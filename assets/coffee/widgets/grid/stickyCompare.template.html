@@ -2,10 +2,13 @@
 	<ul class='stickyControls'>
 	<li>
 		<span class="btn-group">
-			<button id ="stickyChain-btn" type="button" class="btn btn-default stickyChainIcon">
+			<button id ="stickyChain-btn" type="button" class="btn btn-default dropdown-toggle stickyChainIcon" data-toggle="dropdown">
 				{{labels.selected}}
 			</button>
-			<div style="height:10px;position:relative;"></div>
+			<ul id="stickyChainSelectedList" class="dropdown-menu">
+				
+			</ul>
+
 		</span>
 	</li>
 	<li><button id="stickyCompare-btn" type="button" class="btn btn-primary">

@@ -27,6 +27,7 @@
 		"feedback": "Feedback",
 		"filter": "Filter",
 		"filterd_by": "Filtered by",
+		"filtered_percentage_of_total": "Filtered Percentage of Total",
 		"find_out_more": "Find out more",
 		"grade": "Grade",
 		"grayscale": "Grayscale",
@@ -80,7 +81,9 @@
 		"summative" : "Summative",
 		"teacher": "Teacher",
 		"total": "Total",
+		"total_assessed": "Total Assessed",
 		"total_count": "Total Count",
+		"unfiltered_total_assessed": "Unfiltered Total Assessed",
 		"viewing": "Viewing",
 		"asmt": {
 			"Communicating Reasoning": "Communicating Reasoning",

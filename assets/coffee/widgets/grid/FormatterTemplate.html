@@ -15,20 +15,20 @@
             
             {{#insufficient}}
             <div>{{insufficientText}}</div>
-            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.students_total}}'></span>
+            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
             {{#subject.unfilteredTotal}}
-            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.students_percentage}}'></span>
-            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.students_unfiltered_total}}'></span>
+            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
+            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.unfiltered_total_assessed}}'></span>
             {{/subject.unfilteredTotal}}
             {{/insufficient}}
 
             {{^insufficient}}
             <div class='studentsTotal'>{{subject.total}}</div>
-            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.students_total}}'></span>
+            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
-                <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.students_percentage}}'></span>
-                <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.students_unfiltered_total}}'></span>
+                <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
+                <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.unfiltered_total_assessed}}'></span>
             </div>
             {{/subject.unfilteredTotal}}
             <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>

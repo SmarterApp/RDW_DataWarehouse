@@ -1,4 +1,5 @@
 import csv
+import os
 from udl2_util.database_util import execute_queries
 from move_to_target import move_to_target, move_to_target_setup
 from tests.functional_tests.util import UDLTestHelper
@@ -14,7 +15,7 @@ class IntToStarFTest(UDLTestHelper):
         table = 'INT_SBAC_ASMT'
         insert_sql = """INSERT INTO "{staging_schema}"."{staging_table}" VALUES({value_string});"""
         insert_array = []
-        with open('../data/INT_SBAC_ASMT.csv') as f:
+        with open(os.path.join(self.udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT.csv')) as f:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             next(cf)
             for row in cf:
@@ -29,7 +30,7 @@ class IntToStarFTest(UDLTestHelper):
             execute_queries(self.udl2_conn, insert_array, except_msg)
         table = 'INT_SBAC_ASMT_OUTCOME'
         insert_array = []
-        with open('../data/INT_SBAC_ASMT_OUTCOME.csv') as f:
+        with open(os.path.join(self.udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT_OUTCOME.csv')) as f:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             next(cf)
             for row in cf:

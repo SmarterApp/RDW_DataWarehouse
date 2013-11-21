@@ -29,6 +29,7 @@
 		"filter": "フィルター",
 		"filterd_by": "使用中のフィルター",
 		"filtered_percentage_of_total": "総学生のフィルタリングされた割合",
+		"filtered_student_count": "フィルタリング学生カウント",
 		"grade": "グレード",
 		"grayscale": "白黒",
 		"grayscale_message": "白黒プリント",

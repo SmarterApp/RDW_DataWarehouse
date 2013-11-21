@@ -12,10 +12,15 @@
             <div class='alignmentHighlightSection'>
                 <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
             </div>
-            
+
             {{#insufficient}}
             <div>{{insufficientText}}</div>
+            {{^isFilterOn}}
             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+            {{/isFilterOn}}
+            {{#isFilterOn}}
+             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+            {{/isFilterOn}}
             {{#subject.unfilteredTotal}}
             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.unfiltered_total_assessed}}'></span>
@@ -24,7 +29,12 @@
 
             {{^insufficient}}
             <div class='studentsTotal'>{{subject.total}}</div>
+            {{^isFilterOn}}
             <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+            {{/isFilterOn}}
+            {{#isFilterOn}}
+             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+            {{/isFilterOn}}
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
                 <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>

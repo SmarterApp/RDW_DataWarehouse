@@ -19,7 +19,8 @@ define [
   "edwareAsmtDropdown"
   "edwareDisclaimer"
   "edwareConstants"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants) ->
+  "edwareClientStorage"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants, edwareClientStorage) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -112,6 +113,20 @@ define [
       this.sort = $.extend(this.sort, sort)
       $('#gridTable').sortBySubject(this.sort.name, this.sort.index, this.sort.order)
 
+    isFiltersOn: () ->
+      result = []
+      params = edwareClientStorage.filterStorage.load()
+      if params
+        $.each JSON.parse(params), (key, value) ->
+          filter = $('.filter-group[data-name=' + key + ']')
+          if filter[0]
+            filterData = []
+            filterName = filter.data('display') #filter name
+            $('input', filter).each ->
+              filterData.push $(this).data('label') if $(this).val() in value
+            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
+      return result.length > 0
+
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
@@ -122,6 +137,7 @@ define [
       # set current query assessment type
       param.asmtType = this.currentAsmtType.toUpperCase()
       self = this
+
       this.fetchData param, (data)->
         self.data = data
         self.populationData = self.data.records
@@ -211,11 +227,12 @@ define [
       this.gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
-      
+
       # Filter out selected rows, if any, we pass in the first columns' grid config field name for sticky chain list
       filteredInfo = this.stickyCompare.getFilteredInfo this.populationData, this.gridConfig[0]["items"][0]["field"]
 
       self = this
+
       # Create compare population grid for State/District/School view
       edwareGrid.create {
         data: filteredInfo.data
@@ -226,6 +243,7 @@ define [
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort
+          isFiltersOn: self.isFiltersOn()
           gridComplete: () ->
             self.afterGridLoadComplete()
       }

@@ -3,20 +3,21 @@ define [
   'jqGrid'
   'edwareUtil'
   'edwareGridFormatters'
-  'edwareGridSorters'  
+  'edwareGridSorters'
 ], ($, jqGrid, edwareUtil, edwareGridFormatters, edwareGridSorters) ->
 
   DEFAULT_CONFIG =
     tableId: 'gridTable'
     data: undefined
     options:
+      isFiltersOn: false
       gridHeight: window.innerHeight * 0.6 #default grid height
       datatype: "local"
       height: "auto"
       viewrecords: true
       autoencode: true
       rowNum: 100
-      gridview: true 
+      gridview: true
       scroll: 1
       shrinkToFit: false
       defaultWidth: 980
@@ -24,7 +25,7 @@ define [
 
 
   class EdwareGrid
-  
+
     constructor: (@table, columns, @options, @footer) ->
       this.columns = this.setSortedColumn columns
       this.options.footerrow = true if this.footer
@@ -35,7 +36,7 @@ define [
     setSortedColumn: (columns) ->
       sorted = this.options.sort
       return columns if not sorted
-      
+
       for column in columns
         if sorted.name == column.items[0].index
           column.items[0].sortorder = sorted.order || 'asc'
@@ -67,7 +68,7 @@ define [
       this.table.jqGrid options
       this.table.jqGrid "hideCol", "rn"
       this.table.setGridWidth options.defaultWidth, false
-      
+
     renderFooter: () ->
       # Add footer row to the grid
       footer = this.footer
@@ -95,11 +96,12 @@ define [
       for column in this.columns
         for item in column['items']
           item.parent = column
-          models.push this.getColumnModel item 
+          models.push this.getColumnModel item
       models
-      
+
     getColumnModel: (column) ->
       colModelItem =
+        isFiltersOn: this.options.isFiltersOn
         name: column.field
         label: column.name
         parentLabel: column.parent.name
@@ -170,15 +172,15 @@ define [
     $.fn.lazyLoad = () ->
       # dynamically load data when scrolling down
       this.jqGrid('setGridParam', {scroll: 1, rowNum: 100}).trigger("reloadGrid")
-      
+
   #
   #    * Creates EDWARE grid
   #    * @param tableId - The container id for grid
   #    * @param columnItems
   #    * @param columnData
-  #    * @param footerData - Grid footer row 
+  #    * @param footerData - Grid footer row
   #    * @param options
-  #    
+  #
   create = (config) ->
     # merge configuration
     config = $.extend true, {}, DEFAULT_CONFIG, config
@@ -192,6 +194,6 @@ define [
       $('#' + config['tableId']).edwareGrid columns, options, footer
     else
       edwareUtil.displayErrorMessage  options.labels['no_results']
-      
+
   create: create
-    
+

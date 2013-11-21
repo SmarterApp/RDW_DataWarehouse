@@ -160,7 +160,8 @@ define [
     subject.insufficientText = insufficientText
     subject.labels = options.colModel.labels
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
-      subject: subject,
+      isFilterON: options.colModel.isFilterOn
+      subject: subject
       labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
       export: 'edwareExportColumn' if exportable

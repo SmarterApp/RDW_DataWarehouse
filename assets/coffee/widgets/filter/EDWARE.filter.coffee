@@ -7,24 +7,24 @@ define [
   "edwareClientStorage"
   "text!edwareFilterTemplate"
 ], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate) ->
-  
+
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
   FILTER_CLOSE = 'edware.filter.close'
-  
+
   FILTER_SUBMIT = 'edware.filter.submit'
-  
+
   RESET_DROPDOWN = 'edware.filter.reset.dropdown'
-  
+
   class EdwareFilter
-    
+
     constructor: (@filterArea, @filterTrigger, @configs, @callback) ->
       this.loadPage()
       this.initialize()
       # bind click event
       this.bindEvents()
       return this
-      
+
     initialize: ->
       # initialize variables
       this.filterArrow = $('.filterArrow', this.filterArea)
@@ -46,41 +46,41 @@ define [
       # load config from server
       output = Mustache.to_html filterTemplate, this.configs
       $(this.filterArea).html output
-      
+
     bindEvents: ->
       self = this
       # subscribe filter close event
       this.filterArea.on FILTER_CLOSE, () ->
         self.closeFilter()
-      
+
       # attach click event to cancel button
       this.cancelButton.click () ->
         self.cancel self
-      
+
       # attach click event to submit button
       this.submitButton.click () ->
         $(self).trigger FILTER_SUBMIT
-                
+
       # attach click event to filter trigger button
       this.filterTrigger.click ->
         self.toggleFilterArea self
-        
+
       # toggle grades checkbox effect
       this.gradesFilter.click () ->
         $(this).parent().toggleClass('blue')
-    
+
       # prevent dropdown memu from disappearing
       $(this.dropdownMenu).click (e) ->
         e.stopPropagation()
-      
+
       $(this.filters).on RESET_DROPDOWN, this.clearOptions
-       
+
       $(this).on FILTER_SUBMIT, self.submitFilter
-      
+
       # attach click event to 'Clear All' button
       $(this.clearAllButton).click ->
         self.clearAll()
-        
+
       # display user selected option on dropdown
       $(this.options).click ->
         self.showOptions $(this).closest('.btn-group')
@@ -116,7 +116,7 @@ define [
          filterPanel.slideDown 'slow'
       else
          self.cancel self
-         
+
     closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'
       noTags = $(this.tagPanel).is(':empty')
@@ -137,24 +137,24 @@ define [
         $(this).trigger RESET_DROPDOWN
       # trigger ajax call
       $(this).trigger FILTER_SUBMIT
-  
+
     submitFilter: ->
       self = this
       # display selected filters on html page
       self.createFilterBar self
       self.closeFilter ->
           self.submitAjaxCall self.callback
-    
+
     createFilterBar: ->
       self = this
       # remove existing filter labels
       this.tagPanel.empty()
-      
+
       # create tags for selected filter options
       this.filters.each () ->
         tag = new EdwareFilterTag($(this), self)
         $(self.tagPanel).append tag.create() unless tag.isEmpty
-    
+
     submitAjaxCall: (callback) ->
       selectedValues = this.getSelectedValues()
       # construct params and send ajax call
@@ -164,7 +164,7 @@ define [
       # save param to session storage
       this.storage.save(params)
       callback params if callback
-      
+
     # get parameters for ajax call
     getSelectedValues: ->
       # get fields of selected options in json format
@@ -230,22 +230,22 @@ define [
 
     hidePercentage: (filter) ->
       $('p.not_stated', filter).remove()
-      
-          
+
+
     updatePercentage: (filter, percentage) ->
       output = Mustache.to_html this.template, { 'percentage': percentage }
       $('p.not_stated', filter).html output
 
 
   class EdwareFilterTag
-    
+
     constructor: (@dropdown, @filter) ->
       this.init()
       this.bindEvents()
-    
+
     create: ->
       this.label
-      
+
     init: ->
       param = {}
       param.display = this.dropdown.data('display')
@@ -257,19 +257,19 @@ define [
         param.values.push label
       this.label = this.generateLabel param
       this.isEmpty = (param.values.length == 0)
-      
+
     generateLabel: (data) ->
       #template = "{{#.}}<div class='selectedFilterGroup'><div class='pull-left'><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
       template = "{{#.}}<span class='selectedFilterGroup'><span><span>{{display}}: </span>{{#values}}<span>{{.}}</span><span class='seperator'>, </span>{{/values}}</span><div class='removeIcon'></span></span>{{/.}}"
       output = Mustache.to_html(template, data)
       $(output)
-      
+
     bindEvents: ->
       self = this
       # attach click event on remove icon
       $('.removeIcon', this.label).click () ->
         self.remove self
-      
+
     # remove individual filters
     remove: (self) ->
       #remove label
@@ -284,10 +284,10 @@ define [
   #
   #    *  EDWARE Filter plugin
   #    *  @param filterHook - Panel config data
-  #    *  @param filterTrigger - 
+  #    *  @param filterTrigger -
   #    *  @param callback - callback function, triggered by click event on apply button
   #    *  Example: $("#table1").edwareFilter(filterTrigger, callbackFunction)
-  #  
+  #
   (($)->
     $.fn.edwareFilter = (filterTrigger, configs, callback) ->
       new EdwareFilter($(this), filterTrigger, configs, callback)

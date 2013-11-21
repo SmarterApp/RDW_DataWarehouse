@@ -31,7 +31,7 @@ class ValidateTableData(unittest.TestCase):
         self.tenant_dir = TENANT_DIR
 
     def tearDown(self):
-        os.rmdir(self.tenant_dir)
+        shutil.rmtree(self.tenant_dir)
 
     def empty_batch_table(self, db_connection):
         output = db_connection.execute('DELETE FROM udl2."UDL_BATCH";')

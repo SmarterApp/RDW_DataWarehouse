@@ -887,11 +887,12 @@ def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, s
 
     # setup output path dict
     output_dict = ENTITY_TO_PATH_DICT
-    if not gen_dim_staff and Staff in output_dict:
-        del output_dict[Staff]
 
     if output_path:
         output_dict = create_output_dict(output_path)
+
+    if not gen_dim_staff and Staff in output_dict:
+        del output_dict[Staff]
     # generate_data
     generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format,
                                    single_file, district_chunk_size, gen_dim_staff)

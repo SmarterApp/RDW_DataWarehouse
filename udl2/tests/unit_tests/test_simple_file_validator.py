@@ -20,9 +20,9 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
     def test_simple_file_validator_passes_for_valid_csv(self):
         validator = simple_file_validator.SimpleFileValidator()
         results = validator.execute(self.conf['zones']['datafiles'],
-                                    'test_data_valid_latest_11122013/'
-                                    'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv', 1)
-        self.assertEqual(len(results), 0)
+                                    'test_data_latest/'
+                                    'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
+        assert len(results) == 0
 
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator()
@@ -53,7 +53,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                            'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'code_state', 'asmt_subject', 'asmt_type']
         validator = csv_validator.DoesSourceFileInExpectedFormat(csv_fields=test_csv_fields)
         results = [validator.execute(self.conf['zones']['datafiles'],
-                                     'test_data_valid_latest_11122013/'
-                                     'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv', 1)]
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0][0], '0')
+                                     'test_data_latest/'
+                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)]
+        assert len(results) == 1
+        assert results[0][0] == '0'

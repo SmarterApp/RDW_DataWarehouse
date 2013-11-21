@@ -53,7 +53,7 @@ define [
       records.push edwareUtil.escapeCSV [this.labels.date, this.timestamp]
       records.push edwareUtil.escapeCSV [this.labels.report_info, this.breadcrumb]
       # build filters
-      records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.filters] if this.filters
+      records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.filters] if (this.filters.length > 0)
       records.push edwareUtil.escapeCSV [this.labels.sort_by, this.sortBy]
       records.push edwareUtil.escapeCSV [this.labels.compare, this.isSticky]
       records.push edwareUtil.escapeCSV [this.labels.asmt_type, this.asmtType]

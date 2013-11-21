@@ -43,9 +43,9 @@ class TestFileExpander(unittest.TestCase):
         shutil.copyfile(self.test_source_file_4, self.test_missing_json_file)
 
     def test_expander_for_valid_file(self):
-        self.assertTrue(os.path.isfile(self.test_valid_file))
-        expected_json_file = 'METADATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.json'
-        expected_csv_file = 'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv'
+        assert os.path.isfile(self.test_valid_file)
+        expected_json_file = 'METADATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.json'
+        expected_csv_file = 'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv'
         tar_file_contents = file_expander.expand_file(self.test_valid_file, self.expanded_dir)
         expanded_files = [name for name in os.listdir(self.expanded_dir) if os.path.isfile(self.expanded_dir + name)]
         self.assertEqual(len(expanded_files), 2)
@@ -72,8 +72,8 @@ class TestFileExpander(unittest.TestCase):
 
     def test_expander_for_absolute_path_coded_file(self):
         assert os.path.isfile(self.test_absolute_path_file)
-        expected_json_file = 'METADATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.json'
-        expected_csv_file = 'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv'
+        expected_json_file = 'METADATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.json'
+        expected_csv_file = 'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv'
         tar_file_contents = file_expander.expand_file(self.test_absolute_path_file, self.expanded_dir)
         expanded_files = [name for name in os.listdir(self.expanded_dir) if os.path.isfile(self.expanded_dir + name)]
         assert len(expanded_files) == 2

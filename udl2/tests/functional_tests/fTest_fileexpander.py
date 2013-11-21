@@ -43,17 +43,17 @@ class TestFileExpander(unittest.TestCase):
         shutil.copyfile(self.test_source_file_4, self.test_missing_json_file)
 
     def test_expander_for_valid_file(self):
-        assert os.path.isfile(self.test_valid_file)
+        self.assertTrue(os.path.isfile(self.test_valid_file))
         expected_json_file = 'METADATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.json'
         expected_csv_file = 'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv'
         tar_file_contents = file_expander.expand_file(self.test_valid_file, self.expanded_dir)
         expanded_files = [name for name in os.listdir(self.expanded_dir) if os.path.isfile(self.expanded_dir + name)]
-        assert len(expanded_files) == 2
-        assert len(tar_file_contents) == 2
-        self.assertTrue(expected_json_file in expanded_files)
-        self.assertTrue(expected_csv_file in expanded_files)
-        self.assertTrue(os.path.join(self.expanded_dir, expected_json_file) in tar_file_contents)
-        self.assertTrue(os.path.join(self.expanded_dir, expected_csv_file) in tar_file_contents)
+        self.assertEqual(len(expanded_files), 2)
+        self.assertEqual(len(tar_file_contents), 2)
+        self.assertIn(expected_json_file, expanded_files)
+        self.assertIn(expected_csv_file, expanded_files)
+        self.assertIn(os.path.join(self.expanded_dir, expected_json_file), tar_file_contents)
+        self.assertIn(os.path.join(self.expanded_dir, expected_csv_file), tar_file_contents)
 
     def test_expander_for_invalid_file(self):
         assert not os.path.isfile(self.test_invalid_file)

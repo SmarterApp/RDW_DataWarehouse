@@ -6,8 +6,9 @@ This module provides client side session storage.
 define [
   "jquery"
   "edwareUtil"
-], ($, edwareUtil) ->
-  
+  "edwareConstants"
+], ($, edwareUtil, Constants) ->
+
   clearAll = () ->
     ### Clears all client storage. ###
     sessionStorage.clear()
@@ -53,17 +54,35 @@ define [
       Data must be able to convert to a JSON string in order to be put into session storage.
       ###
       this.storage.setItem(this.key, JSON.stringify(data))
-    
+
     update: (data) ->
       ###
       Merge data into existing storage
       ###
       merged = $.extend(JSON.parse(this.load() || "{}"), data)
       this.storage.setItem(this.key, JSON.stringify(merged))
-    
+
     clear: () ->
       ### Clear data ###
       this.storage.removeItem(this.key)
+
+    buildFilters: () ->
+      self = this
+      result = []
+      params = self.load()
+      if params
+        $.each JSON.parse(params), (key, value) ->
+          filter = $('.filter-group[data-name=' + key + ']')
+          if filter[0]
+            filterData = []
+            filterName = filter.data('display') #filter name
+            $('input', filter).each ->
+              filterData.push $(this).data('label') if $(this).val() in value
+            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
+      result
+
+    areFiltersOn: () ->
+      return this.buildFilters().length > 0
 
   ###
   Filter Storage

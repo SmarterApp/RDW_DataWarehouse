@@ -15,30 +15,30 @@
 
             {{#insufficient}}
             <div>{{insufficientText}}</div>
-            {{^isFilterOn}}
+            {{^areFiltersOn}}
             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
-            {{/isFilterOn}}
-            {{#isFilterOn}}
-             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
-            {{/isFilterOn}}
+            {{/areFiltersOn}}
+            {{#areFiltersOn}}
+            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+            {{/areFiltersOn}}
             {{#subject.unfilteredTotal}}
             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
-            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.unfiltered_total_assessed}}'></span>
+            <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
             {{/subject.unfilteredTotal}}
             {{/insufficient}}
 
             {{^insufficient}}
             <div class='studentsTotal'>{{subject.total}}</div>
-            {{^isFilterOn}}
+            {{^areFiltersOn}}
             <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
-            {{/isFilterOn}}
-            {{#isFilterOn}}
-             <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
-            {{/isFilterOn}}
+            {{/areFiltersOn}}
+            {{#areFiltersOn}}
+            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+            {{/areFiltersOn}}
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
                 <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
-                <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.unfiltered_total_assessed}}'></span>
+                <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
             </div>
             {{/subject.unfilteredTotal}}
             <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
@@ -87,8 +87,8 @@
                 <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
             </div>
             <span class='edwareExportField' data-export-value='{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}'
-                      data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>   
-            <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>   
+                      data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>
+            <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
         </div>
         {{/subject}}
         {{^subject}}

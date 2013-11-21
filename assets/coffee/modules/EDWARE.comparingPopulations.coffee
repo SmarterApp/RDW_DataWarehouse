@@ -113,19 +113,8 @@ define [
       this.sort = $.extend(this.sort, sort)
       $('#gridTable').sortBySubject(this.sort.name, this.sort.index, this.sort.order)
 
-    isFiltersOn: () ->
-      result = []
-      params = edwareClientStorage.filterStorage.load()
-      if params
-        $.each JSON.parse(params), (key, value) ->
-          filter = $('.filter-group[data-name=' + key + ']')
-          if filter[0]
-            filterData = []
-            filterName = filter.data('display') #filter name
-            $('input', filter).each ->
-              filterData.push $(this).data('label') if $(this).val() in value
-            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
-      return result.length > 0
+    areFiltersOn: () ->
+        return edwareClientStorage.filterStorage.areFiltersOn()
 
     reload: (@param) ->
       # initialize variables
@@ -243,7 +232,7 @@ define [
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort
-          isFiltersOn: self.isFiltersOn()
+          areFiltersOn: self.areFiltersOn()
           gridComplete: () ->
             self.afterGridLoadComplete()
       }

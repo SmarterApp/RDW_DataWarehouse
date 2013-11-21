@@ -10,7 +10,7 @@ define [
     tableId: 'gridTable'
     data: undefined
     options:
-      isFiltersOn: false
+      areFiltersOn: false
       gridHeight: window.innerHeight * 0.6 #default grid height
       datatype: "local"
       height: "auto"
@@ -101,7 +101,7 @@ define [
 
     getColumnModel: (column) ->
       colModelItem =
-        isFiltersOn: this.options.isFiltersOn
+        areFiltersOn: this.options.areFiltersOn
         name: column.field
         label: column.name
         parentLabel: column.parent.name

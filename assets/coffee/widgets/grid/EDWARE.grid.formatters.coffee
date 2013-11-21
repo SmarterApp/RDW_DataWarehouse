@@ -44,7 +44,7 @@ define [
 
   showlink = (value, options, rowObject) ->
     exportable = options.colModel.export #check if export current field
-    
+
     # draw summary row (grid footer)
     isHeader = rowObject.header
     return Mustache.to_html SUMMARY_TEMPLATE, {
@@ -54,7 +54,7 @@ define [
       columnName: options.colModel.label
       export: 'edwareExportColumn' if exportable
     } if isHeader
-    
+
     getDisplayValue = () ->
       displayValue = value
       if options.colModel.formatoptions.id_name is "asmtGrade"
@@ -160,7 +160,7 @@ define [
     subject.insufficientText = insufficientText
     subject.labels = options.colModel.labels
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
-      isFilterON: options.colModel.isFilterOn
+      areFiltersOn: options.colModel.areFiltersOn
       subject: subject
       labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)

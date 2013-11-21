@@ -13,12 +13,13 @@ from udl2 import message_keys as mk
 from udl2 import W_load_csv_to_staging
 from udl2.celery import celery
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_parrallel_csv_load.task")
+@celery.task(name="udl2.W_parrallel_csv_load.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)

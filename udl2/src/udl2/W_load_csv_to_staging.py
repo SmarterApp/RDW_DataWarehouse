@@ -6,13 +6,14 @@ from udl2 import message_keys as mk
 from udl2.celery import celery, udl2_conf
 from udl2_util.file_util import extract_file_name
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 import datetime
 
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_load_to_staging_table.task")
+@celery.task(name="udl2.W_load_to_staging_table.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)

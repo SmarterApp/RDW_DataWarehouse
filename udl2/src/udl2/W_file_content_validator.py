@@ -13,13 +13,14 @@ import datetime
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 from udl2 import message_keys as mk
 
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name='udl2.W_file_content_validator.task')
+@celery.task(name='udl2.W_file_content_validator.task', base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)

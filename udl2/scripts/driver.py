@@ -6,7 +6,8 @@ import time
 import datetime
 import imp
 
-from celery import chain
+from udl2.celery import celery
+from celery import chain, task
 from udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_simple_file_validator, W_file_splitter, W_file_content_validator,
                   W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star, W_parallel_csv_load, W_post_etl , W_all_done)
 from udl2 import message_keys as mk
@@ -39,7 +40,7 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
     arrival_msg = generate_message_for_file_arrived(archive_file, lzw, common_msg)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), 
-                             W_file_decrypter.task.s(), W_file_expander.task.s(),
+                             W_file_decrypter.DecrypterTask().s(), W_file_expander.task.s(),
                              W_simple_file_validator.task.s(), W_file_splitter.task.s(),
                              W_parallel_csv_load.task.s(),
                              W_file_content_validator.task.s(), W_load_json_to_integration.task.s(),

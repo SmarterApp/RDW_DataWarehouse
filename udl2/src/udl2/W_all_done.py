@@ -10,7 +10,6 @@ from celery.utils.log import get_task_logger
 
 from udl2 import message_keys as mk
 from udl2.celery import celery
-from udl2.udl2_base_task import Udl2BaseTask
 from udl2_util.measurement import BatchTableBenchmark
 
 
@@ -26,7 +25,7 @@ def report_udl_batch_metrics_to_log(msg, end_time):
     logger.info('Total Records Processed: ' + str(msg[mk.FACT_ROWS_LOADED]))
 
 
-@celery.task(name='udl2.W_all_done.task', base=Udl2BaseTask)
+@celery.task(name='udl2.W_all_done.task')
 def task(msg):
     start_time = msg[mk.START_TIMESTAMP]
     end_time = datetime.datetime.now()

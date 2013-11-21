@@ -6,7 +6,6 @@ Created on Jan 24, 2013
 
 from datetime import datetime
 from edapi.decorators import report_config, user_info
-from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from edapi.logging import audit_event
@@ -21,7 +20,7 @@ from smarter.reports.helpers.metadata import get_subjects_map,\
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query,\
     has_filters, FILTERS_CONFIG
-from edcore.utils.utils import merge_dict, delete_multiple_entries_from_dictionary_by_list_of_keys
+from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection

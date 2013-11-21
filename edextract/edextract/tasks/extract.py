@@ -9,10 +9,10 @@ import csv
 import logging
 from edextract.celery import celery
 from edcore.database.edcore_connector import EdCoreDBConnection
-from edextract.status.status import update_extract_stats, ExtractStatus
+from edextract.status.status import ExtractStatus,\
+    insert_extract_stats
 from edextract.status.constants import Constants
 from edextract.utils.file_encryptor import FileEncryptor
-from datetime import datetime
 from edextract.settings.config import Config, get_setting
 from edextract.utils.file_utils import prepare_path
 from edextract.utils.file_archiver import archive_files
@@ -34,8 +34,8 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     '''
     generate_tasks = group(generate.subtask(args=[tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
     workflow = chain(generate_tasks,
-                     archive.subtask(args=[archive_file_name, directory_to_archive], queue='extract', immutable=True),
-                     remote_copy.subtask(args=[archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue='extract', immutable=True))
+                     archive.subtask(args=[request_id, archive_file_name, directory_to_archive], queue='extract', immutable=True),
+                     remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue='extract', immutable=True))
     workflow.apply_async()
 
 
@@ -52,14 +52,15 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
     :param output_uri: output file uri
     :param batch_id: batch_id for tracking
     '''
-    start_time = datetime.utcnow()
     log.info('execute tasks.extract.generate for task ' + task_id)
     try:
-        update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTING,
-                                       Constants.EXTRACT_START: start_time,
-                                       Constants.CELERY_TASK_ID: generate.request.id})
+        task_info = {Constants.TASK_ID: task_id,
+                     Constants.CELERY_TASK_ID: generate.request.id,
+                     Constants.REQUEST_GUID: request_id}
+
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
-            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.utcnow()})
+            insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.NO_TENANT})
             return False
         prepare_path(output_file)
         gpg_binary_file = get_setting(Config.BINARYFILE)
@@ -74,33 +75,42 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
                     csvwriter.writerow(header)
                 row = list(result.values())
                 csvwriter.writerow(row)
-            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED,
-                                           Constants.EXTRACT_END: datetime.utcnow(),
-                                           Constants.OUTPUT_FILE: output_file})
+            insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
             return True
     except Exception as e:
         log.error(e)
-        update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.FAILED, Constants.EXTRACT_END: datetime.utcnow()})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED})
         return False
 
 
 @celery.task(name="tasks.extract.archive",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def archive(zip_file_name, directory):
+def archive(request_id, zip_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
+    task_info = {Constants.TASK_ID: archive.request.id,
+                 Constants.CELERY_TASK_ID: archive.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
     prepare_path(zip_file_name)
     archive_files(zip_file_name, directory)
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
 
 
 @celery.task(name="tasks.extract.remote_copy",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def remote_copy(src_file_name, tenant, gatekeeper, sftp_info):
+def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
+    task_info = {Constants.TASK_ID: remote_copy.request.id,
+                 Constants.CELERY_TASK_ID: remote_copy.request.id,
+                 Constants.REQUEST_GUID: request_id}
     try:
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPYING})
         rtn_code = copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2])
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COMPLETED})
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + e)
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: 'remote copy has failed: ' + e})
     return rtn_code

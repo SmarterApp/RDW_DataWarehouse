@@ -4,14 +4,15 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
-from edextract.tasks.extract import archive, generate, start_extract
+from edextract.tasks.extract import archive, generate
 import tempfile
 import os
 import shutil
 from zipfile import ZipFile
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 
 
-class TestExtractTask(unittest.TestCase):
+class TestExtractTask(Unittest_with_stats_sqlite):
 
     def setUp(self):
         self.__files = ['a.txt', 'b.txt', 'c.txt']
@@ -29,7 +30,7 @@ class TestExtractTask(unittest.TestCase):
         pass
 
     def test_archive(self):
-        archive(self.__tmp_zip, self.__tmp_dir)
+        archive('req_id', self.__tmp_zip, self.__tmp_dir)
         zipfile = ZipFile(self.__tmp_zip, "r")
         namelist = zipfile.namelist()
         self.assertEqual(3, len(namelist))

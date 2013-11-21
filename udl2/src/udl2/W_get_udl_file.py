@@ -20,7 +20,6 @@ def get_next_file(msg):
     :return:
     """
 
-    # TODO: change to a constant from message_keys
     tenant_dirs = msg[mk.TENANT_SEARCH_PATHS]
 
     files_in_dir = []

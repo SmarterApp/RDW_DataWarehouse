@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import os
 import argparse
 import time
-import imp
 
 from udl2.udl2_pipeline import get_pipeline_chain
 from udl2.W_get_udl_file import get_next_file, error_handler

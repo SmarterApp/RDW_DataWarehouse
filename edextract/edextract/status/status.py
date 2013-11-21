@@ -21,6 +21,7 @@ class ExtractStatus():
     ARCHIVED = 'ARCHIVED'           # File is archived
     COPYING = 'COPYING'             # File is being copied to pick up zone
     COPIED = 'COPIED'               # File has been copied and entire extract process is completed
+    # Error status
     FAILED = 'FAILED'               # Extract process failed
     NO_TENANT = 'NO_TENANT'         # Extract process failed due to no tenant given
 

@@ -486,6 +486,7 @@ jenkins_dev:
         CELERY_IMPORTS: ('edextract.tasks.extract',)
         CELERY_RESULT_BACKEND: amqp
         CELERY_DEFAULT_QUEUE : extract
+        CELERY_DEFAULT_ROUTING_KEY: extract
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 8
       gpg.homedir : /var/lib/jenkins/.gnupg

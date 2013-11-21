@@ -109,7 +109,7 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPYING})
         rtn_code = copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2])
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COMPLETED})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPIED})
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + e)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: 'remote copy has failed: ' + e})

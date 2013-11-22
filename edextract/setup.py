@@ -9,7 +9,8 @@ requires = [
     'SQLAlchemy',
     "celery",
     "anyjson",
-    "amqp"
+    "amqp",
+    "apscheduler"
 ]
 
 tests_require = requires

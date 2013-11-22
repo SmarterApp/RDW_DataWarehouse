@@ -66,24 +66,6 @@ define [
       ### Clear data ###
       this.storage.removeItem(this.key)
 
-    buildFilters: () ->
-      self = this
-      result = []
-      params = self.load()
-      if params
-        $.each JSON.parse(params), (key, value) ->
-          filter = $('.filter-group[data-name=' + key + ']')
-          if filter[0]
-            filterData = []
-            filterName = filter.data('display') #filter name
-            $('input', filter).each ->
-              filterData.push $(this).data('label') if $(this).val() in value
-            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
-      result
-
-    areFiltersOn: () ->
-      return this.buildFilters().length > 0
-
   ###
   Filter Storage
   ###

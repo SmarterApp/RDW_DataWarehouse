@@ -113,9 +113,6 @@ define [
       this.sort = $.extend(this.sort, sort)
       $('#gridTable').sortBySubject(this.sort.name, this.sort.index, this.sort.order)
 
-    areFiltersOn: () ->
-        return edwareClientStorage.filterStorage.areFiltersOn()
-
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
@@ -232,7 +229,6 @@ define [
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort
-          areFiltersOn: self.areFiltersOn()
           gridComplete: () ->
             self.afterGridLoadComplete()
       }

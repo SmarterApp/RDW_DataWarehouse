@@ -63,7 +63,19 @@ define [
       records
 
     buildFilters: () ->
-        return edwareClientStorage.filterStorage.buildFilters()
+      result = []
+      self = this
+      params = edwareClientStorage.filterStorage.load()
+      if params
+        $.each JSON.parse(params), (key, value) ->
+          filter = $('.filter-group[data-name=' + key + ']')
+          if filter[0]
+            filterData = []
+            filterName = filter.data('display') #filter name
+            $('input', filter).each ->
+              filterData.push $(this).data('label') if $(this).val() in value
+            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
+      result
 
     buildContent: () ->
       result = []

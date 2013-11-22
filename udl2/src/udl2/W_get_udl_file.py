@@ -1,8 +1,5 @@
 __author__ = 'swimberly'
 
-import glob
-import os
-
 from celery.result import AsyncResult
 
 from udl2.udl2_pipeline import get_pipeline_chain
@@ -34,7 +31,7 @@ def get_next_file(msg):
     if len(files_in_dir) > 0:
         print('picking up file:', files_in_dir[0])
         pipeline = get_pipeline_chain(files_in_dir[0], msg[mk.LOAD_TYPE], msg[mk.PARTS])
-        (pipeline | get_next_file.si(next_file_msg)).apply_async(link_error=error_handler.s())
+        (pipeline | get_next_file.si(next_file_msg)).apply_async()
         return "File found and pipeline scheduled"
     else:
         get_next_file.apply_async((next_file_msg,), countdown=udl2_conf['search_wait_time'])

@@ -248,7 +248,7 @@
 						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
-						"width": 205,
+						"width": 330,
 						"style": "ui-ellipsis bold",
 						"formatter": "showlink",
 						"options": {
@@ -267,7 +267,7 @@
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
-						"width": 170,
+						"width": 230,
 						"formatter": "performanceBar",
 						"options": {
 							"asmt_type": "subject1"
@@ -276,14 +276,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "先生",
-						"displayTpl": "",
-						"index": "assessments.subject1.teacher_full_name",
-						"field": "assessments.subject1.teacher_full_name",
-						"width": 204,
-						"style": "ui-ellipsis",
-						"resizable": false
 					}
 				]
 			}, {
@@ -294,7 +286,7 @@
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
-						"width": 170,
+						"width": 230,
 						"formatter": "performanceBar",
 						"options": {
 							"asmt_type": "subject2"
@@ -303,14 +295,18 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "先生",
+					}
+				]
+			}, {
+				"name": "",
+				"items": [
+					{
+						"name": "",
 						"displayTpl": "",
-						"index": "assessments.subject2.teacher_full_name",
-						"field": "assessments.subject2.teacher_full_name",
-						"width": 204,
-						"style": "ui-ellipsis",
-						"resizable": false
+						"width": 174,
+						"title": false,
+						"export": false,
+						"sortable": false
 					}
 				]
 			}
@@ -324,7 +320,7 @@
 						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
-						"width": 205,
+						"width": 330,
 						"style": "ui-ellipsis bold",
 						"formatter": "showlink",
 						"options": {
@@ -352,14 +348,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "先生",
-						"displayTpl": "",
-						"index": "assessments.subject1.teacher_full_name",
-						"field": "assessments.subject1.teacher_full_name",
-						"width": 155,
-						"style": "ui-ellipsis",
-						"resizable": false
 					}
 				]
 			}, {
@@ -370,7 +358,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject1.claims.0.score",
 						"field": "assessments.subject1.claims.0.score",
-						"width": 140,
+						"width": 152,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",
@@ -385,7 +373,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject1.claims.1.score",
 						"field": "assessments.subject1.claims.1.score",
-						"width": 140,
+						"width": 152,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",
@@ -400,7 +388,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject1.claims.2.score",
 						"field": "assessments.subject1.claims.2.score",
-						"width": 140,
+						"width": 152,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",
@@ -418,7 +406,7 @@
 						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
-						"width": 205,
+						"width": 330,
 						"style": "ui-ellipsis bold",
 						"formatter": "showlink",
 						"options": {
@@ -446,14 +434,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "Teacher",
-						"displayTpl": "",
-						"index": "assessments.subject2.teacher_full_name",
-						"field": "assessments.subject2.teacher_full_name",
-						"width": 155,
-						"style": "ui-ellipsis",
-						"resizable": false
 					}
 				]
 			}, {
@@ -464,7 +444,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.0.score",
 						"field": "assessments.subject2.claims.0.score",
-						"width": 103,
+						"width": 114,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",
@@ -479,7 +459,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.1.score",
 						"field": "assessments.subject2.claims.1.score",
-						"width": 104,
+						"width": 114,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",
@@ -494,7 +474,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.2.score",
 						"field": "assessments.subject2.claims.2.score",
-						"width": 104,
+						"width": 114,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",
@@ -509,7 +489,7 @@
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.3.score",
 						"field": "assessments.subject2.claims.3.score",
-						"width": 104,
+						"width": 114,
 						"formatter": "showConfidence",
 						"sorttype": "int",
 						"align": "center",

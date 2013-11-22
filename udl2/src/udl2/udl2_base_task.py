@@ -1,6 +1,7 @@
 __author__ = 'sravi'
 
-from celery import Task
+from celery import Task, chain
+from udl2 import (W_post_etl , W_all_done)
 
 '''
 Abstract base celery task for all udl2 tasks. Every UDL2 task should be based on this
@@ -23,6 +24,7 @@ class Udl2BaseTask(Task):
         print('Task failed: {0!r}'.format(self.request))
         print('Task raised exception: {0!r}'.format(exc))
         print('exception info: {0!r}'.format(einfo))
+        chain(W_post_etl.task.s(args), W_all_done.task.s()).delay()
 
     def on_success(self, retval, task_id, args, kwargs):
         print('Task completed successfully: {0!r}'.format(self.request))

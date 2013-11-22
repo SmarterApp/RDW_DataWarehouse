@@ -132,6 +132,7 @@ define [
       subject: subject
       labels: options.colModel.labels
       score_ALD: score_ALD
+      asmt_perf_lvl: subject.asmt_perf_lvl
       confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
     }
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {

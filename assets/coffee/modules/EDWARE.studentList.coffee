@@ -16,13 +16,13 @@ define [
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, Constants, edwareStickyCompare) ->
 
   REPORT_NAME = 'studentList'
-  
+
   DROPDOWN_VIEW_TEMPLATE = $('#assessmentDropdownViewTemplate').html()
 
   LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
   class StudentGrid
-  
+
     constructor: () ->
       config = edwareDataProxy.getDataForReport REPORT_NAME
       this.initialize(config)
@@ -40,7 +40,7 @@ define [
       this.gridHeight = window.innerHeight - 235
       edwareUtil.reRenderBody this.labels
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.reloadCurrentView.bind(this)
-      
+
     reload: (params) ->
       self = this
       this.fetchData params, (data)->
@@ -69,7 +69,7 @@ define [
           if not interval.bg_color
             $.extend(interval, this.defaultColors[i])
       cutPointsData
-          
+
     bindEvents: ()->
       # Show tooltip for overall score on mouseover
       $(document).on
@@ -82,7 +82,7 @@ define [
             placement: (tip, element) ->
               edwareUtil.popupPlacement(element, 400, 220)
             title: ->
-              elem.parent().find(".losTooltip .js-popupTitle").html() 
+              elem.parent().find(".losTooltip .js-popupTitle").html()
             template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
             content: ->
               elem.parent().find(".losTooltip").html() # html is located in widgets/EDWARE.grid.formatter performanceBar method
@@ -101,10 +101,10 @@ define [
 
     fetchExportData: () ->
       this.assessmentsData
-  
+
     renderBreadcrumbs: () ->
       $('#breadcrumb').breadcrumbs(this.contextData, this.breadcrumbsConfigs)
-      
+
     createGrid: () ->
       # set school name as the page title from breadcrumb
       $(".title h2").html this.contextData.items[2].name
@@ -113,9 +113,9 @@ define [
       this.createDisclaimer() if not this.disclaimer
       # Get asmtType from storage
       this.asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
-      this.currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2      
+      this.currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
       this.updateView this.asmtType, this.currentView
-    
+
     updateView: (asmtType, viewName) ->
       # Save asmtType and viewName
       this.asmtType = asmtType
@@ -128,17 +128,17 @@ define [
       this.renderGrid asmtType, viewName
       # show the content upon rendering complete to prevent seeing the pre-templated text on the html
       $('.gridControls').show()
-   
+
     reloadCurrentView: () ->
       # this is the callback function for sticky compare to reload current view
       this.updateView this.asmtType, this.viewName
-      
+
     fetchData: (params, callback) ->
       # Determine if the report is state, district or school view"
       options =
         method: "POST"
         params: params
-      
+
       studentsData = undefined
       labels = this.labels
       edwareDataProxy.getDatafromSource "/data/list_of_students", options, (data)->
@@ -179,12 +179,12 @@ define [
 
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
- 
+
     renderGrid: (asmtType, viewName) ->
       $('#gridTable').jqGrid('GridUnload')
       # get filtered data and we pass in the first columns' grid config field name for sticky chain list
       filteredInfo = this.stickyCompare.getFilteredInfo(this.getAsmtData(asmtType, viewName), this.columnData[viewName][0]["items"][0]["field"])
-      
+
       self = this
       edwareGrid.create {
         data: filteredInfo.data
@@ -219,7 +219,7 @@ define [
     # creating the assessment view drop down
     createDropdown: ()->
       this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
-    
+
     createDisclaimer: () ->
       this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
 
@@ -246,16 +246,16 @@ define [
           items.last_interval.asmt_cut_point =  ((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width
 
           # Calculate width for cutpoints other than first and last cutpoints
-          j = 1     
+          j = 1
           while j < items.cut_point_intervals.length - 1
             items.cut_point_intervals[j].asmt_cut_point =  ((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width
             j++
-          # use mustache template to display the json data  
+          # use mustache template to display the json data
           output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
-          $("#"+key+"_perfBar").html(output) 
+          $("#"+key+"_perfBar").html(output)
 
   class AsmtTypeDropdown
-  
+
     constructor: (customViews, subjects, @callback) ->
       items = []
       # render dropdown
@@ -274,7 +274,7 @@ define [
       # the first element name as default view
       this.currentView = items[0].key
       this.asmtType = items[0].asmtType
-      
+
     bindEvents: () ->
       self = this
       # add event to change view for assessment
@@ -298,11 +298,11 @@ define [
 
     getAsmtType: ()->
       this.asmtType
-      
+
     formatAsmt: (asmt) ->
       # Replaces spaces with _ for html id purposes
       asmt.replace /\s+/g, "_"
-    
+
     setSelectedText:(asmtType, view) ->
       name = this.formatAsmt asmtType
       $('#selectedAsmtType').text $('#'+ name + '_' + view).text()

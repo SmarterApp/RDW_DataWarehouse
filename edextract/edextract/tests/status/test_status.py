@@ -6,7 +6,7 @@ Created on Nov 5, 2013
 import unittest
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edextract.status.status import insert_extract_stats, ExtractStatus,\
-    create_new_entry
+    create_new_entry, delete_stats
 from edextract.status.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql.expression import select
@@ -80,6 +80,21 @@ class TestStatus(Unittest_with_stats_sqlite):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][Constants.STATUS], three[Constants.STATUS])
         self.assertEqual(results[0][Constants.TASK_ID], one[Constants.TASK_ID])
+
+    def test_delete(self):
+        with StatsDBConnection() as connector:
+            extract_stats = connector.get_table(Constants.EXTRACT_STATS)
+            # Insert test data
+            stmt = extract_stats.insert({Constants.REQUEST_GUID: 'abc', Constants.STATUS: 'status'})
+            connector.execute(stmt)
+            query = select([extract_stats.c.status.label(Constants.STATUS)],
+                           from_obj=[extract_stats])
+            results = connector.get_result(query)
+            self.assertGreater(len(results), 1)
+            delete_stats()
+            results = connector.get_result(query)
+            self.assertEqual(len(results), 0)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

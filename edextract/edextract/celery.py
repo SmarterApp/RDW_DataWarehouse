@@ -7,6 +7,7 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
 from edextract.status.status import setup_db_connection
 from edextract.settings.config import setup_settings
+from edextract import run_cron_cleanup
 
 PREFIX = 'extract.celery'
 
@@ -21,6 +22,7 @@ def setup_celery(settings, prefix=PREFIX):
     '''
     setup(celery, settings, prefix)
     setup_settings(settings)
+    run_cron_cleanup(settings)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
@@ -30,3 +32,4 @@ if prod_config:
     # We should only need to setup db connection in prod mode
     setup_db_connection(conf)
     setup_settings(conf)
+    run_cron_cleanup(conf)

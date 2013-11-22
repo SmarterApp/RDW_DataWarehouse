@@ -98,6 +98,7 @@ common:
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: Kimberly Swimberly
       sftp.route.base_dir: route
+      cleanup.schedule.cron.day: last
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net

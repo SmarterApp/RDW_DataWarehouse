@@ -44,6 +44,15 @@ def insert_extract_stats(*dict_values):
         connector.execute(stmt)
 
 
+def delete_stats():
+    '''
+    Deletes table
+    '''
+    with StatsDBConnection() as connector:
+        extract_stats = connector.get_table(Constants.EXTRACT_STATS)
+        connector.execute(extract_stats.delete())
+
+
 def setup_db_connection(settings):
     '''
     Given ini key/value pair, initialize db for stats table

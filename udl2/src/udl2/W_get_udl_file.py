@@ -9,6 +9,7 @@ from udl2.udl2_pipeline import get_pipeline_chain
 from udl2.celery import celery
 from udl2 import message_keys as mk
 from udl2.celery import udl2_conf
+from file_finder.file_finder import find_files_in_directories
 
 
 @celery.task(name="udl2.W_get_udl_file.get_next_file")
@@ -22,16 +23,7 @@ def get_next_file(msg):
 
     tenant_dirs = msg[mk.TENANT_SEARCH_PATHS]
 
-    files_in_dir = []
-    for tenant_dir in tenant_dirs:
-        print("checking tenant directory:", tenant_dir)
-        files_in_dir += glob.glob(os.path.join(tenant_dir, '*'))
-
-    # may need to add additional checks for incomplete files
-    # sort files by time created
-    print('files in dir', files_in_dir)
-    files_in_dir = sorted(files_in_dir, key=lambda x: os.stat(x).st_mtime)
-    print('files in dir', files_in_dir)
+    files_in_dir = find_files_in_directories(tenant_dirs)
 
     next_file_msg = {
         mk.TENANT_SEARCH_PATHS: tenant_dirs,

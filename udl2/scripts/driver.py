@@ -30,10 +30,8 @@ def start_pipeline(archive_file=None, load_type='Assessment', file_parts=4, batc
             mk.PARTS: file_parts,
             mk.LOAD_TYPE: load_type,
         }
-        try:
-            get_next_file.apply_async((msg,))
-        except Exception:
-            print('EXCEPTION')
+
+        get_next_file.apply_async((msg,))
 
 
 def create_unique_file_name(file_path):

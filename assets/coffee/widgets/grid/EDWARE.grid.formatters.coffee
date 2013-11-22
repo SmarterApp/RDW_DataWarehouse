@@ -123,16 +123,21 @@ define [
       name = name + " " + rowObject.student_last_name if rowObject.student_last_name
       name
 
+    getAsmtPerfLvl = (subject) ->
+      return '' if not subject
+      if not subject.asmt_perf_lvl then '' else subject.asmt_perf_lvl
+
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[subject_type]
     score_ALD = getScoreALD(subject)
     student_name = getStudentName()
+    asmt_perf_lvl = getAsmtPerfLvl(subject)
     toolTip = Mustache.to_html TOOLTIP_TEMPLATE, {
       student_name: student_name
       subject: subject
       labels: options.colModel.labels
       score_ALD: score_ALD
-      asmt_perf_lvl: subject.asmt_perf_lvl
+      asmt_perf_lvl: asmt_perf_lvl
       confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
     }
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {

@@ -16,8 +16,8 @@ def get_next_file(msg):
     """
     Look in the tenants arrival folder for new files, if there is a file present
     move to the next step of the pipeline, otherwise what for x amount of time and look again
-    :param msg:
-    :return:
+    :param msg: A dictionary containing at least: mk.TENANT_SEARCH_PATHS, mk.PARTS, mk.LOAD_TYPE
+    :return: A string stating if the task found a file
     """
 
     tenant_dirs = msg[mk.TENANT_SEARCH_PATHS]

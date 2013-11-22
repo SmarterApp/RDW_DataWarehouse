@@ -267,7 +267,7 @@ class DataGenerationValidation(unittest.TestCase):
     # TC7: Count number of discticts from CSVs and compare with Config file
     def test_number_of_districts(self):
         csv_files = [DataGenerationValidation.dim_inst_hier_csv, DataGenerationValidation.fact_asmt_outcome_csv,
-                     DataGenerationValidation.dim_section_csv,  DataGenerationValidation.dim_student_csv]
+                     DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
             district_set = set()
             with open(each_csv, 'r') as csvfile:

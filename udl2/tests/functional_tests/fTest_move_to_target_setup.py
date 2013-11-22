@@ -7,6 +7,7 @@ import csv
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import CreateSchema, DropSchema
 from sqlalchemy.sql import select, func
+from sqlalchemy.exc import ProgrammingError
 
 from udl2.celery import udl2_conf
 from udl2 import message_keys as mk
@@ -46,7 +47,17 @@ class MyTestCase(unittest.TestCase):
         # Connect to the target db and create a schema for the tenant
         self.target_engine = create_engine(con_string, echo=True)
         self.target_connection = self.target_engine.connect()
-        self.target_connection.execute(CreateSchema(self.tenant_info['target_schema_name']))
+        try:
+            self.target_connection.execute(CreateSchema(self.tenant_info['target_schema_name']))
+        except ProgrammingError as e:
+            # if exception raised because table already exists, remove table and try again
+            if 'schema "ftest_test_schema" already exists' in str(e):
+                self.target_connection.execute(DropSchema(self.tenant_info['target_schema_name'], cascade=True))
+                self.target_connection.execute(CreateSchema(self.tenant_info['target_schema_name']))
+            else:
+                raise
+
+
         self.target_metadata = generate_ed_metadata(schema_name=self.tenant_info['target_schema_name'],
                                                     bind=self.target_engine)
         self.target_metadata.create_all(self.target_engine)

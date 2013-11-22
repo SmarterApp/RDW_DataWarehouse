@@ -8,7 +8,7 @@ MESSAGE_KEYS = ['start_timestamp', 'landing_zone_work_dir', 'load_type', 'batch_
                 'parts', 'guid_batch', 'input_file_path']
 
 
-class MyTestCase(unittest.TestCase):
+class TestUDL2Pipeline(unittest.TestCase):
 
     def test_get_pipeline_chain_check_type(self):
         arch_file = 'path_to_some_file'

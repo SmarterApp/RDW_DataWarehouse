@@ -1,17 +1,16 @@
 __author__ = 'swimberly'
 
 import os
-
-from src.util import create_path
+from sftp.src.util import create_path
 
 
 def create_tenant(tenant, sftp_conf):
-    """
+    '''
     Create the necessary directories for the given tenant
     :param tenant: The name of the tenant
     :param sftp_conf: The configuration information for the tenant
     :return: None
-    """
+    '''
     dir_list = create_list_of_dirs_for_tenant(tenant, sftp_conf)
 
     print('Directories created for tenant:')

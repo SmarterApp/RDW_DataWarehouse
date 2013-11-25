@@ -6,8 +6,7 @@ import os
 import subprocess
 import pwd
 import shutil
-
-from src.util import group_exists, create_path, cleanup_directory
+from sftp.src.util import cleanup_directory, create_path, group_exists
 
 
 __author__ = 'swimberly'
@@ -23,7 +22,7 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
     :return: a tuple containing True if successful, False otherwise and the reason
         as a string
     """
-    arrive_depart_dir = sftp_conf['group_directories'][role]
+    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
     tenant_sftp_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
                                     arrive_depart_dir, tenant)
     tenant_home_path = os.path.join(sftp_conf['sftp_home'], arrive_depart_dir, tenant)
@@ -34,7 +33,8 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
 
     user_sftp_path = os.path.join(tenant_sftp_path, user)
     user_home_path = os.path.join(tenant_home_path, user)
-    _create_user(user, user_home_path, user_sftp_path, role, sftp_conf['file_drop'])
+    user_path = sftp_conf['file_drop'] if role is 'sftparrivals' else sftp_conf['file_pickup']
+    _create_user(user, user_home_path, user_sftp_path, role, user_path)
 
     # set ssh keys if provided
     if ssh_key_file or ssh_key_str:
@@ -72,7 +72,7 @@ def delete_user(user, sftp_conf):
     print('user removed:', user)
 
 
-def _create_user(user, home_folder, sftp_folder, role, file_drop_name):
+def _create_user(user, home_folder, sftp_folder, role, directory_name):
     """
     create the given user with the specified home-folder and group
 
@@ -84,11 +84,11 @@ def _create_user(user, home_folder, sftp_folder, role, file_drop_name):
     create_path(sftp_folder)
 
     add_user_cmd = "adduser -d {} -g {} -s /sbin/nologin {}".format(home_folder, role, user)
-    subprocess.call(add_user_cmd, shell=True)
-    _create_file_drop_folder(user, sftp_folder, role, file_drop_name)
+    subprocess.call(add_user_cmd)
+    _create_role_specific_folder(user, sftp_folder, role, directory_name)
 
 
-def _create_file_drop_folder(user, sftp_user_folder, role, file_drop_name):
+def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     """
     Create the directory and set the permissions for the file drop folder
     :param user: the username of the user to create
@@ -97,12 +97,12 @@ def _create_file_drop_folder(user, sftp_user_folder, role, file_drop_name):
     :param file_drop_name: the name of the file drop folder (should be in the sftp_config dict)
     :return: None
     """
-    file_drop_loc = os.path.join(sftp_user_folder, file_drop_name)
+    file_drop_loc = os.path.join(sftp_user_folder, directory_name)
 
     # create file drop location and set proper permission
     create_path(file_drop_loc)
     shutil.chown(file_drop_loc, user, role)
-    os.chmod(file_drop_loc, 0o777)
+    os.chmod(file_drop_loc, 0o700)
 
 
 def _verify_user_tenant_and_role(tenant_path, username, role):
@@ -166,6 +166,3 @@ def _set_ssh_key(user, role, home_folder, pub_key_str=None, pub_key_file=None):
 
     shutil.chown(ssh_dir, user, role)
     shutil.chown(auth_keys_path, user, role)
-
-
-

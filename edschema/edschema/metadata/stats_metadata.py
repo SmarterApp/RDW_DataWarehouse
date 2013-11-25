@@ -30,6 +30,5 @@ def generate_stats_metadata(schema_name=None, bind=None):
                           Column('celery_task_id', String(50), nullable=True),
                           Column('info', String(256), nullable=True)
                           )
-    Index('extract_stats_request_idx', extract_stats.c.request_guid)
 
     return metadata

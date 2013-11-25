@@ -60,7 +60,7 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
 
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
-            insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.NO_TENANT})
+            insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
             return False
         prepare_path(output_file)
         gpg_binary_file = get_setting(Config.BINARYFILE)
@@ -79,7 +79,7 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
             return True
     except Exception as e:
         log.error(e)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: e})
         return False
 
 

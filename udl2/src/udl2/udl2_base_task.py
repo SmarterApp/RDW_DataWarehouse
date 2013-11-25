@@ -24,7 +24,8 @@ class Udl2BaseTask(Task):
         print('Task failed: {0!r}'.format(self.request))
         print('Task raised exception: {0!r}'.format(exc))
         print('exception info: {0!r}'.format(einfo))
-        chain(W_post_etl.task.s(args), W_all_done.task.s()).delay()
+        print('sending args to pos etl: ', args[0])
+        chain(W_post_etl.task.s(args[0]), W_all_done.task.s()).delay()
 
     def on_success(self, retval, task_id, args, kwargs):
         print('Task completed successfully: {0!r}'.format(self.request))

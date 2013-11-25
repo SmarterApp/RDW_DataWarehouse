@@ -57,10 +57,10 @@ class DecrypterTask(Udl2BaseTask):
         outgoing_msg.update({mk.FILE_TO_EXPAND: decrypted_file})
         return outgoing_msg
 
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
-        print('Decrypter Task failed. Overridden method')
-        print('Task raised exception: {0!r}'.format(exc))
-        print('exception info: {0!r}'.format(einfo))
+    #def on_failure(self, exc, task_id, args, kwargs, einfo):
+    #    print('Decrypter Task failed. Overridden method')
+    #    print('Task raised exception: {0!r}'.format(exc))
+    #    print('exception info: {0!r}'.format(einfo))
 
     def on_success(self, retval, task_id, args, kwargs):
         print('Decrypter Task completed successfully: Overridden method')

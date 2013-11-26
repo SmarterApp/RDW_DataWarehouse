@@ -52,7 +52,8 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
     user_sftp_path = get_user_sftp_jail_dir(sftp_conf, tenant, user, role)
     user_home_path = get_user_home_dir(sftp_conf, tenant, user)
     user_path = sftp_conf['file_drop'] if role is 'sftparrivals' else sftp_conf['file_pickup']
-    _create_user(user, user_home_path, user_sftp_path, role, user_path)
+    
+    _create_user(user, user_home_path, user_sftp_path, sftp_conf['group'], user_path)
 
     # set ssh keys if provided
     if ssh_key_file or ssh_key_str:

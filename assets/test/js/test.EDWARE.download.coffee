@@ -36,7 +36,7 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
   test "Test display widget", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     model.show()
-    ok $('body').hasClass('modal-open'), "Modal should set up a backdrop on body element"
+    ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
 
   test "Test create function", ->
     CSVDownload = edwareDownload.create '#CSVDownloadContainer', config

@@ -13,6 +13,26 @@ from sftp.src.util import cleanup_directory, create_path, group_exists,\
 __author__ = 'swimberly'
 
 
+def get_user_home_dir(sftp_conf, tenant, user):
+    '''
+    Returns the users's home directory
+    '''
+    return os.path.join(sftp_conf['user_home_base_dir'], tenant, user)
+
+
+def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):
+    '''
+    Returns user's jail directory
+    '''
+    tenant_path = get_tenant_sftp_jail_dir(sftp_conf, tenant, role)
+    return os.path.join(tenant_path, user)
+
+
+def get_tenant_sftp_jail_dir(sftp_conf, tenant, role):
+    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
+    return os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], arrive_depart_dir, tenant)
+
+
 def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_file=None):
     """
     Create an sftp user
@@ -23,18 +43,14 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
     :return: a tuple containing True if successful, False otherwise and the reason
         as a string
     """
-    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
-    tenant_sftp_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
-                                    arrive_depart_dir, tenant)
-    tenant_home_path = os.path.join(sftp_conf['sftp_home'], arrive_depart_dir, tenant)
-
+    tenant_sftp_path = get_tenant_sftp_jail_dir(sftp_conf, tenant, role)
     valid_user = _verify_user_tenant_and_role(tenant_sftp_path, user, role)
     if not valid_user[0]:
         print("Error: {}".format(valid_user[1]))
         return False, valid_user[1]
 
-    user_sftp_path = os.path.join(tenant_sftp_path, user)
-    user_home_path = os.path.join(tenant_home_path, user)
+    user_sftp_path = get_user_sftp_jail_dir(sftp_conf, tenant, user, role)
+    user_home_path = get_user_home_dir(sftp_conf, tenant, user)
     user_path = sftp_conf['file_drop'] if role is 'sftparrivals' else sftp_conf['file_pickup']
     _create_user(user, user_home_path, user_sftp_path, role, user_path)
 
@@ -63,10 +79,8 @@ def delete_user(user, sftp_conf):
     subprocess.call(['userdel', '-r', user])
 
     # check both arrivals and departures in the sftp directores to delete user
-    sftp_path_1 = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
-                               sftp_conf['sftp_arrivals_dir'], tenant_name, user)
-    sftp_path_2 = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
-                               sftp_conf['sftp_departures_dir'], tenant_name, user)
+    sftp_path_1 = os.path.join(get_user_sftp_jail_dir(sftp_conf, tenant_name, user, 'sftparrivals'))
+    sftp_path_2 = os.path.join(get_user_sftp_jail_dir(sftp_conf, tenant_name, user, 'sftpdepartures'))
     cleanup_directory(sftp_path_1)
     cleanup_directory(sftp_path_2)
 
@@ -104,7 +118,6 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     # create file drop location and set proper permission
     create_path(file_drop_loc)
     change_owner(file_drop_loc, user, role)
-    os.chmod(file_drop_loc, 0o700)
 
 
 def _verify_user_tenant_and_role(tenant_path, username, role):

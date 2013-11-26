@@ -18,7 +18,7 @@ def get_user_home_dir(sftp_conf, tenant, user, role):
     Returns the users's home directory
     '''
     arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
-    return os.path.join(sftp_conf['user_home_base_dir'], tenant, arrive_depart_dir, user)
+    return os.path.join(sftp_conf['user_home_base_dir'], arrive_depart_dir, tenant, user)
 
 
 def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):

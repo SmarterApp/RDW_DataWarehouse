@@ -6,7 +6,8 @@ import os
 import subprocess
 import pwd
 import shutil
-from sftp.src.util import cleanup_directory, create_path, group_exists
+from sftp.src.util import cleanup_directory, create_path, group_exists,\
+    change_owner
 
 
 __author__ = 'swimberly'
@@ -59,8 +60,7 @@ def delete_user(user, sftp_conf):
 
     tenant_name = os.path.split(os.path.dirname(pwd.getpwnam(user).pw_dir))[-1]
 
-    del_user_cmd = "userdel -r {}".format(user)
-    subprocess.call(del_user_cmd, shell=True)
+    subprocess.call('userdel' + ['-r', user])
 
     # check both arrivals and departures in the sftp directores to delete user
     sftp_path_1 = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
@@ -83,9 +83,9 @@ def _create_user(user, home_folder, sftp_folder, role, directory_name):
     :return: None
     """
     create_path(sftp_folder)
+    change_owner(home_folder, user, role)
 
-    add_user_cmd = "adduser -d {} -g {} -s /sbin/nologin {}".format(home_folder, role, user)
-    subprocess.call(add_user_cmd)
+    subprocess.call('adduser' + ['-d', home_folder, '-g', role, '-s', '/sbin/nologin', user])
     _create_role_specific_folder(user, sftp_folder, role, directory_name)
 
 
@@ -102,7 +102,7 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
 
     # create file drop location and set proper permission
     create_path(file_drop_loc)
-    shutil.chown(file_drop_loc, user, role)
+    change_owner(file_drop_loc, user, role)
     os.chmod(file_drop_loc, 0o700)
 
 

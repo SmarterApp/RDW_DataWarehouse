@@ -37,3 +37,7 @@ def group_exists(name):
         return True
     except KeyError:
         return False
+
+
+def change_owner(path, user, group):
+    shutil.chown(path, user, group)

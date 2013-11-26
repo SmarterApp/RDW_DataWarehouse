@@ -125,7 +125,7 @@ define [
 
     getAsmtPerfLvl = (subject) ->
       return '' if not subject
-      if not subject.asmt_perf_lvl then '' else subject.asmt_perf_lvl
+      subject.asmt_perf_lvl || ''
 
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[subject_type]

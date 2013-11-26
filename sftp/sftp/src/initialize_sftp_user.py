@@ -13,11 +13,12 @@ from sftp.src.util import cleanup_directory, create_path, group_exists,\
 __author__ = 'swimberly'
 
 
-def get_user_home_dir(sftp_conf, tenant, user):
+def get_user_home_dir(sftp_conf, tenant, user, role):
     '''
     Returns the users's home directory
     '''
-    return os.path.join(sftp_conf['user_home_base_dir'], tenant, user)
+    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
+    return os.path.join(sftp_conf['user_home_base_dir'], tenant, arrive_depart_dir, user)
 
 
 def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):
@@ -50,9 +51,9 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
         return False, valid_user[1]
 
     user_sftp_path = get_user_sftp_jail_dir(sftp_conf, tenant, user, role)
-    user_home_path = get_user_home_dir(sftp_conf, tenant, user)
+    user_home_path = get_user_home_dir(sftp_conf, tenant, user, role)
     user_path = sftp_conf['file_drop'] if role is 'sftparrivals' else sftp_conf['file_pickup']
-    
+
     _create_user(user, user_home_path, user_sftp_path, sftp_conf['group'], user_path)
 
     # set ssh keys if provided

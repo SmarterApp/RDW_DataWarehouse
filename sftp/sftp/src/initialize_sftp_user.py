@@ -115,7 +115,7 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     """
     file_drop_loc = os.path.join(sftp_user_folder, directory_name)
     # Change the user's home sftp to a+rw
-    os.chmod(sftp_user_folder, 0o750)
+    os.chmod(sftp_user_folder, 0o705)
 
     # create file drop location and set proper permission
     create_path(file_drop_loc)

@@ -60,7 +60,7 @@ def delete_user(user, sftp_conf):
 
     tenant_name = os.path.split(os.path.dirname(pwd.getpwnam(user).pw_dir))[-1]
 
-    subprocess.call('userdel' + ['-r', user])
+    subprocess.call(['userdel', '-r', user])
 
     # check both arrivals and departures in the sftp directores to delete user
     sftp_path_1 = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
@@ -84,7 +84,7 @@ def _create_user(user, home_folder, sftp_folder, role, directory_name):
     """
     create_path(sftp_folder)
 
-    subprocess.call('adduser' + ['-d', home_folder, '-g', role, '-s', '/sbin/nologin', user])
+    subprocess.call(['adduser', '-d', home_folder, '-g', role, '-s', '/sbin/nologin', user])
     _create_role_specific_folder(user, sftp_folder, role, directory_name)
     # Change the users's home dir
     change_owner(home_folder, user, role)

@@ -102,8 +102,6 @@ def _create_user(user, home_folder, sftp_folder, role, directory_name):
 
     subprocess.call(['adduser', '-d', home_folder, '-g', role, '-s', '/sbin/nologin', user])
     _create_role_specific_folder(user, sftp_folder, role, directory_name)
-    # Change the users's home dir
-    change_owner(home_folder, user, role)
 
 
 def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
@@ -116,6 +114,8 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     :return: None
     """
     file_drop_loc = os.path.join(sftp_user_folder, directory_name)
+    # Change the user's home sftp to a+rw
+    os.chmod(sftp_user_folder, 0o750)
 
     # create file drop location and set proper permission
     create_path(file_drop_loc)

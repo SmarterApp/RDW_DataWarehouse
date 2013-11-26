@@ -1,22 +1,22 @@
 __author__ = 'swimberly'
 
 import os
-
-from src.util import create_path
+from sftp.src.util import create_path
 
 
 def create_tenant(tenant, sftp_conf):
-    """
+    '''
     Create the necessary directories for the given tenant
     :param tenant: The name of the tenant
     :param sftp_conf: The configuration information for the tenant
     :return: None
-    """
+    '''
     dir_list = create_list_of_dirs_for_tenant(tenant, sftp_conf)
 
     print('Directories created for tenant:')
     for path in dir_list:
         create_path(path)
+        os.chmod(path, 0o755)
         print('\t', path)
 
 
@@ -74,5 +74,5 @@ def create_tenant_home_folder_string(tenant, sftp_conf, is_arrivals=True):
     :return: a string containing the path to be created
     """
     zone_str = sftp_conf['sftp_arrivals_dir'] if is_arrivals else sftp_conf['sftp_departures_dir']
-    tenant_path = os.path.join(sftp_conf['sftp_home'], zone_str, tenant)
+    tenant_path = os.path.join(sftp_conf['user_home_base_dir'], zone_str, tenant)
     return tenant_path

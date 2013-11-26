@@ -3,13 +3,12 @@ Created on Oct 21, 2013
 
 Unit test for configure_sftp_groups.py
 """
+from sftp.src import configure_sftp_groups
 
 __author__ = 'sravi'
 
 import unittest
 import sys
-
-from sftp.src import configure_sftp_groups
 
 
 class TestConfigureSFTPGroups(unittest.TestCase):

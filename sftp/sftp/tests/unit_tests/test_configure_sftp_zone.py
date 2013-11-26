@@ -3,14 +3,13 @@ Created on Oct 18, 2013
 
 Unit test for initialize_sftp_zone.py
 """
+from sftp.src import configure_sftp_zone
 
 __author__ = 'sravi'
 
 import unittest
 import os
 import shutil
-
-from sftp.src import configure_sftp_zone
 
 
 class TestInitializeSFTPZone(unittest.TestCase):

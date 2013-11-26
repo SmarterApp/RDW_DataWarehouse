@@ -83,10 +83,11 @@ def _create_user(user, home_folder, sftp_folder, role, directory_name):
     :return: None
     """
     create_path(sftp_folder)
-    change_owner(home_folder, user, role)
 
     subprocess.call('adduser' + ['-d', home_folder, '-g', role, '-s', '/sbin/nologin', user])
     _create_role_specific_folder(user, sftp_folder, role, directory_name)
+    # Change the users's home dir
+    change_owner(home_folder, user, role)
 
 
 def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):

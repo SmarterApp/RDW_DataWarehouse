@@ -16,6 +16,7 @@ def create_tenant(tenant, sftp_conf):
     print('Directories created for tenant:')
     for path in dir_list:
         create_path(path)
+        os.chmod(path, 0o755)
         print('\t', path)
 
 
@@ -46,8 +47,7 @@ def create_list_of_dirs_for_tenant(tenant, sftp_conf):
     """
     return [create_tenant_path_string(tenant, sftp_conf, True),
             create_tenant_path_string(tenant, sftp_conf, False),
-            create_tenant_home_folder_string(tenant, sftp_conf, True),
-            create_tenant_home_folder_string(tenant, sftp_conf, False)]
+            create_tenant_home_folder_string(tenant, sftp_conf)]
 
 
 def create_tenant_path_string(tenant, sftp_conf, is_arrivals=True):
@@ -63,7 +63,7 @@ def create_tenant_path_string(tenant, sftp_conf, is_arrivals=True):
     return tenant_path
 
 
-def create_tenant_home_folder_string(tenant, sftp_conf, is_arrivals=True):
+def create_tenant_home_folder_string(tenant, sftp_conf):
     """
     Create the home directory path for the tenant
     This path is almost the same as

@@ -49,14 +49,14 @@ class TestInitializeTenant(unittest.TestCase):
     def test_create_tenant_home_folder_string_arrivals(self):
         tenant = "test_tenant1234"
         expected = os.path.join(self.sftp_conf['user_home_base_dir'], tenant)
-        result = initialize_sftp_tenant.create_tenant_home_folder_string(tenant, self.sftp_conf, True)
+        result = initialize_sftp_tenant.create_tenant_home_folder_string(tenant, self.sftp_conf)
 
         self.assertEqual(result, expected)
 
     def test_create_tenant_home_folder_string_departures(self):
         tenant = "test_tenant1234"
         expected = os.path.join(self.sftp_conf['user_home_base_dir'], tenant)
-        result = initialize_sftp_tenant.create_tenant_home_folder_string(tenant, self.sftp_conf, False)
+        result = initialize_sftp_tenant.create_tenant_home_folder_string(tenant, self.sftp_conf)
 
         self.assertEqual(result, expected)
 

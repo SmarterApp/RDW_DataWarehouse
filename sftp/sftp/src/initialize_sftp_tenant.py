@@ -47,7 +47,8 @@ def create_list_of_dirs_for_tenant(tenant, sftp_conf):
     """
     return [create_tenant_path_string(tenant, sftp_conf, True),
             create_tenant_path_string(tenant, sftp_conf, False),
-            create_tenant_home_folder_string(tenant, sftp_conf)]
+            create_tenant_home_folder_string(tenant, sftp_conf, True),
+            create_tenant_home_folder_string(tenant, sftp_conf, False)]
 
 
 def create_tenant_path_string(tenant, sftp_conf, is_arrivals=True):
@@ -63,7 +64,7 @@ def create_tenant_path_string(tenant, sftp_conf, is_arrivals=True):
     return tenant_path
 
 
-def create_tenant_home_folder_string(tenant, sftp_conf):
+def create_tenant_home_folder_string(tenant, sftp_conf, is_arrivals=True):
     """
     Create the home directory path for the tenant
     This path is almost the same as
@@ -72,5 +73,6 @@ def create_tenant_home_folder_string(tenant, sftp_conf):
     :param is_arrivals: create the arrivals directory or the departures directory
     :return: a string containing the path to be created
     """
-    tenant_path = os.path.join(sftp_conf['user_home_base_dir'], tenant)
+    zone_str = sftp_conf['sftp_arrivals_dir'] if is_arrivals else sftp_conf['sftp_departures_dir']
+    tenant_path = os.path.join(sftp_conf['user_home_base_dir'], zone_str, tenant)
     return tenant_path

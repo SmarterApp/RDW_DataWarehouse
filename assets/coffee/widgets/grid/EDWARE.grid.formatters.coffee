@@ -142,7 +142,7 @@ define [
     }
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
       subject: subject
-      confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 275)  if subject
+      confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
       columnName: options.colModel.label
       export: 'edwareExportColumn' if options.colModel.export

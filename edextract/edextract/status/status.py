@@ -23,7 +23,7 @@ class ExtractStatus():
     COPIED = 'COPIED'               # File has been copied and entire extract process is completed
     # Error status
     FAILED = 'FAILED'               # Extract process failed
-    NO_TENANT = 'NO_TENANT'         # Extract process failed due to no tenant given
+    FAILED_NO_TENANT = 'FAILED_NO_TENANT'  # Extract process failed due to no tenant given
 
 
 def insert_extract_stats(*dict_values):

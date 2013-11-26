@@ -3,35 +3,30 @@ __author__ = 'swimberly'
 import unittest
 import os
 import shutil
-
+import tempfile
 from sftp.src import initialize_sftp_tenant
 
 
 class TestInitializeTenant(unittest.TestCase):
 
     def setUp(self):
+        self.__temp_dir = tempfile.mkdtemp()
         self.sftp_conf = {
-            'sftp_home': '/tmp',
+            'sftp_home': self.__temp_dir,
             'sftp_base_dir': 'tenant_test_dir',
             'sftp_arrivals_dir': 'test_arrivals_1',
             'sftp_departures_dir': 'test_departures_1',
-            'groups': ['sftparrivals', 'tenantadmin'],
-            'group_directories': {
-                'sftparrivals': 'arrivals',
-                'tenantadmin': 'departures'
-            }
+            'groups': ['sftparrivals', 'sftpdepartures'],
         }
 
         # Create directories
-        os.makedirs('/tmp/tenant_test_dir/test_arrivals_1')
-        os.makedirs('/tmp/tenant_test_dir/test_departures_1')
-        os.mkdir('/tmp/test_arrivals_1')
-        os.mkdir('/tmp/test_departures_1')
+        os.makedirs(os.path.join(self.__temp_dir, 'tenant_test_dir/test_arrivals_1'))
+        os.makedirs(os.path.join(self.__temp_dir, 'tenant_test_dir/test_departures_1'))
+        os.mkdir(os.path.join(self.__temp_dir, 'test_arrivals_1'))
+        os.mkdir(os.path.join(self.__temp_dir, 'test_departures_1'))
 
     def tearDown(self):
-        shutil.rmtree('/tmp/test_arrivals_1')
-        shutil.rmtree('/tmp/test_departures_1')
-        shutil.rmtree('/tmp/tenant_test_dir')
+        shutil.rmtree(self.__temp_dir, ignore_errors=True)
 
     def test_create_tenant_path_string_arrivals(self):
         tenant = 'test_tenant123'

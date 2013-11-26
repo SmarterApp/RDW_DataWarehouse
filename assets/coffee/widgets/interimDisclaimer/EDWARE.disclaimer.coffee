@@ -49,9 +49,9 @@ define [
     update: (asmtType) ->
       if asmtType is "Comprehensive Interim"
         @interimDisclaimerIcon.show()
+        @displayPopover()
       else
         @interimDisclaimerIcon.hide()
-      @displayPopover()
         
   (($)->
     $.fn.edwareDisclaimer = (content) ->

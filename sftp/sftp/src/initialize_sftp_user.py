@@ -29,6 +29,7 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
 
     valid_user = _verify_user_tenant_and_role(tenant_sftp_path, user, role)
     if not valid_user[0]:
+        print("Error: {}".format(valid_user[1]))
         return False, valid_user[1]
 
     user_sftp_path = os.path.join(tenant_sftp_path, user)

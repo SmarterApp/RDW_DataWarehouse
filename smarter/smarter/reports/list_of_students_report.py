@@ -26,6 +26,8 @@ from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
 from smarter.extract.student_assessment import get_extract_assessment_query
+import csv
+from io import StringIO
 
 REPORT_NAME = "list_of_students"
 
@@ -85,9 +87,17 @@ def get_list_of_student_extract_report_archive(params):
         timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
     )
     csv_files = get_list_of_students_extract_report(params)
-    print(csv_files)
+    # has to hack here, ideally if we can do subrequest, then it will be good. but we are not really process request here.
+    # has to hack it with csv render code here, i don't want zip render to be tied to csv only since we may need to write json.
+    content = ''
+    with StringIO() as out_stream:
+        writer = csv.writer(out_stream, delimiter=',', quoting=csv.QUOTE_NONE)
+        writer.writerow(csv_files['header'])
+        writer.writerows(csv_files['rows'])
+        content = out_stream.getvalue()
+
     return {'zip_name': zip_file_name,
-            'files': [{'name': csv_files['file_name'], 'content': 'hello world'}]}
+            'files': [{'name': csv_files['file_name'], 'content': content}]}
 
 
 @report_config(

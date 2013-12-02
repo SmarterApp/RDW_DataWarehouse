@@ -81,8 +81,10 @@ REPORT_PARAMS = merge_dict({
 def get_list_of_student_extract_report_archive(params):
     asmtGrade = params.get(Constants.ASMTGRADE, None)
     level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
+    asmtSubject = params.get(Constants.ASMT_SUBJECT, None)
     zip_file_name = "ASMT_{level}_{asmtType}_{timestamp}.zip".format(
         level=level,
+        asmtSubject=asmtSubject,
         asmtType=params.get(Constants.ASMTTYPE),
         timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
     )
@@ -341,3 +343,31 @@ def __reverse_map(map_object):
     reverse map for FE
     '''
     return {v: k for k, v in map_object.items()}
+
+
+def generate_zip_file_name(asmtSubject, asmtType, timestamp, grade=None):
+    '''
+    Generate file name for archive file according to US21011
+        Zip file name:
+
+        School-level: ASMT_<subject>_<type>_<timestamp>.zip
+        Grade-level:  ASMT_<grade>_<subject>_<type>_<timestamp>.zip
+
+    :param asmtSubject string:  assessment subject, 'MATH' or 'ELA'
+    :param asmtType string: 'SUMMATIVE', 'COMPREHENSIVE INTERIM'
+    :param timestamp string: Time time in "%m-%d-%Y_%H-%M-%S"
+    :param grade string: not required for school level,
+    '''
+    if grade is None:
+        return "ASMT_{asmtSubject}_{asmtType}_{timestamp}.zip".format(
+            asmtSubject=asmtSubject,
+            asmtType=asmtType,
+            timestamp=timestamp
+        )
+    else:
+        return "ASMT_{grade}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(
+            grade=grade,
+            asmtSubject=asmtSubject,
+            asmtType=asmtType,
+            timestamp=timestamp
+        )

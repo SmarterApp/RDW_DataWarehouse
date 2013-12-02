@@ -4,7 +4,7 @@ Created on Feb 4, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.list_of_students_report import get_list_of_students_report, get_list_of_students_extract_report
+from smarter.reports.list_of_students_report import get_list_of_students_report, get_list_of_students_extract_report, generate_zip_file_name
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
@@ -166,6 +166,17 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(result['header'])
         self.assertEqual(len(result['rows']), 140)
         self.assertEqual(result['file_name'][:len('ASMT_SCHOOL_SUMMATIVE_')], 'ASMT_SCHOOL_SUMMATIVE_')
+
+    def test_generate_zip_file_name(self):
+        testSubject = 'MATH'
+        testType = 'SUMMATIVE'
+        testGrade = 'Grade_3'
+        testTimestamp = '12-03-2013_12-12-12'
+        result_for_school = generate_zip_file_name(testSubject, testType, testTimestamp)
+        result_for_grade = generate_zip_file_name(testSubject, testType, testTimestamp, testGrade)
+        self.assertEqual(result_for_school, 'ASMT_MATH_SUMMATIVE_12-03-2013_12-12-12.zip')
+        self.assertEqual(result_for_grade, 'ASMT_Grade_3_MATH_SUMMATIVE_12-03-2013_12-12-12.zip')
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

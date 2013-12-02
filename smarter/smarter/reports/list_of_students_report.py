@@ -65,6 +65,34 @@ REPORT_PARAMS = merge_dict({
 
 
 @report_config(
+    name=REPORT_NAME + '_zip',
+    params=merge_dict(
+        REPORT_PARAMS,
+        {
+            Constants.ASMTTYPE: {
+                "type": "string",
+                "require": True,
+                "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"
+            }
+        }
+    )
+)
+@audit_event()
+def get_list_of_student_extract_report_archive(params):
+    asmtGrade = params.get(Constants.ASMTGRADE, None)
+    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
+    zip_file_name = "ASMT_{level}_{asmtType}_{timestamp}.zip".format(
+        level=level,
+        asmtType=params.get(Constants.ASMTTYPE),
+        timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
+    )
+    csv_files = get_list_of_students_extract_report(params)
+    print(csv_files)
+    return {'zip_name': zip_file_name,
+            'files': [{'name': csv_files['file_name'], 'content': 'hello world'}]}
+
+
+@report_config(
     name=REPORT_NAME + '_csv',
     params=merge_dict(REPORT_PARAMS,
                       {Constants.ASMTTYPE: {"type": "string",

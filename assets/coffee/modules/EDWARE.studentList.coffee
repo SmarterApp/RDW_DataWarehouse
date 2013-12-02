@@ -124,6 +124,7 @@ define [
       this.asmtTypeDropdown.setSelectedText asmtType, viewName
       # save preference to storage
       edwarePreferences.saveAsmtPreference asmtType
+      edwarePreferences.saveSubjectPreference viewName.split("_")
       this.renderGrid asmtType, viewName
       # show the content upon rendering complete to prevent seeing the pre-templated text on the html
       $('.gridControls').show()
@@ -212,7 +213,7 @@ define [
       # Use mustache template to replace text in json config
       # Add assessments data there so we can get column names
       claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
-      combinedData = this.data.subjects
+      combinedData = $.extend(true, {}, this.data.subjects)
       combinedData.claims =  claimsData
       columnData = JSON.parse(Mustache.render(JSON.stringify(this.studentsConfig), combinedData))
       columnData
@@ -258,6 +259,7 @@ define [
   class AsmtTypeDropdown
 
     constructor: (customViews, subjects, @callback) ->
+      subjects = $.extend(true, {}, subjects)
       items = []
       # render dropdown
       for asmtType in customViews.asmtTypes

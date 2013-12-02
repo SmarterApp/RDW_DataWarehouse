@@ -54,12 +54,10 @@ REPORT_PARAMS = merge_dict({
     Constants.ASMTSUBJECT: {
         "type": "array",
         "required": False,
-        "minLength": 1,
-        "maxLength": 100,
-        "pattern": "^[a-zA-Z0-9\.]+$",
         "items": {
-            "type": "string"
-        },
+            "type": "string",
+            "pattern": "^(" + Constants.ELA + "|" + Constants.MATH + ")$",
+        }
     }
 }, FILTERS_CONFIG)
 

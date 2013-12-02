@@ -199,6 +199,8 @@ define [
           params = JSON.parse edwareClientStorage.filterStorage.load()
           # Get asmtType from session storage
           params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
+          # Get asmtSubject from session storage
+          params['asmtSubject'] = edwarePreferences.getSubjectPreference()
           url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
           download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
           setTimeout ( ->

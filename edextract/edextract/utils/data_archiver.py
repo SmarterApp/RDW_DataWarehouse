@@ -9,12 +9,12 @@ import zipfile
 import gnupg
 
 
-def encrypted_archive_files(dirname, recipients, outputfile):
+def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, gpgbinary='gpg'):
     '''
     create encrpyted archive file.
     '''
     data = archive_files(dirname).getvalue()
-    gpg = gnupg.GPG()
+    gpg = gnupg.GPG(homedir=homedir, gpgbinary=gpgbinary)
     gpg.encrypt(data, recipients, output=outputfile)
 
 

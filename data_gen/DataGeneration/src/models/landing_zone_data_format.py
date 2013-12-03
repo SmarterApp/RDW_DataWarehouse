@@ -10,6 +10,8 @@ import copy
 from collections import OrderedDict
 
 from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_files
+from DataGeneration.src.models.helper_entities import ClaimScore, AssessmentScore, State, StudentInfo, School
+from DataGeneration.src.models.entities import Staff
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -209,7 +211,7 @@ def create_realdata_objs_from_helper_entities(state_population, school, student_
         asmt_score_obj = student_info.asmt_scores[subject]
         date_taken = student_info.asmt_dates_taken[subject]
         claim_scores = asmt_score_obj.claim_scores
-        teacher = student_info.teachers[subject]
+        #teacher = student_info.teachers[subject]
         params = {
             'guid_asmt': student_info.asmt_guids[subject],
             'guid_asmt_location': school.school_guid,
@@ -261,11 +263,11 @@ def create_realdata_objs_from_helper_entities(state_population, school, student_
             'dmg_prg_lep': student_info.dmg_prg_lep,
             'dmg_prg_504': student_info.dmg_prg_504,
             'dmg_prg_tt1': student_info.dmg_prg_tt1,
-            'guid_staff': student_info.teacher_guids[subject],
-            'name_staff_first': teacher.first_name,
-            'name_staff_middle': teacher.middle_name,
-            'name_staff_last': teacher.last_name,
-            'type_staff': 'Teacher',
+            #'guid_staff': student_info.teacher_guids[subject],
+            #'name_staff_first': teacher.first_name,
+            #'name_staff_middle': teacher.middle_name,
+            #'name_staff_last': teacher.last_name,
+            #'type_staff': 'Teacher',
             'asmt_type': student_info.asmt_types[subject],
             'asmt_year': student_info.asmt_years[subject],
             'asmt_subject': student_info.asmt_subjects[subject],
@@ -273,6 +275,116 @@ def create_realdata_objs_from_helper_entities(state_population, school, student_
 
         realdata.append(RealDataFormat(**params))
     return realdata
+
+
+def create_helper_entities_from_lz_dict(lz_dict):
+    """
+
+    :param lz_dict:
+    :return:
+    """
+    state_params = {
+        'state_name': lz_dict['name_state'],
+        'state_code': lz_dict['code_state'],
+    }
+    state = State(**state_params)
+    school_params = {
+        'school_guid': lz_dict['guid_school'],
+        'school_name': lz_dict['name_school'],
+        'district_guid': lz_dict['guid_district'],
+        'district_name': lz_dict['name_district'],
+        'school_category': lz_dict['type_school'],
+        'grade_performance_level_counts': None,
+    }
+    school = School(**school_params)
+
+    teach_params = {
+        'first_name': None,
+        'middle_name': None,
+        'last_name': None,
+        'section_guid': None,
+        'hier_user_type': None,
+        'state_code': None,
+        'district_guid': None,
+        'school_guid': None,
+        'from_date': None,
+        'most_recent': None,
+        'staff_rec_id': None,
+        'staff_guid': None,
+    }
+    #teacher = Staff(**teach_params)
+    subject = lz_dict['asmt_subject']
+    claim_score_params = [
+        {
+            'claim_score': lz_dict['score_claim_1'],
+            'claim_score_interval_minimum': lz_dict['score_claim_1_min'],
+            'claim_score_interval_maximum': lz_dict['score_claim_1_max']
+        },
+        {
+            'claim_score': lz_dict['score_claim_2'],
+            'claim_score_interval_minimum': lz_dict['score_claim_2_min'],
+            'claim_score_interval_maximum': lz_dict['score_claim_2_max']
+        },
+        {
+            'claim_score': lz_dict['score_claim_3'],
+            'claim_score_interval_minimum': lz_dict['score_claim_3_min'],
+            'claim_score_interval_maximum': lz_dict['score_claim_3_max']
+        },
+        {
+            'claim_score': lz_dict['score_claim_4'],
+            'claim_score_interval_minimum': lz_dict['score_claim_4_min'],
+            'claim_score_interval_maximum': lz_dict['score_claim_4_max']
+        },
+    ]
+
+    claim_scores = [ClaimScore(**param) for param in claim_score_params]
+    asmt_score_params = {
+        'overall_score': lz_dict['score_asmt'],
+        'interval_min': lz_dict['score_asmt_min'],
+        'interval_max': lz_dict['score_asmt_max'],
+        'perf_lvl': lz_dict['score_perf_level'],
+        'claim_scores': claim_scores,
+        'asmt_create_date': None,
+    }
+
+    asmt_score = AssessmentScore(**asmt_score_params)
+
+    student_info_params = {
+        'grade': lz_dict['grade_asmt'],
+        'asmt_guids': {subject: lz_dict['guid_asmt']},
+        'student_guid': lz_dict['guid_student'],
+        'first_name': lz_dict['name_student_first'],
+        'last_name': lz_dict['name_student_last'],
+        'middle_name': lz_dict['name_student_middle'],
+        'address_1': lz_dict['address_student_line1'],
+        'address_2': lz_dict['address_student_line2'],
+        'city': lz_dict['address_student_city'],
+        'zip_code': lz_dict['address_student_zip'],
+        'gender': lz_dict['gender_student'],
+        'email': lz_dict['email_student'],
+        'dob': lz_dict['dob_student'],
+        'asmt_dates_taken': {subject: lz_dict['date_assessed']},
+        'dmg_eth_hsp': lz_dict['dmg_eth_hsp'],
+        'dmg_eth_ami': lz_dict['dmg_eth_ami'],
+        'dmg_eth_asn': lz_dict['dmg_eth_asn'],
+        'dmg_eth_blk': lz_dict['dmg_eth_blk'],
+        'dmg_eth_pcf': lz_dict['dmg_eth_pcf'],
+        'dmg_eth_wht': lz_dict['dmg_eth_wht'],
+        'dmg_prg_iep': lz_dict['dmg_prg_iep'],
+        'dmg_prg_lep': lz_dict['dmg_prg_lep'],
+        'dmg_prg_504': lz_dict['dmg_prg_504'],
+        'dmg_prg_tt1': lz_dict['dmg_prg_tt1'],
+        'teacher_guids': {subject: None},
+        'teachers': {subject: None},
+        'asmt_types': {subject: lz_dict['asmt_type']},
+        'asmt_years': {subject: lz_dict['asmt_year']},
+        'asmt_subjects': {subject: subject},
+        'asmt_scores': {subject: asmt_score},
+    }
+
+    student_info = StudentInfo(**student_info_params)
+
+    return student_info, state, school
 
 
 class RealDataFormat(object):
@@ -285,8 +397,9 @@ class RealDataFormat(object):
                  email_student, dob_student, grade_enrolled, date_assessed, score_asmt, score_asmt_min, score_asmt_max, score_perf_level,
                  score_claim_1, score_claim_1_min, score_claim_1_max, score_claim_2, score_claim_2_min, score_claim_2_max, score_claim_3,
                  score_claim_3_min, score_claim_3_max, score_claim_4, score_claim_4_min, score_claim_4_max, dmg_eth_hsp, dmg_eth_ami, dmg_eth_asn,
-                 dmg_eth_blk, dmg_eth_pcf, dmg_eth_wht, dmg_prg_iep, dmg_prg_lep, dmg_prg_504, dmg_prg_tt1, guid_staff, name_staff_first, name_staff_middle,
-                 name_staff_last, type_staff, asmt_type, asmt_year, asmt_subject):
+                 dmg_eth_blk, dmg_eth_pcf, dmg_eth_wht, dmg_prg_iep, dmg_prg_lep, dmg_prg_504, dmg_prg_tt1,
+                 # guid_staff, name_staff_first, name_staff_middle, name_staff_last, type_staff,
+                 asmt_type, asmt_year, asmt_subject):
 
         self.guid_asmt = guid_asmt
         self.guid_asmt_location = guid_asmt_location
@@ -338,11 +451,11 @@ class RealDataFormat(object):
         self.dmg_prg_lep = dmg_prg_lep
         self.dmg_prg_504 = dmg_prg_504
         self.dmg_prg_tt1 = dmg_prg_tt1
-        self.guid_staff = guid_staff
-        self.name_staff_first = name_staff_first
-        self.name_staff_middle = name_staff_middle
-        self.name_staff_last = name_staff_last
-        self.type_staff = type_staff
+        #self.guid_staff = guid_staff
+        #self.name_staff_first = name_staff_first
+        #self.name_staff_middle = name_staff_middle
+        #self.name_staff_last = name_staff_last
+        #self.type_staff = type_staff
         self.asmt_type = asmt_type
         self.asmt_year = asmt_year
         self.asmt_subject = asmt_subject

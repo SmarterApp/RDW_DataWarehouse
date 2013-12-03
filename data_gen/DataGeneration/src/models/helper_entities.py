@@ -110,7 +110,12 @@ class StudentInfo(object):
 
     def __init__(self, grade, gender, asmt_scores, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
                  dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
-                 dmg_prg_504=False, dmg_prg_tt1=False):
+                 dmg_prg_504=False, dmg_prg_tt1=False, dmg_eth_2mr=False, dmg_eth_nst=False, student_guid=None,
+                 first_name=None, middle_name=None, last_name=None, zip_code=None, dob=None, student_rec_ids=None,
+                 email=None, address_1=None, address_2=None, city=None, state_code=None, district_guid=None,
+                 school_guid=None, from_date=None, to_date=None, most_recent=None, asmt_rec_ids=None, asmt_guids=None,
+                 section_guids=None, section_rec_ids=None, teacher_guids=None, teachers=None, asmt_dates_taken=None,
+                 asmt_types=None, asmt_subjects=None, asmt_years=None):
         '''
         Create an unassignedStudent object and populate with name, address, and dob based on the gender and grade.
         Other demographics are optional at initialization.
@@ -120,28 +125,27 @@ class StudentInfo(object):
 
         self.grade = grade
         self.gender = gender
-        self.student_guid = uuid4()
-        self.first_name = generate_first_or_middle_name(gender)
-        self.middle_name = possibly_generate_middle_name(gender)
-        self.last_name = generate_last_name()
+        self.student_guid = student_guid if student_guid else uuid4()
+        self.first_name = first_name if first_name else generate_first_or_middle_name(gender)
+        self.middle_name = middle_name if middle_name else possibly_generate_middle_name(gender)
+        self.last_name = last_name if last_name else generate_last_name()
 
         # TODO: implement city-zip map
-        self.zip_code = random.randint(10000, 99999)
-        # self.email = util.generate_email_address(self.first_name, self.last_name, self.school_name)
-        self.dob = util.generate_dob(grade)
+        self.zip_code = zip_code if zip_code else random.randint(10000, 99999)
+        self.dob = dob if dob else util.generate_dob(grade)
 
         # data to be set after initialization
-        self.student_rec_ids = None
-        self.email = None
-        self.address_1 = None
-        self.address_2 = None
-        self.city = None
-        self.state_code = None
-        self.district_guid = None
-        self.school_guid = None
-        self.from_date = None
-        self.to_date = None
-        self.most_recent = None
+        self.student_rec_ids = student_rec_ids
+        self.email = email
+        self.address_1 = address_1
+        self.address_2 = address_2
+        self.city = city
+        self.state_code = state_code
+        self.district_guid = district_guid
+        self.school_guid = school_guid
+        self.from_date = from_date
+        self.to_date = to_date
+        self.most_recent = most_recent
 
         # Demographic Data
         self.dmg_eth_hsp = dmg_eth_hsp
@@ -150,8 +154,8 @@ class StudentInfo(object):
         self.dmg_eth_blk = dmg_eth_blk
         self.dmg_eth_pcf = dmg_eth_pcf
         self.dmg_eth_wht = dmg_eth_wht
-        self.dmg_eth_2mr = False
-        self.dmg_eth_nst = False
+        self.dmg_eth_2mr = dmg_eth_2mr
+        self.dmg_eth_nst = dmg_eth_nst
         self.dmg_prg_iep = dmg_prg_iep
         self.dmg_prg_lep = dmg_prg_lep
         self.dmg_prg_504 = dmg_prg_504
@@ -159,36 +163,18 @@ class StudentInfo(object):
 
         # a dict that contains an assessment score object that corresponds to each subject
         self.asmt_scores = asmt_scores
-        self.asmt_rec_ids = {}
-        self.asmt_guids = {}
-        self.section_guids = {}
-        self.section_rec_ids = {}
-        self.teacher_guids = {}
-        self.teachers = {}
-        self.asmt_dates_taken = {}
+        self.asmt_rec_ids = asmt_rec_ids if asmt_rec_ids else {}
+        self.asmt_guids = asmt_guids if asmt_guids else {}
+        self.section_guids = section_guids if section_guids else {}
+        self.section_rec_ids = section_rec_ids if section_rec_ids else {}
+        self.teacher_guids = teacher_guids if teacher_guids else {}
+        self.teachers = teachers if teachers else {}
+        self.asmt_dates_taken = asmt_dates_taken if asmt_dates_taken else {}
 
         # New Assessment Information
-        self.asmt_types = {}
-        self.asmt_subjects = {}
-        self.asmt_years = {}
-
-    def set_additional_info(self, student_rec_id, email, address_1, city, section_guid, state_code, district_guid,
-                            school_guid, from_date, to_date, most_recent, address_2=None):
-        '''
-        Set the additional student info that may not be available at object creation
-        '''
-        self.student_rec_id = student_rec_id
-        self.email = email
-        self.address_1 = address_1
-        self.address_2 = address_2
-        self.city = city
-        self.section_guid = section_guid
-        self.state_code = state_code
-        self.district_guid = district_guid
-        self.school_guid = school_guid
-        self.from_date = from_date
-        self.to_date = to_date
-        self.most_recent = most_recent
+        self.asmt_types = asmt_types if asmt_years else {}
+        self.asmt_subjects = asmt_subjects if asmt_subjects else {}
+        self.asmt_years = asmt_years if asmt_years else {}
 
     def getDemoOfStudent(self, substr='dmg'):
         demo = []

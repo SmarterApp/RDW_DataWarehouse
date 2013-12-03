@@ -189,7 +189,7 @@ def adjust_list(total_list, required_numbers, cut_points, total):
 
         split_list = [x for x in total_list if lo <= x <= hi]
 
-        if (len(split_list) > 0):
+        if len(split_list) > 0:
             split_adjust = add_or_delete(split_list, required)
         else:
             print("WARNING: in adjust_list() : nothing in split_list : PL-lo=%d, PL-hi=%d, required=%d" % (lo, hi, required))

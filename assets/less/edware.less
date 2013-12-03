@@ -113,16 +113,74 @@ h6 {
 
 #content { 
     min-height: 200px;
-    
-    h2 {
+}
+
+#infoBar {
+    min-height: 50px;
+    /* background-color: @color-B10; */
+
+    ul {
+	padding-top: 5px;
+	list-style: none;
+
+	li {
+	    display: inline-block;
+	    border-right: solid 1px @color-B3;
+	    padding-right: 20px;
+	    height: 40px;
+
+	    &:last-child {
+		border: none;
+	    }
+
+	    &>* {
+		height: 20px;
+		top: 50%;
+		margin-top: -10px;
+		position: relative;
+		float: left;
+	    }
+	}
+    }
+
+    .title {
+	line-height: normal;
 	color: @color-A1;
 	padding-left: 20px;
     }
 
-    .title {
-	h2 {
-	    float: left;
-	    padding-top: 5px;
+    .reportInfoIcon {
+	background-image: url('../images/interim_infoicon.png');
+	background-repeat: no-repeat;
+	width: 15px;
+	display: inline-block;
+	opacity: 0.7;
+	.filter(grayscale(100%));
+    }
+
+    .downloadIcon {
+	background-image: url('../images/interim_infoicon.png');
+	background-repeat: no-repeat;
+	width: 15px;
+	display: inline-block;
+    }
+
+    .backButton {
+	color: @color-A4;
+    }
+
+    #DownloadMenuModal {
+	width: 323px;
+	
+	li {
+	    display: list-item;
+	    border: none;
+	    height: 30px;
+
+	    input, span {
+		vertical-align: baseline;
+		padding-left: 10px;
+	    }
 	}
     }
 }
@@ -130,12 +188,6 @@ h6 {
 /* Comparing Population container */
 .cPop_Wrapper {
     margin-top: 0 !important;
-
-    .title {
-	line-height: normal;
-	background-color: @color-B10;  
-	min-height: 50px;  
-    }
 
     #gridTable_results\.subject1\.total {
 	display: none;

@@ -38,6 +38,7 @@ require({
     edwareDisclaimer: '../widgets/interimDisclaimer/EDWARE.disclaimer',
     edwareExport: 'EDWARE.export',
     edwareDownload: '../widgets/download/EDWARE.download',
+    edwareReportInfoBar: '../widgets/header/EDWARE.infoBar',
 
     // Templates
     edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -51,12 +52,14 @@ require({
     CPopTemplate: '../widgets/footer/CPopTemplate.html',
     LOSTemplate: '../widgets/footer/LOSTemplate.html',
     edwareHeaderHtml: '../widgets/header/header.html',
+    InfoBarTemplate: '../widgets/header/InfoBarTemplate.html',
     edwareFooterHtml: '../widgets/footer/template.html',
     edwareFilterTemplate: '../widgets/filter/template.html',
     edwareDropdownTemplate: '../widgets/dropdown/template.html',
     edwareStickyCompareTemplate: '../widgets/grid/stickyCompare.template.html',
     edwareFormatterTemplate: '../widgets/grid/FormatterTemplate.html',
-    CSVOptionsTemplate: '../widgets/download/CSVOptionsTemplate.html'
+    CSVOptionsTemplate: '../widgets/download/CSVOptionsTemplate.html',
+    DownloadMenuTemplate: '../widgets/download/DownloadMenuTemplate.html'
   },
   shim: {
     'jqGrid': {

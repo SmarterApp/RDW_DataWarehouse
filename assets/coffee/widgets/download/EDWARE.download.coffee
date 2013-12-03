@@ -3,8 +3,11 @@ define [
   "mustache"
   "moment"
   "text!CSVOptionsTemplate"
+  "text!DownloadMenuTemplate"
   "edwareConstants"
-], ($, Mustache, moment, CSVOptionsTemplate, Constants) ->
+  "edwareClientStorage"
+  "edwarePreferences"
+], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -13,7 +16,7 @@ define [
   INDIVIDUAL_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#IndividualValidationTemplate').html()
 
   COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
-  
+
   class CSVDownloadModal
   
     constructor: (@container, @config) ->
@@ -187,9 +190,63 @@ define [
 
     show: () ->
       $('#CSVModal').modal()
+
+
+  class DownloadMenu
+  
+    constructor: (@container, @config) ->
+      this.initialize(@container)
+      this.bindEvents()
+
+    initialize: (@container) ->
+      output = Mustache.to_html DownloadMenuTemplate, {
+        
+      }
+      $(@container).html output
+      this.eventHandler =
+        file: this.downloadAsFile
+        csv: this.sendCSVRequest
+        extract: this.sendExtractRequest
+
+    show: () ->
+      $('#DownloadMenuModal').modal()
+
+    hide: () ->
+      $('#DownloadMenuModal').modal('hide')
+
+    bindEvents: () ->
+      self = this
+      # bind export event
+      $('.btn-primary', '#DownloadMenuModal').click ->
+        # get selected option
+        option = $('#downloadMenuPopup').find('input[type="radio"]:checked').val()
+        self.eventHandler[option].call(self)
+        self.hide()
+
+    downloadAsFile: () ->
+      # download 508-compliant file
+      $('#gridTable').edwareExport @config.reportName, @config.labels
+
+    sendExtractRequest: () ->
+      # add more code from master branch for old extraction code
+      params = JSON.parse edwareClientStorage.filterStorage.load()
+      # Get asmtType from session storage
+      params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
+      url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
+      download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
+      setTimeout ( ->
+        download.close()
+      ), 2000
+
+    sendCSVRequest: () ->
+      # display file download options
+      CSVDownload = new CSVDownloadModal $('.exportPopup .CSVDownloadContainer'), @config.CSVOptions
+      CSVDownload.show()
                 
   create = (container, config)->
+    # TODO remove this function after nav redesign complete
     new CSVDownloadModal $(container), config
   
   CSVDownloadModal: CSVDownloadModal
+  DownloadMenu: DownloadMenu
   create: create

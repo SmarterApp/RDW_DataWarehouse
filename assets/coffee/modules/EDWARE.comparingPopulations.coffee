@@ -20,7 +20,8 @@ define [
   "edwareDisclaimer"
   "edwareConstants"
   "edwareClientStorage"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants, edwareClientStorage) ->
+  "edwareReportInfoBar"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants, edwareClientStorage, edwareReportInfoBar) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -140,6 +141,7 @@ define [
 
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)
+        self.renderReportInfo()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
         self.createDisclaimer() if not this.disclaimer
@@ -237,8 +239,14 @@ define [
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
-      # set title
-      $('.title h2').html this.breadcrumbs.getReportTitle()
+
+    renderReportInfo: () ->
+      edwareReportInfoBar.create '#infoBar',
+        reportTitle: @breadcrumbs.getReportTitle()
+        reportName: Constants.REPORT_NAME.CPOP
+        reportInfoText: @config.reportInfo
+        labels: @labels
+        CSVOptions: @config.CSVOptions
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
@@ -251,7 +259,7 @@ define [
               $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
 
       self = this
-      $('#gridTable_name').click ()->
+      $('#gridTable_name').click ->
         # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
         self.edwareDropdown.resetAll()
 

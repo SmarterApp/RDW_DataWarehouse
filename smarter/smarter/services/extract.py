@@ -81,13 +81,15 @@ TENANT_EXTRACT_PARAMS = {
     "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "stateCode"]
 }
 
-EXTRACT_PARAMS = merge_dict(REPORT_PARAMS,
-                            {Constants.ASMTTYPE: {"type": "string",
-                                                  "require": True,
-                                                  "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"},
-                             'sl': {"type": "string",
-                                    "required": False}
-                             })
+EXTRACT_PARAMS = {"type": "object",
+                  "additionalProperties": False,
+                  "properties": merge_dict(REPORT_PARAMS,
+                                           {Constants.ASMTTYPE: {"type": "string",
+                                                                 "require": True,
+                                                                 "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"},
+                                            'sl': {"type": "string",
+                                                   "required": False}
+                                            })}
 
 
 @view_config(route_name='tenant_extract', request_method='POST', content_type='application/json')
@@ -158,8 +160,8 @@ def post_extract_service(context, request):
 
 
 @view_config(route_name='extract', request_method='GET')
-#@validate_params(schema=EXTRACT_PARAMS)
-#@audit_event()
+@validate_params(schema=EXTRACT_PARAMS)
+@audit_event()
 def get_extract_service(context, request):
     '''
     Handles GET request to /services/extract

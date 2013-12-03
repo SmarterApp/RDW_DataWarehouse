@@ -8,6 +8,7 @@ import datetime
 from collections import OrderedDict
 import random
 import uuid
+from time import mktime, strptime
 
 from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_files
 from DataGeneration.src.models.landing_zone_data_format import (create_helper_entities_from_lz_dict,
@@ -26,6 +27,7 @@ CUT_POINT = 'cut_point'
 JSON_PATTERN = 'METADATA_ASMT_ID_{}.json'
 CSV_PATTERN = 'REALDATA_ASMT_ID_{}.csv'
 DATE_TAKEN = 'date_assessed'
+DATE_FORMAT = '%Y%m%d'
 
 
 def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_change=-3):
@@ -33,7 +35,7 @@ def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_c
 
     :param row_dict:
     :param perf_change_tup: A tuple containing the range of performance change as percentages.
-        ie (10, 15) would be 10 to 15 percent increase, where (-10, -15) would be 10 to 15 per decrease
+        ie (10, 15) would be 10 to 15 point increase, where (-15, -10) would be 10 to 15 point decrease
     :param asmt_type:
     :param asmt_dict:
     :param date_change: the number of months to change the date taken by, default is -3 (3 months previous)
@@ -41,12 +43,19 @@ def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_c
     """
     old_asmt_guid = row_dict['guid_asmt']
     json_obj = json_map[asmt_dict[old_asmt_guid]]
-    print('**date', type(date_change))
-    row_dict[DATE_TAKEN] = month_delta(datetime.date.fromtimestamp(int(row_dict[DATE_TAKEN])), date_change)
+
+    # update the date
+    date_object = datetime.date.fromtimestamp(mktime(strptime(row_dict[DATE_TAKEN], DATE_FORMAT)))
+    row_dict[DATE_TAKEN] = month_delta(date_object, date_change)
+
+    # update the scores
     cut_points = get_cut_points(json_obj)
-    row_dict['asmt_type'] = asmt_type
     row_dict = update_scores(row_dict, perf_change_tup, cut_points)
+
+    # update assessment type and guid
+    row_dict['asmt_type'] = asmt_type
     row_dict['guid_asmt'] = asmt_dict[old_asmt_guid]
+
     return row_dict
 
 
@@ -88,7 +97,6 @@ def get_cut_points(asmt_dict):
     :param asmt_dict:
     :return:
     """
-    print('***asmt_dict', asmt_dict)
     min_max_score = [asmt_dict[OVERALL][MIN], asmt_dict[OVERALL][MAX]]
     perf_lvl_dict = asmt_dict[PERF_LVLS]
 
@@ -147,7 +155,6 @@ def create_new_json_file(old_json_filename, asmt_type, output_location):
     json_dict[ID][GUID] = new_asmt_guid
     json_dict[ID][TYPE] = asmt_type
 
-    print('***output', output_location)
     new_filename = os.path.join(output_location, JSON_PATTERN.format(new_asmt_guid))
 
     with open(new_filename, 'w') as fp:
@@ -250,7 +257,14 @@ def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_ch
 
         # TODO: prepare output csv file for star format
 
-    perf_change_tup = (asmt_change_low, asmt_change_hi) if positive_change else (-asmt_change_hi, -asmt_change_low)
+    ##
+    ##
+    if not positive_change:
+        asmt_change_low = min(asmt_change_low, -asmt_change_low)
+        asmt_change_hi = min(asmt_change_hi, -asmt_change_hi)
+
+    perf_change_tup = tuple(sorted([asmt_change_low, asmt_change_hi]))
+
     for csv_file in input_csv_list:
         read_csv_file(csv_file, perf_change_tup, output_asmt_type, asmt_map, month_change, output_dir, start_format, json_map)
 

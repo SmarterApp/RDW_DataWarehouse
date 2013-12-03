@@ -33,7 +33,11 @@ def task(msg):
     load_type = msg[mk.LOAD_TYPE]
     guid_batch = msg[mk.GUID_BATCH]
 
-    benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE', start_time, end_time)
+    # infer overall pipeline_status based on previous pipeline_state
+    pipeline_status = mk.FAILURE if mk.PIPELINE_STATE in msg and msg[mk.PIPELINE_STATE] == 'error' else mk.SUCCESS
+
+    benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE',
+                                    start_time, end_time, udl_phase_step_status=pipeline_status)
     benchmark.record_benchmark()
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time)

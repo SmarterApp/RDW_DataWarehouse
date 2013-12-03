@@ -37,7 +37,7 @@ def task(msg):
         loader_task = W_load_csv_to_staging.task.si(message_for_file_loader)
         loader_tasks.append(loader_task)
     loader_group = group(loader_tasks)
-    result = loader_group.delay(link_error=error_handler.s())
+    result = loader_group.delay()
     result.get()
 
     end_time = datetime.datetime.now()

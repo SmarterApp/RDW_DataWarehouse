@@ -37,7 +37,10 @@ class Udl2BaseTask(Task):
                                         task_id=str(self.request.id),
                                         error_desc=str(exc), stack_trace=str(einfo))
         benchmark.record_benchmark()
-        chain(W_post_etl.task.s(args[0]), W_all_done.task.s()).delay()
+        msg = {}
+        msg.update(args[0])
+        msg.update({mk.PIPELINE_STATE: 'error'})
+        chain(W_post_etl.task.s(msg), W_all_done.task.s()).delay()
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))

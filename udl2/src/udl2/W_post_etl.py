@@ -6,6 +6,7 @@ import udl2.message_keys as mk
 from udl2_util.measurement import BatchTableBenchmark
 from post_etl import post_etl
 import datetime
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 

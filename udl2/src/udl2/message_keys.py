@@ -99,4 +99,7 @@ TIME_FOR_ONE_MILLION_RECORDS = 'time_for_one_million_records'
 BATCH_TABLE = 'batch_table'
 USER_EMAIL = 'user_email'
 TASK_URL = 'task_status_url'
+
+# serializing pipeline
+LOOP_PIPELINE = 'loop_pipeline'
 TENANT_SEARCH_PATHS = 'tenant_search_paths'

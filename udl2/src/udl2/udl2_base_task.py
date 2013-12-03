@@ -1,7 +1,7 @@
 __author__ = 'sravi'
 
 from celery import Task, chain
-from udl2 import (W_post_etl , W_all_done)
+import udl2
 import udl2.message_keys as mk
 from celery.utils.log import get_task_logger
 import datetime
@@ -23,6 +23,10 @@ logger = get_task_logger(__name__)
 class Udl2BaseTask(Task):
     abstract = True
 
+    def __get_pipeline_error_handler_chain(self, msg):
+        error_handler_chain = chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
+        return error_handler_chain
+
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         logger.info('Task returned: ' + task_id)
 
@@ -40,7 +44,17 @@ class Udl2BaseTask(Task):
         msg = {}
         msg.update(args[0])
         msg.update({mk.PIPELINE_STATE: 'error'})
-        chain(W_post_etl.task.s(msg), W_all_done.task.s()).delay()
+
+        if mk.LOOP_PIPELINE in msg and msg[mk.LOOP_PIPELINE] is True:
+            next_file_msg = {
+                mk.TENANT_SEARCH_PATHS: msg[mk.TENANT_SEARCH_PATHS],
+                mk.PARTS: msg[mk.PARTS],
+                mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
+            }
+            (self.__get_pipeline_error_handler_chain(msg) |
+             udl2.W_get_udl_file.get_next_file.si(next_file_msg)).apply_async()
+        else:
+            self.__get_pipeline_error_handler_chain(msg).delay()
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))

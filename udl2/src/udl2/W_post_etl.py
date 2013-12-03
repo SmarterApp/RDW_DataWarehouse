@@ -52,10 +52,3 @@ def task(incoming_msg):
     outgoing_msg.update(incoming_msg)
     return outgoing_msg
 
-
-@celery.task(name="udl2.W_post_etl.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

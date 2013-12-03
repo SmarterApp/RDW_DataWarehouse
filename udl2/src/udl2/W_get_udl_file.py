@@ -36,11 +36,3 @@ def get_next_file(msg):
     else:
         get_next_file.apply_async((next_file_msg,), countdown=udl2_conf['search_wait_time'])
         return "No file found"
-
-
-@celery.task(name="udl2.W_get_udl_file.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=True)
-    print('Task %r raised exception: %r\n%r' % (
-          uuid, exc, result.traceback))

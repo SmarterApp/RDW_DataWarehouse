@@ -12,6 +12,7 @@ from udl2 import message_keys as mk
 from udl2.celery import celery
 from udl2_util.measurement import BatchTableBenchmark
 
+
 logger = get_task_logger(__name__)
 
 
@@ -21,7 +22,8 @@ def report_udl_batch_metrics_to_log(msg, end_time):
     logger.info('Batch Guid: ' + msg[mk.GUID_BATCH])
     logger.info('Start time: ' + str(msg[mk.START_TIMESTAMP]))
     logger.info('End time: ' + str(end_time))
-    logger.info('Total Records Processed: ' + str(msg[mk.FACT_ROWS_LOADED]))
+    if mk.FACT_ROWS_LOADED in msg:
+        logger.info('Total Records Processed: ' + str(msg[mk.FACT_ROWS_LOADED]))
 
 
 @celery.task(name='udl2.W_all_done.task')
@@ -36,11 +38,3 @@ def task(msg):
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time)
     return msg
-
-
-@celery.task(name="udl2.W_all_done.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

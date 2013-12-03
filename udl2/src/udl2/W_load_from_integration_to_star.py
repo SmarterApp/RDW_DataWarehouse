@@ -10,13 +10,13 @@ from move_to_target.move_to_target import (explode_data_to_dim_table, explode_da
 from celery import group
 from udl2_util.measurement import BatchTableBenchmark
 from move_to_target.move_to_target_setup import get_table_and_column_mapping, generate_conf, create_group_tuple
-
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 
 
 #*************implemented via group*************
-@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims')
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims', base=Udl2BaseTask)
 def explode_to_dims(msg):
     '''
     This is the celery task to move data from integration tables to dim tables.
@@ -44,7 +44,7 @@ def explode_to_dims(msg):
     return msg
 
 
-@celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task")
+@celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task", base=Udl2BaseTask)
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
     """
     This is the celery task to move data from one integration table to one dim table.
@@ -70,7 +70,7 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     return benchmark.get_result_dict()
 
 
-@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact', base=Udl2BaseTask)
 def explode_to_fact(msg):
     '''
     This is the celery task to move data from integration table to fact table.
@@ -107,13 +107,3 @@ def explode_to_fact(msg):
     outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
     return outgoing_msg
 
-
-@celery.task(name="udl2.W_load_from_integration_to_star.error_handler")
-def error_handler(uuid):
-    '''
-    This is the error handler task
-    '''
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

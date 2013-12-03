@@ -95,7 +95,8 @@ class BatchTableBenchmark(object):
     '''
 
     def __init__(self, guid_batch, load_type, udl_phase, start_timestamp, end_timestamp, working_schema=None, size_records=None, size_units=None,
-                 udl_phase_step_status=mk.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None):
+                 udl_phase_step_status=mk.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None,
+                 error_desc=None, stack_trace=None):
         '''Constructor'''
         self.guid_batch = guid_batch
         self.load_type = load_type
@@ -113,6 +114,8 @@ class BatchTableBenchmark(object):
         self.task_status_url = task_status_url
         self.user_email = user_email
         self.user_sid = user_sid
+        self.error_desc = error_desc
+        self.stack_trace = stack_trace
 
     def get_result_dict(self):
         '''

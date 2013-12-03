@@ -90,6 +90,7 @@ define [
         self.dataByType = {}
         
         self.processData()
+        self.render self.currentAsmtType
         if not self.isPdf
           self.createBreadcrumb()
           self.createDropdown()
@@ -98,7 +99,6 @@ define [
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
           self.updateDisclaimer()
           
-        self.render self.currentAsmtType
 
     processData: () ->
       for asmt of this.data.items
@@ -236,7 +236,7 @@ define [
       # Show tooltip for claims on mouseover
       $(".arrowBox").popover
         html: true
-        container: "body"
+        container: "#content"
         trigger: "hover"
         placement: (tip, element) ->
           edwareUtil.popupPlacement(element, 400, 276)
@@ -263,7 +263,7 @@ define [
       if this.isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
       # show control panel upon rendering complete
-      $('.gridControls').show()
+      $('.gridControls').addClass 'ISRGridControls'
         
     createSampleInterval : (subject, sample_interval) ->
       # merge sample and subject information
@@ -334,10 +334,10 @@ define [
       arrow_bar.css("left", arrow_bar_center + "%")
       #"-2" to adjust height of bar perfectly.
       adjusted_bar_height = (bar_height*(claimArrowBox_height-image_height*2-2)/100)/(claimArrowBox_height-image_height*2)*100
-      arrow_bar.css("height", adjusted_bar_height + "%")        
+      arrow_bar.css("height", adjusted_bar_height + "%")
       # set Triangle image in target div
       $(claimArrowBox).addClass(triangle_img)
-      $(claimArrowBox).css("background-position", "50% " + triangle_y_position + "%")
+      $(claimArrowBox).attr("style", "background-position: 50% " + triangle_y_position + "% !important")
       $(claimArrowBox).append arrow_bar
 
     # Create assessment type dropdown

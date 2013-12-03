@@ -293,7 +293,7 @@ jenkins_qa:
           url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_1
+        schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
 
 uat:
@@ -390,7 +390,7 @@ localOpenAM:
           echo: False
     edware_stats:
       db:
-        schema_name: edware_sds_1_1
+        schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     auth:
       skip.verify: False
@@ -424,7 +424,7 @@ development:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_1
+        schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
 
     auth:
@@ -461,7 +461,7 @@ test:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_1
+        schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     auth:
       skip.verify: False
@@ -545,7 +545,7 @@ air:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_1
+        schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     auth:
       skip.verify: False

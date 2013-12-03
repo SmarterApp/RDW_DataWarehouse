@@ -13,7 +13,7 @@ def create_path(path):
     :return: None
     """
     if not os.path.exists(path):
-        os.mkdir(path, 0o755)
+        os.makedirs(path, 0o700)
 
 
 def cleanup_directory(sftp_dir_path):
@@ -37,3 +37,7 @@ def group_exists(name):
         return True
     except KeyError:
         return False
+
+
+def change_owner(path, user, group):
+    shutil.chown(path, user, group)

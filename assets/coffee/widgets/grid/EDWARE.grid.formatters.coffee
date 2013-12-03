@@ -125,7 +125,7 @@ define [
 
     getAsmtPerfLvl = (subject) ->
       return '' if not subject
-      if not subject.asmt_perf_lvl then '' else subject.asmt_perf_lvl
+      subject.asmt_perf_lvl || ''
 
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[subject_type]
@@ -142,7 +142,7 @@ define [
     }
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
       subject: subject
-      confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 275)  if subject
+      confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
       columnName: options.colModel.label
       export: 'edwareExportColumn' if options.colModel.export

@@ -40,7 +40,7 @@ if __name__ == "__main__":
         if __metadata != 'edware' and __metadata != "stats":
             print('Please specify edware or udl_stats for -m or --metadata')
     if __schema is None:
-        print("Please specifiy --schema option")
+        print("Please specify --schema option")
         exit(-1)
     __URL = DBDRIVER + "://" + __user + ":" + __passwd + "@" + __host + "/" + __database
     print("DB Driver:" + DBDRIVER)

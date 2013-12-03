@@ -50,7 +50,9 @@ def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_c
 
     # update the scores
     cut_points = get_cut_points(json_obj)
-    row_dict = update_scores(row_dict, perf_change_tup, cut_points)
+    min_score = json_obj[OVERALL][MIN]
+    max_score = json_obj[OVERALL][MAX]
+    row_dict = update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score)
 
     # update assessment type and guid
     row_dict['asmt_type'] = asmt_type
@@ -61,15 +63,16 @@ def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_c
 
 def generate_score_offset(perf_change_tup):
     """
-
+    Given a score range tuple
     :param perf_change_tup:
     :return:
     """
-    offset = random.randint(perf_change_tup[0], perf_change_tup[1])
+    sorted_range = sorted(perf_change_tup)
+    offset = random.randint(sorted_range[0], sorted_range[1])
     return offset
 
 
-def update_scores(row_dict, perf_change_tup, cut_points):
+def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     """
 
     :param row_dict:
@@ -77,31 +80,38 @@ def update_scores(row_dict, perf_change_tup, cut_points):
     :return:
     """
     offset = generate_score_offset(perf_change_tup)
-    row_dict['score_asmt'] = int(row_dict['score_asmt']) + offset
-    row_dict['score_asmt_min'] = int(row_dict['score_asmt_min']) + offset
-    row_dict['score_asmt_max'] = int(row_dict['score_asmt_max']) + offset
+    row_dict['score_asmt'] = min(max(int(row_dict['score_asmt']) + offset, min_score), max_score)
+    row_dict['score_asmt_min'] = min(max(int(row_dict['score_asmt_min']) + offset, min_score), max_score)
+    row_dict['score_asmt_max'] = min(max(int(row_dict['score_asmt_max']) + offset, min_score), max_score)
     row_dict['score_perf_level'] = determine_perf_lvl(row_dict['score_asmt'], cut_points)
 
-    for i in range(len(cut_points) + 1):
-        offset = generate_score_offset(perf_change_tup)
-        row_dict['score_claim_{}'.format(i + 1)] = int(row_dict['score_claim_{}'.format(i + 1)]) + offset
-        row_dict['score_claim_{}_max'.format(i + 1)] = int(row_dict['score_claim_{}_max'.format(i + 1)]) + offset
-        row_dict['score_claim_{}_min'.format(i + 1)] = int(row_dict['score_claim_{}_min'.format(i + 1)]) + offset
+    i = 0
+    while True:
+        try:
+            offset = generate_score_offset(perf_change_tup)
+            row_dict['score_claim_{}'.format(i + 1)] = min(max(int(row_dict['score_claim_{}'.format(i + 1)]) + offset, min_score), max_score)
+            row_dict['score_claim_{}_max'.format(i + 1)] = min(max(int(row_dict['score_claim_{}_max'.format(i + 1)]) + offset, min_score), max_score)
+            row_dict['score_claim_{}_min'.format(i + 1)] = min(max(int(row_dict['score_claim_{}_min'.format(i + 1)]) + offset, min_score), max_score)
+        except KeyError:
+            break
+        except ValueError:
+            break
+        i += 1
 
     return row_dict
 
 
 def get_cut_points(asmt_dict):
     """
-    Get a list of the cutpoints from the assessment dictionary
-    :param asmt_dict:
-    :return:
+    Get a list of the cut points from the assessment dictionary
+    :param asmt_dict: the dictionary or OrderedDict that is holding the assessment information
+    :return: a list of sorted cut points
     """
     min_max_score = [asmt_dict[OVERALL][MIN], asmt_dict[OVERALL][MAX]]
     perf_lvl_dict = asmt_dict[PERF_LVLS]
 
-    return [int(x[CUT_POINT]) for x in perf_lvl_dict.values()
-            if x[CUT_POINT] not in min_max_score and x[CUT_POINT] != '']
+    return sorted([int(x[CUT_POINT]) for x in perf_lvl_dict.values()
+                   if x[CUT_POINT] not in min_max_score and x[CUT_POINT] != ''])
 
 
 def determine_perf_lvl(score, cut_points):

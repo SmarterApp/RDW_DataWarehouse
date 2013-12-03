@@ -39,6 +39,7 @@ require({
     edwareExport: 'EDWARE.export',
     edwareDownload: '../widgets/download/EDWARE.download',
     edwareReportInfoBar: '../widgets/header/EDWARE.infoBar',
+    edwareReportActionBar: '../widgets/header/EDWARE.actionBar',
 
     // Templates
     edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -53,6 +54,7 @@ require({
     LOSTemplate: '../widgets/footer/LOSTemplate.html',
     edwareHeaderHtml: '../widgets/header/header.html',
     InfoBarTemplate: '../widgets/header/InfoBarTemplate.html',
+    ActionBarTemplate: '../widgets/header/ActionBarTemplate.html',
     edwareFooterHtml: '../widgets/footer/template.html',
     edwareFilterTemplate: '../widgets/filter/template.html',
     edwareDropdownTemplate: '../widgets/dropdown/template.html',

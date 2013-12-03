@@ -21,7 +21,8 @@ define [
   "edwareConstants"
   "edwareClientStorage"
   "edwareReportInfoBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants, edwareClientStorage, edwareReportInfoBar) ->
+  "edwareReportActionBar"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -142,6 +143,7 @@ define [
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)
         self.renderReportInfo()
+        self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
         self.createDisclaimer() if not this.disclaimer
@@ -247,6 +249,10 @@ define [
         reportInfoText: @config.reportInfo
         labels: @labels
         CSVOptions: @config.CSVOptions
+
+    renderReportActionBar: () ->
+      edwareReportActionBar.create '#actionBar',
+        labels: @labels
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover

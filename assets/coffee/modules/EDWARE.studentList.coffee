@@ -13,7 +13,8 @@ define [
   "edwareDisclaimer"
   "edwareConstants"
   "edwareGridStickyCompare"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, Constants, edwareStickyCompare) ->
+  "edwareReportInfoBar"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, Constants, edwareStickyCompare, edwareReportInfoBar) ->
 
   REPORT_NAME = 'studentList'
 
@@ -56,6 +57,7 @@ define [
         self.stickyCompare.setReportInfo REPORT_NAME, "student", params
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
+        self.renderReportInfo()
         self.createHeaderAndFooter()
         self.createGrid()
         self.bindEvents()
@@ -105,9 +107,15 @@ define [
     renderBreadcrumbs: () ->
       $('#breadcrumb').breadcrumbs(this.contextData, this.breadcrumbsConfigs)
 
+    renderReportInfo: () ->
+      edwareReportInfoBar.create '#infoBar',
+        reportTitle: @contextData.items[2].name # set school name as the page title from breadcrumb
+        reportName: Constants.REPORT_NAME.LOS
+        reportInfoText: @config.reportInfo
+        labels: @labels
+        CSVOptions: @config.CSVOptions
+
     createGrid: () ->
-      # set school name as the page title from breadcrumb
-      $(".title h2").html this.contextData.items[2].name
       # populate select view, only create the dropdown when it doesn't exit
       this.createDropdown() if not this.asmtTypeDropdown
       this.createDisclaimer() if not this.disclaimer

@@ -15,7 +15,8 @@ define [
   "edwarePreferences"
   "edwareDisclaimer"
   "edwareConstants"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences, edwareDisclaimer, Constants) ->
+  "edwareReportInfoBar"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences, edwareDisclaimer, Constants, edwareReportInfoBar) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -93,6 +94,7 @@ define [
         self.render self.currentAsmtType
         if not self.isPdf
           self.createBreadcrumb()
+          self.renderReportInfo()
           self.createDropdown()
           self.disclaimer = $('.disclaimerInfo').edwareDisclaimer self.configData.interimDisclaimer
           # self.disclaimer.create()
@@ -190,10 +192,18 @@ define [
     createBreadcrumb: () ->
       $('#breadcrumb').breadcrumbs(this.data.context, this.breadcrumbsConfigs)
 
+    renderReportInfo: () ->
+      edwareReportInfoBar.create '#infoBar',
+        reportTitle: $('h2.title').text()
+        reportName: Constants.REPORT_NAME.ISR
+        reportInfoText: @configData.reportInfo
+        labels: @labels
+        CSVOptions: @configData.CSVOptions
+
     render : (asmtType) ->
       this.data.current = this.data.items[asmtType]
       # use mustache template to display the json data    
-      output = Mustache.to_html indivStudentReportTemplate, this.data     
+      output = Mustache.to_html indivStudentReportTemplate, this.data
       $("#individualStudentContent").html output
       
       this.renderClaimScoreRelativeDifference asmtType

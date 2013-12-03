@@ -4,7 +4,9 @@ import unittest
 import datetime
 
 from DataGeneration.src.additional_asmt_generator import (month_delta, generate_score_offset, get_cut_points,
-                                                          determine_perf_lvl, update_scores)
+                                                          determine_perf_lvl, update_scores, get_header_from_file,
+                                                          update_row, create_new_json_file, create_list_of_csv_records,
+                                                          read_csv_file, output_data)
 
 
 class AdditionalAssessmentTest(unittest.TestCase):
@@ -305,6 +307,24 @@ class AdditionalAssessmentTest(unittest.TestCase):
         }
 
         self.assertDictEqual(result, expected)
+
+    def test_update_row(self):
+        pass
+
+    def test_get_header_from_file(self):
+        pass
+
+    def test_create_new_json_file(self):
+        pass
+
+    def test_create_list_of_csv_records(self):
+        pass
+
+    def test_read_csv_file(self):
+        pass
+
+    def test_output_data(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

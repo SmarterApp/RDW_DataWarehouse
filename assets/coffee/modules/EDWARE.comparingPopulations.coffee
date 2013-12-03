@@ -236,8 +236,6 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
-      # Display grid controls after grid renders
-      $(".gridControls").show()
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)

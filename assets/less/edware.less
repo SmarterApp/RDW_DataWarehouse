@@ -113,6 +113,11 @@ h6 {
 
 #content { 
     min-height: 200px;
+
+    .reportInfoPopover {
+	max-width: 575px !important;
+	font-size: 13px;
+    }
 }
 
 #infoBar {
@@ -167,12 +172,19 @@ h6 {
 	display: inline-block;
     }
 
+    #downloadMenuPopup {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+    }
+
     .backButton {
 	color: @color-A4;
     }
 
     #DownloadMenuModal {
 	width: 323px;
+	left: 58%;
 	
 	li {
 	    display: list-item;

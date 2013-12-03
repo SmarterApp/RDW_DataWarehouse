@@ -219,7 +219,7 @@ define [
       # bind export event
       $('.btn-primary', '#DownloadMenuModal').click ->
         # get selected option
-        option = $('#downloadMenuPopup').find('input[type="radio"]:checked').val()
+        option = $(self.container).find('input[type="radio"]:checked').val()
         self.eventHandler[option].call(self)
         self.hide()
 

@@ -62,7 +62,7 @@ define [
         $(self).trigger FILTER_SUBMIT
 
       # attach click event to filter trigger button
-      this.filterTrigger.click ->
+      $(document).on 'click', this.filterTrigger, ->
         self.toggleFilterArea self
 
       # toggle grades checkbox effect

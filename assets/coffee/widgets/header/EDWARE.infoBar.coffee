@@ -6,6 +6,8 @@ define [
   "edwareDownload"
 ], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload) ->
 
+  POPOVER_TEMPLATE = '<div class="popover reportInfoPopover"><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
+
   class ReportInfoBar
   
     constructor: (@container, @config) ->
@@ -33,9 +35,10 @@ define [
         trigger: 'hover'
         container: '#content'
         content: @config.reportInfoText
+        template: POPOVER_TEMPLATE
 
     createDownloadMenu: () ->
-      this.edwareDownloadMenu = new edwareDownload.DownloadMenu('#downloadMenuPopup', @config)
+      this.edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
 
   create = (container, config) ->
     new ReportInfoBar(container, config)

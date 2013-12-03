@@ -15,10 +15,10 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
-from smarter.reports.helpers.metadata import get_subjects_map,\
+from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from edapi.cache import cache_region
-from smarter.reports.helpers.filters import apply_filter_to_query,\
+from smarter.reports.helpers.filters import apply_filter_to_query, \
     has_filters, FILTERS_CONFIG
 from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
@@ -28,6 +28,8 @@ from sqlalchemy.sql.expression import true
 from smarter.extract.student_assessment import get_extract_assessment_query
 import csv
 from io import StringIO
+from smarter.extract.processor import process_extract_with_stream
+from pyramid.response import Response
 
 REPORT_NAME = "list_of_students"
 
@@ -65,44 +67,6 @@ REPORT_PARAMS = merge_dict({
 
 
 @report_config(
-    name=REPORT_NAME + '_zip',
-    params=merge_dict(
-        REPORT_PARAMS,
-        {
-            Constants.ASMTTYPE: {
-                "type": "string",
-                "require": True,
-                "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"
-            }
-        }
-    )
-)
-@audit_event()
-def get_list_of_student_extract_report_archive(params):
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
-    asmtSubject = params.get(Constants.ASMT_SUBJECT, None)
-    zip_file_name = "ASMT_{level}_{asmtType}_{timestamp}.zip".format(
-        level=level,
-        asmtSubject=asmtSubject,
-        asmtType=params.get(Constants.ASMTTYPE),
-        timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-    )
-    csv_files = get_list_of_students_extract_report(params)
-    # has to hack here, ideally if we can do subrequest, then it will be good. but we are not really process request here.
-    # has to hack it with csv render code here, i don't want zip render to be tied to csv only since we may need to write json.
-    content = ''
-    with StringIO() as out_stream:
-        writer = csv.writer(out_stream, delimiter=',', quoting=csv.QUOTE_NONE)
-        writer.writerow(csv_files['header'])
-        writer.writerows(csv_files['rows'])
-        content = out_stream.getvalue()
-
-    return {'zip_name': zip_file_name,
-            'files': [{'name': csv_files['file_name'], 'content': content}]}
-
-
-@report_config(
     name=REPORT_NAME + '_csv',
     params=merge_dict(REPORT_PARAMS,
                       {Constants.ASMTTYPE: {"type": "string",
@@ -114,26 +78,11 @@ def get_list_of_students_extract_report(params):
     '''
     CSV version of list of student
     '''
-    # Get results from db
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
-    extract_file_name = "ASMT_{level}_{asmtType}_{timestamp}.csv".format(level=level,
-                                                                         asmtType=params.get(Constants.ASMTTYPE),
-                                                                         timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
-    with EdCoreDBConnection() as connector:
-        query = get_extract_assessment_query(params)
-        results = connector.get_result(query)
-        if not results:
-            raise NotFoundException("There are no results")
-    header = []
-    rows = []
-    # Reformat data
-    for result in results:
-        if len(header) is 0:
-            header = list(result.keys())
-        rows.append(list(result.values()))
-
-    return {'header': header, 'rows': rows, 'file_name': extract_file_name}
+    zip_file_name = generate_zip_file_name(params)
+    content = process_extract_with_stream(params)
+    response = Response(body=content, content_type='application/octet-stream')
+    response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
+    return response
 
 
 @report_config(
@@ -345,7 +294,7 @@ def __reverse_map(map_object):
     return {v: k for k, v in map_object.items()}
 
 
-def generate_zip_file_name(asmtSubject, asmtType, timestamp, grade=None):
+def generate_zip_file_name(params):
     '''
     Generate file name for archive file according to US21011
         Zip file name:
@@ -358,16 +307,11 @@ def generate_zip_file_name(asmtSubject, asmtType, timestamp, grade=None):
     :param timestamp string: Time time in "%m-%d-%Y_%H-%M-%S"
     :param grade string: not required for school level,
     '''
-    if grade is None:
-        return "ASMT_{asmtSubject}_{asmtType}_{timestamp}.zip".format(
-            asmtSubject=asmtSubject,
-            asmtType=asmtType,
-            timestamp=timestamp
-        )
-    else:
-        return "ASMT_{grade}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(
-            grade=grade,
-            asmtSubject=asmtSubject,
-            asmtType=asmtType,
-            timestamp=timestamp
-        )
+    # TODO, sort this list so name is deterministic
+    asmtSubjects = '_'.join(params.get(Constants.ASMTSUBJECT))
+    asmtGrade = params.get(Constants.ASMTGRADE)
+    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
+    return "ASMT_{level}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(level=level,
+                                                                          asmtSubject=asmtSubjects.upper(),
+                                                                          asmtType=params.get(Constants.ASMTTYPE),
+                                                                          timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

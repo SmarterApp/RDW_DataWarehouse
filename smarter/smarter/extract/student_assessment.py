@@ -118,10 +118,7 @@ def get_extract_assessment_query(params, limit=None, compiled=False):
         if asmt_year is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
         if asmt_subject is not None:
-            if len(asmt_subject) is 1:
-                query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject[0]))
-            else:
-                query = query.where(and_(fact_asmt_outcome.c.asmt_subject.in_(asmt_subject)))
+            query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
         if asmt_grade is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
 

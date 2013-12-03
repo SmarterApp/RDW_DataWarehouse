@@ -14,7 +14,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
 from smarter.extract.processor import process_extraction_request
-from smarter.extract.constants import ExtractType
+from smarter.extract.constants import ExtractType, Constants as Extract
 
 EXTRACT_PARAMS = {
     "type": "object",
@@ -118,8 +118,9 @@ def send_extraction_request(params):
     :param params: python dict that contains query parameters from the request
     '''
     try:
-        results = process_extraction_request(params)
-        return Response(body=json.dumps(results), content_type='application/json')
+        if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
+            results = process_extraction_request(params)
+            return Response(body=json.dumps(results), content_type='application/json')
     # TODO: currently we dont' even throw any of these exceptions
     except ExtractionError as e:
         raise EdApiHTTPInternalServerError(e.msg)

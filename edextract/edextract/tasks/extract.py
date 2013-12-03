@@ -17,10 +17,22 @@ from edextract.utils.file_utils import prepare_path
 from celery.canvas import group, chain
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError
-from edextract.utils.data_archiver import encrypted_archive_files
+from edextract.utils.data_archiver import encrypted_archive_files, archive_files
 
 
 log = logging.getLogger('edextract')
+
+
+@celery.task(name='task.extract.start',
+             max_retries=get_setting(Config.MAX_RETRIES),
+             default_retry_delay=get_setting(Config.RETRY_DELAY))
+def start(tenant, request_id, directory_to_archive, tasks):
+    '''
+    '''
+    generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
+    generate_tasks().get()
+    result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract')
+    return result.get()
 
 
 @celery.task(name='task.extract.start_extract',
@@ -31,9 +43,9 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    generate_tasks = group(generate.subtask(args=[tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
+    generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
     workflow = chain(generate_tasks,
-                     archive.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue='extract', immutable=True),
+                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue='extract', immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue='extract', immutable=True))
     workflow.apply_async()
 
@@ -41,7 +53,7 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
 @celery.task(name="tasks.extract.generate",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def generate(tenant, request_id, public_key_id, task_id, query, output_file):
+def generate(tenant, request_id, task_id, query, output_file):
     '''
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
@@ -83,12 +95,28 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
 @celery.task(name="tasks.extract.archive",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def archive(request_id, recipients, encrypted_archive_file_name, directory):
+def archive(request_id, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
     task_info = {Constants.TASK_ID: archive.request.id,
                  Constants.CELERY_TASK_ID: archive.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
+    content = archive_files(directory)
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
+    return content.getvalue()
+
+
+@celery.task(name="tasks.extract.archive_with_encryption",
+             max_retries=get_setting(Config.MAX_RETRIES),
+             default_retry_delay=get_setting(Config.RETRY_DELAY))
+def archive_with_encryption(request_id, recipients, encrypted_archive_file_name, directory):
+    '''
+    given a directory, archive everything in this directory to a file name specified
+    '''
+    task_info = {Constants.TASK_ID: archive_with_encryption.request.id,
+                 Constants.CELERY_TASK_ID: archive_with_encryption.request.id,
                  Constants.REQUEST_GUID: request_id}
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
     prepare_path(encrypted_archive_file_name)

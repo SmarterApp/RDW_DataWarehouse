@@ -25,3 +25,4 @@ def includeme(config):
 
     # Add extract
     config.add_route('extract', '/services/extract')
+    config.add_route('tenant_extract', '/services/extract/tenant')

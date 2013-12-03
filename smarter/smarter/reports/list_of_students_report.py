@@ -4,7 +4,6 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 
-from datetime import datetime
 from edapi.decorators import report_config, user_info
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
@@ -25,11 +24,6 @@ from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
-from smarter.extract.student_assessment import get_extract_assessment_query
-import csv
-from io import StringIO
-from smarter.extract.processor import process_extract_with_stream
-from pyramid.response import Response
 
 REPORT_NAME = "list_of_students"
 
@@ -64,25 +58,6 @@ REPORT_PARAMS = merge_dict({
         }
     }
 }, FILTERS_CONFIG)
-
-
-@report_config(
-    name=REPORT_NAME + '_csv',
-    params=merge_dict(REPORT_PARAMS,
-                      {Constants.ASMTTYPE: {"type": "string",
-                                            "require": True,
-                                            "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"}
-                       }))
-@audit_event()
-def get_list_of_students_extract_report(params):
-    '''
-    CSV version of list of student
-    '''
-    zip_file_name = generate_zip_file_name(params)
-    content = process_extract_with_stream(params)
-    response = Response(body=content, content_type='application/octet-stream')
-    response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
-    return response
 
 
 @report_config(
@@ -292,26 +267,3 @@ def __reverse_map(map_object):
     reverse map for FE
     '''
     return {v: k for k, v in map_object.items()}
-
-
-def generate_zip_file_name(params):
-    '''
-    Generate file name for archive file according to US21011
-        Zip file name:
-
-        School-level: ASMT_<subject>_<type>_<timestamp>.zip
-        Grade-level:  ASMT_<grade>_<subject>_<type>_<timestamp>.zip
-
-    :param asmtSubject string:  assessment subject, 'MATH' or 'ELA'
-    :param asmtType string: 'SUMMATIVE', 'COMPREHENSIVE INTERIM'
-    :param timestamp string: Time time in "%m-%d-%Y_%H-%M-%S"
-    :param grade string: not required for school level,
-    '''
-    # TODO, sort this list so name is deterministic
-    asmtSubjects = '_'.join(params.get(Constants.ASMTSUBJECT))
-    asmtGrade = params.get(Constants.ASMTGRADE)
-    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
-    return "ASMT_{level}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(level=level,
-                                                                          asmtSubject=asmtSubjects.upper(),
-                                                                          asmtType=params.get(Constants.ASMTTYPE),
-                                                                          timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

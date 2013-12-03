@@ -66,7 +66,7 @@ def generate_score_offset(perf_change_tup):
     :return:
     """
     offset = random.randint(perf_change_tup[0], perf_change_tup[1])
-    return offset if perf_change_tup[0] >= 0 else offset * -1
+    return offset
 
 
 def update_scores(row_dict, perf_change_tup, cut_points):
@@ -114,7 +114,7 @@ def determine_perf_lvl(score, cut_points):
 
     for i in range(len(cut_points)):
         if score < cut_points[i]:
-            return i
+            return i + 1
     return len(cut_points) + 1
 
 

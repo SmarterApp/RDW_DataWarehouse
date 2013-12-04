@@ -65,8 +65,7 @@ def create_new_entry(user, request_id, params, status=ExtractStatus.QUEUED):
     task_id = str(uuid4())
 
     insert_extract_stats({Constants.REQUEST_GUID: request_id,
-                          # TODO:  passing in params causes length to be over 256
-                          Constants.INFO: json.dumps({'tenant': user.get_tenant(), 'user_guid': user.get_guid()}),
+                          Constants.INFO: json.dumps({'params': params, 'tenant': user.get_tenant(), 'user_guid': user.get_guid()}),
                           Constants.STATUS: status,
                           Constants.TASK_ID: task_id})
     return task_id

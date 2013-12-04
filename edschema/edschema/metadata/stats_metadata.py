@@ -3,8 +3,8 @@ Created on Jun 19, 2013
 
 @author: tosako
 '''
-from sqlalchemy.schema import MetaData, Table, Column, Index
-from sqlalchemy.types import String, DateTime, BigInteger
+from sqlalchemy.schema import MetaData, Table, Column
+from sqlalchemy.types import String, DateTime, BigInteger, Text
 import datetime
 
 
@@ -28,7 +28,7 @@ def generate_stats_metadata(schema_name=None, bind=None):
                           Column('status', String(32), nullable=False),
                           Column('task_id', String(50), nullable=True),
                           Column('celery_task_id', String(50), nullable=True),
-                          Column('info', String(256), nullable=True)
+                          Column('info', Text, nullable=True)
                           )
 
     return metadata

@@ -1208,14 +1208,14 @@ th.ui-th-column div {
 
 .filterArrow {
   display: none;
-  background-color: @color-B10;
+  background-color: @color-B14;
   min-height: 10px;
   background-image: url('../images/filter_arrow.png');
   background-repeat: no-repeat;
   position: absolute;
   margin-top: -9px;
   width: 22px;
-  right: 35px;
+  right: 70px;
 }
   
 .filter {
@@ -1854,23 +1854,19 @@ th.ui-th-column div {
 
     ul {
 	list-style: none;
-	padding: 6px 0px;
 	margin: 0px;
 	float: right;
 	font-size: 0px;
+	padding-right: 15px;
 
 	&>li {
 	    display: inline-block;
 	    vertical-align: middle;
 	    border-right: solid 1px @color-B7;
 	    padding: 0 27px;
-	    height: 26px;
+	    height: 38px;
 	    font-weight: bold;
 	    font-size: 12px;
-
-	    &:last-child {
-		border: none;
-	    }
 
 	    &>div {
 		height: 20px;
@@ -1885,7 +1881,6 @@ th.ui-th-column div {
 		padding: 0 3px;
 		font-size: 11px;
 	    }
-
 	}
 
 	.align_button_area {
@@ -2004,5 +1999,9 @@ th.ui-th-column div {
 
     .legendPopover {
 	max-width: 850px;
+    }
+
+    .active {
+	background-color: @color-B14;
     }
 }

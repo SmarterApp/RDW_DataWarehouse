@@ -114,11 +114,14 @@ define [
       if filterPanel.is(':hidden')
          filterArrow.show()
          filterPanel.slideDown 'slow'
+         # highlight trigger 
+         $(this.filterTrigger).addClass('active')
       else
          self.cancel self
 
     closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'
+      $(this.filterTrigger).removeClass('active')
       noTags = $(this.tagPanel).is(':empty')
       if noTags
         filterArrow = this.filterArrow

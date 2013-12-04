@@ -37,12 +37,18 @@ define [
     bindEvents: () ->
       self = this
       # create legend popover
-      $("li.legend").popover
+      $("li.legendItem").popover
         html: true
         placement: 'bottom'
-        content: $("li.legend .legendPopup").html()
+        trigger: 'manual'
+        content: $("li.legendItem .legendPopup").html()
         container: "#actionBar"
         template: LEGEND_POPOVER_TEMPLATE
+      .click (e) ->
+        $(this).addClass('active').popover('show')
+      .mouseleave (e)->
+        $(this).removeClass('active')
+        $(this).popover('hide')
 
   create = (container, config) ->
     new ReportActionBar(container, config)

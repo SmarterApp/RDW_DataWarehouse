@@ -52,6 +52,8 @@ require({
     // templates
     edwareBreadcrumbsTemplate: '../src/widgets/breadcrumb/template.html',
     edwareHeaderHtml: '../src/widgets/header/header.html',
+    InfoBarTemplate: '../src/widgets/header/InfoBarTemplate.html',
+    ActionBarTemplate: '../src/widgets/header/ActionBarTemplate.html',
     edwareFooterHtml: '../src/widgets/footer/template.html',
     edwareConfidenceLevelBarTemplate: '../src/widgets/confidenceLevelBar/template.html',
     edwareLOSConfidenceLevelBarTemplate: '../src/widgets/losConfidenceLevelBar/template.html',
@@ -60,7 +62,8 @@ require({
     edwareAssessmentDropdownViewSelectionTemplate: '../js/templates/assessment_dropdown_view_selection.html',
     edwareLOSHeaderConfidenceLevelBarTemplate: '../js/templates/LOS_header_perf_bar.html',
     edwareFilterTemplate: '../src/widgets/filter/template.html',
-    CSVOptionsTemplate: '../src/widgets/download/CSVOptionsTemplate.html'
+    CSVOptionsTemplate: '../src/widgets/download/CSVOptionsTemplate.html',
+    DownloadMenuTemplate: '../src/widgets/download/DownloadMenuTemplate.html'
 
   },
   shim: {

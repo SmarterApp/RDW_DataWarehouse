@@ -28,7 +28,7 @@ define [
         self.edwareDownloadMenu.show()
       # back button click event
       $('.backButton').click ->
-        history.back()
+        self.goBack()
       # bind report info popover
       $('.reportInfoIcon').popover
         html: true
@@ -37,6 +37,9 @@ define [
         container: '#content'
         content: @config.reportInfoText
         template: POPOVER_TEMPLATE
+
+    goBack: () ->
+      history.back()
 
     createDownloadMenu: () ->
       this.edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)

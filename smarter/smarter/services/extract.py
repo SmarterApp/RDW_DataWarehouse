@@ -128,7 +128,7 @@ def send_tenant_level_extraction_request(params):
     '''
     Requests for data extraction for tenant level, throws http exceptions when error occurs
 
-    :param session: session for this user reqest
+    :param session: session for this user request
     :param params: python dict that contains query parameters from the request
     '''
     try:
@@ -148,7 +148,7 @@ def send_tenant_level_extraction_request(params):
 @audit_event()
 def post_extract_service(context, request):
     '''
-    Handles POST request to /services/extract
+    Handles POST request to /services/extract/school
 
     :param request:  Pyramid request object
     '''
@@ -164,7 +164,7 @@ def post_extract_service(context, request):
 @audit_event()
 def get_extract_service(context, request):
     '''
-    Handles GET request to /services/extract
+    Handles GET request to /services/extract/school
 
     :param request:  Pyramid request object
     '''
@@ -179,7 +179,7 @@ def send_extraction_request(params):
     '''
     Requests for data extraction
 
-    :param session: session for this user reqest
+    :param session: session for this user request
     :param params: python dict that contains query parameters from the request
     '''
     extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, [None])[0],
@@ -210,5 +210,5 @@ def generate_zip_file_name(params):
     level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
     return "ASMT_{level}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(level=level,
                                                                           asmtSubject=asmtSubjects.upper(),
-                                                                          asmtType=params.get(Constants.ASMTTYPE),
+                                                                          asmtType=params.get(Constants.ASMTTYPE).upper(),
                                                                           timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

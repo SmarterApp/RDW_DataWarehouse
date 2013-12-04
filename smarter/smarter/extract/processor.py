@@ -87,7 +87,7 @@ def process_async_extraction_request(params):
         # TODO: handle empty public key
         public_key_id = get_encryption_public_key_identifier(tenant)
         archive_file_name = get_archive_file_path(user.get_uid(), tenant, request_id)
-        response['fileName'] = os.path.basename(archive_file_name) + ".gpg"
+        response['fileName'] = os.path.basename(archive_file_name)
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         gatekeeper_id = get_gatekeeper(tenant)
         pickup_zone_info = get_pickup_zone_info(tenant)
@@ -151,7 +151,7 @@ def get_encryption_public_key_identifier(tenant):
 
 def get_archive_file_path(user_name, tenant, request_id):
     base = __get_extract_work_zone_base_dir()
-    file_name = '{user_name}_{current_time}.zip'.format(user_name=user_name, current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+    file_name = '{user_name}_{current_time}.zip.gpg'.format(user_name=user_name, current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
     return os.path.join(base, tenant, request_id, 'zip', file_name)
 
 

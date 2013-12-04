@@ -16,9 +16,8 @@ import imp
 import time
 import datetime
 
-from udl2_util.database_util import connect_db, execute_queries
+from udl2_util.database_util import connect_db, execute_queries, get_sqlalch_table_object
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from preetl import create_queries as queries
 from udl2 import message_keys as mk
 
 try:
@@ -127,16 +126,14 @@ class BatchTableBenchmark(object):
         '''
         Record the benchmark information for the this instance of the benchmarking information
         '''
-        result = self.get_result_dict()
-        insert_query = queries.insert_batch_row_query(udl2_conf['udl2_db']['staging_schema'], udl2_conf['udl2_db']['batch_table'], **result)
+        (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
+                                    udl2_conf['udl2_db']['db_user'],
+                                    udl2_conf['udl2_db']['db_pass'],
+                                    udl2_conf['udl2_db']['db_host'],
+                                    udl2_conf['udl2_db']['db_port'],
+                                    udl2_conf['udl2_db']['db_database'])
 
-        # create database connection
-        (conn, _engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-                                     udl2_conf['udl2_db']['db_user'],
-                                     udl2_conf['udl2_db']['db_pass'],
-                                     udl2_conf['udl2_db']['db_host'],
-                                     udl2_conf['udl2_db']['db_port'],
-                                     udl2_conf['udl2_db']['db_database'])
-        # insert into batch table
-        execute_queries(conn, [insert_query], 'Exception in record_benchmark_in_batch_table, execute query to insert into batch table', 'measurement', 'record_benchmark_in_batch_table')
+        udl_batch = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['reference_schema'],
+                                             udl2_conf['udl2_db']['batch_table'])
+        conn.execute(udl_batch.insert(), [self.get_result_dict()])
         conn.close()

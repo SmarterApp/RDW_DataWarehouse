@@ -70,7 +70,7 @@ UDL_METADATA = {
                 ('udl_phase', False, 'varchar(256)', '', True, ""),
                 ('udl_phase_step', False, 'varchar(50)', '', True, ""),
                 ('udl_phase_step_status', False, 'varchar(50)', '', True, ""),
-                ('error_desc', False, 'varchar(50)', '', True, ""),
+                ('error_desc', False, 'text', '', True, ""),
                 ('stack_trace', False, 'text', '', True, ""),
                 ('udl_leaf', False, 'bool', '', True, ""),
                 ('size_records', False, 'bigint', '', True, ""),

@@ -39,7 +39,7 @@ class Udl2BaseTask(Task):
                                         start_timestamp=failure_time, end_timestamp=failure_time,
                                         udl_phase_step_status=mk.FAILURE,
                                         task_id=str(self.request.id),
-                                        error_desc=str(exc), stack_trace=str(einfo))
+                                        error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()
         msg = {}
         msg.update(args[0])

@@ -7,7 +7,6 @@ import shutil
 import os
 import csv
 import json
-import time
 
 from DataGeneration.src.additional_asmt_generator import (month_delta, generate_score_offset, get_cut_points,
                                                           determine_perf_lvl, update_scores, update_row,

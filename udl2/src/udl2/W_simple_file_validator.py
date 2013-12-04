@@ -6,11 +6,12 @@ from udl2_util.measurement import BatchTableBenchmark
 import datetime
 import os
 import udl2.message_keys as mk
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_file_validator.task")
+@celery.task(name="udl2.W_file_validator.task", base=Udl2BaseTask)
 def task(incoming_msg):
     start_time = datetime.datetime.now()
     guid_batch = incoming_msg[mk.GUID_BATCH]

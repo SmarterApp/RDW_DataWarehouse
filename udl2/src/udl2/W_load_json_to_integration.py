@@ -25,12 +25,12 @@ from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 import udl2.message_keys as mk
 from udl2.celery import udl2_conf
 from udl2_util.measurement import BatchTableBenchmark
-
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_load_json_to_integration.task")
+@celery.task(name="udl2.W_load_json_to_integration.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
@@ -69,10 +69,3 @@ def generate_conf_for_loading(json_file, guid_batch):
     }
     return conf
 
-
-@celery.task(name="udl2.W_load_json_to_integration.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

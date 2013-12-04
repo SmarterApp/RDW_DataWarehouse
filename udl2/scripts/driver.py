@@ -5,7 +5,7 @@ import argparse
 import time
 
 from udl2.udl2_pipeline import get_pipeline_chain
-from udl2.W_get_udl_file import get_next_file, error_handler
+from udl2.W_get_udl_file import get_next_file
 
 from udl2 import message_keys as mk
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE

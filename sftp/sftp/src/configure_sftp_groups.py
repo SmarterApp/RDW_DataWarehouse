@@ -96,12 +96,12 @@ def _remove_group(name):
 
 
 def initialize(sftp_conf):
-    for group_name in sftp_conf['groups']:
-        if _create_group(group_name):
-            print('Group %s added successfully' % group_name)
+    group_name = sftp_conf['group']
+    if _create_group(group_name):
+        print('Group %s added successfully' % group_name)
 
 
 def cleanup(sftp_conf):
-    for group_name in sftp_conf['groups']:
-        if _remove_group(group_name):
-            print('Group %s removed successfully' % group_name)
+    group_name = sftp_conf['group']
+    if _remove_group(group_name):
+        print('Group %s removed successfully' % group_name)

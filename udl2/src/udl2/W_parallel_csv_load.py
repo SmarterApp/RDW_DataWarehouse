@@ -13,12 +13,13 @@ from udl2 import message_keys as mk
 from udl2 import W_load_csv_to_staging
 from udl2.celery import celery
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_parrallel_csv_load.task")
+@celery.task(name="udl2.W_parrallel_csv_load.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)
@@ -36,7 +37,7 @@ def task(msg):
         loader_task = W_load_csv_to_staging.task.si(message_for_file_loader)
         loader_tasks.append(loader_task)
     loader_group = group(loader_tasks)
-    result = loader_group.delay(link_error=error_handler.s())
+    result = loader_group.delay()
     result.get()
 
     end_time = datetime.datetime.now()
@@ -65,10 +66,3 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
 
     return file_loader_msg
 
-
-@celery.task(name="udl2.W_parallel_csv_load.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

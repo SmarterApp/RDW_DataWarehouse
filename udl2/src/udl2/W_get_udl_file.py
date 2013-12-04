@@ -23,6 +23,7 @@ def get_next_file(msg):
     files_in_dir = find_files_in_directories(tenant_dirs)
 
     next_file_msg = {
+        mk.LOOP_PIPELINE: True,
         mk.TENANT_SEARCH_PATHS: tenant_dirs,
         mk.PARTS: msg[mk.PARTS],
         mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
@@ -30,17 +31,9 @@ def get_next_file(msg):
 
     if len(files_in_dir) > 0:
         print('picking up file:', files_in_dir[0])
-        pipeline = get_pipeline_chain(files_in_dir[0], msg[mk.LOAD_TYPE], msg[mk.PARTS])
+        pipeline = get_pipeline_chain(files_in_dir[0], msg[mk.LOAD_TYPE], msg[mk.PARTS], None, next_file_msg)
         (pipeline | get_next_file.si(next_file_msg)).apply_async()
         return "File found and pipeline scheduled"
     else:
         get_next_file.apply_async((next_file_msg,), countdown=udl2_conf['search_wait_time'])
         return "No file found"
-
-
-@celery.task(name="udl2.W_get_udl_file.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=True)
-    print('Task %r raised exception: %r\n%r' % (
-          uuid, exc, result.traceback))

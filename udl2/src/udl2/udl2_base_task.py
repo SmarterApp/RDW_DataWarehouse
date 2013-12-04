@@ -23,8 +23,13 @@ logger = get_task_logger(__name__)
 class Udl2BaseTask(Task):
     abstract = True
 
-    def __get_pipeline_error_handler_chain(self, msg):
-        error_handler_chain = chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
+    def __get_pipeline_error_handler_chain(self, msg, task_name):
+        if task_name == 'udl2.W_post_etl.task':
+            error_handler_chain = udl2.W_all_done.task.s(msg)
+        elif task_name == 'udl2.W_all_done.task':
+            error_handler_chain = None
+        else:
+            error_handler_chain = chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
         return error_handler_chain
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
@@ -45,16 +50,19 @@ class Udl2BaseTask(Task):
         msg.update(args[0])
         msg.update({mk.PIPELINE_STATE: 'error'})
 
+        error_handler_chain = self.__get_pipeline_error_handler_chain(msg, self.name)
         if mk.LOOP_PIPELINE in msg and msg[mk.LOOP_PIPELINE] is True:
             next_file_msg = {
                 mk.TENANT_SEARCH_PATHS: msg[mk.TENANT_SEARCH_PATHS],
                 mk.PARTS: msg[mk.PARTS],
                 mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
             }
-            (self.__get_pipeline_error_handler_chain(msg) |
-             udl2.W_get_udl_file.get_next_file.si(next_file_msg)).apply_async()
+
+            chain = udl2.W_get_udl_file.get_next_file.si(next_file_msg) \
+                if error_handler_chain is None else error_handler_chain | udl2.W_get_udl_file.get_next_file.si(next_file_msg)
+            chain.apply_async()
         else:
-            self.__get_pipeline_error_handler_chain(msg).delay()
+            error_handler_chain.delay() if error_handler_chain is not None else None
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))

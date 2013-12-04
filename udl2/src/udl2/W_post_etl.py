@@ -22,7 +22,7 @@ The output of this worker will serve as the input to the subsequent worker [W_al
 '''
 
 
-@celery.task(name="udl2.W_post_etl.task")
+@celery.task(name="udl2.W_post_etl.task", base=Udl2BaseTask)
 def task(incoming_msg):
     """
     Celery task that handles clean-up of files created during the UDL process.

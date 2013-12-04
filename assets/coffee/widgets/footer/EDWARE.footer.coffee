@@ -205,6 +205,6 @@ define [
           download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
           setTimeout ( ->
             download.close()
-          ), 2000
+          ), 6000
 
   EdwareFooter: EdwareFooter

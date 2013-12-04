@@ -4,7 +4,7 @@
         "indicator": "8,345",
         "desc1": "Percentage of population",
         "desc2": "Total Students",
-        "desc3": "The width of a colored segment is proportional to the number of students in that segment. If a colored segment represents less than 10% of the students tested, then no percentage is displayed.",
+        "desc3": "The width of a colored segment is proportional to the number of students in that segment.",
         "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
     }
 }

@@ -167,7 +167,6 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.config.colorsData = this.data.metadata
       this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.CPOP, this.config, this.reportType) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
@@ -249,8 +248,9 @@ define [
         CSVOptions: @config.CSVOptions
 
     renderReportActionBar: () ->
-      edwareReportActionBar.create '#actionBar',
-        labels: @labels
+      @config.colorsData = @data.metadata
+      @config.reportName = Constants.REPORT_NAME.CPOP
+      edwareReportActionBar.create '#actionBar', @config        
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover

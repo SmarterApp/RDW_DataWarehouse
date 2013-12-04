@@ -3,13 +3,12 @@ define [
   "mustache"
   "bootstrap"
   "text!edwareFooterHtml"
-  "edwareLegend"
   "edwarePreferences"
   "edwareExport"
   "edwareConstants"
   "edwareClientStorage"
   "edwareDownload"
-], ($, Mustache, bootstrap, footerTemplate, edwareLegend, edwarePreferences, edwareExport, Constants, edwareClientStorage, edwareDownload) ->
+], ($, Mustache, bootstrap, footerTemplate, edwarePreferences, edwareExport, Constants, edwareClientStorage, edwareDownload) ->
 
   POPOVER_TEMPLATE = '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
 
@@ -25,36 +24,19 @@ define [
 
     initialize: (config)->
       this.labels = config.labels
-      this.reportInfo = config.reportInfo
-      legendInfo = config.legendInfo
-      this.exportOption = 'csv' # default value for all users
-      this.legend = {
-        legendInfo: legendInfo,
-        subject: config.subject || (()->
-          colorsData = config.colorsData
-          # merge default color data into sample intervals data
-          for color, i in colorsData.subject1 || colorsData.subject2
-            legendInfo.sample_intervals.intervals[i].color = color
-          legendInfo.sample_intervals
-        )()
-      }
-      this.CSVOptions = config.CSVOptions
 
     create: (config) ->
       $('#footer').html Mustache.to_html footerTemplate, {
-        report_info: this.reportInfo
         labels: this.labels
       }
-      # create popover      
+      # create popover
       this.createPopover()
 
     createPopover: () ->
       this.createFeedback()
-      this.createLegend()
       this.createAbout()
       this.createHelp()
       this.createPrint()
-      this.createExport()
 
     createFeedback: () ->
       # Survey monkey popup
@@ -68,20 +50,6 @@ define [
         template: POPOVER_TEMPLATE
         content: () ->
           $(".surveyMonkeyPopup").html()
-
-    createLegend: () ->
-      # create legend
-      $('.legendPopup').createLegend this.reportName, this.legend
-      # create popover
-      $("#legend").popover
-        html: true
-        title: Mustache.to_html TITLE_TEMPLATE, {
-          selector: '#legend'
-          hide: this.labels.hide
-          title: this.labels.legend
-        }
-        template: POPOVER_TEMPLATE
-        content: $("#footerLinks .legendPopup").html()
 
     createAbout: ()->
       $("#aboutReport").popover
@@ -123,32 +91,6 @@ define [
         }
         content: $(".printPopup").html()
 
-    createExport: () ->
-      if this.reportName is Constants.REPORT_NAME.ISR
-        $('#export').hide()
-        return
-      # this is critical to ensure class properties are accessible inside the content closure function's scope
-      self = this
-      $("#export").popover
-        html: true
-        title: Mustache.to_html TITLE_TEMPLATE, {
-          selector: '#export'
-          hide: this.labels.hide
-          title: 'Export'
-        }
-        template: POPOVER_TEMPLATE
-        content: () ->
-          # this is ugly. show only the export raw data button in CPOP school level and LOS and only
-          # for administrator
-          # todo list, add school admin identfication
-          if ((self.reportName is Constants.REPORT_NAME.CPOP and self.reportType is 'school') or
-             (self.reportName is Constants.REPORT_NAME.LOS))
-            $('.exportPopup #raw_extraction_option').show()
-          else
-            $('.exportPopup #raw_extraction_option').hide()
-          $(".exportPopup").html()
-
-
     bindEvents: ()->
       self = this
       # Make the footer button active when associate popup opens up
@@ -181,28 +123,6 @@ define [
           $("#footer .nav li a").removeClass("active")
           window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
         , "#printButton"
-
-      # bind export radio button event
-      $(document).on 'change', 'input[name=export_options]', ->
-        self.exportOption = this.value
-
-      # bind export event
-      $(document).on 'click', '#exportButton', ->
-        if self.exportOption is 'file'
-          # display file download options
-          CSVDownload = edwareDownload.create('.exportPopup .CSVDownloadContainer', self.CSVOptions)
-          CSVDownload.show()
-        else if self.exportOption is 'csv'
-          $('#gridTable').edwareExport self.reportName, self.labels
-        else if self.exportOption is 'extract'
-          # add more code from master branch for old extraction code
-          params = JSON.parse edwareClientStorage.filterStorage.load()
-          # Get asmtType from session storage
-          params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
-          url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
-          download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
-          setTimeout ( ->
-            download.close()
-          ), 2000
+        
 
   EdwareFooter: EdwareFooter

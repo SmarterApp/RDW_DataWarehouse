@@ -488,7 +488,7 @@ th.ui-th-column div {
   height: 45px;
   z-index: 5000;
   
-  .surveyMonkeyPopup, .legendPopup, .aboutReportPopup, .helpPopup, .printPopup{
+  .surveyMonkeyPopup, .aboutReportPopup, .helpPopup, .printPopup{
     display: none;
   }
   
@@ -582,8 +582,6 @@ th.ui-th-column div {
 }
 
 #legendTemplate {
-  width: 590px;
-  height: 492px;
   
   h4 {
     font-size: 13px;
@@ -612,7 +610,7 @@ th.ui-th-column div {
   
   .achievement {
     float: left;
-    width: 55%;
+    width: 300px;
     display: block;
     margin-bottom: 15px;
   }
@@ -1036,93 +1034,93 @@ th.ui-th-column div {
   .populationBarDetails {
       
       .populationBar {
-    position: relative;
-    top: 30px;
+	  position: relative;
+	  top: 30px;
+	  padding-right: 50px;
+	  height: 110px;
 
-    .bar {
-        cursor: auto;
-    }
-    
-    .progressBar_tooltip {
-        display: none;
-    }
+	  .bar {
+              cursor: auto;
+	  }
+	  
+	  .progressBar_tooltip {
+              display: none;
+	  }
 
-    .indicator {
-        position: absolute;
-        left: 274px;
-        top: 0px;
-        color: black;
-        font-style: bold;
-    }
+	  .indicator {
+              position: absolute;
+              left: 274px;
+              top: 0px;
+              color: black;
+              font-style: bold;
+	  }
 
-    .arrow1 {
-        background-image: url('../images/cmppop_percentarrow.png');
-        width: 187px;
-        height: 27px;
-        position: absolute;
-        background-repeat: no-repeat;
-        top: -25px;
-        left: 140px;
-    }
+	  .arrow1 {
+              background-image: url('../images/cmppop_percentarrow.png');
+              width: 187px;
+              height: 27px;
+              position: absolute;
+              background-repeat: no-repeat;
+              top: -25px;
+              left: 140px;
+	  }
 
-    .arrow2 {
-        background-image: url('../images/cmppop_segmentarrow.png');
-        width: 261px;
-        height: 27px;
-        position: absolute;
-        background-repeat: no-repeat;
-        top: 21px;
-        left: 70px;
-    }
+	  .arrow2 {
+              background-image: url('../images/cmppop_segmentarrow.png');
+              width: 261px;
+              height: 27px;
+              position: absolute;
+              background-repeat: no-repeat;
+              top: 21px;
+              left: 70px;
+	  }
 
-    .arrow3 {
-        background-image: url('../images/roster_scalescore_cmppop_total.png');
-        width: 187px;
-        height: 27px;
-        position: absolute;
-        background-repeat: no-repeat;
-        top: 5px;
-        left: 311px;
-    }
+	  .arrow3 {
+              background-image: url('../images/roster_scalescore_cmppop_total.png');
+              width: 187px;
+              height: 27px;
+              position: absolute;
+              background-repeat: no-repeat;
+              top: 5px;
+              left: 311px;
+	  }
       }
 
       .notes {
-    width: 340x;
-    font-style:italic;
-    margin-top: 55px;
-    float: left;
-    
-    h5 {
-        position: relative;
-        top: -3px;
-        vertical-align: top;
-        display: inline;
-    }
+	  width: 340x;
+	  font-style:italic;
+	  float: left;
+	  
+	  h5 {
+              position: relative;
+              top: -3px;
+              vertical-align: top;
+              display: inline;
+	  }
 
-    p {
-        display: inline-block;
-        width: 298px;
-        font-size: 11px;
-        font-weight: normal;
-        color: @color-B2;
-    }
-    
+	  p {
+              display: inline-block;
+              width: 298px;
+              font-size: 11px;
+              font-weight: normal;
+              color: @color-B2;
+	  }
+	  
       }
 
       .description {
-    width: 174px;
-    float: right;
-    margin-right: 40px;
+	  width: 174px;
+	  float: right;
 
-    * {
-        margin-bottom: 11px;
-    }
+	  * {
+              margin-bottom: 11px;
+	  }
 
-    p {
-        font-weight: normal;
-        color: @color-B2;
-        font-size: 11px;
-    }
+	  p {
+              font-weight: normal;
+              color: @color-B2;
+              font-size: 11px;
+	  }
       }
   }
 
@@ -1998,5 +1996,13 @@ th.ui-th-column div {
 	position: 0px 0px;
 	vertical-align: text-top;
 	margin-right: 5px;
+    }
+
+    .legendPopup {
+	display: none;
+    }
+
+    .legendPopover {
+	max-width: 850px;
     }
 }

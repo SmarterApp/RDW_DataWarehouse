@@ -13,11 +13,10 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
 from smarter.extract.processor import process_async_extraction_request, has_data,\
     get_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
-    get_pickup_zone_info, process_sync_extract_request, __create_new_task
+    get_pickup_zone_info, process_sync_extract_request
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
 from edapi.exceptions import NotFoundException
-from smarter.extract import processor
 
 
 class TestProcessor(Unittest_with_edcore_sqlite):
@@ -88,6 +87,27 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtType': 'abc'}
         path = get_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
+        self.assertIn('.csv', path)
+
+    def test_get_file_name_school(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc'}
+        path = get_file_path(params, 'tenant', 'request_id')
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_UUUU_ABC_', path)
+        self.assertIn('.csv', path)
+
+    def test_get_file_name_grade(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc'}
+        path = get_file_path(params, 'tenant', 'request_id')
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_5_UUUU_ABC_', path)
         self.assertIn('.csv', path)
 
     def test_get_extract_work_zone_path(self):

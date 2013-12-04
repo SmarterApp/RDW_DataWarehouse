@@ -82,7 +82,7 @@ def process_async_extraction_request(params):
         # TODO: handle empty public key
         public_key_id = get_encryption_public_key_identifier(tenant)
         archive_file_name = get_archive_file_path(user.get_uid(), tenant, request_id)
-        response['fileName'] = os.path.basename(archive_file_name)
+        response['fileName'] = os.path.basename(archive_file_name) + ".gpg"
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         gatekeeper_id = get_gatekeeper(tenant)
         pickup_zone_info = get_pickup_zone_info(tenant)
@@ -128,15 +128,15 @@ def get_extract_work_zone_path(tenant, request_id):
 def get_file_path(param, tenant, request_id):
     asmtGrade = param.get(Constants.ASMTGRADE)
     if asmtGrade is not None:
-        identifier = 'GRADE_' + str(asmtGrade)
+        identifier = '_GRADE_' + str(asmtGrade)
     elif param.get(Constants.SCHOOLGUID) is not None:
-        identifier = 'SCHOOL'
+        identifier = ''
     else:
-        identifier = param.get(Constants.STATECODE)
-    file_name = 'ASMT_{identifier}_{asmtSubject}_{asmtType}_{currentTime}.csv'.format(identifier=identifier.upper(),
-                                                                                      asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                                                                                      asmtType=param[Constants.ASMTTYPE].upper(),
-                                                                                      currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+        identifier = '_' + param.get(Constants.STATECODE)
+    file_name = 'ASMT{identifier}_{asmtSubject}_{asmtType}_{currentTime}.csv'.format(identifier=identifier.upper(),
+                                                                                     asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                                                                                     asmtType=param[Constants.ASMTTYPE].upper(),
+                                                                                     currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
 
 

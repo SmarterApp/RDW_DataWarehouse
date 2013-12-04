@@ -207,8 +207,8 @@ def generate_zip_file_name(params):
     subjects.sort()
     asmtSubjects = '_'.join(subjects)
     asmtGrade = params.get(Constants.ASMTGRADE)
-    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
-    return "ASMT_{level}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(level=level,
-                                                                          asmtSubject=asmtSubjects.upper(),
-                                                                          asmtType=params.get(Constants.ASMTTYPE).upper(),
-                                                                          timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
+    identifier = '_GRADE_' + str(asmtGrade) if asmtGrade is not None else ''
+    return "ASMT{identifier}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(identifier=identifier,
+                                                                              asmtSubject=asmtSubjects.upper(),
+                                                                              asmtType=params.get(Constants.ASMTTYPE).upper(),
+                                                                              timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

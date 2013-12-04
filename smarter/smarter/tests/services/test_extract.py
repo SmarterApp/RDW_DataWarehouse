@@ -130,7 +130,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
                   'asmtType': 'Summative',
                   'stateCode': 'NY'}
         name = generate_zip_file_name(params)
-        self.assertIn('ASMT_SCHOOL_ELA_MATH_SUMMATIVE', name)
+        self.assertIn('ASMT_ELA_MATH_SUMMATIVE', name)
 
     def test_post_invalid_payload(self):
         self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service)

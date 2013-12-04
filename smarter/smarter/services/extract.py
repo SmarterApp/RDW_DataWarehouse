@@ -203,8 +203,9 @@ def generate_zip_file_name(params):
         School-level: ASMT_<subject>_<type>_<timestamp>.zip
         Grade-level:  ASMT_<grade>_<subject>_<type>_<timestamp>.zip
     '''
-    #TODO: sort this list so name is deterministic
-    asmtSubjects = '_'.join(params.get(Constants.ASMTSUBJECT))
+    subjects = params.get(Constants.ASMTSUBJECT)
+    subjects.sort()
+    asmtSubjects = '_'.join(subjects)
     asmtGrade = params.get(Constants.ASMTGRADE)
     level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
     return "ASMT_{level}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(level=level,

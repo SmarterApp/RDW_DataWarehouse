@@ -39,9 +39,9 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate and then to archive
-        generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)    # @UndefinedVariable
+        generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract_sync', immutable=True) for task in tasks)    # @UndefinedVariable
         generate_tasks().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract')
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract_sync')
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")

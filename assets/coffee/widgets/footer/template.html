@@ -12,9 +12,6 @@
 	<a id="feedback" rel="popover" class="footerLink pull-right"><i class="icon-comment icon-white"></i> {{labels.feedback}}</a>
     </li>
     <li>
-	<a id="export" rel="popover" class="footerLink pull-right"><i class="icon-file icon-white"></i> Export</a>
-    </li>
-    <li>
 	<div id="copyright">
 			Smarter Balanced &#169; Copyright 2013 <br/>
 			DRAFT: All images and data are <span class="underline">unofficial</span> and for internal testing purposes only
@@ -47,19 +44,5 @@
 	    <button id="printButton" type="button" class="btn btn-info">{{labels.print}}</button>
 	</div>
     </div>
-    <div class="exportPopup">
-        <div class="CSVDownloadContainer"></div>
-	<div id="export_to_csv_option">
-	    <input type="radio" name="export_options" value="csv" checked>Export to CSV format<br/>
-	</div>
-	<div id="raw_extraction_option">
-	    <input type="radio" name="export_options" value="extract">Extract Raw Data to CSV format<br/>
-	</div>
-        <div id="file_download_option">
-	    <input type="radio" name="export_options" value="file">CSV File Download<br/>
-	</div>
-	<div id='exportButtonContent'>
-	    <button id="exportButton" type="button" class="btn btn-info">Export</button>
-	</div>
-    </div>
+    <div class="CSVDownloadContainer"></div>
 </div>

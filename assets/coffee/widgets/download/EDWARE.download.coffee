@@ -240,11 +240,10 @@ define [
 
     sendCSVRequest: () ->
       # display file download options
-      CSVDownload = new CSVDownloadModal $('.exportPopup .CSVDownloadContainer'), @config.CSVOptions
+      CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), @config.CSVOptions
       CSVDownload.show()
                 
   create = (container, config)->
-    # TODO remove this function after nav redesign complete
     new CSVDownloadModal $(container), config
   
   CSVDownloadModal: CSVDownloadModal

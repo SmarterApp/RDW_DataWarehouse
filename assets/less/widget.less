@@ -1725,3 +1725,278 @@ th.ui-th-column div {
       }
      }
 }
+
+
+#infoBar {
+    /* background-color: @color-B10; */
+
+    ul {
+	padding: 9px 0px 0px 0px;
+	list-style: none;
+	margin: 0px;
+	font-size: 0px;
+
+	li {
+	    display: inline-block;
+	    border-right: solid 1px @color-B7;
+	    padding: 0px 15px;
+	    height: 26px;
+	    font-size: 14px;
+
+	    &:nth-last-child(-n+2) {
+		border: none;
+	    }
+
+	    &>* {
+		height: 20px;
+		top: 50%;
+		margin-top: -10px;
+		position: relative;
+		float: left;
+	    }
+	}
+    }
+
+    .title {
+	line-height: normal;
+	color: @color-A1;
+    }
+
+    .reportInfoIcon {
+	background-image: url('../images/nav_icons.png');
+	background-repeat: no-repeat;
+	width: 15px;
+	display: inline-block;
+	background-position: 0px -14px;
+	margin-left: 15px;
+    }
+
+    .downloadIcon {
+	background-image: url('../images/nav_icons.png');
+	background-repeat: no-repeat;
+	background-position: 0px -32px;
+	width: 20px;
+	display: inline-block;
+    }
+
+    #downloadMenuPopup {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+    }
+
+    .backButton {
+	color: @color-A4;
+
+	&:before {
+	    display: inline-block;
+	    content: '';
+	    background-image: url("../images/nav_icons.png");
+	    background-position: 0px 0px;
+	    width: 15px;
+	    height: 13px;
+	    vertical-align: text-bottom;
+	}
+    }
+
+    li.overall {
+	float: right;
+
+	.info {
+	    padding: 0px 15px;
+	    border-right: solid 1px @color-B5;
+
+	    &:last-child {
+		border-right: none;
+	    }
+
+	    span {
+		margin-right: 7px;
+	    }
+
+	    .indicator_cell {
+		border-radius: 3px;
+		font-size: 12px;
+		height: 21px;
+		width: 41px;
+		text-align: center;
+		padding: 3px;
+	    }
+
+	    .overallDesc {
+		font-size: 12px;
+		margin-right: 0px;
+	    }
+
+	}
+
+    }
+
+    #DownloadMenuModal {
+	width: 323px;
+	left: 58%;
+	
+	li {
+	    display: list-item;
+	    border: none;
+	    height: 30px;
+
+	    input, span {
+		vertical-align: baseline;
+		padding-left: 10px;
+	    }
+	}
+    }
+}
+
+#actionBar {
+
+    background-color: @color-B8;
+    border-top: solid 1px @color-B3;
+
+    ul {
+	list-style: none;
+	padding: 6px 0px;
+	margin: 0px;
+	float: right;
+	font-size: 0px;
+
+	&>li {
+	    display: inline-block;
+	    vertical-align: middle;
+	    border-right: solid 1px @color-B7;
+	    padding: 0 27px;
+	    height: 26px;
+	    font-weight: bold;
+	    font-size: 12px;
+
+	    &:last-child {
+		border: none;
+	    }
+
+	    &>div {
+		height: 20px;
+		top: 50%;
+		margin-top: -10px;
+		position: relative;
+		float: left;
+	    }
+
+	    label {
+		float: left;
+		padding: 0 3px;
+		font-size: 11px;
+	    }
+
+	}
+
+	.align_button_area {
+
+	    padding-left: 10px;
+	    
+	    .align_button {
+		width: 30px;
+		height: 16px;
+		cursor: pointer;
+		float: left;
+		position: relative;
+		bottom: -2px;
+	    }
+	}
+	
+	.align_off {
+	    background-image: url("../images/align_onoff.png");
+	    background-repeat: no-repeat;
+	    background-position: 0 -16px; 
+	}
+	
+	.align_on {
+	    background-image: url("../images/align_onoff.png");
+	    background-repeat: no-repeat;
+	    background-position: 0 -33px;
+	}
+
+	.alignLabel:before {
+	    display: inline-block;
+	    content: "";
+	    background-image: url("../images/align_onoff.png");
+	    background-position-x: -5px;
+	    width: 23px;
+	    height: 16px;
+	    vertical-align: text-top;
+	}
+
+	.filterLabel {
+	    cursor: pointer;
+	    		
+	    &:before {
+		content: "";
+		display: inline-block;
+		background-image: url('../images/nav_icons.png');
+		background-position: 0px -123px;
+		width: 15px;
+		height: 15px;
+		vertical-align: text-bottom;
+		margin-right: 3px;
+	    }
+
+	    &:after {
+		content: "";
+		display: inline-block;
+		background-image: url('../images/nav_icons.png');
+		background-position: 0 -54px;
+		width: 15px;
+		height: 10px;
+		vertical-align: text-bottom;
+		margin-left: 10px;
+	    }
+	}
+
+	.sortLabel {
+	    &:before {
+		content: "";
+		display: inline-block;
+		background-image: url('../images/nav_icons.png');
+		background-position: 0px -108px;
+		width: 15px;
+		height: 15px;
+		vertical-align: text-bottom;
+		margin-right: 3px;
+	    }
+
+	    &:after {
+		content: "";
+		display: inline-block;
+		background-image: url('../images/nav_icons.png');
+		background-position: 0 -54px;
+		width: 15px;
+		height: 10px;
+		vertical-align: text-bottom;
+		margin-left: 10px;
+	    }
+	}
+
+	.asmtDropdown {
+	    position: relative;
+	    top: 50%;
+	    margin-top: -15px;
+	    height: 30px;
+
+	    #asmtTypeDropdown {
+		z-index: 9999;
+	    }
+	}
+    }
+
+    .legendLabel:before {
+	display: inline-block;
+	content: "";
+	width: 15px;
+	height: 15px;
+	background-image: url('../images/nav_icons.png');
+	background-position: 0px -72px;
+	position: 0px 0px;
+	vertical-align: text-top;
+	margin-right: 5px;
+    }
+}

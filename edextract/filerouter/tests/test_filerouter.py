@@ -20,9 +20,9 @@ class Test(unittest.TestCase):
     GATEKEEPER_TEST_USERNAME1 = os.path.join('ca', 'kswimberly')
     GATEKEEPER_TEST_USERNAME2 = os.path.join('ny', 'byip')
     GATEKEEPER_TEST_USERNAME3 = os.path.join('hi', 'hacker')
-    TESTFILE1 = 'testfile1.zip'
-    TESTFILE2 = 'testfile2.zip'
-    TESTFILE3 = 'testfile3.zip'
+    TESTFILE1 = 'testfile1.zip.gpg'
+    TESTFILE2 = 'testfile2.zip.gpg'
+    TESTFILE3 = 'testfile3.zip.gpg'
     REPORTS = 'reports'
     ROUTE = 'route'
     ERROR = 'error'

@@ -136,7 +136,7 @@ h6 {
 	    height: 26px;
 	    font-size: 14px;
 
-	    &:last-child {
+	    &:nth-last-child(-n+2) {
 		border: none;
 	    }
 
@@ -180,6 +180,49 @@ h6 {
 
     .backButton {
 	color: @color-A4;
+
+	&:before {
+	    display: inline-block;
+	    content: '';
+	    background-image: url("../images/nav_icons.png");
+	    background-position: 0px 0px;
+	    width: 15px;
+	    height: 13px;
+	    vertical-align: text-bottom;
+	}
+    }
+
+    li.overall {
+	float: right;
+
+	.info {
+	    padding: 0px 15px;
+	    border-right: solid 1px @color-B5;
+
+	    &:last-child {
+		border-right: none;
+	    }
+
+	    span {
+		margin-right: 7px;
+	    }
+
+	    .indicator_cell {
+		border-radius: 3px;
+		font-size: 12px;
+		height: 21px;
+		width: 41px;
+		text-align: center;
+		padding: 3px;
+	    }
+
+	    .overallDesc {
+		font-size: 12px;
+		margin-right: 0px;
+	    }
+
+	}
+
     }
 
     #DownloadMenuModal {

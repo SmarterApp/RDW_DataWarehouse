@@ -1,5 +1,16 @@
 <ul>
-    <li><span class="backButton"><i>&lsaquo;</i>Back</span></li>
+    <li><span class="backButton">Back</span></li>
     <li><h2 class="title">{{title}}</h2><div class="reportInfoIcon"></div></li>
     <li><div class="downloadIcon"></div><div id="downloadMenuPopup"></div></li>
+    <li class="overall">
+    {{#subjects}}
+        <div class="info">
+            <span>{{asmt_subject}}</span>
+            <span class="indicator_cell" style="background-color: {{score_bg_color}}; color: {{score_text_color}}">
+                <strong>{{asmt_score}}</strong>
+            </span>
+            <span class="overallDesc" style="color:{{score_color}};">{{score_name}}</span>
+        </div>
+    {{/subjects}}
+    </li>
 </ul>

@@ -18,6 +18,7 @@ define [
     initialize: () ->
       $(this.container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
+        subjects: @config.subjects
       this.createDownloadMenu() if not this.edwareDownloadMenu
         
     bindEvents: () ->

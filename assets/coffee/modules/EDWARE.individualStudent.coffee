@@ -199,6 +199,8 @@ define [
         reportInfoText: @configData.reportInfo
         labels: @labels
         CSVOptions: @configData.CSVOptions
+        # subjects on ISR
+        subjects: @data.current
 
     render : (asmtType) ->
       this.data.current = this.data.items[asmtType]

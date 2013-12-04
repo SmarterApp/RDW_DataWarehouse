@@ -11,7 +11,7 @@ from preetl.pre_etl import pre_etl_job
 from udl2.celery import udl2_conf
 
 
-def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch_guid_forced=None,):
+def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch_guid_forced=None, initial_msg=None):
     """
     Get the celery chain object that is the udl pipeline
 
@@ -31,7 +31,7 @@ def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch
     jc_batch_table = udl2_conf['udl2_db']['batch_table']
 
     # generate common message for each stage
-    common_msg = _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts)
+    common_msg = _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, initial_msg)
     arrival_msg = _generate_message_for_file_arrived(archive_file, lzw, common_msg)
 
     pipeline_chain = chain(W_file_arrived.task.si(arrival_msg),
@@ -48,14 +48,16 @@ def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch
     return pipeline_chain
 
 
-def _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts):
-    return {
+def _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, initial_msg):
+    initial_msg = {} if initial_msg is None else initial_msg
+    msg = {
             mk.BATCH_TABLE: jc_batch_table,
             mk.GUID_BATCH: guid_batch,
             mk.LOAD_TYPE: load_type,
             mk.PARTS: file_parts,
             mk.START_TIMESTAMP: datetime.datetime.now()
         }
+    return _combine_messages(initial_msg, msg)
 
 
 def _generate_message_for_file_arrived(archive_file, lzw, common_message):

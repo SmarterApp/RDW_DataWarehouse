@@ -21,6 +21,14 @@ define [
     pref = {} if not pref
     pref["asmtType"] || 'Summative'
   
+  saveSubjectPreference = (asmtSubject) ->
+    savePreferences {"asmtSubject": asmtSubject}
+  
+  getSubjectPreference = () ->
+    pref = getPreferences()
+    pref = {} if not pref
+    pref["asmtSubject"] || []
+  
   getSelectedLanguage = () ->
     iso_language = getPreferences true
     lang_id = iso_language.languageId if iso_language
@@ -50,6 +58,8 @@ define [
     
   saveAsmtPreference:saveAsmtPreference
   getAsmtPreference:getAsmtPreference
+  saveSubjectPreference:saveSubjectPreference
+  getSubjectPreference:getSubjectPreference
   getSelectedLanguage: getSelectedLanguage
   saveSelectedLanguage: saveSelectedLanguage
   getInterimInfo:getInterimInfo

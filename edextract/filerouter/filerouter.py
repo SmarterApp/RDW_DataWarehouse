@@ -120,7 +120,7 @@ def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, 
     syslog.syslog(syslog.LOG_INFO, 'File moved: [{}] to [{}]'.format(original_file_name, destination_file_name))
 
 
-def _find_files(path, suffix='.zip'):
+def _find_files(path, suffix='.zip.gpg'):
     '''
     find "*.zip" file recursively by given base dir.
     '''

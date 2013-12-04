@@ -11,12 +11,13 @@ from udl2 import message_keys as mk
 from celery.utils.log import get_task_logger
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 
 
 #*************implemented via chord*************
-@celery.task(name="udl2.W_load_to_integration_table.task")
+@celery.task(name="udl2.W_load_to_integration_table.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info("LOAD_FROM_STAGING_TO_INT: Migrating data from staging to integration.")

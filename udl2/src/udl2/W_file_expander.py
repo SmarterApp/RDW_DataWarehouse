@@ -4,6 +4,7 @@ from celery.utils.log import get_task_logger
 import udl2.message_keys as mk
 from fileexpander.file_expander import expand_file
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 import datetime
 
 
@@ -20,7 +21,7 @@ The output of this worker will serve as the input to the subsequent worker [W_si
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_file_expander.task")
+@celery.task(name="udl2.W_file_expander.task", base=Udl2BaseTask)
 def task(incoming_msg):
     """
     This is the celery task to expand the decrypted file

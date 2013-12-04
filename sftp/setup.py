@@ -10,7 +10,7 @@ requires = []
 
 tests_require = requires + [
     'nose == 1.3.0',
-    'coverage', ]
+    'coverage == 3.6', ]
 
 setup(name='sftp',
       version='0.1',

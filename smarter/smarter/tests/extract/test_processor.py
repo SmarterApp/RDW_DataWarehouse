@@ -10,12 +10,13 @@ from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from smarter.extract.processor import process_extraction_request, has_data,\
+from smarter.extract.processor import process_async_extraction_request, has_data,\
     get_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
-    get_pickup_zone_info
+    get_pickup_zone_info, process_sync_extract_request
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
+from edapi.exceptions import NotFoundException
 
 
 class TestProcessor(Unittest_with_edcore_sqlite):
@@ -54,13 +55,13 @@ class TestProcessor(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 
-    def test_process_extraction_request(self):
+    def test_process_extraction_async_request(self):
         params = {'stateCode': ['CA'],
                   'asmtYear': ['2015'],
                   'asmtType': ['SUMMATIVE', 'COMPREHENSIVE INTERIM'],
                   'asmtSubject': ['Math', 'ELA'],
                   'extractType': ['studentAssessment']}
-        results = process_extraction_request(params)
+        results = process_async_extraction_request(params)
         tasks = results['tasks']
         self.assertEqual(len(tasks), 4)
         self.assertEqual(tasks[0]['status'], 'fail')
@@ -86,7 +87,28 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtType': 'abc'}
         path = get_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
-        self.assertIn('.csv.gpg', path)
+        self.assertIn('.csv', path)
+
+    def test_get_file_name_school(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc'}
+        path = get_file_path(params, 'tenant', 'request_id')
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_UUUU_ABC_', path)
+        self.assertIn('.csv', path)
+
+    def test_get_file_name_grade(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc'}
+        path = get_file_path(params, 'tenant', 'request_id')
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_5_UUUU_ABC_', path)
+        self.assertIn('.csv', path)
 
     def test_get_extract_work_zone_path(self):
         path = get_extract_work_zone_path('tenant', 'request')
@@ -97,6 +119,10 @@ class TestProcessor(Unittest_with_edcore_sqlite):
 
     def test_get_archive_file_path(self):
         self.assertIn("/tmp/work_zone/tenant/requestId/zip/user", get_archive_file_path("user", "tenant", "requestId"))
+
+    def test_get_archive_file_path_extension(self):
+        filename = get_archive_file_path("user", "tenant", "requestId")
+        self.assertIn('.zip.gpg', filename)
 
     def test_gatekeeper(self):
         config = self.reg.settings
@@ -113,3 +139,11 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         self.assertEqual(host, pickup[0])
         self.assertEqual(user, pickup[1])
         self.assertEqual(private_key, pickup[2])
+
+    def test_process_sync_extraction_request(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '228',
+                  'schoolGuid': '242',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': []}
+        self.assertRaises(NotFoundException, process_sync_extract_request, params)

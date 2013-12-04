@@ -6,21 +6,20 @@ Created on May 2, 2013
 from setuptools import setup
 import sys
 
-install_requires = ['celery >= 3.0.19',
-                    'Sphinx',
-                    'docutils',
-                    'repoze.sphinx.autointerface',
-                    'python-gnupg',
-                    'anyjson >= 0.3.3',
-                    #'amqp >= 1.3.0',
-                    'SQLAlchemy >= 0.8.1',
-                    'psycopg2 >= 2.5',
-                    'nose >= 1.3.0',
-                    'coverage >= 3.6',
-                    'nose-cov >= 1.6',
-                    'mock >= 1.0.1',
-                    'pep8 >= 1.4.5',
-                    'py-postgresql >= 1.1.0', ]
+install_requires = ['celery == 3.0.23',
+                    'Sphinx == 1.2b1',
+                    'docutils == 0.11',
+                    'repoze.sphinx.autointerface == 0.7.1',
+                    'python-gnupg == 0.3.5',
+                    'anyjson == 0.3.3',
+                    'SQLAlchemy == 0.8.1',
+                    'psycopg2 == 2.5.1',
+                    'nose == 1.3.0',
+                    'coverage == 3.6',
+                    'nose-cov == 1.6',
+                    'mock == 1.0.1',
+                    'pep8 == 1.4.6',
+                    'py-postgresql == 1.1.0', ]
 
 install_requires.append('pyinotify') if sys.platform == 'linux' else None
 

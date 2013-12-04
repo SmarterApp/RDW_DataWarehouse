@@ -30,7 +30,7 @@ class TestExtractTask(Unittest_with_stats_sqlite):
         pass
 
     def test_archive(self):
-        archive('req_id', self.__tmp_zip, self.__tmp_dir)
+        open(self.__tmp_zip, 'wb').write(archive('req_id', self.__tmp_dir))
         zipfile = ZipFile(self.__tmp_zip, "r")
         namelist = zipfile.namelist()
         self.assertEqual(3, len(namelist))

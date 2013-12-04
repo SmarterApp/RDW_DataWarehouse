@@ -199,10 +199,12 @@ define [
           params = JSON.parse edwareClientStorage.filterStorage.load()
           # Get asmtType from session storage
           params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
-          url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
+          # Get asmtSubject from session storage
+          params['asmtSubject'] = edwarePreferences.getSubjectPreference()
+          url = window.location.protocol + "//" + window.location.host + "/services/extract/school?" + $.param(params, true)
           download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
           setTimeout ( ->
             download.close()
-          ), 2000
+          ), 6000
 
   EdwareFooter: EdwareFooter

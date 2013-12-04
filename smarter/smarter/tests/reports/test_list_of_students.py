@@ -4,7 +4,7 @@ Created on Feb 4, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.list_of_students_report import get_list_of_students_report, get_list_of_students_extract_report
+from smarter.reports.list_of_students_report import get_list_of_students_report
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
@@ -153,19 +153,6 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(results['assessments'][0]['Comprehensive Interim']['subject1'])
         self.assertIsNotNone(results['assessments'][0]['Summative']['subject1'])
 
-    def test_get_list_of_students_extract_report_grade_level(self):
-        testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242', 'asmtType': 'SUMMATIVE'}
-        result = get_list_of_students_extract_report(testParam)
-        self.assertIsNotNone(result['header'])
-        self.assertEqual(len(result['rows']), 140)
-        self.assertEqual(result['file_name'][:len('ASMT_GRADE_3_')], 'ASMT_GRADE_3_')
-
-    def test_get_list_of_students_extract_report_school_level(self):
-        testParam = {'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242', 'asmtType': 'SUMMATIVE'}
-        result = get_list_of_students_extract_report(testParam)
-        self.assertIsNotNone(result['header'])
-        self.assertEqual(len(result['rows']), 140)
-        self.assertEqual(result['file_name'][:len('ASMT_SCHOOL_SUMMATIVE_')], 'ASMT_SCHOOL_SUMMATIVE_')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

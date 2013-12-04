@@ -1,6 +1,8 @@
-define ["jquery", "edwareDownload"], ($, edwareDownload) ->
+define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"], ($, edwareDownload, edwarePreferences, edwareClientStorage) ->
 
   CSVDownloadModal = edwareDownload.CSVDownloadModal
+
+  DownloadMenu = edwareDownload.DownloadMenu
 
   config = undefined
   $.ajax {
@@ -11,9 +13,16 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
       config = data.CSVOptions
   }
 
+  downloadMenuConfig = {
+    reportName: 'test'
+    CSVOptions: config
+    labels: {}
+  }
+
   module "EDWARE.download",
     setup: ->
       $("body").append "<div id='CSVDownloadContainer'></div>"
+      $("body").append "<div id='gridTable'></div>"
       # mock ajax call
       options = {}
       $.ajaxBackup = $.ajax
@@ -26,11 +35,13 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
 
     teardown: ->
       $("#CSVDownloadContainer").remove()
+      $("#gridTable").remove()
       $.ajax = $.ajaxBackup
 
   test "Test download widget", ->
     ok edwareDownload, "Should define download widget"
     ok CSVDownloadModal, "CSV download modal should be defined"
+    ok DownloadMenu, "DownloadMenu class should be defined"
     ok edwareDownload.create, "download widget should provide create function"
 
   test "Test display widget", ->
@@ -94,3 +105,29 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
     # uncheck all selection of report type
     $('input[value="summative"]').trigger('click').trigger('click')
     ok $('#message').find('.error')[0], "Should display invalid message"
+
+  test "Test download menu class", ->
+    downloadMenu = new DownloadMenu('#CSVDownloadContainer', {})
+    ok downloadMenu, "DownloadMenu should be able to initiate an object"
+
+  asyncTest "Test toggle download menu", 2, ->
+    downloadMenu = new DownloadMenu('#CSVDownloadContainer', {})
+    downloadMenu.show()
+    ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
+    downloadMenu.hide()
+    setTimeout ->
+      ok !$('.modal-backdrop')[0], "Modal should hide away backdrop from body element"
+      start()
+    , 2000    
+
+  test "Test send CSV request", ->
+    downloadMenu = new DownloadMenu('#CSVDownloadContainer', downloadMenuConfig);
+    downloadMenu.sendCSVRequest()
+    ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
+
+  test "Test send extract request", ->
+    downloadMenu = new DownloadMenu('#CSVDownloadContainer', downloadMenuConfig);
+    edwareClientStorage.filterStorage.save({})
+    timerID = downloadMenu.sendExtractRequest()
+    equal typeof(timerID), "number", "Sending extract request should returns a timer id"
+

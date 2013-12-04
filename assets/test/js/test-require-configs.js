@@ -46,6 +46,8 @@ require({
     edwareLegend: '../src/widgets/footer/EDWARE.legend',
     edwareLanguageSelector: '../src/widgets/languageSelector/EDWARE.languageSelector',
     edwareDownload: '../src/widgets/download/EDWARE.download',
+    edwareReportInfoBar: '../src/widgets/header/EDWARE.infoBar',
+    edwareReportActionBar: '../src/widgets/header/EDWARE.actionBar',
 
     // templates
     edwareBreadcrumbsTemplate: '../src/widgets/breadcrumb/template.html',

@@ -13,13 +13,14 @@ from smarter.extract.student_assessment import get_extract_assessment_query, com
 from pyramid.security import authenticated_userid
 from uuid import uuid4
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import start_extract, start
+from edextract.tasks.extract import start_extract, generate, archive
 from pyramid.threadlocal import get_current_request, get_current_registry
 from datetime import datetime
 import os
 import tempfile
 from copy import deepcopy
 from edapi.exceptions import NotFoundException
+from celery.canvas import group
 
 
 log = logging.getLogger('smarter')
@@ -36,8 +37,12 @@ def process_sync_extract_request(params):
 
     if len(tasks) > 0:
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
-        celery_response = start.apply_async(args=[tenant, request_id, directory_to_archive, tasks], queue='extract')     # @UndefinedVariable
-        return celery_response.get(timeout=10000)
+        celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
+        # Synchronous calls to generate and then to archive
+        generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)    # @UndefinedVariable
+        generate_tasks().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract')
+        return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
 

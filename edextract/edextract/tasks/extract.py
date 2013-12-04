@@ -23,18 +23,6 @@ from edextract.utils.data_archiver import encrypted_archive_files, archive_files
 log = logging.getLogger('edextract')
 
 
-@celery.task(name='task.extract.start',
-             max_retries=get_setting(Config.MAX_RETRIES),
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
-def start(tenant, request_id, directory_to_archive, tasks):
-    '''
-    '''
-    generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
-    generate_tasks().get()
-    result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract')
-    return result.get()
-
-
 @celery.task(name='task.extract.start_extract',
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))

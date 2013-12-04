@@ -79,7 +79,10 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     :param perf_change_tup:
     :return:
     """
+    min_score = int(min_score)
+    max_score = int(max_score)
     offset = generate_score_offset(perf_change_tup)
+
     row_dict['score_asmt'] = min(max(int(row_dict['score_asmt']) + offset, min_score), max_score)
     row_dict['score_asmt_min'] = min(max(int(row_dict['score_asmt_min']) + offset, min_score), max_score)
     row_dict['score_asmt_max'] = min(max(int(row_dict['score_asmt_max']) + offset, min_score), max_score)
@@ -135,18 +138,6 @@ def month_delta(date, delta):
     d = min(date.day,
             [31, 29 if y % 4 == 0 and not y % 400 == 0 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1])
     return date.replace(day=d, month=m, year=y)
-
-
-def get_header_from_file(csv_file_name):
-    """
-    Given a filename open the file and return the header
-    :param csv_file_name: the path to the file to be opened
-    :return: the file header as a list
-    """
-    with open(csv_file_name, 'r') as fp:
-        c_reader = csv.reader(fp)
-        header = next(c_reader)
-    return header
 
 
 def create_new_json_file(old_json_filename, asmt_type, output_location):
@@ -273,7 +264,7 @@ def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_ch
         asmt_change_low = min(asmt_change_low, -asmt_change_low)
         asmt_change_hi = min(asmt_change_hi, -asmt_change_hi)
 
-    perf_change_tup = tuple(sorted([asmt_change_low, asmt_change_hi]))
+    perf_change_tup = tuple(asmt_change_low, asmt_change_hi)
 
     for csv_file in input_csv_list:
         read_csv_file(csv_file, perf_change_tup, output_asmt_type, asmt_map, month_change, output_dir, start_format, json_map)

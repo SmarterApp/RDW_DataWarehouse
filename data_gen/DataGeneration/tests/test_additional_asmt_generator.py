@@ -2,14 +2,25 @@ __author__ = 'swimberly'
 
 import unittest
 import datetime
+import tempfile
+import shutil
+import os
+import csv
+import json
 
 from DataGeneration.src.additional_asmt_generator import (month_delta, generate_score_offset, get_cut_points,
-                                                          determine_perf_lvl, update_scores, get_header_from_file,
-                                                          update_row, create_new_json_file, create_list_of_csv_records,
+                                                          determine_perf_lvl, update_scores, update_row,
+                                                          create_new_json_file, create_list_of_csv_records,
                                                           read_csv_file, output_data)
 
 
 class AdditionalAssessmentTest(unittest.TestCase):
+
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_month_delta_future(self):
         date = datetime.date(2013, 12, 25)
@@ -160,7 +171,7 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_4_min': '',
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-25, -25), cutpoints, 1200, 2400)
+        result = update_scores(row_dict, (-25, -25), cutpoints, '1200', '2400')
         expected = {
             'score_asmt': 1475,
             'score_asmt_max': 1500,
@@ -244,7 +255,7 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_4_min': 2300,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (550, 550), cutpoints, 1200, 2400)
+        result = update_scores(row_dict, (550, 550), cutpoints, '1200', '2400')
         expected = {
             'score_asmt': 2400,
             'score_asmt_max': 2400,
@@ -309,13 +320,131 @@ class AdditionalAssessmentTest(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
     def test_update_row(self):
-        pass
+        row_dict = {
+            'score_asmt': 1500,
+            'score_asmt_max': 1525,
+            'score_asmt_min': 1475,
+            'score_perf_level': 2,
+            'score_claim_1': 1499,
+            'score_claim_1_max': 1524,
+            'score_claim_1_min': 1474,
+            'score_claim_2': 1501,
+            'score_claim_2_max': 1526,
+            'score_claim_2_min': 1476,
+            'score_claim_3': 1502,
+            'score_claim_3_max': 1527,
+            'score_claim_3_min': 1477,
+            'score_claim_4': '',
+            'score_claim_4_max': '',
+            'score_claim_4_min': '',
+            'asmt_type': 'Summative',
+            'guid_asmt': 'guid12345',
+            'date_assessed': '20120505',
+        }
+        change_tup = (0, 0)
+        asmt_type = 'INTERIM'
+        asmt_dict = {'guid12345': 'guid56789', }
+        json_map = {
+            'guid56789': {
+                "overall": {
+                    "min_score": "1200",
+                    "max_score": "2400",
+                },
+                "performance_levels": {
+                    "level_1": {
+                        "name": "Minimal Understanding",
+                        "cut_point": "1200"
+                    },
+                    "level_2": {
+                        "name": "Partial Understanding",
+                        "cut_point": "1400"
+                    },
+                    "level_3": {
+                        "name": "Adequate Understanding",
+                        "cut_point": "1800"
+                    },
+                    "level_4": {
+                        "name": "Thorough Understanding",
+                        "cut_point": "2100"
+                    },
+                    "level_5": {
+                        "name": "",
+                        "cut_point": ""
+                    }
+                }
+            }
+        }
+        date_change = 3
 
-    def test_get_header_from_file(self):
-        pass
+        result = update_row(row_dict, change_tup, asmt_type, asmt_dict, json_map, date_change)
+        expected = {
+            'score_asmt': 1500,
+            'score_asmt_max': 1525,
+            'score_asmt_min': 1475,
+            'score_perf_level': 2,
+            'score_claim_1': 1499,
+            'score_claim_1_max': 1524,
+            'score_claim_1_min': 1474,
+            'score_claim_2': 1501,
+            'score_claim_2_max': 1526,
+            'score_claim_2_min': 1476,
+            'score_claim_3': 1502,
+            'score_claim_3_max': 1527,
+            'score_claim_3_min': 1477,
+            'score_claim_4': '',
+            'score_claim_4_max': '',
+            'score_claim_4_min': '',
+            'asmt_type': 'INTERIM',
+            'guid_asmt': 'guid56789',
+            'date_assessed': datetime.date(2012, 8, 5),
+        }
+        self.assertDictEqual(result, expected)
 
     def test_create_new_json_file(self):
-        pass
+        json_dict = {
+            "identification": {
+                "guid": "guid1234",
+                "type": "SUMMATIVE",
+            },
+            "overall": {
+                "min_score": "1200",
+                "max_score": "2400",
+            },
+            "performance_levels": {
+                "level_1": {
+                    "name": "Minimal Understanding",
+                    "cut_point": "1200"
+                },
+                "level_2": {
+                    "name": "Partial Understanding",
+                    "cut_point": "1400"
+                },
+                "level_3": {
+                    "name": "Adequate Understanding",
+                    "cut_point": "1800"
+                },
+                "level_4": {
+                    "name": "Thorough Understanding",
+                    "cut_point": "2100"
+                },
+                "level_5": {
+                    "name": "",
+                    "cut_point": ""
+                }
+            }
+        }
+        json_file = os.path.join(self.temp_dir, 'json_file.json')
+        with open(json_file, 'w') as fp:
+            json.dump(json_dict, fp, indent=4)
+
+        _j_data, _old_guid, new_guid = create_new_json_file(json_file, 'INTERIM', self.temp_dir)
+
+        with open(os.path.join(self.temp_dir, 'METADATA_ASMT_ID_{}.json'.format(new_guid)), 'r') as fp:
+            res_json_data = json.load(fp)
+
+        expected = json_dict
+        expected.update({'identification': {'guid': new_guid, 'type': "INTERIM"}})
+        self.assertDictEqual(expected, res_json_data)
 
     def test_create_list_of_csv_records(self):
         pass

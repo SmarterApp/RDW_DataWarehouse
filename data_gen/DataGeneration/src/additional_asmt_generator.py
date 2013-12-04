@@ -166,10 +166,17 @@ def create_new_json_file(old_json_filename, asmt_type, output_location):
 
 def read_csv_file(csv_file_name, perf_change_tup, asmt_type, asmt_dict, date_change, output_path, star_format, json_map, batch_size=100000):
     """
-
-    :param csv_file_name:
-    :param batch_size:
-    :return:
+    Read a given csv file and output updated records to a new csv file
+    :param csv_file_name: The name and path of the incoming csv file
+    :param perf_change_tup: The tuple that list min and max performance change (in points)
+    :param asmt_type: The type of assessment to output
+    :param asmt_dict: The dictionary mapping old assessment guids to the new assessment guid
+    :param date_change: The number of months to change date by
+    :param output_path: The location where files should be output
+    :param star_format: Whether or not to generate star schema file format
+    :param json_map: A dictionary mapping the new assessment guid to the json dictionary
+    :param batch_size: The maximum number of records to read before returning
+    :return: None
     """
 
     with open(csv_file_name, 'r') as cf:
@@ -182,10 +189,15 @@ def read_csv_file(csv_file_name, perf_change_tup, asmt_type, asmt_dict, date_cha
 
 def create_list_of_csv_records(csv_reader, batch_size, perf_change_tup, asmt_type, asmt_dict, date_change, json_map):
     """
-
-    :param csv_reader:
-    :param batch_size:
-    :return:
+    Create a list of the csv records that should be updated
+    :param csv_reader: A csv reader object
+    :param batch_size: The maximum number of records to read before returning
+    :param perf_change_tup: The tuple that list min and max performance change (in points)
+    :param asmt_type: The type of assessment to output
+    :param asmt_dict: The dictionary mapping old assessment guids to the new assessment guid
+    :param date_change: The number of months to change date by
+    :param json_map: A dictionary mapping the new assessment guid to the json dictionary
+    :return: A dictionary mapping assessment guids to the corresponding list of student info objects
     """
     student_info_by_asmt = {}
 
@@ -210,6 +222,8 @@ def create_list_of_csv_records(csv_reader, batch_size, perf_change_tup, asmt_typ
 
 def output_data(student_tup_map, output_path, star_format=False):
     """
+    Output student data to landing zone csv file and star format it specified
+    header should already be written to file, using prepare_csv()
     :param student_tup_map: a map of lists of tuples of the format:
         {asmt_guid: [(state_obj, school_obj, student_info_object), ...], ...}
     :param star_format:
@@ -234,16 +248,41 @@ def output_data(student_tup_map, output_path, star_format=False):
         pass
 
 
-def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_change, asmt_change_low, asmt_change_hi, positive_change=False, start_format=False):
+def create_performance_change_tuple(score_change_lo, score_change_hi, positive_change):
     """
 
-    :param input_csv_list:
-    :param input_json_list:
-    :param output_asmt_type:
-    :param start_format:
-    :param output_dir:
+    :param score_change_hi:
+    :param score_change_lo:
+    :param positive_change:
     :return:
     """
+    if positive_change:
+        score_change_lo = max(score_change_lo, -score_change_lo)
+        score_change_hi = max(score_change_hi, -score_change_hi)
+    else:
+        score_change_lo = min(score_change_lo, -score_change_lo)
+        score_change_hi = min(score_change_hi, -score_change_hi)
+
+    return score_change_lo, score_change_hi
+
+
+def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_change, asmt_change_low, asmt_change_hi, positive_change=False, star_format=False):
+    """
+    Main method for subsequent assessment generation
+    :param input_csv_list: A list of csv files to read
+    :param input_json_list: A list of json files to read
+    :param output_asmt_type: Type of assessment to be output
+    :param output_dir: Where to write the output
+    :param month_change: How many months to offset the year
+    :param asmt_change_low: Lower bound on score change
+    :param asmt_change_hi: Upper bound on score change
+    :param positive_change: Whether or not the change should be positive
+    :param star_format: Whether or not star schema format should be output
+    :return: None
+    """
+    assert isinstance(input_csv_list, list)
+    assert isinstance(input_json_list, list)
+
     asmt_map = {}
     json_map = {}
 
@@ -256,19 +295,13 @@ def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_ch
         file_path = os.path.join(output_dir, CSV_PATTERN.format(new_guid))
         prepare_csv_files({RealDataFormat: file_path})
 
-        # TODO: prepare output csv file for star format
-
+    # TODO: prepare output csv file for star format
     ##
     ##
-    if not positive_change:
-        asmt_change_low = min(asmt_change_low, -asmt_change_low)
-        asmt_change_hi = min(asmt_change_hi, -asmt_change_hi)
-
-    perf_change_tup = tuple(asmt_change_low, asmt_change_hi)
+    perf_change_tup = create_performance_change_tuple(asmt_change_low, asmt_change_hi, positive_change)
 
     for csv_file in input_csv_list:
-        read_csv_file(csv_file, perf_change_tup, output_asmt_type, asmt_map, month_change, output_dir, start_format, json_map)
-
+        read_csv_file(csv_file, perf_change_tup, output_asmt_type, asmt_map, month_change, output_dir, star_format, json_map)
 
 
 if __name__ == '__main__':

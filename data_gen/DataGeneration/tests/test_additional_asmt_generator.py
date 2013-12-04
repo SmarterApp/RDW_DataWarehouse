@@ -7,11 +7,13 @@ import shutil
 import os
 import csv
 import json
+import time
 
 from DataGeneration.src.additional_asmt_generator import (month_delta, generate_score_offset, get_cut_points,
                                                           determine_perf_lvl, update_scores, update_row,
-                                                          create_new_json_file, create_list_of_csv_records,
-                                                          read_csv_file, output_data)
+                                                          create_new_json_file, create_list_of_csv_records, main,
+                                                          read_csv_file, output_data, create_performance_change_tuple)
+from DataGeneration.src.models.landing_zone_data_format import RealDataFormat
 
 
 class AdditionalAssessmentTest(unittest.TestCase):
@@ -58,67 +60,15 @@ class AdditionalAssessmentTest(unittest.TestCase):
             self.assertGreaterEqual(result, -15)
 
     def test_get_cut_points(self):
-        asmt_dict = {
-            "overall": {
-                "min_score": "1200",
-                "max_score": "2400",
-            },
-            "performance_levels": {
-                "level_1": {
-                    "name": "Minimal Understanding",
-                    "cut_point": "1200"
-                },
-                "level_2": {
-                    "name": "Partial Understanding",
-                    "cut_point": "1400"
-                },
-                "level_3": {
-                    "name": "Adequate Understanding",
-                    "cut_point": "1800"
-                },
-                "level_4": {
-                    "name": "Thorough Understanding",
-                    "cut_point": "2100"
-                },
-                "level_5": {
-                    "name": "",
-                    "cut_point": ""
-                }
-            }
-        }
+        asmt_dict = get_json_data()
         result = get_cut_points(asmt_dict)
         expected = [1400, 1800, 2100]
         self.assertEqual(result, expected)
 
     def test_get_cut_points_2(self):
-        asmt_dict = {
-            "overall": {
-                "min_score": "1200",
-                "max_score": "2400",
-            },
-            "performance_levels": {
-                "level_1": {
-                    "name": "Minimal Understanding",
-                    "cut_point": "1200"
-                },
-                "level_2": {
-                    "name": "Partial Understanding",
-                    "cut_point": "1400"
-                },
-                "level_3": {
-                    "name": "Adequate Understanding",
-                    "cut_point": "1800"
-                },
-                "level_4": {
-                    "name": "Thorough Understanding",
-                    "cut_point": "2100"
-                },
-                "level_5": {
-                    "name": "Blah",
-                    "cut_point": "2250"
-                }
-            }
-        }
+        asmt_dict = get_json_data()
+        asmt_dict['performance_levels']['level_5'] = {"name": "Blah", "cut_point": "2250"}
+
         result = get_cut_points(asmt_dict)
         expected = [1400, 1800, 2100, 2250]
         self.assertEqual(result, expected)
@@ -345,34 +295,7 @@ class AdditionalAssessmentTest(unittest.TestCase):
         asmt_type = 'INTERIM'
         asmt_dict = {'guid12345': 'guid56789', }
         json_map = {
-            'guid56789': {
-                "overall": {
-                    "min_score": "1200",
-                    "max_score": "2400",
-                },
-                "performance_levels": {
-                    "level_1": {
-                        "name": "Minimal Understanding",
-                        "cut_point": "1200"
-                    },
-                    "level_2": {
-                        "name": "Partial Understanding",
-                        "cut_point": "1400"
-                    },
-                    "level_3": {
-                        "name": "Adequate Understanding",
-                        "cut_point": "1800"
-                    },
-                    "level_4": {
-                        "name": "Thorough Understanding",
-                        "cut_point": "2100"
-                    },
-                    "level_5": {
-                        "name": "",
-                        "cut_point": ""
-                    }
-                }
-            }
+            'guid56789': get_json_data()
         }
         date_change = 3
 
@@ -401,38 +324,7 @@ class AdditionalAssessmentTest(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
     def test_create_new_json_file(self):
-        json_dict = {
-            "identification": {
-                "guid": "guid1234",
-                "type": "SUMMATIVE",
-            },
-            "overall": {
-                "min_score": "1200",
-                "max_score": "2400",
-            },
-            "performance_levels": {
-                "level_1": {
-                    "name": "Minimal Understanding",
-                    "cut_point": "1200"
-                },
-                "level_2": {
-                    "name": "Partial Understanding",
-                    "cut_point": "1400"
-                },
-                "level_3": {
-                    "name": "Adequate Understanding",
-                    "cut_point": "1800"
-                },
-                "level_4": {
-                    "name": "Thorough Understanding",
-                    "cut_point": "2100"
-                },
-                "level_5": {
-                    "name": "",
-                    "cut_point": ""
-                }
-            }
-        }
+        json_dict = get_json_data()
         json_file = os.path.join(self.temp_dir, 'json_file.json')
         with open(json_file, 'w') as fp:
             json.dump(json_dict, fp, indent=4)
@@ -446,14 +338,293 @@ class AdditionalAssessmentTest(unittest.TestCase):
         expected.update({'identification': {'guid': new_guid, 'type': "INTERIM"}})
         self.assertDictEqual(expected, res_json_data)
 
-    def test_create_list_of_csv_records(self):
-        pass
+    def test_create_list_of_csv_records_length_of_results(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data():
+                c_writer.writerow(row)
 
-    def test_read_csv_file(self):
-        pass
+        with open(csv_file, 'r') as fp:
+            c_reader = csv.DictReader(fp)
+            result = create_list_of_csv_records(c_reader, 22, (0, 0), "INTERIM",
+                                                {'guid12345': 'guid1234'}, 3, {'guid1234': get_json_data()})
+            self.assertIn('guid1234', result)
+            self.assertEqual(len(result['guid1234']), 20)
 
-    def test_output_data(self):
-        pass
+    def test_create_list_of_csv_records_successive_calls(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data():
+                c_writer.writerow(row)
+
+        with open(csv_file, 'r') as fp:
+            c_reader = csv.DictReader(fp)
+            result = create_list_of_csv_records(c_reader, 15, (0, 0), "INTERIM",
+                                                {'guid12345': 'guid1234'}, 3, {'guid1234': get_json_data()})
+
+            self.assertEqual(len(result['guid1234']), 15)
+
+            result = create_list_of_csv_records(c_reader, 15, (0, 0), "INTERIM",
+                                                {'guid12345': 'guid1234'}, 3, {'guid1234': get_json_data()})
+
+            self.assertEqual(len(result['guid1234']), 5)
+
+            result = create_list_of_csv_records(c_reader, 15, (0, 0), "INTERIM",
+                                                {'guid12345': 'guid1234'}, 3, {'guid1234': get_json_data()})
+
+            self.assertDictEqual(result, {})
+
+    def test_create_list_of_csv_records_multiple_guids(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data():
+                c_writer.writerow(row)
+            next_guid_csv = get_csv_data('guid3')
+            next_guid_csv.pop(0)
+            for row in next_guid_csv:
+                c_writer.writerow(row)
+
+        with open(csv_file, 'r') as fp:
+            c_reader = csv.DictReader(fp)
+            guid3_json = get_json_data()
+            guid3_json['identification']['guid'] = 'guid3'
+            result = create_list_of_csv_records(c_reader, 100, (0, 0), "INTERIM",
+                                                {'guid12345': 'guid1234', 'guid3': 'guid2'}, 3,
+                                                {'guid1234': get_json_data(), 'guid2': guid3_json})
+            self.assertIn('guid1234', result)
+            self.assertIn('guid2', result)
+            self.assertEqual(len(result['guid1234']), 20)
+            self.assertEqual(len(result['guid2']), 20)
+
+    def output_data_file_exists(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='g3', records=2):
+                c_writer.writerow(row)
+
+        with open(csv_file, 'r') as fp:
+            c_reader = csv.DictReader(fp)
+            student_tup_map = create_list_of_csv_records(c_reader, 22, (0, 0), "INTERIM",
+                                                         {'g3': 'g4'}, 3, {'g4': get_json_data()})
+
+        output_data(student_tup_map, self.temp_dir)
+        expected_file = os.path.join(self.temp_dir, 'REALDATA_ASMT_ID_g4.csv')
+
+        self.assertTrue(os.path.exists(expected_file))
+
+    def output_data_row_count(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='g3', records=2):
+                c_writer.writerow(row)
+
+        with open(csv_file, 'r') as fp:
+            c_reader = csv.DictReader(fp)
+            student_tup_map = create_list_of_csv_records(c_reader, 22, (0, 0), "INTERIM",
+                                                         {'g3': 'g4'}, 3, {'g4': get_json_data()})
+
+        output_data(student_tup_map, self.temp_dir)
+        expected_file = os.path.join(self.temp_dir, 'REALDATA_ASMT_ID_g4.csv')
+
+        with open(expected_file, 'r') as f:
+            self.assertEqual(len(f.readlines()), 2)
+
+    def test_read_csv_file_file_exists(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='g3', records=40):
+                c_writer.writerow(row)
+
+        read_csv_file(csv_file, (0, 0), 'Interim', {'g3': 'g4'}, 3, self.temp_dir, False, {'g4': get_json_data()}, 10)
+        expected_file = os.path.join(self.temp_dir, 'REALDATA_ASMT_ID_g4.csv')
+
+        self.assertTrue(os.path.exists(expected_file))
+
+    def test_read_csv_file_row_count(self):
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='g3', records=40):
+                c_writer.writerow(row)
+
+        read_csv_file(csv_file, (0, 0), 'Interim', {'g3': 'g4'}, 3, self.temp_dir, False, {'g4': get_json_data()}, 10)
+        expected_file = os.path.join(self.temp_dir, 'REALDATA_ASMT_ID_g4.csv')
+
+        with open(expected_file, 'r') as ef:
+            self.assertEqual(len(ef.readlines()), 40)
+
+    def test_create_performance_change_tuple_positive(self):
+        result = create_performance_change_tuple(12, 24, True)
+        expected = (12, 24)
+        self.assertTupleEqual(result, expected)
+
+    def test_create_performance_change_tuple_negative(self):
+        result = create_performance_change_tuple(12, 24, False)
+        expected = (-12, -24)
+        self.assertTupleEqual(result, expected)
+
+    def test_create_performance_change_tuple_negative_positive(self):
+        result = create_performance_change_tuple(-12, -24, True)
+        expected = (12, 24)
+        self.assertTupleEqual(result, expected)
+
+    def test_create_performance_change_tuple_negative_negative(self):
+        result = create_performance_change_tuple(-12, -24, False)
+        expected = (-12, -24)
+        self.assertTupleEqual(result, expected)
+
+    def test_main_1_file_set(self):
+        # write json
+        json_dict = get_json_data()
+        json_file = os.path.join(self.temp_dir, 'json_file.json')
+        with open(json_file, 'w') as fp:
+            json.dump(json_dict, fp, indent=4)
+
+        # write csv
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='guid1234'):
+                c_writer.writerow(row)
+
+        self.assertEqual(len(os.listdir(self.temp_dir)), 2)
+        main([csv_file], [json_file], 'interim', self.temp_dir, 4, 12, 25)
+
+        self.assertEqual(len(os.listdir(self.temp_dir)), 4)
+
+    def test_main_multi_files(self):
+        # write json
+        json_dict = get_json_data()
+        json_file = os.path.join(self.temp_dir, 'json_file.json')
+        with open(json_file, 'w') as fp:
+            json.dump(json_dict, fp, indent=4)
+
+        # write json2
+        json_dict = get_json_data()
+        json_dict['identification']['guid'] = 'guid2'
+        json_file2 = os.path.join(self.temp_dir, 'json_file2.json')
+        with open(json_file2, 'w') as fp:
+            json.dump(json_dict, fp, indent=4)
+
+        # write csv
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='guid1234'):
+                c_writer.writerow(row)
+
+        # write csv2
+        csv_file2 = os.path.join(self.temp_dir, 'csv_file2.csv')
+        with open(csv_file2, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='guid2'):
+                c_writer.writerow(row)
+
+        self.assertEqual(len(os.listdir(self.temp_dir)), 4)
+        main([csv_file, csv_file2], [json_file, json_file2], 'interim', self.temp_dir, 4, 12, 25)
+
+        self.assertEqual(len(os.listdir(self.temp_dir)), 8)
+
+    def test_main_assertion_error(self):
+        # write json
+        json_dict = get_json_data()
+        json_file = os.path.join(self.temp_dir, 'json_file.json')
+        with open(json_file, 'w') as fp:
+            json.dump(json_dict, fp, indent=4)
+
+        # write csv
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='guid1234'):
+                c_writer.writerow(row)
+
+        with self.assertRaises(AssertionError):
+            main(csv_file, json_file, 'interim', self.temp_dir, 4, 12, 25)
+
+    def test_main_assertion_error_2(self):
+        # write json
+        json_dict = get_json_data()
+        json_file = os.path.join(self.temp_dir, 'json_file.json')
+        with open(json_file, 'w') as fp:
+            json.dump(json_dict, fp, indent=4)
+
+        # write csv
+        csv_file = os.path.join(self.temp_dir, 'csv_file.csv')
+        with open(csv_file, 'w') as fp:
+            c_writer = csv.writer(fp)
+            for row in get_csv_data(guid_to_use='guid1234'):
+                c_writer.writerow(row)
+
+        with self.assertRaises(AssertionError):
+            main([csv_file], json_file, 'interim', self.temp_dir, 4, 12, 25)
+
+
+def get_csv_data(guid_to_use='guid12345', records=20):
+    """
+    Return a list of csv data to use for testing
+    :param guid_to_use: the guid to use
+    :param records: the number of rows to generated (count does not include the header)
+    :return: a list of records
+    """
+    header = RealDataFormat.getHeader()
+    data = []
+    for i in range(records):
+        row = []
+        for h in header:
+            if 'date' in h:
+                row.append('20120505')
+            elif 'guid' in h:
+                row.append(guid_to_use)
+            elif 'score' in h:
+                row.append('1400')
+            else:
+                row.append(h + '_val_{}'.format(i))
+        data.append(row)
+
+    return [header] + data
+
+
+def get_json_data():
+    json_dict = {
+        "identification": {
+            "guid": "guid1234",
+            "type": "SUMMATIVE",
+        },
+        "overall": {
+            "min_score": "1200",
+            "max_score": "2400",
+        },
+        "performance_levels": {
+            "level_1": {
+                "name": "Minimal Understanding",
+                "cut_point": "1200"
+            },
+            "level_2": {
+                "name": "Partial Understanding",
+                "cut_point": "1400"
+            },
+            "level_3": {
+                "name": "Adequate Understanding",
+                "cut_point": "1800"
+            },
+            "level_4": {
+                "name": "Thorough Understanding",
+                "cut_point": "2100"
+            },
+            "level_5": {
+                "name": "",
+                "cut_point": ""
+            }
+        }
+    }
+    return json_dict
 
 if __name__ == '__main__':
     unittest.main()

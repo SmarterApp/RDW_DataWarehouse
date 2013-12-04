@@ -19,28 +19,13 @@ from datetime import datetime
 import os
 import tempfile
 from copy import deepcopy
+from edapi.exceptions import NotFoundException
 
 
 log = logging.getLogger('smarter')
 
 
-def __create_new_task(request_id, user, tenant, params, query):
-    task = {}
-    task['task_id'] = create_new_entry(user, request_id, params)
-    task['file_name'] = get_file_path(params, tenant, request_id)
-    task['query'] = compile_query_to_sql_text(query)
-    return task
-
-
-def __get_extract_request_user_info():
-    # Generate an uuid for this extract request
-    request_id = str(uuid4())
-    user = authenticated_userid(get_current_request())
-    tenant = user.get_tenant()
-    return request_id, user, tenant
-
-
-def process_extract_with_stream(params):
+def process_sync_extract_request(params):
     tasks = []
     request_id, user, tenant = __get_extract_request_user_info()
     extract_params = deepcopy(params)
@@ -53,9 +38,11 @@ def process_extract_with_stream(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_response = start.apply_async(args=[tenant, request_id, directory_to_archive, tasks], queue='extract')     # @UndefinedVariable
         return celery_response.get(timeout=10000)
+    else:
+        raise NotFoundException("There are no results")
 
 
-def process_extraction_request(params):
+def process_async_extraction_request(params):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     '''
@@ -111,6 +98,22 @@ def has_data(query, request_id):
         return False
     else:
         return True
+
+
+def __create_new_task(request_id, user, tenant, params, query):
+    task = {}
+    task['task_id'] = create_new_entry(user, request_id, params)
+    task['file_name'] = get_file_path(params, tenant, request_id)
+    task['query'] = compile_query_to_sql_text(query)
+    return task
+
+
+def __get_extract_request_user_info():
+    # Generate an uuid for this extract request
+    request_id = str(uuid4())
+    user = authenticated_userid(get_current_request())
+    tenant = user.get_tenant()
+    return request_id, user, tenant
 
 
 def __get_extract_work_zone_base_dir():

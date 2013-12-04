@@ -13,8 +13,8 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPInternalServerError
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
-from smarter.extract.processor import process_extraction_request,\
-    process_extract_with_stream
+from smarter.extract.processor import process_async_extraction_request,\
+    process_sync_extract_request
 from smarter.extract.constants import ExtractType, Constants as Extract
 from edcore.utils.utils import merge_dict
 from smarter.reports.list_of_students_report import REPORT_PARAMS
@@ -133,7 +133,7 @@ def send_tenant_level_extraction_request(params):
     '''
     try:
         if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
-            results = process_extraction_request(params)
+            results = process_async_extraction_request(params)
             return Response(body=json.dumps(results), content_type='application/json')
     # TODO: currently we dont' even throw any of these exceptions
     except ExtractionError as e:
@@ -189,7 +189,7 @@ def send_extraction_request(params):
                       Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None])[0],
                       Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
     zip_file_name = generate_zip_file_name(extract_params)
-    content = process_extract_with_stream(extract_params)
+    content = process_sync_extract_request(extract_params)
     response = Response(body=content, content_type='application/octet-stream')
     response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
     return response

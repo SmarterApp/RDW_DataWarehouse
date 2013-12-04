@@ -10,12 +10,14 @@ from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from smarter.extract.processor import process_extraction_request, has_data,\
+from smarter.extract.processor import process_async_extraction_request, has_data,\
     get_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
-    get_pickup_zone_info
+    get_pickup_zone_info, process_sync_extract_request, __create_new_task
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
+from edapi.exceptions import NotFoundException
+from smarter.extract import processor
 
 
 class TestProcessor(Unittest_with_edcore_sqlite):
@@ -54,13 +56,13 @@ class TestProcessor(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 
-    def test_process_extraction_request(self):
+    def test_process_extraction_async_request(self):
         params = {'stateCode': ['CA'],
                   'asmtYear': ['2015'],
                   'asmtType': ['SUMMATIVE', 'COMPREHENSIVE INTERIM'],
                   'asmtSubject': ['Math', 'ELA'],
                   'extractType': ['studentAssessment']}
-        results = process_extraction_request(params)
+        results = process_async_extraction_request(params)
         tasks = results['tasks']
         self.assertEqual(len(tasks), 4)
         self.assertEqual(tasks[0]['status'], 'fail')
@@ -113,3 +115,11 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         self.assertEqual(host, pickup[0])
         self.assertEqual(user, pickup[1])
         self.assertEqual(private_key, pickup[2])
+
+    def test_process_sync_extraction_request(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '228',
+                  'schoolGuid': '242',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': []}
+        self.assertRaises(NotFoundException, process_sync_extract_request, params)

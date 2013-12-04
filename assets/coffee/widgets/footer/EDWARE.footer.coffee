@@ -201,7 +201,7 @@ define [
           params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
           # Get asmtSubject from session storage
           params['asmtSubject'] = edwarePreferences.getSubjectPreference()
-          url = window.location.protocol + "//" + window.location.host + "/services/extract?" + $.param(params, true)
+          url = window.location.protocol + "//" + window.location.host + "/services/extract/school?" + $.param(params, true)
           download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
           setTimeout ( ->
             download.close()

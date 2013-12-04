@@ -15,7 +15,8 @@ from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.response import Response
 from smarter.extract.constants import Constants
-from smarter.services.extract import post_extract_service, get_extract_service
+from smarter.services.extract import post_extract_service, get_extract_service,\
+    post_tenant_level_extract_service, get_tenant_level_extract_service
 
 
 class TestExtract(Unittest_with_edcore_sqlite):
@@ -49,11 +50,11 @@ class TestExtract(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.delete())
 
     def test_post_invalid_payload(self):
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service)
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_tenant_level_extract_service)
 
     def test_post_post_invalid_param(self):
         self.__request.json_body = {}
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_tenant_level_extract_service, self.__request)
 
     def test_post_valid_response(self):
         self.__request.method = 'POST'
@@ -67,7 +68,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
         dummy_session.set_uid('1023')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        results = post_extract_service(None, self.__request)
+        results = post_tenant_level_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
         self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
@@ -77,7 +78,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.__request.GET['asmyType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['extractType'] = 'studentAssessment'
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_tenant_level_extract_service)
 
     def test_post_valid_response_failed_task(self):
         self.__request.GET['stateCode'] = 'NY'
@@ -90,7 +91,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
         dummy_session.set_uid('1023')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        results = get_extract_service(None, self.__request)
+        results = get_tenant_level_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
@@ -108,7 +109,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
         dummy_session.set_uid('1023')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        results = post_extract_service(None, self.__request)
+        results = post_tenant_level_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 2)

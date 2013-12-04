@@ -86,7 +86,7 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtType': 'abc'}
         path = get_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
-        self.assertIn('.csv.gpg', path)
+        self.assertIn('.csv', path)
 
     def test_get_extract_work_zone_path(self):
         path = get_extract_work_zone_path('tenant', 'request')

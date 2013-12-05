@@ -301,7 +301,7 @@ function import_data_from_csv {
     python import_data.py --config ${WORKSPACE}/config/${INI_FILE_FOR_ENV} --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
-function build_rpm {
+function build_smarter_rpm {
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
     rm -rf /var/lib/jenkins/rpmbuild
 
@@ -321,6 +321,23 @@ function build_rpm {
     
     echo "Upload to pulp" 
     pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
+
+    echo "Finished building RPM"
+}
+
+function build_udl2_rpm {
+    # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
+    rm -rf /var/lib/jenkins/rpmbuild
+
+    echo "Build RPM"
+    echo "Build Number:"
+    echo $BUILD_NUMBER
+    echo "RPM_VERSION:"
+    echo $RPM_VERSION
+
+    export GIT_COMMIT="$(git rev-parse HEAD)"
+
+    cd "$WORKSPACE/rpm/SPEC"
 
     echo "Finished building RPM"
 }
@@ -406,7 +423,11 @@ function main {
         run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then
-        build_rpm
+        if [ ${MAIN_PKG:=""} == "smarter" ]; then
+           build_smarter_rpm
+        elif [ ${MAIN_PKG:=""} == "udl2" ]; then
+           build_udl2_rpm
+        fi
     fi
 }
 

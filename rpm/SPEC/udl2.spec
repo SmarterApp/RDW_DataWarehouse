@@ -10,7 +10,6 @@ Url: https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/
 
 BuildRequires:	python3
 BuildRequires:	python3-libs
-Requires:
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0

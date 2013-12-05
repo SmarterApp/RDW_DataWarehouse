@@ -68,5 +68,5 @@ setup(name='udl2',
       package_data={'udl2': ['datafiles/*.csv']},
       url='https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/',
       scripts=scripts,
-      install_requires=install_requires
+      install_requires=install_requires,
       )

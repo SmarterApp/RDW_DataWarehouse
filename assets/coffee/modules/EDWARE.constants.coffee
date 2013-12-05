@@ -10,3 +10,8 @@ define [], () ->
     COMMA: ','
     NEWLINE: '\n'
   }
+
+  ASMT_TYPE: {
+    SUMMATIVE: 'Summative'
+    INTERIM: 'Comprehensive Interim'
+  }

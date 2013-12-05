@@ -8,7 +8,7 @@ require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy"], (edwareStuden
     configs = edwareDataProxy.getDataForFilter()
   )()
 
-  filter = $('#losFilter').edwareFilter $('.filter_label'), configs, (param)->
+  filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
     studentGrid.reload(param)
     
   filter.loadReport()

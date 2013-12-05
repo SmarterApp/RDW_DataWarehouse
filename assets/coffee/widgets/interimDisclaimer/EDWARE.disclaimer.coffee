@@ -32,13 +32,6 @@ define [
         trigger: "hover"
         container: '#content'
         content: @content
-      .on 'shown.bs.popover', ->
-        offset = self.interimDisclaimerIcon.offset()
-        popover = $('#content .popover')
-        popover.css "left", offset.left + 17 - popover.width()
-        # update arrow
-        arrow = $(".arrow", popover)
-        arrow.css "left", popover.width() - 10
 
     hasLoaded: () ->
       edwarePreferences.getInterimInfo()

@@ -1027,6 +1027,18 @@ table {
 	    display: none;
 	}
     }
+
+    #gridWrapper {
+	
+	&.Math, &.ELA {
+	    .ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th,
+	    .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column,
+	    .ui-jqgrid tr.ui-row-ltr td {
+		border-right-color: rgb(208, 208, 208) !important;
+	    }
+	}
+    }
+
 }
 
 /* Customize each report */
@@ -1035,12 +1047,20 @@ body.state {
     #infoBar #DownloadMenuModal {
 	li.extract { display: none; }
     }
+
+    #actionBar {
+	li.asmtTypeItem { display: none; }
+    }
 }
 
 body.district {
 
     #infoBar #DownloadMenuModal {
 	li.extract, li.csv { display: none; }
+    }
+
+    #actionBar {
+	li.asmtTypeItem { display: none; }
     }
 }
 
@@ -1063,6 +1083,10 @@ body.los {
     
     #infoBar #DownloadMenuModal {
 	li.csv { display: none; }
+    }
+
+    #actionBar .alignmentItem {    
+	display: none;
     }
 }
 

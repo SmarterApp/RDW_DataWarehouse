@@ -34,12 +34,8 @@ define [
     createAsmtDropdown: () ->
       self = this
       asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, (asmtType) ->
-        # save assessment type
-        edwarePreferences.saveAsmtPreference asmtType
         self.updateDisclaimer()
-        self.reloadCallback()
-      asmtDropdown.create()
-      asmtDropdown.setSelectedValue edwarePreferences.getAsmtPreference()
+        self.reloadCallback asmtType
       @createDisclaimer()
       asmtDropdown
 

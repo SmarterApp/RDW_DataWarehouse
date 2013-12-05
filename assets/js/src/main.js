@@ -61,7 +61,8 @@ require({
     edwareStickyCompareTemplate: '../widgets/grid/stickyCompare.template.html',
     edwareFormatterTemplate: '../widgets/grid/FormatterTemplate.html',
     CSVOptionsTemplate: '../widgets/download/CSVOptionsTemplate.html',
-    DownloadMenuTemplate: '../widgets/download/DownloadMenuTemplate.html'
+    DownloadMenuTemplate: '../widgets/download/DownloadMenuTemplate.html',
+    AsmtDropdownTemplate: '../widgets/asmtDropdown/template.html'
   },
   shim: {
     'jqGrid': {

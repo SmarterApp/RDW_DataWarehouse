@@ -13,13 +13,13 @@
 	<div id="header"></div>
 	<div id="breadcrumb"></div>
         <div id="infoBar"></div>
-        <div id="actionBar"></div>
+        <div id="actionBar" class="clearfix"></div>
         <!-- The content below gets appended to body tag of this html -->
         <div id="content" class="losWrapper">
 	    <div id="losFilter"></div>
 	    <div id="stickyCompareSection"></div>
 	    <div id="errorMessage"></div>
-   	    <div>
+   	    <div id="gridWrapper">
 	        <table id="gridTable"></table>
 	    </div>
 	</div>
@@ -34,9 +34,4 @@
      </div>
     </script>
 
-    <script type="text/template" id="assessmentDropdownViewTemplate">
-     {{#items}}
-     <li><a href='#' id='{{id}}_{{key}}' data-name='{{key}}' data-type='{{asmtType}}' class='viewOptions'>{{value}}</a></li>
-     {{/items}}
-    </script>
 </html>

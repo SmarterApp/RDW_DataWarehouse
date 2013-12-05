@@ -26,8 +26,6 @@ define [
 
   POPULATION_BAR_WIDTH = 145
 
-  DEFAULT_ASMT_TYPE = "Summative"
-
   class ConfigBuilder
     ### Grid configuration builder. ###
 
@@ -78,7 +76,8 @@ define [
       }
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.renderGrid.bind(this)
       this.config.asmtTypes = for asmtType in config.students.customViews.asmtTypes
-        asmtType.name
+        asmtType: asmtType.name
+        display: asmtType.name
 
     setFilter: (filter) ->
       this.filter = filter
@@ -119,9 +118,6 @@ define [
         self.updateFilter()
         self.createHeaderAndFooter()
 
-    refresh: () ->
-      @reload @param
-
     displayNoResults: () ->
       # no results
       $('#gridTable').jqGrid('GridUnload')
@@ -130,7 +126,7 @@ define [
     updateAsmtTypePreference: () ->
       if this.reportType in ['state', 'district']
         # Reset back to summative
-        edwarePreferences.saveAsmtPreference DEFAULT_ASMT_TYPE
+        edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
       # Use this assessment type for school view
       edwarePreferences.getAsmtPreference().toUpperCase()
 
@@ -219,9 +215,11 @@ define [
         CSVOptions: @config.CSVOptions
 
     renderReportActionBar: () ->
+      self = this
       @config.colorsData = @data.metadata
       @config.reportName = Constants.REPORT_NAME.CPOP
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, @refresh.bind(this)
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
+        self.reload self.param
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover

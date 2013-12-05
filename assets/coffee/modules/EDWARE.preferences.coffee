@@ -2,7 +2,8 @@ define [
   "jquery"
   "edwareClientStorage"
   "edwareUtil"
-], ($, clientStorage, edwareUtil) ->
+  "edwareConstants"
+], ($, clientStorage, edwareUtil, Constants) ->
   
   KEY = 'edware.preferences'
   
@@ -14,12 +15,12 @@ define [
     shortTermStorage.clear()
 
   saveAsmtPreference = (asmtType) ->
-    savePreferences {"asmtType": asmtType}
+    savePreferences {"asmtType" : asmtType}
     
   getAsmtPreference = () ->
     pref = getPreferences()
     pref = {} if not pref
-    pref["asmtType"] || 'Summative'
+    pref["asmtType"] || Constants.ASMT_TYPE.SUMMATIVE
   
   getSelectedLanguage = () ->
     iso_language = getPreferences true

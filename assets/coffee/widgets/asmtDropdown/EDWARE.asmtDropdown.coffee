@@ -1,41 +1,36 @@
 define [
   "jquery"
   "mustache"
-], ($, Mustache) ->
-
-  ASMT_TYPE_DROPDOWN_TEMPLATE =
-    '<div class="btn-group">' +
-      '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span id="selectedAsmtType">{{defaultValue}}</span></button>' +
-      '<ul class="dropdown-menu" role="menu">' +
-        '{{#dropdownValues}}<li class="asmtSelection" data-value="{{.}}"><a href="#">{{.}}</a></li>{{/dropdownValues}}' +
-      '</ul>' +
-    '</div>'
+  "text!AsmtDropdownTemplate"
+  "edwarePreferences"
+], ($, Mustache, AsmtDropdownTemplate, edwarePreferences) ->
 
   class EdwareAsmtDropdown
     
-    constructor: (@dropdownSection, @dropdownValues, @callback) ->
-      this.bindEvents()
-      this
+    constructor: (@container, @dropdownValues, @callback) ->
+      @initialize()
+      @bindEvents()
+            
+    initialize: () ->
+      output = Mustache.to_html AsmtDropdownTemplate,
+        dropdownValues: @dropdownValues
+      @container.html(output)
+      # set default option
+      savedAsmtType = edwarePreferences.getAsmtPreference()
+      defaultValue = $('li.asmtSelection[data-asmttype="' + savedAsmtType + '"]').data('display')
+      @setSelectedValue defaultValue
       
     bindEvents: () ->
       self = this
-      $(document).on 'click', '.asmtSelection', (e) ->
-        e.preventDefault()
+      $('.asmtSelection', @container).click ->
         $this = $(this)
-        value = $this.data('value')
-        $('#selectedAsmtType').html value
-        self.callback value
-        
-    create: () ->
-      # By default, summative is default value, unless it doesn't exist
-      defaultValue = "Summative"
-      if this.dropdownValues.indexOf("Summative") == -1
-        defaultValue = this.dropdownValues[0]
-      selector = Mustache.to_html ASMT_TYPE_DROPDOWN_TEMPLATE, {
-        defaultValue: defaultValue,
-        dropdownValues: this.dropdownValues
-      }
-      this.dropdownSection.html(selector)
+        display = $this.data('display')
+        asmtType = $this.data('asmttype')
+        # save assessment type
+        edwarePreferences.saveAsmtPreference asmtType
+        self.setSelectedValue display
+        # additional parameters
+        self.callback $this.data('value')
 
     setSelectedValue: (value) ->
       $('#selectedAsmtType').html value

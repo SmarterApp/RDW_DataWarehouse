@@ -18,8 +18,6 @@ define [
 
   REPORT_NAME = 'studentList'
 
-  DROPDOWN_VIEW_TEMPLATE = $('#assessmentDropdownViewTemplate').html()
-
   LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
   class StudentGrid
@@ -52,7 +50,7 @@ define [
         self.userData = data.user_info
         self.cutPointsData = self.createCutPoints()
         self.columnData = self.createColumns()
-        #  append cutpoints into each individual assessment data
+        # append cutpoints into each individual assessment data
         self.formatAssessmentsData self.cutPointsData
         self.stickyCompare.setReportInfo REPORT_NAME, "student", params
         # process breadcrumbs
@@ -116,37 +114,30 @@ define [
         CSVOptions: @config.CSVOptions
 
     renderReportActionBar: () ->
+      self = this
       @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      @config.asmtTypes = @subjectsData
-      #this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, @reloadCurrentView.bind(this)
+      asmtTypeDropdown = convertAsmtTypes this.studentsConfig.customViews, this.subjectsData
+      @config.asmtTypes = asmtTypeDropdown
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, (viewName) ->
+        # Add dark border color between Math and ELA section to emphasize the division
+        $('#gridWrapper').removeClass().addClass(viewName)
+        self.updateView viewName
 
     createGrid: () ->
-      # populate select view, only create the dropdown when it doesn't exit
-      # TODO this.createDropdown() if not this.asmtTypeDropdown
-      # TODO this.createDisclaimer() if not this.disclaimer
       # Get asmtType from storage
-      this.asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
-      this.currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
-      this.updateView this.asmtType, this.currentView
+      defaultView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
+      this.updateView defaultView
 
-    updateView: (asmtType, viewName) ->
+    updateView: (viewName) ->
       # Save asmtType and viewName
-      this.asmtType = asmtType
+      asmtType = edwarePreferences.getAsmtPreference()
       this.viewName = viewName
-      # set dropdown text
-      this.asmtTypeDropdown.setSelectedText asmtType, viewName
-      # save preference to storage
-      edwarePreferences.saveAsmtPreference asmtType
       this.renderGrid asmtType, viewName
-      # show the content upon rendering complete to prevent seeing the pre-templated text on the html
-      $('.gridControls').show()
-      this.updateDisclaimer asmtType
    
     reloadCurrentView: () ->
       # this is the callback function for sticky compare to reload current view
-      this.updateView this.asmtType, this.viewName
+      this.updateView this.viewName
 
     fetchData: (params, callback) ->
       # Determine if the report is state, district or school view"
@@ -167,7 +158,7 @@ define [
       allSubjects = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
       for asmt in this.asmtTypes
         asmtType = asmt['name']
-        this.cache[asmtType] = {} if not this.cache[asmtType]
+        this.cache[asmtType] ?= {}
         this.cache[asmtType][allSubjects] = [] if not this.cache[asmtType][allSubjects]
         for row in this.assessmentsData
           # Format student name
@@ -232,15 +223,8 @@ define [
       columnData = JSON.parse(Mustache.render(JSON.stringify(this.studentsConfig), combinedData))
       columnData
 
-    # creating the assessment view drop down
-    createDropdown: ()->
-      this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
-
     createDisclaimer: () ->
       this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
-
-    updateDisclaimer: (asmtType) ->
-      this.disclaimer.update asmtType
 
     renderHeaderPerfBar: (cutPointsData) ->
       for key of cutPointsData
@@ -270,58 +254,18 @@ define [
           output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
           $("#"+key+"_perfBar").html(output)
 
-  class AsmtTypeDropdown
+  convertAsmtTypes = (customViews, subjects) ->
+    items = []
+    # render dropdown
+    for asmtType in customViews.asmtTypes
+      subjects['asmtType'] = asmtType['display']
+      for key, value of customViews.items
+        items.push {
+          'value': Mustache.to_html(key, subjects)
+          'asmtType': asmtType['name']
+          'display': Mustache.to_html(value, subjects)
+        }
+    items
 
-    constructor: (customViews, subjects, @callback) ->
-      items = []
-      # render dropdown
-      for asmtType in customViews.asmtTypes
-        subjects['asmtType'] = asmtType['display']
-        for key, value of customViews.items
-          items.push {
-            'key': Mustache.to_html(key, subjects)
-            'value': Mustache.to_html(value, subjects)
-            'asmtType': asmtType['name']
-            'id': this.formatAsmt asmtType['name']
-          }
-      $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
-      # bind events
-      this.bindEvents()
-      # the first element name as default view
-      this.currentView = items[0].key
-      this.asmtType = items[0].asmtType
-
-    bindEvents: () ->
-      self = this
-      # add event to change view for assessment
-      $(document).on 'click', '.viewOptions', (e) ->
-        e.preventDefault()
-        viewName = $(this).data('name')
-        asmtType = $(this).data('type')
-        self.currentView = viewName
-        self.asmtType = asmtType
-        self.callback asmtType, viewName
-
-        # Add dark border color between Math and ELA section to emphasize the division
-        if viewName is "Math_ELA"
-          $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(2), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(2)').css("border-right", "solid 1px #b1b1b1")
-          $('.jqg-second-row-header th:nth-child(3), .jqg-second-row-header th:nth-child(3), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "none")
-        else
-          $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(2), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(2)').css("border-right", "solid 1px #d0d0d0")
-          $('.ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #E2E2E2")
-
-    getCurrentView: () ->
-      this.currentView
-
-    getAsmtType: ()->
-      this.asmtType
-
-    formatAsmt: (asmt) ->
-      # Replaces spaces with _ for html id purposes
-      asmt.replace /\s+/g, "_"
-
-    setSelectedText:(asmtType, view) ->
-      name = this.formatAsmt asmtType
-      $('#selectedAsmtType').text $('#'+ name + '_' + view).text()
 
   StudentGrid: StudentGrid

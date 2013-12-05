@@ -1,0 +1,9 @@
+<div class="btn-group">
+    <button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+        <span id="selectedAsmtType">{{defaultValue}}</span></button>
+        <ul class="dropdown-menu" role="menu">
+            {{#dropdownValues}}
+            <li class="asmtSelection" data-display='{{display}}' data-value='{{value}}' data-asmttype='{{asmtType}}'><a href='#'>{{display}}</a></li>
+            {{/dropdownValues}}
+        </ul>
+</div>

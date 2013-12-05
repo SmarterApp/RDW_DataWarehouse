@@ -13,16 +13,21 @@ class TestFormat(unittest.TestCase):
     def setUp(self):
         setup_input_file_format()
 
-    def test_dim_asmt_mapping(self):
-        dim_asmt = get_column_mapping(Constants.DIM_ASMT)
+    def test_dim_asmt_mapping_from_json(self):
+        dim_asmt = get_column_mapping(Constants.DIM_ASMT, True)
         self.assertIsNotNone(dim_asmt)
-        self.assertEqual(dim_asmt['asmt_guid'], 'guid_asmt')
+        self.assertEqual(dim_asmt['asmt_guid'], 'identification.guid')
         self.assertEqual(dim_asmt['asmt_claim_1_name'], 'claims.claim_1.name')
         self.assertEqual(dim_asmt['asmt_perf_lvl_name_1'], 'performance_levels.level_1.name')
         self.assertEqual(dim_asmt['asmt_score_min'], 'overall.min_score')
         self.assertEqual(dim_asmt['asmt_claim_1_score_max'], 'claims.claim_1.max_score')
         self.assertEqual(dim_asmt['asmt_claim_2_score_weight'], 'claims.claim_2.weight')
         self.assertEqual(dim_asmt['asmt_cut_point_3'], 'performance_levels.level_4.cut_point')
+
+    def test_workaround_with_asmt_guid(self):
+        dim_asmt = get_column_mapping(Constants.DIM_ASMT)
+        self.assertIsNotNone(dim_asmt)
+        self.assertEqual(dim_asmt['asmt_guid'], 'guid_asmt')
 
     def test_dim_student_mapping(self):
         dim_student = get_column_mapping(Constants.DIM_STUDENT)

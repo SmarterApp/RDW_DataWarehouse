@@ -18,9 +18,11 @@ from pyramid.threadlocal import get_current_request, get_current_registry
 from datetime import datetime
 import os
 import tempfile
-from copy import deepcopy
 from edapi.exceptions import NotFoundException
 from celery.canvas import group
+import copy
+from smarter.security.context import select_with_context
+from sqlalchemy.sql.expression import and_
 
 
 log = logging.getLogger('smarter')
@@ -29,17 +31,17 @@ log = logging.getLogger('smarter')
 def process_sync_extract_request(params):
     tasks = []
     request_id, user, tenant = __get_extract_request_user_info()
-    extract_params = deepcopy(params)
+    extract_params = copy.deepcopy(params)
     for subject in params[Constants.ASMTSUBJECT]:
         extract_params[Constants.ASMTSUBJECT] = subject
-        query = get_extract_assessment_query(extract_params)
-        tasks.append(__create_new_task(request_id, user, tenant, extract_params, query))
+        subject_tasks, task_responses = __create_tasks_by_asmt_grade(request_id, user, tenant, extract_params)
+        tasks += subject_tasks
 
     if len(tasks) > 0:
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate and then to archive
-        generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract_sync', immutable=True) for task in tasks)    # @UndefinedVariable
+        generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract_sync', immutable=True) for task in tasks)  # @UndefinedVariable
         generate_tasks().get(timeout=celery_timeout)
         result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract_sync')
         return result.get(timeout=celery_timeout)
@@ -68,19 +70,13 @@ def process_async_extraction_request(params):
                              Extract.EXTRACTTYPE: ExtractType.studentAssessment,
                              Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
                              Constants.ASMTTYPE: param[Constants.ASMTTYPE],
-                             #Constants.ASMTYEAR: task[Constants.ASMTYEAR],
+                             # Constants.ASMTYEAR: task[Constants.ASMTYEAR],
                              Extract.REQUESTID: request_id}
 
-            query = get_extract_assessment_query(param)
-            check_query = query.limit(1)
-
-            if has_data(check_query, request_id):
-                tasks.append(__create_new_task(request_id, user, tenant, param, query))
-                task_response[Extract.STATUS] = Extract.OK
-            else:
-                task_response[Extract.STATUS] = Extract.FAIL
-                task_response[Extract.MESSAGE] = "Data is not available"
-            task_responses.append(task_response)
+            # separate by grades if no grade is specified
+            __tasks, __task_responses = __create_tasks_by_asmt_grade(request_id, user, tenant, param, task_response)
+            tasks += __tasks
+            task_responses += __task_responses
 
     response['tasks'] = task_responses
     if len(tasks) > 0:
@@ -91,8 +87,61 @@ def process_async_extraction_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         gatekeeper_id = get_gatekeeper(tenant)
         pickup_zone_info = get_pickup_zone_info(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue='extract')     # @UndefinedVariable
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue='extract')  # @UndefinedVariable
     return response
+
+
+def __get_available_asmt_guids(params):
+    asmt_guids = []
+    with EdCoreDBConnection() as connector:
+        asmt_type = params.get(Constants.ASMTTYPE)
+        asmt_subject = params.get(Constants.ASMTSUBJECT)
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID)], from_obj=[dim_asmt])
+        query = query.where(and_(dim_asmt.c.asmt_type == asmt_type)).where(and_(dim_asmt.c.asmt_subject == asmt_subject))
+        results = connector.get_result(query)
+        for result in results:
+            asmt_guids.append((result[Constants.ASMT_GUID], and_(dim_asmt.c.asmt_guid == result[Constants.ASMT_GUID])))
+    return asmt_guids
+
+
+def __create_tasks_by_asmt_grade(request_id, user, tenant, param, task_response={}):
+    tasks = []
+    task_responses = []
+    if param.get(Constants.ASMTGRADE) is None:
+        asmt_guids = __get_available_asmt_guids(param)
+        available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
+        for asmt_grade in available_grades:
+            copied_params = copy.deepcopy(param)
+            copied_params[Constants.ASMTGRADE] = asmt_grade
+            query = get_extract_assessment_query(copied_params)
+            # check if a record exists for specified asmt grade
+            if has_data(query.limit(1), request_id):
+                for asmt_guid in asmt_guids:
+                    copied_params[Constants.ASMT_GUID] = asmt_guid[0]
+                    _task, _task_response = __create_task(request_id, user, tenant, copied_params, query.where(asmt_guid[1]), task_response)
+                    if _task is not None:
+                        tasks.append(_task)
+                    task_responses.append(_task_response)
+    else:
+        query = get_extract_assessment_query(copied_params)
+        _task, _task_response = __create_task(request_id, user, tenant, copied_params, query, task_response)
+        if _task is not None:
+            tasks.append(_task)
+        task_responses.append(_task_response)
+    return tasks, task_responses
+
+
+def __create_task(request_id, user, tenant, param, query, task_response={}):
+    task = None
+    copied_task_response = copy.deepcopy(task_response)
+    if has_data(query.limit(1), request_id):
+        task = __create_new_task(request_id, user, tenant, param, query)
+        copied_task_response[Extract.STATUS] = Extract.OK
+    else:
+        copied_task_response[Extract.STATUS] = Extract.FAIL
+        copied_task_response[Extract.MESSAGE] = "Data is not available"
+    return task, copied_task_response
 
 
 def has_data(query, request_id):
@@ -138,10 +187,11 @@ def get_file_path(param, tenant, request_id):
         identifier = ''
     else:
         identifier = '_' + param.get(Constants.STATECODE)
-    file_name = 'ASMT{identifier}_{asmtSubject}_{asmtType}_{currentTime}.csv'.format(identifier=identifier.upper(),
-                                                                                     asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                                                                                     asmtType=param[Constants.ASMTTYPE].upper(),
-                                                                                     currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+    file_name = 'ASMT{identifier}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(identifier=identifier.upper(),
+                                                                                                asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                                                                                                asmtType=param[Constants.ASMTTYPE].upper(),
+                                                                                                currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                                                                                                asmtGuid=param[Constants.ASMT_GUID])
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
 
 

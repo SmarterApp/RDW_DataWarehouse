@@ -10,11 +10,11 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwarePreferences"
-  "edwareDisclaimer"
   "edwareConstants"
   "edwareGridStickyCompare"
   "edwareReportInfoBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, Constants, edwareStickyCompare, edwareReportInfoBar) ->
+  "edwareReportActionBar"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
 
   REPORT_NAME = 'studentList'
 
@@ -58,6 +58,7 @@ define [
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
         self.renderReportInfo()
+        self.renderReportActionBar()
         self.createHeaderAndFooter()
         self.createGrid()
         self.bindEvents()
@@ -97,7 +98,6 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
-      this.config.colorsData = this.cutPointsData
       this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.LOS, this.config, this.fetchExportData.bind(this)) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
 
@@ -115,10 +115,17 @@ define [
         labels: @labels
         CSVOptions: @config.CSVOptions
 
+    renderReportActionBar: () ->
+      @config.colorsData = @cutPointsData
+      @config.reportName = Constants.REPORT_NAME.LOS
+      @config.asmtTypes = @subjectsData
+      #this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, @reloadCurrentView.bind(this)
+
     createGrid: () ->
       # populate select view, only create the dropdown when it doesn't exit
-      this.createDropdown() if not this.asmtTypeDropdown
-      this.createDisclaimer() if not this.disclaimer
+      # TODO this.createDropdown() if not this.asmtTypeDropdown
+      # TODO this.createDisclaimer() if not this.disclaimer
       # Get asmtType from storage
       this.asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
       this.currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2

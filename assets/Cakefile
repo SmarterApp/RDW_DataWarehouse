@@ -88,8 +88,8 @@ task 'build', ->
 task 'watch', ->    
     invoke 'build'
     
-    lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true})
-    coffeeWatcher = chokidar.watch(coffeepath, {persistent: true, ignoreInitial: true})
+    lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true, useFsEvents: false})
+    coffeeWatcher = chokidar.watch(coffeepath, {persistent: true, ignoreInitial: true, useFsEvents: false})
     
     coffeeWatcher.on 'add', (path, stats) ->
         buildCoffee(path, jspath)

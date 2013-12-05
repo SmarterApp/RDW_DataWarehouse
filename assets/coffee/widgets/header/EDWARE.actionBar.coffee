@@ -5,26 +5,51 @@ define [
   "text!ActionBarTemplate"
   "edwareDownload"
   "edwareLegend"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend) ->
+  "edwareAsmtDropdown"
+  "edwareDisclaimer"
+  "edwarePreferences"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences) ->
 
   LEGEND_POPOVER_TEMPLATE = '<div class="popover legendPopover"><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
 
   class ReportActionBar
-  
-    constructor: (@container, @config) ->
+
+    constructor: (@container, @config, @reloadCallback) ->
       @initialize()
       @bindEvents()
 
     initialize: () ->
       $(@container).html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
-      
-      legend = 
+      @legend ?= @createLegend()
+      @asmtDropdown ?= @createAsmtDropdown() # create assessment type dropdown list
+    
+    createLegend: () ->
+      # create legend
+      $('.legendPopup').createLegend @config.reportName,
         legendInfo: @config.legendInfo
         subject: @config.subject || @prepareSubjects()
-      
-      # create legend
-      $('.legendPopup').createLegend @config.reportName, legend
+
+    # Create assessment type dropdown
+    createAsmtDropdown: () ->
+      self = this
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, (asmtType) ->
+        # save assessment type
+        edwarePreferences.saveAsmtPreference asmtType
+        self.updateDisclaimer()
+        self.reloadCallback()
+      asmtDropdown.create()
+      asmtDropdown.setSelectedValue edwarePreferences.getAsmtPreference()
+      @createDisclaimer()
+      asmtDropdown
+
+    createDisclaimer: () ->
+      @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
+      @updateDisclaimer()
+
+    updateDisclaimer: () ->
+      currentAsmtType = edwarePreferences.getAsmtPreference()
+      @disclaimer.update currentAsmtType
 
     prepareSubjects: () ->
       legendInfo = @config.legendInfo
@@ -50,8 +75,8 @@ define [
         $(this).removeClass('active')
         $(this).popover('hide')
 
-  create = (container, config) ->
-    new ReportActionBar(container, config)
+  create = (container, config, reloadCallback) ->
+    new ReportActionBar(container, config, reloadCallback)
 
   ReportActionBar: ReportActionBar
   create: create

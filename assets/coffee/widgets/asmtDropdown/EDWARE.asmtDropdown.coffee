@@ -5,7 +5,7 @@ define [
 
   ASMT_TYPE_DROPDOWN_TEMPLATE =
     '<div class="btn-group">' +
-      '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span id="selectedAsmtType">{{defaultValue}}</span><span class="caret"></span></button>' +
+      '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span id="selectedAsmtType">{{defaultValue}}</span></button>' +
       '<ul class="dropdown-menu" role="menu">' +
         '{{#dropdownValues}}<li class="asmtSelection" data-value="{{.}}"><a href="#">{{.}}</a></li>{{/dropdownValues}}' +
       '</ul>' +

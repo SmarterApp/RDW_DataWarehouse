@@ -16,13 +16,11 @@ define [
   "edwareDropdown"
   "edwareGridStickyCompare"
   "edwarePreferences"
-  "edwareAsmtDropdown"
-  "edwareDisclaimer"
   "edwareConstants"
   "edwareClientStorage"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -79,34 +77,8 @@ define [
         index: 0
       }
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.renderGrid.bind(this)
-      this.asmtTypes = for asmtType in config.students.customViews.asmtTypes
+      this.config.asmtTypes = for asmtType in config.students.customViews.asmtTypes
         asmtType.name
-
-    # Create assessment type dropdown
-    createAsmtDropdown: () ->
-      if this.reportType isnt 'school'
-        # remove asmt type dropdown and vertical bar
-        $('.gridControls .asmtDropdown').parent().remove()
-        # only show asmt type dropdown on school view
-        return
-      self = this
-      this.asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
-        # save assessment type
-        self.currentAsmtType = asmtType
-        edwarePreferences.saveAsmtPreference asmtType
-        self.updateDisclaimer()
-        self.reload self.param
-      this.asmtDropdown.create()
-      # select default asmt type
-      this.asmtDropdown.setSelectedValue this.currentAsmtType
-
-    createDisclaimer: () ->
-      if this.reportType is 'school'
-        this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
-        this.updateDisclaimer()
-
-    updateDisclaimer: () ->
-      this.disclaimer.update this.currentAsmtType
 
     setFilter: (filter) ->
       this.filter = filter
@@ -118,11 +90,8 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
-      this.updateAsmtTypePreference()
-      # create assessment type dropdown list
-      this.createAsmtDropdown() if not this.asmtDropdown
       # set current query assessment type
-      param.asmtType = this.currentAsmtType.toUpperCase()
+      param.asmtType = this.updateAsmtTypePreference()
       self = this
 
       this.fetchData param, (data)->
@@ -146,10 +115,12 @@ define [
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
-        self.createDisclaimer() if not this.disclaimer
         self.updateDropdown()
         self.updateFilter()
         self.createHeaderAndFooter()
+
+    refresh: () ->
+      @reload @param
 
     displayNoResults: () ->
       # no results
@@ -161,7 +132,7 @@ define [
         # Reset back to summative
         edwarePreferences.saveAsmtPreference DEFAULT_ASMT_TYPE
       # Use this assessment type for school view
-      this.currentAsmtType = edwarePreferences.getAsmtPreference()
+      edwarePreferences.getAsmtPreference().toUpperCase()
 
     updateFilter: ()->
       this.filter.update this.notStatedData
@@ -250,7 +221,7 @@ define [
     renderReportActionBar: () ->
       @config.colorsData = @data.metadata
       @config.reportName = Constants.REPORT_NAME.CPOP
-      edwareReportActionBar.create '#actionBar', @config        
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, @refresh.bind(this)
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
@@ -269,7 +240,7 @@ define [
 
     updateDropdown: ()->
       # create drop down menus
-      this.edwareDropdown = this.createDropdown(this.config.comparingPopulations.customALDDropdown) if not this.edwareDropdown
+      @edwareDropdown ?= this.createDropdown(this.config.comparingPopulations.customALDDropdown)
       # update dropdown menus status
       this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.data.metadata)
 

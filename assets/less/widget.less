@@ -1724,7 +1724,6 @@ th.ui-th-column div {
      }
 }
 
-
 #infoBar {
     /* background-color: @color-B10; */
 
@@ -1852,7 +1851,7 @@ th.ui-th-column div {
     background-color: @color-B8;
     border-top: solid 1px @color-B3;
 
-    ul {
+    &>ul {
 	list-style: none;
 	margin: 0px;
 	float: right;
@@ -1900,13 +1899,23 @@ th.ui-th-column div {
 	.align_off {
 	    background-image: url("../images/align_onoff.png");
 	    background-repeat: no-repeat;
-	    background-position: 0 -16px; 
+	    background-position: 0 -16px;
+
+	    &:before {
+		content: "Off";
+		color: white;
+	    }
 	}
 	
 	.align_on {
 	    background-image: url("../images/align_onoff.png");
 	    background-repeat: no-repeat;
 	    background-position: 0 -33px;
+
+	    &:after {
+		content: "On";
+		color: white;
+	    }
 	}
 
 	.alignLabel:before {

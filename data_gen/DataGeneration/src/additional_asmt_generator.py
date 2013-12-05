@@ -32,14 +32,16 @@ DATE_FORMAT = '%Y%m%d'
 
 def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_change=-3):
     """
-
-    :param row_dict:
+    Given a row dictionary for the record to be updated, change the values for the relevant fields and return
+    the dictionary
+    :param row_dict: A dict object containing the data for the current row to be updated
     :param perf_change_tup: A tuple containing the range of performance change as percentages.
         ie (10, 15) would be 10 to 15 point increase, where (-15, -10) would be 10 to 15 point decrease
-    :param asmt_type:
-    :param asmt_dict:
+    :param asmt_type: The type of assessment that the updated record should be for
+    :param asmt_dict: A dictionary mapping the old assessment guids to the new assessment guids
+    :param json_map: A dictionary mapping the new assessment guid to the corresponding json assessment data
     :param date_change: the number of months to change the date taken by, default is -3 (3 months previous)
-    :return:
+    :return: A dictionary with the values updated properly
     """
     old_asmt_guid = row_dict['guid_asmt']
     json_obj = json_map[asmt_dict[old_asmt_guid]]
@@ -63,10 +65,13 @@ def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_c
 
 def generate_score_offset(perf_change_tup):
     """
-    Given a score range tuple
-    :param perf_change_tup:
-    :return:
+    Given a score range tuple generate a random value between the two numbers
+    :param perf_change_tup: A tuple containing 2 integers
+    :return: A random integer between the two values
     """
+    assert isinstance(perf_change_tup[0], int)
+    assert isinstance(perf_change_tup[1], int)
+
     sorted_range = sorted(perf_change_tup)
     offset = random.randint(sorted_range[0], sorted_range[1])
     return offset
@@ -74,10 +79,14 @@ def generate_score_offset(perf_change_tup):
 
 def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     """
-
-    :param row_dict:
-    :param perf_change_tup:
-    :return:
+    Update the scores in the given assessment outcome record based on the perf_change_tuple
+    :param row_dict: A dict object containing the data for the current row to be updated4
+    :param perf_change_tup: A tuple containing the range of performance change as percentages.
+        ie (10, 15) would be 10 to 15 point increase, where (-15, -10) would be 10 to 15 point decrease
+    :param cut_points: a list of ordered values to use as cutpoints (ie. [1400, 1800, 2100])
+    :param min_score: the minimum score for the assessment
+    :param max_score: the maximum score for the assessment
+    :return: the updated row dictionary
     """
     min_score = int(min_score)
     max_score = int(max_score)
@@ -88,6 +97,8 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     row_dict['score_asmt_max'] = min(max(int(row_dict['score_asmt_max']) + offset, min_score), max_score)
     row_dict['score_perf_level'] = determine_perf_lvl(row_dict['score_asmt'], cut_points)
 
+    # loop over each claim score, break from the loop if there are no more claims
+    # or if the value cannot be converted to an int
     i = 0
     while True:
         try:
@@ -119,12 +130,11 @@ def get_cut_points(asmt_dict):
 
 def determine_perf_lvl(score, cut_points):
     """
-
-    :param score: Asmt score
-    :param cut_points: A list of cutpoints that excludes min and max scores
+    Determine the performance level of the score
+    :param score: the assessment score
+    :param cut_points: A list of cut points that excludes min and max scores
     :return: the performance level
     """
-
     for i in range(len(cut_points)):
         if score < cut_points[i]:
             return i + 1
@@ -132,7 +142,13 @@ def determine_perf_lvl(score, cut_points):
 
 
 def month_delta(date, delta):
-    m, y = (date.month+delta) % 12, date.year + (date.month + delta - 1) // 12
+    """
+    Given a date object and a month delta, change the date to have an updated month
+    :param date: A datetime.date object representing the date you want to change
+    :param delta: The number of months you would like to change the date by, either positive or negative
+    :return: An updated date object
+    """
+    m, y = (date.month + delta) % 12, date.year + (date.month + delta - 1) // 12
     if not m:
         m = 12
     d = min(date.day,
@@ -147,6 +163,7 @@ def create_new_json_file(old_json_filename, asmt_type, output_location):
     :type old_json_filename: str
     :param asmt_guid: the new asmt_guid to use
     :param asmt_type: the type of the assessment being created
+    :return: a tuple containing - the new json dictionary, the old assessment guid, the new assessment guid
     """
     with open(old_json_filename, 'r') as fp:
         json_dict = json.load(fp, object_pairs_hook=OrderedDict)
@@ -226,8 +243,9 @@ def output_data(student_tup_map, output_path, star_format=False):
     header should already be written to file, using prepare_csv()
     :param student_tup_map: a map of lists of tuples of the format:
         {asmt_guid: [(state_obj, school_obj, student_info_object), ...], ...}
-    :param star_format:
-    :return:
+    :param output_path:
+    :param star_format: Whether to generate the star schema format - NOT IMPLEMENTED
+    :return: None
     """
 
     # Output lz_format
@@ -250,11 +268,11 @@ def output_data(student_tup_map, output_path, star_format=False):
 
 def create_performance_change_tuple(score_change_lo, score_change_hi, positive_change):
     """
-
-    :param score_change_hi:
-    :param score_change_lo:
-    :param positive_change:
-    :return:
+    Create a tuple comprised of the score change interval
+    :param score_change_lo: Lower bound on score change
+    :param score_change_hi: Upper bound on score change
+    :param positive_change: If the change should be positive or negative
+    :return: A tuple that holds positive or negative versions of the two values
     """
     if positive_change:
         score_change_lo = max(score_change_lo, -score_change_lo)
@@ -296,8 +314,7 @@ def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_ch
         prepare_csv_files({RealDataFormat: file_path})
 
     # TODO: prepare output csv file for star format
-    ##
-    ##
+
     perf_change_tup = create_performance_change_tuple(asmt_change_low, asmt_change_hi, positive_change)
 
     for csv_file in input_csv_list:
@@ -325,7 +342,6 @@ if __name__ == '__main__':
                         help='The upper bound on how much to change the assessment scores, default: 300')
     parser.add_argument('-p', '--positive-score-change', action='store_true',
                         help='whether score change should be positive or negative')
-
 
     args = parser.parse_args()
     print(args)

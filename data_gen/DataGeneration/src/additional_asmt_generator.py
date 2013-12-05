@@ -115,14 +115,14 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     return row_dict
 
 
-def get_cut_points(asmt_dict):
+def get_cut_points(json_dict):
     """
     Get a list of the cut points from the assessment dictionary
-    :param asmt_dict: the dictionary or OrderedDict that is holding the assessment information
+    :param json_dict: the dictionary or OrderedDict that is holding the assessment information
     :return: a list of sorted cut points
     """
-    min_max_score = [asmt_dict[OVERALL][MIN], asmt_dict[OVERALL][MAX]]
-    perf_lvl_dict = asmt_dict[PERF_LVLS]
+    min_max_score = [json_dict[OVERALL][MIN], json_dict[OVERALL][MAX]]
+    perf_lvl_dict = json_dict[PERF_LVLS]
 
     return sorted([int(x[CUT_POINT]) for x in perf_lvl_dict.values()
                    if x[CUT_POINT] not in min_max_score and x[CUT_POINT] != ''])
@@ -304,6 +304,7 @@ def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_ch
     asmt_map = {}
     json_map = {}
 
+    #update json file
     for json_file in input_json_list:
         json_dict, old_guid, new_guid = create_new_json_file(json_file, output_asmt_type, output_dir)
         asmt_map[old_guid] = new_guid
@@ -317,6 +318,7 @@ def main(input_csv_list, input_json_list, output_asmt_type, output_dir, month_ch
 
     perf_change_tup = create_performance_change_tuple(asmt_change_low, asmt_change_hi, positive_change)
 
+    # update csv files
     for csv_file in input_csv_list:
         read_csv_file(csv_file, perf_change_tup, output_asmt_type, asmt_map, month_change, output_dir, star_format, json_map)
 

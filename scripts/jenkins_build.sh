@@ -338,6 +338,7 @@ function build_udl2_rpm {
     export GIT_COMMIT="$(git rev-parse HEAD)"
 
     cd "$WORKSPACE/rpm/SPEC"
+    rpmbuild -bb udl2.spec
 
     echo "Finished building RPM"
 }

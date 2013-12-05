@@ -430,5 +430,5 @@ class DataGenerationValidation(unittest.TestCase):
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 assessment_type = values['asmt_type']
-                assert assessment_type == 'SUMMATIVE', 'Assessment type is incorrect in dim_asmt'
+                self.assertEqual(assessment_type, 'SUMMATIVE', 'Assessment type is incorrect in dim_asmt')
         print('TC11: Passed: Check assessment type')

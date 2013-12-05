@@ -108,8 +108,8 @@ def __get_available_asmt_guids(params):
 def __create_tasks_by_asmt_grade(request_id, user, tenant, param, task_response={}):
     tasks = []
     task_responses = []
+    asmt_guids = __get_available_asmt_guids(param)
     if param.get(Constants.ASMTGRADE) is None:
-        asmt_guids = __get_available_asmt_guids(param)
         available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
         for asmt_grade in available_grades:
             copied_params = copy.deepcopy(param)
@@ -123,12 +123,18 @@ def __create_tasks_by_asmt_grade(request_id, user, tenant, param, task_response=
                     if _task is not None:
                         tasks.append(_task)
                     task_responses.append(_task_response)
+            else:
+                copied_task_response = copy.deepcopy(task_response)
+                copied_task_response[Extract.STATUS] = Extract.FAIL
+                copied_task_response[Extract.MESSAGE] = "Data is not available"
+                task_responses.append(copied_task_response)
     else:
         query = get_extract_assessment_query(copied_params)
-        _task, _task_response = __create_task(request_id, user, tenant, copied_params, query, task_response)
-        if _task is not None:
-            tasks.append(_task)
-        task_responses.append(_task_response)
+        if has_data(query.limit(1), request_id):
+            _task, _task_response = __create_task(request_id, user, tenant, copied_params, query, task_response)
+            if _task is not None:
+                tasks.append(_task)
+            task_responses.append(_task_response)
     return tasks, task_responses
 
 

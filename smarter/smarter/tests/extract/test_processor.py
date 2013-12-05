@@ -84,20 +84,22 @@ class TestProcessor(Unittest_with_edcore_sqlite):
     def test_get_file_name(self):
         params = {'stateCode': 'CA',
                   'asmtSubject': 'UUUU',
-                  'asmtType': 'abc'}
+                  'asmtType': 'abc',
+                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
-        self.assertIn('.csv', path)
+        self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_school(self):
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
                   'schoolGuid': 'asf',
                   'asmtSubject': 'UUUU',
-                  'asmtType': 'abc'}
+                  'asmtType': 'abc',
+                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_UUUU_ABC_', path)
-        self.assertIn('.csv', path)
+        self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_grade(self):
         params = {'stateCode': 'CA',
@@ -105,10 +107,11 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'schoolGuid': 'asf',
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
-                  'asmtType': 'abc'}
+                  'asmtType': 'abc',
+                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_5_UUUU_ABC_', path)
-        self.assertIn('.csv', path)
+        self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_extract_work_zone_path(self):
         path = get_extract_work_zone_path('tenant', 'request')
@@ -145,5 +148,6 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'districtGuid': '228',
                   'schoolGuid': '242',
                   'asmtType': 'SUMMATIVE',
-                  'asmtSubject': []}
+                  'asmtSubject': [],
+                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)

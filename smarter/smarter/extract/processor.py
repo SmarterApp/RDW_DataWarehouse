@@ -121,8 +121,6 @@ def __prepare_data(param):
             query = query.where(and_(fact_asmt_outcome.c.district_guid == district_guid))
         if asmt_year is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
-        if asmt_subject is not None:
-            query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
 
         results = connector.get_result(query)
         for result in results:
@@ -147,6 +145,8 @@ def __create_tasks_with_responses(request_id, user, tenant, param, task_response
             query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\
                 .where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
             tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade, is_tenant_level=is_tenant_level))
+        copied_task_response[Extract.STATUS] = Extract.OK
+        task_responses.append(copied_task_response)
     else:
         copied_task_response[Extract.STATUS] = Extract.FAIL
         copied_task_response[Extract.MESSAGE] = "Data is not available"

@@ -63,6 +63,7 @@ class TestMetadata(Unittest_with_edcore_sqlite):
         asmt_guid = '20'
         query = get_asmt_metadata(asmt_guid)
         self.assertIsNotNone(query)
+        self.assertIn('dim_asmt.asmt_guid', str(query._whereclause))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

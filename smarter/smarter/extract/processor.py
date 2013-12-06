@@ -173,7 +173,7 @@ def __create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fal
         task[Extract.TASK_FILE_ANME] = get_asmt_metadata_file_path(params, tenant, request_id)
         task[Extract.TASK_IS_JSON_REQUEST] = False
     else:
-        task[Extract.TASK_FILE_ANME] = get_extract_file_path(params, tenant, request_id)
+        task[Extract.TASK_FILE_ANME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
         task[Extract.TASK_IS_JSON_REQUEST] = True
     task[Extract.TASK_QUERY] = compile_query_to_sql_text(query)
     return task

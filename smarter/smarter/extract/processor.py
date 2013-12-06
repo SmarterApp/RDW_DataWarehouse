@@ -140,6 +140,7 @@ def __create_tasks(request_id, user, tenant, param, task_response={}):
                         task['query'] = compile_query_to_sql_text(query_with_asmt_guid_and_asmt_grade)
                         tasks.append(task)
         copied_task_response[Extract.STATUS] = Extract.OK
+        task_responses.append(copied_task_response)
     else:
         copied_task_response[Extract.STATUS] = Extract.FAIL
         copied_task_response[Extract.MESSAGE] = "Data is not available"

@@ -133,7 +133,6 @@ def send_tenant_level_extraction_request(params):
     '''
     try:
         if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
-            params[Extract.EXTRACT_LEVEL] = Extract.TENANT
             results = process_async_extraction_request(params)
             return Response(body=json.dumps(results), content_type='application/json')
     # TODO: currently we dont' even throw any of these exceptions

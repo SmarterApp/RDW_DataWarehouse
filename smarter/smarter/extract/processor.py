@@ -48,7 +48,7 @@ def process_sync_extract_request(params):
         raise NotFoundException("There are no results")
 
 
-def process_async_extraction_request(params):
+def process_async_extraction_request(params, is_tenant_level=True):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     '''
@@ -63,8 +63,7 @@ def process_async_extraction_request(params):
             param = ({Constants.ASMTSUBJECT: s,
                      Constants.ASMTTYPE: t,
                      Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE][0],
-                     Extract.EXTRACT_LEVEL: params.get(Extract.EXTRACT_LEVEL, '')})
+                     Constants.STATECODE: params[Constants.STATECODE][0]})
 
             task_response = {Constants.STATECODE: param[Constants.STATECODE],
                              Extract.EXTRACTTYPE: ExtractType.studentAssessment,
@@ -74,7 +73,7 @@ def process_async_extraction_request(params):
                              Extract.REQUESTID: request_id}
 
             # separate by grades if no grade is specified
-            __tasks, __task_responses = __create_tasks_with_responses(request_id, user, tenant, param, task_response)
+            __tasks, __task_responses = __create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
             tasks += __tasks
             task_responses += __task_responses
 
@@ -91,7 +90,7 @@ def process_async_extraction_request(params):
     return response
 
 
-def __parepare_data(param):
+def __prepare_data(param):
     asmt_guids = []
     available_grades = []
     with EdCoreDBConnection() as connector:
@@ -112,11 +111,11 @@ def __parepare_data(param):
     return asmt_guids, available_grades, dim_asmt, fact_asmt_outcome
 
 
-def __create_tasks_with_responses(request_id, user, tenant, param, task_response={}):
+def __create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    asmt_guids, available_grades, dim_asmt, fact_asmt_outcome = __parepare_data(param)
+    asmt_guids, available_grades, dim_asmt, fact_asmt_outcome = __prepare_data(param)
 
     # 1. check record availability
     # if asmt_grade is already set value, then set to None.
@@ -134,7 +133,7 @@ def __create_tasks_with_responses(request_id, user, tenant, param, task_response
                     copied_params[Constants.ASMTGRADE] = asmt_grade
                     query_with_asmt_guid_and_asmt_grade = query_with_asmt_guid.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
                     if has_data(query_with_asmt_guid_and_asmt_grade.limit(1), request_id):
-                        tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_guid_and_asmt_grade))
+                        tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_guid_and_asmt_grade, is_tenant_level=is_tenant_level))
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
@@ -154,9 +153,9 @@ def has_data(query, request_id):
         return True
 
 
-def __create_tasks(request_id, user, tenant, params, query):
+def __create_tasks(request_id, user, tenant, params, query, is_tenant_level=False):
     tasks = []
-    tasks.append(__create_new_task(request_id, user, tenant, params, query))
+    tasks.append(__create_new_task(request_id, user, tenant, params, query, is_tenant_level=is_tenant_level))
     tasks.append(__create_asmt_metadata_task(request_id, user, tenant, params))
     return tasks
 
@@ -166,7 +165,7 @@ def __create_asmt_metadata_task(request_id, user, tenant, params):
     return __create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
 
 
-def __create_new_task(request_id, user, tenant, params, query, asmt_metadata=False):
+def __create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False):
     task = {}
     task[Extract.TASK_TASK_ID] = create_new_entry(user, request_id, params)
     if asmt_metadata:
@@ -196,26 +195,14 @@ def get_extract_work_zone_path(tenant, request_id):
     return os.path.join(base, tenant, request_id, 'csv')
 
 
-def get_extract_file_path(param, tenant, request_id):
-    asmtGrade = param.get(Constants.ASMTGRADE)
-    if asmtGrade is not None:
-        identifier = '_GRADE_' + str(asmtGrade)
-    elif param.get(Constants.SCHOOLGUID) is not None:
-        identifier = ''
-    else:
-        identifier = '_' + param.get(Constants.STATECODE)
-
-    tenant_level = param.get(Extract.EXTRACT_LEVEL, '')
-    if tenant_level == Extract.TENANT:
-        tenant_name = '_' + tenant
-    else:
-        tenant_name = ''
-    file_name = 'ASMT{tenant_name}{identifier}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(tenant_name=tenant_name,
-                                                                                                             identifier=identifier.upper(),
-                                                                                                             asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                                                                                                             asmtType=param[Constants.ASMTTYPE].upper(),
-                                                                                                             currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                                                                                                             asmtGuid=param[Constants.ASMTGUID])
+def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
+    identifier = '_' + param.get(Constants.STATECODE) if is_tenant_level else ''
+    file_name = 'ASMT{identifier}_{asmtGrade}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(identifier=identifier,
+                                                                                                            asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
+                                                                                                            asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                                                                                                            asmtType=param[Constants.ASMTTYPE].upper(),
+                                                                                                            currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                                                                                                            asmtGuid=param[Constants.ASMTGUID])
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
 
 

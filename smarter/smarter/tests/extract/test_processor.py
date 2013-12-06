@@ -13,7 +13,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
 from smarter.extract.processor import process_async_extraction_request, has_data,\
     get_extract_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
-    get_pickup_zone_info, process_sync_extract_request
+    get_pickup_zone_info, process_sync_extract_request,\
+    get_asmt_metadata_file_path
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
 from edapi.exceptions import NotFoundException
@@ -81,14 +82,14 @@ class TestProcessor(Unittest_with_edcore_sqlite):
             query = query.where(fact.c.state_code == 'NY')
             self.assertTrue(has_data(query, '1'))
 
-    def test_get_file_name(self):
+    def test_get_file_name_tenant_level(self):
         params = {'stateCode': 'CA',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
-                  'asmtType': 'abc'}
-        path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
+                  'asmtGrade': '6'}
+        path = get_extract_file_path(params, 'tenant', 'request_id', is_tenant_level=True)
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_GRADE_6_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_school(self):
@@ -98,9 +99,10 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
-                  'asmtType': 'abc'}
+                  'asmtType': 'abc',
+                  'asmtGrade': '1'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_1_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_grade(self):
@@ -110,8 +112,7 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
-                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
-                  'asmtType': 'abc'}
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_5_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
@@ -154,3 +155,15 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtSubject': [],
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
+
+    def test_get_asmt_metadata_file_path(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        file_name = get_asmt_metadata_file_path(params, "tenant", "id")
+        self.assertIn('/tmp/work_zone/tenant/id/csv', file_name)
+        self.assertIn('METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)

@@ -20,7 +20,7 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 
 
 %prep
-rm -rf virtualenv
+# rm -rf virtualenv
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/udl2 %{buildroot}/opt/edware

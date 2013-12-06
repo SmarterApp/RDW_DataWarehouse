@@ -6,7 +6,8 @@ Created on May 2, 2013
 from setuptools import setup
 import sys
 
-install_requires = ['celery == 3.0.23',
+install_requires = ['billiard==2.7.3.32',
+                    'celery == 3.0.23',
                     'Sphinx == 1.2b1',
                     'docutils == 0.11',
                     'repoze.sphinx.autointerface == 0.7.1',
@@ -44,10 +45,9 @@ setup(name='udl2',
       author="Amplify Insight Edware Team",
       author_email="edwaredev@wgen.net",
       packages=['fileloader', 'filearrived','filesplitter', 'post_etl', 'move_to_integration', 'move_to_target',
-                'sfv', 'udl2', 'udl2_util', 'udl2_tests', 'fileexpander', 'filedecrypter', 'rule_maker',
+                'sfv', 'udl2', 'udl2_util','udl2_tests', 'fileexpander', 'filedecrypter', 'rule_maker',
                 'rule_maker.makers', 'rule_maker.rules', 'preetl', 'scripts', 'benchmarking', 'file_finder'],
-      package_dir={
-                   'fileloader': 'src/fileloader',
+      package_dir={'fileloader': 'src/fileloader',
                    'filesplitter': 'src/filesplitter',
                    'post_etl': 'src/post_etl',
                    'move_to_integration': 'src/move_to_integration',

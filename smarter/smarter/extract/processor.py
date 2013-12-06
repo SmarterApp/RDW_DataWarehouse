@@ -64,7 +64,8 @@ def process_async_extraction_request(params):
             param = ({Constants.ASMTSUBJECT: s,
                      Constants.ASMTTYPE: t,
                      Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE][0]})
+                     Constants.STATECODE: params[Constants.STATECODE][0],
+                     Extract.EXTRACT_LEVEL: params.get(Extract.EXTRACT_LEVEL, '')})
 
             task_response = {Constants.STATECODE: param[Constants.STATECODE],
                              Extract.EXTRACTTYPE: ExtractType.studentAssessment,
@@ -183,11 +184,17 @@ def get_file_path(param, tenant, request_id):
         identifier = ''
     else:
         identifier = '_' + param.get(Constants.STATECODE)
-    file_name = 'ASMT{identifier}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(identifier=identifier.upper(),
-                                                                                                asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                                                                                                asmtType=param[Constants.ASMTTYPE].upper(),
-                                                                                                currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                                                                                                asmtGuid=param[Constants.ASMT_GUID])
+    tenant_level = param.get(Extract.EXTRACT_LEVEL, '')
+    if tenant_level == Extract.TENANT:
+        tenant_name = '_' + tenant
+    else:
+        tenant_name = ''
+    file_name = 'ASMT{tenant_name}{identifier}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(tenant_name=tenant_name,
+                                                                                                             identifier=identifier.upper(),
+                                                                                                             asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                                                                                                             asmtType=param[Constants.ASMTTYPE].upper(),
+                                                                                                             currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                                                                                                             asmtGuid=param[Constants.ASMT_GUID])
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
 
 

@@ -16,3 +16,5 @@ class Constants():
     REQUESTID = 'requestId'
     OK = 'ok'
     FAIL = 'fail'
+    EXTRACT_LEVEL = 'extract_level'
+    TENANT = 'tenant'

@@ -23,7 +23,6 @@ import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_, distinct
 from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
-from sqlalchemy.sql.functions import concat
 
 
 log = logging.getLogger('smarter')

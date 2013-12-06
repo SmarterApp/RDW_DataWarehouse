@@ -35,6 +35,8 @@ define [
         container: '#content'
         content: @config.reportInfoText
         template: POPOVER_TEMPLATE
+      # set report info text
+      $('.reportInfoWrapper').append @config.reportInfoText
     
     createDownloadMenu: () ->
       this.edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)

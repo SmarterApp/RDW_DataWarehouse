@@ -22,81 +22,62 @@ define [
     "MATH": ["40", "40", "20", "10"],
     "ELA": ["40", "30", "20", "10"]
   }
+
+  REPORT_NAME = 'indivStudentReport'
   
   class EdwareISR
     
     constructor: () ->
-      this.initialize()
-      this
+      @configData = edwareDataProxy.getDataForReport REPORT_NAME
+      @initialize()
+      @loadPrintMedia()
+      @fetchData()
+
+    loadPage: (template) ->
+      @data = JSON.parse(Mustache.render(JSON.stringify(template)), @configData.labels)
+      @data.labels = @configData.labels
+      @processData()
+      @render()
+      @createBreadcrumb()
+      @renderReportInfo()
+      @renderReportActionBar()
+      #Grayscale logo for print version
+      if @isGrayscale
+        $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
       
     initialize: () ->
       @params = edwareUtil.getUrlParams()
-      this.isPdf = false
-      this.currentAsmtType = Constants.ASMT_TYPE.SUMMATIVE
-      
-      if this.params['grayscale'] is 'true'
-        this.isGrayscale = true
-      if this.params['pdf'] is 'true'
-        this.isPdf = true
-        this.currentAsmtType = this.params['asmtType'] if this.params['asmtType']
-      else
-        this.currentAsmtType = edwarePreferences.getAsmtPreference()
+      @isPdf = @params['pdf']
+      @isGrayscale = @params['grayscale']
+      @reportInfo = @configData.reportInfo
+      @legendInfo = @configData.legendInfo
 
-      this.configData = edwareDataProxy.getDataForReport "indivStudentReport"
-      this.loadCss()
-
-    updateView: (asmtType) ->
-      edwarePreferences.saveAsmtPreference asmtType
-      this.currentAsmtType = asmtType
-      this.render asmtType
-    
-    fetchData: (callback) ->
+    getCurrentAsmtType: () ->
+      if @isPdf
+        currentAsmtType = @params['asmtType']
+        currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
+      else                                   
+        edwarePreferences.getAsmtPreference()
+          
+    fetchData: () ->
       # Get individual student report data from the server
       options =
-        async: true 
+        async: true
         method: "POST"
-        params: this.params
-  
-      edwareDataProxy.getDatafromSource "/data/individual_student_report", options, callback
-    
-    loadCss: () ->
-      # Show grayscale
-      if this.isGrayscale
-        edwareUtil.showGrayScale()
-      # Load css for pdf generation
-      if this.isPdf
-        edwareUtil.showPdfCSS()
-
-    load: () ->
+        params: @params
       self = this
-      this.fetchData (data) ->
-        self.data  = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": self.configData.labels}))
-        self.defaultColors = {}
-        self.defaultColors = self.configData.colors
-        self.defaultGrayColors = self.configData.grayColors
-        self.feedbackData = self.configData.feedback
-        self.breadcrumbsConfigs = self.configData.breadcrumb
-        self.reportInfo = self.configData.reportInfo
-        self.data.labels = self.configData.labels
-        self.legendInfo = self.configData.legendInfo
-        self.asmtTypes = []
-        self.dataByType = {}
-        
-        self.processData()
-        self.render self.currentAsmtType
-        if not self.isPdf
-          self.createBreadcrumb()
-          self.renderReportInfo()
-          self.renderReportActionBar()
-          self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
-          
+      edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
+        self.loadPage data
+    
+    loadPrintMedia: () ->
+      # Show grayscale
+      edwareUtil.showGrayScale() if @isGrayscale
+      # Load css for pdf generation
+      edwareUtil.showPdfCSS() if @isPdf
+
     processData: () ->
       for asmt of this.data.items
         i = 0
-        this.asmtTypes.push
-          'asmtType': asmt
-          'display': asmt
-          'value': asmt
         while i < this.data.items[asmt].length
           items = this.data.items[asmt][i]
           
@@ -104,13 +85,13 @@ define [
           j = 0
           while j < items.cut_point_intervals.length
             if !items.cut_point_intervals[j].bg_color
-              $.extend(items.cut_point_intervals[j], defaultColors[j])
+              $.extend(items.cut_point_intervals[j], @configData.colors[j])
             j++
             
           if this.isGrayscale
             j = 0
             while j < items.cut_point_intervals.length
-              $.extend(items.cut_point_intervals[j], this.defaultGrayColors[j])
+              $.extend(items.cut_point_intervals[j], @configData.grayColors[j])
               j++
         
           # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
@@ -181,7 +162,7 @@ define [
           i++
   
     createBreadcrumb: () ->
-      $('#breadcrumb').breadcrumbs(this.data.context, this.breadcrumbsConfigs)
+      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
@@ -193,14 +174,18 @@ define [
         # subjects on ISR
         subjects: @data.current
 
-    renderReportActionBar: ()->
-      self = this
-      @configData.subject = @createSampleInterval this.data.items[@currentAsmtType][0], this.legendInfo.sample_intervals
+    renderReportActionBar: () ->
+      currentAsmtType = @getCurrentAsmtType()
+      @configData.subject = @createSampleInterval this.data.items[currentAsmtType][0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
-      @configData.asmtTypes = @asmtTypes.sort().reverse()
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, this.updateView.bind(this)
+      @configData.asmtTypes = @getAsmtTypes()
+      self = this
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, () ->
+        #TODO self.renderReportInfo()
+        self.render()
 
-    render : (asmtType) ->
+    render: () ->
+      asmtType = @getCurrentAsmtType()
       this.data.current = this.data.items[asmtType]
       # use mustache template to display the json data    
       output = Mustache.to_html indivStudentReportTemplate, this.data
@@ -267,14 +252,7 @@ define [
       }) unless this.isrFooter
       
       this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
-     
-      # Report info and legend for print version, Grayscale logo for print version
-      $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-      if this.isGrayscale
-        $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
-      # show control panel upon rendering complete
-      $('.gridControls').addClass 'ISRGridControls'
-        
+
     createSampleInterval : (subject, sample_interval) ->
       # merge sample and subject information
       # the return value will be used to generate legend html page
@@ -349,5 +327,12 @@ define [
       $(claimArrowBox).addClass(triangle_img)
       $(claimArrowBox).attr("style", "background-position: 50% " + triangle_y_position + "% !important")
       $(claimArrowBox).append arrow_bar
- 
+
+    getAsmtTypes: () ->
+      asmtTypes = for asmt of @data.items
+        'asmtType': asmt
+        'display': asmt
+        'value': asmt
+      asmtTypes.sort().reverse()
+
   EdwareISR: EdwareISR

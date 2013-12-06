@@ -23,7 +23,7 @@ define [
       $(@container).html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
-      @asmtDropdown ?= @createAsmtDropdown() # create assessment type dropdown list
+      @asmtDropdown ?= @createAsmtDropdown()
       @printer ?= @createPrinter()
 
     createPrinter: () ->

@@ -25,6 +25,7 @@ define [
       option = $('input[name=print]:checked', @container).val()
       asmtType = $('#selectedAsmtType').text()
       url = document.URL.replace("indivStudentReport","print")
+      url = url.replace("#","")
       url += '&pdf=true'
       url += "&grayscale=true" if option is "grayscale"
       url += "&asmtType=" + encodeURI(asmtType) if asmtType

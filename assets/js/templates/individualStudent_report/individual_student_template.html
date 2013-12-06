@@ -114,12 +114,18 @@
 <div class="pageBreak"></div>
 {{/current}}
 <div id="print_reportInfoContent" class="printContent clearfix">
-	<div class="printHeader">
-		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
-		<div class="summary">
+    <div class="printHeader">
+	<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+	<div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
-		</div>
 	</div>
+    </div>
+    <div class="aboutReportPopup">
+	<div class="reportInfoWrapper">
+	    <h3>{{labels.report_info}}:</h3>
+	</div>
+    </div>
+    <div class="legendPopup"></div>
 </div>

@@ -18,7 +18,6 @@ define [
 
     constructor: (@reportName, config, @reportType) ->
       this.initialize(config)
-      # Generate footer
       this.create()
       this.bindEvents()
 
@@ -34,9 +33,7 @@ define [
 
     createPopover: () ->
       this.createFeedback()
-      this.createAbout()
       this.createHelp()
-      this.createPrint()
 
     createFeedback: () ->
       # Survey monkey popup
@@ -51,17 +48,6 @@ define [
         content: () ->
           $(".surveyMonkeyPopup").html()
 
-    createAbout: ()->
-      $("#aboutReport").popover
-        html: true
-        title: Mustache.to_html TITLE_TEMPLATE, {
-          selector: '#aboutReport'
-          hide: this.labels.hide
-          title: this.labels.report_info
-        }
-        template: POPOVER_TEMPLATE
-        content: $("#footerLinks .aboutReportPopup").html()
-
     createHelp: () ->
       $("#help").popover
         html: true
@@ -73,23 +59,6 @@ define [
         template: POPOVER_TEMPLATE
         content: ->
           $(".helpPopup").html()
-
-    createPrint: () ->
-      # show "Print" only on ISR
-      if this.reportName isnt Constants.REPORT_NAME.ISR
-        $('#print').hide()
-        return
-      $("#print").popover
-        html: true
-        title: Mustache.to_html TITLE_TEMPLATE, {
-          selector: '#print'
-          hide: this.labels.hide
-          title: this.labels.print_options
-        }
-        template: Mustache.to_html POPOVER_TEMPLATE, {
-          class: 'printFooterPopover'
-        }
-        content: $(".printPopup").html()
 
     bindEvents: ()->
       self = this

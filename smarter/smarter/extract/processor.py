@@ -192,7 +192,7 @@ def __get_extract_work_zone_base_dir():
 
 def get_extract_work_zone_path(tenant, request_id):
     base = __get_extract_work_zone_base_dir()
-    return os.path.join(base, tenant, request_id, 'csv')
+    return os.path.join(base, tenant, request_id, 'data')
 
 
 def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):

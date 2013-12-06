@@ -27,11 +27,11 @@ log = logging.getLogger('edextract')
 
 def route_tasks(tenant, request_id, tasks, queue_name='extract'):
     '''
-    Given a list of tasks, route them to either generate or generate_json depending on the task type
+    Given a list of tasks, route them to either generate_csv or generate_json depending on the task type
     '''
     generate_tasks = []
     for task in tasks:
-        celery_task = generate if task.get('is_json_request') else generate_json
+        celery_task = generate_csv if task.get('is_json_request') else generate_json
         generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue=queue_name, immutable=True))         # @UndefinedVariable
     return group(generate_tasks)
 
@@ -50,10 +50,10 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     workflow.apply_async()
 
 
-@celery.task(name="tasks.extract.generate",
+@celery.task(name="tasks.extract.generate_csv",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def generate(tenant, request_id, task_id, query, output_file):
+def generate_csv(tenant, request_id, task_id, query, output_file):
     '''
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
@@ -63,9 +63,9 @@ def generate(tenant, request_id, task_id, query, output_file):
     :param output_uri: output file uri
     :param batch_id: batch_id for tracking
     '''
-    log.info('execute tasks.extract.generate for task ' + task_id)
+    log.info('execute tasks.extract.generate_csv for task ' + task_id)
     task_info = {Constants.TASK_ID: task_id,
-                 Constants.CELERY_TASK_ID: generate.request.id,
+                 Constants.CELERY_TASK_ID: generate_csv.request.id,
                  Constants.REQUEST_GUID: request_id}
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})

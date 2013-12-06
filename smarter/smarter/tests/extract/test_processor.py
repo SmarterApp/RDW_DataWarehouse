@@ -89,7 +89,7 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
                   'asmtGrade': '6'}
         path = get_extract_file_path(params, 'tenant', 'request_id', is_tenant_level=True)
-        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_GRADE_6_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_6_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_school(self):
@@ -102,7 +102,7 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtType': 'abc',
                   'asmtGrade': '1'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_1_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_1_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_grade(self):
@@ -114,12 +114,12 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_5_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_5_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_extract_work_zone_path(self):
         path = get_extract_work_zone_path('tenant', 'request')
-        self.assertEqual(path, '/tmp/work_zone/tenant/request/csv')
+        self.assertEqual(path, '/tmp/work_zone/tenant/request/data')
 
     def test_get_encryption_public_key_identifier(self):
         self.assertIsNone(get_encryption_public_key_identifier("tenant"))
@@ -165,5 +165,5 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         file_name = get_asmt_metadata_file_path(params, "tenant", "id")
-        self.assertIn('/tmp/work_zone/tenant/id/csv', file_name)
+        self.assertIn('/tmp/work_zone/tenant/id/data', file_name)
         self.assertIn('METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)

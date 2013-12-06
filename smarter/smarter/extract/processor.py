@@ -168,14 +168,14 @@ def __create_asmt_metadata_task(request_id, user, tenant, params):
 
 def __create_new_task(request_id, user, tenant, params, query, asmt_metadata=False):
     task = {}
-    task['task_id'] = create_new_entry(user, request_id, params)
+    task[Extract.TASK_TASK_ID] = create_new_entry(user, request_id, params)
     if asmt_metadata:
-        task['file_name'] = get_asmt_metadata_file_path(params, tenant, request_id)
-        task['is_json_request'] = False
+        task[Extract.TASK_FILE_ANME] = get_asmt_metadata_file_path(params, tenant, request_id)
+        task[Extract.TASK_IS_JSON_REQUEST] = False
     else:
-        task['file_name'] = get_extract_file_path(params, tenant, request_id)
-        task['is_json_request'] = True
-    task['query'] = compile_query_to_sql_text(query)
+        task[Extract.TASK_FILE_ANME] = get_extract_file_path(params, tenant, request_id)
+        task[Extract.TASK_IS_JSON_REQUEST] = True
+    task[Extract.TASK_QUERY] = compile_query_to_sql_text(query)
     return task
 
 

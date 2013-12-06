@@ -34,7 +34,7 @@ def process_sync_extract_request(params):
     extract_params = copy.deepcopy(params)
     for subject in params[Constants.ASMTSUBJECT]:
         extract_params[Constants.ASMTSUBJECT] = subject
-        subject_tasks, task_responses = __create_tasks_by_asmt_grade(request_id, user, tenant, extract_params)
+        subject_tasks, task_responses = __create_tasks(request_id, user, tenant, extract_params)
         tasks += subject_tasks
 
     if len(tasks) > 0:
@@ -74,7 +74,7 @@ def process_async_extraction_request(params):
                              Extract.REQUESTID: request_id}
 
             # separate by grades if no grade is specified
-            __tasks, __task_responses = __create_tasks_by_asmt_grade(request_id, user, tenant, param, task_response)
+            __tasks, __task_responses = __create_tasks(request_id, user, tenant, param, task_response)
             tasks += __tasks
             task_responses += __task_responses
 
@@ -91,63 +91,60 @@ def process_async_extraction_request(params):
     return response
 
 
-def __get_available_asmt_guids(params):
+def __parepare_data(param):
     asmt_guids = []
+    available_grades = []
     with EdCoreDBConnection() as connector:
-        asmt_type = params.get(Constants.ASMTTYPE)
-        asmt_subject = params.get(Constants.ASMTSUBJECT)
+        asmt_type = param.get(Constants.ASMTTYPE)
+        asmt_subject = param.get(Constants.ASMTSUBJECT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID)], from_obj=[dim_asmt])
         query = query.where(and_(dim_asmt.c.asmt_type == asmt_type)).where(and_(dim_asmt.c.asmt_subject == asmt_subject))
         results = connector.get_result(query)
         for result in results:
-            asmt_guids.append((result[Constants.ASMT_GUID], and_(dim_asmt.c.asmt_guid == result[Constants.ASMT_GUID])))
-    return asmt_guids
+            asmt_guids.append(result[Constants.ASMT_GUID])
+    asmt_grade = param.get(Constants.ASMTGRADE)
+    if asmt_grade is None:
+        available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
+    else:
+        available_grades = [asmt_grade]
+    return asmt_guids, available_grades, dim_asmt, fact_asmt_outcome
 
 
-def __create_tasks_by_asmt_grade(request_id, user, tenant, param, task_response={}):
+def __create_tasks(request_id, user, tenant, param, task_response={}):
     tasks = []
     task_responses = []
-    asmt_guids = __get_available_asmt_guids(param)
-    if param.get(Constants.ASMTGRADE) is None:
-        available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
-        for asmt_grade in available_grades:
-            copied_params = copy.deepcopy(param)
-            copied_params[Constants.ASMTGRADE] = asmt_grade
-            query = get_extract_assessment_query(copied_params)
-            # check if a record exists for specified asmt grade
-            if has_data(query.limit(1), request_id):
-                for asmt_guid in asmt_guids:
-                    copied_params[Constants.ASMT_GUID] = asmt_guid[0]
-                    _task, _task_response = __create_task(request_id, user, tenant, copied_params, query.where(asmt_guid[1]), task_response)
-                    if _task is not None:
-                        tasks.append(_task)
-                    task_responses.append(_task_response)
-            else:
-                copied_task_response = copy.deepcopy(task_response)
-                copied_task_response[Extract.STATUS] = Extract.FAIL
-                copied_task_response[Extract.MESSAGE] = "Data is not available"
-                task_responses.append(copied_task_response)
-    else:
-        query = get_extract_assessment_query(copied_params)
-        if has_data(query.limit(1), request_id):
-            _task, _task_response = __create_task(request_id, user, tenant, copied_params, query, task_response)
-            if _task is not None:
-                tasks.append(_task)
-            task_responses.append(_task_response)
-    return tasks, task_responses
-
-
-def __create_task(request_id, user, tenant, param, query, task_response={}):
-    task = None
     copied_task_response = copy.deepcopy(task_response)
+    asmt_guids, available_grades, dim_asmt, fact_asmt_outcome = __parepare_data(param)
+
+    # 1. check record availability
+    # if asmt_grade is already set value, then set to None.
+    param[Constants.ASMTGRADE] = None
+    query = get_extract_assessment_query(param)
     if has_data(query.limit(1), request_id):
-        task = __create_new_task(request_id, user, tenant, param, query)
+        # 2. check data by asmt_guids
+        for asmt_guid in asmt_guids:
+            copied_params = copy.deepcopy(param)
+            copied_params[Constants.ASMT_GUID] = asmt_guid
+            query_with_asmt_guid = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
+            if has_data(query_with_asmt_guid.limit(1), request_id):
+                # 3. check asmt_grade
+                for asmt_grade in available_grades:
+                    copied_params[Constants.ASMTGRADE] = asmt_grade
+                    query_with_asmt_guid_and_asmt_grade = query_with_asmt_guid.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+                    if has_data(query_with_asmt_guid_and_asmt_grade.limit(1), request_id):
+                        task = {}
+                        task['task_id'] = create_new_entry(user, request_id, copied_params)
+                        task['file_name'] = get_file_path(copied_params, tenant, request_id)
+                        task['query'] = compile_query_to_sql_text(query_with_asmt_guid_and_asmt_grade)
+                        tasks.append(task)
         copied_task_response[Extract.STATUS] = Extract.OK
     else:
         copied_task_response[Extract.STATUS] = Extract.FAIL
         copied_task_response[Extract.MESSAGE] = "Data is not available"
-    return task, copied_task_response
+        task_responses.append(copied_task_response)
+    return tasks, task_responses
 
 
 def has_data(query, request_id):
@@ -158,14 +155,6 @@ def has_data(query, request_id):
         return False
     else:
         return True
-
-
-def __create_new_task(request_id, user, tenant, params, query):
-    task = {}
-    task['task_id'] = create_new_entry(user, request_id, params)
-    task['file_name'] = get_file_path(params, tenant, request_id)
-    task['query'] = compile_query_to_sql_text(query)
-    return task
 
 
 def __get_extract_request_user_info():

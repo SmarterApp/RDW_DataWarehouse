@@ -10,7 +10,7 @@ from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from smarter.extract.processor import process_async_extraction_request, has_data,\
+from smarter.extract.processor import process_async_extraction_request,\
     get_extract_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
     get_pickup_zone_info, process_sync_extract_request,\
@@ -67,20 +67,6 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         self.assertEqual(len(tasks), 4)
         self.assertEqual(tasks[0]['status'], 'fail')
         self.assertEqual(tasks[3]['status'], 'fail')
-
-    def test_has_data_false(self):
-        with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
-            query = select([fact.c.state_code], from_obj=[fact])
-            query = query.where(fact.c.state_code == 'UT')
-            self.assertFalse(has_data(query, '1'))
-
-    def test_has_data_true(self):
-        with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
-            query = select([fact.c.state_code], from_obj=[fact])
-            query = query.where(fact.c.state_code == 'NY')
-            self.assertTrue(has_data(query, '1'))
 
     def test_get_file_name_tenant_level(self):
         params = {'stateCode': 'CA',

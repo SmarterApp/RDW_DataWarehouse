@@ -21,8 +21,9 @@ import tempfile
 from edapi.exceptions import NotFoundException
 import copy
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, distinct
 from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
+from sqlalchemy.sql.functions import concat
 
 
 log = logging.getLogger('smarter')
@@ -91,66 +92,67 @@ def process_async_extraction_request(params, is_tenant_level=True):
 
 
 def __prepare_data(param):
-    asmt_guids = []
+    guid_grade = []
     available_grades = []
-    with EdCoreDBConnection() as connector:
-        asmt_type = param.get(Constants.ASMTTYPE)
-        asmt_subject = param.get(Constants.ASMTSUBJECT)
-        dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMTGUID)], from_obj=[dim_asmt])
-        query = query.where(and_(dim_asmt.c.asmt_type == asmt_type)).where(and_(dim_asmt.c.asmt_subject == asmt_subject))
-        results = connector.get_result(query)
-        for result in results:
-            asmt_guids.append(result[Constants.ASMTGUID])
     asmt_grade = param.get(Constants.ASMTGRADE)
     if asmt_grade is None:
         available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
     else:
         available_grades = [asmt_grade]
-    return asmt_guids, available_grades, dim_asmt, fact_asmt_outcome
+    with EdCoreDBConnection() as connector:
+        asmt_type = param.get(Constants.ASMTTYPE)
+        asmt_subject = param.get(Constants.ASMTSUBJECT)
+        state_code = param.get(Constants.STATECODE)
+        district_guid = param.get(Constants.DISTRICTGUID)
+        school_guid = param.get(Constants.SCHOOLGUID)
+        asmt_grade = param.get(Constants.ASMTGRADE)
+        asmt_year = param.get(Constants.ASMTYEAR)
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        query = select_with_context([distinct(dim_asmt.c.asmt_guid + ':' + fact_asmt_outcome.c.asmt_grade).label('guid_grade'), ],
+                                    from_obj=[dim_asmt
+                                              .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))])\
+            .where(and_(dim_asmt.c.asmt_type == asmt_type))\
+            .where(and_(dim_asmt.c.asmt_subject == asmt_subject))\
+            .where(and_(fact_asmt_outcome.c.state_code == state_code))\
+            .where(and_(fact_asmt_outcome.c.asmt_grade.in_(available_grades)))
+        if school_guid is not None:
+            query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
+        if district_guid is not None:
+            query = query.where(and_(fact_asmt_outcome.c.district_guid == district_guid))
+        if asmt_year is not None:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
+        if asmt_subject is not None:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
+
+        results = connector.get_result(query)
+        for result in results:
+            guid_grade.append(result['guid_grade'].split(':'))
+
+    return guid_grade, dim_asmt, fact_asmt_outcome
 
 
 def __create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    asmt_guids, available_grades, dim_asmt, fact_asmt_outcome = __prepare_data(param)
+    guid_grade, dim_asmt, fact_asmt_outcome = __prepare_data(param)
 
-    # 1. check record availability
-    # if asmt_grade is already set value, then set to None.
     param[Constants.ASMTGRADE] = None
     query = get_extract_assessment_query(param)
-    if has_data(query.limit(1), request_id):
-        # 2. check data by asmt_guids
-        for asmt_guid in asmt_guids:
+    if guid_grade:
+        for asmt_guid, asmt_grade in guid_grade:
             copied_params = copy.deepcopy(param)
             copied_params[Constants.ASMTGUID] = asmt_guid
-            query_with_asmt_guid = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
-            if has_data(query_with_asmt_guid.limit(1), request_id):
-                # 3. check asmt_grade
-                for asmt_grade in available_grades:
-                    copied_params[Constants.ASMTGRADE] = asmt_grade
-                    query_with_asmt_guid_and_asmt_grade = query_with_asmt_guid.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
-                    if has_data(query_with_asmt_guid_and_asmt_grade.limit(1), request_id):
-                        tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_guid_and_asmt_grade, is_tenant_level=is_tenant_level))
-        copied_task_response[Extract.STATUS] = Extract.OK
-        task_responses.append(copied_task_response)
+            copied_params[Constants.ASMTGRADE] = asmt_grade
+            query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\
+                .where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+            tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade, is_tenant_level=is_tenant_level))
     else:
         copied_task_response[Extract.STATUS] = Extract.FAIL
         copied_task_response[Extract.MESSAGE] = "Data is not available"
         task_responses.append(copied_task_response)
     return tasks, task_responses
-
-
-def has_data(query, request_id):
-    log.info('Extract: data availability check for request ' + request_id)
-    with EdCoreDBConnection() as connection:
-        result = connection.get_result(query)
-    if result is None or len(result) < 1:
-        return False
-    else:
-        return True
 
 
 def __create_tasks(request_id, user, tenant, params, query, is_tenant_level=False):

@@ -14,16 +14,18 @@ from edcore.utils.utils import merge_dict
 
 
 class ExtractStatus():
-    QUEUED = 'QUEUED'               # Extract is queued in broker
-    EXTRACTING = 'EXTRACTING'       # Extracting is in progress
-    EXTRACTED = 'EXTRACTED'         # File has been extracted in work zone
-    ARCHIVING = 'ARCHIVING'         # File is being archived
-    ARCHIVED = 'ARCHIVED'           # File is archived
-    COPYING = 'COPYING'             # File is being copied to pick up zone
-    COPIED = 'COPIED'               # File has been copied and entire extract process is completed
+    QUEUED = 'QUEUED'                       # Extract is queued in broker
+    EXTRACTING = 'EXTRACTING'               # Extracting is in progress
+    EXTRACTED = 'EXTRACTED'                 # File has been extracted in work zone
+    GENERATING_JSON = 'GENERATING_JSON'     # Generating json
+    GENERATED_JSON = 'GENERATED_JSON'       # Generated json and file is saved to disk
+    ARCHIVING = 'ARCHIVING'                 # File is being archived
+    ARCHIVED = 'ARCHIVED'                   # File is archived
+    COPYING = 'COPYING'                     # File is being copied to pick up zone
+    COPIED = 'COPIED'                       # File has been copied and entire extract process is completed
     # Error status
-    FAILED = 'FAILED'               # Extract process failed
-    FAILED_NO_TENANT = 'FAILED_NO_TENANT'  # Extract process failed due to no tenant given
+    FAILED = 'FAILED'                       # Extract process failed
+    FAILED_NO_TENANT = 'FAILED_NO_TENANT'   # Extract process failed due to no tenant given
 
 
 def insert_extract_stats(*dict_values):

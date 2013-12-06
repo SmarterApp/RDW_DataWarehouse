@@ -14,13 +14,26 @@ from edextract.status.status import ExtractStatus,\
 from edextract.status.constants import Constants
 from edextract.settings.config import Config, get_setting
 from edextract.utils.file_utils import prepare_path
-from celery.canvas import group, chain
+from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError
 from edextract.utils.data_archiver import encrypted_archive_files, archive_files
+import json
+from edextract.utils.json_formatter import format_json
 
 
 log = logging.getLogger('edextract')
+
+
+def route_tasks(tenant, request_id, tasks, queue_name='extract'):
+    '''
+    Given a list of tasks, route them to either generate or generate_json depending on the task type
+    '''
+    generate_tasks = []
+    for task in tasks:
+        celery_task = generate if task.get('is_json_request') else generate_json
+        generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue=queue_name, immutable=True))         # @UndefinedVariable
+    return group(generate_tasks)
 
 
 @celery.task(name='task.extract.start_extract',
@@ -31,8 +44,7 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
-    workflow = chain(generate_tasks,
+    workflow = chain(route_tasks(tenant, request_id, tasks, 'extract'),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue='extract', immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue='extract', immutable=True))
     workflow.apply_async()
@@ -52,11 +64,10 @@ def generate(tenant, request_id, task_id, query, output_file):
     :param batch_id: batch_id for tracking
     '''
     log.info('execute tasks.extract.generate for task ' + task_id)
+    task_info = {Constants.TASK_ID: task_id,
+                 Constants.CELERY_TASK_ID: generate.request.id,
+                 Constants.REQUEST_GUID: request_id}
     try:
-        task_info = {Constants.TASK_ID: task_id,
-                     Constants.CELERY_TASK_ID: generate.request.id,
-                     Constants.REQUEST_GUID: request_id}
-
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
@@ -129,3 +140,32 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
         log.error("Exception happened in remote copy. " + e)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: 'remote copy has failed: ' + e})
     return rtn_code
+
+
+@celery.task(name="tasks.extract.generate_json",
+             max_retries=get_setting(Config.MAX_RETRIES),
+             default_retry_delay=get_setting(Config.RETRY_DELAY))
+def generate_json(tenant, request_id, task_id, query, output_file):
+    task_info = {Constants.TASK_ID: task_id,
+                 Constants.CELERY_TASK_ID: generate_json.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    try:
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.GENERATING_JSON})
+        if tenant is None:
+            insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
+            return False
+        prepare_path(output_file)
+        with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as outfile:
+            results = connection.get_result(query)
+            if len(results) is 1:
+                formatted = format_json(results[0])
+                json.dump(formatted, outfile, indent=4)
+            else:
+                insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: "Results length is: " + str(len(results))})
+                return False
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.GENERATED_JSON})
+        return True
+    except Exception as e:
+        log.error(e)
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: e})
+        return False

@@ -11,7 +11,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extract.processor import process_async_extraction_request, has_data,\
-    get_file_path, get_extract_work_zone_path,\
+    get_extract_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
     get_pickup_zone_info, process_sync_extract_request
 from sqlalchemy.sql.expression import select
@@ -85,8 +85,9 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         params = {'stateCode': 'CA',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
-                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
-        path = get_file_path(params, 'tenant', 'request_id')
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
+                  'asmtType': 'abc'}
+        path = get_extract_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
@@ -96,8 +97,9 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'schoolGuid': 'asf',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
-                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
-        path = get_file_path(params, 'tenant', 'request_id')
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
+                  'asmtType': 'abc'}
+        path = get_extract_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
@@ -108,8 +110,9 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
-                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
-        path = get_file_path(params, 'tenant', 'request_id')
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
+                  'asmtType': 'abc'}
+        path = get_extract_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_GRADE_5_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
@@ -149,5 +152,5 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'schoolGuid': '242',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': [],
-                  'asmt_guid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)

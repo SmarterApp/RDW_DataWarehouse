@@ -13,16 +13,16 @@ from smarter.extract.student_assessment import get_extract_assessment_query, com
 from pyramid.security import authenticated_userid
 from uuid import uuid4
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import start_extract, generate, archive
+from edextract.tasks.extract import start_extract, archive, route_tasks
 from pyramid.threadlocal import get_current_request, get_current_registry
 from datetime import datetime
 import os
 import tempfile
 from edapi.exceptions import NotFoundException
-from celery.canvas import group
 import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
+from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
 
 
 log = logging.getLogger('smarter')
@@ -34,15 +34,14 @@ def process_sync_extract_request(params):
     extract_params = copy.deepcopy(params)
     for subject in params[Constants.ASMTSUBJECT]:
         extract_params[Constants.ASMTSUBJECT] = subject
-        subject_tasks, task_responses = __create_tasks(request_id, user, tenant, extract_params)
+        subject_tasks, task_responses = __create_tasks_with_responses(request_id, user, tenant, extract_params)
         tasks += subject_tasks
 
     if len(tasks) > 0:
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        # Synchronous calls to generate and then to archive
-        generate_tasks = group(generate.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue='extract_sync', immutable=True) for task in tasks)  # @UndefinedVariable
-        generate_tasks().get(timeout=celery_timeout)
+        # Synchronous calls to generate json and csv and then to archive
+        route_tasks(tenant, request_id, tasks, 'extract-sync')().get(timeout=celery_timeout)
         result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract_sync')
         return result.get(timeout=celery_timeout)
     else:
@@ -75,7 +74,7 @@ def process_async_extraction_request(params):
                              Extract.REQUESTID: request_id}
 
             # separate by grades if no grade is specified
-            __tasks, __task_responses = __create_tasks(request_id, user, tenant, param, task_response)
+            __tasks, __task_responses = __create_tasks_with_responses(request_id, user, tenant, param, task_response)
             tasks += __tasks
             task_responses += __task_responses
 
@@ -100,11 +99,11 @@ def __parepare_data(param):
         asmt_subject = param.get(Constants.ASMTSUBJECT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID)], from_obj=[dim_asmt])
+        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMTGUID)], from_obj=[dim_asmt])
         query = query.where(and_(dim_asmt.c.asmt_type == asmt_type)).where(and_(dim_asmt.c.asmt_subject == asmt_subject))
         results = connector.get_result(query)
         for result in results:
-            asmt_guids.append(result[Constants.ASMT_GUID])
+            asmt_guids.append(result[Constants.ASMTGUID])
     asmt_grade = param.get(Constants.ASMTGRADE)
     if asmt_grade is None:
         available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
@@ -113,7 +112,7 @@ def __parepare_data(param):
     return asmt_guids, available_grades, dim_asmt, fact_asmt_outcome
 
 
-def __create_tasks(request_id, user, tenant, param, task_response={}):
+def __create_tasks_with_responses(request_id, user, tenant, param, task_response={}):
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
@@ -127,7 +126,7 @@ def __create_tasks(request_id, user, tenant, param, task_response={}):
         # 2. check data by asmt_guids
         for asmt_guid in asmt_guids:
             copied_params = copy.deepcopy(param)
-            copied_params[Constants.ASMT_GUID] = asmt_guid
+            copied_params[Constants.ASMTGUID] = asmt_guid
             query_with_asmt_guid = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))
             if has_data(query_with_asmt_guid.limit(1), request_id):
                 # 3. check asmt_grade
@@ -135,11 +134,7 @@ def __create_tasks(request_id, user, tenant, param, task_response={}):
                     copied_params[Constants.ASMTGRADE] = asmt_grade
                     query_with_asmt_guid_and_asmt_grade = query_with_asmt_guid.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
                     if has_data(query_with_asmt_guid_and_asmt_grade.limit(1), request_id):
-                        task = {}
-                        task['task_id'] = create_new_entry(user, request_id, copied_params)
-                        task['file_name'] = get_file_path(copied_params, tenant, request_id)
-                        task['query'] = compile_query_to_sql_text(query_with_asmt_guid_and_asmt_grade)
-                        tasks.append(task)
+                        tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_guid_and_asmt_grade))
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
@@ -159,6 +154,31 @@ def has_data(query, request_id):
         return True
 
 
+def __create_tasks(request_id, user, tenant, params, query):
+    tasks = []
+    tasks.append(__create_new_task(request_id, user, tenant, params, query))
+    tasks.append(__create_asmt_metadata_task(request_id, user, tenant, params))
+    return tasks
+
+
+def __create_asmt_metadata_task(request_id, user, tenant, params):
+    query = get_asmt_metadata(params.get(Constants.ASMTGUID))
+    return __create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
+
+
+def __create_new_task(request_id, user, tenant, params, query, asmt_metadata=False):
+    task = {}
+    task['task_id'] = create_new_entry(user, request_id, params)
+    if asmt_metadata:
+        task['file_name'] = get_asmt_metadata_file_path(params, tenant, request_id)
+        task['is_json_request'] = False
+    else:
+        task['file_name'] = get_extract_file_path(params, tenant, request_id)
+        task['is_json_request'] = True
+    task['query'] = compile_query_to_sql_text(query)
+    return task
+
+
 def __get_extract_request_user_info():
     # Generate an uuid for this extract request
     request_id = str(uuid4())
@@ -176,7 +196,7 @@ def get_extract_work_zone_path(tenant, request_id):
     return os.path.join(base, tenant, request_id, 'csv')
 
 
-def get_file_path(param, tenant, request_id):
+def get_extract_file_path(param, tenant, request_id):
     asmtGrade = param.get(Constants.ASMTGRADE)
     if asmtGrade is not None:
         identifier = '_GRADE_' + str(asmtGrade)
@@ -184,6 +204,7 @@ def get_file_path(param, tenant, request_id):
         identifier = ''
     else:
         identifier = '_' + param.get(Constants.STATECODE)
+
     tenant_level = param.get(Extract.EXTRACT_LEVEL, '')
     if tenant_level == Extract.TENANT:
         tenant_name = '_' + tenant
@@ -194,8 +215,12 @@ def get_file_path(param, tenant, request_id):
                                                                                                              asmtSubject=param[Constants.ASMTSUBJECT].upper(),
                                                                                                              asmtType=param[Constants.ASMTTYPE].upper(),
                                                                                                              currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                                                                                                             asmtGuid=param[Constants.ASMT_GUID])
+                                                                                                             asmtGuid=param[Constants.ASMTGUID])
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
+
+
+def get_asmt_metadata_file_path(params, tenant, request_id):
+    return os.path.join(get_extract_work_zone_path(tenant, request_id), get_metadata_file_name(params))
 
 
 def get_encryption_public_key_identifier(tenant):

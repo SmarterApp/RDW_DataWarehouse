@@ -30,6 +30,7 @@ class Constants():
     ASMT_SUBJECT = 'asmt_subject'
     ASMTTYPE = 'asmtType'
     ASMTYEAR = 'asmtYear'
+    ASMTGUID = 'asmtGuid'
     ASMT_TYPE = 'asmt_type'
     ASMT_GRADE = 'asmt_grade'
     ASMT_GRADE_NAME = 'asmt_grade_name'

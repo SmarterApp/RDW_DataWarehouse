@@ -69,6 +69,7 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(fact['asmt_claim_1_score_range_max'], 'score_claim_1_max')
         self.assertEqual(fact['gender'], 'gender_student')
 
+#TODO: add more tests
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

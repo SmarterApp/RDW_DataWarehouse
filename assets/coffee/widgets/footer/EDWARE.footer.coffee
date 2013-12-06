@@ -107,22 +107,4 @@ define [
         $(selector).popover('hide')
         $("#footer .nav li a").removeClass("active")
 
-      # bind print event
-      $(document).on
-        click: ->
-          val=$('input[name=print_options]:checked').val()
-          asmtType = $('#selectedAsmtType').text()
-          url=document.URL.replace("indivStudentReport","print")
-          url += '&pdf=true'
-          if val is "gray"
-            url += "&grayscale=true"
-          if asmtType
-             url += "&asmtType=" + encodeURI asmtType
-          url += "&lang=" + edwarePreferences.getSelectedLanguage()
-          $("#print").popover "hide"
-          $("#footer .nav li a").removeClass("active")
-          window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
-        , "#printButton"
-        
-
   EdwareFooter: EdwareFooter

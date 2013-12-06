@@ -8,7 +8,8 @@ define [
   "edwareAsmtDropdown"
   "edwareDisclaimer"
   "edwarePreferences"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences) ->
+  "edwarePrint"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint) ->
 
   LEGEND_POPOVER_TEMPLATE = '<div class="popover legendPopover"><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
 
@@ -23,6 +24,10 @@ define [
         labels: @config.labels
       @legend ?= @createLegend()
       @asmtDropdown ?= @createAsmtDropdown() # create assessment type dropdown list
+      @printer ?= @createPrinter()
+
+    createPrinter: () ->
+      @printer = edwarePrint.create '.printModal'
     
     createLegend: () ->
       # create legend
@@ -70,6 +75,9 @@ define [
       .mouseleave (e)->
         $(this).removeClass('active')
         $(this).popover('hide')
+      # bind print popover
+      $('div.printLabel').click ->
+        self.printer.show()
 
   create = (container, config, reloadCallback) ->
     new ReportActionBar(container, config, reloadCallback)

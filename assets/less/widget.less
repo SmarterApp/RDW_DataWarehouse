@@ -1843,6 +1843,7 @@ th.ui-th-column div {
 	    }
 	}
     }
+
 }
 
 #actionBar {
@@ -1851,6 +1852,7 @@ th.ui-th-column div {
     border-top: solid 1px @color-B3;
 
     &>ul {
+	cursor: pointer;
 	list-style: none;
 	margin: 0px;
 	float: right;
@@ -1928,7 +1930,6 @@ th.ui-th-column div {
 	}
 
 	.filterLabel {
-	    cursor: pointer;
 	    		
 	    &:before {
 		content: "";
@@ -1987,6 +1988,19 @@ th.ui-th-column div {
 		z-index: 9999;
 	    }
 	}
+
+	.printLabel {
+	    &:before {
+		content: "";
+		display: inline-block;
+		background-image: url('../images/nav_icons.png');
+		background-position: 0px -123px;
+		width: 15px;
+		height: 15px;
+		vertical-align: text-bottom;
+		margin-right: 3px;
+	    }
+	}
     }
 
     .legendLabel:before {
@@ -2011,5 +2025,23 @@ th.ui-th-column div {
 
     .active {
 	background-color: @color-B14;
+    }
+
+    #PrintModal {
+	width: 323px;
+	left: 58%;
+	
+	li {
+	    display: list-item;
+	    border: none;
+	    height: 30px;
+	    list-style: none;
+
+	    input, span {
+		vertical-align: baseline;
+		padding-left: 10px;
+		font-size: 14px;
+	    }
+	}
     }
 }

@@ -11,12 +11,11 @@ define [
   "edwareUtil"
   "edwareFooter"
   "edwareHeader"
-  "edwareAsmtDropdown"
   "edwarePreferences"
-  "edwareDisclaimer"
   "edwareConstants"
   "edwareReportInfoBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences, edwareDisclaimer, Constants, edwareReportInfoBar) ->
+  "edwareReportActionBar"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -31,9 +30,9 @@ define [
       this
       
     initialize: () ->
-      this.getParams()
+      @params = edwareUtil.getUrlParams()
       this.isPdf = false
-      this.currentAsmtType = "Summative" 
+      this.currentAsmtType = Constants.ASMT_TYPE.SUMMATIVE
       
       if this.params['grayscale'] is 'true'
         this.isGrayscale = true
@@ -45,18 +44,11 @@ define [
 
       this.configData = edwareDataProxy.getDataForReport "indivStudentReport"
       this.loadCss()
-   
-    getParams: () ->
-      this.params = edwareUtil.getUrlParams()
-   
+
     updateView: (asmtType) ->
       edwarePreferences.saveAsmtPreference asmtType
       this.currentAsmtType = asmtType
-      this.updateDisclaimer()
       this.render asmtType
-    
-    updateDisclaimer: () ->
-      this.disclaimer.update this.currentAsmtType
     
     fetchData: (callback) ->
       # Get individual student report data from the server
@@ -95,17 +87,16 @@ define [
         if not self.isPdf
           self.createBreadcrumb()
           self.renderReportInfo()
-          self.createDropdown()
-          self.disclaimer = $('.disclaimerInfo').edwareDisclaimer self.configData.interimDisclaimer
-          # self.disclaimer.create()
+          self.renderReportActionBar()
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
-          self.updateDisclaimer()
           
-
     processData: () ->
       for asmt of this.data.items
         i = 0
-        this.asmtTypes.push asmt
+        this.asmtTypes.push
+          'asmtType': asmt
+          'display': asmt
+          'value': asmt
         while i < this.data.items[asmt].length
           items = this.data.items[asmt][i]
           
@@ -201,6 +192,13 @@ define [
         CSVOptions: @configData.CSVOptions
         # subjects on ISR
         subjects: @data.current
+
+    renderReportActionBar: ()->
+      self = this
+      @configData.subject = @createSampleInterval this.data.items[@currentAsmtType][0], this.legendInfo.sample_intervals
+      @configData.reportName = Constants.REPORT_NAME.ISR
+      @configData.asmtTypes = @asmtTypes.sort().reverse()
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, this.updateView.bind(this)
 
     render : (asmtType) ->
       this.data.current = this.data.items[asmtType]
@@ -351,12 +349,5 @@ define [
       $(claimArrowBox).addClass(triangle_img)
       $(claimArrowBox).attr("style", "background-position: 50% " + triangle_y_position + "% !important")
       $(claimArrowBox).append arrow_bar
-
-    # Create assessment type dropdown
-    createDropdown : () ->
-      this.asmtTypes = this.asmtTypes.sort().reverse()
-      this.dropdown = $('.asmtDropdown').edwareAsmtDropdown this.asmtTypes, this.updateView.bind(this)
-      this.dropdown.create()
-      this.dropdown.setSelectedValue this.currentAsmtType     
  
   EdwareISR: EdwareISR

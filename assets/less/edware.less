@@ -313,6 +313,7 @@ table {
 
 #individualStudentContent {
     float: left;
+    padding-top: 20px;
     padding-bottom: 40px;
     width: 100%;
     h2 {
@@ -1041,15 +1042,21 @@ table {
 
 }
 
+body.cpop {
+
+    #actionBar {
+	.printItem, .asmtTypeItem {    
+	    display: none;
+	}
+    }
+
+}
+
 /* Customize each report */
 body.state {
 
     #infoBar #DownloadMenuModal {
 	li.extract { display: none; }
-    }
-
-    #actionBar {
-	li.asmtTypeItem { display: none; }
     }
 }
 
@@ -1057,10 +1064,6 @@ body.district {
 
     #infoBar #DownloadMenuModal {
 	li.extract, li.csv { display: none; }
-    }
-
-    #actionBar {
-	li.asmtTypeItem { display: none; }
     }
 }
 
@@ -1077,6 +1080,10 @@ body.school {
     #infoBar #DownloadMenuModal {
 	li.csv { display: none; }
     }
+
+    #actionBar .asmtTypeItem {
+	display: inline-block;
+    }
 }
 
 body.los {
@@ -1085,8 +1092,10 @@ body.los {
 	li.csv { display: none; }
     }
 
-    #actionBar .alignmentItem {    
-	display: none;
+    #actionBar {
+	.printItem, .alignmentItem {    
+	    display: none;
+	}
     }
 }
 
@@ -1094,5 +1103,11 @@ body.isr {
     
     #infoBar li.download {
 	display: none;
+    }
+
+    #actionBar {
+	.sortItem, .alignmentItem, .filterItem {    
+	    display: none;
+	}
     }
 }

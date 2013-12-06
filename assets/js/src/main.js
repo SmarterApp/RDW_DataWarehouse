@@ -40,6 +40,7 @@ require({
     edwareDownload: '../widgets/download/EDWARE.download',
     edwareReportInfoBar: '../widgets/header/EDWARE.infoBar',
     edwareReportActionBar: '../widgets/header/EDWARE.actionBar',
+    edwarePrint: '../widgets/print/EDWARE.print',
 
     // Templates
     edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -62,7 +63,8 @@ require({
     edwareFormatterTemplate: '../widgets/grid/FormatterTemplate.html',
     CSVOptionsTemplate: '../widgets/download/CSVOptionsTemplate.html',
     DownloadMenuTemplate: '../widgets/download/DownloadMenuTemplate.html',
-    AsmtDropdownTemplate: '../widgets/asmtDropdown/template.html'
+    AsmtDropdownTemplate: '../widgets/asmtDropdown/template.html',
+    PrintTemplate: '../widgets/print/template.html'
   },
   shim: {
     'jqGrid': {

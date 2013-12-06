@@ -199,9 +199,7 @@ define [
       this.bindEvents()
 
     initialize: (@container) ->
-      output = Mustache.to_html DownloadMenuTemplate, {
-        
-      }
+      output = Mustache.to_html DownloadMenuTemplate, {}
       $(@container).html output
       this.eventHandler =
         file: this.downloadAsFile

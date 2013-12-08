@@ -1560,30 +1560,60 @@ th.ui-th-column div {
   
 }
 .stickyChainScrollable {
-      max-height: 300px;
-      padding: 0 5px 0 5px;
-      width: 280px;
-      overflow-y: auto;
-      .stickyChainTable {
+    max-height: 300px;
+    padding: 0 5px 0 5px;
+    width: 280px;
+    overflow-y: auto;
+    .stickyChainTable {
         display: table;
         .tableRow {
-          display:table-row;
+            display:table-row;
             .tableCellLeft {
-              display:table-cell;
-              font-size: 13px;
-              width: 250px;
-              padding: 4px;
+		display:table-cell;
+		font-size: 13px;
+		width: 250px;
+		padding: 4px;
             }
             .tableCellRight {
-              display:table-cell;
-              padding-right: 10px;
+		display:table-cell;
+		padding-right: 10px;
             }
             .tableCellHR {
-              display:table-cell;
+		display:table-cell;
             }
         }
-      }
     }
+}
+
+#HelpMenuModal {
+
+    width: 600px;
+
+    #helpMenuTab {
+
+	font-size: 16px;
+    }
+
+    .helpText {
+	margin: -2px 15px;
+	float: left;
+	color: @color-A1;
+
+	span {
+	    padding-left: 7px;
+	}
+
+	.icon-question-sign {
+	    vertical-align: middle;
+	    width: 16px;
+	    height: 16px;
+	}
+    }
+
+    p {
+	font-size: 14px;
+    }
+}
 
 
 #CSVModal {

@@ -7,8 +7,8 @@ define [
   "edwareExport"
   "edwareConstants"
   "edwareClientStorage"
-  "edwareDownload"
-], ($, Mustache, bootstrap, footerTemplate, edwarePreferences, edwareExport, Constants, edwareClientStorage, edwareDownload) ->
+  "edwareHelpMenu"
+], ($, Mustache, bootstrap, footerTemplate, edwarePreferences, edwareExport, Constants, edwareClientStorage, edwareHelpMenu) ->
 
   POPOVER_TEMPLATE = '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
 
@@ -49,16 +49,8 @@ define [
           $(".surveyMonkeyPopup").html()
 
     createHelp: () ->
-      $("#help").popover
-        html: true
-        title: Mustache.to_html TITLE_TEMPLATE, {
-          selector: '#help'
-          hide: this.labels.hide
-          title: this.labels.help
-        }
-        template: POPOVER_TEMPLATE
-        content: ->
-          $(".helpPopup").html()
+      @helpMenu ?= edwareHelpMenu.create '.HelpMenuContainer',
+        labels: this.labels
 
     bindEvents: ()->
       self = this
@@ -71,9 +63,8 @@ define [
         $(this).toggleClass("active")
 
       # Popup will close if user clicks popup hide button
-      $(document).on 'click', '.hideButton a', ->
-        selector = $(this).data('selector')
-        $(selector).popover('hide')
-        $("#footer .nav li a").removeClass("active")
+      $(document).on 'click', '#help', ->
+        self.helpMenu.show()
+        
 
   EdwareFooter: EdwareFooter

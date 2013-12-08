@@ -1893,7 +1893,7 @@ th.ui-th-column div {
 		width: 47px;
 		height: 17px;
 		cursor: pointer;
-		vertical-align: text-top;
+		vertical-align: text-bottom;
 	    }
 	}
 	
@@ -2017,6 +2017,17 @@ th.ui-th-column div {
 		.asmtTypeButton {
 		    border: solid 1px #e7e7e7;
 		    background-color: #fff;
+		    color: @color-B1;
+
+		    &:after {
+			content: "";
+			width: 15px;
+			height: 9px;
+			background-image: url("../images/nav_icons.png");
+			display: inline-block;
+			margin-left: 15px;
+			background-position: 0 -52px;
+		    }
 		}
 
 	    }

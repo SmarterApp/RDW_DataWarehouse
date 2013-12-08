@@ -1727,15 +1727,15 @@ th.ui-th-column div {
     /* background-color: @color-B10; */
 
     ul {
-	padding: 9px 0px 0px 0px;
+	padding: 11px 0px 0px 0px;
 	list-style: none;
 	margin: 0px;
 	font-size: 0px;
 
 	li {
 	    display: inline-block;
-	    border-right: solid 1px @color-B7;
-	    padding: 0px 15px;
+	    border-right: solid 1px @color-B16;
+	    padding: 0px 12px;
 	    height: 26px;
 	    font-size: 14px;
 
@@ -1746,7 +1746,7 @@ th.ui-th-column div {
 	    &>* {
 		height: 20px;
 		top: 50%;
-		margin-top: -10px;
+		margin-top: -11px;
 		position: relative;
 		float: left;
 	    }
@@ -1848,8 +1848,8 @@ th.ui-th-column div {
 
 #actionBar {
 
-    background-color: @color-B8;
-    border-top: solid 1px @color-B3;
+    background-color: @color-C11;
+    border-top: solid 1px @color-B17;
 
     &>ul {
 	cursor: pointer;
@@ -1862,16 +1862,14 @@ th.ui-th-column div {
 	&>li {
 	    display: inline-block;
 	    vertical-align: middle;
-	    border-right: solid 1px @color-B7;
-	    padding: 0 27px;
-	    height: 38px;
+	    height: 35px;
 	    font-weight: bold;
 	    font-size: 12px;
 
 	    &>div {
 		height: 20px;
 		top: 50%;
-		margin-top: -10px;
+		margin-top: -13px;
 		position: relative;
 		float: left;
 	    }
@@ -1881,6 +1879,15 @@ th.ui-th-column div {
 		padding: 0 3px;
 		font-size: 11px;
 	    }
+
+	    .divider {
+		border-right: solid 1px @color-B18;
+		padding: 3px 27px;
+	    }
+	}
+
+	.legendItem .divider {
+	    border-left: solid 1px @color-B18;
 	}
 
 	.align_button_area {
@@ -1888,35 +1895,24 @@ th.ui-th-column div {
 	    padding-left: 10px;
 	    
 	    .align_button {
-		width: 30px;
-		height: 16px;
+		display: inline-block;
+		width: 47px;
+		height: 17px;
 		cursor: pointer;
-		float: left;
-		position: relative;
-		bottom: -2px;
+		vertical-align: text-top;
 	    }
 	}
 	
 	.align_off {
-	    background-image: url("../images/align_onoff.png");
+	    background-image: url("../images/align_icons.png");
 	    background-repeat: no-repeat;
-	    background-position: 0 -16px;
-
-	    &:before {
-		content: "Off";
-		color: white;
-	    }
+	    background-position: 0 -21px;
 	}
 	
 	.align_on {
-	    background-image: url("../images/align_onoff.png");
+	    background-image: url("../images/align_icons.png");
 	    background-repeat: no-repeat;
-	    background-position: 0 -33px;
-
-	    &:after {
-		content: "On";
-		color: white;
-	    }
+	    background-position: 0 -1px;
 	}
 
 	.alignLabel:before {
@@ -1950,7 +1946,7 @@ th.ui-th-column div {
 		width: 15px;
 		height: 10px;
 		vertical-align: text-bottom;
-		margin-left: 10px;
+		margin-left: 15px;
 	    }
 	}
 
@@ -1974,7 +1970,7 @@ th.ui-th-column div {
 		width: 15px;
 		height: 10px;
 		vertical-align: text-bottom;
-		margin-left: 10px;
+		margin-left: 15px;
 	    }
 	}
 
@@ -1993,12 +1989,12 @@ th.ui-th-column div {
 	    &:before {
 		content: "";
 		display: inline-block;
-		background-image: url('../images/nav_icons.png');
-		background-position: 0px -123px;
+		background-image: url('../images/print_icons.png');
+		background-repeat: no-repeat;
 		width: 15px;
 		height: 15px;
-		vertical-align: text-bottom;
-		margin-right: 3px;
+		vertical-align: text-top;
+		margin-right: 5px;
 	    }
 	}
     }

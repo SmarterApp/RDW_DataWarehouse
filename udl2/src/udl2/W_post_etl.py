@@ -6,6 +6,7 @@ import udl2.message_keys as mk
 from udl2_util.measurement import BatchTableBenchmark
 from post_etl import post_etl
 import datetime
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 
@@ -21,7 +22,7 @@ The output of this worker will serve as the input to the subsequent worker [W_al
 '''
 
 
-@celery.task(name="udl2.W_post_etl.task")
+@celery.task(name="udl2.W_post_etl.task", base=Udl2BaseTask)
 def task(incoming_msg):
     """
     Celery task that handles clean-up of files created during the UDL process.
@@ -52,10 +53,3 @@ def task(incoming_msg):
     outgoing_msg.update(incoming_msg)
     return outgoing_msg
 
-
-@celery.task(name="udl2.W_post_etl.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

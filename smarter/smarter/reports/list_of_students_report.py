@@ -4,7 +4,6 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 
-from datetime import datetime
 from edapi.decorators import report_config, user_info
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
@@ -15,17 +14,16 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
-from smarter.reports.helpers.metadata import get_subjects_map,\
+from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from edapi.cache import cache_region
-from smarter.reports.helpers.filters import apply_filter_to_query,\
+from smarter.reports.helpers.filters import apply_filter_to_query, \
     has_filters, FILTERS_CONFIG
 from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
-from smarter.extract.student_assessment import get_extract_assessment_query
 
 REPORT_NAME = "list_of_students"
 
@@ -54,48 +52,12 @@ REPORT_PARAMS = merge_dict({
     Constants.ASMTSUBJECT: {
         "type": "array",
         "required": False,
-        "minLength": 1,
-        "maxLength": 100,
-        "pattern": "^[a-zA-Z0-9\.]+$",
         "items": {
-            "type": "string"
-        },
+            "type": "string",
+            "pattern": "^(" + Constants.ELA + "|" + Constants.MATH + ")$",
+        }
     }
 }, FILTERS_CONFIG)
-
-
-@report_config(
-    name=REPORT_NAME + '_csv',
-    params=merge_dict(REPORT_PARAMS,
-                      {Constants.ASMTTYPE: {"type": "string",
-                                            "require": True,
-                                            "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"}
-                       }))
-@audit_event()
-def get_list_of_students_extract_report(params):
-    '''
-    CSV version of list of student
-    '''
-    # Get results from db
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
-    extract_file_name = "ASMT_{level}_{asmtType}_{timestamp}.csv".format(level=level,
-                                                                         asmtType=params.get(Constants.ASMTTYPE),
-                                                                         timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
-    with EdCoreDBConnection() as connector:
-        query = get_extract_assessment_query(params)
-        results = connector.get_result(query)
-        if not results:
-            raise NotFoundException("There are no results")
-    header = []
-    rows = []
-    # Reformat data
-    for result in results:
-        if len(header) is 0:
-            header = list(result.keys())
-        rows.append(list(result.values()))
-
-    return {'header': header, 'rows': rows, 'file_name': extract_file_name}
 
 
 @report_config(

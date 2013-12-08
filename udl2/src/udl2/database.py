@@ -70,6 +70,8 @@ UDL_METADATA = {
                 ('udl_phase', False, 'varchar(256)', '', True, ""),
                 ('udl_phase_step', False, 'varchar(50)', '', True, ""),
                 ('udl_phase_step_status', False, 'varchar(50)', '', True, ""),
+                ('error_desc', False, 'text', '', True, ""),
+                ('stack_trace', False, 'text', '', True, ""),
                 ('udl_leaf', False, 'bool', '', True, ""),
                 ('size_records', False, 'bigint', '', True, ""),
                 ('size_units', False, 'bigint', '', True, ""),
@@ -399,6 +401,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'varchar': VARCHAR,
         'double': FLOAT,
         'json': TEXT,
+        'text': TEXT,
         'bool': BOOLEAN,
         'interval': Interval,
         'time': Time

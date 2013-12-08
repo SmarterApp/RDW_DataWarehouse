@@ -12,7 +12,7 @@
     "walk":"",
     "colors": ">=0.6.0-1",
     "wrench":"",
-    "chokidar":"",
+    "chokidar":"0.7.0",
     "shelljs":"",
     "coffeedoc": ""
   }

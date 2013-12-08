@@ -74,7 +74,7 @@ define [
           else
             # disable button and all the input checkboxes
             self.disableInput()
-            self.sendRequest "/services/extract"
+            self.sendRequest "/services/extract/tenant"
 
     validate: ($dropdown) ->
       # check selected options

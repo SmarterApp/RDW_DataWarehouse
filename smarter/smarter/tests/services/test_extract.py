@@ -15,7 +15,9 @@ from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.response import Response
 from smarter.extract.constants import Constants
-from smarter.services.extract import post_extract_service, get_extract_service
+from smarter.services.extract import post_extract_service, get_extract_service,\
+    post_tenant_level_extract_service, get_tenant_level_extract_service,\
+    generate_zip_file_name
 
 
 class TestExtract(Unittest_with_edcore_sqlite):
@@ -48,14 +50,14 @@ class TestExtract(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 
-    def test_post_invalid_payload(self):
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service)
+    def test_post_invalid_payload_tenant_extract(self):
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_tenant_level_extract_service)
 
-    def test_post_post_invalid_param(self):
+    def test_post_post_invalid_param_tenant_extract(self):
         self.__request.json_body = {}
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_tenant_level_extract_service, self.__request)
 
-    def test_post_valid_response(self):
+    def test_post_valid_response_tenant_extract(self):
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['CA'],
                                     'asmtYear': ['2015'],
@@ -67,19 +69,19 @@ class TestExtract(Unittest_with_edcore_sqlite):
         dummy_session.set_uid('1023')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        results = post_extract_service(None, self.__request)
+        results = post_tenant_level_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
         self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
 
-    def test_get_invalid_param(self):
+    def test_get_invalid_param_tenant_extract(self):
         self.__request.GET['stateCode'] = 'NY'
         self.__request.GET['asmyType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['extractType'] = 'studentAssessment'
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_tenant_level_extract_service)
 
-    def test_post_valid_response_failed_task(self):
+    def test_post_valid_response_failed_task_tenant_extract(self):
         self.__request.GET['stateCode'] = 'NY'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -90,13 +92,13 @@ class TestExtract(Unittest_with_edcore_sqlite):
         dummy_session.set_uid('1023')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        results = get_extract_service(None, self.__request)
+        results = get_tenant_level_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
 
-    def test_multi_tasks(self):
+    def test_multi_tasks_tenant_extract(self):
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['CA'],
                                     'asmtYear': ['2015', '2011'],
@@ -108,12 +110,42 @@ class TestExtract(Unittest_with_edcore_sqlite):
         dummy_session.set_uid('1023')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        results = post_extract_service(None, self.__request)
+        results = post_tenant_level_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 2)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
         self.assertEqual(tasks[1][Constants.STATUS], Constants.FAIL)
+
+    def test_generate_zip_file_name_for_grades(self):
+        params = {'asmtGrade': '6',
+                  'asmtSubject': ['Math'],
+                  'asmtType': 'Summative',
+                  'stateCode': 'NY'}
+        name = generate_zip_file_name(params)
+        self.assertIn('ASMT_GRADE_6_MATH_SUMMATIVE', name)
+
+    def test_generate_zip_file_name_for_schools(self):
+        params = {'asmtSubject': ['Math', 'ELA'],
+                  'asmtType': 'Summative',
+                  'stateCode': 'NY'}
+        name = generate_zip_file_name(params)
+        self.assertIn('ASMT_ELA_MATH_SUMMATIVE', name)
+
+    def test_post_invalid_payload(self):
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service)
+
+    def test_post_post_invalid_param(self):
+        self.__request.json_body = {}
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service, self.__request)
+
+    def test_get_invalid_param(self):
+        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['asmtSubject'] = ['MATH']
+        self.__request.GET['asmyType'] = 'SUMMATIVE'
+        self.__request.GET['asmtSubject'] = 'Math'
+        self.__request.GET['districtGuid'] = '203'
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
 
 
 if __name__ == "__main__":

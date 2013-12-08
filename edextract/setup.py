@@ -10,7 +10,8 @@ requires = [
     "celery",
     "anyjson",
     "amqp",
-    "apscheduler"
+    "apscheduler",
+    "python-gnupg"
 ]
 
 tests_require = requires

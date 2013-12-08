@@ -23,13 +23,11 @@ def compile_query_to_sql_text(query):
     return unbound_sql_code
 
 
-def get_extract_assessment_query(params, limit=None, compiled=False):
+def get_extract_assessment_query(params):
     """
     private method to generate SQLAlchemy object or sql code for extraction
 
     :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit, most_recent
-    :param limit: for set up limit of result
-    :param compile: True to return SQL code, otherwise just SQLALchemy object
     """
     state_code = params.get(Constants.STATECODE)
     district_guid = params.get(Constants.DISTRICTGUID)

@@ -7,11 +7,12 @@ import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
 import datetime
 from udl2_util.measurement import BatchTableBenchmark
+from udl2.udl2_base_task import Udl2BaseTask
 
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_file_splitter.task")
+@celery.task(name="udl2.W_file_splitter.task", base=Udl2BaseTask)
 def task(incoming_msg):
     '''
     This is the celery task for splitting file
@@ -56,10 +57,3 @@ def task(incoming_msg):
                          })
     return outgoing_msg
 
-
-@celery.task(name="udl2.W_file_splitter.error_handler")
-def error_handler(uuid):
-    result = AsyncResult(uuid)
-    exc = result.get(propagate=False)
-    print('Task %r raised exception: %r\n%r' % (
-          exc, result.traceback))

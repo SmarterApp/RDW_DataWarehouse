@@ -4,7 +4,7 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
-from edextract.tasks.extract import archive, generate
+from edextract.tasks.extract import archive, generate_csv
 import tempfile
 import os
 import shutil
@@ -30,7 +30,7 @@ class TestExtractTask(Unittest_with_stats_sqlite):
         pass
 
     def test_archive(self):
-        archive('req_id', self.__tmp_zip, self.__tmp_dir)
+        open(self.__tmp_zip, 'wb').write(archive('req_id', self.__tmp_dir))
         zipfile = ZipFile(self.__tmp_zip, "r")
         namelist = zipfile.namelist()
         self.assertEqual(3, len(namelist))
@@ -50,8 +50,8 @@ class TestExtractTask(Unittest_with_stats_sqlite):
         # we probably can only test failure cases
         # test tenant is
         try:
-            result = generate(tenant=None, request_id='0', public_key_id='swimberly',
-                              task_id='1', query='select 0 from dual', output_file='/tmp/unittest.csv.gz.pgp')
+            result = generate_csv(tenant=None, request_id='0', public_key_id='swimberly',
+                                  task_id='1', query='select 0 from dual', output_file='/tmp/unittest.csv.gz.pgp')
             self.assertEqual(result, False)
         except Exception as e:
             self.assertEqual(True, True)

@@ -117,6 +117,11 @@ define [
         self.updateDropdown()
         self.updateFilter()
         self.createHeaderAndFooter()
+        # Set asmt Subject
+        subjects = []
+        for key, value of self.asmtSubjectsData
+          subjects.push value
+        edwarePreferences.saveSubjectPreference subjects
 
     displayNoResults: () ->
       # no results

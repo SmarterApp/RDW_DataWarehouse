@@ -218,7 +218,7 @@ define [
       # Use mustache template to replace text in json config
       # Add assessments data there so we can get column names
       claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
-      combinedData = this.data.subjects
+      combinedData = $.extend(true, {}, this.data.subjects)
       combinedData.claims =  claimsData
       columnData = JSON.parse(Mustache.render(JSON.stringify(this.studentsConfig), combinedData))
       columnData
@@ -266,6 +266,5 @@ define [
           'display': Mustache.to_html(value, subjects)
         }
     items
-
 
   StudentGrid: StudentGrid

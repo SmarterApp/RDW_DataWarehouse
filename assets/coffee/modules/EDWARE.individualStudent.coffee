@@ -166,7 +166,7 @@ define [
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
-        reportTitle: $('h2.title').text()
+        reportTitle: $('#individualStudentContent h2.title').text()
         reportName: Constants.REPORT_NAME.ISR
         reportInfoText: @configData.reportInfo
         labels: @labels
@@ -181,8 +181,8 @@ define [
       @configData.asmtTypes = @getAsmtTypes()
       self = this
       @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, () ->
-        #TODO self.renderReportInfo()
         self.render()
+        self.renderReportInfo()
 
     render: () ->
       asmtType = @getCurrentAsmtType()

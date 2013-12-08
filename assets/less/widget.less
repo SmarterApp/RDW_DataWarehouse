@@ -1887,6 +1887,9 @@ th.ui-th-column div {
 	    
 	    .align_button {
 		display: inline-block;
+		background-color: @color-C12;
+		color: @color-white;
+		border-radius: 15px;
 		width: 47px;
 		height: 17px;
 		cursor: pointer;
@@ -1895,15 +1898,44 @@ th.ui-th-column div {
 	}
 	
 	.align_off {
-	    background-image: url("../images/align_icons.png");
-	    background-repeat: no-repeat;
-	    background-position: 0 -21px;
+
+	    &:before {
+		content: "";
+		display: inline-block;
+		width: 15px;
+		height: 15px;
+		background-color: #e9e9e9;
+		border-radius: 15px;
+		margin: 1px;
+	    }
+	    
+	    &:after {
+		content: "Off";
+		display: inline-block;
+		vertical-align: text-bottom;
+	    }
 	}
-	
+
 	.align_on {
-	    background-image: url("../images/align_icons.png");
-	    background-repeat: no-repeat;
-	    background-position: 0 -1px;
+	    
+	    &:before {
+		content: "";
+		display: inline-block;
+		width: 15px;
+		height: 15px;
+		background-color: #e9e9e9;
+		border-radius: 15px;
+		margin: 1px;
+		float: right;
+	    }
+
+	    &:after {
+		content: "On";
+		display: inline-block;
+		vertical-align: text-bottom;
+		float: right;
+	    }
+
 	}
 
 	.alignLabel:before {

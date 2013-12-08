@@ -76,7 +76,7 @@ define [
         $(this).removeClass('active')
         $(this).popover('hide')
       # bind print popover
-      $('div.printLabel').click ->
+      $('span.printLabel').click ->
         self.printer.show()
 
   create = (container, config, reloadCallback) ->

@@ -8,12 +8,12 @@ from pyramid import testing
 from edauth.security.session import Session
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
-    Unittest_with_edcore_sqlite,\
+    Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from smarter.extract.processor import process_async_extraction_request,\
-    get_extract_file_path, get_extract_work_zone_path,\
-    get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
-    get_pickup_zone_info, process_sync_extract_request,\
+from smarter.extract.processor import process_async_extraction_request, \
+    get_extract_file_path, get_extract_work_zone_path, \
+    get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
+    get_pickup_zone_info, process_sync_extract_request, \
     get_asmt_metadata_file_path, _prepare_data
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
@@ -194,7 +194,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'ELA',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
-        smarter.extract.format.json_column_mapping={}
+        smarter.extract.format.json_column_mapping = {}
         guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(params)
         self.assertEqual(1, len(guid_grade))
         self.assertIsNotNone(dim_asmt)
@@ -202,7 +202,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         (guid, grade) = guid_grade[0]
         self.assertEqual(guid, 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0')
         self.assertEqual(grade, '11')
-         
+
     def test_get_asmt_metadata_file_path(self):
         params = {'stateCode': 'CA',
                   'districtGuid': '341',

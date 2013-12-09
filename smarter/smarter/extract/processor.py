@@ -41,8 +41,9 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        route_tasks(tenant, request_id, tasks, 'extract-sync')().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue='extract_sync')
+        queue_name = 'extract_sync'
+        route_tasks(tenant, request_id, tasks, queue_name=queue_name)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=queue_name)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")

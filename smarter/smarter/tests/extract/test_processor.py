@@ -14,23 +14,31 @@ from smarter.extract.processor import process_async_extraction_request,\
     get_extract_file_path, get_extract_work_zone_path,\
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
     get_pickup_zone_info, process_sync_extract_request,\
-    get_asmt_metadata_file_path
+    get_asmt_metadata_file_path, _prepare_data
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
 from edapi.exceptions import NotFoundException
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+import tempfile
+from edextract.celery import setup_celery
+import smarter
 
 
-class TestProcessor(Unittest_with_edcore_sqlite):
+class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def setUp(self):
         self.reg = Registry()
+        self.__work_zone_dir = tempfile.TemporaryDirectory()
         self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
                              'pickup.gatekeeper.t1': '/t/acb',
                              'pickup.gatekeeper.t2': '/a/df',
                              'pickup.gatekeeper.y': '/a/c',
                              'pickup.sftp.hostname': 'hostname.local.net',
                              'pickup.sftp.user': 'myUser',
-                             'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa'}
+                             'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa',
+                             'extract.available_grades': '3,4,5,6,7,8,11'}
+        settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
+        setup_celery(settings)
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
@@ -55,6 +63,11 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
+
+    @classmethod
+    def setUpClass(cls):
+        Unittest_with_edcore_sqlite.setUpClass()
+        Unittest_with_stats_sqlite.setUpClass()
 
     def test_process_extraction_async_request(self):
         params = {'stateCode': ['CA'],
@@ -133,7 +146,7 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         self.assertEqual(user, pickup[1])
         self.assertEqual(private_key, pickup[2])
 
-    def test_process_sync_extraction_request(self):
+    def test_process_sync_extraction_request_NotFoundException(self):
         params = {'stateCode': 'CA',
                   'districtGuid': '228',
                   'schoolGuid': '242',
@@ -142,6 +155,54 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
 
+    def test_process_sync_extraction_request_NotFoundException_with_subject(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '228',
+                  'schoolGuid': '242',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': ['ELA'],
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        self.assertRaises(NotFoundException, process_sync_extract_request, params)
+
+    def test_process_sync_extraction_request_with_subject(self):
+        params = {'stateCode': 'NY',
+                  'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
+                  'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': ['ELA'],
+                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
+        zip_data = process_sync_extract_request(params)
+        self.assertIsNotNone(zip_data)
+
+    def test_process_async_extraction_request_with_subject(self):
+        params = {'stateCode': ['NY'],
+                  'asmtYear': ['2015'],
+                  'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
+                  'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
+                  'asmtType': ['SUMMATIVE'],
+                  'asmtSubject': ['ELA'],
+                  'asmtGrade': ['3'],
+                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
+        response = process_async_extraction_request(params)
+        self.assertIn('.zip.gpg', response['fileName'])
+        self.assertEqual(response['tasks'][0]['status'], 'ok')
+
+    def test___prepare_data(self):
+        params = {'stateCode': 'NY',
+                  'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
+                  'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'ELA',
+                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
+        smarter.extract.format.json_column_mapping={}
+        guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(params)
+        self.assertEqual(1, len(guid_grade))
+        self.assertIsNotNone(dim_asmt)
+        self.assertIsNotNone(fact_asmt_outcome)
+        (guid, grade) = guid_grade[0]
+        self.assertEqual(guid, 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0')
+        self.assertEqual(grade, '11')
+         
     def test_get_asmt_metadata_file_path(self):
         params = {'stateCode': 'CA',
                   'districtGuid': '341',

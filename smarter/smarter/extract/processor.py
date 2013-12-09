@@ -90,7 +90,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
     return response
 
 
-def __prepare_data(param):
+def _prepare_data(param):
     guid_grade = []
     available_grades = []
     asmt_grade = param.get(Constants.ASMTGRADE)
@@ -133,7 +133,7 @@ def __create_tasks_with_responses(request_id, user, tenant, param, task_response
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    guid_grade, dim_asmt, fact_asmt_outcome = __prepare_data(param)
+    guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(param)
 
     param[Constants.ASMTGRADE] = None
     query = get_extract_assessment_query(param)

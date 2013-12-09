@@ -43,6 +43,8 @@ cd ${WORKSPACE}/udl2
 python setup.py install
 cd -
 
+deactivate
+
 %install
 cp -r virtualenv %{buildroot}/opt
 

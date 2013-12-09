@@ -127,12 +127,6 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
     downloadMenu.sendCSVRequest()
     ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
 
-  test "Test send extract request", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig);
-    edwareClientStorage.filterStorage.save({})
-    timerID = downloadMenu.sendExtractRequest()
-    equal typeof(timerID), "number", "Sending extract request should returns a timer id"
-
   test "Test click export button", ->
     downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig);
     downloadMenu.show()

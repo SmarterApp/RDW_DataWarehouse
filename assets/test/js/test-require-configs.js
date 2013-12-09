@@ -48,6 +48,8 @@ require({
     edwareDownload: '../src/widgets/download/EDWARE.download',
     edwareReportInfoBar: '../src/widgets/header/EDWARE.infoBar',
     edwareReportActionBar: '../src/widgets/header/EDWARE.actionBar',
+    edwareHelpMenu: '../src/widgets/header/EDWARE.helpMenu',
+    edwarePrint: '../src/widgets/print/EDWARE.print',
 
     // templates
     edwareBreadcrumbsTemplate: '../src/widgets/breadcrumb/template.html',
@@ -63,7 +65,10 @@ require({
     edwareLOSHeaderConfidenceLevelBarTemplate: '../js/templates/LOS_header_perf_bar.html',
     edwareFilterTemplate: '../src/widgets/filter/template.html',
     CSVOptionsTemplate: '../src/widgets/download/CSVOptionsTemplate.html',
-    DownloadMenuTemplate: '../src/widgets/download/DownloadMenuTemplate.html'
+    DownloadMenuTemplate: '../src/widgets/download/DownloadMenuTemplate.html',
+    AsmtDropdownTemplate: '../src/widgets/asmtDropdown/template.html',
+    PrintTemplate: '../src/widgets/print/template.html',
+    HelpMenuTemplate: '../src/widgets/header/helpMenuTemplate.html'
 
   },
   shim: {

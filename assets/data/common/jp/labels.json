@@ -34,7 +34,7 @@
 		"grayscale": "白黒",
 		"grayscale_message": "白黒プリント",
 		"help": "ヘルプ",
-		"help_message": "あなたが援助を必要とする、またはご質問、コメント、または懸念がある場合は、<a href='mailto:SmarterBalancedReporting@wgen.net?subject=HELPDESK: Help request'><br>システム管理者</a>に電子メールを送信してください。",
+		"help_message": "あなたが援助を必要とする、またはご質問、コメント、または懸念がある場合は、<a href='mailto:SmarterBalancedReporting@wgen.net?subject=HELPDESK: Help request'>システム管理者</a>に電子メールを送信してください。",
 		"hide": "閉じる",
 		"insufficient_data": "不十分なデータ",
 		"legend": "使用符号の説明",

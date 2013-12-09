@@ -24,9 +24,9 @@ define [
         labels: @config.labels
       @legend ?= @createLegend()
       @asmtDropdown ?= @createAsmtDropdown()
-      @printer ?= @createPrinter()
+      @printer ?= @createPrint()
 
-    createPrinter: () ->
+    createPrint: () ->
       @printer = edwarePrint.create '.printModal'
     
     createLegend: () ->

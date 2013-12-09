@@ -1,6 +1,6 @@
 <ul>
     <li class="asmtTypeItem">
-        <div>View:</div>
+        <div class="asmtTypeText">View:</div>
         <div class="asmtDropdown"></div>
         <div class="disclaimerInfo interimDisclaimerIcon"></div>
     </li>
@@ -8,7 +8,7 @@
 <ul>
     <li class="legendItem">
         <div class="divider">
-            <span class="legendLabel">Legend</span>
+            <span class="legendLabel">{{labels.legend}}</span>
             <span class="legendPopup"></span>
         </div>
     </li>
@@ -16,9 +16,11 @@
         <div class="divider">
             <span class='alignLabel'>{{labels.align}}</span>
             <span class='align_button_area'>
-                <span class="align_button align_off"></span>
+                <span class="align_button align_off">
+                    <span class="alignText">{{labels.off}}</span>
+                </span>
             </span>
-        <div>
+            <div>
     </li>
     <li class="sortItem">
         <div class="divider">

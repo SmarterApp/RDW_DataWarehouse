@@ -67,7 +67,7 @@ define [
       this.gridHeight = window.innerHeight - 335 #subtract footer and header height
       edwareUtil.reRenderBody this.labels
       # create align button
-      this.alignment = new Alignment('.align_button')
+      this.alignment = new Alignment('.align_button', @labels)
       # default sort
       this.sort = {
         name: 'name'
@@ -415,7 +415,7 @@ define [
 
   class Alignment
 
-    constructor: (@triggerClass)->
+    constructor: (@triggerClass, @labels)->
       this.aligned = false
       this.bindEvents()
 
@@ -423,9 +423,12 @@ define [
       # Set population bar alignment on/off
       self = this
       $(document).on 'click', this.triggerClass, () ->
+        $alignButton = $(self.triggerClass)
         self.aligned = not self.aligned
+        alignText = if self.aligned then self.labels.on else self.labels.off
         # toggle component
-        $(self.triggerClass).toggleClass('align_on align_off')
+        $alignButton.toggleClass('align_on align_off')
+        $alignButton.find('span.alignText').text alignText
         # update alignment
         self.update()
 

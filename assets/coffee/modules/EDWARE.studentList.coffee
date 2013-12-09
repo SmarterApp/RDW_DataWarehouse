@@ -202,9 +202,6 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
-      #TODO Add dark border color between Math and ELA section to emphasize the division
-      $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(2), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(2)').css("border-right", "solid 1px #B1B1B1")
-      $('.jqg-second-row-header th:nth-child(3), .jqg-second-row-header th:nth-child(3), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "none")
       this.renderHeaderPerfBar(this.cutPointsData)
 
     getAsmtData: (asmtType, viewName)->

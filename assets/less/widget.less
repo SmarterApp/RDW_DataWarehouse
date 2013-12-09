@@ -1771,8 +1771,9 @@ th.ui-th-column div {
     }
 
     .title {
-	line-height: normal;
+	line-height: 17px;
 	color: @color-A1;
+	margin-top: -8px;
     }
 
     .reportInfoIcon {
@@ -1938,11 +1939,11 @@ th.ui-th-column div {
 		border-radius: 15px;
 		margin: 1px;
 	    }
-	    
-	    &:after {
-		content: "Off";
-		display: inline-block;
-		vertical-align: text-bottom;
+
+	    .alignText {
+		position: relative;
+		top: -3px;
+		color: @color-C11;
 	    }
 	}
 
@@ -1959,13 +1960,11 @@ th.ui-th-column div {
 		float: right;
 	    }
 
-	    &:after {
-		content: "On";
-		display: inline-block;
-		vertical-align: text-bottom;
-		float: right;
+	    .alignText {
+		position: relative;
+		left: 10px;
+		color: @color-C11;
 	    }
-
 	}
 
 	.alignLabel:before {
@@ -1975,7 +1974,8 @@ th.ui-th-column div {
 	    background-position-x: -5px;
 	    width: 23px;
 	    height: 16px;
-	    vertical-align: text-top;
+	    vertical-align: text-bottom;
+	    margin-right: 5px;
 	}
 
 	.filterLabel {
@@ -2028,17 +2028,13 @@ th.ui-th-column div {
 	}
 
 	.asmtTypeItem {
-	    
-	    div {
-		    margin-top: -10px;
-		}
-	    
+
+	    .asmtTypeText {
+		padding-top: 3px;
+		padding-right: 10px;
+	    }
+
 	    .asmtDropdown {
-		position: relative;
-		top: 50%;
-		height: 30px;
-		margin-top: -7px;
-		margin-left: 10px;
 
 		#asmtTypeDropdown {
 		    z-index: 9999;
@@ -2096,7 +2092,7 @@ th.ui-th-column div {
 	background-image: url('../images/nav_icons.png');
 	background-position: 0px -72px;
 	position: 0px 0px;
-	vertical-align: text-top;
+	vertical-align: text-bottom;
 	margin-right: 5px;
     }
 
@@ -2115,6 +2111,10 @@ th.ui-th-column div {
     #PrintModal {
 	width: 323px;
 	left: 58%;
+
+	ul {
+	    margin: 0px;
+	}
 	
 	li {
 	    display: list-item;

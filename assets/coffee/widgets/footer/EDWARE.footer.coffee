@@ -63,6 +63,12 @@ define [
         $(this).toggleClass("active")
 
       # Popup will close if user clicks popup hide button
+      $(document).on 'click', '.hideButton a', ->
+        selector = $(this).data('selector')
+        $(selector).popover('hide')
+        $("#footer .nav li a").removeClass("active")
+
+      # Popup will close if user clicks popup hide button
       $(document).on 'click', '#help', ->
         self.helpMenu.show()
         

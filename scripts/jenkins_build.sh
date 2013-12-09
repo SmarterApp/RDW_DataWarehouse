@@ -339,12 +339,12 @@ function build_udl2_rpm {
 
     export GIT_COMMIT="$(git rev-parse HEAD)"
 
-    if [ $CLEAN_BUILD == 'true' ]; then
-      cd /var/lib/jenkins/rpmbuild/BUILD
-      echo "Removing Virtualenv and rebuilding"
-      rm -rf virtualenv
-      virtualenv-3.3 --distribute virtualenv
-    fi
+    #if [ $CLEAN_BUILD == 'true' ]; then
+    #  cd /var/lib/jenkins/rpmbuild/BUILD
+    #  echo "Removing Virtualenv and rebuilding"
+    #  rm -rf virtualenv
+    #  virtualenv-3.3 --distribute virtualenv
+    #fi
 
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb udl2.spec
@@ -352,7 +352,7 @@ function build_udl2_rpm {
     scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/udl2${UDL2_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
     ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/udl2-latest.rpm"
 
-    echo "Upload to pulp"
+    #echo "Upload to pulp"
     #pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
 
 

@@ -128,6 +128,11 @@ define [
       # Get asmtType from storage
       defaultView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
       this.updateView defaultView
+      # Set asmt Subject
+      subjects = []
+      for key, value of this.data.subjects
+        subjects.push value
+      edwarePreferences.saveSubjectPreference subjects
 
     updateView: (viewName) ->
       # Save asmtType and viewName
@@ -216,7 +221,7 @@ define [
       # Add assessments data there so we can get column names
       claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
       combinedData = $.extend(true, {}, this.data.subjects)
-      combinedData.claims =  claimsData
+      combinedData.claims = claimsData
       columnData = JSON.parse(Mustache.render(JSON.stringify(this.studentsConfig), combinedData))
       columnData
 
@@ -253,14 +258,15 @@ define [
 
   convertAsmtTypes = (customViews, subjects) ->
     items = []
+    copiedSubjects = jQuery.extend(true, {}, subjects);
     # render dropdown
     for asmtType in customViews.asmtTypes
-      subjects['asmtType'] = asmtType['display']
+      copiedSubjects['asmtType'] = asmtType['display']
       for key, value of customViews.items
         items.push {
-          'value': Mustache.to_html(key, subjects)
+          'value': Mustache.to_html(key, copiedSubjects)
           'asmtType': asmtType['name']
-          'display': Mustache.to_html(value, subjects)
+          'display': Mustache.to_html(value, copiedSubjects)
         }
     items
 

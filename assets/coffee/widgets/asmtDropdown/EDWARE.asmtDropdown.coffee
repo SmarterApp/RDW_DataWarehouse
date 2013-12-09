@@ -26,6 +26,9 @@ define [
         $this = $(this)
         display = $this.data('display')
         asmtType = $this.data('asmttype')
+        subject = $this.data('value').split("_")
+        # save subject value
+        edwarePreferences.saveSubjectPreference subject
         # save assessment type
         edwarePreferences.saveAsmtPreference asmtType
         self.setSelectedValue display

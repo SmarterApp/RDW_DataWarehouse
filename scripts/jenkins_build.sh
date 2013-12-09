@@ -334,8 +334,17 @@ function build_udl2_rpm {
     echo $BUILD_NUMBER
     echo "RPM_VERSION:"
     echo $RPM_VERSION
+    echo "CLEAN_BUILD:"
+    echo $CLEAN_BUILD
 
     export GIT_COMMIT="$(git rev-parse HEAD)"
+
+    if [ $CLEAN_BUILD == 'true' ]; then
+      cd /var/lib/jenkins/rpmbuild/BUILD
+      echo "Removing Virtualenv and rebuilding"
+      rm -rf virtualenv
+      virtualenv-3.3 --distribute virtualenv
+    fi
 
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb udl2.spec

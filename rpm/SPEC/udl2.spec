@@ -96,14 +96,40 @@ fi
 
 %post
 chkconfig --add celeryd-udl2
-if [ ! -d /opt/edware/log ]; then
-    mkdir -p /opt/edware/log
+UDL2_ROOT=/opt/edware
+UDL2_ZONES=$UDL2_ROOT/zones
+
+if [ ! -d $UDL2_ROOT/log ]; then
+    mkdir -p $UDL2_ROOT/log
 fi
 
-%preun
-chkconfig --del celeryd-udl2
+if [ ! -d $UDL2_ZONES ]; then
+    mkdir -p $UDL2_ROOT/zones
+fi
+
+if [ ! -d $UDL2_ZONES/landing ]; then
+    mkdir -p $UDL2_ROOT/landing
+fi
+
+if [ ! -d $UDL2_ZONES/landing/arrivals ]; then
+    mkdir -p $UDL2_ROOT/landing/arrivals
+fi
+
+if [ ! -d $UDL2_ZONES/landing/work ]; then
+    mkdir -p $UDL2_ROOT/landing/work
+fi
+
+if [ ! -d $UDL2_ZONES/landing/history ]; then
+    mkdir -p $UDL2_ROOT/landing/history
+fi
+sudo -R udl2.udl2 $UDL2_ROOT ;
+
 
 %postun
+chkconfig --del celeryd-udl2
+rm -rf /opt/edware
+
+%preun
 userdel -rf celery > /dev/null 2>&1
 userdel -rf udl2 > /dev/null 2>&1
 

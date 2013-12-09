@@ -30,11 +30,11 @@ log = logging.getLogger('smarter')
 
 def process_sync_extract_request(params):
     tasks = []
-    request_id, user, tenant = __get_extract_request_user_info()
+    request_id, user, tenant = _get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
     for subject in params[Constants.ASMTSUBJECT]:
         extract_params[Constants.ASMTSUBJECT] = subject
-        subject_tasks, task_responses = __create_tasks_with_responses(request_id, user, tenant, extract_params)
+        subject_tasks, task_responses = _create_tasks_with_responses(request_id, user, tenant, extract_params)
         tasks += subject_tasks
 
     if len(tasks) > 0:
@@ -55,7 +55,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
     tasks = []
     response = {}
     task_responses = []
-    request_id, user, tenant = __get_extract_request_user_info()
+    request_id, user, tenant = _get_extract_request_user_info()
 
     for s in params[Constants.ASMTSUBJECT]:
         for t in params[Constants.ASMTTYPE]:
@@ -73,7 +73,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
                              Extract.REQUESTID: request_id}
 
             # separate by grades if no grade is specified
-            __tasks, __task_responses = __create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
+            __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
             tasks += __tasks
             task_responses += __task_responses
 
@@ -129,7 +129,7 @@ def _prepare_data(param):
     return guid_grade, dim_asmt, fact_asmt_outcome
 
 
-def __create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
+def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
@@ -144,7 +144,7 @@ def __create_tasks_with_responses(request_id, user, tenant, param, task_response
             copied_params[Constants.ASMTGRADE] = asmt_grade
             query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\
                 .where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
-            tasks += (__create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade, is_tenant_level=is_tenant_level))
+            tasks += (_create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade, is_tenant_level=is_tenant_level))
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)
     else:
@@ -154,32 +154,32 @@ def __create_tasks_with_responses(request_id, user, tenant, param, task_response
     return tasks, task_responses
 
 
-def __create_tasks(request_id, user, tenant, params, query, is_tenant_level=False):
+def _create_tasks(request_id, user, tenant, params, query, is_tenant_level=False):
     tasks = []
-    tasks.append(__create_new_task(request_id, user, tenant, params, query, is_tenant_level=is_tenant_level))
-    tasks.append(__create_asmt_metadata_task(request_id, user, tenant, params))
+    tasks.append(_create_new_task(request_id, user, tenant, params, query, is_tenant_level=is_tenant_level))
+    tasks.append(_create_asmt_metadata_task(request_id, user, tenant, params))
     return tasks
 
 
-def __create_asmt_metadata_task(request_id, user, tenant, params):
+def _create_asmt_metadata_task(request_id, user, tenant, params):
     query = get_asmt_metadata(params.get(Constants.ASMTGUID))
-    return __create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
+    return _create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
 
 
-def __create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False):
+def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False):
     task = {}
     task[Extract.TASK_TASK_ID] = create_new_entry(user, request_id, params)
     if asmt_metadata:
-        task[Extract.TASK_FILE_ANME] = get_asmt_metadata_file_path(params, tenant, request_id)
-        task[Extract.TASK_IS_JSON_REQUEST] = False
-    else:
-        task[Extract.TASK_FILE_ANME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
+        task[Extract.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
         task[Extract.TASK_IS_JSON_REQUEST] = True
+    else:
+        task[Extract.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
+        task[Extract.TASK_IS_JSON_REQUEST] = False
     task[Extract.TASK_QUERY] = compile_query_to_sql_text(query)
     return task
 
 
-def __get_extract_request_user_info():
+def _get_extract_request_user_info():
     # Generate an uuid for this extract request
     request_id = str(uuid4())
     user = authenticated_userid(get_current_request())
@@ -187,12 +187,12 @@ def __get_extract_request_user_info():
     return request_id, user, tenant
 
 
-def __get_extract_work_zone_base_dir():
+def _get_extract_work_zone_base_dir():
     return get_current_registry().settings.get('extract.work_zone_base_dir', tempfile.gettempdir())
 
 
 def get_extract_work_zone_path(tenant, request_id):
-    base = __get_extract_work_zone_base_dir()
+    base = _get_extract_work_zone_base_dir()
     return os.path.join(base, tenant, request_id, 'data')
 
 
@@ -216,7 +216,7 @@ def get_encryption_public_key_identifier(tenant):
 
 
 def get_archive_file_path(user_name, tenant, request_id):
-    base = __get_extract_work_zone_base_dir()
+    base = _get_extract_work_zone_base_dir()
     file_name = '{user_name}_{current_time}.zip.gpg'.format(user_name=user_name, current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
     return os.path.join(base, tenant, request_id, 'zip', file_name)
 

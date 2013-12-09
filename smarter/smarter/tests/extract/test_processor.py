@@ -14,14 +14,19 @@ from smarter.extract.processor import process_async_extraction_request, \
     get_extract_file_path, get_extract_work_zone_path, \
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
     get_pickup_zone_info, process_sync_extract_request, \
-    get_asmt_metadata_file_path, _prepare_data
-from sqlalchemy.sql.expression import select
+    get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
+    _create_asmt_metadata_task, _create_new_task, \
+    _get_extract_work_zone_base_dir, _get_extract_request_user_info, \
+    _create_tasks_with_responses
 from pyramid.registry import Registry
 from edapi.exceptions import NotFoundException
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import tempfile
 from edextract.celery import setup_celery
 import smarter
+from sqlalchemy.sql.expression import select
+from edauth.security.user import User
+from smarter.extract.constants import Constants as Extract
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -214,3 +219,183 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         file_name = get_asmt_metadata_file_path(params, "tenant", "id")
         self.assertIn('/tmp/work_zone/tenant/id/data', file_name)
         self.assertIn('METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)
+
+    def test__create_tasks_for_non_tenant_lvl(self):
+        with UnittestEdcoreDBConnection() as connection:
+            # Insert into user_mapping table
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        results = _create_tasks('request_id', user, 'tenant', params, query)
+        self.assertIsNotNone(results)
+        self.assertEqual(len(results), 2)
+        self.assertFalse(results[0][Extract.TASK_IS_JSON_REQUEST])
+        self.assertTrue(results[1][Extract.TASK_IS_JSON_REQUEST])
+
+    def test__create_tasks_for_tenant_lvl(self):
+        with UnittestEdcoreDBConnection() as connection:
+            # Insert into user_mapping table
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        results = _create_tasks('request_id', user, 'tenant', params, query, is_tenant_level=True)
+        self.assertIsNotNone(results)
+        self.assertEqual(len(results), 2)
+        self.assertFalse(results[0][Extract.TASK_IS_JSON_REQUEST])
+        self.assertTrue(results[1][Extract.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', results[0][Extract.TASK_FILE_NAME])
+
+    def test__create_asmt_metadata_task(self):
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        task = _create_asmt_metadata_task('request_id', user, 'tenant', params)
+        self.assertIsNotNone(task)
+        self.assertTrue(task[Extract.TASK_IS_JSON_REQUEST])
+
+    def test__create_new_task_non_tenant_level(self):
+        with UnittestEdcoreDBConnection() as connection:
+            # Insert into user_mapping table
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False)
+        self.assertIsNotNone(task)
+        self.assertFalse(task[Extract.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_5', task[Extract.TASK_FILE_NAME])
+
+    def test__create_new_task_non_tenant_level_json_request(self):
+        with UnittestEdcoreDBConnection() as connection:
+            # Insert into user_mapping table
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=False)
+        self.assertIsNotNone(task)
+        self.assertTrue(task[Extract.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[Extract.TASK_FILE_NAME])
+
+    def test__create_new_task_tenant_level(self):
+        with UnittestEdcoreDBConnection() as connection:
+            # Insert into user_mapping table
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=True)
+        self.assertIsNotNone(task)
+        self.assertFalse(task[Extract.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', task[Extract.TASK_FILE_NAME])
+
+    def test__create_new_task_tenant_level_json_request(self):
+        with UnittestEdcoreDBConnection() as connection:
+            # Insert into user_mapping table
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'districtGuid': '341',
+                  'schoolGuid': 'asf',
+                  'asmtGrade': '5',
+                  'asmtSubject': 'UUUU',
+                  'asmtType': 'abc',
+                  'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
+        user = User()
+        user.set_tenant('tenant')
+        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=True)
+        self.assertIsNotNone(task)
+        self.assertTrue(task[Extract.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[Extract.TASK_FILE_NAME])
+
+    def test__get_extract_work_zone_base_dir(self):
+        self.assertEqual('/tmp/work_zone', _get_extract_work_zone_base_dir())
+
+    def test___get_extract_request_user_info(self):
+        result = _get_extract_request_user_info()
+        self.assertIsInstance(result[0], str)
+        self.assertEqual('testtenant', result[2])
+
+    def test__create_tasks_with_responses_non_tenant_level(self):
+        params = {'stateCode': 'NY',
+                  'districtGuid': '228',
+                  'schoolGuid': '242',
+                  'asmtGrade': '3',
+                  'asmtSubject': 'Math',
+                  'asmtType': 'SUMMATIVE'}
+        user = User()
+        user.set_tenant('tenant')
+        results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
+        self.assertEqual(len(results[0]), 2)
+        self.assertEqual(len(results[1]), 1)
+        self.assertEqual(results[1][0][Extract.STATUS], Extract.OK)
+
+    def test__create_tasks_with_responses_non_tenant_level_no_data(self):
+        params = {'stateCode': 'NY',
+                  'districtGuid': '228',
+                  'schoolGuid': '242',
+                  'asmtGrade': '3',
+                  'asmtSubject': 'NoSubject',
+                  'asmtType': 'SUMMATIVE'}
+        user = User()
+        user.set_tenant('tenant')
+        results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
+        self.assertEqual(len(results[0]), 0)
+        self.assertEqual(len(results[1]), 1)
+        self.assertEqual(results[1][0][Extract.STATUS], Extract.FAIL)
+
+    def test__create_tasks_with_responses_tenant_level(self):
+        params = {'stateCode': 'NY',
+                  'districtGuid': '228',
+                  'schoolGuid': '242',
+                  'asmtSubject': 'Math',
+                  'asmtType': 'SUMMATIVE'}
+        user = User()
+        user.set_tenant('tenant')
+        results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
+        self.assertEqual(len(results[0]), 2)
+        self.assertEqual(len(results[1]), 1)
+        self.assertEqual(results[1][0][Extract.STATUS], Extract.OK)

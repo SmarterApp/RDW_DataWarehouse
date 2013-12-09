@@ -17,6 +17,6 @@ class Constants():
     OK = 'ok'
     FAIL = 'fail'
     TASK_TASK_ID = 'task_id'
-    TASK_FILE_ANME = 'file_name'
+    TASK_FILE_NAME = 'file_name'
     TASK_IS_JSON_REQUEST = 'is_json_request'
     TASK_QUERY = 'query'

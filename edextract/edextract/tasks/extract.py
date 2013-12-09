@@ -31,7 +31,7 @@ def route_tasks(tenant, request_id, tasks, queue_name='extract'):
     '''
     generate_tasks = []
     for task in tasks:
-        celery_task = generate_csv if task.get('is_json_request') else generate_json
+        celery_task = generate_json if task.get('is_json_request') else generate_csv
         generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue=queue_name, immutable=True))         # @UndefinedVariable
     return group(generate_tasks)
 

@@ -53,16 +53,16 @@ udl2_conf = {
         'RABBITMQ_SERVER_PATH': ['/opt/local/sbin/rabbitmq-server', '/usr/local/sbin/rabbitmq-server'],  # where the rabbitmq-server is located, we list all possible locations in your system.
     },
     'zones': {  # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
-        'landing': '/opt/wgen/edware-udl/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
-        'arrivals': '/opt/wgen/edware-udl/zones/landing/arrivals/',  # this is where the file arrives.
-        'work': '/opt/wgen/edware-udl/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
-        'history': '/opt/wgen/edware-udl/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
-        'pickup': '/opt/wgen/edware-udl/zones/pickup/',  # pickup zone where we store outgoing files
-        'pickup-work': '/opt/wgen/edware-udl/zones/pickup/work',
-        'pickup-departures': '/opt/wgen/edware-udl/zones/pickup/departures',
-        'pickup-history': '/opt/wgen/edware-udl/zones/pickup/history',
-        'datafiles': '/opt/wgen/edware-udl/zones/datafiles/',  # this is for storing test sample data files
-        'tests': '/opt/wgen/edware-udl/zones/tests/',  # this is for running unit tests.
+        'landing': '/opt/edware/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
+        'arrivals': '/opt/edware/zones/landing/arrivals/',  # this is where the file arrives.
+        'work': '/opt/edware/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
+        'history': '/opt/edware/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
+        'pickup': '/opt/edware/zones/pickup/',  # pickup zone where we store outgoing files
+        'pickup-work': '/opt/edware/zones/pickup/work',
+        'pickup-departures': '/opt/edware/zones/pickup/departures',
+        'pickup-history': '/opt/edware/zones/pickup/history',
+        'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
+        'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
     },
     'work_zone_sub_dir': {
         'arrived': 'arrived',
@@ -74,8 +74,8 @@ udl2_conf = {
     'logging': {  # log location. this should be in the long run as file locations or more sophisticated logging system
         'level': 'INFO',
         'debug': 'FALSE',
-        'audit': '/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything
-        'error': '/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions,
+        'audit': '/opt/edware/log/udl2.audit.log',  # for status log for everything
+        'error': '/opt/edware/log/udl2.error.log',  # for error message and exceptions,
     },
     'multi_tenant': {
         'on': False,
@@ -112,7 +112,7 @@ udl2_conf = {
         'db_driver': 'postgresql'
     },
     'quiet_mode': False,
-    'gpg_home': '/opt/wgen/edware-udl/zones/datafiles/keys',
+    'gpg_home': '/opt/edware/zones/datafiles/keys',
     'passphrase': 'sbac udl2',
     'tenant_position': -4,
     'search_wait_time': 10,

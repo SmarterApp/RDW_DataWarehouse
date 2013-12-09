@@ -330,9 +330,11 @@ define [
 
     getAsmtTypes: () ->
       asmtTypes = for asmt of @data.items
+        asmt
+      asmtTypes = asmtTypes.sort().reverse()
+      for asmt in asmtTypes
         'asmtType': asmt
         'display': asmt
         'value': asmt
-      asmtTypes.sort().reverse()
 
   EdwareISR: EdwareISR

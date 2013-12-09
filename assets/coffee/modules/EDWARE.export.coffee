@@ -13,7 +13,7 @@ define [
       current = new Date()
       this.timestamp = (current.getMonth() + 1) + '-' + current.getDate() + '-' + current.getFullYear() + ' ' + current.getHours() + ':' + current.getMinutes() + ':' + current.getSeconds()
       
-      this.title =  $('.title h2').text()
+      this.title =  $('h2.title').text()
       this.sortBy = this.getSortBy()
       this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
       this.isSticky = $('.stickyState').data('label')

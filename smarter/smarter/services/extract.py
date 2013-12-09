@@ -154,6 +154,9 @@ def post_extract_service(context, request):
     '''
     try:
         params = request.json_body
+        for k, v in params.items():
+            if type(v) is not list:
+                params[k] = [v]
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)

@@ -18,15 +18,23 @@ from smarter.extract.constants import Constants
 from smarter.services.extract import post_extract_service, get_extract_service,\
     post_tenant_level_extract_service, get_tenant_level_extract_service,\
     generate_zip_file_name
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+import smarter.extract.format
 
 
-class TestExtract(Unittest_with_edcore_sqlite):
+class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
+
+    @classmethod
+    def setUpClass(cls):
+        Unittest_with_edcore_sqlite.setUpClass()
+        Unittest_with_stats_sqlite.setUpClass()
 
     def setUp(self):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
         reg.settings = {}
+        reg.settings['extract.available_grades'] = '3,4,5,6,7,8,9,11'
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
         with UnittestEdcoreDBConnection() as connection:
@@ -41,6 +49,8 @@ class TestExtract(Unittest_with_edcore_sqlite):
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
+        # for UT purposes
+        smarter.extract.format.json_column_mapping = {}
 
     def tearDown(self):
         self.__request = None
@@ -147,6 +157,61 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.__request.GET['districtGuid'] = '203'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
 
+    def test_get_extract_service(self):
+        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['districtGuid'] = '229'
+        self.__request.GET['schoolGuid'] = '936'
+        self.__request.GET['asmtSubject'] = 'Math'
+        self.__request.GET['asmtType'] = 'SUMMATIVE'
+        response = get_extract_service(None, self.__request)
+        self.assertIsInstance(response, Response)
+        self.assertEqual(response.content_type, 'application/octet-stream')
+
+    def test_post_extract_service(self):
+        self.__request.method = 'POST'
+        self.__request.json_body = {'stateCode': 'NY',
+                                    'districtGuid': '229',
+                                    'schoolGuid': '936',
+                                    'asmtSubject': ['Math'],
+                                    'asmtType': 'SUMMATIVE'}
+        response = post_extract_service(None, self.__request)
+        self.assertIsInstance(response, Response)
+        self.assertEqual(response.content_type, 'application/octet-stream')
+
+    def test_get_valid_tenant_extract(self):
+        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['asmtType'] = 'SUMMATIVE'
+        self.__request.GET['asmtSubject'] = 'Math'
+        self.__request.GET['asmtYear'] = '2015'
+        self.__request.GET['extractType'] = 'studentAssessment'
+        dummy_session = Session()
+        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
+        dummy_session.set_uid('1023')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
+        results = get_tenant_level_extract_service(None, self.__request)
+        self.assertIsInstance(results, Response)
+        tasks = results.json_body['tasks']
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
+
+    def test_post_valid_tenant_extract(self):
+        self.__request.method = 'POST'
+        self.__request.json_body = {'stateCode': ['NY'],
+                                    'asmtSubject': ['Math'],
+                                    'asmtType': ['SUMMATIVE'],
+                                    'asmtYear': ['2015'],
+                                    'extractType': ['studentAssessment']}
+        dummy_session = Session()
+        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
+        dummy_session.set_uid('1023')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
+        results = post_tenant_level_extract_service(None, self.__request)
+        self.assertIsInstance(results, Response)
+        tasks = results.json_body['tasks']
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

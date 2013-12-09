@@ -34,7 +34,7 @@ define [
       @fetchData()
 
     loadPage: (template) ->
-      @data = JSON.parse(Mustache.render(JSON.stringify(template)), @configData.labels)
+      @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @data.labels = @configData.labels
       @processData()
       @render()

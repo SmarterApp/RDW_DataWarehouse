@@ -342,12 +342,12 @@ function build_udl2_rpm {
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb udl2.spec
 
+    echo "Uploading to pynest"
     scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/udl2${UDL2_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
-    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/udl2-latest.rpm"
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/udl2${UDL2_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/udl2-latest.rpm"
 
-    #echo "Upload to pulp"
+    #echo "Uploading to pulp"
     #pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
-
 
     echo "Finished building RPM"
 }

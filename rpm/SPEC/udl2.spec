@@ -46,8 +46,8 @@ cd -
 %install
 cp -r virtualenv %{buildroot}/opt
 
-
 %clean
+rm -rf %{buildroot}
 
 %files
 %defattr(644,root,root,-)
@@ -56,6 +56,8 @@ cp -r virtualenv %{buildroot}/opt
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
+/opt/virtualenv/bin/python
+/opt/virtualenv/bin/python3
 /opt/virtualenv/bin/activate
 /opt/virtualenv/bin/activate.csh
 /opt/virtualenv/bin/activate.fish
@@ -81,28 +83,27 @@ cp -r virtualenv %{buildroot}/opt
 %attr(755,root,root) /opt/virtualenv/bin/celeryd
 %attr(755,root,root) /opt/virtualenv/bin/celeryd-multi
 %attr(755,root,root) /opt/virtualenv/bin/celeryev
-/opt/virtualenv/bin/python
-/opt/virtualenv/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 
 %pre
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
    useradd celery
-   usermod -G fuse celery
+   useradd udl2
 fi
+
+%post
+chkconfig --add celeryd-udl2
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
 
-%post
-chkconfig --add celeryd
-
 %preun
-chkconfig --del celeryd
+chkconfig --del celeryd-udl2
 
 %postun
 userdel -rf celery > /dev/null 2>&1
+userdel -rf udl2 > /dev/null 2>&1
 
 %changelog
 

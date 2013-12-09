@@ -101,10 +101,7 @@ def post_tenant_level_extract_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    try:
-        params = request.json_body
-    except Exception as e:
-        raise EdApiHTTPPreconditionFailed(e)
+    params = request.json_body
     return send_tenant_level_extraction_request(params)
 
 
@@ -152,13 +149,10 @@ def post_extract_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    try:
-        params = request.json_body
-        for k, v in params.items():
-            if type(v) is not list:
-                params[k] = [v]
-    except Exception as e:
-        raise EdApiHTTPPreconditionFailed(e)
+    params = request.json_body
+    for k, v in params.items():
+        if type(v) is not list:
+            params[k] = [v]
     return send_extraction_request(params)
 
 

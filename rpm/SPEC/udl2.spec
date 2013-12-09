@@ -57,7 +57,7 @@ cp -r virtualenv %{buildroot}/opt
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
 /opt/virtualenv/bin/activate
-/opt/virtualenv/bin/activate.cshcler
+/opt/virtualenv/bin/activate.csh
 /opt/virtualenv/bin/activate.fish
 /opt/virtualenv/bin/activate_this.py
 %attr(755,root,root) /opt/virtualenv/bin/easy_install

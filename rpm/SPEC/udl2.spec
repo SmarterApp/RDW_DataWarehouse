@@ -1,4 +1,4 @@
-Name:		udl2%(echo ${SMARTER_ENV_NAME:=""})
+Name:		udl2%(echo ${UDL2_ENV_NAME:=""})
 Version:	%(echo ${RPM_VERSION:="X.X"})
 Release:	%(echo ${BUILD_NUMBER:="X"})%{?dist}
 Summary:	Edware's Universal Data Loader

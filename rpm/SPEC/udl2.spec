@@ -20,7 +20,7 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 
 
 %prep
-#rm -rf virtualenv
+rm -rf virtualenv
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/udl2 %{buildroot}/opt/edware
@@ -33,7 +33,7 @@ cp ${WORKSPACE}/udl2/conf/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc
 
 %build
 export LANG=en_US.UTF-8
-#virtualenv-3.3 --distribute virtualenv
+virtualenv-3.3 --distribute virtualenv
 source virtualenv/bin/activate
 
 cd ${WORKSPACE}/edschema

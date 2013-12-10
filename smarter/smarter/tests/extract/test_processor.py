@@ -27,6 +27,7 @@ import smarter
 from sqlalchemy.sql.expression import select
 from edauth.security.user import User
 from smarter.extract.constants import Constants as Extract
+from edextract.tasks.constants import Constants as TaskConstants
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -237,8 +238,8 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         results = _create_tasks('request_id', user, 'tenant', params, query)
         self.assertIsNotNone(results)
         self.assertEqual(len(results), 2)
-        self.assertFalse(results[0][Extract.TASK_IS_JSON_REQUEST])
-        self.assertTrue(results[1][Extract.TASK_IS_JSON_REQUEST])
+        self.assertFalse(results[0][TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertTrue(results[1][TaskConstants.TASK_IS_JSON_REQUEST])
 
     def test__create_tasks_for_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -257,9 +258,9 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         results = _create_tasks('request_id', user, 'tenant', params, query, is_tenant_level=True)
         self.assertIsNotNone(results)
         self.assertEqual(len(results), 2)
-        self.assertFalse(results[0][Extract.TASK_IS_JSON_REQUEST])
-        self.assertTrue(results[1][Extract.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', results[0][Extract.TASK_FILE_NAME])
+        self.assertFalse(results[0][TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertTrue(results[1][TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', results[0][TaskConstants.TASK_FILE_NAME])
 
     def test__create_asmt_metadata_task(self):
         params = {'stateCode': 'CA',
@@ -273,7 +274,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         user.set_tenant('tenant')
         task = _create_asmt_metadata_task('request_id', user, 'tenant', params)
         self.assertIsNotNone(task)
-        self.assertTrue(task[Extract.TASK_IS_JSON_REQUEST])
+        self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
 
     def test__create_new_task_non_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -291,8 +292,8 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         user.set_tenant('tenant')
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False)
         self.assertIsNotNone(task)
-        self.assertFalse(task[Extract.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_5', task[Extract.TASK_FILE_NAME])
+        self.assertFalse(task[TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -310,8 +311,8 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         user.set_tenant('tenant')
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=False)
         self.assertIsNotNone(task)
-        self.assertTrue(task[Extract.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[Extract.TASK_FILE_NAME])
+        self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -329,8 +330,8 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         user.set_tenant('tenant')
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=True)
         self.assertIsNotNone(task)
-        self.assertFalse(task[Extract.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', task[Extract.TASK_FILE_NAME])
+        self.assertFalse(task[TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -348,8 +349,8 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         user.set_tenant('tenant')
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=True)
         self.assertIsNotNone(task)
-        self.assertTrue(task[Extract.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[Extract.TASK_FILE_NAME])
+        self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
 
     def test__get_extract_work_zone_base_dir(self):
         self.assertEqual('/tmp/work_zone', _get_extract_work_zone_base_dir())

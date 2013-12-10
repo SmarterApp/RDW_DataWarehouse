@@ -23,6 +23,7 @@ import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_, distinct
 from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
+from edextract.tasks.constants import Constants as TaskConstants
 
 
 log = logging.getLogger('smarter')
@@ -40,8 +41,8 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        route_tasks(tenant, request_id, tasks, queue_name=Extract.SYNC_QUEUE_NAME)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=Extract.SYNC_QUEUE_NAME)
+        route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.SYNC_QUEUE_NAME)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
@@ -168,14 +169,14 @@ def _create_asmt_metadata_task(request_id, user, tenant, params):
 
 def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False):
     task = {}
-    task[Extract.TASK_TASK_ID] = create_new_entry(user, request_id, params)
+    task[TaskConstants.TASK_TASK_ID] = create_new_entry(user, request_id, params)
     if asmt_metadata:
-        task[Extract.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
-        task[Extract.TASK_IS_JSON_REQUEST] = True
+        task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
+        task[TaskConstants.TASK_IS_JSON_REQUEST] = True
     else:
-        task[Extract.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
-        task[Extract.TASK_IS_JSON_REQUEST] = False
-    task[Extract.TASK_QUERY] = compile_query_to_sql_text(query)
+        task[TaskConstants.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
+        task[TaskConstants.TASK_IS_JSON_REQUEST] = False
+    task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
     return task
 
 

@@ -16,6 +16,7 @@ from sqlalchemy.ext.compiler import compiles
 
 csv_imported = False
 
+
 class UT_Base(unittest.TestCase):
 
     @classmethod
@@ -37,6 +38,7 @@ class UT_Base(unittest.TestCase):
 
 class Unittest_with_sqlite(UT_Base):
     csv_imported = False
+
     @classmethod
     def setUpClass(cls, datasource_name='', metadata=None):
         Unittest_with_sqlite.datasource_name = datasource_name

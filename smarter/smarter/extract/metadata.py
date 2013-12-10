@@ -17,7 +17,7 @@ def get_metadata_file_name(params):
                                                                                                          asmtGrade=params.get(Constants.ASMTGRADE).upper(),
                                                                                                          asmtSubject=params.get(Constants.ASMTSUBJECT).upper(),
                                                                                                          asmtType=params.get(Constants.ASMTTYPE).upper(),
-                                                                                                         asmtGuid=params.get(Constants.ASMTGUID).upper())
+                                                                                                         asmtGuid=params.get(Constants.ASMTGUID))
 
 
 def get_asmt_metadata(asmt_guid):

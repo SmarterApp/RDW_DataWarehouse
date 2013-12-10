@@ -184,11 +184,11 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     copied_task_response = copy.deepcopy(task_response)
     guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(param)
 
-    param[Constants.ASMTGRADE] = None
-    query = get_extract_assessment_query(param)
+    copied_params = copy.deepcopy(param)
+    copied_params[Constants.ASMTGRADE] = None
+    query = get_extract_assessment_query(copied_params)
     if guid_grade:
         for asmt_guid, asmt_grade in guid_grade:
-            copied_params = copy.deepcopy(param)
             copied_params[Constants.ASMTGUID] = asmt_guid
             copied_params[Constants.ASMTGRADE] = asmt_grade
             query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\

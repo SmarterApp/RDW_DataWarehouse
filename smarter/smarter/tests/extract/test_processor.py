@@ -28,6 +28,8 @@ from sqlalchemy.sql.expression import select
 from edauth.security.user import User
 from smarter.extract.constants import Constants as Extract
 from edextract.tasks.constants import Constants as TaskConstants
+from beaker.cache import CacheManager, cache_managers
+from beaker.util import parse_cache_config_options
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -45,6 +47,11 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                              'extract.available_grades': '3,4,5,6,7,8,11'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
+        cache_opts = {
+            'cache.type': 'memory',
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
+        }
+        CacheManager(**parse_cache_config_options(cache_opts))
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
@@ -69,6 +76,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
+        cache_managers.clear()
 
     @classmethod
     def setUpClass(cls):

@@ -129,6 +129,9 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
+    '''
+    Remotely copies a source file to a remote machine
+    '''
     task_info = {Constants.TASK_ID: remote_copy.request.id,
                  Constants.CELERY_TASK_ID: remote_copy.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -146,6 +149,9 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def generate_json(tenant, request_id, task_id, query, output_file):
+    '''
+    Generates a json file given a result from the first element of a query
+    '''
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_json.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -157,6 +163,7 @@ def generate_json(tenant, request_id, task_id, query, output_file):
         prepare_path(output_file)
         with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as outfile:
             results = connection.get_result(query)
+            # There should only be one result in the list
             if len(results) is 1:
                 formatted = format_json(results[0])
                 json.dump(formatted, outfile, indent=4)

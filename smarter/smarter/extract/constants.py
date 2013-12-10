@@ -20,3 +20,4 @@ class Constants():
     TASK_FILE_NAME = 'file_name'
     TASK_IS_JSON_REQUEST = 'is_json_request'
     TASK_QUERY = 'query'
+    SYNC_QUEUE_NAME = 'extract_sync'

@@ -36,14 +36,12 @@ def process_sync_extract_request(params):
         extract_params[Constants.ASMTSUBJECT] = subject
         subject_tasks, task_responses = _create_tasks_with_responses(request_id, user, tenant, extract_params)
         tasks += subject_tasks
-
-    if len(tasks) > 0:
+    if tasks:
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        queue_name = 'extract_sync'
-        route_tasks(tenant, request_id, tasks, queue_name=queue_name)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=queue_name)
+        route_tasks(tenant, request_id, tasks, queue_name=Extract.SYNC_QUEUE_NAME)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=Extract.SYNC_QUEUE_NAME)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
@@ -52,6 +50,7 @@ def process_sync_extract_request(params):
 def process_async_extraction_request(params, is_tenant_level=True):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
+    :param bool is_tenant_level:  True if it is a tenant level request
     '''
     tasks = []
     response = {}

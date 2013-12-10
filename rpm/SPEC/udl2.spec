@@ -59,8 +59,6 @@ rm -rf %{buildroot}
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
-/opt/virtualenv/bin/python
-/opt/virtualenv/bin/python3
 /opt/virtualenv/bin/activate
 /opt/virtualenv/bin/activate.csh
 /opt/virtualenv/bin/activate.fish
@@ -86,6 +84,8 @@ rm -rf %{buildroot}
 %attr(755,root,root) /opt/virtualenv/bin/celeryd
 %attr(755,root,root) /opt/virtualenv/bin/celeryd-multi
 %attr(755,root,root) /opt/virtualenv/bin/celeryev
+/opt/virtualenv/bin/python
+/opt/virtualenv/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 
 %pre
@@ -94,9 +94,6 @@ if [ $? != 0 ]; then
    useradd celery
    useradd udl2
 fi
-
-%post
-chkconfig --add celeryd-udl2
 UDL2_ROOT=/opt/edware
 UDL2_ZONES=$UDL2_ROOT/zones
 
@@ -125,6 +122,8 @@ if [ ! -d $UDL2_ZONES/landing/history ]; then
 fi
 sudo chown -R udl2.udl2 $UDL2_ROOT
 
+%post
+chkconfig --add celeryd-udl2
 
 %postun
 chkconfig --del celeryd-udl2

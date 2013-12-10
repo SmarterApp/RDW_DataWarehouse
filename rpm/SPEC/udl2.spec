@@ -44,6 +44,7 @@ python setup.py install
 cd -
 
 deactivate
+find virtualenv/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 cp -r virtualenv %{buildroot}/opt
@@ -104,25 +105,25 @@ if [ ! -d $UDL2_ROOT/log ]; then
 fi
 
 if [ ! -d $UDL2_ZONES ]; then
-    mkdir -p $UDL2_ROOT/zones
+    mkdir -p $UDL2_ZONES
 fi
 
 if [ ! -d $UDL2_ZONES/landing ]; then
-    mkdir -p $UDL2_ROOT/landing
+    mkdir -p $UDL2_ZONES/landing
 fi
 
 if [ ! -d $UDL2_ZONES/landing/arrivals ]; then
-    mkdir -p $UDL2_ROOT/landing/arrivals
+    mkdir -p $UDL2_ZONES/landing/arrivals
 fi
 
 if [ ! -d $UDL2_ZONES/landing/work ]; then
-    mkdir -p $UDL2_ROOT/landing/work
+    mkdir -p $UDL2_ZONES/landing/work
 fi
 
 if [ ! -d $UDL2_ZONES/landing/history ]; then
-    mkdir -p $UDL2_ROOT/landing/history
+    mkdir -p $UDL2_ZONES/landing/history
 fi
-sudo -R udl2.udl2 $UDL2_ROOT ;
+sudo chown -R udl2.udl2 $UDL2_ROOT
 
 
 %postun

@@ -149,10 +149,7 @@ def post_extract_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    params = request.json_body
-    for k, v in params.items():
-        if type(v) is not list:
-            params[k] = [v]
+    params = convert_query_string_to_dict_arrays(request.json_body)
     return send_extraction_request(params)
 
 

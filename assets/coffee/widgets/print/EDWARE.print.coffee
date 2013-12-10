@@ -22,6 +22,7 @@ define [
         self.print()
 
     print: () ->
+      @hide()
       option = $('input[name=print]:checked', @container).val()
       asmtType = $('#selectedAsmtType').text()
       url = document.URL.replace("indivStudentReport","print")
@@ -31,7 +32,6 @@ define [
       url += "&asmtType=" + encodeURI(asmtType) if asmtType
       url += "&lang=" + edwarePreferences.getSelectedLanguage()
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
-      @hide()
 
     show: () ->
       $('#PrintModal').modal('show')

@@ -68,7 +68,7 @@ define [
         placement: 'bottom'
         trigger: 'manual'
         content: $("li.legendItem .legendPopup").html()
-        container: "#actionBar"
+        container: @container
         template: LEGEND_POPOVER_TEMPLATE
       .click (e) ->
         $(this).addClass('active').popover('show')

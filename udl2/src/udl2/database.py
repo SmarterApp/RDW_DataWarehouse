@@ -459,7 +459,7 @@ def create_table_keys(key_ddl_dict, schema):
     return key_list
 
 
-def create_table(udl2_conf, metadata, schema, table_name):
+def create_table(metadata, table_name):
     '''
     create a table from UDL_METADATA definitions
     @param udl2_conf: The configuration dictionary for udl
@@ -467,7 +467,7 @@ def create_table(udl2_conf, metadata, schema, table_name):
     @param scheam: Schema name where the table is located in UDL2 schema
     @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
     '''
-    print('create table %s.%s' % (schema, table_name))
+    print('create table metadata %s' % table_name)
     column_ddl = UDL_METADATA['TABLES'][table_name]['columns']
     key_ddl = UDL_METADATA['TABLES'][table_name]['keys']
     arguments = [table_name, metadata]
@@ -478,9 +478,9 @@ def create_table(udl2_conf, metadata, schema, table_name):
         arguments.append(column)
 
     # create unique and foreign table keys, Add to arguments
-    arguments += create_table_keys(key_ddl, schema)
+    # arguments += create_table_keys(key_ddl, schema)
 
-    table = Table(*tuple(arguments), **{'schema': schema})
+    table = Table(*tuple(arguments))
 
     return table
 
@@ -499,7 +499,7 @@ def drop_table(udl2_conf, schema, table_name):
     execute_queries(conn, [sql], except_msg)
 
 
-def create_sequence(udl2_conf, metadata, schema, seq_name):
+def create_sequence(connection, metadata, schema, seq_name):
     '''
     create a sequence from UDL_METADATA definitions
     @param udl2_conf: The configuration dictionary for udl
@@ -516,10 +516,10 @@ def create_sequence(udl2_conf, metadata, schema, seq_name):
                         optional=sequence_ddl[3],
                         quote=sequence_ddl[4],
                         metadata=metadata)
-    sql = CreateSequence(sequence)
-    (conn, engine) = _create_conn_engine(udl2_conf)
-    except_msg = "fail to create sequence %s.%s" % (schema, seq_name)
-    execute_queries(conn, [sql], except_msg)
+    connection.execute(CreateSequence(sequence))
+
+    #except_msg = "fail to create sequence %s.%s" % (schema, seq_name)
+    #execute_queries(conn, [sql], except_msg)
     return sequence
 
 
@@ -537,16 +537,16 @@ def drop_sequence(udl2_conf, schema, seq_name):
     execute_queries(conn, [sql], except_msg)
 
 
-def create_udl2_schema(udl2_conf):
-    '''
-    create schemas according to configuration file
-    @param udl2_conf: The configuration dictionary for
-    '''
-    print('create udl2 staging schema')
-    sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['staging_schema'])
-    (conn, engine) = _create_conn_engine(udl2_conf)
-    except_msg = "fail to create schema %s" % udl2_conf['staging_schema']
-    execute_queries(conn, [sql], except_msg)
+#def create_udl2_schema(udl2_conf):
+#    '''
+#    create schemas according to configuration file
+#    @param udl2_conf: The configuration dictionary for
+#    '''
+#    print('create udl2 staging schema')
+#    sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['staging_schema'])
+#    (conn, engine) = _create_conn_engine(udl2_conf)
+#    except_msg = "fail to create schema %s" % udl2_conf['staging_schema']
+#    execute_queries(conn, [sql], except_msg)
 
 
 def drop_udl2_schema(udl2_conf):
@@ -567,12 +567,10 @@ def create_udl2_tables(udl2_conf):
     @param udl2_conf: The configuration dictionary for
     '''
     # engine = (_get_db_url(udl2_conf))
-    udl2_metadata = MetaData()
+    udl2_metadata = generate_udl2_metadata(udl2_conf['staging_schema'])
     print("create tables")
 
     (conn, engine) = _create_conn_engine(udl2_conf)
-    for table, definition in UDL_METADATA['TABLES'].items():
-        create_table(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], table)
 
     # Use metadata to create tables
     udl2_metadata.create_all(engine)
@@ -588,16 +586,16 @@ def drop_udl2_tables(udl2_conf):
         drop_table(udl2_conf, udl2_conf['staging_schema'], table)
 
 
-def create_udl2_sequence(udl2_conf):
+def create_udl2_sequence(connection, schema_name, udl2_metadata):
     '''
     create sequences according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
     # (conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
-    udl2_metadata = MetaData()
+    #udl2_metadata = MetaData()
     print("create sequences")
     for sequence, definition in UDL_METADATA['SEQUENCES'].items():
-        create_sequence(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], sequence)
+        create_sequence(connection, udl2_metadata, schema_name, sequence)
 
 
 def drop_udl2_sequences(udl2_conf):
@@ -736,18 +734,63 @@ def load_stored_proc(udl2_conf):
     populate_stored_proc(engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
 
 
+###
+# NEW METHODS TO MAKE METADATA USAGE SIMPLER
+###
+
+def create_udl2_schema(engine, connection, schema_name, bind=None):
+    """
+
+    :param engine:
+    :param connection:
+    :param schema_name:
+    :param bind:
+    :return:
+    """
+    metadata = generate_udl2_metadata(schema_name, bind=bind)
+    connection.execute(CreateSchema(metadata.schema))
+    metadata.create_all(bind=engine)
+    return metadata
+
+
+def generate_udl2_metadata(schema_name=None, bind=None):
+    """
+
+    :param schema_name:
+    :param bind:
+    :return:
+    """
+    metadata = MetaData(schema=schema_name, bind=bind)
+
+    # add tables to metadata
+    for table, definition in UDL_METADATA['TABLES'].items():
+        create_table(metadata, table)
+
+    return metadata
+
+
+####
+## END NEW METHODS
+####
+
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
+    # Create schema, tables and sequences
+    (udl2_db_conn, udl2_db_engine) = _create_conn_engine(udl2_conf['udl2_db'])
+    udl2_schema_name = udl2_conf['udl2_db']['db_schema']
+    udl2_metadata = create_udl2_schema(udl2_db_engine, udl2_db_conn, udl2_schema_name)
+    create_udl2_sequence(udl2_db_conn, udl2_schema_name, udl2_metadata)
+
+    # create db_link and fdw
     create_dblink_extension(udl2_conf['target_db'])
-    create_udl2_schema(udl2_conf['udl2_db'])
     create_dblink_extension(udl2_conf['udl2_db'])
     create_foreign_data_wrapper_extension(udl2_conf['udl2_db'])
     create_foreign_data_wrapper_server(udl2_conf['udl2_db'])
-    create_udl2_tables(udl2_conf['udl2_db'])
-    create_udl2_sequence(udl2_conf['udl2_db'])
+
+    # load data and stored procedures
     load_fake_record_in_star_schema(udl2_conf['target_db'])
     load_reference_data(udl2_conf['udl2_db'])
     load_stored_proc(udl2_conf['udl2_db'])

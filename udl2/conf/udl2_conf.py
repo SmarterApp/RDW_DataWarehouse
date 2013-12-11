@@ -98,7 +98,11 @@ udl2_conf = {
         'db_driver': 'postgresql',
         'json_lz_table': 'LZ_JSON',
         'csv_lz_table': 'LZ_CSV',
-        'master_metadata_table': 'MASTER_METADATA'
+        'master_metadata_table': 'MASTER_METADATA',
+        # sqlalchemy specific
+        'echo': False,
+        'max_overflow': 10,
+        'pool_size': 20,
     },
     'target_db': {
         'db_schema': 'edware',

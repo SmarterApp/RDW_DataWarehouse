@@ -11,6 +11,8 @@ from sqlalchemy.sql.expression import text
 from sqlalchemy import MetaData
 from sqlalchemy.orm import sessionmaker
 
+#from udl2.udl2_connector import UDL2DBConnection
+
 
 def print_get_affected_rows(result, action, module, function):
     '''
@@ -35,6 +37,33 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     engine = create_engine(db_string)
     db_connection = engine.connect()
     return db_connection, engine
+
+
+def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
+    trans = conn.get_transaction()
+    # execute queries
+    try:
+        row_affected_list = []
+        for query in list_of_queries:
+            result = conn.execute(query)
+            count = result.rowcount
+            row_affected_list.append(count)
+        trans.commit()
+        return row_affected_list
+    except Exception as e:
+        print(except_msg, e)
+        trans.rollback()
+
+def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
+    trans = conn.get_transaction()
+    # execute queries
+    try:
+        result = conn.execute(query)
+        trans.commit()
+        return result
+    except Exception as e:
+        print(except_msg, e)
+        trans.rollback()
 
 
 def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):

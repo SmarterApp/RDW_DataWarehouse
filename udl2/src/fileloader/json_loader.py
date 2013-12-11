@@ -18,6 +18,7 @@ import argparse
 import json
 import udl2_util.database_util as db_util
 from udl2 import message_keys as mk
+from udl2.udl2_connector import UDL2DBConnection
 
 DBDRIVER = "postgresql"
 
@@ -30,8 +31,7 @@ def load_json(conf):
 
     json_dict = read_json_file(conf[mk.FILE_TO_LOAD])
     flattened_json = flatten_json_dict(json_dict, conf[mk.MAPPINGS])
-    return load_to_table(flattened_json, conf[mk.GUID_BATCH], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PORT],
-                         conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_TABLE], conf[mk.TARGET_DB_SCHEMA])
+    return load_to_table(flattened_json, conf[mk.GUID_BATCH], conf[mk.TARGET_DB_TABLE])
 
 
 def read_json_file(json_file):
@@ -78,7 +78,7 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
-def load_to_table(data_dict, guid_batch, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
+def load_to_table(data_dict, guid_batch, int_table):
     '''
     Load the table into the proper table
     @param data_dict: the dictionary containing the data to be loaded
@@ -93,21 +93,24 @@ def load_to_table(data_dict, guid_batch, db_host, db_name, db_user, db_port, db_
     '''
 
     # Create sqlalchemy connection and get table information from sqlalchemy
-    conn, engine = db_util.connect_db(DBDRIVER, db_user, db_password, db_host, db_port, db_name)
-    s_int_table = db_util.get_sqlalch_table_object(engine, int_schema, int_table)
+    with UDL2DBConnection() as conn:
+        #conn, engine = db_util.connect_db(DBDRIVER, db_user, db_password, db_host, db_port, db_name)
+        #s_int_table = db_util.get_sqlalch_table_object(engine, int_schema, int_table)
+        s_int_table = conn.get_table(int_table)
 
-    # remove empty strings and replace with None
-    data_dict = fix_empty_strings(data_dict)
+        # remove empty strings and replace with None
+        data_dict = fix_empty_strings(data_dict)
 
-    # add the guid_batch to the data
-    data_dict[mk.GUID_BATCH] = guid_batch
+        # add the guid_batch to the data
+        data_dict[mk.GUID_BATCH] = guid_batch
 
-    # create insert statement and execute
-    insert_into_int_table = s_int_table.insert().values(**data_dict)
-    affected_row = db_util.execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ', 'json_loader', 'load_to_table')
+        # create insert statement and execute
+        insert_into_int_table = s_int_table.insert().values(**data_dict)
+        affected_row = db_util.execute_udl_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ', 'json_loader', 'load_to_table')
 
-    # Close connection
-    conn.close()
+        # Close connection
+        # conn.close()
+
     return affected_row[0]
 
 

@@ -5,6 +5,7 @@ import move_to_target.create_queries as queries
 import datetime
 from udl2_util.measurement import BatchTableBenchmark
 import logging
+from udl2.udl2_connector import UDL2DBConnection
 
 
 DBDRIVER = "postgresql"
@@ -78,11 +79,12 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     2. Select asmt_rec_id from dim_asmt by the same guid_amst got from 1. It should have 1 value
     '''
     # connect to integration table, to get the value of guid_asmt
-    conn_to_source_db, _engine = connect_db(DBDRIVER, conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD], conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], conf[mk.SOURCE_DB_NAME])
-    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
-    # print(query_to_get_guid)
-    guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
-    conn_to_source_db.close()
+    with UDL2DBConnection() as conn_to_source_db:
+        #conn_to_source_db, _engine = connect_db(DBDRIVER, conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD], conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], conf[mk.SOURCE_DB_NAME])
+        query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
+        # print(query_to_get_guid)
+        guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
+        #conn_to_source_db.close()
 
     # connect to target table, to get the value of asmt_rec_id
     conn_to_target_db, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])

@@ -6,7 +6,8 @@ from sqlalchemy.sql import select
 from udl2.celery import udl2_conf
 from udl2 import message_keys as mk
 from move_to_target import create_queries as queries
-from udl2_util.database_util import connect_db, execute_query_with_result, get_sqlalch_table_object
+from udl2_util.database_util import connect_db, execute_udl_query_with_result, get_sqlalch_table_object
+from udl2.udl2_connector import UDL2DBConnection
 
 
 def get_table_and_column_mapping(conf, table_name_prefix=None):
@@ -15,21 +16,22 @@ def get_table_and_column_mapping(conf, table_name_prefix=None):
     @param conf: configuration dictionary
     @param table_name_prefix: the prefix of the table name
     '''
-    (conn_source, _engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
-                                        conf[mk.SOURCE_DB_USER],
-                                        conf[mk.SOURCE_DB_PASSWORD],
-                                        conf[mk.SOURCE_DB_HOST],
-                                        conf[mk.SOURCE_DB_PORT],
-                                        conf[mk.SOURCE_DB_NAME])
-    table_map = get_table_mapping(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
-    column_map = get_column_mapping_from_int_to_star(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
-    conn_source.close()
+    with UDL2DBConnection() as conn_source:
+        #(conn_source, _engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
+        #                                    conf[mk.SOURCE_DB_USER],
+        #                                    conf[mk.SOURCE_DB_PASSWORD],
+        #                                    conf[mk.SOURCE_DB_HOST],
+        #                                    conf[mk.SOURCE_DB_PORT],
+        #                                    conf[mk.SOURCE_DB_NAME])
+        table_map = get_table_mapping(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
+        column_map = get_column_mapping_from_int_to_star(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
+    #conn_source.close()
     return table_map, column_map
 
 
 def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_prefix=None):
     table_mapping_query = queries.get_dim_table_mapping_query(schema_name, table_name, phase_number)
-    table_mapping_result = execute_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', 'W_load_from_integration_to_star', 'get_table_mapping')
+    table_mapping_result = execute_udl_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', 'W_load_from_integration_to_star', 'get_table_mapping')
     table_mapping_dict = {}
     if table_mapping_result:
         for mapping in table_mapping_result:
@@ -47,7 +49,7 @@ def get_column_mapping_from_int_to_star(conn, schema_name, table_name, phase_num
     for dim_table in dim_tables:
         # get column map for this dim_table
         column_mapping_query = queries.get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_table)
-        column_mapping_result = execute_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping', 'W_load_from_integration_to_star', 'get_column_mapping_from_int_to_star')
+        column_mapping_result = execute_udl_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping', 'W_load_from_integration_to_star', 'get_column_mapping_from_int_to_star')
         column_mapping_list = []
         if column_mapping_result:
             for mapping in column_mapping_result:
@@ -116,18 +118,20 @@ def get_tenant_target_db_information(tenant_code):
     :return: A dictionary containing the relevant connection information
     """
     if udl2_conf['multi_tenant']['on']:
-        (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-                                    udl2_conf['udl2_db']['db_user'],
-                                    udl2_conf['udl2_db']['db_pass'],
-                                    udl2_conf['udl2_db']['db_host'],
-                                    udl2_conf['udl2_db']['db_port'],
-                                    udl2_conf['udl2_db']['db_database'])
+        with UDL2DBConnection() as conn:
+            #(conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
+            #                            udl2_conf['udl2_db']['db_user'],
+            #                            udl2_conf['udl2_db']['db_pass'],
+            #                            udl2_conf['udl2_db']['db_host'],
+            #                            udl2_conf['udl2_db']['db_port'],
+            #                            udl2_conf['udl2_db']['db_database'])
 
-        table_meta = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['reference_schema'],
-                                              udl2_conf['udl2_db']['master_metadata_table'])
+            mast_meta_table = conn.get_table(udl2_conf['udl2_db']['master_metadata_table'])
+            #table_meta = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['reference_schema'],
+            #                                      udl2_conf['udl2_db']['master_metadata_table'])
 
-        select_object = select([table_meta]).where(table_meta.c.tenant_code == tenant_code)
-        (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select_object).fetchone()
+            select_object = select([mast_meta_table]).where(mast_meta_table.c.tenant_code == tenant_code)
+            (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select_object).fetchone()
     else:
         db_host = udl2_conf['target_db']['db_host']
         port = udl2_conf['target_db']['db_port']

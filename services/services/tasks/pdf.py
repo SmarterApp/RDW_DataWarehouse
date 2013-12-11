@@ -9,14 +9,14 @@ import os
 import sys
 import logging
 import subprocess
-import platform
 from services.celery import celery
-from services.exceptions import PdfGenerationError
+from services.exceptions import PdfGenerationError, NotForWindowsException
 import copy
 from services.celery import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
 
+mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 
@@ -46,18 +46,17 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
 
     NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
     '''
+    # MS Windows is not supported
+    if mswindows:
+        raise NotForWindowsException('PDF generator cannot be served for Windows users')
     force_regenerate = False
     try:
-        # Only for windows environment, set shell to true
-        shell = False
-        if platform.system() == 'Windows':
-            shell = True
         prepare_path(outputfile)
         wkhtmltopdf_option = copy.deepcopy(options)
         if grayscale:
             wkhtmltopdf_option += ['-g']
         wkhtmltopdf_option += ['--cookie', cookie_name, cookie, url, outputfile]
-        subprocess.call(pdf_procs + wkhtmltopdf_option, timeout=timeout, shell=shell)
+        subprocess.call(pdf_procs + wkhtmltopdf_option, timeout=timeout)
     except subprocess.TimeoutExpired:
         # Note that Timeout exception is valid due to wkhtmltopdf issue 141
         log.error('wkhmltopdf subprocess call timed out')

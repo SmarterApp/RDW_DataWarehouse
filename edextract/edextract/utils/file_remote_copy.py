@@ -5,11 +5,17 @@ Created on Nov 7, 2013
 '''
 import os
 import subprocess
-from edextract.exceptions import RemoteCopyError
+from edextract.exceptions import RemoteCopyError, NotForWindowsException
 from edextract.settings.config import Config, get_setting
+import sys
+
+mswindows = (sys.platform == "win32")
 
 
 def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file, binaryfile='sftp'):
+    if mswindows:
+        raise NotForWindowsException('sftp remote copy cannot be served for Windows users')
+
     sftp_command_line = [binaryfile, '-b', '-']
     if private_key_file is not None:
         sftp_command_line += ['-oIdentityFile=' + private_key_file]

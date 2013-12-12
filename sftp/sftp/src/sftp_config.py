@@ -5,9 +5,11 @@ sftp_conf = {
     'sftp_base_dir': 'sftp/opt/edware/home',
     'sftp_arrivals_dir': 'arrivals',
     'sftp_departures_dir': 'departures',
+    'sftp_filerouter_dir': '',
     'user_home_base_dir': '/opt/edware/home',
     'group': 'edwaredataadmin',
-    'roles': ['sftparrivals', 'sftpdepartures'],
-    'file_drop': 'file_drop',
-    'file_pickup': 'reports'
+    'roles': ['sftparrivals', 'sftpdepartures', 'filerouter'],
+    'user_path_sftparrivals_dir': 'file_drop',
+    'user_path_sftpdepartures_dir': 'reports',
+    'user_path_filerouter_dir': 'route'
 }

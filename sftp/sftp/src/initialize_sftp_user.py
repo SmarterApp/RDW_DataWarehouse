@@ -30,8 +30,23 @@ def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):
 
 
 def get_tenant_sftp_jail_dir(sftp_conf, tenant, role):
-    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
+    if role is 'sftparrivals':
+        arrive_depart_dir = sftp_conf['sftp_arrivals_dir']
+    elif role is 'sftpdepartures':
+        arrive_depart_dir = sftp_conf['sftp_departures_dir']
+    else:
+        arrive_depart_dir = sftp_conf['sftp_filerouter_dir']
     return os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], arrive_depart_dir, tenant)
+
+
+def get_user_path(sftp_conf, role):
+    if role is 'sftparrivals':
+        user_path = sftp_conf['user_path_sftparrivals_dir']
+    elif role is 'sftpdepartures':
+        user_path = sftp_conf['user_path_sftpdepartures_dir']
+    else:
+        user_path = sftp_conf['user_path_filerouter_dir']
+    return user_path
 
 
 def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_file=None):
@@ -52,7 +67,7 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
 
     user_sftp_path = get_user_sftp_jail_dir(sftp_conf, tenant, user, role)
     user_home_path = get_user_home_dir(sftp_conf, tenant, user, role)
-    user_path = sftp_conf['file_drop'] if role is 'sftparrivals' else sftp_conf['file_pickup']
+    user_path = get_user_path(sftp_conf, role)
 
     _create_user(user, user_home_path, user_sftp_path, sftp_conf['group'], user_path)
 

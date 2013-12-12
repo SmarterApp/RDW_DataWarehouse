@@ -8,7 +8,7 @@ import shutil
 import tempfile
 
 from sftp.src.initialize_sftp_user import delete_user, create_sftp_user,\
-    _verify_user_tenant_and_role, _create_user
+    _verify_user_tenant_and_role, _create_user, get_user_path
 from sftp.src.configure_sftp_groups import initialize as init_group, cleanup as clean_group
 from sftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from sftp.src.util import create_path
@@ -23,9 +23,11 @@ class TestInitSFTPUser(unittest.TestCase):
             'sftp_base_dir': 'sftp',
             'sftp_arrivals_dir': 'arrivals',
             'sftp_departures_dir': 'departures',
-            'groups': ['testgrp1', 'testgrp2'],
-            'file_drop': 'tst_file_drop',
-            'file_pickup': 'remports'
+            'group': 'testgroup',
+            'roles': ['sftparrivals', 'sftpdepartures', 'filerouter'],
+            'user_path_sftparrivals_dir': 'tst_file_drop',
+            'user_path_sftpdepartures_dir': 'reports',
+            'user_path_filerouter_dir': 'route'
         }
         self.user_dels = []
         self.tenant_dels = []
@@ -167,6 +169,18 @@ class TestInitSFTPUser(unittest.TestCase):
     def check_user_does_not_exist(self, user):
         with self.assertRaises(KeyError):
             pwd.getpwnam(user)
+
+    def test_get_user_path_arrivals(self):
+        path = get_user_path(self.sftp_conf, "sftparrivals")
+        self.assertEqual(path, self.sftp_conf["user_path_sftparrivals_dir"])
+
+    def test_get_user_path_dept(self):
+        path = get_user_path(self.sftp_conf, "sftpdepartures")
+        self.assertEqual(path, self.sftp_conf["user_path_sftpdepartures_dir"])
+
+    def test_get_user_path_filerouters(self):
+        path = get_user_path(self.sftp_conf, "filerouter")
+        self.assertEqual(path, self.sftp_conf["user_path_filerouter_dir"])
 
 if __name__ == '__main__':
     unittest.main()

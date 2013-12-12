@@ -18,7 +18,7 @@ class TestConfigureSFTPGroups(unittest.TestCase):
             'sftp_base_dir': 'sftp',
             'sftp_arrivals_dir': 'arrivals',
             'sftp_departures_dir': 'departures',
-            'group': 'edwaredataadmin',
+            'group': 'idontexist',
             'roles': ['testgrp1', 'testgrp2']
         }
 
@@ -26,7 +26,7 @@ class TestConfigureSFTPGroups(unittest.TestCase):
             'sftp_home': '/tmp',
             'sftp_base_dir': 'sftp',
             'sftp_arrivals_dir': 'arrivals',
-            'group': 'edwaredataadmin',
+            'group': 'idontexist',
             'sftp_departures_dir': 'departures',
             'roles': [None, '']
         }
@@ -44,11 +44,5 @@ class TestConfigureSFTPGroups(unittest.TestCase):
 
         configure_sftp_groups.initialize(self.test_invalid_sftp_conf)
         # the initialize groups only works on linux based machines
-        group = self.test_sftp_conf['group']
-        self.assertFalse(configure_sftp_groups._group_exists(group))
-
-    def test__cleanup_sftp_groups(self):
-        configure_sftp_groups.cleanup(self.test_sftp_conf)
-        # the cleanup groups only works on linux based machines
         group = self.test_sftp_conf['group']
         self.assertFalse(configure_sftp_groups._group_exists(group))

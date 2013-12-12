@@ -8,7 +8,6 @@ from sftp.src import configure_sftp_groups
 __author__ = 'sravi'
 
 import unittest
-import sys
 
 
 class TestConfigureSFTPGroups(unittest.TestCase):
@@ -39,26 +38,17 @@ class TestConfigureSFTPGroups(unittest.TestCase):
         configure_sftp_groups.initialize(self.test_sftp_conf)
         # the initialize groups only works on linux based machines
         group = self.test_sftp_conf['group']
-        if sys.platform == 'linux':
-            self.assertTrue(configure_sftp_groups._group_exists(group))
-        else:
-            self.assertFalse(configure_sftp_groups._group_exists(group))
+        self.assertFalse(configure_sftp_groups._group_exists(group))
 
     def test__initialize_invalid_sftp_groups(self):
 
         configure_sftp_groups.initialize(self.test_invalid_sftp_conf)
         # the initialize groups only works on linux based machines
         group = self.test_sftp_conf['group']
-        if sys.platform == 'linux':
-            self.assertFalse(configure_sftp_groups._group_exists(group))
-        else:
-            self.assertFalse(configure_sftp_groups._group_exists(group))
+        self.assertFalse(configure_sftp_groups._group_exists(group))
 
     def test__cleanup_sftp_groups(self):
         configure_sftp_groups.cleanup(self.test_sftp_conf)
         # the cleanup groups only works on linux based machines
         group = self.test_sftp_conf['group']
-        if sys.platform == 'linux':
-            self.assertFalse(configure_sftp_groups._group_exists(group))
-        else:
-            self.assertFalse(configure_sftp_groups._group_exists(group))
+        self.assertFalse(configure_sftp_groups._group_exists(group))

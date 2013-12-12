@@ -30,19 +30,20 @@ def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):
 
 
 def get_tenant_sftp_jail_dir(sftp_conf, tenant, role):
-    if role is 'sftparrivals':
+    if role == 'sftparrivals':
         arrive_depart_dir = sftp_conf['sftp_arrivals_dir']
-    elif role is 'sftpdepartures':
+    elif role == 'sftpdepartures':
         arrive_depart_dir = sftp_conf['sftp_departures_dir']
     else:
         arrive_depart_dir = sftp_conf['sftp_filerouter_dir']
+        tenant = ""
     return os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], arrive_depart_dir, tenant)
 
 
 def get_user_path(sftp_conf, role):
-    if role is 'sftparrivals':
+    if role == 'sftparrivals':
         user_path = sftp_conf['user_path_sftparrivals_dir']
-    elif role is 'sftpdepartures':
+    elif role == 'sftpdepartures':
         user_path = sftp_conf['user_path_sftpdepartures_dir']
     else:
         user_path = sftp_conf['user_path_filerouter_dir']
@@ -147,7 +148,7 @@ def _verify_user_tenant_and_role(tenant_path, username, role):
     :return: True if both the tenant and the user are valid, False otherwise
     """
     # Ensure that tenant has already been created
-    if not os.path.exists(tenant_path):
+    if role != 'filerouter' and not os.path.exists(tenant_path):
         return False, 'Tenant does not exist!'
 
     # check that the role has been created as a group on the system

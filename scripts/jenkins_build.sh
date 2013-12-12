@@ -307,7 +307,7 @@ function build_rpm {
     rm -rf /var/lib/jenkins/rpmbuild
 
     echo "Build RPM for: "
-    echo $MAIN_PKG
+    echo $1
     echo "Build Number: "
     echo $BUILD_NUMBER
     echo "RPM_VERSION: "
@@ -318,8 +318,9 @@ function build_rpm {
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb $1.spec
 
-    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/$1{$1_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
-    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/$1${$1_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/$1-latest.rpm"
+    ENV_NAME=echo ${1}_env_name | tr '[:lower:]' '[:upper:]'
+    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/$1{$ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/$1${$ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/$1-latest.rpm"
 
     echo "Upload to pulp"
     pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v

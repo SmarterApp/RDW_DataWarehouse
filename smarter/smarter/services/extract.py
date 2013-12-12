@@ -98,7 +98,7 @@ TENANT_EXTRACT_PARAMS = {
             "required": False,
             "pattern": "^(true|TRUE)$",
         },
-        'sl': {  # this is added by GET request inside browsers
+        Constants.SL: {  # this is added by GET request inside browsers
             "type": "array",
             "items": {
                 "type": "string",

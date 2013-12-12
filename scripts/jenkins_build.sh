@@ -318,9 +318,9 @@ function build_rpm {
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb $1.spec
 
-    ENV_NAME=echo ${1}_env_name | tr '[:lower:]' '[:upper:]'
-    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/$1{$ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
-    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/$1${$ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/$1-latest.rpm"
+    ENV_NAME=$(echo ${1}_env_name | tr '[:lower:]' '[:upper:]')
+    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/$1${ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/$1${ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/$1-latest.rpm"
 
     echo "Upload to pulp"
     pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v

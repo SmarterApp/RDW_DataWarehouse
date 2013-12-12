@@ -7,14 +7,13 @@ define [
   "edwareGrid"
   "edwareBreadcrumbs"
   "edwareUtil"
-  "edwareFooter"
   "edwareHeader"
   "edwarePreferences"
   "edwareConstants"
   "edwareGridStickyCompare"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
 
   REPORT_NAME = 'studentList'
 
@@ -36,7 +35,7 @@ define [
       this.asmtTypes = config.students.customViews.asmtTypes
       this.legendInfo = config.legendInfo
       this.labels = config.labels
-      this.gridHeight = window.innerHeight - 235
+      this.gridHeight = window.innerHeight - 212
       edwareUtil.reRenderBody this.labels
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.reloadCurrentView.bind(this)
 
@@ -96,7 +95,6 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
-      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.LOS, this.config, this.fetchExportData.bind(this)) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
 
     fetchExportData: () ->

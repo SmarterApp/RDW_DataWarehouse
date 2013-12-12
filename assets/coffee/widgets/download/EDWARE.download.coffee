@@ -7,7 +7,8 @@ define [
   "edwareConstants"
   "edwareClientStorage"
   "edwarePreferences"
-], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences) ->
+  "edwareExport"
+], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 

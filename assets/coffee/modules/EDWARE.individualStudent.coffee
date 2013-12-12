@@ -9,13 +9,12 @@ define [
   "text!templates/individualStudent_report/individual_student_template.html"
   "edwareBreadcrumbs"
   "edwareUtil"
-  "edwareFooter"
   "edwareHeader"
   "edwarePreferences"
   "edwareConstants"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -244,12 +243,12 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
       
       # Generate footer links
-      this.isrFooter = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.ISR, {
-        reportInfo: this.reportInfo
-        legendInfo: this.legendInfo,
-        subject: this.createSampleInterval this.data.items[asmtType][0], this.legendInfo.sample_intervals
-        labels: this.configData.labels
-      }) unless this.isrFooter
+      # this.isrFooter = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.ISR, {
+      #   reportInfo: this.reportInfo
+      #   legendInfo: this.legendInfo,
+      #   subject: this.createSampleInterval this.data.items[asmtType][0], this.legendInfo.sample_intervals
+      #   labels: this.configData.labels
+      # }) unless this.isrFooter
       
       this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
 

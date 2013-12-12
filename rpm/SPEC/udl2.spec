@@ -6,7 +6,7 @@ Group:		ETL pipeline
 License:	Proprietary software
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Vendor: Amplify Insight Edware Team <edwaredev@wgen.net>
-Url: https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/
+Url: https://github.wgenhq.net/Ed-Ware-SBAC/edware
 
 BuildRequires:	python3
 BuildRequires:	python3-libs

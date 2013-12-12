@@ -127,7 +127,6 @@ chkconfig --add celeryd-udl2
 
 %postun
 chkconfig --del celeryd-udl2
-rm -rf /opt/edware
 
 %preun
 userdel -rf celery > /dev/null 2>&1

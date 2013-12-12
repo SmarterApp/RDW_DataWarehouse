@@ -66,7 +66,6 @@ rm -rf %{buildroot}
 %post
 
 %postun
-rm -rf /opt/edware
 
 %preun
 

@@ -301,6 +301,32 @@ function import_data_from_csv {
     python import_data.py --config ${WORKSPACE}/config/${INI_FILE_FOR_ENV} --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
+function build_rpm {
+    # parameter $1 : $MAIN_PKG to be built
+    # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
+    rm -rf /var/lib/jenkins/rpmbuild
+
+    echo "Build RPM for: "
+    echo $MAIN_PKG
+    echo "Build Number: "
+    echo $BUILD_NUMBER
+    echo "RPM_VERSION: "
+    echo $RPM_VERSION
+
+    export GIT_COMMIT="$(git rev-parse HEAD)"
+
+    cd "$WORKSPACE/rpm/SPEC"
+    rpmbuild -bb $1.spec
+
+    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/$1{$1_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/$1${$1_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/$1-latest.rpm"
+
+    echo "Upload to pulp"
+    pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
+
+    echo "Finished building RPM"
+}
+
 function build_smarter_rpm {
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
     rm -rf /var/lib/jenkins/rpmbuild
@@ -334,22 +360,20 @@ function build_udl2_rpm {
     echo $BUILD_NUMBER
     echo "RPM_VERSION:"
     echo $RPM_VERSION
-    echo "CLEAN_BUILD:"
-    echo $CLEAN_BUILD
 
     export GIT_COMMIT="$(git rev-parse HEAD)"
 
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb udl2.spec
 
-    echo "Uploading to pynest"
+    echo "Uploading udl2 rpm to pynest"
     scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/udl2${UDL2_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
     ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/udl2${UDL2_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/udl2-latest.rpm"
 
     #echo "Uploading to pulp"
     #pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
 
-    echo "Finished building RPM"
+    echo "Finished building udl2 RPM"
 }
 
 function build_egg {
@@ -436,7 +460,9 @@ function main {
         if [ ${MAIN_PKG:=""} == "smarter" ]; then
            build_smarter_rpm
         elif [ ${MAIN_PKG:=""} == "udl2" ]; then
-           build_udl2_rpm
+           build_rpm $MAIN_PKG
+        elif [ ${MAIN_PKG:=""} == "sftp" ]; then
+           build_rpm $MAIN_PKG
         fi
     fi
 }

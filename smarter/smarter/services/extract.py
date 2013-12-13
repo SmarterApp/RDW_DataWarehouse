@@ -16,60 +16,89 @@ from smarter.reports.helpers.constants import AssessmentType, Constants
 from smarter.extract.processor import process_async_extraction_request,\
     process_sync_extract_request
 from smarter.extract.constants import ExtractType, Constants as Extract
-from edcore.utils.utils import merge_dict
-from smarter.reports.list_of_students_report import REPORT_PARAMS
 from datetime import datetime
 
 TENANT_EXTRACT_PARAMS = {
     "type": "object",
     "additionalProperties": False,
     "properties": {
-        'extractType': {
+        Extract.EXTRACTTYPE: {
             "type": "array",
             "items": {
                 "type": "string",
                 "pattern": "^" + ExtractType.studentAssessment + "$"
             },
             "minItems": 1,
-            "uniqueItems": True
+            "uniqueItems": True,
+            "required": False
         },
-        'asmtType': {
+        Constants.ASMTTYPE: {
             "type": "array",
             "items": {
                 "type": "string",
                 "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"
             },
             "minItems": 1,
-            "uniqueItems": True
+            "uniqueItems": True,
+            "required": True
         },
-        'asmtSubject': {
+        Constants.ASMTSUBJECT: {
             "type": "array",
             "items": {
                 "type": "string",
                 "pattern": "^(" + Constants.MATH + "|" + Constants.ELA + ")$"
             },
             "minItems": 1,
-            "uniqueItems": True
+            "uniqueItems": True,
+            "required": True
         },
-        'asmtYear': {
+        Constants.ASMTYEAR: {
             "type": "array",
             "items": {
                 "type": "string",
                 "pattern": "^\d{4}$"
             },
             "minItems": 1,
-            "uniqueItems": True
+            "uniqueItems": True,
+            "required": False
         },
-        'stateCode': {
+        Constants.STATECODE: {
             "type": "array",
             "items": {
                 "type": "string",
                 "pattern": "^[a-zA-Z]{2}$"
             },
             "minItems": 1,
-            "uniqueItems": True
+            "uniqueItems": True,
+            "required": True,
         },
-        'sl': {  # this is added by GET request inside browsers
+        Constants.DISTRICTGUID: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
+        Constants.SCHOOLGUID: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
+        Constants.ASMTGRADE: {
+            "type": "string",
+            "maxLength": 2,
+            "required": False,
+            "pattern": "^[K0-9]+$",
+        },
+        Extract.SYNC: {
+            "type": "string",
+            "required": False,
+            "pattern": "^(true|TRUE)$",
+        },
+        Extract.ASYNC: {
+            "type": "string",
+            "required": False,
+            "pattern": "^(true|TRUE)$",
+        },
+        Constants.SL: {  # this is added by GET request inside browsers
             "type": "array",
             "items": {
                 "type": "string",
@@ -77,71 +106,12 @@ TENANT_EXTRACT_PARAMS = {
             },
             "required": False
         }
-    },
-    "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "stateCode"]
+    }
 }
 
-EXTRACT_PARAMS = {"type": "object",
-                  "additionalProperties": False,
-                  "properties": merge_dict(REPORT_PARAMS,
-                                           {Constants.ASMTTYPE: {"type": "string",
-                                                                 "require": True,
-                                                                 "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"},
-                                            'sl': {"type": "string",
-                                                   "required": False}
-                                            })}
 
-
-@view_config(route_name='tenant_extract', request_method='POST', content_type='application/json')
+@view_config(route_name='extract', request_method='POST')
 @validate_params(schema=TENANT_EXTRACT_PARAMS)
-@audit_event()
-def post_tenant_level_extract_service(context, request):
-    '''
-    Handles POST request to /services/extract/tenant
-
-    :param request:  Pyramid request object
-    '''
-    params = request.json_body
-    return send_tenant_level_extraction_request(params)
-
-
-@view_config(route_name='tenant_extract', request_method='GET')
-@validate_params(schema=TENANT_EXTRACT_PARAMS)
-@audit_event()
-def get_tenant_level_extract_service(context, request):
-    '''
-    Handles GET request to /services/extract/tenant
-
-    :param request:  Pyramid request object
-    '''
-    try:
-        params = convert_query_string_to_dict_arrays(request.GET)
-    except Exception as e:
-        raise EdApiHTTPPreconditionFailed(e)
-    return send_tenant_level_extraction_request(params)
-
-
-def send_tenant_level_extraction_request(params):
-    '''
-    Requests for data extraction for tenant level, throws http exceptions when error occurs
-
-    :param session: session for this user request
-    :param params: python dict that contains query parameters from the request
-    '''
-    try:
-        if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
-            results = process_async_extraction_request(params)
-            return Response(body=json.dumps(results), content_type='application/json')
-    # TODO: currently we dont' even throw any of these exceptions
-    except ExtractionError as e:
-        raise EdApiHTTPInternalServerError(e.msg)
-    except TimeoutError as e:
-        # if celery timed out...
-        raise EdApiHTTPInternalServerError(e.msg)
-
-
-@view_config(route_name='extract', request_method='POST', content_type='application/octet-stream')
-@validate_params(schema=EXTRACT_PARAMS)
 @audit_event()
 def post_extract_service(context, request):
     '''
@@ -154,7 +124,7 @@ def post_extract_service(context, request):
 
 
 @view_config(route_name='extract', request_method='GET')
-@validate_params(schema=EXTRACT_PARAMS)
+@validate_params(schema=TENANT_EXTRACT_PARAMS)
 @audit_event()
 def get_extract_service(context, request):
     '''
@@ -173,19 +143,40 @@ def send_extraction_request(params):
     '''
     Requests for data extraction
 
+    Sync and Async type are both processed here
+    Sync calls return content type of 'application/octet-stream'
+    Async calls return a json Response
+
+    By default, it is a synchronous call unless otherwise specified
+
     :param session: session for this user request
     :param params: python dict that contains query parameters from the request
     '''
-    extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, [None])[0],
-                      Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None])[0],
-                      Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None])[0],
-                      Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None])[0],
-                      Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None])[0],
-                      Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
-    zip_file_name = generate_zip_file_name(extract_params)
-    content = process_sync_extract_request(extract_params)
-    response = Response(body=content, content_type='application/octet-stream')
-    response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
+    response = None
+    try:
+        # By default, it is a sync call
+        is_async = params.get(Extract.ASYNC, False)
+        if is_async:
+            if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
+                results = process_async_extraction_request(params)
+                response = Response(body=json.dumps(results), content_type='application/json')
+        else:
+            extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, [None])[0],
+                              Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None])[0],
+                              Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None])[0],
+                              Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None])[0],
+                              Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None])[0],
+                              Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
+            zip_file_name = generate_zip_file_name(extract_params)
+            content = process_sync_extract_request(extract_params)
+            response = Response(body=content, content_type='application/octet-stream')
+            response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
+    # TODO: currently we dont' even throw any of these exceptions
+    except ExtractionError as e:
+        raise EdApiHTTPInternalServerError(e.msg)
+    except TimeoutError as e:
+        # if celery timed out...
+        raise EdApiHTTPInternalServerError(e.msg)
     return response
 
 

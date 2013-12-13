@@ -11,7 +11,7 @@ class SbacIdentityParser(IdentityParser):
     '''
     format of string in memberOf
     0 1    2     3        4      5                  6                7              8             9       10    11                 12               13         14       15                    16                  17            18
-     |Role|Level|ClinetID|Client|AssociatedEntityID|AssociatedEntity|GroupOfStateID|GroupOfStates|StateID|State|GroupOfDistrictsID|GroupOfDistricts|DistrictID|District|GroupOfInstitutionsID|GroupOfInstitutions|InstitutionID|Institution
+     |Role|Level|ClientID|Client|AssociatedEntityID|AssociatedEntity|GroupOfStateID|GroupOfStates|StateID|State|GroupOfDistrictsID|GroupOfDistricts|DistrictID|District|GroupOfInstitutionsID|GroupOfInstitutions|InstitutionID|Institution
     '''
     @staticmethod
     def get_roles(attributes):

@@ -16,3 +16,5 @@ class Constants():
     REQUESTID = 'requestId'
     OK = 'ok'
     FAIL = 'fail'
+    SYNC = 'sync'
+    ASYNC = 'async'

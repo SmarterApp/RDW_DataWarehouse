@@ -14,16 +14,14 @@ import paramiko
 class rsynch_validation(unittest.TestCase):
 
     def setUp(self):
-        self.test_rsynch_conf = {
-                                 'remote_server': 'edwappsrv5.poc.dum.edwdc.net',
-                                 'file': '/Users/Shared/Amplify/edware/sftp/tests/data/test_source_file_tar_gzipped.tar.gz.gpg'
-                                 }
+        self.test_rsynch_conf = {'remote_server': 'edwappsrv5.poc.dum.edwdc.net',
+                                 'file': '/Users/Shared/Amplify/edware/sftp/tests/data/test_source_file_tar_gzipped.tar.gz.gpg'}
 
     def testdropfile_to_remote(self):
 
         local_file = self.test_rsynch_conf['file']
         srv = pysftp.Connection(host=self.test_rsynch_conf['remote_server'], username="test_user",
-                            password="test_user123")
+                                password="test_user123")
 
         # Make no file is on remote server(app server 5)
         data = srv.listdir('/filedrop')
@@ -51,7 +49,7 @@ class rsynch_validation(unittest.TestCase):
         ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
         ssh.connect('edwappsrv6.poc.dum.edwdc.net', username='udl2', password="udl2")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('ls /opt/wgen/edware-udl/zones/landing/history/test_tenant')
-        print ("output", ssh_stdout.read())
+        print("output", ssh_stdout.read())
         ssh.close()
 if __name__ == '__main__':
     unittest.main()

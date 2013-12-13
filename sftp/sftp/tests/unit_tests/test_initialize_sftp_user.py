@@ -8,7 +8,7 @@ import shutil
 import tempfile
 
 from sftp.src.initialize_sftp_user import delete_user, create_sftp_user,\
-    _verify_user_tenant_and_role, _create_user, get_user_path
+    _verify_user_tenant_and_group, _create_user, get_user_path
 from sftp.src.configure_sftp_groups import initialize as init_group, cleanup as clean_group
 from sftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from sftp.src.util import create_path
@@ -45,15 +45,15 @@ class TestInitSFTPUser(unittest.TestCase):
     def test_verify_user_tenant_and_role_tenant_path(self):
         home_folder = os.path.join(self.__temp_dir, 'does_not_exist')
         expected_result = (False, 'Tenant does not exist!')
-        result = _verify_user_tenant_and_role(home_folder, 'test_user', 'some_role')
+        result = _verify_user_tenant_and_group(home_folder, 'test_user', 'group', 'some_role')
 
         self.assertEqual(expected_result, result)
 
     def test_verify_user_tenant_and_role__role(self):
         tenant_folder = os.path.join(self.__temp_dir, 'test_does_exist')
         create_path(tenant_folder)
-        expected_result = (False, 'Role does not exist as a group in the system')
-        result = _verify_user_tenant_and_role(tenant_folder, 'some_user', 'made_up_role')
+        expected_result = (False, 'Group does not exist as a group in the system')
+        result = _verify_user_tenant_and_group(tenant_folder, 'some_user', 'gddroup', 'made_up_role')
 
         self.assertEqual(result, expected_result)
 
@@ -62,7 +62,7 @@ class TestInitSFTPUser(unittest.TestCase):
         create_path(tenant_folder)
 
         expected_result = (False, 'User already exists!')
-        result = _verify_user_tenant_and_role(tenant_folder, 'root', 'wheel')
+        result = _verify_user_tenant_and_group(tenant_folder, 'root', 'group', 'wheel')
 
         self.assertEqual(expected_result, result)
 
@@ -71,7 +71,7 @@ class TestInitSFTPUser(unittest.TestCase):
         create_path(tenant_folder)
 
         expected_result = True, ""
-        result = _verify_user_tenant_and_role(tenant_folder, 'the_roots', 'wheel')
+        result = _verify_user_tenant_and_group(tenant_folder, 'the_roots', 'group', 'wheel')
 
         self.assertEqual(expected_result, result)
 

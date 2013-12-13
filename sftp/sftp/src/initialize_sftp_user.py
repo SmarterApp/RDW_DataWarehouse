@@ -61,7 +61,7 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
         as a string
     """
     tenant_sftp_path = get_tenant_sftp_jail_dir(sftp_conf, tenant, role)
-    valid_user = _verify_user_tenant_and_role(tenant_sftp_path, user, role)
+    valid_user = _verify_user_tenant_and_group(tenant_sftp_path, user, sftp_conf['group'], role)
     if not valid_user[0]:
         print("Error: {}".format(valid_user[1]))
         return False, valid_user[1]
@@ -138,7 +138,7 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     change_owner(file_drop_loc, user, role)
 
 
-def _verify_user_tenant_and_role(tenant_path, username, role):
+def _verify_user_tenant_and_group(tenant_path, username, group, role):
     """
     Verify that the username does not already exist and that the tenant does exist
 
@@ -152,8 +152,8 @@ def _verify_user_tenant_and_role(tenant_path, username, role):
         return False, 'Tenant does not exist!'
 
     # check that the role has been created as a group on the system
-    if not group_exists(role):
-        return False, 'Role does not exist as a group in the system'
+    if not group_exists(group):
+        return False, 'Group does not exist as a group in the system'
 
     # Verify that user does not already exist
     return _check_user_not_exists(username)

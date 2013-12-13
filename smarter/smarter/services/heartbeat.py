@@ -33,11 +33,13 @@ def check_celery(request):
     '''
     if pyramid.threadlocal.get_current_registry().settings is not None:
         queue = pyramid.threadlocal.get_current_registry().settings.get('pdf.health_check.job.queue')
+        timeout = pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout')
     else:
         queue = 'health_check'
+        timeout = 10
     try:
         celery_response = health_check.apply_async(queue=queue)
-        heartbeat_message = celery_response.get()
+        heartbeat_message = celery_response.get(timeout=timeout)
     except Exception:
         return HTTPServerError()
 

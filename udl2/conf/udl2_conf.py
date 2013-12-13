@@ -112,7 +112,7 @@ udl2_conf = {
         'db_driver': 'postgresql'
     },
     'quiet_mode': False,
-    'gpg_home': '/opt/edware/zones/datafiles/keys',
+    'gpg_home': '/home/udl2/.gnupg',
     'passphrase': 'sbac udl2',
     'tenant_position': -4,
     'search_wait_time': 10,

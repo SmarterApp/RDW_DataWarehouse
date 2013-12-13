@@ -61,8 +61,8 @@ class TestInitSFTPUser(unittest.TestCase):
         tenant_folder = os.path.join(self.__temp_dir, 'test_does_exist')
         create_path(tenant_folder)
 
-        expected_result = (False, 'User already exists!')
-        result = _verify_user_tenant_and_group(tenant_folder, 'root', 'group', 'wheel')
+        expected_result = (False, 'Group does not exist as a group in the system')
+        result = _verify_user_tenant_and_group(tenant_folder, 'root', 'invalidGroup', 'wheel')
 
         self.assertEqual(expected_result, result)
 
@@ -71,7 +71,7 @@ class TestInitSFTPUser(unittest.TestCase):
         create_path(tenant_folder)
 
         expected_result = True, ""
-        result = _verify_user_tenant_and_group(tenant_folder, 'the_roots', 'group', 'wheel')
+        result = _verify_user_tenant_and_group(tenant_folder, 'the_roots', 'wheel', 'wheel')
 
         self.assertEqual(expected_result, result)
 

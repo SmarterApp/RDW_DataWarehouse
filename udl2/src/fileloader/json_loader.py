@@ -94,8 +94,7 @@ def load_to_table(data_dict, guid_batch, int_table):
 
     # Create sqlalchemy connection and get table information from sqlalchemy
     with UDL2DBConnection() as conn:
-        #conn, engine = db_util.connect_db(DBDRIVER, db_user, db_password, db_host, db_port, db_name)
-        #s_int_table = db_util.get_sqlalch_table_object(engine, int_schema, int_table)
+        # get integration table
         s_int_table = conn.get_table(int_table)
 
         # remove empty strings and replace with None
@@ -107,9 +106,6 @@ def load_to_table(data_dict, guid_batch, int_table):
         # create insert statement and execute
         insert_into_int_table = s_int_table.insert().values(**data_dict)
         affected_row = db_util.execute_udl_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ', 'json_loader', 'load_to_table')
-
-        # Close connection
-        # conn.close()
 
     return affected_row[0]
 

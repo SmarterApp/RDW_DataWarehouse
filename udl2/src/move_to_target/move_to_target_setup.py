@@ -16,16 +16,11 @@ def get_table_and_column_mapping(conf, table_name_prefix=None):
     @param conf: configuration dictionary
     @param table_name_prefix: the prefix of the table name
     '''
+
     with UDL2DBConnection() as conn_source:
-        #(conn_source, _engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
-        #                                    conf[mk.SOURCE_DB_USER],
-        #                                    conf[mk.SOURCE_DB_PASSWORD],
-        #                                    conf[mk.SOURCE_DB_HOST],
-        #                                    conf[mk.SOURCE_DB_PORT],
-        #                                    conf[mk.SOURCE_DB_NAME])
         table_map = get_table_mapping(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
         column_map = get_column_mapping_from_int_to_star(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
-    #conn_source.close()
+
     return table_map, column_map
 
 
@@ -86,27 +81,30 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
     :return: A dictionary of the config details
     """
     tenant_db_info = get_tenant_target_db_information(tenant_code)
-    conf = {  # add guid_batch from msg
-              mk.GUID_BATCH: guid_batch,
+    conf = {
+        # add guid_batch from msg
+        mk.GUID_BATCH: guid_batch,
 
-              # db driver
-              mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
+        # db driver
+        mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
+        # source schema
+        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+        # source database setting
+        mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
+        mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
+        mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
+        mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
+        mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
 
-              # source schema
-              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
-              # source database setting
-              mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
-              mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
-              mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
-              mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
-              mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-
-              mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
-              mk.PHASE: int(phase_number),
-              mk.MOVE_TO_TARGET: udl2_conf['move_to_target'],
-              mk.LOAD_TYPE: load_type
+        mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+        mk.PHASE: int(phase_number),
+        mk.MOVE_TO_TARGET: udl2_conf['move_to_target'],
+        mk.LOAD_TYPE: load_type,
+        mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['on'] else udl2_conf['multi_tenant']['default_tenant'],
     }
+
     conf.update(tenant_db_info)
+
     return conf
 
 
@@ -117,35 +115,30 @@ def get_tenant_target_db_information(tenant_code):
     :param tenant_code: The code (2 char name) for the give tenant
     :return: A dictionary containing the relevant connection information
     """
-    if udl2_conf['multi_tenant']['on']:
-        with UDL2DBConnection() as conn:
-            #(conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-            #                            udl2_conf['udl2_db']['db_user'],
-            #                            udl2_conf['udl2_db']['db_pass'],
-            #                            udl2_conf['udl2_db']['db_host'],
-            #                            udl2_conf['udl2_db']['db_port'],
-            #                            udl2_conf['udl2_db']['db_database'])
-
-            mast_meta_table = conn.get_table(udl2_conf['udl2_db']['master_metadata_table'])
-            #table_meta = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['reference_schema'],
-            #                                      udl2_conf['udl2_db']['master_metadata_table'])
-
-            select_object = select([mast_meta_table]).where(mast_meta_table.c.tenant_code == tenant_code)
-            (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select_object).fetchone()
-    else:
-        db_host = udl2_conf['target_db']['db_host']
-        port = udl2_conf['target_db']['db_port']
-        user = udl2_conf['target_db']['db_user']
-        db_name = udl2_conf['target_db']['db_database']
-        schema = udl2_conf['target_db']['db_schema']
-        passwd = udl2_conf['target_db']['db_pass']
+    tenant_code = tenant_code if udl2_conf['multi_tenant']['on'] else udl2_conf['multi_tenant']['default_tenant']
+    #if udl2_conf['multi_tenant']['on']:
+    #    with UDL2DBConnection() as conn:
+    #        mast_meta_table = conn.get_table(udl2_conf['udl2_db']['master_metadata_table'])
+    #
+    #        select_object = select([mast_meta_table]).where(mast_meta_table.c.tenant_code == tenant_code)
+    #        (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select_object).fetchone()
+    #    db_name = udl2_conf['target_db'][tenant_code]['db_database']
+    #    passwd = udl2_conf['target_db'][tenant_code]['db_pass']
+    #    user = udl2_conf['target_db'][tenant_code]['db_user']
+    #else:
+    #    db_host = udl2_conf['target_db']['db_host']
+    #    port = udl2_conf['target_db']['db_port']
+    #    user = udl2_conf['target_db']['db_user']
+    #    db_name = udl2_conf['target_db']['db_database']
+    #    schema = udl2_conf['target_db']['db_schema']
+    #    passwd = udl2_conf['target_db']['db_pass']
 
     return {
-        mk.TARGET_DB_HOST: db_host,
-        mk.TARGET_DB_NAME: db_name,
-        mk.TARGET_DB_PORT: port,
-        mk.TARGET_DB_USER: user,
-        mk.TARGET_DB_SCHEMA: schema,
-        mk.TARGET_DB_PASSWORD: passwd,
+        #mk.TARGET_DB_HOST: db_host,
+        mk.TARGET_DB_NAME: udl2_conf['target_db_conn'][tenant_code]['db_database'],
+        #mk.TARGET_DB_PORT: port,
+        mk.TARGET_DB_USER: udl2_conf['target_db_conn'][tenant_code]['db_user'],
+        mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
+        mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn'][tenant_code]['db_pass'],
     }
 

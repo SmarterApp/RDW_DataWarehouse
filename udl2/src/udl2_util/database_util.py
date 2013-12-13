@@ -54,6 +54,7 @@ def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, c
         print(except_msg, e)
         trans.rollback()
 
+
 def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
     trans = conn.get_transaction()
     # execute queries

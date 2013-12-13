@@ -79,6 +79,7 @@ udl2_conf = {
     },
     'multi_tenant': {
         'on': False,
+        'default_tenant': 'edware',
     },
     'udl2_db': {
         'csv_schema': 'udl2',  # PostgresQL for UDL2 processing. This is not the target database.
@@ -103,8 +104,58 @@ udl2_conf = {
         'echo': False,
         'max_overflow': 10,
         'pool_size': 20,
+        #'edware': {
+        #    'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
+        #    'db_schema': 'udl2',
+        #    'echo': False,
+        #    'max_overflow': 10,
+        #    'pool_size': 20,
+        #}
+    },
+    'udl2_db_conn': {
+        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
+        'db_schema': 'udl2',
+        'echo': False,
+        'max_overflow': 10,
+        'pool_size': 20,
+    },
+    'target_db_conn': {
+        'edware': {
+            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+            'db_schema': 'edware',
+            'echo': False,
+            'max_overflow': 10,
+            'pool_size': 20,
+            'db_database': 'edware',
+            'db_user': 'edware',
+            'db_pass': 'edware2013',
+        },
+        'CA': {
+            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+            'db_schema': 'edware',
+            'echo': False,
+            'max_overflow': 10,
+            'pool_size': 20,
+            'db_database': 'edware',
+            'db_user': 'edware',
+            'db_pass': 'edware2013',
+        },
     },
     'target_db': {
+        #'edware': {
+        #    'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+        #    'db_schema': 'edware',
+        #    'echo': False,
+        #    'max_overflow': 10,
+        #    'pool_size': 20,
+        #},
+        #'CA': {
+        #    'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+        #    'db_schema': 'edware',
+        #    'echo': False,
+        #    'max_overflow': 10,
+        #    'pool_size': 20,
+        #},
         'db_schema': 'edware',
         'db_name': 'edware',
         # TBD, make sure it is the production setting

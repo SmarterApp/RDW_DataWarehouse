@@ -467,13 +467,13 @@ def create_table(metadata, table_name):
     @param scheam: Schema name where the table is located in UDL2 schema
     @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
     '''
-    print('create table metadata %s' % table_name)
+    #print('create table metadata %s' % table_name)
     column_ddl = UDL_METADATA['TABLES'][table_name]['columns']
     key_ddl = UDL_METADATA['TABLES'][table_name]['keys']
     arguments = [table_name, metadata]
 
     for c_ddl in column_ddl:
-        print(c_ddl)
+        #print(c_ddl)
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
 

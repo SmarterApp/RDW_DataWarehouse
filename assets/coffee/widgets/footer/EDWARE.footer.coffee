@@ -7,8 +7,7 @@ define [
   "edwareExport"
   "edwareConstants"
   "edwareClientStorage"
-  "edwareHelpMenu"
-], ($, Mustache, bootstrap, footerTemplate, edwarePreferences, edwareExport, Constants, edwareClientStorage, edwareHelpMenu) ->
+], ($, Mustache, bootstrap, footerTemplate, edwarePreferences, edwareExport, Constants, edwareClientStorage) ->
 
   POPOVER_TEMPLATE = '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
 
@@ -33,7 +32,6 @@ define [
 
     createPopover: () ->
       this.createFeedback()
-      this.createHelp()
 
     createFeedback: () ->
       # Survey monkey popup
@@ -48,9 +46,7 @@ define [
         content: () ->
           $(".surveyMonkeyPopup").html()
 
-    createHelp: () ->
-      @helpMenu ?= edwareHelpMenu.create '.HelpMenuContainer',
-        labels: this.labels
+
 
     bindEvents: ()->
       self = this
@@ -67,10 +63,6 @@ define [
         selector = $(this).data('selector')
         $(selector).popover('hide')
         $("#footer .nav li a").removeClass("active")
-
-      # Popup will close if user clicks popup hide button
-      $(document).on 'click', '#help', ->
-        self.helpMenu.show()
         
 
   EdwareFooter: EdwareFooter

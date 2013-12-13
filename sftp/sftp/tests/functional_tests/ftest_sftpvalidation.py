@@ -27,8 +27,7 @@ class sftpvalidation(unittest.TestCase):
             'sftp_arrivals_dir': 'arrivals',
             'sftp_departures_dir': 'departures',
             'groups': ['sftparrivals', 'tenantadmin'],
-            'group_directories': {
-                                  'sftparrivals': 'arrivals',
+            'group_directories': {'sftparrivals': 'arrivals',
                                   'tenantadmin': 'departures'}
         }
         self.sftp_zone_path = os.path.join(self.test_sftp_conf['sftp_home'], self.test_sftp_conf['sftp_base_dir'])

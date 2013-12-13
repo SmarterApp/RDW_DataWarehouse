@@ -13,11 +13,23 @@ from sftp.src.util import cleanup_directory, create_path, group_exists,\
 __author__ = 'swimberly'
 
 
+def get_user_role_dir(sftp_conf, role):
+    if role == 'sftparrivals':
+        arrive_depart_dir = sftp_conf['sftp_arrivals_dir']
+    elif role == 'sftpdepartures':
+        arrive_depart_dir = sftp_conf['sftp_departures_dir']
+    else:
+        arrive_depart_dir = sftp_conf['sftp_filerouter_dir']
+    return arrive_depart_dir
+
+
 def get_user_home_dir(sftp_conf, tenant, user, role):
     '''
     Returns the users's home directory
     '''
-    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
+    arrive_depart_dir = get_user_role_dir(sftp_conf, role)
+    if role not in ['sftparrivals', 'sftpdepartures']:
+        tenant = ""
     return os.path.join(sftp_conf['user_home_base_dir'], arrive_depart_dir, tenant, user)
 
 
@@ -30,8 +42,20 @@ def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):
 
 
 def get_tenant_sftp_jail_dir(sftp_conf, tenant, role):
-    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
+    arrive_depart_dir = get_user_role_dir(sftp_conf, role)
+    if role not in ['sftparrivals', 'sftpdepartures']:
+        tenant = ""
     return os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], arrive_depart_dir, tenant)
+
+
+def get_user_path(sftp_conf, role):
+    if role == 'sftparrivals':
+        user_path = sftp_conf['user_path_sftparrivals_dir']
+    elif role == 'sftpdepartures':
+        user_path = sftp_conf['user_path_sftpdepartures_dir']
+    else:
+        user_path = sftp_conf['user_path_filerouter_dir']
+    return user_path
 
 
 def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_file=None):
@@ -45,14 +69,14 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
         as a string
     """
     tenant_sftp_path = get_tenant_sftp_jail_dir(sftp_conf, tenant, role)
-    valid_user = _verify_user_tenant_and_role(tenant_sftp_path, user, role)
+    valid_user = _verify_user_tenant_and_group(tenant_sftp_path, user, sftp_conf['group'], role)
     if not valid_user[0]:
         print("Error: {}".format(valid_user[1]))
         return False, valid_user[1]
 
     user_sftp_path = get_user_sftp_jail_dir(sftp_conf, tenant, user, role)
     user_home_path = get_user_home_dir(sftp_conf, tenant, user, role)
-    user_path = sftp_conf['file_drop'] if role is 'sftparrivals' else sftp_conf['file_pickup']
+    user_path = get_user_path(sftp_conf, role)
 
     _create_user(user, user_home_path, user_sftp_path, sftp_conf['group'], user_path)
 
@@ -115,14 +139,14 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     """
     file_drop_loc = os.path.join(sftp_user_folder, directory_name)
     # Change the user's home sftp to a+rw
-    os.chmod(sftp_user_folder, 0o705)
+    os.chmod(sftp_user_folder, 0o755)
 
     # create file drop location and set proper permission
     create_path(file_drop_loc)
     change_owner(file_drop_loc, user, role)
 
 
-def _verify_user_tenant_and_role(tenant_path, username, role):
+def _verify_user_tenant_and_group(tenant_path, username, group, role):
     """
     Verify that the username does not already exist and that the tenant does exist
 
@@ -132,12 +156,12 @@ def _verify_user_tenant_and_role(tenant_path, username, role):
     :return: True if both the tenant and the user are valid, False otherwise
     """
     # Ensure that tenant has already been created
-    if not os.path.exists(tenant_path):
+    if role != 'filerouter' and not os.path.exists(tenant_path):
         return False, 'Tenant does not exist!'
 
     # check that the role has been created as a group on the system
-    if not group_exists(role):
-        return False, 'Role does not exist as a group in the system'
+    if not group_exists(group):
+        return False, 'Group does not exist as a group in the system'
 
     # Verify that user does not already exist
     return _check_user_not_exists(username)

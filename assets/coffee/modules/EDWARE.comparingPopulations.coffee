@@ -11,7 +11,6 @@ define [
   "edwareGrid"
   "edwareBreadcrumbs"
   "edwareUtil"
-  "edwareFooter"
   "edwareHeader"
   "edwareDropdown"
   "edwareGridStickyCompare"
@@ -20,7 +19,7 @@ define [
   "edwareClientStorage"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -64,7 +63,7 @@ define [
       this.labels = config.labels
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
-      this.gridHeight = window.innerHeight - 335 #subtract footer and header height
+      this.gridHeight = window.innerHeight - 312#subtract footer and header height
       edwareUtil.reRenderBody this.labels
       # create align button
       this.alignment = new Alignment('.align_button', @labels)
@@ -139,7 +138,6 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.CPOP, this.config, this.reportType) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchData: (params, callback)->

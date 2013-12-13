@@ -13,11 +13,23 @@ from sftp.src.util import cleanup_directory, create_path, group_exists,\
 __author__ = 'swimberly'
 
 
+def get_user_role_dir(sftp_conf, role):
+    if role == 'sftparrivals':
+        arrive_depart_dir = sftp_conf['sftp_arrivals_dir']
+    elif role == 'sftpdepartures':
+        arrive_depart_dir = sftp_conf['sftp_departures_dir']
+    else:
+        arrive_depart_dir = sftp_conf['sftp_filerouter_dir']
+    return arrive_depart_dir
+
+
 def get_user_home_dir(sftp_conf, tenant, user, role):
     '''
     Returns the users's home directory
     '''
-    arrive_depart_dir = sftp_conf['sftp_arrivals_dir'] if role is 'sftparrivals' else sftp_conf['sftp_departures_dir']
+    arrive_depart_dir = get_user_role_dir(sftp_conf, role)
+    if role not in ['sftparrivals', 'sftpdepartures']:
+        tenant = ""
     return os.path.join(sftp_conf['user_home_base_dir'], arrive_depart_dir, tenant, user)
 
 
@@ -30,12 +42,8 @@ def get_user_sftp_jail_dir(sftp_conf, tenant, user, role):
 
 
 def get_tenant_sftp_jail_dir(sftp_conf, tenant, role):
-    if role == 'sftparrivals':
-        arrive_depart_dir = sftp_conf['sftp_arrivals_dir']
-    elif role == 'sftpdepartures':
-        arrive_depart_dir = sftp_conf['sftp_departures_dir']
-    else:
-        arrive_depart_dir = sftp_conf['sftp_filerouter_dir']
+    arrive_depart_dir = get_user_role_dir(sftp_conf, role)
+    if role not in ['sftparrivals', 'sftpdepartures']:
         tenant = ""
     return os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], arrive_depart_dir, tenant)
 

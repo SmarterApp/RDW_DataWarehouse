@@ -81,4 +81,4 @@ def create_batch_directories(directory_dict):
     """
 
     for directory in directory_dict.values():
-        os.makedirs(directory, mode=0o777)
+        os.makedirs(directory, mode=0o755)

@@ -12,15 +12,16 @@ define [
   create = (data, config, reportName) ->
     labels = config.labels
     headerTemplate = $(headerTemplateHtml)
-    headerTemplate.find('#help').append labels.help
-    headerTemplate.find('#feedback').append labels.feedback
-    headerTemplate.find('#resources').append labels.resources
     header = $("#header").append headerTemplate
     dropdown_menu = header.find('.dropdown-menu')
     # Add language selector
     edwareLanguageSelector.create dropdown_menu, labels
-    log_out = $('<li class="divider"></li><div style="text-align:center;"><button type="button" class="btn btn-primary">'+labels.logout+'</button></div>')
-    dropdown_menu.append log_out
+    # Add labels
+    headerTemplate.find('#help').append labels.help
+    headerTemplate.find('#feedback').append labels.feedback
+    headerTemplate.find('#resources').append labels.resources
+    $('#log_out_button').html labels.logout
+
     createHelp(labels)
     bindEvents()
     userInfo = data.user_info
@@ -46,5 +47,7 @@ define [
     # Popup will close if user clicks popup hide button
     $('#header #help').click () ->
       self.helpMenu.show()
+    $('#log_out_button').click () ->
+      window.open '/logout', 'iframe_logout'
 
   create: create

@@ -93,12 +93,12 @@ def initialize_db(connector_cls, udl2_conf, allow_schema_create=False):
     tenants = {}
 
     if connector_cls.allows_multiple_tenants():
-        if udl2_conf['multi_tenant']['on']:
-            for tenant_name in udl2_conf[connector_cls.get_namespace()]:
-                tenants[tenant_name] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant_name)
-        else:
-            default_tenant = udl2_conf['multi_tenant']['default_tenant']
-            tenants[default_tenant] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, default_tenant)
+        #if udl2_conf['multi_tenant']['on']:
+        for tenant_name in udl2_conf[connector_cls.get_namespace()]:
+            tenants[tenant_name] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant_name)
+        #else:
+        default_tenant = udl2_conf['multi_tenant']['default_tenant']
+        tenants[default_tenant] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, default_tenant)
 
     if tenants:
         for tenant in tenants:

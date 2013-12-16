@@ -12,14 +12,15 @@ define [
   create = (data, config, reportName) ->
     labels = config.labels
     headerTemplate = $(headerTemplateHtml)
-    header = $("#header").append headerTemplate
-    dropdown_menu = header.find('.dropdown-menu')
-    # Add language selector
-    edwareLanguageSelector.create dropdown_menu, labels
     # Add labels
     headerTemplate.find('#help').append labels.help
     headerTemplate.find('#feedback').append labels.feedback
     headerTemplate.find('#resources').append labels.resources
+    header = $("#header").append headerTemplate
+    dropdown_menu = header.find('.dropdown-menu')
+    # Add language selector
+    edwareLanguageSelector.create dropdown_menu, labels
+
     $('#log_out_button').html labels.logout
 
     createHelp(labels)

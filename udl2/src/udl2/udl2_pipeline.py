@@ -51,12 +51,12 @@ def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch
 def _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, initial_msg):
     initial_msg = {} if initial_msg is None else initial_msg
     msg = {
-            mk.BATCH_TABLE: jc_batch_table,
-            mk.GUID_BATCH: guid_batch,
-            mk.LOAD_TYPE: load_type,
-            mk.PARTS: file_parts,
-            mk.START_TIMESTAMP: datetime.datetime.now()
-        }
+        mk.BATCH_TABLE: jc_batch_table,
+        mk.GUID_BATCH: guid_batch,
+        mk.LOAD_TYPE: load_type,
+        mk.PARTS: file_parts,
+        mk.START_TIMESTAMP: datetime.datetime.now()
+    }
     return _combine_messages(initial_msg, msg)
 
 
@@ -74,4 +74,3 @@ def _combine_messages(msg1, msg2):
     If msg1 and msg2 has the same key, returns the value in the msg2
     '''
     return dict(list(msg1.items()) + list(msg2.items()))
-

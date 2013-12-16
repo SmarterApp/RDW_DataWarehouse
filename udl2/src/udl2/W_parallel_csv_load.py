@@ -65,4 +65,3 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
     file_loader_msg[mk.SIZE_RECORDS] = record_count
 
     return file_loader_msg
-

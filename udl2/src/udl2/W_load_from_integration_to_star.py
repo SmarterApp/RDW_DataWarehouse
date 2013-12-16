@@ -2,7 +2,6 @@ from __future__ import absolute_import
 import datetime
 
 from udl2.celery import celery
-from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from udl2 import message_keys as mk
 from move_to_target.move_to_target import (explode_data_to_dim_table, explode_data_to_fact_table,
@@ -109,4 +108,3 @@ def explode_to_fact(msg):
     outgoing_msg.update(msg)
     outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
     return outgoing_msg
-

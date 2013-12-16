@@ -22,6 +22,7 @@ define [
   DEFAULT_SETTING =
     type: 'GET'
     data: ''
+    async: true
     dataType: "json"
     contentType: "application/json"
     onSuccess: (data)->
@@ -54,7 +55,6 @@ define [
     config.type = options.method if options.method
     config.onSuccess = callback if callback
 
-
     dataLoader = edwareLoadingMask.create(context: "<div></div>")
     dataLoader.show()
 
@@ -75,6 +75,7 @@ define [
              $.extend true, data, args[0]
          config.onSuccess data
       .fail (xhr, ajaxOptions, thrownError) ->
+        console.error thrownError
         config.onError xhr, ajaxOptions, thrownError
 
 

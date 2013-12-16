@@ -25,8 +25,13 @@ define [
   class EdwareISR
     
     constructor: () ->
+      self = this
       configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
-      configPromise.done @initialize.bind(@)
+      configPromise.done (configData) ->
+        self.configData = configData
+        self.initialize()
+        self.loadPrintMedia()
+        self.fetchData()
 
     loadPage: (template) ->
       @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
@@ -40,14 +45,12 @@ define [
       if @isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
       
-    initialize: (@configData) ->
+    initialize: () ->
       @params = edwareUtil.getUrlParams()
       @isPdf = @params['pdf']
       @isGrayscale = @params['grayscale']
       @reportInfo = @configData.reportInfo
       @legendInfo = @configData.legendInfo
-      @loadPrintMedia()
-      @fetchData()
 
     getCurrentAsmtType: () ->
       if @isPdf

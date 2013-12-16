@@ -21,8 +21,6 @@ define [
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
 
-  REPORT_NAME = "comparingPopulationsReport"
-
   POPULATION_BAR_WIDTH = 145
 
   class ConfigBuilder
@@ -52,8 +50,8 @@ define [
   class PopulationGrid
 
     constructor: () ->
-      config = edwareDataProxy.getDataForReport REPORT_NAME
-      this.initialize(config)
+      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.CPOP
+      configPromise.done this.initialize.bind(this)
 
     initialize: (config)->
       this.config = config
@@ -145,6 +143,7 @@ define [
       options =
         method: "POST"
         params: params
+        async: false
 
       studentsData = undefined
       edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback

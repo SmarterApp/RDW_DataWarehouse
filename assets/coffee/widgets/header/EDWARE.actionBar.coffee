@@ -34,7 +34,8 @@ define [
       # create legend
       $('.legendPopup').createLegend @config.reportName,
         legendInfo: @config.legendInfo
-        subject: @config.subject || @prepareSubjects()
+        subject: @prepareSubjects()
+        labels: @config.labels
 
     # Create assessment type dropdown
     createAsmtDropdown: () ->
@@ -54,10 +55,13 @@ define [
       @disclaimer.update currentAsmtType
 
     prepareSubjects: () ->
+      # use customized subject interval
+      return @config.subject if @config.subject
+      # use sample interval
       legendInfo = @config.legendInfo
       colorsData = @config.colorsData
       # merge default color data into sample intervals data
-      for color, i in colorsData.subject1 || colorsData.subject2
+      for color, i in colorsData.subject1.colors || colorsData.subject2.colors
         legendInfo.sample_intervals.intervals[i].color = color
       legendInfo.sample_intervals
 

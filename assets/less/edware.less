@@ -1116,3 +1116,188 @@ body.isr {
 	}
     }
 }
+
+body.login {
+    #header {
+	background: none;
+	border-top: none;
+	box-shadow: none;
+
+	.logo {
+	    background-image: url("../images/landing_page.png");
+	    background-repeat: no-repeat;
+	    background-position-y: 8px;
+	    width: 150px;
+	    height: 100%;
+	    float: left;
+	}
+
+	ul.action {
+	    float: right;
+	    cursor: pointer;
+		       
+	    &>li {
+		list-style: none;
+		display: inline-block;
+		vertical-align: middle;
+		height: 50px;
+
+		&>div {
+		    height: 20px;
+		    top: 50%;
+		    margin-top: -13px;
+		    position: relative;
+		    float: left;
+		}
+
+		label {
+		    float: left;
+		    padding: 0 3px;
+		    font-size: 11px;
+		}
+
+		.divider {
+		    border-right: solid 1px @color-B18;
+		    padding: 3px 27px;
+		}
+
+		&:first-child .divider {
+		    border-left: solid 1px @color-B18;
+		}
+	    }
+	}
+    }
+
+    #content {
+	min-height: 380px;
+	background-color: #e3e3e3;
+
+	.intro {
+	    position: relative;
+	    top: 40px;
+	    left: 70px;
+	    width: 300px;
+		     
+	}
+    }
+
+    #about {
+	padding: 20px;
+
+	ul {
+	    width: 100%;
+	    cursor: pointer;
+	    margin: 0px;
+	    font-size: 0px;
+		       
+	    &>li {
+		list-style: none;
+		display: inline-block;
+		vertical-align: middle;
+		height: 50px;
+		width: 234px;
+		height: 150px;
+		border-right: solid 1px @color-B18;
+
+		&>div {
+		    position: relative;
+		    margin: 0px auto;
+		    text-align: center;
+		}
+
+		&:hover {
+		    background-color: @color-C11;
+
+		    h4 {
+			color: @color-A4;
+		    }
+		}
+
+		label {
+		    float: left;
+		    padding: 0 3px;
+		    font-size: 11px;
+		}
+
+		&:last-child{
+		    border-right: none;
+		}
+
+		.asset {
+		    width: 135px;
+		    height: 80px;
+		    background-repeat: no-repeat;
+		}
+
+		h4 {
+		    text-align: center;
+		}
+
+		p {
+		    font-size: 13px;
+		}
+	    }
+	}
+
+	.assessments {
+	    background-image: url("../images/landing_page.png");
+	    background-position: -180px 10px;
+	}
+
+	.reports {
+	    background-image: url("../images/landing_page.png");
+	    background-position: -195px -60px;
+	}
+
+	.security {
+	    background-image: url("../images/landing_page.png");
+	    background-position: -172px -135px;
+	}
+
+	.consortium {
+	    background-image: url("../images/landing_page.png");
+	    background-position: -220px -210px;
+	}
+
+    }
+
+    #footer {
+	height: 100px;
+
+	&>div {
+	    height: 100px;
+	    display: inline-block;
+	    vertical-align: top;
+
+	    h3 {
+		border-bottom: solid 1px gray;
+	    }
+
+	    ul {
+		list-style: none;
+		margin: 0px;
+	    }
+	}
+	
+	.copyright {
+	    width: 325px;
+	    vertical-align: bottom;
+
+	    .logo {
+		width: 160px;
+		height: 80px;
+		background-image: url("../images/landing_page.png");
+		background-repeat: no-repeat;
+		background-position: 0px -60px;
+	    }
+	}
+
+	.help {
+	    width: 325px;
+	}
+
+	.contract {
+	    width: 325px;
+	}
+    }
+}

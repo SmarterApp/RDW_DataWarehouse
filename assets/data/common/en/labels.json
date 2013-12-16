@@ -39,6 +39,7 @@
 		"insufficient_data": "Insufficient Data",
 		"legend": "Legend",
 		"level": "Level",
+	        "login": "Log In",
 		"logout": "Log Out",
 		"no_results": "There is no data available for your request.",
 		"notes": "Notes",

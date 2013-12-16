@@ -1,0 +1,51 @@
+<div id="header">
+    <div class="logo"></div>
+    <ul class="action">
+	<li><div class="divider">{{labels.help}}</div></li>
+	<li><div class="divider">English</div></li>
+	<li><div class="divider">
+	    <button class="btn btn-primary">{{labels.login}}</button>
+	</div></li>
+    </ul>
+</div>
+<div id="content">
+    <div class="intro">
+	<h1>{{content.title}}</h1>
+	<p>{{content.summary}}</p>
+	<button class="btn btn-primary btn-small">{{labels.login}}</button>
+    </div>
+</div>
+{{#about}}
+<div id="about">
+    <h4>{{title}}</h4>
+    {{#sections}}
+    <ul>
+	<li>
+	    <div class="{{class}} asset"></div>
+	    <h4>{{subtitle}}</h4>
+	    <p>{{desc}}</p>
+	</li>
+    </ul>
+    {{/sections}}
+</div>
+{{/about}}
+<div id="footer">
+    <div class="copyright">
+	<div class="logo"></div>
+	Smarter Balanced Consortium @ Copyright 2015.
+    </div>
+    <div class="help">
+	<h3>Help</h3>
+	<ul>
+            <li>User Guide</li>
+            <li>FAQ</li>
+            <li>Reporting Tutorials</li>
+	</ul>
+    </div>
+    <div class="contact">
+	<h3>Contact Us</h3>
+	<ul>
+            <li>reporting@smarterbalanced.org</li>
+	</ul>
+    </div>
+</div>

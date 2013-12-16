@@ -3,13 +3,10 @@ require ["EDWARE.comparingPopulations", "edwareFilter", "edwareDataProxy"], (edw
   populationGrid = new edwareComparingPopulations.PopulationGrid()
 
   # Add filter to the page
-  configs = {}
-
-  ( () ->
-      configs =edwareDataProxy.getDataForFilter()
-  )()
-  # move config to filter widget
-  filter = $('#cpopFilter').edwareFilter '.filterItem', configs, (param)->
-    populationGrid.reload(param)
-  populationGrid.setFilter(filter)
-  filter.loadReport()
+  filterPromise = edwareDataProxy.getDataForFilter()
+  filterPromise.done (configs) ->
+    # move config to filter widget
+    filter = $('#cpopFilter').edwareFilter '.filterItem', configs, (param)->
+      populationGrid.reload(param)
+    populationGrid.setFilter(filter)
+    filter.loadReport()

@@ -6,6 +6,10 @@ define [], () ->
     ISR:  'individual_student_report'
   }
 
+  REPORT_JSON_NAME: {
+    CPOP: 'comparingPopulationsReport'
+  }
+
   DELIMITOR: {
     COMMA: ','
     NEWLINE: '\n'

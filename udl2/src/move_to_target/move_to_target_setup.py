@@ -138,7 +138,7 @@ def get_tenant_target_db_information(tenant_code):
         mk.TARGET_DB_NAME: udl2_conf['target_db_conn'][tenant_code]['db_database'],
         #mk.TARGET_DB_PORT: port,
         mk.TARGET_DB_USER: udl2_conf['target_db_conn'][tenant_code]['db_user'],
-        mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
+        mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn'][tenant_code]['db_schema'],
         mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn'][tenant_code]['db_pass'],
     }
 

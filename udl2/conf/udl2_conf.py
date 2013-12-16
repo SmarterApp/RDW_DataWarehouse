@@ -78,7 +78,7 @@ udl2_conf = {
         'error': '/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions,
     },
     'multi_tenant': {
-        'on': False,
+        'on': True,
         'default_tenant': 'edware',
     },
     'udl2_db': {
@@ -140,6 +140,26 @@ udl2_conf = {
             'db_user': 'edware',
             'db_pass': 'edware2013',
         },
+        'func_tests': {
+            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+            'db_schema': 'ftest_test_schema',
+            'echo': False,
+            'max_overflow': 10,
+            'pool_size': 20,
+            'db_database': 'edware',
+            'db_user': 'edware',
+            'db_pass': 'edware2013',
+        },
+        'func_tests_b': {
+            'url': 'postgresql://edware:edware20133@localhost:5432/edware',
+            'db_schema': 'ftest_test_schema',
+            'echo': False,
+            'max_overflow': 10,
+            'pool_size': 20,
+            'db_database': 'edware',
+            'db_user': 'edware',
+            'db_pass': 'edware2013',
+        }
     },
     'target_db': {
         #'edware': {

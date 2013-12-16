@@ -99,7 +99,7 @@ def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     if is_conn_a_dblink:
         sql_query = text("")
     else:  # table is in the local database server
-        sql_query = text("SELECT column_name, data_type, character_maximum_length " +
+        sql_query = text("SELECT DISTINCT column_name, data_type, character_maximum_length " +
                          "FROM information_schema.columns "
                          "WHERE table_name = \'%s\' "
                          % (table_name))

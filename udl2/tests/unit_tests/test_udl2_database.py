@@ -132,6 +132,7 @@ class TestUdl2Database(unittest.TestCase):
         ddl_in_db = get_table_columns_info(conn, table_name)
         ddl_in_code = sorted(ddl_in_code, key=lambda tup: tup[0])
         ddl_in_db = sorted(ddl_in_db, key=lambda tup: tup[0])
+        print('ddl_in_code', ddl_in_code, '\nddl_in_db', ddl_in_db)
         return self._compare_columns(ddl_in_code, ddl_in_db)
 
     def _compare_table_key_definitions_in_code_and_db(self, table_name):

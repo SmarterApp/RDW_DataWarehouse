@@ -16,6 +16,14 @@ define [
     headerTemplate.find('#help').append labels.help
     headerTemplate.find('#feedback').append labels.feedback
     headerTemplate.find('#resources').append labels.resources
+    userInfo = data.user_info
+
+
+    # Add header to the page
+    userName = edwareUtil.getUserName userInfo
+
+    if userName
+      headerTemplate.find('#user-settings #username').html userName
     header = $("#header").append headerTemplate
     dropdown_menu = header.find('.dropdown-menu')
     # Add language selector
@@ -25,14 +33,6 @@ define [
 
     createHelp(labels)
     bindEvents()
-    userInfo = data.user_info
-
-
-    # Add header to the page
-    userName = edwareUtil.getUserName userInfo
-
-    if userName
-      $('#header .topLinks .user').html userName
     
     feedbackData = config.feedback
     role = edwareUtil.getRole userInfo

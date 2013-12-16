@@ -82,7 +82,7 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
 
     # set ssh keys if provided
     if ssh_key_file or ssh_key_str:
-        _set_ssh_key(user, role, user_home_path, ssh_key_str, ssh_key_file)
+        _set_ssh_key(user, sftp_conf['group'], user_home_path, ssh_key_str, ssh_key_file)
 
     print('User created:\n\tuser: {}\n\thome dir: {}\n\tsftp dir: {}\n\trole: {}'.format(user, user_home_path,
                                                                                          user_sftp_path, role))
@@ -180,7 +180,7 @@ def _check_user_not_exists(username):
         return True, ""
 
 
-def _set_ssh_key(user, role, home_folder, pub_key_str=None, pub_key_file=None):
+def _set_ssh_key(user, group, home_folder, pub_key_str=None, pub_key_file=None):
     """
     Add the given public key to the users home folder
     :param home_folder:
@@ -205,5 +205,5 @@ def _set_ssh_key(user, role, home_folder, pub_key_str=None, pub_key_file=None):
         if pub_key[-1] != '\n':
             f.write('\n')
 
-    shutil.chown(ssh_dir, user, role)
-    shutil.chown(auth_keys_path, user, role)
+    shutil.chown(ssh_dir, user, group)
+    shutil.chown(auth_keys_path, user, group)

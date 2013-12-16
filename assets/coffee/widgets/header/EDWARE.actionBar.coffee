@@ -61,7 +61,7 @@ define [
       legendInfo = @config.legendInfo
       colorsData = @config.colorsData
       # merge default color data into sample intervals data
-      for color, i in colorsData.subject1.colors || colorsData.subject2.colors
+      for color, i in colorsData.subject1.colors || colorsData.subject2.colors || @config.colors
         legendInfo.sample_intervals.intervals[i].color = color
       legendInfo.sample_intervals
 

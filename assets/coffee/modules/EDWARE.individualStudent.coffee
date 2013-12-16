@@ -21,16 +21,12 @@ define [
     "MATH": ["40", "40", "20", "10"],
     "ELA": ["40", "30", "20", "10"]
   }
-
-  REPORT_NAME = 'indivStudentReport'
   
   class EdwareISR
     
     constructor: () ->
-      @configData = edwareDataProxy.getDataForReport REPORT_NAME
-      @initialize()
-      @loadPrintMedia()
-      @fetchData()
+      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
+      configPromise.done @initialize.bind(@)
 
     loadPage: (template) ->
       @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
@@ -44,12 +40,14 @@ define [
       if @isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
       
-    initialize: () ->
+    initialize: (@configData) ->
       @params = edwareUtil.getUrlParams()
       @isPdf = @params['pdf']
       @isGrayscale = @params['grayscale']
       @reportInfo = @configData.reportInfo
       @legendInfo = @configData.legendInfo
+      @loadPrintMedia()
+      @fetchData()
 
     getCurrentAsmtType: () ->
       if @isPdf

@@ -2,14 +2,9 @@ require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy"], (edwareStuden
 
   studentGrid = new edwareStudentList.StudentGrid()
   # Add filter to the page
-  configs = {}
-
-  ( () ->
-    configs = edwareDataProxy.getDataForFilter()
-  )()
-
-  filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
-    studentGrid.reload(param)
-    
-  filter.loadReport()
-  filter.update {}
+  filterPromise = edwareDataProxy.getDataForFilter()
+  filterPromise.done (configs)->
+    filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
+      studentGrid.reload(param)
+    filter.loadReport()
+    filter.update {}

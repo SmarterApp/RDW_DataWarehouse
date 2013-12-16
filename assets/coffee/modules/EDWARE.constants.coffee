@@ -8,6 +8,8 @@ define [], () ->
 
   REPORT_JSON_NAME: {
     CPOP: 'comparingPopulationsReport'
+    LOS: 'studentList'
+    ISR: 'indivStudentReport'
   }
 
   DELIMITOR: {

@@ -51,7 +51,7 @@ define [
 
     constructor: () ->
       configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.CPOP
-      configPromise.done this.initialize.bind(this)
+      configPromise.done @initialize.bind(@)
 
     initialize: (config)->
       this.config = config
@@ -143,7 +143,6 @@ define [
       options =
         method: "POST"
         params: params
-        async: false
 
       studentsData = undefined
       edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback

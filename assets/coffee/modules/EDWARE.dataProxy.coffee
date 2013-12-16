@@ -85,7 +85,7 @@ define [
     getDatafromSource json_url, (data)->
       for key of data['legendInfo']
         data['legendInfo'][key] = data['legendInfo'][key] if data['legendInfo'].hasOwnProperty(key)
-      data['legendInfo'] = JSON.parse(Mustache.render(JSON.stringify(data['legendInfo']), {"labels":data.labels}))      
+      data['legendInfo'] = JSON.parse(Mustache.render(JSON.stringify(data['legendInfo']), {"labels":data.labels}))  
       defer.resolve data
     defer.promise()
  

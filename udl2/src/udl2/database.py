@@ -15,15 +15,10 @@ Created on May 10, 2013
 
 @author: ejen
 '''
-from sqlalchemy.schema import (MetaData, CreateSchema, CreateTable, CreateSequence, ForeignKeyConstraint, UniqueConstraint)
-from sqlalchemy import Table, Column, Index, Sequence
-from sqlalchemy import SmallInteger, String, Date, Boolean
-from sqlalchemy import ForeignKey
+from sqlalchemy.schema import (MetaData, CreateSchema, CreateSequence, ForeignKeyConstraint, UniqueConstraint)
+from sqlalchemy import Table, Column, Sequence
 from sqlalchemy.types import *
-from sqlalchemy.engine import create_engine
-from sqlalchemy.sql.expression import func, text
-from sqlalchemy.dialects.postgresql import *
-from sqlalchemy.sql import text
+from sqlalchemy.sql.expression import text
 import imp
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE

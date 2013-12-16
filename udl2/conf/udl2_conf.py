@@ -104,13 +104,6 @@ udl2_conf = {
         'echo': False,
         'max_overflow': 10,
         'pool_size': 20,
-        #'edware': {
-        #    'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
-        #    'db_schema': 'udl2',
-        #    'echo': False,
-        #    'max_overflow': 10,
-        #    'pool_size': 20,
-        #}
     },
     'udl2_db_conn': {
         'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
@@ -162,20 +155,6 @@ udl2_conf = {
         }
     },
     'target_db': {
-        #'edware': {
-        #    'url': 'postgresql://edware:edware2013@localhost:5432/edware',
-        #    'db_schema': 'edware',
-        #    'echo': False,
-        #    'max_overflow': 10,
-        #    'pool_size': 20,
-        #},
-        #'CA': {
-        #    'url': 'postgresql://edware:edware2013@localhost:5432/edware',
-        #    'db_schema': 'edware',
-        #    'echo': False,
-        #    'max_overflow': 10,
-        #    'pool_size': 20,
-        #},
         'db_schema': 'edware',
         'db_name': 'edware',
         # TBD, make sure it is the production setting

@@ -16,13 +16,6 @@ def move_data_from_staging_to_integration(conf):
            note: udl2_conf is the udl2_conf dictionary that stores all configuration settings
     '''
     with UDL2DBConnection() as conn:
-
-        #(conn, _engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
-        #                             conf[mk.SOURCE_DB_USER],
-        #                             conf[mk.SOURCE_DB_PASSWORD],
-        #                             conf[mk.SOURCE_DB_HOST],
-        #                             conf[mk.SOURCE_DB_PORT],
-        #                             conf[mk.SOURCE_DB_NAME])
         # get the column mapping from ref table
         target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, conf[mk.REF_TABLE], conf[mk.SOURCE_DB_TABLE],
                                                                                            conf[mk.TARGET_DB_TABLE], conf[mk.SOURCE_DB_SCHEMA])
@@ -47,8 +40,8 @@ def get_column_mapping_from_stg_to_int(conn, ref_table, staging_table, integrati
     # get column mapping from ref table, returns a list of tuple. The tuple has 3 items(source_column, target_column, stored_proc_exp)
     get_column_mapping_query = queries.get_column_mapping_query(schema_name, ref_table, staging_table)
     column_mapping = execute_udl_query_with_result(conn, get_column_mapping_query,
-                                               'Exception in getting column mapping between csv_table and staging table -- ',
-                                               'file_loader', 'get_fields_map')
+                                                   'Exception in getting column mapping between csv_table and staging table -- ',
+                                                   'file_loader', 'get_fields_map')
 
     target_columns = []
     source_columns_with_tran_rule = []

@@ -15,7 +15,6 @@ from edschema.metadata.ed_metadata import generate_ed_metadata
 from udl2_util.database_util import connect_db, get_sqlalch_table_object
 from move_to_target.move_to_target_setup import get_tenant_target_db_information
 from udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
-from udl2.udl2_connector import initialize_db, TargetDBConnection
 
 
 ASMT_OUTCOME_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT_OUTCOME.csv')
@@ -79,18 +78,6 @@ class FTestMoveToTarget(unittest.TestCase):
 
         self.empty_int_tables()
 
-        # register db with zope
-        #udl2_conf['target_db_conn']['tc1'] = {
-        #    'url': con_string,
-        #    'db_schema': self.tenant_info['target_schema_name'],
-        #    'max_overflow': 10,
-        #    'pool_size': 20,
-        #    'db_database': self.tenant_info['target_db_name'],
-        #    'db_user': self.tenant_info['target_schema_user_name'],
-        #    'db_pass': self.tenant_info['target_schema_passwd'],
-        #}
-        initialize_db(TargetDBConnection, udl2_conf)
-
     def tearDown(self):
         self.empty_int_tables()
         self.target_metadata.drop_all(self.target_engine)
@@ -132,19 +119,9 @@ class FTestMoveToTarget(unittest.TestCase):
 
     def check1_get_tenant_target_db_information_multi_tenant_on(self):
         udl2_conf['multi_tenant']['on'] = True
-        #udl2_conf['target_db_conn']['tc1'] = {
-        #    'url': 'url',
-        #    'db_schema': self.tenant_info['target_schema_name'],
-        #    'max_overflow': 10,
-        #    'pool_size': 20,
-        #    'db_database': self.tenant_info['target_db_name'],
-        #    'db_user': self.tenant_info['target_schema_user_name'],
-        #    'db_pass': self.tenant_info['target_schema_passwd'],
-        #}
+
         expected = {
-            #mk.TARGET_DB_HOST: self.tenant_info['target_db_host'],
             mk.TARGET_DB_NAME: self.tenant_info['target_db_name'],
-            #mk.TARGET_DB_PORT: 5432,
             mk.TARGET_DB_USER: self.tenant_info['target_schema_user_name'],
             mk.TARGET_DB_SCHEMA: self.tenant_info['target_schema_name'],
             mk.TARGET_DB_PASSWORD: self.tenant_info['target_schema_passwd']
@@ -156,9 +133,7 @@ class FTestMoveToTarget(unittest.TestCase):
     def check2_get_tenant_target_db_information_multi_tenant_off(self):
         udl2_conf['multi_tenant']['on'] = False
         expected = {
-            #mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
             mk.TARGET_DB_NAME: udl2_conf['target_db_conn']['edware']['db_database'],
-            #mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
             mk.TARGET_DB_USER: udl2_conf['target_db_conn']['edware']['db_user'],
             mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn']['edware']['db_schema'],
             mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn']['edware']['db_pass']

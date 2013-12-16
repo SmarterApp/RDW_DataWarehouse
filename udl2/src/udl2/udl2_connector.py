@@ -93,10 +93,11 @@ def initialize_db(connector_cls, udl2_conf, allow_schema_create=False):
     tenants = {}
 
     if connector_cls.allows_multiple_tenants():
-        #if udl2_conf['multi_tenant']['on']:
+        # Get information for all tenants listed
         for tenant_name in udl2_conf[connector_cls.get_namespace()]:
             tenants[tenant_name] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant_name)
-        #else:
+
+        # add default tenant information to dict (this should already be listed)
         default_tenant = udl2_conf['multi_tenant']['default_tenant']
         tenants[default_tenant] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, default_tenant)
 
@@ -136,22 +137,3 @@ def create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant=None):
         'pool_size': tenant_dict['pool_size'],
     }
     return settings, schema_name
-
-#def create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf):
-#    """
-#
-#    :param connector_cls
-#    :param udl2_conf:
-#    :return:
-#    """
-#    db_dict = udl2_conf[connector_cls.get_namespace()]
-#    db_url = '{db_driver}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
-#    db_url = db_url.format(db_driver=db_dict['db_driver'], db_user=db_dict['db_user'], db_password=db_dict['db_pass'],
-#                           db_host=db_dict['db_host'], db_port=db_dict['db_port'], db_name=db_dict['db_name'])
-#    settings = {
-#        'url': db_url,
-#        'max_overflow': db_dict['max_overflow'],
-#        'echo': db_dict['echo'],
-#        'pool_size': db_dict['pool_size'],
-#    }
-#    return settings

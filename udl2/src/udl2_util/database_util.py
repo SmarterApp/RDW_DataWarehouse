@@ -11,8 +11,6 @@ from sqlalchemy.sql.expression import text
 from sqlalchemy import MetaData
 from sqlalchemy.orm import sessionmaker
 
-#from udl2.udl2_connector import UDL2DBConnection
-
 
 def print_get_affected_rows(result, action, module, function):
     '''
@@ -40,6 +38,13 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
 
 
 def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is running and db engines have been registered with zope
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: row_affected_list
+    """
     trans = conn.get_transaction()
     # execute queries
     try:
@@ -56,6 +61,13 @@ def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, c
 
 
 def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is running and db engines have been registered with zope
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: result
+    """
     trans = conn.get_transaction()
     # execute queries
     try:
@@ -68,6 +80,13 @@ def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, c
 
 
 def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is NOT running
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: row_affected_list
+    """
     trans = conn.begin()
     # execute queries
     try:
@@ -84,6 +103,13 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
 
 
 def execute_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is running and db engines have been registered with zope
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: result
+    """
     trans = conn.begin()
     # execute queries
     try:

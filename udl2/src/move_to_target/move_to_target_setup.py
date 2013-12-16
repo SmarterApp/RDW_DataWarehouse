@@ -1,12 +1,11 @@
 __author__ = 'swimberly'
 
 from collections import OrderedDict
-from sqlalchemy.sql import select
 
 from udl2.celery import udl2_conf
 from udl2 import message_keys as mk
 from move_to_target import create_queries as queries
-from udl2_util.database_util import connect_db, execute_udl_query_with_result, get_sqlalch_table_object
+from udl2_util.database_util import execute_udl_query_with_result
 from udl2.udl2_connector import UDL2DBConnection
 
 
@@ -116,29 +115,10 @@ def get_tenant_target_db_information(tenant_code):
     :return: A dictionary containing the relevant connection information
     """
     tenant_code = tenant_code if udl2_conf['multi_tenant']['on'] else udl2_conf['multi_tenant']['default_tenant']
-    #if udl2_conf['multi_tenant']['on']:
-    #    with UDL2DBConnection() as conn:
-    #        mast_meta_table = conn.get_table(udl2_conf['udl2_db']['master_metadata_table'])
-    #
-    #        select_object = select([mast_meta_table]).where(mast_meta_table.c.tenant_code == tenant_code)
-    #        (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select_object).fetchone()
-    #    db_name = udl2_conf['target_db'][tenant_code]['db_database']
-    #    passwd = udl2_conf['target_db'][tenant_code]['db_pass']
-    #    user = udl2_conf['target_db'][tenant_code]['db_user']
-    #else:
-    #    db_host = udl2_conf['target_db']['db_host']
-    #    port = udl2_conf['target_db']['db_port']
-    #    user = udl2_conf['target_db']['db_user']
-    #    db_name = udl2_conf['target_db']['db_database']
-    #    schema = udl2_conf['target_db']['db_schema']
-    #    passwd = udl2_conf['target_db']['db_pass']
 
     return {
-        #mk.TARGET_DB_HOST: db_host,
         mk.TARGET_DB_NAME: udl2_conf['target_db_conn'][tenant_code]['db_database'],
-        #mk.TARGET_DB_PORT: port,
         mk.TARGET_DB_USER: udl2_conf['target_db_conn'][tenant_code]['db_user'],
         mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn'][tenant_code]['db_schema'],
         mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn'][tenant_code]['db_pass'],
     }
-

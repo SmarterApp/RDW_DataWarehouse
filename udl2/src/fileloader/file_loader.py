@@ -5,7 +5,7 @@ import random
 import argparse
 from sqlalchemy.exc import NoSuchTableError
 import udl2.message_keys as mk
-from udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result, connect_db
+from udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from udl2_util.file_util import extract_file_name
 import logging
 
@@ -57,7 +57,7 @@ def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_ta
     header_names_in_ref_table = []
     query = queries.get_columns_in_ref_table_query(staging_schema, ref_table, csv_lz_table)
     csv_columns_in_ref_table = execute_udl_query_with_result(conn, query, 'Exception in getting column names in table %s -- ' % ref_table,
-                                                         'file_loader', 'get_csv_header_names_in_ref_table')
+                                                             'file_loader', 'get_csv_header_names_in_ref_table')
     if csv_columns_in_ref_table:
         header_names_in_ref_table = [name[0] for name in csv_columns_in_ref_table]
     return header_names_in_ref_table
@@ -92,8 +92,8 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
     # get column mapping from ref table
     get_column_mapping_query = queries.get_column_mapping_query(staging_schema, ref_table, csv_lz_table)
     column_mapping = execute_udl_query_with_result(conn, get_column_mapping_query,
-                                               'Exception in getting column mapping between csv_table and staging table -- ',
-                                               'file_loader', 'get_fields_map')
+                                                   'Exception in getting column mapping between csv_table and staging table -- ',
+                                                   'file_loader', 'get_fields_map')
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
@@ -163,8 +163,6 @@ def load_data_process(conn, conf):
     # drop FDW table
     drop_fdw_tables(conn, conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE])
 
-    # close database connection
-    # conn.close()
     return time_as_seconds
 
 
@@ -177,19 +175,12 @@ def load_file(conf):
 
     # connect to database
     with UDL2DBConnection() as conn:
-        #conn, engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD],
-        #                          conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
-        # check staging tables
-        #check_setup(conf[mk.TARGET_DB_TABLE], engine, conn)
-
         # start loading file process
         time_for_load_as_seconds = load_data_process(conn, conf)
 
-        # close db connection
-        # conn.close()
-
     # log for end the file loader
     # print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf[mk.FILE_TO_LOAD]), time_for_load_as_seconds))
+
 
 if __name__ == '__main__':
 

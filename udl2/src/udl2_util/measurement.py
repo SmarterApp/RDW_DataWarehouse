@@ -11,12 +11,9 @@ Main method: measure_cpu_plus_elapsed_time(function_to_be_decorated)
 @author: ejen
 '''
 import inspect
-import math
 import imp
 import time
-import datetime
 
-from udl2_util.database_util import connect_db, execute_queries, get_sqlalch_table_object
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import message_keys as mk
 from udl2.udl2_connector import UDL2DBConnection
@@ -127,17 +124,6 @@ class BatchTableBenchmark(object):
         '''
         Record the benchmark information for the this instance of the benchmarking information
         '''
-        #(conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-        #                            udl2_conf['udl2_db']['db_user'],
-        #                            udl2_conf['udl2_db']['db_pass'],
-        #                            udl2_conf['udl2_db']['db_host'],
-        #                            udl2_conf['udl2_db']['db_port'],
-        #                            udl2_conf['udl2_db']['db_database'])
-        #
-        #udl_batch = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['reference_schema'],
-        #                                     udl2_conf['udl2_db']['batch_table'])
-        #conn.execute(udl_batch.insert(), [self.get_result_dict()])
-        #conn.close()
 
         with UDL2DBConnection() as connector:
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])

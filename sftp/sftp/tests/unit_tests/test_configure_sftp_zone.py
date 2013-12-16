@@ -4,6 +4,7 @@ Created on Oct 18, 2013
 Unit test for initialize_sftp_zone.py
 """
 from sftp.src import configure_sftp_zone
+from sftp.src.util import create_path
 
 __author__ = 'sravi'
 
@@ -30,7 +31,7 @@ class TestInitializeSFTPZone(unittest.TestCase):
 
     def test__create_non_existing_path_as_root(self):
         test_path = "/tmp/sftp"
-        configure_sftp_zone._create_path(test_path)
+        create_path(test_path)
         self.assertTrue(os.path.exists(test_path))
 
         #cleanup
@@ -40,11 +41,11 @@ class TestInitializeSFTPZone(unittest.TestCase):
 
     def test__create_existing_path_as_root(self):
         test_path = "/tmp/sftp"
-        configure_sftp_zone._create_path(test_path)
+        create_path(test_path)
         self.assertTrue(os.path.exists(test_path))
 
         # try creating again
-        configure_sftp_zone._create_path(test_path)
+        create_path(test_path)
         self.assertTrue(os.path.exists(test_path))
 
         #cleanup

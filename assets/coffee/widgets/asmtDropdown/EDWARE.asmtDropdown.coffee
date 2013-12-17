@@ -43,3 +43,5 @@ define [
     $.fn.edwareAsmtDropdown = (dropdownValues, callback) ->
       new EdwareAsmtDropdown($(this), dropdownValues, callback)
   ) jQuery
+
+  EdwareAsmtDropdown: EdwareAsmtDropdown

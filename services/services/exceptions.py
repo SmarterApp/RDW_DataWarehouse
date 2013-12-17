@@ -22,3 +22,11 @@ class PdfGenerationError(ServicesError):
     '''
     def __init__(self):
         self.msg = 'Pdf Generation failed'
+
+
+class NotForWindowsException(Exception):
+    '''
+    Exception for Windows users
+    '''
+    def __init__(self, message):
+        Exception.__init(self, message)

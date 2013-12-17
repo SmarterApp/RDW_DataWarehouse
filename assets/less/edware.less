@@ -310,7 +310,6 @@ table {
 #individualStudentContent {
     float: left;
     padding-top: 20px;
-    padding-bottom: 40px;
     width: 100%;
     h2 {
 	color: @color-A1;
@@ -1091,6 +1090,16 @@ body.los {
     #actionBar {
 	.printItem, .alignmentItem {    
 	    display: none;
+	}
+
+	.legendPopover {
+	    max-width: 885px !important;
+
+	    .achievement {
+		height: 270px;
+		border-right: solid 1px @color-B7;
+		margin-right: 15px;
+	    }
 	}
     }
 }

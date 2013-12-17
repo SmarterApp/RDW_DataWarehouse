@@ -51,7 +51,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             counter = 0
             for result in results:
                 counter = counter + 1
-            self.assertEqual(counter, 1207)
+            self.assertEqual(counter, 1208)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

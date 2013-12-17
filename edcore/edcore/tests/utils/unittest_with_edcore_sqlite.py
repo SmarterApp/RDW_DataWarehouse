@@ -16,6 +16,10 @@ class Unittest_with_edcore_sqlite(Unittest_with_sqlite):
     def setUpClass(cls):
         super().setUpClass(EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name()))
 
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+
 
 class Unittest_with_edcore_sqlite_no_data_load(Unittest_with_sqlite_no_data_load):
     @classmethod

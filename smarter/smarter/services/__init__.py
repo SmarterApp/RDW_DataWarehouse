@@ -24,5 +24,4 @@ def includeme(config):
     config.add_route('user_info', '/services/userinfo')
 
     # Add extract
-    config.add_route('extract', '/services/extract/school')
-    config.add_route('tenant_extract', '/services/extract/tenant')
+    config.add_route('extract', '/services/extract')

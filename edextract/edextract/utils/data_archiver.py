@@ -14,7 +14,7 @@ def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, gpgbi
     create encrpyted archive file.
     '''
     data = archive_files(dirname).getvalue()
-    gpg = gnupg.GPG(gnupghome=homedir, gpgbinary=gpgbinary)
+    gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary)
     gpg.encrypt(data, recipients, output=outputfile)
 
 

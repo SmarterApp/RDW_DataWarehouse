@@ -59,7 +59,7 @@ def convert_to_celery_options(config):
 
     mapping = {}
 
-    # Read from celery.app.defaults to get the expected data type for each configuarable property
+    # Read from celery.app.defaults to get the expected data type for each configurable property
     for (key, value) in defaults.flatten(defaults.NAMESPACES):
         __type = type_map[value.type]
         if __type:
@@ -67,6 +67,14 @@ def convert_to_celery_options(config):
 
     # For each config that need to configure, cast/convert to the expected data type
     for (key, value) in config.items():
-        if mapping[key]:
+        # EJ, BROKER_USE_SSL is not really bool. it is allowed to be a dict to hold cert information.
+        # because we want our celery worker to share same configuration file as smarter. we need to make it parsable
+        # so celery worker can use it
+        # see
+        # http://stackoverflow.com/questions/16406498/is-there-a-way-to-validate-the-brokers-ssl-certificate-in-django-celery
+        # for BROKER_USE_SSL
+        if mapping[key] and key != 'BROKER_USE_SSL':
             config[key] = mapping[key](value)
+        else:
+            config[key] = ast.literal_eval(value)
     return config

@@ -111,8 +111,11 @@ def convert_query_string_to_dict_arrays(request_query_string):
     '''
     params = {}
     for k, v in request_query_string.items():
-        if params.get(k) is not None:
-            params[k].append(v)
+        if type(v) is not list:
+            if params.get(k) is not None:
+                params[k].append(v)
+            else:
+                params[k] = [v]
         else:
-            params[k] = [v]
+            params[k] = v
     return params

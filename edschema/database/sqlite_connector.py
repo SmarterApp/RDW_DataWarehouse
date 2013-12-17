@@ -10,6 +10,7 @@ from edschema.metadata.ed_metadata import generate_ed_metadata
 import sqlite3
 from sqlalchemy.schema import MetaData
 from sqlalchemy import event
+import traceback
 
 
 # create sqlite from static metadata

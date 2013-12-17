@@ -12,6 +12,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.status import ExtractStatus,\
     insert_extract_stats
 from edextract.status.constants import Constants
+from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
 from edextract.utils.file_utils import prepare_path
 from celery.canvas import chain, group
@@ -31,8 +32,8 @@ def route_tasks(tenant, request_id, tasks, queue_name='extract'):
     '''
     generate_tasks = []
     for task in tasks:
-        celery_task = generate_json if task.get('is_json_request') else generate_csv
-        generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task['task_id'], task['query'], task['file_name']], queue=queue_name, immutable=True))         # @UndefinedVariable
+        celery_task = generate_json if task.get(TaskConstants.TASK_IS_JSON_REQUEST, False) else generate_csv
+        generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task[TaskConstants.TASK_TASK_ID], task[TaskConstants.TASK_QUERY], task[TaskConstants.TASK_FILE_NAME]], queue=queue_name, immutable=True))         # @UndefinedVariable
     return group(generate_tasks)
 
 
@@ -45,8 +46,8 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
     workflow = chain(route_tasks(tenant, request_id, tasks, 'extract'),
-                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue='extract', immutable=True),
-                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue='extract', immutable=True))
+                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
+                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
     workflow.apply_async()
 
 
@@ -87,7 +88,7 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
             return True
     except Exception as e:
         log.error(e)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: e})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         return False
 
 
@@ -129,6 +130,9 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
+    '''
+    Remotely copies a source file to a remote machine
+    '''
     task_info = {Constants.TASK_ID: remote_copy.request.id,
                  Constants.CELERY_TASK_ID: remote_copy.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -138,7 +142,7 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPIED})
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + e)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: 'remote copy has failed: ' + e})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: 'remote copy has failed: ' + str(e)})
     return rtn_code
 
 
@@ -146,6 +150,9 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def generate_json(tenant, request_id, task_id, query, output_file):
+    '''
+    Generates a json file given a result from the first element of a query
+    '''
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_json.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -157,6 +164,7 @@ def generate_json(tenant, request_id, task_id, query, output_file):
         prepare_path(output_file)
         with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as outfile:
             results = connection.get_result(query)
+            # There should only be one result in the list
             if len(results) is 1:
                 formatted = format_json(results[0])
                 json.dump(formatted, outfile, indent=4)
@@ -167,5 +175,5 @@ def generate_json(tenant, request_id, task_id, query, output_file):
         return True
     except Exception as e:
         log.error(e)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: e})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         return False

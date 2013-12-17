@@ -17,16 +17,21 @@ def get_metadata_file_name(params):
                                                                                                          asmtGrade=params.get(Constants.ASMTGRADE).upper(),
                                                                                                          asmtSubject=params.get(Constants.ASMTSUBJECT).upper(),
                                                                                                          asmtType=params.get(Constants.ASMTTYPE).upper(),
-                                                                                                         asmtGuid=params.get('asmtGuid').upper())
+                                                                                                         asmtGuid=params.get(Constants.ASMTGUID))
 
 
 def get_asmt_metadata(asmt_guid):
+    '''
+    Generates a query for getting assessment information based on assessment guid
+
+    :param str asmt_guid:  asessment guid
+    '''
     with EdCoreDBConnection() as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         mapping = get_column_mapping(Constants.DIM_ASMT, json_mapping=True)
         query = select([literal("assessment").label("content"),
-                        dim_asmt.c.asmt_guid.label(mapping.get(Constants.ASMT_GUID, Constants.ASMT_GUID)),
-                        dim_asmt.c.asmt_type.label(mapping.get(Constants.ASMT_TYPE, Constants.ASMT_TYPE)),
+                        dim_asmt.c.asmt_guid.label(mapping.get('asmt_guid', 'asmt_guid')),
+                        dim_asmt.c.asmt_type.label(mapping.get('asmt_type', 'asmt_type')),
                         dim_asmt.c.asmt_period_year.label(mapping.get('asmt_period_year', 'asmt_period_year')),
                         dim_asmt.c.asmt_period.label(mapping.get('asmt_period', 'asmt_period')),
                         dim_asmt.c.asmt_version.label(mapping.get('asmt_version', 'asmt_version')),

@@ -34,7 +34,7 @@ def main():
     output = system('pep8', '--ignore=E501', '.', cwd=tempdir)
     shutil.rmtree(tempdir)
     if output:
-        print(output)
+        print(output.decode('utf-8'))
         sys.exit(1)
 
 

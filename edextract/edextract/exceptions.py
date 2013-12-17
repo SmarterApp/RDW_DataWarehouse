@@ -30,3 +30,11 @@ class RemoteCopyError(EdExtractError):
     '''
     def __init__(self):
         self.msg = 'Remote Copy for Extraction failed'
+
+
+class NotForWindowsException(Exception):
+    '''
+    Exception for Windows users
+    '''
+    def __init__(self, message):
+        Exception.__init(self, message)

@@ -5,6 +5,8 @@ define [
   'edwareClientStorage'
   'text!edwareStickyCompareTemplate'
 ], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate) ->
+
+  STICKY_POPOVER_TEMPLATE = '<div class="popover stickyPopover"><div class="mask"></div><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
   
   class EdwareGridStickyCompare
    
@@ -313,6 +315,7 @@ define [
         html: true
         placement: 'bottom'
         trigger: 'manual'
+        template: STICKY_POPOVER_TEMPLATE
         content: -> $('<div></div>').append(self.getStickyChainContent()).html()
       .mouseover ->
         if $(this).parent().find('.popover').length is 0

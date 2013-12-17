@@ -21,8 +21,10 @@ import tempfile
 from edapi.exceptions import NotFoundException
 import copy
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_, distinct
+from sqlalchemy.sql.expression import and_
 from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
+from edextract.tasks.constants import Constants as TaskConstants
+from edapi.cache import cache_region
 
 
 log = logging.getLogger('smarter')
@@ -36,14 +38,12 @@ def process_sync_extract_request(params):
         extract_params[Constants.ASMTSUBJECT] = subject
         subject_tasks, task_responses = _create_tasks_with_responses(request_id, user, tenant, extract_params)
         tasks += subject_tasks
-
-    if len(tasks) > 0:
+    if tasks:
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        queue_name = 'extract_sync'
-        route_tasks(tenant, request_id, tasks, queue_name=queue_name)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=queue_name)
+        route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.SYNC_QUEUE_NAME)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
@@ -52,6 +52,7 @@ def process_sync_extract_request(params):
 def process_async_extraction_request(params, is_tenant_level=True):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
+    :param bool is_tenant_level:  True if it is a tenant level request
     '''
     tasks = []
     response = {}
@@ -91,53 +92,101 @@ def process_async_extraction_request(params, is_tenant_level=True):
     return response
 
 
-def _prepare_data(param):
-    guid_grade = []
-    available_grades = []
-    asmt_grade = param.get(Constants.ASMTGRADE)
-    if asmt_grade is None:
-        available_grades = get_current_registry().settings.get('extract.available_grades', '').split(',')
-    else:
-        available_grades = [asmt_grade]
+@cache_region('public.shortlived')
+def _get_asmt_records(state_code):
+    '''
+    query all available record for asmt_guid and asmt_grade by given state_code.
+    return format {'ELA': {'SUMMATIVE': ['…'], 'COMP': ['…']}, 'MATH': {'SUMMATIVE': ['…'] ...
+    '''
+    keys = {}
     with EdCoreDBConnection() as connector:
-        asmt_type = param.get(Constants.ASMTTYPE)
-        asmt_subject = param.get(Constants.ASMTSUBJECT)
-        state_code = param.get(Constants.STATECODE)
-        district_guid = param.get(Constants.DISTRICTGUID)
-        school_guid = param.get(Constants.SCHOOLGUID)
-        asmt_grade = param.get(Constants.ASMTGRADE)
-        asmt_year = param.get(Constants.ASMTYEAR)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select_with_context([distinct(dim_asmt.c.asmt_guid + ':' + fact_asmt_outcome.c.asmt_grade).label('guid_grade'), ],
+        query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
+                                     fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE),
+                                     dim_asmt.c.asmt_type.label(Constants.ASMTTYPE),
+                                     dim_asmt.c.asmt_subject.label(Constants.ASMTSUBJECT),
+                                     fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),
+                                     fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
+                                     fact_asmt_outcome.c.asmt_year.label(Constants.ASMT_YEAR)],
                                     from_obj=[dim_asmt
                                               .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))])\
-            .where(and_(dim_asmt.c.asmt_type == asmt_type))\
-            .where(and_(dim_asmt.c.asmt_subject == asmt_subject))\
             .where(and_(fact_asmt_outcome.c.state_code == state_code))\
-            .where(and_(fact_asmt_outcome.c.asmt_grade.in_(available_grades)))
-        if school_guid is not None:
-            query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
-        if district_guid is not None:
-            query = query.where(and_(fact_asmt_outcome.c.district_guid == district_guid))
-        if asmt_year is not None:
-            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
+            .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome.c.asmt_grade, dim_asmt.c.asmt_type, dim_asmt.c.asmt_subject,
+                      fact_asmt_outcome.c.school_guid, fact_asmt_outcome.c.district_guid, fact_asmt_outcome.c.asmt_year)
 
         results = connector.get_result(query)
         for result in results:
-            guid_grade.append(result['guid_grade'].split(':'))
+            asmt_guid = result[Constants.ASMT_GUID]
+            asmt_grade = result[Constants.ASMT_GRADE]
+            asmt_type = result[Constants.ASMTTYPE]
+            asmt_subject = result[Constants.ASMTSUBJECT]
+            school_guid = result[Constants.SCHOOL_GUID]
+            district_guid = result[Constants.DISTRICT_GUID]
+            asmt_year = result[Constants.ASMT_YEAR]
 
-    return guid_grade, dim_asmt, fact_asmt_outcome
+            asmt_subjects = keys.get(asmt_subject, {})
+            if not asmt_subjects:
+                keys[asmt_subject] = asmt_subjects
+            asmt_types = asmt_subjects.get(asmt_type, [])
+            if not asmt_types:
+                asmt_subjects[asmt_type] = asmt_types
+            asmt_types.append({Constants.ASMT_GUID: asmt_guid, Constants.ASMT_GRADE: asmt_grade,
+                               Constants.SCHOOL_GUID: school_guid, Constants.DISTRICT_GUID: district_guid,
+                               Constants.ASMT_YEAR: str(asmt_year) if asmt_year is not None else ''})
+    return keys
+
+
+def _prepare_data(param):
+    '''
+    Prepare record for available pre-query extract
+    '''
+    guid_grade_map = {}
+    dim_asmt = None
+    fact_asmt_outcome = None
+    asmt_grade = param.get(Constants.ASMTGRADE)
+    asmt_type = param.get(Constants.ASMTTYPE)
+    asmt_subject = param.get(Constants.ASMTSUBJECT)
+    state_code = param.get(Constants.STATECODE)
+    district_guid = param.get(Constants.DISTRICTGUID)
+    school_guid = param.get(Constants.SCHOOLGUID)
+    asmt_year = param.get(Constants.ASMTYEAR)
+    available_records = _get_asmt_records(state_code)
+    records_by_asmt_subject = available_records.get(asmt_subject, {})
+    records_by_asmt_type = records_by_asmt_subject.get(asmt_type, [])
+    for record_by_asmt_type in records_by_asmt_type:
+        if asmt_grade is not None and record_by_asmt_type[Constants.ASMT_GRADE] != asmt_grade:
+            pass
+        elif district_guid is not None and record_by_asmt_type[Constants.DISTRICT_GUID] != district_guid:
+            pass
+        elif school_guid is not None and record_by_asmt_type[Constants.SCHOOL_GUID] != school_guid:
+            pass
+        elif asmt_year is not None and record_by_asmt_type[Constants.ASMT_YEAR] != asmt_year:
+            pass
+        else:
+            guid_grade_map_key = record_by_asmt_type[Constants.ASMT_GUID] + ':' + record_by_asmt_type[Constants.ASMT_GRADE]
+            if guid_grade_map_key not in guid_grade_map:
+                guid_grade_map[guid_grade_map_key] = (record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE])
+
+    if guid_grade_map:
+        with EdCoreDBConnection() as connector:
+            dim_asmt = connector.get_table(Constants.DIM_ASMT)
+            fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+    return list(guid_grade_map.values()), dim_asmt, fact_asmt_outcome
 
 
 def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
+    '''
+    TODO comment
+    '''
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
     guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(param)
 
-    param[Constants.ASMTGRADE] = None
-    query = get_extract_assessment_query(param)
+    copied_params = copy.deepcopy(param)
+    copied_params[Constants.ASMTGRADE] = None
+    query = get_extract_assessment_query(copied_params)
     if guid_grade:
         for asmt_guid, asmt_grade in guid_grade:
             copied_params = copy.deepcopy(param)
@@ -156,6 +205,9 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
 
 
 def _create_tasks(request_id, user, tenant, params, query, is_tenant_level=False):
+    '''
+    TODO comment
+    '''
     tasks = []
     tasks.append(_create_new_task(request_id, user, tenant, params, query, is_tenant_level=is_tenant_level))
     tasks.append(_create_asmt_metadata_task(request_id, user, tenant, params))
@@ -163,20 +215,26 @@ def _create_tasks(request_id, user, tenant, params, query, is_tenant_level=False
 
 
 def _create_asmt_metadata_task(request_id, user, tenant, params):
+    '''
+    TODO comment
+    '''
     query = get_asmt_metadata(params.get(Constants.ASMTGUID))
     return _create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
 
 
 def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False):
+    '''
+    TODO comment
+    '''
     task = {}
-    task[Extract.TASK_TASK_ID] = create_new_entry(user, request_id, params)
+    task[TaskConstants.TASK_TASK_ID] = create_new_entry(user, request_id, params)
     if asmt_metadata:
-        task[Extract.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
-        task[Extract.TASK_IS_JSON_REQUEST] = True
+        task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
+        task[TaskConstants.TASK_IS_JSON_REQUEST] = True
     else:
-        task[Extract.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
-        task[Extract.TASK_IS_JSON_REQUEST] = False
-    task[Extract.TASK_QUERY] = compile_query_to_sql_text(query)
+        task[TaskConstants.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
+        task[TaskConstants.TASK_IS_JSON_REQUEST] = False
+    task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
     return task
 
 

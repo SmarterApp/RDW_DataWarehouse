@@ -58,6 +58,7 @@ def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, c
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
+        raise
 
 
 def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
@@ -77,6 +78,7 @@ def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, c
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
+        raise
 
 
 def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
@@ -100,6 +102,7 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
+        raise
 
 
 def execute_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
@@ -119,6 +122,7 @@ def execute_query_with_result(conn, query, except_msg, caller_module=None, calle
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
+        raise
 
 
 def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):

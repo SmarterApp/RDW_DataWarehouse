@@ -59,7 +59,7 @@ class TargetDBConnection(DBConnection):
         return TARGET_NAMESPACE
 
     @staticmethod
-    def get_datasource_name(tenant=None):
+    def get_datasource_name(tenant="edware"):
         """
         Returns datasource name for UDL Stats
         """

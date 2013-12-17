@@ -55,13 +55,14 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
     split_file_row_start = split_file_tuple[2]
     record_count = split_file_tuple[1]
 
-    file_loader_msg = {}
-    file_loader_msg[mk.FILE_TO_LOAD] = split_file_path
-    file_loader_msg[mk.ROW_START] = split_file_row_start
-    file_loader_msg[mk.HEADERS] = header_file_path
-    file_loader_msg[mk.LANDING_ZONE_WORK_DIR] = lzw
-    file_loader_msg[mk.GUID_BATCH] = guid_batch
-    file_loader_msg[mk.LOAD_TYPE] = load_type
-    file_loader_msg[mk.SIZE_RECORDS] = record_count
+    file_loader_msg = {
+        mk.FILE_TO_LOAD: split_file_path,
+        mk.ROW_START: split_file_row_start,
+        mk.HEADERS: header_file_path,
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.GUID_BATCH: guid_batch,
+        mk.LOAD_TYPE: load_type,
+        mk.SIZE_RECORDS: record_count
+    }
 
     return file_loader_msg

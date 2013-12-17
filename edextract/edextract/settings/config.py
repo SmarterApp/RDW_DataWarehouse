@@ -11,6 +11,7 @@ class Config():
     TIMEOUT = 'extract.timeout'
     HOMEDIR = 'extract.gpg.homedir'
     BINARYFILE = 'extract.gpg.path'
+    KEYSERVER = 'extract.gpg.keyserver'
     PICKUP_ROUTE_BASE_DIR = 'extract.sftp.route.base_dir'
 
 # list of configurations that are specific to edextract
@@ -19,6 +20,7 @@ LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
                   (Config.TIMEOUT, int, 20),
                   (Config.HOMEDIR, str, '~/.gpg'),
                   (Config.BINARYFILE, str, 'gpg'),
+                  (Config.KEYSERVER, str, None),
                   (Config.PICKUP_ROUTE_BASE_DIR, str, 'route')
                   ]
 

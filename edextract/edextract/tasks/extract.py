@@ -122,7 +122,8 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
     prepare_path(encrypted_archive_file_name)
     gpg_binary_file = get_setting(Config.BINARYFILE)
     homedir = get_setting(Config.HOMEDIR)
-    encrypted_archive_files(directory, recipients, encrypted_archive_file_name, homedir=homedir, gpgbinary=gpg_binary_file)
+    keyserver = get_setting(Config.KEYSERVER)
+    encrypted_archive_files(directory, recipients, encrypted_archive_file_name, homedir=homedir, keyserver=keyserver, gpgbinary=gpg_binary_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
 
 

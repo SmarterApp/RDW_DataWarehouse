@@ -37,7 +37,58 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     return db_connection, engine
 
 
+def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is running and db engines have been registered with zope
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: row_affected_list
+    """
+    trans = conn.get_transaction()
+    # execute queries
+    try:
+        row_affected_list = []
+        for query in list_of_queries:
+            result = conn.execute(query)
+            count = result.rowcount
+            row_affected_list.append(count)
+        trans.commit()
+        return row_affected_list
+    except Exception as e:
+        print(except_msg, e)
+        trans.rollback()
+        raise
+
+
+def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is running and db engines have been registered with zope
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: result
+    """
+    trans = conn.get_transaction()
+    # execute queries
+    try:
+        result = conn.execute(query)
+        trans.commit()
+        return result
+    except Exception as e:
+        print(except_msg, e)
+        trans.rollback()
+        raise
+
+
 def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is NOT running
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: row_affected_list
+    """
     trans = conn.begin()
     # execute queries
     try:
@@ -51,9 +102,17 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
+        raise
 
 
 def execute_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
+    """
+    This should be used when celery is running and db engines have been registered with zope
+    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
+    :param query: Query to execute
+    :param except_msg: Exception string
+    :return: result
+    """
     trans = conn.begin()
     # execute queries
     try:
@@ -63,13 +122,14 @@ def execute_query_with_result(conn, query, except_msg, caller_module=None, calle
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
+        raise
 
 
 def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     if is_conn_a_dblink:
         sql_query = text("")
     else:  # table is in the local database server
-        sql_query = text("SELECT column_name, data_type, character_maximum_length " +
+        sql_query = text("SELECT DISTINCT column_name, data_type, character_maximum_length " +
                          "FROM information_schema.columns "
                          "WHERE table_name = \'%s\' "
                          % (table_name))

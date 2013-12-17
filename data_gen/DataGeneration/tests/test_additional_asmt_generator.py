@@ -268,6 +268,48 @@ class AdditionalAssessmentTest(unittest.TestCase):
 
         self.assertDictEqual(result, expected)
 
+    def test_update_scores_min_2(self):
+        row_dict = {
+            'score_asmt': 1201,
+            'score_asmt_max': 1400,
+            'score_asmt_min': 1201,
+            'score_perf_level': 1,
+            'score_claim_1': 1201,
+            'score_claim_1_max': 1400,
+            'score_claim_1_min': 1201,
+            'score_claim_2': 1201,
+            'score_claim_2_max': 1400,
+            'score_claim_2_min': 1201,
+            'score_claim_3': 1201,
+            'score_claim_3_max': 1350,
+            'score_claim_3_min': 1201,
+            'score_claim_4': 1201,
+            'score_claim_4_max': 1450,
+            'score_claim_4_min': 1201,
+        }
+        cutpoints = [1400, 1800, 2100]
+        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400)
+        expected = {
+            'score_asmt': 1200,
+            'score_asmt_max': 1200,
+            'score_asmt_min': 1200,
+            'score_perf_level': 1,
+            'score_claim_1': 1200,
+            'score_claim_1_max': 1200,
+            'score_claim_1_min': 1200,
+            'score_claim_2': 1200,
+            'score_claim_2_max': 1200,
+            'score_claim_2_min': 1200,
+            'score_claim_3': 1200,
+            'score_claim_3_max': 1200,
+            'score_claim_3_min': 1200,
+            'score_claim_4': 1200,
+            'score_claim_4_max': 1250,
+            'score_claim_4_min': 1200,
+        }
+
+        self.assertDictEqual(result, expected)
+
     def test_update_row(self):
         row_dict = {
             'score_asmt': 1500,

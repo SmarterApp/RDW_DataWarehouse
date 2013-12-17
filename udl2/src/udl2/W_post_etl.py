@@ -52,4 +52,3 @@ def task(incoming_msg):
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
     return outgoing_msg
-

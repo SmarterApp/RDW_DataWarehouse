@@ -56,4 +56,3 @@ def task(incoming_msg):
                          mk.SIZE_RECORDS: totalrows
                          })
     return outgoing_msg
-

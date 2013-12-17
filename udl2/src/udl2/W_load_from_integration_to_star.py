@@ -2,7 +2,6 @@ from __future__ import absolute_import
 import datetime
 
 from udl2.celery import celery
-from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from udl2 import message_keys as mk
 from move_to_target.move_to_target import (explode_data_to_dim_table, explode_data_to_fact_table,
@@ -82,11 +81,14 @@ def explode_to_fact(msg):
     phase_number = msg[mk.PHASE]
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
+
+    # generate config dict
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
     # get fact table column mapping
     fact_table_map, fact_column_map = get_table_and_column_mapping(conf, 'fact_')
     fact_table = list(fact_table_map.keys())[0]
     source_table_for_fact_table = list(fact_table_map.values())[0]
+
     fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
 
     affected_rows = explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
@@ -106,4 +108,3 @@ def explode_to_fact(msg):
     outgoing_msg.update(msg)
     outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
     return outgoing_msg
-

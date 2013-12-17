@@ -9,23 +9,31 @@
 			<div id="log_out">
 				<li class="divider"></li>
 				<div class="padTop9 padBottom4">
-					<button id="log_out_button" type="button" class="btn btn-primary">
+					<button id="log_out_button" type="button" class="btn btn-primary"><span class="text_logout"></span>
 					</button>
 				</div>
 			</div>
 		</ul>
 	</li>
 	<li>
-		<a id='resources' class='headerLink pull-right'><i class='edware-icon-header-resources marginRight8'></i></a>
+		<a id='resources' class='headerLink pull-right'><i class='edware-icon-header-resources marginRight8'></i><span class="text_resources"></span></a>
 	</li>
 	<li>
-		<a id='help' class='headerLink pull-right'><i class='edware-icon-header-help marginRight8'></i></a>
+		<a id='help' class='headerLink pull-right'><i class='edware-icon-header-help marginRight8'></i><span class="text_help"></span></a>
 	</li>
 	<li>
-		<a id='feedback' class='headerLink pull-right'><i class='edware-icon-header-feedback marginRight8'></i></a>
+		<a id='feedback' class='headerLink pull-right'><i class='edware-icon-header-feedback marginRight8'></i><span class="text_feedback"></span></a>
 	</li>
 </ul>
-<!--<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a id='logout_button' href='/logout' target='iframe_logout'>{{labels.logout}}</a></span>-->
 <!--This iframe is used for logout redirect.  Do not remove it.-->
 <iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>
+
 <div class="HelpMenuContainer"></div>
+<div id="SurveryMonkeyModal" class="modal hide fade">
+	<div id="SurveryMonkeyModalHeader">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<span class="text_feedback"></span>
+	</div>
+	<div id="SurveryMonkeyModalBody">
+	</div>
+</div>

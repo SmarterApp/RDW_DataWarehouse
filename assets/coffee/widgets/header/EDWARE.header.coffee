@@ -13,9 +13,9 @@ define [
     labels = config.labels
     headerTemplate = $(headerTemplateHtml)
     # Add labels
-    headerTemplate.find('#help').append labels.help
-    headerTemplate.find('#feedback').append labels.feedback
-    headerTemplate.find('#resources').append labels.resources
+    headerTemplate.find('.text_help').html labels.help
+    headerTemplate.find('.text_feedback').html labels.feedback
+    headerTemplate.find('.text_resources').html labels.resources
     userInfo = data.user_info
 
 
@@ -25,20 +25,20 @@ define [
     if userName
       headerTemplate.find('#user-settings #username').html userName
     header = $("#header").append headerTemplate
-    dropdown_menu = header.find('.dropdown-menu')
+    dropdown_menu = header.find '.dropdown-menu'
     # Add language selector
     edwareLanguageSelector.create dropdown_menu, labels
 
-    $('#log_out_button').html labels.logout
+    $('.text_logout').html labels.logout
 
-    createHelp(labels)
+    createHelp labels
     bindEvents()
     
     feedbackData = config.feedback
     role = edwareUtil.getRole userInfo
     uid = edwareUtil.getUid userInfo
-    # TODO might need to move this part to footer
-    edwareUtil.renderFeedback(role, uid, reportName, feedbackData)
+    edwareUtil.renderFeedback $('#SurveryMonkeyModalBody'), role, uid, reportName, feedbackData
+
   createHelp = (labels) ->
     @helpMenu = edwareHelpMenu.create '.HelpMenuContainer',
       labels: labels
@@ -46,9 +46,12 @@ define [
   bindEvents = ()->
     self = @
     # Popup will close if user clicks popup hide button
-    $('#header #help').click () ->
+    $('#header #help').click ->
       self.helpMenu.show()
-    $('#log_out_button').click () ->
+    $('#header #log_out_button').click ->
       window.open '/logout', 'iframe_logout'
-
+    $('#header #feedback').click ->
+      $('#SurveryMonkeyModal').modal 'show'
+    $('#header .dropdown').mouseleave ->
+      $(@).removeClass 'open'
   create: create

@@ -88,7 +88,7 @@ udl2_conf = {
         'integration_schema': 'udl2',
         'ref_table_name': 'REF_COLUMN_MAPPING',
         'batch_table': 'UDL_BATCH',
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
+        'db_host': 'localhost',
         'db_port': '5432',
         'db_name': 'udl2',
         'db_database': 'udl2',
@@ -104,7 +104,7 @@ udl2_conf = {
         'db_schema': 'edware',
         'db_name': 'edware',
         # TBD, make sure it is the production setting
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
+        'db_host': 'localhost',
         'db_port': '5432',
         'db_database': 'edware',
         'db_user': 'edware',

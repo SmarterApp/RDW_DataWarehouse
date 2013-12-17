@@ -52,6 +52,8 @@ define [
       window.open '/logout', 'iframe_logout'
     $('#header #feedback').click ->
       $('#SurveryMonkeyModal').modal 'show'
+    $('#header #resources').click ->
+      $('#ResourcesModal').modal 'show'
     $('#header .dropdown').mouseleave ->
       $(@).removeClass 'open'
   create: create

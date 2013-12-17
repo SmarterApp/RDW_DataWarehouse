@@ -1155,6 +1155,7 @@ body.login {
 		display: inline-block;
 		vertical-align: middle;
 		height: 50px;
+		line-height: 30px;
 
 		&>div {
 		    height: 30px;
@@ -1172,7 +1173,7 @@ body.login {
 
 		.divider {
 		    border-right: solid 1px @color-B18;
-		    padding: 0px 30px;
+		    padding: 0px 20px;
 		}
 
 		&:first-child .divider {
@@ -1374,6 +1375,25 @@ body.login {
 .ed-icon-question-mark {
     &:before {
 	display: inline-block;
-	
+	content: '';
+	background-image: url("../images/landing_page.png");
+	background-position: 0px -160px;
+	width: 16px;
+	height: 16px;
+	vertical-align: text-top;
+	padding-right: 8px;
+    }
+}
+
+.ed-icon-globe {
+    &:before {
+	display: inline-block;
+	content: '';
+	background-image: url("../images/landing_page.png");
+	background-position: 0px -142px;
+	width: 16px;
+	height: 16px;
+	vertical-align: text-top;
+	padding-right: 8px;
     }
 }

@@ -91,7 +91,6 @@ rm -rf %{buildroot}
 %pre
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
-   useradd celery
    useradd udl2
 fi
 UDL2_ROOT=/opt/edware
@@ -126,7 +125,6 @@ sudo chown -R udl2.udl2 $UDL2_ROOT
 chkconfig --add celeryd-udl2
 
 %postun
-userdel -rf celery > /dev/null 2>&1
 userdel -rf udl2 > /dev/null 2>&1
 
 %preun

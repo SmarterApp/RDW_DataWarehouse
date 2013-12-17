@@ -65,15 +65,15 @@ define [
     # send ajax call
     $.when.apply($, deferreds)
       .always ->
-         $('.loader').remove()
+        $('.loader').remove()
       .done ()->
-         if $.type(arguments[1]) is "string" # single ajax call response
-           data = arguments[0]
-         else
-           data = {} # multiple ajax calls' response
-           for args in arguments
-             $.extend true, data, args[0]
-         config.onSuccess data
+        if $.type(arguments[1]) is "string" # single ajax call response
+          data = arguments[0]
+        else
+          data = {} # multiple ajax calls' response
+          for args in arguments
+            $.extend true, data, args[0]
+        config.onSuccess data
       .fail (xhr, ajaxOptions, thrownError) ->
         console.error thrownError
         config.onError xhr, ajaxOptions, thrownError
@@ -86,19 +86,16 @@ define [
     getDatafromSource json_url, (data)->
       for key of data['legendInfo']
         data['legendInfo'][key] = data['legendInfo'][key] if data['legendInfo'].hasOwnProperty(key)
-      data['legendInfo'] = JSON.parse(Mustache.render(JSON.stringify(data['legendInfo']), {"labels":data.labels}))  
+      data['legendInfo'] = JSON.parse(Mustache.render(JSON.stringify(data['legendInfo']), {"labels":data.labels}))
       defer.resolve data
     defer.promise()
- 
+
   getDataForFilter = ->
     defer = $.Deferred()
     getDatafromSource [URLs.labels, URLs.filters], (data)->
       defer.resolve data
     defer.promise()
 
-  # Check 401 error
-  check401Error = (status) ->
-    location.href = "login.html?redirectURL=" + window.location.href if status is 401
 
   getDatafromSource: getDatafromSource
   getDataForReport: getDataForReport

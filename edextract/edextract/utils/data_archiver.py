@@ -21,7 +21,8 @@ def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyse
     '''
     data = archive_files(dirname).getvalue()
     gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary)
-    import_recipient_keys(gpg, recipients, keyserver)
+    if keyserver is not None:
+        import_recipient_keys(gpg, recipients, keyserver)
     gpg.encrypt(data, recipients, output=outputfile, always_trust=True)
 
 

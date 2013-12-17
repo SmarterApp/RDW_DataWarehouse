@@ -144,6 +144,7 @@ def _create_role_specific_folder(user, sftp_user_folder, role, directory_name):
     # create file drop location and set proper permission
     create_path(file_drop_loc)
     change_owner(file_drop_loc, user, role)
+    os.chmod(file_drop_loc, 0o777)
 
 
 def _verify_user_tenant_and_group(tenant_path, username, group, role):

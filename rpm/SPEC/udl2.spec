@@ -91,7 +91,8 @@ rm -rf %{buildroot}
 %pre
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
-   useradd udl2
+   groupadd udl2 -f -g 501
+   useradd udl2 -g udl2 -u 501
 fi
 UDL2_ROOT=/opt/edware
 GLUSTER_MOUNT=$UDL2_ROOT/gluster/UDL
@@ -120,12 +121,15 @@ fi
 if [ ! -d $UDL2_ZONES/landing/history ]; then
     mkdir -p $UDL2_ZONES/landing/history
 fi
-sudo chown -R udl2.udl2 $UDL2_ROOT
+sudo chown -R udl2.udl2 $UDL2_ROOT/gluster/UDL
+sudo chown -R udl2.udl2 $UDL2_ROOT/log
+sudo chown -R udl2.udl2 $UDL2_ROOT/conf
 
 %post
 chkconfig --add celeryd-udl2
 
 %postun
+groupdel udl2 > /dev/null 2>&1
 userdel -rf udl2 > /dev/null 2>&1
 
 %preun

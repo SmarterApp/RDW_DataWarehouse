@@ -9,4 +9,7 @@ require ['jquery', 'bootstrap', 'mustache', 'edwareDataProxy', 'edwareHelpMenu',
       target = $(this).attr('href')
       helpMenu.show target
     $('.btn-login').click ()->
-      window.location.href = "http://"+window.location.host+"/assets/html/comparingPopulations.html?stateCode=NY"
+      window.location.href = window.location.origin + "/assets/html/comparingPopulations.html?stateCode=NY"
+    $('#about li').click ()->
+      link = $(this).data('link')
+      window.location.href = link

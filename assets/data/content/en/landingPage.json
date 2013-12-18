@@ -7,19 +7,23 @@
             {
                 "subtitle": "Assessments",
                 "class": "assessments",
-                "desc": "Learn More about Smarter Balanced assessments"
+                "desc": "Learn More about Smarter Balanced assessments",
+                "link": "http://www.smarterbalanced.org/smarter-balanced-assessments"
             }, {
                 "subtitle": "Reports",
                 "class": "reports",
-                "desc": "Gain deeper understanding of student performance"
+                "desc": "Gain deeper understanding of student performance",
+                "link": "#"
             }, {
                 "subtitle": "Data Security",
                 "class": "security",
-                "desc": "Learn how Smarter Balanced protects students data"
+                "desc": "Learn how Smarter Balanced protects students data",
+                "link": "#"
             }, {
                 "subtitle": "The Consortium",
                 "class": "consortium",
-                "desc": "We develop assessments aligned to the Common Core State Standards"
+                "desc": "We develop assessments aligned to the Common Core State Standards",
+                "link": "http://www.smarterbalanced.org"
             }
         ]
     },

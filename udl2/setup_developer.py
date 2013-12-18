@@ -77,7 +77,6 @@ setup(name='udl2',
       install_requires=install_requires,
       data_files=[('/var/log/wgen/edware-udl/logs', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
                   ('/opt/wgen/edware-udl/etc', ['conf/udl2_conf.ini', 'conf/udl2_conf.cfg', 'conf/udl2_conf.py']),
-                  ('/opt/edware/')
                   ('/opt/wgen/edware-udl/zones/datafiles/', ['src/udl2/datafiles/seed.csv']),
                   ('/opt/wgen/edware-udl/zones/datafiles/keys', ['tests/data/keys/pubring.gpg',
                                                                  'tests/data/keys/secring.gpg',
@@ -121,5 +120,8 @@ setup(name='udl2',
                                                              'tests/data/test_sm1.tar.gz.gpg',
                                                              'tests/data/test_sm2.tar.gz.gpg',
                                                              'tests/data/test_sm3.tar.gz.gpg']),
+                  # new directory path
+                  ('/opt/edware/conf/', ['conf/dev_conf/udl2_conf.py']),
+                  ('/opt/edware/log/', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
                   ],
       )

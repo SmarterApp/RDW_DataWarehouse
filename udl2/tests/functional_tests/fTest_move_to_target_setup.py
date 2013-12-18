@@ -57,7 +57,6 @@ class FTestMoveToTarget(unittest.TestCase):
             else:
                 raise
 
-
         self.target_metadata = generate_ed_metadata(schema_name=self.tenant_info['target_schema_name'],
                                                     bind=self.target_engine)
         self.target_metadata.create_all(self.target_engine)

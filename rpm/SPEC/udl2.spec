@@ -94,7 +94,8 @@ if [ $? != 0 ]; then
    useradd udl2
 fi
 UDL2_ROOT=/opt/edware
-UDL2_ZONES=$UDL2_ROOT/zones
+GLUSTER_MOUNT=$UDL2_ROOT/gluster/UDL
+UDL2_ZONES=$GLUSTER_MOUNT/zones
 
 if [ ! -d $UDL2_ROOT/log ]; then
     mkdir -p $UDL2_ROOT/log

@@ -52,17 +52,12 @@ udl2_conf = {
     'rabbitmq': {  # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         'RABBITMQ_SERVER_PATH': ['/opt/local/sbin/rabbitmq-server', '/usr/local/sbin/rabbitmq-server'],  # where the rabbitmq-server is located, we list all possible locations in your system.
     },
+    # zones folder will be inside the gluster mount and will be accessible from both UDL and DB server
     'zones': {  # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
-        'landing': '/opt/edware/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
-        'arrivals': '/opt/edware/zones/landing/arrivals/',  # this is where the file arrives.
-        'work': '/opt/edware/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
-        'history': '/opt/edware/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
-        'pickup': '/opt/edware/zones/pickup/',  # pickup zone where we store outgoing files
-        'pickup-work': '/opt/edware/zones/pickup/work',
-        'pickup-departures': '/opt/edware/zones/pickup/departures',
-        'pickup-history': '/opt/edware/zones/pickup/history',
-        'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
-        'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
+        'landing': '/opt/edware/gluster/UDL/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
+        'arrivals': '/opt/edware/gluster/UDL/zones/landing/arrivals/',  # this is where the file arrives.
+        'work': '/opt/edware/gluster/UDL/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
+        'history': '/opt/edware/gluster/UDL/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
     },
     'work_zone_sub_dir': {
         'arrived': 'arrived',

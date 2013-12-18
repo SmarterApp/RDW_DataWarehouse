@@ -139,7 +139,7 @@ define [
       keys
     
     getRowsCount: () ->
-      Object.keys(this.selectedRows).length
+      @getRows().length
       
     # rows have been selected, compare the selections
     compare: () ->
@@ -297,9 +297,11 @@ define [
 
     getStickyChainContent: ()->
       reverse = {}
+      names = []
       for key, value of this.selectedRows
         reverse[value] = key
-      names = Object.keys(reverse).sort()
+        names.push value
+      names = names.sort()
       idx = 0
       scrollable =$('<div class="stickyChainScrollable"></div>')
       table = $('<div class=" stickyChainTable"></div>')

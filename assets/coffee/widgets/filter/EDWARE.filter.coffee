@@ -109,8 +109,8 @@ define [
               $(this).attr('checked', true).triggerHandler('click') if $(this).val() in value
 
     toggleFilterArea: (self) ->
-      filterPanel = $(self.filterPanel)
-      filterArrow = $(self.filterArrow)
+      filterPanel = $('.filter', self.filterArea)
+      filterArrow = $('.filterArrow')
       if filterPanel.is(':hidden')
          filterArrow.show()
          filterPanel.slideDown 'slow'

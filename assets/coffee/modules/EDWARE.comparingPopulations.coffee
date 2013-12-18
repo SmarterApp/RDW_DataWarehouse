@@ -51,7 +51,9 @@ define [
 
     constructor: () ->
       configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.CPOP
-      configPromise.done @initialize.bind(@)
+      self = this
+      configPromise.done (config) ->
+        self.initialize(config)
 
     initialize: (config)->
       this.config = config
@@ -71,7 +73,9 @@ define [
         order: 'asc'
         index: 0
       }
-      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.renderGrid.bind(this)
+      self = this
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, ()->
+        self.renderGrid()
       this.config.asmtTypes = for asmtType in config.students.customViews.asmtTypes
         asmtType: asmtType.name
         display: asmtType.name

@@ -3,12 +3,11 @@ Created on May 22, 2013
 
 @author: ejen
 '''
-#import sys
 import os
 import unittest
 import logging
 from udl2.database import UDL_METADATA
-from udl2_util.database_util import connect_db, execute_queries, get_table_columns_info, get_schema_metadata
+from udl2_util.database_util import connect_db, get_table_columns_info, get_schema_metadata
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import re
@@ -132,6 +131,7 @@ class TestUdl2Database(unittest.TestCase):
         ddl_in_db = get_table_columns_info(conn, table_name)
         ddl_in_code = sorted(ddl_in_code, key=lambda tup: tup[0])
         ddl_in_db = sorted(ddl_in_db, key=lambda tup: tup[0])
+        print('ddl_in_code', ddl_in_code, '\nddl_in_db', ddl_in_db)
         return self._compare_columns(ddl_in_code, ddl_in_db)
 
     def _compare_table_key_definitions_in_code_and_db(self, table_name):

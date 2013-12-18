@@ -13,7 +13,7 @@ def create_path(path):
     :return: None
     """
     if not os.path.exists(path):
-        os.makedirs(path, 0o700)
+        os.makedirs(path, 0o755)
 
 
 def cleanup_directory(sftp_dir_path):

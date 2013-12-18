@@ -79,7 +79,6 @@ udl2_conf = {
     },
     'multi_tenant': {
         'on': False,
-        'default_tenant': 'edware',
     },
     'udl2_db': {
         'csv_schema': 'udl2',  # PostgresQL for UDL2 processing. This is not the target database.
@@ -89,7 +88,7 @@ udl2_conf = {
         'integration_schema': 'udl2',
         'ref_table_name': 'REF_COLUMN_MAPPING',
         'batch_table': 'UDL_BATCH',
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
+        'db_host': 'localhost',
         'db_port': '5432',
         'db_name': 'udl2',
         'db_database': 'udl2',
@@ -99,66 +98,13 @@ udl2_conf = {
         'db_driver': 'postgresql',
         'json_lz_table': 'LZ_JSON',
         'csv_lz_table': 'LZ_CSV',
-        'master_metadata_table': 'MASTER_METADATA',
-        # sqlalchemy specific
-        'echo': False,
-        'max_overflow': 10,
-        'pool_size': 20,
-    },
-    'udl2_db_conn': {
-        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
-        'db_schema': 'udl2',
-        'echo': False,
-        'max_overflow': 10,
-        'pool_size': 20,
-    },
-    'target_db_conn': {
-        'edware': {
-            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
-            'db_schema': 'edware',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        },
-        'CA': {
-            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
-            'db_schema': 'edware',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        },
-        'func_tests': {
-            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
-            'db_schema': 'ftest_test_schema',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        },
-        'func_tests_b': {
-            'url': 'postgresql://edware:edware20133@localhostblah:5432/edware',
-            'db_schema': 'ftest_test_schema',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        }
+        'master_metadata_table': 'MASTER_METADATA'
     },
     'target_db': {
         'db_schema': 'edware',
         'db_name': 'edware',
         # TBD, make sure it is the production setting
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
+        'db_host': 'localhost',
         'db_port': '5432',
         'db_database': 'edware',
         'db_user': 'edware',

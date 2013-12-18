@@ -302,24 +302,27 @@ function import_data_from_csv {
 }
 
 function build_rpm {
+    # parameter $1 : $MAIN_PKG to be built
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
     rm -rf /var/lib/jenkins/rpmbuild
 
-    echo "Build RPM"
-    echo "Build Number:"
+    echo "Build RPM for: "
+    echo $1
+    echo "Build Number: "
     echo $BUILD_NUMBER
-    echo "RPM_VERSION:"
+    echo "RPM_VERSION: "
     echo $RPM_VERSION
 
     export GIT_COMMIT="$(git rev-parse HEAD)"
 
     cd "$WORKSPACE/rpm/SPEC"
-    rpmbuild -bb smarter.spec
-    
-    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
-    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/smarter-latest.rpm"
-    
-    echo "Upload to pulp" 
+    rpmbuild -bb $1.spec
+
+    ENV_NAME=$(echo ${1}_env_name | tr '[:lower:]' '[:upper:]')
+    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/$1${!ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/$1-latest.rpm"
+
+    echo "Upload to pulp"
     pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
 
     echo "Finished building RPM"
@@ -406,7 +409,7 @@ function main {
         run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then
-        build_rpm
+        build_rpm $MAIN_PKG
     fi
 }
 

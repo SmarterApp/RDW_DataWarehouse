@@ -12,6 +12,7 @@ class Config():
     HOMEDIR = 'extract.gpg.homedir'
     BINARYFILE = 'extract.gpg.path'
     KEYSERVER = 'extract.gpg.keyserver'
+    TENANT = 'extract.gpg.'
     PICKUP_ROUTE_BASE_DIR = 'extract.sftp.route.base_dir'
 
 # list of configurations that are specific to edextract

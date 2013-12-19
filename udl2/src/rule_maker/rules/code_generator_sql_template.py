@@ -34,83 +34,83 @@ NOT_FOUND = 'not_found'
 # code for components defined in TEMPLATE_COMPONENT
 # each part has versions of code defined in SUPPORTED_VERSIONS
 TEMPLATE_CONTENT = {
-FUNCTION_DEF: {
-               POSTGRES: """CREATE OR REPLACE FUNCTION {func_name}""",
-               ORACLE: """FUNCTION {func_name}"""
-               },
+    FUNCTION_DEF: {
+        POSTGRES: """CREATE OR REPLACE FUNCTION {func_name}""",
+        ORACLE: """FUNCTION {func_name}"""
+    },
 
-PARAMETER_DEF: {
-                POSTGRES: """
+    PARAMETER_DEF: {
+        POSTGRES: """
 (
     p_{col_name} IN VARCHAR
 )""",
-                ORACLE: """
+        ORACLE: """
 (
     p_{col_name} IN VARCHAR2
 )"""
-                },
+    },
 
-RETURN_DEF: {
-            POSTGRES: """
+    RETURN_DEF: {
+        POSTGRES: """
 RETURNS VARCHAR AS
 $$""",
-            ORACLE: """
+        ORACLE: """
 RETURN VARCHAR2"""
-},
+    },
 
 
-DECLEAR_DEF: {
-              POSTGRES: """
+    DECLEAR_DEF: {
+        POSTGRES: """
 DECLARE
     v_{col_name} VARCHAR(255);
     t_{col_name} VARCHAR(255);
     v_result VARCHAR(255);
 """,
-              ORACLE: """
+        ORACLE: """
 IS
     v_{col_name} VARCHAR2(255);
     t_{col_name} VARCHAR2(255);
     v_result VARCHAR2(255);
 """
-},
+    },
 
 
-RETURN_STATEMENT: {
-                   POSTGRES: {
-                              BASIC: """
+    RETURN_STATEMENT: {
+        POSTGRES: {
+            BASIC: """
     v_result := t_{col_name};
     {rclean_exp}
     RETURN v_result;
 """,
-                              NOT_FOUND: """
+            NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
     {rclean_exp}
     RETURN v_result;
 """,
-                              IF_ELSE: """
+            IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
     {rclean_exp}
     RETURN v_result;
 """
-},
-                   ORACLE: {
-                            BASIC: """
+        },
+        ORACLE: {
+            BASIC: """
     v_result := t_{col_name};
     {rclean_exp}
     RETURN v_result;
 """,
-                            NOT_FOUND: """
+            NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
     {rclean_exp}
     RETURN v_result;
 """,
-                            IF_ELSE: """
+            IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
@@ -118,34 +118,35 @@ RETURN_STATEMENT: {
     RETURN v_result;
 """
         }
-},
+    },
 
 
-EXCEPTION: {
-            POSTGRES: """
+    EXCEPTION: {
+        POSTGRES: """
 EXCEPTION
     WHEN OTHERS THEN
         RETURN v_{col_name};
 """,
-            ORACLE: """
+        ORACLE: """
 EXCEPTION
     WHEN OTHERS THEN
         RETURN v_{col_name};
 """
-},
+    },
 
 
-END: {
-      POSTGRES: """END;
+    END: {
+        POSTGRES: """END;
 $$ LANGUAGE plpgsql;
 """,
-      ORACLE: """END {func_name};
+        ORACLE: """END {func_name};
 """
-}
+    }
 }
 
 
-for_loop_exp = {POSTGRES: """
+for_loop_exp = {
+    POSTGRES: """
     FOR cntr IN array_lower({count_value}{col_name}, 1)..array_upper({count_value}{col_name}, 1)
     LOOP
         {if_statement}
@@ -154,7 +155,7 @@ for_loop_exp = {POSTGRES: """
         END IF;
     END LOOP;
 """,
-                ORACLE: """
+    ORACLE: """
     FOR cntr IN 1..{count_value}{col_name}.COUNT
     LOOP
         {if_statement}
@@ -162,72 +163,74 @@ for_loop_exp = {POSTGRES: """
             EXIT;
         END IF;
     END LOOP;
-"""}
+"""
+}
 
 
 # length expression
-length_exp = {POSTGRES: """CHAR_LENGTH""",
-              ORACLE: """LENGTH"""
+length_exp = {
+    POSTGRES: """CHAR_LENGTH""",
+    ORACLE: """LENGTH"""
 }
 
 
 # index expression for different code version
 index_exp = {
-             POSTGRES: """[cntr]""",
-             ORACLE: """(cntr)"""
-             }
+    POSTGRES: """[cntr]""",
+    ORACLE: """(cntr)"""
+}
 
 
 # substring expression for different code version
 substr_exp = {
-              POSTGRES: """SUBSTRING""",
-              ORACLE: """SUBSTR"""
-             }
+    POSTGRES: """SUBSTRING""",
+    ORACLE: """SUBSTR"""
+}
 
 # array expression for different code version
 array_exp = {
-             POSTGRES: """{prefix}{col_name} text[] = ARRAY['{value_list}'];""",
-             ORACLE: """ TYPE arr{col_name}_t IS VARRAY(255) OF VARCHAR2(255);
+    POSTGRES: """{prefix}{col_name} text[] = ARRAY['{value_list}'];""",
+    ORACLE: """ TYPE arr{col_name}_t IS VARRAY(255) OF VARCHAR2(255);
         {prefix}{col_name} arr{col_name}_t := {col_name}_t ('{value_list}');
         """
-             }
+}
 
 
 # replacing expression for different code version
 repace_exp = {
-              POSTGRES: """REGEXP_REPLACE({col_name}, E\'[\\n\\r]+\', \'\', 'g')""",
-              ORACLE: """ REPLACE({col_name}, CHR(13), NULL)"""
-             }
+    POSTGRES: """REGEXP_REPLACE({col_name}, E\'[\\n\\r]+\', \'\', 'g')""",
+    ORACLE: """ REPLACE({col_name}, CHR(13), NULL)"""
+}
 
 
 # comment expression for different code version
 comment_exp = {
-               POSTGRES: """-- {comment}""",
-               ORACLE: """-- {comment}"""
-               }
+    POSTGRES: """-- {comment}""",
+    ORACLE: """-- {comment}"""
+}
 
 # to_char expression for different code version
 tochar_exp = {
-               POSTGRES: """{col_name} := CAST ({col_name} AS TEXT);""",
-               ORACLE: """TO_CHAR({col_name});"""
-              }
+    POSTGRES: """{col_name} := CAST ({col_name} AS TEXT);""",
+    ORACLE: """TO_CHAR({col_name});"""
+}
 
 # min 0 expression for different code version
 min0_exp = {
-            POSTGRES: """
+    POSTGRES: """
         IF {col_name} ~ '^[0-9]+$' AND
             CAST({col_name} AS BIGINT) < 0 THEN
             {col_name} := '0';
         END IF;
 """,
-            # this expression might be modified
-            ORACLE: """
+    # this expression might be modified
+    ORACLE: """
         IF pkg_utils.is_number({col_name}) = 1 AND
            TO_NUMBER({col_name}) < 0 THEN
            {col_name} := '0';
         END IF;
 """
-            }
+}
 
 
 def generate_func_top(code_version):

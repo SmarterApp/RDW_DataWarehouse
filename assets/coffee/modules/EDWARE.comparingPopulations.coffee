@@ -21,8 +21,6 @@ define [
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
 
-  REPORT_NAME = "comparingPopulationsReport"
-
   POPULATION_BAR_WIDTH = 145
 
   class ConfigBuilder
@@ -52,8 +50,10 @@ define [
   class PopulationGrid
 
     constructor: () ->
-      config = edwareDataProxy.getDataForReport REPORT_NAME
-      this.initialize(config)
+      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.CPOP
+      self = this
+      configPromise.done (config) ->
+        self.initialize(config)
 
     initialize: (config)->
       this.config = config
@@ -64,7 +64,6 @@ define [
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
       this.gridHeight = window.innerHeight - 312#subtract footer and header height
-      edwareUtil.reRenderBody this.labels
       # create align button
       this.alignment = new Alignment('.align_button', @labels)
       # default sort
@@ -73,7 +72,9 @@ define [
         order: 'asc'
         index: 0
       }
-      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.renderGrid.bind(this)
+      self = this
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, ()->
+        self.renderGrid()
       this.config.asmtTypes = for asmtType in config.students.customViews.asmtTypes
         asmtType: asmtType.name
         display: asmtType.name

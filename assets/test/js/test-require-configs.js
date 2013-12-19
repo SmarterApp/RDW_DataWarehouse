@@ -69,7 +69,8 @@ require({
     AsmtDropdownTemplate: '../src/widgets/asmtDropdown/template.html',
     PrintTemplate: '../src/widgets/print/template.html',
     HelpMenuTemplate: '../src/widgets/header/helpMenuTemplate.html',
-    ActionBarTemplate: '../src/widgets/header/ActionBarTemplate.html'
+    ActionBarTemplate: '../src/widgets/header/ActionBarTemplate.html',
+    headerTemplateHtml: '../src/widgets/header/template.html'
   },
   shim: {
     'jqGrid': {
@@ -77,6 +78,10 @@ require({
       //jqGrid
       deps: ['jquery'],
       exports: 'jqGrid'
+    },
+    'bootstrap': {
+      deps: ['jquery'],
+      exports: 'bootstrap'
     }
   }
 }, ['cs!test.EDWARE']);

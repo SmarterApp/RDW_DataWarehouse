@@ -21,16 +21,17 @@ define [
     "MATH": ["40", "40", "20", "10"],
     "ELA": ["40", "30", "20", "10"]
   }
-
-  REPORT_NAME = 'indivStudentReport'
   
   class EdwareISR
     
     constructor: () ->
-      @configData = edwareDataProxy.getDataForReport REPORT_NAME
-      @initialize()
-      @loadPrintMedia()
-      @fetchData()
+      self = this
+      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
+      configPromise.done (configData) ->
+        self.configData = configData
+        self.initialize()
+        self.loadPrintMedia()
+        self.fetchData()
 
     loadPage: (template) ->
       @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))

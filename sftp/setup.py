@@ -8,6 +8,8 @@ README = open(os.path.join(here, 'README.txt')).read()
 
 requires = []
 
+scripts = ['sftp_driver.py']
+
 tests_require = requires + [
     'nose == 1.3.0',
     'coverage == 3.6', ]
@@ -25,6 +27,7 @@ setup(name='sftp',
       zip_safe=False,
       test_suite='nose.collector',
       install_requires=requires,
+      scripts=scripts,
       tests_require=tests_require,
       entry_points="""\
       """,

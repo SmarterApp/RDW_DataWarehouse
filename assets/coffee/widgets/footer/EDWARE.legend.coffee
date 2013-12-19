@@ -18,8 +18,6 @@ define [
     # constructor with legend information as parameter
     constructor: (@legend, @reportName) ->
       this.subject = this.legend['subject']
-      data = edwareDataProxy.getDataForReport reportName
-      $.extend(legend, data)
       
     # create legend in html format from mustache template
     create: (@container) ->
@@ -31,15 +29,11 @@ define [
       # need assessment score and color to display legend consistently across all ISR
       data['asmtScore'] = this.legend['subject'].asmt_score
       data['scoreColor'] = this.legend['subject'].score_color
-      template = this.getTemplate()
-      container = this.container
-      createBar = this.createBar
-      subject = this.subject
       
       data.labels = this.legend.labels
-      container.html Mustache.to_html(template, data)
+      @container.html Mustache.to_html(@getTemplate(), data)
       # create color bars
-      createBar(subject, container)
+      @createBar(@subject, @container)
 
 
     # get template of legend section

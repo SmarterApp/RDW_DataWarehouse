@@ -68,4 +68,3 @@ def generate_conf_for_loading(json_file, guid_batch):
         mk.GUID_BATCH: guid_batch
     }
     return conf
-

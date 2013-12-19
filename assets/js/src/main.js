@@ -66,7 +66,8 @@ require({
     DownloadMenuTemplate: '../widgets/download/DownloadMenuTemplate.html',
     AsmtDropdownTemplate: '../widgets/asmtDropdown/template.html',
     PrintTemplate: '../widgets/print/template.html',
-    HelpMenuTemplate: '../widgets/header/helpMenuTemplate.html'
+    HelpMenuTemplate: '../widgets/header/helpMenuTemplate.html',
+    headerTemplateHtml: '../widgets/header/template.html'
   },
   shim: {
     'jqGrid': {

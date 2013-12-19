@@ -51,4 +51,3 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_ba
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
             mk.GUID_BATCH: guid_batch}
     return conf
-

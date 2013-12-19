@@ -5,6 +5,8 @@ from kombu import Exchange, Queue
 import os
 import imp
 
+from udl2.udl2_connector import initialize_db, UDL2DBConnection, TargetDBConnection
+
 
 def setup_udl2_queues(conf):
     queues = {}
@@ -58,6 +60,9 @@ celery = setup_celery_conf(udl2_conf, celery, udl2_queues)
 # configuration options for file splitter
 FILE_SPLITTER_CONF = udl2_conf['file_splitter']
 
+# init db engine
+initialize_db(UDL2DBConnection, udl2_conf)
+initialize_db(TargetDBConnection, udl2_conf)
 
 if __name__ == '__main__':
     celery.start()

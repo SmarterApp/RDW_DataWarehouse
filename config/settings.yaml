@@ -97,7 +97,7 @@ common:
       retries_allowed: 1
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
-      gpg.public_key.cat: Kimberly Swimberly
+      gpg.public_key.cat: kswimberly@amplify.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last

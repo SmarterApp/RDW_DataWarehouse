@@ -34,7 +34,6 @@ define [
       this.legendInfo = config.legendInfo
       this.labels = config.labels
       this.gridHeight = window.innerHeight - 212
-      edwareUtil.reRenderBody this.labels
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.reloadCurrentView.bind(this)
 
     reload: (params) ->

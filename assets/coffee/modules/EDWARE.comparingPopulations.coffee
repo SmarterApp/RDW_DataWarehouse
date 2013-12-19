@@ -64,7 +64,6 @@ define [
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
       this.gridHeight = window.innerHeight - 312#subtract footer and header height
-      edwareUtil.reRenderBody this.labels
       # create align button
       this.alignment = new Alignment('.align_button', @labels)
       # default sort

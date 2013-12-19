@@ -2,7 +2,7 @@
 Created on Oct 28, 2013
 @author: bpatel
 '''
-## This test verify in case of corrupted json and csv , 
+## This test verify in case of corrupted json and csv ,
 ## udl fails and error has been captured in UDL_BATCH table.
 ## also verify that post udl has been successful.
 
@@ -40,7 +40,7 @@ class ValidateTableData(unittest.TestCase):
         self.database = 'edware'
         self.database1 = 'udl2'
 
-# Run the UDL with corrupted csv (missing column) 
+# Run the UDL with corrupted csv (missing column)
     def udl_with_csv_miss_col(self, guid_batch_id):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
@@ -69,12 +69,11 @@ class ValidateTableData(unittest.TestCase):
         from udl2_conf import udl2_conf
         self.conf = udl2_conf
 
-        self.copy_file_to_tmp(
-                              )
+        self.copy_file_to_tmp()
         arch_file = shutil.copy2(FILE_DICT['corrupt_csv_extra_col'], self.tenant_dir)
         #arch_file = self.copy_file_to_tmp()
         command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
-        print (command)
+        print(command)
         subprocess.call(command, shell=True)
         self.connect_to_star_shema()
 
@@ -88,12 +87,11 @@ class ValidateTableData(unittest.TestCase):
         from udl2_conf import udl2_conf
         self.conf = udl2_conf
 
-        self.copy_file_to_tmp(
-                              )
+        self.copy_file_to_tmp()
         arch_file = shutil.copy2(FILE_DICT['corrupt_json'], self.tenant_dir)
 
         command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
-        print (command)
+        print(command)
         subprocess.call(command, shell=True)
 
 #Run the UDL with corrupted source file

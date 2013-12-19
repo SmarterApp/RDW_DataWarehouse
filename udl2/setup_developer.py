@@ -20,7 +20,9 @@ install_requires = ['billiard==2.7.3.32',
                     'nose-cov == 1.6',
                     'mock == 1.0.1',
                     'pep8 == 1.4.6',
-                    'py-postgresql == 1.1.0', ]
+                    'py-postgresql == 1.1.0',
+                    'zope.component >= 4.0.2',
+                    'zope.interface >= 4.0.3', ]
 
 install_requires.append('pyinotify') if sys.platform == 'linux' else None
 
@@ -44,11 +46,12 @@ setup(name='udl2',
       description="Edware's Universal Data Loader",
       author="Amplify Insight Edware Team",
       author_email="edwaredev@wgen.net",
-      packages=['edschema', 'edschema.metadata', 'edschema.tests', 'config', 'fileloader', 'filearrived',
+      packages=['edschema', 'edschema.metadata', 'edschema.tests', 'config', 'fileloader', 'filearrived', 'database',
                 'filesplitter', 'post_etl', 'move_to_integration', 'move_to_target', 'sfv', 'udl2', 'udl2_util',
                 'udl2_tests', 'fileexpander', 'filedecrypter', 'rule_maker', 'rule_maker.makers', 'rule_maker.rules',
                 'preetl', 'scripts', 'benchmarking', 'file_finder'],
       package_dir={'edschema': '../edschema/edschema',
+                   'database': '../edschema/database',
                    'config': '../config',
                    'fileloader': 'src/fileloader',
                    'filesplitter': 'src/filesplitter',
@@ -117,5 +120,8 @@ setup(name='udl2',
                                                              'tests/data/test_sm1.tar.gz.gpg',
                                                              'tests/data/test_sm2.tar.gz.gpg',
                                                              'tests/data/test_sm3.tar.gz.gpg']),
+                  # new directory path
+                  ('/opt/edware/conf/', ['conf/dev_conf/udl2_conf.py']),
+                  ('/opt/edware/log/', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
                   ],
       )

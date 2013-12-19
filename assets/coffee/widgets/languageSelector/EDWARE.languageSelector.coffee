@@ -11,7 +11,6 @@ define [
     edwareDataProxy.getDatafromSource "../data/languages.json", (data)->
       languages = data['languages']
       
-      
       $.each languages, (lang, name) ->
         language_selections = $('<li></li>')
         input = $('<input type="radio" name="language" value="' + lang + '" >' + name + '</input>')
@@ -19,13 +18,12 @@ define [
         language_selections.append input 
         language_selector_body.append language_selections
     
-      $('input[name="language"]:radio').on
-        change: (e) ->
-          e.preventDefault()
-          current_selected_lang = edwarePreferences.getSelectedLanguage()
-          lang_id = $(this).attr "value"
-          language_name = $('#' + lang_id).text()
-          edwarePreferences.saveSelectedLanguage lang_id
-          location.reload() unless current_selected_lang is lang_id
+      $(document).on 'change', 'input[name="language"]:radio', (e)->
+        e.preventDefault()
+        current_selected_lang = edwarePreferences.getSelectedLanguage()
+        lang_id = $(this).attr "value"
+        language_name = $('#' + lang_id).text()
+        edwarePreferences.saveSelectedLanguage lang_id
+        location.reload() unless current_selected_lang is lang_id
   
   create: create

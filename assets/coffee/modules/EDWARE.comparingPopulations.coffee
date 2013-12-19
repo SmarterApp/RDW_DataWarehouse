@@ -48,11 +48,8 @@ define [
 
   class PopulationGrid
 
-    constructor: () ->
-      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.CPOP
-      self = this
-      configPromise.done (config) ->
-        self.initialize(config)
+    constructor: (config) ->
+      @initialize(config)
 
     initialize: (config)->
       this.config = config
@@ -132,7 +129,7 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
+      this.header ?= edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType)
 
     fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
@@ -201,7 +198,7 @@ define [
       }
 
     renderBreadcrumbs: (breadcrumbsData)->
-      this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
+      this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',

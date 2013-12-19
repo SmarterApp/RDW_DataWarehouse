@@ -1,12 +1,12 @@
-require ["EDWARE.comparingPopulations", "edwareFilter", "edwareDataProxy"], (edwareComparingPopulations,edwareFilter, edwareDataProxy) ->
-  # Create population grid
-  populationGrid = new edwareComparingPopulations.PopulationGrid()
-
-  # Add filter to the page
-  filterPromise = edwareDataProxy.getDataForFilter()
-  filterPromise.done (configs) ->
-    # move config to filter widget
-    filter = $('#cpopFilter').edwareFilter '.filterItem', configs, (param)->
-      populationGrid.reload(param)
-    populationGrid.setFilter(filter)
-    filter.loadReport()
+require ["EDWARE.comparingPopulations", "edwareFilter", "edwareDataProxy", "edwareConstants"], (edwareComparingPopulations,edwareFilter, edwareDataProxy, Constants) ->
+  
+  edwareDataProxy.getDataForReport(Constants.REPORT_JSON_NAME.CPOP).done (reportConfig) ->
+    # Create population grid
+    populationGrid = new edwareComparingPopulations.PopulationGrid(reportConfig)
+    # Add filter to the page
+    edwareDataProxy.getDataForFilter().done (filterConfigs) ->
+      # move config to filter widget
+      filter = $('#cpopFilter').edwareFilter '.filterItem', filterConfigs, (param)->
+        populationGrid.reload(param)
+      populationGrid.setFilter(filter)
+      filter.loadReport()

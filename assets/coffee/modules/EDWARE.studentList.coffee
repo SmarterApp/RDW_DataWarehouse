@@ -19,9 +19,8 @@ define [
 
   class StudentGrid
 
-    constructor: () ->
-      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.LOS
-      configPromise.done @initialize.bind(@)
+    constructor: (config) ->
+      @initialize config
 
     initialize: (config) ->
       this.config = config

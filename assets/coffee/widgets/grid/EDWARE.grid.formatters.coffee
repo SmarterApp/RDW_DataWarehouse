@@ -15,6 +15,8 @@ define [
   SUMMARY_TEMPLATE = getTemplate('SUMMARY_TEMPLATE')
 
   POPULATION_BAR_TEMPLATE = getTemplate('POPULATION_BAR_TEMPLATE')
+  
+  TOTAL_POPULATION_TEMPLATE = getTemplate('TOTAL_POPULATION_TEMPLATE')
 
   NAME_TEMPLATE = getTemplate('NAME_TEMPLATE')
 
@@ -159,7 +161,7 @@ define [
 
     subject = formatSubject subject
     exportable = options.colModel.export
-    insufficient = parseInt(value) <= 0
+    insufficient = parseInt(subject.total) <= 0
     insufficientText = options.colModel.labels['insufficient_data']
     subject.export = 'edwareExportColumn' if exportable
     subject.insufficient = insufficient
@@ -174,13 +176,36 @@ define [
       insufficientText: insufficientText
     }
 
+  # Used to display total population count
+  totalPopulation = (value, options, rowObject) ->
+    asmt_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject.results[asmt_type]
+    subject = formatTotalForSubject subject
+    exportable = options.colModel.export
+    insufficient = parseInt(subject.total) <= 0
+    subject.export = 'edwareExportColumn' if exportable
+    subject.labels = options.colModel.labels
+    subject.insufficient = insufficient
+    insufficientText = options.colModel.labels['insufficient_data']
+    subject.insufficientText = insufficientText
+    return Mustache.to_html TOTAL_POPULATION_TEMPLATE, {
+      subject: subject
+      insufficient: insufficient
+      insufficientText: insufficientText
+      labels: options.colModel.labels
+      export: 'edwareExportColumn' if exportable
+    }
+
   formatSubject = (subject) ->
+    for interval in subject.intervals
+      interval.count = edwareUtil.formatNumber(interval.count) if interval
+    subject
+  
+  formatTotalForSubject = (subject) ->
     subject.total = edwareUtil.formatNumber(subject.total)
     subject.unfilteredTotal = edwareUtil.formatNumber(subject.unfilteredTotal)
     ratio = subject.total * 100.0 / subject.unfilteredTotal
     subject.ratio = edwareUtil.formatNumber(Math.round(ratio))
-    for interval in subject.intervals
-      interval.count = edwareUtil.formatNumber(interval.count) if interval
     subject
 
 
@@ -190,3 +215,4 @@ define [
   showConfidence: showConfidence
   performanceBar: performanceBar
   populationBar: populationBar
+  totalPopulation: totalPopulation

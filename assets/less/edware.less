@@ -124,21 +124,9 @@ h6 {
 .cPop_Wrapper {
     margin-top: 0 !important;
 
-    #gridTable_results\.subject1\.total {
-	display: none;
-    }
-
-    #gridTable_results\.subject2\.total {
-	display: none;
-    }
-
-    .s-ico {
-	visibility : hidden;
-
-	&:first-child {
-	    visibility: visible;
-	}
-    }
+    .jqg-second-row-header {
+        display: none;
+      }
 
     .barContainer.default{
 	margin-left: 15px;
@@ -193,16 +181,27 @@ h6 {
     .barContainer {
 	position: relative;
 
-	.unfilteredTotal {
-	    display: block;
-	    font-size: 11px;
-	    color: @color-C10;
-	    position: absolute;
-	    text-align: right;
-	    right: 27px;
-	}
     }
 
+  .totalPop{
+    padding-right:17px;
+    text-align: right;
+    
+    .studentsTotal {
+      position: relative;
+      .unfilteredTotal {
+        font-size: 11px;
+        color: @color-C10;
+        position: absolute;
+        right: 0px;
+      }
+    }
+  }
+  // removes grid column border on the right
+  .ui-jqgrid tr.ui-row-ltr td:nth-child(2){ border-right: transparent; }
+  .ui-jqgrid tr.ui-row-ltr td:nth-child(4){ border-right: transparent; }
+  .ui-jqgrid tr.footrow td:nth-child(2){ border-right: transparent; }
+  .ui-jqgrid tr.footrow td:nth-child(4){ border-right: transparent; }
 }
 
 #cpopFilter, #losFilter {
@@ -573,15 +572,10 @@ table {
     background: @color-C9;
     height: 100px;
     position: absolute;
-    margin-top: -60px;
+    margin-top: -40px;
     width: 1px;
     display: none;
 
-  }
-
-  .studentsTotal {
-    text-align: right;
-    padding-right: 27px;
   }
 
   .leftPercentageTotal{
@@ -1031,6 +1025,7 @@ table {
 	    .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column,
 	    .ui-jqgrid tr.ui-row-ltr td {
 		border-right-color: rgb(208, 208, 208) !important;
+		
 	    }
 	}
     }

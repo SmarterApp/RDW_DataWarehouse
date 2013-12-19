@@ -12,14 +12,13 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareHeader"
-  "edwareDropdown"
   "edwareGridStickyCompare"
   "edwarePreferences"
   "edwareConstants"
   "edwareClientStorage"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
 
   POPULATION_BAR_WIDTH = 145
 
@@ -70,7 +69,6 @@ define [
       this.sort = {
         name: 'name'
         order: 'asc'
-        index: 0
       }
       self = this
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, ()->
@@ -81,10 +79,6 @@ define [
 
     setFilter: (filter) ->
       this.filter = filter
-
-    sortBySubject: (sort) ->
-      this.sort = $.extend(this.sort, sort)
-      $('#gridTable').sortBySubject(this.sort.name, this.sort.index, this.sort.order)
 
     reload: (@param) ->
       # initialize variables
@@ -114,7 +108,6 @@ define [
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
-        self.updateDropdown()
         self.updateFilter()
         self.createHeaderAndFooter()
         # Set asmt Subject
@@ -235,23 +228,7 @@ define [
             content: ->
               $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
 
-      self = this
-      $('#gridTable_name').click ->
-        # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
-        self.edwareDropdown.resetAll()
-
-    updateDropdown: ()->
-      # create drop down menus
-      @edwareDropdown ?= this.createDropdown(this.config.comparingPopulations.customALDDropdown)
-      # update dropdown menus status
-      this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.data.metadata)
-
-    createDropdown: (customALDDropdown)->
-      self = this
-      $('.dropdownSection').edwareDropdown customALDDropdown, (subject, index)->
-        self.sortBySubject subject, index
-
-      # Format the summary data for summary row rendering purposes
+    # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->
       summaryRowName = this.breadcrumbs.getOverallSummaryName()
       data = {}
@@ -259,6 +236,9 @@ define [
       for k of summaryData.results
         name = 'results.' + k + '.total'
         data[name] = summaryData.results[k].total
+        # Note that this name must be the same as index/field in jqgrid config
+        name = 'results.' + k + '.sortedValue'
+        data[name] = summaryData.results[k].sortedValue
 
       data['subtitle'] = this.labels['reference_point']#'Reference Point'
       # Set header row to be true to indicate that it's the summary row
@@ -351,7 +331,7 @@ define [
           if summary and subjectData
             summaryDataAlignment = summary.intervals[0].percentage + summary.intervals[1].percentage
             subjectData.alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
-            subjectData.alignment =  (((summaryDataAlignment - 100 + subjectData.sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10
+            subjectData.alignment =  (((summaryDataAlignment - 100 + subjectData.sortedValue) * POPULATION_BAR_WIDTH) / 100) + 10
       data
 
     appendSortingAccessor: (data) ->
@@ -368,7 +348,7 @@ define [
       defaultColors = this.defaultColors
       intervals = data.intervals
       len = colors['colors'].length
-      sort = prepareTotalPercentage data.total, len
+      sort = 0
       while i < len
         element = intervals[i]
         element = {'count': 0, 'percentage': 0} if element is undefined
@@ -384,33 +364,11 @@ define [
           element.showPercentage = false
 
         # calculate sort
-        sort = calculateTotalPercentage sort, i, element.percentage
+        if i >= intervals.length/2        
+          sort += element.percentage
         i++
       # attach sort to data
-      data.sort = sort
-
-    # calculate percentages for each sort interval
-    calculateTotalPercentage = (percentages, i, currentPercentage) ->
-      k = 2
-      if i is 0
-        percentages[i] = currentPercentage
-      else
-        while k <= i
-          percentages[k-1] = percentages[k-1] + currentPercentage
-          k++
-      percentages
-
-    # initialize total percentages for each sort interval
-    prepareTotalPercentage = (total, intervalLength) ->
-      percentages = {}
-      j = 0
-      while j < intervalLength - 1
-        # Prepopulate
-        percentages[j] = 0
-        j++
-      percentages[intervalLength-1] = total
-      percentages
-
+      data.sortedValue = sort
 
   class Alignment
 

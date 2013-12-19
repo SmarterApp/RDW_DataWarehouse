@@ -22,14 +22,14 @@ ASMT_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT.csv')
 BATCH_GUID = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
 
 
-class MyTestCase(unittest.TestCase):
+class FTestMoveToTarget(unittest.TestCase):
 
     ###
     # Setup and Teardown code
     ####
     def setUp(self):
         self.tenant_info = {
-            'tenant_code': 'tc1',
+            'tenant_code': 'func_tests',
             'tenant_name': 'ftest_test_tenant',
             'target_db_host': udl2_conf['target_db']['db_host'],
             'target_db_name': udl2_conf['target_db']['db_database'],
@@ -56,7 +56,6 @@ class MyTestCase(unittest.TestCase):
                 self.target_connection.execute(CreateSchema(self.tenant_info['target_schema_name']))
             else:
                 raise
-
 
         self.target_metadata = generate_ed_metadata(schema_name=self.tenant_info['target_schema_name'],
                                                     bind=self.target_engine)
@@ -119,10 +118,9 @@ class MyTestCase(unittest.TestCase):
 
     def check1_get_tenant_target_db_information_multi_tenant_on(self):
         udl2_conf['multi_tenant']['on'] = True
+
         expected = {
-            mk.TARGET_DB_HOST: self.tenant_info['target_db_host'],
             mk.TARGET_DB_NAME: self.tenant_info['target_db_name'],
-            mk.TARGET_DB_PORT: 5432,
             mk.TARGET_DB_USER: self.tenant_info['target_schema_user_name'],
             mk.TARGET_DB_SCHEMA: self.tenant_info['target_schema_name'],
             mk.TARGET_DB_PASSWORD: self.tenant_info['target_schema_passwd']
@@ -134,12 +132,10 @@ class MyTestCase(unittest.TestCase):
     def check2_get_tenant_target_db_information_multi_tenant_off(self):
         udl2_conf['multi_tenant']['on'] = False
         expected = {
-            mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
-            mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
-            mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
-            mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
-            mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
-            mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass']
+            mk.TARGET_DB_NAME: udl2_conf['target_db_conn']['edware']['db_database'],
+            mk.TARGET_DB_USER: udl2_conf['target_db_conn']['edware']['db_user'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn']['edware']['db_schema'],
+            mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn']['edware']['db_pass']
         }
         result = get_tenant_target_db_information(self.tenant_info['tenant_code'])
 

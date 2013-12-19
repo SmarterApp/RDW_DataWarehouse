@@ -1,10 +1,11 @@
-from udl2_util.database_util import execute_queries, connect_db
+from udl2_util.database_util import execute_udl_queries
 from collections import OrderedDict
 from udl2 import message_keys as mk
 import move_to_target.create_queries as queries
 import datetime
 from udl2_util.measurement import BatchTableBenchmark
 import logging
+from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 
 
 DBDRIVER = "postgresql"
@@ -40,31 +41,30 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
     # create database connection (connect to target)
-    conn, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
 
-    # execute above four queries in order, 2 parts
-    # First part: Disable Trigger & Load Data
-    start_time_p1 = datetime.datetime.now()
-    affected_rows_first = execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
-    finish_time_p1 = datetime.datetime.now()
+        # execute above four queries in order, 2 parts
+        # First part: Disable Trigger & Load Data
+        start_time_p1 = datetime.datetime.now()
+        affected_rows_first = execute_udl_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
+        finish_time_p1 = datetime.datetime.now()
 
-    # Record benchmark
-    benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p1, finish_time_p1,
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                    udl_phase_step='Disable Trigger & Load Data')
-    benchmark.record_benchmark()
+        # Record benchmark
+        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p1, finish_time_p1,
+                                        working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                        udl_phase_step='Disable Trigger & Load Data')
+        benchmark.record_benchmark()
 
-    # Second part: Update Inst Hier Rec Id FK & Re-enable Trigger
-    start_time_p2 = datetime.datetime.now()
-    execute_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
-    finish_time_p2 = datetime.datetime.now()
+        # Second part: Update Inst Hier Rec Id FK & Re-enable Trigger
+        start_time_p2 = datetime.datetime.now()
+        execute_udl_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
+        finish_time_p2 = datetime.datetime.now()
 
-    # Record benchmark
-    benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p2, finish_time_p2,
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                    udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')
-    benchmark.record_benchmark()
-    conn.close()
+        # Record benchmark
+        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p2, finish_time_p2,
+                                        working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                        udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')
+        benchmark.record_benchmark()
 
     # returns the number of rows that are inserted into fact table. It maps to the second query result
     return affected_rows_first[1]
@@ -78,18 +78,17 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     2. Select asmt_rec_id from dim_asmt by the same guid_amst got from 1. It should have 1 value
     '''
     # connect to integration table, to get the value of guid_asmt
-    conn_to_source_db, _engine = connect_db(DBDRIVER, conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD], conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], conf[mk.SOURCE_DB_NAME])
-    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
-    # print(query_to_get_guid)
-    guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
-    conn_to_source_db.close()
+    with UDL2DBConnection() as conn_to_source_db:
+        query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
+        # print(query_to_get_guid)
+        guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
 
     # connect to target table, to get the value of asmt_rec_id
-    conn_to_target_db, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
-    query_to_get_rec_id = queries.select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA], target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value)
-    # print(query_to_get_rec_id)
-    asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
-    conn_to_target_db.close()
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
+        query_to_get_rec_id = queries.select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA], target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value)
+        # print(query_to_get_rec_id)
+        asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
+
     return asmt_rec_id, rec_id_column_name
 
 
@@ -152,17 +151,16 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     @param column_types: data types of all columns in one target table
     '''
     # create database connection to target
-    conn, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
 
-    # create insertion query
-    # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
-    query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
-    logger.info(query)
+        # create insertion query
+        # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
+        query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
+        logger.info(query)
 
-    # execute the query
-    affected_rows = execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),
-                                    'move_to_target', 'explode_data_to_dim_table')
-    conn.close()
+        # execute the query
+        affected_rows = execute_udl_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),
+                                            'move_to_target', 'explode_data_to_dim_table')
 
     return affected_rows
 
@@ -175,24 +173,25 @@ def get_table_column_types(conf, target_table, column_names):
     The pattern of the value is: <column_name data_type(length)> or <column_name data_type>
     '''
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
-    conn, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
-    query = queries.create_information_query(target_table)
-    # execute query
-    try:
-        result = conn.execute(query)
-        for row in result:
-            column_name = row[0]
-            data_type = row[1]
-            character_maximum_length = row[2]
-            if column_name in column_types.keys():
-                return_value = column_name + " " + data_type
-                if character_maximum_length:
-                    return_value += "(" + str(character_maximum_length) + ")"
-                column_types[column_name] = return_value
-    except Exception as e:
-        print('Exception in getting type', e)
+    tenant = conf[mk.TENANT_NAME]
+    print("***tenant", tenant)
+    with TargetDBConnection(tenant) as conn:
+        query = queries.create_information_query(target_table)
+        # execute query
+        try:
+            result = conn.execute(query)
+            for row in result:
+                column_name = row[0]
+                data_type = row[1]
+                character_maximum_length = row[2]
+                if column_name in column_types.keys():
+                    return_value = column_name + " " + data_type
+                    if character_maximum_length:
+                        return_value += "(" + str(character_maximum_length) + ")"
+                    column_types[column_name] = return_value
+        except Exception as e:
+            print('Exception in getting type', e)
 
-    conn.close()
     return column_types
 
 

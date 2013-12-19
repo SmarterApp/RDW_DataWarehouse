@@ -75,7 +75,7 @@ define [
           else
             # disable button and all the input checkboxes
             self.disableInput()
-            self.sendRequest "/services/extract/tenant"
+            self.sendRequest "/services/extract"
 
     validate: ($dropdown) ->
       # check selected options
@@ -95,7 +95,7 @@ define [
         $(this).trigger 'click'
 
     sendRequest: (url)->
-      params = this.getParams()
+      params = $.extend(true, {'async': 'true'} ,this.getParams())
       # Get request time
       currentTime = moment()
       this.requestDate = currentTime.format 'MMM Do' 
@@ -232,7 +232,7 @@ define [
       # Get asmtType from session storage
       params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
       params['asmtSubject'] = edwarePreferences.getSubjectPreference()
-      url = window.location.protocol + "//" + window.location.host + "/services/extract/school?" + $.param(params, true)
+      url = window.location.protocol + "//" + window.location.host + "/services/extract?sync=true&" + $.param(params, true)
       window.location = url
       
     sendCSVRequest: () ->

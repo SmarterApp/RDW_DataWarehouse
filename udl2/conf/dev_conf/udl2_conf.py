@@ -52,12 +52,13 @@ udl2_conf = {
     'rabbitmq': {  # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         'RABBITMQ_SERVER_PATH': ['/opt/local/sbin/rabbitmq-server', '/usr/local/sbin/rabbitmq-server'],  # where the rabbitmq-server is located, we list all possible locations in your system.
     },
-    # zones folder will be inside the gluster mount and will be accessible from both UDL and DB server
     'zones': {  # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
-        'landing': '/opt/edware/gluster/UDL/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
-        'arrivals': '/opt/edware/gluster/UDL/zones/landing/arrivals/',  # this is where the file arrives.
-        'work': '/opt/edware/gluster/UDL/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
-        'history': '/opt/edware/gluster/UDL/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
+        'landing': '/opt/edware/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
+        'arrivals': '/opt/edware/zones/landing/arrivals/',  # this is where the file arrives.
+        'work': '/opt/edware/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
+        'history': '/opt/edware/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
+        'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
+        'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
     },
     'work_zone_sub_dir': {
         'arrived': 'arrived',
@@ -84,7 +85,7 @@ udl2_conf = {
         'integration_schema': 'udl2',
         'ref_table_name': 'REF_COLUMN_MAPPING',
         'batch_table': 'UDL_BATCH',
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
+        'db_host': 'localhost',
         'db_port': '5432',
         'db_name': 'udl2',
         'db_database': 'udl2',
@@ -94,19 +95,24 @@ udl2_conf = {
         'db_driver': 'postgresql',
         'json_lz_table': 'LZ_JSON',
         'csv_lz_table': 'LZ_CSV',
-        'master_metadata_table': 'MASTER_METADATA',
-        # sqlalchemy specific
-        'echo': False,
-        'max_overflow': 10,
-        'pool_size': 20,
+        'master_metadata_table': 'MASTER_METADATA'
     },
-    'udl2_db_conn': {
-        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
-        'db_schema': 'udl2',
-        'echo': False,
-        'max_overflow': 10,
-        'pool_size': 20,
+    'target_db': {
+        'db_schema': 'edware',
+        'db_name': 'edware',
+        # TBD, make sure it is the production setting
+        'db_host': 'localhost',
+        'db_port': '5432',
+        'db_database': 'edware',
+        'db_user': 'edware',
+        'db_pass': 'edware2013',
+        'db_driver': 'postgresql'
     },
+    'quiet_mode': False,
+    'gpg_home': '~/.gnupg',
+    'passphrase': 'sbac udl2',
+    'tenant_position': -4,
+    'search_wait_time': 10,
     'target_db_conn': {
         'edware': {
             'url': 'postgresql://edware:edware2013@localhost:5432/edware',
@@ -138,33 +144,14 @@ udl2_conf = {
             'db_user': 'edware',
             'db_pass': 'edware2013',
         },
-        'func_tests_b': {
-            'url': 'postgresql://edware:edware20133@localhostblah:5432/edware',
-            'db_schema': 'ftest_test_schema',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        }
     },
-    'target_db': {
-        'db_schema': 'edware',
-        'db_name': 'edware',
-        # TBD, make sure it is the production setting
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
-        'db_port': '5432',
-        'db_database': 'edware',
-        'db_user': 'edware',
-        'db_pass': 'edware2013',
-        'db_driver': 'postgresql'
+    'udl2_db_conn': {
+        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
+        'db_schema': 'udl2',
+        'echo': False,
+        'max_overflow': 10,
+        'pool_size': 20,
     },
-    'quiet_mode': False,
-    'gpg_home': '/home/udl2/.gnupg',
-    'passphrase': 'sbac udl2',
-    'tenant_position': -4,
-    'search_wait_time': 10,
 }
 
 

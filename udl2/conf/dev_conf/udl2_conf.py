@@ -57,8 +57,8 @@ udl2_conf = {
         'arrivals': '/opt/edware/zones/landing/arrivals/',  # this is where the file arrives.
         'work': '/opt/edware/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
         'history': '/opt/edware/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
-        #'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
-        #'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
+        'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
+        'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
     },
     'work_zone_sub_dir': {
         'arrived': 'arrived',

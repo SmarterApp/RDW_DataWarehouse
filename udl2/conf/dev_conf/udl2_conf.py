@@ -57,12 +57,8 @@ udl2_conf = {
         'arrivals': '/opt/edware/zones/landing/arrivals/',  # this is where the file arrives.
         'work': '/opt/edware/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
         'history': '/opt/edware/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
-        'pickup': '/opt/edware/zones/pickup/',  # pickup zone where we store outgoing files
-        'pickup-work': '/opt/edware/zones/pickup/work',
-        'pickup-departures': '/opt/edware/zones/pickup/departures',
-        'pickup-history': '/opt/edware/zones/pickup/history',
-        'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
-        'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
+        #'datafiles': '/opt/edware/zones/datafiles/',  # this is for storing test sample data files
+        #'tests': '/opt/edware/zones/tests/',  # this is for running unit tests.
     },
     'work_zone_sub_dir': {
         'arrived': 'arrived',
@@ -148,16 +144,6 @@ udl2_conf = {
             'db_user': 'edware',
             'db_pass': 'edware2013',
         },
-        'func_tests_b': {
-            'url': 'postgresql://edware:edware20133@localhostblah:5432/edware',
-            'db_schema': 'ftest_test_schema',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        }
     },
     'udl2_db_conn': {
         'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',

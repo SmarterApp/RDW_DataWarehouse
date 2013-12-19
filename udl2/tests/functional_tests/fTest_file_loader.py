@@ -2,11 +2,13 @@ import unittest
 import subprocess
 import csv
 import os
-from fileloader.file_loader import load_file, connect_db
+from fileloader.file_loader import load_file
+from udl2_util.database_util import connect_db
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import uuid
 from udl2 import message_keys as mk
+from udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
 
 
 class FileLoaderFTest(unittest.TestCase):
@@ -49,6 +51,8 @@ class FileLoaderFTest(unittest.TestCase):
         conn, _engine = connect_db(self.conf[mk.SOURCE_DB_DRIVER], self.conf[mk.TARGET_DB_USER], self.conf[mk.TARGET_DB_PASSWORD],
                                    self.conf[mk.TARGET_DB_HOST], self.conf[mk.TARGET_DB_PORT], self.conf[mk.TARGET_DB_NAME])
         self.conn = conn
+        initialize_db(TargetDBConnection, udl2_conf)
+        initialize_db(UDL2DBConnection, udl2_conf)
 
     def test_row_number(self):
         # load data

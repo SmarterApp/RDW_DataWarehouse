@@ -3,8 +3,7 @@ define [
   'jqGrid'
   'edwareUtil'
   'edwareGridFormatters'
-  'edwareGridSorters'
-], ($, jqGrid, edwareUtil, edwareGridFormatters, edwareGridSorters) ->
+], ($, jqGrid, edwareUtil, edwareGridFormatters) ->
 
   DEFAULT_CONFIG =
     tableId: 'gridTable'
@@ -37,9 +36,9 @@ define [
       return columns if not sorted
 
       for column in columns
-        if sorted.name == column.items[0].index
-          column.items[0].sortorder = sorted.order || 'asc'
-          column.items[0].sorttype = edwareGridSorters.create(sorted.index) if sorted.name != 'name'
+        for item in column['items']
+          if sorted.name == item.index
+            item.sortorder = sorted.order || 'asc'
         column
 
     afterLoadComplete: () ->
@@ -140,6 +139,7 @@ define [
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
+      
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
 
@@ -154,14 +154,6 @@ define [
 
         # change the mouse cursor on the columns which are non-sortable
         else $(this).find(">div.ui-jqgrid-sortable").css cursor: "default"  if not cmi.sortable and colName isnt "rn" and colName isnt "cb" and colName isnt "subgrid"
-
-    $.fn.sortBySubject = (subject, index, order) ->
-      order = order || 'asc'
-      colModels = this.getGridParam('colModel')
-      if subject != 'name'
-        for colModel in colModels
-          colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
-      this.sortGrid(subject, true, order)
 
     $.fn.eagerLoad = () ->
       # load all data at once

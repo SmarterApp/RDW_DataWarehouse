@@ -511,7 +511,6 @@
 	"comparingPopulations": {
 		"grid": [
 			{
-				"name": "",
 				"items": [
 					{
 						"name": "学名",
@@ -528,47 +527,66 @@
 						"hidden": true,
 						"sortorder": "asc",
 						"export": true
-					}
-				]
-			}, {
-				"name": "{{subject1}}",
-				"items": [
-					{
+			         }, {
 						"name": "{{subject1}}",
-						"displayTpl": "<div id='{{subject1}}_sort' style='display: inline'></div>",
-						"index": "{{subject1}}",
-						"field": "results.subject1.total",
-						"width": 388,
-						"sorttype": "popBarSort",
+						"displayTpl": "",
+						"index": "results.subject1.sortedValue",
+						"field": "results.subject1.sortedValue",
+						"width": 308,
+						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
 							"asmt_type": "subject1"
 						},
-						"title": false,
 						"align": "center",
-						"export": true
-					}
-				]
-			}, {
-				"name": "{{subject2}}",
-				"items": [
-					{
+						"export": true,
+						"title": false
+			        }, 
+                    {
+                        "name": "Total Pop",
+                        "displayTpl": "",
+                        "index": "results.subject1.total",
+                        "field": "results.subject1.total",
+                        "sorttype": "int",
+                        "formatter": "totalPopulation",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "width": 77,
+                        "export": true,
+                        "title": false
+                    },
+                    {
 						"name": "{{subject2}}",
-						"displayTpl": "<div id='{{subject2}}_sort' style='display: inline'></div>",
-						"index": "{{subject2}}",
-						"field": "results.subject2.total",
-						"width": 388,
-						"sorttype": "popBarSort",
+						"displayTpl": "",
+						"index": "results.subject2.sortedValue",
+						"field": "results.subject2.sortedValue",
+						"width": 308,
+						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
 							"asmt_type": "subject2"
 						},
-						"title": false,
 						"align": "center",
-						"export": true
-					}
-				]
-			}
+						"export": true,
+						"title": false
+			         },
+                    {
+                        "name": "Total Pop",
+                        "displayTpl": "",
+                        "index": "results.subject2.total",
+                        "field": "results.subject2.total",
+                        "sorttype": "int",
+                        "formatter": "totalPopulation",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "width": 77,
+                        "export": true,
+                        "title": false
+                    }
+		      ]
+		   }
 		],
 		"customViews": {
 			"school": {

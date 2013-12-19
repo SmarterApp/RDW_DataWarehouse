@@ -35,7 +35,7 @@ define [
         response = JSON.parse(xhr.responseText)
         redirect_url = response.redirect
       # Redirect the user to the appropriate url
-      #location.href = redirect_url
+      location.href = redirect_url
 
   #
   #    * Get data from the server via ajax call
@@ -75,7 +75,6 @@ define [
             $.extend true, data, args[0]
         config.onSuccess data
       .fail (xhr, ajaxOptions, thrownError) ->
-        console.error thrownError
         config.onError xhr, ajaxOptions, thrownError
 
 

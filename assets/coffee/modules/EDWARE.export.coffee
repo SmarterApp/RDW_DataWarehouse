@@ -22,7 +22,7 @@ define [
 
     getBreadcrumb: () ->
       path = []
-      $('#breadcrumb').contents().each ()->
+      $('#breadcrumb a').each ()->
         #district name and school name
         level = $(this).text()
         path.push level if level

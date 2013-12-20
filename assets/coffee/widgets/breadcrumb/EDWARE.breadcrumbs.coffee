@@ -53,7 +53,7 @@ define [
         name = "Grade " + name
       else if type is 'student'
         # Special case for names that end with an 's'
-        name += if /s|S$/.test(name) then "'" else "'s"
+        name += if /s$|S$/.test(name) then "'" else "'s"
         name += " Results"
       element.name = name
       element

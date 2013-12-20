@@ -10,10 +10,11 @@ define [
   language = edwarePreferences.getSelectedLanguage()
 
   URLs =
-    labels: '../data/common/' + language + '/labels.json',
-    filters: '../data/filter/' + language + '/filter.json',
-    content: '../data/content/' + language + '/content.json',
+    labels: '../data/common/' + language + '/labels.json'
+    filters: '../data/filter/' + language + '/filter.json'
+    content: '../data/content/' + language + '/content.json'
     common: '../data/common/' + language + '/common.json'
+    landingPage: '../data/content/' + language + '/landingPage.json'
 
   URLs[Constants.REPORT_JSON_NAME.CPOP] = '../data/common/' + language + '/' + Constants.REPORT_JSON_NAME.CPOP + '.json'
   URLs[Constants.REPORT_JSON_NAME.LOS] = '../data/common/' + language + '/' + Constants.REPORT_JSON_NAME.LOS + '.json'
@@ -95,7 +96,13 @@ define [
       defer.resolve data
     defer.promise()
 
+  getDataForLandingPage = ->
+    defer = $.Deferred()
+    getDatafromSource [URLs.labels, URLs.landingPage], (data)->
+      defer.resolve data
+    defer.promise()
 
   getDatafromSource: getDatafromSource
   getDataForReport: getDataForReport
   getDataForFilter: getDataForFilter
+  getDataForLandingPage: getDataForLandingPage

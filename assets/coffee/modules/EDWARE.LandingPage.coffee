@@ -1,9 +1,11 @@
-require ['jquery', 'bootstrap', 'mustache', 'edwareDataProxy', 'edwareHelpMenu', 'text!templates/LandingPage.html'], ($, bootstrap, Mustache, edwareDataProxy, edwareHelpMenu, landingPageTemplate) ->
+require ['jquery', 'bootstrap', 'mustache', 'edwareDataProxy', 'edwareHelpMenu', 'text!templates/LandingPage.html', 'edwareLanguageSelector'], ($, bootstrap, Mustache, edwareDataProxy, edwareHelpMenu, landingPageTemplate, edwareLanguageSelector) ->
   
-  edwareDataProxy.getDatafromSource ['../data/common/en/labels.json', '../data/content/en/landingPage.json'], (data) ->
+  edwareDataProxy.getDataForLandingPage().done (data) ->
     output = Mustache.to_html landingPageTemplate, data
     $('body').html output
     helpMenu = edwareHelpMenu.create '.helpMenuContainer', data
+    #Add language selector
+    edwareLanguageSelector.create $('.languageMenu'), data
     #bind events
     $('.helpMenu a').click (e)->
       target = $(this).attr('href')

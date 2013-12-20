@@ -97,7 +97,8 @@ common:
       retries_allowed: 1
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
-      gpg.public_key.cat: Kimberly Swimberly
+      gpg.public_key.cat: kswimberly@amplify.com
+      gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
       available_grades: 3,4,5,6,7,8,11
@@ -218,6 +219,8 @@ qa:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
+    extract.gpg:
+      keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
       public.data.url: twprxydw0.qa.dum.edwdc.net:22121
@@ -314,6 +317,8 @@ uat:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
+    extract.gpg:
+      keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
     cache:
       public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
       public.data.url: twprxydw0.dmo.som.edwdc.net:22121
@@ -430,7 +435,7 @@ development:
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     extract:
       gpg.homedir: ../../edware/config/gpg
-
+      gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     auth:
       skip.verify: False
       saml:
@@ -495,6 +500,7 @@ jenkins_dev:
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 8
       gpg.homedir : /var/lib/jenkins/.gnupg
+      gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     edware:
       db:
         cat:

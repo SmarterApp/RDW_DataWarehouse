@@ -3,39 +3,57 @@ define [
   "mustache"
   "edwareUtil"
   "edwareLanguageSelector"
-], ($, Mustache, edwareUtil, edwareLanguageSelector) ->
+  "edwareHelpMenu"
+  "text!headerTemplateHtml"
+], ($, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml) ->
 
-  HEADER_TEMPLATE = "<div id='logo'>" +
-                    "<img src='../images/smarterHeader_logo.png' alt='logo' height='36' width='112'>" +
-                    "</div>" +
-                    "<div id='headerTitle'>Reporting Beta UAT - DRAFT SYSTEM</div>" + 
-                    "<div class='topLinks'>" +
-                    "<span id='language_selector'></span><span class='seperator'>|</span>" +
-                    "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a id='logout_button' href='/logout' target='iframe_logout'>{{labels.logout}}</a></span>" +
-                    "</div>" +
-                    "<!--This iframe is used for logout redirect.  Do not remove it.-->" +
-                    "<iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>"
 
 
   create = (data, config, reportName) ->
+    labels = config.labels
+    headerTemplate = $(headerTemplateHtml)
+    # Add labels
+    headerTemplate.find('.text_help').html labels.help
+    headerTemplate.find('.text_feedback').html labels.feedback
+    headerTemplate.find('.text_resources').html labels.resources
     userInfo = data.user_info
 
-    output = Mustache.render(HEADER_TEMPLATE, config)
-    $("#header").html(output)
 
     # Add header to the page
     userName = edwareUtil.getUserName userInfo
 
     if userName
-      $('#header .topLinks .user').html userName
-    
+      headerTemplate.find('#user-settings #username').html userName
+    header = $("#header").html headerTemplate
+    dropdown_menu = header.find '.dropdown-menu'
     # Add language selector
-    edwareLanguageSelector.create $('#language_selector')
+    edwareLanguageSelector.create dropdown_menu, labels
 
+    $('.text_logout').html labels.logout
+
+    createHelp labels
+    bindEvents()
+    
     feedbackData = config.feedback
     role = edwareUtil.getRole userInfo
     uid = edwareUtil.getUid userInfo
-    # TODO might need to move this part to footer
-    edwareUtil.renderFeedback(role, uid, reportName, feedbackData)
+    edwareUtil.renderFeedback $('#SurveryMonkeyModalBody'), role, uid, reportName, feedbackData
 
+  createHelp = (labels) ->
+    @helpMenu = edwareHelpMenu.create '.HelpMenuContainer',
+      labels: labels
+
+  bindEvents = ()->
+    self = @
+    # Popup will close if user clicks popup hide button
+    $('#header #help').click ->
+      self.helpMenu.show()
+    $('#header #log_out_button').click ->
+      window.open '/logout', 'iframe_logout'
+    $('#header #feedback').click ->
+      $('#SurveryMonkeyModal').modal 'show'
+    $('#header #resources').click ->
+      $('#ResourcesModal').modal 'show'
+    $('#header .dropdown').mouseleave ->
+      $(@).removeClass 'open'
   create: create

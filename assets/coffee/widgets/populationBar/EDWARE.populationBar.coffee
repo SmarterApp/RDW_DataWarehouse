@@ -13,11 +13,10 @@ define [
     this.html output
 
   renderPopulationBar = (items) ->
-    if items.sort
-      rightTotalPercentage = items.sort[1]
-      leftTotalPercentage = 100 - rightTotalPercentage
-      if rightTotalPercentage > 0 then items.rightTotalPercentage = rightTotalPercentage
-      if leftTotalPercentage > 0 then items.leftTotalPercentage = leftTotalPercentage
+    rightTotalPercentage = items.sortedValue
+    leftTotalPercentage = 100 - rightTotalPercentage
+    if rightTotalPercentage > 0 then items.rightTotalPercentage = rightTotalPercentage
+    if leftTotalPercentage > 0 then items.leftTotalPercentage = leftTotalPercentage
     # render population bar from template
     output = Mustache.to_html populationBarTemplate, items
     output

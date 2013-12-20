@@ -65,6 +65,10 @@ class TestCeleryConfig(unittest.TestCase):
         celery_config = convert_to_celery_options(config)
         self.assertEqual(celery_config['CELERY_ACCEPT_CONTENT'], ["application.json"])
 
+    def test_convert_to_celery_options_of_BROKER_USE_SSL(self):
+        config = {'BROKER_USE_SSL': '{"key":"value"}'}
+        celery_config = convert_to_celery_options(config)
+        self.assertEqual(celery_config['BROKER_USE_SSL']['key'], 'value')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

@@ -470,6 +470,29 @@ th.ui-th-column div {
   }
 }
 
+#header {
+  .headerLink {
+    font-size: 13px;
+    color: @color-B5;
+    text-align: center;
+    background: url('../images/nav_divider.png') no-repeat top left;
+    background-position: 0;
+    padding: 15px 20px;
+    cursor: pointer;
+    margin: 0 auto;
+      
+    &:hover, &.active{
+      background-color: #242424;
+    }
+  }
+  .dropdown-menu {
+    background-color: #f6f6f6;
+    padding-top: 0px;
+    margin: 0 -2px 0 0;
+    width: 100%;
+  }
+}
+
 #legendTemplate {
   
   h4 {
@@ -1284,31 +1307,40 @@ th.ui-th-column div {
     text-align: center;
     border-top: none;
     margin: 0px;
-        
-    .btn-primary {
-      text-shadow: 1px 1px 1px @color-C8;
-      background-color: @color-C6;
-      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-C6),to(@color-C7));
-      background-image: -webkit-linear-gradient(top,@color-C6,@color-C7);
-      background-image: -o-linear-gradient(top,@color-C6,@color-C7);
-      background-image: linear-gradient(to bottom,@color-C6,@color-C7);
-      background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
-      
-      &:hover {
-        background-position: initial;
-      }
-     }
   }
 
 }
 
-#language_selector {
-  .btn {
-    font-size: 10px;
-    padding: 0 8px;
+.language_selections_header {
+  font-weight: bold;
+  background-color: #ffffff;
+  i {
+    margin: 0 5px 0 15px;
+  }
+  .divider {
+    background-color: #e5e5e5;
+    margin: 0 auto;
+    width: 125px;
+    border-bottom: 0px;
   }
 }
-
+.language_selections_body {
+  background-color: #ffffff;
+  li {
+    margin-left: 15px;
+    input {
+      margin: 0 5px 0 0;
+    }
+  }
+}
+#log_out {
+  text-align: center;
+  .divider {
+    background-color: #e5e5e5;
+    border-bottom: 0px;
+    margin: 0;
+  }
+}
 #stickyCompareSection {
   height: 38px;
   background-color: @color-B12;
@@ -1408,22 +1440,7 @@ th.ui-th-column div {
     font-size: 13px;
     color: @color-B1;
   }
-  
-  .btn-primary {
-      text-shadow: 1px 1px 1px @color-C8;
-      font-size: 13px;
-      color: @color-white;
-      background-color: @color-C6;
-      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-C6),to(@color-C7));
-      background-image: -webkit-linear-gradient(top,@color-C6,@color-C7);
-      background-image: -o-linear-gradient(top,@color-C6,@color-C7);
-      background-image: linear-gradient(to bottom,@color-C6,@color-C7);
-      background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
-      
-      &:hover {
-        background-position: initial;
-      }
-  }
+
   .btn-deselect {
       //text-shadow: 1px 1px 1px @color-C8;
       font-size: 13px;
@@ -1511,6 +1528,10 @@ th.ui-th-column div {
     p {
 	font-size: 14px;
     }
+}
+
+#SurveryMonkeyModal {
+  width: 600px;
 }
 
 

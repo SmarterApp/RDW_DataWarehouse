@@ -4,6 +4,7 @@ from sfv import error_codes
 import unittest
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
+import os
 
 
 class UnitTestSimpleFileValidator(unittest.TestCase):
@@ -22,7 +23,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         results = validator.execute(self.conf['zones']['datafiles'],
                                     'test_data_latest/'
                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
-        assert len(results) == 0
+        self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator()
@@ -55,5 +56,5 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         results = [validator.execute(self.conf['zones']['datafiles'],
                                      'test_data_latest/'
                                      'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)]
-        assert len(results) == 1
-        assert results[0][0] == '0'
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0][0], '0')

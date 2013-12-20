@@ -71,18 +71,16 @@ define [
     content
     
   # Create Survey Monkey iframe based on the role, report.  Uses uid to append to the URL to identify the user that submits the survey
-  renderFeedback = (role, uid, reportName, feedbackMapping) ->
+  renderFeedback = (surveyMonkeyDisplayElement, role, uid, reportName, feedbackMapping) ->
     feedbackdata = {}
     if role of feedbackMapping
       if reportName of feedbackMapping[role]
-        feedbackdata.param = feedbackMapping[role][reportName]
-        feedbackdata.uid = uid
+        param = feedbackMapping[role][reportName]
         
         # Render iframe with all other assets are loaded
         $(document).ready ->
-          template = "<iframe id='sm_e_s' width='600' height='300' frameborder='0' allowtransparency='true' style='border:0px;padding-bottom:4px;' src='https://www.surveymonkey.com/s.aspx?sm={{param}}&c={{uid}}'></iframe>"
-          output = Mustache.to_html template, feedbackdata
-          $("#surveyMonkeyInfo").html output
+          template = $("<iframe id='sm_e_s' width='600' height='300' frameborder='0' allowtransparency='true' style='border:0px;padding-bottom:4px;' src='https://www.surveymonkey.com/s.aspx?sm="+param+"&c="+uid+"'></iframe>")
+          surveyMonkeyDisplayElement.append template
           
           
   # Set the popup position to left, right, top, bottom

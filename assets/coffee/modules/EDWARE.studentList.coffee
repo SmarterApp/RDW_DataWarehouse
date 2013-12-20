@@ -15,15 +15,12 @@ define [
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
 
-  REPORT_NAME = 'studentList'
-
   LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
   class StudentGrid
 
-    constructor: () ->
-      config = edwareDataProxy.getDataForReport REPORT_NAME
-      this.initialize(config)
+    constructor: (config) ->
+      @initialize config
 
     initialize: (config) ->
       this.config = config
@@ -36,7 +33,6 @@ define [
       this.legendInfo = config.legendInfo
       this.labels = config.labels
       this.gridHeight = window.innerHeight - 212
-      edwareUtil.reRenderBody this.labels
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.reloadCurrentView.bind(this)
 
     reload: (params) ->
@@ -51,7 +47,7 @@ define [
         self.columnData = self.createColumns()
         # append cutpoints into each individual assessment data
         self.formatAssessmentsData self.cutPointsData
-        self.stickyCompare.setReportInfo REPORT_NAME, "student", params
+        self.stickyCompare.setReportInfo Constants.REPORT_JSON_NAME.LOS, "student", params
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
         self.renderReportInfo()

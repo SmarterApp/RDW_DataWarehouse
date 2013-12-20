@@ -14,7 +14,6 @@ require({
     edwareDataProxy: 'EDWARE.dataProxy',
     edwareGrid: '../widgets/grid/EDWARE.grid.tablegrid',
     edwareGridFormatters: '../widgets/grid/EDWARE.grid.formatters',
-    edwareGridSorters: '../widgets/grid/EDWARE.grid.sorters',
     edwareStudentList: 'EDWARE.studentList',
     edwareIndividualStudent: 'EDWARE.individualStudent',
     edwareComparingPopulations: 'EDWARE.comparingPopulations',
@@ -29,7 +28,6 @@ require({
     edwareLegend: '../widgets/footer/EDWARE.legend',
     edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
     edwareFilter: '../widgets/filter/EDWARE.filter',
-    edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',
     edwareClientStorage: '../widgets/clientStorage/EDWARE.clientStorage',
     edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
     edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
@@ -66,7 +64,8 @@ require({
     DownloadMenuTemplate: '../widgets/download/DownloadMenuTemplate.html',
     AsmtDropdownTemplate: '../widgets/asmtDropdown/template.html',
     PrintTemplate: '../widgets/print/template.html',
-    HelpMenuTemplate: '../widgets/header/helpMenuTemplate.html'
+    HelpMenuTemplate: '../widgets/header/helpMenuTemplate.html',
+    headerTemplateHtml: '../widgets/header/template.html'
   },
   shim: {
     'jqGrid': {

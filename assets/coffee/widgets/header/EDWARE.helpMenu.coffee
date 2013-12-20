@@ -15,11 +15,27 @@ define [
       $(@container).html(output)
 
     bindEvents: () ->
-      $('#helpMenuTab a').click (e) ->
+      self = this
+      tabs = $('#helpMenuTab')
+      # show selected tab
+      tabs.find('a').click (e) ->
         e.preventDefault()
-        $(this).tab 'show'
+        $this = $(this)
+        self.setActiveTabId $this.attr('href')
+        $this.tab 'show'
+      # show tab when menu modal dropdown, if any
+      $('#HelpMenuModal').on 'shown', ->
+        if self.activeTab
+          target = tabs.find("a[href='" + self.activeTab + "']")
+        else
+          target = tabs.find("a:first")
+         target.tab 'show'
+
+    setActiveTabId: (tabId) ->
+      @activeTab = tabId
       
-    show: () ->
+    show: (tabId) ->
+      @setActiveTabId tabId if tabId
       $('#HelpMenuModal').modal 'show'
 
   create = (container, config) ->

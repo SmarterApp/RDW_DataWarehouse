@@ -4,32 +4,25 @@ define [
   "edwarePreferences"
 ],($, edwareDataProxy, edwarePreferences) ->
   
-  create = (language_selector) ->
+  create = (language_selector, labels) ->
+    language_selector.prepend $('<div class="language_selections_header"><div class="padTopBottom9"><i class="icon-globe"></i>'+labels.language+'</div><li class="divider"></li></div><div class="language_selections_body padTopBottom9"></div>')
+    language_selector_body = language_selector.find('.language_selections_body')
     iso_language = edwarePreferences.getSelectedLanguage()
-    selector = '<span class="btn-group">' +
-    '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-    '<span id="selected_language" lang="' + iso_language + '">'
-    options =
-      async: false
-      method: "GET"
-    edwareDataProxy.getDatafromSource "../data/languages.json", options, (data)->
+    edwareDataProxy.getDatafromSource "../data/languages.json", (data)->
       languages = data['languages']
-      selector += languages[iso_language] + '</span><span class="caret"></span>' +
-      '</button>' +
-      '<ul class="dropdown-menu" role="menu">'
       
       $.each languages, (lang, name) ->
-        selector += '<li class="language_selections"><a href="#" id="' + lang + '" >' + name + '</a></li>'
-    selector += '</ul></span>'
-    language_selector.html(selector)
-    $('.language_selections').on
-      click: (e) ->
+        language_selections = $('<li></li>')
+        input = $('<input type="radio" name="language" value="' + lang + '" >' + name + '</input>')
+        input.attr('checked', true) if lang is iso_language
+        language_selections.append input 
+        language_selector_body.append language_selections
+    
+      $(document).on 'change', 'input[name="language"]:radio', (e)->
         e.preventDefault()
         current_selected_lang = edwarePreferences.getSelectedLanguage()
-        lang_id = $(this).children('a').attr "id"
+        lang_id = $(this).attr "value"
         language_name = $('#' + lang_id).text()
-        $('#selected_language').html language_name
-        $('#selected_language').attr('lang', lang_id)
         edwarePreferences.saveSelectedLanguage lang_id
         location.reload() unless current_selected_lang is lang_id
   

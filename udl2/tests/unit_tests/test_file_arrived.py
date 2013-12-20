@@ -5,6 +5,10 @@ import os
 
 from udl2 import message_keys as mk
 from filearrived import file_arrived
+from udl2.celery import udl2_conf
+
+WORK = udl2_conf['zones']['work']
+HIST = udl2_conf['zones']['history']
 
 
 class TestFileArrived(unittest.TestCase):
@@ -30,11 +34,11 @@ class TestFileArrived(unittest.TestCase):
 
         dir_ending = os.path.split(result[mk.ARRIVED])[-1]
         expected = {
-            mk.ARRIVED: '/opt/wgen/edware-udl/zones/landing/work/bob/arrived/' + dir_ending,
-            mk.DECRYPTED: '/opt/wgen/edware-udl/zones/landing/work/bob/decrypted/' + dir_ending,
-            mk.EXPANDED: '/opt/wgen/edware-udl/zones/landing/work/bob/expanded/' + dir_ending,
-            mk.SUBFILES: '/opt/wgen/edware-udl/zones/landing/work/bob/subfiles/' + dir_ending,
-            mk.HISTORY: '/opt/wgen/edware-udl/zones/landing/history/bob/' + dir_ending
+            mk.ARRIVED: os.path.join(WORK, 'bob', 'arrived', dir_ending),
+            mk.DECRYPTED: os.path.join(WORK, 'bob', 'decrypted', dir_ending),
+            mk.EXPANDED: os.path.join(WORK, 'bob', 'expanded', dir_ending),
+            mk.SUBFILES: os.path.join(WORK, 'bob', 'subfiles', dir_ending),
+            mk.HISTORY: os.path.join(HIST, 'bob', dir_ending),
         }
 
         self.assertDictEqual(expected, result)

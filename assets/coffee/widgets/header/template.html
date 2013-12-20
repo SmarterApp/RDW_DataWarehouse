@@ -1,0 +1,48 @@
+<div id='logo'>
+	<img src='../images/smarterHeader_logo.png' alt='logo' height='36' width='112'>
+</div>
+
+<ul class='nav navbar-nav'>
+	<li class='dropdown pull-right'>
+		<a id='user-settings' class='headerLink' data-toggle='dropdown' role='button'> <i class='edware-icon-header-cog marginRight8'></i>Hi, <span id='username'></span><i class='edware-icon-globalheader-downarrow marginLeft8'></i> </a>
+		<ul class="dropdown-menu" role="menu">
+			<div id="log_out">
+				<li class="divider"></li>
+				<div class="padTop9 padBottom4">
+					<button id="log_out_button" type="button" class="btn btn-primary"><span class="text_logout"></span>
+					</button>
+				</div>
+			</div>
+		</ul>
+	</li>
+	<li>
+		<a id='resources' class='headerLink pull-right'><i class='edware-icon-header-resources marginRight8'></i><span class="text_resources"></span></a>
+	</li>
+	<li>
+		<a id='help' class='headerLink pull-right'><i class='edware-icon-header-help marginRight8'></i><span class="text_help"></span></a>
+	</li>
+	<li>
+		<a id='feedback' class='headerLink pull-right'><i class='edware-icon-header-feedback marginRight8'></i><span class="text_feedback"></span></a>
+	</li>
+</ul>
+<!--This iframe is used for logout redirect.  Do not remove it.-->
+<iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>
+
+<div id="SurveryMonkeyModal" class="modal hide fade">
+	<div id="SurveryMonkeyModalHeader" class='modal-header'>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="text_feedback modal-title"></h2>
+	</div>
+	<div id="SurveryMonkeyModalBody" class='modal-body'>
+	</div>
+</div>
+<div class="HelpMenuContainer"></div>
+<div id="ResourcesModal" class="modal hide fade">
+	<div id="ResourcesModalHeader">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<span class="text_resources"></span>
+	</div>
+	<div id="ResourcesModalBody">
+		<a href="http://www.smarterbalanced.org">SBAC</a>
+	</div>
+</div>

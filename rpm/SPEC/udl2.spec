@@ -89,17 +89,47 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 
 %pre
-id celery > /dev/null 2>&1
-if [ $? != 0 ]; then
+
+
+%post
+chkconfig --add celeryd-udl2
+
+# check if udl2 group exists and create if not
+egrep -i "^udl:" /etc/group > /dev/null 2>&1
+if [ $? -ne 0 ]; then
    groupadd udl2 -f -g 501
+fi
+
+# check if udl2 user exists and create if not
+id udl2 > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+   # add udl2 user with id 501 and group udl2,
+   # the same user/group, id combination needs to be created in the DB server
    useradd udl2 -g udl2 -u 501
 fi
+
 UDL2_ROOT=/opt/edware
 GLUSTER_MOUNT=$UDL2_ROOT/gluster/UDL
 UDL2_ZONES=$GLUSTER_MOUNT/zones
 
 if [ ! -d $UDL2_ROOT/log ]; then
     mkdir -p $UDL2_ROOT/log
+fi
+
+if [ ! -f $UDL2_ROOT/log/udl2.audit.log ]; then
+    touch $UDL2_ROOT/log/udl2.audit.log
+fi
+
+if [ ! -f $UDL2_ROOT/log/udl2.error.log ]; then
+    touch $UDL2_ROOT/log/udl2.error.log
+fi
+
+if [ ! -f $UDL2_ROOT/log/udl2.rsync.audit.log ]; then
+    touch $UDL2_ROOT/log/udl2.rsync.audit.log
+fi
+
+if [ ! -f $UDL2_ROOT/log/udl2.rsync.error.log ]; then
+    touch $UDL2_ROOT/log/udl2.rsync.error.log
 fi
 
 if [ ! -d $UDL2_ZONES ]; then
@@ -125,12 +155,9 @@ sudo chown -R udl2.udl2 $UDL2_ROOT/gluster/UDL
 sudo chown -R udl2.udl2 $UDL2_ROOT/log
 sudo chown -R udl2.udl2 $UDL2_ROOT/conf
 
-%post
-chkconfig --add celeryd-udl2
-
 %postun
-groupdel udl2 > /dev/null 2>&1
 userdel -rf udl2 > /dev/null 2>&1
+groupdel udl2 > /dev/null 2>&1
 
 %preun
 chkconfig --del celeryd-udl2

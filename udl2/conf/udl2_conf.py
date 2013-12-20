@@ -101,7 +101,7 @@ udl2_conf = {
         'pool_size': 20,
     },
     'udl2_db_conn': {
-        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
+        'url': 'postgresql://udl2:udl2abc1234@dbpgudl0.qa.dum.edwdc.net:5432/udl2',
         'db_schema': 'udl2',
         'echo': False,
         'max_overflow': 10,
@@ -109,7 +109,7 @@ udl2_conf = {
     },
     'target_db_conn': {
         'edware': {
-            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+            'url': 'postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware',
             'db_schema': 'edware',
             'echo': False,
             'max_overflow': 10,
@@ -118,29 +118,9 @@ udl2_conf = {
             'db_user': 'edware',
             'db_pass': 'edware2013',
         },
-        'CA': {
-            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
+        'ca': {
+            'url': 'postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware',
             'db_schema': 'edware',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        },
-        'func_tests': {
-            'url': 'postgresql://edware:edware2013@localhost:5432/edware',
-            'db_schema': 'ftest_test_schema',
-            'echo': False,
-            'max_overflow': 10,
-            'pool_size': 20,
-            'db_database': 'edware',
-            'db_user': 'edware',
-            'db_pass': 'edware2013',
-        },
-        'func_tests_b': {
-            'url': 'postgresql://edware:edware20133@localhostblah:5432/edware',
-            'db_schema': 'ftest_test_schema',
             'echo': False,
             'max_overflow': 10,
             'pool_size': 20,

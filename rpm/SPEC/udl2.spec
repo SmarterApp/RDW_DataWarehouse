@@ -151,9 +151,9 @@ fi
 if [ ! -d $UDL2_ZONES/landing/history ]; then
     mkdir -p $UDL2_ZONES/landing/history
 fi
-sudo chown -R udl2.udl2 $UDL2_ROOT/gluster/UDL
-sudo chown -R udl2.udl2 $UDL2_ROOT/log
-sudo chown -R udl2.udl2 $UDL2_ROOT/conf
+chown -R udl2.udl2 $UDL2_ROOT/gluster/UDL
+chown -R udl2.udl2 $UDL2_ROOT/log
+chown -R udl2.udl2 $UDL2_ROOT/conf
 
 %postun
 userdel -rf udl2 > /dev/null 2>&1

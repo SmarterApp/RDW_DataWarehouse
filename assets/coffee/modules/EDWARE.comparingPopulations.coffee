@@ -166,11 +166,15 @@ define [
       this.stickyCompare.update()
       this.alignment.update()
       # Save the current sorting column and order to apply after filtering
+      name = $('#gridTable').getGridParam('sortname')
+      order = $('#gridTable').getGridParam('sortorder')
       this.sort = $.extend this.sort, {
-        order: $('#gridTable').getGridParam('sortorder')
-        name: $('#gridTable').getGridParam('sortname')
+        order: order
+        name: name
       }
-
+      # We need to preserve sorting, so, update the column labels and color
+      this.updateSortLabels(name, order)
+ 
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
       # Change the column name and link url based on the type of report the user is querying for
@@ -196,6 +200,22 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
+
+    updateSortLabels: (index, sortorder) ->
+      # Remove second row header as that counts as a column in setLabel function
+      $('.jqg-second-row-header').remove()
+      grid = $('#gridTable')
+      colModels = grid.jqGrid('getGridParam').colModel
+      # Reset back to original color for all columns
+      for colModel in colModels
+        grid.jqGrid('setLabel', colModel.name, colModel.label, {'background': "none repeat scroll 0 0 #F8F8F8"}) 
+        if colModel.name is index
+          newLabel = colModel.label
+      
+      if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
+        if sortorder is 'asc' then newLabel += " " + this.config.proficiencyAscending else newLabel += " " + this.config.proficiencyDescending
+      # Set background color and label for active sort column
+      grid.jqGrid('setLabel', index, newLabel, {'background': "none repeat scroll 0 0 #ededed"}) 
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)

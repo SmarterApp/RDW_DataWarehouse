@@ -47,7 +47,7 @@ define [
       $("#gview_gridTable > .ui-jqgrid-bdiv").css {
           'min-height': 100, 'height': this.options.gridHeight
       }
-
+   
     render: ()->
       this.renderBody()
       this.renderHeader()
@@ -59,9 +59,8 @@ define [
       options = $.extend(this.options,
         colNames: colNames
         colModel: colModel
-        onSortCol: (index, idxcol, sortorder) ->
-          #TODO show the icons of last sorted column
-          $(@grid.headers[@p.lastsort].el).find(">div.ui-jqgrid-sortable>span.s-ico").show()  if @p.lastsort >= 0 and @p.lastsort isnt idxcol and @p.colModel[@p.lastsort].sortable isnt false
+        # This sets the sort arrows to be shown on sortable columns
+        viewsortcols: [true, 'vertical', true]
       )
       this.table.jqGrid options
       this.table.jqGrid "hideCol", "rn"
@@ -142,18 +141,6 @@ define [
       
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
-
-      colModel = $(this).jqGrid("getGridParam", "colModel")
-      $("#gbox_" + $.jgrid.jqID($(this)[0].id) + " tr.ui-jqgrid-labels th.ui-th-column").each (i) ->
-        cmi = colModel[i]
-        colName = cmi.name
-        if cmi.sortable isnt false
-
-          # show the sorting icons
-          $(this).find(">div.ui-jqgrid-sortable>span.s-ico").show()
-
-        # change the mouse cursor on the columns which are non-sortable
-        else $(this).find(">div.ui-jqgrid-sortable").css cursor: "default"  if not cmi.sortable and colName isnt "rn" and colName isnt "cb" and colName isnt "subgrid"
 
     $.fn.eagerLoad = () ->
       # load all data at once

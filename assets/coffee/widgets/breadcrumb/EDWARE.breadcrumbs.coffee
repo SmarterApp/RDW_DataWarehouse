@@ -39,12 +39,12 @@ define [
       items = $('li', @container)
       items.not(':last').addClass('link').hover ()->
         $this = $(this)
-        $this.addClass 'focus'
-        $this.prev().addClass 'active'
+        $this.addClass 'active'
+        $this.prev().addClass 'preceding'
       , ()->
         $this = $(this)
-        $this.removeClass 'focus'
-        $this.prev().removeClass 'active'
+        $this.removeClass 'active'
+        $this.prev().removeClass 'preceding'
 
     formatName: (element) ->
       type = element.type

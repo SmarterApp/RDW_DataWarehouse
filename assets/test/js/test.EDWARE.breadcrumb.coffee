@@ -1,6 +1,8 @@
 #globals ok $ EDWARE test require module equals deepEqual
 define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
 
+  EdwareBreadcrumbs = edwareBreadcrumbs.EdwareBreadcrumbs
+
   module "EDWARE.breadcrumbs.create",
     setup: ->
       $("body").append "<div id='breadcrumbs'></div>"
@@ -9,7 +11,6 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       $("#breadcrumbs").remove()
 
   test "Test create method", ->
-    stop()
     create = edwareBreadcrumbs.create
     ok create isnt `undefined`, "edwareBreadcrumbs.create method should be defined"
     ok typeof create is "function", "edwareBreadcrumbs.create method should be function"
@@ -56,13 +57,12 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     deepEqual $("#breadcrumbs")[0].innerHTML.length, 0, "breadcrumbs should be empty before test is running"
     edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
     setTimeout (->
-      deepEqual $("#breadcrumbs a").length, 3, "3 links should have been created"
+      deepEqual $("#breadcrumbs a").length, 1, "1 links should have been created"
       deepEqual $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
       start()
     ), 150
     
   test "Test breadcrumb with no links", ->
-    stop()
     test_data = items: [
       type: "state"
       name: "Washington"
@@ -91,7 +91,15 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     ]
     
     edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
-    setTimeout (->      
-      deepEqual $("#breadcrumbs a").length, 0, "0 links should have been created"
-      start()
-    ), 150
+    deepEqual $("#breadcrumbs a").length, 1, "1 links should have been created"
+
+  test "Test format name", ->
+    element = { type: 'grade', name: '1'}
+    actual = EdwareBreadcrumbs::formatName element
+    equal 'Grade 1', actual.name, "grade name should have grade as prefix"
+    element = { type: 'student', name: 'Daniel'}
+    actual = EdwareBreadcrumbs::formatName element
+    equal "Daniel's Results", actual.name, "student's name should have 's Results as suffix"
+    element = { type: 'student', name: 'Daniels'}
+    actual = EdwareBreadcrumbs::formatName element
+    equal "Daniels' Results", actual.name, "student's name should have 's Results as suffix"

@@ -1,8 +1,8 @@
 define ["jquery", 
         "edwareReportInfoBar",
-         "edwareReportActionBar",
-         "edwareHelpMenu",
-         "edwareHeader"
+        "edwareReportActionBar",
+        "edwareHelpMenu",
+        "edwareHeader"
 ], ($, edwareReportInfoBar, edwareReportActionBar, edwareHelpMenu, edwareHeader) ->
 
   ReportInfoBar = edwareReportInfoBar.ReportInfoBar

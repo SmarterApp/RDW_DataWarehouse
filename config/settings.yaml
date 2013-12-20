@@ -435,7 +435,7 @@ development:
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     extract:
       gpg.homedir: ../../edware/config/gpg
-      gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+      gpg.keyserver: None
     auth:
       skip.verify: False
       saml:
@@ -472,6 +472,9 @@ test:
       db:
         schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
+    extract:
+      gpg.homedir: ../../edware/config/gpg
+      gpg.keyserver: None
     auth:
       skip.verify: False
       saml:

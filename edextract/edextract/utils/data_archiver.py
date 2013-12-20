@@ -16,28 +16,20 @@ def import_recipient_keys(gpg, recipients, keyserver):
     gpg.recv_keys(keyserver, *key_ids)
 
 
-def remove_temp_keyring(gpghomedir):
-    filelist = [f for f in os.listdir(gpghomedir)]
-    for f in filelist:
-        os.remove(gpghomedir + os.sep + f)
-    os.rmdir(gpghomedir)
-
-
 def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyserver=None, gpgbinary='gpg'):
     '''
     create encrpyted archive file.
     '''
     data = archive_files(dirname).getvalue()
-    gpghomedir = None
-    if keyserver is None:
-        gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary)
+    # a bug in celery config that convert None into 'None' instead of None
+    if keyserver is None or keyserver == 'None':
+        gpg = gnupg.GPG(gnupghome=os.path.abspath(homedir), gpgbinary=gpgbinary, verbose=True)
+        gpg.encrypt(data, recipients, output=outputfile, always_trust=True)
     else:
-        gpghomedir = tempfile.mkdtemp(dir='/tmp')
-        gpg = gnupg.GPG(gnupghome=os.path.abspath(gpghomedir), gpgbinary=gpgbinary)
-        import_recipient_keys(gpg, recipients, keyserver)
-    gpg.encrypt(data, recipients, output=outputfile, always_trust=True)
-    if gpghomedir is not None:
-        remove_temp_keyring(gpghomedir)
+        with tempfile.TemporaryDirectory(dir='/tmp') as gpghomedir:
+            gpg = gnupg.GPG(gnupghome=gpghomedir, gpgbinary=gpgbinary, verbose=True)
+            import_recipient_keys(gpg, recipients, keyserver)
+            gpg.encrypt(data, recipients, output=outputfile, always_trust=True)
 
 
 def archive_files(dirname):

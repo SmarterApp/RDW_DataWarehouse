@@ -158,29 +158,36 @@ define [
 
     # display empty message
     return '' if not subject
-
-    subject = formatSubject subject
-    exportable = options.colModel.export
-    insufficient = parseInt(subject.total) <= 0
-    insufficientText = options.colModel.labels['insufficient_data']
-    subject.export = 'edwareExportColumn' if exportable
-    subject.insufficient = insufficient
-    subject.insufficientText = insufficientText
-    subject.labels = options.colModel.labels
+    subject = processSubject options, rowObject
+    for interval in subject.intervals
+      interval.count = edwareUtil.formatNumber(interval.count) if interval
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject
       labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
-      export: 'edwareExportColumn' if exportable
-      insufficient: insufficient
-      insufficientText: insufficientText
+      export: subject.export
+      insufficient: subject.insufficient
+      insufficientText: subject.insufficientText
     }
 
   # Used to display total population count
   totalPopulation = (value, options, rowObject) ->
+    subject = processSubject options, rowObject
+    return Mustache.to_html TOTAL_POPULATION_TEMPLATE, {
+      subject: subject
+      insufficient: subject.insufficient
+      insufficientText: subject.insufficientText
+      labels: options.colModel.labels
+      export: subject.export
+    }
+    
+  processSubject = (options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
-    subject = formatTotalForSubject subject
+    subject.total = edwareUtil.formatNumber(subject.total)
+    subject.unfilteredTotal = edwareUtil.formatNumber(subject.unfilteredTotal)
+    ratio = subject.total * 100.0 / subject.unfilteredTotal
+    subject.ratio = edwareUtil.formatNumber(Math.round(ratio))
     exportable = options.colModel.export
     insufficient = parseInt(subject.total) <= 0
     subject.export = 'edwareExportColumn' if exportable
@@ -188,27 +195,8 @@ define [
     subject.insufficient = insufficient
     insufficientText = options.colModel.labels['insufficient_data']
     subject.insufficientText = insufficientText
-    return Mustache.to_html TOTAL_POPULATION_TEMPLATE, {
-      subject: subject
-      insufficient: insufficient
-      insufficientText: insufficientText
-      labels: options.colModel.labels
-      export: 'edwareExportColumn' if exportable
-    }
-
-  formatSubject = (subject) ->
-    for interval in subject.intervals
-      interval.count = edwareUtil.formatNumber(interval.count) if interval
     subject
-  
-  formatTotalForSubject = (subject) ->
-    subject.total = edwareUtil.formatNumber(subject.total)
-    subject.unfilteredTotal = edwareUtil.formatNumber(subject.unfilteredTotal)
-    ratio = subject.total * 100.0 / subject.unfilteredTotal
-    subject.ratio = edwareUtil.formatNumber(Math.round(ratio))
-    subject
-
-
+    
   showlink: showlink
   showText: showText
   showOverallConfidence: showOverallConfidence

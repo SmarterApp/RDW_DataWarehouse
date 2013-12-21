@@ -26,14 +26,11 @@
     <div id="TOTAL_POPULATION_TEMPLATE">
     	<div class='totalPop {{export}}'>
     	{{#insufficient}}
-    	{{^subject.unfilteredTotal}}
-        <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
-        {{/subject.unfilteredTotal}}
         {{#subject.unfilteredTotal}}
         <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
         <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
-        <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
         {{/subject.unfilteredTotal}}
+        <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
         {{/insufficient}}
         
         {{^insufficient}}

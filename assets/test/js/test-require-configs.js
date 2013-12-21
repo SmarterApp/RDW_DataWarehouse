@@ -70,7 +70,8 @@ require({
     PrintTemplate: '../src/widgets/print/template.html',
     HelpMenuTemplate: '../src/widgets/header/helpMenuTemplate.html',
     ActionBarTemplate: '../src/widgets/header/ActionBarTemplate.html',
-    headerTemplateHtml: '../src/widgets/header/template.html'
+    headerTemplateHtml: '../src/widgets/header/template.html',
+    edwareFormatterTemplate: '../src/widgets/grid/FormatterTemplate.html',
   },
   shim: {
     'jqGrid': {

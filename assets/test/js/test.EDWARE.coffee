@@ -16,6 +16,7 @@ require ["cs!test.EDWARE.dataProxy",
 "cs!test.EDWARE.header"
 "cs!test.EDWARE.asmtDropdown"
 "cs!test.EDWARE.print"
+"cs!test.EDWARE.grid.formatters"
 ], ()->
   QUnit.start()
 

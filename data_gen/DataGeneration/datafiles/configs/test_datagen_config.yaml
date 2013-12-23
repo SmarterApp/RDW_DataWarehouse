@@ -1,9 +1,99 @@
 # DataGeneration Test Config file
 
+star:
+    csv:
+        fact_asmt_outcome:
+            internal_key_1: asmt_claim_3_score_range_min
+            internal_key_2: asmt_claim_1_score_range_min
+            internal_key_3: asmt_year
+            internal_key_4: student_guid
+            internal_key_5: asmt_rec_id
+            internal_key_6: asmnt_outcome_rec_id
+            internal_key_7: asmt_claim_2_score_range_max
+            internal_key_8: dmg_eth_blk
+            internal_key_9: dmg_prg_tt1
+            internal_key_10: date_taken_day
+            internal_key_11: date_taken
+            internal_key_12: state_code
+            internal_key_13: gender
+            internal_key_14: asmt_score_range_min
+            internal_key_15: dmg_prg_lep
+            internal_key_16: where_taken_id
+            internal_key_17: batch_guid
+            internal_key_18: asmt_claim_1_score_range_max
+            internal_key_19: asmt_claim_3_score_range_max
+            internal_key_20: asmt_score_range_max
+            internal_key_21: most_recent
+            internal_key_22: dmg_eth_pcf
+            internal_key_23: dmg_eth_asn
+            internal_key_24: asmt_claim_3_score
+            internal_key_25: enrl_grade
+            internal_key_26: asmt_claim_4_score
+            internal_key_27: section_guid
+            internal_key_28: asmt_type
+            internal_key_29: dmg_eth_wht
+            internal_key_30: dmg_eth_hsp
+            internal_key_31: asmt_score
+            internal_key_32: asmt_claim_1_score
+            internal_key_33: dmg_eth_derived
+            internal_key_34: where_taken_name
+            internal_key_35: asmt_claim_2_score
+            internal_key_36: school_guid
+            internal_key_37: asmt_subject
+            internal_key_38: asmt_perf_lvl
+            internal_key_39: status
+            internal_key_40: asmt_claim_4_score_range_max
+            internal_key_41: dmg_eth_ami
+            internal_key_42: date_taken_month
+            internal_key_43: dmg_prg_504
+            internal_key_44: dmg_prg_iep
+            internal_key_45: asmt_grade
+            internal_key_46: asmt_claim_4_score_range_min
+            internal_key_47: section_rec_id
+            internal_key_48: inst_hier_rec_id
+            internal_key_49: district_guid
+            internal_key_50: asmt_claim_2_score_range_min
+            internal_key_51: date_taken_year
+        dim_asmt:
+            internal_key_1: asmt_claim_3_name
+            internal_key_2: asmt_perf_lvl_name_1
+            internal_key_3: asmt_perf_lvl_name_2
+            internal_key_4: asmt_perf_lvl_name_3
+            internal_key_5: asmt_type
+            internal_key_6: asmt_claim_4_name
+            internal_key_7: asmt_perf_lvl_name_5
+            internal_key_8: asmt_claim_1_name
+            internal_key_9: asmt_claim_3_score_min
+            internal_key_10: asmt_claim_4_score_min
+            internal_key_11: asmt_version
+            internal_key_12: asmt_claim_1_score_min
+            internal_key_13: asmt_guid
+            internal_key_14: asmt_score_max
+            internal_key_15: asmt_claim_2_name
+            internal_key_16: asmt_claim_3_score_weight
+            internal_key_17: asmt_perf_lvl_name_4
+            internal_key_18: asmt_period_year
+            internal_key_19: asmt_subject
+            internal_key_20: asmt_claim_1_score_max
+            internal_key_21: from_date
+            internal_key_22: asmt_claim_2_score_max
+            internal_key_23: asmt_period
+            internal_key_24: asmt_score_min
+            internal_key_25: most_recent
+            internal_key_26: asmt_claim_4_score_max
+            internal_key_27: asmt_claim_4_score_weight
+            internal_key_28: to_date
+            internal_key_29: asmt_claim_2_score_weight
+            internal_key_30: asmt_cut_point_3
+            internal_key_31: asmt_cut_point_2
+            internal_key_32: asmt_cut_point_1
+            internal_key_33: asmt_rec_id
+            internal_key_34: asmt_claim_3_score_max
+            internal_key_35: asmt_cut_point_4
+            internal_key_36: asmt_claim_1_score_weight
+            internal_key_37: asmt_claim_2_score_min
 lz:
-    student_info:
-        asmt_guids: fact_assmt_outcome.guid_asmt
-        grade: fact_assmt_outcome.grade_asmt
-    school:
-        school_guid: fact_assmt_outcome.guid_asmt_location
-        school_name: fact_assmt_outcome.name_asmt_location
+    csv:
+        foo: bar
+    json:
+        foo: bar

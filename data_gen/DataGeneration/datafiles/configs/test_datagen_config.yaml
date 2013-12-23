@@ -1,0 +1,9 @@
+# DataGeneration Test Config file
+
+lz:
+    student_info:
+        asmt_guids: fact_assmt_outcome.guid_asmt
+        grade: fact_assmt_outcome.grade_asmt
+    school:
+        school_guid: fact_assmt_outcome.guid_asmt_location
+        school_name: fact_assmt_outcome.name_asmt_location

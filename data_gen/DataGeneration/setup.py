@@ -13,7 +13,8 @@ requires = ['psycopg2',
             'zope.interface >= 4.0.3',
             'Sphinx',
             'docutils',
-            'repoze.sphinx.autointerface']
+            'repoze.sphinx.autointerface',
+            'PyYAML']
 
 tests_require = requires + [
     'nose >= 1.2.1',

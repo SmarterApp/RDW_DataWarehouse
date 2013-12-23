@@ -24,6 +24,7 @@ from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
+from smarter.reports.student_administration import get_student_list_asmt_administration
 
 REPORT_NAME = "list_of_students"
 
@@ -139,6 +140,8 @@ def get_list_of_students_report(params):
     los_results['subjects'] = __reverse_map(subjects_map)
     # query not stated students count
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
+
+    los_results['asmt_administration'] = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
 
     return los_results
 

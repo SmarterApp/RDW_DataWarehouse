@@ -35,7 +35,8 @@ cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/comparing_populations_precache_filters.json %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd-services %{buildroot}/etc/rc.d/init.d/
-
+cp ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{buildroot}/etc/rc.d/init.d/
 
 
 %build
@@ -61,7 +62,13 @@ cd -
 cd ${WORKSPACE}/edapi
 python setup.py install
 cd -
+cd ${WORKSPACE}/edworker
+python setup.py install
+cd -
 cd ${WORKSPACE}/services
+python setup.py install
+cd -
+cd ${WORKSPACE}/edextract
 python setup.py install
 cd -
 cd %{buildroot}/opt/edware/smarter
@@ -88,6 +95,7 @@ cp -r virtualenv %{buildroot}/opt
 /opt/edware/conf/settings.yaml
 /opt/edware/conf/comparing_populations_precache_filters.json
 /opt/edware/conf/celeryd-services.conf
+/opt/edware/conf/celeryd-edextract.conf
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
@@ -121,6 +129,7 @@ cp -r virtualenv %{buildroot}/opt
 /opt/virtualenv/bin/python
 /opt/virtualenv/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
+%attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 
 %pre
 id celery > /dev/null 2>&1
@@ -134,9 +143,13 @@ fi
 
 %post
 chkconfig --add celeryd
+chkconfig --add celeryd-services
+chkconfig --add celeryd-edextract
 
 %preun
 chkconfig --del celeryd
+chkconfig --del celeryd-services
+chkconfig --del celeryd-edextract
 
 %postun
 userdel -rf celery > /dev/null 2>&1

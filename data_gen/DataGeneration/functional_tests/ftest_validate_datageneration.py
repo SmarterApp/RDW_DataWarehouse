@@ -5,38 +5,37 @@ Created on Dec 22, 2013
 '''
 import unittest
 import os
-import subprocess
-import time
+import yaml
 import shutil
 import tempfile
-import glob
+import subprocess
+import pprint
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-CONFIG_FILE = os.path.join(__location__, 'NEW_CONFIG_FILE')
+CONFIG_FILE_1 = os.path.join(__location__, '..', 'datafiles/configs', 'test_datagen_config.yaml')
 
 
 class Test(unittest.TestCase):
 
-#CREATE NEW TAMP DIR FOR STORING NEWLY GENERATED CSV
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-#ADD NEW CONFIG FILE BELLOW INSTEAD OF DG_TYPES_TEST
     def generate_data(self):
         command = 'python -m DataGeneration.src.generate_data --config DataGeneration.src.configs.dg_types_SDS --output {dirname}'
         command = command.format(dirname=self.temp_dir)
         subprocess.call(command, shell=True)
 
-#READ/COMPARE NEWLY ADDED CONFIG FILE AND NEWLY GENERATED CSV
-    def read_config_file(self):
-        new_csv = glob.glob(os.path.join(self.temp_dir, 'REALDATA_ASMT_ID_*.csv'))
+    def read_config_file(self, config_file):
+        config = yaml.load(open(config_file))
+        return config
 
-        with open(new_csv, 'r') as old:
-            with open(CONFIG_FILE, 'r') as new:
+    def test_datagen_by_config(self):
+        config = self.read_config_file(CONFIG_FILE_1)
+        pprint.pprint(config)
+        print(config['lz']['school']['school_guid'])
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -56,17 +56,17 @@ define [
       if @isPdf
         currentAsmtType = @params['asmtType']
         currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
-      else                                   
+      else
         edwarePreferences.getAsmtPreference()
           
     fetchData: () ->
       # Get individual student report data from the server
-      options =
-        async: true
+      self = this
+      ISR_REPORT_SERVICE = "/data/individual_student_report"
+      loadingData = edwareDataProxy.getDatafromSource ISR_REPORT_SERVICE,
         method: "POST"
         params: @params
-      self = this
-      edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
+      loadingData.done (data) ->
         self.loadPage data
     
     loadPrintMedia: () ->

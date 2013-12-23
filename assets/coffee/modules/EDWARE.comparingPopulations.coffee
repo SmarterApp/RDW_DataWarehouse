@@ -23,12 +23,8 @@ define [
   POPULATION_BAR_WIDTH = 145
 
   class ConfigBuilder
-    ### Grid configuration builder. ###
 
     constructor: (template, subjects) ->
-      ###
-
-      ###
       output = Mustache.render(JSON.stringify(template), subjects)
       this.gridConfig = JSON.parse(output)
       this
@@ -84,7 +80,8 @@ define [
       param.asmtType = this.updateAsmtTypePreference()
       self = this
 
-      this.fetchData param, (data)->
+      loadingData = this.fetchData param
+      loadingData.done (data)->
         self.data = data
         self.populationData = self.data.records
         if not self.data.context.items[0]
@@ -131,14 +128,12 @@ define [
     createHeaderAndFooter: ()->
       this.header ?= edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType)
 
-    fetchData: (params, callback)->
-      # Determine if the report is state, district or school view"
+    fetchData: (params)->
       options =
         method: "POST"
         params: params
-
-      studentsData = undefined
-      edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback
+      
+      edwareDataProxy.getDatafromSource "/data/comparing_populations", options
 
     # Based on query parameters, return the type of report that the user is requesting for
     getReportType: (params) ->

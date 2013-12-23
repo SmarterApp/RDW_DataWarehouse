@@ -1,6 +1,13 @@
-require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy", "edwareConstants"], (edwareStudentList, edwareFilter, edwareDataProxy, Constants) ->
+require [
+  "EDWARE.studentList"
+  "edwareFilter"
+  "edwareDataProxy"
+  "edwareConstants"
+], (edwareStudentList, edwareFilter, edwareDataProxy, Constants) ->
 
-  edwareDataProxy.getDataForReport(Constants.REPORT_JSON_NAME.LOS).done (config) ->
+  reportName = Constants.REPORT_JSON_NAME.LOS
+
+  edwareDataProxy.getDataForReport(reportName).done (config) ->
     studentGrid = new edwareStudentList.StudentGrid(config)
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (configs)->

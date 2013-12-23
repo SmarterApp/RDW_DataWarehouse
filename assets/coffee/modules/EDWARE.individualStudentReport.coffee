@@ -1,2 +1,5 @@
-require ["EDWARE.individualStudent", "edwareUtil"], (edwareIndividualStudent, edwareUtil) ->
+require [
+  "EDWARE.individualStudent"
+  "edwareUtil"
+], (edwareIndividualStudent, edwareUtil) ->
   new edwareIndividualStudent.EdwareISR()

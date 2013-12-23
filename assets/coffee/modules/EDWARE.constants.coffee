@@ -21,3 +21,4 @@ define [], () ->
     SUMMATIVE: 'Summative'
     INTERIM: 'Comprehensive Interim'
   }
+

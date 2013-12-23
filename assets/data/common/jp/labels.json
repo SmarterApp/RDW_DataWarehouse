@@ -40,6 +40,7 @@
 		"language": "言語",
 		"legend": "使用符号の説明",
 		"level": "レベル",
+	        "login": "ログイン",
 		"logout": "ログアウト",
 		"no_results": "データはありません。",
 		"notes": "注釈",

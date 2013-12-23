@@ -22,14 +22,18 @@
 	li {
      	    display: inline-block;
 	    vertical-align: middle;
-	    font-weight: bold;
 	    height: 28px;
 	    line-height: 30px;
 	    position: relative;
 
+	    a {
+	    	    font-weight: bold;
+	    }
 	}
 
 	li.link {
+	    a {font-weight: normal;}
+	    
 	    &:after {
 		content: "";
 		display: inline-block;
@@ -102,7 +106,7 @@
 		}
 	    }
 	}
-
+	
     }
     
     a {

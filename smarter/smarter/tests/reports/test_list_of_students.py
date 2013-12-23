@@ -89,6 +89,18 @@ class TestLOS(Unittest_with_edcore_sqlite):
 
         self.assertTrue('context' in results, "returning JSON must have context")
 
+    def test_asmt_administration(self):
+        testParam = {}
+        testParam['stateCode'] = 'NY'
+        testParam['districtGuid'] = '228'
+        testParam['schoolGuid'] = '242'
+        testParam['asmtGrade'] = '3'
+        testParam['asmtSubject'] = ['ELA', 'Math']
+        results = get_list_of_students_report(testParam)
+
+        self.assertTrue('asmt_administration' in results, "asmt_administration is missing")
+        self.assertEquals(len(results['asmt_administration']), 129, "should have 129 different test")
+
     def test_ELA_only(self):
         testParam = {}
         testParam['districtGuid'] = '228'

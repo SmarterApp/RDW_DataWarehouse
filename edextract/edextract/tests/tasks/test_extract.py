@@ -4,14 +4,14 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
-from edextract.tasks.extract import archive, generate_csv, generate_json,\
+from edextract.tasks.extract import archive, generate_csv, generate_json, \
     route_tasks
 import tempfile
 import os
 import shutil
 from zipfile import ZipFile
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from sqlalchemy.sql.expression import select
 from edextract.celery import setup_celery
@@ -74,7 +74,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_generate_csv_to_unwritable_file(self):
         output = os.path.join(self.__tmp_dir, 'unwritable.csv')
-        open(output,'w').close()
+        open(output, 'w').close()
         mode = os.stat(output)[stat.ST_MODE]
         os.chmod(output, mode & ~stat.S_IWUSR & ~stat.S_IWGRP & ~stat.S_IWOTH)
         with UnittestEdcoreDBConnection() as connection:
@@ -83,7 +83,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             query = query.where(dim_asmt.c.asmt_guid == '22')
         result = generate_csv.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
         self.assertRaises(ExtractionError, result.get,)
-        
+
     def test_generate_csv(self):
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
@@ -175,5 +175,5 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(str(tasks_group.kwargs['tasks'][1]), "tasks.extract.generate_csv('testtenant', 'request', 'def', 'def', 'def')")
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

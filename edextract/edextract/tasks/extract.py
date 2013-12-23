@@ -21,7 +21,6 @@ from edextract.exceptions import RemoteCopyError, ExtractionError
 from edextract.utils.data_archiver import encrypted_archive_files, archive_files
 import json
 from edextract.utils.json_formatter import format_json
-import sys
 
 
 log = logging.getLogger('edextract')
@@ -53,10 +52,10 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     workflow.apply_async()
 
 
+#fixme -> max_retries=get_setting(Config.MAX_RETRIES),
 @celery.task(name="tasks.extract.generate_csv",
              ignore_result=True,
              max_retries=1,
-#             max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def generate_csv(tenant, request_id, task_id, query, output_file):
     '''

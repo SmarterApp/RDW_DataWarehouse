@@ -25,6 +25,7 @@ class ExtractionError(EdExtractError):
         self.msg = msg
         EdExtractError.__init__(self, self.msg)
 
+
 class RemoteCopyError(EdExtractError):
     '''
     a custom exception raised when a sftp failed

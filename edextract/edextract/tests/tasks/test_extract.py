@@ -19,12 +19,15 @@ from edextract.tasks.constants import Constants as TaskConstants
 import json
 import csv
 from celery.canvas import group
+from edextract.exceptions import ExtractionError
+import stat
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def setUp(self):
-        settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
+        settings = {'extract.celery.BROKER_URL': 'memory',
+                    'extract.celery.CELERY_ALWAYS_EAGER': 'True'}
         setup_celery(settings)
         self._tenant = get_unittest_tenant_name()
         self.__files = ['a.txt', 'b.txt', 'c.txt']
@@ -64,17 +67,31 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         zipfile.close()
 
     def test_generate_csv_no_tenant(self):
-        result = generate_csv(None, '0', '1', 'select 0 from dual', '/tmp/unittest.csv.gz.pgp')
-        self.assertFalse(result)
+        output = '/tmp/unittest.csv.gz.pgp'
+        result = generate_csv.apply(args=[None, '0', '1', 'select 0 from dual', output])
+        result.get()
+        self.assertFalse(os.path.exists(output))
 
+    def test_generate_csv_to_unwritable_file(self):
+        output = os.path.join(self.__tmp_dir, 'unwritable.csv')
+        open(output,'w').close()
+        mode = os.stat(output)[stat.ST_MODE]
+        os.chmod(output, mode & ~stat.S_IWUSR & ~stat.S_IWGRP & ~stat.S_IWOTH)
+        with UnittestEdcoreDBConnection() as connection:
+            dim_asmt = connection.get_table('dim_asmt')
+            query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period], from_obj=[dim_asmt])
+            query = query.where(dim_asmt.c.asmt_guid == '22')
+        result = generate_csv.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+        self.assertRaises(ExtractionError, result.get,)
+        
     def test_generate_csv(self):
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '22')
         output = os.path.join(self.__tmp_dir, 'asmt.csv')
-        result = generate_csv(self._tenant, 'request_id', 'task_id', query, output)
-        self.assertTrue(result)
+        result = generate_csv.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+        result.get()
         self.assertTrue(os.path.exists(output))
         csv_data = []
         with open(output) as out:
@@ -91,8 +108,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '2123122')
             output = 'C:'
-            results = generate_csv(self._tenant, 'request_id', 'task_id', query, output)
-            self.assertFalse(results)
+            result = generate_csv.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+            self.assertRaises(ExtractionError, result.get,)
 
     def test_generate_json(self):
         with UnittestEdcoreDBConnection() as connection:

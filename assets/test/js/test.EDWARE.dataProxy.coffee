@@ -10,15 +10,15 @@ require ["jquery", "edwareDataProxy"], ($, edwareDataProxy) ->
       "indicator": "8,345",
       "desc1": "Percentage of population",
       "desc2": "Total Students",
-      "desc3": "The width of a colored segment is proportional to the number of students in that segment.",
+      "desc3": "dummy description",
       "notes": [
         "Rollover/Tap bar for breakdown of population numbers",
-        "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."
+        "dummy percentage"
       ]
     }
   }
   
-  module "EDWARE.edwareDataProxy",  
+  module "EDWARE.edwareDataProxy",
     setup: ->
       $.ajaxBackup = $.ajax
       $.whenBackup = $.when
@@ -41,16 +41,16 @@ require ["jquery", "edwareDataProxy"], ($, edwareDataProxy) ->
     
   test "Test sourceURL in getDataFromSource function", ->
     ok getDataFromSource, "dataProxy getDatafromSource method should be defined"
-    equal typeof(getDataFromSource), "function", "dataProxy getDatafromSource method should be function"
-
-    throws getDataFromSource(), TypeError, "Shall expect TypeError when source URL is empty"
+    equal typeof(getDataFromSource), "function", "getDataFromSource should be function"
+    throws getDataFromSource(), TypeError, "Expect TypeError with empty URL"
     throws getDataFromSource(999), TypeError, "SourceURL should not be number"
     throws getDataFromSource({}), TypeError, "SourceURL should not be object"
 
   test "Test options parameter in getDataFromSource function", ->
     options = {}
     resultWithEmptyOptions = ''
-    getDataFromSource '/dummy/url', options, (data)->
+    loading = getDataFromSource '/dummy/url', options
+    loading.done (data)->
       resultWithEmptyOptions = data
     # test done function
     equal resultWithEmptyOptions, dummy_response, "getDataFromSource should work with empty option by default"
@@ -62,7 +62,8 @@ require ["jquery", "edwareDataProxy"], ($, edwareDataProxy) ->
       params: {}
       method: 'POST'
     resultWithEmptyOptions = ''
-    getDataFromSource '/dummy/url', options, (data)->
+    loading = getDataFromSource '/dummy/url', options
+    loading.done (data)->
       resultWithEmptyOptions = data
     equal resultWithEmptyOptions, dummy_response, "getDataFromSource should work options"
 

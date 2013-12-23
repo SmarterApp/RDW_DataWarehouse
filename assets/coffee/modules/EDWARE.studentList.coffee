@@ -37,7 +37,8 @@ define [
 
     reload: (params) ->
       self = this
-      this.fetchData params, (data)->
+      @fetchData(params).done (data)->
+        data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": self.labels}))
         self.data = data
         self.assessmentsData = data.assessments
         self.contextData = data.context
@@ -133,22 +134,16 @@ define [
       asmtType = edwarePreferences.getAsmtPreference()
       this.viewName = viewName
       this.renderGrid asmtType, viewName
-   
+
     reloadCurrentView: () ->
       # this is the callback function for sticky compare to reload current view
       this.updateView this.viewName
 
-    fetchData: (params, callback) ->
+    fetchData: (params) ->
       # Determine if the report is state, district or school view"
-      options =
+      edwareDataProxy.getDatafromSource "/data/list_of_students",
         method: "POST"
         params: params
-
-      studentsData = undefined
-      labels = this.labels
-      edwareDataProxy.getDatafromSource "/data/list_of_students", options, (data)->
-        studentsData = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": labels}))
-        callback studentsData
 
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment

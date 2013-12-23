@@ -1129,6 +1129,8 @@ body.login {
 	border-top: none;
 	box-shadow: none;
 
+	a { text-decoration: none; }
+
 	.logo {
 	    background-image: url("../images/landing_page.png");
 	    background-repeat: no-repeat;
@@ -1144,6 +1146,7 @@ body.login {
 	    float: right;
 	    cursor: pointer;
 	    margin-bottom: 0px;
+	    font-size: 0px;
 
 	    &>li {
 		list-style: none;
@@ -1151,6 +1154,7 @@ body.login {
 		vertical-align: middle;
 		height: 50px;
 		line-height: 30px;
+		font-size: 14px;
 
 		&>div {
 		    height: 30px;
@@ -1167,14 +1171,29 @@ body.login {
 		}
 
 		.divider {
-		    border-right: solid 1px @color-B18;
+		    border-right: solid 1px @color-B21;
 		    padding: 0px 20px;
 		}
 
 		&:first-child .divider {
-		    border-left: solid 1px @color-B18;
+		    border-left: solid 1px @color-B21;
 		}
 	    }
+	}
+
+	.language_selections_header {
+	    display: none;
+	}
+	
+	.languageMenu {
+	    min-width: 107px;
+	    border-radius: 0px 0px 5px 5px;
+	    top: 38px;
+	}
+
+	.languageDropdown.show {
+	    background-color: @color-B21;
+	    a {color: #416776;}
 	}
     }
 

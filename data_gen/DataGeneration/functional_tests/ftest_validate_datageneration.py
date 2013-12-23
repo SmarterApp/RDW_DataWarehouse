@@ -24,9 +24,8 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
-        pass
 
-    def generate_data(self, config_file):
+    def generate_data(self):
         command = 'python -m DataGeneration.src.generate_data --config DataGeneration.src.configs.dg_types_SDS --output {dirname}'
         command = command.format(dirname=self.temp_dir)
         subprocess.call(command, shell=True)
@@ -35,11 +34,8 @@ class Test(unittest.TestCase):
         config = yaml.load(open(config_file))
         return config
 
-    def validate_row(self, row, config):
-        expected_fields = []
+    def validate_row(self, row, expected_fields):
         actual_fields = []
-        for key, value in config.items():
-            expected_fields.append(value)
         for column in row:
             actual_fields.append(column)
         self.assertEqual(len(expected_fields), len(actual_fields))
@@ -48,14 +44,17 @@ class Test(unittest.TestCase):
     def validate_file(self, file, config):
         self.assertTrue(os.path.exists(file))
         self.assertIsNotNone(config)
+        expected_fields = []
+        for key, value in config.items():
+            expected_fields.append(value)
         with open(file, 'r') as f:
             f_csv = csv.DictReader(f)
-            row = next(f_csv)
-            self.validate_row(row, config)
+            for row in f_csv:
+                self.validate_row(row, expected_fields)
 
     def test_datagen_star_format_by_config(self):
         config = self.read_config_file(CONFIG_FILE_1)
-        self.generate_data(CONFIG_FILE_1)
+        self.generate_data()
         time.sleep(3)
         if 'star' in config and 'csv' in config['star']:
             for csv_file_config in config['star']['csv']:

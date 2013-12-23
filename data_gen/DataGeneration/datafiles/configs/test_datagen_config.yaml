@@ -92,6 +92,52 @@ star:
             internal_key_35: asmt_cut_point_4
             internal_key_36: asmt_claim_1_score_weight
             internal_key_37: asmt_claim_2_score_min
+        dim_inst_hier:
+            internal_key_1: to_date
+            internal_key_2: district_guid
+            internal_key_3: most_recent
+            internal_key_4: inst_hier_rec_id
+            internal_key_5: school_guid
+            internal_key_6: state_name
+            internal_key_7: school_category
+            internal_key_8: state_code
+            internal_key_9: school_name
+            internal_key_10: district_name
+            internal_key_11: from_date
+        dim_section:
+            internal_key_1: to_date
+            internal_key_2: school_guid
+            internal_key_3: subject_name
+            internal_key_4: most_recent
+            internal_key_5: district_guid
+            internal_key_6: section_rec_id
+            internal_key_7: state_code
+            internal_key_8: from_date
+            internal_key_9: section_guid
+            internal_key_10: grade
+            internal_key_11: class_name
+            internal_key_12: section_name
+        dim_student:
+            internal_key_1: district_guid
+            internal_key_2: school_guid
+            internal_key_3: middle_name
+            internal_key_4: to_date
+            internal_key_5: student_guid
+            internal_key_6: dob
+            internal_key_7: first_name
+            internal_key_8: state_code
+            internal_key_9: zip_code
+            internal_key_10: student_rec_id
+            internal_key_11: gender
+            internal_key_12: most_recent
+            internal_key_13: last_name
+            internal_key_14: email
+            internal_key_15: grade
+            internal_key_16: city
+            internal_key_17: from_date
+            internal_key_18: section_guid
+            internal_key_19: address_1
+            internal_key_20: address_2
 lz:
     csv:
         foo: bar

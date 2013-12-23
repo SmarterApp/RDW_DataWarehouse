@@ -140,6 +140,58 @@ star:
             internal_key_20: address_2
 lz:
     csv:
-        foo: bar
+        internal_key_1: dmg_eth_pcf
+        internal_key_2: name_student_first
+        internal_key_3: code_state
+        internal_key_4: dmg_prg_iep
+        internal_key_5: grade_asmt
+        internal_key_6: guid_asmt
+        internal_key_7: address_student_line1
+        internal_key_8: name_student_middle
+        internal_key_9: guid_district
+        internal_key_10: dmg_eth_asn
+        internal_key_11: score_claim_4
+        internal_key_12: email_student
+        internal_key_13: score_claim_3
+        internal_key_14: score_claim_1
+        internal_key_15: dob_student
+        internal_key_16: score_claim_2_max
+        internal_key_17: score_claim_2_min
+        internal_key_18: name_state
+        internal_key_19: gender_student
+        internal_key_20: score_asmt_min
+        internal_key_21: asmt_year
+        internal_key_22: name_district
+        internal_key_23: address_student_line2
+        internal_key_24: score_claim_2
+        internal_key_25: score_asmt_max
+        internal_key_26: dmg_eth_wht
+        internal_key_27: score_asmt
+        internal_key_28: score_perf_level
+        internal_key_29: guid_student
+        internal_key_30: dmg_prg_tt1
+        internal_key_31: dmg_prg_504
+        internal_key_32: asmt_type
+        internal_key_33: type_school
+        internal_key_34: dmg_eth_ami
+        internal_key_35: address_student_city
+        internal_key_36: date_assessed
+        internal_key_37: score_claim_4_min
+        internal_key_38: score_claim_1_max
+        internal_key_39: asmt_subject
+        internal_key_40: score_claim_4_max
+        internal_key_41: grade_enrolled
+        internal_key_42: guid_asmt_location
+        internal_key_43: dmg_prg_lep
+        internal_key_44: score_claim_1_min
+        internal_key_45: guid_school
+        internal_key_46: dmg_eth_blk
+        internal_key_47: score_claim_3_min
+        internal_key_48: score_claim_3_max
+        internal_key_49: address_student_zip
+        internal_key_50: name_student_last
+        internal_key_51: name_asmt_location
+        internal_key_52: name_school
+        internal_key_53: dmg_eth_hsp
     json:
         foo: bar

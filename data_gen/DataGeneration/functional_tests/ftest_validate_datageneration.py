@@ -25,9 +25,11 @@ class Test(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def generate_data(self):
+    def generate_data(self, is_landing_zone=False):
         command = 'python -m DataGeneration.src.generate_data --config DataGeneration.src.configs.dg_types_SDS --output {dirname}'
         command = command.format(dirname=self.temp_dir)
+        command = command + ' -l' if is_landing_zone else command
+        print(command)
         subprocess.call(command, shell=True)
 
     def read_config_file(self, config_file):
@@ -51,8 +53,9 @@ class Test(unittest.TestCase):
             f_csv = csv.DictReader(f)
             for row in f_csv:
                 self.validate_row(row, expected_fields)
+                break
 
-    def test_datagen_star_format_by_config(self):
+    def test_datagen_star_format_from_config(self):
         config = self.read_config_file(CONFIG_FILE_1)
         self.generate_data()
         time.sleep(3)
@@ -61,6 +64,13 @@ class Test(unittest.TestCase):
                 csv_file = os.path.join(self.temp_dir, csv_file_config + '.csv')
                 self.validate_file(csv_file, config['star']['csv'][csv_file_config])
 
+    def test_datagen_lz_format_from_config(self):
+        config = self.read_config_file(CONFIG_FILE_1)
+        self.generate_data(True)
+        time.sleep(3)
+        if 'lz' in config and 'csv' in config['lz']:
+            csv_file = os.path.join(self.temp_dir, 'REALDATA_RECORDS' + '.csv')
+            self.validate_file(csv_file, config['lz']['csv'])
 
 if __name__ == "__main__":
     unittest.main()

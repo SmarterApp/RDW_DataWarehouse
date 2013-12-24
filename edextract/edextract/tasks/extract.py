@@ -177,7 +177,7 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
 @celery.task(name="tasks.extract.remote_copy",
              ignore_result=True,
              max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             default_retry_delay=60)
 def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
     '''
     Remotely copies a source file to a remote machine

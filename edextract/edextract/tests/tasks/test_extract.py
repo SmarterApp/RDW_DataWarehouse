@@ -230,7 +230,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         request_id = '1'
         tenant = 'es'
         gatekeeper = 'foo'
-        sftp_info = '127.0.0.2'
+        sftp_info = ['127.0.0.2', 'nobody', '/dev/null']
         with tempfile.TemporaryDirectory() as dir:
             src_file_name = os.path.join(dir, 'src.txt')
             open(src_file_name, 'w').close()

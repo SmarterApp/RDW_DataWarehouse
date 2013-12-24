@@ -208,13 +208,13 @@ qa:
     mode: prod
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net//
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net//
       CELERY_IMPORTS: ('services.tasks.pdf',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
     extract.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net//
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net//
       CELERY_IMPORTS: ('edextract.tasks.extract',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
@@ -234,11 +234,11 @@ qa:
     edware:
       db:
         cat:
-          schema_name: edware_es_1_0
+          schema_name: edware_sds_1_3
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_es_1_0
+        schema_name: edware_sds_1_3
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     auth:
       idp:

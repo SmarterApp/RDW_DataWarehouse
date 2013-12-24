@@ -53,6 +53,9 @@ sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = ${WORKSPAC
 python compile_assets.py
 cd -
 
+cd ${WORKSPACE}/edcore
+python setup.py install
+cd -
 cd ${WORKSPACE}/edschema
 python setup.py install
 cd -

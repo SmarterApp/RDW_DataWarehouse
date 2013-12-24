@@ -18,6 +18,7 @@ requires = ['psycopg2',
 
 tests_require = requires + [
     'nose >= 1.2.1',
+    'pep8',
     'coverage', ]
 
 setup(name='DataGeneration',

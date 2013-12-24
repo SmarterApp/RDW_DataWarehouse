@@ -13,8 +13,10 @@ import glob
 import time
 import csv
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-CONFIGS_LOCATION = os.path.join(__location__, '..', 'datafiles/configs')
+DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
+components = DATAFILE_PATH.split(os.sep)
+DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
+CONFIGS_LOCATION = os.path.join(DATAFILE_PATH, 'datafiles', 'configs')
 
 
 class DataGenConfigTester(unittest.TestCase):

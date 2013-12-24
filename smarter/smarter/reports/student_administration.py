@@ -19,10 +19,10 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
                         fact_asmt_outcome.c.date_taken],
                        from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.state_code == state_code).\
-                  where(and_(fact_asmt_outcome.c.school_guid == school_guid)).\
-                  where(and_(fact_asmt_outcome.c.district_guid == district_guid)).\
-                  group_by(fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_subject, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome.c.date_taken).\
-                  order_by(fact_asmt_outcome.c.asmt_type.desc(), fact_asmt_outcome.c.date_taken.desc())
+            where(and_(fact_asmt_outcome.c.school_guid == school_guid)).\
+            where(and_(fact_asmt_outcome.c.district_guid == district_guid)).\
+            group_by(fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_subject, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome.c.date_taken).\
+            order_by(fact_asmt_outcome.c.asmt_type.desc(), fact_asmt_outcome.c.date_taken.desc())
         if (asmt_grade is not None):
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         if (student_guids is not None):

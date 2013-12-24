@@ -324,7 +324,6 @@ define [
     process: (data) ->
       data = this.appendColors data
       data = this.appendAlignmentOffset data
-      data = this.appendSortingAccessor data
       data
 
     appendColors: (data) ->
@@ -346,14 +345,6 @@ define [
             subjectData.alignment =  (((summaryDataAlignment - 100 + subjectData.sortedValue) * POPULATION_BAR_WIDTH) / 100) + 10
       data
 
-    appendSortingAccessor: (data) ->
-      for item in data
-        for subject of this.asmtSubjectsData
-          subjectData = item['results'][subject]
-          if subjectData
-            item[subjectData.asmt_subject] = subjectData.sort
-      data
-
       # Add color for each intervals
     appendColor: (data, colors) ->
       i = 0
@@ -364,6 +355,7 @@ define [
       while i < len
         element = intervals[i]
         element = {'count': 0, 'percentage': 0} if element is undefined
+        element.count = edwareUtil.formatNumber(element.count)
         if colors and colors[i]
           element.color = colors[i]
         else
@@ -381,6 +373,12 @@ define [
         i++
       # attach sort to data
       data.sortedValue = sort
+      # reformat
+      data.total = edwareUtil.formatNumber(data.total)
+      if data.unfilteredTotal
+        data.unfilteredTotal = edwareUtil.formatNumber(data.unfilteredTotal)
+        ratio = data.total * 100.0 / data.unfilteredTotal
+        data.ratio = edwareUtil.formatNumber(Math.round(ratio))
 
   class Alignment
 

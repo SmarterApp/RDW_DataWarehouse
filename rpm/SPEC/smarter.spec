@@ -153,7 +153,7 @@ if [ ! -d /var/log/celery-services ]; then
 fi
 if [ ! -d /var/log/celery-edextract ]; then
     mkdir -p /var/log/celery-edextract
-    chown celery.celery /var/log/celery-edextracts
+    chown celery.celery /var/log/celery-edextract
 fi
 
 

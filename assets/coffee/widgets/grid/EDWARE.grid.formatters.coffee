@@ -2,12 +2,11 @@ define [
   'jquery'
   'mustache'
   'jqGrid'
-  'edwareUtil'
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'
   'text!edwareFormatterTemplate'
-], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate) ->
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate) ->
 
   getTemplate = (name) ->
     $(edwareFormatterTemplate).find('div#' + name).html()
@@ -159,8 +158,6 @@ define [
     # display empty message
     return '' if not subject
     subject = processSubject options, rowObject
-    for interval in subject.intervals
-      interval.count = edwareUtil.formatNumber(interval.count) if interval
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject
       labels: options.colModel.labels
@@ -184,10 +181,6 @@ define [
   processSubject = (options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
-    subject.total = edwareUtil.formatNumber(subject.total)
-    subject.unfilteredTotal = edwareUtil.formatNumber(subject.unfilteredTotal)
-    ratio = subject.total * 100.0 / subject.unfilteredTotal
-    subject.ratio = edwareUtil.formatNumber(Math.round(ratio))
     exportable = options.colModel.export
     insufficient = parseInt(subject.total) <= 0
     subject.export = 'edwareExportColumn' if exportable

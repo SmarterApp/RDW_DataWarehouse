@@ -933,7 +933,7 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('--format', dest='output_format', action='store', default='configs/datagen_output_format_default.yaml',
                         help='Specify the DataGen output format needed.',
-                        required=True)
+                        required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
     parser.add_argument('-d', '--district-chunk-size', type=int, default=0,

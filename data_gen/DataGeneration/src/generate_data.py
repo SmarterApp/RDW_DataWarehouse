@@ -11,6 +11,8 @@ import argparse
 import os
 import math
 import random
+import yaml
+import pprint
 
 from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
@@ -880,7 +882,17 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True,
+def read_datagen_output_format_yaml(output_format_config_file):
+    """
+    Reads the yaml file and returns the config as python dict
+    @param config_file_path: path to the yaml config file
+    """
+    print(output_format_config_file)
+    output_format = yaml.load(open(output_format_config_file))
+    return output_format
+
+
+def main(output_format_config_file, config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True,
          landing_zone_format=False, single_file=True, district_chunk_size=0, gen_dim_staff=False):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
@@ -893,6 +905,11 @@ def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, s
 
     if not gen_dim_staff and Staff in output_dict:
         del output_dict[Staff]
+
+    if output_format_config_file:
+        output_format_dict = read_datagen_output_format_yaml(output_format_config_file)
+        pprint.pprint(output_format_dict)
+
     # generate_data
     generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format,
                                    single_file, district_chunk_size, gen_dim_staff)
@@ -914,6 +931,9 @@ if __name__ == '__main__':
     parser.add_argument('--config', dest='config_module', action='store', default='configs.dg_types',
                         help='Specify the configuration module that informs that data creation process.',
                         required=False)
+    parser.add_argument('--format', dest='output_format', action='store', default='configs/datagen_output_format_default.yaml',
+                        help='Specify the DataGen output format needed.',
+                        required=True)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
     parser.add_argument('-d', '--district-chunk-size', type=int, default=0,
@@ -934,5 +954,5 @@ if __name__ == '__main__':
     landing_zone = True if args.star_and_lz or args.lz_format else False
     single_file = not args.multi_lz_files
 
-    main(args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file,
+    main(args.output_format, args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file,
          args.district_chunk_size, args.staff)

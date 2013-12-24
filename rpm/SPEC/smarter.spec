@@ -137,6 +137,7 @@ cp -r virtualenv %{buildroot}/opt
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 
+
 %pre
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
@@ -146,17 +147,30 @@ fi
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
+if [ ! -d /var/log/celery-services ]; then
+    mkdir -p /var/log/celery-services
+    chown celery.celery /var/log/celery-services
+fi
+if [ ! -d /var/log/celery-edextract ]; then
+    mkdir -p /var/log/celery-edextract
+    chown celery.celery /var/log/celery-edextracts
+fi
+
 
 %post
 chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
 
+
+
 %preun
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 
+
 %postun
 userdel -rf celery > /dev/null 2>&1
+
 
 %changelog
 

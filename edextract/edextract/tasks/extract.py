@@ -195,10 +195,12 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
         try:
             # this looks funny to you, but this is just a working around solution for celery bug
             # since exc option is not really working for retry.
-            raise ExtractionError()
+            raise ExtractionError(str(e))
         except ExtractionError as exc:
             # this could be caused by network hiccup
             raise remote_copy.retry(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], exc=exc)
+    except Exception as e:
+        raise ExtractionError(str(e))
 
 
 @celery.task(name="tasks.extract.generate_json",

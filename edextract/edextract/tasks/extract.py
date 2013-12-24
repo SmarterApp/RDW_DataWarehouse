@@ -39,7 +39,6 @@ def route_tasks(tenant, request_id, tasks, queue_name='extract'):
 
 
 @celery.task(name='task.extract.start_extract',
-             ignore_result=True,
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks):
@@ -55,7 +54,6 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
 
 # fixme -> max_retries=get_setting(Config.MAX_RETRIES),
 @celery.task(name="tasks.extract.generate_csv",
-             ignore_result=True,
              max_retries=1,
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def generate_csv(tenant, request_id, task_id, query, output_file):
@@ -132,7 +130,6 @@ def archive(request_id, directory):
 
 
 @celery.task(name="tasks.extract.archive_with_encryption",
-             ignore_result=True,
              max_retries=1,
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def archive_with_encryption(request_id, recipients, encrypted_archive_file_name, directory):
@@ -175,7 +172,6 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
 
 
 @celery.task(name="tasks.extract.remote_copy",
-             ignore_result=True,
              max_retries=1,
              default_retry_delay=60)
 def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
@@ -204,7 +200,6 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
 
 
 @celery.task(name="tasks.extract.generate_json",
-             ignore_result=True,
              max_retries=1,
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def generate_json(tenant, request_id, task_id, query, output_file):

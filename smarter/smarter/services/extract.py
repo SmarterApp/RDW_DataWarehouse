@@ -17,6 +17,9 @@ from smarter.extract.processor import process_async_extraction_request,\
     process_sync_extract_request
 from smarter.extract.constants import ExtractType, Constants as Extract
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 TENANT_EXTRACT_PARAMS = {
     "type": "object",
@@ -177,6 +180,10 @@ def send_extraction_request(params):
     except TimeoutError as e:
         # if celery timed out...
         raise EdApiHTTPInternalServerError(e.msg)
+    except Exception as e:
+        # uknown exception was thrown.  Most likely configuration issue.
+        logger.error(str(e))
+        raise
     return response
 
 

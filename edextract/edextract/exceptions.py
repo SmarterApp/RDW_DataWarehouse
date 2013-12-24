@@ -30,8 +30,8 @@ class RemoteCopyError(EdExtractError):
     '''
     a custom exception raised when a sftp failed
     '''
-    def __init__(self):
-        self.msg = 'Remote Copy for Extraction failed'
+    def __init__(self, msg='Remote Copy for Extraction failed'):
+        self.msg = msg
         EdExtractError.__init__(self, self.msg)
 
 

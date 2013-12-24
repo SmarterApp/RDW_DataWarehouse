@@ -37,4 +37,3 @@ def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file
     status = proc.returncode
     if status != 0:
         raise RemoteCopyError(proc.stderr.read().decode())
-    return status

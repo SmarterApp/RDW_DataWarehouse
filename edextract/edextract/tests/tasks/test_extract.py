@@ -5,7 +5,7 @@ Created on Nov 7, 2013
 '''
 import unittest
 from edextract.tasks.extract import archive, generate_csv, generate_json, \
-    route_tasks
+    route_tasks, archive_with_encryption, remote_copy
 import tempfile
 import os
 import shutil
@@ -21,13 +21,20 @@ import csv
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
 import stat
+from edextract.settings.config import get_setting
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def setUp(self):
+        here = os.path.abspath(os.path.dirname(__file__))
+        gpg_home = os.path.abspath(os.path.join(here, "..", "..", "..", "..", "config", "gpg"))
         settings = {'extract.celery.BROKER_URL': 'memory',
-                    'extract.celery.CELERY_ALWAYS_EAGER': 'True'}
+                    'extract.gpg.keyserver': None,
+                    'extract.gpg.homedir': gpg_home,
+                    'extract.gpg.public_key.cat': 'kswimberly@amplify.com',
+                    'extract.celery.CELERY_ALWAYS_EAGER': 'True'
+                    }
         setup_celery(settings)
         self._tenant = get_unittest_tenant_name()
         self.__files = ['a.txt', 'b.txt', 'c.txt']
@@ -117,12 +124,21 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '22')
             output = os.path.join(self.__tmp_dir, 'asmt.json')
-            results = generate_json(self._tenant, 'request_id', 'task_id', query, output)
-            self.assertTrue(results)
+            results = generate_json.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+            results.get()
             self.assertTrue(os.path.exists(output))
             with open(output) as out:
                 data = json.load(out)
             self.assertEqual(data['asmt_guid'], '22')
+
+    def test_generate_json_not_writable(self):
+        with UnittestEdcoreDBConnection() as connection:
+            dim_asmt = connection.get_table('dim_asmt')
+            query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
+            query = query.where(dim_asmt.c.asmt_guid == '22')
+            output = os.path.join('', 'asmt.json')
+            results = generate_json.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+            self.assertRaises(ExtractionError, results.get)
 
     def test_generate_json_with_no_results(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -130,8 +146,11 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '2123122')
             output = os.path.join(self.__tmp_dir, 'asmt.json')
-            results = generate_json(self._tenant, 'request_id', 'task_id', query, output)
-            self.assertFalse(results)
+            results = generate_json.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+            results.get()
+            self.assertTrue(os.path.exists(output))
+            statinfo = os.stat(output)
+            self.assertEqual(0, statinfo.st_size)
 
     def test_generate_json_with_bad_file(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -139,8 +158,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '2123122')
             output = 'C:'
-            results = generate_json(self._tenant, 'request_id', 'task_id', query, output)
-            self.assertFalse(results)
+            results = generate_json.apply(args=[self._tenant, 'request_id', 'task_id', query, output])
+            self.assertRaises(ExtractionError, results.get)
 
     def test_route_tasks_json_request(self):
         tasks = [{TaskConstants.TASK_IS_JSON_REQUEST: True,
@@ -173,6 +192,50 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(tasks_group, group)
         self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_json('testtenant', 'request', 'abc', 'abc', 'abc')")
         self.assertEqual(str(tasks_group.kwargs['tasks'][1]), "tasks.extract.generate_csv('testtenant', 'request', 'def', 'def', 'def')")
+
+    def test_archive_with_encryption(self):
+        files = ['test_0.csv', 'test_1.csv', 'test.json']
+        with tempfile.TemporaryDirectory() as dir:
+            csv_dir = os.path.join(dir, 'csv')
+            os.mkdir(csv_dir)
+            gpg_file = os.path.join(dir, 'gpg', 'output.gpg')
+            os.mkdir(os.path.dirname(gpg_file))
+            for file in files:
+                with open(os.path.join(csv_dir, file), 'a') as f:
+                    f.write(file)
+
+            request_id = '1'
+            recipients = 'kswimberly@amplify.com'
+            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])
+            result.get()
+            self.assertTrue(os.path.exists(gpg_file))
+
+    def test_archive_with_encryption_no_recipients(self):
+        files = ['test_0.csv', 'test_1.csv', 'test.json']
+        with tempfile.TemporaryDirectory() as dir:
+            csv_dir = os.path.join(dir, 'csv')
+            os.mkdir(csv_dir)
+            gpg_file = os.path.join(dir, 'gpg', 'output.gpg')
+            os.mkdir(os.path.dirname(gpg_file))
+            for file in files:
+                with open(os.path.join(csv_dir, file), 'a') as f:
+                    f.write(file)
+
+            request_id = '1'
+            recipients = 'nobody@amplify.com'
+            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])
+            self.assertRaises(ExtractionError, result.get)
+
+    def test_remote_copy(self):
+        request_id = '1'
+        tenant = 'es'
+        gatekeeper = 'foo'
+        sftp_info = '127.0.0.2'
+        with tempfile.TemporaryDirectory() as dir:
+            src_file_name = os.path.join(dir, 'src.txt')
+            open(src_file_name, 'w').close()
+            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info])
+            self.assertRaises(ExtractionError, result.get)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

@@ -14,4 +14,4 @@ def prepare_path(filename):
     '''
     path = os.path.dirname(filename)
     if os.path.exists(path) is not True:
-        os.makedirs(os.path.dirname(path), 0o700)
+        os.makedirs(path, 0o700)

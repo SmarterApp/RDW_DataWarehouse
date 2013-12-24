@@ -148,12 +148,10 @@ if [ ! -d /opt/edware/log ]; then
 fi
 
 %post
-chkconfig --add celeryd
 chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
 
 %preun
-chkconfig --del celeryd
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 

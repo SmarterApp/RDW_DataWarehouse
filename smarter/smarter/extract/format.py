@@ -4,7 +4,7 @@ Created on Nov 14, 2013
 @author: dip
 '''
 from smarter.reports.helpers.constants import Constants
-from ref_table_data import ref_table_conf
+from config.ref_table_data import ref_table_conf
 from copy import deepcopy
 
 

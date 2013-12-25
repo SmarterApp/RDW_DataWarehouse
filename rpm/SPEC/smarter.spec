@@ -169,10 +169,7 @@ chkconfig --del celeryd-edextract
 
 
 %postun
-id celery > /dev/null 2>&1
-if [ $? != 0 ]; then
-    userdel -rf celery > /dev/null 2>&1
-fi
+userdel -rf celery > /dev/null 2>&1
 
 
 %changelog

@@ -140,7 +140,7 @@ cp -r virtualenv %{buildroot}/opt
 
 %pre
 id celery > /dev/null 2>&1
-if [ $? == 0 ]; then
+if [ $? != 0 ]; then
    useradd celery
 fi
 usermod -G fuse celery

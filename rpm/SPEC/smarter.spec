@@ -142,8 +142,8 @@ cp -r virtualenv %{buildroot}/opt
 id celery > /dev/null 2>&1
 if [ $? == 0 ]; then
    useradd celery
-   usermod -G fuse celery
 fi
+usermod -G fuse celery
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
@@ -156,17 +156,13 @@ if [ ! -d /var/log/celery-edextract ]; then
     chown celery.celery /var/log/celery-edextract
 fi
 
-
 %post
 chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
 
-
-
 %preun
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
-
 
 %postun
 userdel -rf celery > /dev/null 2>&1

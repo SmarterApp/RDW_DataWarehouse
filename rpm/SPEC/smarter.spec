@@ -140,7 +140,7 @@ cp -r virtualenv %{buildroot}/opt
 
 %pre
 id celery > /dev/null 2>&1
-if [ $? != 0 ]; then
+if [ $? == 0 ]; then
    useradd celery
    usermod -G fuse celery
 fi
@@ -170,7 +170,7 @@ chkconfig --del celeryd-edextract
 
 %postun
 id celery > /dev/null 2>&1
-if [ $? == 0 ] ; then
+if [ $? != 0 ]; then
     userdel -rf celery > /dev/null 2>&1
 fi
 

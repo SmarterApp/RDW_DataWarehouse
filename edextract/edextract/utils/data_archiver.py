@@ -8,18 +8,7 @@ import io
 import zipfile
 import gnupg
 import tempfile
-
-
-class GPGException(Exception):
-    def __init__(self, msg='gpg execution error'):
-        self.msg = msg
-        Exception.__init__(self, msg)
-
-
-class GPGPublicKeyException(GPGException):
-    def __init__(self, msg='public key is not available'):
-        self.msg = msg
-        GPGException.__init__(self, msg)
+from edextract.exceptions import GPGPublicKeyException, GPGException
 
 
 def import_recipient_keys(gpg, recipients, keyserver):

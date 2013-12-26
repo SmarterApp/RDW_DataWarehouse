@@ -6,7 +6,7 @@ Created on Sep 16, 2013
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.filters import NOT_STATED, \
     apply_filter_to_query, FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, \
-    FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_TT1, FILTERS_ETHNICITY, \
+    FILTERS_PROGRAM_LEP, FILTERS_ETHNICITY, \
     FILTERS_ETHNICITY_NOT_STATED, FILTERS_GENDER_NOT_STATED, FILTERS_GENDER
 from sqlalchemy.sql.expression import and_, true, select
 from smarter.reports.helpers import filters
@@ -84,7 +84,7 @@ class ComparingPopStatReport:
         # query gender
         results[FILTERS_GENDER] = self.run_query({FILTERS_GENDER: [FILTERS_GENDER_NOT_STATED]})
         # query program filters
-        for filterName in [FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_TT1]:
+        for filterName in [FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, FILTERS_PROGRAM_LEP]:
             filters = {filterName: [NOT_STATED]}
             results[filterName] = self.run_query(filters)
         return results

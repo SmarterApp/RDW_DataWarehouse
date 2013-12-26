@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import true, false, null, select
 from smarter.reports.helpers.filters import _get_filter,\
     has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, FILTERS_GENDER,\
     FILTERS_GENDER_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
-    FILTERS_GENDER_MALE, FILTERS_ETHNICITY_AMERICAN, FILTERS_PROGRAM_TT1,\
+    FILTERS_GENDER_MALE, FILTERS_ETHNICITY_AMERICAN,\
     FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
     UnittestEdcoreDBConnection
@@ -47,7 +47,6 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         self.assertTrue(has_filters({FILTERS_PROGRAM_IEP: 'a'}))
         self.assertTrue(has_filters({FILTERS_PROGRAM_504: 'a'}))
         self.assertTrue(has_filters({FILTERS_PROGRAM_LEP: 'a'}))
-        self.assertTrue(has_filters({FILTERS_PROGRAM_TT1: 'a'}))
         self.assertTrue(has_filters({FILTERS_ETHNICITY: 'a'}))
         self.assertTrue(has_filters({FILTERS_GENDER: 'a'}))
         self.assertTrue(has_filters({FILTERS_GRADE: 'a'}))
@@ -95,15 +94,6 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_504: [NOT_STATED]})
             self.assertIsNotNone(query._whereclause)
             self.assertIn("fact_asmt_outcome.dmg_prg_504", str(query._whereclause))
-
-    def test_apply_filter_to_query_with_tt1_filters(self):
-        with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.school_guid],
-                           from_obj=([fact_asmt_outcome]))
-            query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_TT1: [YES]})
-            self.assertIsNotNone(query._whereclause)
-            self.assertIn("fact_asmt_outcome.dmg_prg_tt1", str(query._whereclause))
 
     def test_apply_filter_to_query_with_ethnic_filters(self):
         with UnittestEdcoreDBConnection() as connection:

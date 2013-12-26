@@ -58,34 +58,34 @@
 			]
 		},
 		{
-			"display" : "Ethnicity",
-			"tag" : "Ethnicity",
+			"display" : "Race/Ethnicity",
+			"tag" : "Race/Ethnicity",
 			"name" : "ethnicity",
 			"comment" : "*Not Hispanic or Latino",
 			"options" : [
 				{
-					"label": "Hispanic or Latino (all races)",
+					"label": "Hispanic/Latino of any race",
 				  	"value": "3"
-				},
-				{
-					"label": "Black*",
-				  	"value": "1"
-				},
-				{
-					"label": "Asian*",
-				  	"value": "2"
-				},
-				{
-					"label": "White*",
-				  	"value": "6"
 				},
 				{
 					"label": "American Indian or Alaska Native*",
 				  	"value": "4"
 				},
 				{
+					"label": "Asian*",
+				  	"value": "2"
+				},
+				{
+					"label": "Black or African American*",
+				  	"value": "1"
+				},
+				{
 					"label": "Native Hawaiian or Pacific Islander*",
 				  	"value": "5"
+				},
+				{
+					"label": "White*",
+				  	"value": "6"
 				},
 				{
 					"label": "Two or more races*",
@@ -147,25 +147,6 @@
 				},{
 					"label" : "No",
 					"value" : "N"
-				},
-				{
-					"label": "Not Stated",
-				  	"value": "NS"
-				}
-			]
-		},
-		{
-			"display" : "Title 1",
-			"tag" : "Title 1",
-			"name" : "dmgPrgTt1",
-			"options" : [
-				{
-					"label": "Yes",
-				  	"value": "Y"
-				},
-				{
-					"label": "No",
-				  	"value": "N"
 				},
 				{
 					"label": "Not Stated",

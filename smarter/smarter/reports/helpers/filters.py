@@ -14,7 +14,6 @@ NONE = 'NONE'
 FILTERS_PROGRAM_504 = 'dmgPrg504'
 FILTERS_PROGRAM_IEP = 'dmgPrgIep'
 FILTERS_PROGRAM_LEP = 'dmgPrgLep'
-FILTERS_PROGRAM_TT1 = 'dmgPrgTt1'
 
 FILTERS_ETHNICITY_AMERICAN = '4'
 FILTERS_ETHNICITY_ASIAN = '2'
@@ -59,14 +58,6 @@ FILTERS_CONFIG = {
         }
     },
     FILTERS_PROGRAM_504: {
-        "type": "array",
-        "required": False,
-        "items": {
-            "type": "string",
-            "pattern": "^(" + YES + "|" + NO + "|" + NOT_STATED + ")$",
-        }
-    },
-    FILTERS_PROGRAM_TT1: {
         "type": "array",
         "required": False,
         "items": {
@@ -151,9 +142,6 @@ def apply_filter_to_query(query, fact_asmt_outcome, filters):
         filter_lep = _get_filter(FILTERS_PROGRAM_LEP, fact_asmt_outcome.c.dmg_prg_lep, filters)
         if filter_lep is not None:
             query = query.where(filter_lep)
-        filter_tt1 = _get_filter(FILTERS_PROGRAM_TT1, fact_asmt_outcome.c.dmg_prg_tt1, filters)
-        if filter_tt1 is not None:
-            query = query.where(filter_tt1)
         filter_grade = filters.get(FILTERS_GRADE)
         if filters.get(FILTERS_GRADE):
             query = query.where(fact_asmt_outcome.c.asmt_grade.in_(filter_grade))

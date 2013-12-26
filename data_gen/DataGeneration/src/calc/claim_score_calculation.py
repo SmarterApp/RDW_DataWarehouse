@@ -81,7 +81,7 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
 
         scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright))
+        claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright), 1)
         claim_scores.append(claim_score)
 
     return claim_scores

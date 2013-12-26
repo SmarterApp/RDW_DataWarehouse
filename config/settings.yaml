@@ -208,13 +208,13 @@ qa:
     mode: prod
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net//
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
       CELERY_IMPORTS: ('services.tasks.pdf',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
     extract.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net//
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
       CELERY_IMPORTS: ('edextract.tasks.extract',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
@@ -306,13 +306,13 @@ uat:
     mode: prod
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net//
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
       CELERY_IMPORTS: ('services.tasks.pdf',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
     extract.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net//
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
       CELERY_IMPORTS: ('edextract.tasks.extract',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours

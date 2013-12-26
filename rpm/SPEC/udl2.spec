@@ -109,8 +109,7 @@ if [ $? -ne 0 ]; then
 fi
 
 UDL2_ROOT=/opt/edware
-GLUSTER_MOUNT=$UDL2_ROOT/gluster/UDL
-UDL2_ZONES=$GLUSTER_MOUNT/zones
+UDL2_ZONES=$UDL2_ROOT/zones
 
 if [ ! -d $UDL2_ROOT/log ]; then
     mkdir -p $UDL2_ROOT/log
@@ -151,7 +150,7 @@ fi
 if [ ! -d $UDL2_ZONES/landing/history ]; then
     mkdir -p $UDL2_ZONES/landing/history
 fi
-chown -R udl2.udl2 $UDL2_ROOT/gluster/UDL
+chown -R udl2.udl2 $UDL2_ROOT/zones
 chown -R udl2.udl2 $UDL2_ROOT/log
 chown -R udl2.udl2 $UDL2_ROOT/conf
 

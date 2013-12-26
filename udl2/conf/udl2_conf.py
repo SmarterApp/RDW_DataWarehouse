@@ -52,12 +52,11 @@ udl2_conf = {
     'rabbitmq': {  # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         'RABBITMQ_SERVER_PATH': ['/opt/local/sbin/rabbitmq-server', '/usr/local/sbin/rabbitmq-server'],  # where the rabbitmq-server is located, we list all possible locations in your system.
     },
-    # zones folder will be inside the gluster mount and will be accessible from both UDL and DB server
     'zones': {  # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
-        'landing': '/opt/edware/gluster/UDL/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
-        'arrivals': '/opt/edware/gluster/UDL/zones/landing/arrivals/',  # this is where the file arrives.
-        'work': '/opt/edware/gluster/UDL/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
-        'history': '/opt/edware/gluster/UDL/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
+        'landing': '/opt/edware/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data
+        'arrivals': '/opt/edware/zones/landing/arrivals/',  # this is where the file arrives.
+        'work': '/opt/edware/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
+        'history': '/opt/edware/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
     },
     'work_zone_sub_dir': {
         'arrived': 'arrived',
@@ -84,7 +83,7 @@ udl2_conf = {
         'integration_schema': 'udl2',
         'ref_table_name': 'REF_COLUMN_MAPPING',
         'batch_table': 'UDL_BATCH',
-        'db_host': 'dbpgudl0.qa.dum.edwdc.net',
+        'db_host': 'localhost',
         'db_port': '5432',
         'db_name': 'udl2',
         'db_database': 'udl2',
@@ -101,7 +100,7 @@ udl2_conf = {
         'pool_size': 20,
     },
     'udl2_db_conn': {
-        'url': 'postgresql://udl2:udl2abc1234@dbpgudl0.qa.dum.edwdc.net:5432/udl2',
+        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
         'db_schema': 'udl2',
         'echo': False,
         'max_overflow': 10,

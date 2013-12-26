@@ -51,7 +51,7 @@ def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyse
     except Exception as e:
         # unrecoverable error
         raise GPGException(str(e))
-    # if output file does not exist, it's because direcotry is not writable or receipients were not available
+    # if output file does not exist, it's because directory is not writable or recipients were not available
     if not os.path.exists(outputfile):
         raise GPGException("failed to generate: " + outputfile)
 

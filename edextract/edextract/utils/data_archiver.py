@@ -32,7 +32,7 @@ def import_recipient_keys(gpg, recipients, keyserver):
 
 def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyserver=None, gpgbinary='gpg'):
     '''
-    create encrpyted archive file.
+    create encrypted archive file.
     '''
     try:
         data = archive_files(dirname).getvalue()

@@ -66,9 +66,6 @@ define [
       self = this
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, ()->
         self.renderGrid()
-      this.config.asmtTypes = for asmtType in config.students.customViews.asmtTypes
-        asmtType: asmtType.name
-        display: asmtType.name
 
     setFilter: (filter) ->
       this.filter = filter
@@ -76,8 +73,6 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
-      # set current query assessment type
-      param.asmtType = this.updateAsmtTypePreference()
       self = this
 
       loadingData = this.fetchData param
@@ -114,13 +109,6 @@ define [
       # no results
       $('#gridTable').jqGrid('GridUnload')
       edwareUtil.displayErrorMessage  this.labels['no_results']
-
-    updateAsmtTypePreference: () ->
-      if this.reportType in ['state', 'district']
-        # Reset back to summative
-        edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
-      # Use this assessment type for school view
-      edwarePreferences.getAsmtPreference().toUpperCase()
 
     updateFilter: ()->
       this.filter.update this.notStatedData

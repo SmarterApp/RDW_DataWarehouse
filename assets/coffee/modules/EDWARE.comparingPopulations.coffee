@@ -73,6 +73,7 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
+      param.asmtType = 'SUMMATIVE' # TODO: temporarily fix not_stated percentage in FT
       self = this
 
       loadingData = this.fetchData param

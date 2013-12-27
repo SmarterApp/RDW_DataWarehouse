@@ -220,6 +220,8 @@ qa:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
+      CELERY_DEFAULT_QUEUE : extract
+      CELERY_DEFAULT_ROUTING_KEY: extract
     extract.gpg:
       keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
     cache:
@@ -318,6 +320,8 @@ uat:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
+      CELERY_DEFAULT_QUEUE : extract
+      CELERY_DEFAULT_ROUTING_KEY: extract
     extract.gpg:
       keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
     cache:

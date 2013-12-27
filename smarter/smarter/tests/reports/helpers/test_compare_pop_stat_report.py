@@ -59,7 +59,6 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         self.assertEqual(results['dmgPrg504'], 3)
         self.assertEqual(results['dmgPrgIep'], 3)
         self.assertEqual(results['dmgPrgLep'], 1)
-        self.assertEqual(results['dmgPrgTt1'], 1)
         self.assertEqual(results['ethnicity'], 1)
         self.assertEqual(results['gender'], 1)
 
@@ -71,7 +70,6 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         self.assertEqual(results['dmgPrg504'], 7)
         self.assertEqual(results['dmgPrgIep'], 9)
         self.assertEqual(results['dmgPrgLep'], 9)
-        self.assertEqual(results['dmgPrgTt1'], 7)
         self.assertEqual(results['ethnicity'], 11)
         self.assertEqual(results['gender'], 1)
 
@@ -85,7 +83,6 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         self.assertEqual(results['dmgPrg504'], 4)
         self.assertEqual(results['dmgPrgIep'], 6)
         self.assertEqual(results['dmgPrgLep'], 8)
-        self.assertEqual(results['dmgPrgTt1'], 6)
         self.assertEqual(results['ethnicity'], 6)
         self.assertEqual(results['gender'], 0)
 

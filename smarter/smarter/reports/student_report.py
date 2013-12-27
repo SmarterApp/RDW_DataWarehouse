@@ -14,9 +14,10 @@ from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.constants import Constants
-from smarter.reports.helpers.metadata import get_custom_metadata,\
+from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
+from smarter.reports.student_administration import get_student_list_asmt_administration
 
 REPORT_NAME = 'individual_student_report'
 
@@ -183,8 +184,13 @@ def get_student_report(params):
         result = connection.get_result(query)
         if result:
             first_student = result[0]
+            state_code = first_student['state_code']
+            district_guid = first_student['district_guid']
+            school_guid = first_student['school_guid']
+            asmt_grade = first_student['grade']
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-            context = get_breadcrumbs_context(district_guid=first_student['district_guid'], school_guid=first_student['school_guid'], asmt_grade=first_student['grade'], student_name=student_name)
+            context = get_breadcrumbs_context(district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
+            student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade, [student_guid])
         else:
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
 
@@ -196,4 +202,5 @@ def get_student_report(params):
         result = __arrange_results(result, subjects_map, custom_metadata_map)
 
         result['context'] = context
+        result['asmt_administration'] = student_list_asmt_administration
     return result

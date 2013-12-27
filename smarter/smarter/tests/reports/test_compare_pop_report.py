@@ -342,45 +342,6 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 17)
 
-    def test_view_with_title1_yes(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants.DISTRICTGUID] = '229'
-        testParam[filters.FILTERS_PROGRAM_TT1] = ['Y']
-        results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
-
-    def test_view_with_title1_no(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants.DISTRICTGUID] = '229'
-        testParam[filters.FILTERS_PROGRAM_TT1] = ['N']
-        results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 3)
-
-    def test_view_with_title1_NS(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants.DISTRICTGUID] = '229'
-        testParam[filters.FILTERS_PROGRAM_TT1] = ['NS']
-        results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
-
-    def test_view_with_title1_multi(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants.DISTRICTGUID] = '229'
-        testParam[filters.FILTERS_PROGRAM_TT1] = ['Y', 'N', 'NS']
-        results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][2]['results']['subject1']['total'], 3)
-        self.assertEqual(results['records'][2]['results']['subject2']['total'], 3)
-
     def test_comparing_populations_min_cell_size(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
@@ -431,7 +392,6 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results['not_stated']['dmgPrg504'], 3)
         self.assertEqual(results['not_stated']['dmgPrgIep'], 3)
         self.assertEqual(results['not_stated']['dmgPrgLep'], 1)
-        self.assertEqual(results['not_stated']['dmgPrgTt1'], 1)
         self.assertEqual(results['not_stated']['ethnicity'], 1)
         self.assertEqual(results['not_stated']['gender'], 1)
 

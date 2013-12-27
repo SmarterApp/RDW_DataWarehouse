@@ -28,14 +28,14 @@ define ["jquery",
   
   module "EDWARE.header",
     setup: ->
-      $('head').append "<link rel='stylesheet' href='css/3p/bootstrap.min.css' />"
+      $('head').append "<link rel='stylesheet' href='/assets/css/3p/bootstrap.min.css' />"
       $("body").append "<div id='header'></div>"
       $("body").append "<div id='infoBarContainer'></div>"
       $("body").append "<div id='actionBarContainer'></div>"
       $("body").append "<div id='helpMenu'></div>"
 
     teardown: ->
-      $('link[rel=stylesheet][href~="css/3p/bootstrap.min.css"]').remove()
+      $('link[rel=stylesheet][href~="/assets/css/3p/bootstrap.min.css"]').remove()
       $('#header').remove()
       $('#infoBarContainer').remove()
       $('#actionBarContainer').remove()
@@ -51,64 +51,6 @@ define ["jquery",
     equal('Feedback', text_feedback)
     equal('Resources', text_resources)
     equal('Log Out', text_logout)
-
-  test "Test Survery Monkey Modal not opened", ->
-    edwareHeader.create data, config, reportName
-    display = $('#SurveryMonkeyModal').css 'display'
-    equal('none', display)
-
-  asyncTest "Test Survery Monkey Modal opened", ->
-    expect 1
-    edwareHeader.create data, config, reportName
-    $('#feedback').click()
-    setTimeout (->
-      display = $('#SurveryMonkeyModal').css 'display'
-      equal 'block', display
-      start()
-    ), 500
-
-  asyncTest "Test Rousources Modal", ->
-    expect 1
-    edwareHeader.create data, config, reportName
-    $('#resources').click()
-    setTimeout (->
-      display = $('#ResourcesModal').css 'display'
-      equal('block', display)
-      start()
-    ), 500
-
-  asyncTest "Test Username Popover open", ->
-    expect 1
-    edwareHeader.create data, config, reportName
-    $('#user-settings').click()
-    setTimeout (->
-      open = $('#header .dropdown').hasClass 'open'
-      equal(true, open)
-      start()
-    ), 500
-
-  asyncTest "Test Username Popover close", ->
-    expect 1
-    edwareHeader.create data, config, reportName
-    $('#user-settings').click()
-    setTimeout (->
-      $('#user-settings').mouseleave()
-      setTimeout (->
-        open = $('#header .dropdown').hasClass 'open'
-        equal(false, open)
-        start()
-      ), 500
-    ), 500
-
-  asyncTest "Test Help Modal", ->
-    expect 1
-    edwareHeader.create data, config, reportName
-    $('#help').click()
-    setTimeout (->
-      display = $('#HelpMenuModal').css 'display'
-      equal('block', display)
-      start()
-    ), 500
 
   test "Test ReportInfoBar class", ->
     ok ReportInfoBar, "should have a ReportInfoBar class"

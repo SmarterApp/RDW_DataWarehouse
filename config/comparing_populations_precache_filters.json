@@ -3,8 +3,6 @@
         {
             "dmgPrgIep": ["Y"]
         }, {
-            "dmgPrgTt1": ["Y"]
-        }, {
             "dmgPrgLep": ["Y"]
         }, {
             "grade": ["3"]
@@ -40,27 +38,6 @@
             "grade": ["8"]
         }, {
             "dmgPrgIep": ["Y"],
-            "grade": ["11"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["3"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["4"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["5"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["6"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["7"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["8"]
-        }, {
-            "dmgPrgTt1": ["Y"],
             "grade": ["11"]
         }, {
             "dmgPrgLep": ["Y"],
@@ -89,8 +66,6 @@
         {
             "dmgPrgIep": ["Y"]
         }, {
-            "dmgPrgTt1": ["Y"]
-        }, {
             "dmgPrgLep": ["Y"]
         }, {
             "grade": ["3"]
@@ -126,27 +101,6 @@
             "grade": ["8"]
         }, {
             "dmgPrgIep": ["Y"],
-            "grade": ["11"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["3"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["4"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["5"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["6"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["7"]
-        }, {
-            "dmgPrgTt1": ["Y"],
-            "grade": ["8"]
-        }, {
-            "dmgPrgTt1": ["Y"],
             "grade": ["11"]
         }, {
             "dmgPrgLep": ["Y"],

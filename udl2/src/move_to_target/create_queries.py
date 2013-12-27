@@ -27,7 +27,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
     insert_sql = ["INSERT INTO {target_shcema_and_table}(",
                   ",".join(list(column_mapping.keys())),
-                  ")  SELECT * FROM dblink(\'dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
+                  ")  SELECT * FROM dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
                   ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
                   " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
                   ",".join(list(column_types.values())),
@@ -35,6 +35,8 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
                                             db_password_target=conf[mk.TARGET_DB_PASSWORD],
                                             target_schema=conf[mk.TARGET_DB_SCHEMA],
+                                            host=conf[mk.SOURCE_DB_HOST],
+                                            port=conf[mk.SOURCE_DB_PORT],
                                             db_name=conf[mk.SOURCE_DB_NAME],
                                             db_user=conf[mk.SOURCE_DB_USER],
                                             db_password=conf[mk.SOURCE_DB_PASSWORD],

@@ -322,22 +322,26 @@ def create_helper_entities_from_lz_dict(lz_dict):
         {
             'claim_score': lz_dict['score_claim_1'],
             'claim_score_interval_minimum': lz_dict['score_claim_1_min'],
-            'claim_score_interval_maximum': lz_dict['score_claim_1_max']
+            'claim_score_interval_maximum': lz_dict['score_claim_1_max'],
+            'perf_lvl': lz_dict['asmt_claim_1_perf_lvl']
         },
         {
             'claim_score': lz_dict['score_claim_2'],
             'claim_score_interval_minimum': lz_dict['score_claim_2_min'],
-            'claim_score_interval_maximum': lz_dict['score_claim_2_max']
+            'claim_score_interval_maximum': lz_dict['score_claim_2_max'],
+            'perf_lvl': lz_dict['asmt_claim_2_perf_lvl']
         },
         {
             'claim_score': lz_dict['score_claim_3'],
             'claim_score_interval_minimum': lz_dict['score_claim_3_min'],
-            'claim_score_interval_maximum': lz_dict['score_claim_3_max']
+            'claim_score_interval_maximum': lz_dict['score_claim_3_max'],
+            'perf_lvl': lz_dict['asmt_claim_3_perf_lvl']
         },
         {
             'claim_score': lz_dict['score_claim_4'],
             'claim_score_interval_minimum': lz_dict['score_claim_4_min'],
-            'claim_score_interval_maximum': lz_dict['score_claim_4_max']
+            'claim_score_interval_maximum': lz_dict['score_claim_4_max'],
+            'perf_lvl': lz_dict['asmt_claim_4_perf_lvl']
         },
     ]
 

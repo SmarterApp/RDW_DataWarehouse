@@ -97,6 +97,10 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     row_dict['score_asmt_max'] = min(max(int(row_dict['score_asmt_max']) + offset, min_score), max_score)
     row_dict['score_perf_level'] = determine_perf_lvl(row_dict['score_asmt'], cut_points)
 
+    # assessment claim score cut points will divide the assessment score range in to three equal parts
+    step = (max_score - min_score)/3
+    asmt_claim_score_cut_points = [min_score + step, min_score + (step * 2)]
+
     # loop over each claim score, break from the loop if there are no more claims
     # or if the value cannot be converted to an int
     i = 0
@@ -106,6 +110,7 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
             row_dict['score_claim_{}'.format(i + 1)] = min(max(int(row_dict['score_claim_{}'.format(i + 1)]) + offset, min_score), max_score)
             row_dict['score_claim_{}_max'.format(i + 1)] = min(max(int(row_dict['score_claim_{}_max'.format(i + 1)]) + offset, min_score), max_score)
             row_dict['score_claim_{}_min'.format(i + 1)] = min(max(int(row_dict['score_claim_{}_min'.format(i + 1)]) + offset, min_score), max_score)
+            row_dict['asmt_claim_{}_perf_lvl'.format(i + 1)] = determine_perf_lvl(row_dict['score_claim_{}'.format(i + 1)], asmt_claim_score_cut_points)
         except KeyError:
             break
         except ValueError:

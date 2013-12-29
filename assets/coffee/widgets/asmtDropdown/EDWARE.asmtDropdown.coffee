@@ -6,38 +6,48 @@ define [
 ], ($, Mustache, AsmtDropdownTemplate, edwarePreferences) ->
 
   class EdwareAsmtDropdown
-    
+
     constructor: (@container, @dropdownValues, @callback) ->
       @initialize()
+      @setDefaultOption()
       @bindEvents()
-            
+
     initialize: () ->
       output = Mustache.to_html AsmtDropdownTemplate,
         dropdownValues: @dropdownValues
       @container.html(output)
+
+    setDefaultOption: () ->
       # set default option
-      savedAsmtType = edwarePreferences.getAsmtPreference()
-      defaultValue = $('li.asmtSelection[data-asmttype="' + savedAsmtType + '"]').data('display')
-      @setSelectedValue defaultValue
-      
+      asmt = edwarePreferences.getAsmtPreference()
+      if $.isEmptyObject(asmt)
+        # set first option as default value
+        asmt = @parseAsmtInfo $('.asmtSelection')
+        edwarePreferences.saveAsmtPreference asmt
+      @setSelectedValue asmt.display
+
     bindEvents: () ->
       self = this
       $('.asmtSelection', @container).click ->
-        $this = $(this)
-        display = $this.data('display')
-        asmtType = $this.data('asmttype')
-        subject = $this.data('value').split("_")
+        asmt = self.parseAsmtInfo $(this)
+        subject = asmt.asmtView.split("_")
         # save subject value
         edwarePreferences.saveSubjectPreference subject
         # save assessment type
-        edwarePreferences.saveAsmtPreference asmtType
-        self.setSelectedValue display
+        edwarePreferences.saveAsmtPreference asmt
+        self.setSelectedValue asmt.display
         # additional parameters
-        self.callback $this.data('value')
+        self.callback()
+
+    parseAsmtInfo: ($option) ->
+      display: $option.data('display')
+      asmtType: $option.data('asmttype')
+      asmtGuid: $option.data('asmtguid')?.toString()
+      asmtView: $option.data('value')
 
     setSelectedValue: (value) ->
       $('#selectedAsmtType').html value
-      
+
   # dropdownValues is an array of values to feed into dropdown
   (($)->
     $.fn.edwareAsmtDropdown = (dropdownValues, callback) ->

@@ -1,5 +1,5 @@
 define [], () ->
-  
+
   REPORT_NAME: {
     CPOP: 'comparing_populations'
     LOS:  'list_of_students'
@@ -20,5 +20,5 @@ define [], () ->
   ASMT_TYPE: {
     SUMMATIVE: 'Summative'
     INTERIM: 'Comprehensive Interim'
+    'COMPREHENSIVE INTERIM': 'Comprehensive Interim'
   }
-

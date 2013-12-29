@@ -15,19 +15,19 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
-  
+
   # claim score weight in percentage
   claimScoreWeightArray = {
     "MATH": ["40", "40", "20", "10"],
     "ELA": ["40", "30", "20", "10"]
   }
-  
+
   class EdwareISR
-    
+
     constructor: () ->
       self = this
-      configPromise = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
-      configPromise.done (configData) ->
+      loading = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
+      loading.done (configData) ->
         self.configData = configData
         self.initialize()
         self.loadPrintMedia()
@@ -36,6 +36,7 @@ define [
     loadPage: (template) ->
       @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @data.labels = @configData.labels
+      @grade = @data.context.items[3]
       @processData()
       @render()
       @createBreadcrumb()
@@ -44,7 +45,7 @@ define [
       #Grayscale logo for print version
       if @isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
-      
+
     initialize: () ->
       @params = edwareUtil.getUrlParams()
       @isPdf = @params['pdf']
@@ -52,13 +53,19 @@ define [
       @reportInfo = @configData.reportInfo
       @legendInfo = @configData.legendInfo
 
+    getAsmtGuid: () ->
+      if not @isPdf
+        asmt = edwarePreferences.getAsmtPreference()
+        asmt?.asmtGuid
+
     getCurrentAsmtType: () ->
       if @isPdf
         currentAsmtType = @params['asmtType']
-        currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
       else
-        edwarePreferences.getAsmtPreference()
-          
+        asmt = edwarePreferences.getAsmtPreference()
+        currentAsmtType = asmt?.asmtType
+      currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
+
     fetchData: () ->
       # Get individual student report data from the server
       self = this
@@ -68,7 +75,7 @@ define [
         params: @params
       loadingData.done (data) ->
         self.loadPage data
-    
+
     loadPrintMedia: () ->
       # Show grayscale
       edwareUtil.showGrayScale() if @isGrayscale
@@ -80,87 +87,87 @@ define [
         i = 0
         while i < this.data.items[asmt].length
           items = this.data.items[asmt][i]
-          
+
           # if cut points don't have background colors, then it will use default background colors
           j = 0
           while j < items.cut_point_intervals.length
             if !items.cut_point_intervals[j].bg_color
               $.extend(items.cut_point_intervals[j], @configData.colors[j])
             j++
-            
+
           if this.isGrayscale
             j = 0
             while j < items.cut_point_intervals.length
               $.extend(items.cut_point_intervals[j], @configData.grayColors[j])
               j++
-        
+
           # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
           # ex. assessmentSection0, assessmentSection1
           items.count = i
-        
+
           # set role-based content
           items.content = this.configData.content
-          
+
           # Select cutpoint color and background color properties for the overall score info section
           performance_level = items.cut_point_intervals[items.asmt_perf_lvl-1]
-          
+
           # Apply text color and background color for overall score summary info section
           items.score_color = performance_level.bg_color
           items.score_text_color = performance_level.text_color
           items.score_bg_color = performance_level.bg_color
           items.score_name = performance_level.name
-          
+
           # set level-based overall ald content
           overallALD = Mustache.render(this.configData.overall_ald[items.asmt_subject], items)
           overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
           items.overall_ald = overallALD
-          
+
           # set psychometric_implications content
           psychometricContent = Mustache.render(this.configData.psychometric_implications[asmt][items.asmt_subject], items)
-          
+
           # if the content is more than character limits then truncate the string and add ellipsis (...)
           psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
           items.psychometric_implications = psychometricContent
-          
+
           # set policy content
           grade = this.configData.policy_content[items.grade]
-          if grade 
+          if grade
             if items.grade is "11"
               policyContent = grade[items.asmt_subject]
               # if the content is more than character limits then truncate the string and add ellipsis (...)
-              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))          
+              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))
               items.policy_content = policyContent
             else if items.grade is "8"
               grade_asmt = grade[items.asmt_subject]
-              policyContent = grade_asmt[items.asmt_perf_lvl]            
+              policyContent = grade_asmt[items.asmt_perf_lvl]
               # if the content is more than character limits then truncate the string and add ellipsis (...)
-              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))             
+              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))
               items.policy_content = policyContent
-          
+
           # Claim section
           # For less than 4 claims, width of the claim box would be 28%
           # For 4 claims, the width of the claim box would be 20%
           items.claim_box_width = "28%" if items.claims.length < 4
           items.claim_box_width = "20%" if items.claims.length == 4
-          
-          # Add claim score weight 
+
+          # Add claim score weight
           j = 0
           while j < items.claims.length
             claim = items.claims[j]
             claim.assessmentUC = items.asmt_subject.toUpperCase()
-            
+
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
-            
+
             claimContent = this.configData.claims[items.asmt_subject]["description"][claim.indexer]
             # if the content is more than character limits then truncate the string and add ellipsis (...)
             claimContent = edwareUtil.truncateContent(claimContent, edwareUtil.getConstants("claims_characterLimits"))
             claim.desc = claimContent
-            
+
             claim.score_desc = this.configData.claims[items.asmt_subject]["scoreTooltip"][claim.indexer]
-            
+
             j++
           i++
-  
+
     createBreadcrumb: () ->
       $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb)
 
@@ -187,47 +194,47 @@ define [
     render: () ->
       asmtType = @getCurrentAsmtType()
       this.data.current = this.data.items[asmtType]
-      # use mustache template to display the json data    
+      # use mustache template to display the json data
       output = Mustache.to_html indivStudentReportTemplate, this.data
       $("#individualStudentContent").html output
-      
+
       this.renderClaimScoreRelativeDifference asmtType
-      
-      # Generate Confidence Level bar for each assessment      
+
+      # Generate Confidence Level bar for each assessment
       i = 0
       while i < this.data.items[asmtType].length
-        item = this.data.items[asmtType][i]       
+        item = this.data.items[asmtType][i]
         barContainer = "#assessmentSection" + i + " .confidenceLevel"
-        edwareConfidenceLevelBar.create item, 640, barContainer 
-        
+        edwareConfidenceLevelBar.create item, 640, barContainer
+
         j = 0
         while j < item.claims.length
           claim = item.claims[j]
           barContainer = "#assessmentSection" + i + " #claim" + [claim.indexer] + " .claimsBar"
-          edwareClaimsBar.create claim, 300, barContainer 
-          j++              
-        
-        
+          edwareClaimsBar.create claim, 300, barContainer
+          j++
+
+
         # Set the layout for practical implications and policy content section on print version
         printAssessmentInfoContentLength = 0
         printAssessmentOtherInfo = "#assessmentSection" + i + " li.inline"
         printAssessmentOtherInfoLength = $(printAssessmentOtherInfo).length
-        
+
         $(printAssessmentOtherInfo).each (index) ->
           printAssessmentInfoContentLength = printAssessmentInfoContentLength + $(this).html().length
-        
+
         charLimits = 702
         if printAssessmentOtherInfoLength < 2 or printAssessmentInfoContentLength > charLimits
           $(printAssessmentOtherInfo).removeClass "inline"
-        
+
         if printAssessmentInfoContentLength > charLimits
           assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
           $(assessmentInfo + " h1").css("display", "block")
           $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
-          $(assessmentInfo + " li:first-child").addClass("bottomLine")          
-          
+          $(assessmentInfo + " li:first-child").addClass("bottomLine")
+
         i++
-        
+
       # Show tooltip for claims on mouseover
       $(".arrowBox").popover
         html: true
@@ -242,22 +249,14 @@ define [
         content: ->
           e = $(this)
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
-      
-      # Generate footer links
-      # this.isrFooter = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.ISR, {
-      #   reportInfo: this.reportInfo
-      #   legendInfo: this.legendInfo,
-      #   subject: this.createSampleInterval this.data.items[asmtType][0], this.legendInfo.sample_intervals
-      #   labels: this.configData.labels
-      # }) unless this.isrFooter
-      
+
       this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
 
     createSampleInterval : (subject, sample_interval) ->
       # merge sample and subject information
       # the return value will be used to generate legend html page
       subject = $.extend(true, {}, subject, sample_interval)
-    
+
     #
     # render Claim Score Relative Difference (arrows)
     #
@@ -281,21 +280,21 @@ define [
             this.drawDownArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
           j++
         i++
-    
+
     # draw down triangle and arrow on target <div/>
-    #  
+    #
     drawUpArrow : (assessmentSectionId, indexer, claim_score_relative_difference) ->
       # find arraw drawing box ID
       claimArrowBox = assessmentSectionId + ' #claim' + indexer + ' #content' + indexer + '_upper'
       # style for vertical bar
       bar_height = claim_score_relative_difference
       image_y_position = 100 - claim_score_relative_difference
-      
+
       img = 'Claim_arrowhead_up'
       # style for vertical bar
       arrow_bar_class = "claim_score_arrow_bar claim_score_up_arrow_bar"
       this.drawArrow(claimArrowBox, img, image_y_position, arrow_bar_class, bar_height)
-        
+
     #
     # draw down triangle and arrow on target <div/>
     #
@@ -308,7 +307,7 @@ define [
       # style for vertical bar
       arrow_bar_class = "claim_score_arrow_bar claim_score_down_arrow_bar"
       this.drawArrow(claimArrowBox, img, image_y_position, arrow_bar_class, bar_height)
-    
+
     # draw triangle and arrow on target <div/>
     #
     drawArrow : (claimArrowBox, triangle_img, triangle_y_position, arrow_bar_class, bar_height) ->
@@ -329,12 +328,13 @@ define [
       $(claimArrowBox).append arrow_bar
 
     getAsmtTypes: () ->
-      asmtTypes = for asmt of @data.items
-        asmt
-      asmtTypes = asmtTypes.sort().reverse()
-      for asmt in asmtTypes
-        'asmtType': asmt
-        'display': asmt
-        'value': asmt
+      asmtTypes = []
+      for idx, asmt of @data.asmt_administration
+        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.display = "#{asmt.asmt_year} · #{@grade.name} · #{asmt.asmt_type}"
+        asmt.hasAsmtSubject = false
+        asmtTypes.push asmt
+      asmtTypes
+
 
   EdwareISR: EdwareISR

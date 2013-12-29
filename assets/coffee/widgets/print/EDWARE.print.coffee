@@ -6,7 +6,7 @@ define [
 ], ($, Mustache, PrintTemplate, edwarePreferences) ->
 
   class PrintModal
-  
+
     constructor: (@container) ->
       @initialize()
       @bindEvents()
@@ -24,7 +24,7 @@ define [
     print: () ->
       @hide()
       option = $('input[name=print]:checked', @container).val()
-      asmtType = $('#selectedAsmtType').text()
+      asmtType = edwarePreferences.getAsmtPreference().asmtType
       url = document.URL.replace("indivStudentReport","print")
       url = url.replace("#","")
       url += '&pdf=true'
@@ -38,9 +38,9 @@ define [
 
     hide: () ->
       $('#PrintModal').modal('hide')
-    
+
   create = (container) ->
     new PrintModal(container)
-  
+
   create: create
   PrintModal: PrintModal

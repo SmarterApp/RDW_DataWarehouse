@@ -3,7 +3,8 @@ require [
   "edwareFilter"
   "edwareDataProxy"
   "edwareConstants"
-], (edwareComparingPopulations,edwareFilter, edwareDataProxy, Constants) ->
+  "edwarePreferences"
+], (edwareComparingPopulations,edwareFilter, edwareDataProxy, Constants, edwarePreferences) ->
 
   reportName = Constants.REPORT_JSON_NAME.CPOP
 
@@ -17,3 +18,6 @@ require [
         populationGrid.reload param
       populationGrid.setFilter filter
       filter.loadReport()
+
+  # reset assessment type
+  edwarePreferences.clearAsmtPreference()

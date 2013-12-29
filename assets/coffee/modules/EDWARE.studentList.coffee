@@ -1,4 +1,3 @@
-#global define
 define [
   "jquery"
   "bootstrap"
@@ -17,55 +16,134 @@ define [
 
   LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
-  class StudentGrid
+  EdwareGridStickyCompare = edwareStickyCompare.EdwareGridStickyCompare
 
-    constructor: (config) ->
-      @initialize config
+  class StudentModel
 
-    initialize: (config) ->
-      this.config = config
-      this.defaultColors = config.colors
-      this.feedbackData = config.feedback
-      this.breadcrumbsConfigs = config.breadcrumb
-      this.reportInfo = config.reportInfo
-      this.studentsConfig = config.students
-      this.asmtTypes = config.students.customViews.asmtTypes
-      this.legendInfo = config.legendInfo
-      this.labels = config.labels
-      this.gridHeight = window.innerHeight - 212
-      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.reloadCurrentView.bind(this)
+    constructor: () ->
 
-    reload: (params) ->
-      self = this
-      @fetchData(params).done (data)->
-        data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": self.labels}))
-        self.data = data
-        self.assessmentsData = data.assessments
-        self.contextData = data.context
-        self.subjectsData = data.subjects
-        self.userData = data.user_info
-        self.cutPointsData = self.createCutPoints()
-        self.columnData = self.createColumns()
-        # append cutpoints into each individual assessment data
-        self.formatAssessmentsData self.cutPointsData
-        self.stickyCompare.setReportInfo Constants.REPORT_JSON_NAME.LOS, "student", params
-        # process breadcrumbs
-        self.renderBreadcrumbs(data.context)
-        self.renderReportInfo()
-        self.renderReportActionBar()
-        self.createHeaderAndFooter()
-        self.createGrid()
-        self.bindEvents()
+    init: (row, assessment, dataSet) ->
+      # Format student name
+      row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
+      # This is for links in drill down
+      row['params'] = {"studentGuid": row['student_guid']}
+      for key, value of assessment
+        cutpoint = dataSet.cutPointsData[key]
+        $.extend value, cutpoint
+        # display asssessment type in the tooltip title
+        subjectType = dataSet.subjectsData[key]
+        value.asmt_type = subjectType
+        # set default colors for out of range asmt_perf_lvl
+        if value.asmt_perf_lvl > value.cut_point_intervals.length
+          value.score_bg_color = "#D0D0D0"
+          value.score_text_color = "#000000"
+        else
+          value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].bg_color
+          value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].text_color
+      row
+
+
+  class StudentDataSet
+
+    constructor: (@config) ->
+      @cache = {}
+      @asmtTypes = config.students.customViews.asmtTypes
+
+    build: (@data) ->
+      @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
+      @assessmentsData  = data.assessments
+      #TODO change this dummy guid to actual key for caching assessments
+      @asmtGuid = 'dummyGuid'
+      @subjectsData = data.subjects
+      @cutPointsData = @createCutPoints()
+      @columnData = @createColumns()
+      @formatAssessmentsData()
 
     createCutPoints: () ->
-      cutPointsData = this.data.metadata.cutpoints
-      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),this.data))
+      cutPointsData = @data.metadata.cutpoints
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data))
       #if cut points don't have background colors, then it will use default background colors
       for key, items of cutPointsData
         for interval, i in items.cut_point_intervals
           if not interval.bg_color
-            $.extend(interval, this.defaultColors[i])
+            $.extend(interval, @config.colors[i])
       cutPointsData
+
+    createColumns: () ->
+      # Use mustache template to replace text in json config
+      # Add assessments data there so we can get column names
+      claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
+      combinedData = $.extend(true, {}, this.data.subjects)
+      combinedData.claims = claimsData
+      columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
+      columnData
+
+    # For each subject, filter out its data
+    # Also append cutpoints & colors into each assessment
+    formatAssessmentsData: () ->
+      asmtCache = {}
+      for asmt in @asmtTypes
+        asmtType = asmt['name']
+        asmtCache[asmtType] ?= {}
+        for assessments in @assessmentsData
+          assessment = assessments[asmtType]
+          continue if not assessment
+          row = StudentModel::init assessments, assessment, this
+          asmtCache[asmtType][@allSubjects] ?= []
+          asmtCache[asmtType][@allSubjects].push row
+
+          for key of assessment
+            subjectType = @subjectsData[key]
+            asmtCache[asmtType][subjectType] ?= []
+            asmtCache[asmtType][subjectType].push row
+      @cache[@asmtGuid] = asmtCache
+
+    getAsmtData: (viewName)->
+      # Saved asmtType and viewName
+      asmt = edwarePreferences.getAsmtPreference()
+      asmtGuid = @asmtGuid
+      if not @cache[asmtGuid]
+        #reload from server
+        window.location.reload()
+      asmtType = asmt.asmtType
+      data = @cache[asmtGuid][asmtType][viewName]
+      if data
+        for item in data
+          item.assessments = item[asmtType]
+      data
+
+
+  class StudentGrid
+
+    constructor: (@config) ->
+      @studentsDataSet = new StudentDataSet(config)
+      @feedbackData = config.feedback
+      @reportInfo = config.reportInfo
+      @studentsConfig = config.students
+      @legendInfo = config.legendInfo
+      @labels = config.labels
+      self = this
+      @stickyCompare ?= new EdwareGridStickyCompare @labels, ()->
+        self.updateView()
+
+    reload: (params) ->
+      @fetchData params
+      @stickyCompare.setReportInfo Constants.REPORT_JSON_NAME.LOS, "student", params
+
+    loadPage: (@data)->
+      @studentsDataSet.build data
+      @contextData = data.context
+      @subjectsData = data.subjects
+      @userData = data.user_info
+      @grade = @contextData['items'][3]
+
+      @renderBreadcrumbs(data.context)
+      @renderReportInfo()
+      @renderReportActionBar()
+      @createHeaderAndFooter()
+
+      @createGrid()
+      @bindEvents()
 
     bindEvents: ()->
       # Show tooltip for overall score on mouseover
@@ -98,11 +176,11 @@ define [
       this.assessmentsData
 
     renderBreadcrumbs: () ->
-      $('#breadcrumb').breadcrumbs(this.contextData, this.breadcrumbsConfigs)
+      $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
-        reportTitle: @contextData.items[2].name # set school name as the page title from breadcrumb
+        reportTitle: @contextData.items[2].name # school name
         reportName: Constants.REPORT_NAME.LOS
         reportInfoText: @config.reportInfo
         labels: @labels
@@ -110,153 +188,103 @@ define [
 
     renderReportActionBar: () ->
       self = this
-      @config.colorsData = @cutPointsData
+      @config.colorsData = @studentsDataSet.cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
-      asmtTypeDropdown = convertAsmtTypes this.studentsConfig.customViews, this.subjectsData
+      asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, (viewName) ->
-        # Add dark border color between Math and ELA section to emphasize the division
-        $('#gridWrapper').removeClass().addClass(viewName)
-        self.updateView viewName
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
+        self.updateView()
 
     createGrid: () ->
-      # Get asmtType from storage
-      defaultView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
-      this.updateView defaultView
-      # Set asmt Subject
+      @updateView()
+      #TODO Set asmt Subject
       subjects = []
-      for key, value of this.data.subjects
+      for key, value of @data.subjects
         subjects.push value
       edwarePreferences.saveSubjectPreference subjects
 
-    updateView: (viewName) ->
-      # Save asmtType and viewName
-      asmtType = edwarePreferences.getAsmtPreference()
-      this.viewName = viewName
-      this.renderGrid asmtType, viewName
-
-    reloadCurrentView: () ->
-      # this is the callback function for sticky compare to reload current view
-      this.updateView this.viewName
+    updateView: () ->
+      viewName = edwarePreferences.getAsmtPreference().asmtView
+      viewName = viewName || @studentsDataSet.allSubjects
+      # Add dark border color between Math and ELA section
+      $('#gridWrapper').removeClass().addClass(viewName)
+      this.renderGrid viewName
 
     fetchData: (params) ->
-      # Determine if the report is state, district or school view"
-      edwareDataProxy.getDatafromSource "/data/list_of_students",
+      self = this
+      loadingData = edwareDataProxy.getDatafromSource "/data/list_of_students",
         method: "POST"
         params: params
-
-    # For each subject, filter out its data
-    # Also append cutpoints & colors into each assessment
-    formatAssessmentsData: (assessmentCutpoints) ->
-      this.cache = {}
-      allSubjects = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
-      for asmt in this.asmtTypes
-        asmtType = asmt['name']
-        this.cache[asmtType] ?= {}
-        this.cache[asmtType][allSubjects] = [] if not this.cache[asmtType][allSubjects]
-        for row in this.assessmentsData
-          # Format student name
-          row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
-          # This is for links in drill down
-          row['params'] = {"studentGuid": row['student_guid']}
-          assessment = row[asmtType]
-          this.cache[asmtType][allSubjects].push row if assessment
-          for key, value of this.subjectsData
-            # check that we have such assessment first, since a student may not have taken it
-            if assessment and key of assessment
-              cutpoint = assessmentCutpoints[key]
-              $.extend assessment[key], cutpoint
-              assessment[key].asmt_type = value # display asssessment type in the tooltip title
-              if assessment[key].asmt_perf_lvl > assessment[key].cut_point_intervals.length # this is to prevent bad data where there is no color an asmt_perf_lvl that is out of range
-                assessment[key].score_bg_color = "#D0D0D0"
-                assessment[key].score_text_color = "#000000"
-              else
-                assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].bg_color
-                assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].text_color
-              # save the assessment to the particular subject
-              this.cache[asmtType][value] = [] if not this.cache[asmtType][value]
-              this.cache[asmtType][value].push row
+      loadingData.done (data)->
+        compiled = Mustache.render JSON.stringify(data), "labels": self.labels
+        self.loadPage JSON.parse compiled
 
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
 
-    renderGrid: (asmtType, viewName) ->
+    renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')
-      # get filtered data and we pass in the first columns' grid config field name for sticky chain list
-      filteredInfo = this.stickyCompare.getFilteredInfo(this.getAsmtData(asmtType, viewName), this.columnData[viewName][0]["items"][0]["field"])
+      asmtData = @studentsDataSet.getAsmtData(viewName)
+      filedName = @studentsDataSet.columnData[viewName][0]["items"][0]["field"]
+      # get filtered data and we pass in the first columns' config
+      # field name for sticky chain list
+      filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, filedName)
 
       self = this
       edwareGrid.create {
         data: filteredInfo.data
-        columns: this.columnData[viewName]
+        columns: @studentsDataSet.columnData[viewName]
         options:
-          gridHeight: this.gridHeight
+          gridHeight: window.innerHeight - 212
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
-      this.renderHeaderPerfBar(this.cutPointsData)
-
-    getAsmtData: (asmtType, viewName)->
-      data = this.cache[asmtType][viewName]
-      if data
-        for item in data
-          item.assessments = item[asmtType]
-      data
-
-    createColumns: () ->
-      # Use mustache template to replace text in json config
-      # Add assessments data there so we can get column names
-      claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
-      combinedData = $.extend(true, {}, this.data.subjects)
-      combinedData.claims = claimsData
-      columnData = JSON.parse(Mustache.render(JSON.stringify(this.studentsConfig), combinedData))
-      columnData
+      this.renderHeaderPerfBar()
 
     createDisclaimer: () ->
-      this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+      @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
 
-    renderHeaderPerfBar: (cutPointsData) ->
-      for key of cutPointsData
-          items = cutPointsData[key]
-          items.bar_width = 120
+    renderHeaderPerfBar: () ->
+      cutPointsData = @studentsDataSet.cutPointsData
+      for key, items of cutPointsData
+        items.bar_width = 120
+        score_range = items.asmt_score_max - items.asmt_score_min
 
-          items.asmt_score_min = items.asmt_score_min
-          items.asmt_score_max = items.asmt_score_max
+        # Calculate width for cutpoints other than first and last cutpoints
+        precedence = { interval: items.asmt_score_min }
+        for interval in items.cut_point_intervals
+          current_span = (interval.interval - precedence.interval)
+          interval.asmt_cut_point = items.bar_width * current_span / score_range
+          precedence = interval
+        # use mustache template to display the json data
+        output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
+        $("#"+key+"_perfBar").html(output)
 
-          # Last cut point of the assessment
-          items.last_interval = items.cut_point_intervals[items.cut_point_intervals.length-1]
 
-          items.score_min_max_difference =  items.asmt_score_max - items.asmt_score_min
+    convertAsmtTypes: (asmtAdministration) ->
+      selectors = {}
+      for asmt in asmtAdministration
+        # mapping asmt type to capitalized case
+        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.asmt_subject_text = "#{asmt.asmt_subject} Details"
+        # TODO change the combination to reflect actual link between asmts
+        key = [asmt.asmt_year, asmt.asmt_type]
+        selectors[key] ?= []
+        selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name}
+          · #{asmt.asmt_type}"
+        selectors[key].push asmt
+      for key, asmt of selectors
+        if asmt.length is 2
+          # add subjects combination
+          asmt.unshift
+            asmt_type: asmt[0].asmt_type
+            asmt_subject: "#{asmt[1].asmt_subject}_#{asmt[0].asmt_subject}"
+            asmt_subject_text: "#{asmt[1].asmt_subject} & #{asmt[0].asmt_subject}"
+        "display": asmt.display
+        "asmt": asmt
+        "hasAsmtSubject": true
 
-          # Calculate width for first cutpoint
-          items.cut_point_intervals[0].asmt_cut_point =  ((items.cut_point_intervals[0].interval - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width
-
-          # Calculate width for last cutpoint
-          items.last_interval.asmt_cut_point =  ((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width
-
-          # Calculate width for cutpoints other than first and last cutpoints
-          j = 1
-          while j < items.cut_point_intervals.length - 1
-            items.cut_point_intervals[j].asmt_cut_point =  ((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width
-            j++
-          # use mustache template to display the json data
-          output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
-          $("#"+key+"_perfBar").html(output)
-
-  convertAsmtTypes = (customViews, subjects) ->
-    items = []
-    copiedSubjects = jQuery.extend(true, {}, subjects);
-    # render dropdown
-    for asmtType in customViews.asmtTypes
-      copiedSubjects['asmtType'] = asmtType['display']
-      for key, value of customViews.items
-        items.push {
-          'value': Mustache.to_html(key, copiedSubjects)
-          'asmtType': asmtType['name']
-          'display': Mustache.to_html(value, copiedSubjects)
-        }
-    items
 
   StudentGrid: StudentGrid

@@ -3,7 +3,9 @@ require [
   "edwareFilter"
   "edwareDataProxy"
   "edwareConstants"
-], (edwareStudentList, edwareFilter, edwareDataProxy, Constants) ->
+  "edwarePreferences"
+], (edwareStudentList, edwareFilter, edwareDataProxy, Constants,
+  edwarePreferences) ->
 
   reportName = Constants.REPORT_JSON_NAME.LOS
 
@@ -12,6 +14,7 @@ require [
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (configs)->
       filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
+        $.extend param, edwarePreferences.getAsmtPreference()
         studentGrid.reload(param)
       filter.loadReport()
       filter.update {}

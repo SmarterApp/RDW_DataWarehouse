@@ -77,6 +77,8 @@ def get_list_of_students_report(params):
     asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
 
+    asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
+
     results = get_list_of_students(params)
     if not results and not has_filters(params):
         raise NotFoundException("There are no results")
@@ -141,7 +143,7 @@ def get_list_of_students_report(params):
     # query not stated students count
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
 
-    los_results['asmt_administration'] = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
+    los_results['asmt_administration'] = asmt_administration
 
     return los_results
 

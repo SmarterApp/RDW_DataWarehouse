@@ -142,8 +142,8 @@ cp -r virtualenv %{buildroot}/opt
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
    useradd celery
+   usermod -G fuse celery
 fi
-usermod -G fuse celery
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi

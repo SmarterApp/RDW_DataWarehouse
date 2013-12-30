@@ -61,17 +61,23 @@ class TestGenerateHelperEntities(unittest.TestCase):
         claim_score_val_1 = 1800
         claim_score_1_interval_minimum = 1700
         claim_score_1_interval_maximum = 1900
-        claim_score_1 = ClaimScore(claim_score_val_1, claim_score_1_interval_minimum, claim_score_1_interval_maximum)
+        perf_lvl_1 = 2
+        claim_score_1 = ClaimScore(claim_score_val_1, claim_score_1_interval_minimum,
+                                   claim_score_1_interval_maximum, perf_lvl_1)
 
         claim_score_val_2 = 1900
         claim_score_2_interval_minimum = 1800
         claim_score_2_interval_maximum = 2000
-        claim_score_2 = ClaimScore(claim_score_val_2, claim_score_2_interval_minimum, claim_score_2_interval_maximum)
+        perf_lvl_2 = 2
+        claim_score_2 = ClaimScore(claim_score_val_2, claim_score_2_interval_minimum,
+                                   claim_score_2_interval_maximum, perf_lvl_2)
 
         claim_score_val_3 = 1900
         claim_score_3_interval_minimum = 1800
         claim_score_3_interval_maximum = 2000
-        claim_score_3 = ClaimScore(claim_score_val_3, claim_score_3_interval_minimum, claim_score_3_interval_maximum)
+        perf_lvl_3 = 2
+        claim_score_3 = ClaimScore(claim_score_val_3, claim_score_3_interval_minimum,
+                                   claim_score_3_interval_maximum, perf_lvl_3)
 
         claim_scores = [claim_score_1, claim_score_2, claim_score_3]
         assessment_score = generate_assessment_score(overall_score, perf_lvl, interval_min, interval_max,
@@ -89,4 +95,5 @@ class TestGenerateHelperEntities(unittest.TestCase):
         claim_score_value = 1950
         claim_score_interval_minimum = 1850
         claim_score_interval_maximum = 2050
-        claim_score = generate_claim_score(claim_score_value, claim_score_interval_minimum, claim_score_interval_maximum)
+        perf_lvl = 2
+        claim_score = generate_claim_score(claim_score_value, claim_score_interval_minimum, claim_score_interval_maximum, perf_lvl)

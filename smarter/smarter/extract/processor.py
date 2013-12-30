@@ -25,6 +25,7 @@ from sqlalchemy.sql.expression import and_
 from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants
 from edapi.cache import cache_region
+from celery.canvas import chain
 
 
 log = logging.getLogger('smarter')
@@ -42,9 +43,9 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        prepare_paths.apply_async(args=[tenant, request_id, tasks], queue=TaskConstants.SYNC_QUEUE_NAME)
-        route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.SYNC_QUEUE_NAME)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME)
+        result = chain(prepare_paths.subtask(args=[tenant, request_id, tasks], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True),
+                       route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.SYNC_QUEUE_NAME),
+                       archive.subtask(args=[request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True)).delay()
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")

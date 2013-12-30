@@ -70,8 +70,8 @@ class TestGenerateEntities(unittest.TestCase):
             self.assertIsNone(student.to_date)
 
     def test_generate_assessment_outcomes_from_student_info(self):
-        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400) for i in range(3)]
-        claim_scores2 = [DummyClass(claim_score=1500 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1800) for i in range(4)]
+        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400, perf_lvl=1) for i in range(3)]
+        claim_scores2 = [DummyClass(claim_score=1500 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1800, perf_lvl=1) for i in range(4)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1),
                         'ELA': DummyClass(overall_score=1500, interval_min=1400, interval_max=1600, perf_lvl=2, claim_scores=claim_scores2)}
         student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
@@ -93,8 +93,8 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEqual(len(asmt_outcomes), 2)
 
     def test_generate_assessment_outcomes_from_student_info_2(self):
-        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400) for i in range(3)]
-        claim_scores2 = [DummyClass(claim_score=1500 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1800) for i in range(4)]
+        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400, perf_lvl=1) for i in range(3)]
+        claim_scores2 = [DummyClass(claim_score=1500 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1800, perf_lvl=1) for i in range(4)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1),
                         'ELA': DummyClass(overall_score=1500, interval_min=1400, interval_max=1600, perf_lvl=2, claim_scores=claim_scores2)}
         student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
@@ -128,7 +128,7 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEqual(len(asmt_outcomes), 4)
 
     def test_generate_assessment_outcomes_from_student_info_3(self):
-        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400) for i in range(3)]
+        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400, perf_lvl=1) for i in range(3)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1)}
 
         student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},
@@ -203,7 +203,7 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEqual(asmt_outcome.dmg_eth_derived, 3)
 
     def test_generate_assessment_outcomes_from_student_info_4(self):
-        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400) for i in range(4)]
+        claim_scores1 = [DummyClass(claim_score=1300 + i, claim_score_interval_minimum=1200, claim_score_interval_maximum=1400, perf_lvl=1) for i in range(4)]
         asmt_scores1 = {'Math': DummyClass(overall_score=2300, interval_min=2200, interval_max=2400, perf_lvl=4, claim_scores=claim_scores1)}
 
         student_info1 = DummyClass(student_rec_ids=[1, 2], student_guid='g123', section_guids={'Math': 'm123', 'ELA': 'e123'},

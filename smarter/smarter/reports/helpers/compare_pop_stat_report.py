@@ -19,7 +19,7 @@ def get_not_stated_count(params):
     not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
                          Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID),
                          Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID),
-                         Constants.ASMTTYPE: params.get(Constants.ASMTTYPE)}
+                         Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)}
     return ComparingPopStatReport(**not_stated_params).get_report()
 
 

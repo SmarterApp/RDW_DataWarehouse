@@ -72,8 +72,8 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     weighted_claim_scores = stats.distribute_by_percentages(asmt_score, range_min, range_max, percentages)
 
     # assessment claim score cut points will divide the assessment score range in to three equal parts
-    step = (assessment.asmt_score_max - assessment.asmt_score_min)/3
-    asmt_claim_score_cut_points = [assessment.asmt_score_min + step, assessment.asmt_score_min + (step*2)]
+    step = (assessment.asmt_score_max - assessment.asmt_score_min) / 3
+    asmt_claim_score_cut_points = [assessment.asmt_score_min + step, assessment.asmt_score_min + (step * 2)]
 
     for i in range(len(claim_list)):
         # Get basic claim information from claim tuple

@@ -98,7 +98,7 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
     row_dict['score_perf_level'] = determine_perf_lvl(row_dict['score_asmt'], cut_points)
 
     # assessment claim score cut points will divide the assessment score range in to three equal parts
-    step = (max_score - min_score)/3
+    step = (max_score - min_score) / 3
     asmt_claim_score_cut_points = [min_score + step, min_score + (step * 2)]
 
     # loop over each claim score, break from the loop if there are no more claims

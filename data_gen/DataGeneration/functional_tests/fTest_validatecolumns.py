@@ -22,6 +22,7 @@ ENTITY_TO_PATH_DICT = {'dim_inst_hier': os.path.join(DATAFILE_PATH, 'datafiles',
                        'dim_student': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
 
 
+@unittest.skip("skipping this test till starschema change has been made")
 class ColumnValidationFuncTest(unittest.TestCase):
 
     def setUp(self):

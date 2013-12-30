@@ -1,12 +1,12 @@
 {
     "content": "assessment", 
     "identification": {
-        "guid": "f3df315e-771a-4716-b571-f69e909e848b", 
+        "guid": "f0d58657-1822-4629-be7f-0196ac5da54b", 
         "type": "SUMMATIVE", 
         "year": "2015", 
         "period": "2015", 
         "version": "V1", 
-        "subject": "Math"
+        "subject": "ELA"
     }, 
     "overall": {
         "min_score": "1200", 
@@ -36,28 +36,28 @@
     }, 
     "claims": {
         "claim_1": {
-            "name": "Concepts & Procedures", 
+            "name": "Reading", 
             "min_score": "1200", 
             "max_score": "2400", 
-            "weight": "0.4"
+            "weight": "0.2"
         }, 
         "claim_2": {
-            "name": "Problem Solving and Modeling & Data Analysis", 
+            "name": "Writing", 
             "min_score": "1200", 
             "max_score": "2400", 
-            "weight": "0.45"
+            "weight": "0.25"
         }, 
         "claim_3": {
-            "name": "Communicating Reasoning", 
+            "name": "Speaking & Listening", 
             "min_score": "1200", 
             "max_score": "2400", 
-            "weight": "0.15"
+            "weight": "0.25"
         }, 
         "claim_4": {
-            "name": "", 
-            "min_score": "0", 
-            "max_score": "0", 
-            "weight": "0"
+            "name": "Research & Inquiry", 
+            "min_score": "1200", 
+            "max_score": "2400", 
+            "weight": "0.3"
         }
     }
 }

@@ -6,6 +6,7 @@ Created on Nov 5, 2013
 @author: ejen
 '''
 import csv
+import os.path
 import logging
 from edextract.celery import celery
 from edcore.database.edcore_connector import EdCoreDBConnection
@@ -27,17 +28,6 @@ from edextract.utils.json_formatter import format_json
 log = logging.getLogger('edextract')
 
 
-def route_tasks(tenant, request_id, tasks, queue_name='extract'):
-    '''
-    Given a list of tasks, route them to either generate_csv or generate_json depending on the task type
-    '''
-    generate_tasks = []
-    for task in tasks:
-        celery_task = generate_json if task.get(TaskConstants.TASK_IS_JSON_REQUEST, False) else generate_csv
-        generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task[TaskConstants.TASK_TASK_ID], task[TaskConstants.TASK_QUERY], task[TaskConstants.TASK_FILE_NAME]], queue=queue_name, immutable=True))  # @UndefinedVariable
-    return group(generate_tasks)
-
-
 @celery.task(name='task.extract.start_extract',
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
@@ -46,10 +36,43 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    workflow = chain(route_tasks(tenant, request_id, tasks, 'extract'),
+    workflow = chain(prepare_paths.subtask(args=[tenant, request_id, tasks, encrypted_archive_file_name], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
+                     route_tasks(tenant, request_id, tasks, TaskConstants.DEFAULT_QUEUE_NAME),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
     workflow.apply_async()
+
+
+@celery.task(name='task.extract.prepare_paths',
+             max_retries=get_setting(Config.MAX_RETRIES),
+             default_retry_delay=get_setting(Config.RETRY_DELAY))
+def prepare_paths(tenant, request_id, tasks, encrypted_archive_file_name):
+    task_info = {Constants.TASK_ID: prepare_paths.request.id,
+                 Constants.CELERY_TASK_ID: prepare_paths.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    try:
+        for task in tasks:
+            log.info('execute tasks.extract.prepare_paths for task ' + task[TaskConstants.TASK_TASK_ID])
+            prepare_path(task[TaskConstants.TASK_FILE_NAME])
+        log.info('execute tasks.extract.prepare_paths for enrypted_archive_file_name for request ' + request_id)
+        prepare_path(encrypted_archive_file_name)
+    except FileNotFoundError as e:
+        # which thrown from prepare_path
+        # unrecoverable error, do not try to retry celery task.  it's just wasting time.
+        log.error(e)
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
+        raise ExtractionError()
+
+
+def route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
+    '''
+    Given a list of tasks, route them to either generate_csv or generate_json depending on the task type
+    '''
+    generate_tasks = []
+    for task in tasks:
+        celery_task = generate_json if task.get(TaskConstants.TASK_IS_JSON_REQUEST, False) else generate_csv
+        generate_tasks.append(celery_task.subtask(args=[tenant, request_id, task[TaskConstants.TASK_TASK_ID], task[TaskConstants.TASK_QUERY], task[TaskConstants.TASK_FILE_NAME]], queue=queue_name, immutable=True))  # @UndefinedVariable
+    return group(generate_tasks)
 
 
 # fixme -> max_retries=get_setting(Config.MAX_RETRIES),
@@ -77,7 +100,8 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            prepare_path(output_file)
+            if not os.path.isdir(os.path.dirname(output_file)):
+                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
             with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as csvfile:
                 results = connection.get_streaming_result(query)  # this result is a generator
                 csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
@@ -101,6 +125,7 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
         retriable = True
         exception_thrown = True
 
+    print(exception_thrown)
     if exception_thrown:
         if retriable:
             # this looks funny to you, but this is just a working around solution for celery bug
@@ -143,7 +168,6 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
                      Constants.CELERY_TASK_ID: archive_with_encryption.request.id,
                      Constants.REQUEST_GUID: request_id}
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-        prepare_path(encrypted_archive_file_name)
         gpg_binary_file = get_setting(Config.BINARYFILE)
         homedir = get_setting(Config.HOMEDIR)
         keyserver = get_setting(Config.KEYSERVER)
@@ -216,7 +240,8 @@ def generate_json(tenant, request_id, task_id, query, output_file):
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            prepare_path(output_file)
+            if not os.path.isdir(os.path.dirname(output_file)):
+                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
             with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as outfile:
                 results = connection.get_result(query)
                 # There should only be one result in the list

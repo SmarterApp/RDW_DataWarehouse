@@ -46,7 +46,7 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
 @celery.task(name='task.extract.prepare_paths',
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def prepare_paths(tenant, request_id, tasks, encrypted_archive_file_name):
+def prepare_paths(tenant, request_id, tasks, encrypted_archive_file_name=None):
     task_info = {Constants.TASK_ID: prepare_paths.request.id,
                  Constants.CELERY_TASK_ID: prepare_paths.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -54,8 +54,9 @@ def prepare_paths(tenant, request_id, tasks, encrypted_archive_file_name):
         for task in tasks:
             log.info('execute tasks.extract.prepare_paths for task ' + task[TaskConstants.TASK_TASK_ID])
             prepare_path(task[TaskConstants.TASK_FILE_NAME])
-        log.info('execute tasks.extract.prepare_paths for enrypted_archive_file_name for request ' + request_id)
-        prepare_path(encrypted_archive_file_name)
+        if encrypted_archive_file_name is not None:
+            log.info('execute tasks.extract.prepare_paths for enrypted_archive_file_name for request ' + request_id)
+            prepare_path(encrypted_archive_file_name)
     except FileNotFoundError as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.

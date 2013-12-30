@@ -126,7 +126,6 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
         retriable = True
         exception_thrown = True
 
-    print(exception_thrown)
     if exception_thrown:
         if retriable:
             # this looks funny to you, but this is just a working around solution for celery bug

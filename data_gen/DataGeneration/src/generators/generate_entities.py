@@ -302,7 +302,6 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
     asmt_claim_perf_lvl_name_1 = claim_perf_level[0]
     asmt_claim_perf_lvl_name_2 = claim_perf_level[1]
     asmt_claim_perf_lvl_name_3 = claim_perf_level[2]
-    asmt_claim_perf_lvl_name_4 = claim_perf_level[3]
 
     asmt = Assessment(asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
                       asmt_grade, from_date, most_recent,
@@ -313,7 +312,7 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
                       asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
                       asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
                       asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
-                      to_date, asmt_claim_perf_lvl_name_1, asmt_claim_perf_lvl_name_2, asmt_claim_perf_lvl_name_3, asmt_claim_perf_lvl_name_4)
+                      to_date, asmt_claim_perf_lvl_name_1, asmt_claim_perf_lvl_name_2, asmt_claim_perf_lvl_name_3)
 
     return asmt
 

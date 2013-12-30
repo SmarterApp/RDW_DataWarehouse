@@ -18,7 +18,7 @@ components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
 CONFIGS_LOCATION = os.path.join(DATAFILE_PATH, 'datafiles', 'configs')
 
-@unittest.skip("skipping this test till starschema change has been made")
+
 class DataGenConfigTester(unittest.TestCase):
 
     def setUp(self):

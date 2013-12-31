@@ -235,6 +235,9 @@ qa:
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
+    pickup:
+      sftp.hostname: lzsftpudl0.qa.dum.edwdc.net
+      sftp.private_key_file: /home/celery/.ssh/id_rsa
     edware:
       db:
         cat:

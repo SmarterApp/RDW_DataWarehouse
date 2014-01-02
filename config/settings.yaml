@@ -237,7 +237,7 @@ qa:
       health_check.job.queue: health_check
     pickup:
       sftp.hostname: lzsftpudl0.qa.dum.edwdc.net
-      sftp.private_key_file: /home/celery/.ssh/id_rsa
+      sftp.private_key_file: /opt/edware/ssh/.ssh/id_rsa
     edware:
       db:
         cat:

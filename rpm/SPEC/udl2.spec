@@ -20,7 +20,7 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 
 
 %prep
-rm -rf virtualenv
+rm -rf virtualenv/udl2
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/udl2 %{buildroot}/opt/edware
@@ -33,8 +33,8 @@ cp ${WORKSPACE}/udl2/conf/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc
 
 %build
 export LANG=en_US.UTF-8
-virtualenv-3.3 --distribute virtualenv
-source virtualenv/bin/activate
+virtualenv-3.3 --distribute virtualenv/udl2
+source virtualenv/udl2/bin/activate
 
 cd ${WORKSPACE}/edschema
 python setup.py install
@@ -44,10 +44,11 @@ python setup.py install
 cd -
 
 deactivate
-find virtualenv/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
+find virtualenv/udl2/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
-cp -r virtualenv %{buildroot}/opt
+mkdir -p %{buildroot}/opt/virtualenv
+cp -r virtualenv/udl2 %{buildroot}/opt/virtualenv
 
 %clean
 rm -rf %{buildroot}
@@ -56,36 +57,36 @@ rm -rf %{buildroot}
 %defattr(644,root,root,-)
 /opt/edware/conf/celeryd-udl2.conf
 /opt/edware/conf/udl2_conf.py
-/opt/virtualenv/include/*
-/opt/virtualenv/lib/*
-/opt/virtualenv/lib64
-/opt/virtualenv/bin/activate
-/opt/virtualenv/bin/activate.csh
-/opt/virtualenv/bin/activate.fish
-/opt/virtualenv/bin/activate_this.py
-%attr(755,root,root) /opt/virtualenv/bin/easy_install
-%attr(755,root,root) /opt/virtualenv/bin/easy_install-3.3
-%attr(755,root,root) /opt/virtualenv/bin/initialize_udl2_database.sh
-%attr(755,root,root) /opt/virtualenv/bin/teardown_udl2_database.sh
-%attr(755,root,root) /opt/virtualenv/bin/initialize_udl2_system.sh
-%attr(755,root,root) /opt/virtualenv/bin/initialize_udl2_database_user.sh
-%attr(755,root,root) /opt/virtualenv/bin/initialize_udl2_directories.sh
-%attr(755,root,root) /opt/virtualenv/bin/initialize_udl2_database_user.sh
-%attr(755,root,root) /opt/virtualenv/bin/start_rabbitmq.sh
-%attr(755,root,root) /opt/virtualenv/bin/driver.py
-%attr(755,root,root) /opt/virtualenv/bin/add_tenant.sh
-%attr(755,root,root) /opt/virtualenv/bin/start_rabbitmq.py
-%attr(755,root,root) /opt/virtualenv/bin/pip
-%attr(755,root,root) /opt/virtualenv/bin/pip-3.3
-%attr(755,root,root) /opt/virtualenv/bin/python3.3
-%attr(755,root,root) /opt/virtualenv/bin/celery
-%attr(755,root,root) /opt/virtualenv/bin/celerybeat
-%attr(755,root,root) /opt/virtualenv/bin/celeryctl
-%attr(755,root,root) /opt/virtualenv/bin/celeryd
-%attr(755,root,root) /opt/virtualenv/bin/celeryd-multi
-%attr(755,root,root) /opt/virtualenv/bin/celeryev
-/opt/virtualenv/bin/python
-/opt/virtualenv/bin/python3
+/opt/virtualenv/udl2/include/*
+/opt/virtualenv/udl2/lib/*
+/opt/virtualenv/udl2/lib64
+/opt/virtualenv/udl2/bin/activate
+/opt/virtualenv/udl2/bin/activate.csh
+/opt/virtualenv/udl2/bin/activate.fish
+/opt/virtualenv/udl2/bin/activate_this.py
+%attr(755,root,root) /opt/virtualenv/udl2/bin/easy_install
+%attr(755,root,root) /opt/virtualenv/udl2/bin/easy_install-3.3
+%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/teardown_udl2_database.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_system.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database_user.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_directories.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database_user.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/driver.py
+%attr(755,root,root) /opt/virtualenv/udl2/bin/add_tenant.sh
+%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.py
+%attr(755,root,root) /opt/virtualenv/udl2/bin/pip
+%attr(755,root,root) /opt/virtualenv/udl2/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/udl2/bin/python3.3
+%attr(755,root,root) /opt/virtualenv/udl2/bin/celery
+%attr(755,root,root) /opt/virtualenv/udl2/bin/celerybeat
+%attr(755,root,root) /opt/virtualenv/udl2/bin/celeryctl
+%attr(755,root,root) /opt/virtualenv/udl2/bin/celeryd
+%attr(755,root,root) /opt/virtualenv/udl2/bin/celeryd-multi
+%attr(755,root,root) /opt/virtualenv/udl2/bin/celeryev
+/opt/virtualenv/udl2/bin/python
+/opt/virtualenv/udl2/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
 
 %pre

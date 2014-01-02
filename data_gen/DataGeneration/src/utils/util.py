@@ -210,6 +210,7 @@ def get_list_of_cutpoints(assessment):
         cut_points.append(assessment.asmt_cut_point_4)
     return cut_points
 
+
 def get_list_of_claim_cutpoints(assessment):
     '''
     Given an assessment object, return a list of claim cutpoints

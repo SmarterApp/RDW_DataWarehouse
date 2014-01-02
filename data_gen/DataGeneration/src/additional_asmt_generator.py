@@ -126,6 +126,7 @@ def get_claim_cut_points(json_dict):
     # TODO: read from json_dict once the information is available
     return [1600, 2000]
 
+
 def get_cut_points(json_dict):
     """
     Get a list of the cut points from the assessment dictionary

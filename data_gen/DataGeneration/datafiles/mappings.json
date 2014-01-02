@@ -59,6 +59,19 @@
         	"max_score": "asmt_claim_4_score_max",
         	"weight": "asmt_claim_4_score_weight"
     	}
+    },
+    "claim_performance_levels": {
+    	"level_1": {
+    		"name": "asmt_claim_perf_lvl_name_1",
+    		"cut_point": "claim_cut_point_1"
+    	},
+    	"level_2": {
+    		"name": "asmt_claim_perf_lvl_name_2",
+    		"cut_point": "claim_cut_point_2"
+    	},
+    	"level_3": {
+    		"name": "asmt_claim_perf_lvl_name_3",
+    		"cut_point": "asmt_score_max"
+    	}
     }
-    
 }

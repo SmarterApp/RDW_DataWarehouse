@@ -26,6 +26,7 @@ GUID = 'guid'
 OVERALL = 'overall'
 CLAIMS = 'claims'
 PERFORMANCE = 'performance_levels'
+CLAIM_PERFORMANCE = 'claim_performance_levels'
 
 
 def output_generated_asmts_to_json(assessments, output_dict):
@@ -55,7 +56,7 @@ def generate_json(assessment, mappings, output_path, filename_pattern):
             for key, col_name in mappings[json_section].items():
                 asmt_ord_dict[json_section][key] = get_val_from_assessment(assessment, col_name)
 
-        elif json_section == PERFORMANCE or json_section == CLAIMS:
+        elif json_section == PERFORMANCE or json_section == CLAIMS or json_section == CLAIM_PERFORMANCE:
             # loop through list and add vals
             asmt_ord_dict[json_section] = create_list_for_section(mappings[json_section], assessment)
 

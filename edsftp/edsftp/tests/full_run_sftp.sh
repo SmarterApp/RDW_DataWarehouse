@@ -1,5 +1,5 @@
 !/bin/bash
-cd /opt/wgen/edware-udl/udl2/edware/sftp
+cd /opt/wgen/edware-udl/udl2/edware/edsftp
 source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
 sudo python setup.py install
 sleep 5

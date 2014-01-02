@@ -14,7 +14,7 @@ tests_require = requires + [
     'nose == 1.3.0',
     'coverage == 3.6', ]
 
-setup(name='sftp',
+setup(name='edsftp',
       version='0.1',
       description='EdWare SFTP zone setup tool',
       classifiers=["Programming Language :: Python", ],

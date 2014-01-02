@@ -4,7 +4,7 @@ import unittest
 import os
 import shutil
 import tempfile
-from sftp.src import initialize_sftp_tenant
+from edsftp.src import initialize_sftp_tenant
 
 
 class TestInitializeTenant(unittest.TestCase):

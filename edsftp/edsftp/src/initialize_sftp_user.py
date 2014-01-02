@@ -6,7 +6,7 @@ import os
 import subprocess
 import pwd
 import shutil
-from sftp.src.util import cleanup_directory, create_path, group_exists,\
+from edsftp.src.util import cleanup_directory, create_path, group_exists,\
     change_owner
 
 

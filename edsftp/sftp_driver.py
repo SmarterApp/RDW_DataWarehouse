@@ -7,11 +7,11 @@ Module to initialize sftp zones and creating groups
 __author__ = 'sravi'
 
 import argparse
-from sftp.src.sftp_config import sftp_conf
-from sftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
-from sftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
-from sftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
-from sftp.src.initialize_sftp_user import create_sftp_user, delete_user
+from edsftp.src.sftp_config import sftp_conf
+from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
+from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
+from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
+from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
 
 
 if __name__ == "__main__":

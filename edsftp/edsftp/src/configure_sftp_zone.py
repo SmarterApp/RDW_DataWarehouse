@@ -8,7 +8,7 @@ __author__ = 'sravi'
 
 import os
 import shutil
-from sftp.src.util import create_path
+from edsftp.src.util import create_path
 
 
 def _create_sftp_base_dir(sftp_conf):

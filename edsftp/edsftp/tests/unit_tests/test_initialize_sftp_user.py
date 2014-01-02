@@ -6,12 +6,12 @@ import os
 import shutil
 import tempfile
 
-from sftp.src.initialize_sftp_user import delete_user,\
+from edsftp.src.initialize_sftp_user import delete_user,\
     _verify_user_tenant_and_group, get_user_path,\
     get_user_role_dir, get_user_home_dir, get_user_sftp_jail_dir
-from sftp.src.configure_sftp_groups import cleanup as clean_group
-from sftp.src.initialize_sftp_tenant import remove_tenant
-from sftp.src.util import create_path
+from edsftp.src.configure_sftp_groups import cleanup as clean_group
+from edsftp.src.initialize_sftp_tenant import remove_tenant
+from edsftp.src.util import create_path
 
 
 class TestInitSFTPUser(unittest.TestCase):

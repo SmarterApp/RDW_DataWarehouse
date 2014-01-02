@@ -11,6 +11,7 @@ class TestAssignStudentsSubjectsScores(unittest.TestCase):
     def test_assign_scores_for_subjects(self):
         gender_list = ['male', 'female']
         cut_points = [1200, 1400, 1800, 2100, 2400]
+        claim_cut_points = [1600, 2000]
         min_score = cut_points[0]
         max_score = cut_points[-1]
         subject = 'ELA'
@@ -48,12 +49,14 @@ class TestAssignStudentsSubjectsScores(unittest.TestCase):
                      'dmg_eth_nst': [25, 25, 25, 25],
                      'dmg_eth_2mr': [25, 25, 25, 25]}
 
-        assessment = generate_assessment('SUMMATIVE', str(2012), 2012, subject, grade, cut_points[0], cut_points[1], cut_points[2], None, '09/01/2011', True, to_date='09/01/2012')
+        assessment = generate_assessment('SUMMATIVE', str(2012), 2012, subject, grade, cut_points[0], cut_points[1],
+                                         cut_points[2], claim_cut_points[0], claim_cut_points[1], None,
+                                         '09/01/2011', True, to_date='09/01/2012')
         ebmin = 32
         ebmax = 8
         rndlo = -10
         rndhi = 25
-        assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_score, max_score, grade, subject, assessment, ebmin, ebmax, rndlo, rndhi)
+        assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_score, max_score, grade, subject, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)
 
         self._verify(studentinfo_list, demo_perf, cut_points, min_score, max_score, grade, subject, assessment, ebmin, ebmax, rndlo, rndhi)
 

@@ -375,7 +375,9 @@ class TestGenerateEntities(unittest.TestCase):
             'asmt_cut_point_3': 2100,
             'asmt_cut_point_4': 2200,
             'from_date': date(2013, 4, 15),
-            'most_recent': True
+            'most_recent': True,
+            'claim_cut_point_1': 1600,
+            'claim_cut_point_2': 2000,
         }
         a = generate_assessment(**params)
         self.assertIsInstance(a.asmt_rec_id, int)
@@ -387,7 +389,8 @@ class TestGenerateEntities(unittest.TestCase):
             'grades': [9, 10, 11],
             'cut_points': [1400, 1800, 2100],
             'from_date': date(2013, 4, 23),
-            'most_recent': True
+            'most_recent': True,
+            'claim_cut_points': [1600, 2000]
         }
         assessments = generate_assessments(**params)
         for assessment in assessments:

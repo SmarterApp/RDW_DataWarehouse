@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
         config_module.get_district_types = get_district_types
         config_module.get_state_types = get_state_types
         config_module.get_states = lambda *x: [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'}]
-        config_module.get_scores = lambda *x: {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100]}
+        config_module.get_scores = lambda *x: {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100], 'claim_cut_points': [1600, 2000]}
         config_module.get_temporal_information = lambda *x: {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2015', 'date_taken_month': ''}
         config_module.get_error_band = lambda *x: self.error_band_dict
 
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
     def test_generate_state_populations(self):
         states = [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'},
                   {'name': 'Example State 2', 'state_code': 'E2', 'state_type': 'typical_1'}]
-        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
         district_names = ['n{0}'.format(i) for i in range(30)]
         school_names = ['s{0}'.format(i) for i in range(30)]
         from_date = date.today()
@@ -156,7 +156,7 @@ class Test(unittest.TestCase):
     def test_generate_districts_for_state_population_chunk(self):
         state_populations_chunk = self.state_population
         state_populations_chunk.subject_percentages = {'Math': .99, 'ELA': .99}
-        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
         eb_dict = self.error_band_dict
         district_names = ['n{0}'.format(i) for i in range(30)]
         school_names = ['s{0}'.format(i) for i in range(30)]
@@ -174,7 +174,7 @@ class Test(unittest.TestCase):
         state_populations_chunk = self.state_population
         state_populations_chunk.districts = state_populations_chunk.districts[0:2]
         state_populations_chunk.subject_percentages = {'Math': .99, 'ELA': .99}
-        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
         eb_dict = self.error_band_dict
         district_names = ['n{0}'.format(i) for i in range(30)]
         school_names = ['s{0}'.format(i) for i in range(30)]
@@ -208,7 +208,7 @@ class Test(unittest.TestCase):
         subject_percentages = {'Math': .99, 'ELA': .99}
         school_grade_counts = {11: [round(x) for x in school_pop.school_demographics[11]['all'][1:]]}
         school = generate_school('High School', school_names, school_names, school_grade_counts, 'dist1', 'dguid')
-        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
 
         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
         result = gd2.get_school_population(school, student_info_dict, subject_percentages, self.demo_obj, self.demo_id,
@@ -229,7 +229,7 @@ class Test(unittest.TestCase):
         subject_percentages = {'Math': .99, 'ELA': .99}
         school_grade_counts = {11: [round(x) for x in school_pop.school_demographics[11]['all'][1:]]}
         school = generate_school('High School', school_names, school_names, school_grade_counts, 'dist1', 'dguid')
-        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
 
         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
         result = gd2.get_school_population(school, student_info_dict, subject_percentages, self.demo_obj, self.demo_id,
@@ -444,7 +444,7 @@ class Test(unittest.TestCase):
         street_names = ['st{0}'.format(i) for i in range(30)]
         district = he.District('guid1', 'District9', 'Big Average', district_pop.schools)
         subject_percentages = {'Math': .99, 'ELA': .99}
-        assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
 
         result = gd2.create_schools(district, school_names, school_names, student_info_dict, subject_percentages,
@@ -468,7 +468,7 @@ class Test(unittest.TestCase):
         school_names = ['s{0}'.format(i) for i in range(30)]
         street_names = ['st{0}'.format(i) for i in range(30)]
         subject_percentages = {'Math': .99, 'ELA': .99}
-        assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], [1600, 2000], date.today(), True)
         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
 
         results = gd2.create_districts(self.state_population, district_names, district_names, school_names, school_names,
@@ -493,7 +493,7 @@ class Test(unittest.TestCase):
                                                   'dmg_eth_ami': [2, 48, 12, 12, 12, 12],
                                                   'dmg_eth_blk': [2, 24, 6, 6, 6, 6]}
                                               }
-        assessments = generate_assessments([grade], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([grade], [1400, 1800, 2100], [1600, 2000], date.today(), True)
 
         result = gd2.generate_students_info_from_demographic_counts(state_pop, assessments, self.error_band_dict)
 
@@ -513,7 +513,7 @@ class Test(unittest.TestCase):
                                                   'dmg_eth_ami': [2, 48, 12, 12, 12, 12],
                                                   'dmg_eth_blk': [2, 24, 5.5, 5.2, 6, 6]}
                                               }
-        assessments = generate_assessments([grade], [1400, 1800, 2100], date.today(), True)
+        assessments = generate_assessments([grade], [1400, 1800, 2100], [1600, 2000], date.today(), True)
 
         result = gd2.generate_students_info_from_demographic_counts(state_pop, assessments, self.error_band_dict)
 

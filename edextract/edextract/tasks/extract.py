@@ -43,7 +43,7 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     workflow.apply_async()
 
 
-@celery.task(name='task.extract.prepare_paths')
+@celery.task(name='task.extract.prepare_path')
 def prepare_path(tenant, request_id, paths):
     '''
     Given a list of paths of directories, creates it if it doesn't exist

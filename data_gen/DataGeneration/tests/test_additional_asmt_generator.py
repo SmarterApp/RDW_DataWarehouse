@@ -124,7 +124,8 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'asmt_claim_4_perf_lvl': '',
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-25, -25), cutpoints, '1200', '2400')
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (-25, -25), cutpoints, '1200', '2400', claim_cutpoints)
         expected = {
             'score_asmt': 1475,
             'score_asmt_max': 1500,
@@ -174,7 +175,8 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (550, 550), cutpoints, 1200, 2400)
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (550, 550), cutpoints, 1200, 2400, claim_cutpoints)
         expected = {
             'score_asmt': 2050,
             'score_asmt_max': 2075,
@@ -224,7 +226,8 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (550, 550), cutpoints, '1200', '2400')
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (550, 550), cutpoints, '1200', '2400', claim_cutpoints)
         expected = {
             'score_asmt': 2400,
             'score_asmt_max': 2400,
@@ -274,7 +277,8 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400)
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400, claim_cutpoints)
         expected = {
             'score_asmt': 1200,
             'score_asmt_max': 1200,
@@ -324,7 +328,8 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400)
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400, claim_cutpoints)
         expected = {
             'score_asmt': 1200,
             'score_asmt_max': 1200,
@@ -711,6 +716,20 @@ def get_json_data():
             "level_5": {
                 "name": "",
                 "cut_point": ""
+            }
+        },
+        "claim_performance_levels": {
+            "level_1": {
+                "name": "Below Standard",
+                "cut_point": "1600"
+            },
+            "level_2": {
+                "name": "At or Near Standard",
+                "cut_point": "2000"
+            },
+            "level_3": {
+                "name": "Above Standard",
+                "cut_point": "2400"
             }
         }
     }

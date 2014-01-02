@@ -9,7 +9,7 @@ import datetime
 import DataGeneration.src.calc.stats as stats
 
 
-def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi):
+def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points):
     '''
     Translate a list of assessment scores to AssessmentScore objects
     @param scores: list containing score integers
@@ -37,7 +37,7 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
 
         scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_scores = calculate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
+        claim_scores = calculate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)
         asmt_create_date = datetime.date.today().strftime('%Y%m%d')
         asmt_score = generate_assessment_score(score, perf_lvl, round(ebleft), round(ebright), claim_scores, asmt_create_date)
 
@@ -46,7 +46,7 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
     return score_list
 
 
-def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
+def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points):
     '''
     Calculate a students claim scores from their overall score. Calculate the associated
     claim error bands as well and store in ClaimScore Objects.
@@ -71,10 +71,6 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     range_max = assessment.asmt_claim_1_score_max
     weighted_claim_scores = stats.distribute_by_percentages(asmt_score, range_min, range_max, percentages)
 
-    # assessment claim score cut points will divide the assessment score range in to three equal parts
-    step = (assessment.asmt_score_max - assessment.asmt_score_min) / 3
-    asmt_claim_score_cut_points = [assessment.asmt_score_min + step, assessment.asmt_score_min + (step * 2)]
-
     for i in range(len(claim_list)):
         # Get basic claim information from claim tuple
         claim_minimum_score = claim_list[i][0]
@@ -86,7 +82,7 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
         scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
         claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright),
-                                           determine_claim_perf_level(scaled_claim_score, asmt_claim_score_cut_points))
+                                           determine_claim_perf_level(scaled_claim_score, claim_cut_points))
         claim_scores.append(claim_score)
 
     return claim_scores
@@ -95,7 +91,7 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
 def determine_claim_perf_level(score, cut_points):
     """
     Determine the performance level of the score
-    :param score: the claim score
+    :param score: the claim score. It is assumed the claim score will be with in the min and max score range for that assessment
     :param cut_points: A list of cut points that excludes min and max scores
     :return: the claim performance level
     """

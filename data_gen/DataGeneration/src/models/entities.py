@@ -84,6 +84,7 @@ class Assessment:
                  asmt_claim_3_score_min=None, asmt_claim_3_score_max=None, asmt_claim_3_score_weight=None,
                  asmt_claim_4_score_min=None, asmt_claim_4_score_max=None, asmt_claim_4_score_weight=None,
                  asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
+                 claim_cut_point_1=None, claim_cut_point_2=None,
                  to_date=None, asmt_claim_perf_lvl_name_1=None, asmt_claim_perf_lvl_name_2=None,
                  asmt_claim_perf_lvl_name_3=None):
         '''
@@ -134,6 +135,9 @@ class Assessment:
         self.asmt_cut_point_2 = asmt_cut_point_2
         self.asmt_cut_point_3 = asmt_cut_point_3
         self.asmt_cut_point_4 = asmt_cut_point_4
+
+        self.claim_cut_point_1 = claim_cut_point_1
+        self.claim_cut_point_2 = claim_cut_point_2
 
         self.to_date = to_date
         self.most_recent = most_recent

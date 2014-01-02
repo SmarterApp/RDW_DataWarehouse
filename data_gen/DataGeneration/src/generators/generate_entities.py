@@ -242,6 +242,7 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
 
 def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, asmt_grade,
                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                        claim_cut_point_1, claim_cut_point_2,
                         from_date, most_recent, to_date=None):
     '''
     Given Assessment information, create an Assessment object
@@ -312,12 +313,13 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
                       asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
                       asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
                       asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                      claim_cut_point_1, claim_cut_point_2,
                       to_date, asmt_claim_perf_lvl_name_1, asmt_claim_perf_lvl_name_2, asmt_claim_perf_lvl_name_3)
 
     return asmt
 
 
-def generate_assessments(grades, cut_points, from_date, most_recent, to_date=None):
+def generate_assessments(grades, cut_points, claim_cut_points, from_date, most_recent, to_date=None):
     '''
     Generate all possible assessments for the given grades
 
@@ -328,6 +330,9 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
     asmt_cut_point_2 = cut_points[1]
     asmt_cut_point_3 = cut_points[2]
     asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else None
+
+    claim_cut_point_1 = claim_cut_points[0]
+    claim_cut_point_2 = claim_cut_points[1]
 
     asmt_years = sorted(constants.ASSMT_SCORE_YEARS)
     # TODO: de-couple constants from this method.  Pass the constant values in via parameters.
@@ -340,8 +345,10 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
                     for index_of_year in range(len(asmt_years)):
                         most_recent = (index_of_year == len(asmt_years) - 1)
                         asmt_period_year = asmt_years[index_of_year]
-                        assessment = generate_assessment(asmt_type, asmt_period + ' ' + str(asmt_period_year), asmt_period_year, asmt_subject, asmt_grade,
-                                                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                        assessment = generate_assessment(asmt_type, asmt_period + ' ' + str(asmt_period_year),
+                                                         asmt_period_year, asmt_subject, asmt_grade,
+                                                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3,
+                                                         asmt_cut_point_4, claim_cut_point_1, claim_cut_point_2,
                                                          from_date, most_recent, to_date=to_date)
                         assessments.append(assessment)
     return assessments

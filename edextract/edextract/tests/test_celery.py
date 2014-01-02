@@ -18,7 +18,8 @@ class TestCelery(unittest.TestCase):
         self.assertEqual(celery.conf['CELERY_ALWAYS_EAGER'], True)
 
     def test_run_cron_cleanup(self):
-        settings = {'extract.cleanup.schedule.cron.year': '2014',
+        # 2036 is currently the maximum year that is acceptable by python apscheduler.
+        settings = {'extract.cleanup.schedule.cron.year': '2036',
                     'extract.cleanup.schedule.cron.month': '1-12',
                     'extract.cleanup.schedule.cron.day': '1',
                     'extract.cleanup.schedule.cron.week': '1',
@@ -28,7 +29,8 @@ class TestCelery(unittest.TestCase):
         run_cron_cleanup(settings)
 
     def test_run_cron_cleanup_bad_config(self):
-        settings = {'extract.cleanup.schedule.cron.year': '2014',
+        # 2036 is currently the maximum year that is acceptable by python apscheduler.
+        settings = {'extract.cleanup.schedule.cron.year': '2036',
                     'extract.cleanup.schedule.cron.month': '1-12',
                     'extract.cleanup.schedule.cron.day': '1',
                     'extract.cleanup.schedule.cron.day_of_week': '3',

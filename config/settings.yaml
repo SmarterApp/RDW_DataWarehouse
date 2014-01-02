@@ -213,7 +213,7 @@ qa:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
-    extract.work_zone_base_dir: /mnt/gluster/extraction
+    extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
       CELERY_IMPORTS: ('edextract.tasks.extract',)

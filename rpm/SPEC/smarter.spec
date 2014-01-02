@@ -88,7 +88,7 @@ echo -e "/opt/edware/smarter\n." > virtualenv/smarter/lib/python3.3/site-package
 find virtualenv/smarter/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
-cp -r virtualenv/smarter %{buildroot}/opt
+cp -r virtualenv/smarter %{buildroot}/opt/smarter
 
 
 %clean

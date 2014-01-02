@@ -223,7 +223,7 @@ qa:
       CELERY_DEFAULT_QUEUE : extract
       CELERY_DEFAULT_ROUTING_KEY: extract
     extract.gpg:
-      homedir = /opt/edware/conf/gpg
+      homedir : /opt/edware/conf/gpg
       keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121

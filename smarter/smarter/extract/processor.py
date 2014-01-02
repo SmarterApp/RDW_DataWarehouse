@@ -13,7 +13,7 @@ from smarter.extract.student_assessment import get_extract_assessment_query, com
 from pyramid.security import authenticated_userid
 from uuid import uuid4
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import start_extract, archive, route_tasks, prepare_paths
+from edextract.tasks.extract import start_extract, archive, route_tasks, prepare_path
 from pyramid.threadlocal import get_current_request, get_current_registry
 from datetime import datetime
 import os
@@ -43,7 +43,7 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        result = chain(prepare_paths.subtask(args=[tenant, request_id, tasks], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True),
+        result = chain(prepare_path.subtask(args=[tenant, request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True),      # @UndefinedVariable     
                        route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.SYNC_QUEUE_NAME),
                        archive.subtask(args=[request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True)).delay()
         return result.get(timeout=celery_timeout)

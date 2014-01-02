@@ -15,7 +15,7 @@ from edextract.status.status import ExtractStatus, \
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
-from edextract.utils.file_utils import prepare_path
+from edextract.utils import file_utils
 from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError, ExtractionError
@@ -26,37 +26,33 @@ from edextract.utils.json_formatter import format_json
 
 
 log = logging.getLogger('edextract')
+MAX_RETRY = get_setting(Config.MAX_RETRIES)
+DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 
 
-@celery.task(name='task.extract.start_extract',
-             max_retries=get_setting(Config.MAX_RETRIES),
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+@celery.task(name='task.extract.start_extract')
 def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    workflow = chain(prepare_paths.subtask(args=[tenant, request_id, tasks, encrypted_archive_file_name], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
-                     route_tasks(tenant, request_id, tasks, TaskConstants.DEFAULT_QUEUE_NAME),
+    workflow = chain(prepare_path.subtask(args=[tenant, request_id, directory_to_archive], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
+                     route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
     workflow.apply_async()
 
 
-@celery.task(name='task.extract.prepare_paths',
-             max_retries=get_setting(Config.MAX_RETRIES),
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
-def prepare_paths(tenant, request_id, tasks, encrypted_archive_file_name=None):
-    task_info = {Constants.TASK_ID: prepare_paths.request.id,
-                 Constants.CELERY_TASK_ID: prepare_paths.request.id,
+@celery.task(name='task.extract.prepare_paths')
+def prepare_path(tenant, request_id, path):
+    '''
+    Given a path to a directory, creates it if it doesn't exist
+    '''
+    task_info = {Constants.TASK_ID: prepare_path.request.id,
+                 Constants.CELERY_TASK_ID: prepare_path.request.id,
                  Constants.REQUEST_GUID: request_id}
     try:
-        for task in tasks:
-            log.info('execute tasks.extract.prepare_paths for task ' + task[TaskConstants.TASK_TASK_ID])
-            prepare_path(task[TaskConstants.TASK_FILE_NAME])
-        if encrypted_archive_file_name is not None:
-            log.info('execute tasks.extract.prepare_paths for enrypted_archive_file_name for request ' + request_id)
-            prepare_path(encrypted_archive_file_name)
+        file_utils.prepare_path(path)
     except FileNotFoundError as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.
@@ -76,10 +72,9 @@ def route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEU
     return group(generate_tasks)
 
 
-# fixme -> max_retries=get_setting(Config.MAX_RETRIES),
 @celery.task(name="tasks.extract.generate_csv",
-             max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def generate_csv(tenant, request_id, task_id, query, output_file):
     '''
     celery entry point to execute data extraction query.
@@ -138,9 +133,7 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
             raise ExtractionError()
 
 
-@celery.task(name="tasks.extract.archive",
-             max_retries=get_setting(Config.MAX_RETRIES),
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+@celery.task(name="tasks.extract.archive")
 def archive(request_id, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
@@ -155,8 +148,8 @@ def archive(request_id, directory):
 
 
 @celery.task(name="tasks.extract.archive_with_encryption",
-             max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def archive_with_encryption(request_id, recipients, encrypted_archive_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
@@ -196,8 +189,8 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
 
 
 @celery.task(name="tasks.extract.remote_copy",
-             max_retries=1,
-             default_retry_delay=60)
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
     '''
     Remotely copies a source file to a remote machine
@@ -224,8 +217,8 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
 
 
 @celery.task(name="tasks.extract.generate_json",
-             max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def generate_json(tenant, request_id, task_id, query, output_file):
     '''
     Generates a json file given a result from the first element of a query

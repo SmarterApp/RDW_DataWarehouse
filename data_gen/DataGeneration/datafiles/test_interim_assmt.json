@@ -59,5 +59,19 @@
             "max_score": "2400", 
             "weight": "0.3"
         }
+    },
+    "claim_performance_levels": {
+        "level_1": {
+            "name": "Below Standard",
+            "cut_point": "1600"
+        },
+        "level_2": {
+            "name": "At or Near Standard",
+            "cut_point": "2000"
+        },
+        "level_3": {
+            "name": "Above Standard",
+            "cut_point": "2400"
+        }
     }
 }

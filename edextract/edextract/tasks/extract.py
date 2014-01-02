@@ -36,7 +36,7 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    workflow = chain(prepare_path.subtask(args=[tenant, request_id, directory_to_archive], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
+    workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
                      route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
@@ -44,15 +44,16 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
 
 
 @celery.task(name='task.extract.prepare_paths')
-def prepare_path(tenant, request_id, path):
+def prepare_path(tenant, request_id, paths):
     '''
-    Given a path to a directory, creates it if it doesn't exist
+    Given a list of paths of directories, creates it if it doesn't exist
     '''
     task_info = {Constants.TASK_ID: prepare_path.request.id,
                  Constants.CELERY_TASK_ID: prepare_path.request.id,
                  Constants.REQUEST_GUID: request_id}
     try:
-        file_utils.prepare_path(path)
+        for path in paths:
+            file_utils.prepare_path(path)
     except FileNotFoundError as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.

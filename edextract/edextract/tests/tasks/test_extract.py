@@ -258,7 +258,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         shutil.rmtree(tmp_dir, ignore_errors=True)
         self.assertFalse(os.path.exists(tmp_dir))
         from edextract.tasks.extract import prepare_path
-        prepare_path.apply(args=["tenant", "id", tmp_dir]).get()    # @UndefinedVariable
+        prepare_path.apply(args=["tenant", "id", [tmp_dir]]).get()    # @UndefinedVariable
         self.assertTrue(os.path.exists(tmp_dir))
 
 

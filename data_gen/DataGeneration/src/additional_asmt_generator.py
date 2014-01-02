@@ -20,6 +20,7 @@ ID = 'identification'
 TYPE = 'type'
 GUID = 'guid'
 PERF_LVLS = 'performance_levels'
+CLAIM_PERF_LVLS = 'claim_performance_levels'
 OVERALL = 'overall'
 MIN = 'min_score'
 MAX = 'max_score'
@@ -123,8 +124,11 @@ def get_claim_cut_points(json_dict):
     :param json_dict: the dictionary or OrderedDict that is holding the assessment information
     :return: a list of claim cut points
     """
-    # TODO: read from json_dict once the information is available
-    return [1600, 2000]
+    min_max_score = [json_dict[OVERALL][MIN], json_dict[OVERALL][MAX]]
+    claim_perf_lvl_dict = json_dict[CLAIM_PERF_LVLS]
+
+    return sorted([int(x[CUT_POINT]) for x in claim_perf_lvl_dict.values()
+                   if x[CUT_POINT] not in min_max_score and x[CUT_POINT] != ''])
 
 
 def get_cut_points(json_dict):

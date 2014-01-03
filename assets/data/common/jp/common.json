@@ -623,16 +623,6 @@
                 }
             ]
         }, 
-        "asmtState": {
-            "name": "State",
-            "key": "stateCode",
-            "options": [
-                {
-                    "display": "New York",
-                    "value": "NY"
-                }
-            ]
-        },
         "asmtYear": {
             "name": "Assessment Year",
             "key": "asmtYear",

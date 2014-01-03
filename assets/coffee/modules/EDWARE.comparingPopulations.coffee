@@ -104,6 +104,8 @@ define [
         for key, value of self.asmtSubjectsData
           subjects.push value
         edwarePreferences.saveSubjectPreference subjects
+        # Resets assessment type preferences 
+        edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
 
     displayNoResults: () ->
       # no results

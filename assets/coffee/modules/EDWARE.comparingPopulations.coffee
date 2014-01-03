@@ -261,11 +261,11 @@ define [
       if this.reportType is 'state'
         this.orgType = this.breadcrumbsData.items[0].name
         this.displayType = "District"
-        this.title = 'Comparing ' + this.displayType + ' in ' + this.orgType + ' on Math & ELA'
+        this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'district'
         this.orgType = this.breadcrumbsData.items[1].name
         this.displayType = "School"
-        this.title = 'Comparing ' + this.displayType + ' in ' + this.orgType + ' on Math & ELA'
+        this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'school'
         this.orgType = this.breadcrumbsData.items[2].name
         this.displayType = "Grade"

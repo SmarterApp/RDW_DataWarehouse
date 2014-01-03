@@ -27,8 +27,8 @@
 
 	"policy_content": {
 		"11": {
-			"Math": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='http://stateresources.link'>http://stateresources.link</a>",
-			"ELA": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='http://stateresources.link'>http://stateresources.link</a>"
+			"Math": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='#'>http://stateresources.link</a>",
+			"ELA": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='#'>http://stateresources.link</a>"
 		},
 		"8": {
 			"Math": {

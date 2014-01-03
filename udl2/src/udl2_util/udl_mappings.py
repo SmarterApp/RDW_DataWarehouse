@@ -23,6 +23,9 @@ def get_json_to_asmt_tbl_mappings():
                'name_perf_lvl_3': ['performance_levels', 'level_3', 'name'],
                'name_perf_lvl_4': ['performance_levels', 'level_4', 'name'],
                'name_perf_lvl_5': ['performance_levels', 'level_5', 'name'],
+               'asmt_claim_perf_lvl_name_1': ['claim_performance_levels', 'level_1', 'name'],
+               'asmt_claim_perf_lvl_name_2': ['claim_performance_levels', 'level_2', 'name'],
+               'asmt_claim_perf_lvl_name_3': ['claim_performance_levels', 'level_3', 'name'],
                'score_overall_min': ['overall', 'min_score'],
                'score_overall_max': ['overall', 'max_score'],
                'score_claim_1_min': ['claims', 'claim_1', 'min_score'],
@@ -40,6 +43,8 @@ def get_json_to_asmt_tbl_mappings():
                'score_cut_point_1': ['performance_levels', 'level_2', 'cut_point'],
                'score_cut_point_2': ['performance_levels', 'level_3', 'cut_point'],
                'score_cut_point_3': ['performance_levels', 'level_4', 'cut_point'],
-               'score_cut_point_4': ['performance_levels', 'level_5', 'cut_point']
+               'score_cut_point_4': ['performance_levels', 'level_5', 'cut_point'],
+               'claim_score_cut_point_1': ['claim_performance_levels', 'level_1', 'cut_point'],
+               'claim_score_cut_point_2': ['claim_performance_levels', 'level_2', 'cut_point']
                }
     return mapping

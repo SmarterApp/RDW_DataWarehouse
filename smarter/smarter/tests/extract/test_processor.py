@@ -84,7 +84,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         Unittest_with_stats_sqlite.setUpClass()
 
     def test_process_extraction_async_request(self):
-        params = {'stateCode': ['CA'],
+        params = {'stateCode': 'CA',
                   'asmtYear': ['2015'],
                   'asmtType': ['SUMMATIVE', 'COMPREHENSIVE INTERIM'],
                   'asmtSubject': ['Math', 'ELA'],
@@ -164,7 +164,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'stateCode': 'CA',
                   'districtGuid': '228',
                   'schoolGuid': '242',
-                  'asmtType': 'SUMMATIVE',
+                  'asmtType': ['SUMMATIVE'],
                   'asmtSubject': [],
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
@@ -173,8 +173,9 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'stateCode': 'CA',
                   'districtGuid': '228',
                   'schoolGuid': '242',
-                  'asmtType': 'SUMMATIVE',
+                  'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
+                  'asmtYear': ['2015'],
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
 
@@ -182,14 +183,14 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'stateCode': 'NY',
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
-                  'asmtType': 'SUMMATIVE',
+                  'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
-                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
+                  'asmtYear': [None]}
         zip_data = process_sync_extract_request(params)
         self.assertIsNotNone(zip_data)
 
     def test_process_async_extraction_request_with_subject(self):
-        params = {'stateCode': ['NY'],
+        params = {'stateCode': 'NY',
                   'asmtYear': ['2015'],
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
@@ -206,8 +207,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': 'SUMMATIVE',
-                  'asmtSubject': 'ELA',
-                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
+                  'asmtSubject': 'ELA'}
         smarter.extract.format.json_column_mapping = {}
         guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(params)
         self.assertEqual(1, len(guid_grade))

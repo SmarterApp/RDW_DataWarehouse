@@ -68,7 +68,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_post_valid_response_tenant_extract(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['CA'],
+        self.__request.json_body = {'stateCode': 'CA',
                                     'asmtYear': ['2015'],
                                     'asmtType': ['SUMMATIVE'],
                                     'asmtSubject': ['Math'],
@@ -112,7 +112,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_multi_tasks_tenant_extract(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['CA'],
+        self.__request.json_body = {'stateCode': 'CA',
                                     'asmtYear': ['2015', '2011'],
                                     'asmtType': ['SUMMATIVE'],
                                     'asmtSubject': ['Math', 'ELA'],
@@ -133,14 +133,14 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_generate_zip_file_name_for_grades(self):
         params = {'asmtGrade': '6',
                   'asmtSubject': ['Math'],
-                  'asmtType': 'SUMMATIVE',
+                  'asmtType': ['SUMMATIVE'],
                   'stateCode': 'NY'}
         name = generate_zip_file_name(params)
         self.assertIn('ASMT_GRADE_6_MATH_SUMMATIVE', name)
 
     def test_generate_zip_file_name_for_schools(self):
         params = {'asmtSubject': ['Math', 'ELA'],
-                  'asmtType': 'Summative',
+                  'asmtType': ['Summative'],
                   'stateCode': 'NY'}
         name = generate_zip_file_name(params)
         self.assertIn('ASMT_ELA_MATH_SUMMATIVE', name)
@@ -155,7 +155,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_get_invalid_param(self):
         self.__request.GET['stateCode'] = 'NY'
         self.__request.GET['asmtSubject'] = ['MATH']
-        self.__request.GET['asmyType'] = 'SUMMATIVE'
+        self.__request.GET['asmyType'] = ['SUMMATIVE']
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['districtGuid'] = '203'
         self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
@@ -172,7 +172,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_post_extract_service(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['NY'],
+        self.__request.json_body = {'stateCode': 'NY',
                                     'districtGuid': '229',
                                     'schoolGuid': '936',
                                     'asmtSubject': ['Math'],
@@ -201,7 +201,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_post_valid_tenant_extract(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['NY'],
+        self.__request.json_body = {'stateCode': 'NY',
                                     'asmtSubject': ['Math'],
                                     'asmtType': ['SUMMATIVE'],
                                     'asmtYear': ['2015'],

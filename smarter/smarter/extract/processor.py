@@ -32,8 +32,13 @@ log = logging.getLogger('smarter')
 
 
 def process_sync_extract_request(params):
+    tasks = []
     request_id, user, tenant = _get_extract_request_user_info()
-    tasks, _ = _generate_tasks(params, request_id, tenant, user, False)
+    extract_params = copy.deepcopy(params)
+    for subject in params[Constants.ASMTSUBJECT]:
+        extract_params[Constants.ASMTSUBJECT] = subject
+        subject_tasks, task_responses = _create_tasks_with_responses(request_id, user, tenant, extract_params)
+        tasks += subject_tasks
     if tasks:
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
@@ -51,32 +56,18 @@ def process_async_extraction_request(params, is_tenant_level=True):
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
-    response = {}
-    request_id, user, tenant = _get_extract_request_user_info()
-    tasks, task_responses = _generate_tasks(params, request_id, tenant, user, is_tenant_level)
-    response['tasks'] = task_responses
-    if len(tasks) > 0:
-        # TODO: handle empty public key
-        public_key_id = get_encryption_public_key_identifier(tenant)
-        archive_file_name = get_archive_file_path(user.get_uid(), tenant, request_id)
-        response['fileName'] = os.path.basename(archive_file_name)
-        directory_to_archive = get_extract_work_zone_path(tenant, request_id)
-        gatekeeper_id = get_gatekeeper(tenant)
-        pickup_zone_info = get_pickup_zone_info(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue='extract')  # @UndefinedVariable
-    return response
-
-
-def _generate_tasks(params, request_id, tenant, user, is_tenant_level=True):
     tasks = []
+    response = {}
     task_responses = []
+    request_id, user, tenant = _get_extract_request_user_info()
+
     for s in params[Constants.ASMTSUBJECT]:
         for t in params[Constants.ASMTTYPE]:
             # TODO: handle year and stateCode/tenant
             param = ({Constants.ASMTSUBJECT: s,
                      Constants.ASMTTYPE: t,
                      Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE]})
+                     Constants.STATECODE: params[Constants.STATECODE][0]})
 
             task_response = {Constants.STATECODE: param[Constants.STATECODE],
                              Extract.EXTRACTTYPE: ExtractType.studentAssessment,
@@ -89,7 +80,18 @@ def _generate_tasks(params, request_id, tenant, user, is_tenant_level=True):
             __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
             tasks += __tasks
             task_responses += __task_responses
-    return (tasks, task_responses)
+
+    response['tasks'] = task_responses
+    if len(tasks) > 0:
+        # TODO: handle empty public key
+        public_key_id = get_encryption_public_key_identifier(tenant)
+        archive_file_name = get_archive_file_path(user.get_uid(), tenant, request_id)
+        response['fileName'] = os.path.basename(archive_file_name)
+        directory_to_archive = get_extract_work_zone_path(tenant, request_id)
+        gatekeeper_id = get_gatekeeper(tenant)
+        pickup_zone_info = get_pickup_zone_info(tenant)
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue='extract')  # @UndefinedVariable
+    return response
 
 
 @cache_region('public.shortlived')

@@ -18,7 +18,6 @@ from smarter.extract.processor import process_async_extraction_request,\
 from smarter.extract.constants import ExtractType, Constants as Extract
 from datetime import datetime
 import logging
-from edapi.validation import Validator
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +66,13 @@ TENANT_EXTRACT_PARAMS = {
             "required": False
         },
         Constants.STATECODE: {
-            "type": "string",
-            "pattern": "^[a-zA-Z]{2}$",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z]{2}$"
+            },
+            "minItems": 1,
+            "uniqueItems": True,
             "required": True,
         },
         Constants.DISTRICTGUID: {
@@ -118,7 +122,7 @@ def post_extract_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    params = Validator.fix_types_for_schema(TENANT_EXTRACT_PARAMS.get("properties"), request.json_body)
+    params = convert_query_string_to_dict_arrays(request.json_body)
     return send_extraction_request(params)
 
 
@@ -132,7 +136,7 @@ def get_extract_service(context, request):
     :param request:  Pyramid request object
     '''
     try:
-        params = Validator.fix_types_for_schema(TENANT_EXTRACT_PARAMS.get("properties"), request.GET)
+        params = convert_query_string_to_dict_arrays(request.GET)
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)
@@ -155,18 +159,17 @@ def send_extraction_request(params):
     try:
         # By default, it is a sync call
         is_async = params.get(Extract.ASYNC, False)
-        extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, None),
-                              Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None]),
-                              Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None]),
-                              Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None]),
-                              Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None]),
-                              Constants.ASMTYEAR: params.get(Constants.ASMTYEAR, [None]),
-                              Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
         if is_async:
             if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
-                results = process_async_extraction_request(extract_params)
+                results = process_async_extraction_request(params)
                 response = Response(body=json.dumps(results), content_type='application/json')
         else:
+            extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, [None])[0],
+                              Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None])[0],
+                              Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None])[0],
+                              Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None])[0],
+                              Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None])[0],
+                              Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
             zip_file_name = generate_zip_file_name(extract_params)
             content = process_sync_extract_request(extract_params)
             response = Response(body=content, content_type='application/octet-stream')
@@ -195,10 +198,9 @@ def generate_zip_file_name(params):
     subjects = params.get(Constants.ASMTSUBJECT)
     subjects.sort()
     asmtSubjects = '_'.join(subjects)
-    asmtTypes = '_'.join(params.get(Constants.ASMTTYPE))
     asmtGrade = params.get(Constants.ASMTGRADE)
     identifier = '_GRADE_' + str(asmtGrade) if asmtGrade is not None else ''
     return "ASMT{identifier}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(identifier=identifier,
                                                                               asmtSubject=asmtSubjects.upper(),
-                                                                              asmtType=asmtTypes.upper(),
+                                                                              asmtType=params.get(Constants.ASMTTYPE).upper(),
                                                                               timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

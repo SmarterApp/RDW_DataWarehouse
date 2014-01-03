@@ -156,12 +156,12 @@ def send_extraction_request(params):
         # By default, it is a sync call
         is_async = params.get(Extract.ASYNC, False)
         extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, None),
-                          Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None]),
-                          Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None]),
-                          Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None]),
-                          Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None]),
-                          Constants.ASMTYEAR: params.get(Constants.ASMTYEAR, [None]),
-                          Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
+                              Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None]),
+                              Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None]),
+                              Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None]),
+                              Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None]),
+                              Constants.ASMTYEAR: params.get(Constants.ASMTYEAR, [None]),
+                              Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
         if is_async:
             if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
                 results = process_async_extraction_request(extract_params)

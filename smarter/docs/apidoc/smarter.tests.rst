@@ -6,7 +6,6 @@ Subpackages
 
 .. toctree::
 
-    smarter.tests.database
     smarter.tests.reports
     smarter.tests.security
     smarter.tests.services

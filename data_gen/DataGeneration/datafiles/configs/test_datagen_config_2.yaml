@@ -54,6 +54,10 @@ star:
             internal_key_49: district_guid
             internal_key_50: asmt_claim_2_score_range_min
             internal_key_51: date_taken_year
+            internal_key_52: asmt_claim_1_perf_lvl
+            internal_key_53: asmt_claim_2_perf_lvl
+            internal_key_54: asmt_claim_3_perf_lvl
+            internal_key_55: asmt_claim_4_perf_lvl
         dim_asmt:
             internal_key_1: asmt_claim_3_name
             internal_key_2: asmt_perf_lvl_name_1
@@ -92,6 +96,9 @@ star:
             internal_key_35: asmt_cut_point_4
             internal_key_36: asmt_claim_1_score_weight
             internal_key_37: asmt_claim_2_score_min
+            internal_key_38: asmt_claim_perf_lvl_name_1
+            internal_key_39: asmt_claim_perf_lvl_name_2
+            internal_key_40: asmt_claim_perf_lvl_name_3
         dim_inst_hier:
             internal_key_1: to_date
             internal_key_2: district_guid
@@ -193,5 +200,9 @@ lz:
         internal_key_51: name_asmt_location
         internal_key_52: name_school
         internal_key_53: dmg_eth_hsp
+        internal_key_54: asmt_claim_1_perf_lvl
+        internal_key_55: asmt_claim_2_perf_lvl
+        internal_key_56: asmt_claim_3_perf_lvl
+        internal_key_57: asmt_claim_4_perf_lvl
     json:
         foo: bar

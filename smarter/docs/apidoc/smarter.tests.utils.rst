@@ -1,10 +1,10 @@
 utils Package
 =============
 
-:mod:`unittest_with_smarter_sqlite` Module
-------------------------------------------
+:mod:`test_remote_config` Module
+--------------------------------
 
-.. automodule:: smarter.tests.utils.unittest_with_smarter_sqlite
+.. automodule:: smarter.tests.utils.test_remote_config
     :members:
     :undoc-members:
     :show-inheritance:

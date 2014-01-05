@@ -53,6 +53,6 @@ def generate_assessment_score(overall_score, perf_lvl, interval_min, interval_ma
 
 
 # TODO: Remove this function and just use constructor directly
-def generate_claim_score(claim_score, claim_score_interval_minimum, claim_score_interval_maximum):
+def generate_claim_score(claim_score, claim_score_interval_minimum, claim_score_interval_maximum, perf_level):
     ''' Generate a ClaimScore '''
-    return ClaimScore(claim_score, claim_score_interval_minimum, claim_score_interval_maximum)
+    return ClaimScore(claim_score, claim_score_interval_minimum, claim_score_interval_maximum, perf_level)

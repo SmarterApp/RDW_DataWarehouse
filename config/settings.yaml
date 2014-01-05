@@ -213,7 +213,7 @@ qa:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
-    extract.work_zone_base_dir: /mnt/gluster/extraction
+    extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
       CELERY_IMPORTS: ('edextract.tasks.extract',)
@@ -223,6 +223,7 @@ qa:
       CELERY_DEFAULT_QUEUE : extract
       CELERY_DEFAULT_ROUTING_KEY: extract
     extract.gpg:
+      homedir : /opt/edware/conf/gpg
       keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
@@ -234,6 +235,9 @@ qa:
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
+    pickup:
+      sftp.hostname: lzsftpudl0.qa.dum.edwdc.net
+      sftp.private_key_file: /opt/edware/ssh/.ssh/id_rsa
     edware:
       db:
         cat:

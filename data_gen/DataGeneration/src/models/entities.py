@@ -84,7 +84,9 @@ class Assessment:
                  asmt_claim_3_score_min=None, asmt_claim_3_score_max=None, asmt_claim_3_score_weight=None,
                  asmt_claim_4_score_min=None, asmt_claim_4_score_max=None, asmt_claim_4_score_weight=None,
                  asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
-                 to_date=None):
+                 claim_cut_point_1=None, claim_cut_point_2=None,
+                 to_date=None, asmt_claim_perf_lvl_name_1=None, asmt_claim_perf_lvl_name_2=None,
+                 asmt_claim_perf_lvl_name_3=None):
         '''
         Constructor
         '''
@@ -134,8 +136,15 @@ class Assessment:
         self.asmt_cut_point_3 = asmt_cut_point_3
         self.asmt_cut_point_4 = asmt_cut_point_4
 
+        self.claim_cut_point_1 = claim_cut_point_1
+        self.claim_cut_point_2 = claim_cut_point_2
+
         self.to_date = to_date
         self.most_recent = most_recent
+
+        self.asmt_claim_perf_lvl_name_1 = asmt_claim_perf_lvl_name_1
+        self.asmt_claim_perf_lvl_name_2 = asmt_claim_perf_lvl_name_2
+        self.asmt_claim_perf_lvl_name_3 = asmt_claim_perf_lvl_name_3
 
     def __str__(self):
         '''
@@ -148,9 +157,9 @@ class Assessment:
                 self.asmt_claim_1_name, self.asmt_claim_2_name, self.asmt_claim_3_name, self.asmt_claim_4_name,
                 self.asmt_perf_lvl_name_1, self.asmt_perf_lvl_name_2, self.asmt_perf_lvl_name_3, self.asmt_perf_lvl_name_4, self.asmt_perf_lvl_name_5,
                 self.asmt_score_min, self.asmt_score_max,
-                self.asmt_claim_1_score_min, self.asmt_claim_1_score_max, self.asmt_claim_1_score_weight,
-                self.asmt_claim_2_score_min, self.asmt_claim_2_score_max, self.asmt_claim_2_score_weight,
-                self.asmt_claim_3_score_min, self.asmt_claim_3_score_max, self.asmt_claim_3_score_weight,
+                self.asmt_claim_1_score_min, self.asmt_claim_1_score_max, self.asmt_claim_1_score_weight, self.asmt_claim_perf_lvl_name_1,
+                self.asmt_claim_2_score_min, self.asmt_claim_2_score_max, self.asmt_claim_2_score_weight, self.asmt_claim_perf_lvl_name_2,
+                self.asmt_claim_3_score_min, self.asmt_claim_3_score_max, self.asmt_claim_3_score_weight, self.asmt_claim_perf_lvl_name_3,
                 self.asmt_claim_4_score_min, self.asmt_claim_4_score_max, self.asmt_claim_4_score_weight,
                 self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4,
                 self.from_date, self.to_date, self.most_recent]
@@ -161,9 +170,9 @@ class Assessment:
                 'asmt_claim_1_name', 'asmt_claim_2_name', 'asmt_claim_3_name', 'asmt_claim_4_name',
                 'asmt_perf_lvl_name_1', 'asmt_perf_lvl_name_2', 'asmt_perf_lvl_name_3', 'asmt_perf_lvl_name_4', 'asmt_perf_lvl_name_5',
                 'asmt_score_min', 'asmt_score_max',
-                'asmt_claim_1_score_min', 'asmt_claim_1_score_max', 'asmt_claim_1_score_weight',
-                'asmt_claim_2_score_min', 'asmt_claim_2_score_max', 'asmt_claim_2_score_weight',
-                'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'asmt_claim_3_score_weight',
+                'asmt_claim_1_score_min', 'asmt_claim_1_score_max', 'asmt_claim_1_score_weight', 'asmt_claim_perf_lvl_name_1',
+                'asmt_claim_2_score_min', 'asmt_claim_2_score_max', 'asmt_claim_2_score_weight', 'asmt_claim_perf_lvl_name_2',
+                'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'asmt_claim_3_score_weight', 'asmt_claim_perf_lvl_name_3',
                 'asmt_claim_4_score_min', 'asmt_claim_4_score_max', 'asmt_claim_4_score_weight',
                 'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4',
                 'from_date', 'to_date', 'most_recent']
@@ -176,10 +185,10 @@ class AssessmentOutcome(object):
                  where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day,
                  date_taken_month, date_taken_year,
                  asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
-                 asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
-                 asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
-                 asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
-                 asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
+                 asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, asmt_claim_1_perf_lvl,
+                 asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max, asmt_claim_2_perf_lvl,
+                 asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, asmt_claim_3_perf_lvl,
+                 asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max, asmt_claim_4_perf_lvl,
                  status, most_recent, batch_guid, asmt_type, asmt_year, asmt_subject, gender,
                  dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False, dmg_eth_blk=False,
                  dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
@@ -221,18 +230,22 @@ class AssessmentOutcome(object):
         self.asmt_claim_1_score = asmt_claim_1_score
         self.asmt_claim_1_score_range_min = asmt_claim_1_score_range_min
         self.asmt_claim_1_score_range_max = asmt_claim_1_score_range_max
+        self.asmt_claim_1_perf_lvl = asmt_claim_1_perf_lvl
 
         self.asmt_claim_2_score = asmt_claim_2_score
         self.asmt_claim_2_score_range_min = asmt_claim_2_score_range_min
         self.asmt_claim_2_score_range_max = asmt_claim_2_score_range_max
+        self.asmt_claim_2_perf_lvl = asmt_claim_2_perf_lvl
 
         self.asmt_claim_3_score = asmt_claim_3_score
         self.asmt_claim_3_score_range_min = asmt_claim_3_score_range_min
         self.asmt_claim_3_score_range_max = asmt_claim_3_score_range_max
+        self.asmt_claim_3_perf_lvl = asmt_claim_3_perf_lvl
 
         self.asmt_claim_4_score = asmt_claim_4_score
         self.asmt_claim_4_score_range_min = asmt_claim_4_score_range_min
         self.asmt_claim_4_score_range_max = asmt_claim_4_score_range_max
+        self.asmt_claim_4_perf_lvl = asmt_claim_4_perf_lvl
 
         self.status = status
         self.most_recent = most_recent
@@ -260,10 +273,10 @@ class AssessmentOutcome(object):
                 self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
                 self.asmt_score, self.asmt_score_range_min, self.asmt_score_range_max,
                 self.asmt_perf_lvl,
-                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min, self.asmt_claim_1_score_range_max,
-                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max,
-                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min, self.asmt_claim_3_score_range_max,
-                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max,
+                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min, self.asmt_claim_1_score_range_max, self.asmt_claim_1_perf_lvl,
+                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max, self.asmt_claim_2_perf_lvl,
+                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min, self.asmt_claim_3_score_range_max, self.asmt_claim_3_perf_lvl,
+                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max, self.asmt_claim_4_perf_lvl,
                 self.status, self.most_recent, self.batch_guid,
                 self.asmt_type, self.asmt_year, self.asmt_subject, self.gender,
                 self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_asn, self.dmg_eth_blk,
@@ -279,10 +292,10 @@ class AssessmentOutcome(object):
                 'where_taken_id', 'where_taken_name', 'asmt_grade', 'enrl_grade',
                 'date_taken', 'date_taken_day', 'date_taken_month', 'date_taken_year',
                 'asmt_score', 'asmt_score_range_min', 'asmt_score_range_max', 'asmt_perf_lvl',
-                'asmt_claim_1_score', 'asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_max',
-                'asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max',
-                'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max',
-                'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max',
+                'asmt_claim_1_score', 'asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_max', 'asmt_claim_1_perf_lvl',
+                'asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max', 'asmt_claim_2_perf_lvl',
+                'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max', 'asmt_claim_3_perf_lvl',
+                'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max', 'asmt_claim_4_perf_lvl',
                 'status', 'most_recent', 'batch_guid',
                 'asmt_type', 'asmt_year', 'asmt_subject', 'gender',
                 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf',

@@ -1,19 +1,38 @@
 edextract Package
 =================
 
-:mod:`constants` Module
------------------------
+:mod:`edextract` Package
+------------------------
 
-.. automodule:: edextract.constants
+.. automodule:: edextract
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`extract_status` Module
-----------------------------
+:mod:`celery` Module
+--------------------
 
-.. automodule:: edextract.extract_status
+.. automodule:: edextract.celery
     :members:
     :undoc-members:
     :show-inheritance:
+
+:mod:`exceptions` Module
+------------------------
+
+.. automodule:: edextract.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    edextract.settings
+    edextract.status
+    edextract.tasks
+    edextract.tests
+    edextract.utils
 

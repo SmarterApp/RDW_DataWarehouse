@@ -83,7 +83,7 @@ udl2_conf = {
         'integration_schema': 'udl2',
         'ref_table_name': 'REF_COLUMN_MAPPING',
         'batch_table': 'UDL_BATCH',
-        'db_host': 'localhost',
+        'db_host': 'rbtmqudl0.qa.dum.edwdc.net',
         'db_port': '5432',
         'db_name': 'udl2',
         'db_database': 'udl2',
@@ -100,7 +100,7 @@ udl2_conf = {
         'pool_size': 20,
     },
     'udl2_db_conn': {
-        'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
+        'url': 'postgresql://udl2:udl2abc1234@rbtmqudl0.qa.dum.edwdc.net:5432/udl2',
         'db_schema': 'udl2',
         'echo': False,
         'max_overflow': 10,

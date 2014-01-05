@@ -35,7 +35,8 @@ class TestMoveToTarget(unittest.TestCase):
         column_types = get_expected_column_types_for_fact_table(target_table)
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_query_2 = get_expected_insert_query_for_fact_table(target_table, column_mapping['asmt_rec_id'], column_mapping['section_rec_id'], guid_batch,
+        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, column_mapping['asmt_rec_id'],
+                                                                    column_mapping['section_rec_id'], guid_batch,
                                                                     conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
@@ -56,7 +57,8 @@ class TestMoveToTarget(unittest.TestCase):
         column_mapping = get_expected_column_mapping()[target_table]
         column_types = get_expected_column_types_for_dim_inst_hier(target_table)
         actual_value = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
-        expected_value = get_expected_insert_query_for_dim_inst_hier(target_table, guid_batch, conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
+        expected_value = get_expected_insert_query_for_dim_inst_hier(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
+                                                                     conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         self.assertEqual(expected_value, actual_value)
 
     def test_calculate_spend_time_as_second(self):
@@ -116,14 +118,14 @@ def get_expected_column_types_for_fact_table(table_name):
     return column_name_type_map
 
 
-def get_expected_insert_query_for_fact_table(table_name, asmt_rec_id, section_rec_id, guid_batch, dbname, user, password):
+def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, section_rec_id, guid_batch, dbname, user, password):
     return 'INSERT INTO "edware"."{table_name}"(asmnt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
            'school_guid,section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,status,most_recent,batch_guid) '\
-           ' SELECT * FROM dblink(\'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
+           ' SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
            '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\'\'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
@@ -136,7 +138,8 @@ def get_expected_insert_query_for_fact_table(table_name, asmt_rec_id, section_re
            'asmt_claim_1_score_range_min smallint,asmt_claim_1_score_range_max smallint,asmt_claim_2_score smallint,asmt_claim_2_score_range_min smallint,'\
            'asmt_claim_2_score_range_max smallint,asmt_claim_3_score smallint,asmt_claim_3_score_range_min smallint,asmt_claim_3_score_range_max smallint,'\
            'asmt_claim_4_score smallint,asmt_claim_4_score_range_min smallint,asmt_claim_4_score_range_max smallint,'\
-           'status character varying(2),most_recent boolean,batch_guid character varying(50));'.format(table_name=table_name, asmt_rec_id=asmt_rec_id, section_rec_id=section_rec_id, guid_batch=guid_batch,
+           'status character varying(2),most_recent boolean,batch_guid character varying(50));'.format(host=host_name, port=port, table_name=table_name, asmt_rec_id=asmt_rec_id,
+                                                                                                       section_rec_id=section_rec_id, guid_batch=guid_batch,
                                                                                                        dbname=dbname, user=user, password=password)
 
 
@@ -158,16 +161,16 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
     return column_name_type_map
 
 
-def get_expected_insert_query_for_dim_inst_hier(table_name, guid_batch, dbname, user, password):
+def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, guid_batch, dbname, user, password):
     return 'INSERT INTO \"edware\"."{table_name}"(inst_hier_rec_id,state_name,state_code,district_guid,district_name,'\
            'school_guid,school_name,school_category,from_date,to_date,most_recent)  SELECT * FROM '\
-           'dblink(\'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), '\
+           'dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), '\
            '* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,'\
            'to_char(CURRENT_TIMESTAMP, \'\'yyyymmdd\'\'),\'\'99991231\'\',True FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') '\
            'AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),'\
            'district_name character varying(256),school_guid character varying(50),school_name character varying(256),'\
            'school_category character varying(20),from_date character varying(8),to_date character varying(8),'\
-           'most_recent boolean);'.format(table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
+           'most_recent boolean);'.format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
 
 def get_expected_column_mapping():

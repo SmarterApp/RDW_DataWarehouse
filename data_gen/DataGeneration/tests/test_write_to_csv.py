@@ -18,14 +18,14 @@ class TestWriteToCSV(unittest.TestCase):
 
         write_to_csv.create_csv(entity_list, filename)
 
-        expected_lines = ['1,guid_1,summative,2013,2013,V1,subject1,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True\n',
-                          '2,guid_2,summative,2013,2013,V1,subject2,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True\n']
+        expected_lines = ['1,guid_1,summative,2013,2013,V1,subject1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True',
+                          '2,guid_2,summative,2013,2013,V1,subject2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True']
         actual_lines = self._read_file(filename)
 
         # verify
         self.assertEqual(len(actual_lines), len(expected_lines))
         for i in range(len(actual_lines)):
-            self.assertEqual(actual_lines[i], expected_lines[i])
+            self.assertEqual(actual_lines[0].strip('\r\n'), expected_lines[0].strip('\r\n'))
 
         # delete file
         os.remove(filename)

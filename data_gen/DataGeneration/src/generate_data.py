@@ -90,6 +90,7 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
     # Generate Assessment CSV File
     flat_grades_list = get_flat_grades_list(school_types, constants.GRADES)
     assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
+                                       scores_details[constants.CLAIM_CUT_POINTS],
                                        from_date, most_recent, to_date=to_date)
 
     # prepare csv files and output assessment data
@@ -420,12 +421,14 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         cut_points = util.get_list_of_cutpoints(ela_assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score] + cut_points + [max_score]
+        claim_cut_points = util.get_list_of_claim_cutpoints(ela_assessment)
 
         all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, constants.ELA, grade)
         adjusted_demographics = apply_pld_to_grade_demographics(pld_adjustment, all_grade_demo_info)
         ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in adjusted_demographics.items()}
         assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, constants.ELA,
-                                   ela_assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                   ela_assessment, eb_min_perc, eb_max_perc,
+                                   eb_rand_adj_lo, eb_rand_adj_hi, claim_cut_points)
 
         assign_students_sections(students, subject_sections_map[constants.MATH], subject_sections_map[constants.ELA])
         set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
@@ -647,6 +650,7 @@ def generate_students_info_from_demographic_counts(state_population, assessments
         max_score = assessment.asmt_score_max
 
         cut_points = util.get_list_of_cutpoints(assessment)
+        claim_cut_points = util.get_list_of_claim_cutpoints(assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score]
         inclusive_cut_points.extend(cut_points)
@@ -665,7 +669,7 @@ def generate_students_info_from_demographic_counts(state_population, assessments
         #perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
 
         raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
-        asmt_scores = claim_score_calculation.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+        asmt_scores = claim_score_calculation.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi, claim_cut_points)
 
         score_pool_dict = create_asmt_score_pool_dict(asmt_scores)
         student_info_dict = generate_students_with_demographics(score_pool_dict, grade_demographic_totals, grade)

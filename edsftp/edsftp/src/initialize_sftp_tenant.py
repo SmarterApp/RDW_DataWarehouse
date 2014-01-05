@@ -1,7 +1,7 @@
 __author__ = 'swimberly'
 
 import os
-from sftp.src.util import create_path
+from edsftp.src.util import create_path
 
 
 def create_tenant(tenant, sftp_conf):

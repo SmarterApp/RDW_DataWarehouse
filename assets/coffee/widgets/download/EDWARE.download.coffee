@@ -187,6 +187,9 @@ define [
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
+      storageParams = JSON.parse edwareClientStorage.filterStorage.load()
+      if storageParams and storageParams['stateCode']
+        params['stateCode'] = [storageParams['stateCode']]
       params
 
     show: () ->
@@ -227,7 +230,6 @@ define [
       $('#gridTable').edwareExport @config.reportName, @config.labels
 
     sendExtractRequest: () ->
-      # add more code from master branch for old extraction code
       params = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
       params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()

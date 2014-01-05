@@ -27,8 +27,8 @@
 
 	"policy_content": {
 		"11": {
-			"Math": "The Smarter Balanced Assessment Consortium and your state will provide official policy-related content (forthcoming) to assist in interpreting your score in terms of College-Content Readiness and implications for college course requirements.",
-			"ELA": "The Smarter Balanced Assessment Consortium and your state will provide official policy-related content (forthcoming) to assist in interpreting your score in terms of College-Content Readiness and implications for college course requirements."
+			"Math": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='#'>http://stateresources.link</a>",
+			"ELA": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='#'>http://stateresources.link</a>"
 		},
 		"8": {
 			"Math": {

@@ -20,6 +20,7 @@ ID = 'identification'
 TYPE = 'type'
 GUID = 'guid'
 PERF_LVLS = 'performance_levels'
+CLAIM_PERF_LVLS = 'claim_performance_levels'
 OVERALL = 'overall'
 MIN = 'min_score'
 MAX = 'max_score'
@@ -52,9 +53,10 @@ def update_row(row_dict, perf_change_tup, asmt_type, asmt_dict, json_map, date_c
 
     # update the scores
     cut_points = get_cut_points(json_obj)
+    claim_cut_points = get_claim_cut_points(json_obj)
     min_score = json_obj[OVERALL][MIN]
     max_score = json_obj[OVERALL][MAX]
-    row_dict = update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score)
+    row_dict = update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score, claim_cut_points)
 
     # update assessment type and guid
     row_dict['asmt_type'] = asmt_type
@@ -77,7 +79,7 @@ def generate_score_offset(perf_change_tup):
     return offset
 
 
-def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
+def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score, claim_cut_points):
     """
     Update the scores in the given assessment outcome record based on the perf_change_tuple
     :param row_dict: A dict object containing the data for the current row to be updated4
@@ -106,6 +108,7 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
             row_dict['score_claim_{}'.format(i + 1)] = min(max(int(row_dict['score_claim_{}'.format(i + 1)]) + offset, min_score), max_score)
             row_dict['score_claim_{}_max'.format(i + 1)] = min(max(int(row_dict['score_claim_{}_max'.format(i + 1)]) + offset, min_score), max_score)
             row_dict['score_claim_{}_min'.format(i + 1)] = min(max(int(row_dict['score_claim_{}_min'.format(i + 1)]) + offset, min_score), max_score)
+            row_dict['asmt_claim_{}_perf_lvl'.format(i + 1)] = determine_perf_lvl(row_dict['score_claim_{}'.format(i + 1)], claim_cut_points)
         except KeyError:
             break
         except ValueError:
@@ -113,6 +116,19 @@ def update_scores(row_dict, perf_change_tup, cut_points, min_score, max_score):
         i += 1
 
     return row_dict
+
+
+def get_claim_cut_points(json_dict):
+    """
+    Get a list of the claim cut points from the assessment dictionary
+    :param json_dict: the dictionary or OrderedDict that is holding the assessment information
+    :return: a list of claim cut points
+    """
+    min_max_score = [json_dict[OVERALL][MIN], json_dict[OVERALL][MAX]]
+    claim_perf_lvl_dict = json_dict[CLAIM_PERF_LVLS]
+
+    return sorted([int(x[CUT_POINT]) for x in claim_perf_lvl_dict.values()
+                   if x[CUT_POINT] not in min_max_score and x[CUT_POINT] != ''])
 
 
 def get_cut_points(json_dict):

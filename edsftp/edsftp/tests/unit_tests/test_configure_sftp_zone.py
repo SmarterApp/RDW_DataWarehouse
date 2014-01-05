@@ -3,8 +3,8 @@ Created on Oct 18, 2013
 
 Unit test for initialize_sftp_zone.py
 """
-from sftp.src import configure_sftp_zone
-from sftp.src.util import create_path
+from edsftp.src import configure_sftp_zone
+from edsftp.src.util import create_path
 
 __author__ = 'sravi'
 

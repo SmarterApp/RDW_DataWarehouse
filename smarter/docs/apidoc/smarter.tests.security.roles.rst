@@ -17,14 +17,6 @@ roles Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_school_admin` Module
--------------------------------
-
-.. automodule:: smarter.tests.security.roles.test_school_admin
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`test_student` Module
 --------------------------
 
@@ -33,11 +25,4 @@ roles Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_teacher` Module
---------------------------
-
-.. automodule:: smarter.tests.security.roles.test_teacher
-    :members:
-    :undoc-members:
-    :show-inheritance:
 

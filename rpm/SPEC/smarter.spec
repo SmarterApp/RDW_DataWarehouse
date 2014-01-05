@@ -21,7 +21,7 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 
 
 %prep
-rm -rf virtualenv
+rm -rf virtualenv/smarter
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/smarter %{buildroot}/opt/edware
@@ -41,8 +41,8 @@ cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{build
 
 %build
 export LANG=en_US.UTF-8
-virtualenv-3.3 --distribute virtualenv
-source virtualenv/bin/activate
+virtualenv-3.3 --distribute virtualenv/smarter
+source virtualenv/smarter/bin/activate
 
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}
@@ -84,11 +84,12 @@ python setup.py install
 cd -
 
 deactivate
-echo -e "/opt/edware/smarter\n." > virtualenv/lib/python3.3/site-packages/smarter.egg-link
-find virtualenv/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
+echo -e "/opt/edware/smarter\n." > virtualenv/smarter/lib/python3.3/site-packages/smarter.egg-link
+find virtualenv/smarter/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
-cp -r virtualenv %{buildroot}/opt
+mkdir -p %{buildroot}/opt/virtualenv
+cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 
 
 %clean
@@ -102,38 +103,38 @@ cp -r virtualenv %{buildroot}/opt
 /opt/edware/conf/comparing_populations_precache_filters.json
 /opt/edware/conf/celeryd-services.conf
 /opt/edware/conf/celeryd-edextract.conf
-/opt/virtualenv/include/*
-/opt/virtualenv/lib/*
-/opt/virtualenv/lib64
-/opt/virtualenv/bin/activate
-/opt/virtualenv/bin/activate.csh
-/opt/virtualenv/bin/activate.fish
-/opt/virtualenv/bin/activate_this.py
-%attr(755,root,root) /opt/virtualenv/bin/bfg2pyramid
-%attr(755,root,root) /opt/virtualenv/bin/easy_install
-%attr(755,root,root) /opt/virtualenv/bin/easy_install-3.3
-%attr(755,root,root) /opt/virtualenv/bin/initialize_smarter_db
-%attr(755,root,root) /opt/virtualenv/bin/mako-render
-%attr(755,root,root) /opt/virtualenv/bin/pcreate
-%attr(755,root,root) /opt/virtualenv/bin/pip
-%attr(755,root,root) /opt/virtualenv/bin/pip-3.3
-%attr(755,root,root) /opt/virtualenv/bin/prequest
-%attr(755,root,root) /opt/virtualenv/bin/proutes
-%attr(755,root,root) /opt/virtualenv/bin/pserve
-%attr(755,root,root) /opt/virtualenv/bin/pshell
-%attr(755,root,root) /opt/virtualenv/bin/ptweens
-%attr(755,root,root) /opt/virtualenv/bin/pviews
-%attr(755,root,root) /opt/virtualenv/bin/pygmentize
-%attr(755,root,root) /opt/virtualenv/bin/python3.3
-%attr(755,root,root) /opt/virtualenv/bin/celery
-%attr(755,root,root) /opt/virtualenv/bin/celery
-%attr(755,root,root) /opt/virtualenv/bin/celerybeat
-%attr(755,root,root) /opt/virtualenv/bin/celeryctl
-%attr(755,root,root) /opt/virtualenv/bin/celeryd
-%attr(755,root,root) /opt/virtualenv/bin/celeryd-multi
-%attr(755,root,root) /opt/virtualenv/bin/celeryev
-/opt/virtualenv/bin/python
-/opt/virtualenv/bin/python3
+/opt/virtualenv/smarter/include/*
+/opt/virtualenv/smarter/lib/*
+/opt/virtualenv/smarter/lib64
+/opt/virtualenv/smarter/bin/activate
+/opt/virtualenv/smarter/bin/activate.csh
+/opt/virtualenv/smarter/bin/activate.fish
+/opt/virtualenv/smarter/bin/activate_this.py
+%attr(755,root,root) /opt/virtualenv/smarter/bin/bfg2pyramid
+%attr(755,root,root) /opt/virtualenv/smarter/bin/easy_install
+%attr(755,root,root) /opt/virtualenv/smarter/bin/easy_install-3.3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/initialize_smarter_db
+%attr(755,root,root) /opt/virtualenv/smarter/bin/mako-render
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pcreate
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pip
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pip-3.3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/prequest
+%attr(755,root,root) /opt/virtualenv/smarter/bin/proutes
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pserve
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pshell
+%attr(755,root,root) /opt/virtualenv/smarter/bin/ptweens
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pviews
+%attr(755,root,root) /opt/virtualenv/smarter/bin/pygmentize
+%attr(755,root,root) /opt/virtualenv/smarter/bin/python3.3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celery
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celery
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celerybeat
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryctl
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryd
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryd-multi
+%attr(755,root,root) /opt/virtualenv/smarter/bin/celeryev
+/opt/virtualenv/smarter/bin/python
+/opt/virtualenv/smarter/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 
@@ -142,8 +143,8 @@ cp -r virtualenv %{buildroot}/opt
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
    useradd celery
+   usermod -G fuse celery
 fi
-usermod -G fuse celery
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi

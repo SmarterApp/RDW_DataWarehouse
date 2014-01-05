@@ -73,7 +73,6 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
-      param.asmtType = 'SUMMATIVE' # TODO: temporarily fix not_stated percentage in FT
       self = this
 
       loadingData = this.fetchData param
@@ -105,6 +104,8 @@ define [
         for key, value of self.asmtSubjectsData
           subjects.push value
         edwarePreferences.saveSubjectPreference subjects
+        # Resets assessment type preferences 
+        edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
 
     displayNoResults: () ->
       # no results
@@ -260,22 +261,22 @@ define [
       if this.reportType is 'state'
         this.orgType = this.breadcrumbsData.items[0].name
         this.displayType = "District"
+        this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'district'
         this.orgType = this.breadcrumbsData.items[1].name
         this.displayType = "School"
+        this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'school'
         this.orgType = this.breadcrumbsData.items[2].name
         this.displayType = "Grade"
-
-    getOrgType: () ->
-      this.orgType
+        this.title = 'Results by Grade for ' + this.orgType + ' on Math & ELA'
 
     getDisplayType: () ->
       this.displayType
 
     getReportTitle: () ->
     # Returns report title based on the type of report
-      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's' + ' on Math & ELA'
+      this.title
 
     # Format the summary data for summary row purposes
     getOverallSummaryName: () ->

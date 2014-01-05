@@ -6,7 +6,7 @@ DMG_ETH_NST = 'dmg_eth_nst'
 DMG_ETH_2MR = 'dmg_eth_2mr'
 
 
-def assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_score, max_score, grade, subject, assessment, ebmin, ebmax, rndlo, rndhi):
+def assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_score, max_score, grade, subject, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points):
     """
     Main function to assign scores to students for one subject
     @param studentinfo_list: list of StudentInfo object
@@ -41,7 +41,7 @@ def assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_scor
         perf = demo_perf[demo]
         total_students = len(studentinfo_subset)
         scores = generate_overall_scores(perf, cut_points, min_score, max_score, total_students)
-        asmt_scores = translate_scores_to_assessment_score(scores, cut_points[1:-1], assessment, ebmin, ebmax, rndlo, rndhi)
+        asmt_scores = translate_scores_to_assessment_score(scores, cut_points[1:-1], assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)
         for i in range(len(studentinfo_subset)):
             (studentinfo_subset[i].asmt_scores)[subject] = asmt_scores[i]
 

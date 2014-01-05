@@ -109,18 +109,23 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1499,
             'score_claim_1_max': 1524,
             'score_claim_1_min': 1474,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1501,
             'score_claim_2_max': 1526,
             'score_claim_2_min': 1476,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1502,
             'score_claim_3_max': 1527,
             'score_claim_3_min': 1477,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': '',
             'score_claim_4_max': '',
             'score_claim_4_min': '',
+            'asmt_claim_4_perf_lvl': '',
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-25, -25), cutpoints, '1200', '2400')
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (-25, -25), cutpoints, '1200', '2400', claim_cutpoints)
         expected = {
             'score_asmt': 1475,
             'score_asmt_max': 1500,
@@ -129,15 +134,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1474,
             'score_claim_1_max': 1499,
             'score_claim_1_min': 1449,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1476,
             'score_claim_2_max': 1501,
             'score_claim_2_min': 1451,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1477,
             'score_claim_3_max': 1502,
             'score_claim_3_min': 1452,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': '',
             'score_claim_4_max': '',
             'score_claim_4_min': '',
+            'asmt_claim_4_perf_lvl': '',
         }
 
         self.assertDictEqual(result, expected)
@@ -151,18 +160,23 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1500,
             'score_claim_1_max': 1525,
             'score_claim_1_min': 1475,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1500,
             'score_claim_2_max': 1525,
             'score_claim_2_min': 1475,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1500,
             'score_claim_3_max': 1525,
             'score_claim_3_min': 1475,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': 1500,
             'score_claim_4_max': 1500,
             'score_claim_4_min': 1500,
+            'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (550, 550), cutpoints, 1200, 2400)
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (550, 550), cutpoints, 1200, 2400, claim_cutpoints)
         expected = {
             'score_asmt': 2050,
             'score_asmt_max': 2075,
@@ -171,15 +185,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 2050,
             'score_claim_1_max': 2075,
             'score_claim_1_min': 2025,
+            'asmt_claim_1_perf_lvl': 3,
             'score_claim_2': 2050,
             'score_claim_2_max': 2075,
             'score_claim_2_min': 2025,
+            'asmt_claim_2_perf_lvl': 3,
             'score_claim_3': 2050,
             'score_claim_3_max': 2075,
             'score_claim_3_min': 2025,
+            'asmt_claim_3_perf_lvl': 3,
             'score_claim_4': 2050,
             'score_claim_4_max': 2050,
             'score_claim_4_min': 2050,
+            'asmt_claim_4_perf_lvl': 3,
         }
 
         self.assertDictEqual(result, expected)
@@ -193,18 +211,23 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 2400,
             'score_claim_1_max': 2400,
             'score_claim_1_min': 2350,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 2400,
             'score_claim_2_max': 2400,
             'score_claim_2_min': 2350,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 2350,
             'score_claim_3_max': 2350,
             'score_claim_3_min': 2350,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': 2300,
             'score_claim_4_max': 2300,
             'score_claim_4_min': 2300,
+            'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (550, 550), cutpoints, '1200', '2400')
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (550, 550), cutpoints, '1200', '2400', claim_cutpoints)
         expected = {
             'score_asmt': 2400,
             'score_asmt_max': 2400,
@@ -213,15 +236,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 2400,
             'score_claim_1_max': 2400,
             'score_claim_1_min': 2400,
+            'asmt_claim_1_perf_lvl': 3,
             'score_claim_2': 2400,
             'score_claim_2_max': 2400,
             'score_claim_2_min': 2400,
+            'asmt_claim_2_perf_lvl': 3,
             'score_claim_3': 2400,
             'score_claim_3_max': 2400,
             'score_claim_3_min': 2400,
+            'asmt_claim_3_perf_lvl': 3,
             'score_claim_4': 2400,
             'score_claim_4_max': 2400,
             'score_claim_4_min': 2400,
+            'asmt_claim_4_perf_lvl': 3,
         }
 
         self.assertDictEqual(result, expected)
@@ -235,18 +262,23 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1400,
             'score_claim_1_max': 1400,
             'score_claim_1_min': 1350,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1400,
             'score_claim_2_max': 1400,
             'score_claim_2_min': 1350,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1350,
             'score_claim_3_max': 1350,
             'score_claim_3_min': 1350,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': 1450,
             'score_claim_4_max': 1450,
             'score_claim_4_min': 1450,
+            'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400)
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400, claim_cutpoints)
         expected = {
             'score_asmt': 1200,
             'score_asmt_max': 1200,
@@ -255,15 +287,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1200,
             'score_claim_1_max': 1200,
             'score_claim_1_min': 1200,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1200,
             'score_claim_2_max': 1200,
             'score_claim_2_min': 1200,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1200,
             'score_claim_3_max': 1200,
             'score_claim_3_min': 1200,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': 1250,
             'score_claim_4_max': 1250,
             'score_claim_4_min': 1250,
+            'asmt_claim_4_perf_lvl': 1,
         }
 
         self.assertDictEqual(result, expected)
@@ -277,18 +313,23 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1201,
             'score_claim_1_max': 1400,
             'score_claim_1_min': 1201,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1201,
             'score_claim_2_max': 1400,
             'score_claim_2_min': 1201,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1201,
             'score_claim_3_max': 1350,
             'score_claim_3_min': 1201,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': 1201,
             'score_claim_4_max': 1450,
             'score_claim_4_min': 1201,
+            'asmt_claim_4_perf_lvl': 1,
         }
         cutpoints = [1400, 1800, 2100]
-        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400)
+        claim_cutpoints = [1600, 2000]
+        result = update_scores(row_dict, (-200, -200), cutpoints, 1200, 2400, claim_cutpoints)
         expected = {
             'score_asmt': 1200,
             'score_asmt_max': 1200,
@@ -297,15 +338,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1200,
             'score_claim_1_max': 1200,
             'score_claim_1_min': 1200,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1200,
             'score_claim_2_max': 1200,
             'score_claim_2_min': 1200,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1200,
             'score_claim_3_max': 1200,
             'score_claim_3_min': 1200,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': 1200,
             'score_claim_4_max': 1250,
             'score_claim_4_min': 1200,
+            'asmt_claim_4_perf_lvl': 1,
         }
 
         self.assertDictEqual(result, expected)
@@ -319,15 +364,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1499,
             'score_claim_1_max': 1524,
             'score_claim_1_min': 1474,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1501,
             'score_claim_2_max': 1526,
             'score_claim_2_min': 1476,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1502,
             'score_claim_3_max': 1527,
             'score_claim_3_min': 1477,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': '',
             'score_claim_4_max': '',
             'score_claim_4_min': '',
+            'asmt_claim_4_perf_lvl': '',
             'asmt_type': 'Summative',
             'guid_asmt': 'guid12345',
             'date_assessed': '20120505',
@@ -341,6 +390,7 @@ class AdditionalAssessmentTest(unittest.TestCase):
         date_change = 3
 
         result = update_row(row_dict, change_tup, asmt_type, asmt_dict, json_map, date_change)
+        print(result)
         expected = {
             'score_asmt': 1500,
             'score_asmt_max': 1525,
@@ -349,15 +399,19 @@ class AdditionalAssessmentTest(unittest.TestCase):
             'score_claim_1': 1499,
             'score_claim_1_max': 1524,
             'score_claim_1_min': 1474,
+            'asmt_claim_1_perf_lvl': 1,
             'score_claim_2': 1501,
             'score_claim_2_max': 1526,
             'score_claim_2_min': 1476,
+            'asmt_claim_2_perf_lvl': 1,
             'score_claim_3': 1502,
             'score_claim_3_max': 1527,
             'score_claim_3_min': 1477,
+            'asmt_claim_3_perf_lvl': 1,
             'score_claim_4': '',
             'score_claim_4_max': '',
             'score_claim_4_min': '',
+            'asmt_claim_4_perf_lvl': '',
             'asmt_type': 'INTERIM',
             'guid_asmt': 'guid56789',
             'date_assessed': datetime.date(2012, 8, 5),
@@ -662,6 +716,20 @@ def get_json_data():
             "level_5": {
                 "name": "",
                 "cut_point": ""
+            }
+        },
+        "claim_performance_levels": {
+            "level_1": {
+                "name": "Below Standard",
+                "cut_point": "1600"
+            },
+            "level_2": {
+                "name": "At or Near Standard",
+                "cut_point": "2000"
+            },
+            "level_3": {
+                "name": "Above Standard",
+                "cut_point": "2400"
             }
         }
     }

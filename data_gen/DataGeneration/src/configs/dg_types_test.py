@@ -213,7 +213,7 @@ def get_scores():
     PL3 = cp2 - cp3 (exclusive)
     PL4 = cp3 - max (inclusive)
     """
-    scores = {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100]}
+    scores = {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100], 'claim_cut_points': [1600, 2000]}
     return scores
 
 

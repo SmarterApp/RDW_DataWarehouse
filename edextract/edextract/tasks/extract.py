@@ -6,6 +6,7 @@ Created on Nov 5, 2013
 @author: ejen
 '''
 import csv
+import os.path
 import logging
 from edextract.celery import celery
 from edcore.database.edcore_connector import EdCoreDBConnection
@@ -14,7 +15,7 @@ from edextract.status.status import ExtractStatus, \
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
-from edextract.utils.file_utils import prepare_path
+from edextract.utils import file_utils
 from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError, ExtractionError
@@ -25,9 +26,43 @@ from edextract.utils.json_formatter import format_json
 
 
 log = logging.getLogger('edextract')
+MAX_RETRY = get_setting(Config.MAX_RETRIES)
+DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 
 
-def route_tasks(tenant, request_id, tasks, queue_name='extract'):
+@celery.task(name='task.extract.start_extract')
+def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks):
+    '''
+    entry point to start an extract request for one or more extract tasks
+    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
+    '''
+    workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
+                     route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME),
+                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
+                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
+    workflow.apply_async()
+
+
+@celery.task(name='task.extract.prepare_path')
+def prepare_path(tenant, request_id, paths):
+    '''
+    Given a list of paths of directories, creates it if it doesn't exist
+    '''
+    task_info = {Constants.TASK_ID: prepare_path.request.id,
+                 Constants.CELERY_TASK_ID: prepare_path.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    try:
+        for path in paths:
+            file_utils.prepare_path(path)
+    except FileNotFoundError as e:
+        # which thrown from prepare_path
+        # unrecoverable error, do not try to retry celery task.  it's just wasting time.
+        log.error(e)
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
+        raise ExtractionError()
+
+
+def route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
     '''
     Given a list of tasks, route them to either generate_csv or generate_json depending on the task type
     '''
@@ -38,24 +73,9 @@ def route_tasks(tenant, request_id, tasks, queue_name='extract'):
     return group(generate_tasks)
 
 
-@celery.task(name='task.extract.start_extract',
-             max_retries=get_setting(Config.MAX_RETRIES),
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
-def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks):
-    '''
-    entry point to start an extract request for one or more extract tasks
-    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
-    '''
-    workflow = chain(route_tasks(tenant, request_id, tasks, 'extract'),
-                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
-                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
-    workflow.apply_async()
-
-
-# fixme -> max_retries=get_setting(Config.MAX_RETRIES),
 @celery.task(name="tasks.extract.generate_csv",
-             max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def generate_csv(tenant, request_id, task_id, query, output_file):
     '''
     celery entry point to execute data extraction query.
@@ -77,7 +97,8 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            prepare_path(output_file)
+            if not os.path.isdir(os.path.dirname(output_file)):
+                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
             with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as csvfile:
                 results = connection.get_streaming_result(query)  # this result is a generator
                 csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
@@ -113,9 +134,7 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
             raise ExtractionError()
 
 
-@celery.task(name="tasks.extract.archive",
-             max_retries=get_setting(Config.MAX_RETRIES),
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+@celery.task(name="tasks.extract.archive")
 def archive(request_id, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
@@ -130,8 +149,8 @@ def archive(request_id, directory):
 
 
 @celery.task(name="tasks.extract.archive_with_encryption",
-             max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def archive_with_encryption(request_id, recipients, encrypted_archive_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
@@ -143,7 +162,6 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
                      Constants.CELERY_TASK_ID: archive_with_encryption.request.id,
                      Constants.REQUEST_GUID: request_id}
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-        prepare_path(encrypted_archive_file_name)
         gpg_binary_file = get_setting(Config.BINARYFILE)
         homedir = get_setting(Config.HOMEDIR)
         keyserver = get_setting(Config.KEYSERVER)
@@ -172,8 +190,8 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
 
 
 @celery.task(name="tasks.extract.remote_copy",
-             max_retries=1,
-             default_retry_delay=60)
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
     '''
     Remotely copies a source file to a remote machine
@@ -200,8 +218,8 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
 
 
 @celery.task(name="tasks.extract.generate_json",
-             max_retries=1,
-             default_retry_delay=get_setting(Config.RETRY_DELAY))
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def generate_json(tenant, request_id, task_id, query, output_file):
     '''
     Generates a json file given a result from the first element of a query
@@ -216,7 +234,8 @@ def generate_json(tenant, request_id, task_id, query, output_file):
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            prepare_path(output_file)
+            if not os.path.isdir(os.path.dirname(output_file)):
+                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
             with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as outfile:
                 results = connection.get_result(query)
                 # There should only be one result in the list

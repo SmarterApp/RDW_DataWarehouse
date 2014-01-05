@@ -1,10 +1,10 @@
 utils Package
 =============
 
-:mod:`cache` Module
+:mod:`utils` Module
 -------------------
 
-.. automodule:: smarter.reports.utils.cache
+.. automodule:: edcore.utils.utils
     :members:
     :undoc-members:
     :show-inheritance:

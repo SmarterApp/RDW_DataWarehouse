@@ -73,10 +73,11 @@ class ClaimScore():
     '''
     This is a claim object with scores. Used to create assessment_outcome row.
     '''
-    def __init__(self, claim_score, claim_score_interval_minimum, claim_score_interval_maximum):
+    def __init__(self, claim_score, claim_score_interval_minimum, claim_score_interval_maximum, perf_lvl):
         self.claim_score = claim_score
         self.claim_score_interval_minimum = claim_score_interval_minimum
         self.claim_score_interval_maximum = claim_score_interval_maximum
+        self.perf_lvl = perf_lvl
 
 
 class AssessmentScore:

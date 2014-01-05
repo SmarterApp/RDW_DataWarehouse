@@ -86,15 +86,19 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
                 'asmt_claim_1_score': claim_scores[0].claim_score,
                 'asmt_claim_1_score_range_min': claim_scores[0].claim_score_interval_minimum,
                 'asmt_claim_1_score_range_max': claim_scores[0].claim_score_interval_maximum,
+                'asmt_claim_1_perf_lvl': claim_scores[0].perf_lvl,
                 'asmt_claim_2_score': claim_scores[1].claim_score,
                 'asmt_claim_2_score_range_min': claim_scores[1].claim_score_interval_minimum,
                 'asmt_claim_2_score_range_max': claim_scores[1].claim_score_interval_maximum,
+                'asmt_claim_2_perf_lvl': claim_scores[1].perf_lvl,
                 'asmt_claim_3_score': claim_scores[2].claim_score,
                 'asmt_claim_3_score_range_min': claim_scores[2].claim_score_interval_minimum,
                 'asmt_claim_3_score_range_max': claim_scores[2].claim_score_interval_maximum,
+                'asmt_claim_3_perf_lvl': claim_scores[2].perf_lvl,
                 'asmt_claim_4_score': claim_scores[3].claim_score if len(claim_scores) > 3 else None,
                 'asmt_claim_4_score_range_min': claim_scores[3].claim_score_interval_minimum if len(claim_scores) > 3 else None,
                 'asmt_claim_4_score_range_max': claim_scores[3].claim_score_interval_maximum if len(claim_scores) > 3 else None,
+                'asmt_claim_4_perf_lvl': claim_scores[3].perf_lvl if len(claim_scores) > 3 else None,
                 'status': status,
                 'most_recent': student_info.most_recent,
                 'batch_guid': batch_guid,
@@ -238,6 +242,7 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
 
 def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, asmt_grade,
                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                        claim_cut_point_1, claim_cut_point_2,
                         from_date, most_recent, to_date=None):
     '''
     Given Assessment information, create an Assessment object
@@ -256,6 +261,7 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
 
     # TODO: decouple constants from this function
     claim_defs = constants.CLAIM_DEFINITIONS[asmt_subject]
+    claim_perf_level = constants.CLAIM_PERFORMANCE_LEVELS
     score_min = constants.MINIMUM_ASSESSMENT_SCORE
     score_max = constants.MAXIMUM_ASSESSMENT_SCORE
 
@@ -294,6 +300,10 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
     asmt_perf_lvl_name_4 = performance_levels[3]
     asmt_perf_lvl_name_5 = performance_levels[4] if len(performance_levels) > 4 else None
 
+    asmt_claim_perf_lvl_name_1 = claim_perf_level[0]
+    asmt_claim_perf_lvl_name_2 = claim_perf_level[1]
+    asmt_claim_perf_lvl_name_3 = claim_perf_level[2]
+
     asmt = Assessment(asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
                       asmt_grade, from_date, most_recent,
                       asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
@@ -303,12 +313,13 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
                       asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
                       asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
                       asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
-                      to_date=to_date)
+                      claim_cut_point_1, claim_cut_point_2,
+                      to_date, asmt_claim_perf_lvl_name_1, asmt_claim_perf_lvl_name_2, asmt_claim_perf_lvl_name_3)
 
     return asmt
 
 
-def generate_assessments(grades, cut_points, from_date, most_recent, to_date=None):
+def generate_assessments(grades, cut_points, claim_cut_points, from_date, most_recent, to_date=None):
     '''
     Generate all possible assessments for the given grades
 
@@ -319,6 +330,9 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
     asmt_cut_point_2 = cut_points[1]
     asmt_cut_point_3 = cut_points[2]
     asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else None
+
+    claim_cut_point_1 = claim_cut_points[0]
+    claim_cut_point_2 = claim_cut_points[1]
 
     asmt_years = sorted(constants.ASSMT_SCORE_YEARS)
     # TODO: de-couple constants from this method.  Pass the constant values in via parameters.
@@ -331,8 +345,10 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
                     for index_of_year in range(len(asmt_years)):
                         most_recent = (index_of_year == len(asmt_years) - 1)
                         asmt_period_year = asmt_years[index_of_year]
-                        assessment = generate_assessment(asmt_type, asmt_period + ' ' + str(asmt_period_year), asmt_period_year, asmt_subject, asmt_grade,
-                                                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                        assessment = generate_assessment(asmt_type, asmt_period + ' ' + str(asmt_period_year),
+                                                         asmt_period_year, asmt_subject, asmt_grade,
+                                                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3,
+                                                         asmt_cut_point_4, claim_cut_point_1, claim_cut_point_2,
                                                          from_date, most_recent, to_date=to_date)
                         assessments.append(assessment)
     return assessments

@@ -32,6 +32,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=True)
         self.assertEqual(ebhalf, self.ebmin)
         self.assertEqual(ebleft, (score - ebhalf))
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, (score + ebhalf))
 
     def test_calc_eb_smin_no_random(self):
@@ -39,6 +41,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=False)
         self.assertEqual(ebhalf, self.ebmax)
         self.assertEqual(ebleft, self.smin)
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, (score + ebhalf))
 
     def test_calc_eb_smax_no_random(self):
@@ -46,6 +50,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=False)
         self.assertEqual(ebhalf, self.ebmax)
         self.assertEqual(ebleft, (score - ebhalf))
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, self.smax)
 
     def test_calc_eb_near_smin_no_random(self):
@@ -53,6 +59,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=False)
         self.assertEqual(ebhalf, 145.3125)
         self.assertEqual(ebleft, self.smin)
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, (score + ebhalf))
 
     def test_calc_eb_near_smax_no_random(self):
@@ -60,6 +68,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=False)
         self.assertEqual(ebhalf, 145.3125)
         self.assertEqual(ebleft, (score - ebhalf))
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, self.smax)
 
     def test_calc_eb_using_symmetry_max(self):
@@ -67,6 +77,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=True)
         self.assertEqual(ebhalf, 145.3125)
         self.assertEqual(ebleft, (score - 25))
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, self.smax)
 
     def test_calc_eb_using_symmetry_min(self):
@@ -74,6 +86,8 @@ class Test(unittest.TestCase):
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, clip_eb=True, ensure_symmetry=True)
         self.assertEqual(ebhalf, 145.3125)
         self.assertEqual(ebleft, self.smin)
+        self.assertTrue(ebleft >= self.smin)
+        self.assertTrue(ebright <= self.smax)
         self.assertEqual(ebright, (score + 25))
 
 #    def test_calc_eb_scenter_with_random(self):

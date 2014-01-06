@@ -59,7 +59,7 @@ def _clip_eb(ebleft, ebright, smin, smax, clip_eb):
     return ebleft, ebright
 
 
-def calc_eb(score, smin, smax, scenter, ebmin, ebstep, rndlo=0, rndhi=0, clip_eb=True, ensure_symmetry=False):
+def calc_eb(score, smin, smax, scenter, ebmin, ebstep, rndlo=0, rndhi=0, clip_eb=False, ensure_symmetry=False):
     """ calculate and return the error band (ebleft, ebright)
 
         INPUT:

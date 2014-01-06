@@ -5,8 +5,14 @@ Created on May 14, 2013
 '''
 import os
 from celery import Celery
+from kombu import Queue, Exchange
 import configparser
 from edworker.celeryconfig import get_config
+
+CELERY_QUEUES = 'CELERY_QUEUES'
+CELERY_QUEUE_NAME = 'name'
+CELERY_QUEUE_EXCHANGE = 'exchange'
+CELERY_QUEUE_ROUTING_KEY = 'key'
 
 
 def setup_celery(celery, settings, prefix='celery'):
@@ -16,7 +22,13 @@ def setup_celery(celery, settings, prefix='celery'):
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
+
     celery_config = get_config(settings, prefix)
+    if celery_config.get(CELERY_QUEUES):
+        real_queues = []
+        for queue in celery_config.get(CELERY_QUEUES):
+            real_queues.append(Queue(queue[CELERY_QUEUE_NAME], exchange=Exchange(queue[CELERY_QUEUE_EXCHANGE]), routing_key=queue[CELERY_QUEUE_ROUTING_KEY]))
+        celery_config[CELERY_QUEUES] = real_queues
     celery.config_from_object(celery_config)
 
 

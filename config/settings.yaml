@@ -102,6 +102,8 @@ common:
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
       available_grades: 3,4,5,6,7,8,11
+      extract.job.queue: extract
+      extract_sync.job.queue: extract_sync
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -213,6 +215,22 @@ qa:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: celery
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERY_QUEUES:
+        -   name: celery
+            exchange: direct
+            key: celery
+        -   name: batch_pdf_gen
+            exchange: direct,
+            key: batch_pdf_gen
+        -   name: batch_worker
+            exchange: direct
+            key: batch_worker
+        -   name: health_check
+            exchange: direct
+            key: health_check
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
@@ -220,11 +238,25 @@ qa:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
-      CELERY_DEFAULT_QUEUE : extract
-      CELERY_DEFAULT_ROUTING_KEY: extract
-    extract.gpg:
-      homedir : /opt/edware/conf/gpg
-      keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: celery
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERY_QUEUES:
+        -   name: celery
+            exchange: direct
+            key: celery
+        -   name: extract
+            exchange: direct
+            key: extract
+        -   name: extract_sync
+            exchange: direct
+            key: extract_sync
+    extract:
+      gpg:
+        homedir : /opt/edware/conf/gpg
+        keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
+      extract.job.queue = extract
+      extract_sync.job.queue = extract_sync
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
       public.data.url: twprxydw0.qa.dum.edwdc.net:22121
@@ -326,8 +358,11 @@ uat:
       CELERYD_CONCURRENCY: 20
       CELERY_DEFAULT_QUEUE : extract
       CELERY_DEFAULT_ROUTING_KEY: extract
-    extract.gpg:
-      keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
+    extract:
+      gpg:
+        keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
+      extract.job.queue: extract
+      extract_sync.job.queue: extract_sync
     cache:
       public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
       public.data.url: twprxydw0.dmo.som.edwdc.net:22121
@@ -445,6 +480,8 @@ development:
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
+      extract.job.queue: extract
+      extract_sync.job.queue: extract_sync
     auth:
       skip.verify: False
       saml:
@@ -502,6 +539,22 @@ jenkins_dev:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 1800 # 30 min
       CELERYD_CONCURRENCY: 8
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: celery
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERY_QUEUES:
+        -   name: celery
+            exchange: direct
+            key: celery
+        -   name: batch_pdf_gen
+            exchange: direct
+            key: batch_pdf_gen
+        -   name: batch_worker
+            exchange: direct
+            key: batch_worker
+        -   name: health_check
+            exchange: direct
+            key: health_check
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@localhost/edextract
@@ -511,8 +564,23 @@ jenkins_dev:
         CELERY_DEFAULT_ROUTING_KEY: extract
         CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
         CELERYD_CONCURRENCY: 8
+        CELERY_DEFAULT_QUEUE: celery
+        CELERY_DEFAULT_ROUTING_KEY: celery
+        CELERY_DEFAULT_EXCHANGE_TYPE: direct
+        CELERY_QUEUES:
+            -   name: celery
+                exchange: direct
+                key: celery
+            -   name: extract
+                exchange: direct
+                key: extract
+            -   name: extract_sync
+                exchange: direct
+                key: extract_sync
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+      extract.job.queue : extract
+      extract_sync.job.queue = extract_sync
     edware:
       db:
         cat:

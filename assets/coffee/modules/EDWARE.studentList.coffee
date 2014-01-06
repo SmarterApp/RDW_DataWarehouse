@@ -268,6 +268,7 @@ define [
       for asmt in asmtAdministration
         # mapping asmt type to capitalized case
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
         asmt.asmt_subject_text = "#{asmt.asmt_subject} Details"
         # TODO change the combination to reflect actual link between asmts
         key = [asmt.asmt_year, asmt.asmt_type]

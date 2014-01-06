@@ -32,7 +32,7 @@ define [
     responseHeader = xhr.getResponseHeader('Content-Type')
     if xhr.status == 401 and /application\/json/.test(responseHeader)
       redirectURL = JSON.parse(xhr.responseText).redirect
-    #location.href = redirectURL || "/assets/public/error.html"
+    location.href = redirectURL || "/assets/public/error.html"
 
   getDatafromSource = (sourceURL, options) ->
     if not sourceURL || not $.type(sourceURL) in ['string', 'array']

@@ -104,8 +104,8 @@ define [
         for key, value of self.asmtSubjectsData
           subjects.push value
         edwarePreferences.saveSubjectPreference subjects
-        # Resets assessment type preferences 
-        edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
+        # Resets assessment type preferences
+        # edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
 
     displayNoResults: () ->
       # no results
@@ -122,7 +122,7 @@ define [
       options =
         method: "POST"
         params: params
-      
+
       edwareDataProxy.getDatafromSource "/data/comparing_populations", options
 
     # Based on query parameters, return the type of report that the user is requesting for
@@ -159,7 +159,7 @@ define [
       }
       # We need to preserve sorting, so, update the column labels and color
       this.updateSortLabels(name, order)
- 
+
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
       # Change the column name and link url based on the type of report the user is querying for
@@ -193,14 +193,14 @@ define [
       colModels = grid.jqGrid('getGridParam').colModel
       # Reset back to original color for all columns
       for colModel in colModels
-        grid.jqGrid('setLabel', colModel.name, colModel.label, {'background': "none repeat scroll 0 0 #F8F8F8"}) 
+        grid.jqGrid('setLabel', colModel.name, colModel.label, {'background': "none repeat scroll 0 0 #F8F8F8"})
         if colModel.name is index
           newLabel = colModel.label
-      
+
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc' then newLabel += " " + this.config.proficiencyAscending else newLabel += " " + this.config.proficiencyDescending
       # Set background color and label for active sort column
-      grid.jqGrid('setLabel', index, newLabel, {'background': "none repeat scroll 0 0 #ededed"}) 
+      grid.jqGrid('setLabel', index, newLabel, {'background': "none repeat scroll 0 0 #ededed"})
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
@@ -358,7 +358,7 @@ define [
           element.showPercentage = false
 
         # calculate sort
-        if i >= intervals.length/2        
+        if i >= intervals.length/2
           sort += element.percentage
         i++
       # attach sort to data

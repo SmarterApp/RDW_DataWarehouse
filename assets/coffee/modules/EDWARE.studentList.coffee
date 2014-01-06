@@ -272,8 +272,7 @@ define [
         # TODO change the combination to reflect actual link between asmts
         key = [asmt.asmt_year, asmt.asmt_type]
         selectors[key] ?= []
-        selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name}
-          · #{asmt.asmt_type}"
+        selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{asmt.asmt_type}"
         selectors[key].push asmt
       for key, asmt of selectors
         if asmt.length is 2

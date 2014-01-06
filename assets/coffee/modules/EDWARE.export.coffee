@@ -8,14 +8,15 @@ define [
 
 
   class CSVBuilder
-  
+
     constructor: (@table, @reportType, @labels) ->
       current = new Date()
       this.timestamp = (current.getMonth() + 1) + '-' + current.getDate() + '-' + current.getFullYear() + ' ' + current.getHours() + ':' + current.getMinutes() + ':' + current.getSeconds()
-      
+
       this.title =  $('h2.title').text()
       this.sortBy = this.getSortBy()
-      this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
+      asmtType = $('#selectedAsmtType').text() || this.labels.summative
+      this.asmtType = asmtType.replace(/\s+/g, ' ')
       this.isSticky = $('.stickyState').data('label')
       this.filters = this.buildFilters()
       this.breadcrumb = this.getBreadcrumb()
@@ -36,7 +37,7 @@ define [
         sortBy = model.label if model.index is sortName
       sortBy
 
-      
+
     build: () ->
       records = [] # fixed first 10 rows
       # build header
@@ -107,7 +108,7 @@ define [
           columnValues.push $this.data(field)
       columnValues = edwareUtil.escapeCSV columnValues
       columnValues.join(Constants.DELIMITOR.COMMA)
-      
+
     getFileName: () ->
       this.reportType + '_' + this.timestamp + '.csv'
 

@@ -19,7 +19,7 @@ require [
       target = $(this).attr('href')
       helpMenu.show target
     $('.btn-login').click ()->
-      window.location.href = window.location.origin + "/assets/html/comparingPopulations.html?stateCode=NY"
+      window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/comparingPopulations.html?stateCode=ES"
     $('#about li').click ()->
       link = $(this).data('link')
       window.location.href = link
@@ -30,5 +30,3 @@ require [
       # toggle icon color
       $this.find('.edware-icon-globe-blue').toggleClass('edware-icon-globe-grayscale')
       $this.find('.edware-icon-downarrow-blue').toggleClass('edware-icon-downarrow-grayscale')
-     
-

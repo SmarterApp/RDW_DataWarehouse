@@ -1,7 +1,7 @@
 {
     "content": "assessment", 
     "identification": {
-        "guid": "f1451acb-72fc-43e4-b459-3227d52a5da0", 
+        "guid": "0b2b6b29-b868-4c0f-9fbb-a7b57fa269d9", 
         "type": "SUMMATIVE", 
         "year": "2015", 
         "period": "2015", 
@@ -58,6 +58,20 @@
             "min_score": "1200", 
             "max_score": "2400", 
             "weight": "0.3"
+        }
+    }, 
+    "claim_performance_levels": {
+        "level_1": {
+            "name": "Below Standard", 
+            "cut_point": "1600"
+        }, 
+        "level_2": {
+            "name": "At or Near Standard", 
+            "cut_point": "2000"
+        }, 
+        "level_3": {
+            "name": "Above Standard", 
+            "cut_point": "2400"
         }
     }
 }

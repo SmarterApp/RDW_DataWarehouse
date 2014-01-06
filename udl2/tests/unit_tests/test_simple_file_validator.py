@@ -49,8 +49,9 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                            'email_student', 'grade_asmt', 'grade_enrolled', 'guid_asmt', 'guid_asmt_location', 'guid_district', 'guid_school', 'guid_student',
                            'name_asmt_location', 'name_district', 'name_school', 'name_state', 'name_student_first',
                            'name_student_last', 'name_student_middle', 'score_asmt', 'score_asmt_max', 'score_asmt_min', 'score_claim_1', 'score_claim_1_max', 'score_claim_1_min',
-                           'score_claim_2', 'score_claim_2_max', 'score_claim_2_min', 'score_claim_3', 'score_claim_3_max', 'score_claim_3_min', 'score_claim_4', 'score_claim_4_max',
-                           'score_claim_4_min', 'score_perf_level', 'asmt_year', 'gender_student', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf',
+                           'asmt_claim_1_perf_lvl', 'score_claim_2', 'score_claim_2_max', 'score_claim_2_min', 'asmt_claim_2_perf_lvl', 'score_claim_3',
+                           'score_claim_3_max', 'score_claim_3_min', 'asmt_claim_3_perf_lvl', 'score_claim_4', 'score_claim_4_max',
+                           'score_claim_4_min', 'asmt_claim_4_perf_lvl', 'score_perf_level', 'asmt_year', 'gender_student', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf',
                            'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'code_state', 'asmt_subject', 'asmt_type']
         validator = csv_validator.DoesSourceFileInExpectedFormat(csv_fields=test_csv_fields)
         results = [validator.execute(self.conf['zones']['datafiles'],

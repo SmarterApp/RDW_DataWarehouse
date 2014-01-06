@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
 from psycopg2.extensions import adapt as sqlescape
-from smarter.extract.format import get_column_mapping
+from smarter.extracts.format import get_column_mapping
 
 
 def compile_query_to_sql_text(query):

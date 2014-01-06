@@ -10,7 +10,7 @@ from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from smarter.extract.processor import process_async_extraction_request, \
+from smarter.extracts.processor import process_async_extraction_request, \
     get_extract_file_path, get_extract_work_zone_path, \
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
     get_pickup_zone_info, process_sync_extract_request, \
@@ -26,7 +26,7 @@ from edextract.celery import setup_celery
 import smarter
 from sqlalchemy.sql.expression import select
 from edauth.security.user import User
-from smarter.extract.constants import Constants as Extract
+from smarter.extracts.constants import Constants as Extract
 from edextract.tasks.constants import Constants as TaskConstants
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
@@ -208,7 +208,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'ELA',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
-        smarter.extract.format.json_column_mapping = {}
+        smarter.extracts.format.json_column_mapping = {}
         guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(params)
         self.assertEqual(1, len(guid_grade))
         self.assertIsNotNone(dim_asmt)

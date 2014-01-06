@@ -4,7 +4,7 @@ Created on Nov 16, 2013
 @author: dip
 '''
 import unittest
-from smarter.extract.format import setup_input_file_format, get_column_mapping
+from smarter.extracts.format import setup_input_file_format, get_column_mapping
 from smarter.reports.helpers.constants import Constants
 
 

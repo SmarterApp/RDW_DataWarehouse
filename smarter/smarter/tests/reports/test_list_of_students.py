@@ -99,7 +99,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         results = get_list_of_students_report(testParam)
 
         self.assertTrue('asmt_administration' in results, "asmt_administration is missing")
-        self.assertEquals(len(results['asmt_administration']), 129, "should have 129 different test")
+        self.assertEquals(len(results['asmt_administration']), 4, "should have 4 different test")
 
     def test_ELA_only(self):
         testParam = {}

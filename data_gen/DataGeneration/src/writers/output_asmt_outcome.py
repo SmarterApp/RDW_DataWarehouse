@@ -123,10 +123,22 @@ def write_csv_rows(output_path, row_dict_list):
     """
     # may want to pass this value in as a parameter or pull this information
     # from the config file if ordering is to be preserved
-    fieldnames = list(row_dict_list[0].keys())
+    fieldnames = get_header_from_file(output_path)
     with open(output_path, 'a') as fp:
         csv_writer = csv.DictWriter(fp, fieldnames)
         csv_writer.writerows(row_dict_list)
+
+
+def get_header_from_file(filename):
+    """
+    Open a csv file and return the first row
+    :param filename:
+    :return: the header as a list
+    """
+    with open(filename, 'r') as fp:
+        reader = csv.reader(fp)
+        header = next(reader)
+    return header
 
 
 class Dummy(object):

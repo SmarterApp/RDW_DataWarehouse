@@ -37,6 +37,7 @@ define [
       @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @data.labels = @configData.labels
       @grade = @data.context.items[3]
+      @subjectsData = @data.subjects
       @processData()
       @render()
       @createBreadcrumb()
@@ -331,6 +332,7 @@ define [
       asmtTypes = []
       for idx, asmt of @data.asmt_administration
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
         asmt.display = "#{asmt.asmt_year} · #{@grade.name} · #{asmt.asmt_type}"
         asmt.hasAsmtSubject = false
         asmtTypes.push asmt

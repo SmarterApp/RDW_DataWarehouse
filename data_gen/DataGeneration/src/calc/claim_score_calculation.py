@@ -36,7 +36,7 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
             perf_lvl = len(cut_points) + 1
 
         scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
-        ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
+        ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi, clip_eb=True)
         claim_scores = calculate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)
         asmt_create_date = datetime.date.today().strftime('%Y%m%d')
         asmt_score = generate_assessment_score(score, perf_lvl, round(ebleft), round(ebright), claim_scores, asmt_create_date)
@@ -80,7 +80,7 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi, c
         # calculate the claim score
 
         scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
-        ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
+        ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi, clip_eb=True)
         claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright),
                                            determine_claim_perf_level(scaled_claim_score, claim_cut_points))
         claim_scores.append(claim_score)

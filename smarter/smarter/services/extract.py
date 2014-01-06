@@ -13,9 +13,9 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPInternalServerError
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
-from smarter.extract.processor import process_async_extraction_request,\
+from smarter.extracts.processor import process_async_extraction_request,\
     process_sync_extract_request
-from smarter.extract.constants import ExtractType, Constants as Extract
+from smarter.extracts.constants import ExtractType, Constants as Extract
 from datetime import datetime
 import logging
 

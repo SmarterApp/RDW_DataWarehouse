@@ -7,9 +7,9 @@ Created on Nov 5, 2013
 '''
 import logging
 from smarter.reports.helpers.constants import Constants
-from smarter.extract.constants import Constants as Extract, ExtractType
+from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extract.student_assessment import get_extract_assessment_query, compile_query_to_sql_text
+from smarter.extracts.student_assessment import get_extract_assessment_query, compile_query_to_sql_text
 from pyramid.security import authenticated_userid
 from uuid import uuid4
 from edextract.status.status import create_new_entry
@@ -22,7 +22,7 @@ from edapi.exceptions import NotFoundException
 import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
-from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
+from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants
 from edapi.cache import cache_region
 from celery.canvas import chain

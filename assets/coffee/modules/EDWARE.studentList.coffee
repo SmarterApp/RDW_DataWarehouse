@@ -268,19 +268,23 @@ define [
       for asmt in asmtAdministration
         # mapping asmt type to capitalized case
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
         asmt.asmt_subject_text = "#{asmt.asmt_subject} Details"
         # TODO change the combination to reflect actual link between asmts
         key = [asmt.asmt_year, asmt.asmt_type]
         selectors[key] ?= []
         selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{asmt.asmt_type}"
         selectors[key].push asmt
+      # reverse order to put Math before ELA
+      for key, asmt of selectors
+        asmt.sort().reverse()
       for key, asmt of selectors
         if asmt.length is 2
-          # add subjects combination
+          # add subjects combination, i.e. Math & ELA
           asmt.unshift
             asmt_type: asmt[0].asmt_type
-            asmt_subject: "#{asmt[1].asmt_subject}_#{asmt[0].asmt_subject}"
-            asmt_subject_text: "#{asmt[1].asmt_subject} & #{asmt[0].asmt_subject}"
+            asmt_subject: "#{asmt[0].asmt_subject}_#{asmt[1].asmt_subject}"
+            asmt_subject_text: "#{asmt[0].asmt_subject} & #{asmt[1].asmt_subject}"
         "display": asmt.display
         "asmt": asmt
         "hasAsmtSubject": true

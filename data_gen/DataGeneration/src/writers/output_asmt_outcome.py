@@ -1,6 +1,7 @@
 __author__ = 'swimberly'
 import csv
 import os
+from datetime import date
 
 CSV_K = 'csv'
 
@@ -11,7 +12,7 @@ def initialize_csv_file(output_config, output_keys, output_path):
     :param output_config: A dictionary of configuration information
     :param output_keys: A list of output formats that should be initialized
         these strings must be the top level keys in the output config dictionary
-    :return:
+    :return: a dictionary of output files
     """
     output_files = {}
     for out_key in output_keys:
@@ -58,12 +59,14 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
     :param school: The school object to use in outputting data
     :param student_info: the student info object to use to in outputting data
     :param subject: the name of the subject to output
-    :return:
+    :return: a mapping between column names and values
     """
 
     output_dict = {}
 
     for column_name in table_config_dict:
+        asmt_score = student_info.asmt_scores[subject]
+        claim_scores = asmt_score.claim_scores
         internal_map_string_list = table_config_dict[column_name].split('.')
         if internal_map_string_list[0] == 'student_info':
             data_object = student_info
@@ -71,9 +74,15 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
             data_object = school
         elif internal_map_string_list[0] in ['state', 'state_population']:
             data_object = state_population
+        elif internal_map_string_list[0] == 'claim_scores':
+            data_object = claim_scores
+        elif internal_map_string_list[0] == 'asmt_score':
+            data_object = asmt_score
 
-        # This is a start, this will not handle all of the possible cases
-        value = get_value_from_object(data_object, internal_map_string_list[1], subject)
+        # remove everything before the first '.' from attribute name
+        attribute_name = '.'.join(internal_map_string_list[1:])
+
+        value = get_value_from_object(data_object, attribute_name, subject)
         output_dict[column_name] = value
 
     return output_dict
@@ -81,24 +90,36 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
 
 def get_value_from_object(data_object, attr_name, subject):
     """
-
-    :param data_object:
-    :param attr_name:
-    :param subject:
-    :return:
+    Using the data object get the value desired and return
+    :param data_object: the data object to pull the data from. (could also be a list)
+    :param attr_name: Name of the desired attribute
+    :param subject: The current subject
+    :return: a single cleaned value
     """
-    value = getattr(data_object, attr_name)
+    index_attr_list = attr_name.split('.')
+    if len(index_attr_list) > 1:
+        attr_index, attr_name = index_attr_list
+        attr_index = int(attr_index)
+        value_list = data_object[attr_index - 1] if len(data_object) > attr_index - 1 else None
+        value = getattr(value_list, attr_name)
+    else:
+        value = getattr(data_object, attr_name)
 
+    # Final value cleanup #
     # if the value is a dictionary, there is a value for each subject
-    return value[subject] if isinstance(value, dict) else value
+    value = value[subject] if isinstance(value, dict) else value
+    # if the value is a date object reformat the value
+    value = value.strftime('%Y%m%d') if isinstance(value, date) else value
+
+    return value
 
 
 def write_csv_rows(output_path, row_dict_list):
     """
-
-    :param output_path:
-    :param row_dict_list:
-    :return:
+    Write the given list of csv dictionaries to the given file
+    :param output_path: the path to the output file
+    :param row_dict_list: a list of csv dictionaries
+    :return: None
     """
     # may want to pass this value in as a parameter or pull this information
     # from the config file if ordering is to be preserved
@@ -141,6 +162,10 @@ if __name__ == '__main__':
                     'email_student': 'student_info.email',
                     'dob_student': 'student_info.dob',
                     'grade_enrolled': 'student_info.grade',
+                    'score_claim_1': 'claim_scores.1.claim_score',
+                    'score_claim_2': 'claim_scores.2.claim_score',
+                    'score_claim_3': 'claim_scores.3.claim_score',
+                    'date_taken': 'student_info.asmt_dates_taken',
                 }
             }
         }
@@ -152,8 +177,11 @@ if __name__ == '__main__':
     print(out_files)
     student_info1 = Dummy(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
                           address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
-                          email='b.n@email.com', dob='11111999', grade=4,
-                          asmt_scores={'math': Dummy(), 'ela': Dummy()})
+                          email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
+                          asmt_scores={'math': Dummy(claim_scores=[Dummy(claim_score=1200), Dummy(claim_score=1200),
+                                                                   Dummy(claim_score=1200), Dummy(claim_score=1200)]),
+                                       'ela': Dummy(claim_scores=[Dummy(claim_score=1300), Dummy(claim_score=1300),
+                                                                  Dummy(claim_score=1300)])})
     state1 = Dummy(state_name='New York', state_code="NY")
     school1 = Dummy(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
                     school_category='elementary')

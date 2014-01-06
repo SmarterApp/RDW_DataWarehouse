@@ -22,7 +22,7 @@ Subpackages
 
 .. toctree::
 
-    smarter.database
+    smarter.extracts
     smarter.reports
     smarter.security
     smarter.services

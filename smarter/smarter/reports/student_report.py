@@ -202,5 +202,6 @@ def get_student_report(params):
         result = __arrange_results(result, subjects_map, custom_metadata_map)
 
         result['context'] = context
+        result[Constants.SUBJECTS] = {v: k for k, v in subjects_map.items()}
         result['asmt_administration'] = student_list_asmt_administration
     return result

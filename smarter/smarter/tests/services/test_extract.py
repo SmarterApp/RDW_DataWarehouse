@@ -14,11 +14,11 @@ from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.response import Response
-from smarter.extract.constants import Constants
+from smarter.extracts.constants import Constants
 from smarter.services.extract import post_extract_service, get_extract_service,\
     generate_zip_file_name
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-import smarter.extract.format
+import smarter.extracts.format
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 
@@ -56,7 +56,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
         # for UT purposes
-        smarter.extract.format.json_column_mapping = {}
+        smarter.extracts.format.json_column_mapping = {}
 
     def tearDown(self):
         self.__request = None

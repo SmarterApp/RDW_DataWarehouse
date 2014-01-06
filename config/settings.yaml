@@ -267,9 +267,9 @@ qa:
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
-    pickup:
-      sftp.hostname: lzsftpudl0.qa.dum.edwdc.net
-      sftp.private_key_file: /opt/edware/ssh/.ssh/id_rsa
+    pickup.sftp:
+      hostname: lzsftpudl0.qa.dum.edwdc.net
+      private_key_file: /opt/edware/ssh/.ssh/id_rsa
     edware:
       db:
         cat:
@@ -361,6 +361,9 @@ uat:
     extract:
       gpg:
         keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
+        homedir : /opt/edware/conf/gpg
+        keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
+      work_zone_base_dir: /opt/edware/extraction
       extract.job.queue: extract
       extract_sync.job.queue: extract_sync
     cache:
@@ -373,6 +376,10 @@ uat:
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
+    pickup.sftp:
+      gatekeeper.es: kswimberly
+      hostname: lzsftpudl0.dmo.som.edwdc.net
+      private_key_file: /opt/edware/ssh/.ssh/id_rsa
     disable_stack_trace: true
     edware:
       db:

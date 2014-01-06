@@ -1,10 +1,10 @@
-extract Package
-===============
+extracts Package
+================
 
-:mod:`extract` Package
-----------------------
+:mod:`extracts` Package
+-----------------------
 
-.. automodule:: smarter.extract
+.. automodule:: smarter.extracts
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,7 +12,7 @@ extract Package
 :mod:`constants` Module
 -----------------------
 
-.. automodule:: smarter.extract.constants
+.. automodule:: smarter.extracts.constants
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,7 +20,7 @@ extract Package
 :mod:`format` Module
 --------------------
 
-.. automodule:: smarter.extract.format
+.. automodule:: smarter.extracts.format
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,7 +28,7 @@ extract Package
 :mod:`metadata` Module
 ----------------------
 
-.. automodule:: smarter.extract.metadata
+.. automodule:: smarter.extracts.metadata
     :members:
     :undoc-members:
     :show-inheritance:
@@ -36,7 +36,7 @@ extract Package
 :mod:`processor` Module
 -----------------------
 
-.. automodule:: smarter.extract.processor
+.. automodule:: smarter.extracts.processor
     :members:
     :undoc-members:
     :show-inheritance:
@@ -44,7 +44,7 @@ extract Package
 :mod:`student_assessment` Module
 --------------------------------
 
-.. automodule:: smarter.extract.student_assessment
+.. automodule:: smarter.extracts.student_assessment
     :members:
     :undoc-members:
     :show-inheritance:

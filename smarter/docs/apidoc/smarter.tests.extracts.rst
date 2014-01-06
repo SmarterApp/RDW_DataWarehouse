@@ -1,10 +1,10 @@
-extract Package
-===============
+extracts Package
+================
 
 :mod:`test_format` Module
 -------------------------
 
-.. automodule:: smarter.tests.extract.test_format
+.. automodule:: smarter.tests.extracts.test_format
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,7 +12,7 @@ extract Package
 :mod:`test_metadata` Module
 ---------------------------
 
-.. automodule:: smarter.tests.extract.test_metadata
+.. automodule:: smarter.tests.extracts.test_metadata
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,7 +20,7 @@ extract Package
 :mod:`test_processor` Module
 ----------------------------
 
-.. automodule:: smarter.tests.extract.test_processor
+.. automodule:: smarter.tests.extracts.test_processor
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,7 +28,7 @@ extract Package
 :mod:`test_student_assessment` Module
 -------------------------------------
 
-.. automodule:: smarter.tests.extract.test_student_assessment
+.. automodule:: smarter.tests.extracts.test_student_assessment
     :members:
     :undoc-members:
     :show-inheritance:

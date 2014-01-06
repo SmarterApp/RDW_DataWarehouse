@@ -4,7 +4,7 @@ Created on Nov 8, 2013
 @author: dip
 '''
 import unittest
-from smarter.extract.student_assessment import get_extract_assessment_query,\
+from smarter.extracts.student_assessment import get_extract_assessment_query,\
     compile_query_to_sql_text
 from pyramid.testing import DummyRequest
 from pyramid import testing

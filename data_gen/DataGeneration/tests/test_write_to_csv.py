@@ -18,8 +18,8 @@ class TestWriteToCSV(unittest.TestCase):
 
         write_to_csv.create_csv(entity_list, filename)
 
-        expected_lines = ['1,guid_1,summative,2013,2013,V1,subject1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True',
-                          '2,guid_2,summative,2013,2013,V1,subject2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True']
+        expected_lines = ['1,guid_1,summative,2013,2013,V1,subject1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True',
+                          '2,guid_2,summative,2013,2013,V1,subject2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,01/01/13,,True']
         actual_lines = self._read_file(filename)
 
         # verify

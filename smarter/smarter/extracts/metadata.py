@@ -6,7 +6,7 @@ Created on Dec 4, 2013
 from smarter.reports.helpers.constants import Constants
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import select, and_, literal
-from smarter.extract.format import get_column_mapping
+from smarter.extracts.format import get_column_mapping
 
 
 def get_metadata_file_name(params):

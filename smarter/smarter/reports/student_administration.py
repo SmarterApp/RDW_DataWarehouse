@@ -6,6 +6,7 @@ from sqlalchemy.sql.expression import and_
 from edapi.cache import cache_region
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.metadata import get_subjects_map
 
 
 @cache_region('public.shortlived')
@@ -30,5 +31,10 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         if student_guids:
             query = query.where(and_(fact_asmt_outcome.c.student_guid.in_(student_guids)))
-        x = connection.get_result(query)
-        return x
+        results = connection.get_result(query)
+    subjects_map = get_subjects_map()
+    # mapping asmt subjects
+    for result in results:
+        asmtSubject = result.get("asmt_subject")
+        result["asmt_subject"] = subjects_map[asmtSubject]
+    return results

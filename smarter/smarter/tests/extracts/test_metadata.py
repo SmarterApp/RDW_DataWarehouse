@@ -5,7 +5,7 @@ Created on Dec 5, 2013
 '''
 import unittest
 from smarter.reports.helpers.constants import Constants
-from smarter.extract.metadata import get_metadata_file_name, get_asmt_metadata
+from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid.testing import DummyRequest

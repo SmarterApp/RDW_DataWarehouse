@@ -19,11 +19,11 @@ define [
   COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
 
   class CSVDownloadModal
-  
+
     constructor: (@container, @config) ->
       this.initialize()
       this.bindEvents()
-      
+
     initialize: ()->
       this.container = $(this.container)
       output = Mustache.to_html CSVOptionsTemplate, {
@@ -46,7 +46,7 @@ define [
       # prevent dropdown memu from disappearing
       $(this.dropdownMenu).click (e) ->
         e.stopPropagation()
-      
+
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
         $dropdown = $this.closest('.btn-group')
@@ -88,7 +88,7 @@ define [
       $dropdown.find('input:checked').each () ->
         checked.push $(this).data('label')
       checked
-                
+
     selectDefault: ()->
       # check first option of each dropdown
       $('ul li:nth-child(1) input',this.container).each ()->
@@ -98,7 +98,7 @@ define [
       params = $.extend(true, {'async': 'true'} ,this.getParams())
       # Get request time
       currentTime = moment()
-      this.requestDate = currentTime.format 'MMM Do' 
+      this.requestDate = currentTime.format 'MMM Do'
       this.requestTime = currentTime.format 'h:mma'
       # send request to backend
       request = $.ajax url, {
@@ -120,19 +120,19 @@ define [
       for key, value of item
         item[key] = configMap[value] if configMap[value]
       item
-      
+
     showCloseButton: () ->
       this.submitBtn.text 'Close'
       this.submitBtn.removeAttr 'disabled'
       this.submitBtn.attr 'data-dismiss', 'modal'
-    
+
     enableInput: () ->
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
-    
+
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')
-      $('input:checkbox', this.container).attr('disabled', 'disabled') 
+      $('input:checkbox', this.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->
       taskResponse = response['tasks'].map this.toDisplay.bind(this)
@@ -178,7 +178,7 @@ define [
         optionNames: optionNames
       }
       this.message.append validationMsg
-                
+
     getParams: ()->
       params = {}
       this.dropdownMenu.each (index, param)->
@@ -197,7 +197,7 @@ define [
 
 
   class DownloadMenu
-  
+
     constructor: (@container, @config) ->
       this.initialize(@container)
       this.bindEvents()
@@ -232,19 +232,20 @@ define [
     sendExtractRequest: () ->
       params = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
-      params['asmtType'] = edwarePreferences.getAsmtPreference().toUpperCase()
+      asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
+      params['asmtType'] = asmtType.toUpperCase()
       params['asmtSubject'] = edwarePreferences.getSubjectPreference()
       url = window.location.protocol + "//" + window.location.host + "/services/extract?sync=true&" + $.param(params, true)
       window.location = url
-      
+
     sendCSVRequest: () ->
       # display file download options
       CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), @config.CSVOptions
       CSVDownload.show()
-                
+
   create = (container, config)->
     new CSVDownloadModal $(container), config
-  
+
   CSVDownloadModal: CSVDownloadModal
   DownloadMenu: DownloadMenu
   create: create

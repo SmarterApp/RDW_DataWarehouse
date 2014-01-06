@@ -18,7 +18,7 @@ from celery.exceptions import MaxRetriesExceededError
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
-pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9', '--debug-javascript']
+pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 
 OK = 0
 FAIL = 1

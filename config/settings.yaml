@@ -329,6 +329,7 @@ uat:
         CELERY_DEFAULT_QUEUE : extract
         CELERY_DEFAULT_ROUTING_KEY: extract
       gpg:
+        public_key.es: kswimberly@amplify.com
         homedir : /opt/edware/conf/gpg
         keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
       work_zone_base_dir: /opt/edware/extraction
@@ -343,6 +344,7 @@ uat:
       generate_timeout: 30
       health_check.job.queue: health_check
     pickup.sftp:
+      gatekeeper.es: kswimberly
       hostname: lzsftpudl0.dmo.som.edwdc.net
       private_key_file: /opt/edware/ssh/.ssh/id_rsa
     disable_stack_trace: true

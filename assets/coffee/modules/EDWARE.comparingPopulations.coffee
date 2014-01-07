@@ -192,13 +192,22 @@ define [
       grid = $('#gridTable')
       colModels = grid.jqGrid('getGridParam').colModel
       # Reset back to original color for all columns
-      grid.find('.ui-th-ltr').removeClass('active')
+      $('.jqg-third-row-header .ui-th-ltr').removeClass('active')
       for colModel in colModels
+        #reset labels
+        if colModel.index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
+          grid.jqGrid('setLabel', colModel.name, "<b>#{colModel.label}</b>")
+        else
+          grid.jqGrid('setLabel', colModel.name, colModel.label)
+
         if colModel.name is index
           newLabel = colModel.label
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
-        if sortorder is 'asc' then newLabel += " " + this.config.proficiencyAscending else newLabel += " " + this.config.proficiencyDescending
+        if sortorder is 'asc'
+          newLabel = "<b>#{newLabel}</b> #{this.config.proficiencyAscending}"
+        else
+          newLabel = "<b>#{newLabel}</b> #{this.config.proficiencyDescending}"
       # Set background color and label for active sort column
       grid.jqGrid('setLabel', index, newLabel, 'active')
 

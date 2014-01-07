@@ -233,7 +233,7 @@
 					"count": 6,
 					"level": 4,
 					"percentage": 6,
-					"showPercentage": true 
+					"showPercentage": true
 				}
 			]
 		}
@@ -532,7 +532,7 @@
 						"displayTpl": "",
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
-						"width": 308,
+						"width": 320,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -541,7 +541,7 @@
 						"align": "center",
 						"export": true,
 						"title": false
-			        }, 
+			        },
                     {
                         "name": "Total Pop",
                         "displayTpl": "",
@@ -561,7 +561,7 @@
 						"displayTpl": "",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
-						"width": 308,
+						"width": 320,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -622,7 +622,7 @@
                     "value": "studentAssessment"
                 }
             ]
-        }, 
+        },
         "asmtYear": {
             "name": "Assessment Year",
             "key": "asmtYear",
@@ -645,7 +645,7 @@
                     "value": "COMPREHENSIVE INTERIM"
                 }
             ]
-        }, 
+        },
         "asmtSubject": {
             "name": "主題",
             "key": "asmtSubject",

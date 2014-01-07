@@ -233,7 +233,7 @@
 					"count": 6,
 					"level": 4,
 					"percentage": 6,
-					"showPercentage": true 
+					"showPercentage": true
 				}
 			]
 		}
@@ -534,7 +534,7 @@
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
 						"sorttype": "int",
-						"width": 308,
+						"width": 320,
 						"formatter": "populationBar",
 						"options": {
 							"asmt_type": "subject1"
@@ -562,7 +562,7 @@
 						"displayTpl": "",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
-						"width": 308,
+						"width": 320,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -619,7 +619,7 @@
                     "value": "studentAssessment"
                 }
             ]
-        }, 
+        },
         "asmtYear": {
             "name": "Assessment Year",
             "key": "asmtYear",
@@ -642,7 +642,7 @@
                     "value": "COMPREHENSIVE INTERIM"
                 }
             ]
-        }, 
+        },
         "asmtSubject": {
             "name": "Subject",
             "key": "asmtSubject",

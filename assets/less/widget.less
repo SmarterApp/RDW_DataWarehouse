@@ -3,10 +3,6 @@
 //
 
 #breadcrumb {
-    /* background-image: -moz-linear-gradient(top ,  @color-C10, #6d6d6d 0%, #6d6d6d); */
-    /* background-image: -webkit-linear-gradient(top , @color-C10, #6d6d6d 0%, #6d6d6d);  */
-    /* background-image: -ms-linear-gradient(top ,  @color-C10, #6d6d6d 0%, #6d6d6d);  */
-    /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr= @color-C10, endColorstr=#6d6d6d, GradientType=0); */
     background-color:  @color-C10;
     border-bottom: 1px solid #c9c9c0;
 
@@ -61,7 +57,7 @@
 	    }
 
 	    &.active {
-		background-color: @color-B20;
+		background-color: @color-C13;
 		a { color: @color-A6; }
 
 		&:after {
@@ -72,7 +68,7 @@
 		    background-color: ;
 		    border-top: 14px solid @color-C10;
 		    border-bottom: 14px solid @color-C10;
-		    border-left: 14px solid @color-B20;
+		    border-left: 14px solid @color-C13;
 		    right: 0px;
 		    top: 0px;
 		}
@@ -84,8 +80,8 @@
 		    display: inline-block;
 		    width: 0;
 		    height: 0;
-		    border-top: 14px solid @color-B20;
-		    border-bottom: 14px solid @color-B20;
+		    border-top: 14px solid @color-C13;
+		    border-bottom: 14px solid @color-C13;
 		    border-left: 14px solid transparent;
 		    position: absolute;
 		    right: 0px;
@@ -1399,22 +1395,24 @@ th.ui-th-column div {
 
 .language_selections_header {
   font-weight: bold;
+  font-size: 13px;
   background-color: #ffffff;
   i {
     margin: 0 5px 0 15px;
   }
   .divider {
     background-color: #e5e5e5;
-    margin: 0 auto;
-    width: 125px;
+    margin: 0 10px;
     border-bottom: 0px;
   }
 }
 .language_selections_body {
   background-color: #ffffff;
+  font-size: 13px;
   li {
     margin-left: 15px;
     input {
+	vertical-align: text-top;
       margin: 0 5px 0 0;
     }
   }
@@ -1909,13 +1907,21 @@ th.ui-th-column div {
 	    }
 
 	    .divider {
-		border-right: solid 1px @color-B18;
+		border-left: solid 1px @color-B5;
 		padding: 3px 27px;
 	    }
 	}
 
-	.legendItem .divider {
-	    border-left: solid 1px @color-B18;
+	.legendItem.active {
+	    color: @color-A1;
+
+	    .edware-icon-legend {
+		background-position: -18px -72px;
+	    }
+	}
+
+	.filterItem .divider {
+	    border-right: solid 1px @color-B5;
 	}
 
 	.align_button_area {
@@ -2111,18 +2117,6 @@ th.ui-th-column div {
 	}
     }
 
-    .legendLabel:before {
-	display: inline-block;
-	content: "";
-	width: 15px;
-	height: 15px;
-	background-image: url('../images/nav_icons.png');
-	background-position: 0px -72px;
-	position: 0px 0px;
-	vertical-align: text-bottom;
-	margin-right: 5px;
-    }
-
     .legendPopup {
 	display: none;
     }
@@ -2133,6 +2127,8 @@ th.ui-th-column div {
 
     .active {
 	background-color: @color-B14;
+
+	.divider { border-color: @color-B14 !important; }
     }
 
     #PrintModal {

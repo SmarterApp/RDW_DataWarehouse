@@ -277,7 +277,9 @@ define [
         selectors[key].push asmt
       # reverse order to put Math before ELA
       for key, asmt of selectors
-        asmt.sort().reverse()
+        asmt.sort (subject1, subject2)->
+          subject1.asmt_subject > subject2.asmt_subject
+        .reverse()
       for key, asmt of selectors
         if asmt.length is 2
           # add subjects combination, i.e. Math & ELA

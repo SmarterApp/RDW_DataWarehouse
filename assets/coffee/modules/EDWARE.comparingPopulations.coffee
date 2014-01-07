@@ -192,15 +192,15 @@ define [
       grid = $('#gridTable')
       colModels = grid.jqGrid('getGridParam').colModel
       # Reset back to original color for all columns
+      grid.find('.ui-th-ltr').removeClass('active')
       for colModel in colModels
-        grid.jqGrid('setLabel', colModel.name, colModel.label, {'background': "none repeat scroll 0 0 #F8F8F8"})
         if colModel.name is index
           newLabel = colModel.label
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc' then newLabel += " " + this.config.proficiencyAscending else newLabel += " " + this.config.proficiencyDescending
       # Set background color and label for active sort column
-      grid.jqGrid('setLabel', index, newLabel, {'background': "none repeat scroll 0 0 #ededed"})
+      grid.jqGrid('setLabel', index, newLabel, 'active')
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)

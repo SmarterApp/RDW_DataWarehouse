@@ -117,6 +117,10 @@ h6 {
     .reportInfoPopover {
 	max-width: 575px !important;
 	font-size: 13px;
+
+	h4 {
+	    color: @color-black;
+	}
     }
 }
 
@@ -186,7 +190,7 @@ h6 {
   .totalPop{
     padding-right:17px;
     text-align: right;
-    
+
     .studentsTotal {
       position: relative;
       .unfilteredTotal {
@@ -543,14 +547,14 @@ table {
 }
 .gridHeight100 {
 
-  tr.jqgrow td {
-    height: 100px;
-  }
-  .ui-jqgrid tr.footrow {
-    td {
-      height: 100px;
+    tr.jqgrow td {
+	height: 100px;
     }
-  }
+    .ui-jqgrid tr.footrow {
+	td {
+	    height: 100px;
+	}
+    }
 
   .ui-jqgrid tr.jqgrow td {
     white-space: normal !important;
@@ -565,16 +569,26 @@ table {
   }
 
   .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:first-child div {
-    margin-left: 20px;
+      margin-left: 20px;
   }
 
+  .ui-th-column {
+      background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@color-B22), to(@color-B17)) !important;
+      background-image: -webkit-linear-gradient(top, @color-B22, @color-B17) !important;
+      background-image:    -moz-linear-gradient(top, @color-B22, @color-B17) !important;
+      background-image:     -ms-linear-gradient(top, @color-B22, @color-B17) !important;
+      background-image:      -o-linear-gradient(top, @color-B22, @color-B17) !important;
+  }
+
+
+
   .alignmentLine {
-    background: @color-C9;
-    height: 100px;
-    position: absolute;
-    margin-top: -40px;
-    width: 1px;
-    display: none;
+      background: @color-C9;
+      height: 100px;
+      position: absolute;
+      margin-top: -40px;
+      width: 1px;
+      display: none;
 
   }
 
@@ -1025,7 +1039,7 @@ table {
 	    .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column,
 	    .ui-jqgrid tr.ui-row-ltr td {
 		border-right-color: rgb(208, 208, 208) !important;
-		
+
 	    }
 	}
     }
@@ -1180,8 +1194,9 @@ body.login {
 	.language_selections_header {
 	    display: none;
 	}
-	
+
 	.languageMenu {
+	    background-color: @color-white;
 	    min-width: 107px;
 	    border-radius: 0px 0px 5px 5px;
 	    top: 38px;

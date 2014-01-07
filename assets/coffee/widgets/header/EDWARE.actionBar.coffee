@@ -29,7 +29,7 @@ define [
 
     createPrint: () ->
       @printer = edwarePrint.create '.printModal'
-    
+
     createLegend: () ->
       # create legend
       $('.legendPopup').createLegend @config.reportName,
@@ -76,10 +76,18 @@ define [
         container: @container
         template: LEGEND_POPOVER_TEMPLATE
       .click (e) ->
-        $(this).addClass('active').popover('show')
+        $this = $(this)
+        $this.addClass('active').popover('show')
+        # hide next sibling's divider
+        siblingDivider = $this.nextAll('li:visible').first().find('.divider')
+        siblingDivider.css('border-left-color', '#f4f4f4')
       .mouseleave (e)->
-        $(this).removeClass('active')
-        $(this).popover('hide')
+        $this = $(this)
+        $this.removeClass('active')
+        $this.popover('hide')
+        # show next sibling's divider
+        siblingDivider = $this.nextAll(':visible').first().find('.divider')
+        siblingDivider.css('border-left-color', '#e2e2e2')
       .on 'shown.bs.popover', ->
         # center legend popover to prevent it overflow the screen
         offset = $(this).offset().left

@@ -95,7 +95,7 @@ class DataGenerationValidation(unittest.TestCase):
                     # Validate that the actual score and actual maximum score is less than or equal to max range
                     assert max_asmt_score >= actual_score and max_value, ('Incorrect score: Actual score: ' + str(actual_score) + ' Max_Score: ' + str(max_value))
                     # TODO: This is applicable when Edge cases are not symmetrical. Need to update this when the requirement is clarified
-                    if min_value != min_asmt_score or max_value != max_asmt_score:
+                    if min_value != min_asmt_score and max_value != max_asmt_score:
                         assert (actual_score - min_value) == (max_value - actual_score), ('Min/Max scores are not in range in fact_asmt_outcome file. Actual score: ' + str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
 
     # TC1: Check Headers in all the CSV files

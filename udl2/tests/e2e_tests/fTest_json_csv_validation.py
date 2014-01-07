@@ -16,9 +16,9 @@ from sqlalchemy.engine import create_engine
 import time
 
 
-file_to_path = '/opt/wgen/edware-udl/zones/datafiles/'
-TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/test_user/filedrop'
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
+file_to_path = '/opt/edware/zones/datafiles/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
+UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/etc/udl2_conf.py'
 
 FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_miss_col.tar.gz.gpz'),
              'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),

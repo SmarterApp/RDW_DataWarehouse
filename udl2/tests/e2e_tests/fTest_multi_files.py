@@ -11,9 +11,9 @@ import imp
 import subprocess
 import time
 
-PATH_TO_FILES = '/opt/wgen/edware-udl/zones/datafiles/'
-TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/test_user/filedrop'
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
+PATH_TO_FILES = '/opt/edware/zones/datafiles/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
+UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 
 FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_sm1.tar.gz.gpg'),
              'file2': os.path.join(PATH_TO_FILES, 'test_sm2.tar.gz.gpg'),

@@ -10,13 +10,13 @@ import subprocess
 import os
 import time
 import shutil
-
+from udl2.celery import udl2_conf
 
 #METADATA_FILE_PATTERN = '/opt/wgen/edware-udl/zones/datafiles/Benchmarking_json_file.json'
 #FACT_OUTCOME_FILE_PATTERN = '/opt/wgen/edware-udl/zones/datafiles/BENCHMARK_DATA.csv'
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
-ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
-TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/ftest_test_tenant/'
+UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware/conf/udl2_conf.py'
+ARCHIVED_FILE = '/opt/edware/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/ftest_test_tenant/'
 
 
 class ValidateTableData(unittest.TestCase):
@@ -31,19 +31,15 @@ class ValidateTableData(unittest.TestCase):
         self.tenant_dir = TENANT_DIR
 
     def tearDown(self):
-        shutil.rmtree(self.tenant_dir)
+        if os.path.exists(self.tenant_dir):
+            shutil.rmtree(self.tenant_dir)
 
     def empty_batch_table(self, db_connection):
         output = db_connection.execute('DELETE FROM udl2."UDL_BATCH";')
         print("Sucessfully delete all data from Batch Table")
 
     def run_udl_pipeline(self):
-        try:
-            config_path = dict(os.environ)['UDL2_CONF']
-        except Exception:
-            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+
         self.conf = udl2_conf
 
         arch_file = self.copy_file_to_tmp()

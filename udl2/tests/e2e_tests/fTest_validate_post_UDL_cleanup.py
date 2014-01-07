@@ -14,11 +14,11 @@ from uuid import uuid4
 import glob
 
 
-ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
-TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/'
+ARCHIVED_FILE = '/opt/edware/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 guid_batch_id = str(uuid4())
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
-path = '/opt/wgen/edware-udl/zones/landing/work/test_tenant'
+UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
+path = '/opt/edware/zones/landing/work/test_tenant'
 
 
 class ValidatePostUDLCleanup(unittest.TestCase):

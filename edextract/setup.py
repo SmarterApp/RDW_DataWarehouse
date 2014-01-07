@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 requires = [
     'SQLAlchemy',
-    "billiard==2.7.3.33",
+    "billiard==2.7.3.32",
     "celery==3.0.23",
     "anyjson",
     "amqp < 1.0.11",

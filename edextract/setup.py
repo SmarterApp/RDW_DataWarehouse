@@ -10,7 +10,7 @@ requires = [
     "billiard==2.7.3.32",
     "celery==3.0.23",
     "anyjson",
-    "amqp < 1.0.0",
+    "amqp==1.0.13",
     "apscheduler==2.1.1",
     "python-gnupg==0.3.5"
 ]

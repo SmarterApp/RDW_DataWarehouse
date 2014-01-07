@@ -9,7 +9,7 @@ requires = [
     'SQLAlchemy==0.8.2',
     "billiard==2.7.3.32",
     "celery==3.0.23",
-    "anyjson",
+    "anyjson==0.3.3",
     "amqp==1.0.13",
     "apscheduler==2.1.1",
     "python-gnupg==0.3.5"

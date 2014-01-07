@@ -174,7 +174,7 @@ class Assessment:
                 'asmt_claim_2_score_min', 'asmt_claim_2_score_max', 'asmt_claim_2_score_weight', 'asmt_claim_perf_lvl_name_2',
                 'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'asmt_claim_3_score_weight', 'asmt_claim_perf_lvl_name_3',
                 'asmt_claim_4_score_min', 'asmt_claim_4_score_max', 'asmt_claim_4_score_weight',
-                'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4', 'claim_cut_point_1', 'claim_cut_point_2',
+                'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4', 'claim_score_cut_point_1', 'claim_score_cut_point_2',
                 'from_date', 'to_date', 'most_recent']
 
 

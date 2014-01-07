@@ -6,13 +6,13 @@ Created on Jan 24, 2013
 from setuptools import setup, find_packages
 
 requires = [
-    'SQLAlchemy',
+    'SQLAlchemy==0.8.2',
     "billiard==2.7.3.32",
     "celery==3.0.23",
     "anyjson",
-    "amqp < 1.1.0",
-    "apscheduler",
-    "python-gnupg"
+    "amqp < 1.0.0",
+    "apscheduler==2.1.1",
+    "python-gnupg==0.3.5"
 ]
 
 tests_require = requires

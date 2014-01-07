@@ -8,24 +8,24 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid == 1.4',
-    'pyramid_beaker',
-    'SQLAlchemy',
-    'transaction',
-    'pyramid_tm',
-    'pyramid_debugtoolbar',
-    'zope.sqlalchemy',
-    'waitress',
+    'pyramid_beaker==0.8',
+    'SQLAlchemy==0.8.2',
+    'transaction==1.4.1',
+    'pyramid_tm==0.7',
+    'pyramid_debugtoolbar==1.0.8',
+    'zope.sqlalchemy==0.7.3',
+    'waitress==0.8.7',
     'config',
     'edauth',
     'edapi',
     'edworker',
     'edschema',
-    'py-postgresql',
-    'psycopg2',
-    'pyramid_exclog',
-    'pyyaml',
+    'py-postgresql==1.1.0',
+    'psycopg2==2.5.1',
+    'pyramid_exclog==0.7',
+    'pyyaml==3.10',
     'services',
-    'python3-memcached']
+    'python3-memcached == 1.51']
 
 docs_extras = [
     'Sphinx',

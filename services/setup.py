@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 install_requires = [
     "billiard==2.7.3.32",
     "celery==3.0.23",
-    "anyjson",
+    "anyjson==0.3.3",
     "amqp < 1.1.0"
 ]
 

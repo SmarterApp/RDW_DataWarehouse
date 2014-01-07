@@ -7,10 +7,10 @@ README = open(os.path.join(here, 'README.txt')).read()
 
 install_requires = [
     'pyramid == 1.4',
-    'SQLAlchemy',
+    'SQLAlchemy==0.8.2',
     'PyCrypto>=2.6',
-    'apscheduler',
-    'Beaker',
+    'apscheduler==2.1.1',
+    'Beaker==1.6.4',
     'zope.component >= 4.0.2',
     'zope.interface >= 4.0.3']
 

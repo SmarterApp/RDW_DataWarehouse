@@ -546,8 +546,8 @@ jenkins_dev:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 1800 # 30 min
       CELERYD_CONCURRENCY: 8
-      CELERY_DEFAULT_QUEUE: extract
-      CELERY_DEFAULT_ROUTING_KEY: extract
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: celery
       CELERY_DEFAULT_EXCHANGE_TYPE: direct
       CELERY_QUEUES:
         -   name: celery

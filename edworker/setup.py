@@ -5,7 +5,7 @@ install_requires = [
     "billiard==2.7.3.33",
     "celery==3.0.23",
     "anyjson",
-    "amqp==1.0.11"
+    "amqp < 1.0.11"
 ]
 
 tests_require = [

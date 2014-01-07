@@ -8,7 +8,7 @@ from datetime import date
 from tempfile import mkdtemp
 
 from DataGeneration.src.writers.output_asmt_outcome import (initialize_csv_file, get_header_from_file, write_csv_rows,
-                                                            get_value_from_object)
+                                                            get_value_from_object, create_output_csv_dict, output_data)
 
 
 class TestOutputAssessmentOutcome(unittest.TestCase):
@@ -45,8 +45,39 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                         'type_school': 'school.school_category',
                     }
                 }
+            },
+            'test3': {
+                'csv': {
+                    'NON_REALDATA': {
+                        'guid_district': 'school.district_guid',
+                        'name_district': 'school.district_name',
+                        'claim_1_score': 'claim_scores.1.claim_score',
+                        'asmt_score': 'asmt_scores.overall_score',
+                    }
+                }
+            },
+            'test_error': {
+                'csv': {
+                    'ERROR': {
+                        'guid_district': 'school_error.district_guid',
+                        'name_district': 'school_error.district_name',
+                    }
+                }
             }
         }
+
+        self.state_population = Dummy(state_name='New York', state_code="NY")
+        self.school1 = Dummy(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
+                             school_category='elementary')
+        self.student_info1 = Dummy(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
+                                   address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
+                                   email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
+                                   asmt_scores={'math': Dummy(overall_score=1900,
+                                                              claim_scores=[Dummy(claim_score=1201), Dummy(claim_score=1202),
+                                                                            Dummy(claim_score=1203), Dummy(claim_score=1204)]),
+                                                'ela': Dummy(overall_score=1800,
+                                                             claim_scores=[Dummy(claim_score=1301), Dummy(claim_score=1302),
+                                                                           Dummy(claim_score=1303)])})
 
     def tearDown(self):
         shutil.rmtree(self.output_dir)
@@ -153,6 +184,101 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
         result = get_value_from_object(data_object, attr_name, subject)
         self.assertEqual(result, '20141108')
+
+    def test_create_output_csv_dict(self):
+        table_conf_dict = self.conf_dict['test']['csv']['REALDATA']
+
+        expected = {
+            'guid_asmt': 1,
+            'guid_asmt_location': 123,
+            'name_asmt_location': 'school123',
+            'grade_asmt': 4,
+            'name_state': 'New York',
+            'code_state': 'NY',
+        }
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'math')
+        self.assertDictEqual(expected, res)
+
+    def test_create_output_csv_dict_2(self):
+        table_conf_dict = self.conf_dict['test3']['csv']['NON_REALDATA']
+
+        expected = {
+            'guid_district': 'd123',
+            'name_district': 'district1',
+            'claim_1_score': 1201,
+            'asmt_score': 1900,
+        }
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'math')
+        self.assertDictEqual(expected, res)
+
+    def test_create_output_csv_dict_3(self):
+        table_conf_dict = self.conf_dict['test3']['csv']['NON_REALDATA']
+
+        expected = {
+            'guid_district': 'd123',
+            'name_district': 'district1',
+            'claim_1_score': 1301,
+            'asmt_score': 1800,
+        }
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'ela')
+        self.assertDictEqual(expected, res)
+
+    def test_create_output_csv_dict_error(self):
+        table_conf_dict = self.conf_dict['test_error']['csv']['ERROR']
+
+        with self.assertRaises(NotImplementedError):
+            create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'ela')
+
+    def test_output_data_row_counts(self):
+        output_keys = ['test', 'test2']
+        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+
+        output_data(self.conf_dict, output_keys, output_files, self.state_population, self.school1, self.student_info1)
+
+        self.assertEqual(len(output_files), 3)
+
+        for file in output_files:
+            count = 0
+            with open(output_files[file], 'r') as fp:
+                for _ in csv.reader(fp):
+                    count += 1
+            self.assertEqual(count, 3, 'header + 1 row for each subject')
+
+    def test_output_data_content(self):
+        output_keys = ['test', 'test2']
+        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+
+        output_data(self.conf_dict, output_keys, output_files, self.state_population, self.school1, self.student_info1)
+
+        expected = {
+            'REALDATA': {
+                'guid_asmt': '1',
+                'guid_asmt_location': '123',
+                'name_asmt_location': 'school123',
+                'grade_asmt': '4',
+                'name_state': 'New York',
+                'code_state': 'NY',
+            },
+            'dim_test': {
+                'address_student_line1': '1 bob st.',
+                'address_student_line2': '',
+                'address_student_city': 'new york',
+                'address_student_zip': '12345',
+                'gender_student': 'm',
+            },
+            'NON_REALDATA': {
+                'guid_district': 'd123',
+                'name_district': 'district1',
+                'guid_school': '123',
+                'name_school': 'school123',
+                'type_school': 'elementary',
+            }
+        }
+
+        for file in output_files:
+            with open(output_files[file], 'r') as fp:
+                for c_dict in csv.DictReader(fp):
+                    self.assertDictEqual(c_dict, expected[file])
 
 
 class Dummy(object):

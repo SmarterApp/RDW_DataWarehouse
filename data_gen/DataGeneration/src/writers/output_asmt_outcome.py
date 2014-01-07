@@ -68,6 +68,7 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         asmt_score = student_info.asmt_scores[subject]
         claim_scores = asmt_score.claim_scores
         internal_map_string_list = table_config_dict[column_name].split('.')
+
         if internal_map_string_list[0] == 'student_info':
             data_object = student_info
         elif internal_map_string_list[0] == 'school':
@@ -76,8 +77,10 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
             data_object = state_population
         elif internal_map_string_list[0] == 'claim_scores':
             data_object = claim_scores
-        elif internal_map_string_list[0] == 'asmt_score':
+        elif internal_map_string_list[0] in ['asmt_scores', 'asmt_score']:
             data_object = asmt_score
+        else:
+            raise NotImplementedError('No Action available for name: ', internal_map_string_list[0])
 
         # remove everything before the first '.' from attribute name
         attribute_name = '.'.join(internal_map_string_list[1:])

@@ -85,7 +85,7 @@ star:
             internal_key_24: asmt_score_min
             internal_key_25: most_recent
             internal_key_26: asmt_claim_4_score_max
-            internal_key_27: asmt_claim_4_score_weightgit sta
+            internal_key_27: asmt_claim_4_score_weight
             internal_key_28: to_date
             internal_key_29: asmt_claim_2_score_weight
             internal_key_30: asmt_cut_point_3

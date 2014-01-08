@@ -16,11 +16,16 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.response import Response
 from smarter.extracts.constants import Constants
 from smarter.services.extract import post_extract_service, get_extract_service,\
-    generate_zip_file_name
+    generate_zip_file_name, send_extraction_request
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import smarter.extracts.format
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from edapi.utils import convert_query_string_to_dict_arrays
+import zipfile
+import tempfile
+from smarter.extracts.constants import Constants as Extract
+import json
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -233,6 +238,40 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         response = get_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')
+
+    def test_send_extraction_requesttest_get_extract_service(self):
+        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['districtGuid'] = '229'
+        self.__request.GET['schoolGuid'] = '936'
+        self.__request.GET['asmtSubject'] = 'Math'
+        self.__request.GET['asmtType'] = 'SUMMATIVE'
+        params = convert_query_string_to_dict_arrays(self.__request.GET)
+        response = send_extraction_request(params)
+        content_type = response._headerlist[0]
+        self.assertEqual(content_type[1], "application/octet-stream")
+        body = response.body
+        tested = False
+        with tempfile.TemporaryFile() as tmpfile:
+            tmpfile.write(body)
+            tmpfile.seek(0)
+            myzipfile = zipfile.ZipFile(tmpfile)
+            filelist = myzipfile.namelist()
+            self.assertEqual(2, len(filelist))
+            tested = True
+        self.assertTrue(tested)
+
+    def test_send_extraction_requesttest_get_extract_service_async(self):
+        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['asmtType'] = 'SUMMATIVE'
+        self.__request.GET['asmtSubject'] = 'Math'
+        self.__request.GET['asmtYear'] = '2015'
+        self.__request.GET['extractType'] = 'studentAssessment'
+        self.__request.GET['async'] = 'true'
+        params = convert_query_string_to_dict_arrays(self.__request.GET)
+        response = send_extraction_request(params)
+        content_type = response._headerlist[0]
+        self.assertEqual(content_type[1], "application/json; charset=UTF-8")
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

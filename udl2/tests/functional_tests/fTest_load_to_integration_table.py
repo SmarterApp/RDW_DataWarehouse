@@ -21,8 +21,8 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
     @classmethod
     def setUpClass(cls):
         super(FuncTestLoadToIntegrationTable, cls).setUpClass()
-        initialize_db(UDL2DBConnection, udl2_conf)
-        initialize_db(TargetDBConnection, udl2_conf)
+        #initialize_db(UDL2DBConnection, udl2_conf)
+        #initialize_db(TargetDBConnection, udl2_conf)
 
     def load_file_to_stage(self,):
         # file contain 30 rows

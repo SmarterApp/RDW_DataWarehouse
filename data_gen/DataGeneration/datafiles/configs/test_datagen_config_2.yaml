@@ -85,7 +85,7 @@ star:
             internal_key_24: asmt_score_min
             internal_key_25: most_recent
             internal_key_26: asmt_claim_4_score_max
-            internal_key_27: asmt_claim_4_score_weight
+            internal_key_27: asmt_claim_4_score_weightgit sta
             internal_key_28: to_date
             internal_key_29: asmt_claim_2_score_weight
             internal_key_30: asmt_cut_point_3
@@ -99,8 +99,6 @@ star:
             internal_key_38: asmt_claim_perf_lvl_name_1
             internal_key_39: asmt_claim_perf_lvl_name_2
             internal_key_40: asmt_claim_perf_lvl_name_3
-            internal_key_41: claim_score_cut_point_1
-            internal_key_42: claim_score_cut_point_2
         dim_inst_hier:
             internal_key_1: to_date
             internal_key_2: district_guid

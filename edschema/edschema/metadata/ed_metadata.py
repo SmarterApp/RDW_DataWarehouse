@@ -151,8 +151,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        Column('asmt_cut_point_2', SmallInteger, nullable=True),
                        Column('asmt_cut_point_3', SmallInteger, nullable=True),
                        Column('asmt_cut_point_4', SmallInteger, nullable=True),
-                       Column('claim_score_cut_point_1', SmallInteger, nullable=True),
-                       Column('claim_score_cut_point_2', SmallInteger, nullable=True),
                        Column('from_date', String(8), nullable=False),
                        Column('to_date', String(8), nullable=True),
                        Column('most_recent', Boolean),

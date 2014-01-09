@@ -166,7 +166,6 @@ chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 
 %postun
-userdel -rf celery > /dev/null 2>&1
 
 
 %changelog

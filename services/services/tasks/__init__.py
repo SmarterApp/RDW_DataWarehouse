@@ -10,5 +10,5 @@ def health_check():
 
     The heartbeat message should sent via health_check queue instead of using queue for pdf generator.
     '''
-    heartbeat = "heartbeat" + str(datetime.now())
+    heartbeat = "heartbeat:" + str(datetime.now())
     return heartbeat

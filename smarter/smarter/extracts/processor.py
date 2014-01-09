@@ -11,6 +11,7 @@ from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query, compile_query_to_sql_text
 from pyramid.security import authenticated_userid
+import pyramid.threadlocal
 from uuid import uuid4
 from edextract.status.status import create_new_entry
 from edextract.tasks.extract import start_extract, archive, route_tasks, prepare_path
@@ -32,6 +33,7 @@ log = logging.getLogger('smarter')
 
 
 def process_sync_extract_request(params):
+    queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
     tasks = []
     request_id, user, tenant = _get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
@@ -43,9 +45,9 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True),      # @UndefinedVariable
-                       route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.SYNC_QUEUE_NAME),
-                       archive.subtask(args=[request_id, directory_to_archive], queue=TaskConstants.SYNC_QUEUE_NAME, immutable=True)).delay()
+        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
+                       route_tasks(tenant, request_id, tasks, queue_name=queue),
+                       archive.subtask(args=[request_id, directory_to_archive], queue=queue, immutable=True)).delay()
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
@@ -56,6 +58,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
+    queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     tasks = []
     response = {}
     task_responses = []
@@ -90,7 +93,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         gatekeeper_id = get_gatekeeper(tenant)
         pickup_zone_info = get_pickup_zone_info(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue='extract')  # @UndefinedVariable
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue=queue)  # @UndefinedVariable
     return response
 
 

@@ -25,7 +25,7 @@ FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_source_file_tar_gzipped.
 
 
 class ValidateMultiFiles(unittest.TestCase):
- 
+
     def setUp(self):
         self.tenant_dir = TENANT_DIR
 

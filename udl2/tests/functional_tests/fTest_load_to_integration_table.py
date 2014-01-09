@@ -12,7 +12,7 @@ import rule_maker.rules.code_generator_special_rules as sr
 from udl2_util.database_util import execute_queries
 from move_to_target import move_to_target, move_to_target_setup
 from tests.functional_tests.util import UDLTestHelper
-from udl2.udl2_connector import UDL2DBConnection,TargetDBConnection, initialize_db
+from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection, initialize_db
 from conf.udl2_conf import udl2_conf
 
 

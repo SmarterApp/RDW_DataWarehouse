@@ -32,7 +32,7 @@ class UniuqeCount(unittest.TestCase):
         dim_district_count = self.target_connection.execute('select count(DISTINCT (district_guid)) as district_count from edware.dim_inst_hier')
         dim_district_count_result = dim_district_count.fetchone()
         # Due to fake data in dim_inst_hier table, remove 1 row.
-        dim_dist_count = dim_district_count_result[0] - 1 
+        dim_dist_count = dim_district_count_result[0] - 1
         print(dim_dist_count)
         assert stg_dist_count == dim_dist_count, "No. of districts are not equal in staging table and in dim_inst_hier table(star schema)"
         #Count unique district from fact_asmt_outcome table

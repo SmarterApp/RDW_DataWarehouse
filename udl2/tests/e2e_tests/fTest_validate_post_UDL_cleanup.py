@@ -34,13 +34,13 @@ class ValidatePostUDLCleanup(unittest.TestCase):
     def validate_UDL_database(self, connector):
         time.sleep(10)
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        output = select([batch_table.c.udl_phase_step_status,batch_table.c.guid_batch]).where(batch_table.c.guid_batch == guid_batch_id)
+        output = select([batch_table.c.udl_phase_step_status, batch_table.c.guid_batch]).where(batch_table.c.guid_batch == guid_batch_id)
         output_data = connector.execute(output).fetchall()
         for row in output_data:
             status = row['udl_phase_step_status']
             self.assertEqual(status, 'SUCCESS')
         print('UDL validation is successful')
-        
+
 #Validate that for given guid data loded on star schema
     def validate_edware_database(self, ed_connector):
             time.sleep(10)

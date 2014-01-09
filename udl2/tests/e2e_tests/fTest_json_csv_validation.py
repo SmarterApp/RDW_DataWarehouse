@@ -25,6 +25,7 @@ FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_
              'corrupt_csv_extra_col': os.path.join(file_to_path, 'corrupt_csv_ext_col.tar.gz.gpz')}
 FACT_TABLE = 'fact_asmt_outcome'
 
+
 class ValidateTableData(unittest.TestCase):
 
     def setUp(self):
@@ -36,7 +37,7 @@ class ValidateTableData(unittest.TestCase):
         self.connecter.close_connection()
 
     def udl_with_csv_miss_col(self, guid_batch):
-        
+
         self.conf = udl2_conf
 
         self.copy_file_to_tmp()
@@ -49,24 +50,24 @@ class ValidateTableData(unittest.TestCase):
         self.connect_to_star_shema(self.connector)
 
     def udl_with_csv_ext_col(self, guid_batch):
-       
+
         self.conf = udl2_conf
 
         self.copy_file_to_tmp()
         arch_file = shutil.copy2(FILE_DICT['corrupt_csv_extra_col'], self.tenant_dir)
         #arch_file = self.copy_file_to_tmp()
         command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch)
-        print (command)
+        print(command)
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
     def udl_with_corrupt_json(self, guid_batch):
-       
+
         self.conf = udl2_conf
         self.copy_file_to_tmp()
         arch_file = shutil.copy2(FILE_DICT['corrupt_json'], self.tenant_dir)
         command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch)
-        print (command)
+        print(command)
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
@@ -85,7 +86,7 @@ class ValidateTableData(unittest.TestCase):
         output = select([fact_table.c.batch_guid])
         output_data = connector.execute(output).fetchall()
         trp_str = (self.guid_batch,)
-        self.assertNotIn(trp_str, output_data, "assert successful")        
+        self.assertNotIn(trp_str, output_data, "assert successful")
 
     def test_run_udl_ext_col_csv(self):
         self.guid_batch = str(uuid4())

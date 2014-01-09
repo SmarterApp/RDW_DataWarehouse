@@ -31,15 +31,15 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 
 
 @celery.task(name='task.extract.start_extract')
-def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks):
+def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
-                     route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME),
-                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True),
-                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue=TaskConstants.DEFAULT_QUEUE_NAME, immutable=True))
+    workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
+                     route_tasks(tenant, request_id, tasks, queue_name=queue),
+                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
     workflow.apply_async()
 
 

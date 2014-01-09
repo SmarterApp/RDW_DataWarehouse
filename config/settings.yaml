@@ -255,8 +255,8 @@ qa:
       gpg:
         homedir : /opt/edware/conf/gpg
         keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
-      extract.job.queue: extract
-      extract_sync.job.queue: extract_sync
+      job.queue.async: extract
+      job.queue.sync: extract_sync
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
       public.data.url: twprxydw0.qa.dum.edwdc.net:22121
@@ -487,8 +487,8 @@ development:
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
-      extract.job.queue: extract
-      extract_sync.job.queue: extract_sync
+      job.queue.async: extract
+      job.queue.sync: extract_sync
     auth:
       skip.verify: False
       saml:
@@ -586,8 +586,8 @@ jenkins_dev:
                 key: extract_sync
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
-      extract.job.queue: extract
-      extract_sync.job.queue: extract_sync
+      job.queue.async: extract
+      job.queue.sync: extract_sync
     edware:
       db:
         cat:

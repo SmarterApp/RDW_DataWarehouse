@@ -43,8 +43,6 @@ def get_json_to_asmt_tbl_mappings():
                'score_cut_point_1': ['performance_levels', 'level_2', 'cut_point'],
                'score_cut_point_2': ['performance_levels', 'level_3', 'cut_point'],
                'score_cut_point_3': ['performance_levels', 'level_4', 'cut_point'],
-               'score_cut_point_4': ['performance_levels', 'level_5', 'cut_point'],
-               'claim_score_cut_point_1': ['claim_performance_levels', 'level_1', 'cut_point'],
-               'claim_score_cut_point_2': ['claim_performance_levels', 'level_2', 'cut_point']
+               'score_cut_point_4': ['performance_levels', 'level_5', 'cut_point']
                }
     return mapping

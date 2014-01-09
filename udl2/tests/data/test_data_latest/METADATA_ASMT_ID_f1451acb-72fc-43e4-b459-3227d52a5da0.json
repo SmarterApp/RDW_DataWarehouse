@@ -6,7 +6,7 @@
         "year": "2015", 
         "period": "2015", 
         "version": "V1", 
-        "subject": "ELA"
+        "subject": "Math"
     }, 
     "overall": {
         "min_score": "1200", 
@@ -36,28 +36,39 @@
     }, 
     "claims": {
         "claim_1": {
-            "name": "Reading", 
+            "name": "Concepts & Procedures", 
             "min_score": "1200", 
             "max_score": "2400", 
-            "weight": "0.2"
+            "weight": "0.4"
         }, 
         "claim_2": {
-            "name": "Writing", 
+            "name": "Problem Solving and Modeling & Data Analysis", 
             "min_score": "1200", 
             "max_score": "2400", 
-            "weight": "0.25"
+            "weight": "0.45"
         }, 
         "claim_3": {
-            "name": "Speaking & Listening", 
+            "name": "Communicating Reasoning", 
             "min_score": "1200", 
             "max_score": "2400", 
-            "weight": "0.25"
+            "weight": "0.15"
         }, 
         "claim_4": {
-            "name": "Research & Inquiry", 
-            "min_score": "1200", 
-            "max_score": "2400", 
-            "weight": "0.3"
+            "name": "", 
+            "min_score": "0", 
+            "max_score": "0", 
+            "weight": "0"
+        }
+    }, 
+    "claim_performance_levels": {
+        "level_1": {
+            "name": "Below Standard"
+        }, 
+        "level_2": {
+            "name": "At or Near Standard"
+        }, 
+        "level_3": {
+            "name": "Above Standard"
         }
     }
 }

@@ -30,8 +30,8 @@ class functionaltest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.interim_file_dir))
 
 # Delete tmp dir
-    #def tearDown(self):
-        #shutil.rmtree(self.interim_file_dir)
+    def tearDown(self):
+        shutil.rmtree(self.interim_file_dir)
 
 #generate interim files based on given summative files, store the output in tmpp dir and interim data will be exactly 30 pt off.
     def generate_interim_assmt(self):

@@ -161,7 +161,7 @@ class Assessment:
                 self.asmt_claim_2_score_min, self.asmt_claim_2_score_max, self.asmt_claim_2_score_weight, self.asmt_claim_perf_lvl_name_2,
                 self.asmt_claim_3_score_min, self.asmt_claim_3_score_max, self.asmt_claim_3_score_weight, self.asmt_claim_perf_lvl_name_3,
                 self.asmt_claim_4_score_min, self.asmt_claim_4_score_max, self.asmt_claim_4_score_weight,
-                self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4, self.claim_cut_point_1, self.claim_cut_point_2,
+                self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4,
                 self.from_date, self.to_date, self.most_recent]
 
     @classmethod
@@ -174,7 +174,7 @@ class Assessment:
                 'asmt_claim_2_score_min', 'asmt_claim_2_score_max', 'asmt_claim_2_score_weight', 'asmt_claim_perf_lvl_name_2',
                 'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'asmt_claim_3_score_weight', 'asmt_claim_perf_lvl_name_3',
                 'asmt_claim_4_score_min', 'asmt_claim_4_score_max', 'asmt_claim_4_score_weight',
-                'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4', 'claim_score_cut_point_1', 'claim_score_cut_point_2',
+                'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4',
                 'from_date', 'to_date', 'most_recent']
 
 

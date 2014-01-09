@@ -12,56 +12,47 @@ import time
 import shutil
 from uuid import uuid4
 import glob
+from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from sqlalchemy.sql import select, delete
+from udl2.celery import udl2_conf
 
 
-ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
-TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/'
+ARCHIVED_FILE = '/opt/edware/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 guid_batch_id = str(uuid4())
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
-path = '/opt/wgen/edware-udl/zones/landing/work/test_tenant'
+UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
+path = '/opt/edware/zones/landing/work/test_tenant'
+FACT_TABLE = 'fact_asmt_outcome'
 
 
 class ValidatePostUDLCleanup(unittest.TestCase):
     def setUp(self):
-
         self.archived_file = ARCHIVED_FILE
         self.tenant_dir = TENANT_DIR
-        self.user = 'edware'
-        self.passwd = 'edware2013'
-        self.host = 'localhost'
-        self.port = '5432'
-        self.database = 'edware'
-        self.database1 = 'udl2'
-
-#connect to UDL databse
-    def connect_UDL_db(self):
-        db_string = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{database}'.format(user=self.user, passwd=self.passwd, host=self.host, port=self.port, database=self.database1)
-        engine = create_engine(db_string)
-        db_connection = engine.connect()
-        return db_connection, engine
-
-#Connect to edware databse
-    def connect_edware_db(self):
-        db_string_edware = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{database}'.format(user=self.user, passwd=self.passwd, host=self.host, port=self.port, database=self.database)
-        engine_edware = create_engine(db_string_edware)
-        db_connection_edware = engine_edware.connect()
-        return db_connection_edware, engine_edware
 
 # Validate that in Batch_Table for given guid every udl_phase output is Success
-    def validate_UDL_database(self, db_connection):
+    def validate_UDL_database(self, connector):
         time.sleep(10)
-        batch_table_data = db_connection.execute("""Select guid_batch,udl_phase_step_status from udl2."UDL_BATCH" where guid_batch = '{}'""".format(guid_batch_id)).fetchall()
-        for row in batch_table_data:
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        output = select([batch_table.c.udl_phase_step_status,batch_table.c.guid_batch]).where(batch_table.c.guid_batch == guid_batch_id)
+        output_data = connector.execute(output).fetchall()
+        for row in output_data:
             status = row['udl_phase_step_status']
             self.assertEqual(status, 'SUCCESS')
-
+        print('UDL validation is successful')
+        
 #Validate that for given guid data loded on star schema
-    def validate_edware_database(self, db_connection_edware):
-            edware_result = db_connection_edware.execute("""SELECT batch_guid FROM edware."fact_asmt_outcome" where batch_guid = '{}'""".format(guid_batch_id)).fetchall()
-            row_count = len(edware_result)
+    def validate_edware_database(self, ed_connector):
+            time.sleep(10)
+            edware_table = ed_connector.get_table(FACT_TABLE)
+            print(edware_table.c.batch_guid)
+            output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
+            output_data = ed_connector.execute(output).fetchall()
+            row_count = len(output_data)
             self.assertGreater(row_count, 1, "Data is loaded to star shema")
             truple_str = (guid_batch_id,)
-            self.assertIn(truple_str, edware_result, "assert successful")
+            self.assertIn(truple_str, output_data, "assert successful")
+            print('edware schema validation is successful')
 
 #Copy file to tenant folder
     def copy_file_to_tmp(self):
@@ -110,12 +101,14 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.assertEqual(0, len(subfiles_dir))
 
     def test_validation(self):
-        db_conn, engine = self.connect_UDL_db()
-        db_conn_edware, eng_edware = self.connect_edware_db()
+        #db_conn, engine = self.connect_UDL_db()
+        #db_conn_edware, eng_edware = self.connect_edware_db()
         self.run_udl_pipeline()
-        self.validate_UDL_database(db_conn)
+        with UDL2DBConnection() as connector:
+            self.validate_UDL_database(connector)
+        with TargetDBConnection() as ed_connector:
+            self.validate_edware_database(ed_connector)
         self.validate_workzone()
-        self.validate_edware_database(db_conn_edware)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

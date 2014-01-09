@@ -9,6 +9,11 @@ from fileloader.file_loader import load_file
 from udl2 import message_keys as mk
 from tests.functional_tests.util import UDLTestHelper
 import rule_maker.rules.code_generator_special_rules as sr
+from udl2_util.database_util import execute_queries
+from move_to_target import move_to_target, move_to_target_setup
+from tests.functional_tests.util import UDLTestHelper
+from udl2.udl2_connector import UDL2DBConnection,TargetDBConnection, initialize_db
+from conf.udl2_conf import udl2_conf
 
 
 class FuncTestLoadToIntegrationTable(UDLTestHelper):
@@ -16,6 +21,8 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
     @classmethod
     def setUpClass(cls):
         super(FuncTestLoadToIntegrationTable, cls).setUpClass()
+        #initialize_db(UDL2DBConnection, udl2_conf)
+        #initialize_db(TargetDBConnection, udl2_conf)
 
     def load_file_to_stage(self,):
         # file contain 30 rows

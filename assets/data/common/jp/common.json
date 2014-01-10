@@ -338,6 +338,7 @@
 						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
+						"export": true
 					},
 					{
 						"name": "{{claims.subject1.1.name}}",

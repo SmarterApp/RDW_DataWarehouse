@@ -84,90 +84,59 @@ define [
       edwareUtil.showPdfCSS() if @isPdf
 
     processData: () ->
-      for asmt of this.data.items
-        i = 0
-        while i < this.data.items[asmt].length
-          items = this.data.items[asmt][i]
-
-          # if cut points don't have background colors, then it will use default background colors
-          j = 0
-          while j < items.cut_point_intervals.length
-            if !items.cut_point_intervals[j].bg_color
-              $.extend(items.cut_point_intervals[j], @configData.colors[j])
-            j++
-
-          if this.isGrayscale
-            j = 0
-            while j < items.cut_point_intervals.length
-              $.extend(items.cut_point_intervals[j], @configData.grayColors[j])
-              j++
+      for asmtType, assessments  of @data.items
+        for assessment, idx in assessments
+          for cut_point_interval, i in assessment.cut_point_intervals
+            if @isGrayscale
+              assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.grayColors[i])
+            else if not cut_point_interval
+              # if cut points don't have background colors, then it will use default background colors
+              assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.colors[i])
 
           # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
           # ex. assessmentSection0, assessmentSection1
-          items.count = i
+          assessment.count = idx
 
           # set role-based content
-          items.content = this.configData.content
+          assessment.content = @configData.content
 
           # Select cutpoint color and background color properties for the overall score info section
-          performance_level = items.cut_point_intervals[items.asmt_perf_lvl-1]
+          performance_level = assessment.cut_point_intervals[assessment.asmt_perf_lvl-1]
 
           # Apply text color and background color for overall score summary info section
-          items.score_color = performance_level.bg_color
-          items.score_text_color = performance_level.text_color
-          items.score_bg_color = performance_level.bg_color
-          items.score_name = performance_level.name
+          assessment.score_color = performance_level.bg_color
+          assessment.score_text_color = performance_level.text_color
+          assessment.score_bg_color = performance_level.bg_color
+          assessment.score_name = performance_level.name
 
           # set level-based overall ald content
-          overallALD = Mustache.render(this.configData.overall_ald[items.asmt_subject], items)
+          overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject], assessment)
           overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
-          items.overall_ald = overallALD
+          assessment.overall_ald = overallALD
 
           # set psychometric_implications content
-          psychometricContent = Mustache.render(this.configData.psychometric_implications[asmt][items.asmt_subject], items)
+          psychometricContent = Mustache.render(this.configData.psychometric_implications[asmtType][assessment.asmt_subject], assessment)
 
           # if the content is more than character limits then truncate the string and add ellipsis (...)
           psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
-          items.psychometric_implications = psychometricContent
+          assessment.psychometric_implications = psychometricContent
 
           # set policy content
-          grade = this.configData.policy_content[items.grade]
+          # TODO check grade 11, 8 policy content length, should show up to 256 characters
+          grade = @configData.policy_content[assessment.grade]
           if grade
-            if items.grade is "11"
-              policyContent = grade[items.asmt_subject]
-              # if the content is more than character limits then truncate the string and add ellipsis (...)
-              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))
-              items.policy_content = policyContent
-            else if items.grade is "8"
-              grade_asmt = grade[items.asmt_subject]
-              policyContent = grade_asmt[items.asmt_perf_lvl]
-              # if the content is more than character limits then truncate the string and add ellipsis (...)
-              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))
-              items.policy_content = policyContent
-
-          # Claim section
-          # For less than 4 claims, width of the claim box would be 28%
-          # For 4 claims, the width of the claim box would be 20%
-          items.claim_box_width = "28%" if items.claims.length < 4
-          items.claim_box_width = "20%" if items.claims.length == 4
+            if assessment.grade is "11"
+              assessment.policy_content = grade[assessment.asmt_subject]
+            else if assessment.grade is "8"
+              assessment.policy_content = grade[assessment.asmt_subject][assessment.asmt_perf_lvl]
 
           # Add claim score weight
-          j = 0
-          while j < items.claims.length
-            claim = items.claims[j]
-            claim.assessmentUC = items.asmt_subject.toUpperCase()
-
+          for claim, j in assessment.claims
+            claim.assessmentUC = assessment.asmt_subject.toUpperCase()
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
+            claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
+            claim.score_desc = @configData.claims[assessment.asmt_subject]["scoreTooltip"][claim.indexer]
 
-            claimContent = this.configData.claims[items.asmt_subject]["description"][claim.indexer]
-            # if the content is more than character limits then truncate the string and add ellipsis (...)
-            claimContent = edwareUtil.truncateContent(claimContent, edwareUtil.getConstants("claims_characterLimits"))
-            claim.desc = claimContent
-
-            claim.score_desc = this.configData.claims[items.asmt_subject]["scoreTooltip"][claim.indexer]
-
-            j++
-          i++
 
     createBreadcrumb: () ->
       $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb)
@@ -196,7 +165,7 @@ define [
       asmtType = @getCurrentAsmtType()
       this.data.current = this.data.items[asmtType]
       # use mustache template to display the json data
-      output = Mustache.to_html indivStudentReportTemplate, this.data
+      output = Mustache.to_html indivStudentReportTemplate, @data
       $("#individualStudentContent").html output
 
       this.renderClaimScoreRelativeDifference asmtType

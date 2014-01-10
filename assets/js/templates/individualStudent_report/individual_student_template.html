@@ -22,7 +22,7 @@
 		<div class="overallScoreSection">
 			<div class="summary printContent clearfix">
 				<h1 class="pull-left">{{asmt_subject}}</h1>
-				
+
 				<div class="pull-right">
 					<h3 class="type pull-left marginLeft20"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
                     <div class="date pull-left marginLeft20"><span class="labelText">{{labels.effective_date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
@@ -40,51 +40,29 @@
 			</div>
 		</div>
 		<div class="confidenceLevel">
-			
+
 		</div>
-		<div class="claimsSection clearfix">
-            <h3>{{labels.claims}}</h3>
-			<ul class="inline unstyled">
+		<div class="claimsSection">
+			<ul class="inline">
 				{{#claims}}
-				<li id="claim{{indexer}}" class="claims" style="width: {{claim_box_width}}">
+				<li id="claim{{indexer}}" class="claims {{assessmentUC}}">
 					<div class="header">
-						<div class="name small left"><strong>{{name2}}</strong></div>
-						<div class="icon {{assessmentUC}}_{{indexer}}_icon"></div>
-						<div class="clear"></div>
-						<h4 class="grayTitle">{{name}}</h4>
-						
+						<i class="edware-icon-{{assessmentUC}}-{{indexer}}"></i>
+						<h4>{{name}}</h4>
 					</div>
 					<div class="content">
-						<div class="arrowBox">
-							<div id="content{{indexer}}_upper" class="scoreBox scoreBoxUpper"/>
-							<div id="content{{indexer}}_lower" class="scoreBox scoreBoxLower"/>
-							<div class="claims_tooltip hide">
-								<div class="claimToolTipSection">
-									<div class="summary">
-										<div class="left">
-									  		<div class="title">{{name2}}</div>
-									  		<div class="score">
-									  			<span>{{score}}</span>
-									  		</div>
-								  		</div>
-								  		<div class="description">{{score_desc}}</div>
-							  		</div>
-							  		<hr/>
-							  		<div class="claimsBar">
-							  			
-							  		</div>
-                                    <div class="errorBand">{{labels.error_band}}: <strong>{{range_min_score}}-{{range_max_score}}</strong></div>
-						  		</div>
-							</div>
-						</div>
-						<div class="description">{{desc}}</div>
-                        <div class="link pull-right"><a href="#">{{labels.find_out_more}} >></a></div>
+                                            <div class="level{{perf_lvl}}">
+						<i class="edware-icon-perf-level-{{perf_lvl}}"></i>
+						{{perf_lvl_name}}
+					    </div>
+					    <div class="description">{{desc}}</div>
 					</div>
 				</li>
 				{{/claims}}
 			</ul>
 		</div>
-	</div>
+
+					</div>
 	<div class="assessmentOtherInfoHeader printHeader">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">

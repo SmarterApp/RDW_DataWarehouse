@@ -67,6 +67,8 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
                 claim_object['range_min_score'] = str(result.get('asmt_claim_{0}_score_range_min'.format(index)))
                 claim_object['range_max_score'] = str(result.get('asmt_claim_{0}_score_range_max'.format(index)))
                 claim_object['confidence'] = str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index)))
+                claim_object['perf_lvl'] = str(result.get('asmt_claim_{0}_perf_lvl'.format(index)))
+                claim_object['perf_lvl_name'] = str(result.get('asmt_claim_perf_lvl_name_{0}'.format(claim_object['perf_lvl'])))
             if include_indexer:
                 # This is used by ISR
                 claim_object['indexer'] = str(index)
@@ -91,6 +93,8 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
             del(result['asmt_claim_{0}_score_range_min'.format(index)])
         if 'asmt_claim_{0}_score_range_max'.format(index) in result:
             del(result['asmt_claim_{0}_score_range_max'.format(index)])
+        if 'asmt_claim_{0}_perf_lvl'.format(index) in result:
+            del(result['asmt_claim_{0}_perf_lvl'.format(index)])
         if 'asmt_claim_{0}_score_min'.format(index) in result:
             del(result['asmt_claim_{0}_score_min'.format(index)])
         if 'asmt_claim_{0}_score_max'.format(index) in result:

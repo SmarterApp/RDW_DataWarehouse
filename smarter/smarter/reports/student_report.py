@@ -51,6 +51,9 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                 dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                                 dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                                 dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                                dim_asmt.c.asmt_claim_perf_lvl_name_1.label("asmt_claim_perf_lvl_name_1"),
+                                dim_asmt.c.asmt_claim_perf_lvl_name_2.label("asmt_claim_perf_lvl_name_2"),
+                                dim_asmt.c.asmt_claim_perf_lvl_name_3.label("asmt_claim_perf_lvl_name_3"),
                                 fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                 fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                                 fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
@@ -82,12 +85,15 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
                                 fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
                                 fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
-                                fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
+                                fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
+                                fact_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                fact_asmt_outcome.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
+                                fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
+                                fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
                                 from_obj=[fact_asmt_outcome
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_guid == dim_student.c.student_guid,
                                                                   fact_asmt_outcome.c.section_guid == dim_student.c.section_guid))
-                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
-                                                               dim_asmt.c.most_recent))])
+                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.most_recent))])
     query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
@@ -180,7 +186,6 @@ def get_student_report(params):
 
     with EdCoreDBConnection() as connection:
         query = __prepare_query(connection, student_guid, assessment_guid)
-
         result = connection.get_result(query)
         if result:
             first_student = result[0]

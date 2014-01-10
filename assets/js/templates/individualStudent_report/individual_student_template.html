@@ -1,110 +1,110 @@
 <h2 class="title printContent">{{current.0.student_full_name}} | {{labels.grade}} {{current.0.grade}}</h2>
 {{#current}}
 <div id="assessmentSection{{count}}" class="innerBox clearfix">
-	<div class="sidebar pull-left">
-		<h1>{{asmt_subject}}</h1>
-		<h3 class="type"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
+    <div class="sidebar pull-left">
+        <h1>{{asmt_subject}}</h1>
+        <h3 class="type"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
         <div class="date"><span class="labelText">{{labels.effective_date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
-		<hr>
-		<div class="psychometric">{{{psychometric_implications}}}</div>
-		<hr>
-		<div class="policy">{{{policy_content}}}</div>
-	</div>
-	<div class="printHeader printContent">
-		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
-		<div class="summary">
+        <hr>
+        <div class="psychometric">{{{psychometric_implications}}}</div>
+        <hr>
+        <div class="policy">{{{policy_content}}}</div>
+    </div>
+    <div class="printHeader printContent">
+        <div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+        <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
-		</div>
-	</div>
-	<div class="contentWrapper">
-		<div class="overallScoreSection">
-			<div class="summary printContent clearfix">
-				<h1 class="pull-left">{{asmt_subject}}</h1>
+        </div>
+    </div>
+    <div class="contentWrapper">
+        <div class="overallScoreSection">
+            <div class="summary printContent clearfix">
+                <h1 class="pull-left">{{asmt_subject}}</h1>
 
-				<div class="pull-right">
-					<h3 class="type pull-left marginLeft20"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
+                <div class="pull-right">
+                    <h3 class="type pull-left marginLeft20"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
                     <div class="date pull-left marginLeft20"><span class="labelText">{{labels.effective_date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
-				</div>
-			</div>
-			<div class='info'>
+                </div>
+            </div>
+            <div class='info'>
                 <div class="overallText"><strong>{{labels.overall_score}}</strong></div>
-				<div class="indicator" style="background-color: {{score_bg_color}}!important; color: {{score_text_color}};"><strong class="asmtScore">{{asmt_score}}</strong></div>
-				<div class="overallDesc" style="color: {{score_color}}"><strong class="scoreName">{{score_name}}</strong></div>
-			</div>
+                <div class="indicator" style="background-color: {{score_bg_color}}!important; color: {{score_text_color}};"><strong class="asmtScore">{{asmt_score}}</strong></div>
+                <div class="overallDesc" style="color: {{score_color}}"><strong class="scoreName">{{score_name}}</strong></div>
+            </div>
 
-			<div class="info2">
-				<p>{{{overall_ald}}}</p>
+            <div class="info2">
+                <p>{{{overall_ald}}}</p>
                 <div class="text-right"><a href="#">{{labels.find_out_more}} >></a></div>
-			</div>
-		</div>
-		<div class="confidenceLevel">
+            </div>
+        </div>
+        <div class="confidenceLevel">
 
-		</div>
-		<div class="claimsSection clearfix">
-		    <h3 class="printContent">{{labels.claims}}</h3>
-			<ul class="inline">
-				{{#claims}}
-				<li id="claim{{indexer}}" class="claims {{assessmentUC}}">
-					<div class="header">
-						<i class="edware-icon-{{assessmentUC}}-{{indexer}}"></i>
-						<h4>{{name}}</h4>
-					</div>
-					<div class="content">
-                                            <div class="level{{perf_lvl}}">
-						<i class="edware-icon-perf-level-{{perf_lvl}}"></i>
-						{{perf_lvl_name}}
-					    </div>
-					    <div class="description">{{desc}}</div>
-					</div>
-				</li>
-				{{/claims}}
-			</ul>
-		</div>
+        </div>
+        <div class="claimsSection clearfix">
+            <h3 class="printContent">{{labels.claims}}</h3>
+            <ul class="inline">
+                {{#claims}}
+                <li id="claim{{indexer}}" class="claims {{assessmentUC}}">
+                    <div class="header">
+                        <i class="edware-icon-{{assessmentUC}}-{{indexer}}"></i>
+                        <h4>{{name}}</h4>
+                    </div>
+                    <div class="content">
+                        <div class="level{{perf_lvl}}">
+                            <i class="edware-icon-perf-level-{{perf_lvl}}"></i>
+                            {{perf_lvl_name}}
+                        </div>
+                        <div class="description">{{desc}}</div>
+                    </div>
+                </li>
+                {{/claims}}
+            </ul>
+        </div>
 
-					</div>
-	<div class="assessmentOtherInfoHeader printHeader">
-		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
-		<div class="summary">
+    </div>
+    <div class="assessmentOtherInfoHeader printHeader">
+        <div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+        <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
-		</div>
-	</div>
-	<div class="assessmentOtherInfo printContent">
-			<h1>{{asmt_subject}}</h1>
-			<ul class="unstyled">
-				{{#psychometric_implications}}
-				<li class="inline">
+        </div>
+    </div>
+    <div class="assessmentOtherInfo printContent">
+        <h1>{{asmt_subject}}</h1>
+        <ul class="unstyled">
+            {{#psychometric_implications}}
+            <li class="inline">
                 <h3>{{labels.practical_implications}}</h3>
-					<div class="desc">{{{psychometric_implications}}}</div>
-				</li>
-				{{/psychometric_implications}}
-				{{#policy_content}}
-				<li class="inline">
+                <div class="desc">{{{psychometric_implications}}}</div>
+            </li>
+            {{/psychometric_implications}}
+            {{#policy_content}}
+            <li class="inline">
                 <h3>{{labels.policy_information}}</h3>
-					<div class="desc">{{{policy_content}}}</div>
-				</li>
-				{{/policy_content}}
-			</ul>
-		</div>
+                <div class="desc">{{{policy_content}}}</div>
+            </li>
+            {{/policy_content}}
+        </ul>
+    </div>
 </div>
 <div class="pageBreak"></div>
 {{/current}}
 <div id="print_reportInfoContent" class="printContent clearfix">
     <div class="printHeader">
-	<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
-	<div class="summary">
+        <div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+        <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
-	</div>
+        </div>
     </div>
     <div class="aboutReportPopup">
-	<div class="reportInfoWrapper">
-	    <h3>{{labels.report_info}}:</h3>
-	</div>
+        <div class="reportInfoWrapper">
+            <h3>{{labels.report_info}}:</h3>
+        </div>
     </div>
     <div class="legendPopup"></div>
 </div>

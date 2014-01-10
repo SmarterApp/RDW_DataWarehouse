@@ -241,7 +241,6 @@
 	"students": {
 		"{{subject1}}_{{subject2}}": [
 			{
-				"name": "",
 				"items": [
 					{
 						"name": "Students",
@@ -257,13 +256,9 @@
 						"hidden": true,
 						"sortorder": "asc",
 						"export": true
-					}
-				]
-			}, {
-				"name": "{{subject1}}",
-				"items": [
+					},
 					{
-						"name": "Overall Score",
+						"name": "{{subject1}} Overall Score",
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
@@ -276,13 +271,9 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}
-				]
-			}, {
-				"name": "{{subject2}}",
-				"items": [
+					},
 					{
-						"name": "Overall Score",
+						"name": "{{subject2}} Overall Score",
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
@@ -295,11 +286,7 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}
-				]
-			}, {
-				"name": "",
-				"items": [
+					},
 					{
 						"name": "",
 						"displayTpl": "",
@@ -313,7 +300,6 @@
 		],
 		"{{subject1}}": [
 			{
-				"name": "",
 				"items": [
 					{
 						"name": "Students",
@@ -329,13 +315,9 @@
 						"hidden": true,
 						"sortorder": "asc",
 						"export": true
-					}
-				]
-			}, {
-				"name": "{{subject1}}",
-				"items": [
+					},
 					{
-						"name": "Overall Score",
+						"name": "{{subject1}} Overall Score",
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
@@ -348,13 +330,9 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject1.0.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject1.0.name2}}",
+						"name": "{{claims.subject1.0.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject1.claims.0.score",
 						"field": "assessments.subject1.claims.0.score",
@@ -363,13 +341,9 @@
 						"sorttype": "int",
 						"align": "center",
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject1.1.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject1.1.name2}}",
+						"name": "{{claims.subject1.1.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject1.claims.1.score",
 						"field": "assessments.subject1.claims.1.score",
@@ -378,13 +352,9 @@
 						"sorttype": "int",
 						"align": "center",
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject1.2.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject1.2.name2}}",
+						"name": "{{claims.subject1.2.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject1.claims.2.score",
 						"field": "assessments.subject1.claims.2.score",
@@ -415,13 +385,9 @@
 						"hidden": true,
 						"sortorder": "asc",
 						"export": true
-					}
-				]
-			}, {
-				"name": "{{subject2}}",
-				"items": [
+					},
 					{
-						"name": "Overall Score",
+						"name": "{{subject2}} Overall Score",
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
@@ -434,13 +400,9 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject2.0.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject2.0.name2}}",
+						"name": "{{claims.subject2.0.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.0.score",
 						"field": "assessments.subject2.claims.0.score",
@@ -449,13 +411,9 @@
 						"sorttype": "int",
 						"align": "center",
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject2.1.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject2.1.name2}}",
+						"name": "{{claims.subject2.1.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.1.score",
 						"field": "assessments.subject2.claims.1.score",
@@ -464,13 +422,9 @@
 						"sorttype": "int",
 						"align": "center",
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject2.2.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject2.2.name2}}",
+						"name": "{{claims.subject2.2.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.2.score",
 						"field": "assessments.subject2.claims.2.score",
@@ -479,13 +433,9 @@
 						"sorttype": "int",
 						"align": "center",
 						"export": true
-					}
-				]
-			}, {
-				"name": "<p class='claim_name'>{{claims.subject2.3.name}}</p>",
-				"items": [
+					},
 					{
-						"name": "{{claims.subject2.3.name2}}",
+						"name": "{{claims.subject2.3.name}}",
 						"displayTpl": "",
 						"index": "assessments.subject2.claims.3.score",
 						"field": "assessments.subject2.claims.3.score",

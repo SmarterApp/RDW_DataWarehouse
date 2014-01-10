@@ -641,14 +641,6 @@ table {
     margin-right: 5px;
 }
 
-.claim_name {
-    font-weight: normal;
-    font-size: 11px;
-    line-height: 14px;
-    margin: 0;
-    text-align: center;
-    padding: 2px 0;
-}
 .claim_score_down_arrow_bar {
     background-image: -moz-linear-gradient(center top , #d3d3d3, #565656) !important;
     background-image: -webkit-linear-gradient(top ,#d3d3d3, #565656) !important;
@@ -1053,13 +1045,15 @@ table {
     }
 
     #gridWrapper {
+      .jqg-second-row-header {
+          display: none;
+        }
 
 	&.Math, &.ELA {
 	    .ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th,
 	    .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column,
 	    .ui-jqgrid tr.ui-row-ltr td {
 		border-right-color: rgb(208, 208, 208) !important;
-
 	    }
 	}
     }

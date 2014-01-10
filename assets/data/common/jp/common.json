@@ -332,20 +332,20 @@
 					{
 						"name": "{{claims.subject1.0.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject1.claims.0.score",
-						"field": "assessments.subject1.claims.0.score",
+						"index": "assessments.subject1.claims.0.perf_lvl",
+						"field": "assessments.subject1.claims.0.perf_lvl",
 						"width": 152,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 					},
 					{
 						"name": "{{claims.subject1.1.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject1.claims.1.score",
-						"field": "assessments.subject1.claims.1.score",
+						"index": "assessments.subject1.claims.1.perf_lvl",
+						"field": "assessments.subject1.claims.1.perf_lvl",
 						"width": 152,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 						"export": true
@@ -353,10 +353,10 @@
 					{
 						"name": "{{claims.subject1.2.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject1.claims.2.score",
-						"field": "assessments.subject1.claims.2.score",
+						"index": "assessments.subject1.claims.2.perf_lvl",
+						"field": "assessments.subject1.claims.2.perf_lvl",
 						"width": 152,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 						"export": true
@@ -401,10 +401,10 @@
 					{
 						"name": "{{claims.subject2.0.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject2.claims.0.score",
-						"field": "assessments.subject2.claims.0.score",
+						"index": "assessments.subject2.claims.0.perf_lvl",
+						"field": "assessments.subject2.claims.0.perf_lvl",
 						"width": 114,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 						"export": true
@@ -412,10 +412,10 @@
 					{
 						"name": "{{claims.subject2.1.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject2.claims.1.score",
-						"field": "assessments.subject2.claims.1.score",
+						"index": "assessments.subject2.claims.1.perf_lvl",
+						"field": "assessments.subject2.claims.1.perf_lvl",
 						"width": 114,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 						"export": true
@@ -423,10 +423,10 @@
 					{
 						"name": "{{claims.subject2.2.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject2.claims.2.score",
-						"field": "assessments.subject2.claims.2.score",
+						"index": "assessments.subject2.claims.2.perf_lvl",
+						"field": "assessments.subject2.claims.2.perf_lvl",
 						"width": 114,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 						"export": true
@@ -434,10 +434,10 @@
 					{
 						"name": "{{claims.subject2.3.name}}",
 						"displayTpl": "",
-						"index": "assessments.subject2.claims.3.score",
-						"field": "assessments.subject2.claims.3.score",
+						"index": "assessments.subject2.claims.3.perf_lvl",
+						"field": "assessments.subject2.claims.3.perf_lvl",
 						"width": 114,
-						"formatter": "showConfidence",
+						"formatter": "showPerfLevel",
 						"sorttype": "int",
 						"align": "center",
 						"export": true

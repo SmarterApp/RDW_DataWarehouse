@@ -27,6 +27,8 @@ define [
 
   PERFORMANCE_BAR_TEMPLATE = getTemplate('PERFORMANCE_BAR_TEMPLATE')
 
+  PERF_LEVEL_TEMPLATE = getTemplate('PERF_LEVEL_TEMPLATE')
+
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
@@ -111,6 +113,21 @@ define [
       export: 'edwareExportColumn' if options.colModel.export
     }
 
+  showPerfLevel = (value, options, rowObject) ->
+    names = options.colModel.name.split "."
+    subject = rowObject[names[0]][names[1]]
+    return '' if not subject
+
+    perf_lvl_name = subject[names[2]][names[3]]['perf_lvl_name']
+    Mustache.to_html PERF_LEVEL_TEMPLATE, {
+      asmtType: subject.asmt_type,
+      labels: options.colModel.labels
+      perfLevelNumber: value
+      columnName: options.colModel.label
+      parentName: $(options.colModel.parentLabel).text()
+      perfLevel: perf_lvl_name
+      export: 'edwareExportColumn' if options.colModel.export
+    }
 
   performanceBar = (value, options, rowObject) ->
 
@@ -194,6 +211,7 @@ define [
   showText: showText
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
+  showPerfLevel: showPerfLevel
   performanceBar: performanceBar
   populationBar: populationBar
   totalPopulation: totalPopulation

@@ -1,6 +1,5 @@
 /* Print css */
 @media print {
-
 .assessmentOtherInfoHeader.show { display: block;}
      #breadcrumb {
         background-image: transparent;
@@ -107,36 +106,68 @@
           margin: 40px 15px 15px 0;
           
           h1 {
-            color: @color-A1;
+            color: @color-A1 !important;
             margin-top: -10px;
           }
           
           h3 {
+            strong{
+              color: @color-B2 !important;
+            }
             line-height: 20px;
           }
           
-          .teacher, .date {     
+          .teacher, .date {
+            span {
+              color: @color-B2 !important;
+            }
+            .labelText{
+              color: @color-black !important;
+            }   
             font-size: 15px; 
           }
           
         }
       }
-      
       .contentWrapper {
         .overallScoreSection {
           .info {
             margin-left: 20px;
-            
+            .overallText {
+              strong {
+                color: @color-B1 !important;
+              }
+            }
             .overallDesc {
-              color: @color-black !important;
+              .scoreName{
+                color: @color-black !important;
+              }
             }
             .indicator {
+              .asmtScore {
+                color: @color-black !important;
+              }
               margin-left: 7px;
             }
           }
           .info2 {
             margin-left: 450px;
             color: @color-B1;
+          }
+        }
+        .confidenceLevel {
+          .cutPointsBar {
+            .cutPoints {
+              color: @color-B3 !important;
+            }
+          }
+        }
+        .claimsSection {
+          strong, h4 {
+            color: @color-B2 !important;
+          }
+          .description {
+            color: @color-B3 !important;
           }
         }
       }
@@ -149,7 +180,7 @@
         }
         
         h1 {
-          color: @color-A1;
+          color: @color-A1 !important;
           display: none;
           margin-left: -20px;
         }
@@ -170,6 +201,7 @@
         }
         
         .desc {
+          color: @color-B2 !important;
           margin-right: 40px;
         }
       } 

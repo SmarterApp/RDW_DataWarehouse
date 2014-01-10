@@ -10,7 +10,7 @@
         /*background-image: transparent;
         background: #464646;*/
       }
-      
+
       .ui-jqgrid-bdiv {
         min-height: 700px;
         display: block !important;
@@ -22,33 +22,33 @@
       #lui_gridTable, #load_gridTable {
         display: none !important;
       }
-      
+
       .printContent { display: block; }
       #header, #breadcrumb{ display: none; }
       #individualStudentContent  { background: none; float: none;}
       .outerBox h2 { display: none;}
       .innerBox { border: none; position: relative; float: none; margin: 0;}
-      .printHeader { 
+      .printHeader {
         margin-top: 10px;
-        clear: both; 
-        margin-bottom: 20px; 
-        border-bottom: solid 2px @color-black; 
-        width: 100%;  
+        clear: both;
+        margin-bottom: 20px;
+        border-bottom: solid 2px @color-black;
+        width: 100%;
         min-height: 65px;
-        
-        .logo { 
+
+        .logo {
           position: relative;
           float: left;
           margin-left: 15px;
         }
-        .summary { 
-          text-align: right; 
-          float: right; 
-          font-size: 15px; 
+        .summary {
+          text-align: right;
+          float: right;
+          font-size: 15px;
           line-height: 15px;
           color: @color-B1;
           margin-right: 15px;
-          
+
           .label {
             color: @color-black;
             background: none;
@@ -56,11 +56,11 @@
             font-size: 15px;
             padding: 0;
           }
-          
-          .title { 
-            color: @color-black; 
-            font-size: 17px; 
-            font-weight: bold; 
+
+          .title {
+            color: @color-black;
+            font-size: 17px;
+            font-weight: bold;
             margin-bottom: 5px;
           }
         }
@@ -70,8 +70,23 @@
       .contentWrapper { margin-left: 0; width: 100%; }
       .confidenceLevel { position: relative; margin: 20px auto 0; width: 640px;}
       .info2 a { display: none; }
-      .claims { background: none; }
-      .claims .link { display: none; }
+      .claims {
+	  background: none;
+	  padding: 16px 16px !important;
+
+	  &.MATH {
+	      width: 270px;
+	      margin-right: 0px;
+	      h4 { max-width: 200px; }
+	  }
+
+	  &.ELA {
+	      margin-right: 0px;
+	      width: 192px;
+	      h4 { max-width: 135px; }
+	  }
+      }
+
       .claimsSection ul { float: left; border: 1px solid #E2E2E2; border-radius: 5px; padding: 10px;}
       .claimsSection ul li { border: none; border-right: solid 1px #e2e2e2; }
       .claimsSection ul li:last-child { border-right: none; }
@@ -82,17 +97,17 @@
       #print_reportInfoContent { color: @color-B1; width: 100%;}
       #print_reportInfoContent .helpPopup, #print_reportInfoContent .printPopup { display: none;}
       #print_reportInfoContent {
-        .aboutReportPopup {
-          border-bottom: solid 1px @color-B4;
-          p {
-            line-height: 14px;
-          }
-          
+          .aboutReportPopup {
+              border-bottom: solid 1px @color-B4;
+              p {
+		  line-height: 14px;
+              }
+
           li {
             line-height: 14px;
           }
         }
-        
+
         .legendPopup {
           margin-top: 10px;
         }
@@ -100,33 +115,33 @@
       #print_reportInfoContent h3 { color: @color-black; font-size: 20px; }
       .reportInfoWrapper { width: 100%; }
       #content { min-height: 0; }
-      
+
       .overallScoreSection {
         .summary {
           margin: 40px 15px 15px 0;
-          
+
           h1 {
             color: @color-A1 !important;
             margin-top: -10px;
           }
-          
+
           h3 {
             strong{
               color: @color-B2 !important;
             }
             line-height: 20px;
           }
-          
+
           .teacher, .date {
             span {
               color: @color-B2 !important;
             }
             .labelText{
               color: @color-black !important;
-            }   
-            font-size: 15px; 
+            }
+            font-size: 15px;
           }
-          
+
         }
       }
       .contentWrapper {
@@ -171,48 +186,48 @@
           }
         }
       }
-      
+
       .assessmentOtherInfo {
         margin: 0 50px;
-        
-        .assessmentOtherInfoHeader { 
-          display: none; 
+
+        .assessmentOtherInfoHeader {
+          display: none;
         }
-        
+
         h1 {
           color: @color-A1 !important;
           display: none;
           margin-left: -20px;
         }
-        
+
         li {
           margin-top: 15px;
         }
-          
+
         li.inline {
           width: 50%;
           float: left;
           margin-top: 0;
         }
-        
+
         h3 {
           color: @color-black;
           font-size: 17px;
         }
-        
+
         .desc {
           color: @color-B2 !important;
           margin-right: 40px;
         }
-      } 
-   
+      }
+
       .confidenceLevel {
         height: 150px;
         .progress {
           .bar {
             background-image: none !important;
           }
-        }      
+        }
         .transImage1 {
           background-image: url('../images/ISRleftBracket_print.png') !important;
           background-repeat: no-repeat;
@@ -223,40 +238,40 @@
           background-repeat: no-repeat;
           background-position: top left;
         }
-        
+
         .transImage1.confLevelRight {
           background-image: url("../images/ISRleftBracketwEB_print.png") !important;
           background-repeat: no-repeat;
           background-position: top left;
         }
-      
+
         .transImage2.confLevelRight {
           background-image: url("../images/ISRrightBracket_print.png") !important;
           background-repeat: no-repeat;
           background-position: top left;
         }
-        
+
         .aldDescText {
           visibility: visible;
         }
       }
-      
+
       #legendTemplate {
         width: 100%;
         height: 710px;
-        
+
         h4 {
           font-size: 17px;
         }
-        
+
         h5 {
           font-size: 17px;
         }
-        
+
         p {
           font-size: 14px;
         }
-        
+
         img {
           -webkit-transform: scale(1.2);
           -moz-transform: scale(1.2);
@@ -264,62 +279,62 @@
           -ms-transform: scale(1.2);
           transform: scale(1.2);
         }
-        
+
         .section {
           width: 100%;
           margin: 2% 0 0 0;
           padding-top: 2%;
         }
-        
+
         .claim_score {
           .arrowBox {
             .claim_score_arrow {
               margin: 45px 15px 25px 15px;
             }
-            
+
             .claim_score_indicator_wrapper {
                 top: 22px;
             }
           }
-        
+
           p {
             font-size: 14px;
           }
         }
-        
+
         .losPerfBar {
           display: none;
         }
-        
+
         .indicator_cell {
           border-radius: 5px 5px 5px 5px;
           width: 65px;
           height: 35px;
           font-size: 18px;
         }
-        
+
         .overall_score_wrapper {
-          
+
           position: relative;
-	  
+
           .confidenceLevel {
-            
+
             margin: 0 0 0 98px;
             display: inline-block;
 	    height: 100px;
-            
+
             .aldDescText {
               display: none;
             }
-            
-            .progressbar_indicator640 { 
+
+            .progressbar_indicator640 {
               background-position: -1255px 0;
               width: 20px;
             }
           }
-          
+
         }
-        
+
         .desc_overall_score {
             width: 120px;
             text-align: left;
@@ -331,10 +346,10 @@
               margin-top: 0px;
             }
         }
-        
+
         .desc_error_bands {
           left: 285px;
-	  
+
           h5 {
             left: 200px;
           }
@@ -344,37 +359,37 @@
             left: 202px;
           }
         }
-        
+
         .overall_score_lower {
           left: 29px;
         }
 
 	.overall_score_upper {
           .desc_overall_score_indicator {
-            position:relative; 
+            position:relative;
             top: 6px;
 	    left: 295px;
           }
 	}
-        
+
         .overall_upperleft {
 	  position: relative;
 	  top: 12px;
 	  left: 88px;
         }
-        
+
         .overall_uppermid {
           position: relative;
 	  top: 12px;
-	  left: 287px;  
+	  left: 287px;
         }
-        
+
         .overall_right {
           display:inline-block;
           position: relative;
           bottom: 52px;
           margin-left: 23px;
-          
+
           .desc_scaled_score_range {
             display: inline;
             position: relative;
@@ -382,29 +397,29 @@
             left: 4px;
           }
         }
-        
+
         .overall_lowerleft {
           left: 127px;
         }
-        
+
         #overall_lowermid50px {
           display: none;
         }
-        
+
         #overall_lowermid69px {
           display: inline-block;
         }
         .overall_lowermid {
           left: 369px;
         }
-        
+
         table {
           font-size: 16px;
           margin-top: 0;
-          
+
           td.ALD_table_cell {
             height: 38px;
-            
+
             div.legend_ALD_color {
                width: 20px;
                height: 20px;
@@ -416,7 +431,7 @@
 		z-index: 0;
 	    }
           }
-          
+
           th, td {
             &:last-child {
               display: table-cell;

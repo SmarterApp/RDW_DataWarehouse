@@ -421,19 +421,18 @@ table {
     padding: 0px 24px;
 
     h3 {
-	color: @color-B1;
+	color: @color-B1 !important;
     }
 
     ul.inline { font-size: 0px; }
 }
 
 .claims {
-    height: 230px;
-    vertical-align: middle;
+    vertical-align: top;
     border: solid 1px @color-B5;
     .rounded-corners(5px);
     background: @color-B6;
-    padding: 16px 10px !important;
+    padding: 16px 10px;
     box-sizing: border-box;
     /* -webkit-text-stroke-width: 1px; */
     /* -webkit-text-stroke-color: @color-B12; */
@@ -474,14 +473,14 @@ table {
 	line-height: 46px;
 	font-size: 15px;
 	font-weight: bold;
-	width: 145px;
-	margin: auto;
+	text-align: center;
 
 	i { vertical-align: middle; }
     }
 
-    .level1 { color: @color-C15; }
-    .level3 { color: @color-C16; }
+    .level1 { color: @color-C15 !important; }
+    .level2 { color: @color-B2 !important; }
+    .level3 { color: @color-C16 !important; }
 
     .description {
 	font-size: 12px;

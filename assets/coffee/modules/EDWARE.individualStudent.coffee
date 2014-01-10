@@ -168,6 +168,8 @@ define [
       output = Mustache.to_html indivStudentReportTemplate, @data
       $("#individualStudentContent").html output
 
+      @updateClaimsHeight()
+
       this.renderClaimScoreRelativeDifference asmtType
 
       # Generate Confidence Level bar for each assessment
@@ -221,6 +223,16 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
 
       this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
+
+    updateClaimsHeight: ()->
+      ### Update height of all claim box to match the highest one. ###
+      for idx, subject of @subjectsData
+        do (subject) ->
+          descriptions = $(".claims.#{subject.toUpperCase()} .description")
+          heights = for desc in descriptions
+            $(desc).height()
+          highest = Math.max.apply(Math, heights)
+          descriptions.height highest
 
     createSampleInterval : (subject, sample_interval) ->
       # merge sample and subject information

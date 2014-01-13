@@ -22,7 +22,7 @@
             {{/insufficient}}
         </div>
     </div>
-    
+
     <div id="TOTAL_POPULATION_TEMPLATE">
     	<div class='totalPop {{export}}'>
     	{{#insufficient}}
@@ -32,7 +32,7 @@
         {{/subject.unfilteredTotal}}
         <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
         {{/insufficient}}
-        
+
         {{^insufficient}}
     	<div class='studentsTotal'>{{subject.total}}
     	{{#subject.unfilteredTotal}}
@@ -105,7 +105,7 @@
     <div id="PERFORMANCE_BAR_TEMPLATE">
         <div class='{{export}}'>
             <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}</div>
-            <span class='edwareExportField' data-export-value='{{subject.asmt_score}}' data-export-name='{{subject.asmt_type}} {{columnName}}'></span>
+            <span class='edwareExportField' data-export-value='{{subject.asmt_score}}' data-export-name='{{columnName}}'></span>
             <div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>
             {{{toolTip}}}
         </div>
@@ -114,8 +114,8 @@
     <div id="CONFIDENCE_TEMPLATE">
         <div class='{{export}}'>
             <strong>{{value}}</strong> (&#177;{{confidence}})
-            <span class='edwareExportField' data-export-name='{{asmtType}} - {{columnName}} - {{parentName}} - {{labels.score}}' data-export-value='{{value}}'></span>
-            <span class='edwareExportField' data-export-name='{{asmtType}} - {{columnName}} - {{parentName}} - {{labels.error_band}}' data-export-value='{{confidence}}'></span>
+            <span class='edwareExportField' data-export-name='{{asmtType}} - {{columnName}} - {{labels.score}}' data-export-value='{{value}}'></span>
+            <span class='edwareExportField' data-export-name='{{asmtType}} - {{columnName}} - {{labels.error_band}}' data-export-value='{{confidence}}'></span>
         </div>
     </div>
 

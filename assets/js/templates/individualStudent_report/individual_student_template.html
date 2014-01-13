@@ -3,18 +3,26 @@
 <div id="assessmentSection{{count}}" class="innerBox clearfix">
     <div class="sidebar pull-left">
         <h1>{{asmt_subject}}</h1>
-        <h3 class="type"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
-        <div class="date"><span class="labelText">{{labels.effective_date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
+        <h3 class="type">
+            <strong>{{asmt_type}} {{asmt_period}} </strong>
+        </h3>
+        <div class="date">
+            <span class="labelText">{{labels.effective_date}}:</span>
+            <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span>
+        </div>
         <hr>
         <div class="psychometric">{{{psychometric_implications}}}</div>
         <hr>
         <div class="policy">{{{policy_content}}}</div>
     </div>
     <div class="printHeader printContent">
-        <div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+        <div class="logo">
+            <img src="../images/smarter_printlogo.png" width="150" height="47" />
+        </div>
         <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
-            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
+            <span class="label">{{labels.state}}:</span>{{context.items.0.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
         </div>
     </div>
@@ -22,26 +30,36 @@
         <div class="overallScoreSection">
             <div class="summary printContent clearfix">
                 <h1 class="pull-left">{{asmt_subject}}</h1>
-
                 <div class="pull-right">
-                    <h3 class="type pull-left marginLeft20"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
-                    <div class="date pull-left marginLeft20"><span class="labelText">{{labels.effective_date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
+                    <h3 class="type pull-left marginLeft20">
+                        <strong>{{asmt_type}} {{asmt_period}} </strong>
+                    </h3>
+                    <div class="date pull-left marginLeft20">
+                        <span class="labelText">{{labels.effective_date}}:</span>
+                        <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span>
+                    </div>
                 </div>
             </div>
             <div class='info'>
-                <div class="overallText"><strong>{{labels.overall_score}}</strong></div>
-                <div class="indicator" style="background-color: {{score_bg_color}}!important; color: {{score_text_color}};"><strong class="asmtScore">{{asmt_score}}</strong></div>
-                <div class="overallDesc" style="color: {{score_color}}"><strong class="scoreName">{{score_name}}</strong></div>
+                <div class="overallText">
+                    <strong>{{labels.overall_score}}</strong>
+                </div>
+                <div class="indicator" style="background-color: {{score_bg_color}}!important; color: {{score_text_color}};">
+                    <strong class="asmtScore">{{asmt_score}}</strong>
+                </div>
+                <div class="overallDesc" style="color: {{score_color}}">
+                    <strong class="scoreName">{{score_name}}</strong>
+                </div>
             </div>
 
             <div class="info2">
                 <p>{{{overall_ald}}}</p>
-                <div class="text-right"><a href="#">{{labels.find_out_more}} >></a></div>
+                <div class="text-right">
+                    <a href="#">{{labels.find_out_more}} >></a>
+                </div>
             </div>
         </div>
-        <div class="confidenceLevel">
-
-        </div>
+        <div class="confidenceLevel"></div>
         <div class="claimsSection clearfix">
             <h3 class="printContent">{{labels.claims}}</h3>
             <ul class="inline">
@@ -65,10 +83,13 @@
 
     </div>
     <div class="assessmentOtherInfoHeader printHeader">
-        <div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+        <div class="logo">
+            <img src="../images/smarter_printlogo.png" width="150" height="47" />
+        </div>
         <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
-            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
+            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
         </div>
     </div>
@@ -94,10 +115,13 @@
 {{/current}}
 <div id="print_reportInfoContent" class="printContent clearfix">
     <div class="printHeader">
-        <div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+        <div class="logo">
+            <img src="../images/smarter_printlogo.png" width="150" height="47" />
+        </div>
         <div class="summary">
             <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
-            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
+            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;
+            <span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
         </div>
     </div>

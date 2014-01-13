@@ -128,9 +128,11 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_1_score_range_max': 4,
                   'asmt_claim_1_score_min': 2,
                   'asmt_claim_1_score_max': 5,
+                  'asmt_claim_1_perf_lvl': 3,
                   'asmt_score_max': 500,
                   'asmt_claim_1_score': 2,
                   'asmt_claim_1_name': 'name',
+                  'asmt_claim_perf_lvl_name_3': 'Above Standard',
                   'asmt_subject': 'ELA',
                   'asmt_cut_point_name_2': 'two',
                   'asmt_claim_2_score_range_min': 1,
@@ -142,8 +144,10 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_2_name': 'Two'}
         claims = get_claims(number_of_claims=2, result=result, include_scores=True)
         self.assertEqual(len(claims), 2)
-        self.assertEqual(len(claims[0]), 4)
+        self.assertEqual(len(claims[0]), 6)
         self.assertEqual(claims[0]['score'], '2')
+        self.assertEqual(claims[0]['perf_lvl'], '3')
+        self.assertEqual(claims[0]['perf_lvl_name'], 'Above Standard')
 
     def test_get_claims_for_indexer_only(self):
         result = {'asmt_cut_point_name_1': 'one',

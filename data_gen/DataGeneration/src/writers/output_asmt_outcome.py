@@ -3,6 +3,8 @@ import csv
 import os
 from datetime import date
 
+from DataGeneration.src.utils.idgen import IdGen
+
 CSV_K = 'csv'
 
 
@@ -28,8 +30,8 @@ def initialize_csv_file(output_config, output_keys, output_path):
     return output_files
 
 
-def output_data(output_config, output_keys, output_files, state_population, school, student_info):
-
+def output_data(output_config, output_keys, output_files, school=None, student_info=None, state_population=None,
+                inst_hier=None, batch_guid=None, section=None, assessment=None):
     """
     Output the data to using the configuration information and the relevant objects
     :param output_config: The output configuration dictionary
@@ -43,15 +45,22 @@ def output_data(output_config, output_keys, output_files, state_population, scho
     for o_key in output_keys:
         csv_conf = output_config[o_key][CSV_K]
         for table in csv_conf:
+
             output_file = output_files[table]
             output_data_list = []
-            for subject in student_info.asmt_scores:
-                output_row = create_output_csv_dict(csv_conf[table], state_population, school, student_info, subject)
-                output_data_list.append(output_row)
+            if student_info:
+                for subject in student_info.asmt_scores:
+                    output_row = create_output_csv_dict(csv_conf[table], state_population, school,
+                                                        student_info, subject, inst_hier, batch_guid, section, assessment)
+                    output_data_list.append(output_row) if output_row else None
+            else:
+                output_row = create_output_csv_dict(csv_conf[table], state_population, school,
+                                                    student_info, None, inst_hier, batch_guid, section, assessment)
+                output_data_list.append(output_row) if output_row else None
             write_csv_rows(output_file, output_data_list)
 
 
-def create_output_csv_dict(table_config_dict, state_population, school, student_info, subject):
+def create_output_csv_dict(table_config_dict, state_population, school, student_info, subject, inst_hier, batch_guid, section, assessment):
     """
     Create the csv output dictionary from the given data
     :param table_config_dict: the config dict pertaining directly to the table being output
@@ -63,24 +72,45 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
     """
 
     output_dict = {}
+    idgen = IdGen()
+
+    asmt_score = student_info.asmt_scores[subject] if student_info else None
+    claim_scores = asmt_score.claim_scores if asmt_score else None
+
+    obj_name_map = {
+        'student_info': student_info,
+        'school': school,
+        'state': state_population,
+        'state_population': state_population,
+        'claim_scores': claim_scores,
+        'asmt_scores': asmt_score,
+        'asmt_score': asmt_score,
+        'date_taken': student_info.asmt_dates_taken[subject] if student_info else None,
+        'inst_hierarchy': inst_hier,
+        'batch_guid': MakeTemp(value=batch_guid),
+        'idgen': idgen,
+        'UNIQUE_ID': MakeTemp(value=idgen.get_id),
+        'section': section,
+        'assessment': assessment,
+    }
+
+    required_objects = {obj_name.split('.')[0] for obj_name in table_config_dict.values()}
+
+    # if a required object is missing then this table is not meant to be written or there is an error
+    # Return None
+    for req_obj in required_objects:
+        # if the name we are looking for is not present, that value will be used for the column during output
+        if obj_name_map.get(req_obj, not None) is None:
+            return None
 
     for column_name in table_config_dict:
-        asmt_score = student_info.asmt_scores[subject]
-        claim_scores = asmt_score.claim_scores
         internal_map_string_list = table_config_dict[column_name].split('.')
 
-        if internal_map_string_list[0] == 'student_info':
-            data_object = student_info
-        elif internal_map_string_list[0] == 'school':
-            data_object = school
-        elif internal_map_string_list[0] in ['state', 'state_population']:
-            data_object = state_population
-        elif internal_map_string_list[0] == 'claim_scores':
-            data_object = claim_scores
-        elif internal_map_string_list[0] in ['asmt_scores', 'asmt_score']:
-            data_object = asmt_score
-        else:
-            raise NotImplementedError('No Action available for name: ', internal_map_string_list[0])
+        obj_name = internal_map_string_list[0]
+
+        data_object = obj_name_map.get(obj_name, MakeTemp(value=obj_name))
+
+        internal_map_string_list = ['value', 'value'] if isinstance(data_object, MakeTemp) else internal_map_string_list
 
         # remove everything before the first '.' from attribute name
         attribute_name = '.'.join(internal_map_string_list[1:])
@@ -113,6 +143,8 @@ def get_value_from_object(data_object, attr_name, subject):
     value = value[subject] if isinstance(value, dict) else value
     # if the value is a date object reformat the value
     value = value.strftime('%Y%m%d') if isinstance(value, date) else value
+    # check to see if the value is a callable function
+    value = value() if callable(value) else value
 
     return value
 
@@ -144,7 +176,7 @@ def get_header_from_file(filename):
     return header
 
 
-class Dummy(object):
+class MakeTemp(object):
     def __init__(self, **kwargs):
         for kw in kwargs:
             setattr(self, kw, kwargs[kw])
@@ -190,14 +222,14 @@ if __name__ == '__main__':
     out_path = os.getcwd()
     out_files = initialize_csv_file(conf_dict, out_keys, out_path)
     print(out_files)
-    student_info1 = Dummy(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
-                          address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
-                          email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
-                          asmt_scores={'math': Dummy(claim_scores=[Dummy(claim_score=1200), Dummy(claim_score=1200),
-                                                                   Dummy(claim_score=1200), Dummy(claim_score=1200)]),
-                                       'ela': Dummy(claim_scores=[Dummy(claim_score=1300), Dummy(claim_score=1300),
-                                                                  Dummy(claim_score=1300)])})
-    state1 = Dummy(state_name='New York', state_code="NY")
-    school1 = Dummy(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
-                    school_category='elementary')
-    output_data(conf_dict, out_keys, out_files, state1, school1, student_info1)
+    student_info1 = MakeTemp(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
+                             address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
+                             email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
+                             asmt_scores={'math': MakeTemp(claim_scores=[MakeTemp(claim_score=1200), MakeTemp(claim_score=1200),
+                                                                         MakeTemp(claim_score=1200), MakeTemp(claim_score=1200)]),
+                                          'ela': MakeTemp(claim_scores=[MakeTemp(claim_score=1300), MakeTemp(claim_score=1300),
+                                                                        MakeTemp(claim_score=1300)])})
+    state1 = MakeTemp(state_name='New York', state_code="NY")
+    school1 = MakeTemp(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
+                       school_category='elementary')
+    output_data(conf_dict, out_keys, out_files, school1, student_info1, state1)

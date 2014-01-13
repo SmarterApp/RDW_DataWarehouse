@@ -1,0 +1,209 @@
+# DataGeneration Config file
+
+star:
+    csv:
+        fact_asmt_outcome:
+            asmnt_outcome_rec_id: UNIQUE_ID
+            asmt_rec_id: student_info.asmt_rec_ids
+            student_guid: student_info.student_guid
+            teacher_guid: student_info.teacher_guids
+            state_code: student_info.state_code
+            district_guid: student_info.district_guid
+            school_guid: student_info.school_guid
+            section_guid: student_info.section_guids
+            inst_hier_rec_id: inst_hierarchy.inst_hier_rec_id
+            section_rec_id: student_info.section_rec_ids
+            where_taken_id: student_info.school_guid
+            where_taken_name: inst_hierarchy.school_name
+            asmt_grade: student_info.grade
+            enrl_grade: student_info.grade
+            date_taken: student_info.asmt_dates_taken
+            date_taken_day: date_taken.day
+            date_taken_month: date_taken.month
+            date_taken_year: date_taken.year
+            asmt_score: asmt_score.overall_score
+            asmt_score_range_min: asmt_score.interval_min
+            asmt_score_range_max: asmt_score.interval_max
+            asmt_perf_lvl: asmt_score.perf_lvl
+            asmt_claim_1_score: claim_scores.1.claim_score
+            asmt_claim_1_score_range_min: claim_scores.1.claim_score_interval_minimum
+            asmt_claim_1_score_range_max: claim_scores.1.claim_score_interval_maximum
+            asmt_claim_1_perf_lvl: claim_scores.1.perf_lvl
+            asmt_claim_2_score: claim_scores.2.claim_score
+            asmt_claim_2_score_range_min: claim_scores.2.claim_score_interval_minimum
+            asmt_claim_2_score_range_max: claim_scores.2.claim_score_interval_maximum
+            asmt_claim_2_perf_lvl: claim_scores.2.perf_lvl
+            asmt_claim_3_score: claim_scores.3.claim_score
+            asmt_claim_3_score_range_min: claim_scores.3.claim_score_interval_minimum
+            asmt_claim_3_score_range_max: claim_scores.3.claim_score_interval_maximum
+            asmt_claim_3_perf_lvl: claim_scores.3.perf_lvl
+            asmt_claim_4_score: claim_scores.4.claim_score
+            asmt_claim_4_score_range_min: claim_scores.4.claim_score_interval_minimum
+            asmt_claim_4_score_range_max: claim_scores.4.claim_score_interval_maximum
+            asmt_claim_4_perf_lvl: claim_scores.4.perf_lvl
+            status: C
+            most_recent: student_info.most_recent
+            batch_guid: batch_guid
+            asmt_type: student_info.asmt_types
+            asmt_year: student_info.asmt_years
+            asmt_subject: student_info.asmt_subjects
+            gender: student_info.gender
+            dmg_eth_hsp: student_info.dmg_eth_hsp
+            dmg_eth_ami: student_info.dmg_eth_ami
+            dmg_eth_asn: student_info.dmg_eth_asn
+            dmg_eth_blk: student_info.dmg_eth_blk
+            dmg_eth_pcf: student_info.dmg_eth_pcf
+            dmg_eth_wht: student_info.dmg_eth_wht
+            dmg_prg_iep: student_info.dmg_prg_iep
+            dmg_prg_lep: student_info.dmg_prg_lep
+            dmg_prg_504: student_info.dmg_prg_504
+            dmg_prg_tt1: student_info.dmg_prg_tt1
+            dmg_eth_derived: student_info.derived_demographic
+        dim_student:
+            student_rec_id: student_info.student_rec_ids  # Need to update how this is being stored
+            student_guid: student_info.student_guid
+            section_guid: student_info.section_guids
+            first_name: student_info.first_name
+            last_name: student_info.last_name
+            address_1: student_info.address_1
+            city: student_info.city
+            zip_code: student_info.zip_code
+            gender: student_info.gender
+            email: student_info.email
+            dob: student_info.dob
+            grade: student_info.grade
+            state_code: student_info.state_code
+            district_guid: student_info.district_guid
+            school_guid: student_info.school_guid
+            from_date: student_info.from_date
+            most_recent: student_info.most_recent
+            middle_name: student_info.middle_name
+            to_date: student_info.to_date
+        dim_inst_hier:
+            inst_hier_rec_id: inst_hierarchy.inst_hier_rec_id
+            state_name: inst_hierarchy.state_name
+            state_code: inst_hierarchy.state_code
+            district_guid: inst_hierarchy.district_guid
+            district_name: inst_hierarchy.district_name
+            school_guid: inst_hierarchy.school_guid
+            school_name: inst_hierarchy.school_name
+            school_category: inst_hierarchy.school_category
+            from_date: inst_hierarchy.from_date
+            to_date: inst_hierarchy.to_date
+            most_recent: inst_hierarchy.most_recent
+        dim_section:
+            section_rec_id: section.section_rec_id
+            section_guid: section.section_guid
+            section_name: section.section_name
+            grade: section.grade
+            class_name: section.class_name
+            subject_name: section.subject_name
+            state_code: section.state_code
+            district_guid: section.district_guid
+            school_guid: section.school_guid
+            from_date: section.from_date
+            to_date: section.to_date
+            most_recent: section.most_recent
+        dim_assessment:
+            asmt_rec_id: assessment.asmt_rec_id
+            asmt_guid: assessment.asmt_guid
+            asmt_type: assessment.asmt_type
+            asmt_period: assessment.asmt_period
+            asmt_period_year: assessment.asmt_period_year
+            asmt_version: assessment.asmt_version
+            asmt_subject: assessment.asmt_subject
+            asmt_claim_1_name: assessment.asmt_claim_1_name
+            asmt_claim_2_name: assessment.asmt_claim_2_name
+            asmt_claim_3_name: assessment.asmt_claim_3_name
+            asmt_claim_4_name: assessment.asmt_claim_4_name
+            asmt_perf_lvl_name_1: assessment.asmt_perf_lvl_name_1
+            asmt_perf_lvl_name_2: assessment.asmt_perf_lvl_name_2
+            asmt_perf_lvl_name_3: assessment.asmt_perf_lvl_name_3
+            asmt_perf_lvl_name_4: assessment.asmt_perf_lvl_name_4
+            asmt_perf_lvl_name_5: assessment.asmt_perf_lvl_name_5
+            asmt_score_min: assessment.
+            asmt_score_max:
+            asmt_claim_1_score_min:
+            asmt_claim_1_score_max:
+            asmt_claim_1_score_weight:
+            asmt_claim_perf_lvl_name_1:
+            asmt_claim_2_score_min:
+            asmt_claim_2_score_max:
+            asmt_claim_2_score_weight:
+            asmt_claim_perf_lvl_name_2:
+            asmt_claim_3_score_min:
+            asmt_claim_3_score_max:
+            asmt_claim_3_score_weight:
+            asmt_claim_perf_lvl_name_3:
+            asmt_claim_4_score_min:
+            asmt_claim_4_score_max:
+            asmt_claim_4_score_weight:
+            asmt_cut_point_1:
+            asmt_cut_point_2:
+            asmt_cut_point_3:
+            asmt_cut_point_4:
+            claim_cut_point_1:
+            claim_cut_point_2:
+            from_date:
+            to_date:
+            most_recent:
+lz:
+    csv:
+        realdata:
+            guid_asmt: student_info.asmt_guids
+            guid_asmt_location: school.school_guid
+            name_asmt_location: school.school_name
+            grade_asmt: student_info.grade
+            name_state: state_population.state_name
+            code_state: state_population.state_code
+            guid_district: school.district_guid
+            name_district: school.district_name
+            guid_school: school.school_guid
+            name_school: school.school_name
+            type_school: school.school_category
+            guid_student: student_info.student_guid
+            name_student_first: student_info.first_name
+            name_student_middle: student_info.middle_name
+            name_student_last: student_info.last_name
+            address_student_line1: student_info.address_1
+            address_student_line2: student_info.address_2
+            address_student_city: student_info.city
+            address_student_zip: student_info.zip_code
+            gender_student: student_info.gender
+            email_student: student_info.email
+            dob_student: student_info.dob
+            grade_enrolled: student_info.grade
+            date_assessed: student_info.date_taken
+            score_asmt: asmt_score_obj.overall_score
+            score_asmt_min: asmt_score_obj.interval_min
+            score_asmt_max: asmt_score_obj.interval_max
+            score_perf_level: asmt_score_obj.perf_lvl
+            score_claim_1: claim_scores.1.claim_score
+            score_claim_1_min: claim_scores.1.claim_score_interval_minimum
+            score_claim_1_max: claim_scores.1.claim_score_interval_maximum
+            asmt_claim_1_perf_lvl: claim_scores.1.perf_lvl
+            score_claim_2: claim_scores.2.claim_score
+            score_claim_2_min: claim_scores.2.claim_score_interval_minimum
+            score_claim_2_max: claim_scores.2.claim_score_interval_maximum
+            asmt_claim_2_perf_lvl: claim_scores.2.perf_lvl
+            score_claim_3: claim_scores.3.claim_score
+            score_claim_3_min: claim_scores.3.claim_score_interval_minimum
+            score_claim_3_max: claim_scores.3.claim_score_interval_maximum
+            asmt_claim_3_perf_lvl: claim_scores.3.perf_lvl
+            score_claim_4: claim_scores.4.claim_score
+            score_claim_4_min: claim_scores.4.claim_score_interval_minimum
+            score_claim_4_max: claim_scores.4.claim_score_interval_maximum
+            asmt_claim_4_perf_lvl: claim_scores.4.perf_lvl
+            dmg_eth_hsp: student_info.dmg_eth_hsp
+            dmg_eth_ami: student_info.dmg_eth_ami
+            dmg_eth_asn: student_info.dmg_eth_asn
+            dmg_eth_blk: student_info.dmg_eth_blk
+            dmg_eth_pcf: student_info.dmg_eth_pcf
+            dmg_eth_wht: student_info.dmg_eth_wht
+            dmg_prg_iep: student_info.dmg_prg_iep
+            dmg_prg_lep: student_info.dmg_prg_lep
+            dmg_prg_504: student_info.dmg_prg_504
+            dmg_prg_tt1: student_info.dmg_prg_tt1
+            asmt_type: student_info.asmt_types
+            asmt_year: student_info.asmt_years
+            asmt_subject: student_info.asmt_subjects

@@ -3,6 +3,7 @@ from uuid import uuid4
 from DataGeneration.src.generators.generate_names import (generate_first_or_middle_name, generate_last_name,
                                                           possibly_generate_middle_name)
 import DataGeneration.src.utils.util as util
+from DataGeneration.src.demographics.demographic_derived import derive_demographic as get_derived_demographic
 
 
 class State:
@@ -211,3 +212,10 @@ class StudentInfo(object):
         6. White
         '''
         return [self.dmg_eth_blk, self.dmg_eth_asn, self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_pcf, self.dmg_eth_wht]
+
+    def derived_demographic(self):
+        """
+        Return the derived demographic based on the students list of demographics
+        :return: An integer value denoting the demographic
+        """
+        return get_derived_demographic(self.get_stu_demo_list())

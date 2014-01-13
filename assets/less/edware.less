@@ -1,6 +1,7 @@
 @import "color";
 @import "base";
 
+
 body {
     font-family: helvetica, arial, sans-serif;
     margin: 0 auto;
@@ -129,6 +130,20 @@ h6 {
 	}
     }
 }
+
+.ui-th-column {
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@color-B22), to(@color-B17)) !important;
+        background-image: -webkit-linear-gradient(top, @color-B22, @color-B17) !important;
+        background-image:    -moz-linear-gradient(top, @color-B22, @color-B17) !important;
+        background-image:     -ms-linear-gradient(top, @color-B22, @color-B17) !important;
+        background-image:      -o-linear-gradient(top, @color-B22, @color-B17) !important;
+        font-size: 11px;
+
+        &.active {
+	        background-image: none !important;
+	    background-color: @color-C14;
+        }
+    }
 
 /* Comparing Population container */
 .cPop_Wrapper {
@@ -585,20 +600,6 @@ table {
       margin-left: 20px;
   }
 
-  .ui-th-column {
-      background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@color-B22), to(@color-B17)) !important;
-      background-image: -webkit-linear-gradient(top, @color-B22, @color-B17) !important;
-      background-image:    -moz-linear-gradient(top, @color-B22, @color-B17) !important;
-      background-image:     -ms-linear-gradient(top, @color-B22, @color-B17) !important;
-      background-image:      -o-linear-gradient(top, @color-B22, @color-B17) !important;
-      font-size: 11px;
-
-      &.active {
-	  background-image: none !important;
-	  background-color: @color-C14;
-      }
-  }
-
   .alignmentLine {
       background: @color-C9;
       height: 100px;
@@ -1044,6 +1045,7 @@ table {
     }
 
     #gridWrapper {
+
       .jqg-second-row-header {
           display: none;
         }

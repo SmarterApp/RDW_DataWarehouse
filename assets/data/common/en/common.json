@@ -258,7 +258,7 @@
 						"export": true
 					},
 					{
-						"name": "{{subject1}} Overall Score",
+						"name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
@@ -273,7 +273,7 @@
 						"export": true
 					},
 					{
-						"name": "{{subject2}} Overall Score",
+						"name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
@@ -317,7 +317,7 @@
 						"export": true
 					},
 					{
-						"name": "{{subject1}} Overall Score",
+						"name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
@@ -387,7 +387,7 @@
 						"export": true
 					},
 					{
-						"name": "{{subject2}} Overall Score",
+						"name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",

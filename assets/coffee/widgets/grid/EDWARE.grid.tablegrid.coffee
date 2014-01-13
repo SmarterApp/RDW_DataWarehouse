@@ -47,6 +47,7 @@ define [
       $("#gview_gridTable > .ui-jqgrid-bdiv").css {
           'min-height': 100, 'height': this.options.gridHeight
       }
+      this.highlightSortLabels()
    
     render: ()->
       this.renderBody()
@@ -134,13 +135,18 @@ define [
         numberOfColumns: column.items.length
         titleText: column.name
 
+    highlightSortLabels: () ->
+      $('.jqg-third-row-header .ui-th-ltr').removeClass('active')
+      grid = $('#gridTable')
+      column = grid.jqGrid('getGridParam', 'sortname')
+      grid.jqGrid('setLabel', column, '', 'active')
 
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
       
       # trigger gridComplete event
-      options.gridComplete() if options.gridComplete
+      #options.gridComplete() if options.gridComplete
 
     $.fn.eagerLoad = () ->
       # load all data at once

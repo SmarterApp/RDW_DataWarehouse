@@ -33,6 +33,7 @@ from DataGeneration.src.utils.idgen import IdGen
 import DataGeneration.src.calc.claim_score_calculation as claim_score_calculation
 from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
 from DataGeneration.src.models.landing_zone_data_format import output_generated_districts_to_lz_format, prepare_lz_csv_file, output_generated_asmts_to_json
+from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file, output_data
 
 
 IDEAL_DISTRICT_CHUNK = 100000
@@ -95,10 +96,10 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
 
     # prepare csv files and output assessment data
     if star_format:
-        prepare_csv_files(output_dict)
+        #prepare_csv_files(output_dict)
         create_csv(assessments, output_dict[Assessment])
     if landing_zone_format:
-        prepare_lz_csv_file(output_dict, assessments, single_file)
+        #prepare_lz_csv_file(output_dict, assessments, single_file)
         output_generated_asmts_to_json(assessments, output_dict)
 
     # Generate the all the data
@@ -470,7 +471,7 @@ def set_student_institution_information(students, school, from_date, most_recent
         city_name_1 = random.choice(street_names)
         city_name_2 = random.choice(street_names)
 
-        student.student_rec_ids = [id_generator.get_id(), id_generator.get_id()]
+        student.student_rec_ids = {constants.MATH: id_generator.get_id(), constants.ELA: id_generator.get_id()}
         student.school_guid = school.school_guid
         student.district_guid = school.district_guid
         student.state_code = state_code
@@ -913,6 +914,9 @@ def main(output_format_config_file, config_mod_name='dg_types', output_path=None
     if output_format_config_file:
         output_format_dict = read_datagen_output_format_yaml(output_format_config_file)
         pprint.pprint(output_format_dict)
+        output_keys = ['star', 'lz']
+        yaml_output_dict = initialize_csv_file(output_format_dict, output_keys, output_path)
+
 
     # generate_data
     generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format,
@@ -940,7 +944,8 @@ if __name__ == '__main__':
                         help='Specify the DataGen output format needed.',
                         required=False)
     parser.add_argument('--output', dest='output_path', action='store',
-                        help='Specify the location of the output csv files', required=False)
+                        default=os.path.join(DATAFILE_PATH, 'datafiles', 'csv'),
+                        help='Specify the location of the output csv files. Default: "datafiles/csv/"')
     parser.add_argument('-d', '--district-chunk-size', type=int, default=0,
                         help='The number of district to generate and output at a time. If this value is'
                              ' less than 1 this will be calculated at run time. Default: 0')

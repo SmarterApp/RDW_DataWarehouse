@@ -348,7 +348,7 @@ define [
       i = 0
       defaultColors = this.defaultColors
       intervals = data.intervals
-      len = colors['colors'].length
+      if colors and colors['colors'] then len = colors['colors'].length else len = defaultColors.length
       sort = 0
       while i < len
         element = intervals[i]

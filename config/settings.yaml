@@ -91,6 +91,27 @@ common:
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
     disable.context.security: True
+    services.celery:
+      CELERY_IMPORTS: ('services.tasks.pdf',)
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+      CELERYD_CONCURRENCY: 20
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: celery
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERY_QUEUES:
+        -   name: celery
+            exchange: direct
+            key: celery
+        -   name: batch_pdf_gen
+            exchange: direct,
+            key: batch_pdf_gen
+        -   name: batch_worker
+            exchange: direct
+            key: batch_worker
+        -   name: health_check
+            exchange: direct
+            key: health_check
     extract:
       celery_timeout: 30
       retry_delay: 60
@@ -104,6 +125,24 @@ common:
       available_grades: 3,4,5,6,7,8,11
       extract.job.queue: extract
       extract_sync.job.queue: extract_sync
+    extract.celery:
+      CELERY_IMPORTS: ('edextract.tasks.extract',)
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+      CELERYD_CONCURRENCY: 20
+      CELERY_DEFAULT_QUEUE: extract
+      CELERY_DEFAULT_ROUTING_KEY: extract
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERY_QUEUES:
+        -   name: celery
+            exchange: direct
+            key: celery
+        -   name: extract
+            exchange: direct
+            key: extract
+        -   name: extract_sync
+            exchange: direct
+            key: extract_sync
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -211,46 +250,9 @@ qa:
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
-      CELERY_IMPORTS: ('services.tasks.pdf',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 20
-      CELERY_DEFAULT_QUEUE: celery
-      CELERY_DEFAULT_ROUTING_KEY: celery
-      CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERY_QUEUES:
-        -   name: celery
-            exchange: direct
-            key: celery
-        -   name: batch_pdf_gen
-            exchange: direct,
-            key: batch_pdf_gen
-        -   name: batch_worker
-            exchange: direct
-            key: batch_worker
-        -   name: health_check
-            exchange: direct
-            key: health_check
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
-      CELERY_IMPORTS: ('edextract.tasks.extract',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 20
-      CELERY_DEFAULT_QUEUE: extract
-      CELERY_DEFAULT_ROUTING_KEY: extract
-      CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERY_QUEUES:
-        -   name: celery
-            exchange: direct
-            key: celery
-        -   name: extract
-            exchange: direct
-            key: extract
-        -   name: extract_sync
-            exchange: direct
-            key: extract_sync
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -339,6 +341,10 @@ jenkins_qa:
       db:
         schema_name: edware_sds_1_2
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
+    services.celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
+    extract.celery:
+        BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
 
 uat:
   '[app:main]':
@@ -346,18 +352,8 @@ uat:
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
-      CELERY_IMPORTS: ('services.tasks.pdf',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 20
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
-      CELERY_IMPORTS: ('edextract.tasks.extract',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 20
-      CELERY_DEFAULT_QUEUE : extract
-      CELERY_DEFAULT_ROUTING_KEY: extract
     extract:
       gpg:
         keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
@@ -528,6 +524,10 @@ test:
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
+    extract.celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    services.celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
     auth:
       skip.verify: False
       saml:
@@ -541,49 +541,10 @@ test:
 jenkins_dev:
   '[app:main]':
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@localhost/services
-      CELERY_IMPORTS: ('services.tasks.pdf',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 1800 # 30 min
-      CELERYD_CONCURRENCY: 8
-      CELERY_DEFAULT_QUEUE: celery
-      CELERY_DEFAULT_ROUTING_KEY: celery
-      CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERY_QUEUES:
-        -   name: celery
-            exchange: direct
-            key: celery
-        -   name: batch_pdf_gen
-            exchange: direct
-            key: batch_pdf_gen
-        -   name: batch_worker
-            exchange: direct
-            key: batch_worker
-        -   name: health_check
-            exchange: direct
-            key: health_check
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
     extract:
       celery:
-        BROKER_URL: amqp://edware:edware1234@localhost/edextract
-        CELERY_IMPORTS: ('edextract.tasks.extract',)
-        CELERY_RESULT_BACKEND: amqp
-        CELERY_DEFAULT_QUEUE : extract
-        CELERY_DEFAULT_ROUTING_KEY: extract
-        CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-        CELERYD_CONCURRENCY: 8
-        CELERY_DEFAULT_QUEUE: extract
-        CELERY_DEFAULT_ROUTING_KEY: extract
-        CELERY_DEFAULT_EXCHANGE_TYPE: direct
-        CELERY_QUEUES:
-            -   name: celery
-                exchange: direct
-                key: celery
-            -   name: extract
-                exchange: direct
-                key: extract
-            -   name: extract_sync
-                exchange: direct
-                key: extract_sync
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       job.queue.async: extract

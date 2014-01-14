@@ -9,7 +9,6 @@
 			<th class="ALD_table_header" style="width:17%;">{{labels.color}}</th>
 			<th class="ALD_table_header">{{labels.description}}</th>
 			<th class="ALD_table_header">{{labels.score_range}}</th>
-			<th class="ALD_table_header" style="width:17%;"><span>{{labels.outside_error_band}}</span></th>
 		    </tr>
 		</thead>
 				{{#ALDs}}
@@ -17,10 +16,6 @@
 		    <td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
 		    <td class="ALD_table_cell">{{description}}</td>
 		    <td class="ALD_table_cell">{{range}}</td>
-		    <td class="ALD_table_cell">
-			<div class="legend_ALD_color" style="background-color:{{color}};position: absolute; margin-left: 30px; margin-top: 5px;"></div>
-			<img src="../images/ISR_shades.png"/>
-		    </td>
 		</tr>
 				{{/ALDs}}
 	    </table>
@@ -35,7 +30,7 @@
             <span class="indicator">{{legendInfo.indicator}}</span>
         </div>
 	<div class="description">
-	    <h5>{{legendInfo.desc1}}</h5>
+	    <h5>{{legendInfo.desc1}}</h5>q
 	    <h5>{{legendInfo.desc2}}</h5>
 	    <p>{{legendInfo.desc3}}</p>
 	</div>

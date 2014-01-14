@@ -64,399 +64,413 @@
 		}
 	],
 
-	"feedback": {
-		"PARENT": {
-			"individual_student_report": "GjmM_2fSzJnjlt3A_2bGMxRZ_2fw_3d_3d",
-			"list_of_students": "G36s4TWKfrELsjXZ7jq1Zg_3d_3d",
-			"comparing_populations_state": "XnbKuR5vwCZAL1GyHeJgSQ_3d_3d",
-			"comparing_populations_district": "xILjemwP1hZXE9T3mf278g_3d_3d",
-			"comparing_populations_school": "z6jXFrx1xI0KJFqiq1WH1Q_3d_3d"
-		},
-		"STUDENT": {
-			"individual_student_report": "TgykGLaGiMu3XZIwwiwhKw_3d_3d",
-			"list_of_students": "Y6JAH3Is_2b9aFJUCj5uRZ2A_3d_3d",
-			"comparing_populations_state": "B9Hzlr6ksG5nqOOoaDJgIw_3d_3d",
-			"comparing_populations_district": "4z4MOLKf6dQhLaBqBb0Xxg_3d_3d",
-			"comparing_populations_school": "yvjbuVuDhevpws94gWCYQA_3d_3d"
-		},
-		"TEACHER": {
-			"individual_student_report": "kSet9N4jx4AE2EKqOeJn2w_3d_3d",
-			"list_of_students": "VLvFLuVFlTJmr19_2by0QeSA_3d_3d",
-			"comparing_populations_state": "lHRt_2b3848QW3EnYHFaUqdg_3d_3d",
-			"comparing_populations_district": "GVYKrPRyWqbwNMAphmXlCQ_3d_3d",
-			"comparing_populations_school": "1Ap0xBboGETtpVw4QDkz6A_3d_3d"
-		},
-		"STATE_EDUCATION_ADMINISTRATOR_1": {
-			"individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-			"list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-			"comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-			"comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-			"comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-		},
-		"STATE_EDUCATION_ADMINISTRATOR_2": {
-			"individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-			"list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-			"comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-			"comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-			"comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-		},
-		"DISTRICT_EDUCATION_ADMINISTRATOR_1": {
-			"individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-			"list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-			"comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-			"comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-			"comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-		},
-		"DISTRICT_EDUCATION_ADMINISTRATOR_2": {
-			"individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-			"list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-			"comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-			"comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-			"comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-		},
-		"SCHOOL_EDUCATION_ADMINISTRATOR_1": {
-			"individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-			"list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-			"comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-			"comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-			"comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-		},
-		"SCHOOL_EDUCATION_ADMINISTRATOR_2": {
-			"individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-			"list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-			"comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-			"comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-			"comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-		},
-		"HIGHER_EDUCATION_ADMISSIONS_OFFICER": {
-			"individual_student_report": "iRRX0K6lwdrTWj5ZBsKNvg_3d_3d",
-			"list_of_students": "xHHhMnZTC23JsGG_2bkqJfqQ_3d_3d",
-			"comparing_populations_state": "0_2bCFlTqRnJOeC4ryoGhUlQ_3d_3d",
-			"comparing_populations_district": "umQqUXtFpf1Sr867HwmHNg_3d_3d",
-			"comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
-		}
+    "feedback": {
+	"PARENT": {
+	    "individual_student_report": "GjmM_2fSzJnjlt3A_2bGMxRZ_2fw_3d_3d",
+	    "list_of_students": "G36s4TWKfrELsjXZ7jq1Zg_3d_3d",
+	    "comparing_populations_state": "XnbKuR5vwCZAL1GyHeJgSQ_3d_3d",
+	    "comparing_populations_district": "xILjemwP1hZXE9T3mf278g_3d_3d",
+	    "comparing_populations_school": "z6jXFrx1xI0KJFqiq1WH1Q_3d_3d"
 	},
-	"legendInfo": {
-		"sample_intervals": {
-			"asmt_score": 1789,
-			"asmt_score_interval": 65,
-			"asmt_score_max": 2400,
-			"asmt_score_max_range": 441,
-			"asmt_score_min": 1200,
-			"asmt_score_min_range": 263,
-			"asmt_score_pos": 402.5,
-			"asmt_score_range_max": 2027,
-			"asmt_score_range_min": 1907,
-			"score_color": "#e4c904",
-			"cut_point_intervals": [
-				{
-					"asmt_cut_point": 107,
-				 	"bg_color": "#DD514C",
-					"end_gradient_bg_color": "#C43C35",
-					"interval": "1400",
-					"name": "Minimal Understanding",
-					"start_gradient_bg_color": "#EE5F5B",
-					"text_color": "#FFFFFF"
-				},
-				{
-					"asmt_cut_point": 213,
-				 	"bg_color": "#e4c904",
-					"end_gradient_bg_color": "#eed909",
-					"interval": "1800",
-					"name": "Partial Understanding",
-					"start_gradient_bg_color": "#e3c703",
-					"text_color": "#000"
-				},
-				{
-					"asmt_cut_point": 160,
-				 	"bg_color": "#6aa506",
-					"end_gradient_bg_color": "#65b92c",
-					"interval": "2100",
-					"name": "Adequate Understanding",
-					"start_gradient_bg_color": "#3d9913",
-					"text_color": "#FFFFFF"
-				},
-				{
-					"asmt_cut_point": 160,
-				 	"bg_color": "#237ccb",
-					"end_gradient_bg_color": "#3a98d1",
-					"interval": "2400",
-					"name": "Thorough Understanding",
-					"start_gradient_bg_color": "#2078ca",
-					"text_color": "#FFFFFF"
-				}
-			],
-			"intervals": [
-				{
-				 	"color": {
-				 		"bg_color": "#DD514C",
-				 		"end_gradient_bg_color": "#C43C35",
-						"start_gradient_bg_color": "#EE5F5B",
-						"text_color": "#ffffff"
-				 	},
-					"count": 27,
-					"level": 1,
-					"percentage": 27,
-					"showPercentage": true
-				},
-				{
-				 	"color": {
-						"bg_color": "#e4c904",
-						"start_gradient_bg_color": "#e3c703",
-						"end_gradient_bg_color": "#eed909",
-						"text_color": "#000"
-					},
-					"count": 33,
-					"level": 2,
-					"percentage": 33,
-					"showPercentage": true
-				},
-				{
-				 	"color": {
-						"bg_color": "#6aa506",
-						"start_gradient_bg_color": "#3d9913",
-						"end_gradient_bg_color": "#65b92c",
-						"text_color": "#FFFFFF"
-				 	},
-					"count": 34,
-					"level": 3,
-					"percentage": 34,
-					"showPercentage": true
-				},
-				{
-				 	"color": {
-						"bg_color": "#237ccb",
-						"start_gradient_bg_color": "#2078ca",
-						"end_gradient_bg_color": "#3a98d1",
-						"text_color": "#FFFFFF"
-				 	},
-					"count": 6,
-					"level": 4,
-					"percentage": 6,
-					"showPercentage": true
-				}
-			]
-		}
+	"STUDENT": {
+	    "individual_student_report": "TgykGLaGiMu3XZIwwiwhKw_3d_3d",
+	    "list_of_students": "Y6JAH3Is_2b9aFJUCj5uRZ2A_3d_3d",
+	    "comparing_populations_state": "B9Hzlr6ksG5nqOOoaDJgIw_3d_3d",
+	    "comparing_populations_district": "4z4MOLKf6dQhLaBqBb0Xxg_3d_3d",
+	    "comparing_populations_school": "yvjbuVuDhevpws94gWCYQA_3d_3d"
 	},
-	"students": {
-		"{{subject1}}_{{subject2}}": [
-			{
-				"items": [
-					{
-						"name": "Students",
-						"displayTpl": "",
-						"index": "student_full_name",
-						"field": "student_full_name",
-						"width": 330,
-						"style": "ui-ellipsis bold",
-						"formatter": "showlink",
-						"options": {
-							"linkUrl": "indivStudentReport.html"
-						},
-						"hidden": true,
-						"sortorder": "asc",
-						"export": true
-					},
-					{
-						"name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
-						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
-						"index": "assessments.subject1.asmt_score",
-						"field": "assessments.subject1.asmt_score",
-						"width": 230,
-						"formatter": "performanceBar",
-						"options": {
-							"asmt_type": "subject1"
-						},
-						"sorttype": "int",
-						"align": "center",
-						"title": false,
-						"export": true
-					},
-					{
-						"name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
-						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
-						"index": "assessments.subject2.asmt_score",
-						"field": "assessments.subject2.asmt_score",
-						"width": 230,
-						"formatter": "performanceBar",
-						"options": {
-							"asmt_type": "subject2"
-						},
-						"sorttype": "int",
-						"align": "center",
-						"title": false,
-						"export": true
-					},
-					{
-						"name": "",
-						"displayTpl": "",
-						"width": 174,
-						"title": false,
-						"export": false,
-						"sortable": false
-					}
-				]
-			}
-		],
-		"{{subject1}}": [
-			{
-				"items": [
-					{
-						"name": "Students",
-						"displayTpl": "",
-						"index": "student_full_name",
-						"field": "student_full_name",
-						"width": 330,
-						"style": "ui-ellipsis bold",
-						"formatter": "showlink",
-						"options": {
-							"linkUrl": "indivStudentReport.html"
-						},
-						"hidden": true,
-						"sortorder": "asc",
-						"export": true
-					},
-					{
-						"name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
-						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
-						"index": "assessments.subject1.asmt_score",
-						"field": "assessments.subject1.asmt_score",
-						"width": 175,
-						"formatter": "performanceBar",
-						"options": {
-							"asmt_type": "subject1"
-						},
-						"sorttype": "int",
-						"align": "center",
-						"title": false,
-						"export": true
-					},
-					{
-						"name": "{{claims.subject1.0.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject1.claims.0.perf_lvl",
-						"field": "assessments.subject1.claims.0.perf_lvl",
-						"width": 154,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					},
-					{
-						"name": "{{claims.subject1.1.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject1.claims.1.perf_lvl",
-						"field": "assessments.subject1.claims.1.perf_lvl",
-						"width": 160,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					},
-					{
-						"name": "{{claims.subject1.2.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject1.claims.2.perf_lvl",
-						"field": "assessments.subject1.claims.2.perf_lvl",
-						"width": 160,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					}
-				]
-			}
-		],
-		"{{subject2}}": [
-			{
-				"name": "",
-				"items": [
-					{
-						"name": "Students",
-						"displayTpl": "",
-						"index": "student_full_name",
-						"field": "student_full_name",
-						"width": 330,
-						"style": "ui-ellipsis bold",
-						"formatter": "showlink",
-						"options": {
-							"linkUrl": "indivStudentReport.html"
-						},
-						"hidden": true,
-						"sortorder": "asc",
-						"export": true
-					},
-					{
-						"name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
-						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
-						"index": "assessments.subject2.asmt_score",
-						"field": "assessments.subject2.asmt_score",
-						"width": 175,
-						"formatter": "performanceBar",
-						"options": {
-							"asmt_type": "subject2"
-						},
-						"sorttype": "int",
-						"align": "center",
-						"title": false,
-						"export": true
-					},
-					{
-						"name": "{{claims.subject2.0.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject2.claims.0.perf_lvl",
-						"field": "assessments.subject2.claims.0.perf_lvl",
-						"width": 118,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					},
-					{
-						"name": "{{claims.subject2.1.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject2.claims.1.perf_lvl",
-						"field": "assessments.subject2.claims.1.perf_lvl",
-						"width": 118,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					},
-					{
-						"name": "{{claims.subject2.2.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject2.claims.2.perf_lvl",
-						"field": "assessments.subject2.claims.2.perf_lvl",
-						"width": 118,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					},
-					{
-						"name": "{{claims.subject2.3.name}}",
-						"displayTpl": "",
-						"index": "assessments.subject2.claims.3.perf_lvl",
-						"field": "assessments.subject2.claims.3.perf_lvl",
-						"width": 120,
-						"formatter": "showPerfLevel",
-						"sorttype": "int",
-						"align": "center",
-						"export": true
-					}
-				]
-			}
-		],
-		"customViews": {
-			"asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Comprehensive Interim", "display": "Interim Comp."}],
-			"items": {
-				"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
-				"{{subject1}}": "{{subject1}} {{asmtType}}",
-				"{{subject2}}": "{{subject2}} {{asmtType}}"
-			}
-		}
+	"TEACHER": {
+	    "individual_student_report": "kSet9N4jx4AE2EKqOeJn2w_3d_3d",
+	    "list_of_students": "VLvFLuVFlTJmr19_2by0QeSA_3d_3d",
+	    "comparing_populations_state": "lHRt_2b3848QW3EnYHFaUqdg_3d_3d",
+	    "comparing_populations_district": "GVYKrPRyWqbwNMAphmXlCQ_3d_3d",
+	    "comparing_populations_school": "1Ap0xBboGETtpVw4QDkz6A_3d_3d"
 	},
+	"STATE_EDUCATION_ADMINISTRATOR_1": {
+	    "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
+	    "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
+	    "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
+	    "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
+	    "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
+	},
+	"STATE_EDUCATION_ADMINISTRATOR_2": {
+	    "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
+	    "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
+	    "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
+	    "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
+	    "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
+	},
+	"DISTRICT_EDUCATION_ADMINISTRATOR_1": {
+	    "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
+	    "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
+	    "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
+	    "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
+	    "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
+	},
+	"DISTRICT_EDUCATION_ADMINISTRATOR_2": {
+	    "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
+	    "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
+	    "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
+	    "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
+	    "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
+	},
+	"SCHOOL_EDUCATION_ADMINISTRATOR_1": {
+	    "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
+	    "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
+	    "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
+	    "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
+	    "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
+	},
+	"SCHOOL_EDUCATION_ADMINISTRATOR_2": {
+	    "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
+	    "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
+	    "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
+	    "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
+	    "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
+	},
+	"HIGHER_EDUCATION_ADMISSIONS_OFFICER": {
+	    "individual_student_report": "iRRX0K6lwdrTWj5ZBsKNvg_3d_3d",
+	    "list_of_students": "xHHhMnZTC23JsGG_2bkqJfqQ_3d_3d",
+	    "comparing_populations_state": "0_2bCFlTqRnJOeC4ryoGhUlQ_3d_3d",
+	    "comparing_populations_district": "umQqUXtFpf1Sr867HwmHNg_3d_3d",
+	    "comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
+	}
+    },
+    "legendInfo": {
+	"sample_intervals": {
+	    "asmt_score": 1789,
+	    "asmt_score_interval": 65,
+	    "asmt_score_max": 2400,
+	    "asmt_score_max_range": 441,
+	    "asmt_score_min": 1200,
+	    "asmt_score_min_range": 263,
+	    "asmt_score_pos": 402.5,
+	    "asmt_score_range_max": 2027,
+	    "asmt_score_range_min": 1907,
+	    "score_color": "#e4c904",
+	    "cut_point_intervals": [
+		{
+		    "asmt_cut_point": 107,
+		    "bg_color": "#DD514C",
+		    "end_gradient_bg_color": "#C43C35",
+		    "interval": "1400",
+		    "name": "Minimal Understanding",
+		    "start_gradient_bg_color": "#EE5F5B",
+		    "text_color": "#FFFFFF"
+		},
+		{
+		    "asmt_cut_point": 213,
+		    "bg_color": "#e4c904",
+		    "end_gradient_bg_color": "#eed909",
+		    "interval": "1800",
+		    "name": "Partial Understanding",
+		    "start_gradient_bg_color": "#e3c703",
+		    "text_color": "#000"
+		},
+		{
+		    "asmt_cut_point": 160,
+		    "bg_color": "#6aa506",
+		    "end_gradient_bg_color": "#65b92c",
+		    "interval": "2100",
+		    "name": "Adequate Understanding",
+		    "start_gradient_bg_color": "#3d9913",
+		    "text_color": "#FFFFFF"
+		},
+		{
+		    "asmt_cut_point": 160,
+		    "bg_color": "#237ccb",
+		    "end_gradient_bg_color": "#3a98d1",
+		    "interval": "2400",
+		    "name": "Thorough Understanding",
+		    "start_gradient_bg_color": "#2078ca",
+		    "text_color": "#FFFFFF"
+		}
+	    ],
+	    "intervals": [
+		{
+		    "color": {
+			"bg_color": "#DD514C",
+			"end_gradient_bg_color": "#C43C35",
+			"start_gradient_bg_color": "#EE5F5B",
+			"text_color": "#ffffff"
+		    },
+		    "count": 27,
+		    "level": 1,
+		    "percentage": 27,
+		    "showPercentage": true
+		},
+		{
+		    "color": {
+			"bg_color": "#e4c904",
+			"start_gradient_bg_color": "#e3c703",
+			"end_gradient_bg_color": "#eed909",
+			"text_color": "#000"
+		    },
+		    "count": 33,
+		    "level": 2,
+		    "percentage": 33,
+		    "showPercentage": true
+		},
+		{
+		    "color": {
+			"bg_color": "#6aa506",
+			"start_gradient_bg_color": "#3d9913",
+			"end_gradient_bg_color": "#65b92c",
+			"text_color": "#FFFFFF"
+		    },
+		    "count": 34,
+		    "level": 3,
+		    "percentage": 34,
+		    "showPercentage": true
+		},
+		{
+		    "color": {
+			"bg_color": "#237ccb",
+			"start_gradient_bg_color": "#2078ca",
+			"end_gradient_bg_color": "#3a98d1",
+			"text_color": "#FFFFFF"
+		    },
+		    "count": 6,
+		    "level": 4,
+		    "percentage": 6,
+		    "showPercentage": true
+		}
+	    ]
+	},
+        "performance_levels": [
+            {
+                "level": 3,
+                "desc": "Above Standard"
+            },
+            {
+                "level": 2,
+                "desc": "At/Near Standard"
+            },
+            {
+                "level": 1,
+                "desc": "Below Standard"
+            }
+        ]
+    },
+    "students": {
+	"{{subject1}}_{{subject2}}": [
+	    {
+		"items": [
+		    {
+			"name": "Students",
+			"displayTpl": "",
+			"index": "student_full_name",
+			"field": "student_full_name",
+			"width": 330,
+			"style": "ui-ellipsis bold",
+			"formatter": "showlink",
+			"options": {
+			    "linkUrl": "indivStudentReport.html"
+			},
+			"hidden": true,
+			"sortorder": "asc",
+			"export": true
+		    },
+		    {
+			"name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
+			"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
+			"index": "assessments.subject1.asmt_score",
+			"field": "assessments.subject1.asmt_score",
+			"width": 230,
+			"formatter": "performanceBar",
+			"options": {
+			    "asmt_type": "subject1"
+			},
+			"sorttype": "int",
+			"align": "center",
+			"title": false,
+			"export": true
+		    },
+		    {
+			"name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
+			"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
+			"index": "assessments.subject2.asmt_score",
+			"field": "assessments.subject2.asmt_score",
+			"width": 230,
+			"formatter": "performanceBar",
+			"options": {
+			    "asmt_type": "subject2"
+			},
+			"sorttype": "int",
+			"align": "center",
+			"title": false,
+			"export": true
+		    },
+		    {
+			"name": "",
+			"displayTpl": "",
+			"width": 174,
+			"title": false,
+			"export": false,
+			"sortable": false
+		    }
+		]
+	    }
+	],
+	"{{subject1}}": [
+	    {
+		"items": [
+		    {
+			"name": "Students",
+			"displayTpl": "",
+			"index": "student_full_name",
+			"field": "student_full_name",
+			"width": 330,
+			"style": "ui-ellipsis bold",
+			"formatter": "showlink",
+			"options": {
+			    "linkUrl": "indivStudentReport.html"
+			},
+			"hidden": true,
+			"sortorder": "asc",
+			"export": true
+		    },
+		    {
+			"name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
+			"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
+			"index": "assessments.subject1.asmt_score",
+			"field": "assessments.subject1.asmt_score",
+			"width": 175,
+			"formatter": "performanceBar",
+			"options": {
+			    "asmt_type": "subject1"
+			},
+			"sorttype": "int",
+			"align": "center",
+			"title": false,
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject1.0.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject1.claims.0.perf_lvl",
+			"field": "assessments.subject1.claims.0.perf_lvl",
+			"width": 154,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject1.1.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject1.claims.1.perf_lvl",
+			"field": "assessments.subject1.claims.1.perf_lvl",
+			"width": 160,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject1.2.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject1.claims.2.perf_lvl",
+			"field": "assessments.subject1.claims.2.perf_lvl",
+			"width": 160,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    }
+		]
+	    }
+	],
+	"{{subject2}}": [
+	    {
+		"name": "",
+		"items": [
+		    {
+			"name": "Students",
+			"displayTpl": "",
+			"index": "student_full_name",
+			"field": "student_full_name",
+			"width": 330,
+			"style": "ui-ellipsis bold",
+			"formatter": "showlink",
+			"options": {
+			    "linkUrl": "indivStudentReport.html"
+			},
+			"hidden": true,
+			"sortorder": "asc",
+			"export": true
+		    },
+		    {
+			"name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
+			"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
+			"index": "assessments.subject2.asmt_score",
+			"field": "assessments.subject2.asmt_score",
+			"width": 175,
+			"formatter": "performanceBar",
+			"options": {
+			    "asmt_type": "subject2"
+			},
+			"sorttype": "int",
+			"align": "center",
+			"title": false,
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject2.0.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject2.claims.0.perf_lvl",
+			"field": "assessments.subject2.claims.0.perf_lvl",
+			"width": 118,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject2.1.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject2.claims.1.perf_lvl",
+			"field": "assessments.subject2.claims.1.perf_lvl",
+			"width": 118,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject2.2.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject2.claims.2.perf_lvl",
+			"field": "assessments.subject2.claims.2.perf_lvl",
+			"width": 118,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    },
+		    {
+			"name": "{{claims.subject2.3.name}}",
+			"displayTpl": "",
+			"index": "assessments.subject2.claims.3.perf_lvl",
+			"field": "assessments.subject2.claims.3.perf_lvl",
+			"width": 120,
+			"formatter": "showPerfLevel",
+			"sorttype": "int",
+			"align": "center",
+			"export": true
+		    }
+		]
+	    }
+	],
+	"customViews": {
+	    "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Comprehensive Interim", "display": "Interim Comp."}],
+	    "items": {
+		"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
+		"{{subject1}}": "{{subject1}} {{asmtType}}",
+		"{{subject2}}": "{{subject2}} {{asmtType}}"
+	    }
+	}
+    },
 
 	"comparingPopulations": {
 		"grid": [

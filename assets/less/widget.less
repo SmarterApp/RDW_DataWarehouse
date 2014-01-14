@@ -768,260 +768,194 @@ th.ui-th-column div {
     }
 
 
-  .losPerfBar {
-    position: relative;
-    height: 79px;
-    left: 52px;
-    margin-top: -24px;
-    margin-left: 30px;
-    display: inline-block;
-
-    .progressbar_indicator300 {
-      background-image: url("../images/css_images.png");
-      background-position: -1238px 0;
-      width: 18px;
-    }
-
-    .progress {
-      height: 20px;
-      margin-top: 31px;
-    }
-
-    .overall_score {
-      font-size: 12px;
-    }
-
-    .cutPointsBar {
-      .cutPoints {
-        font-size: 10px;
-      }
-    }
-
-    .transWrapper {
-      margin-top: 23px;
-    }
-  }
-
-  table {
-    width: 92%;
-    margin-top: 3%;
-    margin-left: 5px;
-    border-collapse: collapse;
-    font-size: 10px;
-
-    th.ALD_table_header {
-      font-style: italic;
-      font-weight: normal;
-      vertical-align: bottom;
-    }
-
-    td.ALD_table_cell {
-      border: 1px solid @color-B4;
-      text-align: center;
-      font-weight: bold;
-      color: @color-black;
-      height: 28px;
-
-      div.legend_ALD_color {
-         width: 15px;
-         height: 15px;
-         display: table;
-         margin:auto;
-      }
-
-      div.legend_ALD_trans {
-        background-image: url("../images/ISRleftBracket_print.png");
-        background-position: 0px -20px;
-        z-index: 9999;
-      }
-
-    }
-
-    th, td {
-      &:last-child {
-        display: none;
-      }
-    }
-  }
-
-  .losPerformanceBar {
-      overflow: hidden;
-      margin-bottom: 8px;
-
-      #overall_score_details {
-    float: left;
-    width: 330px;
-    border-right: solid 1px @color-B7;
-    margin: 5px 0 10px 0;
-    padding-right: 5px;
-
-    .confidenceLevel {
-        border: solid 1px #d0d0d0;
-        height: auto;
-        width: 170px;
-        float: left;
+    .losPerfBar {
         position: relative;
+        height: 79px;
+        left: 52px;
+        margin-top: -24px;
+        margin-left: 30px;
         display: inline-block;
-        margin-bottom: 13px;
-        margin-left: 5px;
 
-        .indicator_cell {
-      position: relative;
-      display: inline-table;
-      top: 10px;
-      left: 10px;
+        .progressbar_indicator300 {
+            background-image: url("../images/css_images.png");
+            background-position: -1238px 0;
+            width: 18px;
         }
 
         .progress {
-      position: relative;
-      height: 40px;
-      margin: 0 0 0 60px;
-
-      .bar {
-          border-right: 1px dashed #000;
-      }
+            height: 20px;
+            margin-top: 31px;
         }
 
-        .scoreWrapper {
-
-      .indicator {
-          margin-top: 2px;
-          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAkCAYAAABBn/B2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowREI3NjQ4RjkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowREI3NjQ5MDkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjBEQjc2NDhEOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjBEQjc2NDhFOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+DHTmvQAAAGVJREFUeNpi/P//PwM6YGLAAkYF0QEo6HR0dExVVVX7gbQhOChBDDY2tn8geRAN5Bsz/fz5M/bXr1+MIF0gGsiPZmJnZ18KVAEOflZW1v8gPsxMcxUVlekgs0F8xtE4oqogQIABAOYcK5weP3EcAAAAAElFTkSuQmCC') no-repeat top center;
-          z-index: 110;
-      }
-
-      .interval {
-          margin-top: 4px;
-          height: 33px;
-          border-left: 1px solid #a0a0a0;
-          border-right: 1px solid #a0a0a0;
-          background: @color-B7;
-          opacity: .8;
-          position: relative;
-      }
+        .overall_score {
+            font-size: 12px;
         }
 
-        .arrow1 {
-      background-image: url('../images/roster_overallarrow.png');
-      width: 187px;
-      height: 27px;
-      position: absolute;
-      background-repeat: no-repeat;
-      top: -17px;
-      left: 108px;
-      z-index: 9999;
+        .cutPointsBar {
+            .cutPoints {
+                font-size: 10px;
+            }
         }
-        .arrow2 {
-      background-image: url('../images/roster_errorbandarrow.png');
-      width: 187px;
-      height: 27px;
-      position: absolute;
-      background-repeat: no-repeat;
-      top: 38px;
-      left: 93px;
-        }
-        .arrow3 {
-      background-image: url('../images/roster_downarrow.png');
-      width: 187px;
-      height: 27px;
-      position: absolute;
-      background-repeat: no-repeat;
-      top: 31px;
-      left: 26px;
-        }
-        .arrow4 {
-      background-image: url('../images/roster_scalescore_cmppop_total.png');
-      width: 187px;
-      height: 27px;
-      position: absolute;
-      background-repeat: no-repeat;
-      top: 14px;
-      left: 169px;
+
+        .transWrapper {
+            margin-top: 23px;
         }
     }
 
-    .notes {
-        display: inline-block;
-        float:right;
-        width: 130px;
+    table {
+        font-size: 10px;
+        color: @color-black;
+        border-collapse: collapse;
+
+        th {
+            font-style: italic;
+            font-weight: normal;
+            vertical-align: bottom;
+            color: @color-B2;
+        }
+
+        td {
+            border: 1px solid @color-B4;
+            font-weight: bold;
+            height: 28px;
+
+            div.legend_ALD_color {
+                width: 15px;
+                height: 15px;
+                display: table;
+                margin:auto;
+            }
+
+            div.legend_ALD_trans {
+                background-image: url("../images/ISRleftBracket_print.png");
+                background-position: 0px -20px;
+                z-index: 9999;
+            }
+
+        }
+
+        th, td {
+            text-align: left;
+            vertical-align: middle;
+            padding: 1px 14px;
+        }
     }
 
-    .numeric_score {
-        clear: left;
-    }
+  .losPerformanceBar {
 
-    p {
+      #overall_score_details {
+          float: left;
+          width: 330px;
+          border-right: solid 1px @color-B7;
+          margin: 5px 0 10px 0;
+          padding-right: 5px;
 
-        font-weight: normal;
-        color: @color-B2;
-        font-size: 11px;
-        font-style: italic;
-    }
+          .confidenceLevel {
+              border: solid 1px #d0d0d0;
+              height: auto;
+              width: 170px;
+              float: left;
+              position: relative;
+              display: inline-block;
+              margin-bottom: 13px;
+              margin-left: 5px;
+
+              .indicator_cell {
+                  position: relative;
+                  display: inline-table;
+                  top: 10px;
+                  left: 10px;
+              }
+
+              .progress {
+                  position: relative;
+                  height: 40px;
+                  margin: 0 0 0 60px;
+
+                  .bar {
+                      border-right: 1px dashed #000;
+                  }
+              }
+
+              .scoreWrapper {
+
+                  .indicator {
+                      margin-top: 2px;
+                      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAkCAYAAABBn/B2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowREI3NjQ4RjkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowREI3NjQ5MDkyRDkxMUUyQTVDNUFEQ0E1OUI4ODREMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjBEQjc2NDhEOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjBEQjc2NDhFOTJEOTExRTJBNUM1QURDQTU5Qjg4NEQxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+DHTmvQAAAGVJREFUeNpi/P//PwM6YGLAAkYF0QEo6HR0dExVVVX7gbQhOChBDDY2tn8geRAN5Bsz/fz5M/bXr1+MIF0gGsiPZmJnZ18KVAEOflZW1v8gPsxMcxUVlekgs0F8xtE4oqogQIABAOYcK5weP3EcAAAAAElFTkSuQmCC') no-repeat top center;
+                      z-index: 110;
+                  }
+
+                  .interval {
+                      margin-top: 4px;
+                      height: 33px;
+                      border-left: 1px solid #a0a0a0;
+                      border-right: 1px solid #a0a0a0;
+                      background: @color-B7;
+                      opacity: .8;
+                      position: relative;
+                  }
+              }
+
+              .arrow1 {
+                  background-image: url('../images/roster_overallarrow.png');
+                  width: 187px;
+                  height: 27px;
+                  position: absolute;
+                  background-repeat: no-repeat;
+                  top: -17px;
+                  left: 108px;
+                  z-index: 9999;
+              }
+              .arrow2 {
+                  background-image: url('../images/roster_errorbandarrow.png');
+                  width: 187px;
+                  height: 27px;
+                  position: absolute;
+                  background-repeat: no-repeat;
+                  top: 38px;
+                  left: 93px;
+              }
+              .arrow3 {
+                  background-image: url('../images/roster_downarrow.png');
+                  width: 187px;
+                  height: 27px;
+                  position: absolute;
+                  background-repeat: no-repeat;
+                  top: 31px;
+                  left: 26px;
+              }
+              .arrow4 {
+                  background-image: url('../images/roster_scalescore_cmppop_total.png');
+                  width: 187px;
+                  height: 27px;
+                  position: absolute;
+                  background-repeat: no-repeat;
+                  top: 14px;
+                  left: 169px;
+              }
+          }
+
+          .notes {
+              display: inline-block;
+              float:right;
+              width: 130px;
+          }
+
+          .numeric_score {
+              clear: left;
+          }
+
+          p {
+
+              font-weight: normal;
+              color: @color-B2;
+              font-size: 11px;
+              font-style: italic;
+          }
       }
 
       #claim_score_details {
-    float: left;
-    margin-left: 15px;
-
-    .claim_score_cell {
-        display: block;
-        width: 100px;
-        height: 40px;
-        text-align: center;
-        border: solid 1px @color-B7;
-        margin-left: 5px;
-        margin-bottom: 16px;
-
-        span {
-      position: relative;
-      top: 10px;
-      font-weight: bold;
-      font-size: 12px;
-
-      .smaller {
-          display: inline;
-          font-weight: 100;
-          font-size: 11px;
-      }
-        }
-    }
-
-    .claim_score_note {
-        margin-top: 4px;
-        margin-left: 90px;
-    }
-
-    .error_band_note {
-        width: 113px;
-        margin-left: 69px;
-
-        p {
-      font-size: 11px;
-      font-weight: normal;
-      font-style: italic;
-      color: @color-B2;
-        }
-    }
-
-    .arrow1 {
-        background-image: url('../images/roster_claimscorearrow.png');
-        width: 261px;
-        height: 27px;
-        position: relative;
-        background-repeat: no-repeat;
-        top: -38px;
-        left: 32px;
-    }
-
-    .arrow2 {
-        background-image: url('../images/roster_downarrow.png');
-        width: 261px;
-        height: 27px;
-        position: relative;
-        background-repeat: no-repeat;
-        top: -18px;
-        left: 62px;
-    }
+          table {width: 170px;}
       }
   }
 

@@ -117,7 +117,6 @@ define [
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
     return '' if not subject
-
     perf_lvl_name = subject[names[2]][names[3]]['perf_lvl_name']
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       asmtType: subject.asmt_type,
@@ -158,11 +157,13 @@ define [
       asmt_perf_lvl: asmt_perf_lvl
       confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
     }
+    # hack to remove html tag in name
+    columnName = removeHTMLTags(options.colModel.label)
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
       subject: subject
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
-      columnName: options.colModel.label
+      columnName: columnName
       export: 'edwareExportColumn' if options.colModel.export
     }
     perfBar
@@ -206,7 +207,13 @@ define [
     insufficientText = options.colModel.labels['insufficient_data']
     subject.insufficientText = insufficientText
     subject
-    
+
+  removeHTMLTags = (str) ->
+    regex = ///
+        <[^<|^>]+>
+    ///g
+    return str.replace(regex, '')
+
   showlink: showlink
   showText: showText
   showOverallConfidence: showOverallConfidence

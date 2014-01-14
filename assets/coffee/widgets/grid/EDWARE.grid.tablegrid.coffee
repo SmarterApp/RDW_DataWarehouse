@@ -146,7 +146,7 @@ define [
       this.grid.render()
       
       # trigger gridComplete event
-      #options.gridComplete() if options.gridComplete
+      options.gridComplete() if options.gridComplete
 
     $.fn.eagerLoad = () ->
       # load all data at once

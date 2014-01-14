@@ -221,6 +221,8 @@ define [
 
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
+      # Remove second row header as that counts as a column in setLabel function
+      $('.jqg-second-row-header').remove()
 
     renderGrid: (viewName) ->
       $('#gridTable').jqGrid('GridUnload')

@@ -3,7 +3,7 @@
 a {
   color: @color-A4;
   text-decoration: none;
-  
+
   &:hover {
     color: @color-A1;
     text-decoration: underline;
@@ -116,7 +116,7 @@ ul.inline li {
   font-size: 11px;
 }
 
-.form-horizontal .help-inline { 
+.form-horizontal .help-inline {
   display: none;
 }
 
@@ -153,4 +153,22 @@ hr {
 .bottomLine {
   border-bottom: solid 1px #ccc;
   padding-bottom: 10px;
+}
+
+// Base CSS
+.edware-btn-primary {
+    text-shadow: 1px 1px 1px @color-C8;
+    font-size: 13px;
+    color: @color-white;
+    background-color: @color-C6;
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-C6),to(@color-C7));
+    background-image: -webkit-linear-gradient(top,@color-C6,@color-C7);
+    background-image: -o-linear-gradient(top,@color-C6,@color-C7);
+    background-image: linear-gradient(to bottom,@color-C6,@color-C7);
+    background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
+
+    &:hover {
+        background-position: initial;
+    background-color: @color-C6;
+    }
 }

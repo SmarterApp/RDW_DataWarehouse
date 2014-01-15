@@ -37,3 +37,96 @@ body.school {
 	li.csv { display: none; }
     }
 }
+
+.cPop_Wrapper {
+    margin-top: 0 !important;
+
+    .jqg-second-row-header {
+        display: none;
+      }
+
+    #jqgh_gridTable_results\.subject1\.sortedValue,
+    #jqgh_gridTable_results\.subject2\.sortedValue,{
+	font-size: 13px;
+    }
+
+    .barContainer.default{
+	margin-left: 15px;
+
+	.populationBar {
+	    width: 265px;
+
+	    .progress {
+		width: 265px;
+
+		.percentageOnBar {
+		    display: block;
+		}
+	    }
+	}
+
+	.alignmentLine {
+	    display: none;
+	}
+
+	.leftPercentageTotal, .rightPercentageTotal {
+	    display: none;
+	}
+
+    }
+
+    .barContainer.alignment {
+	margin-left: 60px;
+
+	.populationBar {
+	    width: 215px;
+
+	    .progress {
+		width: 145px;
+
+		.percentageOnBar {
+		    display: none;
+		}
+	    }
+	}
+
+	.alignmentLine {
+	    display: block;
+	}
+
+	.leftPercentageTotal, .rightPercentageTotal {
+	    display: block;
+	}
+
+    }
+
+    .barContainer {
+	position: relative;
+
+    }
+
+  .totalPop{
+    padding-right:17px;
+    text-align: right;
+
+    .studentsTotal {
+      position: relative;
+      .unfilteredTotal {
+        font-size: 11px;
+        color: @color-C10;
+        position: absolute;
+        right: 0px;
+      }
+    }
+  }
+  // removes grid column border on the right
+  .ui-jqgrid tr.ui-row-ltr td:nth-child(2){ border-right: transparent; }
+  .ui-jqgrid tr.ui-row-ltr td:nth-child(4){ border-right: transparent; }
+  .ui-jqgrid tr.footrow td:nth-child(2){ border-right: transparent; }
+  .ui-jqgrid tr.footrow td:nth-child(4){ border-right: transparent; }
+}
+
+
+#cpopFilter, #losFilter {
+    position: relative;
+}

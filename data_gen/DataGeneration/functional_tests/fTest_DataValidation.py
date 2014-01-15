@@ -105,10 +105,10 @@ class DataGenerationValidation(unittest.TestCase):
         # Validate headers
             actual_headers = DataGenerationValidation.getting_header(each_csv, 'r')
             expected_headers = DataGenerationValidation.header_dict.get(os.path.basename(each_csv)[:-4])
-            assert expected_headers is not None, ('No header info for %s' % each_csv)
-            assert len(actual_headers) == len(expected_headers), ('Number of header does not match: %s' % each_csv)
+            self.assertIsNotNone(expected_headers, ('No header info for %s' % each_csv))
+            self.assertEqual(len(actual_headers), len(expected_headers), ('Number of header does not match: %s' % each_csv))
             for header in expected_headers:
-                assert header in actual_headers, ('Header Name: %s is missing in %s file' % (header, os.path.basename(each_csv)[:-4]))
+                self.assertIn(header, actual_headers, ('Header Name: %s is missing in %s file' % (header, os.path.basename(each_csv)[:-4])))
         print('TC1: Passed: Check Headers in all the CSV files')
 
     # TC2: Validate min/Max assessment score, cut score and assessment performance level name

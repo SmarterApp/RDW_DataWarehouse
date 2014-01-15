@@ -101,7 +101,6 @@ def generate_data_from_config_file(config_module, output_dict, output_config, do
         util.combine_dicts_of_lists(asmt_output_dicts, output_data(output_config, output_dict, assessment=asmt))
     output_from_dict_of_lists(asmt_output_dicts)
 
-
     # Generate the all the data
     print('Generating State Population Counts')
     state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
@@ -927,7 +926,6 @@ def main(output_format_config_file, config_mod_name='dg_types', output_path=None
         pprint.pprint(output_format_dict)
         #output_keys = ['star', 'lz']
         yaml_output_dict = initialize_csv_file(output_format_dict, output_path)
-
 
     # generate_data
     generate_data_from_config_file(config_module, yaml_output_dict, output_format_dict, do_pld_adjustment, star_format, landing_zone_format,

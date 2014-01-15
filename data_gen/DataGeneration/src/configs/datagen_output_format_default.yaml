@@ -104,7 +104,7 @@ star:
             from_date: section.from_date
             to_date: section.to_date
             most_recent: section.most_recent
-        dim_assessment:
+        dim_asmt:
             asmt_rec_id: assessment.asmt_rec_id
             asmt_guid: assessment.asmt_guid
             asmt_type: assessment.asmt_type

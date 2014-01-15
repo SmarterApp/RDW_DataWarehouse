@@ -4,10 +4,11 @@ import os
 from datetime import date
 
 from DataGeneration.src.utils.idgen import IdGen
-from DataGeneration.src.models.landing_zone_data_format import output_generated_asmts_to_json
+from DataGeneration.src.models.landing_zone_data_format import output_generated_asmts_to_json, get_file_path_from_output_dict
 
 CSV_K = 'csv'
 JSON_K = 'json'
+CSV_BY_ID_K = 'csv_by_asmt_id'
 PATH_TO_JSON = 'path_to_json_mapping'
 
 
@@ -51,6 +52,7 @@ def output_data(output_config, output_files, output_keys=None, school=None, stud
                 inst_hier=None, batch_guid=None, section=None, assessment=None, staff=None, write_data=True):
     """
     Output the data to using the configuration information and the relevant objects
+        Works on the assumption that the assessment data is written first
     :param output_config: The output configuration dictionary
     :param output_keys: A list of output formats that should be output from the given data
     :param output_files: A dictionary of output paths for each table to be output
@@ -66,12 +68,23 @@ def output_data(output_config, output_files, output_keys=None, school=None, stud
     for o_key in output_keys:
         csv_conf = output_config[o_key].get(CSV_K, [])
         json_conf = output_config[o_key].get(JSON_K)
+        csv_by_id = output_config[o_key].get(CSV_BY_ID_K, [])
 
         if json_conf and assessment:
             params = [[assessment], output_files]
             path_to_json = json_conf[PATH_TO_JSON]
             params.append(path_to_json) if os.path.isfile(path_to_json) else None
             output_generated_asmts_to_json(*params)
+
+        # works on the assumption that the assessment data is written first
+        if csv_by_id and assessment:
+            output_path = get_file_path_from_output_dict(output_files)
+            for table in csv_by_id:
+                table_out_name = table + '_' + str(assessment.asmt_guid)
+                table_out_conf = {'table_out': {CSV_K: {table_out_name: csv_by_id[table]}}}
+                path_dict = initialize_csv_file(table_out_conf, output_path, ['table_out'])
+                output_files.update(path_dict)
+                csv_conf[table_out_name] = csv_by_id[table]
 
         for table in csv_conf:
 
@@ -137,6 +150,7 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         'section': section,
         'assessment': assessment,
         'staff': staff,
+        'external_user_student': None,
     }
 
     required_objects = {obj_name.split('.')[0] for obj_name in table_config_dict.values()}  # if len(obj_name.split('.')) > 1}

@@ -118,7 +118,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual(4, len(result['claims']))
         self.assertEqual('Reading', result['claims'][0]['name'])
         self.assertEqual('Writing', result['claims'][1]['name'])
-        self.assertEqual('Speaking & Listening', result['claims'][2]['name'])
+        self.assertEqual('Listening', result['claims'][2]['name'])
         self.assertEqual('Research & Inquiry', result['claims'][3]['name'])
 
     def test_invalid_student_id(self):

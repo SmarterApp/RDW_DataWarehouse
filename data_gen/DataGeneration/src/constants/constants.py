@@ -87,7 +87,7 @@ ASSMT_PERIODS = ['Fall', 'Spring']
 ASSMT_PERIOD_TO_MONTHS_DICT = {'Fall': [9, 10, 11, 12], 'Spring': [1, 2, 3, 4, 5]}
 PERFORMANCE_LEVELS = ['Minimal Understanding', 'Partial Understanding', 'Adequate Understanding', 'Thorough Understanding']
 
-CLAIM_PERFORMANCE_LEVELS = ['Below Standard', 'At or Near Standard', 'Above Standard']
+CLAIM_PERFORMANCE_LEVELS = ['Below Standard', 'At/Near Standard', 'Above Standard']
 
 HISPANIC_CODE = 3
 TWO_OR_MORE_RACES_CODE = 7

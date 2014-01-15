@@ -52,7 +52,7 @@ CLAIM_DEFINITIONS = {'Math': [{'claim_name': 'Concepts & Procedures', 'claim_wei
                               ],
                      'ELA': [{'claim_name': 'Reading', 'claim_weight': .20},
                              {'claim_name': 'Writing', 'claim_weight': .25},
-                             {'claim_name': 'Speaking & Listening', 'claim_weight': .25},
+                             {'claim_name': 'Listening', 'claim_weight': .25},
                              {'claim_name': 'Research & Inquiry', 'claim_weight': .30}]
                      }
 CLAIM_SCORE_MASTER_MIN = 10

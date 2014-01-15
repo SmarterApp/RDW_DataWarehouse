@@ -47,11 +47,11 @@ class DataGenConfigTester(unittest.TestCase):
         self.assertEqual(set(expected_fields), set(actual_fields))
 
     def validate_file(self, file, config):
-        self.assertTrue(os.path.exists(file))
+        self.assertTrue(os.path.exists(file), 'file: %s, does not exist' % file)
         self.assertIsNotNone(config)
         expected_fields = []
         for key, value in config.items():
-            expected_fields.append(value)
+            expected_fields.append(key)
         with open(file, 'r') as f:
             f_csv = csv.DictReader(f)
             for row in f_csv:
@@ -75,8 +75,11 @@ class DataGenConfigTester(unittest.TestCase):
         self.generate_data(config_file, temp_dir, is_landing_zone=True)
         time.sleep(3)
         if 'lz' in config and 'csv' in config['lz']:
-            csv_file = os.path.join(temp_dir, 'REALDATA_RECORDS' + '.csv')
-            self.validate_file(csv_file, config['lz']['csv'])
+            for csv_file_config in config['lz']['csv']:
+                csv_file = os.path.join(temp_dir, csv_file_config + '.csv')
+                self.validate_file(csv_file, config['lz']['csv'][csv_file_config])
+            #csv_file = os.path.join(temp_dir, 'REALDATA_RECORDS' + '.csv')
+            #self.validate_file(csv_file, config['lz']['csv'])
         shutil.rmtree(temp_dir, ignore_errors=True)
 
     def test_datagen_output_with_config(self):

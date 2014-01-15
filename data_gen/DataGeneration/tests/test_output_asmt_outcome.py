@@ -7,6 +7,7 @@ import unittest
 from datetime import date
 from tempfile import mkdtemp
 
+from DataGeneration.src.utils.idgen import IdGen
 from DataGeneration.src.writers.output_asmt_outcome import (initialize_csv_file, get_header_from_file, write_csv_rows,
                                                             get_value_from_object, create_output_csv_dict, output_data)
 
@@ -52,32 +53,78 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                         'guid_district': 'school.district_guid',
                         'name_district': 'school.district_name',
                         'claim_1_score': 'claim_scores.1.claim_score',
+                        'claim_4_score': 'claim_scores.4.claim_score',
                         'asmt_score': 'asmt_scores.overall_score',
+                    }
+                }
+            },
+            'test_date': {
+                'csv': {
+                    'NON_REALDATA': {
+                        'guid_district': 'school.district_guid',
+                        'name_district': 'school.district_name',
+                        'date_taken_day': 'date_taken.day',
+                        'date_taken': 'student_info.asmt_dates_taken',
                     }
                 }
             },
             'test_error': {
                 'csv': {
                     'ERROR': {
-                        'guid_district': 'school_error.district_guid',
-                        'name_district': 'school_error.district_name',
+                        'status': 'C',
+                        'custom': 'custom_val',
+                    }
+                }
+            },
+            'star_related': {
+                'csv': {
+                    'star': {
+                        'batch_guid': 'batch_guid',
+                        'rec_id': 'UNIQUE_ID',
+                        'derived_demographic': 'student_info.derived_demographic',
+                        'inst_hier_rec_id': 'inst_hierarchy.inst_hier_rec_id',
+                    }
+                }
+            },
+            'other': {
+                'csv': {
+                    'section': {
+                        'section_rec_id': 'section.section_rec_id',
+                        'section_guid': 'section.section_guid',
+                        'section_name': 'section.section_name',
+                        'grade': 'section.grade',
+                    },
+                    'inst_hier': {
+                        'inst_hier_rec_id': 'inst_hierarchy.inst_hier_rec_id',
+                        'state_name': 'inst_hierarchy.state_name',
+                        'state_code': 'inst_hierarchy.state_code',
+                    },
+                    'assessment': {
+                        'asmt_rec_id': 'assessment.asmt_rec_id',
+                        'asmt_guid': 'assessment.asmt_guid',
+                        'asmt_type': 'assessment.asmt_type',
+                        'asmt_period': 'assessment.asmt_period',
                     }
                 }
             }
         }
-
-        self.state_population = Dummy(state_name='New York', state_code="NY")
-        self.school1 = Dummy(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
-                             school_category='elementary')
-        self.student_info1 = Dummy(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
-                                   address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
-                                   email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
-                                   asmt_scores={'math': Dummy(overall_score=1900,
-                                                              claim_scores=[Dummy(claim_score=1201), Dummy(claim_score=1202),
-                                                                            Dummy(claim_score=1203), Dummy(claim_score=1204)]),
-                                                'ela': Dummy(overall_score=1800,
-                                                             claim_scores=[Dummy(claim_score=1301), Dummy(claim_score=1302),
-                                                                           Dummy(claim_score=1303)])})
+        self.idgen = IdGen()
+        self.state_population = MakeTemp(state_name='New York', state_code="NY")
+        self.school1 = MakeTemp(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
+                                school_category='elementary')
+        self.student_info1 = MakeTemp(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
+                                      address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
+                                      email='b.n@email.com', dob='11111999', grade=4,
+                                      asmt_dates_taken={'math': date.today(), 'ela': date(2011, 2, 5)},
+                                      asmt_scores={'math': MakeTemp(overall_score=1900,
+                                                                    claim_scores=[MakeTemp(claim_score=1201), MakeTemp(claim_score=1202),
+                                                                                  MakeTemp(claim_score=1203), MakeTemp(claim_score=1204)]),
+                                                'ela': MakeTemp(overall_score=1800,
+                                                                claim_scores=[MakeTemp(claim_score=1301), MakeTemp(claim_score=1302),
+                                                                              MakeTemp(claim_score=1303)])})
+        self.section = MakeTemp(section_rec_id=123, section_guid='sg123', section_name='section1', grade=4)
+        self.inst_hier = MakeTemp(inst_hier_rec_id=456, state_name='Georgia', state_code="GA")
+        self.assessment = MakeTemp(asmt_rec_id=789, asmt_guid="gu789", asmt_type='interim', asmt_period='fall')
 
     def tearDown(self):
         shutil.rmtree(self.output_dir)
@@ -86,7 +133,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test']
 
-        result = initialize_csv_file(self.conf_dict, output_keys, output_path)
+        result = initialize_csv_file(self.conf_dict, output_path, output_keys)
         expected = {
             'REALDATA': os.path.join(self.output_dir, 'REALDATA.csv'),
             'dim_test': os.path.join(self.output_dir, 'dim_test.csv'),
@@ -98,7 +145,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test2']
 
-        result = initialize_csv_file(self.conf_dict, output_keys, output_path)
+        result = initialize_csv_file(self.conf_dict, output_path, output_keys)
         expected = {
             'NON_REALDATA': os.path.join(self.output_dir, 'NON_REALDATA.csv'),
         }
@@ -109,7 +156,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test']
 
-        initialize_csv_file(self.conf_dict, output_keys, output_path)
+        initialize_csv_file(self.conf_dict, output_path, output_keys)
 
         self.assertTrue(os.path.exists(os.path.join(self.output_dir, 'REALDATA.csv')))
         self.assertTrue(os.path.exists(os.path.join(self.output_dir, 'dim_test.csv')))
@@ -118,7 +165,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test']
 
-        initialize_csv_file(self.conf_dict, output_keys, output_path)
+        initialize_csv_file(self.conf_dict, output_path, output_keys)
 
         with open(os.path.join(self.output_dir, 'REALDATA.csv'), 'r') as fp:
             reader = csv.reader(fp)
@@ -161,7 +208,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         self.assertListEqual(row_dict_list, result)
 
     def test_get_value_from_object(self):
-        data_object = Dummy(time='good morning', fun='fun')
+        data_object = MakeTemp(time='good morning', fun='fun')
         attr_name = 'time'
         subject = 'Math'
 
@@ -169,7 +216,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         self.assertEqual(result, 'good morning')
 
     def test_get_value_from_object_subject_dict(self):
-        data_object = Dummy(time={'Math': 'good morning', 'ELA': 'good night'}, fun='fun')
+        data_object = MakeTemp(time={'Math': 'good morning', 'ELA': 'good night'}, fun='fun')
         attr_name = 'time'
         subject = 'ELA'
 
@@ -178,7 +225,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
     def test_get_value_from_object_time(self):
         some_date = date(2014, 11, 8)
-        data_object = Dummy(time={'Math': 'good morning', 'ELA': 'good night'}, fun=some_date)
+        data_object = MakeTemp(time={'Math': 'good morning', 'ELA': 'good night'}, fun=some_date)
         attr_name = 'fun'
         subject = 'ELA'
 
@@ -196,7 +243,8 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'name_state': 'New York',
             'code_state': 'NY',
         }
-        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'math')
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'math', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
     def test_create_output_csv_dict_2(self):
@@ -206,9 +254,11 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'guid_district': 'd123',
             'name_district': 'district1',
             'claim_1_score': 1201,
+            'claim_4_score': 1204,
             'asmt_score': 1900,
         }
-        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'math')
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'math', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
     def test_create_output_csv_dict_3(self):
@@ -218,22 +268,122 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'guid_district': 'd123',
             'name_district': 'district1',
             'claim_1_score': 1301,
+            'claim_4_score': None,
             'asmt_score': 1800,
         }
-        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'ela')
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'ela', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
-    def test_create_output_csv_dict_error(self):
+    def test_create_output_csv_dict_4(self):
+        table_conf_dict = self.conf_dict['test_date']['csv']['NON_REALDATA']
+
+        expected = {
+            'guid_district': 'd123',
+            'name_district': 'district1',
+            'date_taken_day': 5,
+            'date_taken': '20110205',
+        }
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'ela', None, None, None, None, None)
+        self.assertDictEqual(expected, res)
+
+    def test_create_output_csv_dict_undefined_object_listed(self):
         table_conf_dict = self.conf_dict['test_error']['csv']['ERROR']
 
-        with self.assertRaises(NotImplementedError):
-            create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1, 'ela')
+        expected = {
+            'status': 'C',
+            'custom': 'custom_val',
+        }
+
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'ela', None, None, None, None, None)
+        self.assertDictEqual(res, expected)
+
+    def test_create_output_csv_dict_star_related(self):
+        table_conf_dict = self.conf_dict['star_related']['csv']['star']
+
+        self.idgen.next_id = 30
+        inst_hier = MakeTemp(inst_hier_rec_id=34)
+        #self.student_info1.get_stu_demo_list = lambda: [True, False, False, False, False, False]
+        self.student_info1.derived_demographic = lambda: 1
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'ela', inst_hier, 'gu123', None, None, None)
+
+        expected = {
+            'batch_guid': 'gu123',
+            'rec_id': 30,
+            'derived_demographic': 1,
+            'inst_hier_rec_id': 34,
+        }
+        self.assertDictEqual(res, expected)
+
+    def test_create_output_csv_dict_star_related_2(self):
+        table_conf_dict = self.conf_dict['star_related']['csv']['star']
+
+        self.idgen.next_id = 100
+        table_conf_dict['rec_id'] = 'idgen.get_id'
+        inst_hier = MakeTemp(inst_hier_rec_id=34)
+        #self.student_info1.get_stu_demo_list = lambda: [True, False, False, False, False, False]
+        self.student_info1.derived_demographic = lambda: 1
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
+                                     self.student_info1, 'ela', inst_hier, 'gu123', None, None, None)
+
+        expected = {
+            'batch_guid': 'gu123',
+            'rec_id': 100,
+            'derived_demographic': 1,
+            'inst_hier_rec_id': 34,
+        }
+        self.assertDictEqual(res, expected)
+
+    def test_create_output_csv_dict_no_student_info_available__assessment(self):
+        table_conf_dict = self.conf_dict['other']['csv']['assessment']
+
+        res = create_output_csv_dict(table_conf_dict, None, None, None, None, None, None, None, self.assessment, None)
+
+        expected = {
+            'asmt_rec_id': 789,
+            'asmt_guid': "gu789",
+            'asmt_type': 'interim',
+            'asmt_period': 'fall',
+        }
+
+        self.assertDictEqual(res, expected)
+
+    def test_create_output_csv_dict_no_student_info_available__inst_hier(self):
+        table_conf_dict = self.conf_dict['other']['csv']['inst_hier']
+
+        res = create_output_csv_dict(table_conf_dict, None, None, None, None, self.inst_hier, None, None, None, None)
+
+        expected = {
+            'inst_hier_rec_id': 456,
+            'state_name': 'Georgia',
+            'state_code': 'GA',
+        }
+
+        self.assertDictEqual(res, expected)
+
+    def test_create_output_csv_dict_no_student_info_available__section(self):
+        table_conf_dict = self.conf_dict['other']['csv']['section']
+
+        res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1,
+                                     'math', self.inst_hier, 'gu123', self.section, self.assessment, None)
+
+        expected = {
+            'section_rec_id': 123,
+            'section_guid': 'sg123',
+            'section_name': 'section1',
+            'grade': 4,
+        }
+
+        self.assertDictEqual(res, expected)
 
     def test_output_data_row_counts(self):
         output_keys = ['test', 'test2']
-        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-        output_data(self.conf_dict, output_keys, output_files, self.state_population, self.school1, self.student_info1)
+        output_data(self.conf_dict, output_files, output_keys, self.school1, self.student_info1, self.state_population)
 
         self.assertEqual(len(output_files), 3)
 
@@ -246,9 +396,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
     def test_output_data_content(self):
         output_keys = ['test', 'test2']
-        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-        output_data(self.conf_dict, output_keys, output_files, self.state_population, self.school1, self.student_info1)
+        output_data(self.conf_dict, output_files, output_keys, self.school1, self.student_info1, self.state_population)
 
         expected = {
             'REALDATA': {
@@ -280,8 +430,54 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                 for c_dict in csv.DictReader(fp):
                     self.assertDictEqual(c_dict, expected[file])
 
+    def test_output_data_content_2(self):
+        output_keys = ['other']
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-class Dummy(object):
+        output_data(self.conf_dict, output_files, output_keys, section=self.section)
+
+        expected = {
+            'section': {
+                'section_rec_id': '123',
+                'section_guid': 'sg123',
+                'section_name': 'section1',
+                'grade': '4',
+            }
+        }
+
+        for file in output_files:
+            with open(output_files[file], 'r') as fp:
+                for c_dict in csv.DictReader(fp):
+                    self.assertDictEqual(c_dict, expected[file])
+
+    def test_output_data_content_3(self):
+        output_keys = ['other']
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
+
+        output_data(self.conf_dict, output_files, output_keys, section=self.section, assessment=self.assessment)
+
+        expected = {
+            'section': {
+                'section_rec_id': '123',
+                'section_guid': 'sg123',
+                'section_name': 'section1',
+                'grade': '4',
+            },
+            'assessment': {
+                'asmt_rec_id': '789',
+                'asmt_guid': 'gu789',
+                'asmt_type': 'interim',
+                'asmt_period': 'fall',
+            }
+        }
+
+        for file in output_files:
+            with open(output_files[file], 'r') as fp:
+                for c_dict in csv.DictReader(fp):
+                    self.assertDictEqual(c_dict, expected[file])
+
+
+class MakeTemp(object):
     def __init__(self, **kwargs):
         for kw in kwargs:
             setattr(self, kw, kwargs[kw])

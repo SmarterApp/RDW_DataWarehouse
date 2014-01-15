@@ -7,7 +7,9 @@ from datetime import date
 import unittest
 import csv
 import os
+import shutil
 from collections import Counter
+from tempfile import mkdtemp
 
 from DataGeneration.src.models.entities import (InstitutionHierarchy, Staff, Section, Assessment,
                                                 AssessmentOutcome, ExternalUserStudent, Student)
@@ -17,6 +19,7 @@ from DataGeneration.src.generators.generate_entities import generate_assessments
 import DataGeneration.src.demographics.demographics as dmg
 import DataGeneration.src.models.state_population as sp
 from DataGeneration.src.generators.generate_helper_entities import generate_school
+from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -24,13 +27,14 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 class Test(unittest.TestCase):
 
     def setUp(self):
+        self.output_dir = mkdtemp()
         self.from_date = '20120901'
         self.to_date = None
         self.most_recent = True
         self.date_taken_year = '2012'
 
-        self.entity_to_path_dict = {DummyEntity1: os.path.join(__location__, 'dummy_ent_1.fortest'),
-                                    DummyEntity2: os.path.join(__location__, 'dummy_ent_2.fortest')}
+        self.entity_to_path_dict = {DummyEntity1: os.path.join(self.output_dir, 'dummy_ent_1.fortest'),
+                                    DummyEntity2: os.path.join(self.output_dir, 'dummy_ent_2.fortest')}
         self.csv_file_names = {DummyEntity1: 'dummy_ent_1.fortest',
                                DummyEntity2: 'dummy_ent_2.fortest'}
         self.csv_file = write_demographics_csv()
@@ -41,13 +45,18 @@ class Test(unittest.TestCase):
         self.state_population.get_state_demographics(self.demo_obj, self.demo_id)
         self.state_population.demographics_id = self.demo_id
         self.error_band_dict = {'min_divisor': 32, 'max_divisor': 8, 'random_adjustment_points_lo': -10, 'random_adjustment_points_hi': 25}
-        self.ts_cvs_names = {InstitutionHierarchy: os.path.join(__location__, 'ts_dim_inst_hier.csv'),
-                             Section: os.path.join(__location__, 'ts_dim_section.csv'),
-                             Assessment: os.path.join(__location__, 'ts_dim_asmt.csv'),
-                             AssessmentOutcome: os.path.join(__location__, 'ts_fact_asmt_outcome.csv'),
-                             Staff: os.path.join(__location__, 'ts_dim_staff.csv'),
-                             ExternalUserStudent: os.path.join(__location__, 'ts_external_user_student_rel.csv'),
-                             Student: os.path.join(__location__, 'ts_dim_student.csv')}
+        #self.ts_cvs_names = {InstitutionHierarchy: os.path.join(__location__, 'ts_dim_inst_hier.csv'),
+        #                     Section: os.path.join(__location__, 'ts_dim_section.csv'),
+        #                     Assessment: os.path.join(__location__, 'ts_dim_asmt.csv'),
+        #                     AssessmentOutcome: os.path.join(__location__, 'ts_fact_asmt_outcome.csv'),
+        #                     Staff: os.path.join(__location__, 'ts_dim_staff.csv'),
+        #                     ExternalUserStudent: os.path.join(__location__, 'ts_external_user_student_rel.csv'),
+        #                     Student: os.path.join(__location__, 'ts_dim_student.csv')}
+
+        self.output_config_yaml = os.path.join(__location__, '..', 'datafiles', 'configs', 'utest_datagen_config.yaml')
+
+    def tearDown(self):
+        shutil.rmtree(self.output_dir)
 
     def test_generate_data_from_config_file(self):
         config_module = DummyClass()
@@ -59,11 +68,11 @@ class Test(unittest.TestCase):
         config_module.get_scores = lambda *x: {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100], 'claim_cut_points': [1600, 2000]}
         config_module.get_temporal_information = lambda *x: {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2015', 'date_taken_month': ''}
         config_module.get_error_band = lambda *x: self.error_band_dict
+        conf_output_dict = gd2.read_datagen_output_format_yaml(self.output_config_yaml)
+        output_dict = initialize_csv_file(conf_output_dict, self.output_dir)
 
-        output_dict = self.ts_cvs_names
-
-        self.assertTrue(gd2.generate_data_from_config_file(config_module, output_dict))
-        self.remove_files(list(self.ts_cvs_names.values()))
+        self.assertTrue(gd2.generate_data_from_config_file(config_module, output_dict, conf_output_dict))
+        #self.remove_files(list(self.ts_cvs_names.values()))
 
     def test_output_generated_data_to_csv(self):
         pass
@@ -655,7 +664,7 @@ class Test(unittest.TestCase):
         for name in res:
             number_of_lines = len(res[name])
             self.assertEqual(number_of_lines, name_count)
-        self.remove_files(file_names)
+        #self.remove_files(file_names)
 
     def test_get_flat_grades_list(self):
         school_config = {
@@ -714,7 +723,7 @@ class Test(unittest.TestCase):
 
     def test_create_output_dict(self):
         gd2.CSV_FILE_NAMES = self.csv_file_names
-        result = gd2.create_output_dict(__location__)
+        result = gd2.create_output_dict(self.output_dir)
 
         self.assertDictEqual(result, self.entity_to_path_dict)
 
@@ -722,7 +731,7 @@ class Test(unittest.TestCase):
         gd2.prepare_csv_files(self.entity_to_path_dict)
         for entity in self.entity_to_path_dict:
             self.read_row_in_csv(self.entity_to_path_dict[entity], entity.getHeader())
-        self.remove_files(list(self.entity_to_path_dict.values()))
+        #self.remove_files(list(self.entity_to_path_dict.values()))
 
     ##==================================
     ## Helper Methods

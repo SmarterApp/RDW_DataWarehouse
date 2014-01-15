@@ -218,3 +218,20 @@ def get_list_of_claim_cutpoints(assessment):
     @return: A list of claim cutpoints
     '''
     return [assessment.claim_cut_point_1, assessment.claim_cut_point_2]
+
+
+def combine_dicts_of_lists(dict_a, dict_b):
+    """
+    Given two dictionaries of lists, update the first list to include all of the items from the 2nd dictionary
+    :param dict_a:
+    :param dict_b:
+    :return: An updated version of dict_a
+    """
+
+    for key in dict_b:
+        if key in dict_a:
+            dict_a[key] += dict_b[key]
+        else:
+            dict_a[key] = dict_b[key]
+
+    return dict_a

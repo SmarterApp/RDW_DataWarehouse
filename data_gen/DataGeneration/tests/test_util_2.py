@@ -160,6 +160,15 @@ class TestUtil2(unittest.TestCase):
         expected_names = ['word1', 'word2', 'word3']
         self.assertEqual(actual_names, expected_names)
 
+    def test_combine_dicts_of_lists(self):
+        dict_a = {'a': [1, 2, 3, 4, 5, 6], 'b': [1, 2]}
+        dict_b = {'a': [7, 8, 9], 'c': [1, 3, 4]}
+
+        result = util.combine_dicts_of_lists(dict_a, dict_b)
+        expected = {'a': [1, 2, 3, 4, 5, 6, 7, 8, 9], 'b': [1, 2], 'c': [1, 3, 4]}
+
+        self.assertDictEqual(result, expected)
+
 
 class DummyAssessment(object):
     pass

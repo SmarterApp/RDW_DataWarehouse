@@ -74,22 +74,24 @@
 	  background: none;
 	  padding: 16px 16px !important;
 
+          .header h4 { font-size: 15px;}
+
+          .level1, .level2, .level3 {font-size: 16px;}
+
+          .description {font-size: 14px;}
+
 	  &.MATH {
-	      width: 300px;
-	      margin-right: 0px;
-	      h4 { max-width: 200px; }
+	      width: 295px;
+	      h4 { max-width: 200px;}
 	  }
 
 	  &.ELA {
-	      margin-right: 0px;
-	      width: 226px;
+	      width: 220px;
 	      h4 { max-width: 135px; }
 	  }
+
       }
 
-      .claimsSection ul { float: left; border: 1px solid #E2E2E2; border-radius: 5px; padding: 10px;}
-      .claimsSection ul li { border: none; border-right: solid 1px #e2e2e2; }
-      .claimsSection ul li:last-child { border-right: none; }
       .surveyMonkeyPopup { display: none;}
       .exportPopup {display: none;}
       .legendPopup, .aboutReportPopup { float: left; width: 100%;}
@@ -175,14 +177,6 @@
             .cutPoints {
               color: @color-B3 !important;
             }
-          }
-        }
-        .claimsSection {
-          strong, h4 {
-            color: @color-B2 !important;
-          }
-          .description {
-            color: @color-B3 !important;
           }
         }
       }

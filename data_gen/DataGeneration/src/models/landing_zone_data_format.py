@@ -29,14 +29,14 @@ PERFORMANCE = 'performance_levels'
 CLAIM_PERFORMANCE = 'claim_performance_levels'
 
 
-def output_generated_asmts_to_json(assessments, output_dict):
+def output_generated_asmts_to_json(assessments, output_dict, path_to_json_mapping=JSON_PATTERN):
     '''
     Given a list of assessemtns and the output_dictionary. Write the assessment data to a json file
     '''
     file_path = get_file_path_from_output_dict(output_dict)
     mappings = read_mapping_json(JSONFILE)
     for asmt in assessments:
-        generate_json(asmt, mappings, file_path, JSON_PATTERN)
+        generate_json(asmt, mappings, file_path, path_to_json_mapping)
 
 
 def generate_json(assessment, mappings, output_path, filename_pattern):

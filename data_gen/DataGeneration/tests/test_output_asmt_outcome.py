@@ -53,6 +53,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                         'guid_district': 'school.district_guid',
                         'name_district': 'school.district_name',
                         'claim_1_score': 'claim_scores.1.claim_score',
+                        'claim_4_score': 'claim_scores.4.claim_score',
                         'asmt_score': 'asmt_scores.overall_score',
                     }
                 }
@@ -132,7 +133,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test']
 
-        result = initialize_csv_file(self.conf_dict, output_keys, output_path)
+        result = initialize_csv_file(self.conf_dict, output_path, output_keys)
         expected = {
             'REALDATA': os.path.join(self.output_dir, 'REALDATA.csv'),
             'dim_test': os.path.join(self.output_dir, 'dim_test.csv'),
@@ -144,7 +145,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test2']
 
-        result = initialize_csv_file(self.conf_dict, output_keys, output_path)
+        result = initialize_csv_file(self.conf_dict, output_path, output_keys)
         expected = {
             'NON_REALDATA': os.path.join(self.output_dir, 'NON_REALDATA.csv'),
         }
@@ -155,7 +156,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test']
 
-        initialize_csv_file(self.conf_dict, output_keys, output_path)
+        initialize_csv_file(self.conf_dict, output_path, output_keys)
 
         self.assertTrue(os.path.exists(os.path.join(self.output_dir, 'REALDATA.csv')))
         self.assertTrue(os.path.exists(os.path.join(self.output_dir, 'dim_test.csv')))
@@ -164,7 +165,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         output_path = self.output_dir
         output_keys = ['test']
 
-        initialize_csv_file(self.conf_dict, output_keys, output_path)
+        initialize_csv_file(self.conf_dict, output_path, output_keys)
 
         with open(os.path.join(self.output_dir, 'REALDATA.csv'), 'r') as fp:
             reader = csv.reader(fp)
@@ -243,7 +244,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'code_state': 'NY',
         }
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'math', None, None, None, None)
+                                     self.student_info1, 'math', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
     def test_create_output_csv_dict_2(self):
@@ -253,10 +254,11 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'guid_district': 'd123',
             'name_district': 'district1',
             'claim_1_score': 1201,
+            'claim_4_score': 1204,
             'asmt_score': 1900,
         }
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'math', None, None, None, None)
+                                     self.student_info1, 'math', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
     def test_create_output_csv_dict_3(self):
@@ -266,10 +268,11 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'guid_district': 'd123',
             'name_district': 'district1',
             'claim_1_score': 1301,
+            'claim_4_score': None,
             'asmt_score': 1800,
         }
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'ela', None, None, None, None)
+                                     self.student_info1, 'ela', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
     def test_create_output_csv_dict_4(self):
@@ -282,7 +285,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'date_taken': '20110205',
         }
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'ela', None, None, None, None)
+                                     self.student_info1, 'ela', None, None, None, None, None)
         self.assertDictEqual(expected, res)
 
     def test_create_output_csv_dict_undefined_object_listed(self):
@@ -294,7 +297,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         }
 
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'ela', None, None, None, None)
+                                     self.student_info1, 'ela', None, None, None, None, None)
         self.assertDictEqual(res, expected)
 
     def test_create_output_csv_dict_star_related(self):
@@ -305,7 +308,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         #self.student_info1.get_stu_demo_list = lambda: [True, False, False, False, False, False]
         self.student_info1.derived_demographic = lambda: 1
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'ela', inst_hier, 'gu123', None, None)
+                                     self.student_info1, 'ela', inst_hier, 'gu123', None, None, None)
 
         expected = {
             'batch_guid': 'gu123',
@@ -324,7 +327,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         #self.student_info1.get_stu_demo_list = lambda: [True, False, False, False, False, False]
         self.student_info1.derived_demographic = lambda: 1
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
-                                     self.student_info1, 'ela', inst_hier, 'gu123', None, None)
+                                     self.student_info1, 'ela', inst_hier, 'gu123', None, None, None)
 
         expected = {
             'batch_guid': 'gu123',
@@ -337,7 +340,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
     def test_create_output_csv_dict_no_student_info_available__assessment(self):
         table_conf_dict = self.conf_dict['other']['csv']['assessment']
 
-        res = create_output_csv_dict(table_conf_dict, None, None, None, None, None, None, None, self.assessment)
+        res = create_output_csv_dict(table_conf_dict, None, None, None, None, None, None, None, self.assessment, None)
 
         expected = {
             'asmt_rec_id': 789,
@@ -351,7 +354,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
     def test_create_output_csv_dict_no_student_info_available__inst_hier(self):
         table_conf_dict = self.conf_dict['other']['csv']['inst_hier']
 
-        res = create_output_csv_dict(table_conf_dict, None, None, None, None, self.inst_hier, None, None, None)
+        res = create_output_csv_dict(table_conf_dict, None, None, None, None, self.inst_hier, None, None, None, None)
 
         expected = {
             'inst_hier_rec_id': 456,
@@ -365,7 +368,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         table_conf_dict = self.conf_dict['other']['csv']['section']
 
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1, self.student_info1,
-                                     'math', self.inst_hier, 'gu123', self.section, self.assessment)
+                                     'math', self.inst_hier, 'gu123', self.section, self.assessment, None)
 
         expected = {
             'section_rec_id': 123,
@@ -378,9 +381,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
     def test_output_data_row_counts(self):
         output_keys = ['test', 'test2']
-        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-        output_data(self.conf_dict, output_keys, output_files, self.school1, self.student_info1, self.state_population)
+        output_data(self.conf_dict, output_files, output_keys, self.school1, self.student_info1, self.state_population)
 
         self.assertEqual(len(output_files), 3)
 
@@ -393,9 +396,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
     def test_output_data_content(self):
         output_keys = ['test', 'test2']
-        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-        output_data(self.conf_dict, output_keys, output_files, self.school1, self.student_info1, self.state_population)
+        output_data(self.conf_dict, output_files, output_keys, self.school1, self.student_info1, self.state_population)
 
         expected = {
             'REALDATA': {
@@ -429,9 +432,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
     def test_output_data_content_2(self):
         output_keys = ['other']
-        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-        output_data(self.conf_dict, output_keys, output_files, section=self.section)
+        output_data(self.conf_dict, output_files, output_keys, section=self.section)
 
         expected = {
             'section': {
@@ -449,9 +452,9 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
 
     def test_output_data_content_3(self):
         output_keys = ['other']
-        output_files = initialize_csv_file(self.conf_dict, output_keys, self.output_dir)
+        output_files = initialize_csv_file(self.conf_dict, self.output_dir, output_keys)
 
-        output_data(self.conf_dict, output_keys, output_files, section=self.section, assessment=self.assessment)
+        output_data(self.conf_dict, output_files, output_keys, section=self.section, assessment=self.assessment)
 
         expected = {
             'section': {

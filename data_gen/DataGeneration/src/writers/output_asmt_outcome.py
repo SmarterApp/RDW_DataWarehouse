@@ -4,11 +4,14 @@ import os
 from datetime import date
 
 from DataGeneration.src.utils.idgen import IdGen
+from DataGeneration.src.models.landing_zone_data_format import output_generated_asmts_to_json
 
 CSV_K = 'csv'
+JSON_K = 'json'
+PATH_TO_JSON = 'path_to_json_mapping'
 
 
-def initialize_csv_file(output_config, output_keys, output_path):
+def initialize_csv_file(output_config, output_path, output_keys=None):
     """
     Given the output configuration dictionary create the corresponding csv files
     :param output_config: A dictionary of configuration information
@@ -17,6 +20,8 @@ def initialize_csv_file(output_config, output_keys, output_path):
     :return: a dictionary of output files
     """
     output_files = {}
+    output_keys = output_keys if output_keys else output_config.keys()
+
     for out_key in output_keys:
         csv_info = output_config[out_key].get(CSV_K)
         for table in csv_info:
@@ -30,8 +35,20 @@ def initialize_csv_file(output_config, output_keys, output_path):
     return output_files
 
 
-def output_data(output_config, output_keys, output_files, school=None, student_info=None, state_population=None,
-                inst_hier=None, batch_guid=None, section=None, assessment=None):
+def output_from_dict_of_lists(output_dictionary):
+    """
+    Given a dictionary where the keys are the output path and the values are lists of dicts corresponding directly
+    to the csv file headers, write the rows to file
+    :param output_dictionary: dict of the form - {'<file_path>': [row_dict_1, row_dict_2, ...], ...}
+    :return: None
+    """
+
+    for file_path, list_of_dicts in output_dictionary.items():
+        write_csv_rows(file_path, list_of_dicts)
+
+
+def output_data(output_config, output_files, output_keys=None, school=None, student_info=None, state_population=None,
+                inst_hier=None, batch_guid=None, section=None, assessment=None, staff=None, write_data=True):
     """
     Output the data to using the configuration information and the relevant objects
     :param output_config: The output configuration dictionary
@@ -40,27 +57,53 @@ def output_data(output_config, output_keys, output_files, school=None, student_i
     :param state_population: The state population object to use in outputting data
     :param school: The school object to use in outputting data
     :param student_info: the student info object to use to in outputting data
-    :return: None
+    :return: A dictionary containing a list of all the objects created mapped to their respective file names
     """
+
+    output_keys = output_keys if output_keys else output_config.keys()
+    output_data_dict = {}
+
     for o_key in output_keys:
-        csv_conf = output_config[o_key][CSV_K]
+        csv_conf = output_config[o_key].get(CSV_K, [])
+        json_conf = output_config[o_key].get(JSON_K)
+
+        if json_conf and assessment:
+            params = [[assessment], output_files]
+            path_to_json = json_conf[PATH_TO_JSON]
+            params.append(path_to_json) if os.path.isfile(path_to_json) else None
+            output_generated_asmts_to_json(*params)
+
         for table in csv_conf:
 
             output_file = output_files[table]
+            output_data_dict[output_file] = []
+
             output_data_list = []
+
+            # if student info is present loop on the available subjects to get data
             if student_info:
                 for subject in student_info.asmt_scores:
                     output_row = create_output_csv_dict(csv_conf[table], state_population, school,
-                                                        student_info, subject, inst_hier, batch_guid, section, assessment)
+                                                        student_info, subject, inst_hier, batch_guid, section, assessment, staff)
                     output_data_list.append(output_row) if output_row else None
+
+            # otherwise data is not bound by a subject
             else:
                 output_row = create_output_csv_dict(csv_conf[table], state_population, school,
-                                                    student_info, None, inst_hier, batch_guid, section, assessment)
+                                                    student_info, None, inst_hier, batch_guid, section, assessment, staff)
                 output_data_list.append(output_row) if output_row else None
-            write_csv_rows(output_file, output_data_list)
+
+            # if param for writing data is present write rows, otherwise, just return the data.
+            if write_data:
+                write_csv_rows(output_file, output_data_list)
+
+            # add new data to list for that file in the dictionary
+            output_data_dict[output_file] += output_data_list
+
+    return output_data_dict
 
 
-def create_output_csv_dict(table_config_dict, state_population, school, student_info, subject, inst_hier, batch_guid, section, assessment):
+def create_output_csv_dict(table_config_dict, state_population, school, student_info, subject, inst_hier, batch_guid, section, assessment, staff):
     """
     Create the csv output dictionary from the given data
     :param table_config_dict: the config dict pertaining directly to the table being output
@@ -85,6 +128,7 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         'claim_scores': claim_scores,
         'asmt_scores': asmt_score,
         'asmt_score': asmt_score,
+        'asmt_score_obj': asmt_score,
         'date_taken': student_info.asmt_dates_taken[subject] if student_info else None,
         'inst_hierarchy': inst_hier,
         'batch_guid': MakeTemp(value=batch_guid),
@@ -92,9 +136,10 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         'UNIQUE_ID': MakeTemp(value=idgen.get_id),
         'section': section,
         'assessment': assessment,
+        'staff': staff,
     }
 
-    required_objects = {obj_name.split('.')[0] for obj_name in table_config_dict.values()}
+    required_objects = {obj_name.split('.')[0] for obj_name in table_config_dict.values()}  # if len(obj_name.split('.')) > 1}
 
     # if a required object is missing then this table is not meant to be written or there is an error
     # Return None
@@ -134,7 +179,7 @@ def get_value_from_object(data_object, attr_name, subject):
         attr_index, attr_name = index_attr_list
         attr_index = int(attr_index)
         value_list = data_object[attr_index - 1] if len(data_object) > attr_index - 1 else None
-        value = getattr(value_list, attr_name)
+        value = getattr(value_list, attr_name) if value_list else None
     else:
         value = getattr(data_object, attr_name)
 

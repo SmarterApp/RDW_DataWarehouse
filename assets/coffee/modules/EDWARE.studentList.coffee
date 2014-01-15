@@ -262,7 +262,9 @@ define [
           precedence = interval
         # use mustache template to display the json data
         output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
-        $("#"+key+"_perfBar").html(output)
+        rainbowAnchor = $("#"+key+"_perfBar")
+        rainbowAnchor.html(output)
+        rainbowAnchor.closest('th').append(rainbowAnchor)
 
 
     convertAsmtTypes: (asmtAdministration) ->

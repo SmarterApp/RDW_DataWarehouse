@@ -602,13 +602,6 @@ th.ui-th-column div {
     padding-top: 10px;
   }
 
-  .achievement {
-    float: left;
-    width: 300px;
-    display: block;
-    margin-bottom: 15px;
-  }
-
   .claim_score {
     float: left;
     display: block;
@@ -799,45 +792,6 @@ th.ui-th-column div {
 
         .transWrapper {
             margin-top: 23px;
-        }
-    }
-
-    table {
-        font-size: 10px;
-        color: @color-black;
-        border-collapse: collapse;
-
-        th {
-            font-style: italic;
-            font-weight: normal;
-            vertical-align: bottom;
-            color: @color-B2;
-        }
-
-        td {
-            border: 1px solid @color-B4;
-            font-weight: bold;
-            height: 28px;
-
-            div.legend_ALD_color {
-                width: 15px;
-                height: 15px;
-                display: table;
-                margin:auto;
-            }
-
-            div.legend_ALD_trans {
-                background-image: url("../images/ISRleftBracket_print.png");
-                background-position: 0px -20px;
-                z-index: 9999;
-            }
-
-        }
-
-        th, td {
-            text-align: left;
-            vertical-align: middle;
-            padding: 1px 14px;
         }
     }
 
@@ -2059,7 +2013,11 @@ th.ui-th-column div {
     }
 
     .legendPopover {
-	max-width: 850px;
+	max-width: 885px;
+
+        .popover-content {
+            padding: 0px 0px;
+        }
     }
 
     .active {

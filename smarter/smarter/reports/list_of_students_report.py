@@ -74,8 +74,8 @@ def get_list_of_students_report(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    asmtSubject = params.get(Constants.ASMTSUBJECT, None)
+    asmtGrade = params.get(Constants.ASMTGRADE)
+    asmtSubject = params.get(Constants.ASMTSUBJECT)
 
     asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
 
@@ -152,8 +152,8 @@ def get_list_of_students(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    asmtSubject = params.get(Constants.ASMTSUBJECT, None)
+    asmtGrade = params.get(Constants.ASMTGRADE)
+    asmtSubject = params.get(Constants.ASMTSUBJECT)
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)

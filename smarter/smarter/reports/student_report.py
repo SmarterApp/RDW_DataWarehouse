@@ -128,7 +128,7 @@ def __calculateClaimScoreRelativeDifference(items):
 
 def __arrange_results(results, subjects_map, custom_metadata_map):
     '''
-    This method arranges the data retreievd from the db to make it easier to consume by the client
+    This method arranges the data retrieved from the db to make it easier to consume by the client
     '''
     new_results = {}
     for result in results:

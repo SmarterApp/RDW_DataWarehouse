@@ -148,7 +148,7 @@ star:
             from_date: assessment.from_date
             to_date: assessment.to_date
             most_recent: assessment.most_recent
-        external_user_student:
+        external_user_student_rel:
             external_user_student_guid: external_user_student.external_user_student_guid
             external_user_guid: external_user_student.external_user_guid
             student_guid: external_user_student.student_guid

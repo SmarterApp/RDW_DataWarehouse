@@ -33,7 +33,7 @@ def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file
     proc.stdin.write(bytes('chmod 600 ' + tmp_destination_file + '\n', 'UTF-8'))
     proc.stdin.write(bytes('rename ' + tmp_destination_file + ' ' + final_destination_file + '\n', 'UTF-8'))
     proc.stdin.close()
-    proc.wait(timeout=10)
+    proc.wait(timeout=1800)
     status = proc.returncode
     if status != 0:
         raise RemoteCopyError(proc.stderr.read().decode())

@@ -94,7 +94,7 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_guid == dim_student.c.student_guid,
                                                                   fact_asmt_outcome.c.section_guid == dim_student.c.section_guid))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.most_recent))])
-    query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
+    query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.student_guid == student_guid))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     query = query.order_by(dim_asmt.c.asmt_subject.desc())

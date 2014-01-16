@@ -35,6 +35,6 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     subjects_map = get_subjects_map()
     # mapping asmt subjects
     for result in results:
-        asmtSubject = result.get("asmt_subject")
-        result["asmt_subject"] = subjects_map[asmtSubject]
+        asmtSubject = result.get(Constants.ASMT_SUBJECT)
+        result[Constants.ASMT_SUBJECT] = subjects_map[asmtSubject]
     return results

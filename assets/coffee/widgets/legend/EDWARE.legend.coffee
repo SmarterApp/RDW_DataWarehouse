@@ -59,7 +59,7 @@ define [
         interval['range'] = start_score + '-' + end_score
         ALDs.push interval
         i++
-      ALDs
+      ALDs.reverse()
 
 
   # Legend section on comparing population report

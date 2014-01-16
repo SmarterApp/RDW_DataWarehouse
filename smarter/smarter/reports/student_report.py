@@ -128,7 +128,7 @@ def __calculateClaimScoreRelativeDifference(items):
 
 def __arrange_results(results, subjects_map, custom_metadata_map):
     '''
-    This method arranges the data retreievd from the db to make it easier to consume by the client
+    This method arranges the data retrieved from the db to make it easier to consume by the client
     '''
     new_results = {}
     for result in results:
@@ -170,8 +170,8 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                    },
                })
-@audit_event()
 @user_info
+@audit_event()
 def get_student_report(params):
     '''
     Individual Student Report

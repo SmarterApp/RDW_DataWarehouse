@@ -1,26 +1,24 @@
 <div id="legendTemplate">
     <div class="row">
         <div class="span4">
-            <div class="achievement">
-                <!-- ALD -->
-                <h4>{{labels.achievement_level_descriptors}}:</h4>
-                <table class="table edware-table-bordered">
-                    <thead>
-                        <tr>
-                            <th style="width:17%;">{{labels.color}}</th>
-                            <th>{{labels.description}}</th>
-                            <th>{{labels.score_range}}</th>
-                        </tr>
-                    </thead>
-                    {{#ALDs}}
+            <!-- ALD -->
+            <h4>{{labels.achievement_level_descriptors}}:</h4>
+            <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
+                <thead>
                     <tr>
-                        <td><div class="edware-icon-ALD-color" style="background-color:{{color}};"></div></td>
-                        <td><strong class="blackText">{{description}}</strong></td>
-                        <td><strong class="blackText">{{range}}</strong></td>
+                        <th style="width:11%;">{{labels.color}}</th>
+                        <th>{{labels.description}}</th>
+                        <th>{{labels.score_range}}</th>
                     </tr>
-                    {{/ALDs}}
-                </table>
-            </div>
+                </thead>
+                {{#ALDs}}
+                <tr>
+                    <td><div class="edware-icon-ALD-color" style="background-color:{{color}};"></div></td>
+                    <td><strong class="blackText">{{description}}</strong></td>
+                    <td><strong class="blackText">{{range}}</strong></td>
+                </tr>
+                {{/ALDs}}
+            </table>
         </div>
         <div class="populationBarDetails span7 edware-border-left">
             <h4>{{labels.population_bar_details}}:</h4>

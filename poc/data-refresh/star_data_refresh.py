@@ -101,7 +101,7 @@ def migrate_data():
     '''
     engine = connect_db('postgresql+psycopg2', 'edware', 'edware2013', 'dbpgudl0.qa.dum.edwdc.net', 5432, 'edware')
     session = create_sqlalch_session(engine)
-    metadata = get_schema_metadata(engine, 'edware_ca_1_3')
+    metadata = get_schema_metadata(engine, SCHEMA_NAME)
     print(metadata.tables.keys())
 
     staging_star_fact = get_sqlalch_table_object(metadata, SCHEMA_NAME, STG_STAR_FACT_TABLE)

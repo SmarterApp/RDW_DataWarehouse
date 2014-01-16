@@ -40,22 +40,23 @@ IDEAL_DISTRICT_CHUNK = 100000
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
 components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
+DEFAULT_OUTPUT_DIR = os.path.join(DATAFILE_PATH, 'datafiles', 'csv')
 
-ENTITY_TO_PATH_DICT = {InstitutionHierarchy: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_inst_hier.csv'),
-                       Section: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
-                       Assessment: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_asmt.csv'),
-                       AssessmentOutcome: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                       Staff: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_staff.csv'),
-                       ExternalUserStudent: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'external_user_student_rel.csv'),
-                       Student: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
-
-CSV_FILE_NAMES = {InstitutionHierarchy: 'dim_inst_hier.csv',
-                  Section: 'dim_section.csv',
-                  Assessment: 'dim_asmt.csv',
-                  AssessmentOutcome: 'fact_asmt_outcome.csv',
-                  Staff: 'dim_staff.csv',
-                  ExternalUserStudent: 'external_user_student_rel.csv',
-                  Student: 'dim_student.csv'}
+#ENTITY_TO_PATH_DICT = {InstitutionHierarchy: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_inst_hier.csv'),
+#                       Section: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
+#                       Assessment: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_asmt.csv'),
+#                       AssessmentOutcome: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
+#                       Staff: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_staff.csv'),
+#                       ExternalUserStudent: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'external_user_student_rel.csv'),
+#                       Student: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
+#
+#CSV_FILE_NAMES = {InstitutionHierarchy: 'dim_inst_hier.csv',
+#                  Section: 'dim_section.csv',
+#                  Assessment: 'dim_asmt.csv',
+#                  AssessmentOutcome: 'fact_asmt_outcome.csv',
+#                  Staff: 'dim_staff.csv',
+#                  ExternalUserStudent: 'external_user_student_rel.csv',
+#                  Student: 'dim_student.csv'}
 
 LAST_NAMES = 'last_names'
 FEMALE_FIRST_NAMES = 'female_first_names'
@@ -72,16 +73,14 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict, output_config, do_pld_adjustment=True, star_format=True,
-                                   landing_zone_format=False, single_file=True, district_chunk_size=0,
-                                   gen_dim_asmt=False):
-    '''
+def generate_data_from_config_file(config_module, output_dict, output_config, do_pld_adjustment=True, district_chunk_size=0):
+    """
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
 
     @param config_module: module that contains all configuration information for the data creation process
     @return nothing
-    '''
+    """
 
     # generate one batch_guid for all records
     batch_guid = uuid4()
@@ -98,7 +97,7 @@ def generate_data_from_config_file(config_module, output_dict, output_config, do
     # output assessments
     asmt_output_dicts = {}
     for asmt in assessments:
-        util.combine_dicts_of_lists(asmt_output_dicts, output_data(output_config, output_dict, assessment=asmt))
+        util.combine_dicts_of_lists(asmt_output_dicts, output_data(output_config, output_dict, assessment=asmt, write_data=False))
     output_from_dict_of_lists(asmt_output_dicts)
 
     # Generate the all the data
@@ -113,22 +112,23 @@ def generate_data_from_config_file(config_module, output_dict, output_config, do
         print('district_chunk size', district_chunk_size)
         generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names,
                                      demographics_info, from_date, most_recent, to_date, street_names, batch_guid,
-                                     output_dict, output_config, max_chunk=district_chunk_size, star_format=star_format,
-                                     landing_zone_format=landing_zone_format, single_file=single_file,
-                                     gen_dim_asmt=gen_dim_asmt)
+                                     output_dict, output_config, max_chunk=district_chunk_size)
 
         state = generate_state(state_population.state_name, state_population.state_code)
         create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10)
-        # TODO: use new output format
-        if star_format and gen_dim_asmt:
-            output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date)
+
+        # output state level staff
+        all_staff_dict = {}
+        for staff_member in state.staff:
+            util.combine_dicts_of_lists(all_staff_dict, output_data(output_config, output_dict, batch_guid=batch_guid, staff=staff_member, write_data=False))
+        output_from_dict_of_lists(all_staff_dict)
 
     return True
 
 
 def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date, gen_dim_asmt=False):
-    '''
-    '''
+    """
+    """
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(output_dict)
     print('Writing CSV files')
@@ -161,13 +161,6 @@ def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, f
 
     if gen_dim_asmt:
         create_csv(staff, output_dict[Staff])
-
-
-def output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date):
-    '''
-    '''
-    state_staff = state.staff
-    create_csv(state_staff, output_dict[Staff])
 
 
 def output_data_to_selected_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date,
@@ -230,10 +223,10 @@ def output_generated_districts_to_csv(districts, state, batch_guid, output_dict,
 
 
 def get_values_from_config(config_module):
-    '''
+    """
     Given a config module pull out all information that is necessary for the generation of data
     In some cases also will create the relevant objects
-    '''
+    """
 
     # Setup demographics object
     demographics_info = Demographics(config_module.get_demograph_file())
@@ -274,9 +267,9 @@ def get_values_from_config(config_module):
 
 def generate_state_populations(states, state_types, demographics_info, assessments, district_types, school_types,
                                district_names, school_names, error_band_dict, from_date, most_recent, to_date, do_pld_adjustment):
-    '''
+    """
     Take all relevant information and loop through the states to generate the relevant data
-    '''
+    """
 
     state_populations = []
 
@@ -310,8 +303,7 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
 
 def generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names,
                                  demographics_info, from_date, most_recent, to_date, street_names, batch_guid,
-                                 output_dict, output_config, max_chunk=10, star_format=True, landing_zone_format=False,
-                                 single_file=True, gen_dim_asmt=False):
+                                 output_dict, output_config, max_chunk=10):
     """
     """
     for chunk_position in range(0, len(state_population.districts), max_chunk):
@@ -321,13 +313,11 @@ def generate_districts_in_chunks(state_population, assessments, error_band_dict,
                                                                   demographics_info, from_date, most_recent, to_date, street_names)
         # write district to file
         output_generated_districts_to_csv(districts, state_population, batch_guid, output_dict, from_date, most_recent, to_date, output_config)
-        #output_data_to_selected_format(districts, state_population, batch_guid, output_dict, from_date, most_recent,
-        #                               to_date, star_format, landing_zone_format, single_file, gen_dim_asmt)
 
 
 def get_district_chunk(state_population, chunk_size, start_pos):
-    '''
-    '''
+    """
+    """
     districts = state_population.districts
     if start_pos > len(districts):
         return
@@ -338,9 +328,9 @@ def get_district_chunk(state_population, chunk_size, start_pos):
 
 
 def create_state_population_from_districts(district_list, state_population):
-    '''
+    """
     create a new state population object from a subset of districts
-    '''
+    """
     state_demographic_totals = add_list_of_district_populations(district_list)
 
     new_state_population = StatePopulation(state_population.state_name, state_population.state_code, state_population.state_type, state_population.subject,
@@ -351,9 +341,9 @@ def create_state_population_from_districts(district_list, state_population):
 
 def generate_districts_for_state_population_chunk(state_populations_chunk, assessments, error_band_dict, district_names, school_names,
                                                   demographics_info, from_date, most_recent, to_date, street_names):
-    '''
+    """
     Generate a real state with districts, schools, students, sections and teachers
-    '''
+    """
 
     #for state_population in state_populations:
     demographics_id = state_populations_chunk.demographics_id
@@ -372,9 +362,9 @@ def generate_districts_for_state_population_chunk(state_populations_chunk, asses
 
 
 def create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10):
-    '''
+    """
     Create the state-level staff
-    '''
+    """
     state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, from_date, most_recent, to_date, state_code=state.state_code)
     state.staff = state_level_staff
     return state
@@ -382,10 +372,10 @@ def create_state_level_staff(state, from_date, most_recent, to_date, number_of_s
 
 def get_school_population(school, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments,
                           error_band_dict, state_name, state_code, from_date, most_recent, to_date, street_names, pld_adjustment):
-    '''
+    """
     create teachers, students and sections for a school
     @param school: a school object
-    '''
+    """
     eb_min_perc = error_band_dict[constants.MIN_PERC]
     eb_max_perc = error_band_dict[constants.MAX_PERC]
     eb_rand_adj_lo = error_band_dict[constants.RAND_ADJ_PNT_LO]
@@ -458,8 +448,8 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
 
 
 def generate_teachers_for_sections(staff_per_section, sections, from_date, most_recent, to_date, school, state_code):
-    '''
-    '''
+    """
+    """
     all_staff = []
     for section in sections:
         staff = generate_multiple_staff(staff_per_section, 'Teacher', from_date, most_recent,
@@ -473,9 +463,9 @@ def generate_teachers_for_sections(staff_per_section, sections, from_date, most_
 
 
 def set_student_institution_information(students, school, from_date, most_recent, to_date, street_names, math_teacher, ela_teacher, state_code):
-    '''
+    """
     For each student assigned to a school. Set the relevant information
-    '''
+    """
     id_generator = IdGen()
     for student in students:
         city_name_1 = random.choice(street_names)
@@ -498,9 +488,9 @@ def set_student_institution_information(students, school, from_date, most_recent
 
 
 def assign_students_sections(students, math_sections, ela_sections):
-    '''
+    """
     For a list of students and sections. Assign each student a section for math and ela
-    '''
+    """
     assert len(math_sections) == len(ela_sections)
     student_size = len(students)
     students_per_section = math.ceil(student_size / len(math_sections))
@@ -520,10 +510,10 @@ def assign_students_sections(students, math_sections, ela_sections):
 
 
 def set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_taken, years, types):
-    '''
+    """
     take a list of students and assign them assessment record ids.
     subjects and asmt_rec_ids are lists that should match
-    '''
+    """
     for student in students:
         for i in range(len(subjects)):
             student.asmt_rec_ids[subjects[i]] = asmt_rec_ids[i]
@@ -536,10 +526,10 @@ def set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_t
 
 
 def apply_subject_percentages(subject_percentages, students):
-    '''
+    """
     based on the percentages for each student taking an assessment, remove a subject
     record for that percentage of students
-    '''
+    """
     # For each subject, calculate the number of students that should not have
     # this assessment record
     for subject in subject_percentages:
@@ -555,10 +545,10 @@ def apply_subject_percentages(subject_percentages, students):
 
 
 def get_students_by_counts(grade, grade_counts, student_info_dict):
-    '''
+    """
     @param grade_counts: A five element list that contains the performance level counts for a grade
     [total, pl1, pl2, pl3, pl4]
-    '''
+    """
     students = []
     short_sum = 0
     total = grade_counts[0]
@@ -582,9 +572,9 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
 def create_schools(district, school_names_1, school_names_2, student_info_dict, subject_percentages,
                    demographics_info, demographics_id, assessments, error_band_dict, state_name,
                    state_code, from_date, most_recent, to_date, street_names):
-    '''
+    """
     create and return a list of schools from a list of districts
-    '''
+    """
     schools = []
 
     for sch_pop in district.school_populations:
@@ -614,9 +604,9 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
 def create_districts(state_population, district_names_1, district_names_2, school_names_1, school_names_2, student_info_dict,
                      subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name,
                      state_code, from_date, most_recent, to_date, street_names):
-    '''
+    """
     create and return a list of districts
-    '''
+    """
     districts = []
     district_populations = state_population.districts
 
@@ -636,13 +626,13 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
 
 
 def generate_students_info_from_demographic_counts(state_population, assessments, error_band_dict):
-    '''
+    """
     Construct pools of students for each grade and performance level with assigned demographics
     @param state_population: A state population object that has been populated with demographic data
     @param assessments: A list of assessment objects
     @param error_band_dict: A dictionary containing the error band information
     @return: A dictionary of students with the following form {<grade>: {'PL1': [students], 'PL2': [students], ...} }
-    '''
+    """
 
     demographic_totals = state_population.state_demographic_totals
 
@@ -690,12 +680,12 @@ def generate_students_info_from_demographic_counts(state_population, assessments
 
 
 def generate_students_with_demographics(score_pool, demographic_totals, grade):
-    '''
+    """
     Given a set of scores and the demographic numbers. Create studentInfo objects that match
     the given values
     @param score_pool: A dict of scores by performance levels
     @param demographic_totals: A dictionary of numbers for each performance level by demographic
-    '''
+    """
 
     gender_group = 1
     groupings = sorted({count_list[L_GROUPING] for count_list in demographic_totals.values() if count_list[L_GROUPING] not in [OVERALL_GROUP, gender_group]})  # TODO: Could pull out and define list as a constant elsewhere
@@ -710,9 +700,9 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
 
 
 def create_student_info_dict(group_num, score_pool, demographic_totals, grade):
-    '''
+    """
     Create a dictionary of student info objects
-    '''
+    """
     student_info_dict = {perf_lvl: [] for perf_lvl in score_pool}
     ordered_names = sorted(demographic_totals, key=lambda k: demographic_totals[k][L_TOTAL])
 
@@ -732,9 +722,9 @@ def create_student_info_dict(group_num, score_pool, demographic_totals, grade):
 
 
 def create_student_infos_by_gender(gender, count, performance_level, score_pool, grade):
-    '''
+    """
     Create a list of students all with the same gender and assign them scores
-    '''
+    """
     student_info_list = []
     score_list = score_pool[performance_level]
     for _i in range(count):
@@ -751,9 +741,9 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
 
 
 def assign_demographics_for_grouping(group_num, student_info_pool, demographic_totals):
-    '''
+    """
     Assign students demographics based on the totals passed in
-    '''
+    """
     # Copy student_info pools lists
     student_info_dict = {perf_lvl: student_info_pool[perf_lvl][:] for perf_lvl in student_info_pool}
 
@@ -771,9 +761,9 @@ def assign_demographics_for_grouping(group_num, student_info_pool, demographic_t
 
 
 def assign_demographic_to_students(demographic_name, student_pool, count, performance_level):
-    '''
+    """
     Assign a number of students that are in the given performance level the given demographic
-    '''
+    """
     student_list = student_pool[performance_level]
     for _i in range(count):
         if len(student_list) <= 0:
@@ -788,11 +778,11 @@ def assign_demographic_to_students(demographic_name, student_pool, count, perfor
 
 
 def create_asmt_score_pool_dict(assessment_scores):
-    '''
+    """
     Given a list of assessment score objects, split them into pools based on performance level
     @param assessment_scores: A list of assessmentScore objects
     @return: A dictionary with Performance Level numbers as keys. Where the values are a list of assessmentScores
-    '''
+    """
 
     score_pl_dict = {}
 
@@ -804,11 +794,11 @@ def create_asmt_score_pool_dict(assessment_scores):
 
 
 def get_flat_grades_list(school_config, grade_key):
-    '''
+    """
     pull out grades from score_config and place in flat list
     @param school_config: A dictionary of school info
     @return: list of grades
-    '''
+    """
     grades = []
 
     for school_type in school_config:
@@ -821,14 +811,14 @@ def get_flat_grades_list(school_config, grade_key):
 
 
 def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date, state_code='NA', district_guid='NA', school_guid='NA'):
-    '''
+    """
     Generate staff that are not teachers
     @param number_of_staff: The number of staff memebers to generate
     @keyword state_code: The state code to use for the staff memeber. If applicable.
     @keyword district_guid: The guid to the district the staff member is in. If applicable.
     @keyword school_guid: The guid to the school the staff member is in. If applicable.
     @return: a list of Staff objects
-    '''
+    """
     hier_user_type = 'Staff'
     staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code,
                                          district_guid=district_guid, school_guid=school_guid, to_date=to_date)
@@ -836,12 +826,12 @@ def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date
 
 
 def generate_institution_hierarchy_from_helper_entities(state_population, district, school, from_date, most_recent, to_date):
-    '''
+    """
     Create an InstitutionHierarchy object from the helper entities provided
     @param state_population: a State population
     @param district: A District object
     @param school: A School object
-    '''
+    """
     state_name = state_population.state_name
     state_code = state_population.state_code
     district_guid = district.district_guid
@@ -858,13 +848,13 @@ def generate_institution_hierarchy_from_helper_entities(state_population, distri
 
 
 def create_output_dict(output_path):
-    '''
+    """
     create a dictionary that specifies the output path for all csv files
     @param output_path: the path to where to store the files
     @type output_path: str
     @return: A dict containing all ouput paths
     @rtype: dict
-    '''
+    """
     out_dict = {}
 
     for fname in CSV_FILE_NAMES:
@@ -874,21 +864,21 @@ def create_output_dict(output_path):
 
 
 def calculate_dist_chunk(state_population):
-    '''
+    """
     using the state population object and the number of students present, determine how large a chunk should be.
-    '''
+    """
     avg_district_size = state_population.total_students_in_state / len(state_population.districts)
     district_chunk = IDEAL_DISTRICT_CHUNK / avg_district_size
     return max(1, int(district_chunk))
 
 
 def generate_name_list_dictionary(list_name_to_path_dictionary):
-    '''
+    """
     Create a dictionary that contains naming lists as keys and a list of file
     lines as values
     @param list_name_to_path: a dictionary mapping names to file paths
     @return:  a dictionary mapping name to file paths
-    '''
+    """
     name_list_dictionary = {}
     for list_name in list_name_to_path_dictionary:
         path = list_name_to_path_dictionary[list_name]
@@ -907,39 +897,25 @@ def read_datagen_output_format_yaml(output_format_config_file):
     return output_format
 
 
-def main(output_format_config_file, config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True,
-         landing_zone_format=False, single_file=True, district_chunk_size=0, gen_dim_staff=False):
+def main(output_format_config_file, config_mod_name='dg_types', output_path=DEFAULT_OUTPUT_DIR, do_pld_adjustment=True, district_chunk_size=0):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
-    # setup output path dict
-    output_dict = ENTITY_TO_PATH_DICT
-
-    if output_path:
-        output_dict = create_output_dict(output_path)
-
-    if not gen_dim_staff and Staff in output_dict:
-        del output_dict[Staff]
-
-    if output_format_config_file:
-        output_format_dict = read_datagen_output_format_yaml(output_format_config_file)
-        pprint.pprint(output_format_dict)
-        #output_keys = ['star', 'lz']
-        yaml_output_dict = initialize_csv_file(output_format_dict, output_path)
+    output_format_dict = read_datagen_output_format_yaml(output_format_config_file)
+    yaml_output_dict = initialize_csv_file(output_format_dict, output_path)
 
     # generate_data
-    generate_data_from_config_file(config_module, yaml_output_dict, output_format_dict, do_pld_adjustment, star_format, landing_zone_format,
-                                   single_file, district_chunk_size, gen_dim_staff)
+    generate_data_from_config_file(config_module, yaml_output_dict, output_format_dict, do_pld_adjustment, district_chunk_size)
 
     # print time
     t2 = datetime.datetime.now()
-    print("data_generation starts ", t1)
-    print("data_generation ends   ", t2)
+    print()
+    print("data_generation starts\t\t", t1)
+    print("data_generation ends\t\t", t2)
+    print('data_generation total time\t', t2 - t1)
+    print()
 
-    # extract the output folder path
-    output_components = list(output_dict.values())[0].split(os.sep)
-    output_folder = str.join(os.sep, output_components[:-1])
-    return output_folder
+    return output_path
 
 
 if __name__ == '__main__':
@@ -953,25 +929,13 @@ if __name__ == '__main__':
                         help='Specify the DataGen output format needed.',
                         required=False)
     parser.add_argument('--output', dest='output_path', action='store',
-                        default=os.path.join(DATAFILE_PATH, 'datafiles', 'csv'),
+                        default=DEFAULT_OUTPUT_DIR,
                         help='Specify the location of the output csv files. Default: "datafiles/csv/"')
     parser.add_argument('-d', '--district-chunk-size', type=int, default=0,
                         help='The number of district to generate and output at a time. If this value is'
                              ' less than 1 this will be calculated at run time. Default: 0')
     parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
                         help='Specify this flag to generate data without applying the performance level adjustments')
-    parser.add_argument('-l', '--lz-format', action='store_true', dest='lz_format',
-                        help='generate landing zone format instead of star schema format')
-    parser.add_argument('-b', '--star-and-lz', action='store_true',
-                        help='create both star schema and landing zone output file')
-    parser.add_argument('-m', '--multi-lz-files', action='store_true',
-                        help='write the landing zone csv files to multiple files instead of one single file')
-    parser.add_argument('-s', '--staff', action='store_true', help='generate dim_staff file in output')
     args = parser.parse_args()
 
-    star_format = True if args.star_and_lz or not args.lz_format else False
-    landing_zone = True if args.star_and_lz or args.lz_format else False
-    single_file = not args.multi_lz_files
-
-    main(args.output_format, args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file,
-         args.district_chunk_size, args.staff)
+    main(args.output_format, args.config_module, args.output_path, args.do_pld_adjustment, args.district_chunk_size)

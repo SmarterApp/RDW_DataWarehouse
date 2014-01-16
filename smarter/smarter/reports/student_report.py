@@ -170,8 +170,8 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                    },
                })
-@audit_event()
 @user_info
+@audit_event()
 def get_student_report(params):
     '''
     Individual Student Report

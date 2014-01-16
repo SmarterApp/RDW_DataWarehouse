@@ -64,8 +64,8 @@ REPORT_PARAMS = merge_dict({
 @report_config(
     name=REPORT_NAME,
     params=REPORT_PARAMS)
-@audit_event()
 @user_info
+@audit_event()
 def get_list_of_students_report(params):
     '''
     List of Students Report

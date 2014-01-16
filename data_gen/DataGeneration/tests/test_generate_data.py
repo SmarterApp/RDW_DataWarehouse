@@ -45,13 +45,6 @@ class Test(unittest.TestCase):
         self.state_population.get_state_demographics(self.demo_obj, self.demo_id)
         self.state_population.demographics_id = self.demo_id
         self.error_band_dict = {'min_divisor': 32, 'max_divisor': 8, 'random_adjustment_points_lo': -10, 'random_adjustment_points_hi': 25}
-        #self.ts_cvs_names = {InstitutionHierarchy: os.path.join(__location__, 'ts_dim_inst_hier.csv'),
-        #                     Section: os.path.join(__location__, 'ts_dim_section.csv'),
-        #                     Assessment: os.path.join(__location__, 'ts_dim_asmt.csv'),
-        #                     AssessmentOutcome: os.path.join(__location__, 'ts_fact_asmt_outcome.csv'),
-        #                     Staff: os.path.join(__location__, 'ts_dim_staff.csv'),
-        #                     ExternalUserStudent: os.path.join(__location__, 'ts_external_user_student_rel.csv'),
-        #                     Student: os.path.join(__location__, 'ts_dim_student.csv')}
 
         self.output_config_yaml = os.path.join(__location__, '..', 'datafiles', 'configs', 'utest_datagen_config.yaml')
 
@@ -726,12 +719,6 @@ class Test(unittest.TestCase):
         result = gd2.create_output_dict(self.output_dir)
 
         self.assertDictEqual(result, self.entity_to_path_dict)
-
-    def test_prepare_csv_files(self):
-        gd2.prepare_csv_files(self.entity_to_path_dict)
-        for entity in self.entity_to_path_dict:
-            self.read_row_in_csv(self.entity_to_path_dict[entity], entity.getHeader())
-        #self.remove_files(list(self.entity_to_path_dict.values()))
 
     ##==================================
     ## Helper Methods

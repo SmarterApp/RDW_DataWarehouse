@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
                                     DummyEntity2: os.path.join(self.output_dir, 'dummy_ent_2.fortest')}
         self.csv_file_names = {DummyEntity1: 'dummy_ent_1.fortest',
                                DummyEntity2: 'dummy_ent_2.fortest'}
-        self.csv_file = write_demographics_csv()
+        self.csv_file = write_demographics_csv(self.output_dir)
         self.demo_obj = dmg.Demographics(self.csv_file)
         self.demo_id = 'typical1'
         self.state_population = sp.StatePopulation('Test', 'TS', 'typical_1')
@@ -733,7 +733,7 @@ class Test(unittest.TestCase):
         list_name = 'unit_test_file_for_testing{num}'
         file_list = []
         for i in range(file_count):
-            file_name = list_name.format(num=i)
+            file_name = os.path.join(self.output_dir, list_name.format(num=i))
             with open(file_name, 'w') as f:
                 for i in range(name_count):
                     f.write('name_{0}\n'.format(i))
@@ -769,7 +769,7 @@ class DummyEntity2(object):
         return ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
 
 
-def write_demographics_csv():
+def write_demographics_csv(output_dir):
     csv_file_data = [
         ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, '3', 4),
         ('typical1', '0', 'math', '3', 'All Students', 'all', '100', '9', '30', '48', '13'),
@@ -811,7 +811,7 @@ def write_demographics_csv():
         ('typical1', '5', 'ela', '11', 'Economically Disadvantaged', 'dmg_prg_tt1', '57', '13', '37', '42', '8'),
     ]
 
-    file_path = os.path.join(__location__, 'test_file.csv')
+    file_path = os.path.join(output_dir, 'test_file.csv')
 
     with open(file_path, 'w') as cfile:
         cwriter = csv.writer(cfile)

@@ -65,3 +65,4 @@ data_gen/DataGeneration/.pydevproject
 .project
 
 config/gpg/random_seed
+data_gen/DataGeneration/datafiles/csv

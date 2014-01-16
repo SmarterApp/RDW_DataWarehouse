@@ -15,15 +15,11 @@ import yaml
 import pprint
 
 from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
-from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
-                                                             generate_multiple_staff, generate_assessment_outcomes_from_student_info,
-                                                             generate_students_from_student_info)
-from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_files
+from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy,
+                                                             generate_sections, generate_multiple_staff)
 from DataGeneration.src.models.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
 from DataGeneration.src.constants import constants
 from DataGeneration.src.generators.generate_scores import generate_overall_scores
-from DataGeneration.src.models.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
-                                                Staff, ExternalUserStudent, Student)
 from DataGeneration.src.generators.generate_helper_entities import generate_district, generate_school, generate_state
 from DataGeneration.src.models.helper_entities import StudentInfo
 from DataGeneration.src.utils.print_state_population import print_state_population
@@ -32,7 +28,6 @@ from DataGeneration.src.utils.assign_students_subjects_scores import assign_scor
 from DataGeneration.src.utils.idgen import IdGen
 from DataGeneration.src.calc import claim_score_calculation
 from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
-from DataGeneration.src.models.landing_zone_data_format import output_generated_districts_to_lz_format, prepare_lz_csv_file, output_generated_asmts_to_json
 from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file, output_data, output_from_dict_of_lists
 
 
@@ -108,57 +103,6 @@ def generate_data_from_config_file(config_module, output_dict, output_config, do
         output_from_dict_of_lists(all_staff_dict)
 
     return True
-
-
-def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date, gen_dim_asmt=False):
-    """
-    """
-    # First thing: prep the csv files by deleting their contents and adding appropriate headers
-    prepare_csv_files(output_dict)
-    print('Writing CSV files')
-
-    create_csv(assessments, output_dict[Assessment])
-
-    institution_hierarchies = []
-    staff = []
-    sections = []
-
-    for state in states:
-        staff += state.staff
-        for district in state.districts:
-            staff += district.staff
-            for school in district.schools:
-                staff += school.teachers
-                sections += school.sections
-
-                inst_hier = generate_institution_hierarchy_from_helper_entities(state, district, school, from_date,
-                                                                                most_recent, to_date)
-                institution_hierarchies.append(inst_hier)
-                student_entities = generate_students_from_student_info(school.student_info)
-                fact_assessment_entities = generate_assessment_outcomes_from_student_info(school.student_info, batch_guid, inst_hier)
-
-                create_csv(student_entities, output_dict[Student])
-                create_csv(fact_assessment_entities, output_dict[AssessmentOutcome])
-
-    create_csv(institution_hierarchies, output_dict[InstitutionHierarchy])
-    create_csv(sections, output_dict[Section])
-
-    if gen_dim_asmt:
-        create_csv(staff, output_dict[Staff])
-
-
-def output_data_to_selected_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date,
-                                   star_format=True, landing_zone_format=False, single_file=True, gen_dim_asmt=False):
-    """
-    """
-    print('Writing data to file: %s districts' % len(districts))
-    if star_format:
-        output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date,
-                                          most_recent, to_date, gen_dim_asmt)
-    if landing_zone_format:
-        output_generated_districts_to_lz_format(districts, state, batch_guid, output_dict, from_date,
-                                                most_recent, to_date, single_file)
-    print('Data write complete')
 
 
 def output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, output_config, gen_dim_asmt=False):
@@ -672,7 +616,8 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
     """
 
     gender_group = 1
-    groupings = sorted({count_list[L_GROUPING] for count_list in demographic_totals.values() if count_list[L_GROUPING] not in [OVERALL_GROUP, gender_group]})  # TODO: Could pull out and define list as a constant elsewhere
+    # TODO: Could pull out and define list as a constant elsewhere
+    groupings = sorted({count_list[L_GROUPING] for count_list in demographic_totals.values() if count_list[L_GROUPING] not in [OVERALL_GROUP, gender_group]})
 
     # Create new student info objects with a gender assigned and scores
     student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade)

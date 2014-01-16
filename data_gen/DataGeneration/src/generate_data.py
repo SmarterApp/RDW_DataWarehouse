@@ -78,6 +78,7 @@ def generate_data_from_config_file(config_module, output_dict, output_config, do
     for asmt in assessments:
         util.combine_dicts_of_lists(asmt_output_dicts, output_data(output_config, output_dict, assessment=asmt, write_data=False))
     output_from_dict_of_lists(asmt_output_dicts)
+    del asmt_output_dicts
 
     # Generate the all the data
     print('Generating State Population Counts')
@@ -101,6 +102,7 @@ def generate_data_from_config_file(config_module, output_dict, output_config, do
         for staff_member in state.staff:
             util.combine_dicts_of_lists(all_staff_dict, output_data(output_config, output_dict, batch_guid=batch_guid, staff=staff_member, write_data=False))
         output_from_dict_of_lists(all_staff_dict)
+        del all_staff_dict
 
     return True
 
@@ -138,15 +140,20 @@ def output_generated_districts_to_csv(districts, state, batch_guid, output_dict,
                                                batch_guid=batch_guid, student_info=student_in, inst_hier=inst_hier, write_data=False)
                 all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, data_output_dict)
 
+            # write all school items to file
+            output_from_dict_of_lists(all_data_output_dict)
+            del all_data_output_dict
+            all_data_output_dict = {}
+
     # get output data for staff and sections
     for staff_member in staff:
         staff_data_dict = output_data(output_config, output_dict, staff=staff_member, batch_guid=batch_guid, write_data=False)
-        all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, staff_data_dict)
+        util.combine_dicts_of_lists(all_data_output_dict, staff_data_dict)
     for section in sections:
         section_out_dict = output_data(output_config, output_dict, section=section, batch_guid=batch_guid, write_data=False)
-        all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, section_out_dict)
+        util.combine_dicts_of_lists(all_data_output_dict, section_out_dict)
 
-    # write all created dicts to file
+    # write all staff and sections to file
     output_from_dict_of_lists(all_data_output_dict)
 
 

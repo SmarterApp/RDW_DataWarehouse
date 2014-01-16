@@ -197,7 +197,7 @@ class DataGenerationValidation(unittest.TestCase):
                 # High school - School category from dim_inst_hier
                 overall_highschool = dict['High School']
                 # Validate Grades according to the school category
-                assert uniq_hi_list == overall_highschool, 'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
+                self.assertEqual(uniq_hi_list, overall_highschool, 'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4])
             # Middle School
             uniq_ml_list = []
             overall_middleschool_list = grade_dict['6'] + grade_dict['7'] + grade_dict['8']

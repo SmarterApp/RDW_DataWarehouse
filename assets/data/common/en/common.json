@@ -466,7 +466,7 @@
 	    }
 	],
 	"customViews": {
-	    "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Comprehensive Interim", "display": "Interim Comp."}],
+	    "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
 	    "items": {
 		"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
 		"{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -606,7 +606,7 @@
                     "value": "SUMMATIVE"
                 }, {
                     "display": "Interim Comprehensive",
-                    "value": "COMPREHENSIVE INTERIM"
+                    "value": "INTERIM COMPREHENSIVE"
                 }
             ]
         },

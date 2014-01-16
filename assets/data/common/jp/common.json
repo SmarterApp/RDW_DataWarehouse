@@ -447,7 +447,7 @@
 			}
 		],
 		"customViews": {
-		  "asmtTypes": [{"name": "Summative", "display": "累積的な"}, {"name": "Comprehensive Interim", "display": "暫定的な"}],
+		  "asmtTypes": [{"name": "Summative", "display": "累積的な"}, {"name": "Interim Comprehensive", "display": "暫定的な"}],
 			"items": {
                 "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
                 "{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -590,7 +590,7 @@
                     "value": "SUMMATIVE"
                 }, {
                     "display": "暫定包括",
-                    "value": "COMPREHENSIVE INTERIM"
+                    "value": "INTERIM COMPREHENSIVE"
                 }
             ]
         },

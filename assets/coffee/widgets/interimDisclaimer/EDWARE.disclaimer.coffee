@@ -3,10 +3,10 @@ define [
   "mustache"
   "edwarePreferences"
 ], ($, Mustache, edwarePreferences) ->
-  
+
 
   class EdwareDisclaimer
-    
+
     constructor: (@content) ->
       @interimDisclaimerIcon = $('.interimDisclaimerIcon')
       @bindEvents()
@@ -22,7 +22,7 @@ define [
         ), 10000
         # This will save that we've loaded it the first time
         @saveLoadedInfo()
-      
+
     bindEvents: () ->
       self = this
       # Show tooltip on mouseover
@@ -35,17 +35,17 @@ define [
 
     hasLoaded: () ->
       edwarePreferences.getInterimInfo()
-    
+
     saveLoadedInfo: () ->
       edwarePreferences.saveInterimInfo()
-    
+
     update: (asmtType) ->
-      if asmtType is "Comprehensive Interim"
+      if asmtType is "Interim Comprehensive"
         @interimDisclaimerIcon.show()
         @displayPopover()
       else
         @interimDisclaimerIcon.hide()
-        
+
   (($)->
     $.fn.edwareDisclaimer = (content) ->
       new EdwareDisclaimer(content)

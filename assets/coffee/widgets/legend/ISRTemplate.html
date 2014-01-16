@@ -84,12 +84,12 @@
     <div class="row">
         <div class="span5">
             <h4>{{labels.achievement_level_descriptors}}:</h4>
-            <table class="table edware-table-bordered edware-table-center" style="font-size: 11px;">
+            <table class="table edware-table-bordered edware-table-center">
                 <thead>
                     <tr>
-                        <th style="width:17%;"><em>{{labels.color}}</em></th>
-                        <th><em>{{labels.description}}</em></th>
-                        <th><em>{{labels.score_range}}</em></th>
+                        <th style="width:11%;">{{labels.color}}</th>
+                        <th>{{labels.description}}</th>
+                        <th>{{labels.score_range}}</th>
                     </tr>
                 </thead>
                 {{#ALDs}}
@@ -104,20 +104,20 @@
         <div class="span7 edware-border-left">
             <div>
                 <h4>{{labels.claim_score_details}}:</h4>
-                <table class="table edware-table-bordered edware-table-center" style="font-size: 11px;">
+                <table class="table edware-table-bordered edware-table-center">
                     <thead>
                         <tr>
-                            <th><em>Icon</em></th>
-                            <th><em>Description</em></th>
-                            <th><em>Meaning</em></th>
+                            <th style="width: 30px;">Icon</th>
+                            <th style="width: 150px;" >Description</th>
+                            <th>Meaning</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#legendInfo.performance_levels}}
                         <tr>
                             <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
-                            <td style="width: 115px;" class="blackText"><strong>{{desc}}</strong></td>
-                            <td>{{meaning}}</td>
+                            <td class="blackText"><strong>{{desc}}</strong></td>
+                            <td style="font-size: 14px;">{{meaning}}</td>
                         </tr>
                         {{/legendInfo.performance_levels}}
                     </tbody>

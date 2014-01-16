@@ -1,71 +1,74 @@
-<div id="legendTemplate" class="container">
-    <div class="span4 achievement">
-	<!-- ALD -->
-	<h4>{{labels.achievement_level_descriptors}}:</h4>
-	<table class="table">
-	    <thead>
-		<tr>
-		    <th style="width:17%;">{{labels.color}}</th>
-		    <th>{{labels.description}}</th>
-		    <th>{{labels.score_range}}</th>
-		</tr>
-	    </thead>
-	    {{#ALDs}}
-	    <tr>
-		<td><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
-		<td>{{description}}</td>
-		<td>{{range}}</td>
-	    </tr>
-	    {{/ALDs}}
-	</table>
-    </div>
-    <div class="losPerformanceBar span7">
-        <div class="container">
-            <div id="overall_score_details" class="span4">
-	        <h4>{{labels.overall_score_details}}:</h4>
-                <div class="confidenceLevel">
-                    <div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000;">
-                        <strong class="asmtScore">{{asmtScore}}</strong>
-                    </div>
-                    <div class="arrow1"></div>
-                    <div class="arrow2"></div>
-                    <div class="arrow3"></div>
-                    <div class="arrow4"></div>
-                </div>
-                <div class="notes">
-                    <h5>{{legendInfo.desc1}}</h5>
-                    <h5 style="margin-top: 10px;">{{legendInfo.desc2}}</h5>
-                    <h5 style="margin-top: 10px;">{{legendInfo.desc3}}</h5>
-                    <p>{{legendInfo.desc4}}</p>
-                </div>
-                <div class="numeric_score">
-                    <h5>{{legendInfo.desc5}}</h5>
-                    <p>{{legendInfo.desc6}}</p>
-                </div>
-            </div>
-            <div id="claim_score_details" class="span3">
-                <h4>{{labels.claim_score_details}}:</h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Icon</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#legendInfo.performance_levels}}
-                        <tr>
-                            <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
-                            <td>{{desc}}</td>
-                        </tr>
-                        {{/legendInfo.performance_levels}}
-                    </tbody>
-                </table>
-            </div>
+<div id="legendTemplate" class="content">
+    <div class="row">
+        <div class="span4 achievement">
+            <!-- ALD -->
+            <h4>{{labels.achievement_level_descriptors}}:</h4>
+            <table class="table edware-table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width:17%;">{{labels.color}}</th>
+                        <th>{{labels.description}}</th>
+                        <th>{{labels.score_range}}</th>
+                    </tr>
+                </thead>
+                {{#ALDs}}
+                <tr>
+                    <td><i class="edware-icon-ALD-color" style="background-color:{{color}} !important;""></i></td>
+                    <td><strong class="blackText">{{description}}</strong></td>
+                    <td><strong class="blackText">{{range}}</strong></td>
+                </tr>
+                {{/ALDs}}
+            </table>
         </div>
-        <div class="error_band_wrapper">
-	    <h4>{{labels.error_band}}:</h4>
-	    <p>{{legendInfo.error_band}}</p>
+        <div class="losPerformanceBar span7 edware-border-left">
+            <div class="container">
+                <div id="overall_score_details" class="span4">
+                    <h4>{{labels.overall_score_details}}:</h4>
+                    <div class="confidenceLevel">
+                        <div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000;">
+                            <strong class="asmtScore">{{asmtScore}}</strong>
+                        </div>
+                        <div class="arrow1"></div>
+                        <div class="arrow2"></div>
+                        <div class="arrow3"></div>
+                        <div class="arrow4"></div>
+                    </div>
+                    <div class="notes">
+                        <h5>{{legendInfo.desc1}}</h5>
+                        <h5 style="margin-top: 10px;">{{legendInfo.desc2}}</h5>
+                        <h5 style="margin-top: 10px;">{{legendInfo.desc3}}</h5>
+                        <p>{{legendInfo.desc4}}</p>
+                    </div>
+                    <div class="numeric_score">
+                        <h5>{{legendInfo.desc5}}</h5>
+                        <p>{{legendInfo.desc6}}</p>
+                    </div>
+                </div>
+                <div id="claim_score_details" class="span3">
+                    <h4>{{labels.claim_score_details}}:</h4>
+                    <table class="table edware-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#legendInfo.performance_levels}}
+                            <tr>
+                                <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
+                                <td><strong class="blackText">{{desc}}</strong></td>
+                            </tr>
+                            {{/legendInfo.performance_levels}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr>
+            <div class="error_band_wrapper">
+                <h4>{{labels.error_band}}:</h4>
+                <p>{{legendInfo.error_band}}</p>
+            </div>
         </div>
     </div>
 </div>

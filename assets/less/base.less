@@ -141,9 +141,9 @@ hr {
 }
 
 .box-shadow(@style, @c) when (iscolor(@c)) {
-  box-shadow:         @style @c;
-  -webkit-box-shadow: @style @c;
-  -moz-box-shadow:    @style @c;
+    box-shadow:         @style @c;
+    -webkit-box-shadow: @style @c;
+    -moz-box-shadow:    @style @c;
 }
 
 .box-shadow(@style, @alpha: 50%) when (isnumber(@alpha)) {
@@ -171,4 +171,42 @@ hr {
         background-position: initial;
     background-color: @color-C6;
     }
+}
+
+table {
+    &.edware-table-bordered {
+
+        border-collapse: collapse;
+
+        th {
+            font-weight: normal;
+            padding: 0px;
+            text-align: center;
+        }
+
+        td {
+            border: solid 1px @color-B24;
+        }
+    }
+
+    &.edware-table-center {
+        td {
+            vertical-align: middle;
+            line-height: 15px;
+        }
+    }
+}
+
+.row {
+
+    .edware-border-left {
+        border-left: solid 1px @color-B5;
+        padding-left: 17px;
+    }
+
+    .edware-border-right {
+        border-right: solid 1px @color-B5;
+        padding-right: 17px;
+    }
+
 }

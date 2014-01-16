@@ -18,7 +18,7 @@ define [
     # constructor with legend information as parameter
     constructor: (@legend, @reportName) ->
       this.subject = this.legend['subject']
-      
+
     # create legend in html format from mustache template
     create: (@container) ->
       data = {}
@@ -29,7 +29,7 @@ define [
       # need assessment score and color to display legend consistently across all ISR
       data['asmtScore'] = this.legend['subject'].asmt_score
       data['scoreColor'] = this.legend['subject'].score_color
-      
+
       data.labels = this.legend.labels
       @container.html Mustache.to_html(@getTemplate(), data)
       # create color bars
@@ -67,7 +67,7 @@ define [
 
     constructor: (@legend) ->
       super legend, 'comparingPopulationsReport'
-      
+
     getTemplate: ->
       CPopTemplate
 
@@ -83,18 +83,18 @@ define [
 
     constructor: (@legend) ->
       super legend, 'indivStudentReport'
-      
+
     getTemplate: ->
       ISRTemplate
 
     createBar: (subject, container)->
-      # use mustache template to display the json data 
+      # use mustache template to display the json data
       # show 300px performance bar on html page
       output = edwareConfidenceLevelBar.create subject, 300
       $('#legendTemplate .losPerfBar', container).html(output)
       # show 640px performance bar on pdf
       output = edwareConfidenceLevelBar.create subject, 640
-      $('#legendTemplate .confidenceLevel', container).html(output)
+      $('#legendTemplatePrint .confidenceLevel', container).html(output)
 
   # Legend section on list of students report
   class LOSLegend extends Legend
@@ -115,7 +115,7 @@ define [
   ( ($) ->
 
     # jQuery extension for creating legend section
-    # 
+    #
     # reportName: report name, should be one of three names: 'individual_student_report', 'list_of_students', 'comparing_populations'.
     # data: contains legend info.
     $.fn.createLegend = (reportName, data) ->

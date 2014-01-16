@@ -240,15 +240,18 @@
         "performance_levels": [
             {
                 "level": 3,
-                "desc": "Above Standard"
+                "desc": "Above Standard",
+                "meaning": "Your test results clearly show that you understand and are able to apply your knowledge to the standards in this subject-area of your grade."
             },
             {
                 "level": 2,
-                "desc": "At/Near Standard"
+                "desc": "At/Near Standard",
+                "meaning": "Your test results may be just above or just below the standard, but due to the error band (see below), the result it too close to call."
             },
             {
                 "level": 1,
-                "desc": "Below Standard"
+                "desc": "Below Standard",
+                "meaning": "Your test results clearly show that you have not yet met the standard in this subject-area for your grade."
             }
         ]
     },

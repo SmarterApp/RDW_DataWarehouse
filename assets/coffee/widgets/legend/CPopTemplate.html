@@ -1,42 +1,44 @@
 <div id="legendTemplate">
-    <div style="border-top: none;">
-	<div class="achievement">
-	    <!-- ALD -->
-	    <h4>{{labels.achievement_level_descriptors}}:</h4>
-	    <table class="ALD_table">
-		<thead>
-		    <tr>
-			<th class="ALD_table_header" style="width:17%;">{{labels.color}}</th>
-			<th class="ALD_table_header">{{labels.description}}</th>
-			<th class="ALD_table_header">{{labels.score_range}}</th>
-		    </tr>
-		</thead>
-				{{#ALDs}}
-		<tr>
-		    <td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
-		    <td class="ALD_table_cell">{{description}}</td>
-		    <td class="ALD_table_cell">{{range}}</td>
-		</tr>
-				{{/ALDs}}
-	    </table>
-	</div>
-    </div>
-    <div class="populationBarDetails">
-	<h4>{{labels.population_bar_details}}:</h4>
-	<div class="populationBar">
-            <div class="arrow1"></div>
-            <div class="arrow2"></div>
-            <div class="arrow3"></div>
-            <span class="indicator">{{legendInfo.indicator}}</span>
+    <div class="row">
+        <div class="span4">
+            <div class="achievement">
+                <!-- ALD -->
+                <h4>{{labels.achievement_level_descriptors}}:</h4>
+                <table class="table edware-table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:17%;">{{labels.color}}</th>
+                            <th>{{labels.description}}</th>
+                            <th>{{labels.score_range}}</th>
+                        </tr>
+                    </thead>
+                    {{#ALDs}}
+                    <tr>
+                        <td><div class="edware-icon-ALD-color" style="background-color:{{color}};"></div></td>
+                        <td><strong class="blackText">{{description}}</strong></td>
+                        <td><strong class="blackText">{{range}}</strong></td>
+                    </tr>
+                    {{/ALDs}}
+                </table>
+            </div>
         </div>
-	<div class="description">
-	    <h5>{{legendInfo.desc1}}</h5>q
-	    <h5>{{legendInfo.desc2}}</h5>
-	    <p>{{legendInfo.desc3}}</p>
-	</div>
-        <div class="notes">
-            <h5>{{labels.notes}}:</h5>
-            <p>{{#legendInfo.notes}}{{.}}<br/><br/>{{/legendInfo.notes}}</p>
+        <div class="populationBarDetails span7 edware-border-left">
+            <h4>{{labels.population_bar_details}}:</h4>
+            <div class="populationBar">
+                <div class="arrow1"></div>
+                <div class="arrow2"></div>
+                <div class="arrow3"></div>
+                <span class="indicator">{{legendInfo.indicator}}</span>
+            </div>
+            <div class="description">
+                <h5>{{legendInfo.desc1}}</h5>
+                <h5>{{legendInfo.desc2}}</h5>
+                <p>{{legendInfo.desc3}}</p>
+            </div>
+            <div class="notes">
+                <h5>{{labels.notes}}:</h5>
+                <p>{{#legendInfo.notes}}{{.}}<br/><br/>{{/legendInfo.notes}}</p>
+            </div>
         </div>
     </div>
 </div>

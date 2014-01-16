@@ -88,7 +88,7 @@ class DBConnection(ConnectionBase):
         :param query: A select query to be execute
         :param fetch_size: max number of rows to be returned
         '''
-        result = self.execute(query)
+        result = self.execute(query, stream_results=True)
         # we should make this configurable in the long run
         rows = result.fetchmany(fetch_size)
         while len(rows) > 0:
@@ -107,8 +107,8 @@ class DBConnection(ConnectionBase):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
         return dbUtil.get_metadata()
 
-    def execute(self, statement, *multiparams, **params):
-        return self.__connection.execute(statement, *multiparams, **params)
+    def execute(self, statement, stream_results=False, *multiparams, **params):
+        return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)
 
     def get_transaction(self):
         """

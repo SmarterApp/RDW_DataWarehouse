@@ -20,17 +20,17 @@ from DataGeneration.src.generators.generate_entities import (generate_assessment
                                                              generate_students_from_student_info)
 from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_files
 from DataGeneration.src.models.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
-import DataGeneration.src.constants.constants as constants
+from DataGeneration.src.constants import constants
 from DataGeneration.src.generators.generate_scores import generate_overall_scores
 from DataGeneration.src.models.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
                                                 Staff, ExternalUserStudent, Student)
 from DataGeneration.src.generators.generate_helper_entities import generate_district, generate_school, generate_state
 from DataGeneration.src.models.helper_entities import StudentInfo
 from DataGeneration.src.utils.print_state_population import print_state_population
-import DataGeneration.src.utils.util as util
+from DataGeneration.src.utils import util
 from DataGeneration.src.utils.assign_students_subjects_scores import assign_scores_for_subjects
 from DataGeneration.src.utils.idgen import IdGen
-import DataGeneration.src.calc.claim_score_calculation as claim_score_calculation
+from DataGeneration.src.calc import claim_score_calculation
 from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
 from DataGeneration.src.models.landing_zone_data_format import output_generated_districts_to_lz_format, prepare_lz_csv_file, output_generated_asmts_to_json
 from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file, output_data, output_from_dict_of_lists
@@ -41,22 +41,6 @@ DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
 components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
 DEFAULT_OUTPUT_DIR = os.path.join(DATAFILE_PATH, 'datafiles', 'csv')
-
-#ENTITY_TO_PATH_DICT = {InstitutionHierarchy: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_inst_hier.csv'),
-#                       Section: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
-#                       Assessment: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_asmt.csv'),
-#                       AssessmentOutcome: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-#                       Staff: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_staff.csv'),
-#                       ExternalUserStudent: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'external_user_student_rel.csv'),
-#                       Student: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
-#
-#CSV_FILE_NAMES = {InstitutionHierarchy: 'dim_inst_hier.csv',
-#                  Section: 'dim_section.csv',
-#                  Assessment: 'dim_asmt.csv',
-#                  AssessmentOutcome: 'fact_asmt_outcome.csv',
-#                  Staff: 'dim_staff.csv',
-#                  ExternalUserStudent: 'external_user_student_rel.csv',
-#                  Student: 'dim_student.csv'}
 
 LAST_NAMES = 'last_names'
 FEMALE_FIRST_NAMES = 'female_first_names'

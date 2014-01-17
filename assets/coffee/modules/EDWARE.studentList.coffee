@@ -270,15 +270,17 @@ define [
     convertAsmtTypes: (asmtAdministration) ->
       selectors = {}
       for asmt in asmtAdministration
-        # mapping asmt type to capitalized case
-        asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
-        asmt.asmt_subject_text = "#{asmt.asmt_subject} Details"
-        # TODO change the combination to reflect actual link between asmts
-        key = [asmt.asmt_year, asmt.asmt_type]
-        selectors[key] ?= []
-        selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{asmt.asmt_type}"
-        selectors[key].push asmt
+        for subject, subject_text of @subjectsData
+          selector = {}
+          # mapping asmt type to capitalized case
+          selector['asmt_type'] = Constants.ASMT_TYPE[asmt.asmt_type]
+          selector['asmt_subject'] = subject_text
+          selector['asmt_subject_text'] = "#{subject_text} Details"
+          # TODO change the combination to reflect actual link between asmts
+          key = [asmt.asmt_year, asmt.asmt_type]
+          selectors[key] ?= []
+          selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{asmt.asmt_type}"
+          selectors[key].push selector
       # reverse order to put Math before ELA
       for key, asmt of selectors
         asmt.sort (subject1, subject2)->

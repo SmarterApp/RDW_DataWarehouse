@@ -17,24 +17,19 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     with EdCoreDBConnection() as connection:
         fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        #  should it be always for summative?
-        query = select([fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_subject, fact_asmt_outcome.c.asmt_type,
-                        dim_asmt.c.asmt_guid],
+        query = select([fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type],
                        from_obj=[fact_asmt_outcome, dim_asmt])
         query = query.where(fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome.c.state_code == state_code).\
             where(and_(fact_asmt_outcome.c.school_guid == school_guid)).\
             where(and_(fact_asmt_outcome.c.district_guid == district_guid)).\
-            group_by(fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_subject, fact_asmt_outcome.c.asmt_type, dim_asmt.c.asmt_rec_id).\
+            group_by(fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type,).\
             order_by(fact_asmt_outcome.c.asmt_type.desc(), fact_asmt_outcome.c.asmt_year.desc())
         if asmt_grade:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         if student_guids:
             query = query.where(and_(fact_asmt_outcome.c.student_guid.in_(student_guids)))
+        print(query)
         results = connection.get_result(query)
     subjects_map = get_subjects_map()
-    # mapping asmt subjects
-    for result in results:
-        asmtSubject = result.get(Constants.ASMT_SUBJECT)
-        result[Constants.ASMT_SUBJECT] = subjects_map[asmtSubject]
     return results

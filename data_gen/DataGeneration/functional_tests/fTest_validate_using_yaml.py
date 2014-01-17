@@ -18,6 +18,9 @@ components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
 CONFIGS_LOCATION = os.path.join(DATAFILE_PATH, 'datafiles', 'configs')
 
+STAR_CONFIG = os.path.join(CONFIGS_LOCATION, 'datagen_config.yaml')
+LZ_CONFIG = os.path.join(CONFIGS_LOCATION, 'lz_output_config.yaml')
+
 
 class DataGenConfigTester(unittest.TestCase):
 
@@ -31,7 +34,7 @@ class DataGenConfigTester(unittest.TestCase):
         command = 'python -m DataGeneration.src.generate_data --config DataGeneration.src.configs.dg_types_SDS ' \
                   '--output {dirname} --format {config_file}'
         command = command.format(dirname=output_dir, config_file=output_format_config_file)
-        command = command + ' -l' if is_landing_zone else command
+        #command = command + ' -l' if is_landing_zone else command
         print(command)
         subprocess.call(command, shell=True)
 
@@ -84,14 +87,10 @@ class DataGenConfigTester(unittest.TestCase):
 
     def test_datagen_output_with_config(self):
 
-        datagen_configs = glob.glob(os.path.join(CONFIGS_LOCATION, '*.yaml'))
-        print(datagen_configs)
-
-        for config_file in datagen_configs:
-            print('Validating DataGen Star output based on Config: ' + config_file)
-            self.validate_datagen_star_format_from_config(config_file)
-            print('Validating DataGen LZ output based on Config: ' + config_file)
-            self.validate_datagen_lz_format_from_config(config_file)
+        print('Validating DataGen Star output based on Config: ' + STAR_CONFIG)
+        self.validate_datagen_star_format_from_config(STAR_CONFIG)
+        print('Validating DataGen LZ output based on Config: ' + LZ_CONFIG)
+        self.validate_datagen_lz_format_from_config(LZ_CONFIG)
 
 
 if __name__ == "__main__":

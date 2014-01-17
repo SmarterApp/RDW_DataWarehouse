@@ -45,9 +45,14 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
-                       route_tasks(tenant, request_id, tasks, queue_name=queue),
-                       archive.subtask(args=[request_id, directory_to_archive], queue=queue, immutable=True)).delay()
+        # BUG, it still routes to 'extract' queue due to chain
+#        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
+#                       route_tasks(tenant, request_id, tasks, queue_name=queue),
+#                       archive.subtask(args=[request_id, directory_to_archive], queue=queue, immutable=True)).delay()
+#        return result.get(timeout=celery_timeout)
+        prepare_path.apply_async(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+        route_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")

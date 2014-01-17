@@ -289,7 +289,11 @@ class RecordManager():
                     interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
                 # adjust for min cell size policy and do not return data if violated
                 min_cell_size = self._custom_metadata.get(alias, {}).get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE)
-                if total > (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE):
+                # get student counts for students in level 1 and 2
+                non_proficient_students_count = 0
+                for i in range(0, len(intervals) // 2):
+                    non_proficient_students_count += intervals[i][Constants.COUNT]
+                if total > (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE) and total != non_proficient_students_count:
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
                 else:
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1, Constants.LEVEL: interval.get('level')} for interval in intervals], Constants.TOTAL: -1}

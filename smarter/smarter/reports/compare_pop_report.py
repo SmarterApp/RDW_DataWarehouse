@@ -53,8 +53,8 @@ DEFAULT_MIN_CELL_SIZE = 0
             "pattern": "^[a-zA-Z0-9 ]{0,50}$",
         }
     }, FILTERS_CONFIG))
-@audit_event()
 @user_info
+@audit_event()
 def get_comparing_populations_report(params):
     '''
     Comparing Populations Report

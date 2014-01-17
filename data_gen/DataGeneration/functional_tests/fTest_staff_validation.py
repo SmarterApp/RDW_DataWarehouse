@@ -11,6 +11,7 @@ import shutil
 import tempfile
 
 
+@unittest.skip("skipping this test till starschema change has been made")
 class ValidateStaffColumn(unittest.TestCase):
 
     def setUp(self):

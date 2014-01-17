@@ -577,6 +577,8 @@ th.ui-th-column div {
 
 #legendTemplate {
 
+    .span4 {width: 284px;}
+
     h4 {
         font-size: 13px;
         color: @color-black;
@@ -589,16 +591,15 @@ th.ui-th-column div {
     }
 
     p {
-        color: @color-black;
-        font-size: 12px;
+        font-size: 11px;
         line-height: 120%;
     }
+
+    hr {margin: 20px 0 18px;}
 
     table {
         font-size: 11px;
         margin-bottom: 0px;
-
-        th { font-style: italic; }
 
         td:first-child { text-align: center; }
     }
@@ -631,7 +632,7 @@ th.ui-th-column div {
     }
 
     .overall_score_upper {
-        margin-top: 18px;
+        margin-top: 10px;
         position: relative;
 
         * {
@@ -648,7 +649,7 @@ th.ui-th-column div {
     .overall_score_lower {
         display: block;
         position: relative;
-        padding-bottom: 25px;
+        padding-bottom: 10px;
         top: -12px;
 
         h5, span {
@@ -889,7 +890,7 @@ th.ui-th-column div {
             .notes {
                 display: inline-block;
                 float:right;
-                width: 130px;
+                width: 133px;
             }
 
             .numeric_score {
@@ -2010,7 +2011,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
     }
 
     .legendPopover {
-        max-width: 980px;
+        min-width: 900px;
     }
 
     .active {

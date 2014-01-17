@@ -22,7 +22,6 @@ ENTITY_TO_PATH_DICT = {'dim_inst_hier': os.path.join(DATAFILE_PATH, 'datafiles',
                        'dim_student': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
 
 
-@unittest.skip("skipping this test till starschema change has been made")
 class ColumnValidationFuncTest(unittest.TestCase):
 
     def setUp(self):
@@ -45,7 +44,7 @@ class ColumnValidationFuncTest(unittest.TestCase):
         print(database_columns.keys())
 
         for table in csv_columns:
-            self.assertEqual(len(csv_columns[table]), len(database_columns[table]))
+            self.assertEqual(len(csv_columns[table]), len(database_columns[table]), "columns don't match for table: %s" % table)
             self.assertSetEqual(set(csv_columns[table]), set(database_columns[table]))
 
     def get_headers_from_csv(self):

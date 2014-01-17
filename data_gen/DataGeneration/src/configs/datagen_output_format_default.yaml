@@ -65,6 +65,7 @@ star:
             first_name: student_info.first_name
             last_name: student_info.last_name
             address_1: student_info.address_1
+            address_2: student_info.address_2
             city: student_info.city
             zip_code: student_info.zip_code
             gender: student_info.gender

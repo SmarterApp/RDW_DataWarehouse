@@ -1,5 +1,4 @@
 require [
-  "EDWARE.individualStudent"
-  "edwareUtil"
-], (edwareIndividualStudent, edwareUtil) ->
+  "edwareIndividualStudent"
+], (edwareIndividualStudent) ->
   new edwareIndividualStudent.EdwareISR()

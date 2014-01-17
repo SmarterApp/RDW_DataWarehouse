@@ -14,7 +14,7 @@ define [
   SUMMARY_TEMPLATE = getTemplate('SUMMARY_TEMPLATE')
 
   POPULATION_BAR_TEMPLATE = getTemplate('POPULATION_BAR_TEMPLATE')
-  
+
   TOTAL_POPULATION_TEMPLATE = getTemplate('TOTAL_POPULATION_TEMPLATE')
 
   NAME_TEMPLATE = getTemplate('NAME_TEMPLATE')
@@ -196,7 +196,7 @@ define [
       labels: options.colModel.labels
       export: subject.export
     }
-    
+
   processSubject = (options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]

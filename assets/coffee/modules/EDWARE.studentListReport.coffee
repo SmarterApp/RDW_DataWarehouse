@@ -1,5 +1,5 @@
 require [
-  "EDWARE.studentList"
+  "edwareStudentList"
   "edwareFilter"
   "edwareDataProxy"
   "edwareConstants"

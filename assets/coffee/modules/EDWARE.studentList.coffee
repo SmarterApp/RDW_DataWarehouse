@@ -279,7 +279,7 @@ define [
           # TODO change the combination to reflect actual link between asmts
           key = [asmt.asmt_year, asmt.asmt_type]
           selectors[key] ?= []
-          selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{asmt.asmt_type}"
+          selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{selector['asmt_type']}"
           selectors[key].push selector
       # reverse order to put Math before ELA
       for key, asmt of selectors

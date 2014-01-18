@@ -29,7 +29,6 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         if student_guids:
             query = query.where(and_(fact_asmt_outcome.c.student_guid.in_(student_guids)))
-        print(query)
         results = connection.get_result(query)
     subjects_map = get_subjects_map()
     return results

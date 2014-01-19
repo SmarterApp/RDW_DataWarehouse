@@ -151,47 +151,47 @@
 	    "cut_point_intervals": [
 		{
 		    "asmt_cut_point": 107,
-		    "bg_color": "#DD514C",
-		    "end_gradient_bg_color": "#C43C35",
+		    "bg_color": "#BB231C",
+		    "end_gradient_bg_color": "#C32C25",
 		    "interval": "1400",
 		    "name": "Minimal Understanding",
-		    "start_gradient_bg_color": "#EE5F5B",
+		    "start_gradient_bg_color": "#E14A45",
 		    "text_color": "#FFFFFF"
 		},
 		{
 		    "asmt_cut_point": 213,
 		    "bg_color": "#e4c904",
-		    "end_gradient_bg_color": "#eed909",
+		    "end_gradient_bg_color": "#e3c703",
 		    "interval": "1800",
 		    "name": "Partial Understanding",
-		    "start_gradient_bg_color": "#e3c703",
+		    "start_gradient_bg_color": "#eed909",
 		    "text_color": "#000"
 		},
 		{
 		    "asmt_cut_point": 160,
 		    "bg_color": "#6aa506",
-		    "end_gradient_bg_color": "#65b92c",
+		    "end_gradient_bg_color": "#6aa506",
 		    "interval": "2100",
 		    "name": "Adequate Understanding",
-		    "start_gradient_bg_color": "#3d9913",
+		    "start_gradient_bg_color": "#99be23",
 		    "text_color": "#FFFFFF"
 		},
 		{
 		    "asmt_cut_point": 160,
 		    "bg_color": "#237ccb",
-		    "end_gradient_bg_color": "#3a98d1",
+		    "end_gradient_bg_color": "#2078ca",
 		    "interval": "2400",
 		    "name": "Thorough Understanding",
-		    "start_gradient_bg_color": "#2078ca",
+		    "start_gradient_bg_color": "#3a98d1",
 		    "text_color": "#FFFFFF"
 		}
 	    ],
 	    "intervals": [
 		{
 		    "color": {
-			"bg_color": "#DD514C",
-			"end_gradient_bg_color": "#C43C35",
-			"start_gradient_bg_color": "#EE5F5B",
+			"bg_color": "#BB231C",
+			"end_gradient_bg_color": "#C32C25",
+			"start_gradient_bg_color": "#E14A45",
 			"text_color": "#ffffff"
 		    },
 		    "count": 27,
@@ -202,8 +202,8 @@
 		{
 		    "color": {
 			"bg_color": "#e4c904",
-			"start_gradient_bg_color": "#e3c703",
-			"end_gradient_bg_color": "#eed909",
+			"start_gradient_bg_color": "#eed909",
+			"end_gradient_bg_color": "#e3c703",
 			"text_color": "#000"
 		    },
 		    "count": 33,
@@ -214,8 +214,8 @@
 		{
 		    "color": {
 			"bg_color": "#6aa506",
-			"start_gradient_bg_color": "#3d9913",
-			"end_gradient_bg_color": "#65b92c",
+			"start_gradient_bg_color": "#99be23",
+			"end_gradient_bg_color": "#6aa506",
 			"text_color": "#FFFFFF"
 		    },
 		    "count": 34,
@@ -226,8 +226,8 @@
 		{
 		    "color": {
 			"bg_color": "#237ccb",
-			"start_gradient_bg_color": "#2078ca",
-			"end_gradient_bg_color": "#3a98d1",
+			"start_gradient_bg_color": "#3a98d1",
+			"end_gradient_bg_color": "#2078ca",
 			"text_color": "#FFFFFF"
 		    },
 		    "count": 6,

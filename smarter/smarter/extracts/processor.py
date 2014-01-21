@@ -45,9 +45,14 @@ def process_sync_extract_request(params):
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         # Synchronous calls to generate json and csv and then to archive
-        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
-                       route_tasks(tenant, request_id, tasks, queue_name=queue),
-                       archive.subtask(args=[request_id, directory_to_archive], queue=queue, immutable=True)).delay()
+        # BUG, it still routes to 'extract' queue due to chain
+#        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
+#                       route_tasks(tenant, request_id, tasks, queue_name=queue),
+#                       archive.subtask(args=[request_id, directory_to_archive], queue=queue, immutable=True)).delay()
+#        return result.get(timeout=celery_timeout)
+        prepare_path.apply_async(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+        route_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
@@ -98,86 +103,60 @@ def process_async_extraction_request(params, is_tenant_level=True):
 
 
 @cache_region('public.shortlived')
-def _get_asmt_records(state_code):
+def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_year, asmt_type, asmt_subject):
     '''
-    query all available record for asmt_guid and asmt_grade by given state_code.
-    return format {'ELA': {'SUMMATIVE': ['…'], 'COMP': ['…']}, 'MATH': {'SUMMATIVE': ['…'] ...
+    query all asmt_guid and asmt_grade by given extract request params
     '''
-    keys = {}
     with EdCoreDBConnection() as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
-                                     fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE),
-                                     dim_asmt.c.asmt_type.label(Constants.ASMTTYPE),
-                                     dim_asmt.c.asmt_subject.label(Constants.ASMTSUBJECT),
-                                     fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),
-                                     fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
-                                     fact_asmt_outcome.c.asmt_year.label(Constants.ASMT_YEAR)],
+                                     fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
                                     from_obj=[dim_asmt
                                               .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))])\
             .where(and_(fact_asmt_outcome.c.state_code == state_code))\
-            .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome.c.asmt_grade, dim_asmt.c.asmt_type, dim_asmt.c.asmt_subject,
-                      fact_asmt_outcome.c.school_guid, fact_asmt_outcome.c.district_guid, fact_asmt_outcome.c.asmt_year)
+            .where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))\
+            .where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))\
+            .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome.c.asmt_grade)
+
+        if district_guid is not None:
+            query = query.where(and_(fact_asmt_outcome.c.district_guid == district_guid))
+        if school_guid is not None:
+            query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
+        if asmt_grade is not None:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+        if asmt_year is not None:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
 
         results = connector.get_result(query)
-        for result in results:
-            asmt_guid = result[Constants.ASMT_GUID]
-            asmt_grade = result[Constants.ASMT_GRADE]
-            asmt_type = result[Constants.ASMTTYPE]
-            asmt_subject = result[Constants.ASMTSUBJECT]
-            school_guid = result[Constants.SCHOOL_GUID]
-            district_guid = result[Constants.DISTRICT_GUID]
-            asmt_year = result[Constants.ASMT_YEAR]
-
-            asmt_subjects = keys.get(asmt_subject, {})
-            if not asmt_subjects:
-                keys[asmt_subject] = asmt_subjects
-            asmt_types = asmt_subjects.get(asmt_type, [])
-            if not asmt_types:
-                asmt_subjects[asmt_type] = asmt_types
-            asmt_types.append({Constants.ASMT_GUID: asmt_guid, Constants.ASMT_GRADE: asmt_grade,
-                               Constants.SCHOOL_GUID: school_guid, Constants.DISTRICT_GUID: district_guid,
-                               Constants.ASMT_YEAR: str(asmt_year) if asmt_year is not None else ''})
-    return keys
+    return results
 
 
 def _prepare_data(param):
     '''
     Prepare record for available pre-query extract
     '''
-    guid_grade_map = {}
+    asmt_guid_with_grades = []
     dim_asmt = None
     fact_asmt_outcome = None
-    asmt_grade = param.get(Constants.ASMTGRADE)
     asmt_type = param.get(Constants.ASMTTYPE)
     asmt_subject = param.get(Constants.ASMTSUBJECT)
     state_code = param.get(Constants.STATECODE)
     district_guid = param.get(Constants.DISTRICTGUID)
     school_guid = param.get(Constants.SCHOOLGUID)
+    asmt_grade = param.get(Constants.ASMTGRADE)
     asmt_year = param.get(Constants.ASMTYEAR)
-    available_records = _get_asmt_records(state_code)
-    records_by_asmt_subject = available_records.get(asmt_subject, {})
-    records_by_asmt_type = records_by_asmt_subject.get(asmt_type, [])
-    for record_by_asmt_type in records_by_asmt_type:
-        if asmt_grade is not None and record_by_asmt_type[Constants.ASMT_GRADE] != asmt_grade:
-            pass
-        elif district_guid is not None and record_by_asmt_type[Constants.DISTRICT_GUID] != district_guid:
-            pass
-        elif school_guid is not None and record_by_asmt_type[Constants.SCHOOL_GUID] != school_guid:
-            pass
-        elif asmt_year is not None and record_by_asmt_type[Constants.ASMT_YEAR] != asmt_year:
-            pass
-        else:
-            guid_grade_map_key = record_by_asmt_type[Constants.ASMT_GUID] + ':' + record_by_asmt_type[Constants.ASMT_GRADE]
-            if guid_grade_map_key not in guid_grade_map:
-                guid_grade_map[guid_grade_map_key] = (record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE])
+    available_records = _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_year, asmt_type, asmt_subject)
+    # Format to a list with a tuple of asmt_guid and grades
+    for record_by_asmt_type in available_records:
+        asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
 
-    if guid_grade_map:
+    if asmt_guid_with_grades:
         with EdCoreDBConnection() as connector:
             dim_asmt = connector.get_table(Constants.DIM_ASMT)
             fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-    return list(guid_grade_map.values()), dim_asmt, fact_asmt_outcome
+    # Returns list of asmt guid with grades, and table objects
+    return asmt_guid_with_grades, dim_asmt, fact_asmt_outcome
 
 
 def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):

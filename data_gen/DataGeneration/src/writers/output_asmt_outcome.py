@@ -96,6 +96,9 @@ def output_data(output_config, output_files, output_keys=None, school=None, stud
             # if student info is present loop on the available subjects to get data
             if student_info:
                 for subject in student_info.asmt_scores:
+                    # check that the asmt_guid and the asmt guid for the file match. If not continue
+                    if csv_by_id and str(student_info.asmt_guids[subject]) not in output_file:
+                        continue
                     output_row = create_output_csv_dict(csv_conf[table], state_population, school,
                                                         student_info, subject, inst_hier, batch_guid, section, assessment, staff)
                     output_data_list.append(output_row) if output_row else None
@@ -153,7 +156,7 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         'external_user_student': None,
     }
 
-    required_objects = {obj_name.split('.')[0] for obj_name in table_config_dict.values()}  # if len(obj_name.split('.')) > 1}
+    required_objects = {obj_name.split('.')[0] for obj_name in table_config_dict.values()}
 
     # if a required object is missing then this table is not meant to be written or there is an error
     # Return None

@@ -114,7 +114,7 @@ define [
       if filterPanel.is(':hidden')
          filterArrow.show()
          filterPanel.slideDown 'slow'
-         # highlight trigger 
+         # highlight trigger
          $(this.filterTrigger).addClass('active')
       else
          self.cancel self
@@ -224,7 +224,7 @@ define [
         filterName = $(this).data('name')
         count = data[filterName]
         percentage = Math.round(count * 100.0 / total)
-        if percentage > 0
+        if count > 0
           # show percentage
           self.updatePercentage(this, percentage)
         else
@@ -295,4 +295,3 @@ define [
     $.fn.edwareFilter = (filterTrigger, configs, callback) ->
       new EdwareFilter($(this), filterTrigger, configs, callback)
   ) jQuery
-

@@ -524,6 +524,7 @@ th.ui-th-column div {
 }
 /// Content styles
 #content {
+
     .popover {
         max-width: 400px;
         z-index: 4999;
@@ -577,6 +578,8 @@ th.ui-th-column div {
 
 #legendTemplate {
 
+    .span4 {width: 284px;}
+
     h4 {
         font-size: 13px;
         color: @color-black;
@@ -589,9 +592,17 @@ th.ui-th-column div {
     }
 
     p {
-        color: @color-black;
-        font-size: 12px;
+        font-size: 11px;
         line-height: 120%;
+    }
+
+    hr {margin: 20px 0 18px;}
+
+    table {
+        font-size: 11px;
+        margin-bottom: 0px;
+
+        td:first-child { text-align: center; }
     }
 
     .claim_score {
@@ -622,7 +633,7 @@ th.ui-th-column div {
     }
 
     .overall_score_upper {
-        margin-top: 18px;
+        margin-top: 10px;
         position: relative;
 
         * {
@@ -639,7 +650,7 @@ th.ui-th-column div {
     .overall_score_lower {
         display: block;
         position: relative;
-        padding-bottom: 25px;
+        padding-bottom: 10px;
         top: -12px;
 
         h5, span {
@@ -790,11 +801,7 @@ th.ui-th-column div {
     .losPerformanceBar {
 
         #overall_score_details {
-            float: left;
-            width: 330px;
-            border-right: solid 1px @color-B7;
-            margin: 5px 0 10px 0;
-            padding-right: 5px;
+            width: 325px;
 
             .confidenceLevel {
                 border: solid 1px #d0d0d0;
@@ -884,7 +891,7 @@ th.ui-th-column div {
             .notes {
                 display: inline-block;
                 float:right;
-                width: 130px;
+                width: 133px;
             }
 
             .numeric_score {
@@ -901,7 +908,7 @@ th.ui-th-column div {
         }
 
         #claim_score_details {
-            table {width: 170px;}
+            width: 173px;
         }
     }
 
@@ -983,7 +990,7 @@ th.ui-th-column div {
         }
 
         .description {
-            width: 174px;
+            width: 200px;
             float: right;
 
             * {
@@ -1626,7 +1633,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 }
 
 #infoBar {
-    /* background-color: @color-B10; */
+    background-color: @color-white;
 
     &>ul {
         padding: 11px 0px 0px 0px;
@@ -1755,6 +1762,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
     background-color: @color-C11;
     border-top: solid 1px @color-B17;
+    border-bottom: solid 1px @color-B25;
 
     &>ul {
         cursor: pointer;
@@ -1942,7 +1950,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
                 &>li {
                     padding: 5px 0px;
-                    border-bottom: dotted 1px;
+                    border-bottom: solid 1px @color-B5;
 
                     &:last-child {
                         border-bottom: none;
@@ -2005,11 +2013,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
     }
 
     .legendPopover {
-        max-width: 885px;
-
-        .popover-content {
-            padding: 0px 0px;
-        }
+        min-width: 900px;
     }
 
     .active {

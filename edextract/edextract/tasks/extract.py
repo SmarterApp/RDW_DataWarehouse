@@ -113,10 +113,16 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
     except FileNotFoundError as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.
+        if os.path.isfile(output_file):
+            # file should be deleted if there is an error
+            os.unlink(output_file)
         log.error(e)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         exception_thrown = True
     except Exception as e:
+        if os.path.isfile(output_file):
+            # file should be deleted if there is an error
+            os.unlink(output_file)
         log.error(e)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         retriable = True

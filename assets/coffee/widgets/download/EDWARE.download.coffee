@@ -8,7 +8,8 @@ define [
   "edwareClientStorage"
   "edwarePreferences"
   "edwareExport"
-], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport) ->
+  "edwareDataProxy"
+], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -100,13 +101,13 @@ define [
       currentTime = moment()
       this.requestDate = currentTime.format 'MMM Do'
       this.requestTime = currentTime.format 'h:mma'
-      # send request to backend
-      request = $.ajax url, {
-        type: 'POST'
-        data: JSON.stringify(params)
-        dataType: 'json'
-        contentType: "application/json"
-      }
+
+      options =
+        params: params
+        method: 'POST'
+        redirectOnError: false
+
+      request = edwareDataProxy.getDatafromSource url, options
       request.done this.showSuccessMessage.bind(this)
       request.fail this.showFailureMessage.bind(this)
 

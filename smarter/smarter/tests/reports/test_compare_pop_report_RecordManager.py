@@ -100,22 +100,36 @@ class Test(unittest.TestCase):
         summary = manager.get_summary()
         self.assertEqual(3, len(summary[0]['results']['subject1']))
 
-    def test_RecordManager_format_data(self):
+    def test_RecordManager_format_data_insufficent_case(self):
         data = {'subject2': {1: 1, 2: 2, 3: 1}, 'subject1': {2: 2}}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
         asmt_levels = {Constants.SUBJECT1: 4, Constants.SUBJECT2: 2}
         manager = RecordManager(subjects, asmt_levels)
         formatted_data = manager.format_results(data)
         self.assertEqual(len(formatted_data['subject1']['intervals']), 4)
-        self.assertEqual(formatted_data['subject1']['intervals'][0]['percentage'], 0)
-        self.assertEqual(formatted_data['subject1']['intervals'][0]['count'], 0)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['percentage'], -1)
         self.assertEqual(formatted_data['subject1']['intervals'][0]['level'], 1)
-        self.assertEqual(formatted_data['subject1']['intervals'][1]['percentage'], 100)
+        self.assertEqual(formatted_data['subject1']['intervals'][1]['percentage'], -1)
+        self.assertEqual(formatted_data['subject1']['intervals'][1]['level'], 2)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['percentage'], -1)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['level'], 4)
+
+    def test_RecordManager_format_data(self):
+        data = {'subject2': {1: 1, 2: 2, 3: 1}, 'subject1': {1: 1, 2: 2, 3: 3, 4: 4}}
+        subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        asmt_levels = {Constants.SUBJECT1: 4, Constants.SUBJECT2: 2}
+        manager = RecordManager(subjects, asmt_levels)
+        formatted_data = manager.format_results(data)
+        self.assertEqual(len(formatted_data['subject1']['intervals']), 4)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['count'], 1)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['level'], 1)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['percentage'], 10)
         self.assertEqual(formatted_data['subject1']['intervals'][1]['count'], 2)
         self.assertEqual(formatted_data['subject1']['intervals'][1]['level'], 2)
-        self.assertEqual(formatted_data['subject1']['intervals'][3]['percentage'], 0)
-        self.assertEqual(formatted_data['subject1']['intervals'][3]['count'], 0)
+        self.assertEqual(formatted_data['subject1']['intervals'][1]['percentage'], 20)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['count'], 4)
         self.assertEqual(formatted_data['subject1']['intervals'][3]['level'], 4)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['percentage'], 40)
 
 
 def get_results(file_name):

@@ -1,75 +1,154 @@
-<div id="legendTemplate">
-	<h3 class="printContent" style="margin-bottom: -3%">{{labels.legend}}:</h3>
-	<div class="section" style="border-top: none;">
-		<div class="achievement">
-			<!-- ALD -->
-			<h4>{{labels.achievement_level_descriptors}}:</h4>
-			<table class="ALD_table">
-				<thead>
-					<tr>
-						<th class="ALD_table_header" style="width:17%;">{{labels.color}}</th>
-						<th class="ALD_table_header">{{labels.description}}</th>
-						<th class="ALD_table_header">{{labels.score_range}}</th>
-						<th class="ALD_table_header" style="width:17%;"><span>{{labels.outside_error_band}}</span></th>
-					</tr>
-				</thead>
-				{{#ALDs}}
-				<tr>
-					<td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}} !important;"></div></td>
-					<td class="ALD_table_cell">{{description}}</td>
-					<td class="ALD_table_cell">{{range}}</td>
-					<td class="ALD_table_cell">
-						<div class="legend_ALD_color" style="background-color:{{color}} !important;position: relative; top: 17px;"></div>
-						<img class="shades" src="../images/ISR_shades.png"/>
-					</td>
-				</tr>
-				{{/ALDs}}
-			</table>
-		</div>
-		<div class="claim_score">
-			<!-- Claim Score Details -->
-			<h4>{{labels.claim_score_details}}:</h4>
-			<div class="arrowBox">
-				<img src="../images/claim_score.png" class="claim_score_arrow"/>
-				<div class="claim_score_indicator_wrapper"><h5>{{labels.overall_score}}</h5></div>				
-			</div>
-			<div>
-                <h5>{{labels.relative_strength_weakness}}</h5>
-				<p>
-					{{legendInfo.relative_strength_text}}
-				</p>
-			</div>
-		</div>
-	</div>
-	<div class="section overall_score_wrapper">
-        <h4>{{labels.overall_score_details}}:</h4>
-		<div class="overall_score_upper">
-			<div class="indicator_cell desc" style="background-color: {{scoreColor}}!important; color: #000;">
-				<strong class="asmtScore">{{asmtScore}}</strong>
-			</div>
-			<img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>
-            <div class="desc_overall_score"><h5>{{labels.overall_score}}</h5><span>({{labels.ald_color_coded}})</span></div>
-			<img src="../images/OVERALL_uppermid.png" class="overall_uppermid"/>
-            <h5 class="desc_overall_score_indicator">{{labels.overall_score_indicator}}</h5>
-		</div>
-		<div class="losPerfBar losPopover"></div>
-		<div class="confidenceLevel printContent"></div>
-		<div class="overall_right">
-			<img src="../images/OVERALL_upperleft.png">
-            <h5 class="desc_scaled_score_range">{{labels.scaled_score_range}}</h5>
-		</div>
-		<div class="overall_score_lower">
-            <h5>{{labels.ald_cutpoints}}</h5>
-			<img src="../images/OVERALL_lowerleft.png" class="overall_lowerleft"/>
-			<img id="overall_lowermid50px" src="../images/OVERALL_lowermid.png" class="overall_lowermid"/>
-			<img id="overall_lowermid69px" src="../images/OVERALL_lowermid69px.png" class="overall_lowermid printContent"/>
-            <div class="desc_error_bands"><h5>{{labels.error_bands}}</h5><span>({{labels.brackets_denote_min_max}})</span></div>
-		</div>
-	</div>
-	<div class="section error_band_wrapper">
-        <h4>{{labels.error_band}}:</h4>
-		<p>
-			{{legendInfo.error_band}}
-		</p>
-	</div>
+<div id="legendTemplate" class="container">
+    <div class="row">
+        <div class="span4">
+            <!-- ALD -->
+            <h4>{{labels.achievement_level_descriptors}}:</h4>
+            <table class="table edware-table-bordered edware-table-center marginLeft8" style="width: 275px;">
+                <thead>
+                    <tr>
+                        <th style="width:11%;">{{labels.color}}</th>
+                        <th>{{labels.description}}</th>
+                        <th>{{labels.score_range}}</th>
+                    </tr>
+                </thead>
+                {{#ALDs}}
+                <tr>
+                    <td><i class="edware-icon-ALD-color" style="background-color:{{color}} !important;"></i></td>
+                    <td class="blackText"><strong>{{description}}</strong></td>
+                    <td class="blackText"><strong>{{range}}</strong></td>
+                </tr>
+                {{/ALDs}}
+            </table>
+        </div>
+        <div class="span7 edware-border-left">
+            <div class="overall_score_wrapper">
+                <h4>{{labels.overall_score_details}}:</h4>
+                <div class="overall_score_upper">
+                    <div class="indicator_cell desc" style="background-color: {{scoreColor}}!important; color: #000;">
+                        <strong class="asmtScore">{{asmtScore}}</strong>
+                    </div>
+                    <img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>
+                    <div class="desc_overall_score"><h5>{{labels.overall_score}}</h5><span>({{labels.ald_color_coded}})</span></div>
+                    <img src="../images/OVERALL_uppermid.png" class="overall_uppermid"/>
+                    <h5 class="desc_overall_score_indicator">{{labels.overall_score_indicator}}</h5>
+                </div>
+                <div class="losPerfBar losPopover"></div>
+                <div class="confidenceLevel printContent"></div>
+                <div class="overall_right">
+                    <img src="../images/OVERALL_upperleft.png">
+                    <h5 class="desc_scaled_score_range">{{labels.scaled_score_range}}</h5>
+                </div>
+                <div class="overall_score_lower">
+                    <h5>{{labels.ald_cutpoints}}</h5>
+                    <img src="../images/OVERALL_lowerleft.png" class="overall_lowerleft"/>
+                    <img id="overall_lowermid50px" src="../images/OVERALL_lowermid.png" class="overall_lowermid"/>
+                    <img id="overall_lowermid69px" src="../images/OVERALL_lowermid69px.png" class="overall_lowermid printContent"/>
+                    <div class="desc_error_bands"><h5>{{labels.error_bands}}</h5><span>({{labels.brackets_denote_min_max}})</span></div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4>{{labels.claim_score_details}}:</h4>
+                <table class="table edware-table-bordered edware-table-center" style="width: 530px;">
+                    <thead>
+                        <tr>
+                            <th><em>{{labels.icon}}</em></th>
+                            <th><em>{{labels.description}}</em></th>
+                            <th><em>{{labels.meaning}}</em></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#legendInfo.performance_levels}}
+                        <tr>
+                            <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
+                            <td style="width: 115px;" class="blackText"><strong>{{desc}}</strong></td>
+                            <td>{{meaning}}</td>
+                        </tr>
+                        {{/legendInfo.performance_levels}}
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div class="error_band_wrapper">
+                <h4>{{labels.error_band}}:</h4>
+                <p>
+                    {{legendInfo.error_band}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="legendTemplatePrint" class="content printContent">
+    <h3>{{labels.legend}}</h3>
+    <div class="row">
+        <div class="span5">
+            <h4>{{labels.achievement_level_descriptors}}:</h4>
+            <table class="table edware-table-bordered edware-table-center">
+                <thead>
+                    <tr>
+                        <th style="width:11%;">{{labels.color}}</th>
+                        <th>{{labels.description}}</th>
+                        <th>{{labels.score_range}}</th>
+                    </tr>
+                </thead>
+                {{#ALDs}}
+                <tr>
+                    <td style="text-align: center;"><i class="edware-icon-ALD-color" style="background-color:{{color}} !important;"></i></td>
+                    <td class="blackText"><strong>{{description}}</strong></td>
+                    <td class="blackText"><strong>{{range}}</strong></td>
+                </tr>
+                {{/ALDs}}
+            </table>
+        </div>
+        <div class="span7 edware-border-left">
+            <div>
+                <h4>{{labels.claim_score_details}}:</h4>
+                <table class="table edware-table-bordered edware-table-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">{{labels.icon}}</th>
+                            <th style="width: 150px;" >{{labels.description}}</th>
+                            <th>{{labels.meaning}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#legendInfo.performance_levels}}
+                        <tr>
+                            <td><i class="edware-icon-perf-level-{{level}}" style="vertical-align: middle;"></i></td>
+                            <td class="blackText"><strong>{{desc}}</strong></td>
+                            <td style="font-size: 14px;">{{meaning}}</td>
+                        </tr>
+                        {{/legendInfo.performance_levels}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="overall_score_wrapper span12">
+            <h4>{{labels.overall_score_details}}:</h4>
+            <div class="overall_score_upper">
+                <div class="label asmtScore" style="background-color: {{scoreColor}}!important;">
+                    <strong>{{asmtScore}}</strong>
+                </div>
+                <img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>
+                <div class="desc_overall_score"><h4>{{labels.overall_score}}</h4><span>({{labels.ald_color_coded}})</span></div>
+                <img src="../images/OVERALL_uppermid.png" class="overall_uppermid"/>
+                <h4 class="desc_overall_score_indicator">{{labels.overall_score_indicator}}</h4>
+            </div>
+            <div class="confidenceLevel"></div>
+            <div class="overall_right">
+                <img src="../images/OVERALL_upperleft.png">
+                <h4 class="desc_scaled_score_range">{{labels.scaled_score_range}}</h4>
+            </div>
+            <div class="overall_score_lower">
+                <h4 class="ALD_cutpoints">{{labels.ald_cutpoints}}</h4>
+                <img src="../images/OVERALL_lowerleft.png" class="overall_lowerleft"/>
+                <img id="overall_lowermid69px" src="../images/OVERALL_lowermid69px.png" class="overall_lowermid"/>
+                <div class="desc_error_bands"><h4>{{labels.error_bands}}</h4><span>({{labels.brackets_denote_min_max}})</span></div>
+            </div>
+        </div>
+    </div>
 </div>

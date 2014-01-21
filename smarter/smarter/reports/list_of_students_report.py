@@ -64,8 +64,8 @@ REPORT_PARAMS = merge_dict({
 @report_config(
     name=REPORT_NAME,
     params=REPORT_PARAMS)
-@audit_event()
 @user_info
+@audit_event()
 def get_list_of_students_report(params):
     '''
     List of Students Report
@@ -74,8 +74,8 @@ def get_list_of_students_report(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    asmtSubject = params.get(Constants.ASMTSUBJECT, None)
+    asmtGrade = params.get(Constants.ASMTGRADE)
+    asmtSubject = params.get(Constants.ASMTSUBJECT)
 
     asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
 
@@ -152,8 +152,8 @@ def get_list_of_students(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
-    asmtGrade = params.get(Constants.ASMTGRADE, None)
-    asmtSubject = params.get(Constants.ASMTSUBJECT, None)
+    asmtGrade = params.get(Constants.ASMTGRADE)
+    asmtSubject = params.get(Constants.ASMTSUBJECT)
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -208,7 +208,6 @@ def get_list_of_students(params):
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
-        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
         query = apply_filter_to_query(query, fact_asmt_outcome, params)
         if asmtSubject is not None:

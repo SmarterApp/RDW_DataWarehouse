@@ -86,7 +86,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_process_extraction_async_request(self):
         params = {'stateCode': ['CA'],
                   'asmtYear': ['2015'],
-                  'asmtType': ['SUMMATIVE', 'COMPREHENSIVE INTERIM'],
+                  'asmtType': ['SUMMATIVE', 'INTERIM COMPREHENSIVE'],
                   'asmtSubject': ['Math', 'ELA'],
                   'extractType': ['studentAssessment']}
         results = process_async_extraction_request(params)

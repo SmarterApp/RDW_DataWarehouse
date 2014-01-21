@@ -6,7 +6,6 @@ star:
             asmnt_outcome_rec_id: UNIQUE_ID
             asmt_rec_id: student_info.asmt_rec_ids
             student_guid: student_info.student_guid
-            teacher_guid: student_info.teacher_guids
             state_code: student_info.state_code
             district_guid: student_info.district_guid
             school_guid: student_info.school_guid
@@ -66,6 +65,7 @@ star:
             first_name: student_info.first_name
             last_name: student_info.last_name
             address_1: student_info.address_1
+            address_2: student_info.address_2
             city: student_info.city
             zip_code: student_info.zip_code
             gender: student_info.gender
@@ -142,8 +142,6 @@ star:
             asmt_cut_point_2: assessment.asmt_cut_point_2
             asmt_cut_point_3: assessment.asmt_cut_point_3
             asmt_cut_point_4: assessment.asmt_cut_point_4
-            claim_cut_point_1: assessment.claim_cut_point_1
-            claim_cut_point_2: assessment.claim_cut_point_2
             from_date: assessment.from_date
             to_date: assessment.to_date
             most_recent: assessment.most_recent

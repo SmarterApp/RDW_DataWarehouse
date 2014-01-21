@@ -82,19 +82,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         result.get()
         self.assertFalse(os.path.exists(output))
 
-    def test_generate_csv_to_unwritable_file(self):
-        from edextract.tasks.extract import generate_csv
-        output = os.path.join(self.__tmp_dir, 'unwritable.csv')
-        open(output, 'w').close()
-        mode = os.stat(output)[stat.ST_MODE]
-        os.chmod(output, mode & ~stat.S_IWUSR & ~stat.S_IWGRP & ~stat.S_IWOTH)
-        with UnittestEdcoreDBConnection() as connection:
-            dim_asmt = connection.get_table('dim_asmt')
-            query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period], from_obj=[dim_asmt])
-            query = query.where(dim_asmt.c.asmt_guid == '22')
-        result = generate_csv.apply(args=[self._tenant, 'request_id', 'task_id', query, output])    # @UndefinedVariable
-        self.assertRaises(ExtractionError, result.get,)
-
     def test_generate_csv(self):
         from edextract.tasks.extract import generate_csv
         with UnittestEdcoreDBConnection() as connection:

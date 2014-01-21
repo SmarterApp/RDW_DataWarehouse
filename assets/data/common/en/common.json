@@ -151,47 +151,47 @@
 	    "cut_point_intervals": [
 		{
 		    "asmt_cut_point": 107,
-		    "bg_color": "#DD514C",
-		    "end_gradient_bg_color": "#C43C35",
+		    "bg_color": "#BB231C",
+		    "end_gradient_bg_color": "#C32C25",
 		    "interval": "1400",
 		    "name": "Minimal Understanding",
-		    "start_gradient_bg_color": "#EE5F5B",
+		    "start_gradient_bg_color": "#E14A45",
 		    "text_color": "#FFFFFF"
 		},
 		{
 		    "asmt_cut_point": 213,
 		    "bg_color": "#e4c904",
-		    "end_gradient_bg_color": "#eed909",
+		    "end_gradient_bg_color": "#e3c703",
 		    "interval": "1800",
 		    "name": "Partial Understanding",
-		    "start_gradient_bg_color": "#e3c703",
+		    "start_gradient_bg_color": "#eed909",
 		    "text_color": "#000"
 		},
 		{
 		    "asmt_cut_point": 160,
 		    "bg_color": "#6aa506",
-		    "end_gradient_bg_color": "#65b92c",
+		    "end_gradient_bg_color": "#6aa506",
 		    "interval": "2100",
 		    "name": "Adequate Understanding",
-		    "start_gradient_bg_color": "#3d9913",
+		    "start_gradient_bg_color": "#99be23",
 		    "text_color": "#FFFFFF"
 		},
 		{
 		    "asmt_cut_point": 160,
 		    "bg_color": "#237ccb",
-		    "end_gradient_bg_color": "#3a98d1",
+		    "end_gradient_bg_color": "#2078ca",
 		    "interval": "2400",
 		    "name": "Thorough Understanding",
-		    "start_gradient_bg_color": "#2078ca",
+		    "start_gradient_bg_color": "#3a98d1",
 		    "text_color": "#FFFFFF"
 		}
 	    ],
 	    "intervals": [
 		{
 		    "color": {
-			"bg_color": "#DD514C",
-			"end_gradient_bg_color": "#C43C35",
-			"start_gradient_bg_color": "#EE5F5B",
+			"bg_color": "#BB231C",
+			"end_gradient_bg_color": "#C32C25",
+			"start_gradient_bg_color": "#E14A45",
 			"text_color": "#ffffff"
 		    },
 		    "count": 27,
@@ -202,8 +202,8 @@
 		{
 		    "color": {
 			"bg_color": "#e4c904",
-			"start_gradient_bg_color": "#e3c703",
-			"end_gradient_bg_color": "#eed909",
+			"start_gradient_bg_color": "#eed909",
+			"end_gradient_bg_color": "#e3c703",
 			"text_color": "#000"
 		    },
 		    "count": 33,
@@ -214,8 +214,8 @@
 		{
 		    "color": {
 			"bg_color": "#6aa506",
-			"start_gradient_bg_color": "#3d9913",
-			"end_gradient_bg_color": "#65b92c",
+			"start_gradient_bg_color": "#99be23",
+			"end_gradient_bg_color": "#6aa506",
 			"text_color": "#FFFFFF"
 		    },
 		    "count": 34,
@@ -226,8 +226,8 @@
 		{
 		    "color": {
 			"bg_color": "#237ccb",
-			"start_gradient_bg_color": "#2078ca",
-			"end_gradient_bg_color": "#3a98d1",
+			"start_gradient_bg_color": "#3a98d1",
+			"end_gradient_bg_color": "#2078ca",
 			"text_color": "#FFFFFF"
 		    },
 		    "count": 6,
@@ -240,15 +240,18 @@
         "performance_levels": [
             {
                 "level": 3,
-                "desc": "Above Standard"
+                "desc": "Above Standard",
+                "meaning": "Your test results clearly show that you understand and are able to apply your knowledge to the standards in this subject-area of your grade."
             },
             {
                 "level": 2,
-                "desc": "At/Near Standard"
+                "desc": "At/Near Standard",
+                "meaning": "Your test results may be just above or just below the standard, but due to the error band (see below), the result it too close to call."
             },
             {
                 "level": 1,
-                "desc": "Below Standard"
+                "desc": "Below Standard",
+                "meaning": "Your test results clearly show that you have not yet met the standard in this subject-area for your grade."
             }
         ]
     },
@@ -463,7 +466,7 @@
 	    }
 	],
 	"customViews": {
-	    "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Comprehensive Interim", "display": "Interim Comp."}],
+	    "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
 	    "items": {
 		"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
 		"{{subject1}}": "{{subject1}} {{asmtType}}",
@@ -603,7 +606,7 @@
                     "value": "SUMMATIVE"
                 }, {
                     "display": "Interim Comprehensive",
-                    "value": "COMPREHENSIVE INTERIM"
+                    "value": "INTERIM COMPREHENSIVE"
                 }
             ]
         },

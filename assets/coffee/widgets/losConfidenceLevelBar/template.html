@@ -1,6 +1,8 @@
 <div class="scoreWrapper" style="width: {{bar_width}}px;">
 	<div class="indicator" style="margin-left: {{asmt_score_pos}}px;"/>
-	<div class="interval" style="margin-left: {{asmt_errorband_min_range}}px; width: {{asmt_errorband_width}}px"/>
+	<div class="interval" style="margin-left: {{asmt_errorband_min_range}}px; width: {{asmt_errorband_width}}px">
+            <div class="cutLine" style="left: {{cutLine}}px"></div>
+        </div>
 </div>
 <div class="progress" style="width: {{bar_width}}px;">
 	{{#cut_point_intervals}}

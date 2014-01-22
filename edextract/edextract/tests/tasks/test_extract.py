@@ -18,7 +18,6 @@ import json
 import csv
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
-import stat
 from edextract.settings.config import setup_settings
 
 
@@ -237,7 +236,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
-            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info])     # @UndefinedVariable
+            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
             self.assertRaises(ExtractionError, result.get)
 
     def test_prepare_path(self):

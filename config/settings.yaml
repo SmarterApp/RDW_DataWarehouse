@@ -123,8 +123,9 @@ common:
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
       available_grades: 3,4,5,6,7,8,11
-      extract.job.queue: extract
-      extract_sync.job.queue: extract_sync
+      job.queue.async: extract
+      job.queue.sync: extract_sync
+      job.queue.archive: extract_archive
     extract.celery:
       CELERY_IMPORTS: ('edextract.tasks.extract',)
       CELERY_RESULT_BACKEND: amqp
@@ -257,8 +258,6 @@ qa:
       gpg:
         homedir : /opt/edware/conf/gpg
         keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
-      job.queue.async: extract
-      job.queue.sync: extract_sync
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
       public.data.url: twprxydw0.qa.dum.edwdc.net:22121
@@ -360,8 +359,6 @@ uat:
         homedir : /opt/edware/conf/gpg
         keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
       work_zone_base_dir: /opt/edware/extraction
-      extract.job.queue: extract
-      extract_sync.job.queue: extract_sync
     cache:
       public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
       public.data.url: twprxydw0.dmo.som.edwdc.net:22121
@@ -483,8 +480,6 @@ development:
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
-      job.queue.async: extract
-      job.queue.sync: extract_sync
     auth:
       skip.verify: False
       saml:
@@ -547,9 +542,6 @@ jenkins_dev:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
-      job.queue.async: extract
-      job.queue.sync: extract_sync
-    edware:
       db:
         cat:
           schema_name: edware_sds_1_4

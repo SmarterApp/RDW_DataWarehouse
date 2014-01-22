@@ -198,7 +198,7 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
 @celery.task(name="tasks.extract.remote_copy",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)
-def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
+def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeout=1800):
     '''
     Remotely copies a source file to a remote machine
     '''
@@ -207,7 +207,7 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info):
                  Constants.REQUEST_GUID: request_id}
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPYING})
-        copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2])
+        copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2], timeout=timeout)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPIED})
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + str(e))

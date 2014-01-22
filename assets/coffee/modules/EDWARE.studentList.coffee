@@ -268,34 +268,29 @@ define [
 
 
     convertAsmtTypes: (asmtAdministration) ->
-      selectors = {}
+      selectors = []
       for asmt in asmtAdministration
+        selector = {}
+        # mapping asmt type to capitalized case
+        selector.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
+        selector.asmt_year = asmt.asmt_year
+        selector.asmt_grade = this.grade.name
+        selector.display = "{{asmtYear}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
+        selector.hasAsmtSubject = true
+
+        # add subjects combination, i.e. Math & ELA
+        defaultSubject = "#{this.subjectsData.subject1}_#{this.subjectsData.subject2}"
+        defaultSubjectText = "#{this.subjectsData.subject1} & #{this.subjectsData.subject2}"
+        selector.defaultSubjectText = defaultSubjectText
+
+        asmts = [{ asmt_subject: defaultSubject, asmt_subject_text: defaultSubjectText }]
         for subject, subject_text of @subjectsData
-          selector = {}
-          # mapping asmt type to capitalized case
-          selector['asmt_type'] = Constants.ASMT_TYPE[asmt.asmt_type]
-          selector['asmt_subject'] = subject_text
-          selector['asmt_subject_text'] = "#{subject_text} Details"
-          # TODO change the combination to reflect actual link between asmts
-          key = [asmt.asmt_year, asmt.asmt_type]
-          selectors[key] ?= []
-          selectors[key].display = "#{asmt.asmt_year} · #{this.grade.name} · #{selector['asmt_type']}"
-          selectors[key].push selector
-      # reverse order to put Math before ELA
-      for key, asmt of selectors
-        asmt.sort (subject1, subject2)->
-          subject1.asmt_subject > subject2.asmt_subject
-        .reverse()
-      for key, asmt of selectors
-        if asmt.length is 2
-          # add subjects combination, i.e. Math & ELA
-          asmt.unshift
-            asmt_type: asmt[0].asmt_type
-            asmt_subject: "#{asmt[0].asmt_subject}_#{asmt[1].asmt_subject}"
-            asmt_subject_text: "#{asmt[0].asmt_subject} & #{asmt[1].asmt_subject}"
-        "display": asmt.display
-        "asmt": asmt
-        "hasAsmtSubject": true
+          asmts.push
+            asmt_subject: subject_text
+            asmt_subject_text: "#{subject_text} Details"
+        selector.asmts = asmts
+        selectors.push selector
+      selectors
 
 
   StudentGrid: StudentGrid

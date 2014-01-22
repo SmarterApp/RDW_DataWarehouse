@@ -13,6 +13,7 @@ define [
       @bindEvents()
 
     initialize: () ->
+      @optionTemplate = @dropdownValues[0].display
       output = Mustache.to_html AsmtDropdownTemplate,
         dropdownValues: @dropdownValues
       @container.html(output)
@@ -24,7 +25,9 @@ define [
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
-      @setSelectedValue asmt.display
+      if not asmt.subjectText
+        asmt.subjectText = @dropdownValues[0].defaultSubjectText
+      @setSelectedValue @getAsmtDisplayText(asmt)
 
     bindEvents: () ->
       self = this
@@ -35,7 +38,8 @@ define [
         edwarePreferences.saveSubjectPreference subject
         # save assessment type
         edwarePreferences.saveAsmtPreference asmt
-        self.setSelectedValue asmt.display
+        displayText = self.getAsmtDisplayText(asmt)
+        self.setSelectedValue displayText
         # additional parameters
         self.callback()
 
@@ -44,9 +48,15 @@ define [
       asmtType: $option.data('asmttype')
       asmtGuid: $option.data('asmtguid')?.toString()
       asmtView: $option.data('value')
+      asmtYear: $option.data('year')
+      asmtGrade: $option.data('grade')
+      subjectText: $option.data('subjecttext')
 
     setSelectedValue: (value) ->
       $('#selectedAsmtType').html value
+
+    getAsmtDisplayText: (asmt)->
+      Mustache.to_html @optionTemplate, asmt
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->

@@ -14,7 +14,8 @@ require [
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (configs)->
       filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
-        $.extend param, edwarePreferences.getAsmtPreference()
+        asmt = edwarePreferences.getAsmtPreference()
+        param.asmtType = asmt?.asmtType
         studentGrid.reload(param)
       filter.loadReport()
       filter.update {}

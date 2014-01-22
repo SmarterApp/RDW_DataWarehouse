@@ -542,6 +542,7 @@ jenkins_dev:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
+    edware:
       db:
         cat:
           schema_name: edware_sds_1_4

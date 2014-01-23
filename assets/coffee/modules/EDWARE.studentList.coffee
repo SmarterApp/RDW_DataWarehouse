@@ -117,7 +117,6 @@ define [
 
     constructor: (@config) ->
       @studentsDataSet = new StudentDataSet(config)
-      @feedbackData = config.feedback
       @reportInfo = config.reportInfo
       @studentsConfig = config.students
       @legendInfo = config.legendInfo

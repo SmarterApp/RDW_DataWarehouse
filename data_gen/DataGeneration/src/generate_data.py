@@ -29,6 +29,7 @@ from DataGeneration.src.utils.idgen import IdGen
 from DataGeneration.src.calc import claim_score_calculation
 from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
 from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file, output_data, output_from_dict_of_lists
+from DataGeneration.src.calc.claim_score_calculation import translate_scores_to_assessment_score
 
 
 IDEAL_DISTRICT_CHUNK = 100000
@@ -376,20 +377,100 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
                                             state_code, subject_teachers_map)
         apply_subject_percentages(subject_percentages, students, grade_assessment_guids)
         students_in_school += students
-        print(len(students))
 
         sections_in_school += [j for i in subject_sections_map.values() for j in i]
         teachers_in_school += [j for i in subject_teachers_map.values() for j in i]
 
         # Assign assessment scores for other assessments
-
+        for add_asmt_type in constants.ASSMT_TYPES[1:]:
+            #print('Computing additional assessments for grade %d: %s' % (grade, add_asmt_type))
+            for subject in constants.SUBJECTS:
+                assessment = util.select_assessment_from_list(assessments, grade, subject, add_asmt_type)
+                date_taken = util.generate_date_given_assessment(assessment)
+                create_assessment_scores_for_additional_assessment(students, assessment, eb_min_perc, eb_max_perc,
+                                                                   eb_rand_adj_lo, eb_rand_adj_hi, date_taken)
 
     return students_in_school, teachers_in_school, sections_in_school
 
 
-def create_assessment_scores_for_additional_assessments(students, assessment):
-    pass
-# Pick up here tomorrow
+def create_assessment_scores_for_additional_assessment(students, assessment, ebmin, ebmax, rndlo, rndhi, date_taken):
+    """
+    For a given list of students and a
+    :param students: a list of student_info objects (students)
+    :param assessment: the assessment to create scores for
+    :param ebmin: The divisor of the minimum error band, taken from the config file
+    :param ebmax: The divisor of the maximum error band, taken from the config file
+    :param rndlo: The lower bound for getting the random adjustment of the error band
+    :param rndhi: The higher bound for getting the random adjustment of the error band
+    :param date_taken: the date object for when the student took the assessment
+    :return: the same list of students
+    """
+
+    for student in students:
+        subject = assessment.asmt_subject
+        other_asmt_for_subject = get_student_asmt_guid_by_subject(student, subject)
+        if other_asmt_for_subject is None:
+            continue
+        add_assessment_to_student(student, assessment, other_asmt_for_subject, ebmin, ebmax, rndlo, rndhi, date_taken)
+
+    return students
+
+
+def add_assessment_to_student(student, new_assessment, old_asmt_guid_for_subj, ebmin, ebmax, rndlo, rndhi, date_taken):
+    """
+    Add assessment outcome information to the given student
+    :param student: The student info object to update
+    :param new_assessment: the new assessment object
+    :param old_asmt_guid_for_subj: the assessment guid for another assessment the student has taken of the same subject
+    :param ebmin: The divisor of the minimum error band, taken from the config file
+    :param ebmax: The divisor of the maximum error band, taken from the config file
+    :param rndlo: The lower bound for getting the random adjustment of the error band
+    :param rndhi: The higher bound for getting the random adjustment of the error band
+    :param date_taken: the date object for when the student took the assessment
+    :return: the updated student object
+    """
+
+    asmt_guid = new_assessment.asmt_guid
+    old_asmt_score_obj = student.asmt_scores[old_asmt_guid_for_subj]
+    student.asmt_scores[asmt_guid] = create_new_asmt_score_object(old_asmt_score_obj, new_assessment, ebmin, ebmax, rndlo, rndhi)
+    student.asmt_rec_ids[asmt_guid] = new_assessment.asmt_rec_id
+    student.asmt_guids[asmt_guid] = asmt_guid
+    student.asmt_dates_taken[asmt_guid] = date_taken
+    student.asmt_types[asmt_guid] = new_assessment.asmt_type
+    student.asmt_subjects[asmt_guid] = new_assessment.asmt_subject
+    student.asmt_years[asmt_guid] = new_assessment.asmt_period_year
+    return student
+
+
+def create_new_asmt_score_object(asmt_score_obj, assessment, ebmin, ebmax, rndlo, rndhi):
+    """
+
+    :param asmt_score_obj:
+    :return:
+    """
+    cut_points = util.get_list_of_cutpoints(assessment)
+    claim_cut_points = util.get_list_of_claim_cutpoints(assessment)
+
+    positive_change = random.choice([-1, 1])
+    score_offset = random.randint(constants.ASMT_PERF_CHANGE_MIN, constants.ASMT_PERF_CHANGE_MAX) * positive_change
+    new_score = max(min(asmt_score_obj.overall_score + score_offset, assessment.asmt_score_max), assessment.asmt_score_min)
+
+    asmt_score = translate_scores_to_assessment_score([new_score], cut_points, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)[0]
+
+    return asmt_score
+
+
+def get_student_asmt_guid_by_subject(student, subject):
+    """
+
+    :param subject:
+    :return:
+    """
+    for a_guid, a_subject in student.asmt_subjects.items():
+        if a_subject == subject:
+            return a_guid
+
+    return None
 
 
 def generate_teachers_for_sections(staff_per_section, sections, from_date, most_recent, to_date, school, state_code):

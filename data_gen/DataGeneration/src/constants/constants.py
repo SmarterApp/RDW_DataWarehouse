@@ -58,6 +58,9 @@ CLAIM_DEFINITIONS = {'Math': [{'claim_name': 'Concepts & Procedures', 'claim_wei
 CLAIM_SCORE_MASTER_MIN = 10
 CLAIM_SCORE_MASTER_MAX = 99
 
+ASMT_PERF_CHANGE_MIN = 75
+ASMT_PERF_CHANGE_MAX = 500
+
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000
 
@@ -82,7 +85,7 @@ HIER_USER_TYPE = ['Teacher', 'Staff']
 SCORE_MIN_MAX_RANGE = 20
 
 ASSMT_SCORE_YEARS = [2015]
-ASSMT_TYPES = ['SUMMATIVE']
+ASSMT_TYPES = ['SUMMATIVE', 'INTERIM COMPREHENSIVE']
 ASSMT_PERIODS = ['Fall', 'Spring']
 ASSMT_PERIOD_TO_MONTHS_DICT = {'Fall': [9, 10, 11, 12], 'Spring': [1, 2, 3, 4, 5]}
 PERFORMANCE_LEVELS = ['Minimal Understanding', 'Partial Understanding', 'Adequate Understanding', 'Thorough Understanding']

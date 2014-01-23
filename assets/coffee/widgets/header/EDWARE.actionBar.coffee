@@ -83,16 +83,6 @@ define [
         # show next sibling's divider
         siblingDivider = $this.nextAll(':visible').first().find('.divider')
         siblingDivider.css('border-left-color', '#e2e2e2')
-      .on 'shown.bs.popover', ->
-        # center legend popover to prevent it overflow the screen
-        offset = $(this).offset().left
-        bodyOffset = self.container.offset().left
-        $popover = $('.legendPopover')
-        popoverOffset = bodyOffset + (self.container.width() - $popover.width()) / 2
-        $popover.css "left", popoverOffset
-        # update arrow
-        arrow = $(".arrow", $popover)
-        arrow.css "left", offset - popoverOffset + $(this).width() / 2
 
       # bind print popover
       $('span.printLabel').click ->

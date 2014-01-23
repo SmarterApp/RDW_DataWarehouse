@@ -5,10 +5,32 @@ define ["jquery"], ($) ->
     trigger: 'hover'
     placement: 'bottom'
 
-  resizePopover = ()->
+  resize = ()->
     offset = $(this).offset().top
     height = window.innerHeight - offset - 100 # add 100px for popover margin
     $(".edwareScrollable").css('max-height', height + 'px')
+
+  reposition = () ->
+    # center legend popover to prevent it overflow the screen
+    $popover = $('.edwarePopover')
+    popLeft = $popover.offset().left
+    popRight = popLeft + $popover.width()
+
+    $body = $('body')
+    bodyLeft = $body.offset().left
+    bodyRight = bodyLeft + $body.width()
+    popLeft = bodyLeft - popLeft + 20
+
+    $popover.css "left", "+=#{popLeft}"
+
+    arrowLeft = $popover.width() / 2 - popLeft
+    $(".arrow", $popover).css "left", arrowLeft
+
+
+
+    # update arrow
+    # arrow =
+    # arrow.css "left", offset - popoverOffset + $(this).width() / 2
 
   $.fn.edwarePopover = (config) ->
     # setup default template with customized class name
@@ -18,7 +40,8 @@ define ["jquery"], ($) ->
     this.popover config
     self = this
     this.on 'shown.bs.popover', ->
-      resizePopover.call(self)
+      reposition.call(self)
+      resize.call(self)
     this.unbind('mouseleave').mouseleave ->
       self.popover 'hide'
     this

@@ -4,9 +4,8 @@ define [
   "mustache"
   "text!InfoBarTemplate"
   "edwareDownload"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload) ->
-
-  POPOVER_TEMPLATE = '<div class="popover "><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
+  "edwarePopover"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover) ->
 
   class ReportInfoBar
 

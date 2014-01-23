@@ -7,7 +7,7 @@ define ["jquery"], ($) ->
 
   resizePopover = ()->
     offset = $(this).offset().top
-    height = window.innerHeight - offset - 100
+    height = window.innerHeight - offset - 100 # add 100px for popover margin
     $(".edwareScrollable").css('max-height', height + 'px')
 
   $.fn.edwarePopover = (config) ->

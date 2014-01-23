@@ -39,6 +39,7 @@ require({
     edwareReportActionBar: '../widgets/header/EDWARE.actionBar',
     edwareHelpMenu: '../widgets/header/EDWARE.helpMenu',
     edwarePrint: '../widgets/print/EDWARE.print',
+    edwarePopover: '../widgets/popover/EDWARE.popover',
 
     // Templates
     edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

@@ -122,14 +122,15 @@ h6 {
 
 #content {
     min-height: 200px;
+}
 
-    .reportInfoPopover {
-    max-width: 575px !important;
+.edwarePopover {
+    min-width: 575px;
     font-size: 13px;
+    font-weight: normal;
 
     h4 {
         color: @color-black;
-    }
     }
 }
 
@@ -639,4 +640,22 @@ table {
 
 .edwareExportField {
     display: none;
+}
+
+.popover {
+
+    .popover-content {
+        padding: 0px 17px 17px 17px;
+    }
+
+    .edwareScrollable {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .mask {
+        height: 20px;
+        position: relative;
+        top: -15px;
+    }
 }

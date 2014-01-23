@@ -178,6 +178,9 @@ class StudentInfo(object):
         self.asmt_subjects = asmt_subjects if asmt_subjects else {}
         self.asmt_years = asmt_years if asmt_years else {}
 
+        self.asmt_dicts_stored_by_guid = [self.asmt_scores, self.asmt_rec_ids, self.asmt_guids, self.asmt_dates_taken,
+                                          self.asmt_types, self.asmt_subjects, self.asmt_years]
+
     def getDemoOfStudent(self, substr='dmg'):
         demo = []
         for attr_name in self.__dict__:
@@ -219,3 +222,17 @@ class StudentInfo(object):
         :return: An integer value denoting the demographic
         """
         return get_derived_demographic(self.get_stu_demo_list())
+
+    def delete_assessment_info(self, asmt_guid):
+        """
+        remove all information stored in this object about the assessment with the given guid
+        :param asmt_guid: a UUID object representing the guid for the assessment
+        :return: None
+        """
+        try:
+            for attribute in self.asmt_dicts_stored_by_guid:
+                del attribute[asmt_guid]
+        except KeyError:
+            print('Key error in deleting assessment information in student')
+            print('attribute name', attribute)
+            raise

@@ -184,7 +184,7 @@ def chop_year_off_asmt_period(asmt_period):
     return component_strings[0]
 
 
-def select_assessment_from_list(asmt_list, grade, subject):
+def select_assessment_from_list(asmt_list, grade, subject, asmt_type=constants.ASSMT_TYPES[0]):
     '''
     select the proper assessment from a list
     @param asmt_list: A list of Assessment objects
@@ -193,7 +193,7 @@ def select_assessment_from_list(asmt_list, grade, subject):
     @return: A single assessment object that has the grade and subject specified. None if no match found
     '''
     for asmt in asmt_list:
-        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower():
+        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower() and asmt_type == asmt.asmt_type:
             return asmt
 
 

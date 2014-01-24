@@ -91,8 +91,7 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
                                 fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
                                 from_obj=[fact_asmt_outcome
-                                          .join(dim_student, and_(fact_asmt_outcome.c.student_guid == dim_student.c.student_guid,
-                                                                  fact_asmt_outcome.c.section_guid == dim_student.c.section_guid))
+                                          .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.most_recent))])
     query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.student_guid == student_guid))
     if assessment_guid is not None:

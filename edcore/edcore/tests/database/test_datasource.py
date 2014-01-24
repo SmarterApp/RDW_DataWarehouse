@@ -124,6 +124,17 @@ class TestDatasource(unittest.TestCase):
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware_stats.db.schema_name'])
 
+    def test_parse_db_settings_mapping(self):
+        settings = {'edware.db.echo': 'True',
+                    'edware.db.schema_name': 'dummySchema',
+                    'edware.db.dummyTenant.state_code': 'NY',
+                    'edware.db.dummyTenant.url': 'sqlite:///:memory:',
+                    'other': 'setting',
+                    'dummy': 'other settings'}
+        mapping = initialize_db(EdCoreDBConnection, settings)
+        self.assertIsNotNone(mapping)
+        self.assertEqual('NY', mapping['dummyTenant'])
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -42,7 +42,6 @@ define [
     errorband_min_range = barWidth - 2 if errorband_min_range >= barWidth - 2
 
     cutLine = calculateCutLineForSwimLane(items.cut_point_intervals, errorband_min_range, errorband_max_range)
-    console.log cutLine
 
     # use mustache template to display the json data
     output = Mustache.to_html losConfidenceLevelBarTemplate, {

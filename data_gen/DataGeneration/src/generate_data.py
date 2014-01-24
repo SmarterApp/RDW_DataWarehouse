@@ -12,7 +12,6 @@ import os
 import math
 import random
 import yaml
-import pprint
 
 from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy,
@@ -537,28 +536,6 @@ def assign_students_sections(students, section_map):
     return students
 
 
-#def assign_students_sections(students, math_sections, ela_sections):
-#    """
-#    For a list of students and sections. Assign each student a section for math and ela
-#    """
-#    assert len(math_sections) == len(ela_sections)
-#    student_size = len(students)
-#    students_per_section = math.ceil(student_size / len(math_sections))
-#
-#    student_index = 0
-#
-#    for i in range(len(math_sections)):
-#        for _j in range(min(students_per_section, student_size)):
-#            # place the section guid in section guid dict for the student
-#            students[student_index].section_guids[constants.MATH] = math_sections[i].section_guid
-#            students[student_index].section_rec_ids[constants.MATH] = math_sections[i].section_rec_id
-#            students[student_index].section_guids[constants.ELA] = ela_sections[i].section_guid
-#            students[student_index].section_rec_ids[constants.ELA] = ela_sections[i].section_rec_id
-#            student_index += 1
-#
-#    return students
-
-
 def set_students_asmt_info(students, assessment, date_taken):
     """
 
@@ -575,22 +552,6 @@ def set_students_asmt_info(students, assessment, date_taken):
         student.asmt_types[assessment.asmt_guid] = assessment.asmt_type
         student.asmt_subjects[assessment.asmt_guid] = assessment.asmt_subject
     return students
-
-#
-#def set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_taken, years, types):
-#    """
-#    take a list of students and assign them assessment record ids.
-#    subjects and asmt_rec_ids are lists that should match
-#    """
-#    for student in students:
-#        for i in range(len(subjects)):
-#            student.asmt_rec_ids[subjects[i]] = asmt_rec_ids[i]
-#            student.asmt_guids[subjects[i]] = asmt_guids[i]
-#            student.asmt_dates_taken[subjects[i]] = dates_taken[i]
-#            student.asmt_years[subjects[i]] = years[i]
-#            student.asmt_types[subjects[i]] = types[i]
-#            student.asmt_subjects[subjects[i]] = subjects[i]
-#    return students
 
 
 def apply_subject_percentages(subject_percentages, students, grade_assessment_guids):
@@ -633,8 +594,6 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
             index = random.randint(0, len(student_info_dict[grade][pl]) - 1)
             students.append(student_info_dict[grade][pl].pop(index))
 
-    #if short_sum:
-        #print('short_sum\t', short_sum, '\tout of', total, '\tgrade', grade)
     return students
 
 
@@ -914,22 +873,6 @@ def generate_institution_hierarchy_from_helper_entities(state_population, distri
                                                            school_guid, school_name, school_category,
                                                            from_date, most_recent, to_date)
     return institution_hierarchy
-
-
-def create_output_dict(output_path):
-    """
-    create a dictionary that specifies the output path for all csv files
-    @param output_path: the path to where to store the files
-    @type output_path: str
-    @return: A dict containing all ouput paths
-    @rtype: dict
-    """
-    out_dict = {}
-
-    for fname in CSV_FILE_NAMES:
-        out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
-
-    return out_dict
 
 
 def calculate_dist_chunk(state_population):

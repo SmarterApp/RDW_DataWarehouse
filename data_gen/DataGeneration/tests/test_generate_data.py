@@ -21,6 +21,7 @@ import DataGeneration.src.models.state_population as sp
 from DataGeneration.src.generators.generate_helper_entities import generate_school
 from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file
 from DataGeneration.src.utils.util import select_assessment_from_list
+from DataGeneration.src.calc.claim_score_calculation import translate_scores_to_assessment_score
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -735,11 +736,75 @@ class Test(unittest.TestCase):
         self.assertEqual(res.school_name, 'School1')
         self.assertEqual(res.school_category, 'Middle')
 
-    def test_create_output_dict(self):
-        gd2.CSV_FILE_NAMES = self.csv_file_names
-        result = gd2.create_output_dict(self.output_dir)
+    def test_create_assessment_scores_for_additional_assessment(self):
+        students = create_tmp_students(10)
+        assessment = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)[0]
+        assessment.asmt_type = 'Interim Test'
+        assessment.asmt_subject = 'math'
 
-        self.assertDictEqual(result, self.entity_to_path_dict)
+        date_taken = date.today()
+
+        for student in students:
+            for asmt in student.asmt_scores:
+                student.asmt_scores[asmt] = translate_scores_to_assessment_score([1500], [1400, 1800, 2100], assessment, 25, 8, -10, 25, [1600, 2000])[0]
+
+            self.assertEqual(len(student.asmt_scores), 2)
+            self.assertEqual(len(student.asmt_rec_ids), 2)
+            self.assertEqual(len(student.asmt_guids), 2)
+            self.assertEqual(len(student.asmt_types), 2)
+            self.assertEqual(len(student.asmt_subjects), 2)
+            self.assertEqual(len(student.asmt_years), 2)
+            self.assertEqual(len(student.asmt_dates_taken), 2)
+
+        gd2.create_assessment_scores_for_additional_assessment(students, assessment, 32, 8, -10, 25, date_taken)
+
+        for student in students:
+            self.assertEqual(len(student.asmt_scores), 3)
+            self.assertEqual(len(student.asmt_rec_ids), 3)
+            self.assertEqual(len(student.asmt_guids), 3)
+            self.assertEqual(len(student.asmt_types), 3)
+            self.assertEqual(len(student.asmt_subjects), 3)
+            self.assertEqual(len(student.asmt_years), 3)
+            self.assertEqual(len(student.asmt_dates_taken), 3)
+
+    def test_add_assessment_to_student(self):
+        student = create_tmp_students(1)[0]
+        assessment = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)[0]
+        assessment.asmt_type = 'Interim Test'
+        assessment.asmt_subject = 'math'
+
+        date_taken = date.today()
+        asmt_guid = None
+        for asmt in student.asmt_scores:
+            asmt_guid = asmt
+            student.asmt_scores[asmt] = translate_scores_to_assessment_score([1500], [1400, 1800, 2100], assessment, 25, 8, -10, 25, [1600, 2000])[0]
+            break
+
+        gd2.add_assessment_to_student(student, assessment, asmt_guid, 32, 8, -10, 25, date_taken)
+
+        self.assertEqual(len(student.asmt_scores), 3)
+        self.assertEqual(len(student.asmt_rec_ids), 3)
+        self.assertEqual(len(student.asmt_guids), 3)
+        self.assertEqual(len(student.asmt_types), 3)
+        self.assertEqual(len(student.asmt_subjects), 3)
+        self.assertEqual(len(student.asmt_years), 3)
+        self.assertEqual(len(student.asmt_dates_taken), 3)
+
+    def test_create_new_asmt_score_object(self):
+        assessment = generate_assessments([11], [1400, 1800, 2100], [1600, 2000], date.today(), True)[0]
+        score = translate_scores_to_assessment_score([1500], [1400, 1800, 2100], assessment, 25, 8, -10, 25, [1600, 2000])[0]
+        gd2.constants.ASMT_PERF_CHANGE_MAX = 100
+        gd2.constants.ASMT_PERF_CHANGE_MIN = 100
+
+        new_score = gd2.create_new_asmt_score_object(score, assessment, 25, 8, -10, 25)
+        self.assertIn(new_score.overall_score, [1600, 1400])
+
+    def test_get_student_asmt_guid_by_subject(self):
+        student = create_tmp_students(1)[0]
+        subject = 'math'
+
+        res = gd2.get_student_asmt_guid_by_subject(student, subject)
+        self.assertEqual(res, 'mathguid')
 
     ##==================================
     ## Helper Methods
@@ -859,7 +924,7 @@ def create_tmp_students(student_count):
                        asmt_guids={'mathguid': 'guid', 'elaguid': 'guid'},
                        asmt_dates_taken={'mathguid': 'date', 'elaguid': 'date'},
                        asmt_types={'mathguid': 'type', 'elaguid': 'type'},
-                       asmt_subjects={'mathguid': 'sub', 'elaguid': 'sub'},
+                       asmt_subjects={'mathguid': 'math', 'elaguid': 'ela'},
                        asmt_years={'mathguid': 'year', 'elaguid': 'year'},
                        )
             for _ in range(student_count)]

@@ -66,7 +66,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 929)
+        self.assertEqual(results['total'], 907)
         self.assertEqual(results['dmgPrg504'], 7)
         self.assertEqual(results['dmgPrgIep'], 9)
         self.assertEqual(results['dmgPrgLep'], 9)

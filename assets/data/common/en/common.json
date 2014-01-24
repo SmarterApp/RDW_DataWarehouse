@@ -357,6 +357,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    },
 		    {
@@ -368,6 +369,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    },
 		    {
@@ -379,6 +381,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    }
 		]
@@ -427,6 +430,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    },
 		    {
@@ -438,6 +442,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    },
 		    {
@@ -449,6 +454,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    },
 		    {
@@ -460,6 +466,7 @@
 			"formatter": "showPerfLevel",
 			"sorttype": "int",
 			"align": "center",
+                        "title": false,
 			"export": true
 		    }
 		]

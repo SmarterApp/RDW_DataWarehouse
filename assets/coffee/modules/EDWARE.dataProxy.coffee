@@ -27,18 +27,25 @@ define [
     dataType: 'json'
     contentType: 'application/json'
 
-  onError = (xhr, ajaxOptions, thrownError) ->
+  onError = (xhr, ajaxOptions, thrownError, redirectOnError) ->
     # Read the redirect url on 401 Unauthorized Error
     responseHeader = xhr.getResponseHeader('Content-Type')
+    # redirect to login page
     if xhr.status == 401 and /application\/json/.test(responseHeader)
-      redirectURL = JSON.parse(xhr.responseText).redirect
-    location.href = redirectURL || "/assets/public/error.html"
+      location.href = JSON.parse(xhr.responseText).redirect
+    location.href = "/assets/public/error.html" if redirectOnError
 
   getDatafromSource = (sourceURL, options) ->
     if not sourceURL || not $.type(sourceURL) in ['string', 'array']
       return new TypeError('sourceURL invalid')
 
     options = options || {}
+
+    # define if redirect to error page in case error occurs on server side
+    if options.hasOwnProperty('redirectOnError')
+      redirectOnError = options.redirectOnError
+    else
+      redirectOnError = true
 
     config = $.extend {}, DEFAULT_SETTING
     # setup settings
@@ -67,7 +74,7 @@ define [
         defer.resolve data
       .fail (xhr, ajaxOptions, thrownError) ->
         defer.reject arguments
-        onError xhr, ajaxOptions, thrownError
+        onError xhr, ajaxOptions, thrownError, redirectOnError
     defer.promise()
 
 

@@ -114,7 +114,7 @@ define [
       if filterPanel.is(':hidden')
          filterArrow.show()
          filterPanel.slideDown 'slow'
-         # highlight trigger 
+         # highlight trigger
          $(this.filterTrigger).addClass('active')
       else
          self.cancel self
@@ -295,4 +295,3 @@ define [
     $.fn.edwareFilter = (filterTrigger, configs, callback) ->
       new EdwareFilter($(this), filterTrigger, configs, callback)
   ) jQuery
-

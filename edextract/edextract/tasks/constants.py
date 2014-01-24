@@ -10,5 +10,6 @@ class Constants():
     TASK_TASK_ID = 'task_id'
     TASK_FILE_NAME = 'file_name'
     TASK_QUERY = 'query'
-    SYNC_QUEUE_NAME = 'extract_sync'
     DEFAULT_QUEUE_NAME = 'extract'
+    SYNC_QUEUE_NAME = 'extract_sync'
+    ARCHIVE_QUEUE_NAME = 'extract_archve'

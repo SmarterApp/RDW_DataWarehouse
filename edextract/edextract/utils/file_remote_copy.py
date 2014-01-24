@@ -12,7 +12,7 @@ import sys
 mswindows = (sys.platform == "win32")
 
 
-def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file, binaryfile='sftp'):
+def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file, binaryfile='sftp', timeout=1800):
     if mswindows:
         raise NotForWindowsException('sftp remote copy cannot be served for Windows users')
 
@@ -33,7 +33,7 @@ def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file
     proc.stdin.write(bytes('chmod 600 ' + tmp_destination_file + '\n', 'UTF-8'))
     proc.stdin.write(bytes('rename ' + tmp_destination_file + ' ' + final_destination_file + '\n', 'UTF-8'))
     proc.stdin.close()
-    proc.wait(timeout=1800)
+    proc.wait(timeout=timeout)
     status = proc.returncode
     if status != 0:
         raise RemoteCopyError(proc.stderr.read().decode())

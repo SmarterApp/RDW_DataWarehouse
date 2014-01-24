@@ -24,7 +24,7 @@ define [
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
-      @asmtDropdown ?= @createAsmtDropdown()
+      @asmtDropdown ?= @createAsmtDropdown() if @config.asmtTypes
       @printer ?= @createPrint()
 
     createPrint: () ->

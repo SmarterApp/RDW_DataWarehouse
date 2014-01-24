@@ -33,7 +33,9 @@ log = logging.getLogger('smarter')
 
 
 def process_sync_extract_request(params):
-    queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
+    settings = get_current_registry().settings
+    queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
+    archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
     tasks = []
     request_id, user, tenant = _get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
@@ -48,11 +50,10 @@ def process_sync_extract_request(params):
         # BUG, it still routes to 'extract' queue due to chain
 #        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
 #                       route_tasks(tenant, request_id, tasks, queue_name=queue),
-#                       archive.subtask(args=[request_id, directory_to_archive], queue=queue, immutable=True)).delay()
-#        return result.get(timeout=celery_timeout)
+#                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
         prepare_path.apply_async(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
         route_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=queue, immutable=True)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")

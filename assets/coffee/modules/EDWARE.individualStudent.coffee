@@ -314,7 +314,9 @@ define [
       for idx, asmt of @data.asmt_administration
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
-        asmt.display = "#{asmt.asmt_year} · #{@grade.name} · #{asmt.asmt_type}"
+        asmt.display = "{{asmtYear}} · {{asmtGrade}} · {{asmtType}}"
+        asmt.asmt_year = asmt.asmt_year
+        asmt.asmt_grade = @grade.name
         asmt.hasAsmtSubject = false
         asmtTypes.push asmt
       asmtTypes

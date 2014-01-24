@@ -799,7 +799,6 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
     score_list = score_pool[performance_level]
     for _i in range(count):
         if len(score_list) <= 0:
-            #print('short by: ', count - _i, '\tperf_lvl was:', performance_level, '\tgrade:', grade, '\tdemographic_name:', gender)
             break
         index = random.randint(0, len(score_list) - 1)
         score = score_list.pop(index)

@@ -20,6 +20,7 @@ import DataGeneration.src.demographics.demographics as dmg
 import DataGeneration.src.models.state_population as sp
 from DataGeneration.src.generators.generate_helper_entities import generate_school
 from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file
+from DataGeneration.src.utils.util import select_assessment_from_list
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -243,17 +244,23 @@ class Test(unittest.TestCase):
         section_guids = [s.section_guid for s in res_sections]
         section_rec_ids = [s.section_rec_id for s in res_sections]
         math_count, ela_count = 0, 0
+
+        math_assessment = select_assessment_from_list(assessments, 11, 'Math')
+        math_guid = math_assessment.asmt_guid
+        ela_assessment = select_assessment_from_list(assessments, 11, 'ELA')
+        ela_guid = ela_assessment.asmt_guid
+
         for student in res_students:
-            if student.asmt_scores.get('Math'):
+            if student.asmt_scores.get(math_guid):
                 math_count += 1
-                self.assertIsNotNone(student.asmt_dates_taken.get('Math'))
+                self.assertIsNotNone(student.asmt_dates_taken.get(math_guid))
                 self.assertIn(student.teacher_guids['Math'], teacher_guids)
                 self.assertIn(student.section_guids['Math'], section_guids)
                 self.assertIn(student.section_rec_ids['Math'], section_rec_ids)
 
-            if student.asmt_scores.get('ELA'):
+            if student.asmt_scores.get(ela_guid):
                 ela_count += 1
-                self.assertIsNotNone(student.asmt_dates_taken.get('ELA'))
+                self.assertIsNotNone(student.asmt_dates_taken.get(ela_guid))
                 self.assertIn(student.teacher_guids['ELA'], teacher_guids)
                 self.assertIn(student.section_guids['ELA'], section_guids)
                 self.assertIn(student.section_rec_ids['ELA'], section_rec_ids)
@@ -297,8 +304,10 @@ class Test(unittest.TestCase):
         ela_teacher = DummyClass(staff_guid='e1')
         expected_teacher_guids = {'Math': 'm1', 'ELA': 'e1'}
         to_date = date(2015, 12, 12)
+        teacher_map = {'Math': [math_teacher], 'ELA': [ela_teacher]}
 
-        result = gd2.set_student_institution_information(students, school, from_date, most_recent, to_date, street_names, math_teacher, ela_teacher, state_code)
+        result = gd2.set_student_institution_information(students, school, from_date, most_recent, to_date,
+                                                         street_names, state_code, teacher_map)
 
         for student in result:
             self.assertEqual(len(student.student_rec_ids), 2)
@@ -321,20 +330,22 @@ class Test(unittest.TestCase):
             self.assertIn('sname', student_cities[1])
 
     def test_assign_students_sections(self):
-        students = [DummyClass(section_rec_ids={}, section_guids={}) for _x in range(100)]
+        students = [DummyClass(section_rec_ids={}, section_guids={}) for _ in range(100)]
         math_sections = [DummyClass(section_guid='mg10', section_rec_id='mr10')]
         ela_sections = [DummyClass(section_guid='eg10', section_rec_id='er10')]
         expected_guid = {'Math': 'mg10', 'ELA': 'eg10'}
         expected_rec = {'Math': 'mr10', 'ELA': 'er10'}
 
-        result = gd2.assign_students_sections(students, math_sections, ela_sections)
+        section_map = {'Math': math_sections, 'ELA': ela_sections}
+
+        result = gd2.assign_students_sections(students, section_map)
 
         for student in result:
             self.assertDictEqual(student.section_rec_ids, expected_rec)
             self.assertDictEqual(student.section_guids, expected_guid)
 
     def test_assign_students_sections_2(self):
-        students = [DummyClass(section_rec_ids={}, section_guids={}) for _x in range(100)]
+        students = [DummyClass(section_rec_ids={}, section_guids={}) for _ in range(100)]
         math_sections = [DummyClass(section_guid='mg{0}'.format(i),
                                     section_rec_id='mr{0}'.format(i)) for i in range(10)]
         ela_sections = [DummyClass(section_guid='eg{0}'.format(i), section_rec_id='er{0}'.format(i))
@@ -342,7 +353,9 @@ class Test(unittest.TestCase):
         section_guid_count = Counter()
         section_rec_count = Counter()
 
-        result = gd2.assign_students_sections(students, math_sections, ela_sections)
+        section_map = {'Math': math_sections, 'ELA': ela_sections}
+
+        result = gd2.assign_students_sections(students, section_map)
 
         for student in result:
             section_rec_count[student.section_rec_ids['Math']] += 1
@@ -358,21 +371,23 @@ class Test(unittest.TestCase):
             self.assertEqual(section_rec_count[rec_id], 10, 'Each section should have 10 students')
 
     def test_set_students_asmt_info(self):
-        students = [DummyClass(asmt_rec_ids={}, asmt_guids={}, asmt_dates_taken={}, asmt_years={}, asmt_types={}, asmt_subjects={}) for _x in range(100)]
+        students = [DummyClass(asmt_rec_ids={}, asmt_guids={}, asmt_dates_taken={}, asmt_years={}, asmt_types={}, asmt_subjects={}) for _ in range(100)]
         subjects = ['Math', 'ELA']
         asmt_rec_ids = ['123', '456']
         asmt_guids = ['ag123', 'ag123r4']
         dates_taken = [date(2013, 12, 2), date(2001, 11, 5)]
         asmt_types = ['SUMMATIVE', 'SUMMATIVE']
         asmt_years = [2015, 1920]
-        expected_asmt_rec_ids = {'Math': '123', 'ELA': '456'}
-        expected_asmt_guids = {'Math': 'ag123', 'ELA': 'ag123r4'}
-        expected_dates_taken = {'Math': date(2013, 12, 2), 'ELA': date(2001, 11, 5)}
-        expected_asmt_types = {'Math': 'SUMMATIVE', 'ELA': 'SUMMATIVE'}
-        expected_asmt_years = {'Math': 2015, 'ELA': 1920}
-        expected_asmt_subjects = {'Math': 'Math', 'ELA': 'ELA'}
+        expected_asmt_rec_ids = {'g123': 123}
+        expected_asmt_guids = {'g123': 'g123'}
+        expected_dates_taken = {'g123': date(2013, 12, 2)}
+        expected_asmt_types = {'g123': 'SUMMATIVE'}
+        expected_asmt_years = {'g123': 2015}
+        expected_asmt_subjects = {'g123': 'Math'}
+        assessment = DummyClass(asmt_rec_id=123, asmt_guid='g123', asmt_period_year=2015,
+                                asmt_type='SUMMATIVE', asmt_subject='Math')
 
-        result = gd2.set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_taken, asmt_years, asmt_types)
+        result = gd2.set_students_asmt_info(students, assessment, date(2013, 12, 2))
 
         for student in result:
             self.assertDictEqual(student.asmt_rec_ids, expected_asmt_rec_ids)
@@ -383,29 +398,31 @@ class Test(unittest.TestCase):
             self.assertDictEqual(student.asmt_subjects, expected_asmt_subjects)
 
     def test_apply_subject_percentages(self):
-        students = [DummyClass(asmt_scores={'Math': 'score', 'ELA': 'score'}) for _i in range(100)]
+        students = create_tmp_students(100)
         subject_percentages = {'Math': .75, 'ELA': .75}
-        result = gd2.apply_subject_percentages(subject_percentages, students)
+        grade_assessment_guids = {'Math': 'mathguid', 'ELA': 'elaguid'}
+        result = gd2.apply_subject_percentages(subject_percentages, students, grade_assessment_guids)
 
         math_count, ela_count = 0, 0
         for student in result:
-            if student.asmt_scores.get('Math'):
+            if student.asmt_scores.get('mathguid'):
                 math_count += 1
-            if student.asmt_scores.get('ELA'):
+            if student.asmt_scores.get('elaguid'):
                 ela_count += 1
         self.assertEqual(math_count, 75)
         self.assertEqual(ela_count, 75)
 
     def test_apply_subject_percentages_2(self):
-        students = [DummyClass(asmt_scores={'Math': 'score', 'ELA': 'score'}) for _i in range(100)]
+        students = create_tmp_students(100)
         subject_percentages = {'Math': .80, 'ELA': .95}
-        gd2.apply_subject_percentages(subject_percentages, students)
+        grade_assessment_guids = {'Math': 'mathguid', 'ELA': 'elaguid'}
+        gd2.apply_subject_percentages(subject_percentages, students, grade_assessment_guids)
 
         math_count, ela_count = 0, 0
         for student in students:
-            if student.asmt_scores.get('Math'):
+            if student.asmt_scores.get('mathguid'):
                 math_count += 1
-            if student.asmt_scores.get('ELA'):
+            if student.asmt_scores.get('elaguid'):
                 ela_count += 1
         self.assertEqual(math_count, 80)
         self.assertEqual(ela_count, 95)
@@ -538,7 +555,8 @@ class Test(unittest.TestCase):
                               'dmg_eth_ami': [2, 28, 7, 7, 7, 7],
                               'dmg_eth_blk': [2, 24, 6, 6, 6, 6]}
         grade = 3
-        results = gd2.generate_students_with_demographics(score_pool, demographic_totals, grade)
+        assessment = DummyClass(asmt_guid='guid123')
+        results = gd2.generate_students_with_demographics(score_pool, demographic_totals, grade, assessment)
         self.assertEquals(len(results), 4)
 
     def test_assign_demographics_for_grouping(self):
@@ -615,7 +633,8 @@ class Test(unittest.TestCase):
                       3: [x for x in range(100)], 4: [x for x in range(100)]}
         demographic_totals = {'male': [1, 20, 5, 5, 5, 5], 'female': [1, 24, 6, 6, 6, 6], 'not_stated': [1, 28, 7, 7, 7, 7]}
         grade = 3
-        result = gd2.create_student_info_dict(group_num, score_pool, demographic_totals, grade)
+        assessment = DummyClass(asmt_guid='guid123')
+        result = gd2.create_student_info_dict(group_num, score_pool, demographic_totals, grade, assessment)
 
         for perf_lvl in result:
             self.assertEqual(len(result[perf_lvl]), 18)
@@ -626,9 +645,11 @@ class Test(unittest.TestCase):
         performance_level = 1
         score_pool = {1: [x for x in range(count)]}
         grade = 3
-        studentInfo_list = gd2.create_student_infos_by_gender(gender, count, performance_level, score_pool, grade)
-        self.assertEqual(len(studentInfo_list), count)
-        print(studentInfo_list[0].asmt_scores)
+        assessment = DummyClass(asmt_guid='guid123')
+        student_info_list = gd2.create_student_infos_by_gender(gender, count, performance_level,
+                                                               score_pool, grade, assessment)
+        self.assertEqual(len(student_info_list), count)
+        print(student_info_list[0].asmt_scores)
 
     def test_create_asmt_score_pool_dict(self):
         total = 100
@@ -751,6 +772,16 @@ class DummyClass:
             setattr(self, arg, kwargs[arg])
 
 
+class TmpStudent:
+    def __init__(self, **kwargs):
+        for arg in kwargs:
+            setattr(self, arg, kwargs[arg])
+
+    def delete_assessment_info(self, asmt_guid):
+        for attr in self.__dict__:
+            del self.__dict__[attr][asmt_guid]
+
+
 class DummyEntity1(object):
     def __init__(self):
         pass
@@ -819,6 +850,19 @@ def write_demographics_csv(output_dir):
             cwriter.writerow(row)
 
     return file_path
+
+
+def create_tmp_students(student_count):
+
+    return [TmpStudent(asmt_scores={'mathguid': 'score', 'elaguid': 'score'},
+                       asmt_rec_ids={'mathguid': 'rec_id', 'elaguid': 'rec_id'},
+                       asmt_guids={'mathguid': 'guid', 'elaguid': 'guid'},
+                       asmt_dates_taken={'mathguid': 'date', 'elaguid': 'date'},
+                       asmt_types={'mathguid': 'type', 'elaguid': 'type'},
+                       asmt_subjects={'mathguid': 'sub', 'elaguid': 'sub'},
+                       asmt_years={'mathguid': 'year', 'elaguid': 'year'},
+                       )
+            for _ in range(student_count)]
 
 
 def get_district_types():

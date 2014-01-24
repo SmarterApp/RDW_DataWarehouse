@@ -6,6 +6,7 @@ star:
             asmnt_outcome_rec_id: UNIQUE_ID
             asmt_rec_id: student_info.asmt_rec_ids
             student_guid: student_info.student_guid
+            student_rec_id: student_info.student_rec_ids
             state_code: student_info.state_code
             district_guid: student_info.district_guid
             school_guid: student_info.school_guid
@@ -76,6 +77,7 @@ star:
             state_code: student_info.state_code
             district_guid: student_info.district_guid
             school_guid: student_info.school_guid
+            batch_guid: batch_guid
             from_date: student_info.from_date
             most_recent: student_info.most_recent
             to_date: student_info.to_date

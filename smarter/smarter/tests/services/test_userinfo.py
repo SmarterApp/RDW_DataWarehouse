@@ -23,7 +23,7 @@ class TestUserInfo(Unittest_with_stats_sqlite_no_data_load):
         dummy_session = Session()
         dummy_session.set_roles(['SUPER_USER'])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant('cat')
+        dummy_session.set_tenants('cat')
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

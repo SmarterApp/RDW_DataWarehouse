@@ -29,7 +29,7 @@ class TestBasicIdentityParser(unittest.TestCase):
     def test_valid_dn(self):
         attributes = {'dn': ['ou=dummyOrg,ou=dummy,dc=testing,dc=com']}
         tenant = BasicIdentityParser.get_tenant_name(attributes)
-        self.assertEqual(tenant, 'dummyorg')
+        self.assertEqual(tenant[0], 'dummyorg')
 
     def test_valid_dn_without_ou(self):
         attributes = {'dn': ['cn=dummyOrg,ou=dummy,dc=testing,dc=com']}
@@ -48,12 +48,12 @@ class TestBasicIdentityParser(unittest.TestCase):
         self.__config = testing.setUp(registry=reg, request=DummyRequest(), hook_zca=False)
         attributes = {'dn': ['ou=dummyOrg,ou=dummy']}
         tenant = BasicIdentityParser.get_tenant_name(attributes)
-        self.assertEqual(tenant, 'dummyorg')
+        self.assertEqual(tenant[0], 'dummyorg')
 
     def test_case_sensitive_ou(self):
         attributes = {'dn': ['ou=DUMMYoRG,ou=dummy,dc=testing,dc=com']}
         tenant = BasicIdentityParser.get_tenant_name(attributes)
-        self.assertEqual(tenant, 'dummyorg')
+        self.assertEqual(tenant[0], 'dummyorg')
 
 
 if __name__ == "__main__":

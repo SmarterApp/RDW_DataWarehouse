@@ -24,8 +24,6 @@ from beaker.util import parse_cache_config_options
 from edapi.utils import convert_query_string_to_dict_arrays
 import zipfile
 import tempfile
-from smarter.extracts.constants import Constants as Extract
-import json
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -55,7 +53,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
@@ -82,7 +80,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
@@ -107,7 +105,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         results = get_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
@@ -126,7 +124,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
@@ -196,7 +194,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         results = get_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
@@ -215,7 +213,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         response = post_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
@@ -233,7 +231,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         response = get_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)

@@ -25,7 +25,7 @@ class TestUser(unittest.TestCase):
         roles = user.get_roles()
         self.assertEqual(roles, data['roles'])
 
-        tenant = user.get_tenant()
+        tenant = user.get_tenants()
         self.assertIsNone(tenant)
 
         guid = user.get_guid()
@@ -33,12 +33,12 @@ class TestUser(unittest.TestCase):
 
     def test_non_empty_user(self):
         user = User()
-        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'stateCode': None, 'tenant': 'dog', 'guid': '123'}
+        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'stateCode': [None], 'tenant': ['dog'], 'guid': '123'}
         user.set_name(data['name'])
         user.set_uid(data['uid'])
         user.set_roles(data['roles'])
         user.set_guid(data['guid'])
-        user.set_tenant(data['tenant'])
+        user.set_tenants(data['tenant'])
 
         name = user.get_name()
         self.assertEqual(name, {'name': data['name']})
@@ -52,7 +52,7 @@ class TestUser(unittest.TestCase):
         roles = user.get_roles()
         self.assertEqual(roles, data['roles'])
 
-        tenant = user.get_tenant()
+        tenant = user.get_tenants()
         self.assertEqual(tenant, data['tenant'])
 
         guid = user.get_guid()
@@ -60,7 +60,7 @@ class TestUser(unittest.TestCase):
 
     def test_set_individual_names(self):
         user = User()
-        data = {'name': {'fullName': 'Joe MDoe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'tenant': 'dog', 'guid': '123'}
+        data = {'name': {'fullName': 'Joe MDoe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'tenant': ['dog'], 'guid': '123'}
         user.set_first_name(data['name']['firstName'])
         user.set_last_name(data['name']['lastName'])
         user.set_full_name(data['name']['fullName'])
@@ -75,14 +75,14 @@ class TestUser(unittest.TestCase):
         user.set_uid(data['uid'])
         user.set_roles(data['roles'])
         user.set_guid(data['guid'])
-        user.set_tenant(data['tenant'])
+        user.set_tenants(data['tenant'])
 
         context = user.get_user_context()
         self.assertEqual(context['uid'], data['uid'])
         self.assertEqual(context['name'], data['name'])
         self.assertEqual(context['roles'], data['roles'])
         self.assertEqual(context['guid'], data['guid'])
-        self.assertEqual(context['tenant'], data['tenant'])
+        self.assertEqual(context['tenant'], [data['tenant']])
 
     def test_set_user_info(self):
         user = User()
@@ -96,6 +96,13 @@ class TestUser(unittest.TestCase):
         self.assertEqual(context['roles'], data['roles'])
         self.assertEqual(context['guid'], data['guid'])
         self.assertEqual(context['tenant'], data['tenant'])
+
+    def test_user_with_tenant_as_str(self):
+        user = User()
+        user.set_tenants("dog")
+        tenants = user.get_tenants()
+        self.assertIn("dog", tenants)
+        self.assertEqual(len(tenants), 1)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

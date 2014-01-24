@@ -39,7 +39,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.TEACHER])
 #        dummy_session.set_uid('272')
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
@@ -49,7 +49,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.TEACHER])
 #        dummy_session.set_uid('272')
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            # Insert into user_mapping table
@@ -68,7 +68,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles([RolesConstants.STUDENT])
         dummy_session.set_uid(uid)
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
@@ -87,7 +87,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1])
 #        dummy_session.set_uid(uid)
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            # Insert into user_mapping table
@@ -106,7 +106,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
 #        dummy_session.set_uid(uid)
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            # Insert into user_mapping table
@@ -131,7 +131,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.TEACHER])
 #        dummy_session.set_uid('272')
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            # Insert into user_mapping table
@@ -146,7 +146,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles([RolesConstants.STUDENT])
         dummy_session.set_uid(uid)
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
@@ -161,7 +161,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1])
 #        dummy_session.set_uid(uid)
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            # Insert into user_mapping table
@@ -176,7 +176,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 #        dummy_session = Session()
 #        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
 #        dummy_session.set_uid(uid)
-#        dummy_session.set_tenant(self.__tenant_name)
+#        dummy_session.set_tenants(self.__tenant_name)
 #        self.__config.testing_securitypolicy(dummy_session)
 #        with UnittestEdcoreDBConnection() as connection:
 #            # Insert into user_mapping table

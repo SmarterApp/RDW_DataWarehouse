@@ -30,7 +30,7 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
         dummy_session = Session()
         dummy_session.set_roles([RolesConstants.STATE_EDUCATION_ADMINISTRATOR_1])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant(get_unittest_tenant_name())
+        dummy_session.set_tenants([get_unittest_tenant_name()])
         self.__config.testing_securitypolicy(dummy_session)
         set_default_min_cell_size(0)
 

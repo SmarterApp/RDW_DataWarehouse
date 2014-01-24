@@ -42,8 +42,8 @@ class Session:
     def get_roles(self):
         return self.__user.get_roles()
 
-    def get_tenant(self):
-        return self.__user.get_tenant()
+    def get_tenants(self):
+        return self.__user.get_tenants()
 
     def get_guid(self):
         return self.__user.get_guid()
@@ -84,11 +84,11 @@ class Session:
         '''
         self.__user.set_roles(roles)
 
-    def set_tenant(self, tenant):
+    def set_tenants(self, tenant):
         '''
         @param tenant: the tenant to set
         '''
-        self.__user.set_tenant(tenant)
+        self.__user.set_tenants(tenant)
 
     def set_guid(self, guid):
         '''

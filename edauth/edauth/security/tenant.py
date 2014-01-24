@@ -8,11 +8,16 @@ Created on Jan 23, 2014
 TENANT_MAP = {}
 
 
-def get_state_code_mapping(tenant):
+def get_state_code_mapping(tenants):
     '''
-    Given a tenant name, return the state code that it maps to
+    Given a list of tenants, return list of state code that it maps to
+    :param list tenants:  list of tenants
     '''
-    return TENANT_MAP.get(tenant)
+    state_codes = []
+    if tenants:
+        for tenant in tenants:
+            state_codes.append(TENANT_MAP.get(tenant))
+    return state_codes
 
 
 def set_tenant_map(tenant_map):

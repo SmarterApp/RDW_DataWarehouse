@@ -49,7 +49,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('a5ddfe12-740d-4487-9179-de70f6ac33be')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
         settings = {'services.celery.CELERY_ALWAYS_EAGER': True}
@@ -78,7 +78,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
@@ -115,7 +115,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         self.__request.matchdict['report'] = 'indivStudentReport.html'
 
@@ -160,7 +160,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['TEACHER'])
         dummy_session.set_uid('1020')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
         params = {}
         # Important, this pdf must not exist in directory
@@ -183,7 +183,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
 
         self.assertRaises(ForbiddenError, get_pdf_content, params)

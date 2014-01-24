@@ -50,7 +50,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
         self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
         self.assertEqual(session.get_name()['name']['fullName'], "Linda Kim", "name is Linda Kim")
-        self.assertEqual(session.get_tenant(), 'dummyorg')
+        self.assertEqual(session.get_tenants()[0], 'dummyorg')
         self.assertEqual(session.get_guid(), '55d56214-ca4b-11e2-8f31-68a86d1e157a')
 
     def test_update_last_access_session(self):

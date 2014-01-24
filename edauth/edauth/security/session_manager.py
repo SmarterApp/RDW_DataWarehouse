@@ -105,7 +105,7 @@ def __create_from_SAMLResponse(saml_response, identity_parser_class, last_access
     # set nameId
     session.set_name_id(__name_id)
     # set tenant
-    session.set_tenant(identity_parser_class.get_tenant_name(__attributes))
+    session.set_tenants(identity_parser_class.get_tenant_name(__attributes))
 
     session.set_expiration(expiration)
     session.set_last_access(last_access)

@@ -227,7 +227,7 @@ def _get_extract_request_user_info():
     # Generate an uuid for this extract request
     request_id = str(uuid4())
     user = authenticated_userid(get_current_request())
-    tenant = user.get_tenant()
+    tenant = user.get_tenants()[0]
     return request_id, user, tenant
 
 

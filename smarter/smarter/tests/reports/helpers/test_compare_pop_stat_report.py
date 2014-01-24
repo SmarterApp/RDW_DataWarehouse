@@ -37,7 +37,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         dummy_session.set_session_id('123')
         dummy_session.set_roles(['TEACHER'])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant(get_unittest_tenant_name())
+        dummy_session.set_tenants([get_unittest_tenant_name()])
         self.__config.testing_securitypolicy(dummy_session)
         set_default_min_cell_size(0)
 

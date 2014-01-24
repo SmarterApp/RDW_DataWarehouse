@@ -201,7 +201,7 @@ def saml2_post_consumer(request):
         session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), identity_parser_class, session_timeout).get_session_id()
 
         # If user doesn't have a Tenant, return 403
-        if get_user_session(session_id).get_tenant() is None:
+        if get_user_session(session_id).get_tenants() is None:
             write_security_event('No Tenant was found.  Rejecting User', SECURITY_EVENT_TYPE.WARN, session_id)
             raise NotAuthorized()
 

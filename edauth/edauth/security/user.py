@@ -92,14 +92,16 @@ class User(object):
         '''
         self.__info[UserConstants.ROLES] = roles
 
-    def set_tenant(self, tenant):
+    def set_tenants(self, tenants):
         '''
-        @param tenant: the tenant to be set
-        @type tenant: string
+        @param tenant: the tenants to be set
+        @type tenant: list
         '''
-        self.__info[UserConstants.TENANT] = tenant
+        if not isinstance(tenants, list):
+            tenants = [tenants]
+        self.__info[UserConstants.TENANT] = tenants
         # Set the state code based on tenant name
-        self.__info[UserConstants.STATECODE] = get_state_code_mapping(tenant)
+        self.__info[UserConstants.STATECODE] = get_state_code_mapping(tenants)
 
     def set_guid(self, guid):
         '''
@@ -120,7 +122,7 @@ class User(object):
     def get_roles(self):
         return self.__info[UserConstants.ROLES]
 
-    def get_tenant(self):
+    def get_tenants(self):
         return self.__info[UserConstants.TENANT]
 
     def get_guid(self):

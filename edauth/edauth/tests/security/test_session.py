@@ -17,7 +17,7 @@ class TestSession(unittest.TestCase):
         self.assertEqual(0, len(session.get_roles()))
         self.assertIsNone(session.get_session_id())
         self.assertIsNone(session.get_uid())
-        self.assertIsNone(session.get_tenant())
+        self.assertIsNone(session.get_tenants())
         self.assertIsNone(session.get_guid())
 
     def test_fullName(self):

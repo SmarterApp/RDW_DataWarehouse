@@ -32,7 +32,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
+        dummy_session.set_tenants([self.__tenant_name])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
@@ -44,12 +44,6 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.delete())
 
     def test_get_extract_assessment_query(self):
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-
         params = {'stateCode': ['CA'],
                   'asmtYear': ['2015'],
                   'asmtType': ['SUMMATIVE'],
@@ -60,12 +54,6 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIn('fact_asmt_outcome.asmt_type', str(query._whereclause))
 
     def test_get_extract_assessment_query_limit(self):
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-
         params = {'stateCode': ['CA'],
                   'asmtYear': ['2015'],
                   'asmtType': ['SUMMATIVE'],
@@ -76,12 +64,6 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIn('541', str(query._limit))
 
     def test_get_extract_assessment_query_compiled(self):
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-
         params = {'stateCode': ['CA'],
                   'asmtYear': ['2015'],
                   'asmtType': ['SUMMATIVE'],

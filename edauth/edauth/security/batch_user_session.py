@@ -69,7 +69,7 @@ def __create_session(roles, expire_in_secs, tenant_name):
     __uid = str(uuid.uuid4())
     session.set_uid(__uid)
     # set tenant
-    session.set_tenant(tenant_name)
+    session.set_tenants([tenant_name])
     # save current session
     get_session_backend().create_new_session(session)
     return session

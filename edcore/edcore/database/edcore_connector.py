@@ -23,7 +23,8 @@ class EdCoreDBConnection(DBConnection):
             # Get user's tenant from session
             __user = authenticated_userid(get_current_request())
             if __user:
-                tenant = __user.get_tenant()
+                # User object has a list of tenant.  Retrieve the first element
+                tenant = __user.get_tenants()[0]
         super().__init__(name=self.get_datasource_name(tenant))
 
     @staticmethod

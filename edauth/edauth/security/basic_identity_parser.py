@@ -59,6 +59,7 @@ class BasicIdentityParser(IdentityParser):
                 element = value[0].split('=')
                 # Ensure that it's an ou
                 if element[0] == 'ou':
-                    tenant = element[1]
+                    # Return it as a list of one
+                    tenant = [element[1]]
 
         return tenant

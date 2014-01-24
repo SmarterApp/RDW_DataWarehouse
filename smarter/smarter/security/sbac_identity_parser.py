@@ -45,4 +45,4 @@ class SbacIdentityParser(IdentityParser):
             #index 0 is always empty.
             #Tenant is always at index 10
             tenant = value[10].lower()
-        return tenant
+        return [tenant]

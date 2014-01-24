@@ -938,7 +938,8 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('--format', dest='output_format', action='store',
                         default=os.path.join(DATAFILE_PATH, 'src', 'configs', 'datagen_output_format_default.yaml'),
-                        help='Specify the DataGen output format needed.',
+                        help='Specify the DataGen output yaml file desired. '
+                             'Default: "src/configs/datagen_output_format_default.yaml"',
                         required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         default=DEFAULT_OUTPUT_DIR,

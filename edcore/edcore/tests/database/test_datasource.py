@@ -26,6 +26,7 @@ class TestDatasource(unittest.TestCase):
     def test_parse_db_settings(self):
         settings = {'edware.db.echo': 'True',
                     'edware.db.schema_name': 'dummySchema',
+                    'edware.db.dummyTenant.state_code': 'NY',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'other': 'setting',
                     'dummy': 'other settings'}
@@ -40,6 +41,7 @@ class TestDatasource(unittest.TestCase):
         settings = {'edware.db.dummyTenant.echo': 'True',
                     'edware.db.dummyTenant.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
+                    'edware.db.dummyTenant.state_code': 'NY',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
         initialize_db(EdCoreDBConnection, settings)
@@ -54,6 +56,7 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.dummyTenant.echo': 'True',
                     'edware.db.dummyTenant.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
+                    'edware.db.dummyTenant.state_code': 'NY',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
         initialize_db(EdCoreDBConnection, settings)
@@ -69,8 +72,11 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.schema_name': 'myname',
                     'edware.db.dummyTenant.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
+                    'edware.db.dummyTenant.state_code': 'NY',
                     'edware.db.aTenant.url': 'sqlite:///:memory:',
+                    'edware.db.aTenant.state_code': 'AB',
                     'edware.db.bTenant.url': 'sqlite:///:memory:',
+                    'edware.db.bTenant.state_code': 'AB',
                     'edware.db.bTenant.echo': 'True',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
@@ -97,6 +103,7 @@ class TestDatasource(unittest.TestCase):
 
     def test_setup_tenant_db_connection(self):
         settings = {'edware.db.dummyTenant.echo': 'False',
+                    'edware.db.dummyTenant.state_code': 'AB',
                     'edware.db.dummyTenant.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:'}
         setup_tenant_db_connection(EdCoreDBConnection, 'dummyTenant', settings)
@@ -105,7 +112,7 @@ class TestDatasource(unittest.TestCase):
         self.assertEqual(dbUtil.get_engine().echo, False)
         self.assertEqual(dbUtil.get_metadata().schema, 'dummySchema')
         self.assertEqual(dbUtil.get_engine().url.database, ':memory:')
-        self.assertEqual(len(settings.keys()), 2)
+        self.assertEqual(len(settings.keys()), 4)
 
     def test_initialize_db_without_tenants(self):
         settings = {'edware_stats.db.schema_name': 'dummySchema',

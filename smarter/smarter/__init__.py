@@ -18,6 +18,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.stats_connector import StatsDBConnection
 from services.celery import setup_celery as setup_services_celery, PREFIX as servicesPrefix
 from edextract.celery import setup_celery as setup_extract_celery, PREFIX as edextractPrefix
+from edauth.security.tenant import set_tenant_map
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -47,8 +48,11 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
-    initialize_db(EdCoreDBConnection, settings)
+    tenant_mapping = initialize_db(EdCoreDBConnection, settings)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
+
+    # save tenancy mapping
+    set_tenant_map(tenant_mapping)
 
     # setup celery
     setup_services_celery(settings, prefix=servicesPrefix)

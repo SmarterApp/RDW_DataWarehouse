@@ -53,6 +53,10 @@ define [
   getGuid = (userInfo) ->
     userInfo._User__info.guid
 
+  # Given an user_info object, return the state_code
+  getUserStateCode = (userInfo) ->
+    userInfo._User__info.stateCode
+
   format_full_name_reverse = (first_name, middle_name, last_name) ->
     if (middle_name && middle_name.length > 0)
         middle_init = middle_name[0] + '.'
@@ -170,6 +174,7 @@ define [
   getUserName: getUserName
   getUid: getUid
   getGuid: getGuid
+  getUserStateCode: getUserStateCode
   truncateContent: truncateContent
   renderFeedback: renderFeedback
   popupPlacement: popupPlacement

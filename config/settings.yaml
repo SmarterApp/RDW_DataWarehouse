@@ -32,6 +32,8 @@ common:
     # Database
     edware:
       db:
+        cat.state_code: NY
+        dog.state_code: NJ
         echo: False
     trigger:
       recache:

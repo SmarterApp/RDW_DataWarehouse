@@ -15,6 +15,7 @@ def initialize_db(connector_cls, settings, allow_schema_create=False):
     '''
     options = {}
     tenants = []
+    tenant_mapping = {}
     # Get all the generic edware db configurations
     config_prefix = connector_cls.get_namespace()
     config_prefix_len = len(config_prefix)
@@ -45,8 +46,10 @@ def initialize_db(connector_cls, settings, allow_schema_create=False):
                     tenant_options[prefix + new_key] = val
             # Setup connection for the tenant
             setup_tenant_db_connection(connector_cls, tenant=tenant, config=tenant_options)
+            tenant_mapping[tenant] = tenant_options[prefix + 'state_code']
     else:
         prefixed_options = {}
         for key, val in options.items():
             prefixed_options[config_prefix + key] = val
         setup_tenant_db_connection(connector_cls, config=prefixed_options, allow_schema_create=allow_schema_create)
+    return tenant_mapping

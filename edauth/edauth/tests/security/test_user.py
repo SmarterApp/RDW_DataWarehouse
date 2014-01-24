@@ -33,7 +33,7 @@ class TestUser(unittest.TestCase):
 
     def test_non_empty_user(self):
         user = User()
-        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'tenant': 'dog', 'guid': '123'}
+        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'stateCode': None, 'tenant': 'dog', 'guid': '123'}
         user.set_name(data['name'])
         user.set_uid(data['uid'])
         user.set_roles(data['roles'])

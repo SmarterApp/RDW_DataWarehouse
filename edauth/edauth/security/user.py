@@ -3,6 +3,7 @@ Created on Mar 14, 2013
 
 @author: dip
 '''
+from edauth.security.tenant import get_state_code_mapping
 
 
 class UserConstants():
@@ -14,6 +15,7 @@ class UserConstants():
     ROLES = 'roles'
     TENANT = 'tenant'
     GUID = 'guid'
+    STATECODE = 'stateCode'
 
 
 class User(object):
@@ -96,6 +98,8 @@ class User(object):
         @type tenant: string
         '''
         self.__info[UserConstants.TENANT] = tenant
+        # Set the state code based on tenant name
+        self.__info[UserConstants.STATECODE] = get_state_code_mapping(tenant)
 
     def set_guid(self, guid):
         '''

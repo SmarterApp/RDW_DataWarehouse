@@ -89,7 +89,7 @@ define [
           for cut_point_interval, i in assessment.cut_point_intervals
             if @isGrayscale
               assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.grayColors[i])
-            else if not cut_point_interval
+            else if not cut_point_interval.bg_color
               # if cut points don't have background colors, then it will use default background colors
               assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.colors[i])
 

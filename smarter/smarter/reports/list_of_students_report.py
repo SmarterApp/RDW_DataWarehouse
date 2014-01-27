@@ -215,7 +215,6 @@ def get_list_of_students(params):
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
-        print(query)
         return connector.get_result(query)
 
 

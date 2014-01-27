@@ -101,8 +101,7 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome.c.asmt_year.label(fact_asmt_outcome_label.get(Constants.ASMT_YEAR, Constants.ASMT_YEAR)),
                                     fact_asmt_outcome.c.asmt_subject.label(fact_asmt_outcome_label.get(Constants.ASMT_SUBJECT, Constants.ASMT_SUBJECT))],
                                     from_obj=[fact_asmt_outcome
-                                              .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
-                                                                      dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
+                                              .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type == asmt_type))
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])

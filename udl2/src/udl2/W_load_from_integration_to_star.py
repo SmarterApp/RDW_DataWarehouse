@@ -28,18 +28,18 @@ def explode_to_dims(msg):
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
                                         for dim_table, source_table in table_map.items()])
     result_uuid = group(*grouped_tasks)()
-    msg['dim_tables'] = result_uuid.get()
+    #msg['dim_tables'] = result_uuid.get()
+    #logger.debug(msg)
+    #total_affected_rows = 0
+    #for dim_table_result in msg['dim_tables']:
+    #    total_affected_rows += dim_table_result[mk.SIZE_RECORDS]
 
-    total_affected_rows = 0
-    for dim_table_result in msg['dim_tables']:
-        total_affected_rows += dim_table_result[mk.SIZE_RECORDS]
-
-    end_time = datetime.datetime.now()
+    #end_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], explode_to_dims.name, start_time, end_time,
-                                    size_records=total_affected_rows, task_id=str(explode_to_dims.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
-    benchmark.record_benchmark()
+    #benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], explode_to_dims.name, start_time, end_time,
+    #                               size_records=total_affected_rows, task_id=str(explode_to_dims.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
+    #benchmark.record_benchmark()
     return msg
 
 

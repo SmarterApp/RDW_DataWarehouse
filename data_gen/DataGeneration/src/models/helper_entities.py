@@ -137,7 +137,7 @@ class StudentInfo(object):
         self.dob = dob if dob else util.generate_dob(grade)
 
         # data to be set after initialization
-        self.student_rec_ids = student_rec_ids
+        self.student_rec_ids = student_rec_ids if student_rec_ids else {}
         self.email = email
         self.address_1 = address_1
         self.address_2 = address_2

@@ -235,3 +235,16 @@ def combine_dicts_of_lists(dict_a, dict_b):
             dict_a[key] = dict_b[key]
 
     return dict_a
+
+
+def get_active_key_in_dict(dictionary):
+    """
+    Given a dictionary return the key that points to a value that is not empty or None.
+    If multiple such keys exist, None will be returned. If no such key exists, None will also be returned.
+    :param dictionary:
+    :return:
+    """
+    active_keys = [key for key, val in dictionary.items() if val]
+    if len(active_keys) != 1:
+        return None
+    return active_keys[0]

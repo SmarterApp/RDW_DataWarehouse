@@ -311,7 +311,6 @@ class Test(unittest.TestCase):
                                                          street_names, state_code, teacher_map)
 
         for student in result:
-            self.assertEqual(len(student.student_rec_ids), 2)
             self.assertIsNotNone(student.school_guid)
             self.assertIsNotNone(student.district_guid)
             self.assertIsNotNone(student.state_code)
@@ -372,13 +371,8 @@ class Test(unittest.TestCase):
             self.assertEqual(section_rec_count[rec_id], 10, 'Each section should have 10 students')
 
     def test_set_students_asmt_info(self):
-        students = [DummyClass(asmt_rec_ids={}, asmt_guids={}, asmt_dates_taken={}, asmt_years={}, asmt_types={}, asmt_subjects={}) for _ in range(100)]
-        subjects = ['Math', 'ELA']
-        asmt_rec_ids = ['123', '456']
-        asmt_guids = ['ag123', 'ag123r4']
-        dates_taken = [date(2013, 12, 2), date(2001, 11, 5)]
-        asmt_types = ['SUMMATIVE', 'SUMMATIVE']
-        asmt_years = [2015, 1920]
+        students = [DummyClass(asmt_rec_ids={}, asmt_guids={}, asmt_dates_taken={}, asmt_years={},
+                               asmt_types={}, asmt_subjects={}, student_rec_ids={}) for _ in range(100)]
         expected_asmt_rec_ids = {'g123': 123}
         expected_asmt_guids = {'g123': 'g123'}
         expected_dates_taken = {'g123': date(2013, 12, 2)}
@@ -397,6 +391,7 @@ class Test(unittest.TestCase):
             self.assertDictEqual(student.asmt_years, expected_asmt_years)
             self.assertDictEqual(student.asmt_types, expected_asmt_types)
             self.assertDictEqual(student.asmt_subjects, expected_asmt_subjects)
+            self.assertEqual(len(student.student_rec_ids), 1)
 
     def test_apply_subject_percentages(self):
         students = create_tmp_students(100)
@@ -926,6 +921,7 @@ def create_tmp_students(student_count):
                        asmt_types={'mathguid': 'type', 'elaguid': 'type'},
                        asmt_subjects={'mathguid': 'math', 'elaguid': 'ela'},
                        asmt_years={'mathguid': 'year', 'elaguid': 'year'},
+                       student_rec_ids={'mathguid': 'rec_m', 'elaguid': 'rec_e'},
                        )
             for _ in range(student_count)]
 

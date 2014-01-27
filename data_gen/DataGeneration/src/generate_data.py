@@ -132,12 +132,18 @@ def output_generated_districts_to_csv(districts, state, batch_guid, output_dict,
                                                                             most_recent, to_date)
             # add inst_hier to all data dict
             inst_hier_output = output_data(output_config, output_dict, inst_hier=inst_hier, write_data=False)
+            inst_hier_key = util.get_active_key_in_dict(inst_hier_output)
             all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, inst_hier_output)
 
             # get output data for
             for student_in in school.student_info:
                 data_output_dict = output_data(output_config, output_dict, school=school, state_population=state,
                                                batch_guid=batch_guid, student_info=student_in, inst_hier=inst_hier, write_data=False)
+                if inst_hier_key:
+                    # if inst_hier csv is present, remove this data from the student_info related data
+                    # doing this prevents duplicate data
+                    data_output_dict[inst_hier_key] = []
+
                 all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, data_output_dict)
 
             # write all school items to file
@@ -429,6 +435,8 @@ def add_assessment_to_student(student, new_assessment, old_asmt_guid_for_subj, e
     :return: the updated student object
     """
 
+    id_generator = IdGen()
+
     asmt_guid = new_assessment.asmt_guid
     old_asmt_score_obj = student.asmt_scores[old_asmt_guid_for_subj]
     student.asmt_scores[asmt_guid] = create_new_asmt_score_object(old_asmt_score_obj, new_assessment, ebmin, ebmax, rndlo, rndhi)
@@ -438,6 +446,7 @@ def add_assessment_to_student(student, new_assessment, old_asmt_guid_for_subj, e
     student.asmt_types[asmt_guid] = new_assessment.asmt_type
     student.asmt_subjects[asmt_guid] = new_assessment.asmt_subject
     student.asmt_years[asmt_guid] = new_assessment.asmt_period_year
+    student.student_rec_ids[asmt_guid] = id_generator.get_id()
     return student
 
 
@@ -491,12 +500,10 @@ def set_student_institution_information(students, school, from_date, most_recent
     """
     For each student assigned to a school. Set the relevant information
     """
-    id_generator = IdGen()
     for student in students:
         city_name_1 = random.choice(street_names)
         city_name_2 = random.choice(street_names)
 
-        student.student_rec_ids = {subject: id_generator.get_id() for subject in teacher_subject_map}  # {constants.MATH: id_generator.get_id(), constants.ELA: id_generator.get_id()}
         student.school_guid = school.school_guid
         student.district_guid = school.district_guid
         student.state_code = state_code
@@ -544,6 +551,8 @@ def set_students_asmt_info(students, assessment, date_taken):
     :param dates_taken:
     :return:
     """
+    id_generator = IdGen()
+
     for student in students:
         student.asmt_rec_ids[assessment.asmt_guid] = assessment.asmt_rec_id
         student.asmt_guids[assessment.asmt_guid] = assessment.asmt_guid
@@ -551,6 +560,7 @@ def set_students_asmt_info(students, assessment, date_taken):
         student.asmt_years[assessment.asmt_guid] = assessment.asmt_period_year
         student.asmt_types[assessment.asmt_guid] = assessment.asmt_type
         student.asmt_subjects[assessment.asmt_guid] = assessment.asmt_subject
+        student.student_rec_ids[assessment.asmt_guid] = id_generator.get_id()
     return students
 
 

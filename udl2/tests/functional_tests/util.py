@@ -30,11 +30,10 @@ class UDLTestHelper(unittest.TestCase):
         self.truncate_udl_tables()
 
     def tearDown(self):
-        print('here6')
         #self.truncate_edware_tables()
-        print('here7')
         #self.truncate_udl_tables()
-        print('here8')
+        pass
+
 
     def truncate_edware_tables(self):
         template = """
@@ -50,7 +49,6 @@ class UDLTestHelper(unittest.TestCase):
         execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section, sql_dim_student, sql_fact_asmt_outcome], except_msg)
 
     def truncate_udl_tables(self):
-        print('abc')
         sql_template = """
             TRUNCATE "{staging_schema}"."{staging_table}" CASCADE
             """
@@ -66,7 +64,6 @@ class UDLTestHelper(unittest.TestCase):
 
         except_msg = "Unable to clean up udl tables"
         execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt, sql_stg_asmt_outcome], except_msg)
-        print('def')
 
     def get_staging_asmt_score_avgs(self):
         stg_avg_query = """ select avg(score_asmt::int),

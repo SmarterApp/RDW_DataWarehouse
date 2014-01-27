@@ -174,7 +174,6 @@ def get_table_column_types(conf, target_table, column_names):
     '''
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     tenant = conf[mk.TENANT_NAME]
-    print("***tenant", tenant)
     with TargetDBConnection(tenant) as conn:
         query = queries.create_information_query(target_table)
         # execute query

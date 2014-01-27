@@ -274,11 +274,11 @@ qa:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_3
+          schema_name: edware_sds_1_4
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_3
+        schema_name: edware_sds_1_4
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     auth:
       idp:

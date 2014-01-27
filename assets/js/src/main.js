@@ -1,6 +1,6 @@
 require({
   // version
-  urlArgs: 'v2',
+  urlArgs: 'v1',
   paths: {
     jquery: '../../3p/jquery-1.7.2.min',
     jqGrid: '../../3p/jquery.jqGrid.min',

@@ -16,7 +16,7 @@ define ["jquery"], ($) ->
     popLeft = $popover.offset().left
     popRight = popLeft + $popover.width()
 
-    $body = $('body')
+    $body = $('#header') # use header element to make sure offset left consistant cross browsers
     bodyLeft = $body.offset().left
     bodyRight = bodyLeft + $body.width()
 

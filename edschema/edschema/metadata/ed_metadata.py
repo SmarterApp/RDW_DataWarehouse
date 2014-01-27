@@ -169,6 +169,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
+                               Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
                                Column('student_guid', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),

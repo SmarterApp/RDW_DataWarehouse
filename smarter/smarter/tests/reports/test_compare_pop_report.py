@@ -260,7 +260,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 134)
-        self.assertEqual(results['records'][2]['results']['subject2']['total'], 148)
+        self.assertEqual(results['records'][2]['results']['subject2']['total'], 139)
 
     def test_state_view_with_504_not_stated(self):
         testParam = {}
@@ -276,7 +276,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 6)
-        self.assertEqual(results['records'][4]['results']['subject2']['total'], 14)
+        self.assertEqual(results['records'][4]['results']['subject2']['total'], 12)
 
     def test_state_view_with_iep_yes_504_no(self):
         testParam = {}
@@ -286,7 +286,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 15)
-        self.assertEqual(results['records'][2]['results']['subject2']['total'], 21)
+        self.assertEqual(results['records'][2]['results']['subject2']['total'], 20)
 
     def test_filters_with_no_results(self):
         testParam = {}

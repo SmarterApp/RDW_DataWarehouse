@@ -2,9 +2,9 @@ __author__ = 'sravi'
 
 from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
-from edload.settings.config import setup_settings
+from edmigrate.settings.config import setup_settings
 
-PREFIX = 'edload.celery'
+PREFIX = 'edmigrate.celery'
 
 
 def setup_celery(settings, prefix=PREFIX):

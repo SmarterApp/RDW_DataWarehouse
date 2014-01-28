@@ -372,11 +372,11 @@ define [
       # attach sort to data
       data.sortedValue = sort
       # reformat
-      data.total = edwareUtil.formatNumber(data.total)
       if data.unfilteredTotal
-        data.unfilteredTotal = edwareUtil.formatNumber(data.unfilteredTotal)
         ratio = data.total * 100.0 / data.unfilteredTotal
         data.ratio = edwareUtil.formatNumber(Math.round(ratio))
+        data.unfilteredTotal = edwareUtil.formatNumber(data.unfilteredTotal)
+      data.total = edwareUtil.formatNumber(data.total)
 
   class Alignment
 

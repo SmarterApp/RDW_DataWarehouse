@@ -9,7 +9,6 @@ from edauth.security.tenant import get_state_code_mapping, set_tenant_map
 
 class TestTenant(unittest.TestCase):
 
-
     def test_get_state_code_mapping_empty_map(self):
         set_tenant_map({})
         mapping = get_state_code_mapping(['a', 'b'])

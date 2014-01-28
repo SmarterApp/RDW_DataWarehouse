@@ -18,9 +18,9 @@ docs_extras = [
     'docutils',
     'repoze.sphinx.autointerface']
 
-setup(name='edload',
+setup(name='edmigrate',
       version='0.1',
-      description='Scheduled Data Loader for Edware Reporting',
+      description='Scheduled Data Migration process for Edware Reporting',
       classifiers=[
           "Programming Language :: Python",
           "Framework :: Pyramid",
@@ -29,7 +29,7 @@ setup(name='edload',
       author='',
       author_email='',
       url='',
-      keywords='web wsgi edload edware celery',
+      keywords='web wsgi edmigrate edware celery',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,

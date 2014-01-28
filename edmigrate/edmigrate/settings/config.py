@@ -2,14 +2,14 @@ __author__ = 'sravi'
 
 
 class Config():
-    MASTER_SCHEDULER_HOUR = 'edload.master_scheduler.hour'
-    MASTER_SCHEDULER_MIN = 'edload.master_scheduler.min'
+    MASTER_SCHEDULER_HOUR = 'edmigrate.master_scheduler.hour'
+    MASTER_SCHEDULER_MIN = 'edmigrate.master_scheduler.min'
 
 # list of configurations that are specific to edextract
 LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.MASTER_SCHEDULER_MIN, int, 1)]
 
-# Keeps track of configuration related to edload that is read off from ini
+# Keeps track of configuration related to edmigrate that is read off from ini
 settings = {}
 
 

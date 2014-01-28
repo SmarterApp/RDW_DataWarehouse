@@ -432,7 +432,7 @@
 						"displayTpl": "",
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
-						"width": 320,
+						"width": 300,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -452,7 +452,7 @@
                         "options": {
                             "asmt_type": "subject1"
                         },
-                        "width": 77,
+                        "width": 97,
                         "export": true,
                         "title": false
                     },
@@ -461,7 +461,7 @@
 						"displayTpl": "",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
-						"width": 320,
+						"width": 300,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -481,7 +481,7 @@
                         "options": {
                             "asmt_type": "subject2"
                         },
-                        "width": 77,
+                        "width": 97,
                         "export": true,
                         "title": false
                     }

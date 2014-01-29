@@ -377,12 +377,12 @@ uat:
     edware:
       db:
         es:
-          schema_name: edware_uat_1_0
-          url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6432/edware
+          schema_name: edware_uat_1_1
+          url: postgresql+psycopg2://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_uat_1_0
-        url: postgresql+psycopg2://edware:edware.dmo.may.2013@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
+        schema_name: edware_uat_1_1
+        url: postgresql+psycopg2://edware:xON.yw27aw@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

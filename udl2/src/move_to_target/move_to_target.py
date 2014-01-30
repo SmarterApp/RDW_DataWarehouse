@@ -10,6 +10,7 @@ from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 
 DBDRIVER = "postgresql"
 FAKE_INST_HIER_REC_ID = -1
+FAKE_STUDENT_REC_ID = -1
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +20,8 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     The basic steps are:
     0. Get three foreign keys: asmt_rec_id, student_rec_id and section_rec_id
     1. Disable trigger of table fact_asmt_outcome
-    2. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome. But for column inst_hier_rec_id, put the temporary value as -1
+    2. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome. But for columns inst_hier_rec_id and student_rec_id ,
+       put the temporary value as -1
     3. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
     4. Update foreign key student_rec_id by comparing student_guid, batch_guid
     5. Enable trigger of table fact_asmt_outcome
@@ -34,8 +36,6 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     section_rec_id = section_rec_id_info['value']
     section_rec_id_column_name = section_rec_id_info['rec_id']
 
-    # get student_rec_id, which is one foreign key in fact table. We set to a fake value to load data
-
     # update above 2 foreign keys in column mapping
     column_mapping[asmt_rec_id_column_name] = str(asmt_rec_id)
     column_mapping[section_rec_id_column_name] = str(section_rec_id)
@@ -49,7 +49,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
         start_time_p1 = datetime.datetime.now()
-        affected_rows_first = execute_udl_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
+        affected_rows_first = execute_udl_queries(conn, queries[0:3], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
         finish_time_p1 = datetime.datetime.now()
 
         # Record benchmark
@@ -58,15 +58,10 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
                                         udl_phase_step='Disable Trigger & Load Data')
         benchmark.record_benchmark()
 
-        # The second part: Update Inst Hier Rec Id FK
+        # The second part: Update Inst Hier Rec Id FK, Update Student Rec Id FK
         start_time_p2 = datetime.datetime.now()
-        execute_udl_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
+        execute_udl_queries(conn, queries[2:5], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
         finish_time_p2 = datetime.datetime.now()
-
-        # The third part: Update Student FK & Re-enable Trigger
-        #start_time_p2 = datetime.datetime.now()
-        #execute_udl_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
-        #finish_time_p2 = datetime.datetime.now()
 
         # Record benchmark
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p2, finish_time_p2,
@@ -140,11 +135,15 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_INST_HIER_REC_ID, conf['move_to_target'][1])
     # print(update_inst_hier_rec_id_fk_query)
 
+    # update student query back
+    update_student_rec_id_fk_query = queries.update_student_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_STUDENT_REC_ID, conf['move_to_target'][3])
+
     # enable foreign key in fact table
     enable_back_trigger_query = queries.enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
     # print(enable_back_trigger_query)
 
-    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, enable_back_trigger_query]
+    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, update_student_rec_id_fk_query,
+            enable_back_trigger_query]
 
 
 def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):

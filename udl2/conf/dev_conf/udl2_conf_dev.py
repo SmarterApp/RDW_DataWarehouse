@@ -39,7 +39,10 @@ udl2_conf = {
                                                  ('district_guid', 'district_guid'),
                                                  ('school_guid', 'school_guid')])},
                        {'rec_id': 'section_rec_id',
-                        'value': '1'}
+                        'value': '1'},
+                       {'rec_id_map': ('student_rec_id', 'student_rec_id'),
+                        'table_map': ('dim_student', 'fact_asmt_outcome'),
+                        'guid_column_map': dict([('student_guid', 'student_guid')])}
                        ],
     'celery_defaults': {
         'CELERY_DEFAULT_QUEUE': 'celery',  # default celery queue name for celery internal tasks

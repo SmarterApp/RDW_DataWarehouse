@@ -1,28 +1,23 @@
 __author__ = 'sravi'
 
 import unittest
-import os
-import shutil
-from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
 
 
-class TestMasterWorker(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
+class TestMasterWorker(unittest.TestCase):
 
     def setUp(self):
         pass
 
     @classmethod
     def setUpClass(cls):
-        Unittest_with_edcore_sqlite.setUpClass()
-        Unittest_with_stats_sqlite.setUpClass()
+        pass
 
     def tearDown(self):
         pass
 
     def test_verify_master_slave_repl_status(self):
-        pass
-
+        import edmigrate.tasks.master as master
+        master.verify_master_slave_repl_status('repmgr', ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net'])
 
 if __name__ == "__main__":
     unittest.main()

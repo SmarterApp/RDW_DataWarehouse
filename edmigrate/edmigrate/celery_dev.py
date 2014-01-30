@@ -7,7 +7,6 @@ from celery.decorators import periodic_task
 from celery.schedules import crontab
 from datetime import timedelta
 from celery import Celery
-from edworker.celery import setup_celery as setup, configure_celeryd, get_config_file
 from edmigrate.settings.config import Config, get_setting
 from kombu.common import Broadcast
 from kombu import Exchange, Queue
@@ -17,12 +16,6 @@ from edcore.database.repmgr_connector import RepMgrDBConnection
 
 def setup_db_connection(settings):
     initialize_db(RepMgrDBConnection, settings)
-    with RepMgrDBConnection('repmgr') as connector:
-        import pdb; pdb.set_trace()
-        metadata = connector.get_metadata('repmgr_edware_pg_cluster')
-        print(metadata.tables)
-        for table in metadata.tables:
-            print(table)
 
 PREFIX = 'edmigrate.celery'
 MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)
@@ -38,12 +31,12 @@ celery.conf.CELERYBEAT_SCHEDULE = {
         'task': 'task.edmigrate.master.start_edware_data_refresh',
         #'schedule': crontab()
         'schedule': timedelta(seconds=10),
+        'args': ('repmgr')
     },
 }
 celery.conf.CELERY_TIMEZONE = 'US/Eastern'
 default_exchange = Exchange('default', type='direct')
 celery.conf.CELERY_QUEUES = (Broadcast('edload_slaves'), Queue('edload_master', default_exchange, routing_key='default'))
-#celery.conf.CELERY_QUEUES = (Queue('edload_slaves', default_exchange, routing_key='slave'), Queue('edload_master', default_exchange, routing_key='default'))
 celery.conf.CELERY_ROUTES = {'task.edmigrate.slave.slaves_get_ready_for_data_migrate': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.slaves_switch': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.slaves_end_data_migrate': {'queue': 'edload_slaves' },
@@ -64,5 +57,4 @@ for option in options:
     conf[option] = config.get(section_name, option)
 
 setup_db_connection(conf)
-print(conf)
 # hack till integrarion with edworker

@@ -1,11 +1,12 @@
 define [
   "jquery"
+  "bootstrap"
   "mustache"
   "edwareUtil"
   "edwareLanguageSelector"
   "edwareHelpMenu"
   "text!headerTemplateHtml"
-], ($, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml) ->
+], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml) ->
 
 
 

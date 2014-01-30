@@ -250,6 +250,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'code_state', 'fact_asmt_outcome', 'state_code', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_district', 'fact_asmt_outcome', 'district_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_school', 'fact_asmt_outcome', 'school_guid', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', '-1', 'fact_asmt_outcome', 'student_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', "''", 'fact_asmt_outcome', 'section_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', '-1', 'fact_asmt_outcome', 'inst_hier_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', None, 'fact_asmt_outcome', 'section_rec_id', None, None),

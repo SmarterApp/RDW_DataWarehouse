@@ -17,11 +17,12 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     '''
     Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome
     The basic steps are:
-    0. Get two foreign keys: asmt_rec_id and section_rec_id
+    0. Get three foreign keys: asmt_rec_id, student_rec_id and section_rec_id
     1. Disable trigger of table fact_asmt_outcome
     2. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome. But for column inst_hier_rec_id, put the temporary value as -1
     3. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
-    4. Enable trigger of table fact_asmt_outcome
+    4. Update foreign key student_rec_id by comparing student_guid, batch_guid
+    5. Enable trigger of table fact_asmt_outcome
     '''
     asmt_rec_id_info = conf[mk.MOVE_TO_TARGET][0]
     # get asmt_rec_id, which is one foreign key in fact table
@@ -32,6 +33,8 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     section_rec_id_info = conf[mk.MOVE_TO_TARGET][2]
     section_rec_id = section_rec_id_info['value']
     section_rec_id_column_name = section_rec_id_info['rec_id']
+
+    # get student_rec_id, which is one foreign key in fact table. We set to a fake value to load data
 
     # update above 2 foreign keys in column mapping
     column_mapping[asmt_rec_id_column_name] = str(asmt_rec_id)
@@ -55,10 +58,15 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
                                         udl_phase_step='Disable Trigger & Load Data')
         benchmark.record_benchmark()
 
-        # Second part: Update Inst Hier Rec Id FK & Re-enable Trigger
+        # The second part: Update Inst Hier Rec Id FK
         start_time_p2 = datetime.datetime.now()
         execute_udl_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
         finish_time_p2 = datetime.datetime.now()
+
+        # The third part: Update Student FK & Re-enable Trigger
+        #start_time_p2 = datetime.datetime.now()
+        #execute_udl_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
+        #finish_time_p2 = datetime.datetime.now()
 
         # Record benchmark
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p2, finish_time_p2,
@@ -174,7 +182,6 @@ def get_table_column_types(conf, target_table, column_names):
     '''
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     tenant = conf[mk.TENANT_NAME]
-    print("***tenant", tenant)
     with TargetDBConnection(tenant) as conn:
         query = queries.create_information_query(target_table)
         # execute query

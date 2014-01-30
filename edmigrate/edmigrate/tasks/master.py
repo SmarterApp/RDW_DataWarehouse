@@ -7,47 +7,60 @@ from celery.canvas import chain
 from edmigrate.celery_dev import celery
 from edmigrate.tasks.slave import slaves_get_ready_for_data_migrate, slaves_switch, slaves_end_data_migrate
 from edmigrate.utils.constants import Constants
+import edmigrate.nodes.nodes as nodes
+import edmigrate.utils.queries as queries
 
 from sqlalchemy.sql.expression import select
 from sqlalchemy import Table
 
 from edcore.database.repmgr_connector import RepMgrDBConnection
 
-
-
 log = logging.getLogger('edmigrate.master')
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh')
-def start_edware_data_refresh():
+def start_edware_data_refresh(tenant):
     '''
     Step 1: send message to all slaves to initiate protocol for data refresh
             protocol on slave
-                slaves A: pause replication
-                slaves B: Block Postgres load-balancer
+                slaves B: pause replication
+                slaves A: Block Postgres load-balancer
 
-    Step 2: send message to slaves to switch
+    Step 2: migrate data to master
+
+    Step 3: verify the status of replication on Slaves A
+            Data should be successfully replicated to A slaves and should be in sync with master
+
+    Step 4: send message to slaves to switch
             protocol on slave
-                slaves A: Block Postgres load-balancer and resume replication
-                slaves B: Unblock Postgres load-balancer
+                slaves B: Block Postgres load-balancer and resume replication
+                slaves A: Unblock Postgres load-balancer
 
-    Step 3: migrate data to master
+    Step 5: verify the status of replication on Slaves
+            Data should be successfully replicated to all slaves (A and B) and should be in sync with master
 
-    Step 4: verify the status of replication on Slaves (A)
-            Data should be successfully replicated to slaves A and should be in sync with master
-
-    Step 5: send end message to all slaves
+    Step 6: send end message to all slaves
             protocol on slave
-                slaves A: Unblock Postgres load-balancer and resume replication
-                slaves B: Verify is in the pool and replication is resumed
+                slaves B: Unblock Postgres load-balancer and resume replication
+                slaves A: Verify is in the pool and replication is resumed
     '''
 
-    tenant = 'repmgr'
-    migration_workflow = chain(slaves_get_ready_for_data_migrate.s(),
-                               migrate_data.si(tenant),
-                               verify_master_slave_repl_status.si(tenant),
-                               slaves_switch.si(),
-                               verify_master_slave_repl_status.si(tenant),
+    # TODO: Broadcast message to all slave nodes to register themselves
+    # TODO: Add a server task to process all responses from slave node and add them to the nodes.registered_nodes
+
+    # Note: The above self registration process needs to be finished
+    # (within some upper time bound) before starting the below steps
+
+    # slaves_a will be loaded first
+    slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
+    slaves_a = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_A)
+    slaves_b = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_B)
+
+    migration_workflow = chain(slaves_get_ready_for_data_migrate.s(slaves_a),
+                               migrate_data.si(tenant, slaves_a),
+                               verify_master_slave_repl_status.si(tenant, slaves_a),
+                               slaves_switch.si(slaves_b),
+                               verify_master_slave_repl_status.si(tenant, slaves_all),
                                slaves_end_data_migrate.si()
                                )
     log.info('Master: Starting scheduled edware data refresh task')
@@ -57,7 +70,7 @@ def start_edware_data_refresh():
 
 
 @celery.task(name='task.edmigrate.master.migrate_data')
-def migrate_data(tenant):
+def migrate_data(tenant, slaves):
     '''
     load batches of data from pre-prod to prod master
     '''
@@ -67,22 +80,13 @@ def migrate_data(tenant):
 
 
 @celery.task(name='task.edmigrate.master.verify_master_slave_repl_status')
-def verify_master_slave_repl_status(tenant):
+def verify_master_slave_repl_status(tenant, slaves):
     '''
     verify the status of data load to master and connected slave set (B)
     Data should be successfully migrated to master and slaves B should be in sync with master
     '''
-    log.info('Master: verify status of data migration and replication')
-    with RepMgrDBConnection(tenant) as connector:
-        metadata = connector.get_metadata('repmgr_edware_pg_cluster')
-        print(metadata.tables)
-        for table in metadata.tables:
-            print(table)
-        #query = select([repl_Status_table.c.primary_node, repl_Status_table.c.standby_node],
-        #               from_obj=[repl_Status_table])
-
-        #print(query)
-        #repl_status_rows = connector.get_result(query)
-        #for repl_status in repl_status_rows:
-        #    print(repl_status)
+    log.info('Master: verify status of data migration and replication on slaves: ' + str(slaves))
+    slave_node_ids = queries.get_slave_node_ids_from_host_name(tenant, slaves)
+    slave_node_status = queries.get_slave_node_status(tenant, slave_node_ids)
+    print(slave_node_status)
 

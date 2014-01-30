@@ -355,9 +355,9 @@ uat:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
     extract:
       gpg:
-        keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
+        keyserver: hkp://celrydw1.dmo.som.edwdc.net
         homedir : /opt/edware/conf/gpg
-        keyserver: hkp://rtbmqdw0.dmo.som.edwdc.net
+        public_key.es: kswimberly@amplify.com
       work_zone_base_dir: /opt/edware/extraction
     cache:
       public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
@@ -369,10 +369,11 @@ uat:
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
       health_check.job.queue: health_check
-    pickup.sftp:
+    pickup:
       gatekeeper.es: kswimberly
-      hostname: lzsftpudl0.dmo.som.edwdc.net
-      private_key_file: /opt/edware/ssh/.ssh/id_rsa
+      sftp:
+        hostname: lzsftpudl0.dmo.som.edwdc.net
+        private_key_file: /opt/edware/ssh/.ssh/id_rsa
     disable_stack_trace: true
     edware:
       db:

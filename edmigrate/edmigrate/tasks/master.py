@@ -74,15 +74,10 @@ def verify_master_slave_repl_status(tenant):
     '''
     log.info('Master: verify status of data migration and replication')
     with RepMgrDBConnection(tenant) as connector:
-        metadata = connector.get_metadata()
-        #repl_Status_table = connector.get_table(Constants.REPL_STATUS_TABLE)
-        #repl_Status_table = Table(Constants.REPL_STATUS_TABLE, metadata,
-        #                          autoload=True, autoload_with=connector.engine)
-        #print(repl_Status_table.columns)
-        for table in metadata.sorted_tables:
+        metadata = connector.get_metadata('repmgr_edware_pg_cluster')
+        print(metadata.tables)
+        for table in metadata.tables:
             print(table)
-        #print(type(repl_Status_table))
-        #print(repl_Status_table.columns)
         #query = select([repl_Status_table.c.primary_node, repl_Status_table.c.standby_node],
         #               from_obj=[repl_Status_table])
 

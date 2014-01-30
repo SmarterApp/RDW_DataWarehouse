@@ -34,7 +34,6 @@ class UDLTestHelper(unittest.TestCase):
         #self.truncate_udl_tables()
         pass
 
-
     def truncate_edware_tables(self):
         template = """
             TRUNCATE "{target_schema}"."{target_table}" CASCADE

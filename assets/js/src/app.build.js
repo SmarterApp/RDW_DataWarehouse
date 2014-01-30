@@ -22,5 +22,8 @@
 	},
 	{
 		name : "EDWARE.studentListReport"
+	},
+	{
+	    name: "EDWARE.stateMap"
 	}]
 })

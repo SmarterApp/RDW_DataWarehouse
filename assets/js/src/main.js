@@ -9,6 +9,8 @@ require({
     mustache: '../../3p/mustache',
     moment: '../../3p/moment.min',
     templates: '../../templates',
+    usmap: '../../3p/usmap/jquery.usmap',
+    raphael: '../../3p/usmap/raphael',
     edwareUtil: 'EDWARE.util',
     edwareConstants: 'EDWARE.constants',
     edwareDataProxy: 'EDWARE.dataProxy',
@@ -76,7 +78,11 @@ require({
     'bootstrap': {
       deps: ['jquery'],
       exports: 'bootstrap'
-    }
+    },
+    'usmap': {
+      deps: ['jquery', 'raphael'],
+      exports: 'usmap'
+    },
   }
 });
 

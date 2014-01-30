@@ -4,7 +4,6 @@ Created on Jan 29, 2014
 @author: sravi
 '''
 from database.connector import DBConnection
-from sqlalchemy.schema import MetaData
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import get_current_request
 
@@ -25,6 +24,9 @@ class RepMgrDBConnection(DBConnection):
             if __user:
                 tenant = __user.get_tenant()
         super().__init__(name=self.get_datasource_name(tenant))
+
+    def get_metadata(self, schema_name):
+        return super(RepMgrDBConnection, self).get_metadata(reflect=True, schema_name=schema_name)
 
     @staticmethod
     def get_namespace():
@@ -58,4 +60,4 @@ class RepMgrDBConnection(DBConnection):
         '''
         Generates metadata for repmgr
         '''
-        return DBConnection.generate_metadata(schema_name, bind=None, reflect=True)
+        return None

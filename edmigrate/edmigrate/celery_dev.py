@@ -17,6 +17,12 @@ from edcore.database.repmgr_connector import RepMgrDBConnection
 
 def setup_db_connection(settings):
     initialize_db(RepMgrDBConnection, settings)
+    with RepMgrDBConnection('repmgr') as connector:
+        import pdb; pdb.set_trace()
+        metadata = connector.get_metadata('repmgr_edware_pg_cluster')
+        print(metadata.tables)
+        for table in metadata.tables:
+            print(table)
 
 PREFIX = 'edmigrate.celery'
 MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)

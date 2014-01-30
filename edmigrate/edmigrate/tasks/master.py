@@ -3,8 +3,17 @@ __author__ = 'sravi'
 from time import sleep
 import logging
 from celery.canvas import chain
+
 from edmigrate.celery_dev import celery
 from edmigrate.tasks.slave import slaves_get_ready_for_data_migrate, slaves_switch, slaves_end_data_migrate
+from edmigrate.utils.constants import Constants
+
+from sqlalchemy.sql.expression import select
+from sqlalchemy import Table
+
+from edcore.database.repmgr_connector import RepMgrDBConnection
+
+
 
 log = logging.getLogger('edmigrate.master')
 
@@ -33,19 +42,22 @@ def start_edware_data_refresh():
                 slaves B: Verify is in the pool and replication is resumed
     '''
 
+    tenant = 'repmgr'
     migration_workflow = chain(slaves_get_ready_for_data_migrate.s(),
-                               migrate_data.si(),
-                               verify_master_slave_repl_status.si(),
+                               migrate_data.si(tenant),
+                               verify_master_slave_repl_status.si(tenant),
                                slaves_switch.si(),
-                               verify_master_slave_repl_status.si(),
+                               verify_master_slave_repl_status.si(tenant),
                                slaves_end_data_migrate.si()
                                )
     log.info('Master: Starting scheduled edware data refresh task')
-    migration_workflow.apply_async()
+    #migration_workflow.apply_async()
+
+    verify_master_slave_repl_status.delay(tenant)
 
 
 @celery.task(name='task.edmigrate.master.migrate_data')
-def migrate_data():
+def migrate_data(tenant):
     '''
     load batches of data from pre-prod to prod master
     '''
@@ -55,10 +67,27 @@ def migrate_data():
 
 
 @celery.task(name='task.edmigrate.master.verify_master_slave_repl_status')
-def verify_master_slave_repl_status():
+def verify_master_slave_repl_status(tenant):
     '''
     verify the status of data load to master and connected slave set (B)
     Data should be successfully migrated to master and slaves B should be in sync with master
     '''
     log.info('Master: verify status of data migration and replication')
-    pass
+    with RepMgrDBConnection(tenant) as connector:
+        metadata = connector.get_metadata()
+        #repl_Status_table = connector.get_table(Constants.REPL_STATUS_TABLE)
+        #repl_Status_table = Table(Constants.REPL_STATUS_TABLE, metadata,
+        #                          autoload=True, autoload_with=connector.engine)
+        #print(repl_Status_table.columns)
+        for table in metadata.sorted_tables:
+            print(table)
+        #print(type(repl_Status_table))
+        #print(repl_Status_table.columns)
+        #query = select([repl_Status_table.c.primary_node, repl_Status_table.c.standby_node],
+        #               from_obj=[repl_Status_table])
+
+        #print(query)
+        #repl_status_rows = connector.get_result(query)
+        #for repl_status in repl_status_rows:
+        #    print(repl_status)
+

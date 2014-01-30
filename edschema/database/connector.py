@@ -8,6 +8,7 @@ from database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
+from sqlalchemy import MetaData
 from collections import OrderedDict
 import logging
 
@@ -139,8 +140,11 @@ class DBConnection(ConnectionBase):
         raise Exception('need to implement get_db_config_prefix')
 
     @staticmethod
-    def generate_metadata(schema_name=None, bind=None):
+    def generate_metadata(schema_name=None, bind=None, reflect=False):
         '''
         return metadata
         '''
-        raise Exception('need to implement generate_metadata')
+        if reflect:
+            import pdb; pdb.set_trace()
+            dbUtil = component.queryUtility(IDbUtil, name=schema_name)
+            return MetaData(bind='')

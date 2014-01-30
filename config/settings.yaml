@@ -146,6 +146,22 @@ common:
         -   name: extract_sync
             exchange: direct
             key: extract_sync
+    migrate.celery:
+      CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave')
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+      CELERYD_CONCURRENCY: 1
+      CELERY_DEFAULT_QUEUE: edmigrate_master
+      CELERY_DEFAULT_ROUTING_KEY: edmigrate
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERY_QUEUES:
+        -   name: edmigrate_master
+            exchange: direct
+            key: edmigrate_master
+      CELERY_BROADCAST_QUEUES:
+        -   name: edmigrate.slave
+            exchange: fanout
+            key: edmigrate_slave
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -475,6 +491,9 @@ development:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
           schema_name: edware_sds_1_5_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+        repmgr:
+          schema_name: repmgr_edware_pg_cluster
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:

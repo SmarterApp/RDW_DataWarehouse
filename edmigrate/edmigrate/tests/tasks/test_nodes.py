@@ -27,6 +27,11 @@ class TesNodes(unittest.TestCase):
         test_registered_slaves.append(node(host='testslave1.qa.dum.edwdc.net', group='B'))
         self.assertTrue(len(nodes.get_slave_node_host_names_for_group('A', test_registered_slaves)) == 1)
 
+    def test_regiser_slave_node(self):
+        nodes.register_slave_node('testslave0.qa.dum.edwdc.net', 'A')
+        nodes.register_slave_node('testslave1.qa.dum.edwdc.net', 'B')
+        self.assertTrue(len(nodes.get_registered_slave_nodes()) == 2)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -43,7 +43,7 @@ def assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_scor
         scores = generate_overall_scores(perf, cut_points, min_score, max_score, total_students)
         asmt_scores = translate_scores_to_assessment_score(scores, cut_points[1:-1], assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)
         for i in range(len(studentinfo_subset)):
-            (studentinfo_subset[i].asmt_scores)[subject] = asmt_scores[i]
+            studentinfo_subset[i].asmt_scores[assessment.asmt_guid] = asmt_scores[i]
 
 
 def count_student_demographics(studentinfo_list):

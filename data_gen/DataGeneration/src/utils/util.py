@@ -184,7 +184,7 @@ def chop_year_off_asmt_period(asmt_period):
     return component_strings[0]
 
 
-def select_assessment_from_list(asmt_list, grade, subject):
+def select_assessment_from_list(asmt_list, grade, subject, asmt_type=constants.ASSMT_TYPES[0]):
     '''
     select the proper assessment from a list
     @param asmt_list: A list of Assessment objects
@@ -193,7 +193,7 @@ def select_assessment_from_list(asmt_list, grade, subject):
     @return: A single assessment object that has the grade and subject specified. None if no match found
     '''
     for asmt in asmt_list:
-        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower():
+        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower() and asmt_type == asmt.asmt_type:
             return asmt
 
 
@@ -235,3 +235,16 @@ def combine_dicts_of_lists(dict_a, dict_b):
             dict_a[key] = dict_b[key]
 
     return dict_a
+
+
+def get_active_key_in_dict(dictionary):
+    """
+    Given a dictionary return the key that points to a value that is not empty or None.
+    If multiple such keys exist, None will be returned. If no such key exists, None will also be returned.
+    :param dictionary:
+    :return:
+    """
+    active_keys = [key for key, val in dictionary.items() if val]
+    if len(active_keys) != 1:
+        return None
+    return active_keys[0]

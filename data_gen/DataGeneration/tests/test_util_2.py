@@ -137,7 +137,7 @@ class TestUtil2(unittest.TestCase):
         asmt_list = [asmt_1, asmt_2]
         grade = 3
         subject = 'subject1'
-        actual_asmt = util.select_assessment_from_list(asmt_list, grade, subject)
+        actual_asmt = util.select_assessment_from_list(asmt_list, grade, subject, 'summative')
         self.assertEqual(actual_asmt, asmt_1)
 
     def test_get_list_of_cutpoints_three_cut_points(self):

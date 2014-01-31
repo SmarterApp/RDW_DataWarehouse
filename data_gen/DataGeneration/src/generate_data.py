@@ -12,7 +12,6 @@ import os
 import math
 import random
 import yaml
-import pprint
 
 from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy,
@@ -29,6 +28,7 @@ from DataGeneration.src.utils.idgen import IdGen
 from DataGeneration.src.calc import claim_score_calculation
 from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
 from DataGeneration.src.writers.output_asmt_outcome import initialize_csv_file, output_data, output_from_dict_of_lists
+from DataGeneration.src.calc.claim_score_calculation import translate_scores_to_assessment_score
 
 
 IDEAL_DISTRICT_CHUNK = 100000
@@ -132,12 +132,18 @@ def output_generated_districts_to_csv(districts, state, batch_guid, output_dict,
                                                                             most_recent, to_date)
             # add inst_hier to all data dict
             inst_hier_output = output_data(output_config, output_dict, inst_hier=inst_hier, write_data=False)
+            inst_hier_key = util.get_active_key_in_dict(inst_hier_output)
             all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, inst_hier_output)
 
             # get output data for
             for student_in in school.student_info:
                 data_output_dict = output_data(output_config, output_dict, school=school, state_population=state,
                                                batch_guid=batch_guid, student_info=student_in, inst_hier=inst_hier, write_data=False)
+                if inst_hier_key:
+                    # if inst_hier csv is present, remove this data from the student_info related data
+                    # doing this prevents duplicate data
+                    data_output_dict[inst_hier_key] = []
+
                 all_data_output_dict = util.combine_dicts_of_lists(all_data_output_dict, data_output_dict)
 
             # write all school items to file
@@ -220,7 +226,7 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
         demographics_id = state_type[constants.DEMOGRAPHICS]
 
         # Create State Population object
-        state_population = StatePopulation(state_name, state_code, state_type_name, do_pld_adjustment=do_pld_adjustment)
+        state_population = StatePopulation(state_name, state_code, state_type_name, subject=constants.SUBJECTS[0], do_pld_adjustment=do_pld_adjustment)
         # calculate the states total number of object
         state_population.populate_state(state_type, district_types, school_types)
         # Calculate the Math Demographic numbers for the state
@@ -328,7 +334,14 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         subject_sections_map = {}
         subject_teachers_map = {}
 
-        for subject in constants.SUBJECTS:
+        # Generate Students that have Math scores and demographics
+        students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
+        grade_assessment_guids = {}
+
+        # loop subjects and create sections and teachers
+        for i in range(len(constants.SUBJECTS)):
+        #for subject in constants.SUBJECTS:
+            subject = constants.SUBJECTS[i]
             # create sections
             sections = generate_sections(constants.NUMBER_OF_SECTIONS, subject, grade, state_code, school.district_guid,
                                          school.school_guid, from_date, most_recent, to_date=to_date)
@@ -339,47 +352,133 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
                                                    to_date, school, state_code)
             subject_teachers_map[subject] = staff
 
-        # Generate Students that have Math scores and demographics
-        students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
+            ## Experiment
+            asmt_type = constants.ASSMT_TYPES[0]
+            assessment = util.select_assessment_from_list(assessments, grade, subject, asmt_type)
+            date_taken = util.generate_date_given_assessment(assessment)
+            grade_assessment_guids[subject] = assessment.asmt_guid
 
-        # Get ELA assessment information
-        math_assessment = util.select_assessment_from_list(assessments, grade, constants.MATH)
-        math_date_taken = util.generate_date_given_assessment(math_assessment)
-        math_asmt_type = math_assessment.asmt_type
-        math_asmt_year = math_assessment.asmt_period_year
-        ela_assessment = util.select_assessment_from_list(assessments, grade, constants.ELA)
-        ela_date_taken = util.generate_date_given_assessment(ela_assessment)
-        ela_asmt_type = ela_assessment.asmt_type
-        ela_asmt_year = ela_assessment.asmt_period_year
-        min_score = ela_assessment.asmt_score_min
-        max_score = ela_assessment.asmt_score_max
+            if i > 0:
+                min_score = assessment.asmt_score_min
+                max_score = assessment.asmt_score_max
 
-        cut_points = util.get_list_of_cutpoints(ela_assessment)
-        # Create list of cutpoints that includes min and max score values
-        inclusive_cut_points = [min_score] + cut_points + [max_score]
-        claim_cut_points = util.get_list_of_claim_cutpoints(ela_assessment)
+                cut_points = util.get_list_of_cutpoints(assessment)
 
-        all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, constants.ELA, grade)
-        adjusted_demographics = apply_pld_to_grade_demographics(pld_adjustment, all_grade_demo_info)
-        ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in adjusted_demographics.items()}
-        assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, constants.ELA,
-                                   ela_assessment, eb_min_perc, eb_max_perc,
-                                   eb_rand_adj_lo, eb_rand_adj_hi, claim_cut_points)
+                # Create list of cutpoints that includes min and max score values
+                inclusive_cut_points = [min_score] + cut_points + [max_score]
+                claim_cut_points = util.get_list_of_claim_cutpoints(assessment)
 
-        assign_students_sections(students, subject_sections_map[constants.MATH], subject_sections_map[constants.ELA])
+                all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, subject, grade)
+                adjusted_demographics = apply_pld_to_grade_demographics(pld_adjustment, all_grade_demo_info)
+                subj_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in adjusted_demographics.items()}
+                assign_scores_for_subjects(students, subj_perf, inclusive_cut_points, min_score, max_score, grade,
+                                           subject, assessment, eb_min_perc, eb_max_perc,
+                                           eb_rand_adj_lo, eb_rand_adj_hi, claim_cut_points)
+
+            set_students_asmt_info(students, assessment, date_taken)
+
+        assign_students_sections(students, subject_sections_map)
         set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
-                                            subject_teachers_map[constants.MATH][0], subject_teachers_map[constants.ELA][0], state_code)
-        set_students_asmt_info(students, [constants.ELA, constants.MATH], [ela_assessment.asmt_rec_id, math_assessment.asmt_rec_id],
-                               [ela_assessment.asmt_guid, math_assessment.asmt_guid], [ela_date_taken, math_date_taken],
-                               [ela_asmt_year, math_asmt_year], [ela_asmt_type, math_asmt_type])
-        apply_subject_percentages(subject_percentages, students)
-
+                                            state_code, subject_teachers_map)
+        apply_subject_percentages(subject_percentages, students, grade_assessment_guids)
         students_in_school += students
 
         sections_in_school += [j for i in subject_sections_map.values() for j in i]
         teachers_in_school += [j for i in subject_teachers_map.values() for j in i]
 
+        # Assign assessment scores for other assessments
+        for add_asmt_type in constants.ASSMT_TYPES[1:]:
+            #print('Computing additional assessments for grade %d: %s' % (grade, add_asmt_type))
+            for subject in constants.SUBJECTS:
+                assessment = util.select_assessment_from_list(assessments, grade, subject, add_asmt_type)
+                date_taken = util.generate_date_given_assessment(assessment)
+                create_assessment_scores_for_additional_assessment(students, assessment, eb_min_perc, eb_max_perc,
+                                                                   eb_rand_adj_lo, eb_rand_adj_hi, date_taken)
+
     return students_in_school, teachers_in_school, sections_in_school
+
+
+def create_assessment_scores_for_additional_assessment(students, assessment, ebmin, ebmax, rndlo, rndhi, date_taken):
+    """
+    For a given list of students and a
+    :param students: a list of student_info objects (students)
+    :param assessment: the assessment to create scores for
+    :param ebmin: The divisor of the minimum error band, taken from the config file
+    :param ebmax: The divisor of the maximum error band, taken from the config file
+    :param rndlo: The lower bound for getting the random adjustment of the error band
+    :param rndhi: The higher bound for getting the random adjustment of the error band
+    :param date_taken: the date object for when the student took the assessment
+    :return: the same list of students
+    """
+
+    for student in students:
+        subject = assessment.asmt_subject
+        other_asmt_for_subject = get_student_asmt_guid_by_subject(student, subject)
+        if other_asmt_for_subject is None:
+            continue
+        add_assessment_to_student(student, assessment, other_asmt_for_subject, ebmin, ebmax, rndlo, rndhi, date_taken)
+
+    return students
+
+
+def add_assessment_to_student(student, new_assessment, old_asmt_guid_for_subj, ebmin, ebmax, rndlo, rndhi, date_taken):
+    """
+    Add assessment outcome information to the given student
+    :param student: The student info object to update
+    :param new_assessment: the new assessment object
+    :param old_asmt_guid_for_subj: the assessment guid for another assessment the student has taken of the same subject
+    :param ebmin: The divisor of the minimum error band, taken from the config file
+    :param ebmax: The divisor of the maximum error band, taken from the config file
+    :param rndlo: The lower bound for getting the random adjustment of the error band
+    :param rndhi: The higher bound for getting the random adjustment of the error band
+    :param date_taken: the date object for when the student took the assessment
+    :return: the updated student object
+    """
+
+    id_generator = IdGen()
+
+    asmt_guid = new_assessment.asmt_guid
+    old_asmt_score_obj = student.asmt_scores[old_asmt_guid_for_subj]
+    student.asmt_scores[asmt_guid] = create_new_asmt_score_object(old_asmt_score_obj, new_assessment, ebmin, ebmax, rndlo, rndhi)
+    student.asmt_rec_ids[asmt_guid] = new_assessment.asmt_rec_id
+    student.asmt_guids[asmt_guid] = asmt_guid
+    student.asmt_dates_taken[asmt_guid] = date_taken
+    student.asmt_types[asmt_guid] = new_assessment.asmt_type
+    student.asmt_subjects[asmt_guid] = new_assessment.asmt_subject
+    student.asmt_years[asmt_guid] = new_assessment.asmt_period_year
+    student.student_rec_ids[asmt_guid] = id_generator.get_id()
+    return student
+
+
+def create_new_asmt_score_object(asmt_score_obj, assessment, ebmin, ebmax, rndlo, rndhi):
+    """
+
+    :param asmt_score_obj:
+    :return:
+    """
+    cut_points = util.get_list_of_cutpoints(assessment)
+    claim_cut_points = util.get_list_of_claim_cutpoints(assessment)
+
+    positive_change = random.choice([-1, 1])
+    score_offset = random.randint(constants.ASMT_PERF_CHANGE_MIN, constants.ASMT_PERF_CHANGE_MAX) * positive_change
+    new_score = max(min(asmt_score_obj.overall_score + score_offset, assessment.asmt_score_max), assessment.asmt_score_min)
+
+    asmt_score = translate_scores_to_assessment_score([new_score], cut_points, assessment, ebmin, ebmax, rndlo, rndhi, claim_cut_points)[0]
+
+    return asmt_score
+
+
+def get_student_asmt_guid_by_subject(student, subject):
+    """
+
+    :param subject:
+    :return:
+    """
+    for a_guid, a_subject in student.asmt_subjects.items():
+        if a_subject == subject:
+            return a_guid
+
+    return None
 
 
 def generate_teachers_for_sections(staff_per_section, sections, from_date, most_recent, to_date, school, state_code):
@@ -397,16 +496,14 @@ def generate_teachers_for_sections(staff_per_section, sections, from_date, most_
     return all_staff
 
 
-def set_student_institution_information(students, school, from_date, most_recent, to_date, street_names, math_teacher, ela_teacher, state_code):
+def set_student_institution_information(students, school, from_date, most_recent, to_date, street_names, state_code, teacher_subject_map):
     """
     For each student assigned to a school. Set the relevant information
     """
-    id_generator = IdGen()
     for student in students:
         city_name_1 = random.choice(street_names)
         city_name_2 = random.choice(street_names)
 
-        student.student_rec_ids = {constants.MATH: id_generator.get_id(), constants.ELA: id_generator.get_id()}
         student.school_guid = school.school_guid
         student.district_guid = school.district_guid
         student.state_code = state_code
@@ -416,51 +513,58 @@ def set_student_institution_information(students, school, from_date, most_recent
         student.email = util.generate_email_address(student.first_name, student.last_name, school.school_name)
         student.address_1 = util.generate_address(street_names)
         student.city = city_name_1 + ' ' + city_name_2
-        student.teacher_guids = {constants.MATH: math_teacher.staff_guid, constants.ELA: ela_teacher.staff_guid}
-        student.teachers = {constants.MATH: math_teacher, constants.ELA: ela_teacher}
+        student.teacher_guids = {subject: teacher_subject_map[subject][0].staff_guid for subject in teacher_subject_map}  # {constants.MATH: math_teacher.staff_guid, constants.ELA: ela_teacher.staff_guid}
+        student.teachers = {subject: teacher_subject_map[subject][0] for subject in teacher_subject_map}  # {constants.MATH: math_teacher, constants.ELA: ela_teacher}
 
     return students
 
 
-def assign_students_sections(students, math_sections, ela_sections):
+def assign_students_sections(students, section_map):
     """
-    For a list of students and sections. Assign each student a section for math and ela
+
+    :param students:
+    :param section_map:
+    :return:
     """
-    assert len(math_sections) == len(ela_sections)
+    subjects = list(section_map.keys())
     student_size = len(students)
-    students_per_section = math.ceil(student_size / len(math_sections))
+    section_size = len(section_map[subjects[0]])
+    students_per_section = math.ceil(student_size / section_size)
 
     student_index = 0
 
-    for i in range(len(math_sections)):
-        for _j in range(min(students_per_section, student_size)):
-            # place the section guid in section guid dict for the student
-            students[student_index].section_guids[constants.MATH] = math_sections[i].section_guid
-            students[student_index].section_rec_ids[constants.MATH] = math_sections[i].section_rec_id
-            students[student_index].section_guids[constants.ELA] = ela_sections[i].section_guid
-            students[student_index].section_rec_ids[constants.ELA] = ela_sections[i].section_rec_id
+    for i in range(section_size):
+        for _ in range(min(students_per_section, student_size)):
+            for subject in subjects:
+                students[student_index].section_guids[subject] = section_map[subject][i].section_guid
+                students[student_index].section_rec_ids[subject] = section_map[subject][i].section_rec_id
             student_index += 1
 
     return students
 
 
-def set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_taken, years, types):
+def set_students_asmt_info(students, assessment, date_taken):
     """
-    take a list of students and assign them assessment record ids.
-    subjects and asmt_rec_ids are lists that should match
+
+    :param students:
+    :param assessment:
+    :param dates_taken:
+    :return:
     """
+    id_generator = IdGen()
+
     for student in students:
-        for i in range(len(subjects)):
-            student.asmt_rec_ids[subjects[i]] = asmt_rec_ids[i]
-            student.asmt_guids[subjects[i]] = asmt_guids[i]
-            student.asmt_dates_taken[subjects[i]] = dates_taken[i]
-            student.asmt_years[subjects[i]] = years[i]
-            student.asmt_types[subjects[i]] = types[i]
-            student.asmt_subjects[subjects[i]] = subjects[i]
+        student.asmt_rec_ids[assessment.asmt_guid] = assessment.asmt_rec_id
+        student.asmt_guids[assessment.asmt_guid] = assessment.asmt_guid
+        student.asmt_dates_taken[assessment.asmt_guid] = date_taken
+        student.asmt_years[assessment.asmt_guid] = assessment.asmt_period_year
+        student.asmt_types[assessment.asmt_guid] = assessment.asmt_type
+        student.asmt_subjects[assessment.asmt_guid] = assessment.asmt_subject
+        student.student_rec_ids[assessment.asmt_guid] = id_generator.get_id()
     return students
 
 
-def apply_subject_percentages(subject_percentages, students):
+def apply_subject_percentages(subject_percentages, students, grade_assessment_guids):
     """
     based on the percentages for each student taking an assessment, remove a subject
     record for that percentage of students
@@ -475,7 +579,8 @@ def apply_subject_percentages(subject_percentages, students):
 
         # sample the correct students and remove their assessment score
         for student in random.sample(students, students_with_out_subject):
-            del student.asmt_scores[subject]
+            asmt_guid = grade_assessment_guids[subject]
+            student.delete_assessment_info(asmt_guid)
     return students
 
 
@@ -499,8 +604,6 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
             index = random.randint(0, len(student_info_dict[grade][pl]) - 1)
             students.append(student_info_dict[grade][pl].pop(index))
 
-    #if short_sum:
-        #print('short_sum\t', short_sum, '\tout of', total, '\tgrade', grade)
     return students
 
 
@@ -608,13 +711,13 @@ def generate_students_info_from_demographic_counts(state_population, assessments
         asmt_scores = claim_score_calculation.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi, claim_cut_points)
 
         score_pool_dict = create_asmt_score_pool_dict(asmt_scores)
-        student_info_dict = generate_students_with_demographics(score_pool_dict, grade_demographic_totals, grade)
+        student_info_dict = generate_students_with_demographics(score_pool_dict, grade_demographic_totals, grade, assessment)
 
         state_student_dict[grade] = student_info_dict
     return state_student_dict
 
 
-def generate_students_with_demographics(score_pool, demographic_totals, grade):
+def generate_students_with_demographics(score_pool, demographic_totals, grade, assessment):
     """
     Given a set of scores and the demographic numbers. Create studentInfo objects that match
     the given values
@@ -627,7 +730,7 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
     groupings = sorted({count_list[L_GROUPING] for count_list in demographic_totals.values() if count_list[L_GROUPING] not in [OVERALL_GROUP, gender_group]})
 
     # Create new student info objects with a gender assigned and scores
-    student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade)
+    student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade, assessment)
     print('Generating Student in Grade:', grade)
     for group in groupings:
         assign_demographics_for_grouping(group, student_info_dict, demographic_totals)
@@ -635,7 +738,7 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
     return student_info_dict
 
 
-def create_student_info_dict(group_num, score_pool, demographic_totals, grade):
+def create_student_info_dict(group_num, score_pool, demographic_totals, grade, assessment):
     """
     Create a dictionary of student info objects
     """
@@ -651,13 +754,13 @@ def create_student_info_dict(group_num, score_pool, demographic_totals, grade):
             perf_lvl_count = math.ceil(demo_list[i])
             perf_lvl = i - 1
             generated_student_info = create_student_infos_by_gender(demo_name, perf_lvl_count, perf_lvl,
-                                                                    score_pool, grade)
+                                                                    score_pool, grade, assessment)
             student_info_dict[perf_lvl] += generated_student_info
 
     return student_info_dict
 
 
-def create_student_infos_by_gender(gender, count, performance_level, score_pool, grade):
+def create_student_infos_by_gender(gender, count, performance_level, score_pool, grade, assessment):
     """
     Create a list of students all with the same gender and assign them scores
     """
@@ -665,11 +768,10 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
     score_list = score_pool[performance_level]
     for _i in range(count):
         if len(score_list) <= 0:
-            #print('short by: ', count - _i, '\tperf_lvl was:', performance_level, '\tgrade:', grade, '\tdemographic_name:', gender)
             break
         index = random.randint(0, len(score_list) - 1)
         score = score_list.pop(index)
-        asmt_score_dict = {'Math': score}
+        asmt_score_dict = {assessment.asmt_guid: score}
         student_info = StudentInfo(grade, gender, asmt_score_dict)
         student_info_list.append(student_info)
 
@@ -783,22 +885,6 @@ def generate_institution_hierarchy_from_helper_entities(state_population, distri
     return institution_hierarchy
 
 
-def create_output_dict(output_path):
-    """
-    create a dictionary that specifies the output path for all csv files
-    @param output_path: the path to where to store the files
-    @type output_path: str
-    @return: A dict containing all ouput paths
-    @rtype: dict
-    """
-    out_dict = {}
-
-    for fname in CSV_FILE_NAMES:
-        out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
-
-    return out_dict
-
-
 def calculate_dist_chunk(state_population):
     """
     using the state population object and the number of students present, determine how large a chunk should be.
@@ -862,7 +948,8 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('--format', dest='output_format', action='store',
                         default=os.path.join(DATAFILE_PATH, 'src', 'configs', 'datagen_output_format_default.yaml'),
-                        help='Specify the DataGen output format needed.',
+                        help='Specify the DataGen output yaml file desired. '
+                             'Default: "src/configs/datagen_output_format_default.yaml"',
                         required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         default=DEFAULT_OUTPUT_DIR,

@@ -17,6 +17,8 @@ import time
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import message_keys as mk
 from udl2.udl2_connector import UDL2DBConnection
+import logging
+logger = logging.getLogger(__name__)
 
 try:
     config_path_file = os.environ['UDL2_CONF']

@@ -64,7 +64,7 @@ class TestAssignStudentsSubjectsScores(unittest.TestCase):
         student_demo_perf_dict = {}
         for studentinfo in studentinfo_list:
             student_demo = studentinfo.getDemoOfStudent()
-            subject_score = studentinfo.asmt_scores[subject].overall_score
+            subject_score = studentinfo.asmt_scores[assessment.asmt_guid].overall_score
             for demo in student_demo:
                 if demo.startswith('dmg_'):
                     level = self._calcualte_perf_level(subject_score, cut_points)

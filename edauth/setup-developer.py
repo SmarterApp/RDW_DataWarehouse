@@ -7,7 +7,8 @@ from distutils.core import run_setup
 here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = [
-    'edschema', ]
+    'edschema',
+    'edcore', ]
 
 
 for dependency in dependencies:

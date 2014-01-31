@@ -13,16 +13,6 @@ pgpool = 'dwrouter1.qa.dum.edwdc.net'
 node_group_id = 'A'
 
 
-@celery.task(name='task.edmigrate.slave.slaves_get_ready_for_data_migrate', ignore_result=True)
-def slaves_get_ready_for_data_migrate(group_id):
-    print('Slave: starting to prep up for data refresh')
-    # TODO validate group_id
-    if group_id == node_group_id:
-        pause_replication()
-    else:
-        block_pgpool()
-
-
 @celery.task(name='task.edmigrate.slave.slaves_switch', ignore_result=True)
 def slaves_switch():
     print('Slave: starting to switch')
@@ -49,6 +39,7 @@ def is_replication_paused(connector):
         return True
 
 
+@celery.task(name='task.edmigrate.slave.pause_replication', ignore_result=True)
 def pause_replication():
     '''
     Pauses replication on current node.
@@ -58,6 +49,7 @@ def pause_replication():
             connector.execute("select pg_xlog_replay_pause()")
 
 
+@celery.task(name='task.edmigrate.slave.resume_replication', ignore_result=True)
 def resume_replication():
     '''
     Resumes replication on current node.
@@ -67,6 +59,7 @@ def resume_replication():
             connector.execute("select pg_xlog_replay_resume()")
 
 
+@celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True)
 def block_pgpool():
     '''
     Changes iptable rule to reject access from pgpool.
@@ -74,6 +67,7 @@ def block_pgpool():
     call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
 
 
+@celery.task(name='task.edmigrate.slave.unblock_pgpool', ignore_result=True)
 def unblock_pgpool():
     '''
     Changes iptable rule to accept access from pgpool.

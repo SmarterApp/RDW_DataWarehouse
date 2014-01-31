@@ -14,12 +14,7 @@ pgpool = 'dwrouter1.qa.dum.edwdc.net'
 node_group_id = 'A'
 
 
-@celery.task
-def slaves_get_ready_for_data_migrate():
-    pass
-
-
-@celery.task(name='task.edmigrate.slave.register')
+@celery.task(name='task.edmigrate.slave.slaves_register', ignore_result=True)
 def slaves_register():
     '''
     Registers current node to master.  This task will call task
@@ -29,11 +24,6 @@ def slaves_register():
     hostname = socket.gethostname()
     group_id = node_group_id
     register_slave_node.delay(hostname, group_id)
-
-
-@celery.task(name='task.edmigrate.slave.slaves_switch', ignore_result=True)
-def slaves_switch():
-    print('Slave: starting to switch')
 
 
 @celery.task(name='task.edmigrate.slave.slaves_end_data_migrate', ignore_result=True)

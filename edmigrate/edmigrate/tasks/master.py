@@ -1,8 +1,8 @@
 __author__ = 'sravi'
 
 from time import sleep
-import logging
 from celery.canvas import chain
+from celery.utils.log import get_task_logger
 
 from edmigrate.celery_dev import celery
 from edmigrate.tasks.slave import slaves_register
@@ -15,7 +15,7 @@ from sqlalchemy import Table
 
 from edcore.database.repmgr_connector import RepMgrDBConnection
 
-log = logging.getLogger('edmigrate.master')
+log = get_task_logger(__name__)
 
 
 @celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
@@ -26,6 +26,7 @@ def prepare_edware_data_refresh():
     `nodes.register_slave_node` task and be added to the
     nodes.registered_nodes collection.
     '''
+    log.debug("preparing edware data refresh")
     slaves_register.delay()
 
 
@@ -55,8 +56,9 @@ def start_edware_data_refresh(tenant):
                 slaves B: Unblock Postgres load-balancer and resume replication
                 slaves A: Verify is in the pool and replication is resumed
     '''
+    log.debug("Start data refresh")
+    log.debug("Registered nodes: %s", nodes.registered_slaves)
     print(nodes.registered_slaves)
-    return
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 

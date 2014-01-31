@@ -27,11 +27,15 @@ log = logging.getLogger('edmigrate')
 celery = Celery('edmigrate', broker='amqp://guest@localhost//', backend='amqp', include=['edmigrate.tasks.master', 'edmigrate.tasks.slave'])
 celery.conf.CELERY_TASK_SERIALIZER = 'json'
 celery.conf.CELERYBEAT_SCHEDULE = {
-    'migrate-data-to-edware-star': {
+    'prepare-migration': {
         'task': 'task.edmigrate.master.prepare_edware_data_refresh',
-        #'schedule': crontab()
-        'schedule': timedelta(seconds=10),
+        'schedule': crontab(minute='*/1'),
         'args': ()
+    },
+    'start-migration': {
+        'task': 'task.edmigrate.master.start_edware_data_refresh',
+        'schedule': crontab(minute='*/2'),
+        'args': ('repmgr',)
     },
 }
 celery.conf.CELERY_TIMEZONE = 'US/Eastern'

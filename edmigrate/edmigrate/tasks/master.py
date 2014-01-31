@@ -5,7 +5,7 @@ import logging
 from celery.canvas import chain
 
 from edmigrate.celery_dev import celery
-from edmigrate.tasks.slave import slaves_get_ready_for_data_migrate, slaves_switch, slaves_end_data_migrate, slaves_register
+from edmigrate.tasks.slave import slaves_register
 from edmigrate.utils.constants import Constants
 from edmigrate.nodes import nodes
 import edmigrate.utils.queries as queries
@@ -27,7 +27,6 @@ def prepare_edware_data_refresh():
     nodes.registered_nodes collection.
     '''
     slaves_register.delay()
-    sleep(5)
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh')
@@ -57,6 +56,7 @@ def start_edware_data_refresh(tenant):
                 slaves A: Verify is in the pool and replication is resumed
     '''
     print(nodes.registered_slaves)
+    return
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 

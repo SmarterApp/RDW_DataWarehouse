@@ -1,12 +1,11 @@
 __author__ = 'sravi'
 
 import collections
-from multiprocessing import Manager
 from edmigrate.celery_dev import celery
 
 Node = collections.namedtuple('Node', 'host group')
 print('Type of node:', type(Node))
-registered_slaves = Manager().list()
+registered_slaves = []
 
 # test data for now till we implement the registration for slave nodes
 registered_slaves.append(Node(host='dbpgdwr0.qa.dum.edwdc.net', group='A'))

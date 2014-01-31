@@ -151,7 +151,7 @@ udl2_conf = {
     'udl2_db_conn': {
         'url': 'postgresql://udl2:udl2abc1234@localhost:5432/udl2',
         'db_schema': 'udl2',
-        'echo': True,
+        'echo': False,
         'max_overflow': 10,
         'pool_size': 20,
     },

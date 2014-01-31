@@ -24,14 +24,14 @@ MASTER_SCHEDULER_MIN = get_setting(Config.MASTER_SCHEDULER_MIN)
 log = logging.getLogger('edmigrate')
 
 # hack till integrarion with edworker
-celery = Celery('master', broker='amqp://guest@localhost//', backend='amqp', include=['edmigrate.tasks.master', 'edmigrate.tasks.slave'])
+celery = Celery('edmigrate', broker='amqp://guest@localhost//', backend='amqp', include=['edmigrate.tasks.master', 'edmigrate.tasks.slave'])
 celery.conf.CELERY_TASK_SERIALIZER = 'json'
 celery.conf.CELERYBEAT_SCHEDULE = {
     'migrate-data-to-edware-star': {
-        'task': 'task.edmigrate.master.start_edware_data_refresh',
+        'task': 'task.edmigrate.master.prepare_edware_data_refresh',
         #'schedule': crontab()
         'schedule': timedelta(seconds=10),
-        'args': ('repmgr')
+        'args': ()
     },
 }
 celery.conf.CELERY_TIMEZONE = 'US/Eastern'

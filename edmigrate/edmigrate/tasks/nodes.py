@@ -5,11 +5,11 @@ from edmigrate.celery_dev import celery
 
 Node = collections.namedtuple('Node', 'host group')
 print('Type of node:', type(Node))
-registered_slaves = []
+registered_slaves = set()
 
 # test data for now till we implement the registration for slave nodes
-registered_slaves.append(Node(host='dbpgdwr0.qa.dum.edwdc.net', group='A'))
-registered_slaves.append(Node(host='dbpgdwr0s1.qa.dum.edwdc.net', group='B'))
+registered_slaves.add(Node(host='dbpgdwr0.qa.dum.edwdc.net', group='A'))
+registered_slaves.add(Node(host='dbpgdwr0s1.qa.dum.edwdc.net', group='B'))
 # end of test data
 
 
@@ -32,4 +32,4 @@ def register_slave_node(host, group):
     '''
     register a slave node based on host and group info
     '''
-    registered_slaves.append(Node(host=host, group=group))
+    registered_slaves.add(Node(host=host, group=group))

@@ -5,9 +5,9 @@ import logging
 from celery.canvas import chain
 
 from edmigrate.celery_dev import celery
-from edmigrate.tasks.slave import slaves_get_ready_for_data_migrate, slaves_switch, slaves_end_data_migrate
+from edmigrate.tasks.slave import slaves_get_ready_for_data_migrate, slaves_switch, slaves_end_data_migrate, slaves_register
 from edmigrate.utils.constants import Constants
-import edmigrate.nodes.nodes as nodes
+from edmigrate.nodes import nodes
 import edmigrate.utils.queries as queries
 
 from sqlalchemy.sql.expression import select
@@ -16,6 +16,18 @@ from sqlalchemy import Table
 from edcore.database.repmgr_connector import RepMgrDBConnection
 
 log = logging.getLogger('edmigrate.master')
+
+
+@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
+def prepare_edware_data_refresh():
+    '''
+    Broadcast message to all slave nodes to register
+    themselves. Slaves will send back register information to
+    `nodes.register_slave_node` task and be added to the
+    nodes.registered_nodes collection.
+    '''
+    slaves_register.delay()
+    sleep(5)
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh')
@@ -44,10 +56,7 @@ def start_edware_data_refresh(tenant):
                 slaves B: Unblock Postgres load-balancer and resume replication
                 slaves A: Verify is in the pool and replication is resumed
     '''
-
-    # TODO: Broadcast message to all slave nodes to register themselves
-    # TODO: Add a server task to process all responses from slave node and add them to the nodes.registered_nodes
-
+    print(nodes.registered_slaves)
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 
@@ -89,4 +98,3 @@ def verify_master_slave_repl_status(tenant, slaves):
     slave_node_ids = queries.get_slave_node_ids_from_host_name(tenant, slaves)
     slave_node_status = queries.get_slave_node_status(tenant, slave_node_ids)
     print(slave_node_status)
-

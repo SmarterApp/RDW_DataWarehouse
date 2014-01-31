@@ -18,7 +18,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
     Given certain known information, returns breadcrumbs context
     '''
     formatted_results = []
-    with EdCoreDBConnection(tenant=tenant) as connector:
+    with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connector:
         dim_inst_hier = connector.get_table('dim_inst_hier')
 
         # Limit result count to one

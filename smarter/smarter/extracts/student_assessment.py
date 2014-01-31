@@ -42,7 +42,7 @@ def get_extract_assessment_query(params):
     dim_asmt_label = get_column_mapping(Constants.DIM_ASMT)
     fact_asmt_outcome_label = get_column_mapping(Constants.FACT_ASMT_OUTCOME)
 
-    with EdCoreDBConnection() as connector:
+    with EdCoreDBConnection(state_code=state_code) as connector:
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
@@ -104,7 +104,7 @@ def get_extract_assessment_query(params):
                                               .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type == asmt_type))
-                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])
+                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
         query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)

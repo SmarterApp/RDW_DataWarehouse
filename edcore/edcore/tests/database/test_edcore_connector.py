@@ -13,7 +13,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection,\
 class TestEdcoreConnector(Unittest_with_edcore_sqlite):
 
     def test_connector(self):
-        conn = EdCoreDBConnection(get_unittest_tenant_name())
+        conn = EdCoreDBConnection(tenant=get_unittest_tenant_name())
         self.assertIsInstance(conn, EdCoreDBConnection)
         dim_student = conn.get_table('dim_student')
         self.assertEqual(dim_student.name, 'dim_student')

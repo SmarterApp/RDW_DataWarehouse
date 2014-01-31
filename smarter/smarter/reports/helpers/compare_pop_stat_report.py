@@ -96,7 +96,7 @@ class ComparingPopStatReport:
         :rtype: dict
         :returns:  results from database
         '''
-        with EdCoreDBConnection(tenant=self.tenant) as connector:
+        with EdCoreDBConnection(tenant=self.tenant, state_code=self.state_code) as connector:
             query = self.get_query(connector, filters)
             results = connector.get_result(query)
         return results[0].get(Constants.COUNT) if results else 0

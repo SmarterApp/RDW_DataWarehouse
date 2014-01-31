@@ -13,7 +13,7 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     '''
     Get asmt administration for a list of students. There is no PII in the results and it can be stored in shortlived cache
     '''
-    with EdCoreDBConnection() as connection:
+    with EdCoreDBConnection(state_code=state_code) as connection:
         fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
         query = select([fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type],

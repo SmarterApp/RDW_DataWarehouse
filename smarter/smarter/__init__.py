@@ -18,7 +18,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.stats_connector import StatsDBConnection
 from services.celery import setup_celery as setup_services_celery, PREFIX as servicesPrefix
 from edextract.celery import setup_celery as setup_extract_celery, PREFIX as edextractPrefix
-from edauth.security.tenant import set_tenant_map
+from edcore.security.tenant import set_tenant_map
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None

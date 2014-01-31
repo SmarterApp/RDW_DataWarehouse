@@ -3,7 +3,7 @@ Created on Mar 14, 2013
 
 @author: dip
 '''
-from edauth.security.tenant import get_state_code_mapping
+from edcore.security.tenant import get_state_code_mapping, get_tenant_map
 
 
 class UserConstants():
@@ -99,6 +99,10 @@ class User(object):
         '''
         if not isinstance(tenants, list):
             tenants = [tenants]
+        # TODO:  This needs to be removed after SSO integration
+        # Test code for multi-tenancy
+        if 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1' in self.get_roles():
+            tenants = list(get_tenant_map().keys())
         self.__info[UserConstants.TENANT] = tenants
         # Set the state code based on tenant name
         self.__info[UserConstants.STATECODE] = get_state_code_mapping(tenants)

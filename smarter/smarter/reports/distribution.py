@@ -16,7 +16,7 @@ def get_summary_distribution(state_code, district_guid=None, school_guid=None, a
     '''
     Get a bucketed distribution of scores
     '''
-    with EdCoreDBConnection() as connection:
+    with EdCoreDBConnection(state_code=state_code) as connection:
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
         #  should it be always for summative?
         query = select([label(Constants.SCORE_BUCKET, (fact_asmt_outcome.c.asmt_score / get_bucket_size()) * get_bucket_size()),

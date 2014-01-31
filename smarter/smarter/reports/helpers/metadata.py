@@ -11,7 +11,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 @cache_region('public.shortlived')
-def get_custom_metadata(stateCode, tenant=None):
+def get_custom_metadata(state_code, tenant=None):
     '''
     Query assessment custom metadata from database
 
@@ -21,13 +21,13 @@ def get_custom_metadata(stateCode, tenant=None):
     :returns: dict of custom metadata with subject id as key and metadata as its value
     '''
     cstm_meta_map = {}
-    with EdCoreDBConnection(tenant) as connector:
+    with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connector:
         # query custom metadata by state code
         dim_asmt_cstm = connector.get_table(Constants.CUSTOM_METADATA)
         query = select([dim_asmt_cstm.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
                         dim_asmt_cstm.c.asmt_subject.label(Constants.ASMT_SUBJECT)],
                        from_obj=[dim_asmt_cstm])\
-            .where(dim_asmt_cstm.c.state_code == stateCode)
+            .where(dim_asmt_cstm.c.state_code == state_code)
         results = connector.get_result(query)
         for result in results:
             custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)

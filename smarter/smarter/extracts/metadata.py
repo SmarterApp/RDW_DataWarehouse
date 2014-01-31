@@ -20,13 +20,13 @@ def get_metadata_file_name(params):
                                                                                                          asmtGuid=params.get(Constants.ASMTGUID))
 
 
-def get_asmt_metadata(asmt_guid):
+def get_asmt_metadata(state_code, asmt_guid):
     '''
     Generates a query for getting assessment information based on assessment guid
 
     :param str asmt_guid:  asessment guid
     '''
-    with EdCoreDBConnection() as connector:
+    with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         mapping = get_column_mapping(Constants.DIM_ASMT, json_mapping=True)
         query = select([literal("assessment").label("content"),

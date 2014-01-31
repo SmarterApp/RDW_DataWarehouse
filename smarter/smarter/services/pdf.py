@@ -28,6 +28,10 @@ PDF_PARAMS = {
     "type": "object",
     "additionalProperties": False,
     "properties": {
+        Constants.STATECODE: {
+            "type": "string",
+            "required": True,
+            "pattern": "^[a-zA-Z]{2}$"},
         Constants.STUDENTGUID: {
             "type": "string",
             "required": True,
@@ -119,12 +123,13 @@ def get_pdf_content(params):
 
     :param params: python dict that contains query parameters from the request
     '''
-    student_guid = params.get('studentGuid')
-    asmt_type = params.get('asmtType', AssessmentType.SUMMATIVE)
+    student_guid = params.get(Constants.STUDENTGUID)
+    state_code = params.get(Constants.STATECODE)
+    asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     if student_guid is None:
         raise InvalidParameterError('Required parameter is missing')
 
-    if not has_context_for_pdf_request(student_guid):
+    if not has_context_for_pdf_request(state_code, student_guid):
         raise ForbiddenError('Access Denied')
 
     asmt_type = asmt_type.upper()
@@ -158,7 +163,7 @@ def get_pdf_content(params):
     return Response(body=pdf_stream, content_type='application/pdf')
 
 
-def has_context_for_pdf_request(student_guid):
+def has_context_for_pdf_request(state_code, student_guid):
     '''
     Validates that user has context to student_guid
 
@@ -166,4 +171,4 @@ def has_context_for_pdf_request(student_guid):
     '''
     if type(student_guid) is not list:
         student_guid = [student_guid]
-    return check_context(student_guid)
+    return check_context(state_code, student_guid)

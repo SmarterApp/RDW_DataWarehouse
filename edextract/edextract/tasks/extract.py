@@ -99,7 +99,7 @@ def generate_csv(tenant, request_id, task_id, query, output_file):
         else:
             if not os.path.isdir(os.path.dirname(output_file)):
                 raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
-            with EdCoreDBConnection(tenant) as connection, open(output_file, 'w') as csvfile:
+            with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w') as csvfile:
                 results = connection.get_streaming_result(query)  # this result is a generator
                 csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
                 header = []

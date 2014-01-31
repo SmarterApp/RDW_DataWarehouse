@@ -15,7 +15,10 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
     '''
     Returns a SELECT clause statement with context security attached in the WHERE clause
     '''
-    with EdCoreDBConnection() as connector:
+    # Retrieve state code for db connection routing
+    state_code = kwargs.get(Constants.STATE_CODE)
+    kwargs.pop(Constants.STATE_CODE, None)
+    with EdCoreDBConnection(state_code=state_code) as connector:
         # Get user role and guid
         (guid, roles) = __get_user_info(connector)
 
@@ -39,7 +42,7 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
     return query
 
 
-def check_context(student_guids):
+def check_context(state_code, student_guids):
     '''
     Given a list of student guids, return true if user has access to see their data, false otherwise
 
@@ -49,7 +52,7 @@ def check_context(student_guids):
     if len(student_guids) is 0:
         return False
 
-    with EdCoreDBConnection() as connector:
+    with EdCoreDBConnection(state_code=state_code) as connector:
         # Get user role and guid
         (guid, roles) = __get_user_info(connector)
 

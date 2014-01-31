@@ -7,6 +7,7 @@ from database.connector import DBConnection
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import get_current_request
 from edschema.metadata.ed_metadata import generate_ed_metadata
+from edcore.security.tenant import get_state_code_to_tenant_map
 
 config_namespace = 'edware.db'
 
@@ -17,14 +18,21 @@ class EdCoreDBConnection(DBConnection):
     This is used for database connection for reports
     '''
 
-    def __init__(self, tenant=None):
+    def __init__(self, tenant=None, state_code=None):
 
         if tenant is None:
             # Get user's tenant from session
             __user = authenticated_userid(get_current_request())
             if __user:
-                # User object has a list of tenant.  Retrieve the first element
-                tenant = __user.get_tenants()[0]
+                # User object has a list of tenant.
+                tenants = __user.get_tenants()
+                if len(tenants) > 0:
+                    if len(tenants) is 1:
+                        tenant = tenants[0]
+                    else:
+                        # Match tenant to the state code
+                        _map = get_state_code_to_tenant_map()
+                        tenant = _map.get(state_code)
         super().__init__(name=self.get_datasource_name(tenant))
 
     @staticmethod

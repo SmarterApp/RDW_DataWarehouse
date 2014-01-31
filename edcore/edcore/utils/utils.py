@@ -29,3 +29,11 @@ def delete_multiple_entries_from_dictionary_by_list_of_keys(dictionary, list_of_
         except Exception as e:
             pass
     return dictionary
+
+
+def reverse_map(map_object):
+    '''
+    reverse map for a dict object
+    '''
+    _map = deepcopy(map_object)
+    return {v: k for k, v in _map.items()}

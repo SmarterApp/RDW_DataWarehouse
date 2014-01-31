@@ -124,7 +124,7 @@ class TestContext(Unittest_with_edcore_sqlite):
         pass
 
     def test_check_context_with_empty_guids(self):
-        context = check_context([])
+        context = check_context('NY', [])
         self.assertFalse(context)
 
 #    def test_check_context_with_context_as_teacher(self):
@@ -153,7 +153,7 @@ class TestContext(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
 
-        context = check_context(['61ec47de-e8b5-4e78-9beb-677c44dd9b50'])
+        context = check_context('NY', ['61ec47de-e8b5-4e78-9beb-677c44dd9b50'])
         self.assertTrue(context)
 
 #    def test_check_context_as_school_admin_with_no_context(self):

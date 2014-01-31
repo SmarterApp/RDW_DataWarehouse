@@ -108,13 +108,13 @@ def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_y
     '''
     query all asmt_guid and asmt_grade by given extract request params
     '''
-    with EdCoreDBConnection() as connector:
+    with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
                                      fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
                                     from_obj=[dim_asmt
-                                              .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))])\
+                                              .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], state_code=state_code)\
             .where(and_(fact_asmt_outcome.c.state_code == state_code))\
             .where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))\
             .where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))\
@@ -153,7 +153,7 @@ def _prepare_data(param):
         asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
 
     if asmt_guid_with_grades:
-        with EdCoreDBConnection() as connector:
+        with EdCoreDBConnection(state_code=state_code) as connector:
             dim_asmt = connector.get_table(Constants.DIM_ASMT)
             fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
     # Returns list of asmt guid with grades, and table objects
@@ -203,7 +203,7 @@ def _create_asmt_metadata_task(request_id, user, tenant, params):
     '''
     TODO comment
     '''
-    query = get_asmt_metadata(params.get(Constants.ASMTGUID))
+    query = get_asmt_metadata(params.get(Constants.STATECODE), params.get(Constants.ASMTGUID))
     return _create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
 
 

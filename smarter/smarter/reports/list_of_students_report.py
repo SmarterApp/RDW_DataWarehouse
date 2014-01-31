@@ -102,6 +102,7 @@ def get_list_of_students_report(params):
             student['enrollment_grade'] = result['enrollment_grade']
             student['district_name'] = result['district_name']
             student['school_name'] = result['school_name']
+            student['state_code'] = result['state_code']
             student[Constants.ROWID] = rowId
             rowId += 1
 
@@ -154,7 +155,7 @@ def get_list_of_students(params):
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = params.get(Constants.ASMTGRADE)
     asmtSubject = params.get(Constants.ASMTSUBJECT)
-    with EdCoreDBConnection() as connector:
+    with EdCoreDBConnection(state_code=stateCode) as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -164,6 +165,7 @@ def get_list_of_students(params):
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),
                                     dim_student.c.last_name.label('student_last_name'),
+                                    fact_asmt_outcome.c.state_code.label('state_code'),
                                     dim_inst_hier.c.district_name.label('district_name'),
                                     dim_inst_hier.c.school_name.label('school_name'),
                                     fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
@@ -203,7 +205,7 @@ def get_list_of_students(params):
                                               .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
-                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])
+                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], state_code=stateCode)
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
@@ -223,7 +225,7 @@ def __get_asmt_data(asmtSubject, stateCode):
     '''
     Queries dim_asmt for cutpoint and custom metadata
     '''
-    with EdCoreDBConnection() as connector:
+    with EdCoreDBConnection(state_code=stateCode) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
 
         # construct the query

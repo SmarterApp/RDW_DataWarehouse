@@ -4,7 +4,7 @@ Created on Jan 24, 2014
 @author: dip
 '''
 import unittest
-from edauth.security.tenant import get_state_code_mapping, set_tenant_map
+from edcore.security.tenant import get_state_code_mapping, set_tenant_map
 
 
 class TestTenant(unittest.TestCase):

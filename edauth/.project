@@ -3,6 +3,7 @@
 	<name>edauth</name>
 	<comment></comment>
 	<projects>
+		<project>edcore</project>
 		<project>eddatabase</project>
 	</projects>
 	<buildSpec>

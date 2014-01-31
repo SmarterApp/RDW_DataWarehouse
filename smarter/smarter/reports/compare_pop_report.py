@@ -184,7 +184,7 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns:  results from database
         '''
-        with EdCoreDBConnection(tenant=self.tenant) as connector:
+        with EdCoreDBConnection(tenant=self.tenant, state_code=self.state_code) as connector:
             query_helper = QueryHelper(connector, **params)
             query = query_helper.get_query()
             results = connector.get_result(query)
@@ -385,7 +385,7 @@ class QueryHelper():
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
 
-    def build_query(self, f, extra_columns):
+    def build_query(self, f, extra_columns, **kwargs):
         '''
         build select columns based on request
         '''
@@ -393,8 +393,7 @@ class QueryHelper():
                   [self._fact_asmt_outcome.c.asmt_subject.label(Constants.ASMT_SUBJECT),
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
                    func.count().label(Constants.TOTAL)],
-                  from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
-                  )\
+                  from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))], **kwargs)\
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == self._asmt_type))\
             .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
@@ -418,7 +417,7 @@ class QueryHelper():
                    .order_by(self._dim_inst_hier.c.school_name)
 
     def get_query_for_school_view(self):
-        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
+        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)], state_code=self._state_code)\
                    .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))\
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .order_by(self._fact_asmt_outcome.c.asmt_grade)

@@ -26,7 +26,7 @@ define [
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
       # This is for links in drill down
-      row['params'] = {"studentGuid": row['student_guid']}
+      row['params'] = {"studentGuid": row['student_guid'], "stateCode": row['state_code']}
       for key, value of assessment
         cutpoint = dataSet.cutPointsData[key]
         $.extend value, cutpoint

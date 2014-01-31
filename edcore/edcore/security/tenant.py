@@ -4,6 +4,8 @@ Created on Jan 23, 2014
 
 @author: dip
 '''
+from copy import deepcopy
+from edcore.utils.utils import reverse_map
 
 TENANT_MAP = {}
 
@@ -26,3 +28,16 @@ def set_tenant_map(tenant_map):
     '''
     global TENANT_MAP
     TENANT_MAP = tenant_map
+
+
+def get_tenant_map():
+    global TENANT_MAP
+    return TENANT_MAP
+
+
+def get_state_code_to_tenant_map():
+    '''
+    Returns tenant to state code mapping
+    '''
+    global TENANT_MAP
+    return reverse_map(TENANT_MAP)

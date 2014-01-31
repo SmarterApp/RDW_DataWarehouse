@@ -22,7 +22,7 @@ from smarter.reports.student_administration import get_student_list_asmt_adminis
 REPORT_NAME = 'individual_student_report'
 
 
-def __prepare_query(connector, student_guid, assessment_guid):
+def __prepare_query(connector, state_code, student_guid, assessment_guid):
     '''
     Returns query for individual student report
     '''
@@ -92,7 +92,7 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
                                 from_obj=[fact_asmt_outcome
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
-                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.most_recent))])
+                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.most_recent))], state_code=state_code)
     query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.student_guid == student_guid))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
@@ -159,11 +159,15 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
 
 @report_config(name=REPORT_NAME,
                params={
-                   "studentGuid": {
+                   Constants.STATECODE: {
+                       "type": "string",
+                       "required": True,
+                       "pattern": "^[a-zA-Z]{2}$"},
+                   Constants.STUDENTGUID: {
                        "type": "string",
                        "required": True,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
-                   "assessmentGuid": {
+                   Constants.ASSESSMENTGUID: {
                        "type": "string",
                        "required": False,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -175,22 +179,18 @@ def get_student_report(params):
     '''
     Individual Student Report
     '''
-    # get studentId
-    student_guid = str(params['studentGuid'])
+    student_guid = params[Constants.STUDENTGUID]
+    state_code = params[Constants.STATECODE]
+    assessment_guid = params.get(Constants.ASSESSMENTGUID)
 
-    # if assessmentId is available, read the value.
-    assessment_guid = None
-    if 'assessmentGuid' in params:
-        assessment_guid = str(params['assessmentGuid'])
-
-    with EdCoreDBConnection() as connection:
-        query = __prepare_query(connection, student_guid, assessment_guid)
+    with EdCoreDBConnection(state_code=state_code) as connection:
+        query = __prepare_query(connection, state_code, student_guid, assessment_guid)
         result = connection.get_result(query)
         if result:
             first_student = result[0]
-            state_code = first_student['state_code']
-            district_guid = first_student['district_guid']
-            school_guid = first_student['school_guid']
+            state_code = first_student[Constants.STATE_CODE]
+            district_guid = first_student[Constants.DISTRICT_GUID]
+            school_guid = first_student[Constants.SCHOOL_GUID]
             asmt_grade = first_student['grade']
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = get_breadcrumbs_context(district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)

@@ -50,7 +50,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.delete())
 
     def test_student_report(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20, 'stateCode': 'NY'}
         result = get_student_report(params)['items']['Summative']
         self.assertEqual(1, len(result), "studentGuid should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
@@ -58,7 +58,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual('Research & Inquiry', result[0]['claims'][3]['name'], 'asmt_claim_4_name Spelling')
 
     def test_assessment_header_info(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NY'}
         result = get_student_report(params)['items']['Summative']
         student_report = result[0]
 
@@ -90,7 +90,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
             self.assertIn("bg_color", keys, "should contain the bg_color of the cut point")
 
     def test_score_interval(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NY'}
         result = get_student_report(params)['items']['Summative']
         student_report = result[0]
 
@@ -98,7 +98,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_max'] - student_report['asmt_score_interval'])
 
     def test_context(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NY'}
         result = get_student_report(params)['context']['items']
         self.assertEqual('New York', result[0]['name'])
         self.assertEqual('Sunset School District', result[1]['name'])
@@ -107,7 +107,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual("Lettie L. Hose", result[4]['name'])
 
     def test_claims(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NY'}
         items = get_student_report(params)['items']['Summative']
         result = items[0]
         self.assertEqual(3, len(result['claims']))
@@ -122,7 +122,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual('Research & Inquiry', result['claims'][3]['name'])
 
     def test_invalid_student_id(self):
-        params = {'studentGuid': 'invalid'}
+        params = {'studentGuid': 'invalid', 'stateCode': 'NY'}
         self.assertRaises(NotFoundException, get_student_report, params)
 
 if __name__ == '__main__':

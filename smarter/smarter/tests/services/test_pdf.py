@@ -74,7 +74,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
+        self.__request.json_body = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d', 'stateCode': 'NY'}
         dummy_session = Session()
         dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
@@ -86,7 +86,7 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': studentGuid}
+        self.__request.json_body = {'studentGuid': studentGuid, 'stateCode': 'NY'}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
@@ -111,7 +111,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_pdf_service_no_context(self):
         self.__request.method
-        self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
+        self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d', 'stateCode': 'NY'}
         dummy_session = Session()
         dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
@@ -124,6 +124,7 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_pdf_valid_params(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.GET['studentGuid'] = studentGuid
+        self.__request.GET['stateCode'] = 'NY'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
@@ -142,6 +143,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         params = {}
         params['studentGuid'] = studentGuid
+        params['stateCode'] = 'NY'
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
@@ -165,6 +167,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         params = {}
         # Important, this pdf must not exist in directory
         params['studentGuid'] = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
+        params['stateCode'] = 'NY'
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
@@ -178,6 +181,7 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_pdf_content_with_no_context(self):
         params = {}
         params['studentGuid'] = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
+        params['stateCode'] = 'NY'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         dummy_session = Session()
@@ -190,12 +194,12 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_has_context_for_pdf_request(self):
         student_guid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
-        has_context = has_context_for_pdf_request(student_guid)
+        has_context = has_context_for_pdf_request('NY', student_guid)
         self.assertTrue(has_context)
 
     def test_has_context_for_pdf_request_with_no_context(self):
         student_guid = 'invalid'
-        has_context = has_context_for_pdf_request(student_guid)
+        has_context = has_context_for_pdf_request('NY', student_guid)
         self.assertFalse(has_context)
 
     def test_send_pdf_request_with_always_generate_flag(self):
@@ -203,6 +207,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         params = {}
         params['studentGuid'] = studentGuid
+        params['stateCode'] = 'NY'
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}

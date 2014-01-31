@@ -33,7 +33,7 @@ common:
     edware:
       db:
         cat.state_code: NY
-        dog.state_code: NJ
+        dog.state_code: CA
         echo: False
     trigger:
       recache:

@@ -61,42 +61,22 @@ def enable_trigger_query(schema_name, table_name, is_enable):
     return query
 
 
-def update_inst_hier_rec_id_query(schema, condition_value, info_map):
+def update_foreign_rec_id_query(schema, condition_value, info_map):
     '''
-    Main function to crate query to update foreign key inst_hier_rec_id in table fact_asmt_outcome
-    '''
-    update_query = ["UPDATE {schema_and_fact_table} ",
-                    "SET {inst_hier_in_fact}=dim.dim_{inst_hier_in_dim} FROM (SELECT ",
-                    "{inst_hier_in_dim} AS dim_{inst_hier_in_dim}, ",
-                    ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in sorted(list(info_map['guid_column_map'].keys()))),
-                    " FROM {schema_and_dim_table})dim",
-                    " WHERE {inst_hier_in_fact}={fake_value} AND ",
-                    " AND ".join(guid_in_fact + '=dim_' + guid_in_dim for guid_in_dim, guid_in_fact in sorted(info_map['guid_column_map'].items()))
-                    ]
-    update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
-                                                schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),
-                                                inst_hier_in_dim=info_map['rec_id_map'][0],
-                                                inst_hier_in_fact=info_map['rec_id_map'][1],
-                                                fake_value=condition_value)
-    return update_query
-
-
-def update_student_rec_id_query(schema, condition_value, info_map):
-    '''
-    Main function to crate query to update foreign key inst_hier_rec_id in table fact_asmt_outcome
+    Main function to crate query to update foreign key [foreign]_rec_id in table fact_asmt_outcome
     '''
     update_query = ["UPDATE {schema_and_fact_table} ",
-                    "SET {student_rec_in_fact}=dim.dim_{student_rec_in_dim} FROM (SELECT ",
-                    "{student_rec_in_dim} AS dim_{student_rec_in_dim}, ",
+                    "SET {foreign_in_fact}=dim.dim_{foreign_in_dim} FROM (SELECT ",
+                    "{foreign_in_dim} AS dim_{foreign_in_dim}, ",
                     ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in sorted(list(info_map['guid_column_map'].keys()))),
                     " FROM {schema_and_dim_table}) dim",
-                    " WHERE {student_rec_in_fact}={fake_value} AND ",
+                    " WHERE {foreign_in_fact}={fake_value} AND ",
                     " AND ".join(guid_in_fact + '=dim_' + guid_in_dim for guid_in_dim, guid_in_fact in sorted(info_map['guid_column_map'].items()))
                     ]
     update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
                                                 schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),
-                                                student_rec_in_dim=info_map['rec_id_map'][0],
-                                                student_rec_in_fact=info_map['rec_id_map'][1],
+                                                foreign_in_dim=info_map['rec_id_map'][0],
+                                                foreign_in_fact=info_map['rec_id_map'][1],
                                                 fake_value=condition_value)
     return update_query
 

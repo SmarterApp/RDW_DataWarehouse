@@ -9,8 +9,7 @@ from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 
 
 DBDRIVER = "postgresql"
-FAKE_INST_HIER_REC_ID = -1
-FAKE_STUDENT_REC_ID = -1
+FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
 
 
@@ -132,11 +131,11 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     logger.info(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_INST_HIER_REC_ID, conf['move_to_target'][1])
+    update_inst_hier_rec_id_fk_query = queries.update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID, conf['move_to_target'][1])
     # print(update_inst_hier_rec_id_fk_query)
 
     # update student query back
-    update_student_rec_id_fk_query = queries.update_student_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_STUDENT_REC_ID, conf['move_to_target'][3])
+    update_student_rec_id_fk_query = queries.update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID, conf['move_to_target'][3])
 
     # enable foreign key in fact table
     enable_back_trigger_query = queries.enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)

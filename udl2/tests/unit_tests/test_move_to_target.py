@@ -147,7 +147,7 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
 def get_expected_update_inst_hier_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET inst_hier_rec_id=dim.dim_inst_hier_rec_id FROM '\
         '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid,school_guid AS dim_school_guid,state_code AS dim_state_code '\
-        'FROM "edware"."dim_inst_hier")dim WHERE inst_hier_rec_id=-1 AND district_guid=dim_district_guid AND '\
+        'FROM "edware"."dim_inst_hier") dim WHERE inst_hier_rec_id=-1 AND district_guid=dim_district_guid AND '\
         'school_guid=dim_school_guid AND state_code=dim_state_code'.format(table_name=table_name)
 
 

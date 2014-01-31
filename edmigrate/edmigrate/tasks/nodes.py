@@ -10,8 +10,8 @@ Node = collections.namedtuple('Node', 'host group')
 registered_slaves = set()
 
 # test data for now till we implement the registration for slave nodes
-registered_slaves.add(Node(host='dbpgdwr0.qa.dum.edwdc.net', group='A'))
-registered_slaves.add(Node(host='dbpgdwr0s1.qa.dum.edwdc.net', group='B'))
+#registered_slaves.add(Node(host='dbpgdwr0.qa.dum.edwdc.net', group='A'))
+#registered_slaves.add(Node(host='dbpgdwr0s1.qa.dum.edwdc.net', group='B'))
 # end of test data
 
 
@@ -28,6 +28,12 @@ def get_all_slave_node_host_names(slaves):
     '''
     return [slave.host for slave in slaves]
 
+
+def get_registered_slave_nodes():
+    '''
+    returns registered slave nodes in the format needed
+    '''
+    return registered_slaves
 
 @celery.task(name='task.edmigrate.nodes.register_node')
 def register_slave_node(host, group):

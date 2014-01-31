@@ -1,13 +1,13 @@
 __author__ = 'sravi'
-import logging
 
 from sqlalchemy.sql.expression import select
 from sqlalchemy import Table
 from edmigrate.utils.constants import Constants
+from celery.utils.log import get_task_logger
 
 from edcore.database.repmgr_connector import RepMgrDBConnection
 
-log = logging.getLogger('edmigrate.queries')
+log = get_task_logger(__name__)
 
 
 def get_host_name_from_node_conn_info(conn_info):

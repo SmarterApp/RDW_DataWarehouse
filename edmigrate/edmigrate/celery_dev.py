@@ -1,11 +1,9 @@
 __author__ = 'sravi'
 
-import logging
 import os
 import configparser
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-from datetime import timedelta
 from celery import Celery
 from edmigrate.settings.config import Config, get_setting
 from kombu.common import Broadcast
@@ -20,8 +18,6 @@ def setup_db_connection(settings):
 PREFIX = 'edmigrate.celery'
 MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)
 MASTER_SCHEDULER_MIN = get_setting(Config.MASTER_SCHEDULER_MIN)
-
-log = logging.getLogger('edmigrate')
 
 # hack till integrarion with edworker
 celery = Celery('edmigrate', broker='amqp://guest@localhost//', backend='amqp', include=['edmigrate.tasks.master', 'edmigrate.tasks.slave'])

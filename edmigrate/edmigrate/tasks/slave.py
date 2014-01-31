@@ -1,12 +1,12 @@
 __author__ = 'sravi'
 
-from celery.utils.log import get_task_logger
 import socket
 from edmigrate.celery_dev import celery
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call
 from edmigrate.tasks.nodes import register_slave_node
+from celery.utils.log import get_task_logger
 
 log = get_task_logger(__name__)
 

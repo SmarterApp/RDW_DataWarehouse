@@ -3,6 +3,7 @@ __author__ = 'sravi'
 from time import sleep
 from celery.canvas import chain, group
 from celery.utils.log import get_task_logger
+from edmigrate.settings.config import Config, get_setting
 
 from edmigrate.celery import celery
 from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
@@ -14,6 +15,8 @@ import edmigrate.utils.queries as queries
 
 log = get_task_logger(__name__)
 
+MAX_RETRY = get_setting(Config.MAX_RETRIES)
+DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 
 @celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
 def prepare_edware_data_refresh():
@@ -93,10 +96,15 @@ def migrate_data(tenant, slaves):
     sleep(100)
 
 
-@celery.task(name='task.edmigrate.master.verify_master_slave_repl_status')
+@celery.task(name='task.edmigrate.master.verify_master_slave_repl_status',
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     '''
     verify the status of replication on slaves
     '''
     log.info('Master: verify status of replication on slaves: ' + str(slaves))
-    return queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
+    status = queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
+    if not status:
+        verify_slaves_repl_status.retry(args=[tenant, slaves, lag_tolerence_in_bytes])
+

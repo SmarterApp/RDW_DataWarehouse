@@ -48,7 +48,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
         start_time_p1 = datetime.datetime.now()
-        affected_rows_first = execute_udl_queries(conn, queries[0:3], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
+        affected_rows_first = execute_udl_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
         finish_time_p1 = datetime.datetime.now()
 
         # Record benchmark

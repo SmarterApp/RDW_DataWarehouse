@@ -4,7 +4,7 @@ from time import sleep
 from celery.canvas import chain, group
 from celery.utils.log import get_task_logger
 
-from edmigrate.celery_dev import celery
+from edmigrate.celery import celery
 from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
     pause_replication, resume_replication, block_pgpool, unblock_pgpool
 from edmigrate.utils.constants import Constants
@@ -100,4 +100,3 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     '''
     log.info('Master: verify status of replication on slaves: ' + str(slaves))
     return queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
-

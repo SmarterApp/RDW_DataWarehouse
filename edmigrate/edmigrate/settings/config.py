@@ -7,6 +7,7 @@ class Config():
     MAX_RETRIES = 'edmigrate.retries_allowed'
     RETRY_DELAY = 'edmigrate.retry_delay'
     TIMEOUT = 'edmigrate.timeout'
+    REPLICATION_GROUP = 'migrate.replication.group'
 
 # list of configurations that are specific to edmigrate
 LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
@@ -14,6 +15,8 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.MAX_RETRIES, int, 10),
                   (Config.RETRY_DELAY, int, 60),
                   (Config.TIMEOUT, int, 20)]
+                  (Config.REPLICATION_GROUP, str, None)]
+
 
 # Keeps track of configuration related to edmigrate that is read off from ini
 settings = {}

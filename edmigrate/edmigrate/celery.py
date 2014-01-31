@@ -3,8 +3,11 @@ __author__ = 'sravi'
 from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
 from edmigrate.settings.config import setup_settings
+from edcore.database import initialize_db
+from edcore.database.repmgr_connector import RepMgrDBConnection
 
-PREFIX = 'edmigrate.celery'
+
+PREFIX = 'migrate.celery'
 
 
 def setup_celery(settings, prefix=PREFIX):
@@ -19,11 +22,14 @@ def setup_celery(settings, prefix=PREFIX):
     setup_settings(settings)
 
 
+def setup_db_connection(settings):
+    initialize_db(RepMgrDBConnection, settings)
+
+
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
     # We should only need to setup db connection in prod mode
-    #setup_db_connection(conf)
+    setup_db_connection(conf)
     setup_settings(conf)
-    pass

@@ -1,17 +1,18 @@
 __author__ = 'sravi'
 
 import socket
-from edmigrate.celery_dev import celery
+from edmigrate.celery import celery
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call
 from edmigrate.tasks.nodes import register_slave_node
+from edmigrate.settings.config import Config, get_setting
 from celery.utils.log import get_task_logger
 
 log = get_task_logger(__name__)
 
 pgpool = 'dwrouter1.qa.dum.edwdc.net'
-node_group_id = 'A'
+node_group_id = get_setting(Config.REPLICATION_GROUP)
 
 
 @celery.task(name='task.edmigrate.slave.slaves_register', ignore_result=True)

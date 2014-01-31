@@ -37,11 +37,13 @@ celery.conf.CELERYBEAT_SCHEDULE = {
 celery.conf.CELERY_TIMEZONE = 'US/Eastern'
 default_exchange = Exchange('default', type='direct')
 celery.conf.CELERY_QUEUES = (Broadcast('edload_slaves'), Queue('edload_master', default_exchange, routing_key='default'))
+
 celery.conf.CELERY_ROUTES = {'task.edmigrate.slave.unblock_pgpool': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.block_pgpool': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.pause_replication': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.resume_replication': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.slaves_register': {'queue': 'edload_slaves'}}
+
 celery.conf.CELERY_DEFAULT_QUEUE = 'edload_master'
 celery.conf.CELERY_DEFAULT_EXCHANGE = 'default'
 celery.conf.CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'

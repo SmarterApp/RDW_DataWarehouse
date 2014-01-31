@@ -144,6 +144,8 @@ common:
         -   name: extract_sync
             exchange: direct
             key: extract_sync
+    migrate:
+      replication.group: 'A'
     migrate.celery:
       CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave')
       CELERY_RESULT_BACKEND: amqp
@@ -157,9 +159,9 @@ common:
             exchange: direct
             key: edmigrate_master
       CELERY_BROADCAST_QUEUES:
-        -   name: edmigrate.slave
+        -   name: edmigrate_slave
             exchange: fanout
-            key: edmigrate_slave
+            key: task.edmigrate.slave.*
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -489,13 +491,15 @@ development:
         dog:
           schema_name: edware_sds_1_4_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-        repmgr:
-          schema_name: repmgr_edware_pg_cluster
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
         schema_name: edware_sds_1_3
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
+    edware_rep:
+      db:
+        repmgr:
+          schema_name: repmgr_edware_pg_cluster
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
@@ -515,7 +519,7 @@ development:
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     sftp.jail.base_path: /tmp
-      
+
 test:
   '[app:main]':
     cache:

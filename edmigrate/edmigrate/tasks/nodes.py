@@ -1,7 +1,7 @@
 __author__ = 'sravi'
 
 import collections
-from edmigrate.celery_dev import celery
+from edmigrate.celery import celery
 from celery.utils.log import get_task_logger
 
 log = get_task_logger(__name__)

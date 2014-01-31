@@ -6,10 +6,12 @@ Created on May 14, 2013
 import os
 from celery import Celery
 from kombu import Queue, Exchange
+from kombu.common import Broadcast
 import configparser
 from edworker.celeryconfig import get_config
 
 CELERY_QUEUES = 'CELERY_QUEUES'
+CELERY_BROADCAST_QUEUES = 'CELERY_BROADCAST_QUEUES'
 CELERY_QUEUE_NAME = 'name'
 CELERY_QUEUE_EXCHANGE = 'exchange'
 CELERY_QUEUE_ROUTING_KEY = 'key'
@@ -28,6 +30,8 @@ def setup_celery(celery, settings, prefix='celery'):
         real_queues = []
         for queue in celery_config.get(CELERY_QUEUES):
             real_queues.append(Queue(queue[CELERY_QUEUE_NAME], exchange=Exchange(queue[CELERY_QUEUE_EXCHANGE]), routing_key=queue[CELERY_QUEUE_ROUTING_KEY]))
+        for queue in celery_config.get(CELERY_BROADCAST_QUEUES):
+            real_queues.append(Broadcast(queue[CELERY_QUEUE_NAME]))
         celery_config[CELERY_QUEUES] = real_queues
     celery.config_from_object(celery_config)
 

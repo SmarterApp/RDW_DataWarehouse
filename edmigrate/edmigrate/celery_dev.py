@@ -45,11 +45,7 @@ celery.conf.CELERY_ROUTES = {'task.edmigrate.slave.unblock_pgpool': {'queue': 'e
                              'task.edmigrate.slave.block_pgpool': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.pause_replication': {'queue': 'edload_slaves'},
                              'task.edmigrate.slave.resume_replication': {'queue': 'edload_slaves'},
-                             'task.edmigrate.slave.slaves_register': {'queue': 'edload_slaves'},
-                             'task.edmigrate.master.prepare_edware_data_refresh': {'queue': 'edload_master', 'routing_key': 'default'},
-                             'task.edmigrate.master.start_edware_data_refresh': {'queue': 'edload_master', 'routing_key': 'default'},
-                             'task.edmigrate.master.migrate_data': {'queue': 'edload_master', 'routing_key': 'default'},
-                             'task.edmigrate.master.verify_master_slave_repl_status': {'queue': 'edload_master', 'routing_key': 'default'}}
+                             'task.edmigrate.slave.slaves_register': {'queue': 'edload_slaves'}}
 celery.conf.CELERY_DEFAULT_QUEUE = 'edload_master'
 celery.conf.CELERY_DEFAULT_EXCHANGE = 'default'
 celery.conf.CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'

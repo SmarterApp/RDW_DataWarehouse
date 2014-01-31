@@ -2,7 +2,7 @@ __author__ = 'sravi'
 
 import unittest
 import collections
-import edmigrate.nodes.nodes as nodes
+import edmigrate.tasks.nodes as nodes
 
 
 class TesNodes(unittest.TestCase):

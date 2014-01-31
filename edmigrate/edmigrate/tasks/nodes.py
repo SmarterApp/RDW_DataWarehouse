@@ -4,7 +4,6 @@ import collections
 from edmigrate.celery_dev import celery
 
 Node = collections.namedtuple('Node', 'host group')
-print('Type of node:', type(Node))
 registered_slaves = set()
 
 # test data for now till we implement the registration for slave nodes

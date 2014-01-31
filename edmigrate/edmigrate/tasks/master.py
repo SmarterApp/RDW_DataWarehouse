@@ -1,19 +1,16 @@
 __author__ = 'sravi'
 
 from time import sleep
-from celery.canvas import chain
+from celery.canvas import chain, group
 from celery.utils.log import get_task_logger
 
 from edmigrate.celery_dev import celery
-from edmigrate.tasks.slave import slaves_register
+from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
+    pause_replication, resume_replication, block_pgpool, unblock_pgpool
 from edmigrate.utils.constants import Constants
 from edmigrate.tasks import nodes
 import edmigrate.utils.queries as queries
 
-from sqlalchemy.sql.expression import select
-from sqlalchemy import Table
-
-from edcore.database.repmgr_connector import RepMgrDBConnection
 
 log = get_task_logger(__name__)
 
@@ -66,18 +63,18 @@ def start_edware_data_refresh(tenant):
     slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
     slaves_a = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_A)
     slaves_b = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_B)
+    lag_tolerence_in_bytes = '0'
 
-    migration_workflow = chain(slaves_get_ready_for_data_migrate.s(slaves_a),
-                               migrate_data.si(tenant, slaves_a),
-                               verify_master_slave_repl_status.si(tenant, slaves_a),
-                               slaves_switch.si(slaves_b),
-                               verify_master_slave_repl_status.si(tenant, slaves_all),
-                               slaves_end_data_migrate.si()
-                               )
+    migration_workflow = chain(
+        group(pause_replication.si(tenant, slaves_b), block_pgpool.si(slaves_a)),
+        migrate_data.si(tenant, slaves_a),
+        verify_slaves_repl_status.si(tenant, slaves_a, lag_tolerence_in_bytes),
+        group(block_pgpool.si(slaves_b), unblock_pgpool.si(slaves_a)),
+        resume_replication.si(slaves_b),
+        verify_slaves_repl_status.si(tenant, slaves_all, lag_tolerence_in_bytes),
+        slaves_end_data_migrate.si(tenant, slaves_all))
     log.info('Master: Starting scheduled edware data refresh task')
     #migration_workflow.apply_async()
-
-    verify_master_slave_repl_status.delay(tenant)
 
 
 @celery.task(name='task.edmigrate.master.migrate_data')
@@ -86,17 +83,21 @@ def migrate_data(tenant, slaves):
     load batches of data from pre-prod to prod master
     '''
     log.info('Master: Scheduling task for master to start data migration to prod master')
-    # load the data from pre-prod and prod and wait for some time for replication to finish
-    sleep(10)
+
+    # delay to make sure slaves executed the previous tasks sent to them
+    sleep(100)
+
+    # TODO: Load data
+
+    # delay to wait for replication to finish
+    sleep(100)
 
 
 @celery.task(name='task.edmigrate.master.verify_master_slave_repl_status')
-def verify_master_slave_repl_status(tenant, slaves):
+def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     '''
-    verify the status of data load to master and connected slave set (B)
-    Data should be successfully migrated to master and slaves B should be in sync with master
+    verify the status of replication on slaves
     '''
-    log.info('Master: verify status of data migration and replication on slaves: ' + str(slaves))
-    slave_node_ids = queries.get_slave_node_ids_from_host_name(tenant, slaves)
-    slave_node_status = queries.get_slave_node_status(tenant, slave_node_ids)
-    print(slave_node_status)
+    log.info('Master: verify status of replication on slaves: ' + str(slaves))
+    return queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
+

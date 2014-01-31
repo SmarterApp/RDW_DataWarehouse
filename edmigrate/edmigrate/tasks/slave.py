@@ -28,10 +28,12 @@ def slaves_register():
 
 
 @celery.task(name='task.edmigrate.slave.slaves_end_data_migrate', ignore_result=True)
-def slaves_end_data_migrate():
+def slaves_end_data_migrate(tenant, nodes):
     print('Slave: Ending data migration')
-    unblock_pgpool()
-    resume_replication()
+    if socket.gethostname() not in nodes:
+        return
+    unblock_pgpool(nodes)
+    resume_replication(tenant, nodes)
 
 
 def is_replication_paused(connector):
@@ -49,38 +51,46 @@ def is_replication_paused(connector):
 
 
 @celery.task(name='task.edmigrate.slave.pause_replication', ignore_result=True)
-def pause_replication(tenant):
+def pause_replication(tenant, nodes):
     '''
     Pauses replication on current node.
     '''
+    if socket.gethostname() not in nodes:
+        return
     with RepMgrDBConnection(tenant) as connector:
         if not is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_pause()")
 
 
 @celery.task(name='task.edmigrate.slave.resume_replication', ignore_result=True)
-def resume_replication(tenant):
+def resume_replication(tenant, nodes):
     '''
     Resumes replication on current node.
     '''
+    if socket.gethostname() not in nodes:
+        return
     with RepMgrDBConnection(tenant) as connector:
         if is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_resume()")
 
 
 @celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True)
-def block_pgpool():
+def block_pgpool(nodes):
     '''
     Changes iptable rule to reject access from pgpool. System user who
     runs celery task should have priviledge to manipulate iptables.
     '''
+    if socket.gethostname() not in nodes:
+        return
     call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
 
 
 @celery.task(name='task.edmigrate.slave.unblock_pgpool', ignore_result=True)
-def unblock_pgpool():
+def unblock_pgpool(nodes):
     '''
     Changes iptable rule to accept access from pgpool. System user who
     runs celery task should have priviledge to manipulate iptables.
     '''
+    if socket.gethostname() not in nodes:
+        return
     call(['iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])

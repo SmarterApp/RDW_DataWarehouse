@@ -17,7 +17,6 @@ class TestMasterWorker(unittest.TestCase):
         pass
 
     def test_verify_master_slave_repl_status(self):
-        #master.verify_slaves_repl_status('repmgr', ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net'], 10)
         self.assertTrue(master.verify_slaves_repl_status('repmgr', ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net'], 10))
         self.assertFalse(master.verify_slaves_repl_status('repmgr', ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net'], -1))
 

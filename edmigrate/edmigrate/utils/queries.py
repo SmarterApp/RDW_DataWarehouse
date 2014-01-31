@@ -18,52 +18,6 @@ def get_host_name_from_node_conn_info(conn_info):
     return (conn_info.split()[0]).split('=')[1]
 
 
-def get_slave_node_ids_from_host_name(tenant, slave_host_names):
-    '''
-    get slave node id list from host names
-    '''
-    log.info('Master: Getting list of node ids for the given hostnames: ' + str(slave_host_names))
-    node_ids = []
-    with RepMgrDBConnection(tenant) as connector:
-        metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
-        repl_nodes_table = Table(Constants.REPL_NODES_TABLE, metadata)
-        query = select([repl_nodes_table.c.id, repl_nodes_table.c.conninfo],
-                       from_obj=[repl_nodes_table])
-        repl_nodes_rows = connector.get_result(query)
-        for repl_node in repl_nodes_rows:
-            host_name = get_host_name_from_node_conn_info(repl_node['conninfo'])
-            print(host_name)
-            if host_name in slave_host_names:
-                print('Adding node: ' + str(repl_node['id']))
-                node_ids.append(repl_node['id'])
-    return node_ids
-
-
-def get_slave_node_status(tenant, slave_node_ids):
-    '''
-    get replication lag status for the list of slave nodes
-    '''
-    log.info('Master: Getting replication lag for the list of the slave nodes: ' + str(slave_node_ids))
-    node_status_rep_lag = []
-    with RepMgrDBConnection(tenant) as connector:
-        metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
-        repl_Status_table = Table(Constants.REPL_STATUS_TABLE, metadata)
-        query = select([repl_Status_table.c.primary_node, repl_Status_table.c.standby_node, repl_Status_table.c.replication_lag],
-                       from_obj=[repl_Status_table])
-        repl_status_rows = connector.get_result(query)
-        for repl_status_row in repl_status_rows:
-            if repl_status_row['standby_node'] in slave_node_ids:
-                node_status_rep_lag.append(repl_status_row['replication_lag'])
-    return node_status_rep_lag
-
-
-def is_slave_in_sync_with_master(tenant, slave, lag_tolerence_in_bytes):
-    '''
-    verify if the given slave is in sync with master
-    '''
-    pass
-
-
 def is_sync_satus_acceptable(status, tolerence):
     '''
     the slave lag in bytes should be less then tolerence allowed
@@ -72,16 +26,56 @@ def is_sync_satus_acceptable(status, tolerence):
     return True if lag_in_bytes < int(tolerence) else False
 
 
+def get_slave_nodes_info_dict(tenant, slave_host_names):
+    '''
+    get slave node id info from host names
+    '''
+    log.info('Master: Getting slave node info for the given hostnames: ' + str(slave_host_names))
+    slave_node_info = {}
+    with RepMgrDBConnection(tenant) as connector:
+        metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
+        repl_nodes_table = Table(Constants.REPL_NODES_TABLE, metadata)
+        query = select([repl_nodes_table.c.id, repl_nodes_table.c.conninfo],
+                       from_obj=[repl_nodes_table])
+        repl_nodes_rows = connector.get_result(query)
+        for repl_node in repl_nodes_rows:
+            host_name = get_host_name_from_node_conn_info(repl_node['conninfo'])
+            if host_name in slave_host_names:
+                slave_node_info[repl_node['id']] = host_name
+    return slave_node_info
+
+
+def get_slave_nodes_status(tenant, slave_nodes_info):
+    '''
+    get replication lag status for the list of slave nodes
+    '''
+    log.info('Master: Getting replication lag for the slave nodes: ' + str(slave_nodes_info))
+    node_status = {}
+    with RepMgrDBConnection(tenant) as connector:
+        metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
+        repl_Status_table = Table(Constants.REPL_STATUS_TABLE, metadata)
+        query = select([repl_Status_table.c.primary_node, repl_Status_table.c.standby_node, repl_Status_table.c.replication_lag],
+                       from_obj=[repl_Status_table])
+        repl_status_rows = connector.get_result(query)
+        for repl_status_row in repl_status_rows:
+            if repl_status_row['standby_node'] in slave_nodes_info.keys():
+                node_status[repl_status_row['standby_node']] = repl_status_row['replication_lag']
+    return node_status
+
+
 def are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes):
     '''
     check if the slaves are in sync with master
     '''
-    slave_node_ids = get_slave_node_ids_from_host_name(tenant, slaves)
-    log.info('Master: Node Ids to be verified for lag: ' + str(slave_node_ids))
-    slave_status = get_slave_node_status(tenant, slave_node_ids)
-    log.info('Master: replication lag status for all nodes in bytes: ' + str(slave_node_ids))
-    for slave_node_status in slave_status:
-        if not is_sync_satus_acceptable(slave_node_status, lag_tolerence_in_bytes):
-            log.warn('Master: replication lag status for all nodes in bytes: ' + str(slave_node_ids))
+    slave_nodes_info = get_slave_nodes_info_dict(tenant, slaves)
+    log.info('Master: Nodes to be verified for lag: ' + str(slave_nodes_info))
+    slave_nodes_status_info = get_slave_nodes_status(tenant, slave_nodes_info)
+    log.info('Master: replication lag status for nodes in bytes: ' + str(slave_nodes_status_info))
+    for node in slave_nodes_status_info.keys():
+        if not is_sync_satus_acceptable(slave_nodes_status_info[node], lag_tolerence_in_bytes):
+            log.info('Master: slave node out of sync. Node Id=' + str(node)
+                     + ', Bytes=' + slave_nodes_status_info[node]
+                     + ', Expected Tolerance='+ str(lag_tolerence_in_bytes))
             return False
+    log.info('Master: All slaves in sync with master' + str(slaves))
     return True

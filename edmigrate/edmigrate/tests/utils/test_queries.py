@@ -17,12 +17,11 @@ class TestQueries(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_dummy(self):
-        pass
-
-    def test_get_slave_node_ids_from_host_name(self):
-        slave_host_names = ['testslave0.qa.dum.edwdc.net', 'testslave1.qa.dum.edwdc.net']
-        queries.get_slave_node_ids_from_host_name('repmgr', slave_host_names)
+    def test_get_host_name_from_node_conn_info(self):
+        conn_info = 'host=dbpgdw0.qa.dum.edwdc.net user=repmgr dbname=edware'
+        self.assertEqual(queries.get_host_name_from_node_conn_info(conn_info), 'dbpgdw0.qa.dum.edwdc.net')
+        conn_info = 'host=dbpgdw0.qa.dum.edwdc.net user=repmgr dbname=edware'
+        self.assertEqual(queries.get_host_name_from_node_conn_info(conn_info), 'dbpgdw0.qa.dum.edwdc.net')
 
 
 if __name__ == "__main__":

@@ -4,10 +4,16 @@ __author__ = 'sravi'
 class Config():
     MASTER_SCHEDULER_HOUR = 'edmigrate.master_scheduler.hour'
     MASTER_SCHEDULER_MIN = 'edmigrate.master_scheduler.min'
+    MAX_RETRIES = 'edmigrate.retries_allowed'
+    RETRY_DELAY = 'edmigrate.retry_delay'
+    TIMEOUT = 'edmigrate.timeout'
 
-# list of configurations that are specific to edextract
+# list of configurations that are specific to edmigrate
 LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
-                  (Config.MASTER_SCHEDULER_MIN, int, 1)]
+                  (Config.MASTER_SCHEDULER_MIN, int, 1),
+                  (Config.MAX_RETRIES, int, 10),
+                  (Config.RETRY_DELAY, int, 60),
+                  (Config.TIMEOUT, int, 20)]
 
 # Keeps track of configuration related to edmigrate that is read off from ini
 settings = {}

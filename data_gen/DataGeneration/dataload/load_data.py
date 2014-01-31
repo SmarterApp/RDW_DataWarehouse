@@ -16,6 +16,7 @@ import re
 import subprocess
 import time
 import argparse
+import csv
 
 from sqlalchemy import create_engine, MetaData
 
@@ -198,14 +199,16 @@ def copy_db_tables(tables, csvpath, schema, user, host, database, env):
 
         # Check that the csv exists
         try:
-            with open(filename, 'r'):
-                pass
+            with open(filename, 'r') as fp:
+                csv_reader = csv.reader(fp)
+                column_list_str = str(tuple(next(csv_reader)))
+                column_list_str = column_list_str.replace("'", "")
         except IOError:
             print("Skipping file load to '%s'. No CSV file found" % table)
             continue
 
-        copy_string = "\copy {schema}.{name} from {filename} USING DELIMITERS ',' CSV HEADER".format(schema=schema, name=table, filename=filename)
-
+        copy_string = "\copy {schema}.{name} {col_list} from {filename} USING DELIMITERS ',' CSV HEADER".format(schema=schema, name=table, filename=filename, col_list=column_list_str)
+        #print('copy_string:', copy_string)
         start = time.time()
         print('Loading table:', table)
 

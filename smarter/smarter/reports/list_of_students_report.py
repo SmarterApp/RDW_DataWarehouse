@@ -200,8 +200,7 @@ def get_list_of_students(params):
                                     fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
                                     fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
                                     from_obj=[fact_asmt_outcome
-                                              .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
-                                                                      dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
+                                              .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])

@@ -73,20 +73,7 @@ define [
       content = content.substr(0, content.lastIndexOf(' ') + 1) + "..."
       
     content
-    
-  # Create Survey Monkey iframe based on the role, report.  Uses uid to append to the URL to identify the user that submits the survey
-  renderFeedback = (surveyMonkeyDisplayElement, role, uid, reportName, feedbackMapping) ->
-    feedbackdata = {}
-    if role of feedbackMapping
-      if reportName of feedbackMapping[role]
-        param = feedbackMapping[role][reportName]
-        
-        # Render iframe with all other assets are loaded
-        $(document).ready ->
-          template = $("<iframe id='sm_e_s' width='600' height='300' frameborder='0' allowtransparency='true' style='border:0px;padding-bottom:4px;' src='https://www.surveymonkey.com/s.aspx?sm="+param+"&c="+uid+"'></iframe>")
-          surveyMonkeyDisplayElement.append template
-          
-          
+
   # Set the popup position to left, right, top, bottom
   popupPlacement = (element, popupWidth, popupHeight)->
     isWithinBounds = (elementPosition) ->
@@ -176,7 +163,6 @@ define [
   getGuid: getGuid
   getUserStateCode: getUserStateCode
   truncateContent: truncateContent
-  renderFeedback: renderFeedback
   popupPlacement: popupPlacement
   format_full_name_reverse: format_full_name_reverse
   showGrayScale : showGrayScale

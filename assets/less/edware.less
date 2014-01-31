@@ -122,14 +122,15 @@ h6 {
 
 #content {
     min-height: 200px;
+}
 
-    .reportInfoPopover {
-    max-width: 575px !important;
+.edwarePopover {
+    min-width: 575px;
     font-size: 13px;
+    font-weight: normal;
 
     h4 {
         color: @color-black;
-    }
     }
 }
 
@@ -159,7 +160,7 @@ h6 {
 table {
     th div.header_perfBar {
     margin-left: 48px;
-    padding: 0px;
+    padding: 0px 5px;
     position: absolute !important;
     margin-bottom: 0px;
     bottom: 0px;
@@ -217,6 +218,13 @@ table {
             background: @color-B7;
             opacity: .8;
             position: absolute;
+
+            .cutLine {
+                position: relative;
+                width: 1px;
+                height: 100%;
+                background-color: @color-white;
+            }
         }
 
         .indicator {
@@ -632,4 +640,22 @@ table {
 
 .edwareExportField {
     display: none;
+}
+
+.edwarePopover {
+
+    .popover-content {
+        padding: 0px 17px 17px 17px;
+    }
+
+    .edwareScrollable {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .mask {
+        height: 20px;
+        position: relative;
+        top: -15px;
+    }
 }

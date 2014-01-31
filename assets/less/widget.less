@@ -578,6 +578,7 @@ th.ui-th-column div {
 
 #legendTemplate {
 
+    color: @color-B2;
     .span4 {width: 284px;}
 
     h4 {
@@ -818,6 +819,7 @@ th.ui-th-column div {
                     display: inline-table;
                     top: 10px;
                     left: 10px;
+
                 }
 
                 .progress {
@@ -846,6 +848,14 @@ th.ui-th-column div {
                         background: @color-B7;
                         opacity: .8;
                         position: relative;
+
+                        .cutLine {
+                            position: relative;
+                            width: 1px;
+                            height: 100%;
+                            background-color: @color-white;
+                        }
+
                     }
                 }
 
@@ -1652,7 +1662,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
                 border: none;
             }
 
-            &>* {
+            .title, .reportInfoIcon, .downloadIcon, .info {
                 height: 20px;
                 top: 50%;
                 margin-top: -11px;
@@ -1783,7 +1793,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
             font-weight: bold;
             font-size: 12px;
 
-            &>div {
+            .asmtViewText, .asmtDropdown, .divider, .disclaimerInfo {
                 height: 20px;
                 top: 50%;
                 margin-top: -13px;
@@ -1908,7 +1918,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
         .asmtTypeItem {
 
-            .asmtTypeText {
+            .asmtViewText {
                 padding-top: 3px;
                 padding-right: 10px;
             }
@@ -2013,7 +2023,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
     }
 
     .legendPopover {
-        min-width: 900px;
+        min-width: 920px;
     }
 
     .active {

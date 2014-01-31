@@ -2,7 +2,8 @@ define [
   "jquery"
   "mustache"
   "edwarePreferences"
-], ($, Mustache, edwarePreferences) ->
+  "edwarePopover"
+], ($, Mustache, edwarePreferences, edwarePopover) ->
 
 
   class EdwareDisclaimer
@@ -26,11 +27,8 @@ define [
     bindEvents: () ->
       self = this
       # Show tooltip on mouseover
-      @interimDisclaimerIcon.popover
-        html: true
-        placement: "bottom"
-        trigger: "hover"
-        container: '#content'
+      @interimDisclaimerIcon.edwarePopover
+        class: 'disclaimerPopover'
         content: @content
 
     hasLoaded: () ->
@@ -39,8 +37,8 @@ define [
     saveLoadedInfo: () ->
       edwarePreferences.saveInterimInfo()
 
-    update: (asmtType) ->
-      if asmtType is "Interim Comprehensive"
+    update: (asmt) ->
+      if asmt.asmtType is "Interim Comprehensive"
         @interimDisclaimerIcon.show()
         @displayPopover()
       else

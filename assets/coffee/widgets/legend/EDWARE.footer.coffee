@@ -27,25 +27,6 @@ define [
       $('#footer').html Mustache.to_html footerTemplate, {
         labels: this.labels
       }
-      # create popover
-      this.createPopover()
-
-    createPopover: () ->
-      this.createFeedback()
-
-    createFeedback: () ->
-      # Survey monkey popup
-      $("#feedback").popover
-        html: true
-        title: Mustache.to_html TITLE_TEMPLATE, {
-          selector: '#feedback'
-          hide: this.labels.hide
-          title: this.labels.feedback
-        }
-        template: POPOVER_TEMPLATE
-        content: () ->
-          $(".surveyMonkeyPopup").html()
-
 
 
     bindEvents: ()->

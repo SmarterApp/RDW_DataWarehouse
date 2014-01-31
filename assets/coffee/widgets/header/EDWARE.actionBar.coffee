@@ -9,9 +9,8 @@ define [
   "edwareDisclaimer"
   "edwarePreferences"
   "edwarePrint"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint) ->
-
-  LEGEND_POPOVER_TEMPLATE = '<div class="popover legendPopover"><div class="arrow"></div><div class="popover-content"><p></p></div></div>'
+  "edwarePopover"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover) ->
 
   class ReportActionBar
 
@@ -68,36 +67,22 @@ define [
     bindEvents: () ->
       self = this
       # create legend popover
-      $("li.legendItem").popover
-        html: true
-        placement: 'bottom'
+      $("li.legendItem").edwarePopover
+        class: "legendPopover"
         trigger: 'manual'
         content: $(".legendPopup").html()
-        container: @container
-        template: LEGEND_POPOVER_TEMPLATE
       .click (e) ->
         $this = $(this)
         $this.addClass('active').popover('show')
         # hide next sibling's divider
         siblingDivider = $this.nextAll('li:visible').first().find('.divider')
         siblingDivider.css('border-left-color', '#f4f4f4')
-      .mouseleave (e)->
+      .on 'hidden.bs.popover', (e)->
         $this = $(this)
         $this.removeClass('active')
-        $this.popover('hide')
         # show next sibling's divider
         siblingDivider = $this.nextAll(':visible').first().find('.divider')
         siblingDivider.css('border-left-color', '#e2e2e2')
-      .on 'shown.bs.popover', ->
-        # center legend popover to prevent it overflow the screen
-        offset = $(this).offset().left
-        bodyOffset = self.container.offset().left
-        $popover = $('.legendPopover')
-        popoverOffset = bodyOffset + (self.container.width() - $popover.width()) / 2
-        $popover.css "left", popoverOffset
-        # update arrow
-        arrow = $(".arrow", $popover)
-        arrow.css "left", offset - popoverOffset + $(this).width() / 2
 
       # bind print popover
       $('span.printLabel').click ->

@@ -17,7 +17,7 @@ class StatePopulation(object):
     '''
     Class to maintain and calculate the population counts for a state
     '''
-    def __init__(self, name, state_code, state_type, subject='math', do_pld_adjustment=True, state_demographic_totals=None,
+    def __init__(self, name, state_code, state_type, subject=constants.SUBJECTS[0], do_pld_adjustment=True, state_demographic_totals=None,
                  districts=None, subject_percentages=None, demographics_id=None):
         ''' Constructor '''
 
@@ -70,7 +70,7 @@ class StatePopulation(object):
             state_sum = add_populations(district.district_demographic_totals, self.state_demographic_totals)
             self.state_demographic_totals = state_sum
 
-    def _generate_districts(self, district_type, district_counts, district_info, school_types_dict, subject='math'):
+    def _generate_districts(self, district_type, district_counts, district_info, school_types_dict, subject=constants.SUBJECTS[0]):
         '''
         generate a number of districts that have the given type
         @param district_type: the type of the district
@@ -93,7 +93,7 @@ class DistrictPopulation(object):
     '''
     Class to maintain and calculate the population counts for a state
     '''
-    def __init__(self, district_type, subject='math', do_pld_adjustment=True):
+    def __init__(self, district_type, subject=constants.SUBJECTS[0], do_pld_adjustment=True):
         self.district_type = district_type
         self.guid = uuid4()
         self.subject = subject
@@ -166,7 +166,7 @@ class SchoolPopulation(object):
     '''
     Class to maintain and calculate the populations counts of a state
     '''
-    def __init__(self, school_type, school_type_name, subject='math', do_pld_adjustment=True):
+    def __init__(self, school_type, school_type_name, subject=constants.SUBJECTS[0], do_pld_adjustment=True):
         '''
         @param school_type: type of school
         @param school_type_dict: The dictionary corresponding to the type of school

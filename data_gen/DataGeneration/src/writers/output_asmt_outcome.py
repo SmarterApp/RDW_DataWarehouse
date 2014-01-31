@@ -95,12 +95,12 @@ def output_data(output_config, output_files, output_keys=None, school=None, stud
 
             # if student info is present loop on the available subjects to get data
             if student_info:
-                for subject in student_info.asmt_scores:
+                for asmt_guid in student_info.asmt_scores:
                     # check that the asmt_guid and the asmt guid for the file match. If not continue
-                    if csv_by_id and str(student_info.asmt_guids[subject]) not in output_file:
+                    if csv_by_id and str(asmt_guid) not in output_file:
                         continue
                     output_row = create_output_csv_dict(csv_conf[table], state_population, school,
-                                                        student_info, subject, inst_hier, batch_guid, section, assessment, staff)
+                                                        student_info, asmt_guid, inst_hier, batch_guid, section, assessment, staff)
                     output_data_list.append(output_row) if output_row else None
 
             # otherwise data is not bound by a subject
@@ -119,7 +119,7 @@ def output_data(output_config, output_files, output_keys=None, school=None, stud
     return output_data_dict
 
 
-def create_output_csv_dict(table_config_dict, state_population, school, student_info, subject, inst_hier, batch_guid, section, assessment, staff):
+def create_output_csv_dict(table_config_dict, state_population, school, student_info, asmt_guid, inst_hier, batch_guid, section, assessment, staff):
     """
     Create the csv output dictionary from the given data
     :param table_config_dict: the config dict pertaining directly to the table being output
@@ -133,7 +133,8 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
     output_dict = {}
     idgen = IdGen()
 
-    asmt_score = student_info.asmt_scores[subject] if student_info else None
+    asmt_score = student_info.asmt_scores[asmt_guid] if student_info else None
+    subject = student_info.asmt_subjects[asmt_guid] if student_info else None
     claim_scores = asmt_score.claim_scores if asmt_score else None
 
     obj_name_map = {
@@ -145,7 +146,7 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         'asmt_scores': asmt_score,
         'asmt_score': asmt_score,
         'asmt_score_obj': asmt_score,
-        'date_taken': student_info.asmt_dates_taken[subject] if student_info else None,
+        'date_taken': student_info.asmt_dates_taken[asmt_guid] if student_info else None,
         'inst_hierarchy': inst_hier,
         'batch_guid': MakeTemp(value=batch_guid),
         'idgen': idgen,
@@ -177,13 +178,13 @@ def create_output_csv_dict(table_config_dict, state_population, school, student_
         # remove everything before the first '.' from attribute name
         attribute_name = '.'.join(internal_map_string_list[1:])
 
-        value = get_value_from_object(data_object, attribute_name, subject)
+        value = get_value_from_object(data_object, attribute_name, subject, asmt_guid)
         output_dict[column_name] = value
 
     return output_dict
 
 
-def get_value_from_object(data_object, attr_name, subject):
+def get_value_from_object(data_object, attr_name, subject, asmt_guid):
     """
     Using the data object get the value desired and return
     :param data_object: the data object to pull the data from. (could also be a list)
@@ -202,7 +203,9 @@ def get_value_from_object(data_object, attr_name, subject):
 
     # Final value cleanup #
     # if the value is a dictionary, there is a value for each subject
-    value = value[subject] if isinstance(value, dict) else value
+    if isinstance(value, dict):
+        value = value.get(asmt_guid) if value.get(asmt_guid) else value.get(subject)
+
     # if the value is a date object reformat the value
     value = value.strftime('%Y%m%d') if isinstance(value, date) else value
     # check to see if the value is a callable function

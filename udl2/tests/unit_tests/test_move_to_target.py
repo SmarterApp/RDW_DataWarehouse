@@ -39,8 +39,9 @@ class TestMoveToTarget(unittest.TestCase):
                                                                     column_mapping['section_rec_id'], guid_batch,
                                                                     conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
-        expected_query_4 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4]
+        expected_query_4 = get_expected_update_student_rec_id_query(target_table)
+        expected_query_5 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
+        expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4, expected_query_5]
         actual_value = move_to_target.create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
         self.maxDiff = None
         self.assertEqual(len(expected_value), len(actual_value))
@@ -146,8 +147,14 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
 def get_expected_update_inst_hier_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET inst_hier_rec_id=dim.dim_inst_hier_rec_id FROM '\
         '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid,school_guid AS dim_school_guid,state_code AS dim_state_code '\
-        'FROM "edware"."dim_inst_hier")dim WHERE inst_hier_rec_id=-1 AND district_guid=dim_district_guid AND '\
+        'FROM "edware"."dim_inst_hier") dim WHERE inst_hier_rec_id=-1 AND district_guid=dim_district_guid AND '\
         'school_guid=dim_school_guid AND state_code=dim_state_code'.format(table_name=table_name)
+
+
+def get_expected_update_student_rec_id_query(table_name):
+    return 'UPDATE "edware"."{table_name}" SET student_rec_id=dim.dim_student_rec_id FROM '\
+        '(SELECT student_rec_id AS dim_student_rec_id, student_guid AS dim_student_guid ' \
+        'FROM "edware"."dim_student") dim WHERE student_rec_id=-1 AND student_guid=dim_student_guid'.format(table_name=table_name)
 
 
 def get_expected_column_types_for_dim_inst_hier(table_name):

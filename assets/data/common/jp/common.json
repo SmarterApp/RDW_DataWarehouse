@@ -62,79 +62,6 @@
 			"text_color": "#000"
 		}
 	],
-
-    "feedback": {
-	"PARENT": {
-	    "individual_student_report": "GjmM_2fSzJnjlt3A_2bGMxRZ_2fw_3d_3d",
-	    "list_of_students": "G36s4TWKfrELsjXZ7jq1Zg_3d_3d",
-	    "comparing_populations_state": "XnbKuR5vwCZAL1GyHeJgSQ_3d_3d",
-	    "comparing_populations_district": "xILjemwP1hZXE9T3mf278g_3d_3d",
-	    "comparing_populations_school": "z6jXFrx1xI0KJFqiq1WH1Q_3d_3d"
-	},
-	"STUDENT": {
-	    "individual_student_report": "TgykGLaGiMu3XZIwwiwhKw_3d_3d",
-	    "list_of_students": "Y6JAH3Is_2b9aFJUCj5uRZ2A_3d_3d",
-	    "comparing_populations_state": "B9Hzlr6ksG5nqOOoaDJgIw_3d_3d",
-	    "comparing_populations_district": "4z4MOLKf6dQhLaBqBb0Xxg_3d_3d",
-	    "comparing_populations_school": "yvjbuVuDhevpws94gWCYQA_3d_3d"
-	},
-	"TEACHER": {
-	    "individual_student_report": "kSet9N4jx4AE2EKqOeJn2w_3d_3d",
-	    "list_of_students": "VLvFLuVFlTJmr19_2by0QeSA_3d_3d",
-	    "comparing_populations_state": "lHRt_2b3848QW3EnYHFaUqdg_3d_3d",
-	    "comparing_populations_district": "GVYKrPRyWqbwNMAphmXlCQ_3d_3d",
-	    "comparing_populations_school": "1Ap0xBboGETtpVw4QDkz6A_3d_3d"
-	},
-	"STATE_EDUCATION_ADMINISTRATOR_1": {
-	    "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-	    "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-	    "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-	    "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-	    "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-	},
-	"STATE_EDUCATION_ADMINISTRATOR_2": {
-	    "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-	    "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-	    "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-	    "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-	    "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-	},
-	"DISTRICT_EDUCATION_ADMINISTRATOR_1": {
-	    "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-	    "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-	    "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-	    "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-	    "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-	},
-	"DISTRICT_EDUCATION_ADMINISTRATOR_2": {
-	    "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-	    "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-	    "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-	    "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-	    "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-	},
-	"SCHOOL_EDUCATION_ADMINISTRATOR_1": {
-	    "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-	    "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-	    "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-	    "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-	    "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-	},
-	"SCHOOL_EDUCATION_ADMINISTRATOR_2": {
-	    "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-	    "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-	    "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-	    "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-	    "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-	},
-	"HIGHER_EDUCATION_ADMISSIONS_OFFICER": {
-	    "individual_student_report": "iRRX0K6lwdrTWj5ZBsKNvg_3d_3d",
-	    "list_of_students": "xHHhMnZTC23JsGG_2bkqJfqQ_3d_3d",
-	    "comparing_populations_state": "0_2bCFlTqRnJOeC4ryoGhUlQ_3d_3d",
-	    "comparing_populations_district": "umQqUXtFpf1Sr867HwmHNg_3d_3d",
-	    "comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
-	}
-    },
     "legendInfo": {
 	"sample_intervals": {
 	    "asmt_score": 1789,
@@ -505,7 +432,7 @@
 						"displayTpl": "",
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
-						"width": 320,
+						"width": 300,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -525,7 +452,7 @@
                         "options": {
                             "asmt_type": "subject1"
                         },
-                        "width": 77,
+                        "width": 97,
                         "export": true,
                         "title": false
                     },
@@ -534,7 +461,7 @@
 						"displayTpl": "",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
-						"width": 320,
+						"width": 300,
 						"sorttype": "int",
 						"formatter": "populationBar",
 						"options": {
@@ -554,7 +481,7 @@
                         "options": {
                             "asmt_type": "subject2"
                         },
-                        "width": 77,
+                        "width": 97,
                         "export": true,
                         "title": false
                     }

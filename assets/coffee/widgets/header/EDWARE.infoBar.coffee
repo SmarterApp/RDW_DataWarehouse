@@ -4,12 +4,11 @@ define [
   "mustache"
   "text!InfoBarTemplate"
   "edwareDownload"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload) ->
-
-  POPOVER_TEMPLATE = '<div class="popover reportInfoPopover"><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
+  "edwarePopover"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover) ->
 
   class ReportInfoBar
-  
+
     constructor: (@container, @config) ->
       #TODO how to specify what information expected?
       this.initialize()
@@ -20,24 +19,20 @@ define [
         title: @config.reportTitle
         subjects: @config.subjects
       this.createDownloadMenu() if not this.edwareDownloadMenu
-        
+
     bindEvents: () ->
       self = this
       # show download menu
       $('.downloadIcon').click ->
         self.edwareDownloadMenu.show()
-        
+
       # bind report info popover
-      $('.reportInfoIcon').popover
-        html: true
-        placement: 'bottom'
-        trigger: 'hover'
-        container: '#content'
+      $('.reportInfoIcon').edwarePopover
+        class: 'reportInfoPopover'
         content: @config.reportInfoText
-        template: POPOVER_TEMPLATE
       # set report info text
       $('.reportInfoWrapper').append @config.reportInfoText
-    
+
     createDownloadMenu: () ->
       this.edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
 

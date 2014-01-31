@@ -121,7 +121,8 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                                                                                   MakeTemp(claim_score=1203), MakeTemp(claim_score=1204)]),
                                                 'ela': MakeTemp(overall_score=1800,
                                                                 claim_scores=[MakeTemp(claim_score=1301), MakeTemp(claim_score=1302),
-                                                                              MakeTemp(claim_score=1303)])})
+                                                                              MakeTemp(claim_score=1303)])},
+                                      asmt_subjects={'math': 'Math', 'ela': 'ELA'})
         self.section = MakeTemp(section_rec_id=123, section_guid='sg123', section_name='section1', grade=4)
         self.inst_hier = MakeTemp(inst_hier_rec_id=456, state_name='Georgia', state_code="GA")
         self.assessment = MakeTemp(asmt_rec_id=789, asmt_guid="gu789", asmt_type='interim', asmt_period='fall')
@@ -212,7 +213,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         attr_name = 'time'
         subject = 'Math'
 
-        result = get_value_from_object(data_object, attr_name, subject)
+        result = get_value_from_object(data_object, attr_name, subject, 'math')
         self.assertEqual(result, 'good morning')
 
     def test_get_value_from_object_subject_dict(self):
@@ -220,7 +221,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         attr_name = 'time'
         subject = 'ELA'
 
-        result = get_value_from_object(data_object, attr_name, subject)
+        result = get_value_from_object(data_object, attr_name, subject, "ELA")
         self.assertEqual(result, 'good night')
 
     def test_get_value_from_object_time(self):
@@ -229,7 +230,7 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
         attr_name = 'fun'
         subject = 'ELA'
 
-        result = get_value_from_object(data_object, attr_name, subject)
+        result = get_value_from_object(data_object, attr_name, subject, "ELA")
         self.assertEqual(result, '20141108')
 
     def test_create_output_csv_dict(self):

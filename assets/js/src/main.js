@@ -42,6 +42,7 @@ require({
     edwareHelpMenu: '../widgets/header/EDWARE.helpMenu',
     edwarePrint: '../widgets/print/EDWARE.print',
     edwareRedirect: 'EDWARE.stateViewRedirect',
+    edwarePopover: '../widgets/popover/EDWARE.popover',
 
     // Templates
     edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

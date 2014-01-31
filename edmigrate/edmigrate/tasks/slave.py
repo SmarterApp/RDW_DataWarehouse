@@ -6,7 +6,7 @@ from edmigrate.celery_dev import celery
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call
-from edmigrate.nodes.nodes import register_slave_node
+from edmigrate.tasks.nodes import register_slave_node
 
 log = logging.getLogger('edmigrate.slave')
 

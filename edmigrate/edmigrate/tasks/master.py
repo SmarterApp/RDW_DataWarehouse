@@ -7,7 +7,7 @@ from celery.canvas import chain
 from edmigrate.celery_dev import celery
 from edmigrate.tasks.slave import slaves_register
 from edmigrate.utils.constants import Constants
-from edmigrate.nodes import nodes
+from edmigrate.tasks import nodes
 import edmigrate.utils.queries as queries
 
 from sqlalchemy.sql.expression import select

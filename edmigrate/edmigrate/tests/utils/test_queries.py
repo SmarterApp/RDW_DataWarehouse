@@ -20,9 +20,21 @@ class TestQueries(unittest.TestCase):
     def test_get_host_name_from_node_conn_info(self):
         conn_info = 'host=dbpgdw0.qa.dum.edwdc.net user=repmgr dbname=edware'
         self.assertEqual(queries.get_host_name_from_node_conn_info(conn_info), 'dbpgdw0.qa.dum.edwdc.net')
-        conn_info = 'host=dbpgdw0.qa.dum.edwdc.net user=repmgr dbname=edware'
+        conn_info = 'host=dbpgdw0.qa.dum.edwdc.net'
         self.assertEqual(queries.get_host_name_from_node_conn_info(conn_info), 'dbpgdw0.qa.dum.edwdc.net')
+        conn_info = ''
+        self.assertIsNone(queries.get_host_name_from_node_conn_info(conn_info))
+        conn_info = 'dbpgdw0.qa.dum.edwdc.net'
+        self.assertIsNone(queries.get_host_name_from_node_conn_info(conn_info))
 
+    def test_is_sync_satus_acceptable(self):
+        self.assertTrue(queries.is_sync_satus_acceptable('0 Bytes', '0'))
+        self.assertFalse(queries.is_sync_satus_acceptable('10 Bytes', '0'))
+        self.assertTrue(queries.is_sync_satus_acceptable('10 Bytes', '10'))
+        self.assertFalse(queries.is_sync_satus_acceptable('11 Bytes', '10'))
+        self.assertFalse(queries.is_sync_satus_acceptable('11', '10'))
+        self.assertFalse(queries.is_sync_satus_acceptable(' ', '10'))
+        self.assertFalse(queries.is_sync_satus_acceptable('X Bytes', '10'))
 
 if __name__ == "__main__":
     unittest.main()

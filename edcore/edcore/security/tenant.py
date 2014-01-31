@@ -4,7 +4,6 @@ Created on Jan 23, 2014
 
 @author: dip
 '''
-from copy import deepcopy
 from edcore.utils.utils import reverse_map
 
 TENANT_MAP = {}

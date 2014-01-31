@@ -8,9 +8,32 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     get_unittest_tenant_name
 from edcore.database.edcore_connector import EdCoreDBConnection,\
     config_namespace
+from pyramid.testing import DummyRequest
+from pyramid import testing
+from edcore.security.tenant import set_tenant_map
+
+
+class DummySession():
+    def set_tenants(self, tenants):
+        self.tenants = tenants
+
+    def get_tenants(self):
+        return self.tenants
 
 
 class TestEdcoreConnector(Unittest_with_edcore_sqlite):
+
+    def setUp(self):
+        self.__request = DummyRequest()
+        # Must set hook_zca to false to work with uniittest_with_sqlite
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        dummy_session = DummySession()
+        dummy_session.set_tenants([get_unittest_tenant_name()])
+        self.__config.testing_securitypolicy(dummy_session)
+
+    def tearDown(self):
+        # reset the registry
+        testing.tearDown()
 
     def test_connector(self):
         conn = EdCoreDBConnection(tenant=get_unittest_tenant_name())
@@ -33,6 +56,22 @@ class TestEdcoreConnector(Unittest_with_edcore_sqlite):
     def test_generate_metadata(self):
         metadata = EdCoreDBConnection.generate_metadata()
         self.assertIsNotNone(metadata)
+
+    def test_connector_with_one_tenant(self):
+        conn = EdCoreDBConnection()
+        self.assertIsInstance(conn, EdCoreDBConnection)
+        dim_student = conn.get_table('dim_student')
+        self.assertEqual(dim_student.name, 'dim_student')
+
+    def test_connector_with_multi_tenants(self):
+        set_tenant_map({get_unittest_tenant_name(): 'NY', 'b': 'AB'})
+        dummy_session = DummySession()
+        dummy_session.set_tenants([get_unittest_tenant_name(), 'dummyTenant'])
+        self.__config.testing_securitypolicy(dummy_session)
+        conn = EdCoreDBConnection(state_code='NY')
+        self.assertIsInstance(conn, EdCoreDBConnection)
+        dim_student = conn.get_table('dim_student')
+        self.assertEqual(dim_student.name, 'dim_student')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

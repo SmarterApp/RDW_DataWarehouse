@@ -14,6 +14,8 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
     '''
     Returns a SELECT clause statement with context security attached in the WHERE clause
+
+    Note: state_code must be passed in as kwargs for database routing for multi tenant users
     '''
     # Retrieve state code for db connection routing
     state_code = kwargs.get(Constants.STATE_CODE)

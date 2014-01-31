@@ -24,7 +24,6 @@ def get_slave_node_ids_from_host_name(tenant, slave_host_names):
     '''
     log.info('Master: Getting list of node ids for the given hostnames: ' + str(slave_host_names))
     node_ids = []
-    print(slave_host_names)
     with RepMgrDBConnection(tenant) as connector:
         metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
         repl_nodes_table = Table(Constants.REPL_NODES_TABLE, metadata)
@@ -45,7 +44,6 @@ def get_slave_node_status(tenant, slave_node_ids):
     get replication lag status for the list of slave nodes
     '''
     log.info('Master: Getting replication lag for the list of the slave nodes: ' + str(slave_node_ids))
-    print(slave_node_ids)
     node_status_rep_lag = []
     with RepMgrDBConnection(tenant) as connector:
         metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
@@ -57,3 +55,33 @@ def get_slave_node_status(tenant, slave_node_ids):
             if repl_status_row['standby_node'] in slave_node_ids:
                 node_status_rep_lag.append(repl_status_row['replication_lag'])
     return node_status_rep_lag
+
+
+def is_slave_in_sync_with_master(tenant, slave, lag_tolerence_in_bytes):
+    '''
+    verify if the given slave is in sync with master
+    '''
+    pass
+
+
+def is_sync_satus_acceptable(status, tolerence):
+    '''
+    the slave lag in bytes should be less then tolerence allowed
+    '''
+    lag_in_bytes = int(status.split()[0])
+    return True if lag_in_bytes < int(tolerence) else False
+
+
+def are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes):
+    '''
+    check if the slaves are in sync with master
+    '''
+    slave_node_ids = get_slave_node_ids_from_host_name(tenant, slaves)
+    log.info('Master: Node Ids to be verified for lag: ' + str(slave_node_ids))
+    slave_status = get_slave_node_status(tenant, slave_node_ids)
+    log.info('Master: replication lag status for all nodes in bytes: ' + str(slave_node_ids))
+    for slave_node_status in slave_status:
+        if not is_sync_satus_acceptable(slave_node_status, lag_tolerence_in_bytes):
+            log.warn('Master: replication lag status for all nodes in bytes: ' + str(slave_node_ids))
+            return False
+    return True

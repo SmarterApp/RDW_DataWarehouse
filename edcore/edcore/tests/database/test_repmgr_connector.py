@@ -4,15 +4,13 @@ Created on Jan 31, 2014
 @author: ejen
 '''
 import unittest
-from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite_no_data_load, \
-    get_unittest_tenant_name, UnittestRepMgrDBConnection
-from edcore.database.repmgr_connector import RepMgrDBConnection,\
-    config_namespace
-from database.tests.utils.unittest_with_sqlite import UT_Base
+from edcore.tests.utils.unittest_with_repmgr_sqlite import get_unittest_tenant_name, UnittestRepMgrDBConnection, \
+    Unittest_with_repmgr_sqlite
+from edcore.database.repmgr_connector import RepMgrDBConnection, config_namespace
 from edschema.metadata.repmgr_metadata import generate_repmgr_metadata
 
 
-class TestRepMgrConnector(Unittest_with_repmgr_sqlite_no_data_load):
+class TestRepMgrConnector(Unittest_with_repmgr_sqlite):
     def test_connector(self):
         conn = RepMgrDBConnection(get_unittest_tenant_name())
         self.assertIsInstance(conn, RepMgrDBConnection)

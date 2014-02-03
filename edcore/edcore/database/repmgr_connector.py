@@ -25,7 +25,7 @@ class RepMgrDBConnection(DBConnection):
                 tenant = __user.get_tenant()
         super().__init__(name=self.get_datasource_name(tenant))
 
-    def get_metadata(self, schema_name):
+    def get_metadata(self, schema_name=None):
         return super(RepMgrDBConnection, self).get_metadata(reflect=True, schema_name=schema_name)
 
     @staticmethod

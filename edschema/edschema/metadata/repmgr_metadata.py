@@ -8,6 +8,10 @@ from sqlalchemy.types import String, BigInteger, Text, Integer, Interval, TIMEST
 import datetime
 
 
+#
+# Note: This schema is not for generation of postgres's repmgr related tables. this is only used for unit test to
+# use sqlite to mock real databae.
+#
 def generate_repmgr_metadata(schema_name=None, bind=None):
     metadata = MetaData(schema=schema_name, bind=bind)
     repl_status = Table('repl_status', metadata,

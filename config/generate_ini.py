@@ -36,7 +36,7 @@ def flatten_yaml(a_dict, result, path=""):
     return result
 
 
-def generate_ini(env, input_file='settings.yaml'):
+def generate_ini(env, input_file='settings.yaml', output_file=None):
     '''
     This tool is a standalone tool that convert a yaml file into its equivalent ini file.
     '''
@@ -75,8 +75,9 @@ def generate_ini(env, input_file='settings.yaml'):
         # we add all settings with their values.
         result = result + ''.join([setting + " = " + group_settings[setting] + "\n" for setting in sorted(group_settings.keys())])
 
-    # we presume that the result file has the environment name.
-    output_file = env + ".ini"
+    if not output_file:
+        # we presume that the result file has the environment name.
+        output_file = env + ".ini"
     try:
         # we overwrite the entire file's content
         with open(output_file, 'w') as f:
@@ -92,12 +93,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert a YAML file into an INI file.')
     parser.add_argument("-e", "--env", default='development', help="set environment name.")
     parser.add_argument("-i", "--input", default="settings.yaml", help="set input yaml file name default[settings.yaml]")
+    parser.add_argument("-o", "--output", help="set output ini file name. Default is development.ini")
     args = parser.parse_args()
 
     if args.env is None:
         print("Please specifiy --env option")
         exit(-1)
     try:
-        generate_ini(args.env, args.input)
+        generate_ini(args.env, args.input, args.output)
     except Exception as ipe:
         print(ipe)

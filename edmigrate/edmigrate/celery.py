@@ -35,3 +35,6 @@ if prod_config:
     # We should only need to setup db connection in prod mode
     setup_db_connection(conf)
     setup_settings(conf)
+
+import logging
+logging.basicConfig(level=logging.DEBUG)

@@ -59,6 +59,7 @@ def pause_replication(tenant, nodes):
     '''
     if socket.gethostname() not in nodes:
         return
+    log.debug("Pausing replication on node %s" % socket.gethostname())
     with RepMgrDBConnection(tenant) as connector:
         if not is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_pause()")
@@ -71,6 +72,7 @@ def resume_replication(tenant, nodes):
     '''
     if socket.gethostname() not in nodes:
         return
+    log.debug("Resuming replication on node %s" % socket.gethostname())
     with RepMgrDBConnection(tenant) as connector:
         if is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_resume()")

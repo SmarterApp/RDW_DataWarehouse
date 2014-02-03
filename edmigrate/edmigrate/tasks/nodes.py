@@ -6,7 +6,7 @@ import logging
 
 log = logging.getLogger('edmigrate')
 
-Node = collections.namedtuple('Node', 'host group')
+Node = collections.namedtuple('Node', ['host', 'group'])
 registered_slaves = set()
 
 

@@ -1,7 +1,7 @@
 __author__ = 'sravi'
 
 from time import sleep
-from celery.canvas import chain, group
+from celery.canvas import chain, group, chord
 import logging
 from datetime import timedelta
 from celery.schedules import crontab
@@ -27,6 +27,8 @@ DEFAULT_QUEUE = get_setting(Config.DEFAULT_ROUTUNG_QUEUE)
 DEFAULT_ROUTUNG_KEY = get_setting(Config.DEFAULT_ROUTUNG_KEY)
 
 TENANT = 'repmgr'
+BROADCAST_QUEUE = get_setting(Config.BROADCAST_QUEUE)
+
 
 @celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
 def prepare_edware_data_refresh():
@@ -36,9 +38,8 @@ def prepare_edware_data_refresh():
     `nodes.register_slave_node` task and be added to the
     nodes.registered_nodes collection.
     '''
-    log.debug("preparing edware data refresh")
-    broadcast = get_setting(Config.BROADCAST_QUEUE)
-    slaves_register.apply_async(queue=broadcast)
+    log.info("preparing edware data refresh")
+    slaves_register.apply_async(queue=BROADCAST_QUEUE)
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh')
@@ -67,28 +68,38 @@ def start_edware_data_refresh():
                 slaves B: Unblock Postgres load-balancer and resume replication
                 slaves A: Verify is in the pool and replication is resumed
     '''
-    log.debug("Start data refresh")
-    log.debug("Registered nodes: %s", nodes.registered_slaves)
+    log.info("Start data refresh")
+    log.info("Registered nodes: %s", nodes.registered_slaves)
     print(nodes.registered_slaves)
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 
     # slaves_a will be loaded first
     slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
-    slaves_a = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_A)
-    slaves_b = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_B)
+    slaves_a = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_A, nodes.registered_slaves)
+    slaves_b = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_B, nodes.registered_slaves)
 
-    migration_workflow = chain(
-        group(pause_replication.si(TENANT, slaves_b), block_pgpool.si(slaves_a)),
-        migrate_data.si(TENANT, slaves_a),
-        verify_slaves_repl_status.si(TENANT, slaves_a, LAG_TOLERENCE_IN_BYTES),
-        group(block_pgpool.si(slaves_b), unblock_pgpool.si(slaves_a)),
-        resume_replication.si(slaves_b),
-        verify_slaves_repl_status.si(TENANT, slaves_all, LAG_TOLERENCE_IN_BYTES),
-        slaves_end_data_migrate.si(TENANT, slaves_all))
+    # step 1: TODO anyway to get results back?
+    prepation_stages = group(pause_replication.si(TENANT, slaves_b), block_pgpool.si(slaves_a))
+    prepation_stages.apply_async(queue=BROADCAST_QUEUE)
+
+    # step 2
+    migrate_data(TENANT, slaves_a)
+
+    # step 3
+    verify_slaves_repl_status(TENANT, slaves_a, LAG_TOLERENCE_IN_BYTES)
+
+    # step 4
+    switch_status = chord((block_pgpool.si(slaves_b), unblock_pgpool.si(slaves_a)), resume_replication.si(slaves_b))
+    switch_status.apply_async(queue=BROADCAST_QUEUE)
+
+    # step 5
+    verify_slaves_repl_status(TENANT, slaves_all, LAG_TOLERENCE_IN_BYTES)
+
+    # step 6
+    slaves_end_data_migrate.apply_async([TENANT, slaves_all], queue=BROADCAST_QUEUE)
+
     log.info('Master: Starting scheduled edware data refresh task')
-
-    #migration_workflow.apply_async()
 
 
 @celery.task(name='task.edmigrate.master.migrate_data')
@@ -102,7 +113,7 @@ def migrate_data(tenant, slaves):
     #sleep(100)
 
     # TODO: Load data
-
+    sleep(5)
     # delay to wait for replication to finish
     #sleep(100)
 

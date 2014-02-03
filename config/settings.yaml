@@ -146,7 +146,7 @@ common:
             key: extract_sync
     migrate:
       replication.group: 'A'
-      broadcast.queue: 'edload_slaves'
+      broadcast.queue: 'edmigrate_slaves'
       master_scheduler.hour: 1
       master_scheduler.min: 1
       retries_allowed: 5
@@ -164,7 +164,7 @@ common:
         -   name: edmigrate_master
             exchange: direct
             key: edmigrate_master
-        -   name: edmigrate_slave
+        -   name: edmigrate_slaves
             exchange: fanout
             key: ''
     sftp.jail.base_path: /sftp

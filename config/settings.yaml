@@ -276,6 +276,8 @@ qa:
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
@@ -367,6 +369,8 @@ jenkins_qa:
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     services.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
 
@@ -376,6 +380,8 @@ uat:
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
     extract:
@@ -489,6 +495,8 @@ development:
       celery_always_eager: true
     extract.celery:
       celery_always_eager: true
+    migrate.celery:
+      celery_always_eager: true
     edware:
       db:
         pool_size: 20
@@ -552,6 +560,8 @@ test:
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
     auth:
@@ -568,6 +578,8 @@ jenkins_dev:
   '[app:main]':
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
@@ -616,6 +628,8 @@ air:
     services.celery:
       celery_always_eager: true
     extract.celery:
+      celery_always_eager: true
+    migrate.celery:
       celery_always_eager: true
     edware:
       db:

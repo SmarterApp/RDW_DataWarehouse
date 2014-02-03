@@ -146,6 +146,12 @@ common:
             key: extract_sync
     migrate:
       replication.group: 'A'
+      broadcast.queue: 'edload_slaves'
+      master_scheduler.hour: 1
+      master_scheduler.min: 1
+      retries_allowed: 5
+      retry_delay: 5
+      timeout: 30
     migrate.celery:
       CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave')
       CELERY_RESULT_BACKEND: amqp
@@ -158,10 +164,9 @@ common:
         -   name: edmigrate_master
             exchange: direct
             key: edmigrate_master
-      CELERY_BROADCAST_QUEUES:
         -   name: edmigrate_slave
             exchange: fanout
-            key: task.edmigrate.slave.*
+            key: ''
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net

@@ -2,20 +2,22 @@ __author__ = 'sravi'
 
 
 class Config():
-    MASTER_SCHEDULER_HOUR = 'edmigrate.master_scheduler.hour'
-    MASTER_SCHEDULER_MIN = 'edmigrate.master_scheduler.min'
-    MAX_RETRIES = 'edmigrate.retries_allowed'
-    RETRY_DELAY = 'edmigrate.retry_delay'
-    TIMEOUT = 'edmigrate.timeout'
+    MASTER_SCHEDULER_HOUR = 'migrate.master_scheduler.hour'
+    MASTER_SCHEDULER_MIN = 'migrate.master_scheduler.min'
+    MAX_RETRIES = 'migrate.retries_allowed'
+    RETRY_DELAY = 'migrate.retry_delay'
+    TIMEOUT = 'migrate.timeout'
     REPLICATION_GROUP = 'migrate.replication.group'
+    BROADCAST_QUEUE = 'migrate.broadcast.queue'
 
 # list of configurations that are specific to edmigrate
 LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.MASTER_SCHEDULER_MIN, int, 1),
                   (Config.MAX_RETRIES, int, 10),
                   (Config.RETRY_DELAY, int, 60),
-                  (Config.TIMEOUT, int, 20)]
-                  (Config.REPLICATION_GROUP, str, None)]
+                  (Config.TIMEOUT, int, 20),
+                  (Config.REPLICATION_GROUP, str, None),
+                  (Config.BROADCAST_QUEUE, str, None)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

@@ -29,11 +29,19 @@ def setup_celery(celery, settings, prefix='celery'):
     if celery_config.get(CELERY_QUEUES):
         real_queues = []
         for queue in celery_config.get(CELERY_QUEUES):
-            real_queues.append(Queue(queue[CELERY_QUEUE_NAME], exchange=Exchange(queue[CELERY_QUEUE_EXCHANGE]), routing_key=queue[CELERY_QUEUE_ROUTING_KEY]))
-        for queue in celery_config.get(CELERY_BROADCAST_QUEUES):
-            real_queues.append(Broadcast(queue[CELERY_QUEUE_NAME]))
+            real_queues.append(create_queue(queue))
         celery_config[CELERY_QUEUES] = real_queues
     celery.config_from_object(celery_config)
+
+
+def create_queue(queue):
+    name = queue[CELERY_QUEUE_NAME]
+    exchange_type = queue[CELERY_QUEUE_EXCHANGE]
+    routing_key = queue[CELERY_QUEUE_ROUTING_KEY]
+    if exchange_type == 'fanout':
+        return Broadcast(name)
+    else:
+        return Queue(name, exchange=Exchange(exchange_type), routing_key=routing_key)
 
 
 def configure_celeryd(name, prefix='celery'):

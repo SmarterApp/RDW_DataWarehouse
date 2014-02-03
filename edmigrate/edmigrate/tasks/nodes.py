@@ -9,11 +9,6 @@ log = logging.getLogger('edmigrate')
 Node = collections.namedtuple('Node', 'host group')
 registered_slaves = set()
 
-# test data for now till we implement the registration for slave nodes
-#registered_slaves.add(Node(host='dbpgdwr0.qa.dum.edwdc.net', group='A'))
-#registered_slaves.add(Node(host='dbpgdwr0s1.qa.dum.edwdc.net', group='B'))
-# end of test data
-
 
 def get_slave_node_host_names_for_group(group, slaves):
     '''

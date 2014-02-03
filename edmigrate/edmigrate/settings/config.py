@@ -11,6 +11,8 @@ class Config():
     BROADCAST_QUEUE = 'migrate.broadcast.queue'
     LAG_TOLERENCE_IN_BYTES = 'migrate.lag_tolerence_in_bytes'
     PGPOOL_HOSTNAME = 'migrate.pgpool.hostname'
+    DEFAULT_ROUTUNG_KEY = 'migrate.celery.CELERY_DEFAULT_ROUTING_KEY'
+    DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
 
 
 # list of configurations that are specific to edmigrate
@@ -22,7 +24,9 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.REPLICATION_GROUP, str, None),
                   (Config.BROADCAST_QUEUE, str, None),
                   (Config.LAG_TOLERENCE_IN_BYTES, int, 10),
-                  (Config.PGPOOL_HOSTNAME, str, None)]
+                  (Config.PGPOOL_HOSTNAME, str, None),
+                  (Config.DEFAULT_ROUTUNG_KEY, str, 'edmigrate'),
+                  (Config.DEFAULT_ROUTUNG_QUEUE, str, 'edmigrate_master')]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

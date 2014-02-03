@@ -15,6 +15,7 @@ from edmigrate.tasks import nodes
 import edmigrate.utils.queries as queries
 from edmigrate.settings.config import Config, get_setting
 
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('edmigrate')
 
 MAX_RETRY = get_setting(Config.MAX_RETRIES)
@@ -22,6 +23,9 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)
 MASTER_SCHEDULER_MIN = get_setting(Config.MASTER_SCHEDULER_MIN)
 LAG_TOLERENCE_IN_BYTES = get_setting(Config.LAG_TOLERENCE_IN_BYTES)
+DEFAULT_QUEUE = get_setting(Config.DEFAULT_ROUTUNG_QUEUE)
+DEFAULT_ROUTUNG_KEY = get_setting(Config.DEFAULT_ROUTUNG_KEY)
+
 TENANT = 'repmgr'
 
 @celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
@@ -83,6 +87,7 @@ def start_edware_data_refresh():
         verify_slaves_repl_status.si(TENANT, slaves_all, LAG_TOLERENCE_IN_BYTES),
         slaves_end_data_migrate.si(TENANT, slaves_all))
     log.info('Master: Starting scheduled edware data refresh task')
+
     #migration_workflow.apply_async()
 
 
@@ -111,5 +116,4 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     '''
     log.info('Master: verify status of replication on slaves: ' + str(slaves))
     status = queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
-    if not status:
-        verify_slaves_repl_status.retry(args=[tenant, slaves, lag_tolerence_in_bytes])
+    return status

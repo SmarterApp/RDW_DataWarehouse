@@ -37,9 +37,7 @@ class TestRepMgrConnector(Unittest_with_repmgr_sqlite_no_data_load):
         with UnittestRepMgrDBConnection() as connection:
             metadata = connection.get_metadata()
             fixture_metadata = generate_repmgr_metadata()
-            metadata_tables = [t for t in metadata.tables]
-            fixture_tables = [t for t in fixture_metadata.tables]
-            self.assertEqual(sorted(metadata_tables), sorted(fixture_tables))
+            self.assertEqual(sorted(metadata.tables), sorted(fixture_metadata.tables))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

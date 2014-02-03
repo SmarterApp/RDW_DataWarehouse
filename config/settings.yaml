@@ -155,7 +155,7 @@ common:
       retry_delay: 5
       timeout: 30
     migrate.celery:
-      CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave')
+      CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave', 'edmigrate.tasks.nodes')
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 1

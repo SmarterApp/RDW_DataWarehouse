@@ -3,6 +3,8 @@ __author__ = 'sravi'
 from time import sleep
 from celery.canvas import chain, group
 from celery.utils.log import get_task_logger
+from datetime import timedelta
+from celery.schedules import crontab
 from edmigrate.settings.config import Config, get_setting
 
 from edmigrate.celery import celery
@@ -17,9 +19,11 @@ log = get_task_logger(__name__)
 
 MAX_RETRY = get_setting(Config.MAX_RETRIES)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
+MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)
+MASTER_SCHEDULER_MIN = get_setting(Config.MASTER_SCHEDULER_MIN)
 
-
-@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
+#@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', run_every=crontab(hour=MASTER_SCHEDULER_HOUR, minute=MASTER_SCHEDULER_MIN))
+@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', run_every=timedelta(seconds=2))
 def prepare_edware_data_refresh():
     '''
     Broadcast message to all slave nodes to register

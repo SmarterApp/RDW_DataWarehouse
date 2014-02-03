@@ -91,7 +91,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NY', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -128,7 +128,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NY', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -149,7 +149,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NY', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -213,7 +213,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
         # prepare empty file to mimic a pdf was generated
-        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NY', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')

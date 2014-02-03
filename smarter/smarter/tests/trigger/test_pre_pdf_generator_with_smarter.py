@@ -55,7 +55,7 @@ class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
         setup_celery(settings, "celery")
 
         results = [{'school_guid': '242', 'district_guid': '228', 'asmt_period_year': '2012', 'asmt_grade': '3', 'student_guid': '34140997-8949-497e-bbbb-5d72aa7dc9cb'}]
-        triggered = trigger_pre_pdf(settings, self.tenant, 'NY', results)
+        triggered = trigger_pre_pdf(settings, 'NY', self.tenant, results)
         self.assertTrue(triggered)
 
 

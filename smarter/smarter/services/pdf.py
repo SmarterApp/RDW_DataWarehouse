@@ -151,7 +151,7 @@ def get_pdf_content(params):
 
     # get isr file path name
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+    file_name = generate_isr_report_path_by_student_guid(state_code, pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()

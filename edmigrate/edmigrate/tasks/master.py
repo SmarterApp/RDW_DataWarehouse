@@ -21,6 +21,7 @@ MAX_RETRY = get_setting(Config.MAX_RETRIES)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)
 MASTER_SCHEDULER_MIN = get_setting(Config.MASTER_SCHEDULER_MIN)
+LAG_TOLERENCE_IN_BYTES = get_setting(Config.LAG_TOLERENCE_IN_BYTES)
 
 #@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', run_every=crontab(hour=MASTER_SCHEDULER_HOUR, minute=MASTER_SCHEDULER_MIN))
 @celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', run_every=timedelta(seconds=2))
@@ -72,15 +73,14 @@ def start_edware_data_refresh(tenant):
     slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
     slaves_a = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_A)
     slaves_b = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_B)
-    lag_tolerence_in_bytes = '0'
 
     migration_workflow = chain(
         group(pause_replication.si(tenant, slaves_b), block_pgpool.si(slaves_a)),
         migrate_data.si(tenant, slaves_a),
-        verify_slaves_repl_status.si(tenant, slaves_a, lag_tolerence_in_bytes),
+        verify_slaves_repl_status.si(tenant, slaves_a, LAG_TOLERENCE_IN_BYTES),
         group(block_pgpool.si(slaves_b), unblock_pgpool.si(slaves_a)),
         resume_replication.si(slaves_b),
-        verify_slaves_repl_status.si(tenant, slaves_all, lag_tolerence_in_bytes),
+        verify_slaves_repl_status.si(tenant, slaves_all, LAG_TOLERENCE_IN_BYTES),
         slaves_end_data_migrate.si(tenant, slaves_all))
     log.info('Master: Starting scheduled edware data refresh task')
     #migration_workflow.apply_async()

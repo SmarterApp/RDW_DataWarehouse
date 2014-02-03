@@ -151,6 +151,7 @@ common:
       master_scheduler.min: 1
       retries_allowed: 5
       retry_delay: 5
+      lag_tolerence_in_bytes: 10
       timeout: 30
     migrate.celery:
       CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave', 'edmigrate.tasks.nodes')

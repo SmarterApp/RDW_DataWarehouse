@@ -10,6 +10,8 @@ class Config():
     REPLICATION_GROUP = 'migrate.replication.group'
     BROADCAST_QUEUE = 'migrate.broadcast.queue'
     LAG_TOLERENCE_IN_BYTES = 'migrate.lag_tolerence_in_bytes'
+    PGPOOL_HOSTNAME = 'migrate.pgpool.hostname'
+
 
 # list of configurations that are specific to edmigrate
 LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
@@ -19,7 +21,8 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.TIMEOUT, int, 20),
                   (Config.REPLICATION_GROUP, str, None),
                   (Config.BROADCAST_QUEUE, str, None),
-                  (Config.LAG_TOLERENCE_IN_BYTES, int, 10)]
+                  (Config.LAG_TOLERENCE_IN_BYTES, int, 10),
+                  (Config.PGPOOL_HOSTNAME, str, None)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

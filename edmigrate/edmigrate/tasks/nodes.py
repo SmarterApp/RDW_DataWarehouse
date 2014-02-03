@@ -2,9 +2,9 @@ __author__ = 'sravi'
 
 import collections
 from edmigrate.celery import celery
-from celery.utils.log import get_task_logger
+import logging
 
-log = get_task_logger(__name__)
+log = logging.getLogger('edmigrate')
 
 Node = collections.namedtuple('Node', 'host group')
 registered_slaves = set()
@@ -34,6 +34,7 @@ def get_registered_slave_nodes():
     returns registered slave nodes in the format needed
     '''
     return registered_slaves
+
 
 @celery.task(name='task.edmigrate.nodes.register_node')
 def register_slave_node(host, group):

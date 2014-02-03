@@ -2,7 +2,7 @@ __author__ = 'sravi'
 
 from time import sleep
 from celery.canvas import chain, group
-from celery.utils.log import get_task_logger
+import logging
 from datetime import timedelta
 from celery.schedules import crontab
 from edmigrate.settings.config import Config, get_setting
@@ -15,7 +15,7 @@ from edmigrate.tasks import nodes
 import edmigrate.utils.queries as queries
 from edmigrate.settings.config import Config, get_setting
 
-log = get_task_logger(__name__)
+log = logging.getLogger('edmigrate')
 
 MAX_RETRY = get_setting(Config.MAX_RETRIES)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)

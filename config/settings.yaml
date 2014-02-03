@@ -149,6 +149,7 @@ common:
     migrate:
       replication.group: 'A'
       broadcast.queue: 'edmigrate_slaves'
+      pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       master_scheduler.hour: 1
       master_scheduler.min: 1
       retries_allowed: 5

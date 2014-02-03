@@ -7,11 +7,11 @@ from sqlalchemy.exc import OperationalError
 from subprocess import call
 from edmigrate.tasks.nodes import register_slave_node
 from edmigrate.settings.config import Config, get_setting
-from celery.utils.log import get_task_logger
+import logging
 
-log = get_task_logger(__name__)
+log = logging.getLogger('edmigrate')
 
-pgpool = 'dwrouter1.qa.dum.edwdc.net'
+pgpool = get_setting(Config.PGPOOL_HOSTNAME)
 node_group_id = get_setting(Config.REPLICATION_GROUP)
 
 

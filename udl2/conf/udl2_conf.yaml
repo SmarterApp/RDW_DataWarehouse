@@ -3,6 +3,7 @@
 ###
 
 common:
+  '[app]':
     celery:
         root: udl2.celery
         broker: amqp://guest@localhost//    # this is the url to message broker. Currently it is located on localhost for rabbitmq
@@ -74,6 +75,7 @@ common:
 
 
 qa:
+  '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
         landing: /opt/edware/zones/landing/             # this is for where the uploaded files are located, it may be an url in the long run to get data
         arrivals: /opt/edware/zones/landing/arrivals/   # this is where the file arrives.
@@ -141,6 +143,7 @@ qa:
 
 
 development:
+  '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
         landing: /opt/edware/zones/landing/             # this is for where the uploaded files are located, it may be an url in the long run to get data
         arrivals: /opt/edware/zones/landing/arrivals/   # this is where the file arrives.

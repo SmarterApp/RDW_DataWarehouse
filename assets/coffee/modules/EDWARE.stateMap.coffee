@@ -42,10 +42,10 @@ require [
             if data.name in stateCodes
               window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/comparingPopulations.html?stateCode=" + data.name
         }
-
+        
         $('#map svg text tspan').each () ->
-          if $(this).html() not in stateCodes
-            $(this).html('')
+          if this.firstChild.data not in stateCodes
+            this.firstChild.data = ''
 
         # TODO: remove/update "individual_student_report"
         edwareHeader.create(data, reportConfig, "individual_student_report")

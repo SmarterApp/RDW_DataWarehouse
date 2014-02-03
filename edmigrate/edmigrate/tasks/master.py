@@ -18,6 +18,7 @@ log = get_task_logger(__name__)
 MAX_RETRY = get_setting(Config.MAX_RETRIES)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 
+
 @celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
 def prepare_edware_data_refresh():
     '''
@@ -108,4 +109,3 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     status = queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
     if not status:
         verify_slaves_repl_status.retry(args=[tenant, slaves, lag_tolerence_in_bytes])
-

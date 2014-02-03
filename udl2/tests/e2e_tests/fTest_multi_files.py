@@ -32,6 +32,7 @@ class ValidateMultiFiles(unittest.TestCase):
 #teardown tenant folder
     def tearDown(self):
         shutil.rmtree(self.tenant_dir)
+        self.connector.close_connection()
 
 #Delete all data from Batch table
     def empty_batch_table(self, connector):

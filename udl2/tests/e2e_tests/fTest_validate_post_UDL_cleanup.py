@@ -1,6 +1,5 @@
 '''
 Created on Nov 1, 2013
-
 @author: bpatel
 '''
 import unittest
@@ -29,6 +28,14 @@ class ValidatePostUDLCleanup(unittest.TestCase):
     def setUp(self):
         self.archived_file = ARCHIVED_FILE
         self.tenant_dir = TENANT_DIR
+        self.ed_connector = TargetDBConnection()
+        self.connector = UDL2DBConnection()
+
+    def tearDown(self):
+        self.ed_connector.close_connection()
+        self.connector.close_connection()
+        if os.path.exists(self.tenant_dir):
+            shutil.rmtree(self.tenant_dir)
 
 # Validate that in Batch_Table for given guid every udl_phase output is Success
     def validate_UDL_database(self, connector):
@@ -45,12 +52,12 @@ class ValidatePostUDLCleanup(unittest.TestCase):
     def validate_edware_database(self, ed_connector):
             time.sleep(10)
             edware_table = ed_connector.get_table(FACT_TABLE)
-            print(edware_table.c.batch_guid)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
             output_data = ed_connector.execute(output).fetchall()
+            print(edware_table.c.batch_guid)
             row_count = len(output_data)
             self.assertGreater(row_count, 1, "Data is loaded to star shema")
-            truple_str = (guid_batch_id,)
+            truple_str = (guid_batch_id, )
             self.assertIn(truple_str, output_data, "assert successful")
             print('edware schema validation is successful')
 
@@ -64,12 +71,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
 # Run pipeline with given guid.
     def run_udl_pipeline(self):
-        try:
-            config_path = dict(os.environ)['UDL2_CONF']
-        except Exception:
-            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+
         self.conf = udl2_conf
 
         arch_file = self.copy_file_to_tmp()
@@ -101,13 +103,11 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.assertEqual(0, len(subfiles_dir))
 
     def test_validation(self):
-        #db_conn, engine = self.connect_UDL_db()
-        #db_conn_edware, eng_edware = self.connect_edware_db()
         self.run_udl_pipeline()
-        with UDL2DBConnection() as connector:
-            self.validate_UDL_database(connector)
-        with TargetDBConnection() as ed_connector:
-            self.validate_edware_database(ed_connector)
+        #with UDL2DBConnection() as connector:
+        self.validate_UDL_database(self.connector)
+        #with TargetDBConnection() as ed_connector:
+        self.validate_edware_database(self.ed_connector)
         self.validate_workzone()
 
 if __name__ == "__main__":

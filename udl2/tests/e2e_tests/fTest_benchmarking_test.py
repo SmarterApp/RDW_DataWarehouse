@@ -23,9 +23,12 @@ class ValidateTableData(unittest.TestCase):
     def setUp(self):
         self.tenant_dir = TENANT_DIR
         self.archived_file = ARCHIVED_FILE
+        self.connector = UDL2DBConnection()
 
     def tearDown(self):
-        shutil.rmtree(self.tenant_dir)
+        if os.path.exists(self.tenant_dir):
+            shutil.rmtree(self.tenant_dir)
+        self.connector.close_connection()
 
     def empty_batch_table(self, connector):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
@@ -44,7 +47,7 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
 
     def connect_verify_db(self, connector):
-        time.sleep(20)
+        time.sleep(10)
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table])
         result = connector.execute(query).fetchall()
@@ -60,7 +63,6 @@ class ValidateTableData(unittest.TestCase):
         self.assertEqual(tuple_str, output_data)
 
     def test_benchmarking_data(self):
-        self.connector = UDL2DBConnection()
         self.empty_batch_table(self.connector)
         self.run_udl_pipeline()
         self.connect_verify_db(self.connector)

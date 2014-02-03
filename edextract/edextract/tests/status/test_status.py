@@ -15,7 +15,7 @@ from datetime import datetime
 
 class DummyUser():
 
-    def get_tenant(self):
+    def get_tenants(self):
         return "myTenant"
 
     def get_guid(self):
@@ -60,7 +60,7 @@ class TestStatus(Unittest_with_stats_sqlite):
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0][Constants.TASK_ID], task_id)
             self.assertEqual(results[0][Constants.STATUS], ExtractStatus.QUEUED)
-            self.assertIn(DummyUser().get_tenant(), results[0][Constants.INFO])
+            self.assertIn(DummyUser().get_tenants(), results[0][Constants.INFO])
             self.assertIn(DummyUser().get_guid(), results[0][Constants.INFO])
             self.assertEqual(results[0][Constants.REQUEST_GUID], request_id)
 

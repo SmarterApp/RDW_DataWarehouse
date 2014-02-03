@@ -25,6 +25,7 @@ def slaves_register():
     hostname = socket.gethostname()
     group_id = node_group_id
     log.debug("Register node %s %s to master", hostname, group_id)
+    print("Slaves are called")
     register_slave_node.delay(hostname, group_id)
 
 

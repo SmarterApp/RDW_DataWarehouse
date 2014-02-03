@@ -11,7 +11,7 @@ from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
 from edmigrate.utils.constants import Constants
 from edmigrate.tasks import nodes
 import edmigrate.utils.queries as queries
-
+from edmigrate.settings.config import Config, get_setting
 
 log = get_task_logger(__name__)
 
@@ -27,7 +27,8 @@ def prepare_edware_data_refresh():
     nodes.registered_nodes collection.
     '''
     log.debug("preparing edware data refresh")
-    slaves_register.delay()
+    broadcast = get_setting(Config.BROADCAST_QUEUE)
+    slaves_register.apply_async(queue=broadcast)
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh')

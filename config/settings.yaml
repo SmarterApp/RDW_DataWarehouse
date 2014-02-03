@@ -149,7 +149,7 @@ common:
       broadcast.queue: 'edmigrate_slaves'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       master_scheduler.hour: 1
-      master_scheduler.min: 1
+      master_scheduler.min: 0
       retries_allowed: 5
       retry_delay: 5
       lag_tolerence_in_bytes: 10
@@ -162,6 +162,19 @@ common:
       CELERY_DEFAULT_QUEUE: edmigrate_master
       CELERY_DEFAULT_ROUTING_KEY: edmigrate
       CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERYBEAT_SCHEDULE:
+        -   name: prepare-migration
+            task: task.edmigrate.master.prepare_edware_data_refresh
+            schedule: timedelta
+            seconds: 10
+            #schedule: cron
+            #hour: 1
+            #min: 0
+        -   name: start-migration
+            task: task.edmigrate.master.start_edware_data_refresh
+            schedule: cron
+            hour: 1
+            min: 10
       CELERY_QUEUES:
         -   name: edmigrate_master
             exchange: direct

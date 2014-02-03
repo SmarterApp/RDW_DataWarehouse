@@ -22,9 +22,9 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
 MASTER_SCHEDULER_HOUR = get_setting(Config.MASTER_SCHEDULER_HOUR)
 MASTER_SCHEDULER_MIN = get_setting(Config.MASTER_SCHEDULER_MIN)
 LAG_TOLERENCE_IN_BYTES = get_setting(Config.LAG_TOLERENCE_IN_BYTES)
+TENANT = 'repmgr'
 
-#@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', run_every=crontab(hour=MASTER_SCHEDULER_HOUR, minute=MASTER_SCHEDULER_MIN))
-@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', run_every=timedelta(seconds=2))
+@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
 def prepare_edware_data_refresh():
     '''
     Broadcast message to all slave nodes to register
@@ -38,7 +38,7 @@ def prepare_edware_data_refresh():
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh')
-def start_edware_data_refresh(tenant):
+def start_edware_data_refresh():
     '''
     Step 1: send message to all slaves to initiate protocol for data refresh
             protocol on slave
@@ -75,13 +75,13 @@ def start_edware_data_refresh(tenant):
     slaves_b = nodes.get_slave_node_host_names_for_group(nodes.registered_slaves, Constants.SLAVE_GROUP_B)
 
     migration_workflow = chain(
-        group(pause_replication.si(tenant, slaves_b), block_pgpool.si(slaves_a)),
-        migrate_data.si(tenant, slaves_a),
-        verify_slaves_repl_status.si(tenant, slaves_a, LAG_TOLERENCE_IN_BYTES),
+        group(pause_replication.si(TENANT, slaves_b), block_pgpool.si(slaves_a)),
+        migrate_data.si(TENANT, slaves_a),
+        verify_slaves_repl_status.si(TENANT, slaves_a, LAG_TOLERENCE_IN_BYTES),
         group(block_pgpool.si(slaves_b), unblock_pgpool.si(slaves_a)),
         resume_replication.si(slaves_b),
-        verify_slaves_repl_status.si(tenant, slaves_all, LAG_TOLERENCE_IN_BYTES),
-        slaves_end_data_migrate.si(tenant, slaves_all))
+        verify_slaves_repl_status.si(TENANT, slaves_all, LAG_TOLERENCE_IN_BYTES),
+        slaves_end_data_migrate.si(TENANT, slaves_all))
     log.info('Master: Starting scheduled edware data refresh task')
     #migration_workflow.apply_async()
 
@@ -94,12 +94,12 @@ def migrate_data(tenant, slaves):
     log.info('Master: Scheduling task for master to start data migration to prod master')
 
     # delay to make sure slaves executed the previous tasks sent to them
-    sleep(100)
+    #sleep(100)
 
     # TODO: Load data
 
     # delay to wait for replication to finish
-    sleep(100)
+    #sleep(100)
 
 
 @celery.task(name='task.edmigrate.master.verify_master_slave_repl_status',

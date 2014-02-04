@@ -100,7 +100,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
         mk.PHASE: int(phase_number),
         mk.MOVE_TO_TARGET: get_move_to_target_conf(),
         mk.LOAD_TYPE: load_type,
-        mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['on'] else udl2_conf['multi_tenant']['default_tenant'],
+        mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant'],
     }
 
     conf.update(tenant_db_info)
@@ -115,7 +115,7 @@ def get_tenant_target_db_information(tenant_code):
     :param tenant_code: The code (2 char name) for the give tenant
     :return: A dictionary containing the relevant connection information
     """
-    tenant_code = tenant_code if udl2_conf['multi_tenant']['on'] else udl2_conf['multi_tenant']['default_tenant']
+    tenant_code = tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant']
 
     return {
         mk.TARGET_DB_NAME: udl2_conf['target_db_conn'][tenant_code]['db_database'],

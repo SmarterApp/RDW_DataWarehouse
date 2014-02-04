@@ -52,7 +52,7 @@ common:
         audit: /opt/edware/log/udl2.audit.log  # for status log for everything
         error: /opt/edware/log/udl2.error.log  # for error message and exceptions,
     multi_tenant:
-        bon: False
+        active: False
         default_tenant: edware
     quiet_mode: False
     passphrase: sbac udl2

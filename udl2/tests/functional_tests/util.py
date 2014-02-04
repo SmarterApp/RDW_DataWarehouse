@@ -1,9 +1,9 @@
 import os
-import imp
 from udl2 import database
 from udl2_util.database_util import execute_queries
 import unittest
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+from udl2_util.config_reader import read_ini_file
 
 
 class UDLTestHelper(unittest.TestCase):
@@ -14,9 +14,8 @@ class UDLTestHelper(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
-        cls.udl2_conf = udl2_conf
+
+        cls.udl2_conf = read_ini_file(config_path)
         cls.udl2_conn, cls.udl2_engine = database._create_conn_engine(cls.udl2_conf['udl2_db'])
         cls.target_conn, cls.target_engine = database._create_conn_engine(cls.udl2_conf['target_db'])
 

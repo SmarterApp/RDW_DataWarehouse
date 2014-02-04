@@ -64,8 +64,8 @@ def start_edware_data_refresh():
                 slaves B: Unblock Postgres load-balancer and resume replication
                 slaves A: Verify is in the pool and replication is resumed
     '''
-    logger.info("Start data refresh")
-    logger.info("Registered nodes: %s", nodes.registered_slaves)
+    logger.info('Master: Starting scheduled edware data refresh task')
+    logger.info("Master: Registered nodes: %s", nodes.registered_slaves)
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 
@@ -73,31 +73,39 @@ def start_edware_data_refresh():
     slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
     slaves_a = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_A, nodes.registered_slaves)
     slaves_b = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_B, nodes.registered_slaves)
+    logger.info("Group A consists of %s", slaves_a)
+    logger.info("Group B consists of %s", slaves_b)
 
-    # step 1: TODO anyway to get results back?
-    prepation_stages = group([pause_replication.si(TENANT, slaves_b), block_pgpool.si(slaves_a)])
-    prepation_stages.apply_async(queue=BROADCAST_QUEUE)
+    # step 1
+    logger.info("Step 1 ...")
+    pause_replication.apply_async([TENANT, slaves_b], queue=BROADCAST_QUEUE)
+    block_pgpool.apply_async([slaves_a], queue=BROADCAST_QUEUE)
 
     # step 2
+    logger.info("Step 2 ...")
     migrate_data(TENANT, slaves_a)
 
     # step 3
+    logger.info("Step 3 ...")
     verify_slaves_repl_status(TENANT, slaves_a, LAG_TOLERENCE_IN_BYTES)
 
     # step 4
+    logger.info("Step 4 ...")
     unblock_pgpool.apply_async([slaves_a], queue=BROADCAST_QUEUE)
-    chain(block_pgpool.si(slaves_b), resume_replication.si(TENANT, slaves_b)).apply_async(queue=BROADCAST_QUEUE)
+    chain(block_pgpool.si(slaves_b).set(queue=BROADCAST_QUEUE),
+          resume_replication.si(TENANT, slaves_b).set(queue=BROADCAST_QUEUE))()
 
     # step 5
+    logger.info("Step 5 ...")
     verify_slaves_repl_status(TENANT, slaves_all, LAG_TOLERENCE_IN_BYTES)
 
     # step 6
+    logger.info("Step 6 ...")
     slaves_end_data_migrate.apply_async([TENANT, slaves_all], queue=BROADCAST_QUEUE)
 
-    logger.info('Master: Starting scheduled edware data refresh task')
+    logger.info('Master: Finished scheduled edware data refresh task')
 
 
-@celery.task(name='task.edmigrate.master.migrate_data')
 def migrate_data(tenant, slaves):
     '''
     load batches of data from pre-prod to prod master
@@ -113,9 +121,6 @@ def migrate_data(tenant, slaves):
     #sleep(100)
 
 
-@celery.task(name='task.edmigrate.master.verify_master_slave_repl_status',
-             max_retries=MAX_RETRY,
-             default_retry_delay=DEFAULT_RETRY_DELAY)
 def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     '''
     verify the status of replication on slaves

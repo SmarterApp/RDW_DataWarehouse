@@ -2,17 +2,18 @@ __author__ = 'sravi'
 
 import unittest
 import edmigrate.utils.queries as queries
+from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite, \
+    Unittest_with_repmgr_sqlite_no_data_load, UnittestRepMgrDBConnection
 
 
-# TODO: Create a test util base class with test data for repl_mgr schema and tables and inherit that
-class TestQueries(unittest.TestCase):
+class TestQueries(Unittest_with_repmgr_sqlite):
 
     def setUp(self):
         pass
 
     @classmethod
     def setUpClass(cls):
-        pass
+        Unittest_with_repmgr_sqlite.setUpClass()
 
     def tearDown(self):
         pass

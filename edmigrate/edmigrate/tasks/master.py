@@ -22,6 +22,9 @@ LAG_TOLERENCE_IN_BYTES = get_setting(Config.LAG_TOLERENCE_IN_BYTES)
 DEFAULT_QUEUE = get_setting(Config.DEFAULT_ROUTUNG_QUEUE)
 DEFAULT_ROUTUNG_KEY = get_setting(Config.DEFAULT_ROUTUNG_KEY)
 
+# TODO: This is just a temp way to know the tenant name to grab the connection to repmgr schema
+#       UDL2 needs to be updated to capture the tenant<->hostname<->batchid mapping in a table
+#       This mapping info will be used by the migration script to know which data in preprod needs to move where in prod
 TENANT = 'repmgr'
 BROADCAST_QUEUE = get_setting(Config.BROADCAST_QUEUE)
 
@@ -69,6 +72,8 @@ def start_edware_data_refresh():
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 
+    # TODO: Error handling - How do we ensure the slave discovery/registration process is complete
+
     # slaves_a will be loaded first
     slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
     slaves_a = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_A, nodes.registered_slaves)
@@ -81,6 +86,8 @@ def start_edware_data_refresh():
     pause_replication.apply_async([TENANT, slaves_b], queue=BROADCAST_QUEUE)
     block_pgpool.apply_async([slaves_a], queue=BROADCAST_QUEUE)
 
+    # TODO: Error handling - How to ensure the slaves has completed the above tasks successfully
+
     # step 2
     logger.info("Step 2 ...")
     migrate_data(TENANT, slaves_a)
@@ -89,11 +96,16 @@ def start_edware_data_refresh():
     logger.info("Step 3 ...")
     verify_slaves_repl_status(TENANT, slaves_a, LAG_TOLERENCE_IN_BYTES)
 
+    # TODO: Error handling - How to ensure the slaves get in sync with
+    # master soon and we do not end up waiting for ever
+
     # step 4
     logger.info("Step 4 ...")
     unblock_pgpool.apply_async([slaves_a], queue=BROADCAST_QUEUE)
     chain(block_pgpool.si(slaves_b).set(queue=BROADCAST_QUEUE),
           resume_replication.si(TENANT, slaves_b).set(queue=BROADCAST_QUEUE))()
+
+    # TODO: Error handling - How to ensure the slaves has completed the above tasks successfully
 
     # step 5
     logger.info("Step 5 ...")
@@ -113,12 +125,16 @@ def migrate_data(tenant, slaves):
     logger.info('Master: Scheduling task for master to start data migration to prod master')
 
     # delay to make sure slaves executed the previous tasks sent to them
-    #sleep(100)
+    sleep(5)
 
     # TODO: Load data
-    sleep(5)
+    # TODO:
+    #   1. The data load should happen in batches of transaction to support rollback
+    #   2. This means batch_guid needs to be added to all dimension tables
+    #   3. For every batch, the udl reference table will be consulted to kow the tenant and destination
+
     # delay to wait for replication to finish
-    #sleep(100)
+    sleep(5)
 
 
 def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
@@ -127,4 +143,5 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     '''
     logger.info('Master: verify status of replication on slaves: ' + str(slaves))
     status = queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
+    # TODO: Error handling - If slaves are not in sync how long to wait to repeat this check
     return status

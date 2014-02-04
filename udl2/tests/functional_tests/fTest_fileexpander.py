@@ -3,7 +3,7 @@ import os
 import shutil
 from fileexpander import file_expander
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-import imp
+from udl2_util.config_reader import read_ini_file
 
 
 class TestFileExpander(unittest.TestCase):
@@ -14,9 +14,8 @@ class TestFileExpander(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
-        self.conf = udl2_conf
+        self.conf = read_ini_file(config_path)
+
         # test source files
         self.test_source_file_1 = self.conf['zones']['datafiles'] + 'test_source_file_tar_gzipped.tar.gz'
         self.test_source_file_2 = self.conf['zones']['datafiles'] + 'test_corrupted_source_file_tar_gzipped.tar.gz'

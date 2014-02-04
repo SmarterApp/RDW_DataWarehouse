@@ -4,7 +4,7 @@ import os
 import shutil
 from filesplitter import file_splitter
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-import imp
+from udl2_util.config_reader import read_ini_file
 
 
 class TestFileSplitter(unittest.TestCase):
@@ -14,9 +14,8 @@ class TestFileSplitter(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
-        self.conf = udl2_conf
+        self.conf = read_ini_file(config_path)
+
         # create test csv
         self.test_file_name = self.conf['zones']['tests'] + 'test.csv'
         output_file = open(self.test_file_name, 'w', newline='')

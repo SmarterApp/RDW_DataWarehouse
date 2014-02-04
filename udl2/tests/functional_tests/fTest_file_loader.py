@@ -9,6 +9,7 @@ import imp
 import uuid
 from udl2 import message_keys as mk
 from udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
+from udl2_util.config_reader import read_ini_file
 
 
 class FileLoaderFTest(unittest.TestCase):
@@ -18,8 +19,8 @@ class FileLoaderFTest(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+        udl2_conf = read_ini_file(config_path)
+
         CSV_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_realdata.csv')
         self.CSV_FILE2 = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data.csv')
         self.CSV_FILE2_CLEAN = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data_CLEAN.csv')

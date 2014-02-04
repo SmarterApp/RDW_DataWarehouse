@@ -3,9 +3,9 @@ from udl2.errorcodes import BATCH_REC_FAILED
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_query_with_result, execute_queries
 from uuid import uuid4
-import imp
 import os
 from preetl.pre_etl import pre_etl_job
+from udl2_util.config_reader import read_ini_file
 
 
 class PreEtlTest(unittest.TestCase):
@@ -13,9 +13,7 @@ class PreEtlTest(unittest.TestCase):
     def setUp(self):
         # get conf file
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path_file)
-        from udl2_conf import udl2_conf
-        self.udl2_conf = udl2_conf
+        self.udl2_conf = read_ini_file(config_path_file)
 
         # create test error log file
         current_file_path = os.path.dirname(os.path.realpath(__file__))

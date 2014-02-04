@@ -3,12 +3,9 @@ from sfv import error_codes
 from sfv import simple_file_validator
 from sfv import csv_validator
 from sfv import json_validator
-import csv
 import os
-import json
-from udl2_util.file_util import abs_path_join
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-import imp
+from udl2_util.config_reader import read_ini_file
 
 __location__ = '../data'
 
@@ -20,9 +17,8 @@ class DataValidationErrorCode(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-            udl2_conf = imp.load_source('udl2_conf', config_path)
-            from udl2_conf import udl2_conf
-        self.conf = udl2_conf
+
+        self.conf = read_ini_file(config_path)
 
     # For bad CSVFiles
     def test_sourcefolder_errorcode(self):

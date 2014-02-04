@@ -6,8 +6,6 @@ Created on Jun 19, 2013
 
 import unittest
 import os
-import imp
-from importlib import import_module
 
 from sqlalchemy.sql.expression import select
 from udl2 import database
@@ -16,6 +14,7 @@ from udl2_util.database_util import connect_db, get_sqlalch_table_object
 from udl2.populate_ref_info import populate_stored_proc
 from rule_maker.rules.udl_transformation_config import transform_rules
 from rule_maker.rules import transformation_code_generator
+from udl2_util.config_reader import read_ini_file
 
 
 class PopulateRefInfoFTest(unittest.TestCase):
@@ -26,8 +25,7 @@ class PopulateRefInfoFTest(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+        udl2_conf = read_ini_file(config_path)
         self.conn, self.engine = database._create_conn_engine(udl2_conf['udl2_db'])
         self.ref_schema = udl2_conf['udl2_db']['reference_schema']
         self.ref_table_name = udl2_conf['udl2_db']['ref_table_name']

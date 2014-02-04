@@ -8,6 +8,7 @@ from rule_maker.rules import transformation_code_generator
 from sqlalchemy import func
 from udl2_util.database_util import create_sqlalch_session
 from sqlalchemy.exc import ProgrammingError
+from udl2_util.config_reader import read_ini_file
 
 
 class RuleGeneratorFTest(unittest.TestCase):
@@ -17,8 +18,7 @@ class RuleGeneratorFTest(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+        udl2_conf = read_ini_file(config_path)
         self.conn, self.engine = database._create_conn_engine(udl2_conf['udl2_db'])
         self.rule_names = transform_rules.keys()
         self.rule_conf = transform_rules

@@ -22,7 +22,7 @@ def slaves_register():
     '''
     hostname = socket.gethostname()
     group_id = node_group_id
-    logger.info("Register node %s %s to master", hostname, group_id)
+    logger.info("Slave: Register node %s %s to master", hostname, group_id)
     register_slave_node.delay(hostname, group_id)
 
 
@@ -55,7 +55,7 @@ def pause_replication(tenant, nodes):
     '''
     if socket.gethostname() not in nodes:
         return
-    logger.info("Pausing replication on node %s" % socket.gethostname())
+    logger.info("Slave: Pausing replication on node %s" % socket.gethostname())
     with RepMgrDBConnection(tenant) as connector:
         if not is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_pause()")
@@ -67,8 +67,8 @@ def resume_replication(tenant, nodes):
     Resumes replication on current node.
     '''
     if socket.gethostname() not in nodes:
-        return
-    logger.info("Resuming replication on node %s" % socket.gethostname())
+        return True
+    logger.info("Slave: Resuming replication on node %s" % socket.gethostname())
     with RepMgrDBConnection(tenant) as connector:
         if is_replication_paused(connector):
             try:
@@ -76,6 +76,7 @@ def resume_replication(tenant, nodes):
             except OperationalError as e:
                 # TODO
                 pass
+    return True
 
 
 @celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True)
@@ -88,6 +89,7 @@ def block_pgpool(nodes):
         return
     logger.info("Slave: Blocking pgpool")
     call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+    return True
 
 
 @celery.task(name='task.edmigrate.slave.unblock_pgpool', ignore_result=True)
@@ -98,5 +100,6 @@ def unblock_pgpool(nodes):
     '''
     if socket.gethostname() not in nodes:
         return
-    loggerdebug("Slave: Resuming pgpool")
+    logger.info("Slave: Resuming pgpool")
     call(['iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+    return True

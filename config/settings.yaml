@@ -165,11 +165,9 @@ common:
       CELERYBEAT_SCHEDULE:
         -   name: prepare-migration
             task: task.edmigrate.master.prepare_edware_data_refresh
-            schedule: timedelta
-            seconds: 10
-            #schedule: cron
-            #hour: 1
-            #min: 0
+            schedule: cron
+            hour: 1
+            min: 0
         -   name: start-migration
             task: task.edmigrate.master.start_edware_data_refresh
             schedule: cron
@@ -320,6 +318,8 @@ qa:
       db:
         schema_name: edware_sds_1_3
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
+    migrate:
+      pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -531,6 +531,18 @@ development:
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
+    migrate:
+      pgpool.hostname: ''
+    migrate.celery:
+      CELERYBEAT_SCHEDULE:
+        -   name: prepare-migration
+            task: task.edmigrate.master.prepare_edware_data_refresh
+            schedule: timedelta
+            seconds: 100
+        -   name: start-migration
+            task: task.edmigrate.master.start_edware_data_refresh
+            schedule: timedelta
+            seconds: 200
     auth:
       skip.verify: False
       saml:

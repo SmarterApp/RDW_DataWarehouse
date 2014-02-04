@@ -2,16 +2,18 @@ __author__ = 'sravi'
 
 import unittest
 import edmigrate.tasks.master as master
+from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite, \
+    Unittest_with_repmgr_sqlite_no_data_load, UnittestRepMgrDBConnection
 
 
-class TestMasterWorker(unittest.TestCase):
+class TestMasterWorker(Unittest_with_repmgr_sqlite):
 
     def setUp(self):
         pass
 
     @classmethod
     def setUpClass(cls):
-        pass
+        Unittest_with_repmgr_sqlite.setUpClass()
 
     def tearDown(self):
         pass

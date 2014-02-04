@@ -126,6 +126,5 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     verify the status of replication on slaves
     '''
     logger.info('Master: verify status of replication on slaves: ' + str(slaves))
-    sleep(5)
     status = queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
     return status

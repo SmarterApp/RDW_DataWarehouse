@@ -11,6 +11,10 @@ from edschema.metadata.repmgr_metadata import generate_repmgr_metadata
 
 
 class TestRepMgrConnector(Unittest_with_repmgr_sqlite):
+    @classmethod
+    def setUpClass(cls):
+        Unittest_with_repmgr_sqlite.setUpClass()
+
     def test_connector(self):
         conn = RepMgrDBConnection(get_unittest_tenant_name())
         self.assertIsInstance(conn, RepMgrDBConnection)

@@ -7,6 +7,7 @@ from udl2 import message_keys as mk
 from move_to_target import create_queries as queries
 from udl2_util.database_util import execute_udl_query_with_result
 from udl2.udl2_connector import UDL2DBConnection
+from move_to_target.move_to_target_conf import get_move_to_target_conf
 
 
 def get_table_and_column_mapping(conf, table_name_prefix=None):
@@ -97,7 +98,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
 
         mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
         mk.PHASE: int(phase_number),
-        mk.MOVE_TO_TARGET: udl2_conf['move_to_target'],
+        mk.MOVE_TO_TARGET: get_move_to_target_conf(),
         mk.LOAD_TYPE: load_type,
         mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['on'] else udl2_conf['multi_tenant']['default_tenant'],
     }

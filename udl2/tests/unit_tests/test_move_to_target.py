@@ -8,6 +8,7 @@ from collections import OrderedDict
 import datetime
 from udl2 import message_keys as mk
 from udl2_util.config_reader import read_ini_file
+from move_to_target.move_to_target_conf import get_move_to_target_conf
 
 
 class TestMoveToTarget(unittest.TestCase):
@@ -94,7 +95,7 @@ def generate_conf(guid_batch, udl2_conf):
               mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
               mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
               mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
-              mk.MOVE_TO_TARGET: udl2_conf['move_to_target']}
+              mk.MOVE_TO_TARGET: get_move_to_target_conf()}
     return conf
 
 

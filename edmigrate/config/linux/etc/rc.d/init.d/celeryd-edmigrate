@@ -4,7 +4,7 @@
 # chkconfig: 345 90 10
 #
 # :Usage: /etc/init.d/celeryd {start|stop|force-reload|restart|try-restart|status}
-# :Configuration file: /opt/edware/conf/celeryd-edload.conf
+# :Configuration file: /opt/edware/conf/celeryd-edmigrate.conf
 #
 # See http://docs.celeryproject.org/en/latest/tutorials/daemonizing.html#generic-init-scripts
 
@@ -17,7 +17,7 @@ DEFAULT_LOG_LEVEL="INFO"
 DEFAULT_NODES="celery"
 DEFAULT_CELERYD="-m celery.bin.celeryd_detach"
 
-CELERY_DEFAULTS=${CELERY_DEFAULTS:-"/opt/edware/conf/celeryd-edload.conf"}
+CELERY_DEFAULTS=${CELERY_DEFAULTS:-"/opt/edware/conf/celeryd-edmigrate.conf"}
 
 test -f "$CELERY_DEFAULTS" && . "$CELERY_DEFAULTS"
 

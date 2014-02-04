@@ -117,7 +117,7 @@ setup(name='udl2',
                                                     'tests/data/corrupt_json.tar.gz.gpz',
                                                     'tests/data/test_source_file1_tar_gzipped.tar.gz.gpg',
                                                     'tests/data/test_source_file2_tar_gzipped.tar.gz.gpg']),
-                  ('/opt/edware/conf/', ['conf/dev_conf/udl2_conf.py']),
+                  ('/opt/edware/conf/', ['../config/development.ini']),
                   ('/opt/edware/log/', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
                   ],
       )

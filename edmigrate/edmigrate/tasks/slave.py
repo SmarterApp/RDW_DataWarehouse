@@ -1,15 +1,13 @@
 __author__ = 'sravi'
 
 import socket
-from edmigrate.celery import celery
+from edmigrate.celery import celery, logger
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call
 from edmigrate.tasks.nodes import register_slave_node
 from edmigrate.settings.config import Config, get_setting
-import logging
 
-log = logging.getLogger('edmigrate')
 
 pgpool = get_setting(Config.PGPOOL_HOSTNAME)
 node_group_id = get_setting(Config.REPLICATION_GROUP)
@@ -24,14 +22,12 @@ def slaves_register():
     '''
     hostname = socket.gethostname()
     group_id = node_group_id
-    log.debug("Register node %s %s to master", hostname, group_id)
-    print("Slaves are called")
+    logger.info("Register node %s %s to master", hostname, group_id)
     register_slave_node.delay(hostname, group_id)
 
 
 @celery.task(name='task.edmigrate.slave.slaves_end_data_migrate', ignore_result=True)
 def slaves_end_data_migrate(tenant, nodes):
-    print('Slave: Ending data migration')
     if socket.gethostname() not in nodes:
         return
     unblock_pgpool(nodes)
@@ -48,7 +44,7 @@ def is_replication_paused(connector):
         replication_paused = result.fetchone()['pg_is_xlog_replay_paused']
         return replication_paused == 'f'
     except OperationalError as e:
-        log.debug("Error occurs when query replication status: %s" % e)
+        # logger.info("Error occurs when query replication status: %s" % e)
         return True
 
 
@@ -59,7 +55,7 @@ def pause_replication(tenant, nodes):
     '''
     if socket.gethostname() not in nodes:
         return
-    log.debug("Pausing replication on node %s" % socket.gethostname())
+    logger.info("Pausing replication on node %s" % socket.gethostname())
     with RepMgrDBConnection(tenant) as connector:
         if not is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_pause()")
@@ -72,10 +68,14 @@ def resume_replication(tenant, nodes):
     '''
     if socket.gethostname() not in nodes:
         return
-    log.debug("Resuming replication on node %s" % socket.gethostname())
+    logger.info("Resuming replication on node %s" % socket.gethostname())
     with RepMgrDBConnection(tenant) as connector:
         if is_replication_paused(connector):
-            connector.execute("select pg_xlog_replay_resume()")
+            try:
+                connector.execute("select pg_xlog_replay_resume()")
+            except OperationalError as e:
+                # TODO
+                pass
 
 
 @celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True)
@@ -86,6 +86,7 @@ def block_pgpool(nodes):
     '''
     if socket.gethostname() not in nodes:
         return
+    logger.info("Slave: Blocking pgpool")
     call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
 
 
@@ -97,4 +98,5 @@ def unblock_pgpool(nodes):
     '''
     if socket.gethostname() not in nodes:
         return
+    loggerdebug("Slave: Resuming pgpool")
     call(['iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])

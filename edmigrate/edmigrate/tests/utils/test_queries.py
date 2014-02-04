@@ -3,13 +3,14 @@ __author__ = 'sravi'
 import unittest
 import edmigrate.utils.queries as queries
 from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite, \
-    Unittest_with_repmgr_sqlite_no_data_load, UnittestRepMgrDBConnection
+    Unittest_with_repmgr_sqlite_no_data_load, UnittestRepMgrDBConnection, get_unittest_tenant_name
 
 
 class TestQueries(Unittest_with_repmgr_sqlite):
 
     def setUp(self):
-        pass
+        self.slave_host_names = ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net']
+        self.slave_nodes_info = {2: 'dbpgdwr0.qa.dum.edwdc.net', 3: 'dbpgdwr0s1.qa.dum.edwdc.net'}
 
     @classmethod
     def setUpClass(cls):
@@ -36,6 +37,17 @@ class TestQueries(Unittest_with_repmgr_sqlite):
         self.assertFalse(queries.is_sync_satus_acceptable('11', '10'))
         self.assertFalse(queries.is_sync_satus_acceptable(' ', '10'))
         self.assertFalse(queries.is_sync_satus_acceptable('X Bytes', '10'))
+
+    def test_get_slave_nodes_info_dict(self):
+        with UnittestRepMgrDBConnection() as connection:
+            nodes_info = queries.query_slave_nodes_info_dict(connection, self.slave_host_names)
+        self.assertEqual(sorted(list(nodes_info.values())), self.slave_host_names)
+
+    def test_get_slave_nodes_status(self):
+        with UnittestRepMgrDBConnection() as connection:
+            nodes_status = queries.query_slave_nodes_status(connection, self.slave_nodes_info)
+        self.assertEqual(sorted(nodes_status.keys()), sorted(self.slave_nodes_info.keys()))
+
 
 if __name__ == "__main__":
     unittest.main()

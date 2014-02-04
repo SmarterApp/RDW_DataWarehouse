@@ -37,7 +37,7 @@ def is_sync_satus_acceptable(status, tolerence):
     return True if lag_in_bytes <= int(tolerence) else False
 
 
-def query_slave_node_info_dict(connector, slave_host_names):
+def query_slave_nodes_info_dict(connector, slave_host_names):
     slave_node_info = {}
     metadata = connector.get_metadata(Constants.REPL_MGR_SCHEMA)
     repl_nodes_table = Table(Constants.REPL_NODES_TABLE, metadata)
@@ -58,7 +58,7 @@ def get_slave_nodes_info_dict(tenant, slave_host_names):
     log.info('Master: Getting slave node info for the given hostnames: ' + str(slave_host_names))
     slave_node_info = {}
     with RepMgrDBConnection(tenant) as connector:
-        slave_node_info = query_slave_node_info_dict(connector, slave_host_names)
+        slave_node_info = query_slave_nodes_info_dict(connector, slave_host_names)
     return slave_node_info
 
 

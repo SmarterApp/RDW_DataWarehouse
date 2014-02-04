@@ -4,7 +4,7 @@ Created on Feb 3rd, 2013
 @author: ejen
 '''
 from sqlalchemy.schema import MetaData, Table, Column
-from sqlalchemy.types import String, BigInteger, Text, Integer, Interval, TIMESTAMP
+from sqlalchemy.types import String, BigInteger, Text, Integer, Interval, DateTime
 import datetime
 
 
@@ -15,14 +15,14 @@ import datetime
 def generate_repmgr_metadata(schema_name=None, bind=None):
     metadata = MetaData(schema=schema_name, bind=bind)
     repl_status = Table('repl_status', metadata,
-                        Column('primary_node', Integer, primary_key=True),
+                        Column('primary_node', Integer, nullable=False),
                         Column('standby_node', Integer, nullable=False),
                         Column('last_wal_primary_location', Text(255), nullable=False),
                         Column('last_wal_standby_location', Text(255), nullable=False),
                         Column('replication_lag', Text(255), nullable=False),
                         Column('apply_lag', Text(255), nullable=False),
-                        Column('time_lag', Interval, nullable=False),
-                        Column('last_monitor_time', TIMESTAMP, nullable=False, default=datetime.datetime.strptime('20000101000000', '%Y%m%d%H%M%S'))
+                        Column('time_lag', Interval, nullable=False, default=datetime.timedelta(0)),
+                        Column('last_monitor_time', DateTime(True), nullable=False, default=datetime.datetime.strptime('2000-01-01 00:00:00', '%Y-%m-%d %H:%M:%S'))
                         )
 
     repl_nodes = Table('repl_nodes', metadata,

@@ -11,6 +11,7 @@ from udl2_util.database_util import connect_db, get_table_columns_info, get_sche
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import re
+from udl2_util.config_reader import read_ini_file
 
 
 logger = logging.getLogger()
@@ -24,9 +25,7 @@ class TestUdl2Database(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
-        self.conf = udl2_conf
+        self.conf = read_ini_file(config_path)
 
     def tearDown(self):
         pass

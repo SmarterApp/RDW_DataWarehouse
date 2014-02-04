@@ -8,6 +8,7 @@ from uuid import uuid4
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import udl2.message_keys as mk
 from post_etl import post_etl
+from udl2_util.config_reader import read_ini_file
 
 
 class TestPostEtl(unittest.TestCase):
@@ -18,8 +19,7 @@ class TestPostEtl(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+        udl2_conf = read_ini_file(config_path)
         self.conf = udl2_conf
 
     def setUp(self):

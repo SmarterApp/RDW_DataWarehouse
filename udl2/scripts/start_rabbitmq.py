@@ -5,6 +5,7 @@ import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import os.path
+from udl2_util.config_reader import read_ini_file
 
 
 def start_rabbitmq(RABBITMQ_SERVER):
@@ -34,6 +35,6 @@ if __name__ == '__main__':
     else:
         config_path_file = args.config_file
 
-    udl2_conf = imp.load_source('udl2_conf', config_path_file)
-    from udl2_conf import udl2_conf
+    udl2_conf = read_ini_file(config_path_file)
+
     start_rabbitmq(udl2_conf['rabbitmq']['RABBITMQ_SERVER_PATH'])

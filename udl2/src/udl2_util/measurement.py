@@ -13,20 +13,23 @@ Main method: measure_cpu_plus_elapsed_time(function_to_be_decorated)
 import inspect
 import imp
 import time
+import os
 
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import message_keys as mk
 from udl2.udl2_connector import UDL2DBConnection
 import logging
+from udl2.celery import udl2_conf
+
 logger = logging.getLogger(__name__)
 
-try:
-    config_path_file = os.environ['UDL2_CONF']
-except Exception:
-    config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
-
-udl2_conf = imp.load_source('udl2_conf', config_path_file)
-from udl2_conf import udl2_conf
+# try:
+#     config_path_file = os.environ['UDL2_CONF']
+# except Exception:
+#     config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
+#
+# udl2_conf = imp.load_source('udl2_conf', config_path_file)
+# from udl2_conf import udl2_conf
 
 
 def remove_celery_system_frame_objects(frames):

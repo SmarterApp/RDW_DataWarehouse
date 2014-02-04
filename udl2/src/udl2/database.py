@@ -19,12 +19,13 @@ from sqlalchemy.schema import (MetaData, CreateSchema, CreateSequence, ForeignKe
 from sqlalchemy import Table, Column, Sequence
 from sqlalchemy.types import *
 from sqlalchemy.sql.expression import text
-import imp
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
 from udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
 from config import ref_table_data
+from udl2_util.config_reader import read_ini_file
+
 
 #
 # UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces
@@ -831,8 +832,7 @@ def main():
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
     else:
         config_path_file = args.config_file
-    udl2_conf = imp.load_source('udl2_conf', config_path_file)
-    from udl2_conf import udl2_conf
+    udl2_conf = read_ini_file(config_path_file)
 
     if args.action is None:
         parser.print_help()

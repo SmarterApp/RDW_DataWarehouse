@@ -5,6 +5,7 @@ import shutil
 import csv
 import imp
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+from udl2_util.config_reader import read_ini_file
 
 
 class Test(unittest.TestCase):
@@ -14,8 +15,7 @@ class Test(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
+        udl2_conf = read_ini_file(config_path)
         self.conf = udl2_conf
         #define test file name and directory
         self.test_output_path = udl2_conf['zones']['tests'] + 'this/is/a/'

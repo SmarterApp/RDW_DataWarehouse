@@ -31,10 +31,10 @@ common:
         CELERY_TASK_RESULT_EXPIRES: 10      # TTL for results
         CELERY_CONCURRENCY: 10              # number of available workers processes
         CELERY_SEND_EVENTS: True            # send events for monitor
-        rabbitmq:                           # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
-            RABBITMQ_SERVER_PATH: 
-                - /opt/local/sbin/rabbitmq-server
-                - /usr/local/sbin/rabbitmq-server       # where the rabbitmq-server is located, we list all possible locations in your system. 
+    rabbitmq:                               # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
+        RABBITMQ_SERVER_PATH: 
+            - /opt/local/sbin/rabbitmq-server
+            - /usr/local/sbin/rabbitmq-server       # where the rabbitmq-server is located, we list all possible locations in your system. 
     file_splitter:                          # Options for file_splitter
         row_limit: 10000                    # default row number for split files
         parts: 1                            # default parts of files
@@ -180,3 +180,38 @@ development:
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql
+    udl2_db_conn:
+        url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
+        db_schema: udl2
+        echo: False
+        max_overflow: 10
+        pool_size: 20
+    target_db_conn:
+        edware:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: edware
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        ca:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: edware
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: ftest_test_schema
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+    gpg_home: ~/.gnupg

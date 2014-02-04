@@ -16,6 +16,7 @@ from udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from udl2_util.database_util import connect_db, get_sqlalch_table_object
+from udl2_util.config_reader import read_ini_file
 
 
 FILES = ['BENCHMARK_RECORDS_10K.tar.gz.asc', 'BENCHMARK_RECORDS_50K.tar.gz.asc', 'BENCHMARK_RECORDS_100K.tar.gz.asc', 'BENCHMARK_RECORDS_500K.tar.gz.asc', 'BENCHMARK_RECORDS_2M.tar.gz.asc', 'BENCHMARK_RECORDS_5M.tar.gz.asc']
@@ -31,8 +32,7 @@ logger = get_task_logger(__name__)
 
 config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-udl2_conf = imp.load_source('udl2_conf', config_path_file)
-from udl2_conf import udl2_conf
+udl2_conf = read_ini_file(config_path_file)
 
 
 def start_test(directory_path, memory, cpu, hist_db, hist_schema, port, user, passwd, host):

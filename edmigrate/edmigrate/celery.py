@@ -7,7 +7,14 @@ from edcore.database import initialize_db
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from datetime import timedelta
 from celery.schedules import crontab
+import logging
 
+logger = logging.getLogger('edmigrate')
+logger.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 PREFIX = 'migrate.celery'
 
@@ -35,6 +42,3 @@ if prod_config:
     # We should only need to setup db connection in prod mode
     setup_db_connection(conf)
     setup_settings(conf)
-
-import logging
-logging.basicConfig(level=logging.DEBUG)

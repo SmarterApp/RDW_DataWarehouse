@@ -90,7 +90,7 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
                 student_guid = result.get(Constants.STUDENT_GUID)
                 file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid)
                 logger.debug('pre-pdf for [%s]', file_name)
-                pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_name)
+                pdf_trigger.send_pdf_request(student_guid, state_code, file_name)
             except Exception as e:
                 triggered = False
                 logger.warning('Pdf generation failed for %s', student_guid)

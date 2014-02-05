@@ -117,7 +117,7 @@ class FTestMoveToTarget(unittest.TestCase):
         self.check3_entire_load_to_star_stage_with_multi_tenancy()
 
     def check1_get_tenant_target_db_information_multi_tenant_on(self):
-        udl2_conf['multi_tenant']['on'] = True
+        udl2_conf['multi_tenant']['active'] = True
 
         expected = {
             mk.TARGET_DB_NAME: self.tenant_info['target_db_name'],
@@ -130,7 +130,7 @@ class FTestMoveToTarget(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
     def check2_get_tenant_target_db_information_multi_tenant_off(self):
-        udl2_conf['multi_tenant']['on'] = False
+        udl2_conf['multi_tenant']['active'] = False
         expected = {
             mk.TARGET_DB_NAME: udl2_conf['target_db_conn']['edware']['db_database'],
             mk.TARGET_DB_USER: udl2_conf['target_db_conn']['edware']['db_user'],
@@ -142,7 +142,7 @@ class FTestMoveToTarget(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
     def check3_entire_load_to_star_stage_with_multi_tenancy(self):
-        udl2_conf['multi_tenant']['on'] = True
+        udl2_conf['multi_tenant']['active'] = True
         self.verify_target_schema(True)
         self.read_csv_data_to_dict()
         msg = self.create_msg()

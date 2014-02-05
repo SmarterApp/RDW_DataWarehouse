@@ -25,7 +25,7 @@ def get_move_to_target_conf():
             },
         },
         {
-           'rec_id': 'section_rec_id',
+            'rec_id': 'section_rec_id',
             'value': '1'
         },
         {

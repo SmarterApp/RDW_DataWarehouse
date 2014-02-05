@@ -17,7 +17,7 @@ from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from sqlalchemy.sql import select, delete, and_
 from udl2.celery import udl2_conf
 from sqlalchemy import and_
-
+from udl2_util.config_reader import read_ini_file
 
 FACT_TABLE = 'fact_asmt_outcome'
 
@@ -58,7 +58,7 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
-#Run the UDL with corrupted csv(missing column)
+    #Run the UDL with corrupted csv(missing column)
     def udl_with_csv_ext_col(self, guid_batch_id):
         self.conf = udl2_conf
 
@@ -69,7 +69,7 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
-#Run the udl with corrupted json
+    #Run the udl with corrupted json
     def udl_with_corrupt_json(self, guid_batch_id):
         self.conf = udl2_conf
 
@@ -81,10 +81,10 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
-#Run the UDL with corrupted source file
+    #Run the UDL with corrupted source file
     def udl_with_corrupt_sorurce(self, guid_batch_id):
 
-        from udl2_conf import udl2_conf
+        #from udl2_conf import udl2_conf
         self.conf = udl2_conf
 
         self.copy_file_to_tmp()
@@ -96,7 +96,7 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
-#Run the UDL with missing json file
+    #Run the UDL with missing json file
     def udl_with_missing_json(self, guid_batch_id):
 
         self.conf = udl2_conf
@@ -110,16 +110,16 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
-#copy files to tenant directory
+    #copy files to tenant directory
     def copy_file_to_tmp(self):
         # create tenant dir if not exists
         if os.path.exists(self.tenant_dir):
-                print("tenant dir already exists")
+            print("tenant dir already exists")
         else:
-                print("copying")
-                os.makedirs(self.tenant_dir)
+            print("copying")
+            os.makedirs(self.tenant_dir)
 
-#connect to star schmea after each of above udl run and verify that data has not been loaded into star schema
+            #connect to star schmea after each of above udl run and verify that data has not been loaded into star schema
     def connect_to_star_shema(self, connector):
         # Connect to DB and make sure that star shma dont have any data
         time.sleep(2)
@@ -130,7 +130,7 @@ class ValidateTableData(unittest.TestCase):
         trp_str = (self.guid_batch_id,)
         self.assertNotIn(trp_str, output_data, "assert successful")
 
-#In UDL_Batch Table,After each udl run verify that UDL_Complete task is Failure and Post_udl cleanup task is successful
+    #In UDL_Batch Table,After each udl run verify that UDL_Complete task is Failure and Post_udl cleanup task is successful
     def verify_udl_failure(self, udl_connector, guid_batch_id):
         time.sleep(5)
         status = [('FAILURE',)]
@@ -144,7 +144,7 @@ class ValidateTableData(unittest.TestCase):
         self.assertEquals(status, batch_table_data)
         self.assertEquals([('SUCCESS',)], batch_table_post_udl)
 
-#Verify that udl is failing due to corrcet task failure.For i.e if json is missing udl should fail due to missing file at file expander task
+    #Verify that udl is failing due to corrcet task failure.For i.e if json is missing udl should fail due to missing file at file expander task
     def verify_missing_json(self, udl_connector, guid_batch_id):
         time.sleep(5)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
@@ -153,7 +153,7 @@ class ValidateTableData(unittest.TestCase):
         print(batch_data_tasklevel)
         self.assertEquals([('FAILURE',)], batch_data_tasklevel)
 
-#Verify that UDL is failing at Decription task
+    #Verify that UDL is failing at Decription task
     def verify_corrupt_source(self, udl_connector, guid_batch_id):
         time.sleep(5)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
@@ -162,7 +162,7 @@ class ValidateTableData(unittest.TestCase):
         print(batch_data_tasklevel)
         self.assertEquals([('FAILURE',)], batch_data_tasklevel)
 
-#Verify udl is failing at simple file validator
+    #Verify udl is failing at simple file validator
     def verify_corrupt_csv(self, udl_connector, guid_batch_id):
         time.sleep(3)
         print(guid_batch_id)

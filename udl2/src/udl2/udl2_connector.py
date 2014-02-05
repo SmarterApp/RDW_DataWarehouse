@@ -123,7 +123,6 @@ def create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant=None):
     namespace = connector_cls.get_datasource_name(tenant=tenant)
     db_dict = udl2_conf[namespace.split('.')[0]]
     if tenant:
-        print('****', namespace.split('.'))
         tenant_dict = db_dict[namespace.split('.')[1]]
     else:
         tenant_dict = db_dict

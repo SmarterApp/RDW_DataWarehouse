@@ -31,7 +31,7 @@ function build_e2e {
 	cp $WORKSPACE/udl2/tests/data/keys/* ~/.gnupg/
 	#cd ../config
 	#python setup.py install --force
-	$WORKSPACE/udl2/scripts/stop_celery.sh
+	stop_celery.sh
 	sleep 2
 	celeryctl purge
 

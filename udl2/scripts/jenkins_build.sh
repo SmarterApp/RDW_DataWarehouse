@@ -28,22 +28,20 @@ function build_e2e {
 
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
+	cp $WORKSPACE/udl2/tests/data/keys/* ~/.gnupg/
 	#cd ../config
 	#python setup.py install --force
-	stop_celery.sh
+	$WORKSPACE/udl2/scripts/stop_celery.sh
 	sleep 2
 	celeryctl purge
 
 	cd $WORKSPACE/udl2/scripts
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	$WORKSPACE/udl2/scrupts/teardown_udl2_database.sh
 	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
-	start_celery.sh &
+	$WORKSPACE/scripts/start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/e2e_tests
 	nosetests fTest_*.py -vs
-	stop_celery.sh
-	sleep 2
-	celeryctl purge
 }
 
 function build_functest {

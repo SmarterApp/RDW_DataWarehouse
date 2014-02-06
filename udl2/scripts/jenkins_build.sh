@@ -11,9 +11,9 @@ function build_pep8 {
 
 function build_doc {
 	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
-	cd udl2
+	cd $WORKSPACE/udl2
 	python setup.py install --force
-	cd docs
+	cd $WORKSPACE/docs
 	make clean
 	make html
 }
@@ -22,7 +22,7 @@ function build_e2e {
 	PATH=$PATH:/usr/pgsql-9.2/bin/
 	export PATH
 	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
-	cd config
+	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
@@ -50,7 +50,7 @@ function build_functest {
 	PATH=$PATH:/usr/pgsql-9.2/bin/
 	export PATH
 	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
-	cd config
+	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 

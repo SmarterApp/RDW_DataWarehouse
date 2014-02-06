@@ -37,7 +37,7 @@ function build_e2e {
 	cd $WORKSPACE/udl2/scripts
 	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
 	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
-	$WORKSPACE/scripts/start_celery.sh &
+	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/e2e_tests
 	nosetests fTest_*.py -vs
@@ -81,7 +81,7 @@ function build_unittest {
 	sleep 2
 	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
 	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
-	#cd ..
+
 	cd $WORKSPACE/udl2
 	nosetests --with-cov --cov=src/ --cov-report xml tests/unit_tests/test*.py
 }

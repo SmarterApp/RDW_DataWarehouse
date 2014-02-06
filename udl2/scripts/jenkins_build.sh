@@ -29,8 +29,7 @@ function build_e2e {
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
 	cp $WORKSPACE/udl2/tests/data/keys/* ~/.gnupg/
-	#cd ../config
-	#python setup.py install --force
+
 	stop_celery.sh
 	sleep 2
 	celeryctl purge
@@ -54,13 +53,11 @@ function build_functest {
 
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
-	#cd ../config
-	#python setup.py install --force
+
 	stop_celery.sh
 	sleep 2
 	celeryctl purge
 
-	#cd $WORKSPACE/udl2/scripts
 	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
 	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	start_celery.sh &

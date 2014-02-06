@@ -7,7 +7,7 @@ function build_unittest {
 	PATH=$PATH:/usr/pgsql-9.2/bin/
 	export PATH
 	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
-	cd config
+	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 

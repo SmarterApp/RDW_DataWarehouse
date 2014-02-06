@@ -1,0 +1,14 @@
+{
+    "content": "assessment",
+    "identification": {
+        "guid": "asmt_guid",
+        "type": "asmt_type",
+        "year": "asmt_period_year",
+        "period": "asmt_period_year",
+        "version": "asmt_version",
+        "subject": "asmt_subject"
+        "year": "asmt_period_year",
+        "extract_date": "reg_extract_date",
+    	}
+    }
+}

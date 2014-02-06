@@ -259,11 +259,18 @@ define [
         label = label.replace /\*$/, ""
         param.values.push label
       this.label = this.generateLabel param
-      this.isEmpty = (param.values.length == 0)
+      this.isEmpty = (param.values.length is 0)
 
     generateLabel: (data) ->
-      #template = "{{#.}}<div class='selectedFilterGroup'><div class='pull-left'><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
-      template = "{{#.}}<span class='selectedFilterGroup'><span><span>{{display}}: </span>{{#values}}<span>{{.}}</span><span class='seperator'>, </span>{{/values}}</span><div class='removeIcon'></span></span>{{/.}}"
+      template = "<span class='selectedFilterGroup'>
+        <span>
+          <span>{{display}}: </span>
+          {{#values}}
+            <span>{{.}}</span><span class='seperator'>, </span>
+          {{/values}}
+        </span>
+        <div class='removeIcon'/>
+      </span>"
       output = Mustache.to_html(template, data)
       $(output)
 

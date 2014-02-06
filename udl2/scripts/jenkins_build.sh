@@ -57,6 +57,7 @@ function build_functest {
 	#cd ../config
 	#python setup.py install --force
 	stop_celery.sh
+	sleep 2
 	celeryctl purge
 
 	#cd $WORKSPACE/udl2/scripts
@@ -79,11 +80,8 @@ function build_unittest {
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
 
-
-	#cd $WORKSPACE/config
-	#python setup.py install --force
-	/opt/wgen/edware-udl/udl2/python3.3/bin/stop_celery.sh
-	#cd $WORKSPACE/udl2/scripts
+	stop_celery.sh
+	sleep 2
 	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
 	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	#cd ..

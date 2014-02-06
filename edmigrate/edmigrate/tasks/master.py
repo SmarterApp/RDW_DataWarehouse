@@ -1,16 +1,14 @@
 __author__ = 'sravi'
 
 from time import sleep
-from celery.canvas import chain, group, chord
-from datetime import timedelta
-from celery.schedules import crontab
+from celery.canvas import chain
 from edmigrate.settings.config import Config, get_setting
 
 from edmigrate.celery import celery, logger
 from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
     pause_replication, resume_replication, block_pgpool, unblock_pgpool
 from edmigrate.utils.constants import Constants
-from edmigrate.tasks import nodes
+from edmigrate.tasks.nodes import registered_slaves, get_slave_node_host_names_for_group, get_all_slave_node_host_names
 import edmigrate.utils.queries as queries
 from edmigrate.settings.config import Config, get_setting
 
@@ -68,16 +66,16 @@ def start_edware_data_refresh():
                 slaves A: Verify is in the pool and replication is resumed
     '''
     logger.info('Master: Starting scheduled edware data refresh task')
-    logger.info("Master: Registered nodes: %s", nodes.registered_slaves)
+    logger.info("Master: Registered nodes: %s", registered_slaves)
     # Note: The above self registration process needs to be finished
     # (within some upper time bound) before starting the below steps
 
     # TODO: Error handling - How do we ensure the slave discovery/registration process is complete
 
     # slaves_a will be loaded first
-    slaves_all = nodes.get_all_slave_node_host_names(nodes.registered_slaves)
-    slaves_a = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_A, nodes.registered_slaves)
-    slaves_b = nodes.get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_B, nodes.registered_slaves)
+    slaves_all = get_all_slave_node_host_names(registered_slaves)
+    slaves_a = get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_A, registered_slaves)
+    slaves_b = get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_B, registered_slaves)
     logger.info("Group A consists of %s", slaves_a)
     logger.info("Group B consists of %s", slaves_b)
 

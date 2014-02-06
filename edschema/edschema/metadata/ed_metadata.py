@@ -225,6 +225,20 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('dmg_prg_504', Boolean, nullable=True),
                                Column('dmg_prg_tt1', Boolean, nullable=True),
                                Column('dmg_eth_derived', SmallInteger, nullable=True),
+                               Column('acc_asl_video_embed', SmallInteger, nullable=False),
+                               Column('acc_asl_human_nonembed', SmallInteger, nullable=False),
+                               Column('acc_braile_embed', SmallInteger, nullable=False),
+                               Column('acc_closed_captioning_embed', SmallInteger, nullable=False),
+                               Column('acc_text_to_speech_embed', SmallInteger, nullable=False),
+                               Column('acc_abacus_nonembed', SmallInteger, nullable=False),
+                               Column('acc_alternate_response_options_nonembed', SmallInteger, nullable=False),
+                               Column('acc_calculator_nonembed', SmallInteger, nullable=False),
+                               Column('acc_multiplication_table_nonembed', SmallInteger, nullable=False),
+                               Column('acc_print_on_demand_nonembed', SmallInteger, nullable=False),
+                               Column('acc_read_aloud_nonembed', SmallInteger, nullable=False),
+                               Column('acc_scribe_nonembed', SmallInteger, nullable=False),
+                               Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
+                               Column('acc_streamline_mode', SmallInteger, nullable=False),
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_rec_id, unique=True)

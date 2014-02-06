@@ -36,7 +36,7 @@ function build_e2e {
 	celeryctl purge
 
 	cd $WORKSPACE/udl2/scripts
-	$WORKSPACE/udl2/scrupts/teardown_udl2_database.sh
+	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
 	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	$WORKSPACE/scripts/start_celery.sh &
 	sleep 2

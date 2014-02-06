@@ -94,7 +94,7 @@ function build_unittest {
 }
 
 function main {
-	while getopts ":m:d:ufhbse" opt; do
+	while getopts ":m:d:upfhbse" opt; do
 
 		case $opt in
 			u)
@@ -108,6 +108,9 @@ function main {
 				;;
 			e)
 				build_e2e
+				;;
+			p)
+				build_pep8
 				;;
 		esac
 	done

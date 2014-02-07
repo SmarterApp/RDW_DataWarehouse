@@ -12,7 +12,7 @@ define [
 
   class EdwareBreadcrumbs
 
-    constructor: (@container, @contextData, @configs) ->
+    constructor: (@container, @contextData, @configs, @displayHome) ->
       @initialize()
       @bindEvents()
 
@@ -32,6 +32,8 @@ define [
         # sets the url link and returns the current query parameters
         currentParams = @setUrlLink currentParams, element, staticElement
         elements.push @formatName element
+      if not this.displayHome
+        elements.shift()
       elements[elements.length - 1].link = '#'
       elements
 
@@ -70,6 +72,8 @@ define [
         else
           currentParams = currentParams + "&" + params
         element.link = staticElement.link + "?" + currentParams
+      else if staticElement.link
+        element.link = staticElement.link
       currentParams
 
   #
@@ -78,16 +82,16 @@ define [
   #    *  @param configs
   #    *  Example: $("#table1").breadcrumbs(data, configs)
   #
-  $.fn.breadcrumbs = (contextData, configs) ->
-    new EdwareBreadcrumbs(this, contextData, configs)
+  $.fn.breadcrumbs = (contextData, configs, displayHome) ->
+    new EdwareBreadcrumbs(this, contextData, configs, displayHome)
     
   #
   #    * Creates breadcrumbs widget
   #    * @param containerId - The container id for breadcrumbs
   #    * @param data
   #
-  create = (containerId, contextData, configs) ->
-    $(containerId).breadcrumbs contextData, configs
+  create = (containerId, contextData, configs, displayHome) ->
+    $(containerId).breadcrumbs contextData, configs, displayHome
 
   create: create
   EdwareBreadcrumbs: EdwareBreadcrumbs

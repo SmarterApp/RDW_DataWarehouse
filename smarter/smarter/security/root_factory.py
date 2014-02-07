@@ -30,7 +30,7 @@ class RootFactory(object):
                (Allow, RolesConstants.DISTRICT_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
                (Allow, RolesConstants.STATE_EDUCATION_ADMINISTRATOR_1, ('view', 'logout')),
                (Allow, RolesConstants.STATE_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
-               (Allow, RolesConstants.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, ('view', 'logout')),
+               (Allow, RolesConstants.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, ('view', 'logout', 'display_home')),
                (Allow, RolesConstants.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
                (Allow, RolesConstants.SUPER_USER, ('super_admin_rights', 'view')),
                # For no role in memberOf in SAML response

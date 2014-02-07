@@ -43,7 +43,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
         results = connector.get_result(query)
         if results:
             result = results[0]
-
+            formatted_results.append({'type': 'home', 'name': 'Home'})
             # return an hierarchical ordered list
             formatted_results.append({'type': 'state', 'name': result[Constants.STATE_NAME], 'id': result[Constants.STATE_CODE]})
             if district_guid is not None:

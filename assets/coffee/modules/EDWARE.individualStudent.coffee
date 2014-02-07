@@ -36,7 +36,7 @@ define [
     loadPage: (template) ->
       @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @data.labels = @configData.labels
-      @grade = @data.context.items[3]
+      @grade = @data.context.items[4]
       @subjectsData = @data.subjects
       @processData()
       @render()
@@ -139,7 +139,8 @@ define [
 
 
     createBreadcrumb: () ->
-      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb)
+      displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
+      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb, displayHome)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',

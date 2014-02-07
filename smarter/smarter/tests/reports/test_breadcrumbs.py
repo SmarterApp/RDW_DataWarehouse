@@ -48,13 +48,8 @@ class TestContext(Unittest_with_edcore_sqlite):
     def testStateContext(self):
         results = get_breadcrumbs_context(state_code='NY')
         self.assertEqual(len(results['items']), 2)
-        self.assertEqual(results['items'][1]['name'], 'New York')
-        self.assertEqual(results['items'][1]['id'], 'NY')
-        self.assertEqual(results['items'][1]['type'], 'state')
-
-    def testExplicitStateContext(self):
-        results = get_breadcrumbs_context(state_code='NY')
-        self.assertEqual(len(results['items']), 2)
+        self.assertEqual(results['items'][0]['name'], 'Home')
+        self.assertEqual(results['items'][0]['type'], 'home')
         self.assertEqual(results['items'][1]['name'], 'New York')
         self.assertEqual(results['items'][1]['id'], 'NY')
         self.assertEqual(results['items'][1]['type'], 'state')
@@ -89,6 +84,12 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results['items']), 6)
         self.assertEqual(results['items'][5]['name'], 'StudentName')
         self.assertEqual(results['items'][5]['type'], 'student')
+
+    def test_No_state_code(self):
+        results = get_breadcrumbs_context()
+        self.assertEqual(len(results['items']), 1)
+        self.assertEqual(results['items'][0]['name'], 'Home')
+        self.assertEqual(results['items'][0]['type'], 'home')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

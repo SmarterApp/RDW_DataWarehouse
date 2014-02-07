@@ -5,7 +5,8 @@ require [
   'edwareDataProxy'
   'edwareUtil'
   'edwareHeader'
-], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader) ->
+  'edwareBreadcrumbs'
+], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs) ->
 
   # TODO: remove/update "comparingPopulationReport"
   edwareDataProxy.getDataForReport('comparingPopulationsReport').done (reportConfig) ->
@@ -49,6 +50,6 @@ require [
           if this.firstChild.data not in stateCodes
             this.firstChild.data = ''
 
-        # TODO: remove/update "individual_student_report"
-        edwareHeader.create(data, reportConfig, "individual_student_report")
-
+        edwareHeader.create(data, reportConfig)
+        displayHome = edwareUtil.getDisplayBreadcrumbsHome data.user_info
+        $('#breadcrumb').breadcrumbs(data.context, reportConfig.breadcrumb, displayHome)

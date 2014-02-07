@@ -79,8 +79,9 @@ define [
 
 
   getDataForReport = (reportName) ->
-    reportUrl = URLs[reportName]
-    resources = [URLs.content, URLs.common, URLs.labels, reportUrl]
+    reportUrl = [URLs[reportName]]
+    reportUrl = [] if not reportUrl
+    resources = [URLs.content, URLs.common, URLs.labels].concat(reportUrl)
     defer = $.Deferred()
     getDatafromSource(resources).done (data)->
       # preprocess legend data

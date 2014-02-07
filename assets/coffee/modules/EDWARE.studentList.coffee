@@ -169,7 +169,7 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
-      this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
+      this.header = edwareHeader.create(this.data, this.config) unless this.header
 
     fetchExportData: () ->
       this.assessmentsData

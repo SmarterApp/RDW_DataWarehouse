@@ -5,8 +5,7 @@
 define [
   'jquery'
   "mustache"
-  "edwareDataProxy"
-] , ($, Mustache, edwareDataProxy) ->
+] , ($, Mustache) ->
 
   BREADCRUMBS_TEMPLATE = "<ul>{{#items}}<li><a href='{{link}}'>{{name}}</a></li>{{/items}}<ul>"
 
@@ -34,7 +33,8 @@ define [
         elements.push @formatName element
       if not this.displayHome
         elements.shift()
-      elements[elements.length - 1].link = '#'
+      if elements.length > 0
+        elements[elements.length - 1].link = '#'
       elements
 
     bindEvents: ->

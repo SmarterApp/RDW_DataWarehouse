@@ -223,7 +223,7 @@ define [
           e = $(this)
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
 
-      this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
+      this.isrHeader = edwareHeader.create(this.data, this.configData) unless this.isrHeader
 
     updateClaimsHeight: ()->
       ### Update height of all claim box to match the highest one. ###

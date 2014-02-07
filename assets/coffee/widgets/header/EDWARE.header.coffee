@@ -8,7 +8,7 @@ define [
   "text!headerTemplateHtml"
 ], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml) ->
 
-  create = (data, config, reportName) ->
+  create = (data, config) ->
     labels = config.labels
     headerTemplate = $(headerTemplateHtml)
     # Add labels
@@ -45,6 +45,7 @@ define [
     $('#header .dropdown').mouseleave ->
       $(@).removeClass 'open'
 
+  # The code below is curently not being used.  Waiting to be refactored
   createCommonRegion = ()->
     # create header, breadcrumbs, info bar, action bar
     # process breadcrumbs

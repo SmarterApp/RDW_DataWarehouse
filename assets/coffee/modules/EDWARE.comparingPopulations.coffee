@@ -116,7 +116,7 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.header ?= edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType)
+      this.header ?= edwareHeader.create(this.data, this.config)
 
     fetchData: (params)->
       options =

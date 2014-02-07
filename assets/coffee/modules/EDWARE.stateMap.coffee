@@ -8,7 +8,6 @@ require [
   'edwareBreadcrumbs'
 ], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs) ->
 
-  # TODO: remove/update "comparingPopulationReport"
   edwareDataProxy.getDataForReport('comparingPopulationsReport').done (reportConfig) ->
       options =
         method: 'POST'

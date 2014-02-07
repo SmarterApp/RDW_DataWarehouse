@@ -36,7 +36,7 @@ def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch
 
     pipeline_chain = chain(W_file_arrived.task.si(arrival_msg),
                            W_file_decrypter.task.s(), W_file_expander.task.s(),
-                           #W_get_load_type.task.s(),
+                           W_get_load_type.task.s(),
                            W_simple_file_validator.task.s(), W_file_splitter.task.s(),
                            W_parallel_csv_load.task.s(),
                            W_file_content_validator.task.s(), W_load_json_to_integration.task.s(),

@@ -48,7 +48,6 @@ def setup_celery(celery, settings, prefix='celery'):
             beat_schedules[schedule[CELERYBEAT_SCHEDULE_NAME]] = get_schedule(schedule)
         celery_config[CELERY_QUEUES] = real_queues
         celery_config[CELERYBEAT_SCHEDULE] = beat_schedules
-    print(celery_config)
     celery.config_from_object(celery_config)
 
 def get_schedule(schedule):

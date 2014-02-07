@@ -58,6 +58,10 @@ common:
     passphrase: sbac udl2
     tenant_position: -4
     search_wait_time: 10
+    load_type_key: content
+    load_type:
+        assessment: assessment
+        student_registration: studentregistration
 
 
 qa:

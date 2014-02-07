@@ -15,7 +15,7 @@ class TestStatsMetadata(Unittest_with_sqlite):
         super().setUpClass(datasource_name='stats', metadata=generate_stats_metadata())
 
     def test_number_of_tables(self):
-        self.assertEqual(2, len(self.get_Metadata().tables), "Number of table does not match")
+        self.assertEqual(3, len(self.get_Metadata().tables), "Number of table does not match")
 
     def test_dim_inst_hier_type(self):
         self.assertTrue('udl_stats' in self.get_Metadata().tables)

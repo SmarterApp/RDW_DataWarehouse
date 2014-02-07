@@ -12,5 +12,6 @@ class Constants():
     REPL_NODE_ID = 'id'
     REPL_STANDBY_NODE = 'standby_node'
     REPL_STATUS_LAG = 'replication_lag'
+    UDL_DAILY_STATS_TABLE = 'udl_daily_stats'
     SLAVE_GROUP_A = 'A'
     SLAVE_GROUP_B = 'B'

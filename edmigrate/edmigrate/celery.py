@@ -5,6 +5,7 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
 from edmigrate.settings.config import setup_settings
 from edcore.database import initialize_db
 from edcore.database.repmgr_connector import RepMgrDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 import logging
 
 logger = logging.getLogger('edmigrate')
@@ -31,6 +32,7 @@ def setup_celery(settings, prefix=PREFIX):
 
 def setup_db_connection(settings):
     initialize_db(RepMgrDBConnection, settings)
+    initialize_db(StatsDBConnection, settings)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so

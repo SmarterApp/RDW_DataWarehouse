@@ -6,6 +6,7 @@ from edmigrate.utils.constants import Constants
 from celery.utils.log import get_task_logger
 
 from edcore.database.repmgr_connector import RepMgrDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 
 log = get_task_logger(__name__)
 
@@ -84,6 +85,32 @@ def get_slave_nodes_status(tenant, slave_nodes_info):
     with RepMgrDBConnection(tenant) as connector:
         node_status = query_slave_nodes_status(connector, slave_nodes_info)
     return node_status
+
+
+def query_daily_delta_batches_to_migrate(connector):
+    """
+    query daily batches to be migrated
+    """
+    batches_to_be_migrated = {}
+    udl_daily_status_table = connector.get_table(Constants.UDL_DAILY_STATS_TABLE)
+    query = select([udl_daily_status_table.c.batch_guid,
+                    udl_daily_status_table.c.tenant,
+                    udl_daily_status_table.c.file_arrived],
+                   from_obj=[udl_daily_status_table])
+    udl_daily_status_rows = connector.get_result(query)
+    for status_row in udl_daily_status_rows:
+        print(status_row)
+    return batches_to_be_migrated
+
+
+def get_daily_delta_batches_to_migrate():
+    '''
+    get list of batches to be migrated to prod
+    '''
+    log.info('Master: Getting daily delta batches to migrate')
+    with StatsDBConnection() as connector:
+        batches_to_be_migrated = query_daily_delta_batches_to_migrate(connector)
+    return batches_to_be_migrated
 
 
 def are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes):

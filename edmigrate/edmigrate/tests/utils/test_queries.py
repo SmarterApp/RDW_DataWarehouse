@@ -48,6 +48,9 @@ class TestQueries(Unittest_with_repmgr_sqlite):
             nodes_status = queries.query_slave_nodes_status(connection, self.slave_nodes_info)
         self.assertEqual(sorted(nodes_status.keys()), sorted(self.slave_nodes_info.keys()))
 
+    def test_get_daily_delta_batches_to_migrate(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()

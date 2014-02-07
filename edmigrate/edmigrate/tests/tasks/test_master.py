@@ -19,8 +19,7 @@ class TestMasterWorker(Unittest_with_repmgr_sqlite):
         pass
 
     def test_verify_master_slave_repl_status(self):
-        self.assertTrue(master.verify_slaves_repl_status('repmgr', ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net'], 10))
-        self.assertFalse(master.verify_slaves_repl_status('repmgr', ['dbpgdwr0.qa.dum.edwdc.net', 'dbpgdwr0s1.qa.dum.edwdc.net'], -1))
+        pass
 
 if __name__ == "__main__":
     unittest.main()

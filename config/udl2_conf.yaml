@@ -172,6 +172,10 @@ development:
         echo: False
         max_overflow: 10
         pool_size: 20
+    edware_stats:
+        db:
+            url: postgresql://edware:edware2013@localhost:5432/edware_stats
+            db_schema: edware_stats
     target_db_conn:
         edware:
             url: postgresql://edware:edware2013@localhost:5432/edware

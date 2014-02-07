@@ -3,10 +3,10 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from celery import Celery
 from kombu import Exchange, Queue
 import os
-import imp
 from udl2_util.config_reader import read_ini_file
-
 from udl2.udl2_connector import initialize_db, UDL2DBConnection, TargetDBConnection
+from edcore.database.stats_connector import StatsDBConnection
+import edcore.database as edcoredb
 
 
 def setup_udl2_queues(conf):
@@ -41,9 +41,8 @@ try:
 except Exception:
     config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-# udl2_conf = imp.load_source('udl2_conf', config_path_file)
-# from udl2_conf import udl2_conf
-udl2_conf = read_ini_file(config_path_file)
+# get udl2 configuration as nested and flat dictionary
+udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
 
 # the celery instance has to be named as celery due to celery driver looks for this object in celery.py
 # this is the default protocol between celery system and our implementation of tasks.
@@ -62,9 +61,14 @@ celery = setup_celery_conf(udl2_conf, celery, udl2_queues)
 # configuration options for file splitter
 FILE_SPLITTER_CONF = udl2_conf['file_splitter']
 
+# TODO: Change udl2 to use edcore connection class for all connections
+
 # init db engine
 initialize_db(UDL2DBConnection, udl2_conf)
 initialize_db(TargetDBConnection, udl2_conf)
+# using edcore connection class to init statsdb connection
+# this needs a flat config file rather than udl2 which needs nested config
+edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf)
 
 if __name__ == '__main__':
     celery.start()

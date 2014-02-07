@@ -5,8 +5,6 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
 from edmigrate.settings.config import setup_settings
 from edcore.database import initialize_db
 from edcore.database.repmgr_connector import RepMgrDBConnection
-from datetime import timedelta
-from celery.schedules import crontab
 import logging
 
 logger = logging.getLogger('edmigrate')

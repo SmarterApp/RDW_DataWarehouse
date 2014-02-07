@@ -18,7 +18,8 @@ class TestFileDecrypter(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-        self.conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        self.conf = conf_tup[0]
         # test source files
         self.test_source_file_1 = self.conf['zones']['datafiles'] + 'test_source_file_tar_gzipped.tar.gz.gpg'
         self.test_source_file_2 = self.conf['zones']['datafiles'] + 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'

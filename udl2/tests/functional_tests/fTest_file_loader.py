@@ -19,7 +19,8 @@ class FileLoaderFTest(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        udl2_conf = conf_tup[0]
 
         CSV_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_realdata.csv')
         self.CSV_FILE2 = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data.csv')

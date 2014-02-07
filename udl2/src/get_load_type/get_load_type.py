@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 load_types = ['assessment', 'studentregistration']
 
+
 def _has_duplicate_or_no_content_key(json_file_path, key, json_file_name):
     returnval = False
     with open(json_file_path) as file:
@@ -26,6 +27,7 @@ def _has_duplicate_or_no_content_key(json_file_path, key, json_file_name):
             logger.error('Non-existent content in json file %s' % json_file_name)
             returnval = True
     return returnval
+
 
 def _get_content_type_from_json(json_file_path, json_file_name):
     '''
@@ -49,6 +51,7 @@ def _get_content_type_from_json(json_file_path, json_file_name):
         except ValueError:
             logger.error('Malformed json file %s' % json_file_name)
     return content
+
 
 def get_load_type(dir_path, json_file):
     """

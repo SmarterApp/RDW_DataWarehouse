@@ -2,8 +2,6 @@ __author__ = 'sravi'
 
 from time import sleep
 from celery.canvas import chain
-from edmigrate.settings.config import Config, get_setting
-
 from edmigrate.celery import celery, logger
 from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
     pause_replication, resume_replication, block_pgpool, unblock_pgpool

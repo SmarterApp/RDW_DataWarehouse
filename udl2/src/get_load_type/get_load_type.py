@@ -1,13 +1,13 @@
 import json
 import os
-import argparse
 import logging
+from udl2.celery import udl2_conf
 
 __author__ = 'tshewchuk'
 
 logger = logging.getLogger(__name__)
 
-load_types = ['assessment', 'studentregistration']
+load_types = udl2_conf['load_type'].values()
 
 
 def _has_duplicate_or_no_content_key(json_file_path, key, json_file_name):
@@ -43,7 +43,7 @@ def _get_content_type_from_json(json_file_path, json_file_name):
         try:
             json_object = json.load(file)
             for key in json_object:
-                if key.lower() == 'content':
+                if key.lower() == udl2_conf['load_type_key']:
                     content = json_object.get(key).lower()
                     break
             if content not in load_types:

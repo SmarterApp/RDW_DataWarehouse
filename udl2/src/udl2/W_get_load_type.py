@@ -3,10 +3,12 @@ from celery.utils.log import get_task_logger
 from udl2.celery import celery
 from udl2_util.measurement import BatchTableBenchmark
 import datetime
-import os
 import udl2.message_keys as mk
 from udl2.udl2_base_task import Udl2BaseTask
 from get_load_type.get_load_type import get_load_type
+from udl2 import W_post_etl
+from udl2 import W_all_done
+from udl2.celery import udl2_conf
 
 __author__ = 'tshewchuk'
 
@@ -29,6 +31,11 @@ def task(incoming_msg):
     # benchmark
     benchmark = BatchTableBenchmark(guid_batch, incoming_msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
     benchmark.record_benchmark()
+
+    #For student registration load type, log and exit for now.
+    if load_type.lower() == udl2_conf['load_type']['student_registration']:
+        task.request.callbacks[:] = [W_post_etl.task.s(), W_all_done.task.s()]
+        logger.info('W_GET_LOAD_TYPE: %s load type found. Stopping further processing of current job.' % load_type)
 
     # Outgoing message to be piped to the file validator
     outgoing_msg = {}

@@ -41,4 +41,3 @@ setup(name='edmigrate',
       entry_points="""\
       """,
       )
-

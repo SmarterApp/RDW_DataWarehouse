@@ -21,11 +21,15 @@ function build_doc {
 function build_e2e {
 	PATH=$PATH:/usr/pgsql-9.2/bin/
 	export PATH
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
-	cd $WORKSPACE/config
+    cd $WORKSPACE
+    rm -fr python3.3
+	virtualenv-3.3 --distribute python3.3
+	source $WORKSPACE/python3.3/bin/activate
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
+    cd $WORKSPACE/edcore
+    python setup.py install
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
 	cp $WORKSPACE/udl2/tests/data/keys/* ~/.gnupg/
@@ -46,11 +50,16 @@ function build_e2e {
 function build_functest {
 	PATH=$PATH:/usr/pgsql-9.2/bin/
 	export PATH
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
+	cd $WORKSPACE
+	rm -fr python3.3
+	virtualenv-3.3 --distribute python3.3
+	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
+	cd $WORKSPACE/edcore
+    python setup.py install
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
 
@@ -69,7 +78,10 @@ function build_functest {
 function build_unittest {
 	PATH=$PATH:/usr/pgsql-9.2/bin/
 	export PATH
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
+	cd $WORKSPACE
+	rm -fr python3.3
+	virtualenv-3.3 --distribute python3.3
+	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini

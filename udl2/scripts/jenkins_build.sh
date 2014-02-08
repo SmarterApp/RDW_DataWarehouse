@@ -25,6 +25,7 @@ function build_e2e {
     rm -fr python3.3
 	virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
+	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 

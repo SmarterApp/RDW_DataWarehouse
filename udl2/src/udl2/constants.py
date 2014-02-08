@@ -13,4 +13,3 @@ class UdlStatsConstants():
     UDL_END = 'udl_end'
     RECORD_LOADED_COUNT = 'record_loaded_count'
     UDL_DAILY_STATS = 'udl_daily_stats'
-    

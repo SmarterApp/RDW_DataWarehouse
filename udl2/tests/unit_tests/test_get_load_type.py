@@ -45,3 +45,6 @@ class TestGetLoadType(unittest.TestCase):
         shutil.copy(self.data_dir + 'test_malformed.json', self.test_expanded_dir)
         self.assertRaises(ValueError, get_load_type.get_load_type, self.test_expanded_dir)
         os.remove(self.test_expanded_dir + 'test_malformed.json')
+
+    def test_get_load_type_no_json(self):
+        self.assertRaises(IOError, get_load_type.get_load_type, self.test_expanded_dir)

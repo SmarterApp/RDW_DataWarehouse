@@ -10,7 +10,7 @@ from get_load_type import get_load_type
 
 
 class TestGetLoadType(unittest.TestCase):
-    
+
     def setUp(self):
         try:
             config_path = dict(os.environ)['UDL2_CONF']

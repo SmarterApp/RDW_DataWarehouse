@@ -528,7 +528,7 @@ development:
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:
-        repmgr:
+        cat:
           schema_name: repmgr_edware_pg_cluster
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:

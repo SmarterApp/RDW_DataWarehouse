@@ -46,7 +46,8 @@ def initialize_db(connector_cls, settings, allow_schema_create=False):
                     tenant_options[prefix + new_key] = val
             # Setup connection for the tenant
             setup_tenant_db_connection(connector_cls, tenant=tenant, config=tenant_options)
-            tenant_mapping[tenant] = tenant_options[prefix + 'state_code']
+            if prefix + 'state_code' in tenant_options:
+                tenant_mapping[tenant] = tenant_options[prefix + 'state_code']
     else:
         prefixed_options = {}
         for key, val in options.items():

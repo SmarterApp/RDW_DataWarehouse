@@ -21,7 +21,7 @@ DEFAULT_ROUTUNG_KEY = get_setting(Config.DEFAULT_ROUTUNG_KEY)
 # TODO: This is just a temp way to know the tenant name to grab the connection to repmgr schema
 #       UDL2 needs to be updated to capture the tenant<->hostname<->batchid mapping in a table
 #       This mapping info will be used by the migration script to know which data in preprod needs to move where in prod
-TENANT = 'repmgr'
+TENANT = 'cat'
 BROADCAST_QUEUE = get_setting(Config.BROADCAST_QUEUE)
 
 

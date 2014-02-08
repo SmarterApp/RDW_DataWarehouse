@@ -13,7 +13,8 @@ class PreEtlTest(unittest.TestCase):
     def setUp(self):
         # get conf file
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
-        self.udl2_conf = read_ini_file(config_path_file)
+        conf_tup = read_ini_file(config_path_file)
+        self.udl2_conf = conf_tup[0]
 
         # create test error log file
         current_file_path = os.path.dirname(os.path.realpath(__file__))

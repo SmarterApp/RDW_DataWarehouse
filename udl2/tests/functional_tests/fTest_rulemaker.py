@@ -3,6 +3,7 @@ import csv
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import database
 import imp
+import os
 from rule_maker.rules.udl_transformation_config import transform_rules
 from rule_maker.rules import transformation_code_generator
 from sqlalchemy import func
@@ -18,7 +19,8 @@ class RuleGeneratorFTest(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        udl2_conf = conf_tup[0]
         self.conn, self.engine = database._create_conn_engine(udl2_conf['udl2_db'])
         self.rule_names = transform_rules.keys()
         self.rule_conf = transform_rules

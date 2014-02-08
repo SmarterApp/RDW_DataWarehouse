@@ -4,6 +4,7 @@ from database.connector import DBConnection
 from udl2.database import generate_udl2_metadata
 from database.generic_connector import setup_db_connection_from_ini
 from edschema.metadata_generator import generate_ed_metadata
+from edschema.metadata.stats_metadata import generate_stats_metadata
 
 
 UDL_NAMESPACE = 'udl2_db_conn'

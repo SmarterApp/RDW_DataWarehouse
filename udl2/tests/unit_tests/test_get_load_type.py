@@ -17,7 +17,11 @@ class TestGetLoadType(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         udl2_conf = read_ini_file(config_path)
-        self.data_dir = udl2_conf['zones']['datafiles'] + '/'
+        if isinstance(udl2_conf, tuple):
+            self.conf = udl2_conf[0]
+        else:
+            self.conf = udl2_conf
+        self.data_dir = self.conf['zones']['datafiles'] + '/'
         self.test_expanded_dir = '/tmp/test_get_load_type/'
         if not os.path.exists(self.test_expanded_dir):
             os.makedirs(self.test_expanded_dir)

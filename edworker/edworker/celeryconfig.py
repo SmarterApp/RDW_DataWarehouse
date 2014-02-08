@@ -73,7 +73,7 @@ def convert_to_celery_options(config):
         # see
         # http://stackoverflow.com/questions/16406498/is-there-a-way-to-validate-the-brokers-ssl-certificate-in-django-celery
         # for BROKER_USE_SSL
-        if mapping[key] and key != 'BROKER_USE_SSL':
+        if key in mapping and key != 'BROKER_USE_SSL':
             config[key] = mapping[key](value)
         else:
             config[key] = ast.literal_eval(value)

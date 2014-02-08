@@ -29,4 +29,3 @@ def delete_stats():
     with StatsDBConnection() as connector:
         udl_daily_stats = connector.get_table(UdlStatsConstants.UDL_DAILY_STATS)
         connector.execute(udl_daily_stats.delete())
-

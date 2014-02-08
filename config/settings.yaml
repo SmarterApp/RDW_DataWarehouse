@@ -34,7 +34,6 @@ common:
       db:
         cat.state_code: NY
         dog.state_code: CA
-        repmgr.state_code: CA
         echo: False
     trigger:
       recache:

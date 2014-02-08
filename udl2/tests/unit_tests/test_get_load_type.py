@@ -16,7 +16,10 @@ class TestGetLoadType(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         udl2_conf = read_ini_file(config_path)
-        self.conf = udl2_conf
+        if isinstance(udl2_conf, tuple):
+            self.conf = udl2_conf[0]
+        else:
+            self.conf = udl2_conf
 
     def test_get_load_type_from_valid_json(self):
         load_type = get_load_type.get_load_type(self.conf['zones']['datafiles'], 'test_valid_content_type.json')

@@ -1,8 +1,0 @@
-[2014-02-07 14:55:01,594: WARNING/MainProcess] celery@master ready.
-[2014-02-07 14:55:01,623: INFO/MainProcess] consumer: Connected to amqp://guest@127.0.0.1:5672//.
-[2014-02-07 14:55:19,723: WARNING/MainProcess] celery@master ready.
-[2014-02-07 14:55:19,751: INFO/MainProcess] consumer: Connected to amqp://guest@127.0.0.1:5672//.
-[2014-02-07 14:55:38,664: WARNING/MainProcess] celery@master ready.
-[2014-02-07 14:55:38,691: INFO/MainProcess] consumer: Connected to amqp://guest@127.0.0.1:5672//.
-[2014-02-07 16:35:35,131: WARNING/MainProcess] celery@master ready.
-[2014-02-07 16:35:35,159: INFO/MainProcess] consumer: Connected to amqp://guest@127.0.0.1:5672//.

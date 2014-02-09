@@ -50,6 +50,7 @@ def setup_celery(celery, settings, prefix='celery'):
         celery_config[CELERYBEAT_SCHEDULE] = beat_schedules
     celery.config_from_object(celery_config)
 
+
 def get_schedule(schedule):
     task_name = schedule[CELERYBEAT_SCHEDULE_TASK]
     sch = schedule[CELERYBEAT_SCHEDULE_SCH]
@@ -58,11 +59,11 @@ def get_schedule(schedule):
         hour = schedule[CELERYBEAT_SCHEDULE_HOUR]
         minute = schedule[CELERYBEAT_SCHEDULE_MIN]
         beat_schedule[CELERYBEAT_SCHEDULE_TASK] = task_name
-        beat_schedule[CELERYBEAT_SCHEDULE_SCH] =  crontab(hour= hour, minute=minute)
+        beat_schedule[CELERYBEAT_SCHEDULE_SCH] = crontab(hour=hour, minute=minute)
     elif sch == TIMEDELTA:
         seconds = schedule[CELERYBEAT_SCHEDULE_SEC]
         beat_schedule[CELERYBEAT_SCHEDULE_TASK] = task_name
-        beat_schedule[CELERYBEAT_SCHEDULE_SCH] =  timedelta(seconds= seconds)
+        beat_schedule[CELERYBEAT_SCHEDULE_SCH] = timedelta(seconds=seconds)
     else:
         # not adding support for anything apart from cron/timedelta based scheduling for now
         pass

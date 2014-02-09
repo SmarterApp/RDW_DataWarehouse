@@ -6,65 +6,62 @@ from edudl2.udl2.celery import udl2_conf
 __author__ = 'tshewchuk'
 
 logger = logging.getLogger(__name__)
-
 load_types = udl2_conf['load_type'].values()
 
 
-def _has_duplicate_or_no_content_key(json_file_path, key, json_file_name):
-    returnval = False
-    with open(json_file_path) as file:
-        found = False
-        for line in file:
-            line_key = line.split(':')[0].lower()
-            if key in line_key:
-                if found:
-                    logger.error('Duplicate content in json file %s' % json_file_name)
-                    returnval = True
-                    break
-                else:
-                    found = True
-        if not found:
-            logger.error('Non-existent content in json file %s' % json_file_name)
-            returnval = True
-    return returnval
-
-
-def _get_content_type_from_json(json_file_path, json_file_name):
+def _get_json_file_in_dir(json_file_dir):
     '''
-    Determine the content type from the JSON file
-
-    @param json_object: A dictionary that represents some json object
-    @type json_object: dict
-    @return: content type
+    Get the name of the json file which resides in the directory
+    @param json_file_dir: The directory which houses the json file
+    @type string
+    @return: JSON file name
     @rtype: string
     '''
-    content = None
-    with open(json_file_path) as file:
+    for file_name in os.listdir(json_file_dir):
+        if file_name.split('.')[-1] == 'json':
+            return file_name
+    logger.error('No json file in upload file')
+    return None
+
+
+def _get_load_type_from_json(json_file_path, json_file_name):
+    '''
+    Determine the udl load type from the json file contents
+    @param json_file_path: The full directory pathname of the json file
+    @type string
+    @param json_file_name: The filename of the json file
+    @type string
+    @return: UDL load type
+    @rtype: string
+    '''
+    load_type = None
+    with open(json_file_path) as json_file:
         try:
-            json_object = json.load(file)
+            json_object = json.load(json_file)
+            load_type_key = udl2_conf['load_type_key']
             for key in json_object:
-                if key.lower() == udl2_conf['load_type_key']:
-                    content = json_object.get(key).lower()
+                if key.lower() == load_type_key:
+                    load_type = json_object.get(key).lower()
                     break
-            if content not in load_types:
-                logger.error('Invalid content specified in json file %s' % json_file_name)
+            if load_type not in load_types:
+                logger.error('Invalid load type specified in json file %s' % json_file_name)
         except ValueError:
             logger.error('Malformed json file %s' % json_file_name)
-    return content
+    return load_type
 
 
-def get_load_type(dir_path, json_file):
+def get_load_type(json_file_dir):
     """
-    Get the load type for this UDL job from the JSON file
-
-    @param json_file_path: the full pathname of the JSON file
+    Get the load type for this UDL job from the json file
+    @param json_file_dir: A directory that houses the json file
     @return: UDL job load type
     @rtype: string
     """
-    json_file_path = os.path.join(dir_path, json_file)
-    if _has_duplicate_or_no_content_key(json_file_path, 'content', json_file):
-        raise KeyError('Non-existant or duplicate content in JSON file -- %s' % json_file)
-    load_type = _get_content_type_from_json(json_file_path, json_file)
+    json_file_name = _get_json_file_in_dir(json_file_dir)
+    if (not json_file_name):
+        raise IOError('No json file in upload file')
+    json_file_path = os.path.join(json_file_dir, json_file_name)
+    load_type = _get_load_type_from_json(json_file_path, json_file_name)
     if load_type not in load_types:
-        raise ValueError('No valid load type specified in JSON file -- %s' % json_file)
+        raise ValueError('No valid load type specified in json file -- %s' % json_file_name)
     return load_type

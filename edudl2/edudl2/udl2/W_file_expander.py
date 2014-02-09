@@ -35,7 +35,6 @@ def task(incoming_msg):
     load_type = incoming_msg[mk.LOAD_TYPE]
 
     logger.info('W_FILE_EXPANDER: expand file <%s> with guid_batch = <%s> to directory <%s>' % (file_to_expand, guid_batch, expand_to_dir))
-#    json_filename, file_contents = expand_file(file_to_expand, expand_to_dir)
     file_contents = expand_file(file_to_expand, expand_to_dir)
     logger.info('W_FILE_EXPANDER: expanded files:  <%s>' % (', '.join(file_contents)))
 
@@ -48,5 +47,4 @@ def task(incoming_msg):
     # Outgoing message to be piped to the file expander
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
-#    outgoing_msg.update({mk.JSON_FILENAME: json_filename})
     return outgoing_msg

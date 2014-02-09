@@ -18,9 +18,8 @@ def task(incoming_msg):
 
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
     expanded_dir = tenant_directory_paths[mk.EXPANDED]
-    json_filename = incoming_msg[mk.JSON_FILENAME]
 
-    load_type = get_load_type(expanded_dir, json_filename)
+    load_type = get_load_type(expanded_dir)
 
     logger.info('W_GET_LOAD_TYPE: Load type is <%s>' % load_type)
     end_time = datetime.datetime.now()

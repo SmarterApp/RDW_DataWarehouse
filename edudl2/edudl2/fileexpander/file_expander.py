@@ -80,11 +80,7 @@ def _extract_tar_file_contents(file_to_expand, expanded_dir):
             tar_file_contents.append(expanded_dir + member.name)
             print(member.name, member.size, " bytes in size, is a regular file: ", member.isreg())
             tar.extract(member, expanded_dir)  # extract
-#            extension = member.name.split('.')[-1]
-#            if extension == 'json':
-#                json_filename = member.name
     tar.close()
-#    return json_filename, tar_file_contents
     return tar_file_contents
 
 

@@ -8,6 +8,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
 
 from datetime import datetime
+import traceback
 
 # TODO: remove this. temp thing for testing as script
 import edmigrate.celery
@@ -132,7 +133,7 @@ def migrate_all_tables(batch_guid, pre_prod_connection, prod_connection, tables)
     """
     migrate all tables
     """
-    print('Migrating all tables for batch: ' + batch_guid + ' tables: ' + str(tables))
+    print('Migrating all tables for batch: ' + batch_guid)
     migrate_fact(batch_guid, pre_prod_connection, prod_connection)
     for table in list(filter(lambda x: x.startswith('dim_'), tables)):
         migrate_dims(batch_guid, pre_prod_connection, prod_connection, table)
@@ -161,7 +162,7 @@ def migrate_batch(batch_guid, tenant):
             trans.commit()
             print('Master: Migration successful for batch: ' + batch_guid)
         except Exception as e:
-            print('Exception happened while migrating batch: ' + batch_guid, e, ' - Rollback initiated')
+            print('Exception happened while migrating batch: ' + batch_guid, ' - Rollback initiated')
             trans.rollback()
 
 
@@ -172,8 +173,6 @@ def start_migrate_daily_delta():
     batches_to_migrate = get_daily_delta_batches_to_migrate()
     for batch in batches_to_migrate:
         migrate_batch(batch['batch_guid'], batch['tenant'])
-        break
-
 
 if __name__ == '__main__':
     start_migrate_daily_delta()

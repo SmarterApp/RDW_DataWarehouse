@@ -8,10 +8,9 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
 
 from datetime import datetime
-import traceback
 
-# TODO: remove this. temp thing for testing as script
-import edmigrate.celery
+# these tables will be dropped in future
+TABLES_NOT_CONNECTED_WITH_BATCH = ['dim_section']
 
 
 def query_daily_delta_batches_to_migrate(connector):
@@ -101,16 +100,44 @@ def get_dest_key(tenant):
     return 'dog'
 
 
+def yield_rows(connector, query, batch_size):
+    """
+    stream the query results in batches of batch_size
+    """
+    result = connector.execute(query, stream_results=True)
+    rows = result.fetchmany(batch_size)
+    while len(rows) > 0:
+        yield rows
+        rows = result.fetchmany(batch_size)
+
+
+def get_source_query(source_tab, batch_guid, migrate_all=False):
+    """
+    returns the source query to fetch records from pre-prod
+    """
+    # hack for now to allow dim_section migration (fake record) with out batch_guid matching
+    if migrate_all is True:
+        return source_tab.select()
+    return source_tab.select().where(source_tab.c.batch_guid == batch_guid)
+
+
 def migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, table_name, batch_size=100):
     """
     Load prod fact table with delta from pre-prod
     """
     source_tab = source_connector.get_table(table_name)
     dest_Tab = dest_connector.get_table(table_name)
-    query = source_tab.select().where(source_tab.c.batch_guid == batch_guid)
-    result = source_connector.execute(query).fetchall()
-    if len(result) > 0:
-        dest_connector.execute(dest_Tab.insert(), False, result)
+
+    if table_name in TABLES_NOT_CONNECTED_WITH_BATCH:
+        query = get_source_query(source_tab, batch_guid, migrate_all=True)
+    else:
+        query = get_source_query(source_tab, batch_guid)
+    # get handle to query result iterator
+    rows = yield_rows(source_connector, query, batch_size)
+    for batch in rows:
+        # execute insert to target schema in batches
+        print('Bulk Inserting batch of size: ' + str(len(batch)))
+        dest_connector.execute(dest_Tab.insert(), False, batch)
 
 
 def migrate_fact(batch_guid, pre_prod_connection, prod_connection):
@@ -126,7 +153,7 @@ def migrate_dims(batch_guid, pre_prod_connection, prod_connection, table):
     Migrate all the dimension tables
     """
     print('Migrating dimension for batch: ' + batch_guid + ' table: ' + table)
-    # TODO: migrate dims
+    migrate_from_preprod_to_prod(batch_guid, pre_prod_connection, prod_connection, table)
 
 
 def migrate_all_tables(batch_guid, pre_prod_connection, prod_connection, tables):
@@ -134,9 +161,11 @@ def migrate_all_tables(batch_guid, pre_prod_connection, prod_connection, tables)
     migrate all tables
     """
     print('Migrating all tables for batch: ' + batch_guid)
-    migrate_fact(batch_guid, pre_prod_connection, prod_connection)
+    # migrate dims first
     for table in list(filter(lambda x: x.startswith('dim_'), tables)):
         migrate_dims(batch_guid, pre_prod_connection, prod_connection, table)
+    # migrate fact
+    migrate_fact(batch_guid, pre_prod_connection, prod_connection)
 
 
 def migrate_batch(batch_guid, tenant):
@@ -163,6 +192,7 @@ def migrate_batch(batch_guid, tenant):
             print('Master: Migration successful for batch: ' + batch_guid)
         except Exception as e:
             print('Exception happened while migrating batch: ' + batch_guid, ' - Rollback initiated')
+            print(e)
             trans.rollback()
 
 
@@ -173,6 +203,9 @@ def start_migrate_daily_delta():
     batches_to_migrate = get_daily_delta_batches_to_migrate()
     for batch in batches_to_migrate:
         migrate_batch(batch['batch_guid'], batch['tenant'])
+        break
 
 if __name__ == '__main__':
+    # TODO: remove this. temp thing for testing as script
+    import edmigrate.celery
     start_migrate_daily_delta()

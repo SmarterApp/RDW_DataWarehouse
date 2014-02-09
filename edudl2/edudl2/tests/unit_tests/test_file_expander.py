@@ -5,7 +5,6 @@ import unittest
 import os
 
 
-
 class TestFileExpander(unittest.TestCase):
 
     def setUp(self):

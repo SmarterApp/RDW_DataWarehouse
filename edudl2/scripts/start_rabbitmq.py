@@ -2,10 +2,10 @@
 from __future__ import absolute_import
 import subprocess
 import argparse
-from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import os.path
-from udl2_util.config_reader import read_ini_file
+from edudl2.udl2_util.config_reader import read_ini_file
 
 
 def start_rabbitmq(RABBITMQ_SERVER):

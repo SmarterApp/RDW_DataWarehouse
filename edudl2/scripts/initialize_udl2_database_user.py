@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import subprocess
-from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-import sys
+from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 
 
 if __name__ == '__main__':

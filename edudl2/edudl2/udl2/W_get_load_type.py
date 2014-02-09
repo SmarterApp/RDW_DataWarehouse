@@ -29,7 +29,7 @@ def task(incoming_msg):
     benchmark.record_benchmark()
 
     #For student registration load type, log and exit for now.
-    if load_type.lower() == udl2_conf['load_type']['student_registration']:
+    if load_type == udl2_conf['load_type']['student_registration']:
         task.request.callbacks[:] = [W_post_etl.task.s(), W_all_done.task.s()]
         logger.info('W_GET_LOAD_TYPE: %s load type found. Stopping further processing of current job.' % load_type)
 

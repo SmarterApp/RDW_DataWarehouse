@@ -45,10 +45,20 @@ class TestGetLoadType(unittest.TestCase):
         self.assertRaises(ValueError, get_load_type.get_load_type, self.test_expanded_dir)
         os.remove(self.test_expanded_dir + 'test_missing_content_type.json')
 
+    def test_get_load_type_from_missing_top_level_content_type(self):
+        shutil.copy(self.data_dir + 'test_missing_top_level_content_type.json', self.test_expanded_dir)
+        self.assertRaises(ValueError, get_load_type.get_load_type, self.test_expanded_dir)
+        os.remove(self.test_expanded_dir + 'test_missing_top_level_content_type.json')
+
     def test_get_load_type_from_malformed_json(self):
         shutil.copy(self.data_dir + 'test_malformed.json', self.test_expanded_dir)
         self.assertRaises(ValueError, get_load_type.get_load_type, self.test_expanded_dir)
         os.remove(self.test_expanded_dir + 'test_malformed.json')
+
+    def test_get_load_type_empty_json(self):
+        open(self.test_expanded_dir + 'test_empty.json', 'a').close()
+        self.assertRaises(ValueError, get_load_type.get_load_type, self.test_expanded_dir)
+        os.remove(self.test_expanded_dir + 'test_empty.json')
 
     def test_get_load_type_no_json(self):
         self.assertRaises(IOError, get_load_type.get_load_type, self.test_expanded_dir)

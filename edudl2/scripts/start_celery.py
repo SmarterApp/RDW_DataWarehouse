@@ -4,7 +4,6 @@ import subprocess
 import argparse
 import os
 
-
 def start_celery(config=None):
     '''
     Given the path to a configuration file, this function takes the config file name, config, and
@@ -19,11 +18,11 @@ def start_celery(config=None):
     # we start celery by showing debug messages, and send event notifications
     try:
         if config is None:
-            subprocess.call(["celery worker --app=edudl2.udl2 -l debug"], shell=True)
+            subprocess.call(["celery worker --app=edudl2.udl2 --workdir=../edudl2 -l debug"], shell=True)
         else:
             local_env = dict(os.environ)
             local_env['UDL2_CONF'] = config
-            subprocess.call(["celery worker --app=edudl2.udl2  -l debug"], shell=True, env=local_env)
+            subprocess.call(["celery worker --app=edudl2.udl2 --workdir=../edudl2 -l debug"], shell=True, env=local_env)
     except Exception as e:
         print(e)
 

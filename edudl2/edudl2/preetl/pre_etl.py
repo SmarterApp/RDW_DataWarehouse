@@ -6,12 +6,12 @@ from edudl2.udl2.errorcodes import BATCH_REC_FAILED
 from edudl2.preetl.create_queries import insert_batch_row_query
 
 
-def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment', batch_guid_forced=None):
+def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced=None):
     '''
     PRE ETL function: create a new guid_batch and insert one row into batch table
     @param udl2_conf: udl2 config, which is got from udl.udl2_conf
     @param log_file: name of the log_file, by default is None, and it will be set to the value in config file
-    @param load_type: load type of the current job. The default value is 'Assessment'
+    @param load_type: load type of the current job. The default value is 'Unknown'
     '''
     logger = get_logger(udl2_conf, udl2_conf['logging']['error'] if log_file is None else log_file)
 

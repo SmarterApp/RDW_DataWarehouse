@@ -13,7 +13,7 @@ import datetime
 from celery import chain
 
 
-def get_pipeline_chain(archive_file, load_type='Assessment', file_parts=4, batch_guid_forced=None, initial_msg=None):
+def get_pipeline_chain(archive_file, load_type='Unknown', file_parts=4, batch_guid_forced=None, initial_msg=None):
     """
     Get the celery chain object that is the udl pipeline
 

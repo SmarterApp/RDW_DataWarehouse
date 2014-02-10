@@ -35,6 +35,9 @@ common:
         cat.state_code: NY
         dog.state_code: CA
         echo: False
+    edware_rep:
+      db:
+        cat.state_code: NY
     trigger:
       recache:
         enable: False
@@ -528,7 +531,7 @@ development:
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:
-        repmgr:
+        cat:
           schema_name: repmgr_edware_pg_cluster
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:
@@ -605,11 +608,13 @@ jenkins_dev:
   '[app:main]':
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+      CELERYD_CONCURRENCY: 4
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+        CELERYD_CONCURRENCY: 4
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     edware:

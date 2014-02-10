@@ -69,7 +69,7 @@ initialize_db(UDL2DBConnection, udl2_conf)
 initialize_db(TargetDBConnection, udl2_conf)
 # using edcore connection class to init statsdb connection
 # this needs a flat config file rather than udl2 which needs nested config
-edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf)
+edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf, allow_schema_create=True)
 
 if __name__ == '__main__':
     celery.start()

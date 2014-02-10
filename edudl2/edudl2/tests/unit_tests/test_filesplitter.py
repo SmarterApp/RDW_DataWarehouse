@@ -6,6 +6,7 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.filesplitter.file_splitter import create_output_destination,\
     run_command, get_list_split_files
+import tempfile
 
 
 class Test(unittest.TestCase):
@@ -21,9 +22,12 @@ class Test(unittest.TestCase):
         #define test file name and directory
         self.test_output_path = udl2_conf['zones']['tests'] + 'this/is/a/'
         self.test_file_name = 'test.csv'
-        self.output_dir = udl2_conf['zones']['tests'] + 'testsplit/'
+        self.output_dir = tempfile.mkdtemp()
         self.output_template = 'split_part_'
         return
+
+    def tearDown(self):
+        shutil.rmtree(self.output_dir, ignore_errors=True)
 
     def test_create_output_dest(self):
         #if directory exists, delete it

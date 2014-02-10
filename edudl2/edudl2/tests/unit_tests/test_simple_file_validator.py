@@ -16,29 +16,30 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path)
         self.conf = conf_tup[0]
+        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 
     def test_simple_file_validator_passes_for_valid_csv(self):
         validator = simple_file_validator.SimpleFileValidator()
-        results = validator.execute(self.conf['zones']['datafiles'],
+        results = validator.execute(self.data_dir,
                                     'test_data_latest/'
                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
         self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator()
-        results = validator.execute(self.conf['zones']['datafiles'], 'nonexistent.csv', 1)
+        results = validator.execute(self.data_dir, 'nonexistent.csv', 1)
         self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
 
     def test_simple_file_validator_invalid_extension(self):
         validator = simple_file_validator.SimpleFileValidator()
-        results = validator.execute(self.conf['zones']['datafiles'], 'invalid_ext.xls', 1)
+        results = validator.execute(self.data_dir, 'invalid_ext.xls', 1)
         self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
 
     def test_for_source_file_with_less_number_of_columns(self):
         test_csv_fields = {'guid_batch', 'student_guid'}
         validator = csv_validator.DoesSourceFileInExpectedFormat(csv_fields=test_csv_fields)
         error_code_expected = error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
-        results = [validator.execute(self.conf['zones']['datafiles'],
+        results = [validator.execute(self.data_dir,
                                      'invalid_csv.csv', 1)]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][0], error_code_expected)
@@ -53,7 +54,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                            'score_claim_4_min', 'asmt_claim_4_perf_lvl', 'score_perf_level', 'asmt_year', 'gender_student', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf',
                            'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'code_state', 'asmt_subject', 'asmt_type']
         validator = csv_validator.DoesSourceFileInExpectedFormat(csv_fields=test_csv_fields)
-        results = [validator.execute(self.conf['zones']['datafiles'],
+        results = [validator.execute(self.data_dir,
                                      'test_data_latest/'
                                      'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)]
         self.assertEqual(len(results), 1)

@@ -9,6 +9,8 @@ import os
 import unittest
 from edudl2.fileloader.json_loader import flatten_json_dict, read_json_file,\
     fix_empty_strings
+import tempfile
+import shutil
 
 
 class TestJsonLoader(unittest.TestCase):
@@ -21,6 +23,10 @@ class TestJsonLoader(unittest.TestCase):
         self.mappings = {'val1': ['pls', 'pl1', 'name'], 'val2': ['pls', 'pl2', 'name'], 'val3': ['pls', 'pl3', 'name'], 'val4': ['pls', 'pl2', 'level'],
                          'val5': ['id', 'year'], 'val6': ['id', 'type'], 'val7': ['pls', 'pl3', 'cp'], 'val8': ['pls', 'pl1', 'level']
                          }
+        self.temp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_flatten_json_dict(self):
         expected = {'val1': 'Minimal',
@@ -37,11 +43,11 @@ class TestJsonLoader(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_read_json_file(self):
-        with open('test_read_json_file.json', 'w') as jf:
+        path = os.path.join(self.temp_dir, 'test_read_json_file.json')
+        with open(path, 'w') as jf:
             json.dump(self.json_dict, jf, indent=4)
-        result = read_json_file('test_read_json_file.json')
+        result = read_json_file(path)
         self.assertEqual(result, self.json_dict)
-        os.remove('test_read_json_file.json')
 
     def test_fix_empty_strings_1(self):
         ''' check method with no empty strings in dict '''

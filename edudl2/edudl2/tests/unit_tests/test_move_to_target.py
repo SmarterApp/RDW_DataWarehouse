@@ -50,9 +50,6 @@ class TestMoveToTarget(unittest.TestCase):
         self.maxDiff = None
         self.assertEqual(len(expected_value), len(actual_value))
         for i in range(len(expected_value)):
-            print("this is %i", i)
-            print("expected == ", expected_value[i].strip())
-            print("actual   == ", actual_value[i].strip())
             self.assertEqual(expected_value[i].strip(), actual_value[i].strip())
 
     def test_create_insert_query_for_dim_table(self):
@@ -103,7 +100,6 @@ def generate_conf(guid_batch, udl2_conf):
 
 
 def get_expected_column_types_for_fact_table(table_name):
-    print(table_name)
     column_names = list(get_expected_column_mapping()[table_name].keys())
     column_types = ['asmnt_outcome_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
                     'teacher_guid character varying(50)', 'state_code character varying(2)', 'district_guid character varying(50)',

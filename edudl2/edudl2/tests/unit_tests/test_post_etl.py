@@ -1,8 +1,9 @@
+import tempfile
+import shutil
 __author__ = 'sravi'
 
 import unittest
 import os
-import imp
 import time
 from uuid import uuid4
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
@@ -23,14 +24,14 @@ class TestPostEtl(unittest.TestCase):
         self.conf = conf_tup[0]
 
     def setUp(self):
-        pass
+        self.temp_dir = tempfile.mkdtemp()
 
     @classmethod
     def tearDownClass(self):
         pass
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def _get_mock_tenant(self):
         return 'ca'
@@ -48,13 +49,13 @@ class TestPostEtl(unittest.TestCase):
         dir_name = self._get_mock_work_zone_directory()
 
         work_zone_directories_to_cleanup = {
-            mk.ARRIVED: os.path.join(self.conf['zones']['work'], tenant_name,
+            mk.ARRIVED: os.path.join(self.temp_dir, tenant_name,
                                      self.conf['work_zone_sub_dir']['arrived'], dir_name),
-            mk.DECRYPTED: os.path.join(self.conf['zones']['work'], tenant_name,
+            mk.DECRYPTED: os.path.join(self.temp_dir, tenant_name,
                                        self.conf['work_zone_sub_dir']['decrypted'], dir_name),
-            mk.EXPANDED: os.path.join(self.conf['zones']['work'], tenant_name,
+            mk.EXPANDED: os.path.join(self.temp_dir, tenant_name,
                                       self.conf['work_zone_sub_dir']['expanded'], dir_name),
-            mk.SUBFILES: os.path.join(self.conf['zones']['work'], tenant_name,
+            mk.SUBFILES: os.path.join(self.temp_dir, tenant_name,
                                       self.conf['work_zone_sub_dir']['subfiles'], dir_name),
         }
         self._set_up_mock_work_zone(work_zone_directories_to_cleanup)

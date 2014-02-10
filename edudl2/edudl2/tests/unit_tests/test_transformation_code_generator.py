@@ -74,8 +74,6 @@ class TestTransformationCodeGenerator(unittest.TestCase):
         actual_result = tg.generate_single_transformation_code(self.code_version, rule_name, rule_def)
         expected_result = (rule_name, tg.FUNC_PREFIX + rule_name, EXPECTED_CODE_FOR_LOOKUP.format(col_name=rule_name))
         actual_result_update = update_actual_result(actual_result)
-        print("expected == %s" % str(expected_result))
-        print("actual   == %s" % str(actual_result_update))
         self.assertEqual(actual_result_update, expected_result)
 
     def test_special_rule(self):

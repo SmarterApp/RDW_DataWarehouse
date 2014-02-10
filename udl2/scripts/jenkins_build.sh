@@ -3,14 +3,14 @@
 set -e # Exit on errors
 
 function build_pep8 {
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
+	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/udl2
 	python setup.py install --force
 	pep8 --exclude='*config*' --ignore=E501 *.py src/ tests/
 }
 
 function build_doc {
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
+	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/udl2
 	python setup.py install --force
 	cd $WORKSPACE/docs

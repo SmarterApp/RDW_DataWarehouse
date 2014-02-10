@@ -29,6 +29,8 @@ function build_e2e {
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
+	cd $WORKSPACE/edschema
+    python setup.py install
     cd $WORKSPACE/edcore
     python setup.py install
 	cd $WORKSPACE/udl2
@@ -59,7 +61,9 @@ function build_functest {
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
-	cd $WORKSPACE/edcore
+	cd $WORKSPACE/edschema
+    python setup.py install
+    cd $WORKSPACE/edcore
     python setup.py install
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
@@ -86,6 +90,8 @@ function build_unittest {
 	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
+	cd $WORKSPACE/edschema
+    python setup.py install
     cd $WORKSPACE/edcore
     python setup.py install
 	cd $WORKSPACE/udl2

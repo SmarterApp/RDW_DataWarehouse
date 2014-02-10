@@ -6,9 +6,8 @@ from distutils.core import run_setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-dependencies = \
-    ['edschema',
-     'edcore']
+dependencies = [
+    'edschema', ]
 
 for dependency in dependencies:
     pkg_path = os.path.abspath(here + "/../" + dependency + "/")

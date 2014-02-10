@@ -23,7 +23,7 @@ function build_e2e {
 	export PATH
     cd $WORKSPACE
     rm -fr python3.3
-	virtualenv-3.3 --distribute python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
@@ -53,7 +53,7 @@ function build_functest {
 	export PATH
 	cd $WORKSPACE
 	rm -fr python3.3
-	virtualenv-3.3 --distribute python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
@@ -81,7 +81,7 @@ function build_unittest {
 	export PATH
 	cd $WORKSPACE
 	rm -fr python3.3
-	virtualenv-3.3 --distribute python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force

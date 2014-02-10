@@ -33,12 +33,16 @@ def report_udl_batch_metrics_to_log(msg, end_time, pipeline_status):
 
 def report_batch_to_udl_daily_stats(msg, end_time):
     logger.info('Reporting to UDL daily stats')
+    #Fact rows are not updated for student registration yet
+    fact_rows_loaded = 0
+    if mk.FACT_ROWS_LOADED in msg:
+        fact_rows_loaded = msg[mk.FACT_ROWS_LOADED]
     udl_batch_stats = {
         UdlStatsConstants.BATCH_GUID: msg[mk.GUID_BATCH],
-        UdlStatsConstants.STATE_CODE: msg[mk.TENANT_NAME],
+        UdlStatsConstants.STATE_CODE: 'XX',
         UdlStatsConstants.FILE_ARRIVED: msg[mk.START_TIMESTAMP],
         UdlStatsConstants.TENANT: msg[mk.TENANT_NAME],
-        UdlStatsConstants.RECORD_LOADED_COUNT: msg[mk.FACT_ROWS_LOADED],
+        UdlStatsConstants.RECORD_LOADED_COUNT: fact_rows_loaded,
         UdlStatsConstants.UDL_START: msg[mk.START_TIMESTAMP],
         UdlStatsConstants.UDL_END: end_time
     }

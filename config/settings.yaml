@@ -35,6 +35,9 @@ common:
         cat.state_code: NY
         dog.state_code: CA
         echo: False
+    edware_rep:
+      db:
+        cat.state_code: NY
     trigger:
       recache:
         enable: False

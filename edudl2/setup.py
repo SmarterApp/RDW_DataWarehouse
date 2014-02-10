@@ -14,7 +14,11 @@ requires = ['billiard==2.7.3.32',
             'nose-cov == 1.6',
             'mock == 1.0.1',
             'pep8 == 1.4.6',
-            'py-postgresql == 1.1.0', ]
+            'py-postgresql == 1.1.0', 
+            'config',
+            'edcore',
+            'edworker',
+            'edschema']
 
 requires.append('pyinotify') if sys.platform == 'linux' else None
 

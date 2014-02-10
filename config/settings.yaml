@@ -35,6 +35,9 @@ common:
         cat.state_code: NY
         dog.state_code: CA
         echo: False
+    edware_rep:
+      db:
+        cat.state_code: NY
     trigger:
       recache:
         enable: False
@@ -146,6 +149,42 @@ common:
         -   name: extract_sync
             exchange: direct
             key: extract_sync
+    migrate:
+      replication.group: 'A'
+      broadcast.queue: 'edmigrate_slaves'
+      pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      master_scheduler.hour: 1
+      master_scheduler.min: 0
+      retries_allowed: 5
+      retry_delay: 5
+      lag_tolerence_in_bytes: 10
+      timeout: 30
+    migrate.celery:
+      CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave', 'edmigrate.tasks.nodes')
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+      CELERYD_CONCURRENCY: 1
+      CELERY_DEFAULT_QUEUE: edmigrate_master
+      CELERY_DEFAULT_ROUTING_KEY: edmigrate
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
+      CELERYBEAT_SCHEDULE:
+        -   name: prepare-migration
+            task: task.edmigrate.master.prepare_edware_data_refresh
+            schedule: cron
+            hour: 1
+            min: 0
+        -   name: start-migration
+            task: task.edmigrate.master.start_edware_data_refresh
+            schedule: cron
+            hour: 1
+            min: 10
+      CELERY_QUEUES:
+        -   name: edmigrate_master
+            exchange: direct
+            key: edmigrate_master
+        -   name: edmigrate_slaves
+            exchange: fanout
+            key: ''
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -253,6 +292,8 @@ qa:
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
@@ -282,6 +323,8 @@ qa:
       db:
         schema_name: edware_sds_1_4
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
+    migrate:
+      pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -344,6 +387,8 @@ jenkins_qa:
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     services.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
 
@@ -353,6 +398,8 @@ uat:
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
     extract:
@@ -466,6 +513,8 @@ development:
       celery_always_eager: true
     extract.celery:
       celery_always_eager: true
+    migrate.celery:
+      celery_always_eager: true
     edware:
       db:
         pool_size: 20
@@ -480,9 +529,26 @@ development:
       db:
         schema_name: edware_sds_1_6
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
+    edware_rep:
+      db:
+        cat:
+          schema_name: repmgr_edware_pg_cluster
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
+    migrate:
+      pgpool.hostname: ''
+    migrate.celery:
+      CELERYBEAT_SCHEDULE:
+        -   name: prepare-migration
+            task: task.edmigrate.master.prepare_edware_data_refresh
+            schedule: timedelta
+            seconds: 100
+        -   name: start-migration
+            task: task.edmigrate.master.start_edware_data_refresh
+            schedule: timedelta
+            seconds: 200
     auth:
       skip.verify: False
       saml:
@@ -524,6 +590,8 @@ test:
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
     auth:
@@ -540,6 +608,8 @@ jenkins_dev:
   '[app:main]':
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
@@ -588,6 +658,8 @@ air:
     services.celery:
       celery_always_eager: true
     extract.celery:
+      celery_always_eager: true
+    migrate.celery:
       celery_always_eager: true
     edware:
       db:

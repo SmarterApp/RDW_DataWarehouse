@@ -19,8 +19,8 @@ class TestPostEtl(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = read_ini_file(config_path)
-        self.conf = udl2_conf
+        conf_tup = read_ini_file(config_path)
+        self.conf = conf_tup[0]
 
     def setUp(self):
         pass

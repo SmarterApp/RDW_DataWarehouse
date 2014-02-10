@@ -15,8 +15,8 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = read_ini_file(config_path)
-        self.conf = udl2_conf
+        conf_tup = read_ini_file(config_path)
+        self.conf = conf_tup[0]
 
     def test_simple_file_validator_passes_for_valid_csv(self):
         validator = simple_file_validator.SimpleFileValidator()

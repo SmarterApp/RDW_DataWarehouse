@@ -18,7 +18,8 @@ class DataValidationErrorCode(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-        self.conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        self.conf = conf_tup[0]
 
     # For bad CSVFiles
     def test_sourcefolder_errorcode(self):

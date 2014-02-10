@@ -15,7 +15,8 @@ class Test(unittest.TestCase):
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        udl2_conf = conf_tup[0]
         self.conf = udl2_conf
         #define test file name and directory
         self.test_output_path = udl2_conf['zones']['tests'] + 'this/is/a/'

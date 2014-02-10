@@ -37,6 +37,8 @@ cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf %{bu
 cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd-services %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/opt/edware/conf/celeryd-edmigrate.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/celeryd-edmigrate %{buildroot}/etc/rc.d/init.d/
 
 
 %build
@@ -77,6 +79,9 @@ cd -
 cd ${WORKSPACE}/edextract
 python setup.py install
 cd -
+cd ${WORKSPACE}/edmigrate
+python setup.py install
+cd -
 cd %{buildroot}/opt/edware/smarter
 rm -rf assets
 mv ../assets .
@@ -103,6 +108,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 /opt/edware/conf/comparing_populations_precache_filters.json
 /opt/edware/conf/celeryd-services.conf
 /opt/edware/conf/celeryd-edextract.conf
+/opt/edware/conf/celeryd-edmigrate.conf
 /opt/virtualenv/smarter/include/*
 /opt/virtualenv/smarter/lib/*
 /opt/virtualenv/smarter/lib64
@@ -137,6 +143,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 /opt/virtualenv/smarter/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
+%attr(755,root,root) /etc/rc.d/init.d/celeryd-edmigrate
 
 
 %pre
@@ -156,14 +163,20 @@ if [ ! -d /var/log/celery-edextract ]; then
     mkdir -p /var/log/celery-edextract
     chown celery.celery /var/log/celery-edextract
 fi
+if [ ! -d /var/log/celery-edmigrate ]; then
+    mkdir -p /var/log/celery-edmigrate
+    chown celery.celery /var/log/celery-edmigrate
+fi
 
 %post
 chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
+chkconfig --add celeryd-edmigrate
 
 %preun
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
+chkconfig --del celeryd-edmigrate
 
 %postun
 

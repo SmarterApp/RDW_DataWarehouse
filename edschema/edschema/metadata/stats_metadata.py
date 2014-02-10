@@ -22,6 +22,16 @@ def generate_stats_metadata(schema_name=None, bind=None):
                       Column('last_pre_cached', DateTime, nullable=True, default=datetime.datetime.strptime('20000101000000', '%Y%m%d%H%M%S'))
                       )
 
+    udl_daily_stats = Table('udl_daily_stats', metadata,
+                            Column('batch_guid', String(50), nullable=True),
+                            Column('state_code', String(2), nullable=False),
+                            Column('tenant', String(32), nullable=True),
+                            Column('file_arrived', DateTime, nullable=False),
+                            Column('udl_start', DateTime, nullable=False),
+                            Column('udl_end', DateTime, nullable=True),
+                            Column('record_loaded_count', BigInteger, nullable=False)
+                            )
+
     extract_stats = Table('extract_stats', metadata,
                           Column('request_guid', String(50), nullable=False),
                           Column('timestamp', DateTime, nullable=True),

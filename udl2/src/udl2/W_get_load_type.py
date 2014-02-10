@@ -29,7 +29,7 @@ def task(incoming_msg):
     end_time = datetime.datetime.now()
 
     # benchmark
-    benchmark = BatchTableBenchmark(guid_batch, incoming_msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time, task_id=str(task.request.id))
     benchmark.record_benchmark()
 
     #For student registration load type, log and exit for now.

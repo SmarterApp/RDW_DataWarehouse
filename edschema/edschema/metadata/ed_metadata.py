@@ -36,6 +36,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     # Two-letter state - some countries have 3 or more, but two will do for US
     instit_hier = Table('dim_inst_hier', metadata,
                         Column('inst_hier_rec_id', BigInteger, primary_key=True),
+                        Column('batch_guid', String(50), nullable=True),
                         Column('state_name', String(32), nullable=False),
                         Column('state_code', String(2), nullable=False),
                         Column('district_guid', String(50), nullable=False),
@@ -53,6 +54,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     sections = Table('dim_section', metadata,
                      Column('section_rec_id', BigInteger, primary_key=True),
+                     Column('batch_guid', String(50), nullable=True),
                      Column('section_guid', String(50), nullable=False),
                      Column('section_name', String(256), nullable=False),
                      Column('grade', String(10), nullable=False),
@@ -73,6 +75,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     # NB! Figure out uniques in dim_student
     students = Table('dim_student', metadata,
                      Column('student_rec_id', BigInteger, primary_key=True),
+                     Column('batch_guid', String(50), nullable=True),
                      Column('student_guid', String(50), nullable=False),
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
@@ -115,6 +118,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
+                       Column('batch_guid', String(50), nullable=True),
                        Column('asmt_guid', String(50), nullable=False),
                        Column('asmt_type', String(32), nullable=False),
                        Column('asmt_period', String(32), nullable=False),

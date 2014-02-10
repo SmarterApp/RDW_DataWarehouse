@@ -12,10 +12,10 @@ require [
     VT:
       name:
         x: 800
-        y: 75
+        y: 85
       line:
         x1: 825
-        y1: 75
+        y1: 85
         x2: 840
         y2: 100
     NH:
@@ -29,11 +29,11 @@ require [
         y2: 90
     CT:
       name:
-        x: 870
+        x: 880
         y: 210
       line:
-        x1: 869
-        y1: 210
+        x1: 879
+        y1: 200
         x2: 862
         y2: 187
     DE:
@@ -91,13 +91,16 @@ require [
         x2: 805
         y2: 250
 
+  SVG = (tag) ->
+    document.createElementNS('http://www.w3.org/2000/svg', tag)
+
   edwareDataProxy.getDataForReport('comparingPopulationsReport').done (reportConfig) ->
       options =
         method: 'POST'
       load = edwareDataProxy.getDatafromSource "/services/userinfo", options
       load.done (data) ->
         stateCodes = edwareUtil.getUserStateCode data.user_info
-        stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME"]
+        # stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO']
         #TODO: maybe move to less file
         stateColor = '#0085ad'
         stateHoverColor = '#43b02a'
@@ -108,9 +111,6 @@ require [
           stroke: '#ffffff'
           'stroke-width': .10
         }
-
-        # Add text for header string
-        # $('#titleString').append('<text>Select State to start exploring Smarter Balanced test results</h2>')
 
         for stateCode in stateCodes
           stateStyleMap[stateCode] = 'fill': stateColor
@@ -128,7 +128,6 @@ require [
               window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/comparingPopulations.html?stateCode=" + data.name
         }
 
-        
         #Removes the state codes that are added by usmap
         $('#map svg text tspan').each () ->
           if this.firstChild.data not in stateCodes or this.firstChild.data of state_label_pos
@@ -143,6 +142,7 @@ require [
             rem_y.push $(this).attr('y')
             $(this).hide()
 
+        # remove boxes on side of screen for old labels
         i = 0
         while i < rem_x.length
           x = rem_x[i]
@@ -152,22 +152,27 @@ require [
               $(this).hide()
           ++i
 
+        # get map svg object
+        map_svg = $('#map svg')
+
+        # add state codes and lines for small states
         for state_code, coord of state_label_pos
           if state_code in stateCodes
-            st_txt = $('<text></text>')
-            st_txt.attr(coord.name)
-            st_span = $('<tspan dy="5.682005882263184"></tsapn')
+            st_txt = $(SVG('text')).attr(coord.name)
+            # st_txt.attr(coord.name)
+            st_span = $(SVG('tspan')).attr('dy', '5.682005882263184')
             st_span.append(state_code)
             st_txt.append(st_span)
-            $('#map svg').append(st_txt)
+            map_svg.append(st_txt)
 
-            st_line = $('<line></line>')
+            st_line = $(SVG('line'))
             st_line.attr(coord.line)
-            $('#map svg').append(st_line)        
+            map_svg.append(st_line)        
 
+        # $('#map').append(new_svg)
         edwareHeader.create(data, reportConfig)
         displayHome = edwareUtil.getDisplayBreadcrumbsHome data.user_info
         $('#breadcrumb').breadcrumbs(data.context, reportConfig.breadcrumb, displayHome)
 
         # refresh html of map div to display newly added labels
-        $('#map').html($('#map').html())
+        #$('#map').html($('#map').html())

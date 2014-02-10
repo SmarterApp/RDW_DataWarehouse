@@ -68,6 +68,9 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(fact['asmt_claim_1_score'], 'score_claim_1')
         self.assertEqual(fact['asmt_claim_1_score_range_max'], 'score_claim_1_max')
         self.assertEqual(fact['gender'], 'gender_student')
+        self.assertEqual(fact['acc_closed_captioning_embed'], 'acc_closed_captioning_embed')
+        self.assertEqual(fact['acc_print_on_demand_nonembed'], 'acc_print_on_demand_nonembed')
+        self.assertEqual(fact['acc_streamline_mode'], 'acc_streamline_mode')
 
 #TODO: add more tests
 

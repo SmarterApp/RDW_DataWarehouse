@@ -8,6 +8,7 @@ from database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
+from sqlalchemy import MetaData, schema
 from collections import OrderedDict
 import logging
 
@@ -103,9 +104,14 @@ class DBConnection(ConnectionBase):
     def get_table(self, table_name):
         return Table(table_name, self.get_metadata())
 
-    def get_metadata(self):
+    def get_metadata(self, reflect=False, schema_name=None):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
-        return dbUtil.get_metadata()
+        if reflect:
+            metadata = schema.MetaData(bind=dbUtil.get_engine(), schema=schema_name)
+            metadata.reflect(views=True)
+            return metadata
+        else:
+            return dbUtil.get_metadata()
 
     def execute(self, statement, stream_results=False, *multiparams, **params):
         return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)

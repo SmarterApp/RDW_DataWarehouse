@@ -32,7 +32,8 @@ logger = get_task_logger(__name__)
 
 config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-udl2_conf = read_ini_file(config_path_file)
+conf_tup = read_ini_file(config_path_file)
+udl2_conf = conf_tup[0]
 
 
 def start_test(directory_path, memory, cpu, hist_db, hist_schema, port, user, passwd, host):

@@ -25,7 +25,8 @@ class PopulateRefInfoFTest(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-        udl2_conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        udl2_conf = conf_tup[0]
         self.conn, self.engine = database._create_conn_engine(udl2_conf['udl2_db'])
         self.ref_schema = udl2_conf['udl2_db']['reference_schema']
         self.ref_table_name = udl2_conf['udl2_db']['ref_table_name']

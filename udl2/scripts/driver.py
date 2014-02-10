@@ -11,7 +11,7 @@ from udl2 import message_keys as mk
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 
 
-def start_pipeline(archive_file=None, load_type='Assessment', file_parts=4, batch_guid_forced=None, tenant_dirs=None):
+def start_pipeline(archive_file=None, load_type='Unknown', file_parts=4, batch_guid_forced=None, tenant_dirs=None):
     '''
     Begins the UDL Pipeline process by copying the file found at 'archive_file' to the landing zone arrivals dir and
     initiating our main pipeline chain.

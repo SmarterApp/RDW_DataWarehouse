@@ -23,7 +23,7 @@ function build_doc {
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/udl2
 	python setup.py install --force
-	cd $WORKSPACE/docs
+	cd $WORKSPACE/udl2/docs
 	make clean
 	make html
 }

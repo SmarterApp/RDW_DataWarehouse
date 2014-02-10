@@ -41,7 +41,7 @@ class ValidateSchemaChange(unittest.TestCase):
         self.conf = udl2_conf
 
         arch_file = self.copy_file_to_tmp()
-        command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=guid_batch_id)
+        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
 

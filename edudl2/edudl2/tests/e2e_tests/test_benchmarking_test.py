@@ -40,7 +40,7 @@ class ValidateTableData(unittest.TestCase):
     def run_udl_pipeline(self):
         self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
-        command = "python ../../scripts/driver.py -a {}".format(arch_file)
+        command = "python ../../../scripts/driver.py -a {}".format(arch_file)
         print(command)
         subprocess.call(command, shell=True)
 

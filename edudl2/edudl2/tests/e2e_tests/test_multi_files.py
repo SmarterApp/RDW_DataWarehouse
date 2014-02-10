@@ -48,7 +48,7 @@ class ValidateMultiFiles(unittest.TestCase):
         self.copy_file_to_tmp()
         arch_file = self.tenant_dir
 
-        command = "python ../../scripts/driver.py --loop-dir {file_path}".format(file_path=arch_file)
+        command = "python ../../../scripts/driver.py --loop-dir {file_path}".format(file_path=arch_file)
         print(command)
         subprocess.call(command, shell=True)
 

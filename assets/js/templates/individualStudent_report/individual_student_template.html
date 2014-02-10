@@ -66,20 +66,34 @@
                 <li id="claim{{indexer}}" class="claims {{assessmentUC}}">
                     <div class="header">
                         <i class="edware-icon-{{assessmentUC}}-{{indexer}}"></i>
-                        <h4>{{name}}</h4>
+                        <h4 style="font-size: 13px;">{{name}}</h4>
                     </div>
                     <div class="content">
                         <div class="level{{perf_lvl}}">
                             <i class="edware-icon-perf-level-{{perf_lvl}}"></i>
                             {{perf_lvl_name}}
                         </div>
-                        <div class="description">{{desc}}</div>
+                        <p class="description">{{desc}}</p>
                     </div>
                 </li>
                 {{/claims}}
             </ul>
         </div>
-
+        <div class="accommodationSection clearfix">
+            <div class="content">
+                <h4>Accommodations</h4>
+                {{#accommodations}}
+                <div class="section">
+                    <p>{{description}}</p>
+                    <div>
+                        {{#accommodation}}
+                        <span class="label edware-label-accommodation">{{.}}</span>
+                        {{/accommodation}}
+                    </div>
+                </div>
+                {{/accommodations}}
+            </div>
+        </div>
     </div>
     <div class="assessmentOtherInfoHeader printHeader">
         <div class="logo">

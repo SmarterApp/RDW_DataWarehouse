@@ -263,7 +263,7 @@ table {
     }
 }
 .sidebar {
-    height: 650px;
+    /* height: 650px; */
     padding: 15px;
     width: 170px;
     border-top-left-radius: 5px;
@@ -349,11 +349,27 @@ table {
     cursor: pointer;
 }
 
-.claimsSection {
+.claimsSection, .accommodationSection {
     padding: 0px 24px;
 
     h3 {
-    color: @color-B1 !important;
+        color: @color-B1 !important;
+    }
+
+    h4  {
+        color: @color-B1 !important;
+        display: inline-block;
+        line-height: 17px;
+        vertical-align: middle;
+    }
+
+    p {
+        font-size: 12px;
+        color: @color-B3;
+
+        strong {
+            color: @color-B1 !important;
+        }
     }
 
     ul.inline { font-size: 0px; }
@@ -393,14 +409,7 @@ table {
         vertical-align: middle;
     }
 
-    h4  {
-        color: @color-B1 !important;
-        font-size: 13px;
-        display: inline-block;
-        line-height: 17px;
-        vertical-align: middle;
-        padding-left: 8px;
-    }
+    h4 { padding-left: 8px; }
     }
 
     .level1, .level2, .level3 {
@@ -417,9 +426,7 @@ table {
     .level3 { color: @color-C16 !important; }
 
     .description {
-    font-size: 12px;
-    color: @color-B3;
-        padding-top: 13px;
+    padding-top: 13px;
     border-top: dashed 1px @color-B4;
     line-height: 18px;
     }
@@ -492,6 +499,29 @@ table {
 .claimsPopover {
     padding: 0;
 }
+
+.accommodationSection {
+
+    .content {
+        border: solid 1px @color-B5;
+        .rounded-corners(5px);
+        padding: 10px 10px;
+
+        .section {
+            border-top: solid 1px @color-B5;
+            padding: 10px 0px 15px 0px;
+
+            &:first-child {
+                border: none;
+            }
+
+            p {
+                margin-bottom: 3px;
+            }
+        }
+    }
+}
+
 .gridHeight100 {
 
     tr.jqgrow td {

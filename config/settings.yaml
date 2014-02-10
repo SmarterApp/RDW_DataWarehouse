@@ -642,6 +642,7 @@ jenkins_dev:
       report_base_dir: /opt/edware/pdf
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
       health_check.job.queue: health_check
+      generate_timeout: 15
     cache:
       public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211

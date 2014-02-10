@@ -35,6 +35,7 @@ if __name__ == '__main__':
     else:
         config_path_file = args.config_file
 
-    udl2_conf = read_ini_file(config_path_file)
+    conf_tup = read_ini_file(config_path_file)
+    udl2_conf = conf_tup[0]
 
     start_rabbitmq(udl2_conf['rabbitmq']['RABBITMQ_SERVER_PATH'])

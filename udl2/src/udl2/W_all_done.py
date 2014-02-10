@@ -12,6 +12,8 @@ from udl2 import message_keys as mk
 from udl2.celery import celery
 from udl2_util.measurement import BatchTableBenchmark
 from udl2.udl2_base_task import Udl2BaseTask
+from udl2.status import insert_udl_daily_stats
+from udl2.constants import UdlStatsConstants
 
 
 logger = get_task_logger(__name__)
@@ -29,6 +31,24 @@ def report_udl_batch_metrics_to_log(msg, end_time, pipeline_status):
         logger.info('Total Records Processed: ' + str(msg[mk.FACT_ROWS_LOADED]))
 
 
+def report_batch_to_udl_daily_stats(msg, end_time):
+    logger.info('Reporting to UDL daily stats')
+    #Fact rows are not updated for student registration yet
+    fact_rows_loaded = 0
+    if mk.FACT_ROWS_LOADED in msg:
+        fact_rows_loaded = msg[mk.FACT_ROWS_LOADED]
+    udl_batch_stats = {
+        UdlStatsConstants.BATCH_GUID: msg[mk.GUID_BATCH],
+        UdlStatsConstants.STATE_CODE: 'XX',
+        UdlStatsConstants.FILE_ARRIVED: msg[mk.START_TIMESTAMP],
+        UdlStatsConstants.TENANT: msg[mk.TENANT_NAME],
+        UdlStatsConstants.RECORD_LOADED_COUNT: fact_rows_loaded,
+        UdlStatsConstants.UDL_START: msg[mk.START_TIMESTAMP],
+        UdlStatsConstants.UDL_END: end_time
+    }
+    insert_udl_daily_stats(udl_batch_stats)
+
+
 @celery.task(name='udl2.W_all_done.task', base=Udl2BaseTask)
 def task(msg):
     start_time = msg[mk.START_TIMESTAMP]
@@ -42,6 +62,11 @@ def task(msg):
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE',
                                     start_time, end_time, udl_phase_step_status=pipeline_status)
     benchmark.record_benchmark()
+
+    # record batch stats to udl daily stats table
+    # this will be used by migration script to move the data from pre-prod to prod
+    report_batch_to_udl_daily_stats(msg, end_time)
+
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time, pipeline_status)
     return msg

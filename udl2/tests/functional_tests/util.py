@@ -15,7 +15,8 @@ class UDLTestHelper(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
 
-        cls.udl2_conf = read_ini_file(config_path)
+        conf_tup = read_ini_file(config_path)
+        cls.udl2_conf = conf_tup[0]
         cls.udl2_conn, cls.udl2_engine = database._create_conn_engine(cls.udl2_conf['udl2_db'])
         cls.target_conn, cls.target_engine = database._create_conn_engine(cls.udl2_conf['target_db'])
 

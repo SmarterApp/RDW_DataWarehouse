@@ -21,10 +21,11 @@ class FileLoaderFTest(unittest.TestCase):
         conf_tup = read_ini_file(config_path)
         udl2_conf = conf_tup[0]
 
-        CSV_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_realdata.csv')
-        self.CSV_FILE2 = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data.csv')
-        self.CSV_FILE2_CLEAN = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data_CLEAN.csv')
-        HEADER_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_headers.csv')
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        CSV_FILE = os.path.join(data_dir, 'test_file_realdata.csv')
+        self.CSV_FILE2 = os.path.join(data_dir, 'test_file_stored_proc_data.csv')
+        self.CSV_FILE2_CLEAN = os.path.join(data_dir, 'test_file_stored_proc_data_CLEAN.csv')
+        HEADER_FILE = os.path.join(data_dir, 'test_file_headers.csv')
         print(CSV_FILE)
         print(HEADER_FILE)
         CSV_TABLE = 'test_csv_table'

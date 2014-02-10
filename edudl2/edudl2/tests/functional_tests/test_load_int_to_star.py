@@ -15,7 +15,8 @@ class IntToStarFTest(UDLTestHelper):
         table = 'INT_SBAC_ASMT'
         insert_sql = """INSERT INTO "{staging_schema}"."{staging_table}" VALUES({value_string});"""
         insert_array = []
-        with open(os.path.join(self.udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT.csv')) as f:
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        with open(os.path.join(data_dir, 'INT_SBAC_ASMT.csv')) as f:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             next(cf)
             for row in cf:
@@ -30,7 +31,7 @@ class IntToStarFTest(UDLTestHelper):
             execute_queries(self.udl2_conn, insert_array, except_msg)
         table = 'INT_SBAC_ASMT_OUTCOME'
         insert_array = []
-        with open(os.path.join(self.udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT_OUTCOME.csv')) as f:
+        with open(os.path.join(data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')) as f:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             next(cf)
             for row in cf:

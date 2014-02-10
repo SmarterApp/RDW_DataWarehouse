@@ -20,10 +20,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         #initialize_db(TargetDBConnection, udl2_conf)
 
     def load_file_to_stage(self,):
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         # file contain 30 rows
         conf = {
-            mk.FILE_TO_LOAD: os.path.join(self.udl2_conf['zones']['datafiles'], 'test_file_realdata.csv'),
-            mk.HEADERS: os.path.join(self.udl2_conf['zones']['datafiles'], 'test_file_headers.csv'),
+            mk.FILE_TO_LOAD: os.path.join(data_dir, 'test_file_realdata.csv'),
+            mk.HEADERS: os.path.join(data_dir, 'test_file_headers.csv'),
             mk.CSV_TABLE: 'csv_table_for_file_loader',
             mk.TARGET_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
             mk.TARGET_DB_PORT: self.udl2_conf['udl2_db']['db_port'],

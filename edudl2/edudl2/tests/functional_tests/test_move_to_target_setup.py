@@ -16,9 +16,9 @@ from edudl2.udl2_util.database_util import connect_db, get_sqlalch_table_object
 from edudl2.move_to_target.move_to_target_setup import get_tenant_target_db_information
 from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
 
-
-ASMT_OUTCOME_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT_OUTCOME.csv')
-ASMT_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'INT_SBAC_ASMT.csv')
+data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+ASMT_OUTCOME_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')
+ASMT_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT.csv')
 BATCH_GUID = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
 
 

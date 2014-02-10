@@ -6,6 +6,8 @@ from uuid import uuid4
 import os
 from edudl2.preetl.pre_etl import pre_etl_job
 from edudl2.udl2_util.config_reader import read_ini_file
+import tempfile
+import shutil
 
 
 class PreEtlTest(unittest.TestCase):
@@ -17,14 +19,12 @@ class PreEtlTest(unittest.TestCase):
         self.udl2_conf = conf_tup[0]
 
         # create test error log file
-        current_file_path = os.path.dirname(os.path.realpath(__file__))
-        components = current_file_path.split(os.sep)
-        current_path = str.join(os.sep, components[:-1])
-        self.test_error_log_file = os.sep.join([current_path, 'data', 'test_error_log.log'])
+        self.temp_dir = tempfile.mkdtemp()
+        self.test_error_log_file = os.sep.join([self.temp_dir, 'test_error_log.log'])
         open(self.test_error_log_file, 'w').close()
 
     def tearDown(self):
-        os.remove(self.test_error_log_file)
+        shutil.rmtree(self.temp_dir)
 
     def test_pre_etl_job_wrong_auth(self):
         # read the log file, should be empty

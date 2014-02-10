@@ -4,11 +4,11 @@ import shutil
 from edudl2.filedecrypter import file_decrypter
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
+import tempfile
 
 
 class TestFileDecrypter(unittest.TestCase):
 
-    @classmethod
     def setUp(self):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
@@ -18,21 +18,23 @@ class TestFileDecrypter(unittest.TestCase):
         conf_tup = read_ini_file(config_path)
         self.conf = conf_tup[0]
         # test source files
-        self.test_source_file_1 = self.conf['zones']['datafiles'] + 'test_source_file_tar_gzipped.tar.gz.gpg'
-        self.test_source_file_2 = self.conf['zones']['datafiles'] + 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        self.test_source_file_1 = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
+        self.test_source_file_2 = os.path.join(data_dir, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg')
         # temp directory for testing decrypter
-        self.decrypter_test_dir = self.conf['zones']['tests'] + 'decrypter_test/'
-        if not os.path.exists(self.decrypter_test_dir):
-            os.makedirs(self.decrypter_test_dir)
+        self.decrypter_test_dir = tempfile.mkdtemp()
         # test files in tests zone
-        self.test_valid_file = self.decrypter_test_dir + 'test_source_file_tar_gzipped.tar.gz.gpg'
-        self.test_invalid_file = self.decrypter_test_dir + 'test_non_existing_file_tar_gzipped.tar.gz.gpg'
-        self.test_corrupted_file = self.decrypter_test_dir + 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'
+        self.test_valid_file = os.path.join(self.decrypter_test_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
+        self.test_invalid_file = os.path.join(self.decrypter_test_dir, 'test_non_existing_file_tar_gzipped.tar.gz.gpg')
+        self.test_corrupted_file = os.path.join(self.decrypter_test_dir, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg')
         # copy files to tests zone
         shutil.copyfile(self.test_source_file_1, self.test_valid_file)
         shutil.copyfile(self.test_source_file_2, self.test_corrupted_file)
         # set the gpg key home
-        self.gpg_test_home = self.conf['zones']['datafiles'] + 'keys'
+        self.gpg_test_home = os.path.join(data_dir, 'keys')
+
+    def tearDown(self):
+        shutil.rmtree(self.decrypter_test_dir, ignore_errors=True)
 
     def test_decrypter_for_valid_file(self):
         assert os.path.isfile(self.test_valid_file)
@@ -58,8 +60,3 @@ class TestFileDecrypter(unittest.TestCase):
         assert os.path.isfile(self.test_valid_file)
         with self.assertRaises(Exception):
             file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'wrong passphrase', self.gpg_test_home)
-
-    @classmethod
-    def tearDownClass(self):
-        if os.path.exists(self.decrypter_test_dir):
-            shutil.rmtree(self.decrypter_test_dir)

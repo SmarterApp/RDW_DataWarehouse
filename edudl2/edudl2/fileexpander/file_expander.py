@@ -77,7 +77,7 @@ def _extract_tar_file_contents(file_to_expand, expanded_dir):
     for member in tar.getmembers():
         if member.isreg():  # skip if the TarInfo is not files
             member.name = os.path.basename(member.name)  # update the member name to handle absolute paths
-            tar_file_contents.append(expanded_dir + member.name)
+            tar_file_contents.append(os.path.join(expanded_dir, member.name))
             print(member.name, member.size, " bytes in size, is a regular file: ", member.isreg())
             tar.extract(member, expanded_dir)  # extract
     tar.close()

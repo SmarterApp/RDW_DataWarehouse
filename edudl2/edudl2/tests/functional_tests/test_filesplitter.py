@@ -5,6 +5,7 @@ import shutil
 from edudl2.filesplitter import file_splitter
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
+import tempfile
 
 
 class TestFileSplitter(unittest.TestCase):
@@ -18,18 +19,19 @@ class TestFileSplitter(unittest.TestCase):
         self.conf = conf_tup[0]
 
         # create test csv
-        self.test_file_name = self.conf['zones']['tests'] + 'test.csv'
-        output_file = open(self.test_file_name, 'w', newline='')
-        writer = csv.writer(output_file, delimiter=',')
-        self.header_row = ['title1', 'title2', 'title3']
-        writer.writerow(self.header_row)
-        for i in range(1, 11):
-            row = ['Row' + str(i), 'fdsa', 'asdf']
-            writer.writerow(row)
-        output_file.close()
+        self.temp_dir = tempfile.mkdtemp()
+        self.output_dir = os.path.join(self.temp_dir, 'splitter_test')
+        self.test_file_name = os.path.join(self.temp_dir, 'test.csv')
+        with open(self.test_file_name, 'w', newline='') as output_file:
+            writer = csv.writer(output_file, delimiter=',')
+            self.header_row = ['title1', 'title2', 'title3']
+            writer.writerow(self.header_row)
+            for i in range(1, 11):
+                row = ['Row' + str(i), 'fdsa', 'asdf']
+                writer.writerow(row)
 
     def test_parts(self):
-        output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, parts=5, output_path=self.conf['zones']['tests'] + 'splitter_test/')
+        output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, parts=5, output_path=self.output_dir)
         print(self.test_file_name)
         print(output_list)
         print(header_path)
@@ -45,7 +47,7 @@ class TestFileSplitter(unittest.TestCase):
                     assert int(row[0].strip('Row')) == i
 
     def test_rowlimit(self):
-        output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, row_limit=5, output_path=self.conf['zones']['tests'] + 'splitter_test/')
+        output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, row_limit=5, output_path=self.output_dir)
         assert len(output_list) == 2
         for entry in output_list:
             assert 'test_part_' in entry[0]
@@ -59,6 +61,4 @@ class TestFileSplitter(unittest.TestCase):
 
     def tearDown(self):
         print(self.test_file_name)
-        # base =  os.path.splitext(os.path.basename(self.test_file_name))[0]
-        shutil.rmtree(self.conf['zones']['tests'] + 'splitter_test/')
-        os.remove(self.test_file_name)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)

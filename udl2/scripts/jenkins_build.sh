@@ -19,7 +19,7 @@ function build_doc {
 }
 
 function build_e2e {
-	PATH=$PATH:/usr/pgsql-9.2/bin/
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
 	export PATH
     cd $WORKSPACE
     rm -fr python3.3
@@ -40,8 +40,8 @@ function build_e2e {
 	celeryctl purge
 
 	cd $WORKSPACE/udl2/scripts
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
-	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/e2e_tests
@@ -49,7 +49,7 @@ function build_e2e {
 }
 
 function build_functest {
-	PATH=$PATH:/usr/pgsql-9.2/bin/
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
 	export PATH
 	cd $WORKSPACE
 	rm -fr python3.3
@@ -68,8 +68,8 @@ function build_functest {
 	sleep 2
 	celeryctl purge
 
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
-	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/functional_tests
@@ -77,7 +77,7 @@ function build_functest {
 }
 
 function build_unittest {
-	PATH=$PATH:/usr/pgsql-9.2/bin/
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
 	export PATH
 	cd $WORKSPACE
 	rm -fr python3.3
@@ -93,8 +93,8 @@ function build_unittest {
 
 	stop_celery.sh
 	sleep 2
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
-	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 
 	cd $WORKSPACE/udl2
 	nosetests --with-cov --cov=src/ --cov-report xml tests/unit_tests/test*.py

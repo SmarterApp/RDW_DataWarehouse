@@ -39,7 +39,7 @@ def report_batch_to_udl_daily_stats(msg, end_time):
         fact_rows_loaded = msg[mk.FACT_ROWS_LOADED]
     udl_batch_stats = {
         UdlStatsConstants.BATCH_GUID: msg[mk.GUID_BATCH],
-        UdlStatsConstants.STATE_CODE: msg[mk.TENANT_NAME],
+        UdlStatsConstants.STATE_CODE: 'XX',
         UdlStatsConstants.FILE_ARRIVED: msg[mk.START_TIMESTAMP],
         UdlStatsConstants.TENANT: msg[mk.TENANT_NAME],
         UdlStatsConstants.RECORD_LOADED_COUNT: fact_rows_loaded,

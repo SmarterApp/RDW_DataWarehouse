@@ -45,7 +45,7 @@ function build_e2e {
 	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/e2e_tests
-	nosetests fTest_*.py -vs
+	nosetests test_*.py -vs
 }
 
 function build_functest {
@@ -73,7 +73,7 @@ function build_functest {
 	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/functional_tests
-	nosetests fTest_*.py -vs
+	nosetests test_*.py -vs
 }
 
 function build_unittest {

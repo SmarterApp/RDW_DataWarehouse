@@ -175,6 +175,7 @@ ref_table_conf = {
         # Integration to Target
         ('4', 'INT_SBAC_ASMT', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_asmt', 'asmt_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
+        ('4', 'INT_SBAC_ASMT', 'guid_batch', 'dim_asmt', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT', 'type', 'dim_asmt', 'asmt_type', None, None),
         ('4', 'INT_SBAC_ASMT', 'period', 'dim_asmt', 'asmt_period', None, None),
         ('4', 'INT_SBAC_ASMT', 'year', 'dim_asmt', 'asmt_period_year', None, None),
@@ -214,6 +215,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT', "'99991231'", 'dim_asmt', 'to_date', None, None),
         ('4', 'INT_SBAC_ASMT', 'TRUE', 'dim_asmt', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_inst_hier', 'inst_hier_rec_id', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', 'dim_inst_hier', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_state', 'dim_inst_hier', 'state_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'code_state', 'dim_inst_hier', 'state_code', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_district', 'dim_inst_hier', 'district_guid', None, None),
@@ -226,6 +228,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'TRUE', 'dim_inst_hier', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_student', 'student_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_student', 'dim_student', 'student_guid', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', 'dim_student', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_student_first', 'dim_student', 'first_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_student_middle', 'dim_student', 'middle_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_student_last', 'dim_student', 'last_name', None, None),

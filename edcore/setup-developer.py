@@ -8,7 +8,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = \
     ['edschema',
-    'edcore']
+     'edcore']
 
 for dependency in dependencies:
     pkg_path = os.path.abspath(here + "/../" + dependency + "/")

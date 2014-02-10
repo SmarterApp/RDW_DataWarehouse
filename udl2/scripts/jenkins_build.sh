@@ -19,16 +19,18 @@ function build_doc {
 }
 
 function build_e2e {
-	PATH=$PATH:/usr/pgsql-9.2/bin/
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
 	export PATH
     cd $WORKSPACE
     rm -fr python3.3
-	virtualenv-3.3 --distribute python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
+	cd $WORKSPACE/edschema
+    python setup.py install
     cd $WORKSPACE/edcore
     python setup.py install
 	cd $WORKSPACE/udl2
@@ -40,8 +42,8 @@ function build_e2e {
 	celeryctl purge
 
 	cd $WORKSPACE/udl2/scripts
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
-	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/e2e_tests
@@ -49,17 +51,19 @@ function build_e2e {
 }
 
 function build_functest {
-	PATH=$PATH:/usr/pgsql-9.2/bin/
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
 	export PATH
 	cd $WORKSPACE
 	rm -fr python3.3
-	virtualenv-3.3 --distribute python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
 
-	cd $WORKSPACE/edcore
+	cd $WORKSPACE/edschema
+    python setup.py install
+    cd $WORKSPACE/edcore
     python setup.py install
 	cd $WORKSPACE/udl2
 	python setup_developer.py install --force
@@ -68,8 +72,8 @@ function build_functest {
 	sleep 2
 	celeryctl purge
 
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
-	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 	start_celery.sh &
 	sleep 2
 	cd $WORKSPACE/udl2/tests/functional_tests
@@ -77,15 +81,17 @@ function build_functest {
 }
 
 function build_unittest {
-	PATH=$PATH:/usr/pgsql-9.2/bin/
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
 	export PATH
 	cd $WORKSPACE
 	rm -fr python3.3
-	virtualenv-3.3 --distribute python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
 	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/config
 	python setup.py install --force
 	python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
+	cd $WORKSPACE/edschema
+    python setup.py install
     cd $WORKSPACE/edcore
     python setup.py install
 	cd $WORKSPACE/udl2
@@ -93,8 +99,8 @@ function build_unittest {
 
 	stop_celery.sh
 	sleep 2
-	$WORKSPACE/udl2/scripts/teardown_udl2_database.sh
-	$WORKSPACE/udl2/scripts/initialize_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/teardown_udl2_database.sh
+	/bin/sh $WORKSPACE/udl2/scripts/initialize_udl2_database.sh
 
 	cd $WORKSPACE/udl2
 	nosetests --with-cov --cov=src/ --cov-report xml tests/unit_tests/test*.py

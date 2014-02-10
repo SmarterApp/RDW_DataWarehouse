@@ -101,6 +101,17 @@ def get_dest_key(tenant):
     return 'dog'
 
 
+def yield_rows(connector, query, batch_size):
+    """
+    stream the query results in batches of batch_size
+    """
+    result = connector.execute(query, stream_results=True)
+    rows = result.fetchmany(batch_size)
+    while len(rows) > 0:
+        yield rows
+        rows = result.fetchmany(batch_size)
+
+
 def migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, table_name, batch_size=100):
     """
     Load prod fact table with delta from pre-prod
@@ -108,9 +119,12 @@ def migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, t
     source_tab = source_connector.get_table(table_name)
     dest_Tab = dest_connector.get_table(table_name)
     query = source_tab.select().where(source_tab.c.batch_guid == batch_guid)
-    result = source_connector.execute(query).fetchall()
-    if len(result) > 0:
-        dest_connector.execute(dest_Tab.insert(), False, result)
+    # get handle to query result iterator
+    rows = yield_rows(source_connector, query, batch_size)
+    for batch in rows:
+        # execute insert to target schema in batches
+        print('Bulk Inserting batch of size: ' + str(len(batch)))
+        dest_connector.execute(dest_Tab.insert(), False, batch)
 
 
 def migrate_fact(batch_guid, pre_prod_connection, prod_connection):
@@ -163,6 +177,7 @@ def migrate_batch(batch_guid, tenant):
             print('Master: Migration successful for batch: ' + batch_guid)
         except Exception as e:
             print('Exception happened while migrating batch: ' + batch_guid, ' - Rollback initiated')
+            print(e)
             trans.rollback()
 
 
@@ -173,6 +188,7 @@ def start_migrate_daily_delta():
     batches_to_migrate = get_daily_delta_batches_to_migrate()
     for batch in batches_to_migrate:
         migrate_batch(batch['batch_guid'], batch['tenant'])
+        break
 
 if __name__ == '__main__':
     start_migrate_daily_delta()

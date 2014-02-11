@@ -263,13 +263,15 @@ table {
     }
 }
 .sidebar {
-    /* height: 650px; */
     padding: 15px;
     width: 170px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     background: @color-B6;
     color: @color-B1;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
 
     h1 {
     color: @color-A1;
@@ -287,6 +289,7 @@ table {
 .contentWrapper {
     width: 740px;
     margin-left: 200px;
+    padding-bottom: 24px;
 
     .overallScoreSection {
     min-height: 70px;
@@ -342,183 +345,6 @@ table {
         font-size: 14px;
         min-height: 70px;
     }
-    }
-}
-
-.arrowBox {
-    cursor: pointer;
-}
-
-.claimsSection, .accommodationSection {
-    padding: 0px 24px;
-
-    h3 {
-        color: @color-B1 !important;
-    }
-
-    h4  {
-        color: @color-B1 !important;
-        display: inline-block;
-        line-height: 17px;
-        vertical-align: middle;
-    }
-
-    p {
-        font-size: 12px;
-        color: @color-B3;
-
-        strong {
-            color: @color-B1 !important;
-        }
-    }
-
-    ul.inline { font-size: 0px; }
-}
-
-.claims {
-    vertical-align: top;
-    border: solid 1px @color-B5;
-    .rounded-corners(5px);
-    background: @color-B6;
-    padding: 16px 10px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-
-    /* -webkit-text-stroke-width: 1px; */
-    /* -webkit-text-stroke-color: @color-B12; */
-
-    &.MATH {
-    margin-right: 20px;
-    width: 217px;
-
-    h4 { max-width: 152px; }
-    }
-
-    &.ELA {
-    margin-right: 14px;
-    width: 162px;
-
-    h4 { max-width: 98px; }
-    }
-    &.MATH:last-child, &.ELA:last-child { margin-right: 0px; }
-
-    .header {
-    height: 50px;
-
-    i {
-        vertical-align: middle;
-    }
-
-    h4 { padding-left: 8px; }
-    }
-
-    .level1, .level2, .level3 {
-        padding: 10px 0px 18px;
-    font-size: 15px;
-    font-weight: bold;
-    text-align: center;
-
-    i { vertical-align: middle; }
-    }
-
-    .level1 { color: @color-C15 !important; }
-    .level2 { color: @color-B2 !important; }
-    .level3 { color: @color-C16 !important; }
-
-    .description {
-    padding-top: 13px;
-    border-top: dashed 1px @color-B4;
-    line-height: 18px;
-    }
-
-    .link {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    }
-
-    .footer {
-    font-size: 9px;
-    color: @color-B2;
-    position: absolute;
-    bottom: 5px;
-    }
-
-    .graph {
-    margin-right: 10px;
-    }
-}
-
-.claimToolTipSection {
-    width: 315px;
-    color: @color-B1;
-
-    .left {
-    width: 60px;
-    }
-
-    .title {
-    font-size: 13px;
-    line-height: 13px;
-    margin-bottom: 5px;
-    }
-
-    .score {
-    border-radius: 5px 5px 5px 5px;
-    display: table;
-    float: left;
-    font-size: 16px;
-    height: 28px;
-    text-align: center;
-    width: 50px;
-    background: @color-B9;
-    color: @color-white;
-
-    span {
-        vertical-align: middle;
-        display: table-cell;
-    }
-    }
-
-    .description {
-    margin-left: 65px;
-    font-size: 12px;
-    line-height: 17px;
-    min-height: 90px;
-    }
-
-    hr {
-    margin: 10px 0;
-    }
-
-    .errorBand {
-    font-size: 13px;
-    }
-}
-
-.claimsPopover {
-    padding: 0;
-}
-
-.accommodationSection {
-
-    .content {
-        border: solid 1px @color-B5;
-        .rounded-corners(5px);
-        padding: 10px 10px;
-
-        .section {
-            border-top: solid 1px @color-B5;
-            padding: 10px 0px 15px 0px;
-
-            &:first-child {
-                border: none;
-            }
-
-            p {
-                margin-bottom: 3px;
-            }
-        }
     }
 }
 

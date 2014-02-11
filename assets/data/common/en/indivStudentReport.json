@@ -3,5 +3,13 @@
     "legendInfo": {
         "relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
         "error_band": "Smarter Balanced tests try to provide the most precise scores possible within a reasonable time limit, but no test can be 100 percent accurate. The error band indicates the range of scores that a student would be very likely to achieve if they were to take the test multiple times. It is similar to the \"margin of error\" that newspapers report for public opinion surveys."
+    },
+    "accommodationMapping": {
+        "5": " used <strong>without prior registration:</strong>",
+        "6": " was eligible for, but <strong>availability and use are unknown:</strong>",
+        "7": " was eligible for, but <strong>was not available for use:</strong>",
+        "8": " was eligible for and had <strong>available, but use is unknown:</strong>",
+        "9": " was eligible for and had <strong>available, but did not use:</strong>",
+        "10": " was eligible for, had <strong>available, and used:</strong>"
     }
 }

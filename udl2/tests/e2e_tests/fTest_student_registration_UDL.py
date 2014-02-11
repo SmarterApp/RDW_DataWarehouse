@@ -4,7 +4,7 @@ import unittest
 import shutil
 import os
 import subprocess
-import time
+from time import sleep
 from uuid import uuid4
 from sqlalchemy.sql import select, and_
 from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
@@ -49,7 +49,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=sr_file, guid=self.batch_id)
         print(command)
         subprocess.call(command, shell=True)
-        time.sleep(2)
+        sleep(5)
 
     def copy_file_to_tmp(self):
         if os.path.exists(self.tenant_dir):

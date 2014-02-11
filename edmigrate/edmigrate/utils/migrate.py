@@ -8,10 +8,6 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
 
 from datetime import datetime
-import traceback
-
-# TODO: remove this. temp thing for testing as script
-import edmigrate.celery
 
 
 def query_daily_delta_batches_to_migrate(connector):
@@ -140,7 +136,7 @@ def migrate_dims(batch_guid, pre_prod_connection, prod_connection, table):
     Migrate all the dimension tables
     """
     print('Migrating dimension for batch: ' + batch_guid + ' table: ' + table)
-    # TODO: migrate dims
+    migrate_from_preprod_to_prod(batch_guid, pre_prod_connection, prod_connection, table)
 
 
 def migrate_all_tables(batch_guid, pre_prod_connection, prod_connection, tables):
@@ -148,9 +144,11 @@ def migrate_all_tables(batch_guid, pre_prod_connection, prod_connection, tables)
     migrate all tables
     """
     print('Migrating all tables for batch: ' + batch_guid)
-    migrate_fact(batch_guid, pre_prod_connection, prod_connection)
+    # migrate dims first
     for table in list(filter(lambda x: x.startswith('dim_'), tables)):
         migrate_dims(batch_guid, pre_prod_connection, prod_connection, table)
+    # migrate fact
+    migrate_fact(batch_guid, pre_prod_connection, prod_connection)
 
 
 def migrate_batch(batch_guid, tenant):
@@ -191,4 +189,6 @@ def start_migrate_daily_delta():
         break
 
 if __name__ == '__main__':
+    # TODO: remove this. temp thing for testing as script
+    import edmigrate.celery
     start_migrate_daily_delta()

@@ -9,6 +9,9 @@ from edcore.utils.utils import merge_dict
 
 from datetime import datetime
 
+# these tables will be dropped in future
+TABLES_NOT_CONNECTED_WITH_BATCH = ['dim_section']
+
 
 def query_daily_delta_batches_to_migrate(connector):
     """
@@ -108,13 +111,27 @@ def yield_rows(connector, query, batch_size):
         rows = result.fetchmany(batch_size)
 
 
+def get_source_query(source_tab, batch_guid, migrate_all=False):
+    """
+    returns the source query to fetch records from pre-prod
+    """
+    # hack for now to allow dim_section migration (fake record) with out batch_guid matching
+    if migrate_all is True:
+        return source_tab.select()
+    return source_tab.select().where(source_tab.c.batch_guid == batch_guid)
+
+
 def migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, table_name, batch_size=100):
     """
     Load prod fact table with delta from pre-prod
     """
     source_tab = source_connector.get_table(table_name)
     dest_Tab = dest_connector.get_table(table_name)
-    query = source_tab.select().where(source_tab.c.batch_guid == batch_guid)
+
+    if table_name in TABLES_NOT_CONNECTED_WITH_BATCH:
+        query = get_source_query(source_tab, batch_guid, migrate_all=True)
+    else:
+        query = get_source_query(source_tab, batch_guid)
     # get handle to query result iterator
     rows = yield_rows(source_connector, query, batch_size)
     for batch in rows:

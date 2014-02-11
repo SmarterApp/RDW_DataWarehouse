@@ -7,10 +7,11 @@ import subprocess
 from time import sleep
 from uuid import uuid4
 from sqlalchemy.sql import select, and_
-from udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
-from udl2.celery import udl2_conf
+from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.celery import udl2_conf
 
-STUDENT_REG_DATA_FILE = '/opt/edware/zones/datafiles/test_sample_student_reg.tar.gz.gpg'
+data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+STUDENT_REG_DATA_FILE = os.path.join(data_dir, 'test_sample_student_reg.tar.gz.gpg')
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 
 

@@ -10,6 +10,23 @@
         "7": " was eligible for, but <strong>was not available for use:</strong>",
         "8": " was eligible for and had <strong>available, but use is unknown:</strong>",
         "9": " was eligible for and had <strong>available, but did not use:</strong>",
-        "10": " was eligible for, had <strong>available, and used:</strong>"
+        "10": " was eligible for and had <strong>available, and used:</strong>"
+    },
+    "accommodationColumns": {
+        "acc_asl_video_embed": "ASL Videos",
+        "acc_asl_human_nonembed": "Human ASL Signer",
+        "acc_braile_embed": "Fully Brailled",
+        "acc_closed_captioning_embed": "Closed Captioning: ELA Listening Stimuli",
+        "acc_text_to_speech_embed": "Text-to-speech: ELA Reading Passages",
+        "acc_abacus_nonembed": "Abacus",
+        "acc_alternate_response_options_nonembed": "Alternative Response Options",
+        "acc_calculator_nonembed": "Calculator",
+        "acc_multiplication_table_nonembed": "Multiplication Table",
+        "acc_print_on_demand_nonembed": "Printed Stimuli / Items",
+        "acc_read_aloud_nonembed": "Read-aloud: ELA Reading Passages",
+        "acc_scribe_nonembed": "Scribe: ELA Writing Items",
+        "acc_speech_to_text_nonembed": "Speech-to-text: ELA Writing Items",
+        "acc_streamline_mode": "TBD"
     }
+
 }

@@ -15,69 +15,36 @@ define [
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences, Constants, edwareReportInfoBar, edwareReportActionBar) ->
 
+  class DataProcessor
 
-  class EdwareISR
+    # do not show accommodations that have code less than the threshold
+    ACCOMMODATION_THRESHOLD_CODE = 5
 
-    constructor: () ->
-      self = this
-      loading = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
-      loading.done (configData) ->
-        self.configData = configData
-        self.initialize()
-        self.loadPrintMedia()
-        self.fetchData()
+    constructor: (@data, @configData, @isGrayscale) ->
 
-    loadPage: (template) ->
-      @data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
-      @data.labels = @configData.labels
-      @grade = @data.context.items[3]
-      @subjectsData = @data.subjects
+    process: () ->
       @processData()
-      @render()
-      @createBreadcrumb()
-      @renderReportInfo()
-      @renderReportActionBar()
-      #Grayscale logo for print version
-      if @isGrayscale
-        $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
+      @processAccommodations()
+      @data
 
-    initialize: () ->
-      @params = edwareUtil.getUrlParams()
-      @isPdf = @params['pdf']
-      @isGrayscale = @params['grayscale']
-      @reportInfo = @configData.reportInfo
-      @legendInfo = @configData.legendInfo
+    processAccommodations: () ->
+      for asmtType, assessments  of @data.items
+        for asmt in assessments
+          sections = @buildAccommodations asmt.accommodations
+          asmt.accommodations = {"sections": sections}
 
-    getAsmtGuid: () ->
-      if not @isPdf
-        asmt = edwarePreferences.getAsmtPreference()
-        asmt?.asmtGuid
-
-    getCurrentAsmtType: () ->
-      if @isPdf
-        currentAsmtType = @params['asmtType']
-      else
-        asmt = edwarePreferences.getAsmtPreference()
-        currentAsmtType = asmt?.asmtType
-      currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
-
-    fetchData: () ->
-      # Get individual student report data from the server
-      self = this
-      ISR_REPORT_SERVICE = "/data/individual_student_report"
-      loadingData = edwareDataProxy.getDatafromSource ISR_REPORT_SERVICE,
-        method: "POST"
-        params: @params
-      loadingData.done (data) ->
-        self.loadPage data
-
-    loadPrintMedia: () ->
-      # Show grayscale
-      edwareUtil.showGrayScale() if @isGrayscale
-      # Load css for pdf generation
-      edwareUtil.showPdfCSS() if @isPdf
+    buildAccommodations: (accommodations) ->
+      # mapping accommodation code and column name to meaningful description text
+      for code, columns of accommodations
+        section = {}
+        continue if code < ACCOMMODATION_THRESHOLD_CODE
+        section["description"] = @configData.accommodationMapping[code]
+        section["accommodation"] = for column in columns
+          @configData.accommodationColumns[column]
+        section
 
     processData: () ->
+      # TODO: below code should be made prettier someday
       for asmtType, assessments  of @data.items
         for assessment, idx in assessments
           for cut_point_interval, i in assessment.cut_point_intervals
@@ -126,6 +93,68 @@ define [
           for claim in assessment.claims
             claim.subject = assessment.asmt_subject.toUpperCase()
             claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
+
+
+  class EdwareISR
+
+    constructor: () ->
+      self = this
+      loading = edwareDataProxy.getDataForReport Constants.REPORT_JSON_NAME.ISR
+      loading.done (configData) ->
+        self.configData = configData
+        self.initialize()
+        self.loadPrintMedia()
+        self.fetchData()
+
+    loadPage: (template) ->
+      data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
+      @data = new DataProcessor(data, @configData, @isGrayscale).process()
+      @data.labels = @configData.labels
+      @grade = @data.context.items[3]
+      @subjectsData = @data.subjects
+      @render()
+      @createBreadcrumb()
+      @renderReportInfo()
+      @renderReportActionBar()
+      #Grayscale logo for print version
+      if @isGrayscale
+        $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
+
+    initialize: () ->
+      @params = edwareUtil.getUrlParams()
+      @isPdf = @params['pdf']
+      @isGrayscale = @params['grayscale']
+      @reportInfo = @configData.reportInfo
+      @legendInfo = @configData.legendInfo
+
+    getAsmtGuid: () ->
+      if not @isPdf
+        asmt = edwarePreferences.getAsmtPreference()
+        asmt?.asmtGuid
+
+    getCurrentAsmtType: () ->
+      if @isPdf
+        currentAsmtType = @params['asmtType']
+      else
+        asmt = edwarePreferences.getAsmtPreference()
+        currentAsmtType = asmt?.asmtType
+      currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
+
+    fetchData: () ->
+      # Get individual student report data from the server
+      self = this
+      ISR_REPORT_SERVICE = "/data/individual_student_report"
+      loadingData = edwareDataProxy.getDatafromSource ISR_REPORT_SERVICE,
+        method: "POST"
+        params: @params
+      loadingData.done (data) ->
+        self.loadPage data
+
+    loadPrintMedia: () ->
+      # Show grayscale
+      edwareUtil.showGrayScale() if @isGrayscale
+      # Load css for pdf generation
+      edwareUtil.showPdfCSS() if @isPdf
 
 
     createBreadcrumb: () ->

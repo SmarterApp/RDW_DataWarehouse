@@ -79,21 +79,25 @@
                 {{/claims}}
             </ul>
         </div>
+        {{#accommodations}}
         <div class="accommodationSection clearfix">
             <div class="content">
                 <h4>Accommodations</h4>
-                {{#accommodations}}
-                <div class="section">
-                    <p>{{description}}</p>
-                    <div>
-                        {{#accommodation}}
-                        <span class="label edware-label-accommodation">{{.}}</span>
-                        {{/accommodation}}
+                <div>
+                    {{#sections}}
+                    <div class="section">
+                        <p>{{current.0.student_first_name}} {{{description}}}</p>
+                        <div>
+                            {{#accommodation}}
+                            <span class="label edware-label-accommodation">{{.}}</span>
+                            {{/accommodation}}
+                        </div>
                     </div>
+                    {{/sections}}
                 </div>
-                {{/accommodations}}
             </div>
         </div>
+        {{/accommodations}}
     </div>
     <div class="assessmentOtherInfoHeader printHeader">
         <div class="logo">

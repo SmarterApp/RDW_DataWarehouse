@@ -1,4 +1,1 @@
-id,cluster,conninfo
-1,edware_pg_cluster,host=dbpgdw0.qa.dum.edwdc.net user=repmgr dbname=edware
-2,edware_pg_cluster,host=dbpgdwr0.qa.dum.edwdc.net user=repmgr dbname=edware
-3,edware_pg_cluster,host=dbpgdwr0s1.qa.dum.edwdc.net user=repmgr dbname=edware
+id,cluster,conninfo1,edware_pg_cluster,host=master.dummy.net user=repmgr dbname=edware2,edware_pg_cluster,host=slave1.dummy.net user=repmgr dbname=edware3,edware_pg_cluster,host=slave2.dummy.net user=repmgr dbname=edware

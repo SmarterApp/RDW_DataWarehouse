@@ -150,6 +150,10 @@ class TestUdl2Database(unittest.TestCase):
         table_name = 'STG_SBAC_ASMT_OUTCOME'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
+    def test_STG_SBAC_STU_REG(self):
+        table_name = 'STG_SBAC_STU_REG'
+        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+
     def test_INT_SBAC_ASMT(self):
         table_name = 'INT_SBAC_ASMT'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))

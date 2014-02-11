@@ -608,11 +608,13 @@ jenkins_dev:
   '[app:main]':
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+      CELERYD_CONCURRENCY: 4
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+        CELERYD_CONCURRENCY: 4
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     edware:
@@ -640,6 +642,7 @@ jenkins_dev:
       report_base_dir: /opt/edware/pdf
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
       health_check.job.queue: health_check
+      generate_timeout: 15
     cache:
       public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211

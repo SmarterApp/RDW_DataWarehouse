@@ -8,118 +8,37 @@ require [
   'edwareBreadcrumbs'
 ], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs) ->
 
-  state_label_pos = 
-    VT:
-      name:
-        x: 800
-        y: 85
-      line:
-        x1: 825
-        y1: 85
-        x2: 840
-        y2: 100
-    NH:
-      name:
-        x: 835
-        y: 65
-      line:
-        x1: 850
-        y1: 73
-        x2: 862
-        y2: 90
-    CT:
-      name:
-        x: 880
-        y: 210
-      line:
-        x1: 879
-        y1: 200
-        x2: 862
-        y2: 187
-    DE:
-      name:
-        x: 845
-        y: 275
-      line:
-        x1: 843
-        y1: 274
-        x2: 830
-        y2: 256
-    MA:
-      name:
-        x: 900
-        y: 145
-      line:
-        x1: 900
-        y1: 145
-        x2: 885
-        y2: 159
-    RI:
-      name:
-        x: 900
-        y: 190
-      line:
-        x1: 898
-        y1: 185
-        x2: 878
-        y2: 178
-    NJ:
-      name:
-        x: 860
-        y: 235
-      line:
-        x1: 858
-        y1: 232
-        x2: 844
-        y2: 220
-    MD:
-      name:
-        x: 840
-        y: 300
-      line:
-        x1: 840
-        y1: 300
-        x2: 830
-        y2: 275
-    DC:
-      name:
-        x: 850
-        y: 255
-      line:
-        x1: 850
-        y1: 255
-        x2: 805
-        y2: 250
-
   SVG = (tag) ->
     document.createElementNS('http://www.w3.org/2000/svg', tag)
 
-  edwareDataProxy.getDataForReport('comparingPopulationsReport').done (reportConfig) ->
+  edwareDataProxy.getDataForReport('stateMap').done (stateMapConfig) -> # comparingPopulationsReport
       options =
         method: 'POST'
       load = edwareDataProxy.getDatafromSource "/services/userinfo", options
       load.done (data) ->
         stateCodes = edwareUtil.getUserStateCode data.user_info
-        # stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO']
-        #TODO: maybe move to less file
-        stateColor = '#0085ad'
-        stateHoverColor = '#43b02a'
+        #stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO']
+        
+        # get colors from report
+        colors = stateMapConfig.colors
+
         stateStyleMap = {}
         stateHoverMap = {}
-        stateStyles = {
-          fill: '#3fa3c1'
-          stroke: '#ffffff'
-          'stroke-width': .10
-        }
+        stateStyles = 
+          fill: colors.defaultFill
+          stroke: colors.defaultStroke
+          'stroke-width': colors.strokeWidth
 
+        # add fill and hover for each state in the list
         for stateCode in stateCodes
-          stateStyleMap[stateCode] = 'fill': stateColor
-          stateHoverMap[stateCode] = 'fill': stateHoverColor
+          stateStyleMap[stateCode] = 'fill': colors.stateStyle
+          stateHoverMap[stateCode] = 'fill': colors.stateHover
 
+        # Add usmap to div
         $('#map').usmap {
           showLabels: true
           stateStyles: stateStyles
-          stateHoverStyles: fill: '#3fa3c1'
+          stateHoverStyles: fill: colors.defaultFill
           stateHoverAnimation: 100
           stateSpecificStyles: stateStyleMap
           stateSpecificHoverStyles: stateHoverMap
@@ -128,6 +47,9 @@ require [
               window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/comparingPopulations.html?stateCode=" + data.name
         }
 
+        # get state label locations from json
+        state_label_pos = stateMapConfig.state_pos
+        
         #Removes the state codes that are added by usmap
         $('#map svg text tspan').each () ->
           if this.firstChild.data not in stateCodes or this.firstChild.data of state_label_pos
@@ -137,7 +59,7 @@ require [
         rem_y = []
         # Remove small state text boxes drawn by usmap.js
         $('#map svg rect').each () ->
-          if $(this).attr('fill')  == "#333333"
+          if $(this).attr('fill')  == colors.usmapFill
             rem_x.push $(this).attr('x')
             rem_y.push $(this).attr('y')
             $(this).hide()
@@ -154,12 +76,13 @@ require [
 
         # get map svg object
         map_svg = $('#map svg')
-
+        console.log(stateMapConfig)
+        
         # add state codes and lines for small states
         for state_code, coord of state_label_pos
           if state_code in stateCodes
             st_txt = $(SVG('text')).attr(coord.name)
-            # st_txt.attr(coord.name)
+    
             st_span = $(SVG('tspan')).attr('dy', '5.682005882263184')
             st_span.append(state_code)
             st_txt.append(st_span)
@@ -169,10 +92,6 @@ require [
             st_line.attr(coord.line)
             map_svg.append(st_line)        
 
-        # $('#map').append(new_svg)
-        edwareHeader.create(data, reportConfig)
+        edwareHeader.create(data, stateMapConfig)
         displayHome = edwareUtil.getDisplayBreadcrumbsHome data.user_info
-        $('#breadcrumb').breadcrumbs(data.context, reportConfig.breadcrumb, displayHome)
-
-        # refresh html of map div to display newly added labels
-        #$('#map').html($('#map').html())
+        $('#breadcrumb').breadcrumbs(data.context, stateMapConfig.breadcrumb, displayHome)

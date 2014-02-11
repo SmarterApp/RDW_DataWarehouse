@@ -11,13 +11,13 @@ require [
   SVG = (tag) ->
     document.createElementNS('http://www.w3.org/2000/svg', tag)
 
-  edwareDataProxy.getDataForReport('stateMap').done (stateMapConfig) -> # comparingPopulationsReport
+  edwareDataProxy.getDataForReport('stateMap').done (stateMapConfig) ->
       options =
         method: 'POST'
       load = edwareDataProxy.getDatafromSource "/services/userinfo", options
       load.done (data) ->
         stateCodes = edwareUtil.getUserStateCode data.user_info
-        #stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO']
+        # stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO', "MA", 'RI', 'NJ', 'MD', 'DC']
         
         # get colors from report
         colors = stateMapConfig.colors
@@ -44,7 +44,7 @@ require [
           stateSpecificHoverStyles: stateHoverMap
           click: (event, data) ->
             if data.name in stateCodes
-              window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/comparingPopulations.html?stateCode=" + data.name
+              window.location.href = edwareUtil.getBaseURL() + stateMapConfig.reportExtension + data.name
         }
 
         # get state label locations from json
@@ -59,7 +59,7 @@ require [
         rem_y = []
         # Remove small state text boxes drawn by usmap.js
         $('#map svg rect').each () ->
-          if $(this).attr('fill')  == colors.usmapFill
+          if $(this).attr('fill') == colors.usmapFill
             rem_x.push $(this).attr('x')
             rem_y.push $(this).attr('y')
             $(this).hide()
@@ -76,14 +76,13 @@ require [
 
         # get map svg object
         map_svg = $('#map svg')
-        console.log(stateMapConfig)
         
         # add state codes and lines for small states
         for state_code, coord of state_label_pos
           if state_code in stateCodes
             st_txt = $(SVG('text')).attr(coord.name)
     
-            st_span = $(SVG('tspan')).attr('dy', '5.682005882263184')
+            st_span = $(SVG('tspan')).attr('dy', '5.682005882263184')  # dy moves Y coordinate down 
             st_span.append(state_code)
             st_txt.append(st_span)
             map_svg.append(st_txt)

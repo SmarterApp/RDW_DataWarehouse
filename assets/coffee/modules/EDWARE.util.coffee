@@ -157,6 +157,9 @@ define [
     else
       value
     
+  getBaseURL = ->
+    window.location.protocol + "//" + window.location.host
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -175,3 +178,4 @@ define [
   displayNoResultsMessage: displayNoResultsMessage
   reRenderBody: reRenderBody
   escapeCSV: escapeCSV
+  getBaseURL: getBaseURL

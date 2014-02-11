@@ -116,5 +116,6 @@
         "defaultStroke": "#ffffff",
         "strokeWidth": ".10",
         "usmapFill": "#333333"
-    }
+    },
+    "reportExtension": "/assets/html/comparingPopulations.html?stateCode="
 }

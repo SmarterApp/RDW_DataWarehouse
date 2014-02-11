@@ -50,10 +50,10 @@ class ValidateTableData(unittest.TestCase):
         query = select([batch_table])
         result = connector.execute(query).fetchall()
         number_of_row = len(result)
-        if number_of_row < 22:
+        if number_of_row < 24:
             time.sleep(30)
             print(number_of_row)
-        self.assertEqual(number_of_row, 23)
+        self.assertEqual(number_of_row, 24)
 
         output = select([batch_table.c.udl_phase_step_status]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
         output_data = connector.execute(output).fetchall()

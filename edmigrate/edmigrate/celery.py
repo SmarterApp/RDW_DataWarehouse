@@ -9,12 +9,6 @@ from edcore.database.stats_connector import StatsDBConnection
 import logging
 
 logger = logging.getLogger('edmigrate')
-logger.setLevel(logging.DEBUG)
-
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
-
 PREFIX = 'migrate.celery'
 
 

@@ -387,7 +387,7 @@ function run_javascript_yslow_tests {
     phantomjs /opt/yslow/yslow.js --help
 }
 
-function generate_ini_for_udl {
+function setup_for_udl {
     echo "Setting up ini for udl"
     cd "$WORKSPACE/config"
     python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
@@ -424,6 +424,7 @@ function main {
             UT_PATH="$MAIN_PKG"
             if [ ${RUN_UNIT_TEST:=""} == "edudl2" ]; then
                 UT_PATH=$MAIN_PKG/edudl2/tests
+                setup_for_udl
             fi 
             run_unit_tests $UT_PATH
         fi

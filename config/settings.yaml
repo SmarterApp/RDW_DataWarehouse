@@ -379,11 +379,11 @@ jenkins_qa:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_5
+          schema_name: edware_sds_1_6
           url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_5
+        schema_name: edware_sds_1_6
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     services.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
@@ -487,7 +487,7 @@ localOpenAM:
       db:
         cat:
           schema_name: edware_sds_1_2
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
           echo: False
     edware_stats:
       db:
@@ -520,14 +520,14 @@ development:
         pool_size: 20
         max_overflow: 10
         cat:
-          schema_name: edware_sds_1_5
+          schema_name: edware_sds_1_6
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
-          schema_name: edware_sds_1_5_dog
+          schema_name: edware_sds_1_6_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_5
+        schema_name: edware_sds_1_6
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:
@@ -576,14 +576,14 @@ test:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_5
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          schema_name: edware_sds_1_6
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
         dog:
-          schema_name: edware_sds_1_5_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          schema_name: edware_sds_1_6_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_5
+        schema_name: edware_sds_1_6
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     extract:
       gpg.homedir: ../../edware/config/gpg
@@ -620,14 +620,14 @@ jenkins_dev:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_5
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          schema_name: edware_sds_1_6
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
         dog:
-          schema_name: edware_sds_1_5_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          schema_name: edware_sds_1_6_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_5
+        schema_name: edware_sds_1_6
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     auth:
       policy.secure: False
@@ -668,10 +668,10 @@ air:
       db:
         ca:
           schema_name: edware_sds_1_2
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
         dog:
           schema_name: edware_sds_1_2_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_2

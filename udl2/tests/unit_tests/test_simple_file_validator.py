@@ -52,7 +52,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                            'asmt_claim_1_perf_lvl', 'score_claim_2', 'score_claim_2_max', 'score_claim_2_min', 'asmt_claim_2_perf_lvl', 'score_claim_3',
                            'score_claim_3_max', 'score_claim_3_min', 'asmt_claim_3_perf_lvl', 'score_claim_4', 'score_claim_4_max',
                            'score_claim_4_min', 'asmt_claim_4_perf_lvl', 'score_perf_level', 'asmt_year', 'gender_student', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf',
-                           'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'code_state', 'asmt_subject', 'asmt_type']
+                           'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'code_state', 'asmt_subject', 'asmt_type', 'acc_asl_video_embed', 'acc_asl_human_nonembed', 'acc_braile_embed', 'acc_closed_captioning_embed', 'acc_text_to_speech_embed', 'acc_abacus_nonembed', 'acc_alternate_response_options_nonembed', 'acc_calculator_nonembed', 'acc_multiplication_table_nonembed', 'acc_print_on_demand_nonembed', 'acc_read_aloud_nonembed', 'acc_scribe_nonembed', 'acc_speech_to_text_nonembed', 'acc_streamline_mode']
         validator = csv_validator.DoesSourceFileInExpectedFormat(csv_fields=test_csv_fields)
         results = [validator.execute(self.conf['zones']['datafiles'],
                                      'test_data_latest/'

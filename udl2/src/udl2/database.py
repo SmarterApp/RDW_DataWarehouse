@@ -238,6 +238,20 @@ UDL_METADATA = {
                 ('asmt_subject', False, 'varchar(256)', '', True, "Assessment Subject"),
                 ('asmt_year', False, 'varchar(256)', '', True, 'Assessment Year'),
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
+                ('acc_asl_video_embed', False, 'varchar(256)', '', False, 'ASL Video'),
+                ('acc_asl_human_nonembed', False, 'varchar(256)', '', False, 'Human ASL Signer'),
+                ('acc_braile_embed', False, 'varchar(256)', '', False, 'Fully Brailled'),
+                ('acc_closed_captioning_embed', False, 'varchar(256)', '', False, 'Closed Captioning: ELA Listening Stimuli'),
+                ('acc_text_to_speech_embed', False, 'varchar(256)', '', False, 'Text-to-speech: ELA Reading Passages'),
+                ('acc_abacus_nonembed', False, 'varchar(256)', '', False, 'Abacus'),
+                ('acc_alternate_response_options_nonembed', False, 'varchar(256)', '', False, 'Alternative Response Options'),
+                ('acc_calculator_nonembed', False, 'varchar(256)', '', False, 'Calculator'),
+                ('acc_multiplication_table_nonembed', False, 'varchar(256)', '', False, 'Multiplication Table'),
+                ('acc_print_on_demand_nonembed', False, 'varchar(256)', '', False, 'Printed stimuli/Items'),
+                ('acc_read_aloud_nonembed', False, 'varchar(256)', '', False, 'Read-aloud: ELA Reading Passages'),
+                ('acc_scribe_nonembed', False, 'varchar(256)', '', False, 'Scribe: ELA Writing Items'),
+                ('acc_speech_to_text_nonembed', False, 'varchar(256)', '', False, 'Speech-to-text: ELA Writing Items'),
+                ('acc_streamline_mode', False, 'varchar(256)', '', False, ''),
             ],
             'indexes': [],
             'keys': {}
@@ -364,6 +378,20 @@ UDL_METADATA = {
                 ('asmt_subject', False, 'varchar(32)', '', False, "Math, ELA ..."),
                 ('asmt_year', False, 'smallint', '', False, "Assessment year"),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
+                ('acc_asl_video_embed', False, 'smallint', '', False, 'ASL Video'),
+                ('acc_asl_human_nonembed', False, 'smallint', '', False, 'Human ASL Signer'),
+                ('acc_braile_embed', False, 'smallint', '', False, 'Fully Brailled'),
+                ('acc_closed_captioning_embed', False, 'smallint', '', False, 'Closed Captioning: ELA Listening Stimuli'),
+                ('acc_text_to_speech_embed', False, 'smallint', '', False, 'Text-to-speech: ELA Reading Passages'),
+                ('acc_abacus_nonembed', False, 'smallint', '', False, 'Abacus'),
+                ('acc_alternate_response_options_nonembed', False, 'smallint', '', False, 'Alternative Response Options'),
+                ('acc_calculator_nonembed', False, 'smallint', '', False, 'Calculator'),
+                ('acc_multiplication_table_nonembed', False, 'smallint', '', False, 'Multiplication Table'),
+                ('acc_print_on_demand_nonembed', False, 'smallint', '', False, 'Printed stimuli/Items'),
+                ('acc_read_aloud_nonembed', False, 'smallint', '', False, 'Read-aloud: ELA Reading Passages'),
+                ('acc_scribe_nonembed', False, 'smallint', '', False, 'Scribe: ELA Writing Items'),
+                ('acc_speech_to_text_nonembed', False, 'smallint', '', False, 'Speech-to-text: ELA Writing Items'),
+                ('acc_streamline_mode', False, 'smallint', '', False, ''),
             ],
             'indexes': [],
             'keys': {},
@@ -533,7 +561,6 @@ def create_table(metadata, table_name):
 
     # create unique and foreign table keys, Add to arguments
     # arguments += create_table_keys(key_ddl, schema)
-
     table = Table(*tuple(arguments))
 
     return table

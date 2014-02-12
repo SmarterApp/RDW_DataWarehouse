@@ -23,7 +23,7 @@ import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
 from udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
-from config import ref_table_data
+from config import ref_table_data, sr_ref_table_data
 from udl2_util.config_reader import read_ini_file
 
 
@@ -397,6 +397,22 @@ UDL_METADATA = {
             'keys': {},
         },
         'REF_COLUMN_MAPPING': {
+            'columns': [
+                ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
+                ('phase', False, 'smallint', '', True, 'The phase in the pipeline where this mapping/transformation occurs'),
+                ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
+                ('source_column', False, 'varchar(256)', '', True, 'name of the source column'),
+                ('target_table', False, 'varchar(50)', '', True, 'name of the target table'),
+                ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
+                ('transformation_rule', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
+                ('stored_proc_name', False, 'varchar(256)', '', True, 'Name of stored procedure to use during this transformation'),
+                ('stored_proc_created_date', False, 'timestamp with time zone', '', True, 'Date when the stored procedure was added'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {},
+        },
+        'SR_REF_COLUMN_MAPPING': {
             'columns': [
                 ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
                 ('phase', False, 'smallint', '', True, 'The phase in the pipeline where this mapping/transformation occurs'),
@@ -796,13 +812,15 @@ def load_fake_record_in_star_schema(udl2_conf):
 
 def load_reference_data(udl2_conf):
     '''
-    load the reference data into the referenct tables
+    load the reference data into the reference tables
     @param udl2_conf: The configuration dictionary for
     '''
     (conn, engine) = _create_conn_engine(udl2_conf)
-    ref_table_info = ref_table_data.ref_table_conf
-    populate_ref_column_map(ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
+    asmt_ref_table_info = ref_table_data.ref_table_conf
+    populate_ref_column_map(asmt_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
 
+    sr_ref_table_info = sr_ref_table_data.ref_table_conf
+    populate_ref_column_map(sr_ref_table_info, engine, conn, udl2_conf['reference_schema'], 'SR_REF_COLUMN_MAPPING')
 
 def load_stored_proc(udl2_conf):
     '''

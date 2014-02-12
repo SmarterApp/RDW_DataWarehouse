@@ -7,7 +7,7 @@ import unittest
 import os
 import shutil
 import subprocess
-import time
+from time import sleep
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
@@ -25,6 +25,7 @@ class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):
         self.tenant_dir = TENANT_DIR
+        self.connector = UDL2DBConnection()
 
 #teardown tenant folder
     def tearDown(self):
@@ -50,6 +51,7 @@ class ValidateMultiFiles(unittest.TestCase):
         command = "python ../../../scripts/driver.py --loop-dir {file_path}".format(file_path=arch_file)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.connector)
 
 #Copy file to tenant folder
     def copy_file_to_tmp(self):
@@ -61,9 +63,20 @@ class ValidateMultiFiles(unittest.TestCase):
             files = shutil.copy2(file, self.tenant_dir)
             print(files)
 
+    #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
+    def check_job_completion(self, connector, max_wait=30):
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'udl2.W_post_etl.task')
+        timer = 0
+        result = connector.execute(query).fetchall()
+        while timer < max_wait and len(result) < len(FILE_DICT):
+            sleep(0.25)
+            timer += 0.25
+            result = connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for job to complete.')
+
 #Connect to UDL database through config_file
     def connect_verify_udl(self, connector):
-        time.sleep(10)
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.guid_batch]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
         result = connector.execute(query).fetchall()
@@ -73,9 +86,8 @@ class ValidateMultiFiles(unittest.TestCase):
 
 #Test method for edware db
     def test_database(self):
-        self.udl_run()
-        self.connector = UDL2DBConnection()
         self.empty_batch_table(self.connector)
+        self.udl_run()
         self.connect_verify_udl(self.connector)
 
 if __name__ == "__main__":

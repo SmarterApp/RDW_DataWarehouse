@@ -6,11 +6,11 @@ Created on Sep 10, 2013
 import unittest
 import subprocess
 import os
-import time
 import shutil
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
+from time import sleep
 
 
 class ValidateTableData(unittest.TestCase):
@@ -42,16 +42,24 @@ class ValidateTableData(unittest.TestCase):
         command = "python {driver_path} -a {file_name}".format(driver_path=driver_path, file_name=arch_file)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.connector)
+
+    def check_job_completion(self, connector, max_wait=30):
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.udl_phase], batch_table.c.udl_phase == 'udl2.W_post_etl.task')
+        timer = 0
+        result = connector.execute(query).fetchall()
+        while timer < max_wait and result == []:
+            sleep(0.25)
+            timer += 0.25
+            result = connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for job to complete.')
 
     def connect_verify_db(self, connector):
-        time.sleep(10)
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table])
         result = connector.execute(query).fetchall()
         number_of_row = len(result)
-        if number_of_row < 24:
-            time.sleep(30)
-            print(number_of_row)
         self.assertEqual(number_of_row, 24)
 
         output = select([batch_table.c.udl_phase_step_status]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')

@@ -101,10 +101,11 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
         # check context
         context_items = results['context']['items']
-        self.assertEqual(3, len(context_items))
-        self.assertEqual('New York', context_items[0][Constants.NAME])
-        self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
-        self.assertEqual('Sunset - Eastern Elementary', context_items[2][Constants.NAME])
+        self.assertEqual(4, len(context_items))
+        self.assertEqual('Home', context_items[0][Constants.NAME])
+        self.assertEqual('New York', context_items[1][Constants.NAME])
+        self.assertEqual('Sunset School District', context_items[2][Constants.NAME])
+        self.assertEqual('Sunset - Eastern Elementary', context_items[3][Constants.NAME])
 
         # check colors
         self.assertTrue('text_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
@@ -162,9 +163,9 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
         # check context
         context_items = results['context']['items']
-        self.assertEqual(2, len(context_items))
-        self.assertEqual('New York', context_items[0][Constants.NAME])
-        self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
+        self.assertEqual(3, len(context_items))
+        self.assertEqual('New York', context_items[1][Constants.NAME])
+        self.assertEqual('Sunset School District', context_items[2][Constants.NAME])
 
         # check colors
         self.assertTrue('text_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
@@ -221,8 +222,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
         # check context
         context_items = results['context']['items']
-        self.assertEqual(1, len(context_items))
-        self.assertEqual('New York', context_items[0][Constants.NAME])
+        self.assertEqual(2, len(context_items))
+        self.assertEqual('New York', context_items[1][Constants.NAME])
 
         # check colors
         self.assertEqual(len(results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS]), 4)

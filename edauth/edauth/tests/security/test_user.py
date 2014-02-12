@@ -5,13 +5,14 @@ Created on Mar 14, 2013
 '''
 import unittest
 from edauth.security.user import User
+from edauth.security.roles import Roles
 
 
 class TestUser(unittest.TestCase):
 
     def test_empty_user(self):
         user = User()
-        data = {'name': {'fullName': None, 'firstName': None, 'lastName': None}, 'uid': None, 'roles': [], 'tenant': None, 'guid': None}
+        data = {'name': {'fullName': None, 'firstName': None, 'lastName': None}, 'uid': None, 'roles': [], 'tenant': None, 'displayHome': False, 'guid': None}
 
         name = user.get_name()
         self.assertEqual(name, {'name': data['name']})
@@ -33,7 +34,7 @@ class TestUser(unittest.TestCase):
 
     def test_non_empty_user(self):
         user = User()
-        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'stateCode': [None], 'tenant': ['dog'], 'guid': '123'}
+        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'stateCode': [None], 'tenant': ['dog'], 'displayHome': False, 'guid': '123'}
         user.set_name(data['name'])
         user.set_uid(data['uid'])
         user.set_roles(data['roles'])
@@ -60,7 +61,7 @@ class TestUser(unittest.TestCase):
 
     def test_set_individual_names(self):
         user = User()
-        data = {'name': {'fullName': 'Joe MDoe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'tenant': ['dog'], 'guid': '123'}
+        data = {'name': {'fullName': 'Joe MDoe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'tenant': ['dog'], 'displayHome': False, 'guid': '123'}
         user.set_first_name(data['name']['firstName'])
         user.set_last_name(data['name']['lastName'])
         user.set_full_name(data['name']['fullName'])
@@ -86,16 +87,17 @@ class TestUser(unittest.TestCase):
 
     def test_set_user_info(self):
         user = User()
-        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'junk': 'junk', 'roles': ['TEACHER'], 'tenant': 'dog', 'guid': '123'}
+        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'junk': 'junk', 'roles': ['TEACHER'], 'tenant': 'dog', 'displayHome': False, 'guid': '123'}
 
         user.set_user_info(data)
         context = user.get_user_context()
-        self.assertEqual(len(context), 5)
+        self.assertEqual(len(context), 6)
         self.assertEqual(context['name'], data['name'])
         self.assertEqual(context['uid'], data['uid'])
         self.assertEqual(context['roles'], data['roles'])
         self.assertEqual(context['guid'], data['guid'])
         self.assertEqual(context['tenant'], data['tenant'])
+        self.assertEqual(context['displayHome'], data['displayHome'])
 
     def test_user_with_tenant_as_str(self):
         user = User()
@@ -103,6 +105,14 @@ class TestUser(unittest.TestCase):
         tenants = user.get_tenants()
         self.assertIn("dog", tenants)
         self.assertEqual(len(tenants), 1)
+
+    def test_display_home(self):
+        Roles.set_roles([('Allow', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1', ('view', 'logout', 'display_home'))])
+        user = User()
+        user.set_roles(['CONSORTIUM_EDUCATION_ADMINISTRATOR_1'])
+        context = user.get_user_context()
+        self.assertTrue(context['displayHome'])
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

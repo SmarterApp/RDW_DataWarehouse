@@ -11,10 +11,10 @@ import os
 import subprocess
 import shutil
 from uuid import uuid4
-import time
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
 from sqlalchemy.sql.expression import and_, select
+from time import sleep
 
 FACT_TABLE = 'fact_asmt_outcome'
 file_to_path = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -52,6 +52,7 @@ class ValidateTableData(unittest.TestCase):
         command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.udl_connector, guid_batch)
         self.connect_to_star_shema(self.connector)
 
     #Run the UDL with corrupted csv(missing column)
@@ -63,6 +64,7 @@ class ValidateTableData(unittest.TestCase):
         command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.udl_connector, guid_batch_id)
         self.connect_to_star_shema(self.connector)
 
     #Run the udl with corrupted json
@@ -75,6 +77,7 @@ class ValidateTableData(unittest.TestCase):
         command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.udl_connector, guid_batch_id)
         self.connect_to_star_shema(self.connector)
 
     #Run the UDL with corrupted source file
@@ -90,6 +93,7 @@ class ValidateTableData(unittest.TestCase):
         command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.udl_connector, guid_batch_id)
         self.connect_to_star_shema(self.connector)
 
     #Run the UDL with missing json file
@@ -104,6 +108,7 @@ class ValidateTableData(unittest.TestCase):
         command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.udl_connector, guid_batch_id)
         self.connect_to_star_shema(self.connector)
 
     #Run the UDL with json file containing an invalid load entry
@@ -119,6 +124,19 @@ class ValidateTableData(unittest.TestCase):
         print(command)
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
+        self.check_job_completion(self.udl_connector, guid_batch_id)
+
+    #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
+    def check_job_completion(self, connector, guid_batch_id, max_wait=30):
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_post_etl.task'))
+        timer = 0
+        result = connector.execute(query).fetchall()
+        while timer < max_wait and result == []:
+            sleep(0.25)
+            timer += 0.25
+            result = connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for job to complete.')
 
     #copy files to tenant directory
     def copy_file_to_tmp(self):
@@ -132,7 +150,6 @@ class ValidateTableData(unittest.TestCase):
             #connect to star schmea after each of above udl run and verify that data has not been loaded into star schema
     def connect_to_star_shema(self, connector):
         # Connect to DB and make sure that star shma dont have any data
-        time.sleep(2)
         fact_table = connector.get_table(FACT_TABLE)
         print(fact_table.c.batch_guid)
         output = select([fact_table.c.batch_guid])
@@ -142,7 +159,6 @@ class ValidateTableData(unittest.TestCase):
 
     #In UDL_Batch Table,After each udl run verify that UDL_Complete task is Failure and Post_udl cleanup task is successful
     def verify_udl_failure(self, udl_connector, guid_batch_id):
-        time.sleep(5)
         status = [('FAILURE',)]
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
@@ -156,7 +172,6 @@ class ValidateTableData(unittest.TestCase):
 
     #Verify that udl is failing due to corrcet task failure.For i.e if json is missing udl should fail due to missing file at file expander task
     def verify_missing_json(self, udl_connector, guid_batch_id):
-        time.sleep(5)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_expander.task'))
         batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
@@ -165,7 +180,6 @@ class ValidateTableData(unittest.TestCase):
 
     #Verify that UDL is failing at Decription task
     def verify_corrupt_source(self, udl_connector, guid_batch_id):
-        time.sleep(5)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_decrypter.task'))
         batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
@@ -174,7 +188,6 @@ class ValidateTableData(unittest.TestCase):
 
     #Verify udl is failing at simple file validator
     def verify_corrupt_csv(self, udl_connector, guid_batch_id):
-        time.sleep(3)
         print(guid_batch_id)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_validator.task'))
@@ -184,7 +197,6 @@ class ValidateTableData(unittest.TestCase):
 
     #Verify udl is failing at get load type
     def verify_invalid_load(self, udl_connector, guid_batch_id):
-        time.sleep(3)
         print(guid_batch_id)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_get_load_type.task'))

@@ -32,6 +32,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
 
+    #Validate that the load type received is student registration
     def validate_load_type(self):
         batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status, batch_table.c.load_type], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'udl2.W_get_load_type.task'))
@@ -45,13 +46,27 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEqual(status, 'SUCCESS')
             self.assertEqual(load, self.load_type, 'Not the expected load type.')
 
+    #Run the UDL pipeline
     def run_udl_pipeline(self):
         sr_file = self.copy_file_to_tmp()
         command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=sr_file, guid=self.batch_id)
         print(command)
         subprocess.call(command, shell=True)
-        sleep(5)
+        self.check_job_completion()
 
+    #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
+    def check_job_completion(self, max_wait=30):
+        batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'udl2.W_post_etl.task'))
+        timer = 0
+        result = self.udl_connector.execute(query).fetchall()
+        while timer < max_wait and result == []:
+            sleep(0.25)
+            timer += 0.25
+            result = self.udl_connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for job to complete.')
+
+    #Copy file to tenant directory
     def copy_file_to_tmp(self):
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")

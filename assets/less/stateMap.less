@@ -1,0 +1,36 @@
+@import "color";
+
+.stateMap {
+
+    #titleString, #outerMap {
+        background-color: @color-A9;
+    }
+
+    #map {
+        height: 750px;
+        width: 750px;
+        margin: 0 auto;
+
+        text {
+            font-family: Helvetica !important;
+            font-size: 15pt !important;
+            font-weight: bold !important;
+            fill: @color-white;
+        }
+
+        line {
+            stroke: @color-white;
+            stroke-width: 1.2;
+        }
+    }
+
+    #titleString {
+        padding-top: 60px;
+        padding-bottom:  60px;
+        text-align: center;
+        font-size: 19pt;
+        font-family: Helvetica;
+        font-weight: bold;
+        color: @color-white;
+    }
+}

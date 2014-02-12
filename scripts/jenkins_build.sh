@@ -409,9 +409,9 @@ function main {
             # Special case for UDL
             path = "$MAIN_PKG"
             if [ ${RUN_UNIT_TEST:=""} == "edudl2" ]; then
-                path = $MAIN_PKG/edudl2/tests/unit_tests/
+                $path = $MAIN_PKG/edudl2/tests/unit_tests/
             fi 
-            run_unit_tests path
+            run_unit_tests $path
         fi
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG

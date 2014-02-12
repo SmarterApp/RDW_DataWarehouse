@@ -387,6 +387,16 @@ function run_javascript_yslow_tests {
     phantomjs /opt/yslow/yslow.js --help
 }
 
+function generate_ini_for_udl {
+    echo "Setting up ini for udl"
+    cd "$WORKSPACE/config"
+    python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
+    cp udl2_conf.ini /opt/edware/conf/udl2_conf.ini 
+    echo "Run db cleanup script"
+    /bin/sh $WORKSPACE/edudl2/scripts/teardown_udl2_database.sh
+    /bin/sh $WORKSPACE/edudl2/scripts/initialize_udl2_database.sh
+}
+
 function main {
 	
     get_opts $@
@@ -397,7 +407,7 @@ function main {
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             # Special case for UDL
-            path = $MAIN_PKG
+            path = "$MAIN_PKG"
             if [ ${RUN_UNIT_TEST:=""} == "edudl2" ]; then
                 path = $MAIN_PKG/edudl2/tests/unit_tests/
             fi 

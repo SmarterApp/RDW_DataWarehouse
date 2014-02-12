@@ -6,8 +6,9 @@ from edmigrate.celery import celery, logger
 from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
     pause_replication, resume_replication, block_pgpool, unblock_pgpool
 from edmigrate.utils.constants import Constants
-from edmigrate.tasks.nodes import registered_slaves, get_slave_node_host_names_for_group, get_all_slave_node_host_names
+from edmigrate.tasks.nodes import registered_slaves, get_registered_slave_nodes_for_group, get_all_registered_slave_nodes
 import edmigrate.utils.queries as queries
+import edmigrate.utils.migrate as migrate
 from edmigrate.settings.config import Config, get_setting
 
 MAX_RETRY = get_setting(Config.MAX_RETRIES)
@@ -19,8 +20,6 @@ DEFAULT_QUEUE = get_setting(Config.DEFAULT_ROUTUNG_QUEUE)
 DEFAULT_ROUTUNG_KEY = get_setting(Config.DEFAULT_ROUTUNG_KEY)
 
 # TODO: This is just a temp way to know the tenant name to grab the connection to repmgr schema
-#       UDL2 needs to be updated to capture the tenant<->hostname<->batchid mapping in a table
-#       This mapping info will be used by the migration script to know which data in preprod needs to move where in prod
 TENANT = 'cat'
 BROADCAST_QUEUE = get_setting(Config.BROADCAST_QUEUE)
 
@@ -61,7 +60,6 @@ def start_edware_data_refresh():
     Step 6: send end message to all slaves
             protocol on slave
                 slaves B: Unblock Postgres load-balancer and resume replication
-                slaves A: Verify is in the pool and replication is resumed
     '''
     logger.info('Master: Starting scheduled edware data refresh task')
     logger.info("Master: Registered nodes: %s", registered_slaves)
@@ -71,22 +69,22 @@ def start_edware_data_refresh():
     # TODO: Error handling - How do we ensure the slave discovery/registration process is complete
 
     # slaves_a will be loaded first
-    slaves_all = get_all_slave_node_host_names(registered_slaves)
-    slaves_a = get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_A, registered_slaves)
-    slaves_b = get_slave_node_host_names_for_group(Constants.SLAVE_GROUP_B, registered_slaves)
+    slaves_all = get_all_registered_slave_nodes()
+    slaves_a = get_registered_slave_nodes_for_group(Constants.SLAVE_GROUP_A)
+    slaves_b = get_registered_slave_nodes_for_group(Constants.SLAVE_GROUP_B)
     logger.info("Group A consists of %s", slaves_a)
     logger.info("Group B consists of %s", slaves_b)
 
     # step 1
     logger.info("Step 1 ...")
-    pause_replication.apply_async([TENANT, slaves_b], queue=BROADCAST_QUEUE)
-    block_pgpool.apply_async([slaves_a], queue=BROADCAST_QUEUE)
+    pause_replication.apply_async([TENANT, Constants.SLAVE_GROUP_B], queue=BROADCAST_QUEUE)
+    block_pgpool.apply_async([Constants.SLAVE_GROUP_A], queue=BROADCAST_QUEUE)
 
     # TODO: Error handling - How to ensure the slaves has completed the above tasks successfully
 
     # step 2
     logger.info("Step 2 ...")
-    migrate_data(TENANT, slaves_a)
+    migrate_data(TENANT)
 
     # step 3
     logger.info("Step 3 ...")
@@ -97,9 +95,9 @@ def start_edware_data_refresh():
 
     # step 4
     logger.info("Step 4 ...")
-    unblock_pgpool.apply_async([slaves_a], queue=BROADCAST_QUEUE)
-    chain(block_pgpool.si(slaves_b).set(queue=BROADCAST_QUEUE),
-          resume_replication.si(TENANT, slaves_b).set(queue=BROADCAST_QUEUE))()
+    unblock_pgpool.apply_async([Constants.SLAVE_GROUP_A], queue=BROADCAST_QUEUE)
+    chain(block_pgpool.si(Constants.SLAVE_GROUP_B).set(queue=BROADCAST_QUEUE),
+          resume_replication.si(TENANT, Constants.SLAVE_GROUP_B).set(queue=BROADCAST_QUEUE))()
 
     # TODO: Error handling - How to ensure the slaves has completed the above tasks successfully
 
@@ -109,12 +107,12 @@ def start_edware_data_refresh():
 
     # step 6
     logger.info("Step 6 ...")
-    slaves_end_data_migrate.apply_async([TENANT, slaves_all], queue=BROADCAST_QUEUE)
+    slaves_end_data_migrate.apply_async([TENANT, Constants.SLAVE_GROUP_B], queue=BROADCAST_QUEUE)
 
     logger.info('Master: Finished scheduled edware data refresh task')
 
 
-def migrate_data(tenant, slaves):
+def migrate_data(tenant):
     '''
     load batches of data from pre-prod to prod master
     '''
@@ -123,11 +121,8 @@ def migrate_data(tenant, slaves):
     # delay to make sure slaves executed the previous tasks sent to them
     sleep(5)
 
-    # TODO: Load data
-    # TODO:
-    #   1. The data load should happen in batches of transaction to support rollback
-    #   2. This means batch_guid needs to be added to all dimension tables
-    #   3. For every batch, the udl reference table will be consulted to kow the tenant and destination
+    # start data migration
+    migrate.start_migrate_daily_delta(tenant)
 
     # delay to wait for replication to finish
     sleep(5)

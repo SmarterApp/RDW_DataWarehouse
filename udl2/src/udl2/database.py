@@ -131,6 +131,50 @@ UDL_METADATA = {
             'indexes': [],
             'keys': {},
         },
+        'STG_SBAC_STU_REG': {
+            'columns': [
+                ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+                ('guid_batch', False, 'varchar(256)', '', False, "Batch ID which caused the record insert"),
+                ('src_file_rec_num', False, 'bigint', '', True, "Batch ID which caused the record insert"),
+                ('name_state', False, 'varchar(256)', '', True, "Name of the State"),
+                ('code_state', False, 'varchar(256)', '', True, "State Code or Abbreviation"),
+                ('guid_district', False, 'varchar(256)', '', True, "District GUID"),
+                ('name_district', False, 'varchar(256)', '', True, "District Name"),
+                ('guid_school', False, 'varchar(256)', '', True, "School GUID"),
+                ('name_school', False, 'varchar(256)', '', True, "School Name"),
+                ('guid_student', False, 'varchar(256)', '', True, "Student GUID"),
+                ('external_ssid_student', False, 'varchar(256)', '', True, "State assigned Student GUID"),
+                ('name_student_first', False, 'varchar(256)', '', True, "Student First Name"),
+                ('name_student_middle', False, 'varchar(256)', '', True, "Student Middle Name"),
+                ('name_student_last', False, 'varchar(256)', '', True, "Student Last Name"),
+                ('gender_student', False, 'varchar(256)', '', True, "Student Gender"),
+                ('dob_student', False, 'varchar(256)', '', True, "Student Date of Birth"),
+                ('grade_enrolled', False, 'varchar(256)', '', True, "Student Enrollment Grade"),
+                ('dmg_eth_hsp', False, 'varchar(256)', '', True, 'Student ethnicity Hispanic'),
+                ('dmg_eth_ami', False, 'varchar(256)', '', True, 'Student ethnicity American Indian/Alaskan Native'),
+                ('dmg_eth_asn', False, 'varchar(256)', '', True, 'Student ethnicity Asian'),
+                ('dmg_eth_blk', False, 'varchar(256)', '', True, 'Student ethnicity Black'),
+                ('dmg_eth_pcf', False, 'varchar(256)', '', True, 'Student ethnicity Pacific Islander'),
+                ('dmg_eth_wht', False, 'varchar(256)', '', True, 'Student ethnicity White'),
+                ('dmg_prg_iep', False, 'varchar(256)', '', True, 'IEP (Individualized Education Program)'),
+                ('dmg_prg_lep', False, 'varchar(256)', '', True, 'LEP (Limited English Proficiency)'),
+                ('dmg_prg_504', False, 'varchar(256)', '', True, 'Section 504'),
+                ('dmg_sts_ecd', False, 'varchar(256)', '', True, 'Economic Disadvantaged Status'),
+                ('dmg_sts_mig', False, 'varchar(256)', '', True, 'Migrant Status'),
+                ('dmg_multi_race', False, 'varchar(256)', '', True, 'Two or more races'),
+                ('code_confirm', False, 'varchar(256)', '', True, 'Confirmation Code'),
+                ('code_language', False, 'varchar(256)', '', True, 'Language Code'),
+                ('eng_prof_lvl', False, 'varchar(256)', '', True, 'English Language Proficiency Level'),
+                ('us_school_entry_date', False, 'varchar(256)', '', True, 'First Entry Date into a US School'),
+                ('lep_entry_date', False, 'varchar(256)', '', True, 'Limited English Proficiency Entry Date'),
+                ('lep_exit_date', False, 'varchar(256)', '', True, 'Limited English Proficiency Exit Date'),
+                ('t3_program_type', False, 'varchar(256)', '', True, 'Title III Language Instruction Program Type'),
+                ('prim_disability_type', False, 'varchar(256)', '', True, 'Primary Disability Type'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
+            ],
+            'indexes': [],
+            'keys': {},
+        },
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
@@ -530,7 +574,7 @@ def drop_table(udl2_conf, schema, table_name):
     @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
     '''
     print('drop table %s.%s' % (schema, table_name))
-    sql = text("DROP TABLE \"%s\".\"%s\" CASCADE" % (schema, table_name))
+    sql = text("DROP TABLE IF EXISTS \"%s\".\"%s\" CASCADE" % (schema, table_name))
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to drop table %s.%s" % (schema, table_name)
     execute_queries(conn, [sql], except_msg)

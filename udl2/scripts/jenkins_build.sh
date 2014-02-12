@@ -3,17 +3,27 @@
 set -e # Exit on errors
 
 function build_pep8 {
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
+	export PATH
+    cd $WORKSPACE
+    rm -fr python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
+	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/udl2
 	python setup.py install --force
 	pep8 --exclude='*config*' --ignore=E501 *.py src/ tests/
 }
 
 function build_doc {
-	source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
+	PATH=$PATH:/usr/pgsql-9.2/bin/:$WORSPACE/python3.3/bin
+	export PATH
+    cd $WORKSPACE
+    rm -fr python3.3
+	/opt/python3/bin/virtualenv-3.3 --distribute python3.3
+	source $WORKSPACE/python3.3/bin/activate
 	cd $WORKSPACE/udl2
 	python setup.py install --force
-	cd $WORKSPACE/docs
+	cd $WORKSPACE/udl2/docs
 	make clean
 	make html
 }

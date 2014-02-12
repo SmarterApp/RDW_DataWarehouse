@@ -120,6 +120,13 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         self.assertEqual('Writing', result['claims'][1]['name'])
         self.assertEqual('Listening', result['claims'][2]['name'])
         self.assertEqual('Research & Inquiry', result['claims'][3]['name'])
+        self.assertEqual(7, len(result['accommodations']))
+        self.assertEqual(3, len(result['accommodations'][0]))
+        self.assertEqual(2, len(result['accommodations'][5]))
+        self.assertEqual(2, len(result['accommodations'][6]))
+        self.assertEqual(2, len(result['accommodations'][7]))
+        self.assertEqual(2, len(result['accommodations'][9]))
+        self.assertEqual(2, len(result['accommodations'][10]))
 
     def test_invalid_student_id(self):
         params = {'studentGuid': 'invalid', 'stateCode': 'NY'}

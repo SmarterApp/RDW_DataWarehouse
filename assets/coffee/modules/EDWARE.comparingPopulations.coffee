@@ -116,7 +116,7 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.header ?= edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType)
+      this.header ?= edwareHeader.create(this.data, this.config)
 
     fetchData: (params)->
       options =
@@ -211,7 +211,8 @@ define [
       grid.jqGrid('setLabel', index, newLabel, '')
 
     renderBreadcrumbs: (breadcrumbsData)->
-      this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
+      displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
+      this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType, displayHome)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
@@ -260,22 +261,22 @@ define [
 
   class Breadcrumbs
 
-    constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType) ->
+    constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType, @displayHome) ->
       # Render breadcrumbs on the page
-      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs, @displayHome)
       this.initialize()
 
     initialize: () ->
       if this.reportType is 'state'
-        this.orgType = this.breadcrumbsData.items[0].name
+        this.orgType = this.breadcrumbsData.items[1].name
         this.displayType = "District"
         this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'district'
-        this.orgType = this.breadcrumbsData.items[1].name
+        this.orgType = this.breadcrumbsData.items[2].name
         this.displayType = "School"
         this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'school'
-        this.orgType = this.breadcrumbsData.items[2].name
+        this.orgType = this.breadcrumbsData.items[3].name
         this.displayType = "Grade"
         this.title = 'Results by Grade for ' + this.orgType + ' on Math & ELA'
 
@@ -290,19 +291,19 @@ define [
     getOverallSummaryName: () ->
         # Returns the overall summary row name based on the type of report
       if this.reportType is 'state'
-        return this.breadcrumbsData.items[0].id + ' State Overall'
+        return this.breadcrumbsData.items[1].id + ' State Overall'
       else if this.reportType is 'district'
-        districtName = this.breadcrumbsData.items[1].name
+        districtName = this.breadcrumbsData.items[2].name
         districtName = $.trim districtName.replace(/(Schools)|(Public Schools)$/, '')
         districtName = $.trim districtName.replace(/District$/, '')
         districtName = $.trim districtName.replace(/School$/, '')
         return districtName + ' District Overall'
       else if this.reportType is 'school'
-        schoolName = this.breadcrumbsData.items[2].name
+        schoolName = this.breadcrumbsData.items[3].name
         schoolName = $.trim schoolName.replace(/School$/, '')
         return schoolName + ' School Overall'
       else
-        return this.breadcrumbsData.items[3].name + ' Overall'
+        return this.breadcrumbsData.items[4].name + ' Overall'
 
     # Add an 's to a word
     addApostropheS: (word) ->

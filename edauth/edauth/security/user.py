@@ -4,6 +4,7 @@ Created on Mar 14, 2013
 @author: dip
 '''
 from edcore.security.tenant import get_state_code_mapping, get_tenant_map
+from edauth.security.roles import Roles
 
 
 class UserConstants():
@@ -16,6 +17,7 @@ class UserConstants():
     TENANT = 'tenant'
     GUID = 'guid'
     STATECODE = 'stateCode'
+    DISPLAYHOME = 'displayHome'
 
 
 class User(object):
@@ -38,6 +40,7 @@ class User(object):
         self.__info[UserConstants.ROLES] = []
         self.__info[UserConstants.TENANT] = None
         self.__info[UserConstants.GUID] = None
+        self.__info[UserConstants.DISPLAYHOME] = False
 
     def set_user_info(self, info):
         '''
@@ -91,6 +94,9 @@ class User(object):
         @type info: string
         '''
         self.__info[UserConstants.ROLES] = roles
+        # Check whether 'home' is enabled
+        has_home = Roles.has_display_home_permission(roles)
+        self.__info[UserConstants.DISPLAYHOME] = has_home
 
     def set_tenants(self, tenants):
         '''

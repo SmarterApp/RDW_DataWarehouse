@@ -7,6 +7,7 @@ from edauth import utils
 
 
 class Roles:
+    defined_permissions = {}
     # Pre-Populate a role of none
     defined_roles = utils.enum(NONE='NONE')
 
@@ -17,15 +18,19 @@ class Roles:
         Mappings is a list of tuples of the form [(Allow, 'role_name', ('permissions'))]
         TODO:  We probably don't need to make it as an enum anymore
         '''
-        kwargs = {}
+        Roles.acl = mappings
+        roles = {}
+        permissions = {}
         for mapping in mappings:
             role = mapping[1].upper()
-            #permission = mapping[2]
-            kwargs[role] = role
+            permission = mapping[2]
+            roles[role] = role
+            permissions[role] = permission
         # Make sure we have a role of None
-        if 'NONE' not in kwargs.keys():
-            kwargs['NONE'] = 'NONE'
-        Roles.defined_roles = utils.enum(**kwargs)
+        if 'NONE' not in roles.keys():
+            roles['NONE'] = 'NONE'
+        Roles.defined_roles = utils.enum(**roles)
+        Roles.defined_permissions = permissions
 
     @staticmethod
     def get_invalid_role():
@@ -43,3 +48,15 @@ class Roles:
             if Roles.defined_roles.reverse_mapping.get(role) is None:
                 return True
         return False
+
+    @staticmethod
+    def has_permission(roles, permission):
+        for role in roles:
+            permissions = Roles.defined_permissions.get(role)
+            if permissions and permission in permissions:
+                return True
+        return False
+
+    @staticmethod
+    def has_display_home_permission(roles):
+        return Roles.has_permission(roles, 'display_home')

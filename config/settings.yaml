@@ -521,10 +521,10 @@ development:
         max_overflow: 10
         cat:
           schema_name: edware_sds_1_6
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
           schema_name: edware_sds_1_6_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
         schema_name: edware_sds_1_6

@@ -110,7 +110,7 @@ define [
       data = JSON.parse(Mustache.render(JSON.stringify(template), @configData))
       @data = new DataProcessor(data, @configData, @isGrayscale).process()
       @data.labels = @configData.labels
-      @grade = @data.context.items[3]
+      @grade = @data.context.items[4]
       @subjectsData = @data.subjects
       @render()
       @createBreadcrumb()
@@ -158,7 +158,8 @@ define [
 
 
     createBreadcrumb: () ->
-      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb)
+      displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
+      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb, displayHome)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
@@ -213,7 +214,24 @@ define [
           $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
           $(assessmentInfo + " li:first-child").addClass("bottomLine")
 
-      this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
+        i++
+
+      # Show tooltip for claims on mouseover
+      $(".arrowBox").popover
+        html: true
+        container: "#content"
+        trigger: "hover"
+        placement: (tip, element) ->
+          edwareUtil.popupPlacement(element, 400, 276)
+        title: ->
+          e = $(this)
+          e.parent().parent().find(".header").find("h4").html()
+        template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+        content: ->
+          e = $(this)
+          e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
+
+      this.isrHeader = edwareHeader.create(this.data, this.configData) unless this.isrHeader
 
     updateClaimsHeight: ()->
       ### Update height of all claim box to match the highest one. ###

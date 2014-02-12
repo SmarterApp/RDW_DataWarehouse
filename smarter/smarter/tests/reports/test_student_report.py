@@ -100,11 +100,11 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
     def test_context(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NY'}
         result = get_student_report(params)['context']['items']
-        self.assertEqual('New York', result[0]['name'])
-        self.assertEqual('Sunset School District', result[1]['name'])
-        self.assertEqual("3", result[3]['name'])
-        self.assertEqual("Sunset - Eastern Elementary", result[2]['name'])
-        self.assertEqual("Lettie L. Hose", result[4]['name'])
+        self.assertEqual('New York', result[1]['name'])
+        self.assertEqual('Sunset School District', result[2]['name'])
+        self.assertEqual("3", result[4]['name'])
+        self.assertEqual("Sunset - Eastern Elementary", result[3]['name'])
+        self.assertEqual("Lettie L. Hose", result[5]['name'])
 
     def test_claims(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NY'}

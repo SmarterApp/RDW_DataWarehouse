@@ -57,6 +57,9 @@ define [
   getUserStateCode = (userInfo) ->
     userInfo._User__info.stateCode
 
+  getDisplayBreadcrumbsHome = (userInfo) ->
+    userInfo._User__info.displayHome
+
   format_full_name_reverse = (first_name, middle_name, last_name) ->
     if (middle_name && middle_name.length > 0)
         middle_init = middle_name[0] + '.'
@@ -154,6 +157,9 @@ define [
     else
       value
     
+  getBaseURL = ->
+    window.location.protocol + "//" + window.location.host
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -162,6 +168,7 @@ define [
   getUid: getUid
   getGuid: getGuid
   getUserStateCode: getUserStateCode
+  getDisplayBreadcrumbsHome: getDisplayBreadcrumbsHome
   truncateContent: truncateContent
   popupPlacement: popupPlacement
   format_full_name_reverse: format_full_name_reverse
@@ -171,3 +178,4 @@ define [
   displayNoResultsMessage: displayNoResultsMessage
   reRenderBody: reRenderBody
   escapeCSV: escapeCSV
+  getBaseURL: getBaseURL

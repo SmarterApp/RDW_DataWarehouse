@@ -12,15 +12,12 @@ from edudl2.udl2.udl2_connector import UDL2DBConnection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
-ARCHIVED_FILE = '/opt/edware/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/ftest_test_tenant/'
-
 
 class ValidateTableData(unittest.TestCase):
     def setUp(self):
-        self.tenant_dir = TENANT_DIR
-        self.archived_file = ARCHIVED_FILE
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ftest_test_tenant/'
+        self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         self.connector = UDL2DBConnection()
 
     def tearDown(self):
@@ -40,7 +37,9 @@ class ValidateTableData(unittest.TestCase):
     def run_udl_pipeline(self):
         self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
-        command = "python ../../../scripts/driver.py -a {}".format(arch_file)
+        here = os.path.dirname(__file__)
+        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
+        command = "python {driver_path} -a {file_name}".format(driver_path=driver_path, file_name=arch_file)
         print(command)
         subprocess.call(command, shell=True)
 
@@ -67,9 +66,9 @@ class ValidateTableData(unittest.TestCase):
 
     def copy_file_to_tmp(self):
         if os.path.exists(self.tenant_dir):
-                print("tenant dir already exists")
+            print("tenant dir already exists")
         else:
-                os.makedirs(self.tenant_dir)
+            os.makedirs(self.tenant_dir)
 
         return shutil.copy2(self.archived_file, self.tenant_dir)
 

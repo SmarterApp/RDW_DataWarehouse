@@ -14,17 +14,16 @@ from sqlalchemy.sql import select, delete
 from edudl2.udl2.celery import udl2_conf
 
 
-ARCHIVED_FILE = '/opt/edware/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 guid_batch_id = str(uuid4())
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 path = '/opt/edware/zones/landing/work/test_tenant'
 FACT_TABLE = 'fact_asmt_outcome'
 
 
 class ValidatePostUDLCleanup(unittest.TestCase):
     def setUp(self):
-        self.archived_file = ARCHIVED_FILE
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         self.tenant_dir = TENANT_DIR
         self.ed_connector = TargetDBConnection()
         self.connector = UDL2DBConnection()

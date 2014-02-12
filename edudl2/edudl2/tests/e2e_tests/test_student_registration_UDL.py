@@ -47,7 +47,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     def run_udl_pipeline(self):
         sr_file = self.copy_file_to_tmp()
-        command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=sr_file, guid=self.batch_id)
+        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=sr_file, guid=self.batch_id)
         print(command)
         subprocess.call(command, shell=True)
         sleep(5)

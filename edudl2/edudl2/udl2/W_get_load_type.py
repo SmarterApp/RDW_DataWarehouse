@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from celery.utils.log import get_task_logger
 import datetime
 from edudl2.udl2.celery import udl2_conf, celery
-from edudl2.udl2 import message_keys as mk, W_post_etl
+from edudl2.udl2 import message_keys as mk, W_post_etl, W_all_done
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.get_load_type.get_load_type import get_load_type
 from edudl2.udl2_util.measurement import BatchTableBenchmark

@@ -13,9 +13,8 @@ from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 
 
-PATH_TO_FILES = '/opt/edware/zones/datafiles/'
+PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 
 FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_source_file_tar_gzipped.tar.gz.gpg'),
              'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),

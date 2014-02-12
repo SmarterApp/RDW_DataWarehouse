@@ -14,12 +14,11 @@ from uuid import uuid4
 import time
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
+from sqlalchemy.sql.expression import and_, select
 
 FACT_TABLE = 'fact_asmt_outcome'
-
-file_to_path = '/opt/edware/zones/datafiles/'
+file_to_path = os.path.join(os.path.dirname(__file__), "..", "data")
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/etc/udl2_conf.py'
 
 FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_miss_col.tar.gz.gpz'),
              'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),
@@ -116,7 +115,7 @@ class ValidateTableData(unittest.TestCase):
 
         arch_file = shutil.copy2(FILE_DICT['invalid_load_json'], self.tenant_dir)
         #arch_file = self.copy_file_to_tmp()
-        command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)

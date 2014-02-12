@@ -4,6 +4,7 @@ import subprocess
 import argparse
 import os
 
+
 def start_celery(config=None):
     '''
     Given the path to a configuration file, this function takes the config file name, config, and

@@ -876,7 +876,8 @@ def load_reference_data(udl2_conf):
     populate_ref_column_map(asmt_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
 
     sr_ref_table_info = sr_ref_table_data.ref_table_conf
-    populate_ref_column_map(sr_ref_table_info, engine, conn, udl2_conf['reference_schema'], 'SR_REF_COLUMN_MAPPING')
+    populate_ref_column_map(sr_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['sr_ref_table_name'])
+
 
 def load_stored_proc(udl2_conf):
     '''

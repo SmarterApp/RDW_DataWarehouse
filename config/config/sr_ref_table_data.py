@@ -3,7 +3,7 @@ from config import ref_table_data as ref_constants
 LZ_CSV = 'LZ_CSV'
 SR_STAGING_CSV = 'STG_SBAC_STU_REG'
 
-sr_ref_table_conf = {
+ref_table_conf = {
     'column_definitions': ref_constants.COLUMNS,
     'column_mappings': [
         # Columns:

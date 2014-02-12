@@ -183,6 +183,11 @@ class TestUdl2Database(unittest.TestCase):
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
         self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 
+    def test_SR_REF_COLUMN_MAPPING(self):
+        table_name = 'SR_REF_COLUMN_MAPPING'
+        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

@@ -395,7 +395,7 @@ function setup_for_udl {
 
     echo "Stop celery"
     cd $WORKSPACE/edudl2/scripts
-    stop_celery.sh
+    /bin/sh stop_celery.sh
     sleep 2
     celeryctl purge
     
@@ -407,7 +407,7 @@ function setup_for_udl {
     cp $WORKSPACE/edudl2/udl2/tests/data/keys/* ~/.gnupg/
     
     echo "Start celery"
-    start_celery.sh &
+    /bin/sh start_celery.sh &
     sleep 2
 }
 

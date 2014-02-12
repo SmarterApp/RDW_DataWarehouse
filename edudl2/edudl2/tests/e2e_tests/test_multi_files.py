@@ -47,8 +47,9 @@ class ValidateMultiFiles(unittest.TestCase):
         self.conf = udl2_conf
         self.copy_file_to_tmp()
         arch_file = self.tenant_dir
-
-        command = "python ../../../scripts/driver.py --loop-dir {file_path}".format(file_path=arch_file)
+        here = os.path.dirname(__file__)
+        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
+        command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.connector)

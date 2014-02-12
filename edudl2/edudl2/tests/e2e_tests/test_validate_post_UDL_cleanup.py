@@ -79,11 +79,11 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
 # Run pipeline with given guid.
     def run_udl_pipeline(self):
-
         self.conf = udl2_conf
-
         arch_file = self.copy_file_to_tmp()
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=guid_batch_id)
+        here = os.path.dirname(__file__)
+        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.connector)

@@ -35,6 +35,8 @@ class ValidateTableData(unittest.TestCase):
         self.connector = TargetDBConnection()
         self.udl_connector = UDL2DBConnection()
         self.tenant_dir = TENANT_DIR
+        here = os.path.dirname(__file__)
+        self.driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
 
     @classmethod
     def teardownClass(self):
@@ -49,7 +51,7 @@ class ValidateTableData(unittest.TestCase):
         self.copy_file_to_tmp()
         #copy file from directory
         arch_file = shutil.copy2(FILE_DICT['corrupt_csv_missing_col'], self.tenant_dir)
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch)
@@ -61,7 +63,7 @@ class ValidateTableData(unittest.TestCase):
 
         self.copy_file_to_tmp()
         arch_file = shutil.copy2(FILE_DICT['corrupt_csv_extra_col'], self.tenant_dir)
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch_id)
@@ -74,7 +76,7 @@ class ValidateTableData(unittest.TestCase):
         self.copy_file_to_tmp()
         arch_file = shutil.copy2(FILE_DICT['corrupt_json'], self.tenant_dir)
 
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch_id)
@@ -90,7 +92,7 @@ class ValidateTableData(unittest.TestCase):
 
         arch_file = shutil.copy2(FILE_DICT['corrupt_sorce_file'], self.tenant_dir)
         #arch_file = self.copy_file_to_tmp()
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch_id)
@@ -105,7 +107,7 @@ class ValidateTableData(unittest.TestCase):
 
         arch_file = shutil.copy2(FILE_DICT['missing_json'], self.tenant_dir)
         #arch_file = self.copy_file_to_tmp()
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch_id)
@@ -120,7 +122,7 @@ class ValidateTableData(unittest.TestCase):
 
         arch_file = shutil.copy2(FILE_DICT['invalid_load_json'], self.tenant_dir)
         #arch_file = self.copy_file_to_tmp()
-        command = "python ../../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)

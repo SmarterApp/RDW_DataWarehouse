@@ -39,8 +39,9 @@ define [
         section = {}
         continue if code < ACCOMMODATION_THRESHOLD_CODE
         section["description"] = @configData.accommodationMapping[code]
-        section["accommodation"] = for column in columns
+        accommodation = for column in columns
           @configData.accommodationColumns[column]
+        section["accommodation"] = accommodation.sort()
         section
 
     processData: () ->

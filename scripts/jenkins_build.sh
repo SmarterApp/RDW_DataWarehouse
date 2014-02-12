@@ -404,7 +404,7 @@ function setup_for_udl {
     /bin/sh initialize_udl2_database.sh
     
     echo "Copy keys"
-    cp $WORKSPACE/edudl2/udl2/tests/data/keys/* ~/.gnupg/
+    cp $WORKSPACE/edudl2/edudl2/tests/data/keys/* ~/.gnupg/
     
     echo "Start celery"
     /bin/sh start_celery.sh &

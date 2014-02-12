@@ -14,4 +14,117 @@ body.isr {
 	}
 
     }
+
+    #assessmentSection0, #assessmentSection1 {
+        position: relative;
+    }
+
+    .claimsSection, .accommodationSection {
+        padding: 0px 24px;
+
+        h3 {
+            color: @color-B1 !important;
+        }
+
+        h4  {
+            color: @color-B1 !important;
+            display: inline-block;
+            line-height: 17px;
+            vertical-align: middle;
+        }
+
+        p {
+            font-size: 12px;
+            color: @color-B3;
+
+            strong {
+                color: @color-B1 !important;
+            }
+        }
+
+        ul.inline { font-size: 0px; }
+    }
+
+    .claims {
+        vertical-align: top;
+        border: solid 1px @color-B5;
+        .rounded-corners(5px);
+        background: @color-B6;
+        padding: 16px 10px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+
+        /* -webkit-text-stroke-width: 1px; */
+        /* -webkit-text-stroke-color: @color-B12; */
+
+        &.MATH {
+            margin-right: 20px;
+            width: 217px;
+
+            h4 { max-width: 152px; }
+        }
+
+        &.ELA {
+            margin-right: 14px;
+            width: 162px;
+            padding-left: 5px;
+            padding-right: 5px;
+
+            h4 { max-width: 98px; }
+        }
+
+        &.MATH:last-child, &.ELA:last-child { margin-right: 0px; }
+
+        .header {
+            height: 50px;
+
+            i {
+                vertical-align: middle;
+            }
+
+            h4 { padding-left: 8px; }
+        }
+
+        .level1, .level2, .level3 {
+            padding: 10px 0px 18px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+
+            i { vertical-align: middle; }
+        }
+
+        .level1 { color: @color-C15 !important; }
+        .level2 { color: @color-B2 !important; }
+        .level3 { color: @color-C16 !important; }
+
+        .description {
+            padding-top: 13px;
+            border-top: dashed 1px @color-B4;
+            line-height: 18px;
+        }
+
+    }
+
+    .accommodationSection {
+
+        .content {
+            border: solid 1px @color-B5;
+            .rounded-corners(5px);
+            padding: 10px 10px;
+
+            .section {
+                border-top: solid 1px @color-B5;
+                padding: 10px 0px 15px 0px;
+
+                &:first-child {
+                    border: none;
+                }
+
+                p {
+                    margin-bottom: 3px;
+                }
+            }
+        }
+    }
 }

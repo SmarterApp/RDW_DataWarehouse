@@ -1,8 +1,9 @@
-from udl2.W_load_json_to_integration import task as task_1
-from udl2.W_load_to_integration_table import task as task_2
-from udl2.W_move_to_target import explode_to_dims, explode_to_fact
+from edudl2.udl2.W_load_json_to_integration import task as task_1
+from edudl2.udl2.W_load_to_integration_table import task as task_2
 from celery import chain
 import argparse
+from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims,\
+    explode_to_fact
 
 
 def main():

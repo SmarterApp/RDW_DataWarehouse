@@ -1,4 +1,4 @@
-from udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
+from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
 from celery import chain
 import argparse
 

@@ -14,9 +14,10 @@ validation #2 : match against existing business data values
 
 '''
 
-from edudl2.validation_rule_sql import *
 import random
 import sys
+from edudl2.rule_maker.rules.validation_rule_sql import NULL_ALL_SQL, NULL_SQL,\
+    DATE_FORMAT_SQL, UNIQUE_SQL
 
 
 BYCOLUMN = 'by_column'  # keyed by column name - rule applies only to this column

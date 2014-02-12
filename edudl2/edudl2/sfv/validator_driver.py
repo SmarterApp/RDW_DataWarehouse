@@ -3,8 +3,8 @@ import os
 
 __author__ = 'abrien'
 
-from sfv.csv_validator import CsvValidator
-from sfv.json_validator import JsonValidator
+from edudl2.sfv.csv_validator import CsvValidator
+from edudl2.sfv.json_validator import JsonValidator
 
 
 def main():

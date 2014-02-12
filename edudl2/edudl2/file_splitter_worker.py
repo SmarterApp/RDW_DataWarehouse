@@ -1,7 +1,7 @@
-from udl2.W_file_splitter import task
+from edudl2.udl2.W_file_splitter import task
 import argparse
 import os
-from udl2.celery import FILE_SPLITTER_CONF
+from edudl2.udl2.celery import FILE_SPLITTER_CONF
 
 
 def main():

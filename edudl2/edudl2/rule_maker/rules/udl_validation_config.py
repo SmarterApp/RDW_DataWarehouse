@@ -125,7 +125,7 @@ validations = {
                                 'score_cut_point_2': [IsNumber, {IsLessThan: '{score_cut_point_3}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}],
                                 'score_cut_point_3': [IsNumber, {IsLessThan: '{score_cut_point_4}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}],
                                 'score_cut_point_4': [IsNumber, {IsMoreThan: '{score_cut_point_3}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}]},
-                    BY_RULE: {[{NAME: 'assert_SumWeight'}, {ASSERT: '{score_claim_1_weight} + {score_claim_2_weight}  + {score_claim_3_weight} +  {score_claim_4_weight} = 1.0'}]}
+                    BY_RULE: {[{NAME: 'assert_SumWeight'}, {Assert: '{score_claim_1_weight} + {score_claim_2_weight}  + {score_claim_3_weight} +  {score_claim_4_weight} = 1.0'}]}
                     }
     }
 }

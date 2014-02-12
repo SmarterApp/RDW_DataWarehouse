@@ -1,4 +1,4 @@
-from udl2.W_load_to_integration_table import task
+from edudl2.udl2.W_load_to_integration_table import task
 from celery import chain
 import argparse
 

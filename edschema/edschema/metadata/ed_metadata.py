@@ -256,7 +256,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     student_registration = Table('fact_student_reg', metadata,
                                Column('student_reg_rec_id', BigInteger, primary_key=True),
-                               Column('batch_guid', String(36), nullable=True),
+                               Column('batch_guid', String(36), nullable=False),
                                Column('state_name', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(30), nullable=False),

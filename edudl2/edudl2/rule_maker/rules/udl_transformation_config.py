@@ -10,37 +10,27 @@ from edudl2.rule_maker.rules.rule_keys import *
 
 CLEANERS = set([PCLEAN, VCLEAN, RCLEAN])
 
-transform_rules = {
-                   'clean'      : { PCLEAN  : [REMNL, TRIM] },
-
-                   'cleanUpper' : { PCLEAN  : [UPPER, REMNL, TRIM] },
-
-                   'cleanLower' : { PCLEAN  : [LOWER, REMNL, TRIM] },
-
-                   'date'       : { DATE    : { DATEIN : ['DD Month YYYY', 'DD Mon YY', 'DDMMYYYY', 'MM-DD-YYYY'],
-                                                DATEOUT: 'YYYYMMDD'}   },
-
-                   'schoolType' : {  PCLEAN  : [UPPER, REMNL, TRIM],
-                                     LOOKUP  : { 'High School'   : ['HS', 'HIGH SCHOOL'],
-                                                 'Middle School' : ['MS', 'MIDDLE SCHOOL'],
-                                                 'Elementary School' : ['ES', 'ELEMENTARY SCHOOL'] } },
-
-                   'yn'          : { PCLEAN  : [UPPER, REMNL, TRIM],
-                                     LOOKUP  : {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F'] } },
-
-                   'gender'      : { PCLEAN  : [UPPER, REMNL, TRIM],
-                                     INLIST  : ['M', 'B', 'MALE', 'BOY', 'F', 'G', 'FEMALE', 'GIRL' , 'NS', 'NOT_SPECIFIED', 'NOT SPECIFIED'],
-                                     OUTLIST : ['male', 'male', 'male', 'male', 'female', 'female', 'female', 'female', 'NS', 'NS', 'NS']     },
-
-                   'calcWeight'  : { CALCULATE  : '( 1 - ( {claim_1} + {claim_2} + {claim_3} ) )' ,
-                                     PCLEAN : [ TRIM, REMNL],
-                                     VCLEAN : UPPER,
-                                     RCLEAN : [ TO_CHAR, MIN0 ] },
-
-                   'asmtType'    : { PCLEAN  : [UPPER, REMNL, TRIM],
-                                      INLIST  : ['SUMMATIVE', 'INTERIM'], COMPARE_LENGTH : '1' },
-
-                   'subjectType' : { PCLEAN  : [ REMNL, TRIM],
-                                      LOOKUP  : { 'Math' : ['MATH', 'MATHS', 'math', 'maths', 'MATHEMATICS', 'Math'],
-                                                  'ELA'  : ['ela', 'Ela', 'English Language Arts', 'ELA'] } }
-                }
+transform_rules = {'clean': {PCLEAN: [REMNL, TRIM]},
+                   'cleanUpper': {PCLEAN: [UPPER, REMNL, TRIM]},
+                   'cleanLower': {PCLEAN: [LOWER, REMNL, TRIM]},
+                   'date': {DATE: {DATEIN: ['DD Month YYYY', 'DD Mon YY', 'DDMMYYYY', 'MM-DD-YYYY'],
+                                   DATEOUT: 'YYYYMMDD'}},
+                   'schoolType': {PCLEAN: [UPPER, REMNL, TRIM],
+                                  LOOKUP: {'High School': ['HS', 'HIGH SCHOOL'],
+                                           'Middle School': ['MS', 'MIDDLE SCHOOL'],
+                                           'Elementary School': ['ES', 'ELEMENTARY SCHOOL']}},
+                   'yn': {PCLEAN: [UPPER, REMNL, TRIM],
+                          LOOKUP: {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F']}},
+                   'gender': {PCLEAN: [UPPER, REMNL, TRIM],
+                              INLIST: ['M', 'B', 'MALE', 'BOY', 'F', 'G', 'FEMALE', 'GIRL', 'NS', 'NOT_SPECIFIED', 'NOT SPECIFIED'],
+                              OUTLIST: ['male', 'male', 'male', 'male', 'female', 'female', 'female', 'female', 'NS', 'NS', 'NS']},
+                   'calcWeight': {CALCULATE: '( 1 - ( {claim_1} + {claim_2} + {claim_3} ) )',
+                                  PCLEAN: [TRIM, REMNL],
+                                  VCLEAN: UPPER,
+                                  RCLEAN: [TO_CHAR, MIN0]},
+                   'asmtType': {PCLEAN: [UPPER, REMNL, TRIM],
+                                INLIST: ['SUMMATIVE', 'INTERIM'], COMPARE_LENGTH: '1'},
+                   'subjectType': {PCLEAN: [REMNL, TRIM],
+                                   LOOKUP: {'Math': ['MATH', 'MATHS', 'math', 'maths', 'MATHEMATICS', 'Math'],
+                                            'ELA': ['ela', 'Ela', 'English Language Arts', 'ELA']}}
+                   }

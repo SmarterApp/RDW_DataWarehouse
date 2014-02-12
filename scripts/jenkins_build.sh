@@ -400,8 +400,8 @@ function setup_for_udl {
     celeryctl purge
     
     echo "Run db cleanup script"
-    /bin/sh $WORKSPACE/edudl2/scripts/teardown_udl2_database.sh
-    /bin/sh $WORKSPACE/edudl2/scripts/initialize_udl2_database.sh
+    /bin/sh teardown_udl2_database.sh
+    /bin/sh initialize_udl2_database.sh
     
     echo "Copy keys"
     cp $WORKSPACE/edudl2/udl2/tests/data/keys/* ~/.gnupg/

@@ -392,9 +392,23 @@ function generate_ini_for_udl {
     cd "$WORKSPACE/config"
     python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
     cp udl2_conf.ini /opt/edware/conf/udl2_conf.ini 
+
+    echo "Stop celery"
+    cd $WORKSPACE/edudl2/scripts
+    stop_celery.sh
+    sleep 2
+    celeryctl purge
+    
     echo "Run db cleanup script"
     /bin/sh $WORKSPACE/edudl2/scripts/teardown_udl2_database.sh
     /bin/sh $WORKSPACE/edudl2/scripts/initialize_udl2_database.sh
+    
+    echo "Copy keys"
+    cp $WORKSPACE/edudl2/udl2/tests/data/keys/* ~/.gnupg/
+    
+    echo "Start celery"
+    start_celery.sh &
+    sleep 2
 }
 
 function main {
@@ -407,11 +421,11 @@ function main {
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             # Special case for UDL
-            PATH="$MAIN_PKG"
+            UT_PATH="$MAIN_PKG"
             if [ ${RUN_UNIT_TEST:=""} == "edudl2" ]; then
-                PATH=$MAIN_PKG/edudl2/tests/unit_tests/
+                UT_PATH=$MAIN_PKG/edudl2/tests
             fi 
-            run_unit_tests $PATH
+            run_unit_tests $UT_PATH
         fi
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG

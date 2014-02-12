@@ -10,7 +10,9 @@ import uuid
 from udl2 import message_keys as mk
 from udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
 from udl2_util.config_reader import read_ini_file
+from datetime import datetime
 
+STG_SBAC_ASMT_OUTCOME_COLUMNS = 'record_sid,guid_batch,src_file_rec_num,guid_asmt,guid_asmt_location,name_asmt_location,grade_asmt,name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,guid_student,name_student_first,name_student_middle,name_student_last,address_student_line1,address_student_line2,address_student_city,address_student_zip,gender_student,email_student,dob_student,grade_enrolled,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,dmg_prg_lep,dmg_prg_504,dmg_prg_tt1,date_assessed,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,score_claim_1,score_claim_1_min,score_claim_1_max,asmt_claim_1_perf_lvl,score_claim_2,score_claim_2_min,score_claim_2_max,asmt_claim_2_perf_lvl,score_claim_3,score_claim_3_min,score_claim_3_max,asmt_claim_3_perf_lvl,score_claim_4,score_claim_4_min,score_claim_4_max,asmt_claim_4_perf_lvl,asmt_type,asmt_subject,asmt_year,acc_asl_video_embed,acc_asl_human_nonembed,acc_braile_embed,acc_closed_captioning_embed,acc_text_to_speech_embed,acc_abacus_nonembed,acc_alternate_response_options_nonembed,acc_calculator_nonembed,acc_multiplication_table_nonembed,acc_print_on_demand_nonembed,acc_read_aloud_nonembed,acc_scribe_nonembed,acc_speech_to_text_nonembed,acc_streamline_mode'
 
 class FileLoaderFTest(unittest.TestCase):
 
@@ -82,15 +84,14 @@ class FileLoaderFTest(unittest.TestCase):
             row_number = 0
             for row_in_csv in reader:
                 row_in_table = records_in_db[row_number]
+                # verify the src_file_rec_num and guid_batch
+                self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
+                self.assertEqual(row_in_table['guid_batch'], str(self.conf[mk.GUID_BATCH]))
+                row_in_table = row_in_table[3:]
                 # verify each of the value
-                for i in range(len(row_in_csv)):
-                    value_in_csv = row_in_csv[i]
-                    value_in_table = row_in_table[i + 3]
-                    if value_in_csv and value_in_table:
+                for value_in_csv, value_in_table in zip(row_in_csv, row_in_table):
+                    if value_in_csv and value_in_table and type(value_in_table) != datetime:
                         self.assertEqual(value_in_csv, value_in_table)
-                    # verify the src_file_rec_num and guid_batch
-                    self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
-                    self.assertEqual(row_in_table['guid_batch'], str(self.conf[mk.GUID_BATCH]))
                 row_number += 1
 
     def test_transformations_occur_during_load(self):
@@ -191,7 +192,7 @@ def get_row_number_in_table(conf, conn):
 
 
 def get_rows_in_table(conf, conn):
-    query = 'SELECT * FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'])
+    query = 'SELECT {columns} FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'], columns=STG_SBAC_ASMT_OUTCOME_COLUMNS)
     print(query)
     trans = conn.begin()
     try:

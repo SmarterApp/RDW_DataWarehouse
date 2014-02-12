@@ -203,7 +203,6 @@ def start_migrate_daily_delta():
     batches_to_migrate = get_daily_delta_batches_to_migrate()
     for batch in batches_to_migrate:
         migrate_batch(batch['batch_guid'], batch['tenant'])
-        break
 
 if __name__ == '__main__':
     # TODO: remove this. temp thing for testing as script

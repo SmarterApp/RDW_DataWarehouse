@@ -8,11 +8,11 @@ from sqlalchemy.engine import create_engine
 import imp
 import subprocess
 import os
-import time
 import shutil
 from udl2.udl2_connector import UDL2DBConnection
 from sqlalchemy.sql import select, delete
 from udl2.celery import udl2_conf
+from time import sleep
 
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 ARCHIVED_FILE = '/opt/edware/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
@@ -45,16 +45,24 @@ class ValidateTableData(unittest.TestCase):
         command = "python ../../scripts/driver.py -a {}".format(arch_file)
         print(command)
         subprocess.call(command, shell=True)
+        self.check_job_completion(self.connector)
+
+    def check_job_completion(self, connector, max_wait=30):
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.udl_phase], batch_table.c.udl_phase == 'udl2.W_post_etl.task')
+        timer = 0
+        result = connector.execute(query).fetchall()
+        while timer < max_wait and result == []:
+            sleep(0.25)
+            timer += 0.25
+            result = connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for job to complete.')
 
     def connect_verify_db(self, connector):
-        time.sleep(10)
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table])
         result = connector.execute(query).fetchall()
         number_of_row = len(result)
-        if number_of_row < 24:
-            time.sleep(30)
-            print(number_of_row)
         self.assertEqual(number_of_row, 24)
 
         output = select([batch_table.c.udl_phase_step_status]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')

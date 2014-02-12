@@ -3,12 +3,9 @@ __author__ = 'sravi'
 from sqlalchemy.sql.expression import select
 from sqlalchemy import Table
 from edmigrate.utils.constants import Constants
-from celery.utils.log import get_task_logger
-
+from edmigrate.celery import logger
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from edcore.database.stats_connector import StatsDBConnection
-
-log = get_task_logger(__name__)
 
 
 def get_host_name_from_node_conn_info(conn_info):
@@ -56,7 +53,7 @@ def get_slave_nodes_info_dict(tenant, slave_host_names):
     '''
     get slave node id info from host names
     '''
-    log.info('Master: Getting slave node info for the given hostnames: ' + str(slave_host_names))
+    logger.info('Master: Getting slave node info for the given hostnames: ' + str(slave_host_names))
     slave_node_info = {}
     with RepMgrDBConnection(tenant) as connector:
         slave_node_info = query_slave_nodes_info_dict(connector, slave_host_names)
@@ -80,7 +77,7 @@ def get_slave_nodes_status(tenant, slave_nodes_info):
     '''
     get replication lag status for the list of slave nodes
     '''
-    log.info('Master: Getting replication lag for the slave nodes: ' + str(slave_nodes_info))
+    logger.info('Master: Getting replication lag for the slave nodes: ' + str(slave_nodes_info))
     node_status = {}
     with RepMgrDBConnection(tenant) as connector:
         node_status = query_slave_nodes_status(connector, slave_nodes_info)
@@ -107,7 +104,7 @@ def get_daily_delta_batches_to_migrate():
     '''
     get list of batches to be migrated to prod
     '''
-    log.info('Master: Getting daily delta batches to migrate')
+    logger.info('Master: Getting daily delta batches to migrate')
     with StatsDBConnection() as connector:
         batches_to_be_migrated = query_daily_delta_batches_to_migrate(connector)
     return batches_to_be_migrated
@@ -118,14 +115,14 @@ def are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes):
     check if the slaves are in sync with master
     '''
     slave_nodes_info = get_slave_nodes_info_dict(tenant, slaves)
-    log.info('Master: Nodes to be verified for lag: ' + str(slave_nodes_info))
+    logger.info('Master: Nodes to be verified for lag: ' + str(slave_nodes_info))
     slave_nodes_status_info = get_slave_nodes_status(tenant, slave_nodes_info)
-    log.info('Master: replication lag status for nodes in bytes: ' + str(slave_nodes_status_info))
+    logger.info('Master: replication lag status for nodes in bytes: ' + str(slave_nodes_status_info))
     for node in slave_nodes_status_info.keys():
         if not is_sync_satus_acceptable(slave_nodes_status_info[node], lag_tolerence_in_bytes):
-            log.info('Master: slave node out of sync. Node Id=' + str(node)
-                     + ', Bytes=' + slave_nodes_status_info[node]
-                     + ', Expected Tolerance=' + str(lag_tolerence_in_bytes))
+            logger.info('Master: slave node out of sync. Node Id=' + str(node)
+                        + ', Bytes=' + slave_nodes_status_info[node]
+                        + ', Expected Tolerance=' + str(lag_tolerence_in_bytes))
             return False
-    log.info('Master: All slaves in sync with master' + str(slaves))
+    logger.info('Master: All slaves in sync with master' + str(slaves))
     return True

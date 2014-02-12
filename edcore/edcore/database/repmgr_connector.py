@@ -4,8 +4,6 @@ Created on Jan 29, 2014
 @author: sravi
 '''
 from database.connector import DBConnection
-from pyramid.security import authenticated_userid
-from pyramid.threadlocal import get_current_request
 
 config_namespace = 'edware_rep.db'
 
@@ -16,13 +14,7 @@ class RepMgrDBConnection(DBConnection):
     This is used for database connection for replication monitoring
     '''
 
-    def __init__(self, tenant=None):
-
-        if tenant is None:
-            # Get user's tenant from session
-            __user = authenticated_userid(get_current_request())
-            if __user:
-                tenant = __user.get_tenant()
+    def __init__(self, tenant):
         super().__init__(name=self.get_datasource_name(tenant))
 
     def get_metadata(self, schema_name=None):

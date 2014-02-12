@@ -11,7 +11,7 @@ from string import capwords
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
-    get_overall_asmt_interval, get_claims
+    get_overall_asmt_interval, get_claims, get_accommodations
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata, \
@@ -89,7 +89,21 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
                                 fact_asmt_outcome.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
                                 fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
-                                fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
+                                fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
+                                fact_asmt_outcome.c.acc_asl_video_embed.label('acc_asl_video_embed'),
+                                fact_asmt_outcome.c.acc_asl_human_nonembed.label('acc_asl_human_nonembed'),
+                                fact_asmt_outcome.c.acc_braile_embed.label('acc_braile_embed'),
+                                fact_asmt_outcome.c.acc_closed_captioning_embed.label('acc_closed_captioning_embed'),
+                                fact_asmt_outcome.c.acc_text_to_speech_embed.label('acc_text_to_speech_embed'),
+                                fact_asmt_outcome.c.acc_abacus_nonembed.label('acc_abacus_nonembed'),
+                                fact_asmt_outcome.c.acc_alternate_response_options_nonembed.label('acc_alternate_response_options_nonembed'),
+                                fact_asmt_outcome.c.acc_calculator_nonembed.label('acc_calculator_nonembed'),
+                                fact_asmt_outcome.c.acc_multiplication_table_nonembed.label('acc_multiplication_table_nonembed'),
+                                fact_asmt_outcome.c.acc_print_on_demand_nonembed.label('acc_print_on_demand_nonembed'),
+                                fact_asmt_outcome.c.acc_read_aloud_nonembed.label('acc_read_aloud_nonembed'),
+                                fact_asmt_outcome.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
+                                fact_asmt_outcome.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
+                                fact_asmt_outcome.c.acc_streamline_mode.label('acc_streamline_mode')],
                                 from_obj=[fact_asmt_outcome
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.most_recent))], state_code=state_code)
@@ -145,6 +159,7 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
         result = get_cut_points(custom, result)
 
         result['claims'] = get_claims(number_of_claims=5, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
+        result['accommodations'] = get_accommodations(result=result)
 
         if new_results.get(result['asmt_type']) is None:
             new_results[result['asmt_type']] = []

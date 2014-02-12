@@ -487,7 +487,7 @@ localOpenAM:
       db:
         cat:
           schema_name: edware_sds_1_2
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
           echo: False
     edware_stats:
       db:
@@ -577,10 +577,10 @@ test:
       db:
         cat:
           schema_name: edware_sds_1_6
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
         dog:
           schema_name: edware_sds_1_6_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_6
@@ -608,21 +608,23 @@ jenkins_dev:
   '[app:main]':
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+      CELERYD_CONCURRENCY: 4
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+        CELERYD_CONCURRENCY: 4
       gpg.homedir : /var/lib/jenkins/.gnupg
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
     edware:
       db:
         cat:
           schema_name: edware_sds_1_6
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
         dog:
           schema_name: edware_sds_1_6_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_6
@@ -640,6 +642,7 @@ jenkins_dev:
       report_base_dir: /opt/edware/pdf
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
       health_check.job.queue: health_check
+      generate_timeout: 15
     cache:
       public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
@@ -665,10 +668,10 @@ air:
       db:
         ca:
           schema_name: edware_sds_1_2
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
         dog:
           schema_name: edware_sds_1_2_dog
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_2

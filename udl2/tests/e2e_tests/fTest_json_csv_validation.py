@@ -29,7 +29,8 @@ FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_
              'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),
              'corrupt_csv_extra_col': os.path.join(file_to_path, 'corrupt_csv_ext_col.tar.gz.gpz'),
              'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
-             'corrupt_sorce_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg')}
+             'corrupt_sorce_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
+             'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg')}
 
 
 class ValidateTableData(unittest.TestCase):
@@ -110,6 +111,20 @@ class ValidateTableData(unittest.TestCase):
         subprocess.call(command, shell=True)
         self.connect_to_star_shema(self.connector)
 
+    #Run the UDL with json file containing an invalid load entry
+    def udl_with_invalid_load_json(self, guid_batch_id):
+
+        self.conf = udl2_conf
+
+        self.copy_file_to_tmp()
+
+        arch_file = shutil.copy2(FILE_DICT['invalid_load_json'], self.tenant_dir)
+        #arch_file = self.copy_file_to_tmp()
+        command = "python ../../scripts/driver.py -a {file_path} -g {guid}".format(file_path=arch_file, guid=self.guid_batch_id)
+        print(command)
+        subprocess.call(command, shell=True)
+        self.connect_to_star_shema(self.connector)
+
     #copy files to tenant directory
     def copy_file_to_tmp(self):
         # create tenant dir if not exists
@@ -172,6 +187,16 @@ class ValidateTableData(unittest.TestCase):
         print(batch_data_corrupt_csv)
         self.assertEquals([('FAILURE',)], batch_data_corrupt_csv)
 
+    #Verify udl is failing at get load type
+    def verify_invalid_load(self, udl_connector, guid_batch_id):
+        time.sleep(3)
+        print(guid_batch_id)
+        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_get_load_type.task'))
+        batch_data_invalid_load = udl_connector.execute(batch_table_status).fetchall()
+        print(batch_data_invalid_load)
+        self.assertEquals([('FAILURE',)], batch_data_invalid_load)
+
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for extra column in csv is : " + self.guid_batch_id)
@@ -204,6 +229,13 @@ class ValidateTableData(unittest.TestCase):
         self.udl_with_missing_json(self.guid_batch_id)
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_missing_json(self.udl_connector, self.guid_batch_id)
+
+    def test_run_udl_invalid_load_json(self):
+        self.guid_batch_id = str(uuid4())
+        print("guid batch for invalid load json: " + self.guid_batch_id)
+        self.udl_with_invalid_load_json(self.guid_batch_id)
+        self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
+        self.verify_invalid_load(self.udl_connector, self.guid_batch_id)
 
 if __name__ == '__main__':
     unittest.main()

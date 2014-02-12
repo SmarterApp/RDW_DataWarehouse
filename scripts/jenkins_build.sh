@@ -407,11 +407,11 @@ function main {
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             # Special case for UDL
-            path = "$MAIN_PKG"
+            PATH="$MAIN_PKG"
             if [ ${RUN_UNIT_TEST:=""} == "edudl2" ]; then
-                $path = $MAIN_PKG/edudl2/tests/unit_tests/
+                PATH=$MAIN_PKG/edudl2/tests/unit_tests/
             fi 
-            run_unit_tests $path
+            run_unit_tests $PATH
         fi
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG

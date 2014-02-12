@@ -94,7 +94,8 @@ define [
           for claim in assessment.claims
             claim.subject = assessment.asmt_subject.toUpperCase()
             claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
-
+            # length info is used for bootstrap to determine how many columns for a claim
+            claim.length = 12 / assessment.claims.length
 
   class EdwareISR
 

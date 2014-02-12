@@ -301,8 +301,8 @@ function import_data_from_csv {
     
     # This is a workaround as pgpool is read-only, replace pgpool server with db master
     echo "${WORKSPACE}/config/data_copy.ini"
-    echo "${WORKSPACE}/config/${INI_FIlE_FOR_ENV}"
-    cp "${WORKSPACE}/config/${INI_FIlE_FOR_ENV}" "${WORKSPACE}/config/data_copy.ini"
+    echo "${WORKSPACE}/config/${INI_FILE_FOR_ENV}"
+    cp "${WORKSPACE}/config/${INI_FILE_FOR_ENV}" "${WORKSPACE}/config/data_copy.ini"
     sed -i.bak "s/edwdbsrv4.poc.dum.edwdc.net:9999/edwdbsrv1.poc.dum.edwdc.net:5432/" ${WORKSPACE}/config/data_copy.ini
     
     python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/database/tests/resources

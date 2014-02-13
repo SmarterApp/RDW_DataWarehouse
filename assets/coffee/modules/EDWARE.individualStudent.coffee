@@ -17,9 +17,6 @@ define [
 
   class DataProcessor
 
-    # do not show accommodations that have code less than the threshold
-    ACCOMMODATION_THRESHOLD_CODE = 5
-
     constructor: (@data, @configData, @isGrayscale) ->
 
     process: () ->
@@ -37,8 +34,9 @@ define [
       # mapping accommodation code and column name to meaningful description text
       for code, columns of accommodations
         section = {}
-        continue if code < ACCOMMODATION_THRESHOLD_CODE
-        section["description"] = @configData.accommodationMapping[code]
+        description = @configData.accommodationMapping[code]
+        continue if not description
+        section["description"] = description
         accommodation = for column in columns
           @configData.accommodationColumns[column]
         section["accommodation"] = accommodation.sort()

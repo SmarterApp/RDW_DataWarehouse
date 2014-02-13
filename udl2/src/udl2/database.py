@@ -887,7 +887,7 @@ def load_stored_proc(udl2_conf):
     '''
 
     (conn, engine) = _create_conn_engine(udl2_conf)
-    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
+    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'], udl2_conf['sr_ref_table_name'])
 
 
 ###

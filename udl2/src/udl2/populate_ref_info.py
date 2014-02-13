@@ -4,7 +4,6 @@ Created on Jun 6, 2013
 @author: swimberly
 '''
 import datetime
-
 from sqlalchemy.sql.expression import select, bindparam
 from sqlalchemy.exc import ProgrammingError
 
@@ -35,19 +34,21 @@ def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, ref_table_n
     conn.execute(col_map_table.insert(), data_list)
 
 
-def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
+def populate_stored_proc(engine, conn, ref_schema, *ref_tables):
     '''
     Generate and load stored procedures into the database
     @param engine: sqlalchemy engine object
     @param conn: sqlalchemy connection object
     @param ref_schema: the name of the reference schema
-    @param ref_table_name: the name of the reference table containing the column mapping info
+    @param ref_tables: the names of the reference tables containing the column mapping info
     @return: A list of tuples: (rule_name, proc_name)
     @rtype: list
     '''
 
-    # get list of transformation rules
-    trans_rules = get_transformation_rule_names(engine, conn, ref_schema, ref_table_name)
+    # get unique list of transformation rules from all ref tables
+    trans_rules = set()
+    for ref_table_name in ref_tables:
+        trans_rules.update(get_transformation_rule_names(engine, conn, ref_schema, ref_table_name))
 
     # get list of stored procedures and code to generate
     proc_list = generate_transformations(trans_rules)
@@ -74,8 +75,9 @@ def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
     # commit session
     session.commit()
 
-    # update db with stored proc names
-    update_column_mappings(rule_map_list, engine, conn, ref_schema, ref_table_name)
+    # update tables with stored proc names
+    for ref_table_name in ref_tables:
+        update_column_mappings(rule_map_list, engine, conn, ref_schema, ref_table_name)
 
     return rule_map_list
 

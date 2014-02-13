@@ -79,7 +79,7 @@ define [
       loadingData.done (data)->
         self.data = data
         self.populationData = self.data.records
-        if not self.data.context.items[0]
+        if self.populationData.length is 0
           # no results
           self.displayNoResults()
           return

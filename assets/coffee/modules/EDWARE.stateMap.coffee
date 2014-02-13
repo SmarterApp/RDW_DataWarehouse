@@ -17,7 +17,7 @@ require [
       load = edwareDataProxy.getDatafromSource "/services/userinfo", options
       load.done (data) ->
         stateCodes = edwareUtil.getUserStateCode data.user_info
-        # stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO', "MA", 'RI', 'NJ', 'MD', 'DC']
+        # stateCodes = stateCodes.concat ['WA', 'OR', 'ID', "NV", "MT", 'WY', 'ND', 'SD', 'CT', 'VT', 'NY', 'DE', 'SC', 'AK', "HI", "ME", "NH", "WV", 'KS', 'PA', 'NC', 'MI', 'WI', 'IA', 'MO', "MA", "RI"]
         
         # get colors from report
         colors = stateMapConfig.colors
@@ -89,7 +89,24 @@ require [
 
             st_line = $(SVG('line'))
             st_line.attr(coord.line)
-            map_svg.append(st_line)        
+            map_svg.append(st_line)
+
+            # Add clickable box around state name
+            st_rect = $(SVG('rect')).attr
+              'width': '30'
+              'height': '21'
+              'x': coord.name.x
+              'y': coord.name.y - 12
+              'dy': '50'
+              'r': '3.72'
+              'rx': '3.72'
+              'ry': '3.72'
+              'class': 'smallStateBox'
+              'data-value': state_code
+            st_rect.click (eventData) ->
+              # get state code and redirect
+              window.location.href = edwareUtil.getBaseURL() + stateMapConfig.reportExtension + $(this).data('value')
+            map_svg.append st_rect
 
         edwareHeader.create(data, stateMapConfig)
         displayHome = edwareUtil.getDisplayBreadcrumbsHome data.user_info

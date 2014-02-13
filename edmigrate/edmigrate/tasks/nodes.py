@@ -36,14 +36,3 @@ def register_slave_node(host, group):
     if group not in registered_slaves.keys():
         registered_slaves[group] = set()
     registered_slaves[group].add(host)
-
-if __name__ == '__main__':
-    # TODO: remove this. temp entry point for testing migration as a script
-    register_slave_node('1', 'A')
-    register_slave_node('1', 'A')
-    register_slave_node('2', 'B')
-    print(registered_slaves)
-    print(get_all_registered_slave_nodes())
-    print(get_registered_slave_nodes_for_group('A'))
-    print(get_registered_slave_nodes_for_group('B'))
-    print(get_registered_slave_nodes_for_group('C'))

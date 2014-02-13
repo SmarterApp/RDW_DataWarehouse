@@ -387,6 +387,30 @@ function run_javascript_yslow_tests {
     phantomjs /opt/yslow/yslow.js --help
 }
 
+function setup_for_udl {
+    echo "Setting up ini for udl"
+    cd "$WORKSPACE/config"
+    python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
+    cp udl2_conf.ini /opt/edware/conf/udl2_conf.ini 
+
+    echo "Stop celery"
+    cd $WORKSPACE/edudl2/scripts
+    /bin/sh stop_celery.sh
+    sleep 2
+    celeryctl purge
+    
+    echo "Run db cleanup script"
+    /bin/sh teardown_udl2_database.sh
+    /bin/sh initialize_udl2_database.sh
+    
+    echo "Copy keys"
+    cp $WORKSPACE/edudl2/edudl2/tests/data/keys/* ~/.gnupg/
+    
+    echo "Start celery"
+    /bin/sh start_celery.sh &
+    sleep 2
+}
+
 function main {
 	
     get_opts $@
@@ -396,7 +420,13 @@ function main {
         setup_virtualenv $@
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
-            run_unit_tests $MAIN_PKG
+            # Special case for UDL
+            UT_PATH="$MAIN_PKG"
+            if [ ${MAIN_PKG:=""} == "edudl2" ]; then
+                UT_PATH=$MAIN_PKG/edudl2/tests
+                setup_for_udl
+            fi 
+            run_unit_tests $UT_PATH
         fi
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG

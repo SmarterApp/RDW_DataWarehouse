@@ -20,7 +20,7 @@ from sqlalchemy import Table, Column, Sequence
 from sqlalchemy.types import *
 from sqlalchemy.sql.expression import text
 import argparse
-from config import ref_table_data
+from config import ref_table_data, sr_ref_table_data
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2_util.database_util import connect_db, execute_queries
 from edudl2.udl2.populate_ref_info import populate_ref_column_map,\
@@ -397,7 +397,79 @@ UDL_METADATA = {
             'indexes': [],
             'keys': {},
         },
+        'INT_SBAC_STU_REG': {
+            'columns': [
+                ('record_sid', True, 'bigserial', '', False, 'Sequential Auto-increment'),
+                ('guid_batch', False, 'varchar(36)', '', False, 'Batch ID which caused the record insert'),
+                ('name_state', False, 'varchar(50)', '', False, 'Name of the State'),
+                ('code_state', False, 'varchar(2)', '', False, 'State Code or Abbreviation'),
+                ('guid_district', False, 'varchar(30)', '', False, 'District GUID'),
+                ('name_district', False, 'varchar(60)', '', False, 'District Name'),
+                ('guid_school', False, 'varchar(30)', '', False, 'School GUID'),
+                ('name_school', False, 'varchar(60)', '', False, 'School Name'),
+                ('guid_student', False, 'varchar(30)', '', False, 'Student GUID'),
+                ('external_ssid_student', False, 'varchar(50)', '', False, 'State assigned Student GUID'),
+                ('name_student_first', False, 'varchar(35)', '', True, 'Student First Name'),
+                ('name_student_middle', False, 'varchar(35)', '', True, 'Student Middle Name'),
+                ('name_student_last', False, 'varchar(35)', '', True, 'Student Last Name'),
+                ('gender_student', False, 'varchar(6)', '', False, 'Student Gender'),
+                ('dob_student', False, 'varchar(10)', '', True, 'Student Date of Birth'),
+                ('grade_enrolled', False, 'varchar(2)', '', False, 'Student Enrollment Grade'),
+                ('dmg_eth_hsp', False, 'bool', '', False, 'Student ethnicity Hispanic'),
+                ('dmg_eth_ami', False, 'bool', '', False, 'Student ethnicity American Indian/Alaskan Native'),
+                ('dmg_eth_asn', False, 'bool', '', False, 'Student ethnicity Asian'),
+                ('dmg_eth_blk', False, 'bool', '', False, 'Student ethnicity Black'),
+                ('dmg_eth_pcf', False, 'bool', '', False, 'Student ethnicity Pacific Islander'),
+                ('dmg_eth_wht', False, 'bool', '', False, 'Student ethnicity White'),
+                ('dmg_prg_iep', False, 'bool', '', False, 'IEP (Individualized Education Program)'),
+                ('dmg_prg_lep', False, 'bool', '', False, 'LEP (Limited English Proficiency)'),
+                ('dmg_prg_504', False, 'varchar(22)', '', False, 'Section 504'),
+                ('dmg_sts_ecd', False, 'bool', '', False, 'Economic Disadvantaged Status'),
+                ('dmg_sts_mig', False, 'bool', '', True, 'Migrant Status'),
+                ('dmg_multi_race', False, 'bool', '', False, 'Two or more races'),
+                ('code_confirm', False, 'varchar(35)', '', False, 'Confirmation Code'),
+                ('code_language', False, 'varchar(3)', '', True, 'Language Code'),
+                ('eng_prof_lvl', False, 'varchar(20)', '', True, 'English Language Proficiency Level'),
+                ('us_school_entry_date', False, 'varchar(10)', '', True, 'First Entry Date into a US School'),
+                ('lep_entry_date', False, 'varchar(10)', '', True, 'Limited English Proficiency Entry Date'),
+                ('lep_exit_date', False, 'varchar(10)', '', True, 'Limited English Proficiency Exit Date'),
+                ('t3_program_type', False, 'varchar(27)', '', True, 'Title III Language Instruction Program Type'),
+                ('prim_disability_type', False, 'varchar(3)', '', True, 'Primary Disability Type'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {},
+        },
+        'INT_SBAC_STU_REG_META': {
+            'columns': [
+                ('record_sid', True, 'bigserial', '', False, 'Sequential Auto-increment'),
+                ('guid_batch', False, 'varchar(36)', '', False, 'Batch ID which caused the record insert'),
+                ('guid_registration', False, 'varchar(50)', '', False, 'Student Registration GUID'),
+                ('academic_year', False, 'smallint', '', False, 'Academic Year'),
+                ('extract_date', False, 'varchar(10)', '', False, 'Extract Date'),
+                ('test_reg_id', False, 'varchar(50)', '', False, 'Test Registration System ID'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {},
+        },
         'REF_COLUMN_MAPPING': {
+            'columns': [
+                ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
+                ('phase', False, 'smallint', '', True, 'The phase in the pipeline where this mapping/transformation occurs'),
+                ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
+                ('source_column', False, 'varchar(256)', '', True, 'name of the source column'),
+                ('target_table', False, 'varchar(50)', '', True, 'name of the target table'),
+                ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
+                ('transformation_rule', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
+                ('stored_proc_name', False, 'varchar(256)', '', True, 'Name of stored procedure to use during this transformation'),
+                ('stored_proc_created_date', False, 'timestamp with time zone', '', True, 'Date when the stored procedure was added'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {},
+        },
+        'SR_REF_COLUMN_MAPPING': {
             'columns': [
                 ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
                 ('phase', False, 'smallint', '', True, 'The phase in the pipeline where this mapping/transformation occurs'),
@@ -797,12 +869,15 @@ def load_fake_record_in_star_schema(udl2_conf):
 
 def load_reference_data(udl2_conf):
     '''
-    load the reference data into the referenct tables
+    load the reference data into the reference tables
     @param udl2_conf: The configuration dictionary for
     '''
     (conn, engine) = _create_conn_engine(udl2_conf)
-    ref_table_info = ref_table_data.ref_table_conf
-    populate_ref_column_map(ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
+    asmt_ref_table_info = ref_table_data.ref_table_conf
+    populate_ref_column_map(asmt_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
+
+    sr_ref_table_info = sr_ref_table_data.ref_table_conf
+    populate_ref_column_map(sr_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['sr_ref_table_name'])
 
 
 def load_stored_proc(udl2_conf):

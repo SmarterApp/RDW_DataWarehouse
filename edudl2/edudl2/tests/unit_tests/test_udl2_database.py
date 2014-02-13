@@ -162,6 +162,14 @@ class TestUdl2Database(unittest.TestCase):
         table_name = 'INT_SBAC_ASMT_OUTCOME'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
+    def test_INT_SBAC_STU_REG(self):
+        table_name = 'INT_SBAC_STU_REG'
+        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+
+    def test_INT_SBAC_STU_REG_META(self):
+        table_name = 'INT_SBAC_STU_REG_META'
+        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+
     def test_ERR_LIST(self):
         table_name = 'ERR_LIST'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
@@ -172,6 +180,11 @@ class TestUdl2Database(unittest.TestCase):
 
     def test_REF_COLUMN_MAPPING(self):
         table_name = 'REF_COLUMN_MAPPING'
+        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
+
+    def test_SR_REF_COLUMN_MAPPING(self):
+        table_name = 'SR_REF_COLUMN_MAPPING'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
         self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 

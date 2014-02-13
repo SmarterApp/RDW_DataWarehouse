@@ -67,7 +67,7 @@ class ValidateMultiFiles(unittest.TestCase):
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, connector, max_wait=30):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'udl2.W_post_etl.task')
+        query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
         timer = 0
         result = connector.execute(query).fetchall()
         while timer < max_wait and len(result) < len(FILE_DICT):

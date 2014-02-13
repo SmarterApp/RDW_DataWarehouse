@@ -6,9 +6,10 @@ SCHOOL_TY = 'schoolType'
 GENDER = 'gender'
 YN = 'yn'
 
+COLUMNS = ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name')
 
 ref_table_conf = {
-    'column_definitions': ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name'),
+    'column_definitions': COLUMNS,
     'column_mappings': [
         # Columns:
         # column_map_key, phase, source_table, source_column, target_table, target_column, transformation_rule, stored_proc_name, stored_proc_created_date, created_date

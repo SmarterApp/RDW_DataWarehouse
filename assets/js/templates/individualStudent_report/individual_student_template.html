@@ -61,9 +61,9 @@
         </div>
         <div class="confidenceLevel"></div>
         <div class="claimsSection clearfix">
-            <ul class="inline">
+            <div class="row-fluid">
                 {{#claims}}
-                <li id="claim{{indexer}}" class="claims {{subject}}">
+                <div id="claim{{indexer}}" class="span{{length}} claims {{subject}}">
                     <div class="header">
                         <i class="edware-icon-{{subject}}-{{indexer}}"></i>
                         <h4 style="font-size: 13px;">{{name}}</h4>
@@ -75,9 +75,9 @@
                         </div>
                         <p class="description">{{desc}}</p>
                     </div>
-                </li>
+                </div>
                 {{/claims}}
-            </ul>
+            </div>
         </div>
         {{#accommodations}}
         <div class="accommodationSection clearfix">

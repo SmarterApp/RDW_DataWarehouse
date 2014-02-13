@@ -39,8 +39,9 @@ define [
         section = {}
         continue if code < ACCOMMODATION_THRESHOLD_CODE
         section["description"] = @configData.accommodationMapping[code]
-        section["accommodation"] = for column in columns
+        accommodation = for column in columns
           @configData.accommodationColumns[column]
+        section["accommodation"] = accommodation.sort()
         section
 
     processData: () ->
@@ -93,7 +94,8 @@ define [
           for claim in assessment.claims
             claim.subject = assessment.asmt_subject.toUpperCase()
             claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
-
+            # length info is used for bootstrap to determine how many columns for a claim
+            claim.length = 12 / assessment.claims.length
 
   class EdwareISR
 

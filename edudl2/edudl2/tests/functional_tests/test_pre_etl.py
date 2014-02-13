@@ -26,32 +26,6 @@ class PreEtlTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
-    def test_pre_etl_job_wrong_auth(self):
-        # read the log file, should be empty
-        self._check_log_file(is_empty=True)
-
-        # set an incorrect user
-        self.udl2_conf['udl2_db']['db_user'] += 'error_user'
-
-        # run pre etl
-        pre_etl_job(self.udl2_conf, log_file=self.test_error_log_file)
-
-        # verify the result
-        self._check_log_file(is_empty=False)
-
-    def test_pre_etl_job_fail_db_conn(self):
-        # read log file, should be empty
-        self._check_log_file(is_empty=True)
-
-        # set an incorrect user
-        self.udl2_conf['udl2_db']['db_database'] += 'error_database'
-
-        # run pre etl
-        pre_etl_job(self.udl2_conf, log_file=self.test_error_log_file)
-
-        # verify the result
-        self._check_log_file(is_empty=False)
-
     def test_pre_etl_job(self):
         # read log file, should be empty
         self._check_log_file(is_empty=True)

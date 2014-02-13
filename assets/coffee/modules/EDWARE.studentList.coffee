@@ -134,7 +134,7 @@ define [
       @contextData = data.context
       @subjectsData = data.subjects
       @userData = data.user_info
-      @grade = @contextData['items'][3]
+      @grade = @contextData['items'][4]
 
       @renderBreadcrumbs(data.context)
       @renderReportInfo()
@@ -169,17 +169,18 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
-      this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
+      this.header = edwareHeader.create(this.data, this.config) unless this.header
 
     fetchExportData: () ->
       this.assessmentsData
 
     renderBreadcrumbs: () ->
-      $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb)
+      displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
+      $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb, displayHome)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
-        reportTitle: "Student Results for " + @contextData.items[3].name + " at " + @contextData.items[2].name # set school name as the page title from breadcrumb
+        reportTitle: "Student Results for " + @contextData.items[4].name + " at " + @contextData.items[3].name # set school name as the page title from breadcrumb
         reportName: Constants.REPORT_NAME.LOS
         reportInfoText: @config.reportInfo
         labels: @labels

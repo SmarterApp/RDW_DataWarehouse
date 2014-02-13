@@ -15,6 +15,7 @@ define [
     content: "../data/content/#{language}/content.json"
     common: "../data/common/#{language}/common.json"
     landingPage: "../data/content/#{language}/landingPage.json"
+    stateMap: "../data/stateMap.json"
 
   # setup URLs for report's specific JSON
   for reportName, fileName of Constants.REPORT_JSON_NAME
@@ -79,8 +80,9 @@ define [
 
 
   getDataForReport = (reportName) ->
-    reportUrl = URLs[reportName]
-    resources = [URLs.content, URLs.common, URLs.labels, reportUrl]
+    reportUrl = [URLs[reportName]]
+    reportUrl = [] if not reportUrl
+    resources = [URLs.content, URLs.common, URLs.labels].concat(reportUrl)
     defer = $.Deferred()
     getDatafromSource(resources).done (data)->
       # preprocess legend data

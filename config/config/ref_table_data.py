@@ -6,9 +6,10 @@ SCHOOL_TY = 'schoolType'
 GENDER = 'gender'
 YN = 'yn'
 
+COLUMNS = ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name')
 
 ref_table_conf = {
-    'column_definitions': ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name'),
+    'column_definitions': COLUMNS,
     'column_mappings': [
         # Columns:
         # column_map_key, phase, source_table, source_column, target_table, target_column, transformation_rule, stored_proc_name, stored_proc_created_date, created_date
@@ -108,6 +109,20 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'asmt_type', 'STG_SBAC_ASMT_OUTCOME', 'asmt_type', 'asmtType', None),
         ('1', 'LZ_CSV', 'asmt_subject', 'STG_SBAC_ASMT_OUTCOME', 'asmt_subject', 'subjectType', None),
         ('1', 'LZ_CSV', 'asmt_year', 'STG_SBAC_ASMT_OUTCOME', 'asmt_year', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_asl_video_embed', 'STG_SBAC_ASMT_OUTCOME', 'acc_asl_video_embed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_asl_human_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_asl_human_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_braile_embed', 'STG_SBAC_ASMT_OUTCOME', 'acc_braile_embed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_closed_captioning_embed', 'STG_SBAC_ASMT_OUTCOME', 'acc_closed_captioning_embed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_text_to_speech_embed', 'STG_SBAC_ASMT_OUTCOME', 'acc_text_to_speech_embed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_abacus_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_abacus_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_alternate_response_options_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_alternate_response_options_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_calculator_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_calculator_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_multiplication_table_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_multiplication_table_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_print_on_demand_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_print_on_demand_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_read_aloud_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_read_aloud_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_scribe_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_speech_to_text_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', 'clean', None),
+        ('1', 'LZ_CSV', 'acc_streamline_mode', 'STG_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'clean', None),
         # Staging to Integration
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_batch', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', None, None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_asmt', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', None, 'substr({src_column}, 1, {length})'),
@@ -172,6 +187,20 @@ ref_table_conf = {
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', None, 'cast({src_column} as bool)'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', None, 'cast({src_column} as bool)'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', "dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht", 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_derived', 'deriveEthnicity', None),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_asl_video_embed', 'INT_SBAC_ASMT_OUTCOME', 'acc_asl_video_embed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_asl_human_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_asl_human_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_braile_embed', 'INT_SBAC_ASMT_OUTCOME', 'acc_braile_embed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_closed_captioning_embed', 'INT_SBAC_ASMT_OUTCOME', 'acc_closed_captioning_embed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_text_to_speech_embed', 'INT_SBAC_ASMT_OUTCOME', 'acc_text_to_speech_embed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_abacus_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_abacus_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_alternate_response_options_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_alternate_response_options_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_calculator_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_calculator_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_multiplication_table_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_multiplication_table_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_print_on_demand_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_print_on_demand_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_read_aloud_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_read_aloud_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'INT_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', None, "to_number({src_column}, '99999')"),
         # Integration to Target
         ('4', 'INT_SBAC_ASMT', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_asmt', 'asmt_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
@@ -303,6 +332,20 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'fact_asmt_outcome', 'dmg_prg_504', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'fact_asmt_outcome', 'dmg_prg_tt1', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_derived', 'fact_asmt_outcome', 'dmg_eth_derived', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_asl_video_embed', 'fact_asmt_outcome', 'acc_asl_video_embed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_asl_human_nonembed', 'fact_asmt_outcome', 'acc_asl_human_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_braile_embed', 'fact_asmt_outcome', 'acc_braile_embed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_closed_captioning_embed', 'fact_asmt_outcome', 'acc_closed_captioning_embed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_text_to_speech_embed', 'fact_asmt_outcome', 'acc_text_to_speech_embed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_abacus_nonembed', 'fact_asmt_outcome', 'acc_abacus_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_alternate_response_options_nonembed', 'fact_asmt_outcome', 'acc_alternate_response_options_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_calculator_nonembed', 'fact_asmt_outcome', 'acc_calculator_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_multiplication_table_nonembed', 'fact_asmt_outcome', 'acc_multiplication_table_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_print_on_demand_nonembed', 'fact_asmt_outcome', 'acc_print_on_demand_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_read_aloud_nonembed', 'fact_asmt_outcome', 'acc_read_aloud_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', 'fact_asmt_outcome', 'acc_scribe_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', 'fact_asmt_outcome', 'acc_speech_to_text_nonembed', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'fact_asmt_outcome', 'acc_streamline_mode', None, None),
         # Used only in reporting app, smarter.  udl should never pick this up
         ('1000', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
     ]

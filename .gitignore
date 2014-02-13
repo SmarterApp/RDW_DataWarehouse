@@ -60,10 +60,6 @@ data_gen/DataGeneration/build
 
 data_gen/DataGeneration/.pydevproject
 
-.pydevproject
-
-.project
-
 config/gpg/random_seed
 data_gen/DataGeneration/datafiles/csv
 

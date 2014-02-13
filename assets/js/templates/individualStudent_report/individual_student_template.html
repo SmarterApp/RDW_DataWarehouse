@@ -61,25 +61,43 @@
         </div>
         <div class="confidenceLevel"></div>
         <div class="claimsSection clearfix">
-            <ul class="inline">
+            <div class="row-fluid">
                 {{#claims}}
-                <li id="claim{{indexer}}" class="claims {{assessmentUC}}">
+                <div id="claim{{indexer}}" class="span{{length}} claims {{subject}}">
                     <div class="header">
-                        <i class="edware-icon-{{assessmentUC}}-{{indexer}}"></i>
-                        <h4>{{name}}</h4>
+                        <i class="edware-icon-{{subject}}-{{indexer}}"></i>
+                        <h4 style="font-size: 13px;">{{name}}</h4>
                     </div>
                     <div class="content">
                         <div class="level{{perf_lvl}}">
                             <i class="edware-icon-perf-level-{{perf_lvl}}"></i>
                             {{perf_lvl_name}}
                         </div>
-                        <div class="description">{{desc}}</div>
+                        <p class="description">{{desc}}</p>
                     </div>
-                </li>
+                </div>
                 {{/claims}}
-            </ul>
+            </div>
         </div>
-
+        {{#accommodations}}
+        <div class="accommodationSection clearfix">
+            <div class="content">
+                <h4>Accommodations</h4>
+                <div>
+                    {{#sections}}
+                    <div class="section">
+                        <p>{{current.0.student_first_name}} {{{description}}}</p>
+                        <div>
+                            {{#accommodation}}
+                            <span class="label edware-label-accommodation">{{.}}</span>
+                            {{/accommodation}}
+                        </div>
+                    </div>
+                    {{/sections}}
+                </div>
+            </div>
+        </div>
+        {{/accommodations}}
     </div>
     <div class="assessmentOtherInfoHeader printHeader">
         <div class="logo">

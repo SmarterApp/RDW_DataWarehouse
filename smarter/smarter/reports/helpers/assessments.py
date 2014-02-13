@@ -100,3 +100,18 @@ def get_claims(number_of_claims=0, result=None, include_names=False, include_sco
         if 'asmt_claim_{0}_score_max'.format(index) in result:
             del(result['asmt_claim_{0}_score_max'.format(index)])
     return claims
+
+
+def get_accommodations(result=None):
+    '''
+    Returns a list of accommodations in an assessment record.
+    Any field starts with `acc_` is considerred as accommodation field.
+    '''
+    accommodations = {key: value for key, value in result.items() if key.startswith('acc_')}
+    # delete duplicated record
+    for key in accommodations:
+        del result[key]
+    grouped_sections = {}
+    for key, value in accommodations.items():
+        grouped_sections.setdefault(value, []).append(key)
+    return grouped_sections

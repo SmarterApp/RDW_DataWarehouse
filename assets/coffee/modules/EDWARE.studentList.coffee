@@ -180,7 +180,7 @@ define [
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
-        reportTitle: "Student Results for " + @contextData.items[4].name + " at " + @contextData.items[2].name # set school name as the page title from breadcrumb
+        reportTitle: "Student Results for " + @contextData.items[4].name + " at " + @contextData.items[3].name # set school name as the page title from breadcrumb
         reportName: Constants.REPORT_NAME.LOS
         reportInfoText: @config.reportInfo
         labels: @labels

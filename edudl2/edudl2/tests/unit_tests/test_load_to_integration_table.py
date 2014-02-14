@@ -38,7 +38,6 @@ class TestLoadToIntegrationTable(unittest.TestCase):
                          re.sub('\s+', ' ', actual_query_result.replace('\n', ' ').replace('\t', ' ')))
 
     def test_get_column_mapping_from_stg_to_int(self):
-
         expected_target_columns = ['guid_batch', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',
                                    'guid_student', 'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last',
                                    'gender_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk',

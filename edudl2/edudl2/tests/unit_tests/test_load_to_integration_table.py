@@ -60,8 +60,8 @@ class TestLoadToIntegrationTable(unittest.TestCase):
                                          'substr(A.prim_disability_type, 1, 3)', 'A.created_date']
         conn = UDL2DBConnection()
         target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, udl2_conf['udl2_db']['sr_ref_table_name'],
-                                                                                            'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
-                                                                                            udl2_conf['udl2_db']['staging_schema'])
+                                                                                           'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
+                                                                                           udl2_conf['udl2_db']['staging_schema'])
         self.assertEqual(expected_target_columns, target_columns)
         self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)
 

@@ -24,22 +24,28 @@ rm -rf virtualenv/udl2
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/udl2 %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/edschema %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/udl2/conf/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/udl2/conf/udl2_conf.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/udl2/conf/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/conf/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/edudl2/conf/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/udl2
 source virtualenv/udl2/bin/activate
 
+cd ${WORKSPACE}/config
+python setup.py install
+cd -
+cd ${WORKSPACE}/edcore
+python setup.py install
+cd -
 cd ${WORKSPACE}/edschema
 python setup.py install
 cd -
-cd ${WORKSPACE}/udl2
+cd ${WORKSPACE}/edudl2
 python setup.py install
 cd -
 
@@ -56,7 +62,8 @@ rm -rf %{buildroot}
 %files
 %defattr(644,root,root,-)
 /opt/edware/conf/celeryd-udl2.conf
-/opt/edware/conf/udl2_conf.py
+/opt/edware/conf/generate_ini.py
+/opt/edware/conf/udl2_conf.yaml
 /opt/virtualenv/udl2/include/*
 /opt/virtualenv/udl2/lib/*
 /opt/virtualenv/udl2/lib64

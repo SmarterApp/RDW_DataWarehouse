@@ -126,7 +126,6 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     '''
     # disable foreign key in fact table
     disable_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)
-    # print(disable_trigger_query)
 
     # create insertion insert_into_fact_table_query
     insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
@@ -134,14 +133,12 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
 
     # update inst_hier_query back
     update_inst_hier_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID, conf['move_to_target'][1])
-    # print(update_inst_hier_rec_id_fk_query)
 
     # update student query back
     update_student_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID, conf['move_to_target'][3])
 
     # enable foreign key in fact table
     enable_back_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
-    # print(enable_back_trigger_query)
 
     return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, update_student_rec_id_fk_query,
             enable_back_trigger_query]

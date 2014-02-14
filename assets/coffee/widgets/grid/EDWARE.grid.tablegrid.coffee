@@ -5,6 +5,9 @@ define [
   'edwareGridFormatters'
 ], ($, jqGrid, edwareUtil, edwareGridFormatters) ->
 
+  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar',
+    '#stickyCompareSection', '.selectedFilter_panel', '.ui-jqgrid-hdiv', '.ui-jqgrid-sdiv']
+
   DEFAULT_CONFIG =
     tableId: 'gridTable'
     data: undefined
@@ -44,11 +47,8 @@ define [
     afterLoadComplete: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      $("#gview_gridTable > .ui-jqgrid-bdiv").css {
-          'min-height': 100, 'height': this.options.gridHeight
-      }
       this.highlightSortLabels()
-   
+
     render: ()->
       this.renderBody()
       this.renderHeader()
@@ -144,7 +144,7 @@ define [
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
-      
+
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
 
@@ -155,6 +155,21 @@ define [
     $.fn.lazyLoad = () ->
       # dynamically load data when scrolling down
       this.jqGrid('setGridParam', {scroll: 1, rowNum: 100}).trigger("reloadGrid")
+
+
+  adjustHeight = () ->
+    # adjust grid height based on visible region
+    $("#gview_gridTable > .ui-jqgrid-bdiv").css {
+      'min-height': 100
+      'height': calculateHeight()
+    }
+
+  calculateHeight = () ->
+    height = 0
+    for component in COMPONENTS_SELECTORS
+      $component = $(component)
+      height += $component.height() if $component.is(':visible')
+    window.innerHeight - height
 
   #
   #    * Creates EDWARE grid
@@ -179,4 +194,4 @@ define [
       edwareUtil.displayErrorMessage  options.labels['no_results']
 
   create: create
-
+  adjustHeight: adjustHeight

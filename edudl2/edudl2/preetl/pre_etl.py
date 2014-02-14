@@ -1,9 +1,10 @@
 from uuid import uuid4
 import logging
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2_util.database_util import connect_db, execute_queries
+from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.udl2.errorcodes import BATCH_REC_FAILED
 from edudl2.preetl.create_queries import insert_batch_row_query
+from edudl2.udl2.udl2_connector import UDL2DBConnection
 
 
 def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced=None):
@@ -34,16 +35,9 @@ def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced
         # create the insertion query
         insert_query = insert_batch_row_query(schema, batch_table, **parm)
 
-        # create database connection
-        (conn, _engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-                                     udl2_conf['udl2_db']['db_user'],
-                                     udl2_conf['udl2_db']['db_pass'],
-                                     udl2_conf['udl2_db']['db_host'],
-                                     udl2_conf['udl2_db']['db_port'],
-                                     udl2_conf['udl2_db']['db_database'])
-        # insert into batch table
-        execute_queries(conn, [insert_query], 'Exception in pre_etl, execute query to insert into batch table', 'pre_etl', 'pre_etl_job')
-        conn.close()
+        with UDL2DBConnection() as conn:
+            # insert into batch table
+            execute_udl_queries(conn, [insert_query], 'Exception in pre_etl, execute query to insert into batch table', 'pre_etl', 'pre_etl_job')
 
         return guid_batch
 

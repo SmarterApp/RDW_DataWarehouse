@@ -237,7 +237,6 @@ define [
         data: filteredInfo.data
         columns: @studentsDataSet.columnData[viewName]
         options:
-          gridHeight: window.innerHeight - 212
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           gridComplete: () ->

@@ -6,7 +6,8 @@ define [
   "edwareUtil"
   "edwareClientStorage"
   "text!edwareFilterTemplate"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate) ->
+  "edwareGrid"
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate, edwareGrid) ->
 
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
@@ -127,6 +128,7 @@ define [
         filterArrow = this.filterArrow
         this.tagPanelWrapper.slideUp 'slow', ->
           filterArrow.hide()
+          edwareGrid.adjustHeight()
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()

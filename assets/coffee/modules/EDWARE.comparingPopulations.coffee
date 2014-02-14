@@ -55,7 +55,6 @@ define [
       this.labels = config.labels
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
-      this.gridHeight = window.innerHeight - 312#subtract footer and header height
       # create align button
       this.alignment = new Alignment('.align_button', @labels)
       # default sort
@@ -79,7 +78,7 @@ define [
       loadingData.done (data)->
         self.data = data
         self.populationData = self.data.records
-        if not self.data.context.items[0]
+        if self.populationData.length is 0
           # no results
           self.displayNoResults()
           return
@@ -173,12 +172,11 @@ define [
       self = this
 
       # Create compare population grid for State/District/School view
-      edwareGrid.create {
+      @grid = edwareGrid.create {
         data: filteredInfo.data
         columns: this.gridConfig
         footer: this.summaryData
         options:
-          gridHeight: this.gridHeight
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort

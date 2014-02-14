@@ -107,7 +107,7 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
 
 def execute_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
     """
-    This should be used when celery is running and db engines have been registered with zope
+    This should be used when celery is NOT running
     :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
     :param query: Query to execute
     :param except_msg: Exception string

@@ -154,7 +154,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                                   'substr(A.gender_student, 1, 6)', 'substr(A.dob_student, 1, 10)', 'substr(A.grade_enrolled, 1, 2)',
                                                   'cast(A.dmg_eth_hsp as bool)', 'cast(A.dmg_eth_ami as bool)', 'cast(A.dmg_eth_asn as bool)',
                                                   'cast(A.dmg_eth_blk as bool)', 'cast(A.dmg_eth_pcf as bool)', 'cast(A.dmg_eth_wht as bool)',
-                                                  'cast(A.dmg_prg_iep as bool)', 'cast(A.dmg_prg_lep as bool)', 'substr(A.dmg_prg_504, 1, 22)',
+                                                  'cast(A.dmg_prg_iep as bool)', 'cast(A.dmg_prg_lep as bool)', 'cast(A.dmg_prg_504 as bool)',
                                                   'cast(A.dmg_sts_ecd as bool)', 'cast(A.dmg_sts_mig as bool)', 'cast(A.dmg_multi_race as bool)',
                                                   'substr(A.code_confirm, 1, 35)', 'substr(A.code_language, 1, 3)', 'substr(A.eng_prof_lvl, 1, 20)',
                                                   'substr(A.us_school_entry_date, 1, 10)', 'substr(A.lep_entry_date, 1, 10)',

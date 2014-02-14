@@ -279,7 +279,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('dmg_eth_wht', Boolean, nullable=False),
                                  Column('dmg_prg_iep', Boolean, nullable=False),
                                  Column('dmg_prg_lep', Boolean, nullable=False),
-                                 Column('dmg_prg_504', String(22), nullable=False),
+                                 Column('dmg_prg_504', Boolean, nullable=True),
                                  Column('dmg_sts_ecd', Boolean, nullable=False),
                                  Column('dmg_sts_mig', Boolean, nullable=True),
                                  Column('dmg_multi_race', Boolean, nullable=False),

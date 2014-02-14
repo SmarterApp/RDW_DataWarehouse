@@ -173,7 +173,7 @@ define [
       self = this
 
       # Create compare population grid for State/District/School view
-      edwareGrid.create {
+      @grid = edwareGrid.create {
         data: filteredInfo.data
         columns: this.gridConfig
         footer: this.summaryData

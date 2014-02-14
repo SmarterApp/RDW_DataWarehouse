@@ -1,12 +1,12 @@
 #!/bin/sh
 
 echo "make option directory"
-sudo -u root -s mkdir -p /opt/edware/etc
+sudo -u root -s mkdir -p /opt/edware/conf
 # we need to fix permission later not to own by root but udl app user
 sudo -u root -s chmod 775 /opt/edware
-sudo -u root -s chmod 777 /opt/edware/etc
+sudo -u root -s chmod 777 /opt/edware/conf
 if [ `uname` == 'Linux' ]; then
-    sudo -u root -s chown -R udl2.udl2 /opt/edware/etc;
+    sudo -u root -s chown -R udl2.udl2 /opt/edware/conf;
 fi
 
 echo "rebuild log directory"

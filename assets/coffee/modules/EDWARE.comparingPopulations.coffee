@@ -55,7 +55,6 @@ define [
       this.labels = config.labels
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
-      this.gridHeight = window.innerHeight - 312#subtract footer and header height
       # create align button
       this.alignment = new Alignment('.align_button', @labels)
       # default sort
@@ -178,7 +177,6 @@ define [
         columns: this.gridConfig
         footer: this.summaryData
         options:
-          gridHeight: this.gridHeight
           labels: this.labels
           stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort

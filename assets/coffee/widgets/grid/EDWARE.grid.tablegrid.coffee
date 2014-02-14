@@ -47,7 +47,6 @@ define [
     afterLoadComplete: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      adjustHeight()
       this.highlightSortLabels()
 
     render: ()->
@@ -159,6 +158,7 @@ define [
 
 
   adjustHeight = () ->
+    # adjust grid height based on visible region
     $("#gview_gridTable > .ui-jqgrid-bdiv").css {
       'min-height': 100
       'height': calculateHeight()

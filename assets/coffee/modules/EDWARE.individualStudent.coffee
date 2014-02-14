@@ -28,7 +28,11 @@ define [
       for asmtType, assessments  of @data.items
         for asmt in assessments
           sections = @buildAccommodations asmt.accommodations
-          asmt.accommodations = {"sections": sections}
+          if sections.length > 0
+            asmt.accommodations = {"sections": sections}
+          else
+            # do not display accommodation at all if none is available
+            asmt.accommodations = undefined
 
     buildAccommodations: (accommodations) ->
       # mapping accommodation code and column name to meaningful description text

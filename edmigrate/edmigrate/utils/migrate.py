@@ -4,7 +4,8 @@ from sqlalchemy.sql.expression import select
 
 from edmigrate.utils.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
-from edcore.database.edcore_connector import EdCoreDBConnection
+from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
+from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 
 # This is a hack needed for now for migration.
 # These tables will be dropped in future
@@ -85,16 +86,6 @@ def get_tables_to_migrate(connector):
     """
     all_tables = [table.split('.')[1] for table in connector.get_metadata().tables.keys()]
     return all_tables
-
-
-def get_source_key(tenant):
-    #TODO: return the actual source prefix key
-    return 'cat'
-
-
-def get_dest_key(tenant):
-    #TODO: return the actual dest prefix key
-    return 'dog'
 
 
 def yield_rows(connector, query, batch_size):
@@ -209,13 +200,8 @@ def migrate_batch(batch_guid, tenant):
     """
     print('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
 
-    # get the source and dest key to grab a connection
-    source = get_source_key(tenant)
-    dest = get_dest_key(tenant)
-
-    # TODO: EdCoreConnection will be replaced with real one later
-    with EdCoreDBConnection(dest) as dest_connector, \
-            EdCoreDBConnection(source) as source_connector:
+    with EdMigrateDestConnection(tenant) as dest_connector, \
+            EdMigrateSourceConnection(tenant) as source_connector:
         try:
             # start transaction for this batch
             trans = dest_connector.get_transaction()
@@ -248,4 +234,4 @@ def start_migrate_daily_delta(tenant):
 if __name__ == '__main__':
     # TODO: remove this. temp entry point for testing migration as a script
     import edmigrate.celery
-    start_migrate_daily_delta('ca')
+    start_migrate_daily_delta('cat')

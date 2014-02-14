@@ -43,7 +43,7 @@ sudo -u root -s mkdir -p /opt/edware/zones/datafiles/keys
 sudo -u root -s mkdir -p /opt/edware/zones/tests
 
 # we need to fix permission later not to own by root but udl app user
-sudo -u root -s chmod 777 /opt/edware/zones/zones
+sudo -u root -s chmod 777 /opt/edware/zones/
 sudo -u root -s chmod 777 /opt/edware/zones/landing
 sudo -u root -s chmod 777 /opt/edware/zones/pickup
 

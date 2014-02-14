@@ -5,9 +5,7 @@ Created on May 24, 2013
 '''
 import unittest
 import re
-from edudl2.udl2.udl2_connector import UDL2DBConnection
-from edudl2.udl2.celery import udl2_conf
-from edudl2.move_to_integration.move_to_integration import create_migration_query, get_column_mapping_from_stg_to_int
+from edudl2.move_to_integration.move_to_integration import create_migration_query
 
 
 class TestLoadToIntegrationTable(unittest.TestCase):
@@ -36,34 +34,6 @@ class TestLoadToIntegrationTable(unittest.TestCase):
                                                      error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule)
         self.assertEqual(re.sub('\s+', ' ', expected_query_result.replace('\n', ' ').replace('\t', ' ')),
                          re.sub('\s+', ' ', actual_query_result.replace('\n', ' ').replace('\t', ' ')))
-
-    def test_get_column_mapping_from_stg_to_int(self):
-        expected_target_columns = ['guid_batch', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',
-                                   'guid_student', 'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last',
-                                   'gender_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk',
-                                   'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig',
-                                   'dmg_multi_race', 'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date',
-                                   'lep_exit_date', 't3_program_type', 'prim_disability_type', 'created_date']
-        expected_source_columns_with_tran_rule = ['A.guid_batch', 'substr(A.name_state, 1, 50)', 'substr(A.code_state, 1, 2)',
-                                                  'substr(A.guid_district, 1, 30)', 'substr(A.name_district, 1, 60)', 'substr(A.guid_school, 1, 30)',
-                                                  'substr(A.name_school, 1, 60)', 'substr(A.guid_student, 1, 30)',
-                                                  'substr(A.external_ssid_student, 1, 50)', 'substr(A.name_student_first, 1, 35)',
-                                                  'substr(A.name_student_middle, 1, 35)', 'substr(A.name_student_last, 1, 35)',
-                                                  'substr(A.gender_student, 1, 6)', 'substr(A.dob_student, 1, 10)', 'substr(A.grade_enrolled, 1, 2)',
-                                                  'cast(A.dmg_eth_hsp as bool)', 'cast(A.dmg_eth_ami as bool)', 'cast(A.dmg_eth_asn as bool)',
-                                                  'cast(A.dmg_eth_blk as bool)', 'cast(A.dmg_eth_pcf as bool)', 'cast(A.dmg_eth_wht as bool)',
-                                                  'cast(A.dmg_prg_iep as bool)', 'cast(A.dmg_prg_lep as bool)', 'substr(A.dmg_prg_504, 1, 22)',
-                                                  'cast(A.dmg_sts_ecd as bool)', 'cast(A.dmg_sts_mig as bool)', 'cast(A.dmg_multi_race as bool)',
-                                                  'substr(A.code_confirm, 1, 35)', 'substr(A.code_language, 1, 3)', 'substr(A.eng_prof_lvl, 1, 20)',
-                                                  'substr(A.us_school_entry_date, 1, 10)', 'substr(A.lep_entry_date, 1, 10)',
-                                                  'substr(A.lep_exit_date, 1, 10)', 'substr(A.t3_program_type, 1, 27)',
-                                                  'substr(A.prim_disability_type, 1, 3)', 'A.created_date']
-        conn = UDL2DBConnection()
-        target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, udl2_conf['udl2_db']['sr_ref_table_name'],
-                                                                                           'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
-                                                                                           udl2_conf['udl2_db']['staging_schema'])
-        self.assertEqual(expected_target_columns, target_columns)
-        self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)
 
 if __name__ == '__main__':
     # import sys;sys.argv = ['', 'Test.testName']

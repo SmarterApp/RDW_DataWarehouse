@@ -5,7 +5,7 @@ Created on Mar 20, 2013
 '''
 import unittest
 from smarter.reports.helpers.assessments import get_overall_asmt_interval,\
-    get_cut_points, get_claims
+    get_cut_points, get_claims, get_accommodations
 from smarter.reports.helpers.constants import Constants
 
 
@@ -197,6 +197,33 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(claims[0]['min_score'], '2')
         self.assertEqual(claims[1]['max_score'], '5')
 
+    def test_get_accommodations(self):
+        result = {
+            "acc_asl_video_embed": 0,
+            "acc_speech_to_text_nonembed": 1,
+            "acc_scribe_nonembed": 3,
+            "acc_print_on_demand_nonembed": 0,
+            "acc_braile_embed": 1,
+            "acc_streamline_mode": 2,
+            "acc_closed_captioning_embed": 4,
+            "acc_text_to_speech_embed": 2,
+            "acc_asl_human_nonembed": 1,
+            "acc_read_aloud_nonembed": 0,
+            "some_garbage": 11}
+        grouped_sections = get_accommodations(result)
+        self.assertEqual(len(grouped_sections), 5)
+        group0 = grouped_sections.get(0)
+        group0.sort()
+        self.assertEqual(group0, ['acc_asl_video_embed', 'acc_print_on_demand_nonembed', 'acc_read_aloud_nonembed'])
+        group1 = grouped_sections.get(1)
+        group1.sort()
+        self.assertEqual(group1, ['acc_asl_human_nonembed', 'acc_braile_embed', 'acc_speech_to_text_nonembed'])
+        self.assertEqual(result, {'some_garbage': 11})
+
+    def test_get_accommodations_empty_input(self):
+        result = {}
+        grouped_sections = get_accommodations(result)
+        self.assertEqual(grouped_sections, {})
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -620,7 +620,7 @@ jenkins_dev:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
     extract:
       celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract

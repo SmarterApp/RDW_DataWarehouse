@@ -423,7 +423,7 @@ UDL_METADATA = {
                 ('dmg_eth_wht', False, 'bool', '', False, 'Student ethnicity White'),
                 ('dmg_prg_iep', False, 'bool', '', False, 'IEP (Individualized Education Program)'),
                 ('dmg_prg_lep', False, 'bool', '', False, 'LEP (Limited English Proficiency)'),
-                ('dmg_prg_504', False, 'varchar(22)', '', False, 'Section 504'),
+                ('dmg_prg_504', False, 'bool', '', True, 'Section 504'),
                 ('dmg_sts_ecd', False, 'bool', '', False, 'Economic Disadvantaged Status'),
                 ('dmg_sts_mig', False, 'bool', '', True, 'Migrant Status'),
                 ('dmg_multi_race', False, 'bool', '', False, 'Two or more races'),

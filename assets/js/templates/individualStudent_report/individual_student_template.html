@@ -110,23 +110,6 @@
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
         </div>
     </div>
-    <div class="assessmentOtherInfo printContent">
-        <h1>{{asmt_subject}}</h1>
-        <ul class="unstyled">
-            {{#psychometric_implications}}
-            <li class="inline">
-                <h3>{{labels.practical_implications}}</h3>
-                <div class="desc">{{{psychometric_implications}}}</div>
-            </li>
-            {{/psychometric_implications}}
-            {{#policy_content}}
-            <li class="inline">
-                <h3>{{labels.policy_information}}</h3>
-                <div class="desc">{{{policy_content}}}</div>
-            </li>
-            {{/policy_content}}
-        </ul>
-    </div>
 </div>
 <div class="pageBreak"></div>
 {{/current}}
@@ -147,5 +130,23 @@
             <h3>{{labels.report_info}}:</h3>
         </div>
     </div>
+    {{#current.0}}
+    <div class="assessmentOtherInfo printContent">
+        <ul class="unstyled">
+            {{#psychometric_implications}}
+            <li class="inline">
+                <h3>{{labels.practical_implications}}</h3>
+                <div class="desc">{{{psychometric_implications}}}</div>
+            </li>
+            {{/psychometric_implications}}
+            {{#policy_content}}
+            <li class="inline">
+                <h3>{{labels.policy_information}}</h3>
+                <div class="desc">{{{policy_content}}}</div>
+            </li>
+            {{/policy_content}}
+        </ul>
+    </div>
+    {{/current.0}}
     <div class="legendPopup"></div>
 </div>

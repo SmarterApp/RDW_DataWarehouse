@@ -1,15 +1,13 @@
 /* Print css */
 @media print {
-    body {border: none;}
+
+    body {
+        border: none;
+    }
     .assessmentOtherInfoHeader.show { display: block;}
     #breadcrumb {
         background-image: transparent;
         background: #ECECE6;
-    }
-    #footer {
-        display: none;
-    /*background-image: transparent;
-      background: #464646;*/
     }
 
     .ui-jqgrid-bdiv {
@@ -92,8 +90,7 @@
     }
 
     .exportPopup {display: none;}
-    .legendPopup, .aboutReportPopup { float: left; width: 100%;}
-    #footer { display: none;}
+
     #print_reportInfoContent { color: @color-B1; width: 100%;}
     #print_reportInfoContent .helpPopup, #print_reportInfoContent .printPopup { display: none;}
     #print_reportInfoContent {
@@ -167,7 +164,7 @@
             }
             .info2 {
                 margin-left: 450px;
-                color: @color-B1;
+                color: @color-B1 !important;
             }
         }
         .confidenceLevel {
@@ -180,36 +177,19 @@
     }
 
     .assessmentOtherInfo {
-        margin: 0 50px;
-
-        .assessmentOtherInfoHeader {
-            display: none;
-        }
-
-        h1 {
-            color: @color-A1 !important;
-            display: none;
-            margin-left: -20px;
-        }
-
-        li {
-            margin-top: 15px;
-        }
-
-        li.inline {
-            width: 50%;
-            float: left;
-            margin-top: 0;
-        }
+        float:left;
+        padding: 15px 0;
+        border-bottom: solid 1px @color-B4;
 
         h3 {
             color: @color-black;
             font-size: 17px;
         }
 
-        .desc {
-            color: @color-B2 !important;
-            margin-right: 40px;
+        li.inline {
+            width: 50%;
+            float: left;
+            margin-top: 0;
         }
     }
 
@@ -253,7 +233,6 @@
     }
 
     #legendTemplatePrint {
-        height: 710px;
 
         .span5 {width: 352px;}
 

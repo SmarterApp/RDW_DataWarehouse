@@ -130,7 +130,7 @@ qa:
         db_driver: postgresql
     prod_db_conn:
          edware:
-            url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware
             echo: False
             max_overflow: 10
@@ -139,8 +139,8 @@ qa:
             db_user: edware
             db_pass: edware2013
         ca:
-            url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
-            db_schema: edware
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            db_schema: edware_ca_1_6
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -151,8 +151,8 @@ qa:
         db_schema: edware
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: dbpgdw0.qa.dum.edwdc.net
-        db_port: 5432
+        db_host: dwpool1.qa.dum.edwdc.net
+        db_port: 6432
         db_database: edware
         db_user: edware
         db_pass: edware2013
@@ -344,7 +344,7 @@ jenksins_dev:
             db_pass: edware2013
     prod_db_conn:
         edware:
-            url: postgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_prod
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_prod
             db_schema: edware_sds_1_6
             echo: False
             max_overflow: 10
@@ -353,8 +353,8 @@ jenksins_dev:
             db_user: edware
             db_pass: edware2013
         ca:
-            url: postgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_prod
-            db_schema: edware_sds_1_6
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_prod
+            db_schema: edware_cat_1_6
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -362,11 +362,11 @@ jenksins_dev:
             db_user: edware
             db_pass: edware2013
     prod_db:
-        db_schema: edware
+        db_schema: edware_sds_1_6
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: edwdbsrv1.poc.dum.edwdc.net
-        db_port: 5432
+        db_host: edwdbsrv4.poc.dum.edwdc.net
+        db_port: 9999
         db_database: edware_prod
         db_user: edware
         db_pass: edware2013

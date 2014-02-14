@@ -40,7 +40,7 @@ sudo -u root -s mkdir -p /opt/edware/zones/pickup/history
 # For testing
 sudo -u root -s mkdir -p /opt/edware/zones/datafiles
 sudo -u root -s mkdir -p /opt/edware/zones/datafiles/keys
-sudo -u root -s mkdir -p /opt/edware/zones/zones/tests
+sudo -u root -s mkdir -p /opt/edware/zones/tests
 
 # we need to fix permission later not to own by root but udl app user
 sudo -u root -s chmod 777 /opt/edware/zones/zones

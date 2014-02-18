@@ -129,7 +129,7 @@ qa:
         db_pass: edware2013
         db_driver: postgresql
     prod_db_conn:
-         edware:
+        edware:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware
             echo: False

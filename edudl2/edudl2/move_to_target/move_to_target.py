@@ -206,3 +206,25 @@ def calculate_spend_time_as_second(start_time, finish_time):
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
     return time_as_seconds
+
+
+def match_deleted_records(conf, source_table, production_table, column_mapping, column_type):
+    '''
+    Match production database target_table. and get target_table's primary rec id
+    return a list of rec_id to delete reocrds
+    '''
+
+
+def is_any_deleted_records_missing(conf, deleted_records, matched_records):
+    '''
+    check any deleted records is not in target database. if yes. return True,
+    so we will raise error for this udl batch
+    '''
+    pass
+
+
+def explode_deleted_record_to_fact(conf, source_table, target_table, column_mapping, column_typess, matched_records):
+    '''
+    update all matched deleted records with rec_id in production database. and explode them into fact table in target
+    '''
+    pass

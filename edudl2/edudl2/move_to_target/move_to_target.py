@@ -3,7 +3,7 @@ from collections import OrderedDict
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
-from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection
+from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
     select_distinct_asmt_rec_id_query, enable_trigger_query, create_insert_query,\

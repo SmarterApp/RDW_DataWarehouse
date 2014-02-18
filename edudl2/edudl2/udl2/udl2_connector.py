@@ -81,7 +81,7 @@ class TargetDBConnection(DBConnection):
         return True
 
 
-class ProductionDBConnection(DBConnection):
+class ProdDBConnection(DBConnection):
     """
     DBConnector for Edware Production Database
     """

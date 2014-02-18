@@ -51,7 +51,7 @@ def update_state_code(tenant, state_code):
         custom_metadata = connection.get_table("custom_metadata")
         fact_asmt = connection.get_table("fact_asmt_outcome")
         dim_student = connection.get_table("dim_student")
-        fact_student_reg = connection.get_table("fact_student_reg")
+        fact_student_reg = connection.get_table("student_reg")
         tables = [dim_inst_hier, dim_section, custom_metadata, fact_asmt, dim_student, fact_student_reg]
         for table in tables:
             stmt = update(table).values(state_code=state_code)

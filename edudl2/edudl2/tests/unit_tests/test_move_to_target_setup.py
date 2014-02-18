@@ -26,8 +26,8 @@ class TestMoveToTargetSetup(unittest.TestCase):
             mk.REF_TABLE: self.udl2_conf['udl2_db']['sr_ref_table_name'],
             mk.PHASE: 4
         }
-        expected_table_map = {'fact_student_reg': 'INT_SBAC_STU_REG_META'}
-        expected_column_map = {'fact_student_reg': OrderedDict([('student_reg_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+        expected_table_map = {'student_reg': 'INT_SBAC_STU_REG'}
+        expected_column_map = {'student_reg': OrderedDict([('student_reg_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                                                                 ('dmg_sts_ecd', 'dmg_sts_ecd'),
                                                                 ('enrl_grade', 'grade_enrolled'),
                                                                 ('language_code', 'code_language'),

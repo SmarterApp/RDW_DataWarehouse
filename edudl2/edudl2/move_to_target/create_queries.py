@@ -110,3 +110,10 @@ def get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_tabl
     '''
     return "SELECT distinct target_column, source_column FROM {source_schema_and_table} WHERE target_table='{target_table}'".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
                                                                                                                                     target_table=dim_table)
+
+
+def find_deleted_candidate_query(src_schema_name, src_table_name, prod_schema_name, prod_table_name, matching_columns, matching_values):
+    '''
+    Function to
+    '''
+    return ""

@@ -37,15 +37,15 @@ def get_move_to_target_conf():
             },
         },
         {
-            'prod_rec_id': '',
-            'target_rec_id': '',
+            'prod_rec_id': 'asmnt_outcome_rec_id',
+            'target_rec_id': 'asmnt_outcome_rec_id',
             'prod_table': 'fact_asmt_outcome',
             'target_table': 'fact_asmt_outcome',
             'source_table': 'INST_SBAC_ASMT',
             'matching_columns': [
-                ('', ''),
-                ('', ''),
-                ('', ''),
+                ('date_assessed', 'date_taken'),
+                ('guid_asmt', 'asmt_guid'),
+                ('guid_student', 'student_guid')
             ],
             'matching_status': [
                 ('status', 'D')

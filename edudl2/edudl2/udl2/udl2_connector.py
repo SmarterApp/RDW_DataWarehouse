@@ -8,6 +8,7 @@ from edschema.metadata_generator import generate_ed_metadata
 
 UDL_NAMESPACE = 'udl2_db_conn'
 TARGET_NAMESPACE = 'target_db_conn'
+PRODUCTION_NAMESPACE = 'production_db_conn'
 
 
 class UDL2DBConnection(DBConnection):
@@ -62,6 +63,40 @@ class TargetDBConnection(DBConnection):
     def get_datasource_name(tenant="edware"):
         """
         Returns datasource name for UDL Stats
+        """
+        return TARGET_NAMESPACE + '.' + tenant
+
+    @staticmethod
+    def generate_metadata(schema_name=None, bind=None):
+        """
+        Generate Metadata for Target
+        """
+        return generate_ed_metadata(schema_name=schema_name, bind=bind)
+
+    @staticmethod
+    def allows_multiple_tenants():
+        """
+        Does this connection class support multiple tenants
+        """
+        return True
+
+
+class ProductionDBConnection(DBConnection):
+    """
+    DBConnector for Edware Production Database
+    """
+    def __init__(self, tenant='edware'):
+        name = ProductionDBConnection.get_datasource_name(tenant)
+        super().__init__(name=name)
+
+    @staticmethod
+    def get_namespace():
+        return PRO_NAMESPACE
+
+    @staticmethod
+    def get_datasource_name(tenant="edware"):
+        """
+        Returns datasource name for Production table
         """
         return TARGET_NAMESPACE + '.' + tenant
 

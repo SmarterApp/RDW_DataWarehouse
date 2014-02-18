@@ -254,7 +254,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_iep', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_iep, unique=False)
     Index('fact_asmt_outcome_gender', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.gender, unique=False)
 
-    student_registration = Table('fact_student_reg', metadata,
+    student_registration = Table('student_reg', metadata,
                                  Column('student_reg_rec_id', BigInteger, primary_key=True),
                                  Column('batch_guid', String(36), nullable=False),
                                  Column('state_name', String(50), nullable=False),

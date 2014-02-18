@@ -188,7 +188,7 @@ class FTestMoveToTarget(unittest.TestCase):
         return {
             mk.BATCH_TABLE: udl2_conf['udl2_db']['batch_table'],
             mk.GUID_BATCH: BATCH_GUID,
-            mk.LOAD_TYPE: 'Assessment',
+            mk.LOAD_TYPE: 'assessment',
             mk.PHASE: 4,
             mk.TENANT_NAME: self.tenant_info['tenant_code'],
         }

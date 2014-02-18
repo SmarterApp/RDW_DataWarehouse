@@ -22,7 +22,7 @@ def task(msg):
     start_time = datetime.datetime.now()
     logger.info("LOAD_FROM_STAGING_TO_INT: Migrating data from staging to integration.")
     guid_batch = msg[mk.GUID_BATCH]
-    conf = generate_conf(guid_batch)
+    conf = generate_conf(guid_batch, msg[mk.LOAD_TYPE])
     affected_rows = move_data_from_staging_to_integration(conf)
     end_time = datetime.datetime.now()
 
@@ -38,7 +38,7 @@ def task(msg):
     return outgoing_msg
 
 
-def generate_conf(guid_batch):
+def generate_conf(guid_batch, load_type):
     conf = {mk.GUID_BATCH: guid_batch,
             mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
 
@@ -61,6 +61,6 @@ def generate_conf(guid_batch):
             mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT_OUTCOME',
 
             mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]
             }
     return conf

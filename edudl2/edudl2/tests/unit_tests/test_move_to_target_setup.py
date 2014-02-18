@@ -21,9 +21,12 @@ class TestMoveToTargetSetup(unittest.TestCase):
         self.udl2_conf = conf_tup[0]
 
     def test_get_table_and_column_mapping(self):
+        print('#######################################')
+        print(self.udl2_conf)
+        print('#######################################')
         conf = {
             mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['integration_schema'],
-            mk.REF_TABLE: self.udl2_conf['udl2_db']['sr_ref_table_name'],
+            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
             mk.PHASE: 4
         }
         expected_table_map = {'fact_student_reg': 'INT_SBAC_STU_REG_META'}

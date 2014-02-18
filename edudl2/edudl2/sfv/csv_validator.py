@@ -22,7 +22,7 @@ class CsvValidator():
     Invoke a suite of validations for csv files.
     """
 
-    def __init__(self):
+    def __init__(self, load_type):
         """Constructor
         @param arg_udl_db: database connections
         @type arg_udl_db: udl.lib.UdlDb
@@ -33,7 +33,7 @@ class CsvValidator():
                                 IsFileBlank(),
                                 DoesSourceFileContainHeaders(),
                                 DoesSourceFileContainDuplicateHeaders(),
-                                DoesSourceFileInExpectedFormat(),
+                                DoesSourceFileInExpectedFormat(load_type),
                                 IsSourceFileCommaDelimited(),
                                 DoesSourceFileHaveData(),
                                 IsCsvWellFormed()
@@ -404,9 +404,9 @@ class DoesSourceFileHaveData(object):
 class DoesSourceFileInExpectedFormat(object):
     """Check if source file is in the expected format with all the columns expected"""
 
-    def __init__(self, csv_fields=None):
+    def __init__(self, load_type, csv_fields=None):
         self.expected_csv_fields = sfv_util.get_source_column_values_from_ref_column_mapping(
-            udl2_conf['udl2_db']['csv_lz_table']) if csv_fields is None else csv_fields
+            udl2_conf['udl2_db']['csv_lz_table'], load_type) if csv_fields is None else csv_fields
 
     def are_eq(self, a, b):
         return len(a) == len(b) and set(a) == set(b)

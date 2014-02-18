@@ -18,7 +18,7 @@ def task(msg):
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
     guid_batch = msg[mk.GUID_BATCH]
-    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], guid_batch)
+    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.LOAD_TYPE], msg[mk.HEADERS], guid_batch)
     load_file(conf)
     end_time = datetime.datetime.now()
 
@@ -29,7 +29,7 @@ def task(msg):
     return msg
 
 
-def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_batch):
+def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_path, guid_batch):
     csv_table = extract_file_name(file_to_load)
     conf = {mk.FILE_TO_LOAD: file_to_load,
             mk.ROW_START: start_seq,
@@ -46,7 +46,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_ba
             # TODO: Get rid of the 1 hard-coded value
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             mk.APPLY_RULES: True,
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
             mk.GUID_BATCH: guid_batch}
     return conf

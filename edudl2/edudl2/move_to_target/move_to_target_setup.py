@@ -96,7 +96,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
         mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
         mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
 
-        mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+        mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
         mk.PHASE: int(phase_number),
         mk.MOVE_TO_TARGET: get_move_to_target_conf(),
         mk.LOAD_TYPE: load_type,

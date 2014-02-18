@@ -76,7 +76,7 @@ class DataValidationErrorCode(unittest.TestCase):
 
     def test_extention_errorcode(self):
         #test#8 --> different file formate other than csv & json
-        expected_error_code = simple_file_validator.SimpleFileValidator().execute(self.data_dir, "REALDATA_3010.xlsx", 123)
+        expected_error_code = simple_file_validator.SimpleFileValidator('assessment').execute(self.data_dir, "REALDATA_3010.xlsx", 123)
         assert expected_error_code[0][0] == error_codes.SRC_FILE_TYPE_NOT_SUPPORTED, "Validation Code for different file formate is incorrect"
         print("Passed: TC8: Validation Code for different file formate")
 
@@ -99,7 +99,7 @@ class DataValidationErrorCode(unittest.TestCase):
         #test#11 --> test multiple errors in one csv file (Error: 3006, 3008 & 3011)
         multierror_list = [error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, error_codes.SRC_FILE_HEADERS_MISMATCH_DATA, error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT]
         errorcode_list = []
-        expected_error_code = csv_validator.CsvValidator().execute(self.data_dir, "realdata_3008_3011.csv", 123)
+        expected_error_code = csv_validator.CsvValidator('assessment').execute(self.data_dir, "realdata_3008_3011.csv", 123)
         for i in range(len(expected_error_code)):
             errorcode_list.append(expected_error_code[i][0])
         assert len(multierror_list) == len(errorcode_list)

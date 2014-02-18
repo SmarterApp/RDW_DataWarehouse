@@ -75,8 +75,9 @@ qa:
         fdw_server: udl2_fdw_server
         staging_schema: udl2
         integration_schema: udl2
-        ref_table_name: REF_COLUMN_MAPPING
-        sr_ref_table_name: SR_REF_COLUMN_MAPPING
+        ref_tables:
+            assessment: REF_COLUMN_MAPPING
+            studentregistration: SR_REF_COLUMN_MAPPING
         batch_table: UDL_BATCH
         db_host: rbtmqudl0.qa.dum.edwdc.net
         db_port: 5432
@@ -144,8 +145,9 @@ development:
         fdw_server: udl2_fdw_server
         staging_schema: udl2
         integration_schema: udl2
-        ref_table_name: REF_COLUMN_MAPPING
-        sr_ref_table_name: SR_REF_COLUMN_MAPPING
+        ref_tables:
+            assessment: REF_COLUMN_MAPPING
+            studentregistration: SR_REF_COLUMN_MAPPING
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432
@@ -222,8 +224,9 @@ jenksins_dev:
         fdw_server: udl2_fdw_server
         staging_schema: udl2
         integration_schema: udl2
-        ref_table_name: REF_COLUMN_MAPPING
-        sr_ref_table_name: SR_REF_COLUMN_MAPPING
+        ref_tables:
+            assessment: REF_COLUMN_MAPPING
+            studentregistration: SR_REF_COLUMN_MAPPING
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432

@@ -3,7 +3,8 @@ __author__ = 'swimberly'
 
 def get_move_to_target_conf():
     """
-
+    configurations for move_to_target to match tables for foreign key rec ids for dim_asmt, dim_student,
+    and dim_inst_hier. It also containts matcher configuration for UDL delete/update against production tables.
     :return:
     """
 
@@ -34,5 +35,21 @@ def get_move_to_target_conf():
             'guid_column_map': {
                 'student_guid': 'student_guid'
             },
+        },
+        {
+            'prod_rec_id': '',
+            'target_rec_id': '',
+            'prod_table': 'fact_asmt_outcome',
+            'target_table': 'fact_asmt_outcome',
+            'source_table': 'INST_SBAC_ASMT',
+            'matching_columns': [
+                ('', ''),
+                ('', ''),
+                ('', ''),
+            ],
+            'matching_status': [
+                ('status', 'D')
+            ]
         }]
+
     return conf

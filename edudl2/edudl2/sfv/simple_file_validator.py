@@ -19,10 +19,10 @@ from edudl2.sfv import json_validator
 class SimpleFileValidator():
     """Determines the file extension and invokes a suite of validations"""
 
-    def __init__(self):
+    def __init__(self, load_type):
         """Constructor"""
-        self.validators = {'.csv': csv_validator.CsvValidator(),
-                           '.json': json_validator.JsonValidator(),
+        self.validators = {'.csv': csv_validator.CsvValidator(load_type),
+                           '.json': json_validator.JsonValidator(load_type),
                            }
 
     def execute(self, dir_path, file_name, guid_batch):

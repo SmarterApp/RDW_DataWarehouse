@@ -1,9 +1,8 @@
 {
-  "Content": "StudentRegistration",
+  "Content": "StudentRegistraion",
   "Identification": {
     "Guid": "009a34ee-4609-4b13-8ca2-ed1bc0386afb",
-    "AcademicYear": "2015",
-    "ExtractDate": "09-01-2014"
+    "ExtractDate": "2014-02-04"
   },
   "Source": {
     "TestRegSysID": "800b3654-4406-4a90-9591-be84b67054df",

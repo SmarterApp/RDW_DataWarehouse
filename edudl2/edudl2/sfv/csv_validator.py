@@ -22,7 +22,7 @@ class CsvValidator():
     Invoke a suite of validations for csv files.
     """
 
-    def __init__(self):
+    def __init__(self, load_type):
         """Constructor
         @param arg_udl_db: database connections
         @type arg_udl_db: udl.lib.UdlDb

@@ -19,19 +19,19 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 
     def test_simple_file_validator_passes_for_valid_csv(self):
-        validator = simple_file_validator.SimpleFileValidator()
+        validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir,
                                     'test_data_latest/'
                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
         self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_fails_for_missing_csv(self):
-        validator = simple_file_validator.SimpleFileValidator()
+        validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir, 'nonexistent.csv', 1)
         self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
 
     def test_simple_file_validator_invalid_extension(self):
-        validator = simple_file_validator.SimpleFileValidator()
+        validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir, 'invalid_ext.xls', 1)
         self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
 
@@ -59,3 +59,19 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                                      'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][0], '0')
+
+    def test_valid_student_registration_json(self):
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
+        results = validator.execute(self.data_dir,
+                                    'test_sample_student_reg.json', 1)
+        self.assertEqual(len(results), 0)
+
+    def test_invalid_content_student_registration_json(self):
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
+        results = validator.execute(self.data_dir,
+                                    'test_invalid_student_reg.json', 1)
+        error_code_expected = error_codes.SRC_JSON_INVALID_FORMAT
+        expected_field = 'academic_year'
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0][0], error_code_expected)
+        self.assertEqual(results[0][4], expected_field)

@@ -83,14 +83,14 @@ class DataValidationErrorCode(unittest.TestCase):
     # Test Cases for bad json file
     def test_jsonStructure_errorcode(self):
         #test# 9 --> file structure
-        validate_instance = json_validator.JsonValidator().validators[0]
+        validate_instance = json_validator.JsonValidator('assessment').validators[0]
         expected_error_code = validate_instance.execute(self.data_dir, "METADATA_ASMT_3012.json", 123)
         assert expected_error_code[0] == error_codes.SRC_JSON_INVALID_STRUCTURE, "Validation Code for JSON file structure is incorrect"
         print("Passed: TC9: Validation Code for JSON file structure")
 
     def test_jsonFormate_errorcode(self):
         #Test#10 --> file formate
-        validate_instance = json_validator.JsonValidator().validators[1]
+        validate_instance = json_validator.JsonValidator('assessment').validators[1]
         expected_error_code = validate_instance.execute(self.data_dir, "METADATA_ASMT_3013.json", 123)
         assert expected_error_code[0] == error_codes.SRC_JSON_INVALID_FORMAT, "Validation Code for JSON file formate is incorrect"
         print("Passed: TC10: Validation Code for JSON file formate")

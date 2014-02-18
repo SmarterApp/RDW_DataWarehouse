@@ -59,3 +59,19 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                                      'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][0], '0')
+
+    def test_valid_student_registration_json(self):
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
+        results = validator.execute(self.data_dir,
+                                    'test_sample_student_reg.json', 1)
+        self.assertEqual(len(results), 0)
+
+    def test_invalid_content_student_registration_json(self):
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
+        results = validator.execute(self.data_dir,
+                                    'test_invalid_student_reg.json', 1)
+        error_code_expected = error_codes.SRC_JSON_INVALID_FORMAT
+        expected_field = 'academic_year'
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0][0], error_code_expected)
+        self.assertEqual(results[0][4], expected_field)

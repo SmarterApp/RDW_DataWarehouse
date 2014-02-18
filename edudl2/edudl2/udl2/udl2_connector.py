@@ -8,7 +8,7 @@ from edschema.metadata_generator import generate_ed_metadata
 
 UDL_NAMESPACE = 'udl2_db_conn'
 TARGET_NAMESPACE = 'target_db_conn'
-PRODUCTION_NAMESPACE = 'production_db_conn'
+PRODUCTION_NAMESPACE = 'prod_db_conn'
 
 
 class UDL2DBConnection(DBConnection):

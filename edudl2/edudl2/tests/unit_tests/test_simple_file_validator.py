@@ -18,15 +18,23 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.conf = conf_tup[0]
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 
-    def test_simple_file_validator_passes_for_valid_csv(self):
+    def test_simple_file_validator_passes_for_valid_assmt_csv(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir,
                                     'test_data_latest/'
                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
         self.assertEqual(len(results), 0)
 
+    def test_simple_file_validator_passes_for_valid_student_reg_csv(self):
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
+        results = validator.execute(self.data_dir, 'test_sample_student_reg.csv', 1)
+        self.assertEqual(len(results), 0)
+
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')
+        results = validator.execute(self.data_dir, 'nonexistent.csv', 1)
+        self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir, 'nonexistent.csv', 1)
         self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
 
@@ -34,10 +42,22 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir, 'invalid_ext.xls', 1)
         self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
+        validator = simple_file_validator.SimpleFileValidator('studentregistration')
+        results = validator.execute(self.data_dir, 'invalid_ext.xls', 1)
+        self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
 
     def test_for_source_file_with_less_number_of_columns(self):
         test_csv_fields = {'guid_batch', 'student_guid'}
         validator = csv_validator.DoesSourceFileInExpectedFormat('assessment', csv_fields=test_csv_fields)
+        error_code_expected = error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
+        results = [validator.execute(self.data_dir,
+                                     'invalid_csv.csv', 1)]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0][0], error_code_expected)
+
+    def test_for_source_file_with_mismatched_format(self):
+        test_csv_fields = {'guid_batch', 'student_guid'}
+        validator = csv_validator.DoesSourceFileInExpectedFormat('studentregistration', csv_fields=test_csv_fields)
         error_code_expected = error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
         results = [validator.execute(self.data_dir,
                                      'invalid_csv.csv', 1)]

@@ -54,16 +54,16 @@ class IsValidJsonFile(object):
         complete_path = os.path.join(dir_path, file_name)
         with open(complete_path) as f:
             try:
-                json_object = json.load(f)
+                json.load(f)
                 return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
-            except ValueError as e:
+            except ValueError:
                 return (error_codes.SRC_JSON_INVALID_STRUCTURE, dir_path, file_name, batch_sid)
 
 
 class HasExpectedFormat(object):
     '''Make sure the JSON file is formatted to our standards '''
     def __init__(self, load_type):
-         # mapping is a dictionary with keys = fields and values = paths to that field within the json structure
+        # mapping is a dictionary with keys = fields and values = paths to that field within the json structure
         # the paths will consist of a list of strings, each one a component of the path to the given field
         if load_type == udl2_conf['load_type']['student_registration']:
             self.mapping = {'academic_year': ['Identification', 'AcademicYear'],

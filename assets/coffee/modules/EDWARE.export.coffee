@@ -34,7 +34,7 @@ define [
       models = this.table.getGridParam('colModel')
       sortBy = ''
       $.each models, (idx, model)->
-        sortBy = model.label if model.index is sortName
+        sortBy = $("<div>#{model.label}</div>").text() if model.index is sortName
       sortBy
 
 

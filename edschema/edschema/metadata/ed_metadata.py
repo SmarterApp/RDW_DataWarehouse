@@ -96,17 +96,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     Index('dim_student_idx', students.c.student_guid, students.c.most_recent, unique=False)
 
-    external_user_student = Table('external_user_student_rel', metadata,
-                                  Column('external_user_student_guid', String(50), primary_key=True),
-                                  Column('external_user_guid', String(256), nullable=False),
-                                  Column('student_guid', String(50), nullable=False),  # NB! Figure out uniques in dim_student
-                                  Column('from_date', String(8), nullable=False),
-                                  Column('to_date', String(8), nullable=True),
-                                  )
-
-    Index('dim_external_user_student_idx', external_user_student.c.external_user_student_guid, unique=True)
-    Index('dim_external_user_student_student_x', external_user_student.c.external_user_guid, external_user_student.c.student_guid, unique=True)
-
     user_mapping = Table('user_mapping', metadata,
                          Column('user_id', String(50), primary_key=True),
                          Column('guid', String(50), nullable=False),

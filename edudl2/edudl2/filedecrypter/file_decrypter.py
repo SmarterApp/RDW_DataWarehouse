@@ -79,7 +79,7 @@ def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
     if not _is_valid__file(file_to_decrypt):
         raise Exception('Invalid source file -- %s' % file_to_decrypt)
 
-    output_file = destination_dir + '/' + os.path.splitext(os.path.basename(file_to_decrypt))[0]
+    output_file = os.path.join(destination_dir, os.path.splitext(os.path.basename(file_to_decrypt))[0])
     status = _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home)
 
     _print_status(status)

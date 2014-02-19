@@ -3,12 +3,14 @@ from __future__ import absolute_import
 import os
 import argparse
 import time
-
 from edudl2.udl2.udl2_pipeline import get_pipeline_chain
 from edudl2.udl2.W_get_udl_file import get_next_file
-
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+from edudl2.udl2.celery import celery
+import shutil
+import glob
+import tempfile
 
 
 def start_pipeline(archive_file=None, load_type='Unknown', file_parts=4, batch_guid_forced=None, tenant_dirs=None):
@@ -21,7 +23,6 @@ def start_pipeline(archive_file=None, load_type='Unknown', file_parts=4, batch_g
     :param udl2_conf: udl2 system configuration dictionary
     :type udl2: dict
     '''
-
     if archive_file:
         get_pipeline_chain(archive_file, load_type, file_parts, batch_guid_forced).delay()
     elif tenant_dirs:
@@ -30,7 +31,6 @@ def start_pipeline(archive_file=None, load_type='Unknown', file_parts=4, batch_g
             mk.PARTS: file_parts,
             mk.LOAD_TYPE: load_type,
         }
-
         get_next_file.apply_async((msg,))
 
 
@@ -54,6 +54,7 @@ def create_unique_file_name(file_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', dest='archive_file', help="path to the source archive file.")
+    parser.add_argument('--dev', action='store_true', dest='dev_mode', default=False, help="dev mode")
     parser.add_argument('-g', dest='batch_guid_forced', default=None, help="force the udl2 pipeline to use this batch guid")
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     parser.add_argument('-f', dest='config_file', default=UDL2_DEFAULT_CONFIG_PATH_FILE, help="configuration file for UDL2")
@@ -61,6 +62,16 @@ if __name__ == '__main__':
     parser.add_argument('--loop-dirs', nargs='+', help='a list of white space separated directories that specify '
                                                        'the tenant directories to be observed')
     args = parser.parse_args()
+    if args.dev_mode:
+        # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
+        os.environ['PATH'] += os.pathsep + '/usr/local/bin'
+        celery.conf.update(CELERY_ALWAYS_EAGER=True)
+        src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
+        # Find the first tar.gz.gpg file as LZ file
+        file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
+        dest = os.path.join(tempfile.mkdtemp(), os.path.basename(file_name))
+        shutil.copy(file_name, dest)
+        args.archive_file = dest
 
     start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced,
                    tenant_dirs=args.loop_dirs)

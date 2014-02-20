@@ -152,7 +152,7 @@ def load_data_process(conn, conf):
 
     # get field map
     stg_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
-                                                                                       conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
+                                                                          conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()

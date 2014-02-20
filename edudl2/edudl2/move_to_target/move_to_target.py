@@ -165,10 +165,11 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
 
         # create insertion query
         # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
-        if source_table in op_table_conf:
-            query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
-        else:
-            query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, None)
+        # send only data that is needed to be inserted (such insert, update) to dimenstion table
+        query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True,
+                                    'C' if source_table in op_table_conf else None)
+
+            #query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, None)
         logger.info(query)
 
         # execute the query

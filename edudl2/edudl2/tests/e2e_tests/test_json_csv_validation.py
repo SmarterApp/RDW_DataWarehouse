@@ -24,8 +24,9 @@ FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_
              'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),
              'corrupt_csv_extra_col': os.path.join(file_to_path, 'corrupt_csv_ext_col.tar.gz.gpz'),
              'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
-             'corrupt_sorce_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
-             'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg')}
+             'corrupt_source_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
+             'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
+             'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
 
 
 class ValidateTableData(unittest.TestCase):
@@ -45,88 +46,15 @@ class ValidateTableData(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
 
-    def udl_with_csv_miss_col(self, guid_batch):
-        #Run the UDL with corrupted csv (missing column)
+    #Run the UDL with specified file
+    def run_udl_with_file(self, guid_batch, file_to_load):
         self.conf = udl2_conf
-        self.copy_file_to_tmp()
-        #copy file from directory
-        arch_file = shutil.copy2(FILE_DICT['corrupt_csv_missing_col'], self.tenant_dir)
+        arch_file = self.copy_file_to_tmp(file_to_load)
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch)
         self.connect_to_star_shema(self.connector)
-
-    #Run the UDL with corrupted csv(missing column)
-    def udl_with_csv_ext_col(self, guid_batch_id):
-        self.conf = udl2_conf
-
-        self.copy_file_to_tmp()
-        arch_file = shutil.copy2(FILE_DICT['corrupt_csv_extra_col'], self.tenant_dir)
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.check_job_completion(self.udl_connector, guid_batch_id)
-        self.connect_to_star_shema(self.connector)
-
-    #Run the udl with corrupted json
-    def udl_with_corrupt_json(self, guid_batch_id):
-        self.conf = udl2_conf
-
-        self.copy_file_to_tmp()
-        arch_file = shutil.copy2(FILE_DICT['corrupt_json'], self.tenant_dir)
-
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.check_job_completion(self.udl_connector, guid_batch_id)
-        self.connect_to_star_shema(self.connector)
-
-    #Run the UDL with corrupted source file
-    def udl_with_corrupt_sorurce(self, guid_batch_id):
-
-        #from udl2_conf import udl2_conf
-        self.conf = udl2_conf
-
-        self.copy_file_to_tmp()
-
-        arch_file = shutil.copy2(FILE_DICT['corrupt_sorce_file'], self.tenant_dir)
-        #arch_file = self.copy_file_to_tmp()
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.check_job_completion(self.udl_connector, guid_batch_id)
-        self.connect_to_star_shema(self.connector)
-
-    #Run the UDL with missing json file
-    def udl_with_missing_json(self, guid_batch_id):
-
-        self.conf = udl2_conf
-
-        self.copy_file_to_tmp()
-
-        arch_file = shutil.copy2(FILE_DICT['missing_json'], self.tenant_dir)
-        #arch_file = self.copy_file_to_tmp()
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.check_job_completion(self.udl_connector, guid_batch_id)
-        self.connect_to_star_shema(self.connector)
-
-    #Run the UDL with json file containing an invalid load entry
-    def udl_with_invalid_load_json(self, guid_batch_id):
-
-        self.conf = udl2_conf
-
-        self.copy_file_to_tmp()
-
-        arch_file = shutil.copy2(FILE_DICT['invalid_load_json'], self.tenant_dir)
-        #arch_file = self.copy_file_to_tmp()
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.connect_to_star_shema(self.connector)
-        self.check_job_completion(self.udl_connector, guid_batch_id)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, connector, guid_batch_id, max_wait=30):
@@ -141,13 +69,14 @@ class ValidateTableData(unittest.TestCase):
         print('Waited for', timer, 'second(s) for job to complete.')
 
     #copy files to tenant directory
-    def copy_file_to_tmp(self):
+    def copy_file_to_tmp(self, file_to_copy):
         # create tenant dir if not exists
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
         else:
             print("copying")
             os.makedirs(self.tenant_dir)
+        return shutil.copy2(file_to_copy, self.tenant_dir)
 
             #connect to star schmea after each of above udl run and verify that data has not been loaded into star schema
     def connect_to_star_shema(self, connector):
@@ -209,42 +138,49 @@ class ValidateTableData(unittest.TestCase):
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for extra column in csv is : " + self.guid_batch_id)
-        self.udl_with_csv_ext_col(self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_csv_extra_col'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_miss_csv(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for missing column in csv: " + self.guid_batch_id)
-        self.udl_with_csv_miss_col(self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_csv_missing_col'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_corrupt_json(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for corrupt json: " + self.guid_batch_id)
-        self.udl_with_corrupt_json(self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_json'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_corrupt_source(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for corrupt source: " + self.guid_batch_id)
-        self.udl_with_corrupt_sorurce(self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_source_file'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_source(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_missing_json(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for missing json: " + self.guid_batch_id)
-        self.udl_with_missing_json(self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['missing_json'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_missing_json(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_invalid_load_json(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for invalid load json: " + self.guid_batch_id)
-        self.udl_with_invalid_load_json(self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['invalid_load_json'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_invalid_load(self.udl_connector, self.guid_batch_id)
+
+    def test_run_udl_sr_csv_missing_column(self):
+        self.guid_batch_id = str(uuid4())
+        print("guid batch for student registration csv missing column: " + self.guid_batch_id)
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['sr_csv_missing_column'])
+        self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
+        self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
 
 if __name__ == '__main__':
     unittest.main()

@@ -34,7 +34,7 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'white', 'STG_SBAC_STU_REG', 'dmg_eth_wht', 'srYn', None),
         ('1', 'LZ_CSV', 'ideaindicator', 'STG_SBAC_STU_REG', 'dmg_prg_iep', 'srYn', None),
         ('1', 'LZ_CSV', 'lepstatus', 'STG_SBAC_STU_REG', 'dmg_prg_lep', 'srYn', None),
-        ('1', 'LZ_CSV', '504status', 'STG_SBAC_STU_REG', 'dmg_prg_504', 'srYn', None),
+        ('1', 'LZ_CSV', 'section504status', 'STG_SBAC_STU_REG', 'dmg_prg_504', 'srYn', None),
         ('1', 'LZ_CSV', 'economicdisadvantagestatus', 'STG_SBAC_STU_REG', 'dmg_sts_ecd', 'srYn', None),
         ('1', 'LZ_CSV', 'migrantstatus', 'STG_SBAC_STU_REG', 'dmg_sts_mig', 'srYn', None),
         ('1', 'LZ_CSV', 'demographicracetwoormoreraces', 'STG_SBAC_STU_REG', 'dmg_multi_race', 'srYn', None),

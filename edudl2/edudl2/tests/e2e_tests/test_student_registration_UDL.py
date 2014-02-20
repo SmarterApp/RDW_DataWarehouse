@@ -41,7 +41,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.assertNotEqual(result, [])
         for row in result:
             status = row['udl_phase_step_status']
-            print('Status:', status)
             load = row['load_type']
             print('Load type:', load)
             self.assertEqual(status, 'SUCCESS')
@@ -49,9 +48,10 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate the staging table
     def validate_staging_table(self):
-        staging_table = self.udl_connector.get_table('STG_SBAC_STU_REG')
+        staging_table = self.udl_connector.get_table(udl2_conf['udl2_db']['staging_tables'][self.load_type])
         query = select([staging_table.c.guid_student], staging_table.c.guid_batch == self.batch_id)
         result = self.udl_connector.execute(query).fetchall()
+        print('Number of rows in staging table:', len(result))
         self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in staging table.')
 
     #Run the UDL pipeline
@@ -87,8 +87,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def test_udl_student_registration(self):
         self.run_udl_pipeline()
         self.validate_load_type()
-        #Uncomment out once student registration data gets loaded to staging table
-        #self.validate_staging_table()
+        self.validate_staging_table()
 
 if __name__ == '__main__':
     unittest.main()

@@ -40,13 +40,16 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
         reader = csv.reader(csv_obj)
         header_names_in_header_file = next(reader)
         header_types = [DATA_TYPE_IN_FDW_TABLE] * len(header_names_in_header_file)
+
+    #Case insensitive
+    lowered_headers_in_file = [header.lower() for header in header_names_in_header_file]
     # verify headers in csv header file also exist in ref_table
     header_names_in_ref_table = get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table)
     # if there are columns which exist at header file, but not defined in ref table, raise exception
-    diff_item = set(header_names_in_header_file) - set(header_names_in_ref_table)
+    diff_item = set(lowered_headers_in_file) - set(header_names_in_ref_table)
     if len(diff_item) > 0:
         raise ValueError('Column %s does not match between header file and mapping defined in ref table %s' % (str(diff_item), ref_table))
-    formatted_header_names = [canonicalize_header_field(name) for name in header_names_in_header_file]
+    formatted_header_names = [canonicalize_header_field(name) for name in lowered_headers_in_file]
     return formatted_header_names, header_types
 
 
@@ -97,17 +100,17 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
-    stg_asmt_outcome_columns = ['guid_batch', 'src_file_rec_num']
+    stg_columns = ['guid_batch', 'src_file_rec_num']
     transformation_rules = ['', '']
     if column_mapping:
         for mapping in column_mapping:
             csv_table_columns.append(mapping[0])
-            stg_asmt_outcome_columns.append(mapping[1])
+            stg_columns.append(mapping[1])
             transformation_rules.append(mapping[2])
-    return stg_asmt_outcome_columns, csv_table_columns, transformation_rules
+    return stg_columns, csv_table_columns, transformation_rules
 
 
-def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules,
+def import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
                    apply_rules, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     '''
     Load data from foreign table to staging table
@@ -118,7 +121,7 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transforma
     # query 1 -- create query to create sequence
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
     # query 2 -- create query to load data from fdw to staging table
-    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns,
+    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_columns, apply_rules, csv_table_columns,
                                                                             staging_schema, staging_table, csv_schema, csv_table, seq_name,
                                                                             transformation_rules)
     # query 3 -- create query to drop sequence
@@ -148,12 +151,12 @@ def load_data_process(conn, conf):
     create_fdw_tables(conn, header_names, header_types, conf[mk.FILE_TO_LOAD], conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.FDW_SERVER])
 
     # get field map
-    stg_asmt_outcome_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
+    stg_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
                                                                                        conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
-    import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules,
+    import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
                    conf[mk.APPLY_RULES], conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE],
                    conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.ROW_START])
     finish_time = datetime.datetime.now()
@@ -187,6 +190,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', dest='source_csv', required=True, help="path to the source file")
     parser.add_argument('-m', dest='header_csv', required=True, help="path to the header file")
+    parser.add_argument('-l', dest='load_type', default='assessment', help="load type of the source file")
     args = parser.parse_args()
 
     conf = {mk.FILE_TO_LOAD: args.source_csv,

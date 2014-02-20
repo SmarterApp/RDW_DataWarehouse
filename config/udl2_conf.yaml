@@ -78,6 +78,9 @@ qa:
         ref_tables:
             assessment: REF_COLUMN_MAPPING
             studentregistration: SR_REF_COLUMN_MAPPING
+        staging_tables:
+            assessment: STG_SBAC_ASMT_OUTCOME
+            studentregistration: STG_SBAC_STU_REG
         batch_table: UDL_BATCH
         db_host: rbtmqudl0.qa.dum.edwdc.net
         db_port: 5432
@@ -148,6 +151,9 @@ development:
         ref_tables:
             assessment: REF_COLUMN_MAPPING
             studentregistration: SR_REF_COLUMN_MAPPING
+        staging_tables:
+            assessment: STG_SBAC_ASMT_OUTCOME
+            studentregistration: STG_SBAC_STU_REG
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432
@@ -227,6 +233,9 @@ jenksins_dev:
         ref_tables:
             assessment: REF_COLUMN_MAPPING
             studentregistration: SR_REF_COLUMN_MAPPING
+        staging_tables:
+            assessment: STG_SBAC_ASMT_OUTCOME
+            studentregistration: STG_SBAC_STU_REG
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432

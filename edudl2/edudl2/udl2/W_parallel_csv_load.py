@@ -7,9 +7,9 @@ import datetime
 
 from celery.utils.log import get_task_logger
 from celery import group
-from edudl2.udl2.celery import celery
+from edudl2.udl2.celery import celery, udl2_conf
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
-from edudl2.udl2 import message_keys as mk, W_load_csv_to_staging
+from edudl2.udl2 import message_keys as mk, W_load_csv_to_staging, W_post_etl, W_all_done
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 
 
@@ -43,6 +43,12 @@ def task(msg):
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'udl2.W_parrallel_csv_load.task', start_time, end_time,
                                     size_records=msg[mk.SIZE_RECORDS], size_units=len(split_file_tuple_list), task_id=str(task.request.id))
     benchmark.record_benchmark()
+
+    #For student registration load type, log and exit for now.
+    if msg[mk.LOAD_TYPE] == udl2_conf['load_type']['student_registration']:
+        task.request.callbacks[:] = [W_post_etl.task.s(), W_all_done.task.s()]
+        logger.info('W_PARALLEL_CSV_LOAD: %s load type found. Stopping further processing of current job.' % msg[mk.LOAD_TYPE])
+
     return msg
 
 

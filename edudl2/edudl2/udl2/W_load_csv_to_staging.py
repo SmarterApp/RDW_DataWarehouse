@@ -26,6 +26,7 @@ def task(msg):
     benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True, size_records=msg[mk.SIZE_RECORDS])
     benchmark.record_benchmark()
+
     return msg
 
 
@@ -43,8 +44,7 @@ def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_pa
             mk.CSV_TABLE: csv_table,
             mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-            # TODO: Get rid of the 1 hard-coded value
-            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
             mk.APPLY_RULES: True,
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],

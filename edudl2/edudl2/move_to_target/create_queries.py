@@ -14,7 +14,7 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
                                                                                                                                                        guid_column_value_got=guid_column_value)
 
 
-def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op):
+def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
     '''
     Main function to create query to insert data from source table to target table
     The query will be executed on the database where target table exists
@@ -25,13 +25,22 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     seq_expression = list(column_mapping.values())[0].replace("'", "''")
 
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
-    insert_sql = ["INSERT INTO {target_shcema_and_table}(",
-                  ",".join(list(column_mapping.keys())),
-                  ")  SELECT * FROM dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
-                  ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
-                  " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
-                  ",".join(list(column_types.values())),
-                  ");"]
+    if op is None:
+        insert_sql = ["INSERT INTO {target_shcema_and_table}(",
+                      ",".join(list(column_mapping.keys())),
+                      ")  SELECT * FROM dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
+                      ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
+                      " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
+                      ",".join(list(column_types.values())),
+                      ");"]
+    else:
+        insert_sql = ["INSERT INTO {target_shcema_and_table}(",
+                      ",".join(list(column_mapping.keys())),
+                      ")  SELECT * FROM dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
+                      ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
+                      " FROM {source_schema_and_table} WHERE op = \'\'{op}\'\' AND guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
+                      ",".join(list(column_types.values())),
+                      ");"]
     insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
                                             db_password_target=conf[mk.TARGET_DB_PASSWORD],
                                             target_schema=conf[mk.TARGET_DB_SCHEMA],
@@ -43,6 +52,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                                             seq_expression=seq_expression,
                                             distinct_expression=distinct_expression,
                                             source_schema_and_table=combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table),
+                                            op=op,
                                             guid_batch=conf[mk.GUID_BATCH])
 
     return insert_sql

@@ -8,6 +8,10 @@ YN = 'yn'
 
 COLUMNS = ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name')
 
+op_table_conf = {
+    'INT_SBAC_ASMT_OUTCOME'
+}
+
 ref_table_conf = {
     'column_definitions': COLUMNS,
     'column_mappings': [

@@ -3,6 +3,7 @@ from collections import OrderedDict
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
+from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
@@ -164,7 +165,10 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
 
         # create insertion query
         # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
-        query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
+        if source_table in op_table_conf:
+            query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
+        else:
+            query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, None)
         logger.info(query)
 
         # execute the query

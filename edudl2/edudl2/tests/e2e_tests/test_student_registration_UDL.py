@@ -13,6 +13,7 @@ from edudl2.udl2.celery import udl2_conf
 data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 STUDENT_REG_DATA_FILE = os.path.join(data_dir, 'test_sample_student_reg.tar.gz.gpg')
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
+NUM_RECORDS_IN_DATA_FILE = 10
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):
@@ -45,6 +46,13 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             print('Load type:', load)
             self.assertEqual(status, 'SUCCESS')
             self.assertEqual(load, self.load_type, 'Not the expected load type.')
+
+    #Validate the staging table
+    def validate_staging_table(self):
+        staging_table = self.udl_connector.get_table('STG_SBAC_STU_REG')
+        query = select([staging_table.c.guid_student], staging_table.c.guid_batch == self.batch_id)
+        result = self.udl_connector.execute(query).fetchall()
+        self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in staging table.')
 
     #Run the UDL pipeline
     def run_udl_pipeline(self):
@@ -79,6 +87,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def test_udl_student_registration(self):
         self.run_udl_pipeline()
         self.validate_load_type()
+        #Uncomment out once student registration data gets loaded to staging table
+        #self.validate_staging_table()
 
 if __name__ == '__main__':
     unittest.main()

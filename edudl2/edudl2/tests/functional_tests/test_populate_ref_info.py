@@ -29,7 +29,7 @@ class PopulateRefInfoFTest(unittest.TestCase):
         udl2_conf = conf_tup[0]
         self.conn, self.engine = database._create_conn_engine(udl2_conf['udl2_db'])
         self.ref_schema = udl2_conf['udl2_db']['reference_schema']
-        self.ref_table_name = udl2_conf['udl2_db']['ref_table_name']
+        self.ref_table_name = udl2_conf['udl2_db']['ref_tables']['assessment']
         self.ref_table = get_sqlalch_table_object(self.engine, self.ref_schema, self.ref_table_name)
 
         # Testable Rules

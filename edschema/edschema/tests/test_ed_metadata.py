@@ -13,7 +13,7 @@ class TestEdMetadata(Unittest_with_sqlite):
 
     def test_number_of_tables(self):
         # check number of tables
-        self.assertEqual(9, len(self.get_Metadata().tables), "Number of table does not match")
+        self.assertEqual(8, len(self.get_Metadata().tables), "Number of table does not match")
 
     # Test dim_district data
     def test_dim_inst_hier_type(self):
@@ -55,9 +55,9 @@ class TestEdMetadata(Unittest_with_sqlite):
 
     # Test student_registration data
     def test_student_registration(self):
-        self.assertTrue('fact_student_reg' in self.get_Metadata().tables, "missing fact_student_reg")
+        self.assertTrue('student_reg' in self.get_Metadata().tables, "missing student_reg")
         with DBConnection() as connector:
-            fact_student_reg = connector.get_table("fact_student_reg")
+            fact_student_reg = connector.get_table("student_reg")
 
             # Check number of fields in the table
             self.assertEqual(40, len(fact_student_reg.c), "Number of fields in student_registration")

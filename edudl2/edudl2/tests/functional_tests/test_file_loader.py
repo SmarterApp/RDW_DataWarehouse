@@ -48,7 +48,7 @@ class FileLoaderFTest(unittest.TestCase):
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             mk.ROW_START: 1,
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables']['assessment'],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
             mk.APPLY_RULES: False
         }

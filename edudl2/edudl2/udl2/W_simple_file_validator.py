@@ -2,8 +2,8 @@ from __future__ import absolute_import
 from celery.utils.log import get_task_logger
 import datetime
 import os
-from edudl2.udl2.celery import celery
-from edudl2.udl2 import message_keys as mk
+from edudl2.udl2.celery import udl2_conf, celery
+from edudl2.udl2 import message_keys as mk, W_post_etl, W_all_done
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.sfv.simple_file_validator import SimpleFileValidator
 from edudl2.udl2_util.measurement import BatchTableBenchmark
@@ -15,11 +15,12 @@ logger = get_task_logger(__name__)
 def task(incoming_msg):
     start_time = datetime.datetime.now()
     guid_batch = incoming_msg[mk.GUID_BATCH]
+    load_type = incoming_msg[mk.LOAD_TYPE]
 
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
     expanded_dir = tenant_directory_paths[mk.EXPANDED]
 
-    sfv = SimpleFileValidator()
+    sfv = SimpleFileValidator(load_type)
     error_map = {}
     for file_name in os.listdir(expanded_dir):
         error_map[file_name] = sfv.execute(expanded_dir, file_name, guid_batch)
@@ -40,6 +41,11 @@ def task(incoming_msg):
     # benchmark
     benchmark = BatchTableBenchmark(guid_batch, incoming_msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
     benchmark.record_benchmark()
+
+    #For student registration load type, log and exit for now.
+    if load_type == udl2_conf['load_type']['student_registration']:
+        task.request.callbacks[:] = [W_post_etl.task.s(), W_all_done.task.s()]
+        logger.info('W_GET_LOAD_TYPE: %s load type found. Stopping further processing of current job.' % load_type)
 
     # Outgoing message to be piped to the file splitter
     outgoing_msg = {}

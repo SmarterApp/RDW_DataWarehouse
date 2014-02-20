@@ -47,7 +47,7 @@ class IntToStarFTest(UDLTestHelper):
 
         # explode to dim tables
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'Assessment', 'edware')
+        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
         table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, 'dim_')
         for target in table_map.keys():
             target_columns = column_map[target]

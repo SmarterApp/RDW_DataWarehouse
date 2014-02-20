@@ -23,8 +23,7 @@ import argparse
 from config import ref_table_data, sr_ref_table_data
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2_util.database_util import connect_db, execute_queries
-from edudl2.udl2.populate_ref_info import populate_ref_column_map,\
-    populate_stored_proc
+from edudl2.udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 
 
@@ -874,10 +873,10 @@ def load_reference_data(udl2_conf):
     '''
     (conn, engine) = _create_conn_engine(udl2_conf)
     asmt_ref_table_info = ref_table_data.ref_table_conf
-    populate_ref_column_map(asmt_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
+    populate_ref_column_map(asmt_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_tables']['assessment'])
 
     sr_ref_table_info = sr_ref_table_data.ref_table_conf
-    populate_ref_column_map(sr_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['sr_ref_table_name'])
+    populate_ref_column_map(sr_ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_tables']['studentregistration'])
 
 
 def load_stored_proc(udl2_conf):
@@ -888,7 +887,8 @@ def load_stored_proc(udl2_conf):
     '''
 
     (conn, engine) = _create_conn_engine(udl2_conf)
-    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'], udl2_conf['sr_ref_table_name'])
+    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_tables']['assessment'],
+                         udl2_conf['ref_tables']['studentregistration'])
 
 
 ###

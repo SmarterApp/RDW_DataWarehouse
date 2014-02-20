@@ -122,6 +122,15 @@ qa:
             db_database: edware
             db_user: edware
             db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
+            db_schema: edware
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
     target_db:
         db_schema: edware
         db_name: edware
@@ -145,6 +154,15 @@ qa:
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_ca_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            db_schema: edware
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -245,7 +263,7 @@ development:
             db_pass: edware2013
     prod_db_conn:
         edware:
-            url: postgresql://edware:edware2013@localhost:5432/edware_prod
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_6
             echo: False
             max_overflow: 10
@@ -254,7 +272,16 @@ development:
             db_user: edware
             db_pass: edware2013
         ca:
-            url: postgresql://edware:edware2013@localhost:5432/edware_prod
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_ca_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_6
             echo: False
             max_overflow: 10
@@ -356,7 +383,7 @@ jenksins_dev:
             db_pass: edware2013
     prod_db_conn:
         edware:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_prod
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_6
             echo: False
             max_overflow: 10
@@ -365,8 +392,17 @@ jenksins_dev:
             db_user: edware
             db_pass: edware2013
         ca:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_prod
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_cat_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_sds_1_6
             echo: False
             max_overflow: 10
             pool_size: 20

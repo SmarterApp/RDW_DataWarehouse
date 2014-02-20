@@ -46,3 +46,15 @@ def get_json_to_asmt_tbl_mappings():
                'score_cut_point_4': ['performance_levels', 'level_5', 'cut_point']
                }
     return mapping
+
+
+def get_json_to_stu_reg_tbl_mappings():
+    ''' Return the mappings dict for mapping json file to the student registration metadata integration table '''
+
+    mapping = {'academic_year': ['identification', 'academicyear'],
+               'extract_date': ['identification', 'extractdate'],
+               'guid_registration': ['identification', 'guid'],
+               'test_reg_id': ['source', 'testregsysid'],
+               'callback_url': ['source', 'testregcallbackurl']
+               }
+    return mapping

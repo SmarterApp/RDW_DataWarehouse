@@ -23,8 +23,7 @@ import argparse
 from config import ref_table_data, sr_ref_table_data
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2_util.database_util import connect_db, execute_queries
-from edudl2.udl2.populate_ref_info import populate_ref_column_map,\
-    populate_stored_proc
+from edudl2.udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 
 

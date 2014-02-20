@@ -16,7 +16,7 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_parrallel_csv_load.task", base=Udl2BaseTask)
+@celery.task(name="udl2.W_parallel_csv_load.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)
@@ -40,7 +40,7 @@ def task(msg):
     end_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark
-    benchmark = BatchTableBenchmark(guid_batch, load_type, 'udl2.W_parrallel_csv_load.task', start_time, end_time,
+    benchmark = BatchTableBenchmark(guid_batch, load_type, 'udl2.W_parallel_csv_load.task', start_time, end_time,
                                     size_records=msg[mk.SIZE_RECORDS], size_units=len(split_file_tuple_list), task_id=str(task.request.id))
     benchmark.record_benchmark()
     return msg

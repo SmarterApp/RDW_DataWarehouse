@@ -88,7 +88,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.run_udl_pipeline()
         self.validate_load_type()
         #Uncomment out once student registration data gets loaded to staging table
-        #self.validate_staging_table()
+        self.validate_staging_table()
 
 if __name__ == '__main__':
     unittest.main()

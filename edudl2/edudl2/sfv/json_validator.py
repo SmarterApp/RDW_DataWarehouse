@@ -66,11 +66,11 @@ class HasExpectedFormat(object):
         # mapping is a dictionary with keys = fields and values = paths to that field within the json structure
         # the paths will consist of a list of strings, each one a component of the path to the given field
         if load_type == udl2_conf['load_type']['student_registration']:
-            self.mapping = {'academic_year': ['Identification', 'AcademicYear'],
-                            'extract_date': ['Identification', 'ExtractDate'],
-                            'guid_registration': ['Identification', 'Guid'],
-                            'test_reg_id': ['Source', 'TestRegSysID'],
-                            'callback_url': ['Source', 'TestRegCallbackURL'],
+            self.mapping = {'academic_year': ['identification', 'academicyear'],
+                            'extract_date': ['identification', 'extractdate'],
+                            'guid_registration': ['identification', 'guid'],
+                            'test_reg_id': ['source', 'testregsysid'],
+                            'callback_url': ['source', 'testregcallbackurl'],
                             }
         elif load_type == udl2_conf['load_type']['assessment']:
             self.mapping = {'asmt_guid': ['identification', 'guid'],
@@ -146,8 +146,10 @@ class HasExpectedFormat(object):
         '''
         current_position = json_object
         for component in path:
-            if component in current_position.keys():
-                current_position = current_position[component]
+            for key in current_position.keys():
+                if component == key.lower():
+                    current_position = current_position[key]
+                    break
             else:
                 return False
         return True

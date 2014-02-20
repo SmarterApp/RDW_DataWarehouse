@@ -38,7 +38,8 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
     # get ordered header names from input csv_header_file
     with open(csv_header_file) as csv_obj:
         reader = csv.reader(csv_obj)
-        header_names_in_header_file = next(reader)
+        case_sensitive_header_names_in_header_file = next(reader)
+        header_names_in_header_file = [name.lower() for name in case_sensitive_header_names_in_header_file]
         header_types = [DATA_TYPE_IN_FDW_TABLE] * len(header_names_in_header_file)
 
     #Case insensitive

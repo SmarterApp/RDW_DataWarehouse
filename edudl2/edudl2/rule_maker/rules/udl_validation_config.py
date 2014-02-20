@@ -90,42 +90,5 @@ validations = {
         BY_RULE: {
 
         }
-    },
-    'STG_SBAC_ASMT': {
-        BY_COLUMN: {'guid_asmt': [IsNotNull, IsGoodGUID],
-                    'type': {IsInList: ['SUMMATIVE', 'INTERIM']},
-                    'period': [],
-                    'year': {HasMaxLength: 4},
-                    'version': {HasMaxLength: 2},
-                    'subject': {IsInList: ['MATH', 'ELA'],
-                                'score_overall_min': [IsNumber, {IsLessThan: '{score_overall_max}'}],
-                                'score_overall_max': [IsNumber, {IsMoreThan: '{score_overall_min}'}],
-                                'name_claim_1': IsText,
-                                'score_claim_1_min': [IsNumber, {IsLessThan: '{score_claim_1_max}'}],
-                                'score_claim_1_max': [IsNumber, {IsMoreThan: '{score_claim_1_min}'}],
-                                'score_claim_1_weight': IsNumber,
-                                'name_claim_2': IsText,
-                                'score_claim_2_min': [IsNumber, {IsLessThan: '{score_claim_2_max}'}],
-                                'score_claim_2_max': [IsNumber, {IsMoreThan: '{score_claim_2_min}'}],
-                                'score_claim_2_weight': IsNumber,
-                                'name_claim_3': IsText,
-                                'score_claim_3_min': [IsNumber, {IsLessThan: '{score_claim_3_max}'}],
-                                'score_claim_3_max': [IsNumber, {IsMoreThan: '{score_claim_3_min}'}],
-                                'score_claim_3_weight': IsNumber,
-                                'name_claim_4': IsText,
-                                'score_claim_4_min': [IsNumber, {IsLessThan: '{score_claim_4_max}'}],
-                                'score_claim_4_max': [IsNumber, {IsMoreThan: '{score_claim_4_min}'}],
-                                'score_claim_4_weight': IsNumber,
-                                'name_perf_lvl_1': [IsSQLSafe, IsText],
-                                'name_perf_lvl_2': [IsSQLSafe, IsText],
-                                'name_perf_lvl_3': [IsSQLSafe, IsText],
-                                'name_perf_lvl_4': [IsSQLSafe, IsText],
-                                'name_perf_lvl_5': [IsSQLSafe, IsText],
-                                'score_cut_point_1': [IsNumber, {IsLessThan: '{score_cut_point_2}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}],
-                                'score_cut_point_2': [IsNumber, {IsLessThan: '{score_cut_point_3}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}],
-                                'score_cut_point_3': [IsNumber, {IsLessThan: '{score_cut_point_4}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}],
-                                'score_cut_point_4': [IsNumber, {IsMoreThan: '{score_cut_point_3}'}, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}]},
-                    BY_RULE: {[{NAME: 'assert_SumWeight'}, {Assert: '{score_claim_1_weight} + {score_claim_2_weight}  + {score_claim_3_weight} +  {score_claim_4_weight} = 1.0'}]}
-                    }
     }
 }

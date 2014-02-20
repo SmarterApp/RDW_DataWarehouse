@@ -210,21 +210,23 @@ def calculate_spend_time_as_second(start_time, finish_time):
 
 def match_deleted_records(conf, source_table, production_table, column_mapping, column_type):
     '''
-    Match production database target_table. and get target_table's primary rec id
+    Match production database in fact_asmt_outcome. and get fact_asmt_outcome primary rec id
+    in prodution tables.
     return a list of rec_id to delete reocrds
     '''
+    logger.info('in match_deleted_records', conf)
 
 
-def is_any_deleted_records_missing(conf, deleted_records, matched_records):
+def is_any_deleted_records_missing(conf, source_table):
     '''
     check any deleted records is not in target database. if yes. return True,
     so we will raise error for this udl batch
     '''
-    pass
+    logger.info('in match_deleted_records', conf)
 
 
-def explode_deleted_record_to_fact(conf, source_table, target_table, column_mapping, column_typess, matched_records):
+def update_deleted_record_rec_id(conf, source_table, production_table, column_mapping, column_type):
     '''
-    update all matched deleted records with rec_id in production database. and explode them into fact table in target
+
     '''
-    pass
+    logger.info('in match_deleted_records', conf)

@@ -73,7 +73,10 @@ def get_nested_data(location_list, json_dict):
 
     value = json_dict
     for loc_key in location_list:
-        value = value[loc_key]
+        for key in value.keys():
+            if loc_key == key.lower():
+                value = value[key]
+                break
 
     return value
 

@@ -7,10 +7,10 @@ ref_table_conf = {
         # column_map_key, phase, source_table, source_column, target_table, target_column, transformation_rule, stored_proc_name, stored_proc_created_date, created_date
 
         #Json to Integration
-        ('1', 'LZ_JSON', 'identification.Guid', 'INT_SBAC_STU_REG_META', 'guid_registration', 'clean', None),
-        ('1', 'LZ_JSON', 'identification.AcademicYear', 'INT_SBAC_STU_REG_META', 'academic_year', 'clean', None),
-        ('1', 'LZ_JSON', 'identification.ExtractDate', 'INT_SBAC_STU_REG_META', 'extract_date', 'srDate', None),
-        ('1', 'LZ_JSON', 'source.TestRegSysID', 'INT_SBAC_STU_REG_META', 'test_reg_id', 'clean', None),
+        ('1', 'LZ_JSON', 'identification.guid', 'INT_SBAC_STU_REG_META', 'guid_registration', 'clean', None),
+        ('1', 'LZ_JSON', 'identification.academicyear', 'INT_SBAC_STU_REG_META', 'academic_year', 'clean', None),
+        ('1', 'LZ_JSON', 'identification.extractdate', 'INT_SBAC_STU_REG_META', 'extract_date', 'srDate', None),
+        ('1', 'LZ_JSON', 'source.testregsysid', 'INT_SBAC_STU_REG_META', 'test_reg_id', 'clean', None),
         # CSV to Staging
         ('1', 'LZ_CSV', 'statename', 'STG_SBAC_STU_REG', 'name_state', 'clean', None),
         ('1', 'LZ_CSV', 'stateabbreviation', 'STG_SBAC_STU_REG', 'code_state', 'cleanUpper', None),

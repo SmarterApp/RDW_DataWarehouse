@@ -58,7 +58,7 @@ class TestMoveToTarget(unittest.TestCase):
         target_table, source_table = ('dim_inst_hier', 'INT_SBAC_ASMT_OUTCOME')
         column_mapping = get_expected_column_mapping()[target_table]
         column_types = get_expected_column_types_for_dim_inst_hier(target_table)
-        actual_value = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
+        actual_value = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
         expected_value = get_expected_insert_query_for_dim_inst_hier(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
                                                                      conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         self.assertEqual(expected_value, actual_value)

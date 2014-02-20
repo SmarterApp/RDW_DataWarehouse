@@ -14,7 +14,7 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
                                                                                                                                                        guid_column_value_got=guid_column_value)
 
 
-def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct):
+def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op):
     '''
     Main function to create query to insert data from source table to target table
     The query will be executed on the database where target table exists
@@ -112,7 +112,7 @@ def get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_tabl
                                                                                                                                     target_table=dim_table)
 
 
-def find_deleted_candidate_query(src_schema_name, src_table_name, prod_schema_name, prod_table_name, matching_columns, matching_values):
+def find_orphan_delete_records(src_schema_name, src_table_name, prod_schema_name, prod_table_name, matching_columns, matching_values):
     '''
     Function to
     '''

@@ -1,5 +1,5 @@
 '''
-Authoratative Definitions for UDL's required tables
+Authoritative Definitions for UDL's required tables
 
 UDL_METADATA contains all tables, sequences that are used in UDL system
 
@@ -178,6 +178,7 @@ UDL_METADATA = {
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+                ('op', False, 'varchar(1)', "'C'", False, "Record operation type"),
                 ('guid_batch', False, 'varchar(256)', '', False, "Batch ID which caused the record insert"),
                 ('src_file_rec_num', False, 'bigint', '', True, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(256)', '', True, "Assessment GUID"),
@@ -315,6 +316,7 @@ UDL_METADATA = {
         'INT_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+                ('op', False, 'varchar(1)', "'C'", False, "Record operation type"),
                 ('guid_batch', False, 'varchar(256)', '', False, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(50)', '', True, "Assessment GUID"),
                 ('guid_asmt_location', False, 'varchar(50)', '', True, "GUID for location where assessment was taken"),

@@ -254,6 +254,7 @@ define [
       data['header'] = true
       data['results'] = summaryData.results
       data['name'] = summaryRowName
+      data['isInterim'] = summaryData.isInterim
       data
 
 
@@ -319,16 +320,20 @@ define [
     # Traverse through to intervals to prepare to append color to data
     # Handle population bar alignment calculations
     process: (data) ->
-      data = this.appendColors data
+      data = this.processDataForSubject data
       data = this.appendAlignmentOffset data
       data
 
-    appendColors: (data) ->
+    processDataForSubject: (data) ->
+      interimCount = 0
       for item in data
+        if item['isInterim']
+            interimCount+=1
         for subject of this.asmtSubjectsData
           subjectData = item['results'][subject]
           if subjectData
             this.appendColor subjectData, this.colorsData[subject]
+      this.summaryData['isInterim'] = interimCount is data.length
       data
 
     appendAlignmentOffset: (data) ->

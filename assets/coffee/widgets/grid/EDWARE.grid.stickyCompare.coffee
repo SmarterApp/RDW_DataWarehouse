@@ -136,7 +136,7 @@ define [
     getRows: () ->
       keys = []
       for key, value of this.selectedRows
-        keys.push(parseInt(key))
+        keys.push(key)
       keys
 
     getRowsCount: () ->
@@ -175,7 +175,7 @@ define [
 
     # Returns the id and name of a row
     getCurrentRowInfo: (row) ->
-      {'id': parseInt($(row).data('value')), 'name': $(row).data('name')}
+      {'id': $(row).data('value'), 'name': $(row).data('name')}
 
     getSelectedRowsFromStorage: () ->
       # When this gets called, it means we should read from storage
@@ -197,13 +197,23 @@ define [
         for data in allData
           if returnData.length is selectedRows.length
             break
-          if data.rowId in selectedRows
+          if String(data.rowId) in selectedRows
             returnData.push data
             # We need to repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
             this.selectedRows[data.rowId] = data[columnField]
+        # For the case that rows don't match data available, reset comparing stickies
+        if selectedRows.length != returnData.length
+          returnData = allData
+          selectedRows = []
+          this.reset()
       else
         returnData = allData
       return {'data': returnData, 'enabled': selectedRows.length > 0}
+    
+    reset: () ->
+      this.selectedRows = []
+      this.compareMode = false
+      this.saveSelectedRowsToStorage()
 
     getDataForReport: () ->
       # Gets the rows selected for the current report view

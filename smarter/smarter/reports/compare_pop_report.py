@@ -22,6 +22,8 @@ from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
+from copy import deepcopy
+from datetime import datetime
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -46,11 +48,6 @@ DEFAULT_MIN_CELL_SIZE = 0
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        },
-        Constants.ASMTTYPE: {
-            "type": "string",
-            "required": False,
-            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
         }
     }, FILTERS_CONFIG))
 @user_info
@@ -66,11 +63,26 @@ def get_comparing_populations_report(params):
     if has_filters(params):
         no_filter_params = {k: v for k, v in params.items() if k not in FILTERS_CONFIG}
         unfiltered = ComparingPopReport(**no_filter_params).get_report()
-        report = merge_results(report, unfiltered)
+        report = merge_filtered_results(report, unfiltered)
+    else:
+        interim_params = deepcopy(params)
+        interim_params[Constants.ASMTTYPE] = AssessmentType.INTERIM_COMPREHENSIVE
+        interim_report = ComparingPopReport(**interim_params).get_report()
+        report['records'] = get_merged_report_records(report, interim_report)
     return report
 
 
-def merge_results(filtered, unfiltered):
+def get_merged_report_records(summative, interim):
+    '''
+    Iterate through combined interim and summative results and merge when summative results don't exist
+    '''
+    merged = {}
+    for record in interim['records'] + summative['records']:
+        merged[record['id']] = record
+    return list(merged.values())
+
+
+def merge_filtered_results(filtered, unfiltered):
     '''
     Merge unfiltered count to filtered results
     '''
@@ -110,6 +122,7 @@ def get_comparing_populations_cache_key(comparing_pop):
         cache_args.append(comparing_pop.state_code)
     if comparing_pop.district_guid is not None:
         cache_args.append(comparing_pop.district_guid)
+    cache_args.append(comparing_pop.asmt_type)
     filters = comparing_pop.filters
     # sorts dictionary of keys
     cache_args.append(sorted(filters.items(), key=lambda x: x[0]))
@@ -222,7 +235,7 @@ class ComparingPopReport(object):
 
 
 class RecordManager():
-    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
@@ -231,6 +244,7 @@ class RecordManager():
         self._summary = {}
         self._custom_metadata = custom_metadata
         self._asmt_level = asmt_level
+        self._asmtType = asmtType
         self.init_summary(self._summary)
 
     def init_summary(self, data):
@@ -305,15 +319,14 @@ class RecordManager():
         return record in array and ordered by name
         '''
         records = []
-        row_id = 0
         for record in self._tracking_record.values():
-            __record = {Constants.ROWID: row_id, Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
+            __record = {Constants.ROWID: datetime.now().timestamp(), Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), 'isInterim': self._asmtType == AssessmentType.INTERIM_COMPREHENSIVE,
+                        Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
             if self._schoolGuid is not None:
                 __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
             records.append(__record)
-            row_id += 1
         return records
 
     @staticmethod

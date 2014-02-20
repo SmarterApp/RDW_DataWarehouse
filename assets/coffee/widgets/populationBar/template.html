@@ -1,13 +1,13 @@
-{{#insufficient}}
+{{#hasText}}
   {{#intervals}}
 <div class="{{export}} edwareExportField">
-    <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.count}}'></span>
-    <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
+    <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.count}}'></span>
+    <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
 </div>
   {{/intervals}}
-{{/insufficient}}
+{{/hasText}}
 
-{{^insufficient}}
+{{^hasText}}
 <div class="leftPercentageTotal hide">
   {{leftTotalPercentage}}{{#leftTotalPercentage}}%{{/leftTotalPercentage}}
 </div>
@@ -36,4 +36,4 @@
 	</ul>
     </div>
 </div>
-{{/insufficient}}
+{{/hasText}}

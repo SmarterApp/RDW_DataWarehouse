@@ -10,7 +10,7 @@ class AssessmentType():
     constants for asmt types
     '''
     SUMMATIVE = 'SUMMATIVE'
-    COMPREHENSIVE_INTERIM = 'INTERIM COMPREHENSIVE'
+    INTERIM_COMPREHENSIVE = 'INTERIM COMPREHENSIVE'
 
 
 class Constants():

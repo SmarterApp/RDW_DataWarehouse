@@ -12,28 +12,27 @@
             <div class='alignmentHighlightSection'>
                 <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
             </div>
-
-            {{#insufficient}}
-            <div>{{insufficientText}}</div>
-            {{/insufficient}}
-
-            {{^insufficient}}
-	     	<div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
-            {{/insufficient}}
+	            {{#hasText}}
+	            <div class='{{displayTextClass}}'>{{displayText}}</div>
+	            {{/hasText}}
+	
+	            {{^hasText}}
+		     	<div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
+	            {{/hasText}}
         </div>
     </div>
 
     <div id="TOTAL_POPULATION_TEMPLATE">
     	<div class='totalPop {{export}}'>
-    	{{#insufficient}}
+    	{{#hasText}}
         {{#subject.unfilteredTotal}}
-        <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
-        <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
+        <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+        <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
         {{/subject.unfilteredTotal}}
-        <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
-        {{/insufficient}}
+        <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        {{/hasText}}
 
-        {{^insufficient}}
+        {{^hasText}}
     	<div class='studentsTotal'>{{subject.total}}
     	{{#subject.unfilteredTotal}}
         <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
@@ -44,7 +43,7 @@
         {{^subject.unfilteredTotal}}
         <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
         {{/subject.unfilteredTotal}}
-        {{/insufficient}}
+        {{/hasText}}
         </div>
         </div>
     </div>

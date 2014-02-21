@@ -24,6 +24,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
 from copy import deepcopy
 import time
+from collections import OrderedDict, namedtuple
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -76,10 +77,14 @@ def get_merged_report_records(summative, interim):
     '''
     Iterate through combined interim and summative results and merge when summative results don't exist
     '''
+    Records = namedtuple('Records', ['id', 'name'])
     merged = {}
     for record in interim['records'] + summative['records']:
-        merged[record['id']] = record
-    return list(merged.values())
+        r = Records(id=record['id'], name=record['name'])
+        merged[r] = record
+    # Create an ordered dictionary sorted by the name of institution
+    sorted_results = OrderedDict(sorted(merged.items(), key=lambda x: (x[0].name)))
+    return list(sorted_results.values())
 
 
 def merge_filtered_results(filtered, unfiltered):

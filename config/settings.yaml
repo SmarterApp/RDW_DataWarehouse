@@ -32,12 +32,12 @@ common:
     # Database
     edware:
       db:
-        cat.state_code: NY
+        cat.state_code: NC
         dog.state_code: CA
         echo: False
     edware_rep:
       db:
-        cat.state_code: NY
+        cat.state_code: NC
     trigger:
       recache:
         enable: False
@@ -317,11 +317,11 @@ qa:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_4
+          schema_name: edware_sds_1_8
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_4
+        schema_name: edware_sds_1_8
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
@@ -379,11 +379,11 @@ jenkins_qa:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_7
+          schema_name: edware_sds_1_8
           url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_7
+        schema_name: edware_sds_1_8
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     services.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
@@ -520,14 +520,14 @@ development:
         pool_size: 20
         max_overflow: 10
         cat:
-          schema_name: edware_sds_1_7
+          schema_name: edware_sds_1_8
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
-          schema_name: edware_sds_1_7_dog
+          schema_name: edware_sds_1_8_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_7
+        schema_name: edware_sds_1_8
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:
@@ -576,14 +576,14 @@ test:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_7
+          schema_name: edware_sds_1_8
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
-          schema_name: edware_sds_1_7_dog
+          schema_name: edware_sds_1_8_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_7
+        schema_name: edware_sds_1_8
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     extract:
       gpg.homedir: ../../edware/config/gpg
@@ -620,14 +620,14 @@ jenkins_dev:
     edware:
       db:
         cat:
-          schema_name: edware_sds_1_7
+          schema_name: edware_sds_1_8
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
-          schema_name: edware_sds_1_7_dog
+          schema_name: edware_sds_1_8_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
-        schema_name: edware_sds_1_7
+        schema_name: edware_sds_1_8
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     auth:
       policy.secure: False

@@ -55,14 +55,11 @@ class UDLTestHelper(unittest.TestCase):
                                            staging_table='INT_SBAC_ASMT')
         sql_int_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
                                                    staging_table='INT_SBAC_ASMT_OUTCOME')
-
-        sql_stg_asmt = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                           staging_table='STG_SBAC_ASMT')
         sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
                                                    staging_table='STG_SBAC_ASMT_OUTCOME')
 
         except_msg = "Unable to clean up udl tables"
-        execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt, sql_stg_asmt_outcome], except_msg)
+        execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt_outcome], except_msg)
 
     def get_staging_asmt_score_avgs(self):
         stg_avg_query = """ select avg(score_asmt::int),

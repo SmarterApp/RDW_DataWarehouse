@@ -62,11 +62,7 @@ class FileLoaderFTest(unittest.TestCase):
 
     def test_assessment_row_number(self):
         # load data
-        self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_ASMT_OUTCOME'
-        self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
-        self.conf[mk.CSV_TABLE] = self.assessment_csv_table
-        self.conf[mk.FILE_TO_LOAD] = self.assessment_csv_file
-        self.conf[mk.HEADERS] = self.assessment_header_file
+        self.load_config('assessment')
         self.conf[mk.ROW_START] = 10
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
@@ -77,11 +73,7 @@ class FileLoaderFTest(unittest.TestCase):
         self.assertEqual(row_total_in_csv, row_total_in_db)
 
     def test_stu_reg_row_number(self):
-        self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_STU_REG'
-        self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
-        self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
-        self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file
-        self.conf[mk.HEADERS] = self.stu_reg_header_file
+        self.load_config('studentregistration')
         self.conf[mk.ROW_START] = 10
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
@@ -92,11 +84,7 @@ class FileLoaderFTest(unittest.TestCase):
 
     def test_assessment_compare_data(self):
         # load data
-        self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_ASMT_OUTCOME'
-        self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
-        self.conf[mk.CSV_TABLE] = self.assessment_csv_table
-        self.conf[mk.FILE_TO_LOAD] = self.assessment_csv_file
-        self.conf[mk.HEADERS] = self.assessment_header_file
+        self.load_config('assessment')
         self.conf[mk.ROW_START] = 24
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
@@ -109,11 +97,7 @@ class FileLoaderFTest(unittest.TestCase):
 
     def test_stu_reg_compare_data(self):
         # load data
-        self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_STU_REG'
-        self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
-        self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
-        self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file
-        self.conf[mk.HEADERS] = self.stu_reg_header_file
+        self.load_config('studentregistration')
         self.conf[mk.ROW_START] = 24
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
@@ -125,10 +109,7 @@ class FileLoaderFTest(unittest.TestCase):
         self.verify_table_content(records_in_db)
 
     def test_assessment_transformations_occur_during_load(self):
-        self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_ASMT_OUTCOME'
-        self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
-        self.conf[mk.CSV_TABLE] = self.assessment_csv_table
-        self.conf[mk.HEADERS] = self.assessment_header_file
+        self.load_config('assessment')
         self.conf[mk.ROW_START] = 124
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         self.conf[mk.FILE_TO_LOAD] = self.assessment_csv_file2
@@ -139,10 +120,7 @@ class FileLoaderFTest(unittest.TestCase):
         self.compare_csv_table_data(self.assessment_csv_file2_clean, 'guid_student')
 
     def test_stu_reg_transformations_occur_during_load(self):
-        self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_STU_REG'
-        self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
-        self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
-        self.conf[mk.HEADERS] = self.stu_reg_header_file
+        self.load_config('studentregistration')
         self.conf[mk.ROW_START] = 124
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file2
@@ -164,6 +142,20 @@ class FileLoaderFTest(unittest.TestCase):
             trans.rollback()
         self.conn.close()
         print("Tear Down successful for batch", self.conf['guid_batch'])
+
+    def load_config(self, type):
+        if type == 'assessment':
+            self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_ASMT_OUTCOME'
+            self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
+            self.conf[mk.CSV_TABLE] = self.assessment_csv_table
+            self.conf[mk.FILE_TO_LOAD] = self.assessment_csv_file
+            self.conf[mk.HEADERS] = self.assessment_header_file
+        elif type == 'studentregistration':
+            self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_STU_REG'
+            self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
+            self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
+            self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file
+            self.conf[mk.HEADERS] = self.stu_reg_header_file
 
     def verify_table_content(self, records_in_db):
         with open(self.conf[mk.FILE_TO_LOAD], newline='') as file:

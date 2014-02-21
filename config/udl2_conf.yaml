@@ -81,6 +81,9 @@ qa:
         staging_tables:
             assessment: STG_SBAC_ASMT_OUTCOME
             studentregistration: STG_SBAC_STU_REG
+        json_integration_tables:
+            assessment: INT_SBAC_ASMT
+            studentregistration: INT_SBAC_STU_REG_META
         batch_table: UDL_BATCH
         db_host: rbtmqudl0.qa.dum.edwdc.net
         db_port: 5432
@@ -201,6 +204,9 @@ development:
         staging_tables:
             assessment: STG_SBAC_ASMT_OUTCOME
             studentregistration: STG_SBAC_STU_REG
+        json_integration_tables:
+            assessment: INT_SBAC_ASMT
+            studentregistration: INT_SBAC_STU_REG_META
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432
@@ -321,6 +327,9 @@ jenksins_dev:
         staging_tables:
             assessment: STG_SBAC_ASMT_OUTCOME
             studentregistration: STG_SBAC_STU_REG
+        json_integration_tables:
+            assessment: INT_SBAC_ASMT
+            studentregistration: INT_SBAC_STU_REG_META
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432

@@ -48,7 +48,7 @@ def read_json_file(json_file):
         return json.load(jf)
 
 
-def flatten_json_dict(json_dict, json_mappings):
+def flatten_json_dict(json_dict, mappings):
     '''
     convert a dictionary into a corresponding flat csv format
     @param json_dict: the dictionary containing the json data
@@ -57,8 +57,6 @@ def flatten_json_dict(json_dict, json_mappings):
     @rtype: dict
     '''
 
-    exclusions = ['callback_url']
-    mappings = {k: json_mappings[k] for k in json_mappings if k not in exclusions}
     flat_data = {}
     for key in mappings:
         location_list = mappings[key]

@@ -14,6 +14,7 @@ data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 STUDENT_REG_DATA_FILE = os.path.join(data_dir, 'test_sample_student_reg.tar.gz.gpg')
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 NUM_RECORDS_IN_DATA_FILE = 10
+NUM_RECORDS_IN_JSON_FILE = 1
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):
@@ -54,6 +55,22 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         print('Number of rows in staging table:', len(result))
         self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in staging table.')
 
+    #Validate the json integration table
+    def validate_json_integration_table(self):
+        json_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['json_integration_tables'][self.load_type])
+        query = select([json_int_table.c.guid_registration], json_int_table.c.guid_batch == self.batch_id)
+        result = self.udl_connector.execute(query).fetchall()
+        print('Number of rows in json integration table:', len(result))
+        self.assertEqual(len(result), NUM_RECORDS_IN_JSON_FILE, 'Unexpected number of records in json integration table.')
+
+    #Validate the csv integration table
+    def validate_csv_integration_table(self):
+        json_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['csv_integration_tables'][self.load_type])
+        query = select([json_int_table.c.guid_student], json_int_table.c.guid_batch == self.batch_id)
+        result = self.udl_connector.execute(query).fetchall()
+        print('Number of rows in csv integration table:', len(result))
+        self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in csv integration table.')
+
     #Run the UDL pipeline
     def run_udl_pipeline(self):
         sr_file = self.copy_file_to_tmp()
@@ -67,7 +84,9 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, max_wait=30):
         batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
+        query = select([batch_table.c.udl_phase],
+                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE',
+                            batch_table.c.udl_phase_step_status == 'SUCCESS'))
         timer = 0
         result = self.udl_connector.execute(query).fetchall()
         while timer < max_wait and result == []:
@@ -75,6 +94,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             timer += 0.25
             result = self.udl_connector.execute(query).fetchall()
         print('Waited for', timer, 'second(s) for job to complete.')
+        self.assertTrue(result, "No result retrieved")
 
     #Copy file to tenant directory
     def copy_file_to_tmp(self):
@@ -88,6 +108,9 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.run_udl_pipeline()
         self.validate_load_type()
         self.validate_staging_table()
+        self.validate_json_integration_table()
+        # TODO: Uncomment next line when functionality is implemented.
+        #self.validate_csv_integration_table()
 
 if __name__ == '__main__':
     unittest.main()

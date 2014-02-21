@@ -211,7 +211,7 @@ define [
       return {'data': returnData, 'enabled': selectedRows.length > 0}
     
     reset: () ->
-      this.selectedRows = []
+      this.selectedRows = {}
       this.compareMode = false
       this.saveSelectedRowsToStorage()
 

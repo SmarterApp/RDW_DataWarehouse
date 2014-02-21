@@ -23,7 +23,7 @@ from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
 from copy import deepcopy
-from datetime import datetime
+import time
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -320,7 +320,8 @@ class RecordManager():
         '''
         records = []
         for record in self._tracking_record.values():
-            __record = {Constants.ROWID: datetime.now().timestamp(), Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), 'isInterim': self._asmtType == AssessmentType.INTERIM_COMPREHENSIVE,
+            __record = {Constants.ROWID: round(time.time() * 1000000), Constants.ID: record.id, Constants.NAME: record.name,
+                        Constants.RESULTS: self.format_results(record.subjects), Constants.ISINTERIM: self._asmtType == AssessmentType.INTERIM_COMPREHENSIVE,
                         Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid

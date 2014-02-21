@@ -65,8 +65,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate the csv integration table
     def validate_csv_integration_table(self):
-        json_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['csv_integration_tables'][self.load_type])
-        query = select([json_int_table.c.guid_student], json_int_table.c.guid_batch == self.batch_id)
+        csv_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['csv_integration_tables'][self.load_type])
+        query = select([csv_int_table.c.guid_student], csv_int_table.c.guid_batch == self.batch_id)
         result = self.udl_connector.execute(query).fetchall()
         print('Number of rows in csv integration table:', len(result))
         self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in csv integration table.')
@@ -109,8 +109,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_load_type()
         self.validate_staging_table()
         self.validate_json_integration_table()
-        # TODO: Uncomment next line when functionality is implemented.
-        #self.validate_csv_integration_table()
+        self.validate_csv_integration_table()
 
 if __name__ == '__main__':
     unittest.main()

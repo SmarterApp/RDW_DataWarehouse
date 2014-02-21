@@ -84,7 +84,7 @@ common:
       retries_allowed: 1
       # delay in retry in seconds
       retry_delay: 0
-      generate_timeout: 10
+      generate_timeout: 30
       report_base_dir: /tmp/pdf
       celery_timeout: 30
       # Don't regenerate if pdf is in file system
@@ -642,7 +642,7 @@ jenkins_dev:
       report_base_dir: /opt/edware/pdf
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
       health_check.job.queue: health_check
-      generate_timeout: 15
+      generate_timeout: 30
     cache:
       public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211

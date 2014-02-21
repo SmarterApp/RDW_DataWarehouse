@@ -41,12 +41,12 @@ def get_daily_delta_batches_to_migrate(tenant):
         udl_daily_status_table = connector.get_table(Constants.UDL_DAILY_STATS_TABLE)
         query = \
             select([udl_daily_status_table.c.batch_guid,
-                        udl_daily_status_table.c.tenant,
-                        udl_daily_status_table.c.state_code,
-                        udl_daily_status_table.c.record_loaded_count,
-                        udl_daily_status_table.c.udl_start,
-                        udl_daily_status_table.c.udl_end],
-                       from_obj=[udl_daily_status_table]).\
+                    udl_daily_status_table.c.tenant,
+                    udl_daily_status_table.c.state_code,
+                    udl_daily_status_table.c.record_loaded_count,
+                    udl_daily_status_table.c.udl_start,
+                    udl_daily_status_table.c.udl_end],
+                   from_obj=[udl_daily_status_table]).\
             where(udl_daily_status_table.c.tenant == tenant).\
             order_by(udl_daily_status_table.c.file_arrived)
         udl_daily_status_rows = connector.get_result(query)

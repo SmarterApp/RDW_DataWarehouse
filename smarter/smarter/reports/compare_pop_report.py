@@ -127,6 +127,7 @@ def get_comparing_populations_cache_key(comparing_pop):
         cache_args.append(comparing_pop.state_code)
     if comparing_pop.district_guid is not None:
         cache_args.append(comparing_pop.district_guid)
+    # We cache based on summative and interim as well
     cache_args.append(comparing_pop.asmt_type)
     filters = comparing_pop.filters
     # sorts dictionary of keys

@@ -5,8 +5,24 @@ Created on May 21, 2013
 '''
 
 
-def get_json_to_asmt_tbl_mappings():
-    ''' Return the mappings dict for mapping json file to the assessment integration table '''
+def get_json_validation_mapping(load_type):
+    ''' Return the mappings dict for mapping json file to the proper integration table '''
+    mappings = {'assessment': _get_json_to_asmt_val_mapping(),
+                'studentregistration': _get_json_to_stu_reg_val_mapping()}
+
+    return mappings[load_type]
+
+
+def get_json_table_mapping(load_type):
+    ''' Return the mappings dict for mapping json file to the proper integration table '''
+    mappings = {'assessment': _get_json_to_asmt_tbl_mapping(),
+                'studentregistration': _get_json_to_stu_reg_tbl_mapping()}
+
+    return mappings[load_type]
+
+
+def _get_json_to_asmt_val_mapping():
+    ''' Return the mappings dict for mapping json file to the assessment json validator '''
 
     mapping = {'guid_asmt': ['identification', 'guid'],
                'type': ['identification', 'type'],
@@ -48,7 +64,7 @@ def get_json_to_asmt_tbl_mappings():
     return mapping
 
 
-def get_json_to_stu_reg_tbl_mappings():
+def _get_json_to_stu_reg_val_mapping():
     ''' Return the mappings dict for mapping json file to the student registration metadata integration table '''
 
     mapping = {'academic_year': ['identification', 'academicyear'],
@@ -57,4 +73,20 @@ def get_json_to_stu_reg_tbl_mappings():
                'test_reg_id': ['source', 'testregsysid'],
                'callback_url': ['source', 'testregcallbackurl']
                }
+    return mapping
+
+
+def _get_json_to_asmt_tbl_mapping():
+    ''' Return the mappings dict for mapping json file to the assessment integration table '''
+
+    mapping = _get_json_to_asmt_val_mapping()
+    return mapping
+
+
+def _get_json_to_stu_reg_tbl_mapping():
+    ''' Return the mappings dict for mapping json file to the student registration metadata json validator '''
+
+    exclusions = ['callback_url']
+    val_mapping = _get_json_to_stu_reg_val_mapping()
+    mapping = {k: val_mapping[k] for k in val_mapping if k not in exclusions}
     return mapping

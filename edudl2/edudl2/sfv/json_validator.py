@@ -2,8 +2,7 @@ import json
 import os
 from edudl2.sfv import error_codes
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2_util.udl_mappings import (get_json_to_asmt_tbl_mappings,
-                                           get_json_to_stu_reg_tbl_mappings)
+from edudl2.udl2_util.udl_mappings import get_json_validation_mapping
 
 
 class JsonValidator():
@@ -67,10 +66,7 @@ class HasExpectedFormat(object):
     def __init__(self, load_type):
         # mapping is a dictionary with keys = fields and values = paths to that field within the json structure
         # the paths will consist of a list of strings, each one a component of the path to the given field
-        if load_type == udl2_conf['load_type']['student_registration']:
-            self.mapping = get_json_to_stu_reg_tbl_mappings()
-        elif load_type == udl2_conf['load_type']['assessment']:
-            self.mapping = get_json_to_asmt_tbl_mappings()
+        self.mapping = get_json_validation_mapping(load_type)
 
     def execute(self, dir_path, file_name, batch_sid):
         '''

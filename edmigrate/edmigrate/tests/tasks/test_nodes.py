@@ -1,38 +1,46 @@
+from edmigrate.utils.constants import Constants
+from edmigrate.tasks.nodes import register_slave_node,\
+    get_all_registered_slave_nodes, get_registered_slave_nodes_for_group
+import edmigrate.tasks.nodes
 __author__ = 'sravi'
 
 import unittest
-import collections
-import edmigrate.tasks.nodes as nodes
-from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite, \
-    Unittest_with_repmgr_sqlite_no_data_load, UnittestRepMgrDBConnection
+from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 
 
-class TesNodes(Unittest_with_repmgr_sqlite):
-
-    def setUp(self):
-        pass
+class TestNodes(Unittest_with_repmgr_sqlite):
 
     @classmethod
     def setUpClass(cls):
         Unittest_with_repmgr_sqlite.setUpClass()
 
     def tearDown(self):
-        pass
+        global registered_slaves
+        edmigrate.tasks.nodes.registered_slaves = {Constants.SLAVE_GROUP_A: [], Constants.SLAVE_GROUP_B: []}
 
-    def test_dummy(self):
-        pass
+    def test_register_slave_node(self):
+        register_slave_node('testslave0.dummy.net', 'A')
+        register_slave_node('testslave1.dummy.net', 'B')
+        self.assertEqual(len(get_all_registered_slave_nodes()), 2)
 
-    def test_slave_node_host_names_for_group(self):
-        node = collections.namedtuple('node', 'host group')
-        test_registered_slaves = []
-        test_registered_slaves.append(node(host='testslave0.dummy.net', group='A'))
-        test_registered_slaves.append(node(host='testslave1.dummy.net', group='B'))
-        self.assertTrue(len(nodes.get_slave_node_host_names_for_group('A', test_registered_slaves)) == 1)
+    def test_register_slave_multiple_times(self):
+        register_slave_node('testslave1.dummy.net', 'B')
+        register_slave_node('testslave1.dummy.net', 'B')
+        register_slave_node('testslave1.dummy.net', 'B')
+        self.assertEqual(len(get_all_registered_slave_nodes()), 1)
 
-    def test_regiser_slave_node(self):
-        nodes.register_slave_node('testslave0.dummy.net', 'A')
-        nodes.register_slave_node('testslave1.dummy.net', 'B')
-        self.assertTrue(len(nodes.get_registered_slave_nodes()) == 2)
+    def test_get_registered_slave_nodes_for_group(self):
+        register_slave_node('testslave1.dummy.net', 'B')
+        register_slave_node('testslave2.dummy.net', 'A')
+        register_slave_node('testslave3.dummy.net', 'B')
+        grp_A = get_registered_slave_nodes_for_group(Constants.SLAVE_GROUP_A)
+        grp_B = get_registered_slave_nodes_for_group(Constants.SLAVE_GROUP_B)
+        self.assertEqual(len(grp_A), 1)
+        self.assertEqual(len(grp_B), 2)
+
+    def test_add_to_invalid_group(self):
+        grp_invalid = register_slave_node('testslave1.dummy.net', 'C')
+        self.assertIsNone(grp_invalid)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,8 @@ from collections import OrderedDict
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
-from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection
+from config.ref_table_data import op_table_conf
+from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
     select_distinct_asmt_rec_id_query, enable_trigger_query, create_insert_query,\
@@ -128,19 +129,23 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     disable_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)
 
     # create insertion insert_into_fact_table_query
-    insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
+    insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types,
+                                                       False, 'C')
     logger.info(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID, conf['move_to_target'][1])
+    update_inst_hier_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
+                                                                   conf['move_to_target'][1])
 
     # update student query back
-    update_student_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID, conf['move_to_target'][3])
+    update_student_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
+                                                                 conf['move_to_target'][3])
 
     # enable foreign key in fact table
     enable_back_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
 
-    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, update_student_rec_id_fk_query,
+    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query,
+            update_student_rec_id_fk_query,
             enable_back_trigger_query]
 
 
@@ -160,7 +165,11 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
 
         # create insertion query
         # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
-        query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
+        # send only data that is needed to be inserted (such insert, update) to dimenstion table
+        query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True,
+                                    'C' if source_table in op_table_conf else None)
+
+            #query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, None)
         logger.info(query)
 
         # execute the query
@@ -206,3 +215,34 @@ def calculate_spend_time_as_second(start_time, finish_time):
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
     return time_as_seconds
+
+
+def match_deleted_records(conf, match_conf):
+    '''
+    Match production database in fact_asmt_outcome. and get fact_asmt_outcome primary rec id
+    in prodution tables.
+    return a list of rec_id to delete reocrds
+    '''
+    logger.info('in match_deleted_records')
+    batch_guid = conf['guid_batch']
+
+    logger.info(batch_guid)
+
+
+def is_any_deleted_records_missing(conf, match_conf):
+    '''
+    check any deleted records is not in target database. if yes. return True,
+    so we will raise error for this udl batch
+    '''
+    logger.info('is_any_deleted_records_missing')
+    batch_guid = conf['guid_batch']
+    logger.info(batch_guid)
+
+
+def update_deleted_record_rec_id(conf, match_conf):
+    '''
+
+    '''
+    logger.info('update_deleted_record_rec_id')
+    batch_guid = conf['guid_batch']
+    logger.info(batch_guid)

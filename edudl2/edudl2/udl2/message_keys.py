@@ -62,6 +62,15 @@ SOURCE_DB_SCHEMA = 'source_db_schema'
 SOURCE_DB_TABLE = 'source_db_table'
 ERROR_DB_SCHEMA = 'error_schema'
 
+# keys for conf sent to move_to_integration.move_data_from_staging_to_integration(conf) for matchers
+PROD_DB_HOST = 'prod_db_host'
+PROD_DB_PORT = 'prod_db_port'
+PROD_DB_USER = 'prod_db_user'
+PROD_DB_NAME = 'prod_db_name'
+PROD_DB_PASSWORD = 'prod_db_password'
+PROD_DB_SCHEMA = 'prod_db_schema'
+PROD_DB_TABLE = 'prod_db_table'
+
 MAP_TYPE = 'map_type'
 
 PHASE = 'phase'

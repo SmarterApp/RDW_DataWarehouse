@@ -43,6 +43,7 @@ def get_pipeline_chain(archive_file, load_type='Unknown', file_parts=4, batch_gu
                            W_load_to_integration_table.task.s(),
                            W_load_from_integration_to_star.explode_to_dims.s(),
                            W_load_from_integration_to_star.explode_to_fact.s(),
+                           W_load_from_integration_to_star.handle_deletions.s(),
                            W_post_etl.task.s(),
                            W_all_done.task.s())
 

@@ -11,6 +11,8 @@ from edmigrate.settings.config import Config, get_setting
 
 pgpool = get_setting(Config.PGPOOL_HOSTNAME)
 node_group_id = get_setting(Config.REPLICATION_GROUP)
+# TODO: change this to node id from repmgr.conf instead of hostname from Socket
+node_id = socket.gethostname()
 
 
 @celery.task(name='task.edmigrate.slave.slaves_register', ignore_result=True)
@@ -20,18 +22,16 @@ def slaves_register():
     `register_slave_node` and send a tuple `(host, group_id)` to message
     queue to register on master node.
     '''
-    hostname = socket.gethostname()
-    group_id = node_group_id
-    logger.info("Slave: Register node %s %s to master", hostname, group_id)
-    register_slave_node.delay(hostname, group_id)
+    logger.info("Slave: Register node %s %s to master", node_id, node_group_id)
+    register_slave_node.delay(node_id, node_group_id)
 
 
 @celery.task(name='task.edmigrate.slave.slaves_end_data_migrate', ignore_result=True)
-def slaves_end_data_migrate(tenant, nodes):
-    if socket.gethostname() not in nodes:
+def slaves_end_data_migrate(tenant, group):
+    if node_group_id is not group:
         return
-    unblock_pgpool(nodes)
-    resume_replication(tenant, nodes)
+    unblock_pgpool(group)
+    resume_replication(tenant, group)
 
 
 def is_replication_paused(connector):
@@ -49,26 +49,26 @@ def is_replication_paused(connector):
 
 
 @celery.task(name='task.edmigrate.slave.pause_replication', ignore_result=True)
-def pause_replication(tenant, nodes):
+def pause_replication(tenant, group):
     '''
     Pauses replication on current node.
     '''
-    if socket.gethostname() not in nodes:
+    if node_group_id is not group:
         return
-    logger.info("Slave: Pausing replication on node %s" % socket.gethostname())
+    logger.info("Slave: Pausing replication on node %s" % node_id)
     with RepMgrDBConnection(tenant) as connector:
         if not is_replication_paused(connector):
             connector.execute("select pg_xlog_replay_pause()")
 
 
 @celery.task(name='task.edmigrate.slave.resume_replication', ignore_result=True)
-def resume_replication(tenant, nodes):
+def resume_replication(tenant, group):
     '''
     Resumes replication on current node.
     '''
-    if socket.gethostname() not in nodes:
-        return True
-    logger.info("Slave: Resuming replication on node %s" % socket.gethostname())
+    if node_group_id is not group:
+        return
+    logger.info("Slave: Resuming replication on node %s" % node_id)
     with RepMgrDBConnection(tenant) as connector:
         if is_replication_paused(connector):
             try:
@@ -80,12 +80,12 @@ def resume_replication(tenant, nodes):
 
 
 @celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True)
-def block_pgpool(nodes):
+def block_pgpool(group):
     '''
     Changes iptable rule to reject access from pgpool. System user who
     runs celery task should have priviledge to manipulate iptables.
     '''
-    if socket.gethostname() not in nodes:
+    if node_group_id is not group:
         return
     logger.info("Slave: Blocking pgpool")
     call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
@@ -93,12 +93,12 @@ def block_pgpool(nodes):
 
 
 @celery.task(name='task.edmigrate.slave.unblock_pgpool', ignore_result=True)
-def unblock_pgpool(nodes):
+def unblock_pgpool(group):
     '''
     Changes iptable rule to accept access from pgpool. System user who
     runs celery task should have priviledge to manipulate iptables.
     '''
-    if socket.gethostname() not in nodes:
+    if node_group_id is not group:
         return
     logger.info("Slave: Resuming pgpool")
     call(['iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])

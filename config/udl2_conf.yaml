@@ -128,12 +128,59 @@ qa:
             db_database: edware
             db_user: edware
             db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
+            db_schema: edware
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
     target_db:
         db_schema: edware
         db_name: edware
         # TBD make sure it is the production setting
         db_host: dbpgudl0.qa.dum.edwdc.net
         db_port: 5432
+        db_database: edware
+        db_user: edware
+        db_pass: edware2013
+        db_driver: postgresql
+    prod_db_conn:
+        edware:
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            db_schema: edware
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        ca:
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            db_schema: edware_ca_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            db_schema: edware
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+    prod_db:
+        db_schema: edware
+        db_name: edware
+        # TBD make sure it is the production setting
+        db_host: dwpool1.qa.dum.edwdc.net
+        db_port: 6432
         db_database: edware
         db_user: edware
         db_pass: edware2013
@@ -226,6 +273,44 @@ development:
             db_database: edware
             db_user: edware
             db_pass: edware2013
+    prod_db_conn:
+        edware:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_sds_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        ca:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_ca_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_sds_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+    prod_db:
+        db_schema: edware
+        db_name: edware
+        # TBD make sure it is the production setting
+        db_host: localhost
+        db_port: 5432
+        db_database: edware_prod
+        db_user: edware
+        db_pass: edware2013
+        db_driver: postgresql
     gpg_home: ~/.gnupg
 jenksins_dev:
   '[app]':
@@ -314,4 +399,42 @@ jenksins_dev:
             db_database: edware
             db_user: edware
             db_pass: edware2013
+    prod_db_conn:
+        edware:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_sds_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        ca:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_cat_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_sds_1_6
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+    prod_db:
+        db_schema: edware_sds_1_6
+        db_name: edware
+        # TBD make sure it is the production setting
+        db_host: edwdbsrv4.poc.dum.edwdc.net
+        db_port: 9999
+        db_database: edware_prod
+        db_user: edware
+        db_pass: edware2013
+        db_driver: postgresql
     gpg_home: ~/.gnupg

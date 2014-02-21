@@ -182,7 +182,7 @@ define [
       labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
       export: subject.export
-      hasText: subject.hasText
+      hasTextReplacement: subject.hasTextReplacement
       displayText: subject.displayText
       displayTextClass: subject.displayTextClass ? ''
     }
@@ -192,7 +192,7 @@ define [
     subject = processSubject options, rowObject
     return Mustache.to_html TOTAL_POPULATION_TEMPLATE, {
       subject: subject
-      hasText: subject.hasText
+      hasTextReplacement: subject.hasTextReplacement
       displayText: subject.displayText
       labels: options.colModel.labels
       export: subject.export
@@ -206,13 +206,11 @@ define [
     interim = rowObject.isInterim ? false
     subject.export = 'edwareExportColumn' if exportable
     subject.labels = options.colModel.labels
-    subject.hasText = insufficient ? interim
+    subject.hasTextReplacement = insufficient || interim
+    subject.displayText = options.colModel.labels['insufficient_data']
     if interim 
       subject.displayText = options.colModel.labels['interim_data_only']
       subject.displayTextClass = 'interimOnly'
-    else 
-      subject.displayText = options.colModel.labels['insufficient_data']
-    
     subject
 
   removeHTMLTags = (str) ->

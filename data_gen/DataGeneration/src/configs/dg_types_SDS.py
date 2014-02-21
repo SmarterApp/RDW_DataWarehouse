@@ -165,11 +165,11 @@ def get_states():
     """
     Structure:
     {'name': val, 'state_code': val, 'state_type': val}
-    where 'name' is the name of the state (eg. New York)
-    'state_code' is the code for that state (eg. NY)
+    where 'name' is the name of the state (eg. North Carolina)
+    'state_code' is the code for that state (eg. NC)
     'state_type' is the type of the state. This should match something that has been defined in get_state_types()
     """
-    states = [{'name': 'New York', 'state_code': 'NY', 'state_type': 'SDS'}]
+    states = [{'name': 'North Carolina', 'state_code': 'NC', 'state_type': 'SDS'}]
     return states
 
 

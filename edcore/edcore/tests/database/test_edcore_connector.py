@@ -64,11 +64,11 @@ class TestEdcoreConnector(Unittest_with_edcore_sqlite):
         self.assertEqual(dim_student.name, 'dim_student')
 
     def test_connector_with_multi_tenants(self):
-        set_tenant_map({get_unittest_tenant_name(): 'NY', 'b': 'AB'})
+        set_tenant_map({get_unittest_tenant_name(): 'NC', 'b': 'AB'})
         dummy_session = DummySession()
         dummy_session.set_tenants([get_unittest_tenant_name(), 'dummyTenant'])
         self.__config.testing_securitypolicy(dummy_session)
-        conn = EdCoreDBConnection(state_code='NY')
+        conn = EdCoreDBConnection(state_code='NC')
         self.assertIsInstance(conn, EdCoreDBConnection)
         dim_student = conn.get_table('dim_student')
         self.assertEqual(dim_student.name, 'dim_student')

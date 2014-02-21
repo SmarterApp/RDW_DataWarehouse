@@ -88,7 +88,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
 
     def test_get_invalid_param_tenant_extract(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmyType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['extractType'] = 'studentAssessment'
@@ -96,7 +96,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
 
     def test_post_valid_response_failed_task_tenant_extract(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtYear'] = '2010'
@@ -137,14 +137,14 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'asmtGrade': '6',
                   'asmtSubject': ['Math'],
                   'asmtType': 'SUMMATIVE',
-                  'stateCode': 'NY'}
+                  'stateCode': 'NC'}
         name = generate_zip_file_name(params)
         self.assertIn('ASMT_GRADE_6_MATH_SUMMATIVE', name)
 
     def test_generate_zip_file_name_for_schools(self):
         params = {'asmtSubject': ['Math', 'ELA'],
                   'asmtType': 'Summative',
-                  'stateCode': 'NY'}
+                  'stateCode': 'NC'}
         name = generate_zip_file_name(params)
         self.assertIn('ASMT_ELA_MATH_SUMMATIVE', name)
 
@@ -156,7 +156,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service, self.__request)
 
     def test_get_invalid_param(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtSubject'] = ['MATH']
         self.__request.GET['asmyType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -164,7 +164,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertRaises(EdApiHTTPPreconditionFailed, get_extract_service)
 
     def test_get_extract_service(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['districtGuid'] = '229'
         self.__request.GET['schoolGuid'] = '936'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -175,7 +175,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_post_extract_service(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['NY'],
+        self.__request.json_body = {'stateCode': ['NC'],
                                     'districtGuid': '229',
                                     'schoolGuid': '936',
                                     'asmtSubject': ['Math'],
@@ -185,7 +185,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(response.content_type, 'application/octet-stream')
 
     def test_get_valid_tenant_extract(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtYear'] = '2015'
@@ -204,7 +204,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_post_valid_tenant_extract(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['NY'],
+        self.__request.json_body = {'stateCode': ['NC'],
                                     'asmtSubject': ['Math'],
                                     'asmtType': ['SUMMATIVE'],
                                     'asmtYear': ['2015'],
@@ -223,7 +223,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
 
     def test_with_no_sync_or_async_set(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtYear'] = '2015'
@@ -238,7 +238,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(response.content_type, 'application/octet-stream')
 
     def test_send_extraction_requesttest_get_extract_service(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['districtGuid'] = '229'
         self.__request.GET['schoolGuid'] = '936'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -259,7 +259,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertTrue(tested)
 
     def test_send_extraction_requesttest_get_extract_service_async(self):
-        self.__request.GET['stateCode'] = 'NY'
+        self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtYear'] = '2015'

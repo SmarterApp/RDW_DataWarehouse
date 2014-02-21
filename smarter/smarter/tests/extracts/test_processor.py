@@ -179,7 +179,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
 
     def test_process_sync_extraction_request_with_subject(self):
-        params = {'stateCode': 'NY',
+        params = {'stateCode': 'NC',
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': 'SUMMATIVE',
@@ -189,7 +189,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsNotNone(zip_data)
 
     def test_process_async_extraction_request_with_subject(self):
-        params = {'stateCode': ['NY'],
+        params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
@@ -202,7 +202,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(response['tasks'][0]['status'], 'ok')
 
     def test___prepare_data(self):
-        params = {'stateCode': 'NY',
+        params = {'stateCode': 'NC',
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': 'SUMMATIVE',
@@ -369,7 +369,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual('testtenant', result[2])
 
     def test__create_tasks_with_responses_non_tenant_level(self):
-        params = {'stateCode': 'NY',
+        params = {'stateCode': 'NC',
                   'districtGuid': '228',
                   'schoolGuid': '242',
                   'asmtGrade': '3',
@@ -383,7 +383,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(results[1][0][Extract.STATUS], Extract.OK)
 
     def test__create_tasks_with_responses_non_tenant_level_no_data(self):
-        params = {'stateCode': 'NY',
+        params = {'stateCode': 'NC',
                   'districtGuid': '228',
                   'schoolGuid': '242',
                   'asmtGrade': '3',
@@ -397,7 +397,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(results[1][0][Extract.STATUS], Extract.FAIL)
 
     def test__create_tasks_with_responses_tenant_level(self):
-        params = {'stateCode': 'NY',
+        params = {'stateCode': 'NC',
                   'districtGuid': '228',
                   'schoolGuid': '242',
                   'asmtSubject': 'Math',

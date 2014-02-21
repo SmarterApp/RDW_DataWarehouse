@@ -65,17 +65,17 @@ class TestCache(Unittest_with_edcore_sqlite):
         }
         cache_manager = CacheManager(**parse_cache_config_options(cache_opts))
         params = {}
-        params['stateCode'] = 'NY'
+        params['stateCode'] = 'NC'
         mycache = cache_manager.get_cache('my_namespace', **params)
         f = FakeFunc('hello')
-        cache = mycache.get("my_namespace {'stateCode': 'NY'}", createfunc=f.fake)
+        cache = mycache.get("my_namespace {'stateCode': 'NC'}", createfunc=f.fake)
         self.assertEqual(cache, f.msg)
         f.msg = 'bye'
         self.assertNotEqual(cache, f.msg)
         cache_flush_data()
         f.msg = 'bye'
         mycache = cache_manager.get_cache('my_namespace', **params)
-        cache = mycache.get("my_namespace {'stateCode': 'NY'}", createfunc=f.fake)
+        cache = mycache.get("my_namespace {'stateCode': 'NC'}", createfunc=f.fake)
         self.assertEqual(cache, f.msg)
 
 

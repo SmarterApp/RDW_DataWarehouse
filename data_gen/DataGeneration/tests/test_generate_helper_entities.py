@@ -11,8 +11,8 @@ from datetime import date
 class TestGenerateHelperEntities(unittest.TestCase):
 
     def test_generate_state(self):
-        state_name = 'New York'
-        state_code = 'NY'
+        state_name = 'North Carolina'
+        state_code = 'NC'
         new_york_state = generate_state(state_name, state_code)
         self.assertEquals(new_york_state.state_name, state_name)
         self.assertEquals(new_york_state.state_code, state_code)

@@ -61,7 +61,7 @@ class TestMetadata(Unittest_with_edcore_sqlite):
 
     def test_get_asmt_metadata_query(self):
         asmt_guid = '20'
-        query = get_asmt_metadata('NY', asmt_guid)
+        query = get_asmt_metadata('NC', asmt_guid)
         self.assertIsNotNone(query)
         self.assertIn('dim_asmt.asmt_guid', str(query._whereclause))
 

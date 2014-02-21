@@ -55,7 +55,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = '3'
-        testParam['stateCode'] = 'NY'
+        testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
@@ -80,7 +80,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
 
     def test_breadcrumbs(self):
         testParam = {}
-        testParam['stateCode'] = 'NY'
+        testParam['stateCode'] = 'NC'
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = '3'
@@ -91,7 +91,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
 
     def test_asmt_administration(self):
         testParam = {}
-        testParam['stateCode'] = 'NY'
+        testParam['stateCode'] = 'NC'
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = '3'
@@ -105,7 +105,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = '3'
-        testParam['stateCode'] = 'NY'
+        testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['ELA']
         results = get_list_of_students_report(testParam)
 
@@ -125,7 +125,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = '3'
-        testParam['stateCode'] = 'NY'
+        testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['Math']
         results = get_list_of_students_report(testParam)
 
@@ -144,12 +144,12 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = 3
-        testParam['stateCode'] = 'NY'
+        testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['Dummy']
         self.assertRaises(NotFoundException, get_list_of_students_report, testParam)
 
     def test_LOS_with_filters(self):
-        testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
+        testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242'}
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 17)
 
@@ -158,7 +158,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results['assessments']), 0)
 
     def test_asmt_type(self):
-        testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
+        testParam = {'asmtGrade': '3', 'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242'}
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 35)
         self.assertIsNotNone(results['assessments'][0]['Interim Comprehensive']['subject1'])

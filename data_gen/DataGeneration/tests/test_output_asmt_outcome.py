@@ -109,11 +109,11 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             }
         }
         self.idgen = IdGen()
-        self.state_population = MakeTemp(state_name='New York', state_code="NY")
+        self.state_population = MakeTemp(state_name='North Carolina', state_code="NC")
         self.school1 = MakeTemp(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
                                 school_category='elementary')
         self.student_info1 = MakeTemp(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
-                                      address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
+                                      address_1='1 bob st.', address_2='', city='North Carolina', zip_code=12345, gender='m',
                                       email='b.n@email.com', dob='11111999', grade=4,
                                       asmt_dates_taken={'math': date.today(), 'ela': date(2011, 2, 5)},
                                       asmt_scores={'math': MakeTemp(overall_score=1900,
@@ -241,8 +241,8 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
             'guid_asmt_location': 123,
             'name_asmt_location': 'school123',
             'grade_asmt': 4,
-            'name_state': 'New York',
-            'code_state': 'NY',
+            'name_state': 'North Carolina',
+            'code_state': 'NC',
         }
         res = create_output_csv_dict(table_conf_dict, self.state_population, self.school1,
                                      self.student_info1, 'math', None, None, None, None, None)
@@ -407,13 +407,13 @@ class TestOutputAssessmentOutcome(unittest.TestCase):
                 'guid_asmt_location': '123',
                 'name_asmt_location': 'school123',
                 'grade_asmt': '4',
-                'name_state': 'New York',
-                'code_state': 'NY',
+                'name_state': 'North Carolina',
+                'code_state': 'NC',
             },
             'dim_test': {
                 'address_student_line1': '1 bob st.',
                 'address_student_line2': '',
-                'address_student_city': 'new york',
+                'address_student_city': 'North Carolina',
                 'address_student_zip': '12345',
                 'gender_student': 'm',
             },

@@ -122,8 +122,14 @@ def get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_tabl
                                                                                                                                     target_table=dim_table)
 
 
-def find_orphan_delete_records(src_schema_name, src_table_name, prod_schema_name, prod_table_name, matching_columns, matching_values):
+def find_unmatched_deleted_fact_asmt_outcome_row(schema_name, table_name, batch_guid, status_code):
     '''
     Function to
     '''
-    return ""
+    return "SELECT status FROM {source_schene} WHERE status = '{status}' and batch_guid = '{batch_guid}'".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                                                                                                                 status=status_code,
+                                                                                                                 batch_guid=batch_guid)
+
+
+def update_matched_row_with_prod_rec_id(conf, match_conf):
+    pass

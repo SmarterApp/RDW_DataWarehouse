@@ -68,7 +68,4 @@ def generate_conf(guid_batch, load_type):
             mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]
             }
-    print('LOAD TYPE %s' % load_type)
-    print('ATTENTION %s' % udl2_conf['udl2_db']['staging_tables'][load_type])
-    print('ATTENTION2 %s' % udl2_conf['udl2_db']['csv_integration_tables'][load_type])
     return conf

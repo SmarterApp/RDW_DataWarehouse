@@ -182,7 +182,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'stateCode': 'NC',
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
-                  'asmtType': 'SUMMATIVE',
+                  'asmtType': 'INTERIM COMPREHENSIVE',
                   'asmtSubject': ['ELA'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         zip_data = process_sync_extract_request(params)
@@ -205,7 +205,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'stateCode': 'NC',
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
-                  'asmtType': 'SUMMATIVE',
+                  'asmtType': 'INTERIM COMPREHENSIVE',
                   'asmtSubject': 'ELA',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         smarter.extracts.format.json_column_mapping = {}
@@ -214,7 +214,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsNotNone(dim_asmt)
         self.assertIsNotNone(fact_asmt_outcome)
         (guid, grade) = guid_grade[0]
-        self.assertEqual(guid, 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0')
+        self.assertEqual(guid, 'a685f0ec-a0a6-4b1e-93b8-0c4298ff6374')
         self.assertEqual(grade, '11')
 
     def test_get_asmt_metadata_file_path(self):

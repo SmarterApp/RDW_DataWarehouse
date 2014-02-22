@@ -165,9 +165,20 @@ def update_matched_row_with_prod_rec_id(conf, match_conf):
     '''
     Function to update asmt_rec_id to production table asmt_rec_id when it is matched to our criteria
     '''
-    update_sql = "WITH AS PROD " + \
-                 "UPDATE {source_schema_and_table} SET status = {found}, asmnt_outcome rec_id = {} FROM   " + \
-                 "WHERE " + \
-                 "".format()
-
-    return update_sql
+    batch_guid = conf['batch_guid']
+    sql_template = "WITH prod AS (" + \
+                   "SELECT asmnt_rec_id, student_guid, asmt_guid, date_taken " + \
+                   "FROM dblink('host=edwdbsrv1.poc.dum.edwdc.net dbname=edware user=edware password=edware2013'," +\
+                   "'SELECT f.asmnt_outcome_rec_id, f.student_guid, a.asmt_guid, f.date_taken, f.status " +\
+                   "FROM edware_sds_1_8.fact_asmt_outcome AS f " +\
+                   "JOIN edware_sds_1_8.dim_asmt AS A ON f.asmt_rec_id = a.asmt_rec_id " +\
+                   "WHERE f.status = ''C''' AND f.batch_guid = ''{batch_guid}'') " +\
+                   "AS J(asmnt_rec_id bigint, student_guid varchar(255), asmt_guid varchar(255), " +\
+                   "date_taken varchar(255), status varchar(2)))" + \
+                   "UPDATE fact_asmt_outcome AS lf1 SET (asmnt_outcome_rec_id, status) = (prod.asmnt_rec_id, 'ID') " +\
+                   "FROM prod WHERE lf1.asmnt_outcome_rec_id in (" +\
+                   "SELECT lf.asmnt_outcome_rec_id " +\
+                   "FROM fact_asmt_outcome AS lf " +\
+                   "JOIN prod ON prod.student_guid = lf.student_guid AND prod.date_taken = lf.date_taken " \
+                   "WHERE lf.status = 'D' AND lf.batch_guid = ''{batch_guid}'')"
+    return sql_template.format(batch_guid=batch_guid)

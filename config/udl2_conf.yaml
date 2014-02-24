@@ -19,6 +19,8 @@ common:
             - udl2.W_file_content_validator
             - udl2.W_load_json_to_integration
             - udl2.W_load_to_integration_table
+            - udl2.W_determine_end_chain
+            - udl2.W_load_sr_integration_to_target
             - udl2.W_load_from_integration_to_star
             - udl2.W_post_etl
             - udl2.W_report_error_or_success

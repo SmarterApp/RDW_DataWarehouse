@@ -27,7 +27,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
 
     def test_simple_file_validator_passes_for_valid_student_reg_csv(self):
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
-        results = validator.execute(self.data_dir, 'test_sample_student_reg.csv', 1)
+        results = validator.execute(self.data_dir, 'student_registration_data/test_sample_student_reg.csv', 1)
         self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_fails_for_missing_csv(self):
@@ -88,13 +88,13 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
     def test_valid_student_registration_json(self):
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir,
-                                    'test_sample_student_reg.json', 1)
+                                    'student_registration_data/test_sample_student_reg.json', 1)
         self.assertEqual(len(results), 0)
 
     def test_invalid_content_student_registration_json(self):
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir,
-                                    'test_invalid_student_reg.json', 1)
+                                    'student_registration_data/test_invalid_student_reg.json', 1)
         error_code_expected = error_codes.SRC_JSON_INVALID_FORMAT
         expected_field = 'academic_year'
         self.assertEqual(len(results), 1)

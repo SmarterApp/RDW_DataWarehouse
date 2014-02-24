@@ -59,7 +59,7 @@ class Constants():
     UNFILTERED_TOTAL = 'unfilteredTotal'
     NAME = 'name'
     ID = 'id'
-    ISINTERIM = 'isInterim'
+    HASINTERIM = 'hasInterim'
     ROWID = 'rowId'
     RESULTS = 'results'
     DIM_INST_HIER = 'dim_inst_hier'

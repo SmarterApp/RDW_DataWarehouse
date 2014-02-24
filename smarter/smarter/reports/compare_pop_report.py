@@ -78,27 +78,27 @@ def get_merged_report_records(summative, interim):
     Iterate through interim and summative results and merge when summative results don't exist
     Wipes out interim results for sorting purposes in the FE
     '''
-    Records = namedtuple('Records', ['id', 'name'])
+    Records = namedtuple('Records', [Constants.ID, Constants.NAME])
     merged = {}
-    for record in interim['records']:
-        r = Records(id=record['id'], name=record['name'])
-        for subject in interim['subjects'].keys():
+    for record in interim[Constants.RECORDS]:
+        r = Records(id=record[Constants.ID], name=record[Constants.NAME])
+        for subject in interim[Constants.SUBJECTS].keys():
             # when total is not zero, that means there are results (either insufficient or not)
-            if record['results'][subject]['total'] is not 0:
-                record['results'][subject]['hasInterim'] = True
-            reset_subject_intervals(record['results'][subject])
+            if record[Constants.RESULTS][subject][Constants.TOTAL] is not 0:
+                record[Constants.RESULTS][subject][Constants.HASINTERIM] = True
+            reset_subject_intervals(record[Constants.RESULTS][subject])
         merged[r] = record
     # Go through summative
-    for record in summative['records']:
-        r = Records(id=record['id'], name=record['name'])
+    for record in summative[Constants.RECORDS]:
+        r = Records(id=record[Constants.ID], name=record[Constants.NAME])
         if r in merged:
-            for subject in summative['subjects'].keys():
+            for subject in summative[Constants.SUBJECTS].keys():
                 # when total is zero, that means there are no summative results, so check if there is interim results
-                if record['results'][subject]['total'] is 0:
-                    hasInterim = merged[r]['results'][subject].get('hasInterim', False)
+                if record[Constants.RESULTS][subject][Constants.TOTAL] is 0:
+                    hasInterim = merged[r][Constants.RESULTS][subject].get(Constants.HASINTERIM, False)
                     if hasInterim:
-                        record['results'][subject]['hasInterim'] = hasInterim
-                        reset_subject_intervals(record['results'][subject])
+                        record[Constants.RESULTS][subject][Constants.HASINTERIM] = hasInterim
+                        reset_subject_intervals(record[Constants.RESULTS][subject])
 
         merged[r] = record
     # Create an ordered dictionary sorted by the name of institution
@@ -107,8 +107,8 @@ def get_merged_report_records(summative, interim):
 
 
 def reset_subject_intervals(subject_data):
-    subject_data['total'] = -1
-    for i in subject_data['intervals']:
+    subject_data[Constants.TOTAL] = -1
+    for i in subject_data[Constants.INTERVALS]:
         i[Constants.PERCENTAGE] = -1
 
 

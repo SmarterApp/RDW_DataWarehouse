@@ -155,9 +155,9 @@ def find_unmatched_deleted_fact_asmt_outcome_row(schema_name, table_name, batch_
     Function to search any record that should be deleted/updated but has no record in production database
     '''
     sql_tempate = "SELECT status FROM {source_schema_and_table} " + \
-                  "WHERE status = '{status}' and batch_guid = '{batch_guid}'"
+                  "WHERE status in ({status}) and batch_guid = '{batch_guid}'"
     return sql_tempate.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                              status=status_code,
+                              status=",".join(["'{i}'".format(i=s[1]) for s in status_code]),
                               batch_guid=batch_guid)
 
 

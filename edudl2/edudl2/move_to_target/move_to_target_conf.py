@@ -41,12 +41,12 @@ def get_move_to_target_conf():
             'source_rec_id': 'asmnt_outcome_rec_id',
             'prod_table': 'fact_asmt_outcome',
             'source_table': 'fact_asmt_outcome',
-            'matching_columns': [
+            'matched_columns': [
                 ('date_assessed', 'date_taken'),
                 ('guid_asmt', 'asmt_guid'),
                 ('guid_student', 'student_guid')
             ],
-            'matching_status': {
+            'matched_status': {
                 'source_table': [('status', 'D'), ('status', 'U')],
                 'prod_table': [('status', 'C')]
             }

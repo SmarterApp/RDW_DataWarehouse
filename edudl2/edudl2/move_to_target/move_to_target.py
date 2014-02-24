@@ -8,8 +8,9 @@ from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, Pro
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
     select_distinct_asmt_rec_id_query, enable_trigger_query, create_insert_query,\
-    update_foreign_rec_id_query, create_information_query,\
-    find_unmatched_deleted_fact_asmt_outcome_row
+    update_foreign_rec_id_query, create_information_query, find_deleted_fact_asmt_outcome_rows,\
+    find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod,\
+    update_matched_fact_asmt_outcome_row
 
 
 DBDRIVER = "postgresql"
@@ -246,10 +247,15 @@ def match_deleted_records(conf, match_conf):
     in prodution tables.
     return a list of rec_id to delete reocrds
     '''
+    matched_results = []
     logger.info('in match_deleted_records')
     batch_guid = conf['guid_batch']
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+        pass
 
-    logger.info(batch_guid)
+    with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
+        pass
+    return matched_results
 
 
 def check_mismatched_deletions(conf, match_conf):
@@ -270,10 +276,11 @@ def check_mismatched_deletions(conf, match_conf):
     return True if mismatched.rowcount == 0 else False
 
 
-def update_deleted_record_rec_id(conf, match_conf):
+def update_deleted_record_rec_id(conf, match_conf, matched_values):
     '''
 
     '''
     logger.info('update_deleted_record_rec_id')
     batch_guid = conf['guid_batch']
-    logger.info(batch_guid)
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+        pass

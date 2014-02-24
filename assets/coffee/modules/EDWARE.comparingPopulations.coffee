@@ -325,15 +325,16 @@ define [
       data
 
     processDataForSubject: (data) ->
-      interimCount = 0
-      for item in data
-        if item['isInterim']
-            interimCount+=1
-        for subject of this.asmtSubjectsData
+      for subject of this.asmtSubjectsData
+        interimCount = 0
+        for item in data
           subjectData = item['results'][subject]
           if subjectData
             this.appendColor subjectData, this.colorsData[subject]
-      this.summaryData['isInterim'] = interimCount is data.length
+          if subjectData['hasInterim'] 
+            interimCount += 1
+        # Summary row hasInterim when one of the rows is an Interim row and Summary row has no data
+        this.summaryData['results'][subject]['hasInterim'] = (interimCount > 0 and this.summaryData['results'][subject]['total'] is 0)
       data
 
     appendAlignmentOffset: (data) ->

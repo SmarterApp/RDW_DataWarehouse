@@ -7,7 +7,7 @@ import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report,\
     ComparingPopReport, CACHE_REGION_PUBLIC_DATA,\
     CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route,\
-    set_default_min_cell_size, get_merged_report_records
+    set_default_min_cell_size, get_merged_report_records, reset_subject_intervals
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants, AssessmentType
@@ -371,7 +371,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 8)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], 8)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][1]['results']['subject2']['total'], -1)
+        self.assertEqual(results['records'][1]['results']['subject2']['total'], 0)
 
     def test_comparing_populations_with_gender_not_stated(self):
         testParam = {}
@@ -381,7 +381,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 0)
 
     def test_comparing_populations_with_not_stated_count(self):
         testParam = {}
@@ -411,10 +411,16 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results['summary'][0]['results']['subject2']['unfilteredTotal'], 24)
 
     def test_get_merged_report_records(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NC'
-        summative = {'records': [{'id': 'a', 'name': 'a', 'type': 'sum'}, {'id': 'b', 'name': 'b', 'type': 'sum'}]}
-        interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int'}, {'id': 'b', 'name': 'b', 'type': 'int'}]}
+        summative = {'records': [{'id': 'a', 'name': 'a', 'type': 'sum',
+                                  'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
+                                 {'id': 'b', 'name': 'b', 'type': 'sum',
+                                  'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                     'subjects': {'a': 'a'}}
+        interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
+                               {'id': 'b', 'name': 'b', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                   'subjects': {'a': 'a'}}
         results = get_merged_report_records(summative, interim)
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]['type'], 'sum')
@@ -423,28 +429,75 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results[1]['name'], 'b')
 
     def test_get_merged_report_records_with_no_summative(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NC'
-        summative = {'records': []}
-        interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int'}, {'id': 'b', 'name': 'b', 'type': 'int'}]}
+        summative = {'records': [],
+                     'subjects': {'a': 'a'}}
+        interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
+                               {'id': 'b', 'name': 'b', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                   'subjects': {'a': 'a'}}
         results = get_merged_report_records(summative, interim)
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]['type'], 'int')
         self.assertEqual(results[0]['name'], 'a')
+        self.assertEqual(results[0]['results']['a']['total'], -1)
         self.assertEqual(results[1]['type'], 'int')
         self.assertEqual(results[1]['name'], 'b')
 
     def test_get_merged_report_records_with_mixed_asmt_types(self):
-        testParam = {}
-        testParam[Constants.STATECODE] = 'NC'
-        summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum'}]}
-        interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int'}, {'id': 'b', 'name': 'b', 'type': 'int'}]}
+        summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
+                                  'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                     'subjects': {'a': 'a'}}
+        interim = {'records': [{'id': 'a', 'name': 'a', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}},
+                               {'id': 'b', 'name': 'b', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                   'subjects': {'a': 'a'}}
         results = get_merged_report_records(summative, interim)
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]['type'], 'int')
         self.assertEqual(results[0]['name'], 'a')
+        self.assertEqual(results[0]['results']['a']['total'], -1)
+        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
         self.assertEqual(results[1]['type'], 'sum')
         self.assertEqual(results[1]['name'], 'b')
+
+    def test_get_merged_report_records_with_insufficient_interim(self):
+        summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
+                                  'results': {'a': {'total': 0, 'intervals': [{'percentage': 0}]}}}],
+                     'subjects': {'a': 'a'}}
+        interim = {'records': [{'id': 'b', 'name': 'b', 'type': 'int',
+                                'results': {'a': {'total': -1, 'intervals': [{'percentage': -1}]}}}],
+                   'subjects': {'a': 'a'}}
+        results = get_merged_report_records(summative, interim)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['type'], 'sum')
+        self.assertEqual(results[0]['name'], 'b')
+        self.assertEqual(results[0]['results']['a']['total'], -1)
+        self.assertEqual(results[0]['results']['a']['hasInterim'], True)
+        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
+
+    def test_get_merged_report_records_with_no_results(self):
+        summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
+                                  'results': {'a': {'total': 0, 'intervals': [{'percentage': 0}]}}}],
+                     'subjects': {'a': 'a'}}
+        interim = {'records': [{'id': 'b', 'name': 'b', 'type': 'int',
+                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                   'subjects': {'a': 'a'}}
+        results = get_merged_report_records(summative, interim)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['type'], 'sum')
+        self.assertEqual(results[0]['name'], 'b')
+        self.assertEqual(results[0]['results']['a']['total'], -1)
+        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
+
+    def test_reset_intervals(self):
+        data = {'intervals': [{'percentage': 20}, {'percentage': 30}], 'total': 3}
+        reset_subject_intervals(data)
+        self.assertEqual(data['intervals'][0]['percentage'], -1)
+        self.assertEqual(data['intervals'][1]['percentage'], -1)
+        self.assertEqual(data['total'], -1)
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

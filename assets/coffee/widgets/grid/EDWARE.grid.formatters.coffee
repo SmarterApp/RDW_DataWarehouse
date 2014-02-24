@@ -202,13 +202,19 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     exportable = options.colModel.export
-    insufficient = parseInt(subject.total) <= 0
-    interim = rowObject.isInterim ? false
+    total = parseInt(subject.total)
+    # No data when total is 0, Insufficient when total is -1
+    insufficient = total < 0
+    noData = total is 0
+    interim = subject.hasInterim ? false
     subject.export = 'edwareExportColumn' if exportable
     subject.labels = options.colModel.labels
-    subject.hasTextReplacement = insufficient || interim
-    subject.displayText = options.colModel.labels['insufficient_data']
-    if interim 
+    subject.hasTextReplacement = insufficient || interim || noData
+    if insufficient
+      subject.displayText = options.colModel.labels['insufficient_data']
+    else if noData
+      subject.displayText = options.colModel.labels['no_data_available'
+    else if interim
       subject.displayText = options.colModel.labels['interim_data_only']
       subject.displayTextClass = 'interimOnly'
     subject

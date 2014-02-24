@@ -75,16 +75,41 @@ def get_comparing_populations_report(params):
 
 def get_merged_report_records(summative, interim):
     '''
-    Iterate through combined interim and summative results and merge when summative results don't exist
+    Iterate through interim and summative results and merge when summative results don't exist
+    Wipes out interim results for sorting purposes in the FE
     '''
     Records = namedtuple('Records', ['id', 'name'])
     merged = {}
-    for record in interim['records'] + summative['records']:
+    for record in interim['records']:
         r = Records(id=record['id'], name=record['name'])
+        for subject in interim['subjects'].keys():
+            # when total is not zero, that means there are results (either insufficient or not)
+            if record['results'][subject]['total'] is not 0:
+                record['results'][subject]['hasInterim'] = True
+            reset_subject_intervals(record['results'][subject])
+        merged[r] = record
+    # Go through summative
+    for record in summative['records']:
+        r = Records(id=record['id'], name=record['name'])
+        if r in merged:
+            for subject in summative['subjects'].keys():
+                # when total is zero, that means there are no summative results, so check if there is interim results
+                if record['results'][subject]['total'] is 0:
+                    hasInterim = merged[r]['results'][subject].get('hasInterim', False)
+                    if hasInterim:
+                        record['results'][subject]['hasInterim'] = hasInterim
+                        reset_subject_intervals(record['results'][subject])
+
         merged[r] = record
     # Create an ordered dictionary sorted by the name of institution
     sorted_results = OrderedDict(sorted(merged.items(), key=lambda x: (x[0].name)))
     return list(sorted_results.values())
+
+
+def reset_subject_intervals(subject_data):
+    subject_data['total'] = -1
+    for i in subject_data['intervals']:
+        i[Constants.PERCENTAGE] = -1
 
 
 def merge_filtered_results(filtered, unfiltered):
@@ -241,7 +266,7 @@ class ComparingPopReport(object):
 
 
 class RecordManager():
-    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, **kwargs):
+    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
@@ -250,7 +275,6 @@ class RecordManager():
         self._summary = {}
         self._custom_metadata = custom_metadata
         self._asmt_level = asmt_level
-        self._asmtType = asmtType
         self.init_summary(self._summary)
 
     def init_summary(self, data):
@@ -309,14 +333,18 @@ class RecordManager():
                     interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
                 # adjust for min cell size policy and do not return data if violated
                 min_cell_size = self._custom_metadata.get(alias, {}).get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE)
+                # check if min_cell_size is defined
+                min_cell_size = (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE)
                 # get student counts for students in level 1 and 2
                 non_proficient_students_count = 0
                 for i in range(0, len(intervals) // 2):
                     non_proficient_students_count += intervals[i][Constants.COUNT]
-                if total > (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE) and total != non_proficient_students_count:
+                if total > min_cell_size and total != non_proficient_students_count:
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
                 else:
-                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1, Constants.LEVEL: interval.get('level')} for interval in intervals], Constants.TOTAL: -1}
+                    # For no results, use 0, for insufficient results use -1
+                    value = 0 if total is 0 else -1
+                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: value, Constants.LEVEL: interval.get('level')} for interval in intervals], Constants.TOTAL: value}
 
         return results
 
@@ -327,7 +355,7 @@ class RecordManager():
         records = []
         for record in self._tracking_record.values():
             __record = {Constants.ROWID: round(time.time() * 1000000), Constants.ID: record.id, Constants.NAME: record.name,
-                        Constants.RESULTS: self.format_results(record.subjects), Constants.ISINTERIM: self._asmtType == AssessmentType.INTERIM_COMPREHENSIVE,
+                        Constants.RESULTS: self.format_results(record.subjects),
                         Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid

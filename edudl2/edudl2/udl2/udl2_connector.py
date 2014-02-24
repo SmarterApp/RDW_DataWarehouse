@@ -86,12 +86,12 @@ class ProdDBConnection(DBConnection):
     DBConnector for Edware Production Database
     """
     def __init__(self, tenant='edware'):
-        name = ProductionDBConnection.get_datasource_name(tenant)
+        name = ProdDBConnection.get_datasource_name(tenant)
         super().__init__(name=name)
 
     @staticmethod
     def get_namespace():
-        return PRO_NAMESPACE
+        return PRODUCTION_NAMESPACE
 
     @staticmethod
     def get_datasource_name(tenant="edware"):

@@ -1,4 +1,4 @@
-from edudl2.udl2_util.database_util import execute_udl_queries
+from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from collections import OrderedDict
 from edudl2.udl2 import message_keys as mk
 import datetime
@@ -8,7 +8,9 @@ from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, Pro
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
     select_distinct_asmt_rec_id_query, enable_trigger_query, create_insert_query,\
-    update_foreign_rec_id_query, create_information_query
+    update_foreign_rec_id_query, create_information_query, find_deleted_fact_asmt_outcome_rows,\
+    find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod,\
+    update_matched_fact_asmt_outcome_row
 
 
 DBDRIVER = "postgresql"
@@ -51,22 +53,34 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
         start_time_p1 = datetime.datetime.now()
-        affected_rows_first = execute_udl_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
+        affected_rows_first = execute_udl_queries(conn,
+                                                  queries[0:2],
+                                                  'Exception -- exploding data from integration to fact table part 1',
+                                                  'move_to_target',
+                                                  'explode_data_to_fact_table')
         finish_time_p1 = datetime.datetime.now()
 
         # Record benchmark
-        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p1, finish_time_p1,
+        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
+                                        'udl2.W_load_from_integration_to_star.explode_to_fact',
+                                        start_time_p1, finish_time_p1,
                                         working_schema=conf[mk.TARGET_DB_SCHEMA],
                                         udl_phase_step='Disable Trigger & Load Data')
         benchmark.record_benchmark()
 
         # The second part: Update Inst Hier Rec Id FK, Update Student Rec Id FK
         start_time_p2 = datetime.datetime.now()
-        execute_udl_queries(conn, queries[2:5], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
+        execute_udl_queries(conn,
+                            queries[2:5],
+                            'Exception -- exploding data from integration to fact table part 2',
+                            'move_to_target',
+                            'explode_data_to_fact_table')
         finish_time_p2 = datetime.datetime.now()
 
         # Record benchmark
-        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p2, finish_time_p2,
+        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
+                                        'udl2.W_load_from_integration_to_star.explode_to_fact',
+                                        start_time_p2, finish_time_p2,
                                         working_schema=conf[mk.TARGET_DB_SCHEMA],
                                         udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')
         benchmark.record_benchmark()
@@ -75,7 +89,8 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     return affected_rows_first[1]
 
 
-def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source, rec_id_column_name, target_table_name, source_table_name):
+def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source, rec_id_column_name,
+                    target_table_name, source_table_name):
     '''
     Main function to get asmt_rec_id in dim_asmt table
     Steps:
@@ -84,13 +99,20 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     '''
     # connect to integration table, to get the value of guid_asmt
     with UDL2DBConnection() as conn_to_source_db:
-        query_to_get_guid = select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
+        query_to_get_guid = select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA],
+                                                            source_table_name,
+                                                            guid_column_name_in_source, conf[mk.GUID_BATCH])
         # print(query_to_get_guid)
-        guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
+        guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid,
+                                                        guid_column_name_in_source)
 
     # connect to target table, to get the value of asmt_rec_id
     with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
-        query_to_get_rec_id = select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA], target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value)
+        query_to_get_rec_id = select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA],
+                                                                target_table_name,
+                                                                rec_id_column_name,
+                                                                guid_column_name_in_target,
+                                                                guid_column_value)
         # print(query_to_get_rec_id)
         asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
 
@@ -173,7 +195,9 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
         logger.info(query)
 
         # execute the query
-        affected_rows = execute_udl_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),
+        affected_rows = execute_udl_queries(conn, [query],
+                                            'Exception -- exploding data from integration to target ' +
+                                            '{target_table}'.format(target_table=target_table),
                                             'move_to_target', 'explode_data_to_dim_table')
 
     return affected_rows
@@ -223,26 +247,40 @@ def match_deleted_records(conf, match_conf):
     in prodution tables.
     return a list of rec_id to delete reocrds
     '''
+    matched_results = []
     logger.info('in match_deleted_records')
     batch_guid = conf['guid_batch']
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+        pass
 
-    logger.info(batch_guid)
+    with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
+        pass
+    return matched_results
 
 
-def is_any_deleted_records_missing(conf, match_conf):
+def check_mismatched_deletions(conf, match_conf):
     '''
     check any deleted records is not in target database. if yes. return True,
     so we will raise error for this udl batch
     '''
-    logger.info('is_any_deleted_records_missing')
-    batch_guid = conf['guid_batch']
-    logger.info(batch_guid)
+    logger.info('check_mismatched_deletions')
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+        query = find_unmatched_deleted_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
+                                                             conf['move_to_target'][4]['source_table'],
+                                                             conf[mk.GUID_BATCH],
+                                                             conf['move_to_target'][4]['matched_status']['source_table'])
+        mismatched = execute_udl_query_with_result(conn, query,
+                                                   'Exception -- Failed at execute find_unmatched_deleted_fact_asmt_outcome_row query',
+                                                   'move_to_target',
+                                                   'checked_mismatched_deletions')
+    return True if mismatched.rowcount == 0 else False
 
 
-def update_deleted_record_rec_id(conf, match_conf):
+def update_deleted_record_rec_id(conf, match_conf, matched_values):
     '''
 
     '''
     logger.info('update_deleted_record_rec_id')
     batch_guid = conf['guid_batch']
-    logger.info(batch_guid)
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+        pass

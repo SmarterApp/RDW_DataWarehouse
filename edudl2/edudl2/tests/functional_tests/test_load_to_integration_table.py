@@ -11,6 +11,7 @@ import edudl2.rule_maker.rules.code_generator_special_rules as sr
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
+from uuid import uuid4
 
 
 class FuncTestLoadToIntegrationTable(UDLTestHelper):
@@ -21,12 +22,12 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         #initialize_db(UDL2DBConnection, udl2_conf)
         #initialize_db(TargetDBConnection, udl2_conf)
 
-    def load_file_to_stage(self,):
+    def load_file_to_stage(self, data_file, header_file, load_type, staging_table, guid):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         # file contain 30 rows
         conf = {
-            mk.FILE_TO_LOAD: os.path.join(data_dir, 'test_file_realdata.csv'),
-            mk.HEADERS: os.path.join(data_dir, 'test_file_headers.csv'),
+            mk.FILE_TO_LOAD: os.path.join(data_dir, data_file),
+            mk.HEADERS: os.path.join(data_dir, header_file),
             mk.CSV_TABLE: 'csv_table_for_file_loader',
             mk.TARGET_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
             mk.TARGET_DB_PORT: self.udl2_conf['udl2_db']['db_port'],
@@ -34,24 +35,24 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
-            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables']['assessment'],
+            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
             mk.FDW_SERVER: 'udl2_fdw_server',
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
-            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.TARGET_DB_TABLE: staging_table,
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
-            mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000'
+            mk.GUID_BATCH: guid
         }
         load_file(conf)
 
-    def postloading_count(self,):
+    def postloading_count(self, table='INT_SBAC_ASMT_OUTCOME'):
         sql_template = """
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
             WHERE guid_batch = '{guid_batch}'
         """
         sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['staging_schema'],
-                                  staging_table='INT_SBAC_ASMT_OUTCOME',
+                                  staging_table=table,
                                   guid_batch=self.udl2_conf['guid_batch'])
         result = self.udl2_conn.execute(sql)
         count = 0
@@ -59,15 +60,9 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             count = row[0]
         return count
 
-    def test_load_stage_to_int(self,):
-        '''
-        functional tests for testing load from staging to integration as an independent unit tests.
-        Use a fixed UUID for the moment. may be dynamic later.
-
-        it loads 30 records from test csv file to stagint table then move it to integration.
-        '''
+    def generate_conf_for_moving_from_stg_to_int(self, guid_batch, load_type):
         conf = {
-            mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000',
+            mk.GUID_BATCH: guid_batch,
             mk.SOURCE_DB_DRIVER: self.udl2_conf['udl2_db']['db_driver'],
 
             # source database setting
@@ -77,7 +72,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.SOURCE_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
-            mk.SOURCE_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.SOURCE_DB_TABLE: self.udl2_conf['udl2_db']['staging_tables'][load_type],
 
             # target database setting
             mk.TARGET_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
@@ -86,14 +81,24 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['integration_schema'],
-            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT_OUTCOME',
+            mk.TARGET_DB_TABLE: self.udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
-            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables']['assessment'],
+            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
 
         }
+        return conf
+
+    def test_load_stage_to_int_assessment(self):
+        '''
+        functional tests for testing load from staging to integration as an independent unit tests.
+        Use a fixed UUID for the moment. may be dynamic later.
+
+        it loads 30 records from test csv file to stagint table then move it to integration.
+        '''
+        conf = self.generate_conf_for_moving_from_stg_to_int('00000000-0000-0000-0000-000000000000', 'assessment')
         self.udl2_conf['guid_batch'] = '00000000-0000-0000-0000-000000000000'
-        self.load_file_to_stage()
+        self.load_file_to_stage('test_file_realdata.csv', 'test_file_headers.csv', 'assessment', 'STG_SBAC_ASMT_OUTCOME', '00000000-0000-0000-0000-000000000000')
         move_data_from_staging_to_integration(conf)
         postloading_total = self.postloading_count()
         print(postloading_total)
@@ -110,6 +115,19 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         derived_count = int_demo_dict.pop('dmg_eth_derived', None)
         assert derived_count
         assert stg_demo_dict == int_demo_dict
+
+    def test_load_stage_to_int_student_registration(self):
+        guid_batch = str(uuid4())
+        load_type = self.udl2_conf['load_type']['student_registration']
+        conf = self.generate_conf_for_moving_from_stg_to_int(guid_batch, load_type)
+        self.udl2_conf['guid_batch'] = guid_batch
+        self.load_file_to_stage(os.path.join('student_registration_data', 'test_stu_reg_without_headers.csv'),
+                                os.path.join('student_registration_data', 'test_stu_reg_header.csv'),
+                                load_type, self.udl2_conf['udl2_db']['staging_tables'][load_type], guid_batch)
+        move_data_from_staging_to_integration(conf)
+        postloading_total = self.postloading_count(self.udl2_conf['udl2_db']['csv_integration_tables'][load_type])
+        print(postloading_total)
+        self.assertEqual(10, postloading_total)
 
     def test_derive_eth_function(self):
         function_name = sr.special_rules['deriveEthnicity'][0]
@@ -139,7 +157,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             self.assertEqual(actual_value, value['expected_code'])
 
     def test_get_column_mapping_from_stg_to_int(self):
-        # TODO: Remove this test and add testing of student registration to test_load_stage_to_int once it is implemented in the udl pipeline.
         expected_target_columns = ['guid_batch', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',
                                    'guid_student', 'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last',
                                    'gender_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk',
@@ -160,10 +177,10 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                                   'substr(A.us_school_entry_date, 1, 10)', 'substr(A.lep_entry_date, 1, 10)',
                                                   'substr(A.lep_exit_date, 1, 10)', 'substr(A.t3_program_type, 1, 27)',
                                                   'substr(A.prim_disability_type, 1, 3)', 'A.created_date']
-        conn = UDL2DBConnection()
-        target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
-                                                                                           self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
-                                                                                           'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
-                                                                                           self.udl2_conf['udl2_db']['staging_schema'])
-        self.assertEqual(expected_target_columns, target_columns)
-        self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)
+        with UDL2DBConnection() as conn:
+            target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
+                                                                                               self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
+                                                                                               'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
+                                                                                               self.udl2_conf['udl2_db']['staging_schema'])
+            self.assertEqual(expected_target_columns, target_columns)
+            self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)

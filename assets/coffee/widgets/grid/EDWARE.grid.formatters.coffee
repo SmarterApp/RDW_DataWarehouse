@@ -210,13 +210,13 @@ define [
     subject.export = 'edwareExportColumn' if exportable
     subject.labels = options.colModel.labels
     subject.hasTextReplacement = insufficient || interim || noData
-    if insufficient
-      subject.displayText = options.colModel.labels['insufficient_data']
-    else if noData
-      subject.displayText = options.colModel.labels['no_data_available'
-    else if interim
+    if interim
       subject.displayText = options.colModel.labels['interim_data_only']
       subject.displayTextClass = 'interimOnly'
+    else if insufficient
+      subject.displayText = options.colModel.labels['insufficient_data']
+    else if noData
+      subject.displayText = options.colModel.labels['no_data_available']
     subject
 
   removeHTMLTags = (str) ->

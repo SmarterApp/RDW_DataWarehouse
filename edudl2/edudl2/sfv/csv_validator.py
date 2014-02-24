@@ -167,7 +167,6 @@ class IsSourceFileCommaDelimited(object):
         except Exception as e1:
             return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
-        attempt_hack = False
         sample_data = None
         # use csv.sniffer to detect the dialect, then close the file
         try:
@@ -184,9 +183,6 @@ class IsSourceFileCommaDelimited(object):
             # if csv.sniffer thorws an exception it means we got a strange encoding.
             # In order not to interfere with encodings that DO work. Lets only apply
             # the hack when an exception is thrown
-            attempt_hack = True
-
-        if attempt_hack:
             try:
                 # h4x to fix an exception that is thrown by sniffer
                 # for the encoding type Western Europe (DOS/OS2-850 International) and probably others as well :)

@@ -43,8 +43,15 @@ class DataValidationErrorCode(unittest.TestCase):
         # test#3 --> blank_file
         validate_instance = csv_validator.IsFileBlank()
         expected_error_code = validate_instance.execute(self.data_dir, "realdata_3003.csv", 123)
-        assert expected_error_code[0] == error_codes.SRC_FILE_HAS_NO_DATA, "Validation Code for CSV balnk file is incorrect"
+        assert expected_error_code[0] == error_codes.SRC_FILE_HAS_NO_DATA, "Validation Code for CSV blank file is incorrect"
         print("Passed: TC3: Validation Code for CSV balnk file")
+
+    def test_wrong_delimiter_errorcode(self):
+        # test#3 --> blank_file
+        validate_instance = csv_validator.IsSourceFileCommaDelimited()
+        expected_error_code = validate_instance.execute(self.data_dir, "REALDATA_3005.csv", 123)
+        assert expected_error_code[0] == error_codes.SRC_FILE_WRONG_DELIMITER, "Validation Code for CSV file with wrong delimiter is incorrect"
+        print("Passed: TC3: Validation Code for CSV file with wrong delimiter")
 
     def test_noHeader_errorcode(self):
         # test#4 --> no headers (3009)

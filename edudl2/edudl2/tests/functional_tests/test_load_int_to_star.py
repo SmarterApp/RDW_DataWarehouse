@@ -58,6 +58,13 @@ class IntToStarFTest(UDLTestHelper):
         column_types = move_to_target.get_table_column_types(conf, list(table_map.keys())[0], list(column_map['fact_asmt_outcome'].keys()))
         move_to_target.explode_data_to_fact_table(conf, list(table_map.values())[0], list(table_map.keys())[0], column_map['fact_asmt_outcome'], column_types)
 
+        # handle deletion case
+        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        print(match_conf)
+        move_to_target.match_deleted_records(conf, match_conf)
+        move_to_target.update_deleted_record_rec_id(conf, match_conf)
+        move_to_target.is_any_deleted_records_missing(conf, match_conf)
+        #exit()
         # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
         tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}

@@ -64,6 +64,11 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][0], error_code_expected)
 
+    def test_simple_file_validator_wrong_delimiter(self):
+        validator = simple_file_validator.SimpleFileValidator('assessment')
+        results = validator.execute(self.data_dir, 'REALDATA_3005.csv', 1)
+        self.assertEqual(results[1][0], error_codes.SRC_FILE_WRONG_DELIMITER)
+
     def test_for_source_file_with_matching_columns(self):
         test_csv_fields = ['date_assessed', 'dob_student', 'type_school', 'address_student_city', 'address_student_line1', 'address_student_line2', 'address_student_zip',
                            'email_student', 'grade_asmt', 'grade_enrolled', 'guid_asmt', 'guid_asmt_location', 'guid_district', 'guid_school', 'guid_student',

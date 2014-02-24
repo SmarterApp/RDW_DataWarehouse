@@ -8,7 +8,7 @@ import datetime
 
 from celery.utils.log import get_task_logger
 from edudl2.udl2.celery import udl2_conf, celery
-from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import message_keys as mk, W_post_etl, W_all_done
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from edudl2.udl2_util.measurement import BatchTableBenchmark
@@ -31,6 +31,11 @@ def task(msg):
                                     task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
+    #For student registration load type, log and exit for now.
+    if msg[mk.LOAD_TYPE] == udl2_conf['load_type']['student_registration']:
+        task.request.callbacks[:] = [W_post_etl.task.s(), W_all_done.task.s()]
+        logger.info('LOAD_FROM_STAGING_TO_INT: %s load type found. Stopping further processing of current job.' % msg[mk.LOAD_TYPE])
+
     # Outgoing message to be piped to the file expander
     outgoing_msg = {}
     outgoing_msg.update(msg)
@@ -49,7 +54,7 @@ def generate_conf(guid_batch, load_type):
             mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-            mk.SOURCE_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
 
             # target database setting
             mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
@@ -58,7 +63,7 @@ def generate_conf(guid_batch, load_type):
             mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
-            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT_OUTCOME',
+            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
             mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]

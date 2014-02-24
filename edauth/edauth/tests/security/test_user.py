@@ -4,7 +4,7 @@ Created on Mar 14, 2013
 @author: dip
 '''
 import unittest
-from edauth.security.user import User
+from edauth.security.user import User, RoleRelation, UserContext
 from edauth.security.roles import Roles
 
 
@@ -113,6 +113,14 @@ class TestUser(unittest.TestCase):
         context = user.get_user_context()
         self.assertTrue(context['displayHome'])
 
+    def test_user_context(self):
+        rel_chain = [RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', '2'),
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', '3'),
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_2', 'NY', 'NY', '2', '4')]
+        uc = UserContext(rel_chain)
+        self.assertEqual(uc.get_districts('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1'), {'1'}, 'Must be district 1')
+        self.assertEqual(uc.get_schools('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1'), {'3', '2'}, 'Must be schools {2, 3}')
+        self.assertEqual(uc.get_schools('NY', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_2'), {'4'}, 'Must be school {4}')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

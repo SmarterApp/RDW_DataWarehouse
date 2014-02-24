@@ -20,6 +20,47 @@ class UserConstants():
     DISPLAYHOME = 'displayHome'
 
 
+class RoleRelation(object):
+    '''
+    Role/Relationship information
+    '''
+    def __init__(self, role, tenant, state_code, district_guid, school_guid):
+        self.role = role
+        self.tenant = tenant
+        self.state_code = state_code
+        self.district_guid = district_guid
+        self.school_guid = school_guid
+
+
+class UserContext(object):
+    '''
+    Entity Relationship information that can represent user context
+    '''
+    def __init__(self, role_inst_rel_list):
+        '''
+        Instantiates user context from RoleRelation array. We do not preserve inter-relationships between institutions
+        '''
+        self.__tenant_context_map = {row.tenant: {} for row in role_inst_rel_list}
+        for row in role_inst_rel_list:
+            tenant = self.__tenant_context_map.get(row.tenant)
+            role = tenant.get(row.role)
+            role = {'sc': set(), 'dg': set(), 'sg': set()} if role is None else role
+            role.get('sc').add(row.state_code)
+            role.get('dg').add(row.district_guid)
+            role.get('sg').add(row.school_guid)
+            tenant[row.role] = role
+            self.__tenant_context_map[row.tenant] = tenant
+
+    def get_states(self, tenant, role):
+        return self.__tenant_context_map[tenant][role]['sc']
+
+    def get_districts(self, tenant, role):
+        return self.__tenant_context_map[tenant][role]['dg']
+
+    def get_schools(self, tenant, role):
+        return self.__tenant_context_map[tenant][role]['sg']
+
+
 class User(object):
     '''
     Represents User information

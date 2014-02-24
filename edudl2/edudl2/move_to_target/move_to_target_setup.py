@@ -80,7 +80,9 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
     :param tenant_code: the tenants 2 letter code
     :return: A dictionary of the config details
     """
-    tenant_db_info = get_tenant_target_db_information(tenant_code)
+    tenant_target_db_info = get_tenant_target_db_information(tenant_code)
+    tenant_prod_db_info = get_tenant_prod_db_information(tenant_code)
+
     conf = {
         # add guid_batch from msg
         mk.GUID_BATCH: guid_batch,
@@ -103,7 +105,8 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
         mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant'],
     }
 
-    conf.update(tenant_db_info)
+    conf.update(tenant_target_db_info)
+    conf.update(tenant_prod_db_info)
 
     return conf
 
@@ -122,4 +125,21 @@ def get_tenant_target_db_information(tenant_code):
         mk.TARGET_DB_USER: udl2_conf['target_db_conn'][tenant_code]['db_user'],
         mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn'][tenant_code]['db_schema'],
         mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn'][tenant_code]['db_pass'],
+    }
+
+
+def get_tenant_prod_db_information(tenant_code):
+    """
+    If multi-tenancy is on look in the Master metadata table to pull out
+    information about this tenant, otherwise get the target db info from udl2_conf
+    :param tenant_code: The code (2 char name) for the give tenant
+    :return: A dictionary containing the relevant connection information
+    """
+    tenant_code = tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant']
+
+    return {
+        mk.PROD_DB_NAME: udl2_conf['prod_db_conn'][tenant_code]['db_database'],
+        mk.PROD_DB_USER: udl2_conf['prod_db_conn'][tenant_code]['db_user'],
+        mk.PROD_DB_SCHEMA: udl2_conf['prod_db_conn'][tenant_code]['db_schema'],
+        mk.PROD_DB_PASSWORD: udl2_conf['prod_db_conn'][tenant_code]['db_pass'],
     }

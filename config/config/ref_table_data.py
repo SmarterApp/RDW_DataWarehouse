@@ -8,6 +8,11 @@ YN = 'yn'
 
 COLUMNS = ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name')
 
+op_table_conf = {
+    'INT_SBAC_ASMT_OUTCOME',
+    'STG_SBAC_ASMT_OUTCOME'
+}
+
 ref_table_conf = {
     'column_definitions': COLUMNS,
     'column_mappings': [
@@ -125,6 +130,7 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'acc_streamline_mode', 'STG_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'clean', None),
         # Staging to Integration
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_batch', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', None, None),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'op', 'INT_SBAC_ASMT_OUTCOME', 'op', None, None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_asmt', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', None, 'substr({src_column}, 1, {length})'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_asmt_location', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt_location', None, 'substr({src_column}, 1, {length})'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'name_asmt_location', 'INT_SBAC_ASMT_OUTCOME', 'name_asmt_location', None, 'substr({src_column}, 1, {length})'),
@@ -204,6 +210,7 @@ ref_table_conf = {
         # Integration to Target
         ('4', 'INT_SBAC_ASMT', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_asmt', 'asmt_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
+        ('4', 'INT_SBAC_ASMT', 'guid_batch', 'dim_asmt', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT', 'type', 'dim_asmt', 'asmt_type', None, None),
         ('4', 'INT_SBAC_ASMT', 'period', 'dim_asmt', 'asmt_period', None, None),
         ('4', 'INT_SBAC_ASMT', 'year', 'dim_asmt', 'asmt_period_year', None, None),
@@ -243,6 +250,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT', "'99991231'", 'dim_asmt', 'to_date', None, None),
         ('4', 'INT_SBAC_ASMT', 'TRUE', 'dim_asmt', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_inst_hier', 'inst_hier_rec_id', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', 'dim_inst_hier', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_state', 'dim_inst_hier', 'state_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'code_state', 'dim_inst_hier', 'state_code', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_district', 'dim_inst_hier', 'district_guid', None, None),
@@ -255,6 +263,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'TRUE', 'dim_inst_hier', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_student', 'student_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_student', 'dim_student', 'student_guid', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', 'dim_student', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_student_first', 'dim_student', 'first_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_student_middle', 'dim_student', 'middle_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_student_last', 'dim_student', 'last_name', None, None),
@@ -311,7 +320,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4_min', 'fact_asmt_outcome', 'asmt_claim_4_score_range_min', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4_max', 'fact_asmt_outcome', 'asmt_claim_4_score_range_max', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'asmt_claim_4_perf_lvl', 'fact_asmt_outcome', 'asmt_claim_4_perf_lvl', None, None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', "''", 'fact_asmt_outcome', 'status', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', "op", 'fact_asmt_outcome', 'status', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'TRUE', 'fact_asmt_outcome', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', 'fact_asmt_outcome', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'asmt_type', 'fact_asmt_outcome', 'asmt_type', None, None),

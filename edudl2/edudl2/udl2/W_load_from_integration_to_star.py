@@ -10,7 +10,8 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import get_table_column_types,\
     explode_data_to_dim_table, calculate_spend_time_as_second,\
-    explode_data_to_fact_table
+    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, \
+    is_any_deleted_records_missing
 
 logger = get_task_logger(__name__)
 
@@ -100,6 +101,47 @@ def explode_to_fact(msg):
     udl_phase_step = 'INT --> FACT TABLE'
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], explode_to_fact.name, start_time, finish_time,
                                     udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(explode_to_fact.request.id),
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA])
+    benchmark.record_benchmark()
+
+    # Outgoing message to be piped to the file decrypter
+    outgoing_msg = {}
+    outgoing_msg.update(msg)
+    outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
+    return outgoing_msg
+
+
+@celery.task(name='udl2.W_load_from_integration_to_star.handle_deletions', base=Udl2BaseTask)
+def handle_deletions(msg):
+    '''
+    This is the celery task to match production database to find out deleted records in a batch
+    exists.
+    In batch, guid_batch is provided.
+    '''
+    logger.info('LOAD_FROM_INT_TO_STAR: Handle deletions in target tables.')
+    start_time = datetime.datetime.now()
+    guid_batch = msg[mk.GUID_BATCH]
+    phase_number = msg[mk.PHASE]
+    load_type = msg[mk.LOAD_TYPE]
+    tenant_name = msg[mk.TENANT_NAME]
+
+    # generate config dict
+    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    # get fact table column mapping
+    #fact_table_map, fact_column_map = get_table_and_column_mapping(conf, 'fact_')
+    #fact_table = list(fact_table_map.keys())[0]
+    #source_table_for_fact_table = list(fact_table_map.values())[0]
+    #fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
+
+    #affected_rows = explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
+    affected_rows = 0
+    finish_time = datetime.datetime.now()
+    _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
+
+    # Create benchmark object ant record benchmark
+    udl_phase_step = 'HANDLE DELETION IN FACT'
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], handle_deletions.name, start_time, finish_time,
+                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(handle_deletions.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 

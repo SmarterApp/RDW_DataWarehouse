@@ -263,6 +263,7 @@ UDL_METADATA = {
                 ('score_cut_point_2', False, 'smallint', '', True, "Cutpoint 2"),
                 ('score_cut_point_3', False, 'smallint', '', True, "Cutpoint 3"),
                 ('score_cut_point_4', False, 'smallint', '', True, "Cutpoint 4"),
+                ('effective_date', False, 'varchar(8)', '', True, "Effective Date of Assmt"),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],

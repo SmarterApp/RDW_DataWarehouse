@@ -128,6 +128,7 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'acc_scribe_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', 'clean', None),
         ('1', 'LZ_CSV', 'acc_speech_to_text_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', 'clean', None),
         ('1', 'LZ_CSV', 'acc_streamline_mode', 'STG_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'clean', None),
+        ('1', 'LZ_CSV', 'op', 'STG_SBAC_ASMT_OUTCOME', 'op', 'option', None),
         # Staging to Integration
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_batch', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', None, None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'op', 'INT_SBAC_ASMT_OUTCOME', 'op', None, None),
@@ -207,6 +208,7 @@ ref_table_conf = {
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', None, "to_number({src_column}, '99999')"),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', 'INT_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', None, "to_number({src_column}, '99999')"),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'INT_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', None, "to_number({src_column}, '99999')"),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'op', 'INT_SBAC_ASMT_OUTCOME', 'op', None, 'substr({src_column}, 1, {length})'),
         # Integration to Target
         ('4', 'INT_SBAC_ASMT', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_asmt', 'asmt_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),

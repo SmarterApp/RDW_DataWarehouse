@@ -7,6 +7,7 @@ from sqlalchemy.exc import NoSuchTableError
 import edudl2.udl2.message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from edudl2.udl2_util.file_util import extract_file_name
+from edudl2.udl2.Constants import TableConstants
 import logging
 
 from edudl2.udl2.udl2_connector import UDL2DBConnection
@@ -98,12 +99,16 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
                                                    'Exception in getting column mapping between csv_table and staging table -- ',
                                                    'file_loader', 'get_fields_map')
 
+    op_column_present = check_header_contains_op(csv_file)
+
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
     stg_columns = ['guid_batch', 'src_file_rec_num']
     transformation_rules = ['', '']
     if column_mapping:
         for mapping in column_mapping:
+            if mapping[1] == TableConstants.OP_COLUMN_NAME and not op_column_present:
+                continue
             csv_table_columns.append(mapping[0])
             stg_columns.append(mapping[1])
             transformation_rules.append(mapping[2])
@@ -167,6 +172,18 @@ def load_data_process(conn, conf):
     drop_fdw_tables(conn, conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE])
 
     return time_as_seconds
+
+
+def check_header_contains_op(csv_file):
+    """
+    Open the csv file and determine if the file contains the OP column
+    :param csv_file: the name of the csv file
+    :returns True if the file contains the 'op' column, False otherwise
+    """
+    with open(csv_file, 'r') as fp:
+        csv_reader = csv.reader(fp)
+        header = next(csv_reader)
+        return TableConstants.OP_COLUMN_NAME in header
 
 
 def load_file(conf):

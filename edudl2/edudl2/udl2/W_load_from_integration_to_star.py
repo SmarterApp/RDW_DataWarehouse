@@ -106,7 +106,7 @@ def explode_to_fact(msg):
     # Outgoing message to be piped to the file decrypter
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
+    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows})
     return outgoing_msg
 
 
@@ -147,5 +147,5 @@ def handle_deletions(msg):
     # Outgoing message to be piped to the file decrypter
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
+    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows})
     return outgoing_msg

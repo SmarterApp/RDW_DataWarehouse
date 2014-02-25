@@ -102,11 +102,11 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.assertEquals(student_data_tuple[state_name_col], 'Dummy State', 'State Name did not match')
         self.assertEquals(student_data_tuple[district_name_col], 'West Podunk School District', 'District Name did not match')
         self.assertEquals(student_data_tuple[school_guid_col], '3333-3333-3333-3333', 'School Id did not match')
-        self.assertEquals(student_data_tuple[gender_col], 'Female', 'Gender did not match')
+        self.assertEquals(student_data_tuple[gender_col], 'female', 'Gender did not match')
         self.assertEquals(student_data_tuple[dob_col], '1999-12-22', 'Date of Birth did not match')
         self.assertTrue(student_data_tuple[eth_hsp_col], 'Hispanic Ethnicity should be true')
         self.assertFalse(student_data_tuple[sec504_col], 'Section504 status should be false')
-        self.assertEquals(student_data_tuple[year_col], '2015', 'Academic Year did not match')
+        self.assertEquals(student_data_tuple[year_col], 2015, 'Academic Year did not match')
         self.assertEquals(student_data_tuple[reg_sys_id_col], '800b3654-4406-4a90-9591-be84b67054df', 'Test registration system\'s id did not match')
 
     #Run the UDL pipeline
@@ -148,8 +148,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_staging_table()
         self.validate_json_integration_table()
         self.validate_csv_integration_table()
-        #self.validate_stu_reg_target_table()
-        #self.validate_student_data()
+        self.validate_stu_reg_target_table()
+        self.validate_student_data()
 
 if __name__ == '__main__':
     unittest.main()

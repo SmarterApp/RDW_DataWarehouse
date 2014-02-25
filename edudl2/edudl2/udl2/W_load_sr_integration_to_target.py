@@ -20,19 +20,19 @@ def task(msg):
     load_type = msg[mk.LOAD_TYPE]
 
     source_tables = [udl2_conf['udl2_db']['csv_integration_tables'][load_type], udl2_conf['udl2_db']['json_integration_tables'][load_type]]
-    target_table = 'student_reg'
+    target_table = udl2_conf['target_db']['sr_target_table']
 
     conf = generate_conf(guid_batch, msg[mk.PHASE], load_type, msg[mk.TENANT_NAME])
-    #affected_rows = move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
+    affected_rows = move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
 
     end_time = datetime.datetime.now()
 
     # benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time, task_id=str(task.request.id),
-                                    working_schema="", size_records=0)
+                                    working_schema="", size_records=affected_rows[0])
     benchmark.record_benchmark()
 
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    #outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows})
+    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows[0]})
     return outgoing_msg

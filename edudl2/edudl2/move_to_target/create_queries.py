@@ -224,7 +224,7 @@ def get_dim_table_mapping_query(schema_name, table_name, phase_number):
     Function to get target table and source table mapping in a specific udl phase
     '''
     sql_template = "SELECT distinct target_table, source_table " + \
-                   "FROM {source_schema_and_table} " +\
+                   "FROM {source_schema_and_table} " + \
                    "WHERE phase={phase_number}"
     return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
                                phase_number=phase_number)
@@ -236,14 +236,14 @@ def get_column_mapping_query(schema_name, table_name, phase_number, target_table
     '''
     if source_table:
         sql_template = "SELECT distinct target_column, source_column " + \
-                    "FROM {source_schema_and_table} " + \
-                    "WHERE target_table='{target_table}' and source_table='{source_table}'"
+                "FROM {source_schema_and_table} " + \
+                "WHERE target_table='{target_table}' and source_table='{source_table}'"
         return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                    target_table=target_table, source_table=source_table)
+                                   target_table=target_table, source_table=source_table)
     else:
         sql_template = "SELECT distinct target_column, source_column " + \
-                    "FROM {source_schema_and_table} " + \
-                    "WHERE target_table='{target_table}'"
+                "FROM {source_schema_and_table} " + \
+                "WHERE target_table='{target_table}'"
         return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
                                    target_table=target_table)
 

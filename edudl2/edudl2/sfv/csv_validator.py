@@ -334,19 +334,18 @@ class IsCsvWellFormed(object):
                         line = next(file_reader)
                     # execute to make sure we haven't hit the end of the file
                     except StopIteration:
-                        return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+                        return error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
 
                     # validate the number of data entries
                     if len(line) != num_headers or self._empty_header_has_data(headers, line):
-                        return (error_codes.SRC_FILE_HEADERS_MISMATCH_DATA,
-                                dir_path, file_name, batch_sid)
+                        return error_codes.SRC_FILE_HEADERS_MISMATCH_DATA, dir_path, file_name, batch_sid
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
 
         # we passed all tests
-        return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+        return error_codes.STATUS_OK, dir_path, file_name, batch_sid
 
     def _empty_header_has_data(self, headers, line):
         """
@@ -388,13 +387,13 @@ class DoesSourceFileHaveData(object):
             next(file_reader)
             next(file_reader)
         except StopIteration:
-            return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+            return error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
 
-        return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+        return error_codes.STATUS_OK, dir_path, file_name, batch_sid
 
 
 class DoesSourceFileInExpectedFormat(object):
@@ -429,13 +428,15 @@ class DoesSourceFileInExpectedFormat(object):
             file_to_validate.close()
             header_row = [column.lower() for column in header_row]
             if not self.are_eq(header_row, self.expected_csv_fields):
-                return (error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid)
+                new_expected = [x for x in self.expected_csv_fields if x != 'op']
+                if not self.are_eq(header_row, new_expected):
+                    return error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid
 
         except StopIteration:
-            return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+            return error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
 
-        return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+        return error_codes.STATUS_OK, dir_path, file_name, batch_sid

@@ -31,11 +31,6 @@ def task(msg):
                                     task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
-    #For student registration load type, log and exit for now.
-    if msg[mk.LOAD_TYPE] == udl2_conf['load_type']['student_registration']:
-        task.request.callbacks[:] = [W_post_etl.task.s(), W_all_done.task.s()]
-        logger.info('LOAD_FROM_STAGING_TO_INT: %s load type found. Stopping further processing of current job.' % msg[mk.LOAD_TYPE])
-
     # Outgoing message to be piped to the file expander
     outgoing_msg = {}
     outgoing_msg.update(msg)

@@ -52,7 +52,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_with_not_stated_count_district_view(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
         results = ComparingPopStatReport(**testParam).get_report()
         self.assertEqual(results['total'], 47)
@@ -64,9 +64,9 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_with_not_stated_count_state_view(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 907)
+        self.assertEqual(results['total'], 664)
         self.assertEqual(results['dmgPrg504'], 7)
         self.assertEqual(results['dmgPrgIep'], 9)
         self.assertEqual(results['dmgPrgLep'], 9)
@@ -75,7 +75,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_with_not_stated_count_school_view(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '242'
         results = ComparingPopStatReport(**testParam).get_report()

@@ -83,7 +83,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
             self.assertIn("fact_asmt_outcome.state_code = 'UT'", str_query)
 
     def test_get_extract_assessment_query_results(self):
-        params = {'stateCode': 'NY',
+        params = {'stateCode': 'NC',
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',

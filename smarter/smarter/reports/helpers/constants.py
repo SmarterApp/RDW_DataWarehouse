@@ -10,7 +10,7 @@ class AssessmentType():
     constants for asmt types
     '''
     SUMMATIVE = 'SUMMATIVE'
-    COMPREHENSIVE_INTERIM = 'INTERIM COMPREHENSIVE'
+    INTERIM_COMPREHENSIVE = 'INTERIM COMPREHENSIVE'
 
 
 class Constants():
@@ -59,6 +59,7 @@ class Constants():
     UNFILTERED_TOTAL = 'unfilteredTotal'
     NAME = 'name'
     ID = 'id'
+    HASINTERIM = 'hasInterim'
     ROWID = 'rowId'
     RESULTS = 'results'
     DIM_INST_HIER = 'dim_inst_hier'

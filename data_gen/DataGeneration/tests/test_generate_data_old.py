@@ -350,7 +350,7 @@
 #             student.first_name = 'first_%d' % i
 #             student.last_name = 'last_%d' % i
 #             student.address_1 = '%d Main St.' % i
-#             student.city = 'New York'
+#             student.city = 'North Carolina'
 #             student.zip_code = 12345
 #             student.gender = 'Male'
 #             student.email = 'email_%d' % i

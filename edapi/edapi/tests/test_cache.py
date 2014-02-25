@@ -33,7 +33,7 @@ class TestCache(unittest.TestCase):
         cache_managers.clear()
 
     def test_get_cache_key(self):
-        args = 'NY'
+        args = 'NC'
         key = get_cache_key(args, 'dummy_method_name')
         self.assertIsNotNone(key)
         self.assertIsInstance(key, str)
@@ -44,21 +44,21 @@ class TestCache(unittest.TestCase):
         self.assertIsInstance(key, str)
 
     def test_region_invalidate_invalid_region(self):
-        self.assertRaises(KeyError, region_invalidate, dummy_method, 'idontexist', 'ny')
+        self.assertRaises(KeyError, region_invalidate, dummy_method, 'idontexist', 'NC')
 
     def test_region_invalidate_invalid_func(self):
-        self.assertRaises(KeyError, region_invalidate, dummy_method, 'unittest', 'ny')
+        self.assertRaises(KeyError, region_invalidate, dummy_method, 'unittest', 'nc')
 
     def test_region_invalidate(self):
         before_invalidate = self.get_cache_key_count()
-        region_invalidate(dummy_cache_method, 'dummyunittest', 'nyc')
+        region_invalidate(dummy_cache_method, 'dummyunittest', 'nc')
         after_flush = self.get_cache_key_count()
         self.assertTrue(before_invalidate <= after_flush)
 
     def test_region_invalidate_valid_caching(self):
-        dummy_cache_method('ny')
+        dummy_cache_method('nc')
         before_invalidate = self.get_cache_key_count()
-        region_invalidate(dummy_cache_method, 'dummyunittest', 'ny')
+        region_invalidate(dummy_cache_method, 'dummyunittest', 'nc')
         after_flush = self.get_cache_key_count()
         self.assertEqual(before_invalidate - 1, after_flush)
 

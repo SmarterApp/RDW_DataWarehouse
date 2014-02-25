@@ -46,41 +46,41 @@ class TestContext(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.delete())
 
     def testStateContext(self):
-        results = get_breadcrumbs_context(state_code='NY')
+        results = get_breadcrumbs_context(state_code='NC')
         self.assertEqual(len(results['items']), 2)
         self.assertEqual(results['items'][0]['name'], 'Home')
         self.assertEqual(results['items'][0]['type'], 'home')
-        self.assertEqual(results['items'][1]['name'], 'New York')
-        self.assertEqual(results['items'][1]['id'], 'NY')
+        self.assertEqual(results['items'][1]['name'], 'North Carolina')
+        self.assertEqual(results['items'][1]['id'], 'NC')
         self.assertEqual(results['items'][1]['type'], 'state')
 
     def testDistrictContext(self):
-        results = get_breadcrumbs_context(state_code='NY', district_guid='228')
+        results = get_breadcrumbs_context(state_code='NC', district_guid='228')
         self.assertEqual(len(results['items']), 3)
-        self.assertEqual(results['items'][1]['name'], 'New York')
+        self.assertEqual(results['items'][1]['name'], 'North Carolina')
         self.assertEqual(results['items'][1]['type'], 'state')
         self.assertEqual(results['items'][2]['name'], 'Sunset School District')
         self.assertEqual(results['items'][2]['type'], 'district')
         self.assertEqual(results['items'][2]['id'], '228')
 
     def testSchoolContext(self):
-        results = get_breadcrumbs_context(state_code='NY', district_guid='228', school_guid='242')
+        results = get_breadcrumbs_context(state_code='NC', district_guid='228', school_guid='242')
         self.assertEqual(len(results['items']), 4)
-        self.assertEqual(results['items'][1]['name'], 'New York')
+        self.assertEqual(results['items'][1]['name'], 'North Carolina')
         self.assertEqual(results['items'][2]['name'], 'Sunset School District')
         self.assertEqual(results['items'][3]['name'], 'Sunset - Eastern Elementary')
         self.assertEqual(results['items'][3]['id'], '242')
         self.assertEqual(results['items'][3]['type'], 'school')
 
     def testGradeContext(self):
-        results = get_breadcrumbs_context(state_code='NY', district_guid='228', school_guid='242', asmt_grade='3')
+        results = get_breadcrumbs_context(state_code='NC', district_guid='228', school_guid='242', asmt_grade='3')
         self.assertEqual(len(results['items']), 5)
         self.assertEqual(results['items'][4]['name'], '3')
         self.assertEqual(results['items'][4]['id'], '3')
         self.assertEqual(results['items'][4]['type'], 'grade')
 
     def testStudentContext(self):
-        results = get_breadcrumbs_context(state_code='NY', district_guid='228', school_guid='242', asmt_grade='3', student_name='StudentName')
+        results = get_breadcrumbs_context(state_code='NC', district_guid='228', school_guid='242', asmt_grade='3', student_name='StudentName')
         self.assertEqual(len(results['items']), 6)
         self.assertEqual(results['items'][5]['name'], 'StudentName')
         self.assertEqual(results['items'][5]['type'], 'student')

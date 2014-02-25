@@ -288,13 +288,13 @@ if __name__ == '__main__':
     out_files = initialize_csv_file(conf_dict, out_keys, out_path)
     print(out_files)
     student_info1 = MakeTemp(asmt_guids=1, student_guid=2, first_name='bill', last_name='nye', middle_name='tom',
-                             address_1='1 bob st.', address_2='', city='new york', zip_code=12345, gender='m',
+                             address_1='1 bob st.', address_2='', city='North Carolina', zip_code=12345, gender='m',
                              email='b.n@email.com', dob='11111999', grade=4, asmt_dates_taken=date.today(),
                              asmt_scores={'math': MakeTemp(claim_scores=[MakeTemp(claim_score=1200), MakeTemp(claim_score=1200),
                                                                          MakeTemp(claim_score=1200), MakeTemp(claim_score=1200)]),
                                           'ela': MakeTemp(claim_scores=[MakeTemp(claim_score=1300), MakeTemp(claim_score=1300),
                                                                         MakeTemp(claim_score=1300)])})
-    state1 = MakeTemp(state_name='New York', state_code="NY")
+    state1 = MakeTemp(state_name='North Carolina', state_code="NC")
     school1 = MakeTemp(school_guid=123, school_name='school123', district_name='district1', district_guid='d123',
                        school_category='elementary')
     output_data(conf_dict, out_keys, out_files, school1, student_info1, state1)

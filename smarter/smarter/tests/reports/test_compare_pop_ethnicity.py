@@ -53,7 +53,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_hispanic(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_HISPANIC]
@@ -63,7 +63,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_blk(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_BLACK]
@@ -74,7 +74,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_asn(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN]
@@ -85,7 +85,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_wht(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_WHITE]
@@ -96,7 +96,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_ami(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_AMERICAN]
@@ -107,7 +107,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_pcf(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_PACIFIC]
@@ -118,7 +118,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_two_or_more(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_MULTI]
@@ -129,7 +129,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_not_stated(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_NOT_STATED]
@@ -140,7 +140,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_blk_wht(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN, filters.FILTERS_ETHNICITY_WHITE]
@@ -151,7 +151,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
 
     def test_comparing_populations_ethnicity_all(self):
         testParam = {}
-        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_AMERICAN,

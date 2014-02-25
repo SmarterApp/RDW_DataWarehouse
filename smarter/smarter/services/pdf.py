@@ -133,7 +133,7 @@ def get_pdf_content(params):
         raise ForbiddenError('Access Denied')
 
     asmt_type = asmt_type.upper()
-    if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM]:
+    if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]:
         raise InvalidParameterError('Unknown assessment type')
 
     report = pyramid.threadlocal.get_current_request().matchdict['report']

@@ -3,6 +3,13 @@ from edudl2.udl2 import message_keys as mk
 
 
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
+    '''
+    Create query to find distict asmt_guid for a given batch in source table
+    @schema_name:
+    @table_name:
+    @column_name:
+    @guid_batch
+    '''
     sql_template = "SELECT DISTINCT {guid_column_name_in_source} " + \
                    "FROM {source_schema_and_table} " + \
                    "WHERE guid_batch=\'{guid_batch}\'"
@@ -13,6 +20,10 @@ def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_b
 
 def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target,
                                       guid_column_value):
+    '''
+    Create query to find distict asmt_rec_id for a given batch in source table
+
+    '''
     sql_template = "SELECT DISTINCT {rec_id_column_name} " + \
                    "FROM {source_schema_and_table} " + \
                    "WHERE {guid_column_name_in_target}=\'{guid_column_value_got}\'"
@@ -239,22 +250,59 @@ def get_column_mapping_query(schema_name, table_name, phase_number, target_table
 
 def find_unmatched_deleted_fact_asmt_outcome_row(schema_name, table_name, batch_guid, status_code):
     '''
-    Function to search any record that should be deleted/updated but has no record in production database
+    create a query to search any record that should be deleted/updated but has no record in production database
     '''
-    sql_tempate = "SELECT status FROM {source_schema_and_table} " + \
-                  "WHERE status = '{status}' and batch_guid = '{batch_guid}'"
-    return sql_tempate.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                              status=status_code,
-                              batch_guid=batch_guid)
+    sql_template = "SELECT status FROM {source_schema_and_table} " + \
+                   "WHERE status in ({status}) and batch_guid = '{batch_guid}'"
+    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                               status=",".join(["'{i}'".format(i=s[1]) for s in status_code]),
+                               batch_guid=batch_guid)
 
 
-def update_matched_row_with_prod_rec_id(conf, match_conf):
+def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matched_columns, status_code):
     '''
-    Function to update asmt_rec_id to production table asmt_rec_id when it is matched to our criteria
+    create a query to find all delete/updated record in current batch
     '''
-    update_sql = "WITH AS PROD " + \
-                 "UPDATE {source_schema_and_table} SET status = {found}, asmnt_outcome rec_id = {} FROM   " + \
-                 "WHERE " + \
-                 "".format()
+    cols = [m[0] for m in matched_columns]
+    cols.extend(list(set([s[0] for s in status_code])))
+    sql_template = "SELECT {cols} " +\
+                   "FROM {source_schema_and_table} " + \
+                   "WHERE batch_guid = '{batch_guid}' AND status in ({status})"
+    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                               cols=" ,".join(cols),
+                               status=", ".join(["'{i}'".format(i=s[1]) for s in status_code]),
+                               batch_guid=batch_guid)
 
-    return update_sql
+
+def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_columns, matched_status, matched_values):
+    '''
+    create a query to find all delete/updated record in current batch, get the rec_id back
+    '''
+    cols = [c[1] for c in matched_columns]
+    cols.extend(list(set([s for s in matched_status])))
+    condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_values[c]) for c in cols])
+    sql_template = "SELECT asmnt_rec_id, {cols} " + \
+                   "FROM {source_schame_and_table} " + \
+                   "WHERE {condition_clause}"
+
+    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                               cols=cols,
+                               condition_clause=condition_clause)
+
+
+def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matched_columns, matched_status,
+                                         matched_values):
+    '''
+    create a query to find all delete/updated record in current batch
+    '''
+    cols = [c[1] for c in matched_columns]
+    cols.extend(list(set([s[0] for s in matched_status])))
+    condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_values[c]) for c in cols])
+    prod_rec_id = matched_values['asmnt_rec_id']
+    sql_template = "UPDATE {source_schema_and_table} " \
+                   "SET asmnt_outcome_rec_id = {prod_rec_id}, status = 'C' || status " +\
+                   "WHERE batch_guid = '{batch_guid}' AND {condition_clause} "
+    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                               prod_rec_id=prod_rec_id,
+                               batch_guid=batch_guid,
+                               condition_clause=condition_clause)

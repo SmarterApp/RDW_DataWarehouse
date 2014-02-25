@@ -15,11 +15,15 @@ from edschema.metadata.ed_metadata import generate_ed_metadata
 from edudl2.udl2_util.database_util import connect_db, get_sqlalch_table_object
 from edudl2.move_to_target.move_to_target_setup import get_tenant_target_db_information
 from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
+from edudl2.udl2.W_load_sr_integration_to_target import task as load_student_registration_data_to_target
 
 data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 ASMT_OUTCOME_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')
 ASMT_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT.csv')
-BATCH_GUID = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
+BATCH_GUID = {'assessment': '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7',
+              'student_registration': '75f1aa80-a459-406a-8529-c357ad0996ad'}
+SR_FILE = os.path.join(data_dir, 'student_registration_data', 'INT_SBAC_STU_REG.csv')
+SR_META_FILE = os.path.join(data_dir, 'student_registration_data', 'INT_SBAC_STU_REG_META.csv')
 
 
 class FTestMoveToTarget(unittest.TestCase):
@@ -103,10 +107,18 @@ class FTestMoveToTarget(unittest.TestCase):
                                                            'dim_student')
         self.target_dim_asmt = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
                                                         'dim_asmt')
+        self.int_sr_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
+                                                     'INT_SBAC_STU_REG')
+        self.int_sr_meta_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
+                                                          'INT_SBAC_STU_REG_META')
+        self.target_sr_table = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
+                                                        'student_reg')
 
     def empty_int_tables(self):
         self.udl2_conn.execute(self.int_asmt_table.delete())
         self.udl2_conn.execute(self.int_asmt_outcome_table.delete())
+        self.udl2_conn.execute(self.int_sr_table.delete())
+        self.udl2_conn.execute(self.int_sr_meta_table.delete())
 
     ##
     # Test kickoff and tests
@@ -114,7 +126,9 @@ class FTestMoveToTarget(unittest.TestCase):
     def test_multi_tenant_target_database(self):
         self.check1_get_tenant_target_db_information_multi_tenant_on()
         self.check2_get_tenant_target_db_information_multi_tenant_off()
-        self.check3_entire_load_to_star_stage_with_multi_tenancy()
+        self.check3_entire_assessment_load_to_star_stage_with_multi_tenancy()
+        #TODO: Uncomment following line when functionality works
+        #self.check4_entire_student_registration_load_to_target_stage_with_multi_tenancy()
 
     def check1_get_tenant_target_db_information_multi_tenant_on(self):
         udl2_conf['multi_tenant']['active'] = True
@@ -141,24 +155,40 @@ class FTestMoveToTarget(unittest.TestCase):
 
         self.assertDictEqual(result, expected)
 
-    def check3_entire_load_to_star_stage_with_multi_tenancy(self):
+    def check3_entire_assessment_load_to_star_stage_with_multi_tenancy(self):
         udl2_conf['multi_tenant']['active'] = True
-        self.verify_target_schema(True)
-        self.read_csv_data_to_dict()
-        msg = self.create_msg()
+        self.verify_target_assessment_schema(True)
+        self.read_csv_data_to_dict(ASMT_OUTCOME_FILE, ASMT_FILE, self.int_asmt_outcome_table, self.int_asmt_table)
+        msg = self.create_msg('assessment')
         explode_to_dims(msg)
         explode_to_fact(msg)
-        self.verify_target_schema(False)
+        self.verify_target_assessment_schema(False)
+
+    def check4_entire_student_registration_load_to_target_stage_with_multi_tenancy(self):
+        udl2_conf['multi_tenant']['active'] = True
+        self.verify_target_student_registration_schema(True)
+        self.read_csv_data_to_dict(SR_FILE, SR_META_FILE, self.int_sr_table, self.int_sr_meta_table)
+        msg = self.create_msg('student_registration')
+        load_student_registration_data_to_target(msg)
+        self.verify_target_student_registration_schema(False)
 
     ##
     # Helper methods
     ##
-    def verify_target_schema(self, is_empty=False):
+    def verify_target_assessment_schema(self, is_empty=False):
         counts = self.get_counts()
         if is_empty:
-            self.assertEqual(counts, (0, 0, 0, 0))
+            self.assertEqual(counts[:4], (0, 0, 0, 0))
         else:
-            self.assertEqual(counts, (99, 1, 71, 94))
+            self.assertEqual(counts[:4], (99, 1, 71, 94))
+        return
+
+    def verify_target_student_registration_schema(self, is_empty=False):
+        counts = self.get_counts()
+        if is_empty:
+            self.assertEqual(counts[4], 0)
+        else:
+            self.assertEqual(counts[4], 10)
         return
 
     def get_counts(self):
@@ -168,27 +198,29 @@ class FTestMoveToTarget(unittest.TestCase):
         asmt_selct = select([func.count()]).select_from(self.target_dim_asmt)
         inst_select = select([func.count()]).select_from(self.target_dim_inst)
         stud_select = select([func.count()]).select_from(self.target_dim_student)
+        sr_select = select([func.count()]).select_from(self.target_sr_table)
 
         fact_count = new_conn.execute(fact_select).fetchall()[0][0]
         asmt_count = new_conn.execute(asmt_selct).fetchall()[0][0]
         inst_count = new_conn.execute(inst_select).fetchall()[0][0]
         stud_count = new_conn.execute(stud_select).fetchall()[0][0]
+        sr_count = new_conn.execute(sr_select).fetchall()[0][0]
         new_conn.close()
 
-        return fact_count, asmt_count, inst_count, stud_count
+        return fact_count, asmt_count, inst_count, stud_count, sr_count
 
-    def read_csv_data_to_dict(self):
-        asmt_outcome_dict_list = get_csv_dict_list(ASMT_OUTCOME_FILE)
-        asmt_dict_list = get_csv_dict_list(ASMT_FILE)
+    def read_csv_data_to_dict(self, data_file, metadata_file, data_table, metadata_table):
+        data_dict_list = get_csv_dict_list(data_file)
+        metadata_dict_list = get_csv_dict_list(metadata_file)
 
-        self.udl2_conn.execute(self.int_asmt_table.insert(), asmt_dict_list)
-        self.udl2_conn.execute(self.int_asmt_outcome_table.insert(), asmt_outcome_dict_list)
+        self.udl2_conn.execute(metadata_table.insert(), metadata_dict_list)
+        self.udl2_conn.execute(data_table.insert(), data_dict_list)
 
-    def create_msg(self):
+    def create_msg(self, type):
         return {
             mk.BATCH_TABLE: udl2_conf['udl2_db']['batch_table'],
-            mk.GUID_BATCH: BATCH_GUID,
-            mk.LOAD_TYPE: 'assessment',
+            mk.GUID_BATCH: BATCH_GUID[type],
+            mk.LOAD_TYPE: udl2_conf['load_type'][type],
             mk.PHASE: 4,
             mk.TENANT_NAME: self.tenant_info['tenant_code'],
         }

@@ -60,11 +60,10 @@ class IntToStarFTest(UDLTestHelper):
 
         # handle deletion case
         match_conf = move_to_target_setup.get_move_to_target_conf()[4]
-        print(match_conf)
-        move_to_target.match_deleted_records(conf, match_conf)
-        move_to_target.update_deleted_record_rec_id(conf, match_conf)
-        move_to_target.is_any_deleted_record_missing(conf, match_conf)
-        #exit()
+        matched_results = move_to_target.match_deleted_records(conf, match_conf)
+        move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_results)
+        move_to_target.check_mismatched_deletions(conf, match_conf)
+
         # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
         tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}

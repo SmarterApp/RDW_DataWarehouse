@@ -176,13 +176,15 @@ define [
     # display empty message
     return '' if not subject
     subject = processSubject options, rowObject
+    
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject
       labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
       export: subject.export
-      insufficient: subject.insufficient
-      insufficientText: subject.insufficientText
+      hasTextReplacement: subject.hasTextReplacement
+      displayText: subject.displayText
+      displayTextClass: subject.displayTextClass ? ''
     }
 
   # Used to display total population count
@@ -190,8 +192,8 @@ define [
     subject = processSubject options, rowObject
     return Mustache.to_html TOTAL_POPULATION_TEMPLATE, {
       subject: subject
-      insufficient: subject.insufficient
-      insufficientText: subject.insufficientText
+      hasTextReplacement: subject.hasTextReplacement
+      displayText: subject.displayText
       labels: options.colModel.labels
       export: subject.export
     }
@@ -200,12 +202,21 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     exportable = options.colModel.export
-    insufficient = parseInt(subject.total) <= 0
+    total = parseInt(subject.total)
+    # No data when total is 0, Insufficient when total is -1
+    insufficient = total < 0
+    noData = total is 0
+    interim = subject.hasInterim ? false
     subject.export = 'edwareExportColumn' if exportable
     subject.labels = options.colModel.labels
-    subject.insufficient = insufficient
-    insufficientText = options.colModel.labels['insufficient_data']
-    subject.insufficientText = insufficientText
+    subject.hasTextReplacement = insufficient || interim || noData
+    if interim
+      subject.displayText = options.colModel.labels['interim_data_only']
+      subject.displayTextClass = 'interimOnly'
+    else if insufficient
+      subject.displayText = options.colModel.labels['insufficient_data']
+    else if noData
+      subject.displayText = options.colModel.labels['no_data_available']
     subject
 
   removeHTMLTags = (str) ->

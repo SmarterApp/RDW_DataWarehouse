@@ -22,19 +22,19 @@ class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
         pass
 
     def test_prepare_pre_pdf(self):
-        results = prepare_pre_pdf(self.tenant, 'NY', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
+        results = prepare_pre_pdf(self.tenant, 'NC', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
         self.assertEqual(43, len(results))
-        results = prepare_pre_pdf(self.tenant, 'NY', '90901b70-ddaa-11e2-a95d-68a86d3c2f82')
-        self.assertEqual(470, len(results))
-        results = prepare_pre_pdf(self.tenant, 'NY', 'd2d02660-ddd7-11e2-a28f-0800200c9a66')
+        results = prepare_pre_pdf(self.tenant, 'NC', '90901b70-ddaa-11e2-a95d-68a86d3c2f82')
+        self.assertEqual(361, len(results))
+        results = prepare_pre_pdf(self.tenant, 'NC', 'd2d02660-ddd7-11e2-a28f-0800200c9a66')
         self.assertEqual(1, len(results))
 
     def test_prepare_pre_pdf_with_future_date(self):
-        results = prepare_pre_pdf(self.tenant, 'NY', 'd1d7d814-ddb1-11e2-b3dd-68a86d3c2f82')
+        results = prepare_pre_pdf(self.tenant, 'NC', 'd1d7d814-ddb1-11e2-b3dd-68a86d3c2f82')
         self.assertEqual(0, len(results))
 
     def test_trigger_pre_pdf_with_empty_results(self):
-        triggered = trigger_pre_pdf({}, self.tenant, 'NY', [])
+        triggered = trigger_pre_pdf({}, self.tenant, 'NC', [])
         self.assertFalse(triggered)
 
     def test_trigger_pre_pdf(self):
@@ -55,7 +55,7 @@ class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
         setup_celery(settings, "celery")
 
         results = [{'school_guid': '242', 'district_guid': '228', 'asmt_period_year': '2012', 'asmt_grade': '3', 'student_guid': '34140997-8949-497e-bbbb-5d72aa7dc9cb'}]
-        triggered = trigger_pre_pdf(settings, 'NY', self.tenant, results)
+        triggered = trigger_pre_pdf(settings, 'NC', self.tenant, results)
         self.assertTrue(triggered)
 
 

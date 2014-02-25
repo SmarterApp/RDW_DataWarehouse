@@ -239,8 +239,8 @@ class TestGenerateEntities(unittest.TestCase):
 
     def test_generate_institution_hierarchy(self):
         params = {
-            'state_name': 'New York',
-            'state_code': 'NY',
+            'state_name': 'North Carolina',
+            'state_code': 'NC',
             'district_guid': 1,
             'district_name': 'district_1',
             'school_guid': 2,
@@ -265,7 +265,7 @@ class TestGenerateEntities(unittest.TestCase):
         params = {
             'section_guid': 1,
             'grade': 9,
-            'state_code': 'NY',
+            'state_code': 'NC',
             'district_guid': 2,
             'school_guid': 3,
             'school_name': 'school_2',
@@ -307,7 +307,7 @@ class TestGenerateEntities(unittest.TestCase):
             'number_of_students': 5,
             'section_guid': uuid4(),
             'grade': 5,
-            'state_code': 'NY',
+            'state_code': 'NC',
             'district_guid': uuid4(),
             'school_guid': uuid4(),
             'school_name': 'P.S. 118',
@@ -324,7 +324,7 @@ class TestGenerateEntities(unittest.TestCase):
         params = {
             'subject_name': 'ELA',
             'grade': 9,
-            'state_code': 'NY',
+            'state_code': 'NC',
             'district_guid': 1,
             'school_guid': 2,
             'section_number': 1,
@@ -352,7 +352,7 @@ class TestGenerateEntities(unittest.TestCase):
             'number_of_sections': 9,
             'subject_name': 'ELA',
             'grade': 9,
-            'state_code': 'NY',
+            'state_code': 'NC',
             'district_guid': uuid4(),
             'school_guid': uuid4(),
             'from_date': date(2013, 4, 15),
@@ -399,7 +399,7 @@ class TestGenerateEntities(unittest.TestCase):
     def test_generate_staff(self):
         params = {
             'hier_user_type': 'Staff',
-            'state_code': 'NY',
+            'state_code': 'NC',
             'district_guid': 1,
             'school_guid': 2,
             'section_guid': 3,
@@ -424,7 +424,7 @@ class TestGenerateEntities(unittest.TestCase):
         params = {
             'number_of_staff': 8,
             'hier_user_type': 'Teacher',
-            'state_code': 'NY',
+            'state_code': 'NC',
             'district_guid': uuid4(),
             'school_guid': uuid4(),
             'section_guid': uuid4(),
@@ -447,7 +447,7 @@ class DummyClass:
 #             'asmt_rec_id': 10,
 #             'student_guid': uuid4(),
 #             'teacher_guid': uuid4(),
-#             'state_code': 'NY',
+#             'state_code': 'NC',
 #             'district_guid': uuid4(),
 #             'school_guid': uuid4(),
 #             'section_guid': uuid4(),
@@ -491,7 +491,7 @@ class DummyClass:
 #     def test_generate_fact_assessment_outcomes(self):
 #         section_guid = uuid4()
 #         grade = 10
-#         state_code = 'NY'
+#         state_code = 'NC'
 #         district_guid = uuid4()
 #         school_guid = uuid4()
 #         from_date = date(2013, 4, 23)

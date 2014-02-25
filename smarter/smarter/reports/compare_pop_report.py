@@ -22,6 +22,9 @@ from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
+from copy import deepcopy
+import time
+from collections import OrderedDict, namedtuple
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -46,11 +49,6 @@ DEFAULT_MIN_CELL_SIZE = 0
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        },
-        Constants.ASMTTYPE: {
-            "type": "string",
-            "required": False,
-            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
         }
     }, FILTERS_CONFIG))
 @user_info
@@ -66,11 +64,55 @@ def get_comparing_populations_report(params):
     if has_filters(params):
         no_filter_params = {k: v for k, v in params.items() if k not in FILTERS_CONFIG}
         unfiltered = ComparingPopReport(**no_filter_params).get_report()
-        report = merge_results(report, unfiltered)
+        report = merge_filtered_results(report, unfiltered)
+    else:
+        interim_params = deepcopy(params)
+        interim_params[Constants.ASMTTYPE] = AssessmentType.INTERIM_COMPREHENSIVE
+        interim_report = ComparingPopReport(**interim_params).get_report()
+        report['records'] = get_merged_report_records(report, interim_report)
     return report
 
 
-def merge_results(filtered, unfiltered):
+def get_merged_report_records(summative, interim):
+    '''
+    Iterate through interim and summative results and merge when summative results don't exist
+    Wipes out interim results for sorting purposes in the FE
+    '''
+    Records = namedtuple('Records', [Constants.ID, Constants.NAME])
+    merged = {}
+    for record in interim[Constants.RECORDS]:
+        r = Records(id=record[Constants.ID], name=record[Constants.NAME])
+        for subject in interim[Constants.SUBJECTS].keys():
+            # when total is not zero, that means there are results (either insufficient or not)
+            if record[Constants.RESULTS][subject][Constants.TOTAL] is not 0:
+                record[Constants.RESULTS][subject][Constants.HASINTERIM] = True
+            reset_subject_intervals(record[Constants.RESULTS][subject])
+        merged[r] = record
+    # Go through summative
+    for record in summative[Constants.RECORDS]:
+        r = Records(id=record[Constants.ID], name=record[Constants.NAME])
+        if r in merged:
+            for subject in summative[Constants.SUBJECTS].keys():
+                # when total is zero, that means there are no summative results, so check if there is interim results
+                if record[Constants.RESULTS][subject][Constants.TOTAL] is 0:
+                    hasInterim = merged[r][Constants.RESULTS][subject].get(Constants.HASINTERIM, False)
+                    if hasInterim:
+                        record[Constants.RESULTS][subject][Constants.HASINTERIM] = hasInterim
+                        reset_subject_intervals(record[Constants.RESULTS][subject])
+
+        merged[r] = record
+    # Create an ordered dictionary sorted by the name of institution
+    sorted_results = OrderedDict(sorted(merged.items(), key=lambda x: (x[0].name)))
+    return list(sorted_results.values())
+
+
+def reset_subject_intervals(subject_data):
+    subject_data[Constants.TOTAL] = -1
+    for i in subject_data[Constants.INTERVALS]:
+        i[Constants.PERCENTAGE] = -1
+
+
+def merge_filtered_results(filtered, unfiltered):
     '''
     Merge unfiltered count to filtered results
     '''
@@ -110,6 +152,8 @@ def get_comparing_populations_cache_key(comparing_pop):
         cache_args.append(comparing_pop.state_code)
     if comparing_pop.district_guid is not None:
         cache_args.append(comparing_pop.district_guid)
+    # We cache based on summative and interim as well
+    cache_args.append(comparing_pop.asmt_type)
     filters = comparing_pop.filters
     # sorts dictionary of keys
     cache_args.append(sorted(filters.items(), key=lambda x: x[0]))
@@ -289,14 +333,18 @@ class RecordManager():
                     interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
                 # adjust for min cell size policy and do not return data if violated
                 min_cell_size = self._custom_metadata.get(alias, {}).get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE)
+                # check if min_cell_size is defined
+                min_cell_size = (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE)
                 # get student counts for students in level 1 and 2
                 non_proficient_students_count = 0
                 for i in range(0, len(intervals) // 2):
                     non_proficient_students_count += intervals[i][Constants.COUNT]
-                if total > (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE) and total != non_proficient_students_count:
+                if total > min_cell_size and total != non_proficient_students_count:
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
                 else:
-                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1, Constants.LEVEL: interval.get('level')} for interval in intervals], Constants.TOTAL: -1}
+                    # For no results, use 0, for insufficient results use -1
+                    value = 0 if total is 0 else -1
+                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: value, Constants.LEVEL: interval.get('level')} for interval in intervals], Constants.TOTAL: value}
 
         return results
 
@@ -305,15 +353,15 @@ class RecordManager():
         return record in array and ordered by name
         '''
         records = []
-        row_id = 0
         for record in self._tracking_record.values():
-            __record = {Constants.ROWID: row_id, Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
+            __record = {Constants.ROWID: round(time.time() * 1000000), Constants.ID: record.id, Constants.NAME: record.name,
+                        Constants.RESULTS: self.format_results(record.subjects),
+                        Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
             if self._schoolGuid is not None:
                 __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
             records.append(__record)
-            row_id += 1
         return records
 
     @staticmethod

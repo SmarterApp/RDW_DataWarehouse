@@ -34,7 +34,7 @@ objectClass: top
 cn: Susan Hall
 sn: Hall
 givenName: Susan
-employeeNumber: 9639c422-ca1d-11e2-aabd-68a86d1e157a 
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: shall
 userPassword:: c2hhbGwxMjM0
 
@@ -44,7 +44,7 @@ objectClass: top
 cn: Victor Lee
 sn: Lee
 givenName: Victor
-employeeNumber: a492d004-ca1d-11e2-b162-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: vlee
 userPassword:: dmxlZTEyMzQ=
 
@@ -54,7 +54,7 @@ objectClass: top
 cn: Sara Lee
 sn: Lee
 givenName: Sara
-employeeNumber: b1cada28-ca1d-11e2-a407-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: slee
 userPassword:: c2xlZTEyMzQ=
 
@@ -64,7 +64,7 @@ objectClass: top
 cn: Jamie Hine
 sn: Hine
 givenName: Jamie
-employeeNumber: de07c7f4-ca1d-11e2-9e77-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: jhine
 userPassword:: amhpbmUxMjM0
 
@@ -74,7 +74,7 @@ objectClass: top
 cn: Chris Davis
 sn: Davis
 givenName: Chris
-employeeNumber: e92cb978-ca1d-11e2-950b-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: cdavis
 userPassword:: Y2RhdmlzMTIzNA==
 
@@ -84,7 +84,7 @@ objectClass: top
 cn: Kelly Tidd
 sn: Tidd
 givenName: Kelly
-employeeNumber: f4fb189e-ca1d-11e2-ac4e-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: ktidd
 userPassword:: a3RpZGQxMjM0
 
@@ -94,7 +94,7 @@ objectClass: top
 cn: Louisa Mui
 sn: Mui
 givenName: Louisa
-employeeNumber: ee873b78-ca1d-11e2-95a9-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: lmui
 userPassword:: bG11aTEyMzQ=
 
@@ -104,7 +104,7 @@ objectClass: top
 cn: Hugh Goree
 sn: Goree
 givenName: Hugh
-employeeNumber: fb880398-ca1d-11e2-bb5e-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: hgoree
 userPassword:: aGdvcmVlMTIzNA==
 
@@ -114,7 +114,7 @@ objectClass: top
 cn: Clare Seabaugh
 sn: Seabaugh
 givenName: Clare
-employeeNumber: ff5b016e-ca1d-11e2-8458-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: cseabaugh
 userPassword:: Y3NlYWJhdWdoMTIzNA==
 
@@ -123,7 +123,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Katy Bester
 givenName: Katy
-employeeNumber: 065758d2-ca1e-11e2-915a-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 sn: Bester
 uid: kbester
 userPassword:: a2Jlc3RlcjEyMzQ=
@@ -134,7 +134,7 @@ objectClass: top
 cn: Erik Croker
 sn: Croker
 givenName: Erik
-employeeNumber: 0bfc9b08-ca1e-11e2-8631-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: ecroker
 userPassword:: ZWNyb2tlcjEyMzQ=
 
@@ -144,7 +144,7 @@ objectClass: top
 cn: Matt Sollars
 sn: Sollars
 givenName: Matt
-employeeNumber: 125a36cc-ca1e-11e2-9fa0-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: msollars
 userPassword:: bXNvbGxhcnMxMjM0
 
@@ -154,7 +154,7 @@ objectClass: top
 cn: Clayton Croxton
 sn: Croxton
 givenName: Clayton
-employeeNumber: 1672f21c-ca1e-11e2-85da-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: ccroxton
 userPassword:: Y2Nyb3h0b24xMjM0
 
@@ -163,10 +163,10 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Amie Stroop
 givenName: Amie
-employeeNumber: 1ad5c1c2-ca1e-11e2-a868-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 sn: Stroop
 uid: astroop
-userPassword:: YXN0cm9vcDEyMzQ=
+userPassword:: YXN0cm9v942yMzQ=
 
 dn: cn=Ted Lazaro,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -174,7 +174,7 @@ objectClass: top
 cn: Ted Lazaro
 sn: Lazaro
 givenName: Ted
-employeeNumber: 1ee12bf8-ca1e-11e2-a945-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: tlazaro
 userPassword:: dGxhemFybzEyMzQ=
 
@@ -184,7 +184,7 @@ objectClass: top
 cn: Guy Man
 sn: Man
 givenName: Guy
-employeeNumber: 24dabf38-ca1e-11e2-9f59-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: gman
 userPassword:: Z21hbjEyMzQ=
 
@@ -193,7 +193,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Selena Magnusson
 givenName: Selena
-employeeNumber: 2882acb8-ca1e-11e2-9a45-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 sn: Magnusson
 uid: smagnusson
 userPassword:: c21hZ251c3NvbjEyMzQ=
@@ -204,7 +204,7 @@ objectClass: top
 cn: Jessie Mollica
 sn: Mollica
 givenName: Jessie
-employeeNumber: 2cb62f6c-ca1e-11e2-8a20-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: jmollica
 userPassword:: am1vbGxpY2ExMjM0
 
@@ -214,7 +214,7 @@ objectClass: top
 cn: Liza Bopp
 sn: Bopp
 givenName: Liza
-employeeNumber: 314778ec-ca1e-11e2-8a48-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: lbopp
 userPassword:: bGJvcHAxMjM0
 
@@ -224,7 +224,7 @@ objectClass: top
 cn: Clinton Degraw
 sn: Degraw
 givenName: Clinton
-employeeNumber: 365a6204-ca1e-11e2-9da8-68a86d1e157a
+employeeNumber: |roleId|CONSORTIUM_EDUCATION_ADMINISTRATOR_1|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|roleId|CONSORTIUM_EDUCATION_ADMINISTRATOR_1|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|dog|CA|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: cdegraw
 userPassword:: Y2RlZ3JhdzEyMzQ=
 
@@ -233,22 +233,20 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Elnora Seinfeld
 givenName: Elnora
-employeeNumber: 3a128250-ca1e-11e2-99e3-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 sn: Seinfeld
 uid: eseinfeld
 userPassword:: ZXNlaW5mZWxkMTIzNA==
 
 dn: cn=Mary Smith,ou=people,ou=dog,ou=environment,dc=edwdc,dc=net
-objectClass: person
-objectClass: organizationalPerson
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Smith
 sn: Smith
 givenName: Mary
-employeeNumber: 407b41f4-ca1e-11e2-befb-68a86d1e157a
+employeeNumber: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|dog|CA|mKlpctu9Ay|groupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central High|
 uid: msmith
-userPassword:: bXNtaXRoMTIzNA== 
+userPassword:: bXNtaXRoMTIzNA==
 
 dn: cn=Teacher,ou=groups,ou=dog,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames

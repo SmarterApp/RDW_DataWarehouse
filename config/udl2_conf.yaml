@@ -152,7 +152,7 @@ qa:
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -161,7 +161,7 @@ qa:
             db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware_ca_1_6
+            db_schema: edware_sds_1_10_dog
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -169,8 +169,8 @@ qa:
             db_user: edware
             db_pass: edware2013
         func_tests:
-            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware_funcional_tests
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -178,7 +178,7 @@ qa:
             db_user: edware
             db_pass: edware2013
     prod_db:
-        db_schema: edware
+        db_schema: edware_sds_1_10
         db_name: edware
         # TBD make sure it is the production setting
         db_host: dwpool1.qa.dum.edwdc.net
@@ -278,7 +278,7 @@ development:
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_6
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -287,7 +287,7 @@ development:
             db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_ca_1_6
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -295,8 +295,8 @@ development:
             db_user: edware
             db_pass: edware2013
         func_tests:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_6
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -304,7 +304,7 @@ development:
             db_user: edware
             db_pass: edware2013
     prod_db:
-        db_schema: edware
+        db_schema: edware_sds_1_10
         db_name: edware
         # TBD make sure it is the production setting
         db_host: localhost
@@ -404,7 +404,7 @@ jenksins_dev:
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_6
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -413,7 +413,7 @@ jenksins_dev:
             db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_cat_1_6
+            db_schema: edware_dog_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -421,8 +421,8 @@ jenksins_dev:
             db_user: edware
             db_pass: edware2013
         func_tests:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_6
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
+            db_schema: edware_sds_1_10
             echo: False
             max_overflow: 10
             pool_size: 20
@@ -430,7 +430,7 @@ jenksins_dev:
             db_user: edware
             db_pass: edware2013
     prod_db:
-        db_schema: edware_sds_1_6
+        db_schema: edware_sds_1_10
         db_name: edware
         # TBD make sure it is the production setting
         db_host: edwdbsrv4.poc.dum.edwdc.net

@@ -284,6 +284,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'TRUE', 'dim_student', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'fact_asmt_outcome', 'asmnt_outcome_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', None, 'fact_asmt_outcome', 'asmt_rec_id', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', 'fact_asmt_outcome', 'asmt_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_student', 'fact_asmt_outcome', 'student_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'code_state', 'fact_asmt_outcome', 'state_code', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_district', 'fact_asmt_outcome', 'district_guid', None, None),

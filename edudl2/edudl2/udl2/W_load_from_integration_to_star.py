@@ -10,8 +10,7 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import get_table_column_types,\
     explode_data_to_dim_table, calculate_spend_time_as_second,\
-    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, \
-    check_mismatched_deletions
+    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id
 
 logger = get_task_logger(__name__)
 
@@ -25,7 +24,7 @@ def explode_to_dims(msg):
     '''
     start_time = datetime.datetime.now()
     conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE], msg[mk.TENANT_NAME])
-    table_map, column_map = get_table_and_column_mapping(conf, 'dim_')
+    table_map, column_map = get_table_and_column_mapping(conf, explode_to_dims.name, 'dim_')
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
                                         for dim_table, source_table in table_map.items()])
@@ -87,7 +86,7 @@ def explode_to_fact(msg):
     # generate config dict
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
     # get fact table column mapping
-    fact_table_map, fact_column_map = get_table_and_column_mapping(conf, 'fact_')
+    fact_table_map, fact_column_map = get_table_and_column_mapping(conf, explode_to_fact.name, 'fact_')
     fact_table = list(fact_table_map.keys())[0]
     source_table_for_fact_table = list(fact_table_map.values())[0]
     fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
@@ -128,7 +127,7 @@ def handle_deletions(msg):
     # generate config dict
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
     # get fact table column mapping
-    #fact_table_map, fact_column_map = get_table_and_column_mapping(conf, 'fact_')
+    #fact_table_map, fact_column_map = get_table_and_column_mapping(conf, handle_deletions,name, 'fact_')
     #fact_table = list(fact_table_map.keys())[0]
     #source_table_for_fact_table = list(fact_table_map.values())[0]
     #fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))

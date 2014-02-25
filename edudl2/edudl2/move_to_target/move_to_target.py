@@ -6,11 +6,13 @@ import logging
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
-from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
-    select_distinct_asmt_rec_id_query, enable_trigger_query, create_insert_query,\
-    update_foreign_rec_id_query, create_information_query, find_deleted_fact_asmt_outcome_rows,\
-    find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod,\
-    update_matched_fact_asmt_outcome_row
+from edudl2.move_to_target.move_to_target_setup import get_column_mapping_from_int_to_target
+from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
+                                                  enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
+                                                  create_information_query, select_columns_in_table, create_delete_query,
+                                                  create_multi_table_select_insert_query, update_matched_fact_asmt_outcome_row,
+                                                  find_deleted_fact_asmt_outcome_rows, find_unmatched_deleted_fact_asmt_outcome_row,
+                                                  match_delete_fact_asmt_outcome_row_in_prod)
 
 
 DBDRIVER = "postgresql"
@@ -247,20 +249,39 @@ def match_deleted_records(conf, match_conf):
     in prodution tables.
     return a list of rec_id to delete reocrds
     '''
+    candidates = []
     matched_results = []
     logger.info('in match_deleted_records')
     batch_guid = conf['guid_batch']
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
-        pass
-
+        query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
+                                                    conf['move_to_target'][4]['source_table'],
+                                                    conf[mk.GUID_BATCH],
+                                                    conf['move_to_target'][4]['matched_columns'],
+                                                    conf['move_to_target'][4]['matched_status']['source_table'])
+        candidates = execute_udl_query_with_result(target_conn, query,
+                                                   'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
+                                                   'move_to_target',
+                                                   'matched_deleted_records')
     with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
-        pass
+        for candidate in candidates:
+            query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.TARGET_DB_SCHEMA],
+                                                               conf['move_to_target'][4]['prod_table'],
+                                                               conf['move_to_target'][4]['matched_columns'],
+                                                               conf['move_to_target']['matched_status']['prod_table'],
+                                                               candidate)
+            matched = execute_udl_query_with_result(prod_conn, query,
+                                                    'Exception -- Failed at match_delete_fact_asmt_outcome_row_in_prod query',
+                                                    'move_to_target',
+                                                    'matched_deleted_records')
+            if matched.rowcount > 0:
+                matched_results.extend([matched])
     return matched_results
 
 
 def check_mismatched_deletions(conf, match_conf):
     '''
-    check any deleted records is not in target database. if yes. return True,
+    check if any deleted record is not in target database. if yes. return True,
     so we will raise error for this udl batch
     '''
     logger.info('check_mismatched_deletions')
@@ -281,6 +302,62 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
 
     '''
     logger.info('update_deleted_record_rec_id')
-    batch_guid = conf['guid_batch']
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
-        pass
+        for matched in matched_values:
+            query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
+                                                         conf['move_to_target'][4]['source_table'],
+                                                         conf[mk.GUID_BATCH],
+                                                         conf['move_to_target'][4]['matched_columns'],
+                                                         conf['move_to_target'][4]['matched_status']['source_table'],
+                                                         matched)
+
+
+def move_data_from_int_tables_to_target_table(conf, source_tables, target_table):
+    '''
+    Main function to move student registration data from source integration tables to target table.
+    Source tables are INT_STU_REG and INT_STU_REG_META. Target table is student_registartion.
+    @param conf: dictionary which has database settings, and guid_batch
+    @param source_tables: names of the source tables from where the data comes
+    @param target_table: name of the target table to where the data should be moved
+    @param column_mapping: list of tuples of:
+                           column_name_in_target, column_name_in_source
+    @param column_types: data types of all columns in one target table
+    '''
+    with UDL2DBConnection() as conn_to_source_db:
+        column_mappings = {}
+        column_types = {}
+        for source_table in source_tables:
+            column_mappings[source_table] = get_column_mapping_from_int_to_target(conn_to_source_db, 'LOAD_FROM_INT_TO_TARGET', conf[mk.SOURCE_DB_SCHEMA],
+                                                                                  conf[mk.REF_TABLE], conf[mk.PHASE], target_table, source_table)
+            column_types[source_table] = get_table_column_types(conf, target_table, list(column_mappings[source_table].keys()))
+        delete_criteria = get_current_stu_reg_delete_criteria(conn_to_source_db, conf[mk.GUID_BATCH], conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE])
+
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
+        # Cleanup any existing records with matching registration system id and academic year.
+        delete_query = create_delete_query(conf[mk.TARGET_DB_SCHEMA], target_table, delete_criteria)
+        deleted_rows = execute_udl_queries(conn_to_target_db, [delete_query],
+                                           'Exception -- deleting data from target {target_table}'.format(target_table=target_table),
+                                           'move_to_target', 'move_data_from_int_tables_to_target_table')
+        logger.info('{deleted_rows} deleted from {target_table}'.format(deleted_rows=deleted_rows[0], target_table=target_table))
+
+        insert_query = create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, True)
+        logger.info(insert_query)
+        affected_rows = execute_udl_queries(conn_to_target_db, [insert_query],
+                                            'Exception -- moving data from integration {int_table} to target {target_table}'
+                                            .format(int_table=source_table, target_table=target_table),
+                                            'move_to_target', 'move_data_from_int_tables_to_target_table')
+
+    return affected_rows
+
+
+def get_current_stu_reg_delete_criteria(conn, batch_guid, source_db_schema, source_table):
+    '''
+    Get the delete criteria for current stident registration job
+    '''
+    select_columns = ['test_reg_id', 'academic_year']
+    criteria = {'guid_batch': batch_guid}
+    query = select_columns_in_table(source_db_schema, source_table, select_columns, criteria)
+    result = execute_udl_query_with_result(conn, query, 'Bad Query')
+    reg_system_id, academic_year = result.fetchone()
+
+    return {'reg_system_id': reg_system_id, 'academic_year': str(academic_year)}

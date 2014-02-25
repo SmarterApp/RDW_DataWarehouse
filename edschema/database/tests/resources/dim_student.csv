@@ -6,7 +6,7 @@ student_rec_id,student_guid,first_name,middle_name,last_name,address_1,address_2
 356,a3fcc2a7-16ba-4783-ae58-f225377e8e20,Rocco,,Curl,343 Luderick Way,,Common tern Gurnard,12399,male,rocco.curl@gangessharkbrownhyaenaprimary.edu,20040225,345,3,NC,228,242,20110122,99991231,TRUE
 360,389c8fd6-228a-4204-bad7-c6a2a3e759cf,Georgianna,,Hammer,31 Zebra Shark Ave,,Common tern Gurnard,11423,female,georgianna.neeley@gangessharkbrownhyaenaprimary.edu,20041218,345,3,NC,228,242,20110208,99991231,TRUE
 361,af68c5f9-b5aa-41e8-b583-e82b7d8ff48b,David,Seth,Odell,74 Hatchetfish North Ave,,Common tern Gurnard,11688,male,david.clayton@gangessharkbrownhyaenaprimary.edu,20040404,345,3,NC,228,242,20110118,99991231,TRUE
-365,34140997-8949-497e-bbbb-5d72aa7dc9cb,Patrick,,Stark,587 Giant Wels Road,,Common tern Gurnard,11501,male,patrick.roe@gangessharkbrownhyaenaprimary.edu,20041220,345,3,NC,228,242,20110210,99991231,TRUE
+365,34140997-8949-497e-bbbb-5d72aa7dc9cb,Patrick,,Stark,,,,,male,patrick.roe@gangessharkbrownhyaenaprimary.edu,20041220,345,3,NC,228,242,20110210,99991231,TRUE
 366,3181376a-f3a8-40d3-bbde-e65fdd9f4494,Annette,B,Roof,258 Sauger Ave,,Common tern Gurnard,12158,female,annette.roof@gangessharkbrownhyaenaprimary.edu,20040927,345,3,NC,228,242,20110211,99991231,TRUE
 367,61ec47de-e8b5-4e78-9beb-677c44dd9b50,Bernice,,Hammond,530 Temperate Perch Street,,Common tern Gurnard,11606,female,bernice.hammond@gangessharkbrownhyaenaprimary.edu,20041021,345,3,NC,228,242,20110201,99991231,TRUE
 368,8b890349-1421-439e-99e4-235e13fe28dc,Naomi,S,Hall,915 European Perch Street,,Common tern Gurnard,11389,female,naomi.hall@gangessharkbrownhyaenaprimary.edu,20040421,345,3,NC,228,242,20110126,99991231,TRUE
@@ -20,7 +20,7 @@ student_rec_id,student_guid,first_name,middle_name,last_name,address_1,address_2
 380,27d55552-55ef-49a0-a1d3-0d6caa35b34f,Laura,,Defalco,735 Black Tetra North Ave,,Common tern Gurnard,10370,female,laura.defalco@gangessharkbrownhyaenaprimary.edu,20041012,345,3,NC,228,242,20110213,99991231,TRUE
 385,9a4cb2b9-f16e-4ff2-81af-714fba2303f9,Nathan,,Seawright,938 Pacific Lamprey Ave,,Common tern Gurnard,11799,male,nathan.seawright@gangessharkbrownhyaenaprimary.edu,20041126,345,3,NC,228,242,20110124,99991231,TRUE
 386,7b9e19af-3540-47bb-8e9a-ffd1cde11fd3,Beverly,,Valdez,727 Temperate Bass Way,,Common tern Gurnard,12265,female,beverly.valdez@gangessharkbrownhyaenaprimary.edu,20040917,345,3,NC,228,242,20110129,99991231,TRUE
-387,c504b0bd-082b-456a-9d59-4d8685a1635b,Alejandro,Marko,Wilson,782 Murray Cod Road,,Common tern Gurnard,11536,male,alejandro.wilson@gangessharkbrownhyaenaprimary.edu,20041218,345,3,NC,228,242,20110114,99991231,TRUE
+387,c504b0bd-082b-456a-9d59-4d8685a1635b,Alejandro,Marko,Wilson,,,,,male,alejandro.wilson@gangessharkbrownhyaenaprimary.edu,20041218,345,3,NC,228,242,20110114,99991231,TRUE
 388,26658085-7820-4c32-a4db-5219f1c284c7,Debra,,Ripley,140 Herring Smelt South Ave,,Common tern Gurnard,11193,female,debra.ripley@gangessharkbrownhyaenaprimary.edu,20041218,345,3,NC,228,242,20110214,99991231,TRUE
 389,8ed02740-dfa9-41c1-829f-ca7c90db4d6f,Robert,,Axford,415 Loach North Ave,,Common tern Gurnard,11559,male,robert.axford@gangessharkbrownhyaenaprimary.edu,20040403,345,3,NC,228,242,20110125,99991231,TRUE
 390,01c7d283-8670-4c67-9e61-8e32d63f22e4,Steve,,Lundy,558 Queen Danio Way,,Common tern Gurnard,10024,male,steve.lundy@gangessharkbrownhyaenaprimary.edu,20041216,345,3,NC,228,242,20110220,99991231,TRUE

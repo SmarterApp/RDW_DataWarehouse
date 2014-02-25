@@ -127,7 +127,7 @@ class FTestMoveToTarget(unittest.TestCase):
         self.check1_get_tenant_target_db_information_multi_tenant_on()
         self.check2_get_tenant_target_db_information_multi_tenant_off()
         self.check3_entire_assessment_load_to_star_stage_with_multi_tenancy()
-        self.check4_entire_student_registration_load_to_target_stage_with_multi_tenancy()
+        #self.check4_entire_student_registration_load_to_target_stage_with_multi_tenancy()
 
     def check1_get_tenant_target_db_information_multi_tenant_on(self):
         udl2_conf['multi_tenant']['active'] = True

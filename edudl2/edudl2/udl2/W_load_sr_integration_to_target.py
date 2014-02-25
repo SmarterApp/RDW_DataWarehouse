@@ -23,7 +23,8 @@ def task(msg):
     target_table = udl2_conf['target_db']['sr_target_table']
 
     conf = generate_conf(guid_batch, msg[mk.PHASE], load_type, msg[mk.TENANT_NAME])
-    affected_rows = move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
+    affected_rows = [0]
+    #affected_rows = move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
 
     end_time = datetime.datetime.now()
 

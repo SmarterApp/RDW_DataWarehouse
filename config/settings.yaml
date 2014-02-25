@@ -69,6 +69,8 @@ common:
         timeout: 1200
       idp:
         metadata: ../../resource/idp_metadata.xml
+      saml:
+        identity_parser: smarter.security.sbac_identity_parser.SbacIdentityParser
 
     # Static cache max age
     smarter.resources.static.max_age: 3600
@@ -693,7 +695,6 @@ air:
         idp_server_logout_url: http://sso-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://sso-dev.opentestsystem.org:8080/auth
-        identity_parser: smarter.security.sbac_identity_parser.SbacIdentityParser
       idp:
         metadata: ../../resource/air_idp_metadata.xml
     # Don't cache any static contents

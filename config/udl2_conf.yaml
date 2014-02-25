@@ -149,6 +149,7 @@ qa:
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql
+        sr_target_table: student_reg
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
@@ -237,6 +238,7 @@ development:
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql
+        sr_target_table: student_reg
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2
@@ -363,6 +365,7 @@ jenksins_dev:
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql
+        sr_target_table: student_reg
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2

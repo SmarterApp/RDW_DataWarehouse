@@ -85,7 +85,7 @@ INT_TABLE_TYPE = 'load_to_integration_table_type'
 MOVE_TO_TARGET = 'move_to_target'
 TENANT_NAME = 'tenant_name'
 
-FACT_ROWS_LOADED = 'fact_rows_loaded'
+TOTAL_ROWS_LOADED = 'total_rows_loaded'
 
 # for benchmarking
 UDL_PHASE = 'udl_phase'

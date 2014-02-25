@@ -1,0 +1,10 @@
+[run]
+omit = 
+	setup.py
+	setup-developer.py
+    edudl2/__init__.py
+
+[report]
+exclude_lines = 
+	if __name__ == "__main__":
+	if __name__ == '__main__':

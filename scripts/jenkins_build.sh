@@ -423,7 +423,6 @@ function main {
             # Special case for UDL
             UT_PATH="$MAIN_PKG"
             if [ ${MAIN_PKG:=""} == "edudl2" ]; then
-                UT_PATH=$MAIN_PKG/edudl2/tests
                 setup_for_udl
             fi 
             run_unit_tests $UT_PATH

@@ -48,13 +48,13 @@ class IntToStarFTest(UDLTestHelper):
         # explode to dim tables
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
-        table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, 'dim_')
+        table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, "udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task", 'dim_')
         for target in table_map.keys():
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf, target, list(target_columns.keys()))
             move_to_target.explode_data_to_dim_table(conf, table_map[target], target, target_columns, column_types)
         # explode to fact table
-        table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, 'fact_')
+        table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, "udl2.W_load_from_integration_to_star.explode_data_to_fact", 'fact_')
         column_types = move_to_target.get_table_column_types(conf, list(table_map.keys())[0], list(column_map['fact_asmt_outcome'].keys()))
         move_to_target.explode_data_to_fact_table(conf, list(table_map.values())[0], list(table_map.keys())[0], column_map['fact_asmt_outcome'], column_types)
 
@@ -63,7 +63,7 @@ class IntToStarFTest(UDLTestHelper):
         print(match_conf)
         move_to_target.match_deleted_records(conf, match_conf)
         move_to_target.update_deleted_record_rec_id(conf, match_conf)
-        move_to_target.is_any_deleted_records_missing(conf, match_conf)
+        move_to_target.is_any_deleted_record_missing(conf, match_conf)
         #exit()
         # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """

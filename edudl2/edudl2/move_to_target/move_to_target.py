@@ -1,4 +1,4 @@
-from edudl2.udl2_util.database_util import execute_udl_queries
+from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from collections import OrderedDict
 from edudl2.udl2 import message_keys as mk
 import datetime
@@ -6,9 +6,11 @@ import logging
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
-from edudl2.move_to_target.create_queries import select_distinct_asmt_guid_query,\
-    select_distinct_asmt_rec_id_query, enable_trigger_query, create_insert_query,\
-    update_foreign_rec_id_query, create_information_query
+from edudl2.move_to_target.move_to_target_setup import get_column_mapping_from_int_to_target
+from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
+                                                  enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
+                                                  create_information_query, select_columns_in_table, create_delete_query,
+                                                  create_multi_table_select_insert_query)
 
 
 DBDRIVER = "postgresql"
@@ -229,12 +231,12 @@ def match_deleted_records(conf, match_conf):
     logger.info(batch_guid)
 
 
-def is_any_deleted_records_missing(conf, match_conf):
+def is_any_deleted_record_missing(conf, match_conf):
     '''
-    check any deleted records is not in target database. if yes. return True,
+    check if any deleted record is not in target database. if yes. return True,
     so we will raise error for this udl batch
     '''
-    logger.info('is_any_deleted_records_missing')
+    logger.info('is_any_deleted_record_missing')
     batch_guid = conf['guid_batch']
     logger.info(batch_guid)
 
@@ -246,3 +248,54 @@ def update_deleted_record_rec_id(conf, match_conf):
     logger.info('update_deleted_record_rec_id')
     batch_guid = conf['guid_batch']
     logger.info(batch_guid)
+
+
+def move_data_from_int_tables_to_target_table(conf, source_tables, target_table):
+    '''
+    Main function to move student registration data from source integration tables to target table.
+    Source tables are INT_STU_REG and INT_STU_REG_META. Target table is student_registartion.
+    @param conf: dictionary which has database settings, and guid_batch
+    @param source_tables: names of the source tables from where the data comes
+    @param target_table: name of the target table to where the data should be moved
+    @param column_mapping: list of tuples of:
+                           column_name_in_target, column_name_in_source
+    @param column_types: data types of all columns in one target table
+    '''
+    with UDL2DBConnection() as conn_to_source_db:
+        column_mappings = {}
+        column_types = {}
+        for source_table in source_tables:
+            column_mappings[source_table] = get_column_mapping_from_int_to_target(conn_to_source_db, 'LOAD_FROM_INT_TO_TARGET', conf[mk.SOURCE_DB_SCHEMA],
+                                                                                  conf[mk.REF_TABLE], conf[mk.PHASE], target_table, source_table)
+            column_types[source_table] = get_table_column_types(conf, target_table, list(column_mappings[source_table].keys()))
+        delete_criteria = get_current_stu_reg_delete_criteria(conn_to_source_db, conf[mk.GUID_BATCH], conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE])
+
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
+        # Cleanup any existing records with matching registration system id and academic year.
+        delete_query = create_delete_query(conf[mk.TARGET_DB_SCHEMA], target_table, delete_criteria)
+        deleted_rows = execute_udl_queries(conn_to_target_db, [delete_query],
+                                           'Exception -- deleting data from target {target_table}'.format(target_table=target_table),
+                                           'move_to_target', 'move_data_from_int_tables_to_target_table')
+        logger.info('{deleted_rows} deleted from {target_table}'.format(deleted_rows=deleted_rows[0], target_table=target_table))
+
+        insert_query = create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, True)
+        logger.info(insert_query)
+        affected_rows = execute_udl_queries(conn_to_target_db, [insert_query],
+                                            'Exception -- moving data from integration {int_table} to target {target_table}'
+                                            .format(int_table=source_table, target_table=target_table),
+                                            'move_to_target', 'move_data_from_int_tables_to_target_table')
+
+    return affected_rows
+
+
+def get_current_stu_reg_delete_criteria(conn, batch_guid, source_db_schema, source_table):
+    '''
+    Get the delete criteria for current stident registration job
+    '''
+    select_columns = ['test_reg_id', 'academic_year']
+    criteria = {'guid_batch': batch_guid}
+    query = select_columns_in_table(source_db_schema, source_table, select_columns, criteria)
+    result = execute_udl_query_with_result(conn, query, 'Bad Query')
+    reg_system_id, academic_year = result.fetchone()
+
+    return {'reg_system_id': reg_system_id, 'academic_year': str(academic_year)}

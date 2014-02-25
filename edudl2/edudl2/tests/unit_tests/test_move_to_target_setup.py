@@ -26,7 +26,6 @@ class TestMoveToTargetSetup(unittest.TestCase):
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
             mk.PHASE: 4
         }
-        expected_table_map = {'student_reg': 'INT_SBAC_STU_REG_META'}
         expected_column_map = {'student_reg': OrderedDict([('student_reg_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                                                            ('dmg_sts_ecd', 'dmg_sts_ecd'),
                                                            ('enrl_grade', 'grade_enrolled'),
@@ -67,7 +66,5 @@ class TestMoveToTargetSetup(unittest.TestCase):
                                                            ('batch_guid', 'guid_batch'),
                                                            ('student_first_name', 'name_student_first'),
                                                            ('dmg_multi_race', 'dmg_multi_race')])}
-        table_map, column_map = get_table_and_column_mapping(conf)
-        #The following assert can be put back in once the get_table_and_column_mapping method is updated
-        #self.assertEqual(table_map, expected_table_map)
+        (_, column_map) = get_table_and_column_mapping(conf, 'udl2.W_load_from_integration_to_target')
         self.assertEqual(column_map, expected_column_map)

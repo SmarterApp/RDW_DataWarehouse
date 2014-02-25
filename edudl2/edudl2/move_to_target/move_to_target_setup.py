@@ -10,7 +10,7 @@ from edudl2. udl2.udl2_connector import UDL2DBConnection
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 
 
-def get_table_and_column_mapping(conf, table_name_prefix=None):
+def get_table_and_column_mapping(conf, task_name, table_name_prefix=None):
     '''
     The main function to get the table mapping and column mapping from reference table
     @param conf: configuration dictionary
@@ -18,15 +18,15 @@ def get_table_and_column_mapping(conf, table_name_prefix=None):
     '''
 
     with UDL2DBConnection() as conn_source:
-        table_map = get_table_mapping(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
-        column_map = get_column_mapping_from_int_to_star(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
+        table_map = get_table_mapping(conn_source, task_name, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
+        column_map = get_column_mapping_from_int_to_star(conn_source, task_name, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
 
     return table_map, column_map
 
 
-def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_prefix=None):
+def get_table_mapping(conn, task_name, schema_name, table_name, phase_number, table_name_prefix=None):
     table_mapping_query = queries.get_dim_table_mapping_query(schema_name, table_name, phase_number)
-    table_mapping_result = execute_udl_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', 'W_load_from_integration_to_star', 'get_table_mapping')
+    table_mapping_result = execute_udl_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', task_name, 'get_table_mapping')
     table_mapping_dict = {}
     if table_mapping_result:
         for mapping in table_mapping_result:
@@ -39,26 +39,32 @@ def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_pr
     return table_mapping_dict
 
 
-def get_column_mapping_from_int_to_star(conn, schema_name, table_name, phase_number, dim_tables):
+def get_column_mapping_from_int_to_star(conn, task_name, schema_name, table_name, phase_number, dim_tables):
     column_map = {}
     for dim_table in dim_tables:
-        # get column map for this dim_table
-        column_mapping_query = queries.get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_table)
-        column_mapping_result = execute_udl_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping', 'W_load_from_integration_to_star', 'get_column_mapping_from_int_to_star')
-        column_mapping_list = []
-        if column_mapping_result:
-            for mapping in column_mapping_result:
-                # mapping[0]: target_column, mapping[1]: source_column
-                target_column = mapping[0]
-                source_column = mapping[1]
-                target_source_pair = (target_column, source_column)
-                # this is the primary key, need to put the pair in front
-                if source_column is not None and 'nextval' in source_column:
-                    column_mapping_list.insert(0, target_source_pair)
-                else:
-                    column_mapping_list.append(target_source_pair)
-        column_map[dim_table] = OrderedDict(column_mapping_list)
+        column_map[dim_table] = get_column_mapping_from_int_to_target(conn, task_name, schema_name, table_name, phase_number, dim_table)
     return column_map
+
+
+def get_column_mapping_from_int_to_target(conn, task_name, schema_name, reference_table, phase_number, target_table, source_table=None):
+    # Get column map for this target table.
+    column_mapping_query = queries.get_column_mapping_query(schema_name, reference_table, phase_number, target_table, source_table)
+    column_mapping_result = execute_udl_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping',
+                                                          task_name, 'get_column_mapping_from_int_to_target')
+    column_mapping_list = []
+    if column_mapping_result:
+        for mapping in column_mapping_result:
+            # mapping[0]: target_column, mapping[1]: source_column
+            target_column = mapping[0]
+            source_column = mapping[1]
+            target_source_pair = (target_column, source_column)
+            # this is the primary key, need to put the pair in front
+            if source_column is not None and 'nextval' in source_column:
+                column_mapping_list.insert(0, target_source_pair)
+            else:
+                column_mapping_list.append(target_source_pair)
+
+    return OrderedDict(column_mapping_list)
 
 
 def create_group_tuple(task_name, arg_list):
@@ -97,6 +103,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
         mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
         mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
         mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
+        mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
 
         mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
         mk.PHASE: int(phase_number),

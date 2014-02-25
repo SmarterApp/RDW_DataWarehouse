@@ -166,7 +166,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_guid', String(50), nullable=False),
                                Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
                                Column('student_guid', String(50), nullable=False),
-                               Column('external_student_ssid', String(50), nullable=False),
+                               Column('external_student_id', String(40), nullable=True),
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),
                                Column('school_guid', String(50), nullable=False),

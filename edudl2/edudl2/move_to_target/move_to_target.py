@@ -247,14 +247,33 @@ def match_deleted_records(conf, match_conf):
     in prodution tables.
     return a list of rec_id to delete reocrds
     '''
+    candidates = []
     matched_results = []
     logger.info('in match_deleted_records')
     batch_guid = conf['guid_batch']
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
-        pass
-
+        query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
+                                                    conf['move_to_target'][4]['source_table'],
+                                                    conf[mk.GUID_BATCH],
+                                                    conf['move_to_target'][4]['matched_columns'],
+                                                    conf['move_to_target'][4]['matched_status']['source_table'])
+        candidates = execute_udl_query_with_result(target_conn, query,
+                                                   'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
+                                                   'move_to_target',
+                                                   'matched_deleted_records')
     with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
-        pass
+        for candidate in candidates:
+            query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.TARGET_DB_SCHEMA],
+                                                               conf['move_to_target'][4]['prod_table'],
+                                                               conf['move_to_target'][4]['matched_columns'],
+                                                               conf['move_to_target']['matched_status']['prod_table'],
+                                                               candidate)
+            matched = execute_udl_query_with_result(prod_conn, query,
+                                                    'Exception -- Failed at match_delete_fact_asmt_outcome_row_in_prod query',
+                                                    'move_to_target',
+                                                    'matched_deleted_records')
+            if matched.rowcount > 0:
+                matched_results.extend([matched])
     return matched_results
 
 
@@ -281,6 +300,11 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
 
     '''
     logger.info('update_deleted_record_rec_id')
-    batch_guid = conf['guid_batch']
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
-        pass
+        for matched in matched_values:
+            query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
+                                                         conf['move_to_target'][4]['source_table'],
+                                                         conf[mk.GUID_BATCH],
+                                                         conf['move_to_target'][4]['matched_columns'],
+                                                         conf['move_to_target'][4]['matched_status']['source_table'],
+                                                         matched)

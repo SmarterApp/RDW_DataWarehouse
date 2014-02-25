@@ -176,36 +176,46 @@ def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, mat
     '''
     create a query to find all delete/updated record in current batch
     '''
-    matched_columns = ",".join([m[0] for m in matched_columns].append(list(set([s[0] for s in status_code]))))
-    sql_template = "SELECT " + matched_columns +\
+    cols = [m[0] for m in matched_columns]
+    cols.extend(list(set([s[0] for s in status_code])))
+    sql_template = "SELECT {cols} " +\
                    "FROM {source_schema_and_table} " + \
-                   "WHERE batch_guid =  {batch_guid} AND status in ({status})"
+                   "WHERE batch_guid = '{batch_guid}' AND status in ({status})"
     return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               status=",".join(["'{i}'".format(i=s[1]) for s in status_code]),
-                               batch_guid_id=batch_guid)
+                               cols=" ,".join(cols),
+                               status=", ".join(["'{i}'".format(i=s[1]) for s in status_code]),
+                               batch_guid=batch_guid)
 
 
 def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_columns, matched_status, matched_values):
     '''
     create a query to find all delete/updated record in current batch, get the rec_id back
     '''
-    cols = [c[1] for c in matched_columns].append(list(set([s for s in matched_status])))
+    cols = [c[1] for c in matched_columns]
+    cols.extend(list(set([s for s in matched_status])))
     condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_values[c]) for c in cols])
-    sql_template = "SELECT asmnt_rec_id FROM {source_schame_and_table} " + \
+    sql_template = "SELECT asmnt_rec_id, {cols} " + \
+                   "FROM {source_schame_and_table} " + \
                    "WHERE {condition_clause}"
 
     return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                               cols=cols,
                                condition_clause=condition_clause)
 
 
-def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matched_columns, prod_rec_id, matched_values):
+def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matched_columns, matched_status,
+                                         matched_values):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    cols = [c[1] for c in matched_columns].append(list(set([s for s in matched_status])))
+    cols = [c[1] for c in matched_columns]
+    cols.extend(list(set([s[0] for s in matched_status])))
     condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_values[c]) for c in cols])
+    prod_rec_id = matched_values['asmnt_rec_id']
     sql_template = "UPDATE {source_schema_and_table} " \
                    "SET asmnt_outcome_rec_id = {prod_rec_id}, status = 'C' || status " +\
-                   "WHERE {condition_clause}"
+                   "WHERE batch_guid = '{batch_guid}' AND {condition_clause} "
     return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                               prod_rec_id=prod_rec_id,
+                               batch_guid=batch_guid,
                                condition_clause=condition_clause)

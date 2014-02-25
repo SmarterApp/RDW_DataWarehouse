@@ -324,8 +324,8 @@ def move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
     @param column_types: data types of all columns in one target table
     '''
     with UDL2DBConnection() as conn_to_source_db:
-        column_mappings = {}
-        column_types = {}
+        column_mappings = OrderedDict()
+        column_types = OrderedDict()
         for source_table in source_tables:
             column_mappings[source_table] = get_column_mapping_from_int_to_target(conn_to_source_db, 'LOAD_FROM_INT_TO_TARGET', conf[mk.SOURCE_DB_SCHEMA],
                                                                                   conf[mk.REF_TABLE], conf[mk.PHASE], target_table, source_table)

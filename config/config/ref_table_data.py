@@ -56,6 +56,7 @@ ref_table_conf = {
         ('1', 'LZ_JSON', 'identification.type', 'INT_SBAC_ASMT', 'type', 'asmtType', None),
         ('1', 'LZ_JSON', 'identification.version', 'INT_SBAC_ASMT', 'version', 'clean', None),
         ('1', 'LZ_JSON', 'identification.year', 'INT_SBAC_ASMT', 'year', 'clean', None),
+        ('1', 'LZ_JSON', 'identification.effective_date', 'INT_SBAC_ASMT', 'effective_date', 'clean', None),
         # CSV to staging
         ('1', 'LZ_CSV', 'address_student_city', 'STG_SBAC_ASMT_OUTCOME', 'address_student_city', 'clean', None),
         ('1', 'LZ_CSV', 'address_student_line1', 'STG_SBAC_ASMT_OUTCOME', 'address_student_line1', 'clean', None),

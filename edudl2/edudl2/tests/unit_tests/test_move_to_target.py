@@ -206,7 +206,7 @@ def get_expected_column_types_for_student_reg(table_name):
                      'us_school_entry_date character varying(10)', 'lep_entry_date character varying(10)',
                      'lep_exit_date character varying(10)', 't3_program_type character varying(27)',
                      'prim_disability_type character varying(3)'],
-                     'INT_SBAC_STU_REG_META':
+                    'INT_SBAC_STU_REG_META':
                     ['student_reg_guid character varying(50)', 'academic_year smallint', 'extract_date character varying(10)',
                      'reg_system_id character varying(50)']
                     }
@@ -222,43 +222,42 @@ def get_expected_column_types_for_student_reg(table_name):
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):
     return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_name,state_code,district_guid,district_name,'\
-            'school_guid,school_name,student_guid,external_student_ssid,student_first_name,student_middle_name,student_last_name,'\
-            'gender,student_dob,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
-            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
-            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
-            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
-            'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * '\
-            'FROM (SELECT DISTINCT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
-            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
-            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
-            'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
-            'int_sbac_stu_reg.gender_student,int_sbac_stu_reg.dob_student,int_sbac_stu_reg.grade_enrolled,'\
-            'int_sbac_stu_reg.dmg_eth_hsp,int_sbac_stu_reg.dmg_eth_ami,int_sbac_stu_reg.dmg_eth_asn,'\
-            'int_sbac_stu_reg.dmg_eth_blk,int_sbac_stu_reg.dmg_eth_pcf,int_sbac_stu_reg.dmg_eth_wht,'\
-            'int_sbac_stu_reg.dmg_prg_iep,int_sbac_stu_reg.dmg_prg_lep,int_sbac_stu_reg.dmg_prg_504,'\
-            'int_sbac_stu_reg.dmg_sts_ecd,int_sbac_stu_reg.dmg_sts_mig,int_sbac_stu_reg.dmg_multi_race,'\
-            'int_sbac_stu_reg.code_confirm,int_sbac_stu_reg.code_language,int_sbac_stu_reg.eng_prof_lvl,'\
-            'int_sbac_stu_reg.us_school_entry_date,int_sbac_stu_reg.lep_entry_date,int_sbac_stu_reg.lep_exit_date,'\
-            'int_sbac_stu_reg.t3_program_type,int_sbac_stu_reg.prim_disability_type,int_sbac_stu_reg_meta.guid_registration,'\
-            'int_sbac_stu_reg_meta.academic_year,int_sbac_stu_reg_meta.extract_date,int_sbac_stu_reg_meta.test_reg_id '\
-            'FROM "udl2"."INT_SBAC_STU_REG" int_sbac_stu_reg,"udl2"."INT_SBAC_STU_REG_META" int_sbac_stu_reg_meta '\
-            'WHERE int_sbac_stu_reg.guid_batch=\'\'{guid_batch}\'\') as y\') AS t(student_reg_rec_id bigint,'\
-            'batch_guid character varying(36),state_name character varying(50),state_code character varying(2),'\
-            'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\
-            'school_name character varying(60),student_guid character varying(30),external_student_ssid character varying(50),'\
-            'student_first_name character varying(35),student_middle_name character varying(35),'\
-            'student_last_name character varying(35),gender character varying(6),student_dob character varying(10),'\
-            'enrl_grade character varying(10),dmg_eth_hsp boolean,dmg_eth_ami boolean,dmg_eth_asn boolean,dmg_eth_blk boolean,'\
-            'dmg_eth_pcf boolean,dmg_eth_wht boolean,dmg_prg_iep boolean,dmg_prg_lep boolean,dmg_prg_504 boolean,'\
-            'dmg_sts_ecd boolean,dmg_sts_mig boolean,dmg_multi_race boolean,confirm_code character varying(35),'\
-            'language_code character varying(3),eng_prof_lvl character varying(20),us_school_entry_date character varying(10),'\
-            'lep_entry_date character varying(10),lep_exit_date character varying(10),t3_program_type character varying(27),'\
-            'prim_disability_type character varying(3),student_reg_guid character varying(50),academic_year smallint,'\
-            'extract_date character varying(10),reg_system_id character varying(50));'.format(host=host_name, port=port,
-                                                                                              table_name=table_name,
-                                                                                              guid_batch=guid_batch,
-                                                                                              dbname=dbname, user=user,
-                                                                                              password=password)
+           'school_guid,school_name,student_guid,external_student_ssid,student_first_name,student_middle_name,student_last_name,'\
+           'gender,student_dob,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
+           'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
+           'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
+           'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
+           'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * '\
+           'FROM (SELECT DISTINCT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
+           'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
+           'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
+           'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
+           'int_sbac_stu_reg.gender_student,int_sbac_stu_reg.dob_student,int_sbac_stu_reg.grade_enrolled,'\
+           'int_sbac_stu_reg.dmg_eth_hsp,int_sbac_stu_reg.dmg_eth_ami,int_sbac_stu_reg.dmg_eth_asn,'\
+           'int_sbac_stu_reg.dmg_eth_blk,int_sbac_stu_reg.dmg_eth_pcf,int_sbac_stu_reg.dmg_eth_wht,'\
+           'int_sbac_stu_reg.dmg_prg_iep,int_sbac_stu_reg.dmg_prg_lep,int_sbac_stu_reg.dmg_prg_504,'\
+           'int_sbac_stu_reg.dmg_sts_ecd,int_sbac_stu_reg.dmg_sts_mig,int_sbac_stu_reg.dmg_multi_race,'\
+           'int_sbac_stu_reg.code_confirm,int_sbac_stu_reg.code_language,int_sbac_stu_reg.eng_prof_lvl,'\
+           'int_sbac_stu_reg.us_school_entry_date,int_sbac_stu_reg.lep_entry_date,int_sbac_stu_reg.lep_exit_date,'\
+           'int_sbac_stu_reg.t3_program_type,int_sbac_stu_reg.prim_disability_type,int_sbac_stu_reg_meta.guid_registration,'\
+           'int_sbac_stu_reg_meta.academic_year,int_sbac_stu_reg_meta.extract_date,int_sbac_stu_reg_meta.test_reg_id '\
+           'FROM "udl2"."INT_SBAC_STU_REG" int_sbac_stu_reg,"udl2"."INT_SBAC_STU_REG_META" int_sbac_stu_reg_meta '\
+           'WHERE int_sbac_stu_reg.guid_batch=\'\'{guid_batch}\'\') as y\') AS t(student_reg_rec_id bigint,'\
+           'batch_guid character varying(36),state_name character varying(50),state_code character varying(2),'\
+           'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\
+           'school_name character varying(60),student_guid character varying(30),external_student_ssid character varying(50),'\
+           'student_first_name character varying(35),student_middle_name character varying(35),'\
+           'student_last_name character varying(35),gender character varying(6),student_dob character varying(10),'\
+           'enrl_grade character varying(10),dmg_eth_hsp boolean,dmg_eth_ami boolean,dmg_eth_asn boolean,dmg_eth_blk boolean,'\
+           'dmg_eth_pcf boolean,dmg_eth_wht boolean,dmg_prg_iep boolean,dmg_prg_lep boolean,dmg_prg_504 boolean,'\
+           'dmg_sts_ecd boolean,dmg_sts_mig boolean,dmg_multi_race boolean,confirm_code character varying(35),'\
+           'language_code character varying(3),eng_prof_lvl character varying(20),us_school_entry_date character varying(10),'\
+           'lep_entry_date character varying(10),lep_exit_date character varying(10),t3_program_type character varying(27),'\
+           'prim_disability_type character varying(3),student_reg_guid character varying(50),academic_year smallint,'\
+           'extract_date character varying(10),reg_system_id character varying(50));'.format(host=host_name, port=port, table_name=table_name,
+                                                                                             guid_batch=guid_batch,
+                                                                                             dbname=dbname, user=user,
+                                                                                             password=password)
 
 
 def get_expected_column_mapping(target_table):

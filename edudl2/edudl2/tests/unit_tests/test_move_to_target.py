@@ -5,8 +5,7 @@ import datetime
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
-from edudl2.move_to_target.create_queries import create_insert_query, create_multi_table_select_insert_query,\
-    create_select_columns_in_table_query
+from edudl2.move_to_target.create_queries import create_insert_query, create_multi_table_select_insert_query
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
@@ -41,15 +40,9 @@ class TestMoveToTarget(unittest.TestCase):
         column_types = get_expected_column_types_for_fact_table(target_table)
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST],
-                                                                    conf[mk.SOURCE_DB_PORT],
-                                                                    target_table,
-                                                                    column_mapping['asmt_rec_id'],
-                                                                    column_mapping['section_rec_id'],
-                                                                    guid_batch,
-                                                                    conf[mk.SOURCE_DB_NAME],
-                                                                    conf[mk.SOURCE_DB_USER],
-                                                                    conf[mk.SOURCE_DB_PASSWORD])
+        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, column_mapping['asmt_rec_id'],
+                                                                    column_mapping['section_rec_id'], guid_batch,
+                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = get_expected_update_student_rec_id_query(target_table)
         expected_query_5 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
@@ -67,12 +60,8 @@ class TestMoveToTarget(unittest.TestCase):
         column_mapping = get_expected_column_mapping(target_table)
         column_types = get_expected_column_types_for_dim_inst_hier(target_table)
         actual_value = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
-        expected_value = get_expected_insert_query_for_dim_inst_hier(conf[mk.SOURCE_DB_HOST],
-                                                                     conf[mk.SOURCE_DB_PORT],
-                                                                     target_table, guid_batch,
-                                                                     conf[mk.SOURCE_DB_NAME],
-                                                                     conf[mk.SOURCE_DB_USER],
-                                                                     conf[mk.SOURCE_DB_PASSWORD])
+        expected_value = get_expected_insert_query_for_dim_inst_hier(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
+                                                                     conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         self.assertEqual(expected_value, actual_value)
 
     def test_create_insert_query_for_sr_target_table(self):
@@ -82,21 +71,13 @@ class TestMoveToTarget(unittest.TestCase):
         column_mappings = get_expected_column_mapping(target_table)
         column_types = get_expected_column_types_for_student_reg(target_table)
         actual_value = create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, True)
-        expected_value1 = get_expected_insert_query_for_student_reg1(conf[mk.SOURCE_DB_HOST],
-                                                                     conf[mk.SOURCE_DB_PORT],
-                                                                     target_table, guid_batch,
-                                                                     conf[mk.SOURCE_DB_NAME],
-                                                                     conf[mk.SOURCE_DB_USER],
-                                                                     conf[mk.SOURCE_DB_PASSWORD])
+        expected_value1 = get_expected_insert_query_for_student_reg1(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
+                                                                     conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         try:
             self.assertEqual(expected_value1, actual_value)
         except AssertionError:
-            expected_value2 = get_expected_insert_query_for_student_reg2(conf[mk.SOURCE_DB_HOST],
-                                                                         conf[mk.SOURCE_DB_PORT],
-                                                                         target_table, guid_batch,
-                                                                         conf[mk.SOURCE_DB_NAME],
-                                                                         conf[mk.SOURCE_DB_USER],
-                                                                         conf[mk.SOURCE_DB_PASSWORD])
+            expected_value2 = get_expected_insert_query_for_student_reg2(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
+                                                                         conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
             self.assertEqual(expected_value2, actual_value)
 
     def test_calculate_spend_time_as_second(self):
@@ -105,9 +86,6 @@ class TestMoveToTarget(unittest.TestCase):
         expected_value = 327.0
         actual_value = calculate_spend_time_as_second(start_time, finish_time)
         self.assertEqual(expected_value, actual_value)
-
-    def test_create_select_columns_in_table_query(self):
-        create_select_columns_in_table_query(conf[mk.SOURCE_DB_SCHEMA],)
 
 
 def generate_conf(guid_batch, udl2_conf):

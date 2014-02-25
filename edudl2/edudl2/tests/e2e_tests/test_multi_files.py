@@ -13,17 +13,20 @@ from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 
 
-PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
+PATH_TO_FILES = ''
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
 
-FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_source_file_tar_gzipped.tar.gz.gpg'),
-             'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
-             'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
+FILE_DICT = {}
 
 
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):
+        global PATH_TO_FILES, FILE_DICT
+        PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
+        FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_source_file_tar_gzipped.tar.gz.gpg'),
+                     'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
+                     'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
         self.tenant_dir = TENANT_DIR
         self.connector = UDL2DBConnection()
 

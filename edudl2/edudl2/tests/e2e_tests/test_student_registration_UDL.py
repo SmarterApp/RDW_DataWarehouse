@@ -10,8 +10,8 @@ from sqlalchemy.sql import select, and_
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
 
-data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-STUDENT_REG_DATA_FILE = os.path.join(data_dir, 'student_registration_data/test_sample_student_reg.tar.gz.gpg')
+data_dir = ''
+STUDENT_REG_DATA_FILE = ''
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 NUM_RECORDS_IN_DATA_FILE = 10
 NUM_RECORDS_IN_JSON_FILE = 1
@@ -22,6 +22,9 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 #TODO: Add more tests as we add functionality
 
     def setUp(self):
+        global data_dir, STUDENT_REG_DATA_FILE
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        STUDENT_REG_DATA_FILE = os.path.join(data_dir, 'student_registration_data/test_sample_student_reg.tar.gz.gpg')
         self.student_reg_file = STUDENT_REG_DATA_FILE
         self.tenant_dir = TENANT_DIR
         self.target_connector = TargetDBConnection()

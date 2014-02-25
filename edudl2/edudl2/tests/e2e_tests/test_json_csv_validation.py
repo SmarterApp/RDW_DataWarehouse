@@ -17,21 +17,23 @@ from sqlalchemy.sql.expression import and_, select
 from time import sleep
 
 FACT_TABLE = 'fact_asmt_outcome'
-file_to_path = os.path.join(os.path.dirname(__file__), "..", "data")
+file_to_path = ''
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-
-FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_miss_col.tar.gz.gpz'),
-             'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),
-             'corrupt_csv_extra_col': os.path.join(file_to_path, 'corrupt_csv_ext_col.tar.gz.gpz'),
-             'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
-             'corrupt_source_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
-             'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
-             'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
+FILE_DICT = {}
 
 
 class ValidateTableData(unittest.TestCase):
     @classmethod
     def setUpClass(self):
+        global file_to_path, FILE_DICT
+        file_to_path = os.path.join(os.path.dirname(__file__), "..", "data")
+        FILE_DICT = {'corrupt_csv_missing_col': os.path.join(file_to_path, 'corrupt_csv_miss_col.tar.gz.gpz'),
+                     'corrupt_json': os.path.join(file_to_path, 'corrupt_json.tar.gz.gpz'),
+                     'corrupt_csv_extra_col': os.path.join(file_to_path, 'corrupt_csv_ext_col.tar.gz.gpz'),
+                     'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
+                     'corrupt_source_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
+                     'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
+                     'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
         self.archived_file = FILE_DICT
         self.connector = TargetDBConnection()
         self.udl_connector = UDL2DBConnection()
@@ -57,7 +59,7 @@ class ValidateTableData(unittest.TestCase):
         self.connect_to_star_shema(self.connector)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-    def check_job_completion(self, connector, guid_batch_id, max_wait=30):
+    def check_job_completion(self, connector, guid_batch_id, max_wait=60):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
         timer = 0
@@ -96,7 +98,9 @@ class ValidateTableData(unittest.TestCase):
         query2 = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_post_etl.task'))
         batch_table_data = udl_connector.execute(query).fetchall()
         batch_table_post_udl = udl_connector.execute(query2).fetchall()
+        print('batch_table_data')
         print(batch_table_data)
+        print('batch_table_post_udl')
         print(batch_table_post_udl)
         self.assertEquals(status, batch_table_data)
         self.assertEquals([('SUCCESS',)], batch_table_post_udl)

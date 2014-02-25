@@ -254,7 +254,8 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'language_code character varying(3),eng_prof_lvl character varying(20),us_school_entry_date character varying(10),'\
            'lep_entry_date character varying(10),lep_exit_date character varying(10),t3_program_type character varying(27),'\
            'prim_disability_type character varying(3),student_reg_guid character varying(50),academic_year smallint,'\
-           'extract_date character varying(10),reg_system_id character varying(50));'.format(host=host_name, port=port, table_name=table_name,
+           'extract_date character varying(10),reg_system_id character varying(50));'.format(host=host_name, port=port,
+                                                                                             table_name=table_name,
                                                                                              guid_batch=guid_batch,
                                                                                              dbname=dbname, user=user,
                                                                                              password=password)

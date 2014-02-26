@@ -36,6 +36,7 @@ def get_asmt_metadata(state_code, asmt_guid):
                         dim_asmt.c.asmt_period.label(mapping.get('asmt_period', 'asmt_period')),
                         dim_asmt.c.asmt_version.label(mapping.get('asmt_version', 'asmt_version')),
                         dim_asmt.c.asmt_subject.label(mapping.get('asmt_subject', 'asmt_subject')),
+                        dim_asmt.c.effective_date.label(mapping.get('effective_date', 'effective_date')),
                         dim_asmt.c.asmt_score_min.label(mapping.get('asmt_score_min', 'asmt_score_min')),
                         dim_asmt.c.asmt_score_max.label(mapping.get('asmt_score_max', 'asmt_score_max')),
                         dim_asmt.c.asmt_perf_lvl_name_1.label(mapping.get('asmt_perf_lvl_name_1', 'asmt_perf_lvl_name_1')),

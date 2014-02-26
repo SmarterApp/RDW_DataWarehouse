@@ -9,10 +9,14 @@ class IdentityParser():
     '''
     Abstract class to parse AttributeMappings
     '''
-    @staticmethod
-    def get_roles(attributes):
+    def __init__(self, attributes):
+        self.attributes = attributes
+
+    def get_roles(self):
         raise NotImplementedError("Should have implemented this")
 
-    @staticmethod
-    def get_tenant_name(attributes):
+    def get_tenant_name(self):
+        raise NotImplementedError("Should have implemented this")
+
+    def get_role_relationship_chain(self):
         raise NotImplementedError("Should have implemented this")

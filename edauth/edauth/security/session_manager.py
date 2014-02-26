@@ -75,6 +75,7 @@ def __create_from_SAMLResponse(saml_response, identity_parser_class, last_access
     __name_id = __assertion.get_name_id()
     session = Session()
     session.set_session_id(__session_id)
+    session.set_name_id(__name_id)
     # get fullName
     fullName = __attributes.get('fullName')
     if fullName is not None:
@@ -100,12 +101,10 @@ def __create_from_SAMLResponse(saml_response, identity_parser_class, last_access
     if guid is not None:
         session.set_guid(guid[0])
 
-    # get roles
-    session.set_roles(identity_parser_class.get_roles(__attributes))
-    # set nameId
-    session.set_name_id(__name_id)
-    # set tenant
-    session.set_tenants(identity_parser_class.get_tenant_name(__attributes))
+    # get Identity specific parsing values
+    parser = identity_parser_class(__attributes)
+    session.set_roles(parser.get_roles())
+    session.set_tenants(parser.get_tenant_name())
 
     session.set_expiration(expiration)
     session.set_last_access(last_access)

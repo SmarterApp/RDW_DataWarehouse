@@ -120,7 +120,7 @@ def create_sr_table_select_insert_query(conf, target_table, column_mappings, col
         if source_table.lower() == primary_table:
             source_key_assignments.append(combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower())
         else:
-            source_key_assignments.append('INNER JOIN ' + combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower() + \
+            source_key_assignments.append('INNER JOIN ' + combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower() +
                                           ' ON ' + source_table.lower() + '.' + key_name + ' = ' + prev_table.lower() + '.' + key_name)
         source_values.extend(list(column_types[source_table].values()))
         prev_table = source_table

@@ -26,8 +26,8 @@ mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/udl2 %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
-cp ${WORKSPACE}/edudl2/conf/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/edudl2/conf/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
 

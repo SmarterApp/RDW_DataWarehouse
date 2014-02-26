@@ -5,10 +5,13 @@ import datetime
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
-from edudl2.move_to_target.create_queries import create_insert_query, create_multi_table_select_insert_query
+from edudl2.move_to_target.create_queries import create_insert_query, create_multi_table_select_insert_query,\
+    create_select_columns_in_table_query, create_multi_table_select_insert_query
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
+import logging
+logger = logging.getLogger(__name__)
 
 
 class TestMoveToTarget(unittest.TestCase):
@@ -81,6 +84,29 @@ class TestMoveToTarget(unittest.TestCase):
         expected_value = 327.0
         actual_value = calculate_spend_time_as_second(start_time, finish_time)
         self.assertEqual(expected_value, actual_value)
+
+    def test_create_select_columns_in_table_query(self):
+        query = create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'})
+        self.assertEqual(query, "SELECT DISTINCT CA,CB FROM \"schema\".\"table\" WHERE condA='valueA'")
+
+    def test_create_multi_table_select_insert_query(self):
+        conf = {
+            mk.GUID_BATCH: '1',
+            mk.SOURCE_DB_SCHEMA: 'source_schema',
+            mk.TARGET_DB_SCHEMA: 'target_schema',
+            mk.SOURCE_DB_HOST: 'source_host',
+            mk.SOURCE_DB_PORT: 'source_port',
+            mk.SOURCE_DB_NAME: 'source_name',
+            mk.SOURCE_DB_USER: 'source_user',
+            mk.SOURCE_DB_PASSWORD: 'source_password',
+        }
+        query = create_multi_table_select_insert_query(conf, 'A', {'table_A_col_A': {'table_B_col_A': 'table_B_col_B'}},
+                                                       {'table_A_col_A': {'table_A_col_A': 'varchar(5)'}}, False)
+        logger.info(query)
+        self.assertEqual(query, "INSERT INTO \"target_schema\".\"A\"(table_B_col_A) " +
+                         "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
+                         ", 'SELECT table_B_col_B, * FROM (SELECT table_a_col_a.table_B_col_B FROM \"source_schema\".\"table_A_col_A\" table_a_col_a WHERE table_a_col_a.guid_batch=''1'') as y')" +
+                         " AS t(varchar(5));")
 
 
 def generate_conf(guid_batch, udl2_conf):

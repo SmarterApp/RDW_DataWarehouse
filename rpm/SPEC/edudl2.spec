@@ -67,7 +67,7 @@ rm -rf %{buildroot}
 /opt/edware/conf/celeryd-udl2.conf
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/udl2_conf.yaml
-/opt/edware/scripts/driver.py
+/opt/edware/edudl2/scripts/driver.py
 /opt/virtualenv/udl2/include/*
 /opt/virtualenv/udl2/lib/*
 /opt/virtualenv/udl2/lib64

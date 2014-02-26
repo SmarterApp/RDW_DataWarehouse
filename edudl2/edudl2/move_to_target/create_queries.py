@@ -1,5 +1,6 @@
 import re
 from edudl2.udl2 import message_keys as mk
+from sqlalchemy.sql.expression import text
 
 
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):

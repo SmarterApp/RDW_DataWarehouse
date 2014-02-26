@@ -9,7 +9,8 @@ import logging
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, compile_query_to_sql_text
+from smarter.extracts.student_assessment import get_extract_assessment_query
+from edcore.utils.utils import compile_query_to_sql_text
 from pyramid.security import authenticated_userid
 import pyramid.threadlocal
 from uuid import uuid4

@@ -252,7 +252,6 @@ def match_deleted_records(conf, match_conf):
     candidates = []
     matched_results = []
     logger.info('in match_deleted_records')
-    batch_guid = conf['guid_batch']
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
         query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
                                                     conf['move_to_target'][4]['source_table'],

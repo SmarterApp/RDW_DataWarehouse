@@ -7,20 +7,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
-from psycopg2.extensions import adapt as sqlescape
 from smarter.extracts.format import get_column_mapping
-
-
-def compile_query_to_sql_text(query):
-    '''
-    This function compile sql object by binding expression's free variable with its params
-    :param sqlalchemy query object
-    '''
-    unbound_sql_code = str(query)
-    params = query.compile().params
-    for k, v in params.items():
-        unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
-    return unbound_sql_code
 
 
 def get_extract_assessment_query(params):

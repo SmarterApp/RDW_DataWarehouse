@@ -133,7 +133,7 @@ UDL_METADATA = {
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('op', False, 'varchar(1)', "'C'", False, "Record operation type"),
+                ('op', False, 'varchar(1)', "'C'", True, "Record operation type"),
                 ('guid_batch', False, 'varchar(256)', '', False, "Batch ID which caused the record insert"),
                 ('src_file_rec_num', False, 'bigint', '', True, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(256)', '', True, "Assessment GUID"),

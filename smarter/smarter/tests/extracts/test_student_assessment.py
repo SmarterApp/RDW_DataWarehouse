@@ -4,8 +4,8 @@ Created on Nov 8, 2013
 @author: dip
 '''
 import unittest
-from smarter.extracts.student_assessment import get_extract_assessment_query,\
-    compile_query_to_sql_text
+from smarter.extracts.student_assessment import get_extract_assessment_query
+from edcore.utils.utils import compile_query_to_sql_text
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\

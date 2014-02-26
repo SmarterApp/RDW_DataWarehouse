@@ -12,7 +12,7 @@ class SbacIdentityParser(IdentityParser):
     CHAIN_ITEMS_COUNT = 17
     ROLE_INDEX = 1
     TENANT_INDEX = 7
-    STATE_CODE_INDEX  = 8
+    STATE_CODE_INDEX = 8
     DISTRICT_GUID_INDEX = 11
     SCHOOL_GUID_INDEX = 15
     '''
@@ -44,7 +44,7 @@ class SbacIdentityParser(IdentityParser):
         '''
         returns a list of tenant names (ex. StateIDs)
         '''
-        values = self.parse_tenancy_chain( self.TENANT_INDEX)
+        values = self.parse_tenancy_chain(self.TENANT_INDEX)
         # Lower case the tenant name
         return [value.lower() for value in values]
 

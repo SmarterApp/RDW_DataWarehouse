@@ -105,8 +105,16 @@ class TestMoveToTarget(unittest.TestCase):
         logger.info(query)
         self.assertEqual(query, "INSERT INTO \"target_schema\".\"A\"(table_B_col_A) " +
                          "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
-                         ", 'SELECT table_B_col_B, * FROM (SELECT table_a_col_a.table_B_col_B FROM \"source_schema\".\"table_A_col_A\" table_a_col_a WHERE table_a_col_a.guid_batch=''1'') as y')" +
+                         ", 'SELECT table_B_col_B, * FROM (SELECT table_a_col_a.table_B_col_B FROM \"source_schema\".\"table_A_col_A\" table_a_col_a " +
+                         "WHERE table_a_col_a.guid_batch=''1'') as y')" +
                          " AS t(varchar(5));")
+        query = create_multi_table_select_insert_query(conf, 'A', {'table_A_col_A': {'table_B_col_A': 'table_B_col_B'}},
+                                                       {'table_A_col_A': {'table_A_col_A': 'varchar(5)'}}, False, 'D')
+        logger.info(query)
+        self.assertEqual(query, "INSERT INTO \"target_schema\".\"A\"(table_B_col_A) " +
+                         "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
+                         ", 'SELECT table_B_col_B, * FROM (SELECT table_a_col_a.table_B_col_B FROM \"source_schema\".\"table_A_col_A\" table_a_col_a " +
+                         "WHERE op = ''D'' AND table_a_col_a.guid_batch=''1'') as y') AS t(varchar(5));")
 
 
 def generate_conf(guid_batch, udl2_conf):

@@ -76,16 +76,16 @@ rm -rf %{buildroot}
 /opt/virtualenv/udl2/bin/activate_this.py
 %attr(755,root,root) /opt/virtualenv/udl2/bin/easy_install
 %attr(755,root,root) /opt/virtualenv/udl2/bin/easy_install-3.3
-%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/teardown_udl2_database.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_system.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database_user.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_directories.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database_user.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/driver.py
-%attr(755,root,root) /opt/virtualenv/udl2/bin/add_tenant.sh
-%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.py
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/teardown_udl2_database.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_system.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database_user.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_directories.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/initialize_udl2_database_user.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/driver.py
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/add_tenant.sh
+#%attr(755,root,root) /opt/virtualenv/udl2/bin/start_rabbitmq.py
 %attr(755,root,root) /opt/virtualenv/udl2/bin/pip
 %attr(755,root,root) /opt/virtualenv/udl2/bin/pip-3.3
 %attr(755,root,root) /opt/virtualenv/udl2/bin/python3.3

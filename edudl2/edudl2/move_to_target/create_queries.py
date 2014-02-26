@@ -126,7 +126,7 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
     else:
         insert_sql = ["INSERT INTO {target_schema_and_table}(",
                       ",".join(target_keys),
-                      ")  SELECT * FROM ",
+                      ") SELECT * FROM ",
                       "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
                       "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
                       " FROM " + ",".join(source_key_assignments),

@@ -33,7 +33,7 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
                                guid_column_value_got=guid_column_value)
 
 
-def select_columns_in_table(schema_name, table_name, column_names, criteria):
+def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria):
     return "SELECT DISTINCT " + ",".join(column_names) + \
         " FROM " + combine_schema_and_table(schema_name, table_name) + \
         " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
@@ -74,8 +74,6 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                       ");"]
     insert_sql = "".join(insert_sql).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
                                                                                              target_table),
-                                            db_password_target=conf[mk.TARGET_DB_PASSWORD],
-                                            target_schema=conf[mk.TARGET_DB_SCHEMA],
                                             host=conf[mk.SOURCE_DB_HOST],
                                             port=conf[mk.SOURCE_DB_PORT],
                                             db_name=conf[mk.SOURCE_DB_NAME],
@@ -118,9 +116,9 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
     if op is None:
         insert_sql = ["INSERT INTO {target_schema_and_table}(",
                       ",".join(target_keys),
-                      ")  SELECT * FROM ",
+                      ") SELECT * FROM ",
                       "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
-                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression} " + ",".join(source_keys),
+                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
                       " FROM " + ",".join(source_key_assignments),
                       " WHERE " + list(column_mappings.keys())[0].lower() + ".guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
                       ",".join(source_values),
@@ -130,15 +128,13 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
                       ",".join(target_keys),
                       ")  SELECT * FROM ",
                       "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
-                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression} " + ",".join(source_keys),
+                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
                       " FROM " + ",".join(source_key_assignments),
                       " WHERE op = \'\'{op}\'\' AND " + list(column_mappings.keys())[0].lower() + ".guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
                       ",".join(source_values),
                       ");"]
     insert_sql = "".join(insert_sql).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
                                                                                              target_table),
-                                            db_password_target=conf[mk.TARGET_DB_PASSWORD],
-                                            target_schema=conf[mk.TARGET_DB_SCHEMA],
                                             host=conf[mk.SOURCE_DB_HOST],
                                             port=conf[mk.SOURCE_DB_PORT],
                                             db_name=conf[mk.SOURCE_DB_NAME],

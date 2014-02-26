@@ -27,22 +27,20 @@ def report_udl_batch_metrics_to_log(msg, end_time, pipeline_status):
     logger.info('End time: ' + str(end_time))
     if mk.INPUT_FILE_SIZE in msg:
         logger.info('Input file size: ' + str(round(msg[mk.INPUT_FILE_SIZE] / (1024 * 1024.0), 3)) + 'MB')
-    if mk.FACT_ROWS_LOADED in msg:
-        logger.info('Total Records Processed: ' + str(msg[mk.FACT_ROWS_LOADED]))
+    if mk.TOTAL_ROWS_LOADED in msg:
+        logger.info('Total Records Processed: ' + str(msg[mk.TOTAL_ROWS_LOADED]))
 
 
 def report_batch_to_udl_daily_stats(msg, end_time):
     logger.info('Reporting to UDL daily stats')
-    #Fact rows are not updated for student registration yet
-    fact_rows_loaded = 0
-    if mk.FACT_ROWS_LOADED in msg:
-        fact_rows_loaded = msg[mk.FACT_ROWS_LOADED]
+    if mk.TOTAL_ROWS_LOADED in msg:
+        total_rows_loaded = msg[mk.TOTAL_ROWS_LOADED]
     udl_batch_stats = {
         UdlStatsConstants.BATCH_GUID: msg[mk.GUID_BATCH],
         UdlStatsConstants.STATE_CODE: 'XX',
         UdlStatsConstants.FILE_ARRIVED: msg[mk.START_TIMESTAMP],
         UdlStatsConstants.TENANT: msg[mk.TENANT_NAME],
-        UdlStatsConstants.RECORD_LOADED_COUNT: fact_rows_loaded,
+        UdlStatsConstants.RECORD_LOADED_COUNT: total_rows_loaded,
         UdlStatsConstants.UDL_START: msg[mk.START_TIMESTAMP],
         UdlStatsConstants.UDL_END: end_time
     }

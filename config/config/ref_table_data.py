@@ -130,6 +130,7 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'acc_scribe_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_scribe_nonembed', 'clean', None),
         ('1', 'LZ_CSV', 'acc_speech_to_text_nonembed', 'STG_SBAC_ASMT_OUTCOME', 'acc_speech_to_text_nonembed', 'clean', None),
         ('1', 'LZ_CSV', 'acc_streamline_mode', 'STG_SBAC_ASMT_OUTCOME', 'acc_streamline_mode', 'clean', None),
+        ('1', 'LZ_CSV', 'op', 'STG_SBAC_ASMT_OUTCOME', 'op', 'option', None),
         # Staging to Integration
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_batch', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', None, None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'op', 'INT_SBAC_ASMT_OUTCOME', 'op', None, None),

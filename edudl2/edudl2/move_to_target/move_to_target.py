@@ -9,10 +9,10 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_column_mapping_from_int_to_target
 from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
                                                   enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
-                                                  create_information_query, select_columns_in_table, create_delete_query,
-                                                  create_multi_table_select_insert_query, update_matched_fact_asmt_outcome_row,
-                                                  find_deleted_fact_asmt_outcome_rows, find_unmatched_deleted_fact_asmt_outcome_row,
-                                                  match_delete_fact_asmt_outcome_row_in_prod)
+                                                  create_information_query, create_select_columns_in_table_query,
+                                                  create_delete_query, create_multi_table_select_insert_query,
+                                                  update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
+                                                  find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod)
 
 
 DBDRIVER = "postgresql"
@@ -324,8 +324,8 @@ def move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
     @param column_types: data types of all columns in one target table
     '''
     with UDL2DBConnection() as conn_to_source_db:
-        column_mappings = {}
-        column_types = {}
+        column_mappings = OrderedDict()
+        column_types = OrderedDict()
         for source_table in source_tables:
             column_mappings[source_table] = get_column_mapping_from_int_to_target(conn_to_source_db, 'LOAD_FROM_INT_TO_TARGET', conf[mk.SOURCE_DB_SCHEMA],
                                                                                   conf[mk.REF_TABLE], conf[mk.PHASE], target_table, source_table)
@@ -356,7 +356,7 @@ def get_current_stu_reg_delete_criteria(conn, batch_guid, source_db_schema, sour
     '''
     select_columns = ['test_reg_id', 'academic_year']
     criteria = {'guid_batch': batch_guid}
-    query = select_columns_in_table(source_db_schema, source_table, select_columns, criteria)
+    query = create_select_columns_in_table_query(source_db_schema, source_table, select_columns, criteria)
     result = execute_udl_query_with_result(conn, query, 'Bad Query')
     reg_system_id, academic_year = result.fetchone()
 

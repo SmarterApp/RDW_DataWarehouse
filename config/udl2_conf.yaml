@@ -189,6 +189,10 @@ qa:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: /home/udl2/.gnupg
+    edware_stats:
+        db:
+            schema_name: edware_stats
+            url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware_stats
 development:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.

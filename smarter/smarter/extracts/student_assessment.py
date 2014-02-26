@@ -69,6 +69,7 @@ def get_extract_assessment_query(params):
                                     dim_student.c.gender.label(dim_student_label.get('gender', 'gender')),
                                     dim_student.c.email.label(dim_student_label.get('email', 'email')),
                                     dim_student.c.dob.label(dim_student_label.get('dob', 'dob')),
+                                    fact_asmt_outcome.c.external_student_id.label(fact_asmt_outcome_label.get('external_student_id', 'external_student_id')),
                                     fact_asmt_outcome.c.enrl_grade.label(fact_asmt_outcome_label.get('enrl_grade', 'enrollment_grade')),
                                     fact_asmt_outcome.c.date_taken.label(fact_asmt_outcome_label.get('date_taken', 'date_taken')),
                                     fact_asmt_outcome.c.asmt_score.label(fact_asmt_outcome_label.get('asmt_score', 'asmt_score')),

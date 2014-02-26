@@ -520,14 +520,14 @@ development:
         pool_size: 20
         max_overflow: 10
         cat:
-          schema_name: edware_sds_1_10
+          schema_name: edware_sds_1_11
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
-          schema_name: edware_sds_1_10_dog
+          schema_name: edware_sds_1_11_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_10
+        schema_name: edware_sds_1_11
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:

@@ -34,13 +34,10 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
 
 
 def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
+    select_query = "SELECT DISTINCT " + ",".join(column_names) + " FROM " + combine_schema_and_table(schema_name, table_name)
     if (criteria):
-        select_query = "SELECT DISTINCT " + ",".join(column_names) + \
-            " FROM " + combine_schema_and_table(schema_name, table_name) + \
-            " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
-    else:
-        select_query = "SELECT DISTINCT " + ",".join(column_names) + \
-            " FROM " + combine_schema_and_table(schema_name, table_name)
+        select_query += " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+
     return select_query
 
 
@@ -120,7 +117,7 @@ def create_sr_table_select_insert_query(conf, target_table, column_mappings, col
         if source_table.lower() == primary_table:
             source_key_assignments.append(combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower())
         else:
-            source_key_assignments.append('INNER JOIN ' + combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower() + \
+            source_key_assignments.append('INNER JOIN ' + combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower() +
                                           ' ON ' + source_table.lower() + '.' + key_name + ' = ' + prev_table.lower() + '.' + key_name)
         source_values.extend(list(column_types[source_table].values()))
         prev_table = source_table

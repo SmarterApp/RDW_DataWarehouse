@@ -38,6 +38,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.target_connector = TargetDBConnection()
         self.udl_connector = UDL2DBConnection()
         self.load_type = udl2_conf['load_type']['student_registration']
+        self.empty_target_table()
 
     def tearDown(self):
         self.udl_connector.close_connection()

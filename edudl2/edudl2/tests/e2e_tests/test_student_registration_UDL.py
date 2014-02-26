@@ -6,30 +6,37 @@ import os
 import subprocess
 from time import sleep
 from uuid import uuid4
-from sqlalchemy.sql import select, and_
+from sqlalchemy.sql import select, and_, func
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
 
-data_dir = ''
-STUDENT_REG_DATA_FILE = ''
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
-NUM_RECORDS_IN_DATA_FILE = 10
-NUM_RECORDS_IN_JSON_FILE = 1
-STUDENT_REG_TARGET_TABLE = 'student_reg'
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):
-#TODO: Add more tests as we add functionality
 
     def setUp(self):
-        global data_dir, STUDENT_REG_DATA_FILE
-        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        STUDENT_REG_DATA_FILE = os.path.join(data_dir, 'student_registration_data/test_sample_student_reg.tar.gz.gpg')
-        self.student_reg_file = STUDENT_REG_DATA_FILE
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "student_registration_data")
+        self.student_reg_files = {
+            'original_data': {
+                'path': os.path.join(data_dir, 'test_sample_student_reg.tar.gz.gpg'),
+                'num_records_in_data_file': 10,
+                'num_records_in_json_file': 1
+            },
+            'data_for_different_test_center_than_original_data': {
+                'path': os.path.join(data_dir, 'test_sample_student_reg_2.tar.gz.gpg'),
+                'num_records_in_data_file': 3,
+                'num_records_in_json_file': 1
+            },
+            'data_to_overwrite_original_data': {
+                'path': os.path.join(data_dir, 'test_sample_student_reg_3.tar.gz.gpg'),
+                'num_records_in_data_file': 4,
+                'num_records_in_json_file': 1
+            }
+        }
         self.tenant_dir = TENANT_DIR
         self.target_connector = TargetDBConnection()
         self.udl_connector = UDL2DBConnection()
-        self.batch_id = str(uuid4())
         self.load_type = udl2_conf['load_type']['student_registration']
 
     def tearDown(self):
@@ -37,6 +44,14 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.target_connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+
+    #Empty target table
+    def empty_target_table(self):
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
+        self.target_connector.execute(target_table.delete())
+        query = select([func.count()]).select_from(target_table)
+        count = self.target_connector.execute(query).fetchall()[0][0]
+        self.assertEqual(count, 0, 'Could not empty out target table correctly')
 
     #Validate that the load type received is student registration
     def validate_load_type(self):
@@ -52,36 +67,36 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEqual(load, self.load_type, 'Not the expected load type.')
 
     #Validate the staging table
-    def validate_staging_table(self):
+    def validate_staging_table(self, file_to_load):
         staging_table = self.udl_connector.get_table(udl2_conf['udl2_db']['staging_tables'][self.load_type])
         query = select([staging_table.c.guid_student], staging_table.c.guid_batch == self.batch_id)
         result = self.udl_connector.execute(query).fetchall()
         print('Number of rows in staging table:', len(result))
-        self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in staging table.')
+        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in staging table.')
 
     #Validate the json integration table
-    def validate_json_integration_table(self):
+    def validate_json_integration_table(self, file_to_load):
         json_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['json_integration_tables'][self.load_type])
         query = select([json_int_table.c.guid_registration], json_int_table.c.guid_batch == self.batch_id)
         result = self.udl_connector.execute(query).fetchall()
         print('Number of rows in json integration table:', len(result))
-        self.assertEqual(len(result), NUM_RECORDS_IN_JSON_FILE, 'Unexpected number of records in json integration table.')
+        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_json_file'], 'Unexpected number of records in json integration table.')
 
     #Validate the csv integration table
-    def validate_csv_integration_table(self):
+    def validate_csv_integration_table(self, file_to_load):
         csv_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['csv_integration_tables'][self.load_type])
         query = select([csv_int_table.c.guid_student], csv_int_table.c.guid_batch == self.batch_id)
         result = self.udl_connector.execute(query).fetchall()
         print('Number of rows in csv integration table:', len(result))
-        self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in csv integration table.')
+        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in csv integration table.')
 
     #Validate the target table
-    def validate_stu_reg_target_table(self):
-        target_table = self.target_connector.get_table(STUDENT_REG_TARGET_TABLE)
+    def validate_stu_reg_target_table(self, file_to_load):
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
         query = select([target_table.c.student_guid], target_table.c.batch_guid == self.batch_id)
         result = self.target_connector.execute(query).fetchall()
-        print('Number of rows in target table:', len(result))
-        self.assertEqual(len(result), NUM_RECORDS_IN_DATA_FILE, 'Unexpected number of records in target table.')
+        print('Number of rows for current job in target table:', len(result))
+        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in target table.')
 
     #Validate a student's data
     def validate_student_data(self):
@@ -95,7 +110,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         year_col = 37
         reg_sys_id_col = 39
 
-        target_table = self.target_connector.get_table(STUDENT_REG_TARGET_TABLE)
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
         query = select([target_table], and_(target_table.c.student_guid == '3333-AAAA-AAAA-AAAA', target_table.c.batch_guid == self.batch_id))
         result = self.target_connector.execute(query).fetchall()
         student_data_tuple = result[0]
@@ -109,9 +124,20 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.assertEquals(student_data_tuple[year_col], 2015, 'Academic Year did not match')
         self.assertEquals(student_data_tuple[reg_sys_id_col], '800b3654-4406-4a90-9591-be84b67054df', 'Test registration system\'s id did not match')
 
+    #Validate the total number of rows in the target table (The args define what's expected in the target table)
+    def validate_total_number_in_target(self, *args):
+        expected_number = 0
+        for arg in args:
+            expected_number += self.student_reg_files[arg]['num_records_in_data_file']
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
+        query = select([func.count()]).select_from(target_table)
+        count = self.target_connector.execute(query).fetchall()[0][0]
+        print('Total number of rows in target table:', count)
+        self.assertEqual(count, expected_number, 'Unexpected number of rows in target table')
+
     #Run the UDL pipeline
-    def run_udl_pipeline(self):
-        sr_file = self.copy_file_to_tmp()
+    def run_udl_pipeline(self, file_to_load):
+        sr_file = self.copy_file_to_tmp(file_to_load)
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=sr_file, guid=self.batch_id)
@@ -135,21 +161,48 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.assertTrue(result, "No result retrieved")
 
     #Copy file to tenant directory
-    def copy_file_to_tmp(self):
+    def copy_file_to_tmp(self, file_to_load):
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
         else:
             os.makedirs(self.tenant_dir)
-        return shutil.copy2(self.student_reg_file, self.tenant_dir)
+        return shutil.copy2(self.student_reg_files[file_to_load]['path'], self.tenant_dir)
 
     def test_udl_student_registration(self):
-        self.run_udl_pipeline()
+        #Run and verify first run of student registration data
+        self.batch_id = str(uuid4())
+        self.run_udl_pipeline('original_data')
         self.validate_load_type()
-        self.validate_staging_table()
-        self.validate_json_integration_table()
-        self.validate_csv_integration_table()
-        self.validate_stu_reg_target_table()
+        self.validate_staging_table('original_data')
+        self.validate_json_integration_table('original_data')
+        self.validate_csv_integration_table('original_data')
+        self.validate_stu_reg_target_table('original_data')
         self.validate_student_data()
+        self.validate_total_number_in_target('original_data')
+
+        #Run and verify second run of student registration data (different test registration than previous run)
+        #TODO: Uncomment following steps once functionality works
+        #self.batch_id = str(uuid4())
+        #self.run_udl_pipeline('data_for_different_test_center_than_original_data')
+        #self.validate_staging_table('data_for_different_test_center_than_original_data')
+        #self.validate_json_integration_table('data_for_different_test_center_than_original_data')
+        #self.validate_csv_integration_table('data_for_different_test_center_than_original_data')
+        #self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
+        #self.validate_student_data()
+        #self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+
+        #Run and verify third run of student registration data (same academic year and test registration as first run)
+        #Should overwrite all data from the first run
+        #TODO: Uncomment following steps once functionality works
+        #self.batch_id = str(uuid4())
+        #self.run_udl_pipeline('data_to_overwrite_original_data')
+        #self.validate_staging_table('data_to_overwrite_original_data')
+        #self.validate_json_integration_table('data_to_overwrite_original_data')
+        #self.validate_csv_integration_table('data_to_overwrite_original_data')
+        #self.validate_stu_reg_target_table('data_to_overwrite_original_data')
+        #self.validate_student_data()
+        #self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
+
 
 if __name__ == '__main__':
     unittest.main()

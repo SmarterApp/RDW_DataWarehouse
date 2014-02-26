@@ -147,8 +147,7 @@ class User(object):
         if not isinstance(tenants, list):
             tenants = [tenants]
         self.__info[UserConstants.TENANT] = tenants
-        # TODO: We can get this from tenancy chain
-        # Set the state code based on tenant name
+        # TODO get the state code from RoleRelationship
         self.__info[UserConstants.STATECODE] = get_state_code_mapping(tenants)
 
     def set_guid(self, guid):

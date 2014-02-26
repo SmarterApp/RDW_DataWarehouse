@@ -10,7 +10,7 @@ from edudl2.move_to_target.move_to_target_setup import get_column_mapping_from_i
 from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
                                                   enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
                                                   create_information_query, create_select_columns_in_table_query,
-                                                  create_delete_query, create_multi_table_select_insert_query,
+                                                  create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod)
 
@@ -339,7 +339,7 @@ def move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
                                            'move_to_target', 'move_data_from_int_tables_to_target_table')
         logger.info('{deleted_rows} deleted from {target_table}'.format(deleted_rows=deleted_rows[0], target_table=target_table))
 
-        insert_query = create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, True)
+        insert_query = create_sr_table_select_insert_query(conf, target_table, column_mappings, column_types)
         logger.info(insert_query)
         affected_rows = execute_udl_queries(conn_to_target_db, [insert_query],
                                             'Exception -- moving data from integration {int_table} to target {target_table}'

@@ -5,9 +5,8 @@ import datetime
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
-from edudl2.move_to_target.create_queries import create_insert_query, create_multi_table_select_insert_query,\
-    create_select_columns_in_table_query, create_multi_table_select_insert_query,\
-    find_unmatched_deleted_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,\
+from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query,\
+    create_select_columns_in_table_query, find_unmatched_deleted_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,\
     match_delete_fact_asmt_outcome_row_in_prod, update_matched_fact_asmt_outcome_row
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
@@ -75,7 +74,7 @@ class TestMoveToTarget(unittest.TestCase):
         target_table = 'student_reg'
         column_mappings = get_expected_column_mapping(target_table)
         column_types = get_expected_column_types_for_student_reg(target_table)
-        actual_value = create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, True)
+        actual_value = create_sr_table_select_insert_query(conf, target_table, column_mappings, column_types)
         expected_value = get_expected_insert_query_for_student_reg(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         self.assertEqual(expected_value, actual_value)
@@ -91,7 +90,7 @@ class TestMoveToTarget(unittest.TestCase):
         query = create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'})
         self.assertEqual(query, "SELECT DISTINCT CA,CB FROM \"schema\".\"table\" WHERE condA='valueA'")
 
-    def test_create_multi_table_select_insert_query(self):
+    def test_create_sr_table_select_insert_query(self):
         conf = {
             mk.GUID_BATCH: '1',
             mk.SOURCE_DB_SCHEMA: 'source_schema',
@@ -102,16 +101,16 @@ class TestMoveToTarget(unittest.TestCase):
             mk.SOURCE_DB_USER: 'source_user',
             mk.SOURCE_DB_PASSWORD: 'source_password',
         }
-        query = create_multi_table_select_insert_query(conf, 'A', {'table_A_col_A': {'table_B_col_A': 'table_B_col_B'}},
-                                                       {'table_A_col_A': {'table_A_col_A': 'varchar(5)'}}, False)
+        query = create_sr_table_select_insert_query(conf, 'A', {'table_A_col_A': {'table_B_col_A': 'table_B_col_B'}},
+                                                    {'table_A_col_A': {'table_A_col_A': 'varchar(5)'}})
         logger.info(query)
         self.assertEqual(query, "INSERT INTO \"target_schema\".\"A\"(table_B_col_A) " +
                          "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
                          ", 'SELECT table_B_col_B, * FROM (SELECT table_a_col_a.table_B_col_B FROM \"source_schema\".\"table_A_col_A\" table_a_col_a " +
                          "WHERE table_a_col_a.guid_batch=''1'') as y')" +
                          " AS t(varchar(5));")
-        query = create_multi_table_select_insert_query(conf, 'A', {'table_A_col_A': {'table_B_col_A': 'table_B_col_B'}},
-                                                       {'table_A_col_A': {'table_A_col_A': 'varchar(5)'}}, False, 'D')
+        query = create_sr_table_select_insert_query(conf, 'A', {'table_A_col_A': {'table_B_col_A': 'table_B_col_B'}},
+                                                    {'table_A_col_A': {'table_A_col_A': 'varchar(5)'}}, 'D')
         logger.info(query)
         self.assertEqual(query, "INSERT INTO \"target_schema\".\"A\"(table_B_col_A) " +
                          "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
@@ -287,7 +286,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
            'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * '\
-           'FROM (SELECT DISTINCT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
+           'FROM (SELECT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
            'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
@@ -300,7 +299,8 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'int_sbac_stu_reg.us_school_entry_date,int_sbac_stu_reg.lep_entry_date,int_sbac_stu_reg.lep_exit_date,'\
            'int_sbac_stu_reg.t3_program_type,int_sbac_stu_reg.prim_disability_type,int_sbac_stu_reg_meta.guid_registration,'\
            'int_sbac_stu_reg_meta.academic_year,int_sbac_stu_reg_meta.extract_date,int_sbac_stu_reg_meta.test_reg_id '\
-           'FROM "udl2"."INT_SBAC_STU_REG" int_sbac_stu_reg,"udl2"."INT_SBAC_STU_REG_META" int_sbac_stu_reg_meta '\
+           'FROM "udl2"."INT_SBAC_STU_REG" int_sbac_stu_reg INNER JOIN "udl2"."INT_SBAC_STU_REG_META" int_sbac_stu_reg_meta '\
+           'ON int_sbac_stu_reg_meta.guid_batch = int_sbac_stu_reg.guid_batch '\
            'WHERE int_sbac_stu_reg.guid_batch=\'\'{guid_batch}\'\') as y\') AS t(student_reg_rec_id bigint,'\
            'batch_guid character varying(36),state_name character varying(50),state_code character varying(2),'\
            'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\

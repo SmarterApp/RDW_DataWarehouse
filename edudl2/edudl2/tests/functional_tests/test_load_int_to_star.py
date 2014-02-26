@@ -86,3 +86,15 @@ class IntToStarFTest(UDLTestHelper):
         star_demo_dict = self.get_star_schema_demographic_counts()
 
         assert int_demo_dict == star_demo_dict
+
+    def test_match_deleted_records(self):
+        #move_to_target.match_deleted_records(conf, match_conf)
+        self.assertEqual(True, True)
+
+    def test_check_mismatched_deletions(self):
+        #move_to_target.check_mismatched_deletions(conf, match_conf)
+        self.assertEqual(True, True)
+
+    def test_update_deleted_record_rec_id(self):
+        #move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_value)
+        self.assertEqual(True, True)

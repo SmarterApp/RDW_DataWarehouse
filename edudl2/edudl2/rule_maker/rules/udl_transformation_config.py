@@ -38,6 +38,6 @@ transform_rules = {'clean': {PCLEAN: [REMNL, TRIM]},
                    'subjectType': {PCLEAN: [REMNL, TRIM],
                                    LOOKUP: {'Math': ['MATH', 'MATHS', 'math', 'maths', 'MATHEMATICS', 'Math'],
                                             'ELA': ['ela', 'Ela', 'English Language Arts', 'ELA']}},
-                   'option': {PCLEAN: [UPPER, REMNL, TRIM],
-                              LOOKUP: {'I': ['', 'I'], 'D': ['D']}},
+                   'option': {PCLEAN: [UPPER, REMNL],
+                              LOOKUP: {'I': ['', 'I', None], 'D': ['D']}},
                    }

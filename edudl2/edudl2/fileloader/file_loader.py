@@ -85,7 +85,7 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
     execute_udl_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --', 'file_loader', 'create_fdw_tables')
 
 
-def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_schema):
+def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_schema, header_file):
     '''
     Getting field mapping, which maps the columns in staging table, and columns in csv table
     The mapping is defined in the given ref_table except for guid_batch and src_file_rec_num
@@ -99,7 +99,7 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
                                                    'Exception in getting column mapping between csv_table and staging table -- ',
                                                    'file_loader', 'get_fields_map')
 
-    op_column_present = check_header_contains_op(csv_file)
+    op_column_present = check_header_contains_op(header_file)
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
@@ -157,7 +157,8 @@ def load_data_process(conn, conf):
 
     # get field map
     stg_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
-                                                                          conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
+                                                                          conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD],
+                                                                          conf[mk.TARGET_DB_SCHEMA], conf[mk.HEADERS])
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
@@ -183,6 +184,7 @@ def check_header_contains_op(csv_file):
     with open(csv_file, 'r') as fp:
         csv_reader = csv.reader(fp)
         header = next(csv_reader)
+        print('***, check header', header)
         return TableConstants.OP_COLUMN_NAME in header
 
 

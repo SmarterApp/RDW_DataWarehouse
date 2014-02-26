@@ -45,6 +45,9 @@ cd -
 cd ${WORKSPACE}/edschema
 python setup.py install
 cd -
+cd ${WORKSPACE}/edworker
+python setup.py install
+cd -
 cd ${WORKSPACE}/edudl2
 python setup.py install
 cd -

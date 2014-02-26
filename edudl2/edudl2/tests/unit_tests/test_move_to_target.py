@@ -435,13 +435,13 @@ def get_expected_column_mapping(target_table):
                                                                                                       ('t3_program_type', 't3_program_type'),
                                                                                                       ('prim_disability_type', 'prim_disability_type')
                                                                                                       ])
-                                                                    ),
+                                                                     ),
                                                                     ('INT_SBAC_STU_REG_META', OrderedDict([('student_reg_guid', 'guid_registration'),
                                                                                                            ('academic_year', 'academic_year'),
                                                                                                            ('extract_date', 'extract_date'),
                                                                                                            ('reg_system_id', 'test_reg_id')
                                                                                                            ])
-                                                                    )
+                                                                     )
                                                                     ])
                                         }
     return column_map_integration_to_target[target_table]

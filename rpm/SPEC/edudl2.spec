@@ -23,7 +23,7 @@ commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 rm -rf virtualenv/udl2
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
-cp -r ${WORKSPACE}/udl2 %{buildroot}/opt/edware
+cp -r ${WORKSPACE}/edudl2 %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/

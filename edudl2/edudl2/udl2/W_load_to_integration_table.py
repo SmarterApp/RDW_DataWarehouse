@@ -8,7 +8,7 @@ import datetime
 
 from celery.utils.log import get_task_logger
 from edudl2.udl2.celery import udl2_conf, celery
-from edudl2.udl2 import message_keys as mk, W_post_etl, W_all_done
+from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from edudl2.udl2_util.measurement import BatchTableBenchmark

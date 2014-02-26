@@ -33,10 +33,15 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
                                guid_column_value_got=guid_column_value)
 
 
-def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria):
-    return "SELECT DISTINCT " + ",".join(column_names) + \
-        " FROM " + combine_schema_and_table(schema_name, table_name) + \
-        " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
+    if (criteria):
+        select_query = "SELECT DISTINCT " + ",".join(column_names) + \
+            " FROM " + combine_schema_and_table(schema_name, table_name) + \
+            " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+    else:
+        select_query = "SELECT DISTINCT " + ",".join(column_names) + \
+            " FROM " + combine_schema_and_table(schema_name, table_name)
+    return select_query
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -89,19 +94,22 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     return insert_sql
 
 
-def create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, need_distinct, op=None):
+def create_sr_table_select_insert_query(conf, target_table, column_mappings, column_types, op=None):
     '''
     Main function to create query to insert data from mutliple source tables to target table
     The query will be executed on the database where target table exists
     Since the source tables and target tables can be existing on different databases/servers,
     dblink is used here to get data from source database in the select clause
     '''
-    distinct_expression = 'DISTINCT ' if need_distinct else ''
+    key_name = mk.GUID_BATCH
+    key_value = conf[mk.GUID_BATCH]
     seq_expression = list(column_mappings[list(column_mappings.keys())[0]].values())[0].replace("'", "''")
     target_keys = []
     source_keys = []
     source_key_assignments = []
     source_values = []
+    primary_table = list(column_mappings.keys())[0].lower()
+    prev_table = ''
     for source_table in column_mappings.keys():
         if 'nextval' in list(column_mappings[source_table].values())[0]:
             seq_expression = list(column_mappings[source_table].values())[0].replace("'", "''")
@@ -109,8 +117,13 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
         else:
             source_keys.extend(list(re.sub('^', source_table.lower() + '.', value).replace("'", "''") for value in list(column_mappings[source_table].values())))
         target_keys.extend(list(column_mappings[source_table].keys()))
-        source_key_assignments.append(combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower())
+        if source_table.lower() == primary_table:
+            source_key_assignments.append(combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower())
+        else:
+            source_key_assignments.append('INNER JOIN ' + combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower() + \
+                                          ' ON ' + source_table.lower() + '.' + key_name + ' = ' + prev_table.lower() + '.' + key_name)
         source_values.extend(list(column_types[source_table].values()))
+        prev_table = source_table
 
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
     if op is None:
@@ -118,9 +131,9 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
                       ",".join(target_keys),
                       ") SELECT * FROM ",
                       "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
-                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
-                      " FROM " + ",".join(source_key_assignments),
-                      " WHERE " + list(column_mappings.keys())[0].lower() + ".guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
+                      "\'SELECT {seq_expression}, * FROM (SELECT " + ",".join(source_keys),
+                      " FROM " + ' '.join(source_key_assignments),
+                      " WHERE " + primary_table + ".{key_name}=\'\'{key_value}\'\') as y\') AS t(",
                       ",".join(source_values),
                       ");"]
     else:
@@ -128,9 +141,9 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
                       ",".join(target_keys),
                       ") SELECT * FROM ",
                       "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
-                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
-                      " FROM " + ",".join(source_key_assignments),
-                      " WHERE op = \'\'{op}\'\' AND " + list(column_mappings.keys())[0].lower() + ".guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
+                      "\'SELECT {seq_expression}, * FROM (SELECT " + ",".join(source_keys),
+                      " FROM " + ' '.join(source_key_assignments),
+                      " WHERE op = \'\'{op}\'\' AND " + list(column_mappings.keys())[0].lower() + ".{key_name}=\'\'{key_value}\'\') as y\') AS t(",
                       ",".join(source_values),
                       ");"]
     insert_sql = "".join(insert_sql).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
@@ -141,9 +154,9 @@ def create_multi_table_select_insert_query(conf, target_table, column_mappings, 
                                             db_user=conf[mk.SOURCE_DB_USER],
                                             db_password=conf[mk.SOURCE_DB_PASSWORD],
                                             seq_expression=seq_expression,
-                                            distinct_expression=distinct_expression,
                                             op=op,
-                                            guid_batch=conf[mk.GUID_BATCH])
+                                            key_name=key_name,
+                                            key_value=key_value)
 
     return insert_sql
 

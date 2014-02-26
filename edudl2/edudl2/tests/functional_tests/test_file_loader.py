@@ -11,7 +11,7 @@ from edudl2.udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DB
 from edudl2.udl2_util.config_reader import read_ini_file
 from datetime import datetime
 
-STG_SBAC_ASMT_OUTCOME_COLUMNS = 'record_sid,guid_batch,src_file_rec_num,guid_asmt,guid_asmt_location,name_asmt_location,grade_asmt,name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,guid_student,name_student_first,name_student_middle,name_student_last,address_student_line1,address_student_line2,address_student_city,address_student_zip,gender_student,email_student,dob_student,grade_enrolled,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,dmg_prg_lep,dmg_prg_504,dmg_prg_tt1,date_assessed,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,score_claim_1,score_claim_1_min,score_claim_1_max,asmt_claim_1_perf_lvl,score_claim_2,score_claim_2_min,score_claim_2_max,asmt_claim_2_perf_lvl,score_claim_3,score_claim_3_min,score_claim_3_max,asmt_claim_3_perf_lvl,score_claim_4,score_claim_4_min,score_claim_4_max,asmt_claim_4_perf_lvl,asmt_type,asmt_subject,asmt_year,acc_asl_video_embed,acc_asl_human_nonembed,acc_braile_embed,acc_closed_captioning_embed,acc_text_to_speech_embed,acc_abacus_nonembed,acc_alternate_response_options_nonembed,acc_calculator_nonembed,acc_multiplication_table_nonembed,acc_print_on_demand_nonembed,acc_read_aloud_nonembed,acc_scribe_nonembed,acc_speech_to_text_nonembed,acc_streamline_mode'
+STG_SBAC_ASMT_OUTCOME_COLUMNS = 'record_sid,op,guid_batch,src_file_rec_num,guid_asmt,guid_asmt_location,name_asmt_location,grade_asmt,name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,guid_student,name_student_first,name_student_middle,name_student_last,address_student_line1,address_student_line2,address_student_city,address_student_zip,gender_student,email_student,dob_student,grade_enrolled,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,dmg_prg_lep,dmg_prg_504,dmg_prg_tt1,date_assessed,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,score_claim_1,score_claim_1_min,score_claim_1_max,asmt_claim_1_perf_lvl,score_claim_2,score_claim_2_min,score_claim_2_max,asmt_claim_2_perf_lvl,score_claim_3,score_claim_3_min,score_claim_3_max,asmt_claim_3_perf_lvl,score_claim_4,score_claim_4_min,score_claim_4_max,asmt_claim_4_perf_lvl,asmt_type,asmt_subject,asmt_year,acc_asl_video_embed,acc_asl_human_nonembed,acc_braile_embed,acc_closed_captioning_embed,acc_text_to_speech_embed,acc_abacus_nonembed,acc_alternate_response_options_nonembed,acc_calculator_nonembed,acc_multiplication_table_nonembed,acc_print_on_demand_nonembed,acc_read_aloud_nonembed,acc_scribe_nonembed,acc_speech_to_text_nonembed,acc_streamline_mode'
 STG_SBAC_STU_REG_COLUMNS = 'record_sid,guid_batch,src_file_rec_num,name_state,code_state,guid_district,name_district,guid_school,name_school,guid_student,external_ssid_student,name_student_first,name_student_middle,name_student_last,gender_student,dob_student,grade_enrolled,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,code_confirm,code_language,eng_prof_lvl,us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type'
 
 
@@ -93,7 +93,7 @@ class FileLoaderFTest(unittest.TestCase):
         records_in_db = get_rows_in_table(self.conf, self.conn, STG_SBAC_ASMT_OUTCOME_COLUMNS)
 
         # read the csv file
-        self.verify_table_content(records_in_db)
+        self.verify_regular_table_content(records_in_db)
 
     def test_stu_reg_compare_data(self):
         # load data
@@ -156,6 +156,22 @@ class FileLoaderFTest(unittest.TestCase):
             self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
             self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file
             self.conf[mk.HEADERS] = self.stu_reg_header_file
+
+    def verify_regular_table_content(self, records_in_db):
+        with open(self.conf[mk.FILE_TO_LOAD], newline='') as file:
+            reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)
+            row_number = 0
+            for row_in_csv in reader:
+                row_in_table = records_in_db[row_number]
+                # verify the src_file_rec_num and guid_batch
+                self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
+                self.assertEqual(row_in_table['guid_batch'], str(self.conf[mk.GUID_BATCH]))
+                row_in_table = (row_in_table[1],) + row_in_table[4:]
+                # verify each of the value
+                for value_in_csv, value_in_table in zip(row_in_csv, row_in_table):
+                    if value_in_csv and value_in_table and type(value_in_table) != datetime:
+                        self.assertEqual(value_in_csv.lower(), value_in_table.lower())
+                row_number += 1
 
     def verify_table_content(self, records_in_db):
         with open(self.conf[mk.FILE_TO_LOAD], newline='') as file:

@@ -6,7 +6,9 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import create_insert_query, create_multi_table_select_insert_query,\
-    create_select_columns_in_table_query, create_multi_table_select_insert_query
+    create_select_columns_in_table_query, create_multi_table_select_insert_query,\
+    find_unmatched_deleted_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,\
+    match_delete_fact_asmt_outcome_row_in_prod, update_matched_fact_asmt_outcome_row
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
@@ -115,6 +117,29 @@ class TestMoveToTarget(unittest.TestCase):
                          "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
                          ", 'SELECT table_B_col_B, * FROM (SELECT table_a_col_a.table_B_col_B FROM \"source_schema\".\"table_A_col_A\" table_a_col_a " +
                          "WHERE op = ''D'' AND table_a_col_a.guid_batch=''1'') as y') AS t(varchar(5));")
+
+    def test_update_matched_fact_asmt_outcome_row(self):
+        query = update_matched_fact_asmt_outcome_row('schema', 'table', 'guid_1', [('col_a_a', 'col_a_b')],
+                                                     [('status', 'D')], {'col_a_b': '1', 'asmnt_rec_id': '2', 'status': 'C'})
+        logger.info(query)
+        self.assertEqual(query, "UPDATE \"schema\".\"table\" SET asmnt_outcome_rec_id = 2, status = 'C' || status " +
+                         "WHERE batch_guid = 'guid_1' AND col_a_a = '1' AND status = 'D'")
+
+    def test_match_delete_fact_asmt_outcome_row_in_prod(self):
+        query = match_delete_fact_asmt_outcome_row_in_prod('schema', 'table', [('col_a_a', 'col_a_b')],
+                                                           [('status', 'C')], {'col_a_a': '1'})
+        logger.info(query)
+        self.assertEqual(query, "SELECT asmnt_rec_id, col_a_b, status FROM \"schema\".\"table\" WHERE col_a_b = '1' AND status = 'C'")
+
+    def test_find_deleted_fact_asmt_outcome_rows(self):
+        query = find_deleted_fact_asmt_outcome_rows('schema', 'table', 'guid_1', [('col_a_a', 'col_a_b')], [('status', 'D')])
+        logger.info(query)
+        self.assertEqual(query, "SELECT col_a_a ,status FROM \"schema\".\"table\" WHERE batch_guid = 'guid_1' AND status in ('D')")
+
+    def test_find_unmatched_deleted_fact_asmt_outcome_row(self):
+        query = find_unmatched_deleted_fact_asmt_outcome_row('scheme', 'table', 'guid', [('status', 'D')])
+        logger.info(query)
+        self.assertEqual(query, "SELECT status FROM \"scheme\".\"table\" WHERE status in ('D') and batch_guid = 'guid'")
 
 
 def generate_conf(guid_batch, udl2_conf):

@@ -47,7 +47,7 @@ def get_move_to_target_conf():
                 ('student_guid', 'student_guid')
             ],
             'matched_status': {
-                'source_table': [('status', 'D'), ('status', 'U')],
+                'source_table': [('status', 'D')],
                 'prod_table': [('status', 'C')]
             }
         }]

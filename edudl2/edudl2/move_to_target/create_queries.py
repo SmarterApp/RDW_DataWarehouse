@@ -302,14 +302,13 @@ def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_
     prod_cols.extend(list(set([s[0] for s in matched_status])))
     for s in matched_status:
         matched_prod_values[s[0]] = s[1]
-    condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_prod_values[c]) for c in prod_cols])
-    sql_template = "SELECT asmnt_rec_id, {cols} " + \
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE {condition_clause}"
-
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               cols=", ".join(prod_cols),
-                               condition_clause=condition_clause)
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in prod_cols])
+    params = [bindparam("{c}".format(c=c), matched_prod_values[c]) for c in prod_cols]
+    query = text("SELECT asmnt_rec_id, " + ", ".join(prod_cols) + " " +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE " + condition_clause,
+                 bindparams=params)
+    return query
 
 
 def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matched_columns, matched_status,
@@ -330,12 +329,12 @@ def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, ma
     # match deleted record should be 'C' in prod, but in pre-prod. it is the
     for s in matched_status:
         matched_pred_values[s[0]] = s[1]
-    condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_pred_values[c]) for c in pred_cols])
-    prod_rec_id = matched_prod_values['asmnt_rec_id']
-    sql_template = "UPDATE {source_schema_and_table} " \
-                   "SET asmnt_outcome_rec_id = {prod_rec_id}, status = 'C' || status " +\
-                   "WHERE batch_guid = '{batch_guid}' AND {condition_clause}"
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               prod_rec_id=prod_rec_id,
-                               batch_guid=batch_guid,
-                               condition_clause=condition_clause)
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in pred_cols])
+    params = [bindparam("{c}".format(c=c), matched_pred_values[c]) for c in pred_cols]
+    params.append(bindparam('prod_rec_id', matched_prod_values['asmnt_rec_id']))
+    params.append(bindparam('batch_guid', batch_guid))
+    query = text("UPDATE " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "SET asmnt_outcome_rec_id = :prod_rec_id, status = 'C' || status " +
+                 "WHERE batch_guid = :batch_guid AND " + condition_clause,
+                 bindparams=params)
+    return query

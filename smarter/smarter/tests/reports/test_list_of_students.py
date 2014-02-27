@@ -8,12 +8,12 @@ from smarter.reports.list_of_students_report import get_list_of_students_report
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edauth.security.session import Session
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    UnittestEdcoreDBConnection
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestLOS(Unittest_with_edcore_sqlite):
@@ -35,10 +35,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_session = Session()
-        dummy_session.set_roles(['TEACHER'])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants([get_unittest_tenant_name()])
+        dummy_session = create_test_session(['TEACHER'], uid='272')
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

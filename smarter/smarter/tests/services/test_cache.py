@@ -21,9 +21,9 @@ class TestCache(Unittest_with_edcore_sqlite):
     def setUp(self):
         reg = {}
         reg['cache.expire'] = 10
-        # Change to get temp dir python
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'
+        CacheManager(**parse_cache_config_options(reg))
         component.provideUtility(SessionBackend(reg), ISessionBackend)
 
     def test_cache_flush_all(self):
@@ -52,11 +52,13 @@ class TestCache(Unittest_with_edcore_sqlite):
 
     def test_flush_session(self):
         session = Session()
-        session.set_session_id('123')
-        get_session_backend().create_new_session(session)
-        self.assertIsNotNone(get_session_backend().get_session('123'))
+        session.set_session_id('1a2b3c')
+        backend = get_session_backend()
+        backend.create_new_session(session)
+        session = backend.get_session('1a2b3c')
+        self.assertIsNotNone(session)
         cache_flush_session()
-        self.assertIsNone(get_session_backend().get_session('123'))
+        self.assertIsNone(backend.get_session('1a2b3c'))
 
     def test_flush_data(self):
         cache_opts = {

@@ -3,7 +3,6 @@ Created on Mar 14, 2013
 
 @author: dip
 '''
-from edcore.security.tenant import get_state_code_mapping, get_tenant_map
 from edauth.security.roles import Roles
 
 
@@ -129,26 +128,26 @@ class User(object):
         '''
         self.__info[UserConstants.NAME][UserConstants.LASTNAME] = last_name
 
-    def set_roles(self, roles):
-        '''
-        @param roles: the roles to be set
-        @type info: string
-        '''
+    def set_context(self, context):
+        # TODO Save to user object, there's an issue to jsonfying the object now
+        #self.user_context = UserContext(context)
+        # For now set the roles and tenant like this to make everything continue to work
+        roles = []
+        tenants = []
+        state_codes = []
+        for c in context:
+            roles.append(c.role)
+            tenants.append(c.tenant)
+            state_codes.append(c.state_code)
+        # We need to make sure that there are we know about all the roles
+        if Roles.has_undefined_roles(roles):
+            roles.append(Roles.get_invalid_role())
         self.__info[UserConstants.ROLES] = roles
+        self.__info[UserConstants.TENANT] = tenants
+        self.__info[UserConstants.STATECODE] = state_codes
         # Check whether 'home' is enabled
         has_home = Roles.has_display_home_permission(roles)
         self.__info[UserConstants.DISPLAYHOME] = has_home
-
-    def set_tenants(self, tenants):
-        '''
-        @param tenant: the tenants to be set
-        @type tenant: list
-        '''
-        if not isinstance(tenants, list):
-            tenants = [tenants]
-        self.__info[UserConstants.TENANT] = tenants
-        # TODO get the state code from RoleRelationship
-        self.__info[UserConstants.STATECODE] = get_state_code_mapping(tenants)
 
     def set_guid(self, guid):
         '''

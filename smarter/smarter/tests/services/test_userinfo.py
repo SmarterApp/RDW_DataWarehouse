@@ -7,9 +7,9 @@ from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sq
 from edapi.tests.dummy import DummyRequest
 from pyramid.registry import Registry
 from pyramid import testing
-from edauth.security.session import Session
 from smarter.services.userinfo import user_info_service
 import unittest
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestUserInfo(Unittest_with_stats_sqlite_no_data_load):
@@ -20,10 +20,7 @@ class TestUserInfo(Unittest_with_stats_sqlite_no_data_load):
         reg = Registry()
         self.__request.registry = reg
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-        dummy_session = Session()
-        dummy_session.set_roles(['SUPER_USER'])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants('cat')
+        dummy_session = create_test_session(['SUPER_USER'], uid='272', tenant='cat')
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

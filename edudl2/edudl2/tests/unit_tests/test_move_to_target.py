@@ -119,15 +119,19 @@ class TestMoveToTarget(unittest.TestCase):
                          "WHERE op = ''D'' AND table_a_col_a.guid_batch=''1'') as y') AS t(varchar(5));")
 
     def test_update_matched_fact_asmt_outcome_row(self):
-        query = update_matched_fact_asmt_outcome_row('schema', 'table', 'guid_1', [('col_a_a', 'col_a_b')],
-                                                     [('status', 'D')], {'col_a_b': '1', 'asmnt_rec_id': '2', 'status': 'C'})
+        query = compile_query_to_sql_text(update_matched_fact_asmt_outcome_row('schema',
+                                                                               'table', 'guid_1', [('col_a_a', 'col_a_b')],
+                                                                               [('status', 'D')], {'col_a_b': '1',
+                                                                                                   'asmnt_rec_id': '2',
+                                                                                                   'status': 'C'}))
         logger.info(query)
-        self.assertEqual(query, "UPDATE \"schema\".\"table\" SET asmnt_outcome_rec_id = 2, status = 'C' || status " +
+        self.assertEqual(query, "UPDATE \"schema\".\"table\" SET asmnt_outcome_rec_id = '2', status = 'C' || status " +
                          "WHERE batch_guid = 'guid_1' AND col_a_a = '1' AND status = 'D'")
 
     def test_match_delete_fact_asmt_outcome_row_in_prod(self):
-        query = match_delete_fact_asmt_outcome_row_in_prod('schema', 'table', [('col_a_a', 'col_a_b')],
-                                                           [('status', 'C')], {'col_a_a': '1'})
+        query = compile_query_to_sql_text(match_delete_fact_asmt_outcome_row_in_prod('schema',
+                                                                                     'table', [('col_a_a', 'col_a_b')],
+                                                                                     [('status', 'C')], {'col_a_a': '1'}))
         logger.info(query)
         self.assertEqual(query, "SELECT asmnt_rec_id, col_a_b, status FROM \"schema\".\"table\" WHERE col_a_b = '1' AND status = 'C'")
 

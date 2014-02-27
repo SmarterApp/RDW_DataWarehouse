@@ -212,7 +212,6 @@ define [
     subject.hasTextReplacement = insufficient || interim || noData
     if interim
       subject.displayText = options.colModel.labels['interim_data_only']
-      subject.displayTextClass = 'interimOnly'
     else if insufficient
       subject.displayText = options.colModel.labels['insufficient_data']
     else if noData

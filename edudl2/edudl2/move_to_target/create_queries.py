@@ -333,8 +333,9 @@ def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, ma
     params = [bindparam("{c}".format(c=c), matched_pred_values[c]) for c in pred_cols]
     params.append(bindparam('prod_rec_id', matched_prod_values['asmnt_rec_id']))
     params.append(bindparam('batch_guid', batch_guid))
+    params.append(bindparam('new_status', 'D'))
     query = text("UPDATE " + combine_schema_and_table(schema_name, table_name) + " " +
-                 "SET asmnt_outcome_rec_id = :prod_rec_id, status = 'C' || status " +
+                 "SET asmnt_outcome_rec_id = :prod_rec_id, status = :new_status " +
                  "WHERE batch_guid = :batch_guid AND " + condition_clause,
                  bindparams=params)
     return query

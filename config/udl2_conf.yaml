@@ -9,6 +9,7 @@ common:
         broker: amqp://guest@localhost//    # this is the url to message broker. Currently it is located on localhost for rabbitmq
         backend: amqp://guest@localhost//   # this is the url to task results for each request. Currently it is located on localhost for rabbitmq
         include:
+            - udl2.W_get_udl_file
             - udl2.W_file_arrived
             - udl2.W_file_decrypter
             - udl2.W_file_expander

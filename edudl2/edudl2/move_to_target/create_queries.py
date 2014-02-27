@@ -12,8 +12,8 @@ def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_b
     @column_name:
     @guid_batch
     '''
-    query = text("SELECT DISTINCT " + column_name +
-                 "FROM " + combine_schema_and_table(schema_name, table_name) +
+    query = text("SELECT DISTINCT " + column_name + " " +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
                  "WHERE guid_batch=:guid_batch",
                  bindparams=[bindparam('guid_batch', guid_batch)])
 

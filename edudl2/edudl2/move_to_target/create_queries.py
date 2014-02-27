@@ -1,6 +1,7 @@
 import re
 from edudl2.udl2 import message_keys as mk
-from sqlalchemy.sql.expression import text
+from sqlalchemy.sql.expression import text, bindparam
+from edcore.utils.utils import compile_query_to_sql_text
 
 
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
@@ -11,12 +12,12 @@ def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_b
     @column_name:
     @guid_batch
     '''
-    sql_template = "SELECT DISTINCT {guid_column_name_in_source} " + \
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE guid_batch=\'{guid_batch}\'"
-    return sql_template.format(guid_column_name_in_source=column_name,
-                               source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               guid_batch=guid_batch)
+    query = text("SELECT DISTINCT " + column_name +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) +
+                 "WHERE guid_batch=:guid_batch",
+                 bindparams=[bindparam('guid_batch', guid_batch)])
+
+    return query
 
 
 def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target,
@@ -262,26 +263,30 @@ def find_unmatched_deleted_fact_asmt_outcome_row(schema_name, table_name, batch_
     '''
     create a query to search any record that should be deleted/updated but has no record in production database
     '''
-    sql_template = "SELECT status FROM {source_schema_and_table} " + \
-                   "WHERE status in ({status}) and batch_guid = '{batch_guid}'"
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               status=",".join(["'{i}'".format(i=s[1]) for s in status_code]),
-                               batch_guid=batch_guid)
+    params = [bindparam('batch_guid', batch_guid)]
+    params.extend([bindparam(str(s[0]) + '_' + str(i), s[1]) for i, s in enumerate(status_code)])
+    query = text("SELECT status FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE status in (" +
+                 "," .join([":" + str(s[0]) + '_' + str(i) for i, s in enumerate(status_code)]) +
+                 ") and batch_guid = :batch_guid",
+                 bindparams=params)
+    return query
 
 
 def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matched_columns, status_code):
     '''
     create a query to find all delete/updated record in current batch
     '''
+    params = [bindparam('batch_guid', batch_guid)]
+    params.extend([bindparam(str(s[0]) + '_' + str(i), s[1]) for i, s in enumerate(status_code)])
     cols = [m[0] for m in matched_columns]
     cols.extend(list(set([s[0] for s in status_code])))
-    sql_template = "SELECT {cols} " +\
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE batch_guid = '{batch_guid}' AND status in ({status})"
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               cols=" ,".join(cols),
-                               status=", ".join(["'{i}'".format(i=s[1]) for s in status_code]),
-                               batch_guid=batch_guid)
+    query = text("SELECT " + " ,".join(cols) + " " +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE batch_guid = :batch_guid AND status in (" +
+                 "," .join([":" + str(s[0]) + '_' + str(i) for i, s in enumerate(status_code)]) + ")",
+                 bindparams=params)
+    return query
 
 
 def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_columns, matched_status,

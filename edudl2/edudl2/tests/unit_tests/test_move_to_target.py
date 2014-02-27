@@ -11,6 +11,7 @@ from edudl2.move_to_target.create_queries import create_insert_query, create_sr_
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
+from edcore.utils.utils import compile_query_to_sql_text
 import logging
 logger = logging.getLogger(__name__)
 
@@ -131,14 +132,19 @@ class TestMoveToTarget(unittest.TestCase):
         self.assertEqual(query, "SELECT asmnt_rec_id, col_a_b, status FROM \"schema\".\"table\" WHERE col_a_b = '1' AND status = 'C'")
 
     def test_find_deleted_fact_asmt_outcome_rows(self):
-        query = find_deleted_fact_asmt_outcome_rows('schema', 'table', 'guid_1', [('col_a_a', 'col_a_b')], [('status', 'D')])
+        query = compile_query_to_sql_text(find_deleted_fact_asmt_outcome_rows('schema', 'table', 'guid_1',
+                                                                              [('col_a_a', 'col_a_b')],
+                                                                              [('status', 'D')]))
         logger.info(query)
-        self.assertEqual(query, "SELECT col_a_a ,status FROM \"schema\".\"table\" WHERE batch_guid = 'guid_1' AND status in ('D')")
+        self.assertEqual(query,
+                         "SELECT col_a_a ,status FROM \"schema\".\"table\" WHERE batch_guid = 'guid_1' AND status in ('D')")
 
     def test_find_unmatched_deleted_fact_asmt_outcome_row(self):
-        query = find_unmatched_deleted_fact_asmt_outcome_row('scheme', 'table', 'guid', [('status', 'D')])
+        query = compile_query_to_sql_text(find_unmatched_deleted_fact_asmt_outcome_row('scheme', 'table', 'guid',
+                                                                                       [('status', 'D')]))
         logger.info(query)
-        self.assertEqual(query, "SELECT status FROM \"scheme\".\"table\" WHERE status in ('D') and batch_guid = 'guid'")
+        self.assertEqual(query,
+                         "SELECT status FROM \"scheme\".\"table\" WHERE status in ('D') and batch_guid = 'guid'")
 
 
 def generate_conf(guid_batch, udl2_conf):

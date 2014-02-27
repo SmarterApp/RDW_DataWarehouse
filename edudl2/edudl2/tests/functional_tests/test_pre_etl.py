@@ -5,6 +5,7 @@ from edudl2.udl2_util.database_util import connect_db, execute_query_with_result
 from uuid import uuid4
 import os
 from edudl2.preetl.pre_etl import pre_etl_job
+from edudl2.udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
 from edudl2.udl2_util.config_reader import read_ini_file
 import tempfile
 import shutil
@@ -17,6 +18,7 @@ class PreEtlTest(unittest.TestCase):
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path_file)
         self.udl2_conf = conf_tup[0]
+        initialize_db(UDL2DBConnection, self.udl2_conf)
 
         # create test error log file
         self.temp_dir = tempfile.mkdtemp()
@@ -93,7 +95,6 @@ class PreEtlTest(unittest.TestCase):
     def _check_log_file(self, is_empty):
         with open(self.test_error_log_file) as f:
             content = f.readlines()
-
         if is_empty is True:
             self.assertEqual(len(content), 0)
         else:

@@ -41,6 +41,7 @@ class IntToStarFTest(UDLTestHelper):
                 values = values.replace("''", "'0'")
                 values = values.replace("'DEFAULT'", "DEFAULT")
                 insert_string = insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'], staging_table=table, value_string=values)
+                print ('query: ', insert_string)
                 insert_array.append(insert_string)
             except_msg = "Unable to insert into %s" % table
             execute_queries(self.udl2_conn, insert_array, except_msg)

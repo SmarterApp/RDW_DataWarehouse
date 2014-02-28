@@ -1,11 +1,6 @@
 import datetime
 from celery import chain
 from edudl2.preetl.pre_etl import pre_etl_job
-from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_get_load_type,
-                         W_simple_file_validator, W_file_splitter, W_file_content_validator,
-                         W_load_json_to_integration, W_load_to_integration_table,
-                         W_load_from_integration_to_star, W_load_sr_integration_to_target,
-                         W_parallel_csv_load, W_post_etl, W_all_done)
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 
@@ -86,4 +81,9 @@ def _combine_messages(msg1, msg2):
     return dict(list(msg1.items()) + list(msg2.items()))
 
 
-from edudl2.udl2 import W_determine_end_chain
+from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_get_load_type,
+                         W_simple_file_validator, W_file_splitter, W_file_content_validator,
+                         W_load_json_to_integration, W_load_to_integration_table,
+                         W_load_from_integration_to_star, W_load_sr_integration_to_target,
+                         W_parallel_csv_load, W_determine_end_chain, W_post_etl, W_all_done)
+

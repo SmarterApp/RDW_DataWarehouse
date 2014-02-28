@@ -1,5 +1,4 @@
 from edudl2.file_finder.file_finder import find_files_in_directories
-from edudl2.udl2.udl2_pipeline import get_pipeline_chain
 __author__ = 'swimberly'
 
 from edudl2.udl2.celery import udl2_conf, celery
@@ -34,3 +33,6 @@ def get_next_file(msg):
     else:
         get_next_file.apply_async((next_file_msg,), countdown=udl2_conf['search_wait_time'])
         return "No file found"
+
+
+from edudl2.udl2.udl2_pipeline import get_pipeline_chain

@@ -6,11 +6,12 @@ from celery.utils.log import get_task_logger
 from edudl2.udl2 import message_keys as mk
 from celery import group
 from edudl2.udl2_util.measurement import BatchTableBenchmark
-from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapping, generate_conf, create_group_tuple
+from edudl2.move_to_target.move_to_target_setup import (get_table_and_column_mapping, generate_conf,
+                                                        create_group_tuple, get_table_column_types)
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
-from edudl2.move_to_target.move_to_target import get_table_column_types,\
-    explode_data_to_dim_table, calculate_spend_time_as_second,\
-    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id
+from edudl2.move_to_target.move_to_target import (explode_data_to_dim_table, calculate_spend_time_as_second,
+                                                  explode_data_to_fact_table, match_deleted_records,
+                                                  update_deleted_record_rec_id)
 
 logger = get_task_logger(__name__)
 

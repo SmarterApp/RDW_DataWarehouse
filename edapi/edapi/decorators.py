@@ -80,7 +80,7 @@ def user_info(orig_func):
         user = authenticated_userid(pyramid.threadlocal.get_current_request())
         # Only append user info if we get an User object returned
         if user:
-            results['user_info'] = user.__dict__
+            results['user_info'] = user
         return results
     return wrap
 

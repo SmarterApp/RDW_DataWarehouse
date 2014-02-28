@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 import uuid
 from edauth.security.session import Session
 from edauth.security.session_backend import get_session_backend
-from edauth.security.user import UserContext
 
 # TODO: remove datetime.now() and use func.now()
 

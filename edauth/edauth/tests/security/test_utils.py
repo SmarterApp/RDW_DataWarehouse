@@ -7,7 +7,8 @@ Created on May 20, 2013
 import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edauth.security.utils import get_session_cookie
+from edauth.security.utils import get_session_cookie, SetEncoder
+from edauth.security.user import User
 
 
 class TestUtils(unittest.TestCase):
@@ -27,6 +28,12 @@ class TestUtils(unittest.TestCase):
         (cookie_name, cookie_value) = get_session_cookie()
         self.assertEqual(cookie_name, 'dummy')
         self.assertEqual(cookie_value, 'abc')
+
+    def test_set_encoder_with_sets(self):
+        s = set()
+        encoder = SetEncoder()
+        results = encoder.default(s)
+        self.assertIsInstance(results, list)
 
 
 if __name__ == "__main__":

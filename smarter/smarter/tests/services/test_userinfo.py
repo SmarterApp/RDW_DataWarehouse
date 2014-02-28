@@ -30,7 +30,7 @@ class TestUserInfo(Unittest_with_stats_sqlite_no_data_load):
         data = user_info_service(self.__request)
         user = data.get('user_info')
         self.assertIsNotNone(user, "User info should not be empty")
-        self.assertEqual('272', user.get('_Session__user').get_uid(), "User guid doesn't match")
+        self.assertEqual('272', user.get_uid(), "User guid doesn't match")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

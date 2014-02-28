@@ -4,6 +4,8 @@ Created on Mar 14, 2013
 @author: dip
 '''
 from edauth.security.roles import Roles
+import json
+from edauth.security.utils import SetEncoder
 
 
 class UserConstants():
@@ -59,6 +61,13 @@ class UserContext(object):
     def get_schools(self, tenant, role):
         return self.__tenant_context_map[tenant][role]['sg']
 
+    def __json__(self, request):
+        '''
+        custom json serialization for this object used by pyramid
+        '''
+        # TODO: Sets are not serializable, so convert to List first.  If we're not using set, remove this
+        return json.loads(json.dumps(self.__tenant_context_map, cls=SetEncoder))
+
 
 class User(object):
     '''
@@ -66,6 +75,12 @@ class User(object):
     '''
     def __init__(self):
         self.__initialize_default_values()
+
+    def __json__(self, request):
+        '''
+        custom json serializer used by pyramid for the User class
+        '''
+        return self.__dict__
 
     def __str__(self):
         '''
@@ -129,8 +144,7 @@ class User(object):
         self.__info[UserConstants.NAME][UserConstants.LASTNAME] = last_name
 
     def set_context(self, context):
-        # TODO Save to user object, there's an issue to jsonfying the object now
-        #self.user_context = UserContext(context)
+        self.user_context = UserContext(context)
         # For now set the roles and tenant like this to make everything continue to work
         roles = []
         tenants = []

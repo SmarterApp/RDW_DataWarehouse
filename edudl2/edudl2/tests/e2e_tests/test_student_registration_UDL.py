@@ -10,7 +10,7 @@ from sqlalchemy.sql import select, and_, func
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/file_drop'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):

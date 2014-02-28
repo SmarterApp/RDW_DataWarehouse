@@ -24,6 +24,7 @@ FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_file_math_data.tar.gz.gp
              'file2': os.path.join(PATH_TO_FILES, 'test_file_ela_data.tar.gz.gpg')}
 
 
+@unittest.skip("skipping this test till starschema change has been made")
 class Test(unittest.TestCase):
 
     def setUp(self):

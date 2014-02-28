@@ -16,10 +16,10 @@ from time import sleep
 from sqlalchemy.sql.expression import and_
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 guid_batch_id = str(uuid4())
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
-#path = '/opt/edware/zones/landing/work/test_tenant'
+path = '/opt/edware/zones/landing/work/test_tenant'
 FACT_TABLE = 'fact_asmt_outcome'
 #DIM_STUDENT = 'dim_student'
 

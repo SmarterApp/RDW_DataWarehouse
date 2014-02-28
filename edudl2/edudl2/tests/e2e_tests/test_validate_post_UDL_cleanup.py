@@ -15,7 +15,7 @@ from time import sleep
 from sqlalchemy.sql.expression import and_
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_tenant/test_user/filedrop/'
 guid_batch_id = str(uuid4())
 path = '/opt/edware/zones/landing/work/test_tenant'
 FACT_TABLE = 'fact_asmt_outcome'

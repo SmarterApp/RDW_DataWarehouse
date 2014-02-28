@@ -494,12 +494,11 @@ def get_expected_sr_column_and_type_mapping():
                                                              ('prim_disability_type', Column(src_col='prim_disability_type', type='character varying(3)'))
                                                              ])
                             ),
-                            ('INT_SBAC_STU_REG_META', OrderedDict([('student_reg_guid', Column(src_col='guid_registration', type='character varying(50)')),
-                                                                   ('academic_year', Column(src_col='academic_year', type='smallint')),
-                                                                   ('extract_date', Column(src_col='extract_date', type='character varying(10)')),
-                                                                   ('reg_system_id', Column(src_col='test_reg_id', type='haracter varying(50)'))
-                                                                   ])
-                            )
+                          ('INT_SBAC_STU_REG_META', OrderedDict([('student_reg_guid', Column(src_col='guid_registration', type='character varying(50)')),
+                                                                ('academic_year', Column(src_col='academic_year', type='smallint')),
+                                                                ('extract_date', Column(src_col='extract_date', type='character varying(10)')),
+                                                                ('reg_system_id', Column(src_col='test_reg_id', type='haracter varying(50)'))
+                                                                 ]))
                            ])
 
     return mapping

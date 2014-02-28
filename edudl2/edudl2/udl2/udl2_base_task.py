@@ -1,5 +1,6 @@
 from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
+import edudl2.udl2 as udl2
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -24,11 +25,11 @@ class Udl2BaseTask(Task):
 
     def __get_pipeline_error_handler_chain(self, msg, task_name):
         if task_name == 'udl2.W_post_etl.task':
-            error_handler_chain = W_all_done.task.s(msg)
+            error_handler_chain = udl2.W_all_done.task.s(msg)
         elif task_name == 'udl2.W_all_done.task':
             error_handler_chain = None
         else:
-            error_handler_chain = chain(W_post_etl.task.s(msg), W_all_done.task.s())
+            error_handler_chain = chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
         return error_handler_chain
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
@@ -66,6 +67,3 @@ class Udl2BaseTask(Task):
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))
-
-
-from edudl2.udl2 import W_all_done, W_post_etl

@@ -19,6 +19,7 @@ class UDLTestHelper(unittest.TestCase):
         cls.udl2_conf = conf_tup[0]
         cls.udl2_conn, cls.udl2_engine = database._create_conn_engine(cls.udl2_conf['udl2_db'])
         cls.target_conn, cls.target_engine = database._create_conn_engine(cls.udl2_conf['target_db'])
+        cls.prod_conn, cls.prod_engine = database._create_conn_engine(cls.udl2_conf['prod_db'])
 
     @classmethod
     def tearDownClass(cls):

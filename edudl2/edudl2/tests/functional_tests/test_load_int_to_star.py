@@ -61,8 +61,6 @@ class IntToStarFTest(UDLTestHelper):
         # handle deletion case
         match_conf = move_to_target_setup.get_move_to_target_conf()[4]
         matched_results = move_to_target.match_deleted_records(conf, match_conf)
-        print('matched_results')
-        print(matched_results)
         move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_results)
         move_to_target.check_mismatched_deletions(conf, match_conf)
 

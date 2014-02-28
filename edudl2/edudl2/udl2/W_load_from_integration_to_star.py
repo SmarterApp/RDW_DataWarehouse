@@ -6,12 +6,11 @@ from celery.utils.log import get_task_logger
 from edudl2.udl2 import message_keys as mk
 from celery import group
 from edudl2.udl2_util.measurement import BatchTableBenchmark
-from edudl2.move_to_target.move_to_target_setup import (get_table_and_column_mapping, generate_conf,
-                                                        create_group_tuple, get_table_column_types)
+from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapping, generate_conf,\
+    create_group_tuple, get_table_column_types, get_move_to_target_conf
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
-from edudl2.move_to_target.move_to_target import (explode_data_to_dim_table, calculate_spend_time_as_second,
-                                                  explode_data_to_fact_table, match_deleted_records,
-                                                  update_deleted_record_rec_id)
+from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
+    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions
 
 logger = get_task_logger(__name__)
 
@@ -134,6 +133,11 @@ def handle_deletions(msg):
     #fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
 
     #affected_rows = explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
+            # handle deletion case
+    match_conf = get_move_to_target_conf()[4]
+    matched_results = match_deleted_records(conf, match_conf)
+    update_deleted_record_rec_id(conf, match_conf, matched_results)
+    check_mismatched_deletions(conf, match_conf)
     affected_rows = 0
     finish_time = datetime.datetime.now()
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)

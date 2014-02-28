@@ -30,6 +30,7 @@ def _get_json_to_asmt_val_mapping():
                'year': ['identification', 'year'],
                'version': ['identification', 'version'],
                'subject': ['identification', 'subject'],
+               'effective_date': ['identification', 'effective_date'],
                'name_claim_1': ['claims', 'claim_1', 'name'],
                'name_claim_2': ['claims', 'claim_2', 'name'],
                'name_claim_3': ['claims', 'claim_3', 'name'],

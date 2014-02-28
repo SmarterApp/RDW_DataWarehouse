@@ -4,7 +4,6 @@ Created on Sep 1, 2013
 @author: dip
 '''
 from copy import deepcopy
-from sqlalchemy.orm.query import Query
 from psycopg2.extensions import adapt as sqlescape
 
 

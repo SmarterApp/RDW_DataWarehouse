@@ -12,7 +12,7 @@ from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,
     create_queries_for_move_to_fact_table
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 from edudl2.move_to_target.move_to_target_setup import Column
-
+from edcore.utils.utils import compile_query_to_sql_text
 import logging
 logger = logging.getLogger(__name__)
 
@@ -126,27 +126,36 @@ class TestMoveToTarget(unittest.TestCase):
                          "WHERE op = ''D'' AND table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
 
     def test_update_matched_fact_asmt_outcome_row(self):
-        query = update_matched_fact_asmt_outcome_row('schema', 'table', 'guid_1', [('col_a_a', 'col_a_b')],
-                                                     [('status', 'D')], {'col_a_b': '1', 'asmnt_rec_id': '2', 'status': 'C'})
+        query = compile_query_to_sql_text(update_matched_fact_asmt_outcome_row('schema',
+                                                                               'table', 'guid_1', [('col_a_a', 'col_a_b')],
+                                                                               [('status', 'W')], {'col_a_b': '1',
+                                                                                                   'asmnt_rec_id': '2',
+                                                                                                   'status': 'C'}))
         logger.info(query)
-        self.assertEqual(query, "UPDATE \"schema\".\"table\" SET asmnt_outcome_rec_id = 2, status = 'C' || status " +
-                         "WHERE batch_guid = 'guid_1' AND col_a_a = '1' AND status = 'D'")
+        self.assertEqual(query, "UPDATE \"schema\".\"table\" SET asmnt_outcome_rec_id = '2', status = 'D' " +
+                         "WHERE batch_guid = 'guid_1' AND col_a_a = '1' AND status = 'W'")
 
     def test_match_delete_fact_asmt_outcome_row_in_prod(self):
-        query = match_delete_fact_asmt_outcome_row_in_prod('schema', 'table', [('col_a_a', 'col_a_b')],
-                                                           [('status', 'C')], {'col_a_a': '1'})
+        query = compile_query_to_sql_text(match_delete_fact_asmt_outcome_row_in_prod('schema',
+                                                                                     'table', [('col_a_a', 'col_a_b')],
+                                                                                     [('status', 'C')], {'col_a_a': '1'}))
         logger.info(query)
         self.assertEqual(query, "SELECT asmnt_rec_id, col_a_b, status FROM \"schema\".\"table\" WHERE col_a_b = '1' AND status = 'C'")
 
     def test_find_deleted_fact_asmt_outcome_rows(self):
-        query = find_deleted_fact_asmt_outcome_rows('schema', 'table', 'guid_1', [('col_a_a', 'col_a_b')], [('status', 'D')])
+        query = compile_query_to_sql_text(find_deleted_fact_asmt_outcome_rows('schema', 'table', 'guid_1',
+                                                                              [('col_a_a', 'col_a_b')],
+                                                                              [('status', 'W')]))
         logger.info(query)
-        self.assertEqual(query, "SELECT col_a_a ,status FROM \"schema\".\"table\" WHERE batch_guid = 'guid_1' AND status in ('D')")
+        self.assertEqual(query,
+                         "SELECT col_a_a ,status FROM \"schema\".\"table\" WHERE batch_guid = 'guid_1' AND status in ('W')")
 
     def test_find_unmatched_deleted_fact_asmt_outcome_row(self):
-        query = find_unmatched_deleted_fact_asmt_outcome_row('scheme', 'table', 'guid', [('status', 'D')])
+        query = compile_query_to_sql_text(find_unmatched_deleted_fact_asmt_outcome_row('scheme', 'table', 'guid',
+                                                                                       [('status', 'W')]))
         logger.info(query)
-        self.assertEqual(query, "SELECT status FROM \"scheme\".\"table\" WHERE status in ('D') and batch_guid = 'guid'")
+        self.assertEqual(query,
+                         "SELECT status FROM \"scheme\".\"table\" WHERE status in ('W') and batch_guid = 'guid'")
 
 
 def generate_conf(guid_batch, udl2_conf):

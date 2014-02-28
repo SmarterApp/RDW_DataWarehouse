@@ -5,11 +5,10 @@ Created on Nov 5, 2013
 '''
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edauth.security.session import Session
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    UnittestEdcoreDBConnection
 from smarter.extracts.processor import process_async_extraction_request, \
     get_extract_file_path, get_extract_work_zone_path, \
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
@@ -30,6 +29,7 @@ from smarter.extracts.constants import Constants as Extract
 from edextract.tasks.constants import Constants as TaskConstants
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -62,10 +62,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(),
                                user_id='272', guid='272')
-        dummy_session = Session()
-        dummy_session.set_roles(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants([get_unittest_tenant_name()])
+        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
@@ -242,7 +239,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants('tenant')
         results = _create_tasks('request_id', user, 'tenant', params, query)
         self.assertIsNotNone(results)
         self.assertEqual(len(results), 2)
@@ -262,7 +258,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants('tenant')
         results = _create_tasks('request_id', user, 'tenant', params, query, is_tenant_level=True)
         self.assertIsNotNone(results)
         self.assertEqual(len(results), 2)
@@ -279,7 +274,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants('tenant')
         task = _create_asmt_metadata_task('request_id', user, 'tenant', params)
         self.assertIsNotNone(task)
         self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
@@ -297,7 +291,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants('tenant')
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False)
         self.assertIsNotNone(task)
         self.assertFalse(task[TaskConstants.TASK_IS_JSON_REQUEST])
@@ -316,7 +309,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants('tenant')
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=False)
         self.assertIsNotNone(task)
         self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
@@ -335,7 +327,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants(['tenant'])
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertFalse(task[TaskConstants.TASK_IS_JSON_REQUEST])
@@ -354,7 +345,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        user.set_tenants(['tenant'])
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
@@ -376,7 +366,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtSubject': 'Math',
                   'asmtType': 'SUMMATIVE'}
         user = User()
-        user.set_tenants('tenant')
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
         self.assertEqual(len(results[0]), 2)
         self.assertEqual(len(results[1]), 1)
@@ -390,7 +379,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtSubject': 'NoSubject',
                   'asmtType': 'SUMMATIVE'}
         user = User()
-        user.set_tenants(['tenant'])
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
         self.assertEqual(len(results[0]), 0)
         self.assertEqual(len(results[1]), 1)
@@ -403,7 +391,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtSubject': 'Math',
                   'asmtType': 'SUMMATIVE'}
         user = User()
-        user.set_tenants(['tenant'])
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
         self.assertEqual(len(results[0]), 2)
         self.assertEqual(len(results[1]), 1)

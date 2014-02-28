@@ -14,15 +14,13 @@ from edcore.security.tenant import get_state_code_mapping
 
 class BasicIdentityParser(IdentityParser):
 
-    def __init__(self, attributes):
-        super().__init__(attributes)
-
-    def get_roles(self):
+    @staticmethod
+    def get_roles(attributes):
         '''
         find roles from Attributes Element (SAMLResponse)
         '''
         roles = []
-        values = self.attributes.get("memberOf", None)
+        values = attributes.get("memberOf", None)
         if values is not None:
             for value in values:
                 cn = re.search('cn=(.*?),', value.lower())
@@ -34,15 +32,16 @@ class BasicIdentityParser(IdentityParser):
             roles.append(Roles.get_invalid_role())
         return roles
 
-    def get_tenant_name(self):
+    @staticmethod
+    def get_tenant_name(attributes):
         '''
         Returns the name of the tenant that the user belongs to in lower case, None if tenant is not found.
         Given the 'dn' from saml response, we grab the last 'ou' after we remove the ldap_base_dn.
         Sample value: 'cn=userName,ou=myOrg,ou=myCompany,dc=myDomain,dc=com'
         :param attributes:  A dictionary of attributes with values that are lists
         '''
-        tenant = None
-        dn = self.attributes.get('dn')
+        tenant = [None]
+        dn = attributes.get('dn')
         if dn is not None:
             value = dn[0].lower()
             # Split the string into a list
@@ -68,10 +67,11 @@ class BasicIdentityParser(IdentityParser):
 
         return tenant
 
-    def get_role_relationship_chain(self):
+    @staticmethod
+    def get_role_relationship_chain(attributes):
         '''
         Returns role/relationship chain.  Currently, based on LDIF, we only support one tenant
         '''
-        roles = self.get_roles()
-        tenants = self.get_tenant_name()
+        roles = BasicIdentityParser.get_roles(attributes)
+        tenants = BasicIdentityParser.get_tenant_name(attributes)
         return [RoleRelation(roles[0], tenants[0], get_state_code_mapping(tenants)[0], None, None)]

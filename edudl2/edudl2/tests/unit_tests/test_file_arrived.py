@@ -13,21 +13,21 @@ HIST = udl2_conf['zones']['history']
 
 class TestFileArrived(unittest.TestCase):
 
-    def test__get_tenant_name_regular_directory(self):
+    def test_get_tenant_name_regular_directory(self):
         dir_name = '/home/person1/arrivals/ri/some_user/file_drop/some_file.tgz'
         expected = 'ri'
         result = file_arrived.get_tenant_name(dir_name, -4)
 
         self.assertEqual(result, expected)
 
-    def test__create_directory_paths_length(self):
+    def test_create_directory_paths_length(self):
         tenant_name = 'bob'
         batch_guid = 'guid123'
         result = file_arrived.create_directory_paths(tenant_name, batch_guid)
 
         self.assertEqual(len(result), 5)
 
-    def test__create_directory_paths_dir_name(self):
+    def test_create_directory_paths_dir_name(self):
         tenant_name = 'bob'
         batch_guid = 'guid123'
         result = file_arrived.create_directory_paths(tenant_name, batch_guid)
@@ -43,7 +43,7 @@ class TestFileArrived(unittest.TestCase):
 
         self.assertDictEqual(expected, result)
 
-    def test__create_batch_directories(self):
+    def test_create_batch_directories(self):
         directories = {
             'dir1': '/tmp/udl2_test1',
             'dir2': '/tmp/udl2_test2/',
@@ -59,7 +59,7 @@ class TestFileArrived(unittest.TestCase):
             self.assertTrue(os.path.isdir(directory))
             os.rmdir(directory)
 
-    def test__move_file_to_work_and_history(self):
+    def test_move_file_to_work_and_history(self):
         incoming_file = '/tmp/udl2_test1.txt'
         arrived_dir = '/tmp/udl2_test_arrived'
         history_dir = '/tmp/udl2_test_history'

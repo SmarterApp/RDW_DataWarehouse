@@ -56,3 +56,7 @@ config/gpg/random_seed
 data_gen/DataGeneration/datafiles/csv
 
 *.ini
+
+.project
+
+.pydevproject

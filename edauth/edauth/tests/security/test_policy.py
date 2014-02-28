@@ -47,7 +47,7 @@ class TestPolicy(unittest.TestCase):
 
     def test_authenticated_userid(self):
         # set up session
-        session = create_test_session(roles=["TEACHER"], full_name='Linda Kim', uid='linda.kim', idpSessionIndex='123', first_name='Linda', last_name='Kim')
+        session = create_test_session(roles=["TEACHER"], full_name='Linda Kim', uid='linda.kim', idpSessionIndex='123', first_name='Linda', last_name='Kim', save_to_backend=True)
 
         self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
 

@@ -25,6 +25,7 @@ class UDLTestHelper(unittest.TestCase):
     def tearDownClass(cls):
         cls.udl2_conn.close()
         cls.target_conn.close()
+        cls.prod_conn.close()
 
     def setUp(self):
         self.truncate_edware_tables()

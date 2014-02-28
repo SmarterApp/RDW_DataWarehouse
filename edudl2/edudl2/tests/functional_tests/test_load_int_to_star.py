@@ -61,6 +61,8 @@ class IntToStarFTest(UDLTestHelper):
         # handle deletion case
         match_conf = move_to_target_setup.get_move_to_target_conf()[4]
         matched_results = move_to_target.match_deleted_records(conf, match_conf)
+        print('matched_results')
+        print(matched_results)
         move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_results)
         move_to_target.check_mismatched_deletions(conf, match_conf)
 
@@ -88,13 +90,25 @@ class IntToStarFTest(UDLTestHelper):
         assert int_demo_dict == star_demo_dict
 
     def test_match_deleted_records(self):
-        #move_to_target.match_deleted_records(conf, match_conf)
+        guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
+        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
+        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        matched_value = {}
+        move_to_target.match_deleted_records(conf, match_conf)
         self.assertEqual(True, True)
 
     def test_check_mismatched_deletions(self):
-        #move_to_target.check_mismatched_deletions(conf, match_conf)
+        guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
+        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
+        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        matched_value = {}
+        move_to_target.check_mismatched_deletions(conf, match_conf)
         self.assertEqual(True, True)
 
     def test_update_deleted_record_rec_id(self):
-        #move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_value)
+        guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
+        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
+        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        matched_value = {}
+        move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_value)
         self.assertEqual(True, True)

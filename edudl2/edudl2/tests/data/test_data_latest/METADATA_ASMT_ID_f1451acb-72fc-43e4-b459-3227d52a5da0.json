@@ -6,7 +6,8 @@
         "year": "2015", 
         "period": "2015", 
         "version": "V1", 
-        "subject": "Math"
+        "subject": "Math",
+        "effective_date": "20150101"
     }, 
     "overall": {
         "min_score": "1200", 

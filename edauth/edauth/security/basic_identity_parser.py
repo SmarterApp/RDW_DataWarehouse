@@ -8,9 +8,12 @@ from edauth.security.identity_parser import IdentityParser
 import pyramid
 import re
 from edauth.security.roles import Roles
+from edauth.security.user import RoleRelation
+from edcore.security.tenant import get_state_code_mapping
 
 
 class BasicIdentityParser(IdentityParser):
+
     @staticmethod
     def get_roles(attributes):
         '''
@@ -37,7 +40,7 @@ class BasicIdentityParser(IdentityParser):
         Sample value: 'cn=userName,ou=myOrg,ou=myCompany,dc=myDomain,dc=com'
         :param attributes:  A dictionary of attributes with values that are lists
         '''
-        tenant = None
+        tenant = [None]
         dn = attributes.get('dn')
         if dn is not None:
             value = dn[0].lower()
@@ -63,3 +66,12 @@ class BasicIdentityParser(IdentityParser):
                     tenant = [element[1]]
 
         return tenant
+
+    @staticmethod
+    def get_role_relationship_chain(attributes):
+        '''
+        Returns role/relationship chain.  Currently, based on LDIF, we only support one tenant
+        '''
+        roles = BasicIdentityParser.get_roles(attributes)
+        tenants = BasicIdentityParser.get_tenant_name(attributes)
+        return [RoleRelation(roles[0], tenants[0], get_state_code_mapping(tenants)[0], None, None)]

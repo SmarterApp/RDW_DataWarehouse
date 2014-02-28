@@ -24,7 +24,7 @@ class TestBasicIdentityParser(unittest.TestCase):
     def test_empty_dn(self):
         attributes = {}
         tenant = BasicIdentityParser.get_tenant_name(attributes)
-        self.assertIsNone(tenant)
+        self.assertIsNone(tenant[0])
 
     def test_valid_dn(self):
         attributes = {'dn': ['ou=dummyOrg,ou=dummy,dc=testing,dc=com']}
@@ -34,12 +34,12 @@ class TestBasicIdentityParser(unittest.TestCase):
     def test_valid_dn_without_ou(self):
         attributes = {'dn': ['cn=dummyOrg,ou=dummy,dc=testing,dc=com']}
         tenant = BasicIdentityParser.get_tenant_name(attributes)
-        self.assertIsNone(tenant)
+        self.assertIsNone(tenant[0])
 
     def test_valid_dn_with_invalid_base_dn(self):
         attributes = {'dn': ['ou=dummyOrg,ou=meow,dc=testing,dc=com']}
         tenant = BasicIdentityParser.get_tenant_name(attributes)
-        self.assertIsNone(tenant)
+        self.assertIsNone(tenant[0])
 
     def test_dn_with_one_base_element(self):
         reg = Registry()
@@ -55,6 +55,12 @@ class TestBasicIdentityParser(unittest.TestCase):
         tenant = BasicIdentityParser.get_tenant_name(attributes)
         self.assertEqual(tenant[0], 'dummyorg')
 
+    def test_get_role_relationship_chain(self):
+        attributes = {'dn': ['ou=dummyOrg,ou=dummy,dc=testing,dc=com'], 'memberOf': ['cn=DUMMY,']}
+        relation = BasicIdentityParser.get_role_relationship_chain(attributes)
+        self.assertEqual(len(relation), 1)
+        self.assertEqual(relation[0].tenant, 'dummyorg')
+        self.assertEqual(relation[0].role, 'DUMMY')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

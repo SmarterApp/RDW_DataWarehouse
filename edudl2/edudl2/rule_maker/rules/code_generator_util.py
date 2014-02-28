@@ -129,7 +129,10 @@ def lookup_helper(code_version, prefix, col, val, val_list):
     pref2 = '\n\tOR   '
     ret = make_substring_part(code_version, prefix, col, val_list[0])
     for i in range(1, len(val_list)):
-        ret += make_substring_part(code_version, pref2, col, val_list[i])
+        if val_list[i]:
+            ret += make_substring_part(code_version, pref2, col, val_list[i])
+        else:
+            ret += make_null_part(code_version, pref2, col)
     # return ''.join([' THEN\n\t\t', assignment('v_result', '\'{value}\'')]).format(value=val)
     ret += " THEN\n\t\tv_result := '{value}';".format(value=val)
     return ret
@@ -140,6 +143,10 @@ def make_substring_part(code_version, pref, col, val, length=None):
         length = len(val)
     substring_str = substr_exp[code_version]
     return "{prefix} {substring_str}(t_{col_name}, 1, {length}) = '{value}'".format(prefix=pref, substring_str=substring_str, col_name=col, length=len(val), value=val)
+
+
+def make_null_part(code_version, pref, col):
+    return "{prefix} t_{col_name} IS NULL".format(prefix=pref, col_name=col)
 
 
 def assignment(left_exp, right_exp, **parm):

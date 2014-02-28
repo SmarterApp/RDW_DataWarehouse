@@ -132,7 +132,7 @@ class TestViews(unittest.TestCase):
 
     def test_login_redirected_due_to_no_role(self):
         # set up session data
-        session = create_test_session(roles=['NONE'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123')
+        session = create_test_session(roles=['NONE'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', save_to_backend=True)
         self.__config.testing_securitypolicy(session.get_session_id(), ['NONE'])
         self.__request.url = 'http://example.com/dummy/page'
         http = login(self.__request)
@@ -148,7 +148,7 @@ class TestViews(unittest.TestCase):
         self.assertEqual(relay_state.path, "/dummy/page")
 
     def test_login_with_no_existing_session(self):
-        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc')
+        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc', save_to_backend=True)
         self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
         http = login(self.__request)
@@ -161,7 +161,7 @@ class TestViews(unittest.TestCase):
 
     def test_logout_with_existing_session(self):
         # set up session data
-        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc')
+        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc', save_to_backend=True)
 
         self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
         http = logout(self.__request)

@@ -4,6 +4,7 @@ Created on Sep 1, 2013
 @author: dip
 '''
 from copy import deepcopy
+from psycopg2.extensions import adapt as sqlescape
 
 
 def merge_dict(d1, d2):
@@ -37,3 +38,15 @@ def reverse_map(map_object):
     '''
     _map = deepcopy(map_object)
     return {v: k for k, v in _map.items()}
+
+
+def compile_query_to_sql_text(query):
+    '''
+    This function compile sql object by binding expression's free variable with its params
+    :param sqlalchemy query object
+    '''
+    unbound_sql_code = str(query)
+    params = query.compile().params
+    for k, v in params.items():
+        unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
+    return unbound_sql_code

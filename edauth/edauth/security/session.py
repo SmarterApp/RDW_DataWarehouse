@@ -78,17 +78,8 @@ class Session:
         '''
         self.__user.set_uid(uid)
 
-    def set_roles(self, roles):
-        '''
-        @param roles: the roles
-        '''
-        self.__user.set_roles(roles)
-
-    def set_tenants(self, tenant):
-        '''
-        @param tenant: the tenant to set
-        '''
-        self.__user.set_tenants(tenant)
+    def set_user_context(self, context):
+        self.__user.set_context(context)
 
     def set_guid(self, guid):
         '''

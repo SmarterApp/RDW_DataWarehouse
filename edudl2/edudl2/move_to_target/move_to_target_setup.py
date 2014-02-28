@@ -1,13 +1,16 @@
 __author__ = 'swimberly'
 
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
-from edudl2.move_to_target import create_queries as queries
+from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, get_column_mapping_query,
+                                                  create_information_query)
 from edudl2.udl2_util.database_util import execute_udl_query_with_result
-from edudl2. udl2.udl2_connector import UDL2DBConnection
+from edudl2. udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
+
+Column = namedtuple('Column', ['src_col', 'type'])
 
 
 def get_table_and_column_mapping(conf, task_name, table_name_prefix=None):
@@ -25,7 +28,7 @@ def get_table_and_column_mapping(conf, task_name, table_name_prefix=None):
 
 
 def get_table_mapping(conn, task_name, schema_name, table_name, phase_number, table_name_prefix=None):
-    table_mapping_query = queries.get_dim_table_mapping_query(schema_name, table_name, phase_number)
+    table_mapping_query = get_dim_table_mapping_query(schema_name, table_name, phase_number)
     table_mapping_result = execute_udl_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', task_name, 'get_table_mapping')
     table_mapping_dict = {}
     if table_mapping_result:
@@ -42,29 +45,107 @@ def get_table_mapping(conn, task_name, schema_name, table_name, phase_number, ta
 def get_column_mapping_from_int_to_star(conn, task_name, schema_name, table_name, phase_number, dim_tables):
     column_map = {}
     for dim_table in dim_tables:
-        column_map[dim_table] = get_column_mapping_from_int_to_target(conn, task_name, schema_name, table_name, phase_number, dim_table)
+        # get column map for this dim_table
+        column_mapping_query = get_column_mapping_query(schema_name, table_name, dim_table)
+        column_mapping_result = execute_udl_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping',
+                                                              task_name, 'get_column_mapping')
+        column_mapping_list = []
+        if column_mapping_result:
+            for mapping in column_mapping_result:
+                # mapping[0]: target_column, mapping[1]: source_column
+                target_column = mapping[0]
+                source_column = mapping[1]
+                target_source_pair = (target_column, source_column)
+                # this is the primary key, need to put the pair in front
+                if source_column is not None and 'nextval' in source_column:
+                    column_mapping_list.insert(0, target_source_pair)
+                else:
+                    column_mapping_list.append(target_source_pair)
+
+        column_map[dim_table] = OrderedDict(column_mapping_list)
+
     return column_map
 
 
-def get_column_mapping_from_int_to_target(conn, task_name, schema_name, reference_table, phase_number, target_table, source_table=None):
-    # Get column map for this target table.
-    column_mapping_query = queries.get_column_mapping_query(schema_name, reference_table, phase_number, target_table, source_table)
-    column_mapping_result = execute_udl_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping',
-                                                          task_name, 'get_column_mapping_from_int_to_target')
-    column_mapping_list = []
-    if column_mapping_result:
-        for mapping in column_mapping_result:
-            # mapping[0]: target_column, mapping[1]: source_column
-            target_column = mapping[0]
-            source_column = mapping[1]
-            target_source_pair = (target_column, source_column)
-            # this is the primary key, need to put the pair in front
-            if source_column is not None and 'nextval' in source_column:
-                column_mapping_list.insert(0, target_source_pair)
-            else:
-                column_mapping_list.append(target_source_pair)
+def get_column_and_type_mapping(conf, conn, task_name, target_table, source_tables):
+    '''
+    Get the column and type mapping for the target table.
 
-    return OrderedDict(column_mapping_list)
+    @param conf: Configuration for particular load type (assessment or studentregistration)
+    @param conn: Connection to the source database containing the reference table
+    @param task_name: Name of the celery task invoking this method
+    @param target_table: Table into which to insert data
+    @param source_tables: Iinclude columns from these tables
+
+    @return: An ordered dictionary containing the column and type mapping
+    '''
+
+    column_and_type_mapping = OrderedDict()
+
+    for source_table in source_tables:
+
+        column_mapping_query = get_column_mapping_query(conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], target_table, source_table)
+        column_mapping_result = execute_udl_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping',
+                                                              task_name, 'get_column_mapping')
+        column_mapping_list = []
+
+        if column_mapping_result:
+
+            # We'll fill in the types in a bit....
+            column_mapping = OrderedDict()
+            for mapping in column_mapping_result:
+                target_column = mapping[0]
+                source_column = mapping[1]
+                column_mapping.update({target_column: source_column})
+
+            types = get_table_column_types(conf, target_table, column_mapping.keys())
+
+            for target_column, source_column in column_mapping.items():
+                type = types[target_column]
+                column = (target_column, Column(source_column, type))
+
+                # This is the primary key; need to put the pair in front.
+                if source_column is not None and 'nextval' in source_column:
+                    column_mapping_list.insert(0, column)
+                else:
+                    column_mapping_list.append(column)
+
+        column_and_type_mapping[source_table] = OrderedDict(column_mapping_list)
+
+    return column_and_type_mapping
+
+
+def get_table_column_types(conf, target_table, column_names):
+    '''
+    Main function to get column types of a table by querying the table
+    @return a dictionary, which has same ordered keys in the input column_names.
+    The values are column types with maximum length if it is defined in table.
+    The pattern of the value is: <column_name data_type(length)> or <column_name data_type>
+    '''
+
+    column_types = OrderedDict([(column_name, '') for column_name in column_names])
+    tenant = conf[mk.TENANT_NAME]
+
+    with TargetDBConnection(tenant) as conn:
+
+        query = create_information_query(target_table)
+
+        try:
+            result = conn.execute(query)
+            for row in result:
+                column_name = row[0]
+                data_type = row[1]
+                character_maximum_length = row[2]
+
+                if column_name in column_types.keys():
+                    return_value = column_name + " " + data_type
+                    if character_maximum_length:
+                        return_value += "(" + str(character_maximum_length) + ")"
+                    column_types[column_name] = return_value
+        except Exception as e:
+            print('Exception in getting type', e)
+
+    return column_types
 
 
 def create_group_tuple(task_name, arg_list):
@@ -74,6 +155,7 @@ def create_group_tuple(task_name, arg_list):
              returns: (add.s(2,4), add.s(2,4))
     '''
     grouped_tasks = [task_name.s(*arg) for arg in arg_list]
+
     return tuple(grouped_tasks)
 
 

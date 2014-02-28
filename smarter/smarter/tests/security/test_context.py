@@ -12,10 +12,10 @@ from smarter.security.context import select_with_context, check_context
 from edapi.exceptions import ForbiddenError
 from smarter.security.constants import RolesConstants
 from smarter.reports.helpers.constants import Constants
-from edauth.security.session import Session
 # Import the roles below so test can run as a standalone
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.roles.student import Student  # @UnusedImport
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestContext(Unittest_with_edcore_sqlite):
@@ -65,10 +65,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 
     def test_select_with_context_as_student(self):
         uid = "61ec47de-e8b5-4e78-9beb-677c44dd9b50"
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.STUDENT])
-        dummy_session.set_uid(uid)
-        dummy_session.set_tenants([self.__tenant_name])
+        dummy_session = create_test_session([RolesConstants.STUDENT], uid=uid)
         self.__config.testing_securitypolicy(dummy_session)
         with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
@@ -143,10 +140,7 @@ class TestContext(Unittest_with_edcore_sqlite):
 
     def test_check_context_as_student(self):
         uid = '61ec47de-e8b5-4e78-9beb-677c44dd9b50'
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.STUDENT])
-        dummy_session.set_uid(uid)
-        dummy_session.set_tenants([self.__tenant_name])
+        dummy_session = create_test_session([RolesConstants.STUDENT], uid=uid)
         self.__config.testing_securitypolicy(dummy_session)
         with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table

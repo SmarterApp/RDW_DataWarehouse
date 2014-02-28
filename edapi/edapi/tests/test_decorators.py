@@ -35,7 +35,7 @@ class TestDecorators(unittest.TestCase):
         dummy_user = DummyUser()
         self.__config.testing_securitypolicy(dummy_user, ['TEACHER'])
         results = some_func()
-        self.assertDictEqual(results, {'user_info': dummy_user.__dict__})
+        self.assertIsInstance(results['user_info'], DummyUser)
 
     def test_user_info_with_no_user(self):
         self.__config.testing_securitypolicy(None, ['TEACHER'])
@@ -48,7 +48,7 @@ class TestDecorators(unittest.TestCase):
         results = some_func_with_some_results()
         self.assertEquals(len(results), 2)
         self.assertDictContainsSubset(some_func_with_some_results(), results)
-        self.assertDictContainsSubset({'user_info': dummy_user.__dict__}, results)
+        self.assertIsInstance(results['user_info'], DummyUser)
 
     def test_validate_params(self):
         # test with value

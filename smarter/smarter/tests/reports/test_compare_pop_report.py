@@ -9,15 +9,15 @@ from smarter.reports.compare_pop_report import get_comparing_populations_report,
     CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route,\
     set_default_min_cell_size, get_merged_report_records, reset_subject_intervals
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    UnittestEdcoreDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edauth.security.session import Session
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.reports.helpers import filters
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestComparingPopulations(Unittest_with_edcore_sqlite):
@@ -36,11 +36,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_session = Session()
-        dummy_session.set_session_id('123')
-        dummy_session.set_roles(['TEACHER'])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants([get_unittest_tenant_name()])
+        dummy_session = create_test_session(['TEACHER'], uid='272')
         self.__config.testing_securitypolicy(dummy_session)
         set_default_min_cell_size(0)
 

@@ -7,20 +7,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
-from psycopg2.extensions import adapt as sqlescape
 from smarter.extracts.format import get_column_mapping
-
-
-def compile_query_to_sql_text(query):
-    '''
-    This function compile sql object by binding expression's free variable with its params
-    :param sqlalchemy query object
-    '''
-    unbound_sql_code = str(query)
-    params = query.compile().params
-    for k, v in params.items():
-        unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
-    return unbound_sql_code
 
 
 def get_extract_assessment_query(params):
@@ -69,6 +56,7 @@ def get_extract_assessment_query(params):
                                     dim_student.c.gender.label(dim_student_label.get('gender', 'gender')),
                                     dim_student.c.email.label(dim_student_label.get('email', 'email')),
                                     dim_student.c.dob.label(dim_student_label.get('dob', 'dob')),
+                                    fact_asmt_outcome.c.external_student_id.label(fact_asmt_outcome_label.get('external_student_id', 'external_student_id')),
                                     fact_asmt_outcome.c.enrl_grade.label(fact_asmt_outcome_label.get('enrl_grade', 'enrollment_grade')),
                                     fact_asmt_outcome.c.date_taken.label(fact_asmt_outcome_label.get('date_taken', 'date_taken')),
                                     fact_asmt_outcome.c.asmt_score.label(fact_asmt_outcome_label.get('asmt_score', 'asmt_score')),
@@ -76,15 +64,19 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome.c.asmt_score_range_max.label(fact_asmt_outcome_label.get('asmt_score_range_max', 'asmt_score_range_max')),
                                     fact_asmt_outcome.c.asmt_perf_lvl.label(fact_asmt_outcome_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_1_score.label(fact_asmt_outcome_label.get('asmt_claim_1_score', 'asmt_claim_1_score')),
+                                    fact_asmt_outcome.c.asmt_claim_1_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_1_perf_lvl', 'asmt_claim_1_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_1_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_1_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_1_score_range_max', 'asmt_claim_1_score_range_max')),
                                     fact_asmt_outcome.c.asmt_claim_2_score.label(fact_asmt_outcome_label.get('asmt_claim_2_score', 'asmt_claim_2_score')),
+                                    fact_asmt_outcome.c.asmt_claim_2_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_2_perf_lvl', 'asmt_claim_2_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_2_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_2_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_2_score_range_max', 'asmt_claim_2_score_range_max')),
                                     fact_asmt_outcome.c.asmt_claim_3_score.label(fact_asmt_outcome_label.get('asmt_claim_3_score', 'asmt_claim_3_score')),
+                                    fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_3_perf_lvl', 'asmt_claim_3_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_3_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_3_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_3_score_range_max', 'asmt_claim_3_score_range_max')),
                                     fact_asmt_outcome.c.asmt_claim_4_score.label(fact_asmt_outcome_label.get('asmt_claim_4_score', 'asmt_claim_4_score')),
+                                    fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_4_perf_lvl', 'asmt_claim_4_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_4_score_range_max', 'asmt_claim_4_score_range_max')),
                                     fact_asmt_outcome.c.dmg_eth_hsp.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_HSP, Constants.DMG_ETH_HSP)),

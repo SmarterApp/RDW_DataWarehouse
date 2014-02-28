@@ -4,16 +4,16 @@ Created on Nov 8, 2013
 @author: dip
 '''
 import unittest
-from smarter.extracts.student_assessment import get_extract_assessment_query,\
-    compile_query_to_sql_text
+from smarter.extracts.student_assessment import get_extract_assessment_query
+from edcore.utils.utils import compile_query_to_sql_text
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid.registry import Registry
-from edauth.security.session import Session
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from sqlalchemy.sql.expression import select
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestStudentAssessment(Unittest_with_edcore_sqlite):
@@ -29,10 +29,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='1023', guid='1023')
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
+        dummy_session = create_test_session(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

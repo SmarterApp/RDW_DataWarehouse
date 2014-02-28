@@ -1,5 +1,7 @@
 import re
 from edudl2.udl2 import message_keys as mk
+from sqlalchemy.sql.expression import text, bindparam
+from edcore.utils.utils import compile_query_to_sql_text
 
 
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
@@ -10,12 +12,12 @@ def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_b
     @column_name:
     @guid_batch
     '''
-    sql_template = "SELECT DISTINCT {guid_column_name_in_source} " + \
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE guid_batch=\'{guid_batch}\'"
-    return sql_template.format(guid_column_name_in_source=column_name,
-                               source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               guid_batch=guid_batch)
+    query = text("SELECT DISTINCT " + column_name + " " +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE guid_batch=:guid_batch",
+                 bindparams=[bindparam('guid_batch', guid_batch)])
+
+    return query
 
 
 def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target,
@@ -33,10 +35,24 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
                                guid_column_value_got=guid_column_value)
 
 
-def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria):
-    return "SELECT DISTINCT " + ",".join(column_names) + \
-        " FROM " + combine_schema_and_table(schema_name, table_name) + \
-        " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
+    '''
+    Create a query to select specified columns in a table, with optional select criteria.
+
+    @schema_name: Name of schema in which database resides
+    @table_name: Name of table from which to select columns
+    @column_names: List of columns to include in select
+    @criteria: (optional) Query select criteria
+            This is a dictionary of pairs of field_name : field_value
+
+    @return Select query
+    '''
+
+    select_query = "SELECT DISTINCT " + ",".join(column_names) + " FROM " + combine_schema_and_table(schema_name, table_name)
+    if (criteria):
+        select_query += " WHERE " + " AND ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+
+    return select_query
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -89,75 +105,103 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     return insert_sql
 
 
-def create_multi_table_select_insert_query(conf, target_table, column_mappings, column_types, need_distinct, op=None):
+def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapping, op=None):
     '''
-    Main function to create query to insert data from mutliple source tables to target table
-    The query will be executed on the database where target table exists
+    Create a query to insert data from multiple source tables to target table.
+    The query will be executed on the database where target table exists.
     Since the source tables and target tables can be existing on different databases/servers,
-    dblink is used here to get data from source database in the select clause
+    dblink is used here to get data from source database in the select clause.
+
+    Query is of format:
+    INSERT INTO "{target_schema}"."{target_table}"(target_col_1,target_col_2,...,target_col_n)
+    SELECT FROM dblink('host={host} port={port} dbname={db_name} user={db_user} password={db_password}',
+    SELECT nextval(''"GLOBAL_REC_SEQ"''), * FROM (SELECT src_table1.src_col_1,...,src_table_1.src_col_j,
+    src_table_2.src_col_1,...,src_table_2.src_col_k,...,src_table_m.src_col_1,...,src_table_m.src_col_l
+    FROM "{source_schema}"."{source_table_1}" source_table_1_lowercase INNER JOIN
+    "{source_schema}"."{source_table_2}" source_table_2_lowercase
+    ON source_table_2_lowercase.{key_name} = source_table_1_lowercase.{key_name},... INNER JOIN
+    "{source_schema}"."{source_table_m}" source_table_m_lowercase
+    ON source_table_m_lowercase.{key_name} = source_table_m-1_lowercase.{key_name}
+    WHERE source_table_1_lowercase.{key_name}={key_value}) AS y') AS t(target_col_1 target_col_1_type,
+    target_col_2 target_col_2_type,...,target_col_n target_col_n_type);
+
+    Where j + k + ... + l = n
+
+    @conf: Configuration for particular load type (assessment or studentregistration)
+    @target_table: Table into which to insert data
+    @column_and_type_mapping: Mapping of source table columns and their types to target table columns
+    @op: (optional) Value of "op" column upon which to select
+
+    @return Insert query
     '''
-    distinct_expression = 'DISTINCT ' if need_distinct else ''
-    seq_expression = list(column_mappings[list(column_mappings.keys())[0]].values())[0].replace("'", "''")
+
+    key_name = mk.GUID_BATCH
+    key_value = conf[mk.GUID_BATCH]
+    primary_table = list(column_and_type_mapping.keys())[0]
+    seq_expression = list(column_and_type_mapping[primary_table].values())[0].src_col.replace("'", "''")
     target_keys = []
     source_keys = []
     source_key_assignments = []
-    source_values = []
-    for source_table in column_mappings.keys():
-        if 'nextval' in list(column_mappings[source_table].values())[0]:
-            seq_expression = list(column_mappings[source_table].values())[0].replace("'", "''")
-            source_keys.extend(list(re.sub('^', source_table.lower() + '.', value).replace("'", "''") for value in list(column_mappings[source_table].values())[1:]))
-        else:
-            source_keys.extend(list(re.sub('^', source_table.lower() + '.', value).replace("'", "''") for value in list(column_mappings[source_table].values())))
-        target_keys.extend(list(column_mappings[source_table].keys()))
-        source_key_assignments.append(combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table.lower())
-        source_values.extend(list(column_types[source_table].values()))
+    types = []
+    prev_table = ''
+    primary_table_lower = primary_table.lower()
 
-    # TODO:if guid_batch is changed to uuid, need to add quotes around it
-    if op is None:
-        insert_sql = ["INSERT INTO {target_schema_and_table}(",
-                      ",".join(target_keys),
-                      ") SELECT * FROM ",
-                      "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
-                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
-                      " FROM " + ",".join(source_key_assignments),
-                      " WHERE " + list(column_mappings.keys())[0].lower() + ".guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
-                      ",".join(source_values),
-                      ");"]
+    # TODO: If guid_batch (key_name) is changed to uuid, need to add quotes around it.
+    if op:
+        where_statement = "WHERE op = \'\'{op}\'\' AND " + primary_table_lower + ".{key_name}=\'\'{key_value}\'\') AS y\')"
     else:
-        insert_sql = ["INSERT INTO {target_schema_and_table}(",
-                      ",".join(target_keys),
-                      ") SELECT * FROM ",
-                      "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
-                      "\'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + ",".join(source_keys),
-                      " FROM " + ",".join(source_key_assignments),
-                      " WHERE op = \'\'{op}\'\' AND " + list(column_mappings.keys())[0].lower() + ".guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
-                      ",".join(source_values),
-                      ");"]
-    insert_sql = "".join(insert_sql).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
-                                                                                             target_table),
-                                            host=conf[mk.SOURCE_DB_HOST],
-                                            port=conf[mk.SOURCE_DB_PORT],
-                                            db_name=conf[mk.SOURCE_DB_NAME],
-                                            db_user=conf[mk.SOURCE_DB_USER],
-                                            db_password=conf[mk.SOURCE_DB_PASSWORD],
-                                            seq_expression=seq_expression,
-                                            distinct_expression=distinct_expression,
-                                            op=op,
-                                            guid_batch=conf[mk.GUID_BATCH])
+        where_statement = "WHERE " + primary_table_lower + ".{key_name}=\'\'{key_value}\'\') AS y\')"
+    where_statement = where_statement.format(key_name=key_name, key_value=key_value, op=op)
 
-    return insert_sql
+    for source_table in column_and_type_mapping.keys():
+        source_table_lower = source_table.lower()
+
+        if 'nextval' in list(column_and_type_mapping[source_table].values())[0].src_col:
+            source_keys.extend(list(re.sub('^', source_table.lower() + '.', value.src_col).replace("'", "''") for value in list(column_and_type_mapping[source_table].values())[1:]))
+        else:
+            source_keys.extend(list(re.sub('^', source_table.lower() + '.', value.src_col).replace("'", "''") for value in list(column_and_type_mapping[source_table].values())))
+
+        target_keys.extend(list(column_and_type_mapping[source_table].keys()))
+
+        if source_table_lower == primary_table_lower:
+            source_key_assignments.append(combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table_lower)
+        else:
+            source_key_assignments.append('INNER JOIN ' + combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table) + ' ' + source_table_lower +
+                                          ' ON ' + source_table_lower + '.' + key_name + ' = ' + prev_table.lower() + '.' + key_name)
+
+        types.extend(list(value.type for value in column_and_type_mapping[source_table].values()))
+
+        prev_table = source_table
+
+    insert_query = ["INSERT INTO {target_schema_and_table}(" + ",".join(target_keys),
+                    ") SELECT * FROM ",
+                    "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
+                    "\'SELECT {seq_expression}, * FROM (SELECT " + ",".join(source_keys),
+                    " FROM " + ' '.join(source_key_assignments) + " {where_statement} AS t(" + ",".join(types) + ");"]
+    insert_query = "".join(insert_query).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
+                                                host=conf[mk.SOURCE_DB_HOST], port=conf[mk.SOURCE_DB_PORT], db_name=conf[mk.SOURCE_DB_NAME],
+                                                db_user=conf[mk.SOURCE_DB_USER], db_password=conf[mk.SOURCE_DB_PASSWORD],
+                                                seq_expression=seq_expression, where_statement=where_statement)
+
+    return insert_query
 
 
-def create_delete_query(schema_name, table_name, criteria):
+def create_delete_query(schema_name, table_name, criteria=None):
     '''
-    Main function to crate a query to delete table
-    @param schema_name: db schema name
-    @param table_name: db table name
-    @param criteria: set of query criteria to apply
-                    This is a dictionary of pairs field_name : field_value
+    Create a query to delete a db table.
+
+    @param schema_name: DB schema name
+    @param table_name: DB table name
+    @param criteria: (optional) Delete criteria to apply
+                    This is a dictionary of pairs of field_name : field_value
+
+    @return Delete query
     '''
-    return "DELETE FROM " + combine_schema_and_table(schema_name, table_name) + \
-        " WHERE " + " and ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+
+    delete_query = "DELETE FROM " + combine_schema_and_table(schema_name, table_name) + \
+        " WHERE " + " AND ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+
+    return delete_query
 
 
 def enable_trigger_query(schema_name, table_name, is_enable):
@@ -226,48 +270,59 @@ def get_dim_table_mapping_query(schema_name, table_name, phase_number):
                                phase_number=phase_number)
 
 
-def get_column_mapping_query(schema_name, table_name, phase_number, target_table, source_table=None):
+def get_column_mapping_query(schema_name, ref_table, target_table, source_table=None):
     '''
-    Function to mapping columns on tables in a specific udl phase
+    Get column mapping to target table.
+
+    @param schema_name: DB schema name
+    @param ref_table: DB reference mapping table name
+    @target_table: Table into which to insert data
+    @param source_table: (optional) Only include columns from this table
+
+    @return Mapping query
     '''
+
     if source_table:
-        sql_template = "SELECT distinct target_column, source_column " + \
-            "FROM {source_schema_and_table} " + \
-            "WHERE target_table='{target_table}' and source_table='{source_table}'"
-        return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                   target_table=target_table, source_table=source_table)
+        where_statement = " WHERE target_table='{target_table}' and source_table='{source_table}'"
     else:
-        sql_template = "SELECT distinct target_column, source_column " + \
-            "FROM {source_schema_and_table} " + \
-            "WHERE target_table='{target_table}'"
-        return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                   target_table=target_table)
+        where_statement = " WHERE target_table='{target_table}'"
+    where_statement = where_statement.format(target_table=target_table, source_table=source_table)
+
+    mapping_query = "SELECT distinct target_column, source_column " + "FROM {source_schema_and_ref_table} {where_statement}"
+    mapping_query = mapping_query.format(source_schema_and_ref_table=combine_schema_and_table(schema_name, ref_table),
+                                         where_statement=where_statement)
+
+    return mapping_query
 
 
 def find_unmatched_deleted_fact_asmt_outcome_row(schema_name, table_name, batch_guid, status_code):
     '''
     create a query to search any record that should be deleted/updated but has no record in production database
     '''
-    sql_template = "SELECT status FROM {source_schema_and_table} " + \
-                   "WHERE status in ({status}) and batch_guid = '{batch_guid}'"
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               status=",".join(["'{i}'".format(i=s[1]) for s in status_code]),
-                               batch_guid=batch_guid)
+    params = [bindparam('batch_guid', batch_guid)]
+    params.extend([bindparam(str(s[0]) + '_' + str(i), s[1]) for i, s in enumerate(status_code)])
+    query = text("SELECT status FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE status in (" +
+                 "," .join([":" + str(s[0]) + '_' + str(i) for i, s in enumerate(status_code)]) +
+                 ") and batch_guid = :batch_guid",
+                 bindparams=params)
+    return query
 
 
 def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matched_columns, status_code):
     '''
     create a query to find all delete/updated record in current batch
     '''
+    params = [bindparam('batch_guid', batch_guid)]
+    params.extend([bindparam(str(s[0]) + '_' + str(i), s[1]) for i, s in enumerate(status_code)])
     cols = [m[0] for m in matched_columns]
     cols.extend(list(set([s[0] for s in status_code])))
-    sql_template = "SELECT {cols} " +\
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE batch_guid = '{batch_guid}' AND status in ({status})"
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               cols=" ,".join(cols),
-                               status=", ".join(["'{i}'".format(i=s[1]) for s in status_code]),
-                               batch_guid=batch_guid)
+    query = text("SELECT " + " ,".join(cols) + " " +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE batch_guid = :batch_guid AND status in (" +
+                 "," .join([":" + str(s[0]) + '_' + str(i) for i, s in enumerate(status_code)]) + ")",
+                 bindparams=params)
+    return query
 
 
 def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_columns, matched_status,
@@ -283,14 +338,13 @@ def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_
     prod_cols.extend(list(set([s[0] for s in matched_status])))
     for s in matched_status:
         matched_prod_values[s[0]] = s[1]
-    condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_prod_values[c]) for c in prod_cols])
-    sql_template = "SELECT asmnt_rec_id, {cols} " + \
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE {condition_clause}"
-
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               cols=", ".join(prod_cols),
-                               condition_clause=condition_clause)
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in prod_cols])
+    params = [bindparam("{c}".format(c=c), matched_prod_values[c]) for c in prod_cols]
+    query = text("SELECT asmnt_rec_id, " + ", ".join(prod_cols) + " " +
+                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "WHERE " + condition_clause,
+                 bindparams=params)
+    return query
 
 
 def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matched_columns, matched_status,
@@ -311,12 +365,13 @@ def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, ma
     # match deleted record should be 'C' in prod, but in pre-prod. it is the
     for s in matched_status:
         matched_pred_values[s[0]] = s[1]
-    condition_clause = " AND ".join(["{c} = '{v}'".format(c=c, v=matched_pred_values[c]) for c in pred_cols])
-    prod_rec_id = matched_prod_values['asmnt_rec_id']
-    sql_template = "UPDATE {source_schema_and_table} " \
-                   "SET asmnt_outcome_rec_id = {prod_rec_id}, status = 'C' || status " +\
-                   "WHERE batch_guid = '{batch_guid}' AND {condition_clause}"
-    return sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                               prod_rec_id=prod_rec_id,
-                               batch_guid=batch_guid,
-                               condition_clause=condition_clause)
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in pred_cols])
+    params = [bindparam("{c}".format(c=c), matched_pred_values[c]) for c in pred_cols]
+    params.append(bindparam('prod_rec_id', matched_prod_values['asmnt_rec_id']))
+    params.append(bindparam('batch_guid', batch_guid))
+    params.append(bindparam('new_status', 'D'))
+    query = text("UPDATE " + combine_schema_and_table(schema_name, table_name) + " " +
+                 "SET asmnt_outcome_rec_id = :prod_rec_id, status = :new_status " +
+                 "WHERE batch_guid = :batch_guid AND " + condition_clause,
+                 bindparams=params)
+    return query

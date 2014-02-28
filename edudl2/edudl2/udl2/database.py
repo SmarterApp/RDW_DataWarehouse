@@ -133,7 +133,7 @@ UDL_METADATA = {
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('op', False, 'varchar(1)', "'C'", False, "Record operation type"),
+                ('op', False, 'varchar(1)', "'C'", True, "Record operation type"),
                 ('guid_batch', False, 'varchar(256)', '', False, "Batch ID which caused the record insert"),
                 ('src_file_rec_num', False, 'bigint', '', True, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(256)', '', True, "Assessment GUID"),
@@ -148,6 +148,7 @@ UDL_METADATA = {
                 ('name_school', False, 'varchar(256)', '', True, "School Name"),
                 ('type_school', False, 'varchar(256)', '', True, "Type of School - Hight School, Middle School, Elementary School"),
                 ('guid_student', False, 'varchar(256)', '', True, "Student GUID"),
+                ('external_student_id', False, 'varchar(256)', '', True, "External Student Id"),
                 ('name_student_first', False, 'varchar(256)', '', True, "Student First Name"),
                 ('name_student_middle', False, 'varchar(256)', '', True, "Student Middle Name"),
                 ('name_student_last', False, 'varchar(256)', '', True, "Student Last Name"),
@@ -263,6 +264,7 @@ UDL_METADATA = {
                 ('score_cut_point_2', False, 'smallint', '', True, "Cutpoint 2"),
                 ('score_cut_point_3', False, 'smallint', '', True, "Cutpoint 3"),
                 ('score_cut_point_4', False, 'smallint', '', True, "Cutpoint 4"),
+                ('effective_date', False, 'varchar(8)', '', True, "Effective Date of Assmt"),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
@@ -285,6 +287,7 @@ UDL_METADATA = {
                 ('name_school', False, 'varchar(256)', '', False, "School Name"),
                 ('type_school', False, 'varchar(20)', '', False, "Type of School - High School, Middle School, Elementary School"),
                 ('guid_student', False, 'varchar(50)', '', False, "Student GUID"),
+                ('external_student_id', False, 'varchar(256)', '', True, "External Student Id"),
                 ('name_student_first', False, 'varchar(256)', '', True, "Student First Name"),
                 ('name_student_middle', False, 'varchar(256)', '', True, "Student Middle Name"),
                 ('name_student_last', False, 'varchar(256)', '', True, "Student Last Name"),

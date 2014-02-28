@@ -57,6 +57,7 @@ class Udl2BaseTask(Task):
                 mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
             }
 
+            import edudl2.udl2.W_get_udl_file as W_get_udl_file
             chain = W_get_udl_file.get_next_file.si(next_file_msg) \
                 if error_handler_chain is None else error_handler_chain | W_get_udl_file.get_next_file.si(next_file_msg)
             chain.apply_async()
@@ -67,4 +68,4 @@ class Udl2BaseTask(Task):
         logger.info('Task completed successfully: '.format(task_id))
 
 
-from edudl2.udl2 import W_get_udl_file, W_all_done, W_post_etl
+from edudl2.udl2 import W_all_done, W_post_etl

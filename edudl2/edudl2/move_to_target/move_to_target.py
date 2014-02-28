@@ -6,7 +6,7 @@ import logging
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
-from edudl2.move_to_target.move_to_target_setup import get_column_mapping_from_int_to_target
+from edudl2.move_to_target.move_to_target_setup import get_column_and_type_mapping
 from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
                                                   enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
                                                   create_information_query, create_select_columns_in_table_query,
@@ -205,35 +205,6 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     return affected_rows
 
 
-def get_table_column_types(conf, target_table, column_names):
-    '''
-    Main function to get column types of a table by querying the table
-    @return a dictionary, which has same ordered keys in the input column_names.
-    The values are column types with maximum length if it is defined in table.
-    The pattern of the value is: <column_name data_type(length)> or <column_name data_type>
-    '''
-    column_types = OrderedDict([(column_name, '') for column_name in column_names])
-    tenant = conf[mk.TENANT_NAME]
-    with TargetDBConnection(tenant) as conn:
-        query = create_information_query(target_table)
-        # execute query
-        try:
-            result = conn.execute(query)
-            for row in result:
-                column_name = row[0]
-                data_type = row[1]
-                character_maximum_length = row[2]
-                if column_name in column_types.keys():
-                    return_value = column_name + " " + data_type
-                    if character_maximum_length:
-                        return_value += "(" + str(character_maximum_length) + ")"
-                    column_types[column_name] = return_value
-        except Exception as e:
-            print('Exception in getting type', e)
-
-    return column_types
-
-
 def calculate_spend_time_as_second(start_time, finish_time):
     '''
     Main function to calculate period distance as seconds
@@ -311,27 +282,29 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                                          matched)
 
 
-def move_data_from_int_tables_to_target_table(conf, source_tables, target_table):
+def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):
     '''
-    Main function to move student registration data from source integration tables to target table.
-    Source tables are INT_STU_REG and INT_STU_REG_META. Target table is student_registartion.
-    @param conf: dictionary which has database settings, and guid_batch
-    @param source_tables: names of the source tables from where the data comes
-    @param target_table: name of the target table to where the data should be moved
-    @param column_mapping: list of tuples of:
-                           column_name_in_target, column_name_in_source
-    @param column_types: data types of all columns in one target table
+    Move student registration data from source integration tables to target table.
+    Source tables are INT_STU_REG and INT_STU_REG_META. Target table is student_registration.
+
+    @param conf: Configuration for particular load type (assessment or studentregistration)
+    @param task_name: Name of the celery task invoking this method
+    @param source_tables: Names of the source tables from where the data comes
+    @param target_table: Name of the target table to where the data should be moved
+
+    @return: Number of inserted rows
     '''
+
     with UDL2DBConnection() as conn_to_source_db:
-        column_mappings = OrderedDict()
-        column_types = OrderedDict()
-        for source_table in source_tables:
-            column_mappings[source_table] = get_column_mapping_from_int_to_target(conn_to_source_db, 'LOAD_FROM_INT_TO_TARGET', conf[mk.SOURCE_DB_SCHEMA],
-                                                                                  conf[mk.REF_TABLE], conf[mk.PHASE], target_table, source_table)
-            column_types[source_table] = get_table_column_types(conf, target_table, list(column_mappings[source_table].keys()))
-        delete_criteria = get_current_stu_reg_delete_criteria(conn_to_source_db, conf[mk.GUID_BATCH], conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE])
+
+        column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,
+                                                              target_table, source_tables)
+
+        delete_criteria = get_current_stu_reg_delete_criteria(conn_to_source_db, conf[mk.GUID_BATCH],
+                                                              conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE])
 
     with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
+
         # Cleanup any existing records with matching registration system id and academic year.
         delete_query = create_delete_query(conf[mk.TARGET_DB_SCHEMA], target_table, delete_criteria)
         deleted_rows = execute_udl_queries(conn_to_target_db, [delete_query],
@@ -339,11 +312,11 @@ def move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
                                            'move_to_target', 'move_data_from_int_tables_to_target_table')
         logger.info('{deleted_rows} deleted from {target_table}'.format(deleted_rows=deleted_rows[0], target_table=target_table))
 
-        insert_query = create_sr_table_select_insert_query(conf, target_table, column_mappings, column_types)
+        insert_query = create_sr_table_select_insert_query(conf, target_table, column_and_type_mapping)
         logger.info(insert_query)
         affected_rows = execute_udl_queries(conn_to_target_db, [insert_query],
                                             'Exception -- moving data from integration {int_table} to target {target_table}'
-                                            .format(int_table=source_table, target_table=target_table),
+                                            .format(int_table=source_tables[0], target_table=target_table),
                                             'move_to_target', 'move_data_from_int_tables_to_target_table')
 
     return affected_rows
@@ -352,10 +325,19 @@ def move_data_from_int_tables_to_target_table(conf, source_tables, target_table)
 def get_current_stu_reg_delete_criteria(conn, batch_guid, source_db_schema, source_table):
     '''
     Get the delete criteria for current stident registration job
+
+    @param conn: Connection to source database
+    @param batch_guid: Batch ID to be used in criteria to select correct table row
+    @param source_db_schema: Names of the source database schema
+    @param source_table: Source table containing the delete criteria information
+
+    @return: Criteria for deletion from target table for current batch job
     '''
+
     select_columns = ['test_reg_id', 'academic_year']
     criteria = {'guid_batch': batch_guid}
     query = create_select_columns_in_table_query(source_db_schema, source_table, select_columns, criteria)
+
     result = execute_udl_query_with_result(conn, query, 'Bad Query')
     reg_system_id, academic_year = result.fetchone()
 

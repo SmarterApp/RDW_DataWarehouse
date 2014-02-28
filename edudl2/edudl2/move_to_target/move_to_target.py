@@ -55,6 +55,8 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
         start_time_p1 = datetime.datetime.now()
+        for query in queries[0:2]:
+            logger.info(query)
         affected_rows_first = execute_udl_queries(conn,
                                                   queries[0:2],
                                                   'Exception -- exploding data from integration to fact table part 1',
@@ -154,7 +156,7 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
 
     # create insertion insert_into_fact_table_query
     insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types,
-                                                       False, 'C')
+                                                       False)
     logger.info(insert_into_fact_table_query)
 
     # update inst_hier_query back

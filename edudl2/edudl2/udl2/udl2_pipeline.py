@@ -86,4 +86,3 @@ from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_ge
                          W_load_json_to_integration, W_load_to_integration_table,
                          W_load_from_integration_to_star, W_load_sr_integration_to_target,
                          W_parallel_csv_load, W_determine_end_chain, W_post_etl, W_all_done)
-

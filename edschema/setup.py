@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 requires = [
     'SQLAlchemy==0.8.2',
-    'zope.component >= 4.0.2',
-    'zope.interface >= 4.0.3']
+    'zope.interface==4.0.3',
+    'zope.component == 4.1.0']
 
 tests_require = requires
 

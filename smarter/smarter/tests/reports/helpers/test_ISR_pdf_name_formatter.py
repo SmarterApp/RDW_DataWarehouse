@@ -4,19 +4,15 @@ Created on May 17, 2013
 @author: tosako
 '''
 import unittest
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
 from edapi.exceptions import NotFoundException
 import os
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid, \
     generate_isr_absolute_file_path_name
-from zope import component
-from edauth.security.session_backend import ISessionBackend, SessionBackend,\
-    get_session_backend
 from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
-from edauth.security.session import Session
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
@@ -28,13 +24,9 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         reg.settings['cache.expire'] = 10
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
-        component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
-        session = Session()
-        session.set_session_id('123')
-        session.set_tenants([get_unittest_tenant_name()])
-        get_session_backend().create_new_session(session)
+        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-        self.__config.testing_securitypolicy(session)
+        self.__config.testing_securitypolicy(dummy_session)
 
     def test_generate_isr_report_path_by_student_guid(self):
         file_name = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')

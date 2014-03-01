@@ -33,6 +33,7 @@ def report_udl_batch_metrics_to_log(msg, end_time, pipeline_status):
 
 def report_batch_to_udl_daily_stats(msg, end_time):
     logger.info('Reporting to UDL daily stats')
+    total_rows_loaded = 0
     if mk.TOTAL_ROWS_LOADED in msg:
         total_rows_loaded = msg[mk.TOTAL_ROWS_LOADED]
     udl_batch_stats = {

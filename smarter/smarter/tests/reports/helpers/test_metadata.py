@@ -8,12 +8,12 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from edapi.tests.dummy import DummyRequest
 from pyramid import testing
-from edauth.security.session import Session
 from smarter.reports.helpers.metadata import get_custom_metadata,\
     get_subjects_map
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from smarter.reports.helpers.constants import Constants
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestCustomMetaData(Unittest_with_edcore_sqlite):
@@ -32,11 +32,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_session = Session()
-        dummy_session.set_session_id('123')
-        dummy_session.set_roles(['TEACHER'])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants([get_unittest_tenant_name()])
+        dummy_session = create_test_session(['TEACHER'], uid='272')
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

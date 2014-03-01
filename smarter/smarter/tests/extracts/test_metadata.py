@@ -7,11 +7,11 @@ import unittest
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    UnittestEdcoreDBConnection
 from pyramid.testing import DummyRequest
 from pyramid.registry import Registry
-from edauth.security.session import Session
 from pyramid import testing
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestMetadata(Unittest_with_edcore_sqlite):
@@ -35,10 +35,7 @@ class TestMetadata(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(),
                                user_id='272', guid='272')
-        dummy_session = Session()
-        dummy_session.set_roles(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants([get_unittest_tenant_name()])
+        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

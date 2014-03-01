@@ -102,9 +102,7 @@ def __create_from_SAMLResponse(saml_response, identity_parser_class, last_access
         session.set_guid(guid[0])
 
     # get Identity specific parsing values
-    parser = identity_parser_class(__attributes)
-    session.set_roles(parser.get_roles())
-    session.set_tenants(parser.get_tenant_name())
+    session.set_user_context(identity_parser_class.get_role_relationship_chain(__attributes))
 
     session.set_expiration(expiration)
     session.set_last_access(last_access)

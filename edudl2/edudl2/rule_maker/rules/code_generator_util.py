@@ -146,7 +146,7 @@ def make_substring_part(code_version, pref, col, val, length=None):
 
 
 def make_null_part(code_version, pref, col):
-    return "{prefix} (t_{col_name}) IS NULL".format(prefix=pref, col_name=col)
+    return "{prefix} t_{col_name} IS NULL".format(prefix=pref, col_name=col)
 
 
 def assignment(left_exp, right_exp, **parm):

@@ -40,7 +40,7 @@ class TestCallback(unittest.TestCase):
 
     def test_session_with_role_returned(self):
         # Prepare session
-        session = create_test_session(roles=['TEACHER', 'STAFF'], uid='linda.kim', full_name='Linda Kim')
+        session = create_test_session(roles=['TEACHER', 'STAFF'], uid='linda.kim', full_name='Linda Kim', save_to_backend=True)
 
         roles = session_check(session.get_session_id(), None)
         self.assertIn("TEACHER", roles)
@@ -50,7 +50,7 @@ class TestCallback(unittest.TestCase):
         # expired sessions return empty roles
         current_datetime = datetime.now() + timedelta(seconds=-30)
         # Prepare session
-        session = create_test_session(roles=['TEACHER', 'STAFF'], uid='linda.kim', full_name='Linda Kim', expiration=current_datetime, last_access=current_datetime)
+        session = create_test_session(roles=['TEACHER', 'STAFF'], uid='linda.kim', full_name='Linda Kim', expiration=current_datetime, last_access=current_datetime, save_to_backend=True)
 
         roles = session_check(session.get_session_id(), None)
         self.assertEquals(roles, [])

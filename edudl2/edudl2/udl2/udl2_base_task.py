@@ -1,6 +1,6 @@
 from celery import Task, chain
-import edudl2.udl2 as udl2
 from edudl2.udl2 import message_keys as mk
+import edudl2.udl2 as udl2
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -58,8 +58,9 @@ class Udl2BaseTask(Task):
                 mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
             }
 
-            chain = udl2.W_get_udl_file.get_next_file.si(next_file_msg) \
-                if error_handler_chain is None else error_handler_chain | udl2.W_get_udl_file.get_next_file.si(next_file_msg)
+            import edudl2.udl2.W_get_udl_file as W_get_udl_file
+            chain = W_get_udl_file.get_next_file.si(next_file_msg) \
+                if error_handler_chain is None else error_handler_chain | W_get_udl_file.get_next_file.si(next_file_msg)
             chain.apply_async()
         else:
             error_handler_chain.delay() if error_handler_chain is not None else None

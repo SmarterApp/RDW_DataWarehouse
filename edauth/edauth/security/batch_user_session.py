@@ -14,6 +14,8 @@ from edauth.security.session_backend import get_session_backend
 import uuid
 from pyramid.authentication import AuthTktCookieHelper, AuthTicket
 import time as time_mod
+from edauth.security.user import RoleRelation
+from edcore.security.tenant import get_state_code_mapping
 
 
 def create_batch_user_session(settings, roles, tenant_name):
@@ -63,13 +65,14 @@ def __create_session(roles, expire_in_secs, tenant_name):
     session.set_session_id(__session_id)
     session.set_expiration(expiration_datetime)
     session.set_last_access(current_datetime)
-    # set session roles
-    session.set_roles(roles)
+    # set session rolerelations
+    relations = []
+    for role in roles:
+        relations.append(RoleRelation(role, tenant_name, get_state_code_mapping([tenant_name])[0], None, None))
+    session.set_user_context(relations)
     # set user
     __uid = str(uuid.uuid4())
     session.set_uid(__uid)
-    # set tenant
-    session.set_tenants([tenant_name])
     # save current session
     get_session_backend().create_new_session(session)
     return session

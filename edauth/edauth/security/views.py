@@ -19,12 +19,12 @@ from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 from urllib.parse import parse_qs, urlsplit, urlunsplit
-from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher, \
-    write_security_event
+from edauth.security.utils import _get_cipher
 from datetime import datetime
 import json
 import pyramid.security
 from edauth.security.exceptions import NotAuthorized
+from edauth.security.logging import SECURITY_EVENT_TYPE, write_security_event
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)

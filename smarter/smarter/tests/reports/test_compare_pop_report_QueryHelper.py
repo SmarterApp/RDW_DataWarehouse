@@ -5,16 +5,16 @@ Created on Mar 8, 2013
 '''
 import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    UnittestEdcoreDBConnection
 from smarter.reports.compare_pop_report import QueryHelper,\
     set_default_min_cell_size
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
-from edauth.security.session import Session
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.constants import RolesConstants
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class Test(Unittest_with_edcore_sqlite_no_data_load):
@@ -27,10 +27,7 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.STATE_EDUCATION_ADMINISTRATOR_1])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenants([get_unittest_tenant_name()])
+        dummy_session = create_test_session([RolesConstants.STATE_EDUCATION_ADMINISTRATOR_1], uid='272')
         self.__config.testing_securitypolicy(dummy_session)
         set_default_min_cell_size(0)
 

@@ -52,7 +52,7 @@ class RuleGeneratorFTest(unittest.TestCase):
                     test_val = input_val[:int(rule_def['compare_length'])]
                     test_val += 'asdf'
                     result = self.engine.execute("SELECT %s('%s')" % (rule[1], input_val))
-                    assert result.fetchone()[0] == input_val
+                    self.assertEqual(result.fetchone()[0], input_val)
 
     def test_rule_with_lookup(self):
         for rule in self.rule_list:
@@ -61,8 +61,12 @@ class RuleGeneratorFTest(unittest.TestCase):
                 print('FOUND A RULE WITHLOOKUP')
                 for lookup_val in rule_def['lookup'].keys():
                     for possible_val in rule_def['lookup'][lookup_val]:
-                        result = self.engine.execute("SELECT %s('%s')" % (rule[1], possible_val))
-                        assert result.fetchone()[0] == lookup_val
+                        print("SELECT %s('%s')" % (rule[1], possible_val))
+                        if possible_val is None:
+                            result = self.engine.execute("SELECT %s(NULL)" % (rule[1]))
+                        else:
+                            result = self.engine.execute("SELECT %s('%s')" % (rule[1], possible_val))
+                        self.assertEqual(result.fetchone()[0], lookup_val)
 
     def test_cleanup_rules(self):
         clean_rules = [('sp_clean', 'this \nshould be cleaned. ', 'this should be cleaned.'),

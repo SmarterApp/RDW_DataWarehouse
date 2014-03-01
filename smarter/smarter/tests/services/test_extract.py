@@ -9,7 +9,6 @@ from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid.registry import Registry
-from edauth.security.session import Session
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
@@ -24,6 +23,7 @@ from beaker.util import parse_cache_config_options
 from edapi.utils import convert_query_string_to_dict_arrays
 import zipfile
 import tempfile
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -50,10 +50,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='1023', guid='1023')
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
+        dummy_session = create_test_session(['SCHOOL_EDUCATION_ADMINISTRATOR_1'], uid='1023')
         self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
@@ -77,11 +74,6 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtSubject': ['Math'],
                                     'extractType': ['studentAssessment'],
                                     'async': 'true'}
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
-        self.__config.testing_securitypolicy(dummy_session)
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
@@ -102,11 +94,6 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtYear'] = '2010'
         self.__request.GET['extractType'] = 'studentAssessment'
         self.__request.GET['async'] = 'true'
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
-        self.__config.testing_securitypolicy(dummy_session)
         results = get_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
@@ -121,11 +108,6 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtSubject': ['Math', 'ELA'],
                                     'extractType': ['studentAssessment'],
                                     'async': 'true'}
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
-        self.__config.testing_securitypolicy(dummy_session)
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
@@ -191,11 +173,6 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtYear'] = '2015'
         self.__request.GET['extractType'] = 'studentAssessment'
         self.__request.GET['async'] = 'true'
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
-        self.__config.testing_securitypolicy(dummy_session)
         results = get_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
@@ -210,11 +187,6 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtYear': ['2015'],
                                     'extractType': ['studentAssessment'],
                                     'async': 'true'}
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
-        self.__config.testing_securitypolicy(dummy_session)
         response = post_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/json')
@@ -228,11 +200,6 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtYear'] = '2015'
         self.__request.GET['extractType'] = 'studentAssessment'
-        dummy_session = Session()
-        dummy_session.set_roles(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_uid('1023')
-        dummy_session.set_tenants([self.__tenant_name])
-        self.__config.testing_securitypolicy(dummy_session)
         response = get_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')

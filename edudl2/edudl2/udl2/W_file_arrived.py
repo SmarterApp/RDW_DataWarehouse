@@ -7,6 +7,8 @@ from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.filearrived.file_arrived import move_file_from_arrivals
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.celery import celery
+from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.query import insert_udl_stats
 
 
 __author__ = 'abrien'
@@ -56,4 +58,17 @@ def task(incoming_msg):
         mk.FILE_TO_DECRYPT: os.path.join(tenant_directory_paths[mk.ARRIVED], os.path.basename(input_source_file)),
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths,
         mk.TENANT_NAME: tenant_name})
+
+    # Insert into udl stats
+    udl_stats = {
+        UdlStatsConstants.BATCH_GUID: guid_batch,
+        UdlStatsConstants.LOAD_TYPE: load_type,
+        # TODO: get state_code from tenant through configuration mapping
+        UdlStatsConstants.STATE_CODE: 'XX',
+        UdlStatsConstants.FILE_ARRIVED: start_time,
+        UdlStatsConstants.TENANT: tenant_name,
+        UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_RECEIVED
+    }
+    insert_udl_stats(udl_stats)
+
     return outgoing_msg

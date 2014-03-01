@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>config</project>
+		<project>edcore</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

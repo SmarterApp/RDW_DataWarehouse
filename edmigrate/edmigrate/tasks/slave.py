@@ -1,3 +1,4 @@
+from edmigrate.tasks.base import BaseTask
 __author__ = 'sravi'
 
 import socket
@@ -15,7 +16,7 @@ node_group_id = get_setting(Config.REPLICATION_GROUP)
 node_id = socket.gethostname()
 
 
-@celery.task(name='task.edmigrate.slave.slaves_register', ignore_result=True)
+@celery.task(name='task.edmigrate.slave.slaves_register', ignore_result=True, base=BaseTask)
 def slaves_register():
     '''
     Registers current node to master.  This task will call task
@@ -48,7 +49,7 @@ def is_replication_paused(connector):
         return True
 
 
-@celery.task(name='task.edmigrate.slave.pause_replication', ignore_result=True)
+@celery.task(name='task.edmigrate.slave.pause_replication', ignore_result=True, base=BaseTask)
 def pause_replication(tenant, group):
     '''
     Pauses replication on current node.
@@ -61,7 +62,7 @@ def pause_replication(tenant, group):
             connector.execute("select pg_xlog_replay_pause()")
 
 
-@celery.task(name='task.edmigrate.slave.resume_replication', ignore_result=True)
+@celery.task(name='task.edmigrate.slave.resume_replication', ignore_result=True, base=BaseTask)
 def resume_replication(tenant, group):
     '''
     Resumes replication on current node.
@@ -79,7 +80,7 @@ def resume_replication(tenant, group):
     return True
 
 
-@celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True)
+@celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True, base=BaseTask)
 def block_pgpool(group):
     '''
     Changes iptable rule to reject access from pgpool. System user who
@@ -92,7 +93,7 @@ def block_pgpool(group):
     return True
 
 
-@celery.task(name='task.edmigrate.slave.unblock_pgpool', ignore_result=True)
+@celery.task(name='task.edmigrate.slave.unblock_pgpool', ignore_result=True, base=BaseTask)
 def unblock_pgpool(group):
     '''
     Changes iptable rule to accept access from pgpool. System user who

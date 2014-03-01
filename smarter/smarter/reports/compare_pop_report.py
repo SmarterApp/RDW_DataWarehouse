@@ -60,7 +60,7 @@ def get_comparing_populations_report(params):
     report = ComparingPopReport(**params).get_report()
     # query not stated students count
     report[Constants.NOT_STATED] = get_not_stated_count(params)
-    # if has filters, merge with some unfiltered data, if not just return report
+    # if has filters, merge with some unfiltered data, if not just merge with interim results
     if has_filters(params):
         no_filter_params = {k: v for k, v in params.items() if k not in FILTERS_CONFIG}
         unfiltered = ComparingPopReport(**no_filter_params).get_report()
@@ -83,7 +83,7 @@ def get_merged_report_records(summative, interim):
     for record in interim[Constants.RECORDS]:
         r = Records(id=record[Constants.ID], name=record[Constants.NAME])
         for subject in interim[Constants.SUBJECTS].keys():
-            # when total is not zero, that means there are results (either insufficient or not)
+            # when total number of students is not zero, that means there are results (could be insufficient data)
             if record[Constants.RESULTS][subject][Constants.TOTAL] is not 0:
                 record[Constants.RESULTS][subject][Constants.HASINTERIM] = True
             reset_subject_intervals(record[Constants.RESULTS][subject])
@@ -96,6 +96,7 @@ def get_merged_report_records(summative, interim):
                 # when total is zero, that means there are no summative results, so check if there is interim results
                 if record[Constants.RESULTS][subject][Constants.TOTAL] is 0:
                     hasInterim = merged[r][Constants.RESULTS][subject].get(Constants.HASINTERIM, False)
+                    # Check if there is interim results, if so, update current record to have hasInterim
                     if hasInterim:
                         record[Constants.RESULTS][subject][Constants.HASINTERIM] = hasInterim
                         reset_subject_intervals(record[Constants.RESULTS][subject])

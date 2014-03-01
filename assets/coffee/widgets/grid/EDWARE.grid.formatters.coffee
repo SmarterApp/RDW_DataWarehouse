@@ -184,7 +184,6 @@ define [
       export: subject.export
       hasTextReplacement: subject.hasTextReplacement
       displayText: subject.displayText
-      displayTextClass: subject.displayTextClass ? ''
     }
 
   # Used to display total population count

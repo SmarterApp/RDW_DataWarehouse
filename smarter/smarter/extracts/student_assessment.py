@@ -113,7 +113,8 @@ def get_extract_assessment_query(params):
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
-        query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)
+        query = query.where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))
+        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
         if school_guid is not None:
             query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
         if district_guid is not None:

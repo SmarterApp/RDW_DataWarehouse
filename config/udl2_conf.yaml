@@ -9,24 +9,24 @@ common:
         broker: amqp://guest@localhost//    # this is the url to message broker. Currently it is located on localhost for rabbitmq
         backend: amqp://guest@localhost//   # this is the url to task results for each request. Currently it is located on localhost for rabbitmq
         include:
-            - udl2.W_get_udl_file
-            - udl2.W_file_arrived
-            - udl2.W_file_decrypter
-            - udl2.W_file_expander
-            - udl2.W_simple_file_validator
-            - udl2.W_file_splitter
-            - udl2.W_parallel_csv_load
-            - udl2.W_load_csv_to_staging
-            - udl2.W_file_content_validator
-            - udl2.W_load_json_to_integration
-            - udl2.W_load_to_integration_table
-            - udl2.W_determine_end_chain
-            - udl2.W_load_sr_integration_to_target
-            - udl2.W_load_from_integration_to_star
-            - udl2.W_post_etl
-            - udl2.W_report_error_or_success
-            - udl2.W_all_done
-            - benchmarking.run_benchmarks
+            - edudl2.udl2.W_get_udl_file
+            - edudl2.udl2.W_file_arrived
+            - edudl2.udl2.W_file_decrypter
+            - edudl2.udl2.W_file_expander
+            - edudl2.udl2.W_simple_file_validator
+            - edudl2.udl2.W_file_splitter
+            - edudl2.udl2.W_parallel_csv_load
+            - edudl2.udl2.W_load_csv_to_staging
+            - edudl2.udl2.W_file_content_validator
+            - edudl2.udl2.W_load_json_to_integration
+            - edudl2.udl2.W_load_to_integration_table
+            - edudl2.udl2.W_determine_end_chain
+            - edudl2.udl2.W_load_sr_integration_to_target
+            - edudl2.udl2.W_load_from_integration_to_star
+            - edudl2.udl2.W_post_etl
+            - edudl2.udl2.W_report_error_or_success
+            - edudl2.udl2.W_all_done
+            - edudl2.benchmarking.run_benchmarks
     celery_defaults:
         CELERY_DEFAULT_QUEUE: celery        # default celery queue name for celery internal tasks
         CELERY_DEFAULT_EXCHANGE: direct     # default celery exchange name, and exchange type

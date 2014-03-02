@@ -119,6 +119,7 @@ def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_y
             .where(and_(fact_asmt_outcome.c.state_code == state_code))\
             .where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))\
             .where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))\
+            .where(and_(fact_asmt_outcome.c.status == 'C'))\
             .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome.c.asmt_grade)
 
         if district_guid is not None:

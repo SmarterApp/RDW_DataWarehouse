@@ -10,7 +10,8 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
     create_group_tuple, get_table_column_types, get_move_to_target_conf
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
-    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions
+    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions,\
+    update_or_delete_duplicate_record
 
 logger = get_task_logger(__name__)
 
@@ -146,3 +147,23 @@ def handle_deletions(msg):
     outgoing_msg.update(msg)
     outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows})
     return outgoing_msg
+
+
+@celery.task(name='udl2.W_load_from_integration_to_star.handle_insertion_dim_tables', base=Udl2BaseTask)
+def handle_insertion_dim_tables(msg):
+    logger.info('LOAD_FROM_INT_TO_STAR: detect duplications in target tables.')
+    start_time = datetime.datetime.now()
+    conf = _get_conf(msg)
+    # generate config dict
+    configs = get_move_to_target_conf()[5]['dim_tables']
+    for match_conf in configs:
+        update_or_delete_duplicate_record(conf, match_conf)
+
+
+def _get_conf(msg):
+    guid_batch = msg[mk.GUID_BATCH]
+    phase_number = msg[mk.PHASE]
+    load_type = msg[mk.LOAD_TYPE]
+    tenant_name = msg[mk.TENANT_NAME]
+    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    return conf

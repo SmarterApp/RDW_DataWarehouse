@@ -45,6 +45,7 @@ def get_pipeline_chain(archive_file, load_type='Unknown', file_parts=4, batch_gu
 def determine_end_chain(msg, load_type):
         target_tasks = {"assessment": [W_load_from_integration_to_star.explode_to_dims.s(msg),
                                        W_load_from_integration_to_star.explode_to_fact.s(),
+                                       W_load_from_integration_to_star.handle_insertion_dim_tables.s(),
                                        W_load_from_integration_to_star.handle_deletions.s()],
                         "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
 

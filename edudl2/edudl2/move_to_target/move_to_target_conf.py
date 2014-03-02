@@ -50,6 +50,18 @@ def get_move_to_target_conf():
                 'source_table': [('status', 'W')],
                 'prod_table': [('status', 'C')]
             }
+        },
+        {
+            'dim_tables': [
+                {
+                    'prod_table': 'dim_student',
+                    'guid_column': 'student_guid',
+                    'matched_columns': [
+                        'first_name',
+                        'last_name'
+                    ]
+                }
+            ]
         }]
 
     return conf

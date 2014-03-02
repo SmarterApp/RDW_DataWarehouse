@@ -25,6 +25,7 @@ from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2_util.database_util import connect_db, execute_queries
 from edudl2.udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+from edudl2.metadata.udl2_metadata import generate_udl2_metadata, generate_udl2_sequences
 
 
 #
@@ -39,7 +40,7 @@ UDL_METADATA = {
     'TABLES': {
         'STG_MOCK_LOAD': {
             'columns': [
-                ('record_sid', True, 'bigserial', '', False, "Non Sequential UUID"),
+                ('record_sid', True, 'bigserial', '', False, " Non Sequential UUID"),
                 ('guid_batch', False, 'varchar(256)', '', False, "Batch ID which caused the record insert"),
                 ('substr_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
@@ -707,8 +708,8 @@ def create_udl2_sequence(connection, schema_name, udl2_metadata):
     # (conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
     #udl2_metadata = MetaData()
     print("create sequences")
-    for sequence, definition in UDL_METADATA['SEQUENCES'].items():
-        create_sequence(connection, udl2_metadata, schema_name, sequence)
+    for sequence in generate_udl2_sequences(schema_name, udl2_metadata):
+        connection.execute(CreateSequence(sequence))
 
 
 def drop_udl2_sequences(udl2_conf):
@@ -867,22 +868,6 @@ def create_udl2_schema(engine, connection, schema_name, bind=None):
     metadata = generate_udl2_metadata(schema_name, bind=bind)
     connection.execute(CreateSchema(metadata.schema))
     metadata.create_all(bind=engine)
-    return metadata
-
-
-def generate_udl2_metadata(schema_name=None, bind=None):
-    """
-
-    :param schema_name:
-    :param bind:
-    :return:
-    """
-    metadata = MetaData(schema=schema_name, bind=bind)
-
-    # add tables to metadata
-    for table, definition in UDL_METADATA['TABLES'].items():
-        create_table(metadata, table)
-
     return metadata
 
 

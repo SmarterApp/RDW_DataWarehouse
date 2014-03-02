@@ -13,7 +13,7 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod)
-
+from edudl2.move_to_target.query_helper import QueryHelper
 
 DBDRIVER = "postgresql"
 FAKE_REC_ID = -1
@@ -249,6 +249,18 @@ def match_deleted_records(conf, match_conf):
             if matched.rowcount > 0:
                 matched_results.extend([matched])
     return matched_results
+
+
+def update_or_delete_duplicate_record(conf, match_conf):
+    tenant_name = conf[mk.TENANT_NAME]
+    with TargetDBConnection(tenant_name) as target_conn, ProdDBConnection(tenant_name) as prod_conn:
+        target_db_helper = QueryHelper(target_conn, match_conf)
+        prod_db_helper = QueryHelper(prod_conn, match_conf)
+        import ipdb; ipdb.set_trace()
+        for record in target_db_helper.find_all():
+            matched = prod_db_helper.find_by_natural_key(record)
+            if matched:
+                target_db_helper.delete_by_guid(record)
 
 
 def check_mismatched_deletions(conf, match_conf):

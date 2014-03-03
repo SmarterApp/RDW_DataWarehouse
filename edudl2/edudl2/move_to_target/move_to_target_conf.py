@@ -57,8 +57,30 @@ def get_move_to_target_conf():
                     'prod_table': 'dim_student',
                     'guid_column': 'student_guid',
                     'matched_columns': [
+                        # 'student_rec_id',
+                        # 'batch_guid',
+                        'student_guid',
                         'first_name',
-                        'last_name'
+                        'middle_name',
+                        'last_name',
+                        'address_1',
+                        'address_2',
+                        'city',
+                        'zip_code',
+                        'gender',
+                        'email',
+                        'dob',
+                        'section_guid',
+                        'grade',
+                        'state_code',
+                        'district_guid',
+                        'school_guid',
+                        'from_date',
+                        'to_date',
+                        # 'most_recent',
+                    ],
+                    'update_columns': [
+                        'student_rec_id'
                     ]
                 }
             ]

@@ -251,16 +251,26 @@ def match_deleted_records(conf, match_conf):
     return matched_results
 
 
-def update_or_delete_duplicate_record(conf, match_conf):
-    tenant_name = conf[mk.TENANT_NAME]
+def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
+    affected_rows = 0
     with TargetDBConnection(tenant_name) as target_conn, ProdDBConnection(tenant_name) as prod_conn:
-        target_db_helper = QueryHelper(target_conn, match_conf)
-        prod_db_helper = QueryHelper(prod_conn, match_conf)
-        import ipdb; ipdb.set_trace()
+        target_db_helper = QueryHelper(target_conn, guid_batch, match_conf)
+        prod_db_helper = QueryHelper(prod_conn, guid_batch, match_conf)
         for record in target_db_helper.find_all():
             matched = prod_db_helper.find_by_natural_key(record)
-            if matched:
+            if not matched:
+                continue
+            identical = target_db_helper.is_identical(matched, record)
+            if not identical:
+                # TODO update dim & fact table?
+                # TODO what if student_rec_id already exists?
+                target_db_helper.update_to_match(matched)
+            else:
+                # TODO what about fact_asmt_outcome?
+                # TODO constraint in fact
                 target_db_helper.delete_by_guid(record)
+            affected_rows += 1
+    return affected_rows
 
 
 def check_mismatched_deletions(conf, match_conf):

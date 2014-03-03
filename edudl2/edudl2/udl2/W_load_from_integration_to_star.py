@@ -156,8 +156,21 @@ def handle_insertion_dim_tables(msg):
     conf = _get_conf(msg)
     # generate config dict
     configs = get_move_to_target_conf()[5]['dim_tables']
+    affected_rows = 0
+    import ipdb; ipdb.set_trace()
     for match_conf in configs:
-        update_or_delete_duplicate_record(conf, match_conf)
+        num_of_rows = update_or_delete_duplicate_record(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)
+        affected_rows += num_of_rows
+    finish_time = datetime.datetime.now()
+
+    # Create benchmark object ant record benchmark
+    udl_phase_step = 'Delete duplicate record in dim tables'
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], handle_insertion_dim_tables.name, start_time, finish_time,
+                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(handle_insertion_dim_tables.request.id),
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA])
+    benchmark.record_benchmark()
+
+    return msg
 
 
 def _get_conf(msg):

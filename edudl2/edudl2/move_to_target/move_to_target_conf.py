@@ -40,7 +40,7 @@ def get_move_to_target_conf():
             'target_table': 'fact_asmt_outcome',
             'find_deleted_fact_asmt_outcome_rows': {'columns': ['student_guid', 'asmt_guid', 'date_taken', 'status'],
                                                     'status': 'W'},
-            'match_delete_fact_asmt_outcome_row_in_prod': {'columns': ['asmt_outcome_rec_id', 'student_guid',
+            'match_delete_fact_asmt_outcome_row_in_prod': {'columns': ['asmnt_outcome_rec_id', 'student_guid',
                                                                        'asmt_guid', 'date_taken'],
                                                            'status': 'C'},
             'update_matched_fact_asmt_outcome_row': {'columns': {'asmnt_outcome_rec_id': 'asmnt_outcome_rec_id',

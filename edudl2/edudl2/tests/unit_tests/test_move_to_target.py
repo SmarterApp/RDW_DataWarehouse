@@ -158,7 +158,7 @@ class TestMoveToTarget(unittest.TestCase):
                                                             'status': 'W'})
         query = compile_query_to_sql_text(query)
         logger.info(query)
-        self.assertEqual(query, "SELECT asmt_outcome_rec_id, student_guid, asmt_guid, date_taken "
+        self.assertEqual(query, "SELECT asmnt_outcome_rec_id, student_guid, asmt_guid, date_taken "
                                 "FROM \"edware\".\"fact_asmt_outcome\" "
                                 "WHERE asmt_guid = 'asmt_guid_1' AND date_taken = '20140101' "
                                 "AND status = 'C' AND student_guid = 'student_guid_1'")

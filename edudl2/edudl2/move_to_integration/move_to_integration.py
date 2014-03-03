@@ -4,6 +4,7 @@ from edudl2.udl2 import message_keys as mk
 import logging
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edudl2.fileloader.prepare_queries import get_column_mapping_query
+from sqlalchemy.sql.expression import text, bindparam
 
 logger = logging.getLogger(__name__)
 
@@ -101,17 +102,18 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
     SELECT {source_columns}
         FROM "{source_schema}"."{source_table}" AS A LEFT JOIN
         "{error_schema}"."{error_table}" AS B ON (A.record_sid = B.record_sid )
-        WHERE B.record_sid IS NULL AND A.guid_batch = \'{guid_batch}\'
+        WHERE B.record_sid IS NULL AND A.guid_batch = :guid_batch
     """
-    sql = sql_template.format(target_schema=target_schema,
-                              target_table=target_table,
-                              target_columns=target_columns_expand,
-                              source_columns=source_columns_expand,
-                              source_schema=source_schema,
-                              source_table=source_table,
-                              error_schema=error_schema,
-                              error_table=error_table,
-                              guid_batch=guid_batch)
+    sql = text(sql_template.format(target_schema=target_schema,
+                                   target_table=target_table,
+                                   target_columns=target_columns_expand,
+                                   source_columns=source_columns_expand,
+                                   source_schema=source_schema,
+                                   source_table=source_table,
+                                   error_schema=error_schema,
+                                   error_table=error_table),
+               bindparams=[bindparam('guid_batch', guid_batch)])
+
     return sql
 
 

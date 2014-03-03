@@ -106,14 +106,14 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         int_asmt_avgs = self.get_integration_asmt_score_avgs()
         stg_asmt_avgs = self.get_staging_asmt_score_avgs()
 
-        assert stg_asmt_avgs == int_asmt_avgs
+        self.assertEqual(stg_asmt_avgs, int_asmt_avgs)
 
         stg_demo_dict = self.get_staging_demographic_counts()
         int_demo_dict = self.get_integration_demographic_counts()
 
         derived_count = int_demo_dict.pop('dmg_eth_derived', None)
-        assert derived_count
-        assert stg_demo_dict == int_demo_dict
+        self.assertIsNotNone(derived_count)
+        self.assertEqual(stg_demo_dict, int_demo_dict)
 
     def test_load_stage_to_int_student_registration(self):
         guid_batch = str(uuid4())

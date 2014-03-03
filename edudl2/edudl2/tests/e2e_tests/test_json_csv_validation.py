@@ -10,6 +10,7 @@ import unittest
 import os
 import subprocess
 import shutil
+import httpretty
 from uuid import uuid4
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
@@ -64,7 +65,7 @@ class ValidateTableData(unittest.TestCase):
         query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
         timer = 0
         result = connector.execute(query).fetchall()
-        while timer < max_wait and result == []:
+        while timer < max_wait and not result:
             sleep(0.25)
             timer += 0.25
             result = connector.execute(query).fetchall()
@@ -139,6 +140,17 @@ class ValidateTableData(unittest.TestCase):
         print(batch_data_invalid_load)
         self.assertEquals([('FAILURE',)], batch_data_invalid_load)
 
+    #Validate that the notification to the callback url was successful
+    def verify_notification_success(self, udl_connector, guid_batch_id):
+        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.udl_phase_step_status],
+                       and_(batch_table.c.guid_batch == self.guid_batch_id, batch_table.c.udl_phase == 'udl2.W_job_status_notification.task'))
+        result = udl_connector.execute(query).fetchall()
+        self.assertNotEqual(result, [])
+        for row in result:
+            status = row['udl_phase_step_status']
+            self.assertEqual(status, 'SUCCESS', 'Notification did not succeed')
+
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())
         print("guid batch for extra column in csv is : " + self.guid_batch_id)
@@ -179,12 +191,15 @@ class ValidateTableData(unittest.TestCase):
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_invalid_load(self.udl_connector, self.guid_batch_id)
 
+    @httpretty.activate
     def test_run_udl_sr_csv_missing_column(self):
         self.guid_batch_id = str(uuid4())
+        httpretty.register_uri(httpretty.POST, "http://StateTestReg.gov/StuReg/CallBack", status=204)
         print("guid batch for student registration csv missing column: " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['sr_csv_missing_column'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
+        #self.verify_notification_success(self.udl_connector, self.guid_batch_id)
 
 if __name__ == '__main__':
     unittest.main()

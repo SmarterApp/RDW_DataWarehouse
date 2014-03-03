@@ -75,7 +75,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d', 'stateCode': 'NC'}
+        self.__request.json_body = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC'}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
@@ -107,7 +107,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_pdf_service_no_context(self):
         self.__request.method
-        self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d', 'stateCode': 'NC'}
+        self.__request.GET = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC'}
         self.__request.matchdict['report'] = 'indivStudentReport.html'
 
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, None, self.__request)
@@ -166,7 +166,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_pdf_content_with_no_context(self):
         params = {}
-        params['studentGuid'] = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
+        params['studentGuid'] = '19489898-d469-41e2-babc-265ecbab2337'
         params['stateCode'] = 'NC'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}

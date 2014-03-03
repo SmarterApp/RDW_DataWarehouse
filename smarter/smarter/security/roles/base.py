@@ -32,6 +32,7 @@ class BaseRole(object):
         return query
 
 
+# TODO, we probably don't need this anymore as context is never going to be none
 def verify_context(fn):
     '''
     Decorator used to validate that we throw Forbidden error when context is an empty list

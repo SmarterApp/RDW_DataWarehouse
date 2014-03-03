@@ -8,7 +8,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from smarter.security.context import check_context
+from smarter.security.context import check_context, select_with_context
 # Import the roles below so test can run as a standalone
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from edauth.tests.test_helper.create_session import create_test_session
@@ -16,6 +16,8 @@ from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
+from smarter.reports.helpers.constants import Constants
+from edapi.exceptions import ForbiddenError
 
 
 class TestContext(Unittest_with_edcore_sqlite):
@@ -38,31 +40,22 @@ class TestContext(Unittest_with_edcore_sqlite):
         testing.tearDown()
 
 #    def test_select_with_context_as_teacher_with_no_user_mapping(self):
-#        dummy_session = Session()
-#        dummy_session.set_roles([RolesConstants.TEACHER])
-#        dummy_session.set_uid('272')
-#        dummy_session.set_tenants(self.__tenant_name)
-#        self.__config.testing_securitypolicy(dummy_session)
+#        dummy_session = create_test_session(['TEACHER'])
+#        dummy_session.set_user_context([RoleRelation("TEACHER", get_unittest_tenant_name(), "NC", "228", None)])
+#        self.__config.testing_securitypolicy(dummy_session.get_user())
 #        with UnittestEdcoreDBConnection() as connection:
 #            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-#            self.assertRaises(ForbiddenError, select_with_context, [fact_asmt_outcome.c.section_guid], from_obj=([fact_asmt_outcome]))
-#    def test_select_with_context_as_teacher(self):
-#        dummy_session = Session()
-#        dummy_session.set_roles([RolesConstants.TEACHER])
-#        dummy_session.set_uid('272')
-#        dummy_session.set_tenants(self.__tenant_name)
-#        self.__config.testing_securitypolicy(dummy_session)
-#        with UnittestEdcoreDBConnection() as connection:
-#            # Insert into user_mapping table
-#            user_mapping = connection.get_table(Constants.USER_MAPPING)
-#            connection.execute(user_mapping.insert(), user_id='272', guid='272')
-#
-#            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-#            query = select_with_context([fact_asmt_outcome.c.section_guid],
-#                                        from_obj=([fact_asmt_outcome]))
-#            results = connection.get_result(query)
-#            for result in results:
-#                self.assertEquals(result[Constants.SECTION_GUID], '345')
+#            self.assertRaises(ForbiddenError, select_with_context, [fact_asmt_outcome.c.section_guid], from_obj=([fact_asmt_outcome]), state_code='NC')
+
+    def test_select_with_context_as_teacher(self):
+        with UnittestEdcoreDBConnection() as connection:
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select_with_context([fact_asmt_outcome.c.section_guid],
+                                        from_obj=([fact_asmt_outcome]), state_code='NC')
+            results = connection.get_result(query)
+            for result in results:
+                self.assertEquals(result[Constants.SECTION_GUID], '345')
+
 #    def test_select_with_context_as_school_admin_one(self):
 #        uid = "951"
 #        dummy_session = Session()

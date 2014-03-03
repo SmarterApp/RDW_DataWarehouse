@@ -155,7 +155,6 @@ def handle_insertion_dim_tables(msg):
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
     # generate config dict
-    import ipdb; ipdb.set_trace()
     configs = get_move_to_target_conf()[5]['dim_tables']
     affected_rows = 0
     for match_conf in configs:

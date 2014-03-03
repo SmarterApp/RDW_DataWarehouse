@@ -37,19 +37,18 @@ def get_move_to_target_conf():
             },
         },
         {
-            'prod_rec_id': 'asmnt_outcome_rec_id',
-            'source_rec_id': 'asmnt_outcome_rec_id',
             'prod_table': 'fact_asmt_outcome',
-            'source_table': 'fact_asmt_outcome',
-            'matched_columns': [
-                ('date_taken', 'date_taken'),
-                ('asmt_guid', 'asmt_guid'),
-                ('student_guid', 'student_guid')
-            ],
-            'matched_status': {
-                'source_table': [('status', 'W')],
-                'prod_table': [('status', 'C')]
-            }
+            'target_table': 'fact_asmt_outcome',
+            'find_deleted_fact_asmt_outcome_rows': {'columns': ['student_guid', 'asmt_guid', 'date_taken', 'status'],
+                                                    'status': 'W'},
+            'match_delete_fact_asmt_outcome_row_in_prod': {'columns': ['asmt_outcome_rec_id', 'student_guid',
+                                                                       'asmt_guid', 'date_taken'],
+                                                           'status': 'C'},
+            'update_matched_fact_asmt_outcome_row': {'columns': {'asmnt_outcome_rec_id': 'asmnt_outcome_rec_id',
+                                                                 'status': 'new_status'},
+                                                     'new_status': 'D',
+                                                     'condition': ['student_guid', 'asmt_guid', 'date_taken', 'status'],
+                                                     'status': 'W'},
         }]
 
     return conf

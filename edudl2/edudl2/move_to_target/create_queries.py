@@ -295,83 +295,63 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
     return mapping_query
 
 
-def find_unmatched_deleted_fact_asmt_outcome_row(schema_name, table_name, batch_guid, status_code):
-    '''
-    create a query to search any record that should be deleted/updated but has no record in production database
-    '''
-    params = [bindparam('batch_guid', batch_guid)]
-    params.extend([bindparam(str(s[0]) + '_' + str(i), s[1]) for i, s in enumerate(status_code)])
-    query = text("SELECT status FROM " + combine_schema_and_table(schema_name, table_name) + " " +
-                 "WHERE status in (" +
-                 "," .join([":" + str(s[0]) + '_' + str(i) for i, s in enumerate(status_code)]) +
-                 ") and batch_guid = :batch_guid",
-                 bindparams=params)
-    return query
-
-
-def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matched_columns, status_code):
+def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matching_conf):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    params = [bindparam('batch_guid', batch_guid)]
-    params.extend([bindparam(str(s[0]) + '_' + str(i), s[1]) for i, s in enumerate(status_code)])
-    cols = [m[0] for m in matched_columns]
-    cols.extend(list(set([s[0] for s in status_code])))
-    query = text("SELECT " + " ,".join(cols) + " " +
-                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
-                 "WHERE batch_guid = :batch_guid AND status in (" +
-                 "," .join([":" + str(s[0]) + '_' + str(i) for i, s in enumerate(status_code)]) + ")",
+    params = [bindparam('batch_guid', batch_guid),
+              bindparam('status', matching_conf['status'])]
+    query = text("SELECT {cols} "
+                 "FROM {source_schema_and_table} "
+                 "WHERE batch_guid = :batch_guid "
+                 "AND status = :status".format(cols=",".join(matching_conf['find_deleted_fact_asmt_outcome_rows']),
+                                               source_schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                table_name)
+                                               ),
                  bindparams=params)
     return query
 
 
-def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matched_columns, matched_status,
-                                               matched_preprod_values):
+def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matching_conf, matched_preprod_values):
     '''
     create a query to find all delete/updated record in current batch, get the rec_id back
     '''
-    pred_to_prod_col_map = dict(matched_columns)
-    matched_prod_values = {}
-    for k, v in matched_preprod_values.items():
-        matched_prod_values[pred_to_prod_col_map[k]] = v
-    prod_cols = [c[1] for c in matched_columns]
-    prod_cols.extend(list(set([s[0] for s in matched_status])))
-    for s in matched_status:
-        matched_prod_values[s[0]] = s[1]
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in prod_cols])
-    params = [bindparam("{c}".format(c=c), matched_prod_values[c]) for c in prod_cols]
-    query = text("SELECT asmnt_rec_id, " + ", ".join(prod_cols) + " " +
-                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
-                 "WHERE " + condition_clause,
+    matched_prod_values = matched_preprod_values.copy()
+    matched_prod_values['status'] = matching_conf['status']
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in matched_prod_values.keys()])
+    params = [bindparam("{c}".format(c=c), matched_prod_values[c]) for c in matched_prod_values.keys()]
+    query = text("SELECT {columns} "
+                 "FROM {source_schema_and_table} "
+                 "WHERE {condition_clause}".format(source_schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                    table_name),
+                                                   columns=",".join(matching_conf['columns']),
+                                                   condition_clause=condition_clause),
                  bindparams=params)
     return query
 
 
-def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matched_columns, matched_status,
+def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matching_conf,
                                          matched_prod_values):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    prod_to_pred_col_map = dict([(s[1], s[0]) for s in matched_columns])
-    matched_pred_values = {}
-    pred_cols = [c[0] for c in matched_columns]
-    pred_cols.extend(list(set([s[0] for s in matched_status])))
-    for k, v in matched_prod_values.items():
-        try:
-            matched_pred_values[prod_to_pred_col_map[k]] = v
-        except KeyError as e:
-            # ok when prod has more value that pre doesn't have
-            pass
-    # match deleted record should be 'C' in prod, but in pre-prod. it is the
-    for s in matched_status:
-        matched_pred_values[s[0]] = s[1]
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in pred_cols])
-    params = [bindparam("{c}".format(c=c), matched_pred_values[c]) for c in pred_cols]
-    params.append(bindparam('prod_rec_id', matched_prod_values['asmnt_rec_id']))
+    set_clause = ", ".join(["{k} = :{v}".format(k=kc, v=kv) for kc, kv in matching_conf['columns'].items()])
+    matched_preprod_values = matched_prod_values.copy()
+    matched_preprod_values['status'] = matching_conf['condition_status']
+    del matched_preprod_values['asmnt_outcome_rec_id']
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in matched_preprod_values.keys()])
+    params = [bindparam("{c}".format(c=c), matched_preprod_values[c]) for c in matched_preprod_values.keys()]
+    matched_prod_values['new_status'] = matching_conf['new_status']
+    params.extend([bindparam('v'.format(v=matched_prod_values[v]) for v in matching_conf['column'].values())])
     params.append(bindparam('batch_guid', batch_guid))
-    params.append(bindparam('new_status', 'D'))
-    query = text("UPDATE " + combine_schema_and_table(schema_name, table_name) + " " +
-                 "SET asmnt_outcome_rec_id = :prod_rec_id, status = :new_status " +
-                 "WHERE batch_guid = :batch_guid AND " + condition_clause,
+
+    query = text("UPDATE {target_schema_and_table} "
+                 "SET {set_calue} " +
+                 "WHERE batch_guid = :batch_guid "
+                 "AND {condition_clause}".format(condition_clause=condition_clause,
+                                                 set_clause=set_clause,
+                                                 target_schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                  table_name)),
+
                  bindparams=params)
     return query

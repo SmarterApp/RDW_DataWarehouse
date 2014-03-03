@@ -21,4 +21,3 @@ jsonfiles = []
 for file in os.listdir("/Users/nparoha/Desktop/temp/shall_02-28-2014_12-39-27"):
     if fnmatch.fnmatch(file, '*.json'):
         jsonfiles.append(str(file.rpartition('METADATA_')[2][:-5]))
-

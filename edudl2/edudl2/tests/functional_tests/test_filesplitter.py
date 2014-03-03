@@ -30,35 +30,35 @@ class TestFileSplitter(unittest.TestCase):
                 row = ['Row' + str(i), 'fdsa', 'asdf']
                 writer.writerow(row)
 
+    def tearDown(self):
+        print(self.test_file_name)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
     def test_parts(self):
         output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, parts=5, output_path=self.output_dir)
         print(self.test_file_name)
         print(output_list)
         print(header_path)
-        assert len(output_list) == 5
+        self.assertEqual(len(output_list), 5)
         for entry in output_list:
-            assert 'test_part_' in entry[0]
-            assert entry[1] == 2
-            assert entry[2] == entry[1] * int(ord(entry[0][-1]) - ord('a')) + 1
+            self.assertIn('test_part_', entry[0])
+            self.assertEqual(entry[1], 2)
+            self.assertEqual(entry[2], entry[1] * int(ord(entry[0][-1]) - ord('a')) + 1)
             with open(entry[0], 'r') as file:
                 reader = csv.reader(file)
                 for i in range(entry[2], entry[1] + entry[2]):
                     row = next(reader)
-                    assert int(row[0].strip('Row')) == i
+                    self.assertEqual(int(row[0].strip('Row')), i)
 
     def test_rowlimit(self):
         output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, row_limit=5, output_path=self.output_dir)
-        assert len(output_list) == 2
+        self.assertEqual(len(output_list), 2)
         for entry in output_list:
-            assert 'test_part_' in entry[0]
-            assert entry[1] == 5
-            assert entry[2] == entry[1] * int(ord(entry[0][-1]) - ord('a')) + 1
+            self.assertIn('test_part_', entry[0])
+            self.assertEqual(entry[1], 5)
+            self.assertEqual(entry[2], entry[1] * int(ord(entry[0][-1]) - ord('a')) + 1)
             with open(entry[0], 'r') as file:
                 reader = csv.reader(file)
                 for i in range(entry[2], entry[1] + entry[2]):
                     row = next(reader)
-                    assert int(row[0].strip('Row')) == i
-
-    def tearDown(self):
-        print(self.test_file_name)
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+                    self.assertEqual(int(row[0].strip('Row')), i)

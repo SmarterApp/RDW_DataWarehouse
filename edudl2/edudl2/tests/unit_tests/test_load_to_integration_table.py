@@ -6,6 +6,7 @@ Created on May 24, 2013
 import unittest
 import re
 from edudl2.move_to_integration.move_to_integration import create_migration_query
+from edcore.utils.utils import compile_query_to_sql_text
 
 
 class TestLoadToIntegrationTable(unittest.TestCase):
@@ -33,7 +34,7 @@ class TestLoadToIntegrationTable(unittest.TestCase):
         actual_query_result = create_migration_query(source_schema, source_table, target_schema, target_table,
                                                      error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule)
         self.assertEqual(re.sub('\s+', ' ', expected_query_result.replace('\n', ' ').replace('\t', ' ')),
-                         re.sub('\s+', ' ', actual_query_result.replace('\n', ' ').replace('\t', ' ')))
+                         re.sub('\s+', ' ', compile_query_to_sql_text(actual_query_result).replace('\n', ' ').replace('\t', ' ')))
 
 if __name__ == '__main__':
     # import sys;sys.argv = ['', 'Test.testName']

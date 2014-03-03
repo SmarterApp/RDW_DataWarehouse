@@ -289,20 +289,16 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
 
     @return Mapping query
     '''
-    params = []
+    params = [bindparam('target_table', target_table)]
     if source_table:
         where_statement = " WHERE target_table= :target_table and source_table= :source_table"
-        params.append(bindparam('target_table', target_table))
         params.append(bindparam('source_table', source_table))
     else:
         where_statement = " WHERE target_table= :target_table"
-        params.append(bindparam('target_table', target_table))
-    where_statement = where_statement.format(target_table=target_table, source_table=source_table)
 
-    mapping_query = "SELECT DISTINCT target_column, source_column FROM {source_schema_and_ref_table} {where_statement}"
+    mapping_query = "SELECT target_column, source_column FROM {source_schema_and_ref_table} {where_statement}"
     mapping_query = mapping_query.format(source_schema_and_ref_table=combine_schema_and_table(schema_name, ref_table),
                                          where_statement=where_statement)
-
     return text(mapping_query, bindparams=params)
 
 

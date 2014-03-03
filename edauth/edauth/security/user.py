@@ -144,7 +144,6 @@ class User(object):
         self.__info[UserConstants.NAME][UserConstants.LASTNAME] = last_name
 
     def set_context(self, role_inst_rel_list_all):
-        # TODO Save to user object, there's an issue to jsonfying the object now
         # For now set the roles and tenant like this to make everything continue to work
         roles = []
         tenants = []

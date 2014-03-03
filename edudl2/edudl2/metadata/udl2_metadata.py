@@ -400,7 +400,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
     return metadata
 
 
-def generate_udl2_sequences(schema_name, metadata):
+def generate_udl2_sequences(schema_name=None, metadata=None):
     '''
     generate_udl2_sequences returns all udl2 related sequences as a tuple.
     '''

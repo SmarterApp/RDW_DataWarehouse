@@ -169,30 +169,6 @@ def drop_table(udl2_conf, schema, table_name):
     execute_queries(conn, [sql], except_msg)
 
 
-def create_sequence(connection, metadata, schema, seq_name):
-    '''
-    create a sequence from UDL_METADATA definitions
-    @param udl2_conf: The configuration dictionary for udl
-    @param metadata: SQLAlchemy Metadata object
-    @param schema: Schema name where the table is located in UDL2 schema
-    @param seq_name: sequence name for the sequence to be created, it must be defined in UDL_METADATA
-    '''
-    print('create global sequence')
-    sequence_ddl = UDL_METADATA['SEQUENCES'][seq_name]
-    sequence = Sequence(name=sequence_ddl[0],
-                        start=sequence_ddl[1],
-                        increment=sequence_ddl[2],
-                        schema=schema,
-                        optional=sequence_ddl[3],
-                        quote=sequence_ddl[4],
-                        metadata=metadata)
-    connection.execute(CreateSequence(sequence))
-
-    #except_msg = "fail to create sequence %s.%s" % (schema, seq_name)
-    #execute_queries(conn, [sql], except_msg)
-    return sequence
-
-
 def drop_sequence(udl2_conf, schema, seq_name):
     '''
     drop schemas according to configuration file
@@ -252,8 +228,12 @@ def drop_udl2_tables(udl2_conf):
     @param udl2_conf: The configuration dictionary for
     '''
     print("drop tables")
-    for table, definition in UDL_METADATA['TABLES'].items():
-        drop_table(udl2_conf, udl2_conf['staging_schema'], table)
+    try:
+        schema_name = udl2_conf['staging_schema']
+        for table in generate_udl2_metadata(schema_name).tables:
+            drop_table(udl2_conf, schema_name, table)
+    except Exception as e:
+        print("Error happens when tearing down tables: " + e)
 
 
 def create_udl2_sequence(connection, schema_name, udl2_metadata):
@@ -273,9 +253,12 @@ def drop_udl2_sequences(udl2_conf):
     drop sequences according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
-    print("drop sequences")
-    for seq, definition in UDL_METADATA['SEQUENCES'].items():
-        drop_sequence(udl2_conf, udl2_conf['staging_schema'], seq)
+    try:
+        print("drop sequences")
+        for seq in generate_udl2_sequences():
+            drop_sequence(udl2_conf, udl2_conf['staging_schema'], seq.name)
+    except Exception as e:
+        print("Error occurs when tearing down sequence: " + e)
 
 
 def create_foreign_data_wrapper_extension(udl2_conf):

@@ -1,6 +1,10 @@
 from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
+from edudl2.udl_exceptions.udl_exceptions import DeleteRecordNotFound
+from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.query import update_udl_stats, insert_to_table
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -16,7 +20,6 @@ Responsible for supporting generic task features like Error handling and post ta
 This being an abstract class, it wont be registered as a celery task, but will be used as the base class for all udl2 tasks
 more about abstract class at: http://docs.celeryproject.org/en/latest/userguide/tasks.html#abstract-classes
 '''
-
 logger = get_task_logger(__name__)
 
 
@@ -46,6 +49,18 @@ class Udl2BaseTask(Task):
                                         task_id=str(self.request.id),
                                         error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()
+        # Write to udl stats table on exceptions
+        update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_FAILED})
+        # Write to ERR_LIST
+        if isinstance(exc, DeleteRecordNotFound):
+            # TODO: Use constants
+            # TODO: Error code and other values
+            values = {'err_source': 4,
+                      'guid_batch': guid_batch,
+                      'created_date': failure_time,
+                      'record_sid': 123,
+                      'err_code': 31}
+            insert_to_table(UDL2DBConnection, 'ERR_LIST', values)
         msg = {}
         msg.update(args[0])
         msg.update({mk.PIPELINE_STATE: 'error'})
@@ -55,6 +70,7 @@ class Udl2BaseTask(Task):
             next_file_msg = {
                 mk.TENANT_SEARCH_PATHS: msg[mk.TENANT_SEARCH_PATHS],
                 mk.PARTS: msg[mk.PARTS],
+                # TODO: Check if we need to pass the load type
                 mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
             }
 
@@ -63,7 +79,8 @@ class Udl2BaseTask(Task):
                 if error_handler_chain is None else error_handler_chain | W_get_udl_file.get_next_file.si(next_file_msg)
             chain.apply_async()
         else:
-            error_handler_chain.delay() if error_handler_chain is not None else None
+            if error_handler_chain is not None:
+                error_handler_chain.delay()
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))

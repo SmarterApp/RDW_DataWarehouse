@@ -23,6 +23,7 @@ def get_next_file(msg):
         mk.LOOP_PIPELINE: True,
         mk.TENANT_SEARCH_PATHS: tenant_dirs,
         mk.PARTS: msg[mk.PARTS],
+        # TODO: Load type is needed?
         mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
     }
 

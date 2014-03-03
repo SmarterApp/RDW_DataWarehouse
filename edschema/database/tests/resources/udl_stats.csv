@@ -1,4 +1,1 @@
-tenant,state_code,load_start,load_end,load_status,batch_guid,record_loaded_count,last_pdf_task_requested,last_pre_cached
-cat,NY,20130101000000,20130101000000,ingested,820568d0-ddaa-11e2-a63d-68a86d3c2f82,1000,,
-dog,NY,20130101000000,20130101000000,in-progress,,1000,,
-cat,NY,20130101000000,20130101000000,ingested,90901b70-ddaa-11e2-a95d-68a86d3c2f82,100,,
+tenant,state_code,load_start,load_end,load_status,batch_guid,record_loaded_count,last_pdf_task_requested,last_pre_cached,load_type,file_arrivedcat,NY,2014-03-01 10:39:52,2014-03-01 10:39:12,ingested,820568d0-ddaa-11e2-a63d-68a86d3c2f82,1000,,,assessment,2014-03-01 10:39:12dog,NY,2014-03-01 10:39:52,2014-03-01 10:39:52,in-progress,820568d0,1000,,,assessment,2014-03-01 10:39:52cat,NY,2014-03-01 10:39:52,2014-03-01 10:39:52,ingested,90901b70-ddaa-11e2-a95d-68a86d3c2f82,100,,,assessment,2014-03-01 10:39:12

@@ -3,7 +3,12 @@ from celery import chain
 from edudl2.preetl.pre_etl import pre_etl_job
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
-
+from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_get_load_type,
+                         W_simple_file_validator, W_file_splitter, W_file_content_validator,
+                         W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star,
+                         W_load_sr_integration_to_target, W_parallel_csv_load, W_determine_end_chain,
+                         W_all_done, W_post_etl)
+from edcore.utils.utils import merge_dict
 __author__ = 'swimberly'
 
 
@@ -63,7 +68,7 @@ def _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, 
         mk.PARTS: file_parts,
         mk.START_TIMESTAMP: datetime.datetime.now()
     }
-    return _combine_messages(initial_msg, msg)
+    return merge_dict(initial_msg, msg)
 
 
 def _generate_message_for_file_arrived(archive_file, lzw, common_message):
@@ -71,19 +76,4 @@ def _generate_message_for_file_arrived(archive_file, lzw, common_message):
         mk.INPUT_FILE_PATH: archive_file,
         mk.LANDING_ZONE_WORK_DIR: lzw
     }
-    return _combine_messages(common_message, msg)
-
-
-def _combine_messages(msg1, msg2):
-    '''
-    Combine two dictionary into one dictionary.
-    If msg1 and msg2 has the same key, returns the value in the msg2
-    '''
-    return dict(list(msg1.items()) + list(msg2.items()))
-
-
-from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_get_load_type,
-                         W_simple_file_validator, W_file_splitter, W_file_content_validator,
-                         W_load_json_to_integration, W_load_to_integration_table,
-                         W_load_from_integration_to_star, W_load_sr_integration_to_target,
-                         W_parallel_csv_load, W_determine_end_chain, W_post_etl, W_all_done)
+    return merge_dict(common_message, msg)

@@ -203,10 +203,14 @@ def create_delete_query(schema_name, table_name, criteria=None):
     @return Delete query
     '''
 
-    delete_query = "DELETE FROM " + combine_schema_and_table(schema_name, table_name) + \
-        " WHERE " + " AND ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+    query = "DELETE FROM {schema_and_table} ".format(schema_and_table=combine_schema_and_table(schema_name, table_name))
+    params = []
+    if (criteria):
+        query += " WHERE {conditions}"
+        query = query.format(conditions=(" AND ".join(["{key} = :{key}".format(key=key) for key in sorted(criteria.keys())])))
+        params = [bindparam(key, criteria[key]) for key in sorted(criteria.keys())]
 
-    return delete_query
+    return text(query, bindparams=params)
 
 
 def enable_trigger_query(schema_name, table_name, is_enable):

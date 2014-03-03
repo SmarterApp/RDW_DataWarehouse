@@ -4,7 +4,7 @@ from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
 from edcore.utils.utils import compile_query_to_sql_text
-from edudl2.udl_exceptions.udl_exceptions import DeleteRecordNotFound
+from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark

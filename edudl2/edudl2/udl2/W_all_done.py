@@ -34,7 +34,7 @@ def report_batch_to_udl_stats(msg, end_time, status):
     stats = {}
     # TODO: it's always zero
     stats[UdlStatsConstants.RECORD_LOADED_COUNT] = msg[mk.TOTAL_ROWS_LOADED] if mk.TOTAL_ROWS_LOADED in msg else 0
-    load_status = UdlStatsConstants.STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.STATUS_FAILED
+    load_status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
     update_udl_stats(msg[mk.GUID_BATCH], merge_dict(stats, {UdlStatsConstants.LOAD_END: end_time, UdlStatsConstants.LOAD_STATUS: load_status}))
 
 

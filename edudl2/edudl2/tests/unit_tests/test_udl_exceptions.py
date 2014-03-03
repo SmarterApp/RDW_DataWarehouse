@@ -1,7 +1,7 @@
+from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
 __author__ = 'ejen'
 import unittest
 import os
-from edudl2.udl_exceptions.udl_exceptions import DeleteRecordNotFound
 
 
 class TestUdlExceptions(unittest.TestCase):

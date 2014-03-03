@@ -42,7 +42,7 @@ class RuleGeneratorFTest(unittest.TestCase):
             if 'inlist' in rule_def and 'outlist' in rule_def:
                 for (input_val, output_val) in zip(rule_def['inlist'], rule_def['outlist']):
                     result = self.engine.execute("SELECT %s('%s')" % (rule[1], input_val))
-                    assert result.fetchone()[0] == output_val
+                    self.assertEqual(result.fetchone()[0], output_val)
 
     def test_rule_with_inlist_compare_length(self):
         for rule in self.rule_list:
@@ -76,9 +76,9 @@ class RuleGeneratorFTest(unittest.TestCase):
         for each in clean_rules:
             result = self.engine.execute("SELECT %s('%s')" % (each[0], each[1]))
             temp = result.fetchone()[0]
-            assert temp == each[2]
+            self.assertEqual(temp, each[2])
 
     def test_rule_definitions(self):
         for each in self.rule_conf:
             if 'INLIST' in each:
-                assert 'OUTLIST' in each or 'COMPARE_LENGTH' in each
+                self.assertTrue('OUTLIST' in each or 'COMPARE_LENGTH' in each)

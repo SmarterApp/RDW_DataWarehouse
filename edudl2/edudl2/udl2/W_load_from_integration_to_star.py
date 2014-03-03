@@ -126,7 +126,7 @@ def handle_deletions(msg):
 
     # generate config dict
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
-    match_conf = get_move_to_target_conf()[4]
+    match_conf = get_move_to_target_conf()['handle_deletions']
     matched_results = match_deleted_records(conf, match_conf)
     update_deleted_record_rec_id(conf, match_conf, matched_results)
     check_mismatched_deletions(conf, match_conf)

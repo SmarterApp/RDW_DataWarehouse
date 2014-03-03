@@ -39,8 +39,8 @@ class Test(unittest.TestCase):
         #call function to create output destination
         template, directory = create_output_destination(self.test_file_name, self.test_output_path + '/' + base)
         #check if directory created correctly
-        assert os.path.exists(output_dir)
-        assert template == 'test_part_'
+        self.assertTrue(os.path.exists(output_dir))
+        self.assertEqual(template, 'test_part_')
         #clean up test directory
         #shutil.rmtree(root)
 
@@ -50,8 +50,8 @@ class Test(unittest.TestCase):
         #call run command
         output, err = run_command(test_command)
         #check there is output and no error
-        assert output
-        assert err is None
+        self.assertIsNotNone(output)
+        self.assertIsNone(err)
 
     def test_get_list_split_files(self):
         #create test split files
@@ -66,8 +66,8 @@ class Test(unittest.TestCase):
             output_file.close()
         output_list = get_list_split_files(self.output_template, self.output_dir)
         for entry in output_list:
-            assert self.output_template in entry[0]
-            assert entry[1] == 5
-            assert entry[2] == entry[1] * int(entry[0][-1]) + 1
+            self.assertTrue(self.output_template in entry[0])
+            self.assertEqual(entry[1], 5)
+            self.assertEqual(entry[2], entry[1] * int(entry[0][-1]) + 1)
         #cleanup
         shutil.rmtree(self.output_dir)

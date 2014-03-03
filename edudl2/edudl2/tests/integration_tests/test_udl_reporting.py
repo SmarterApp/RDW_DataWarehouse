@@ -107,6 +107,7 @@ class Test(unittest.TestCase):
     def validate_UDL_database(self, connector):
         '''
         Validate that in Batch_Table for given guid every udl_phase output is Success
+        Validate that there are no failures in udl_phase_step_status
         '''
         #Validate UDL_Batch table have data for two successful batch.
         time.sleep(5)
@@ -119,7 +120,6 @@ class Test(unittest.TestCase):
         # Assert that there are no failures for each batch_guid
         for each in all_successful_batch_guids:
             failure_query = select([batch_table.c.udl_phase]), and_(batch_table.c.udl_phase_step_status == 'FAIL', batch_table.c.guid_batch == each)
-
             num_failures = connector.execute(failure_query).fetchall()
             self.assertIsNone(len(num_failures), "Failures found in batch guid " + each)
 

@@ -89,8 +89,8 @@ class TestMoveToTarget(unittest.TestCase):
         self.assertEqual(expected_value, actual_value)
 
     def test_create_select_columns_in_table_query(self):
-        query = create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'})
-        self.assertEqual(query, "SELECT DISTINCT CA,CB FROM \"schema\".\"table\" WHERE condA='valueA'")
+        query = compile_query_to_sql_text(create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'}))
+        self.assertEqual(query, "SELECT DISTINCT CA, CB FROM \"schema\".\"table\" WHERE condA = 'valueA'")
 
     def test_create_sr_table_select_insert_query(self):
         conf = {

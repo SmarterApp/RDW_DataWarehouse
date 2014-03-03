@@ -28,11 +28,12 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
     '''
     sql_template = "SELECT DISTINCT {rec_id_column_name} " + \
                    "FROM {source_schema_and_table} " + \
-                   "WHERE {guid_column_name_in_target}=\'{guid_column_value_got}\'"
-    return sql_template.format(rec_id_column_name=rec_id_column_name,
-                               source_schema_and_table=combine_schema_and_table(schema_name, target_table_name),
-                               guid_column_name_in_target=guid_column_name_in_target,
-                               guid_column_value_got=guid_column_value)
+                   "WHERE {guid_column_name_in_target}=:guid_column_value_got"
+    return text(sql_template.format(rec_id_column_name=rec_id_column_name,
+                                    source_schema_and_table=combine_schema_and_table(schema_name,
+                                                                                     target_table_name),
+                                    guid_column_name_in_target=guid_column_name_in_target),
+                bindparams=[bindparam('guid_column_value_got', guid_column_value)])
 
 
 def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
@@ -47,12 +48,16 @@ def create_select_columns_in_table_query(schema_name, table_name, column_names, 
 
     @return Select query
     '''
-
-    select_query = "SELECT DISTINCT " + ",".join(column_names) + " FROM " + combine_schema_and_table(schema_name, table_name)
+    params = []
+    query = "SELECT DISTINCT {columns} FROM {schema_and_table}".format(columns=", ".join(column_names),
+                                                                       schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                                 table_name))
     if (criteria):
-        select_query += " WHERE " + " AND ".join(list(key + "='" + value + "'" for key, value in criteria.items()))
+        query += (" WHERE " + " AND ".join(["{key} = :{key}".format(key=key) for key in sorted(criteria.keys())]))
+        params = [bindparam(key, criteria[key]) for key in sorted(criteria.keys())]
 
-    return select_query
+    compile_query_to_sql_text(text(query, bindparams=params))
+    return text(query, bindparams=params)
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):

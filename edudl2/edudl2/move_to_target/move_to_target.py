@@ -254,6 +254,7 @@ def match_deleted_records(conf, match_conf):
 def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
     affected_rows = 0
     with TargetDBConnection(tenant_name) as target_conn, ProdDBConnection(tenant_name) as prod_conn:
+        # TODO rename QueryHelper
         target_db_helper = QueryHelper(target_conn, guid_batch, match_conf)
         prod_db_helper = QueryHelper(prod_conn, guid_batch, match_conf)
         for record in target_db_helper.find_all():

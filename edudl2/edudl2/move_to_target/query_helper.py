@@ -44,6 +44,8 @@ class QueryHelper():
         if not record:
             return None
         guid = record[self._guid_col_name]
+        #TODO natual key may contain multiple columns
+        #TODO add most recent flag
         query = select([self._table]).where(self._guid_column == guid)
         results = self._conn.execute(query)
         for result in results:

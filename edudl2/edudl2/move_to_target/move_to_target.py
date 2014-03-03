@@ -276,8 +276,8 @@ def check_mismatched_deletions(conf, match_conf):
             record = dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'],
                               mismatch))
         raise DeleteRecordNotFound(record['student_guid'], record['asmt_guid'], record['date_taken'],
-                                   " Not found in  {edschema}.{table}".format(conf[mk.TARGET_DB_SCHEMA],
-                                                                              match_conf['target_table']))
+                                   " Not found in  {edschema}.{table}".format(edschema=conf[mk.TARGET_DB_SCHEMA],
+                                                                              table=match_conf['target_table']))
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):

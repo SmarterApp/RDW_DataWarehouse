@@ -185,7 +185,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('record_sid', BigInteger, primary_key=True),
                           Column('guid_batch', String(256), nullable=False),
                           Column('guid_asmt', String(50), nullable=False),
-                          Column('type', String(16), nullable=False),
+                          Column('type', String(32), nullable=False),
                           Column('period', String(32), nullable=False),
                           Column('year', SmallInteger, nullable=False),
                           Column('version', String(16), nullable=False),

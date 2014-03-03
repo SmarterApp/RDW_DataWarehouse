@@ -174,11 +174,12 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   )
 
     err_list = Table('ERR_LIST', metadata,
-                     Column('record_sid', BigInteger, nullable=False),
-                     Column('guid_batch', String(256), nullable=False),
+                     Column('record_sid', BigInteger, primary_key=True, nullable=False),
+                     Column('guid_batch', String(256), primary_key=True, nullable=False),
                      Column('err_code', BigInteger, nullable=True),
                      Column('err_source', BigInteger, nullable=True),
                      Column('created_date', TIMESTAMP, nullable=False, server_default=text('NOW()')),
+                     Column('err_input', Text, nullable=False, server_default='')
                      )
 
     int_sbac_asmt = Table('INT_SBAC_ASMT', metadata,

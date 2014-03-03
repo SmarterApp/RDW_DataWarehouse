@@ -4,10 +4,7 @@ Created on May 9, 2013
 @author: dip
 '''
 from smarter.reports.helpers.constants import Constants
-from sqlalchemy.sql.expression import select, and_
-from smarter.security.constants import RolesConstants
 from smarter.security.roles.base import BaseRole, verify_context
-from smarter.security.context_role_map import ContextRoleMap
 
 
 # Temp disable context security registration
@@ -18,7 +15,7 @@ class SchoolAdmin(BaseRole):
         super().__init__(connector)
 
     @verify_context
-    def get_context(self, guid):
+    def get_context(self, tenant, user):
         '''
         Returns a sqlalchemy binary expression representing school_guid that user has context to
         If Context is an empty list, return none, which will return Forbidden Error
@@ -38,12 +35,12 @@ class SchoolAdmin(BaseRole):
             expr = fact_asmt_outcome.c.school_guid.in_(context)
         return expr
 
-    def check_context(self, guid, student_guids):
+    def check_context(self, tenant, user, student_guids):
         '''
         Returns true if school_admin has context to the list of student guids
         '''
         query = super().get_students(student_guids)
-        query = query.where(self.get_context(guid))
+        query = query.where(self.get_context(user))
 
         results = self.connector.get_result(query)
 

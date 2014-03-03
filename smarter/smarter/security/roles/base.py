@@ -15,13 +15,13 @@ class BaseRole(object):
     def __init__(self, connector):
         self.connector = connector
 
-    def get_context(self, guid):
+    def get_context(self, tenant, user):
         pass
 
-    def check_context(self, guid, student_guids):
+    def check_context(self, tenant, user, student_guids):
         pass
 
-    def get_students(self, student_guids):
+    def get_students(self, tenant, student_guids):
         '''
         Returns a query that gives a list of distinct student guids given that a list of student guids are supplied
         '''

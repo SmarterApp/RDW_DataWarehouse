@@ -13,7 +13,7 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
                                                   create_information_query, create_select_columns_in_table_query,
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
-                                                  find_unmatched_deleted_fact_asmt_outcome_row, match_delete_fact_asmt_outcome_row_in_prod)
+                                                  match_delete_fact_asmt_outcome_row_in_prod)
 
 
 DBDRIVER = "postgresql"
@@ -33,13 +33,13 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     4. Update foreign key student_rec_id by comparing student_guid, batch_guid
     5. Enable trigger of table fact_asmt_outcome
     '''
-    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET][0]
+    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET]['asmt_rec_id']
     # get asmt_rec_id, which is one foreign key in fact table
     asmt_rec_id, asmt_rec_id_column_name = get_asmt_rec_id(conf, asmt_rec_id_info['guid_column_name'], asmt_rec_id_info['guid_column_in_source'],
                                                            asmt_rec_id_info['rec_id'], asmt_rec_id_info['target_table'], asmt_rec_id_info['source_table'])
 
     # get section_rec_id, which is one foreign key in fact table. We set to a fake value
-    section_rec_id_info = conf[mk.MOVE_TO_TARGET][2]
+    section_rec_id_info = conf[mk.MOVE_TO_TARGET]['section_rec_id_info']
     section_rec_id = section_rec_id_info['value']
     section_rec_id_column_name = section_rec_id_info['rec_id']
 
@@ -162,11 +162,11 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
 
     # update inst_hier_query back
     update_inst_hier_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
-                                                                   conf['move_to_target'][1])
+                                                                   conf[mk.MOVE_TO_TARGET]['update_inst_hier_rec_id_fk'])
 
     # update student query back
     update_student_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
-                                                                 conf['move_to_target'][3])
+                                                                 conf[mk.MOVE_TO_TARGET]['update_student_rec_id_fk'])
 
     # enable foreign key in fact table
     enable_back_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
@@ -229,7 +229,7 @@ def match_deleted_records(conf, match_conf):
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
 
         query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
-                                                    match_conf['source_table'],
+                                                    match_conf['target_table'],
                                                     conf[mk.GUID_BATCH],
                                                     match_conf['find_deleted_fact_asmt_outcome_rows'])
         candidates = execute_udl_query_with_result(target_conn, query,
@@ -288,7 +288,7 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
     with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
         for matched_value in matched_values:
             query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
-                                                         match_conf['source_table'],
+                                                         match_conf['target_table'],
                                                          conf[mk.GUID_BATCH],
                                                          match_conf['update_matched_fact_asmt_outcome_row'],
                                                          matched_value)

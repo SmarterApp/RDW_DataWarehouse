@@ -67,4 +67,4 @@ class TestMoveToTargetSetup(unittest.TestCase):
                                                            ('student_first_name', 'name_student_first'),
                                                            ('dmg_multi_race', 'dmg_multi_race')])}
         (_, column_map) = get_table_and_column_mapping(conf, 'udl2.W_load_from_integration_to_target')
-        self.assertEqual(column_map, expected_column_map)
+        self.assertDictEqual(column_map, expected_column_map)

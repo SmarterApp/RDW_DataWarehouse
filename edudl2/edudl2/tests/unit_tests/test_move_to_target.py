@@ -46,18 +46,22 @@ class TestMoveToTarget(unittest.TestCase):
         column_types = get_expected_column_types_for_fact_table(target_table)
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, column_mapping['asmt_rec_id'],
+        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT],
+                                                                    target_table, column_mapping['asmt_rec_id'],
                                                                     column_mapping['section_rec_id'], guid_batch,
-                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
+                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER],
+                                                                    conf[mk.SOURCE_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = get_expected_update_student_rec_id_query(target_table)
         expected_query_5 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
         expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4, expected_query_5]
-        actual_value = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
+        actual_value = create_queries_for_move_to_fact_table(conf, source_table,
+                                                             target_table, column_mapping,
+                                                             column_types)
         self.maxDiff = None
         self.assertEqual(len(expected_value), len(actual_value))
         for i in range(len(expected_value)):
-            self.assertEqual(expected_value[i].strip(), actual_value[i].strip())
+            self.assertEqual(expected_value[i].strip(), compile_query_to_sql_text(actual_value[i]).strip())
 
     def test_create_insert_query_for_dim_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'
@@ -68,7 +72,7 @@ class TestMoveToTarget(unittest.TestCase):
         actual_value = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
         expected_value = get_expected_insert_query_for_dim_inst_hier(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
                                                                      conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
-        self.assertEqual(expected_value, actual_value)
+        self.assertEqual(expected_value.strip(' '), compile_query_to_sql_text(actual_value).strip(' '))
 
     # We'll disable this test for now, as it's plagued by an obsequious bug, and there are other sufficient tests.
     def dont_create_insert_query_for_sr_target_table(self):
@@ -221,13 +225,13 @@ def get_expected_column_types_for_fact_table(table_name):
 
 
 def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, section_rec_id, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."{table_name}"(asmnt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
+    return 'INSERT INTO "edware"."{table_name}" (asmnt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
            'school_guid,section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,status,most_recent,batch_guid) '\
-           ' SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
+           'SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
            '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\'\'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
@@ -247,15 +251,15 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
 
 def get_expected_update_inst_hier_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET inst_hier_rec_id=dim.dim_inst_hier_rec_id FROM '\
-        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid,school_guid AS dim_school_guid,state_code AS dim_state_code '\
-        'FROM "edware"."dim_inst_hier") dim WHERE inst_hier_rec_id=-1 AND district_guid=dim_district_guid AND '\
-        'school_guid=dim_school_guid AND state_code=dim_state_code'.format(table_name=table_name)
+        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid, school_guid AS dim_school_guid, state_code AS dim_state_code  '\
+        'FROM "edware"."dim_inst_hier") dim  WHERE inst_hier_rec_id =  -1 AND district_guid = dim_district_guid AND '\
+        'school_guid = dim_school_guid AND state_code = dim_state_code'.format(table_name=table_name)
 
 
 def get_expected_update_student_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET student_rec_id=dim.dim_student_rec_id FROM '\
-        '(SELECT student_rec_id AS dim_student_rec_id, student_guid AS dim_student_guid ' \
-        'FROM "edware"."dim_student") dim WHERE student_rec_id=-1 AND student_guid=dim_student_guid'.format(table_name=table_name)
+        '(SELECT student_rec_id AS dim_student_rec_id, student_guid AS dim_student_guid  ' \
+        'FROM "edware"."dim_student") dim  WHERE student_rec_id =  -1 AND student_guid = dim_student_guid'.format(table_name=table_name)
 
 
 def get_expected_column_types_for_dim_inst_hier(table_name):
@@ -270,15 +274,16 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
 
 
 def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, guid_batch, dbname, user, password):
-    return 'INSERT INTO \"edware\"."{table_name}"(inst_hier_rec_id,state_name,state_code,district_guid,district_name,'\
-           'school_guid,school_name,school_category,from_date,to_date,most_recent)  SELECT * FROM '\
-           'dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), '\
-           '* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,'\
-           'to_char(CURRENT_TIMESTAMP, \'\'yyyymmdd\'\'),\'\'99991231\'\',True FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE op = \'\'C\'\' AND guid_batch=\'\'{guid_batch}\'\') as y\') '\
-           'AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),'\
-           'district_name character varying(256),school_guid character varying(50),school_name character varying(256),'\
-           'school_category character varying(20),from_date character varying(8),to_date character varying(8),'\
-           'most_recent boolean);'.format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
+    return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_name,state_code,district_guid,district_name,"\
+           "school_guid,school_name,school_category,from_date,to_date,most_recent) SELECT * FROM "\
+           "dblink('host={host} port={port} dbname={dbname} user={user} password={password}', " \
+           "'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), "\
+           "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,"\
+           "to_char(CURRENT_TIMESTAMP, ''yyyymmdd''),''99991231'',True FROM \"udl2\".\"INT_SBAC_ASMT_OUTCOME\" WHERE op = ''C'' AND guid_batch=''{guid_batch}'') as y') "\
+           "AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),"\
+           "district_name character varying(256),school_guid character varying(50),school_name character varying(256),"\
+           "school_category character varying(20),from_date character varying(8),to_date character varying(8),"\
+           "most_recent boolean);".format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):

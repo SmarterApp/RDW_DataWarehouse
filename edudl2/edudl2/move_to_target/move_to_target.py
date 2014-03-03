@@ -3,6 +3,7 @@ from collections import OrderedDict
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
+from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.udl_exceptions.udl_exceptions import DeleteRecordNotFound
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
@@ -197,7 +198,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
                                     'C' if source_table in op_table_conf else None)
 
             #query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, None)
-        logger.info(query)
+        logger.info(compile_query_to_sql_text(query))
 
         # execute the query
         affected_rows = execute_udl_queries(conn, [query],

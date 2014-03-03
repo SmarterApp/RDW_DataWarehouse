@@ -39,11 +39,6 @@ class TestContext(Unittest_with_edcore_sqlite):
         # reset the registry
         testing.tearDown()
 
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
-
     def testStateContext(self):
         results = get_breadcrumbs_context(state_code='NC')
         self.assertEqual(len(results['items']), 2)

@@ -44,11 +44,6 @@ class TestLOS(Unittest_with_edcore_sqlite):
         # reset the registry
         testing.tearDown()
 
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
-
     def test_assessments(self):
         testParam = {}
         testParam['districtGuid'] = '228'

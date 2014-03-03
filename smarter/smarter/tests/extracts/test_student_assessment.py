@@ -39,10 +39,6 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
     def tearDown(self):
         self.__request = None
         testing.tearDown()
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
 
     def test_get_extract_assessment_query(self):
         params = {'stateCode': 'CA',

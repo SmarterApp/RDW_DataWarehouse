@@ -6,8 +6,7 @@ from edcore.database.stats_connector import StatsDBConnection
 import edcore.database as edcoredb
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection,\
-    initialize_db
+from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection, ProdDBConnection, initialize_db
 
 
 def setup_udl2_queues(conf):
@@ -67,6 +66,7 @@ FILE_SPLITTER_CONF = udl2_conf['file_splitter']
 # init db engine
 initialize_db(UDL2DBConnection, udl2_conf)
 initialize_db(TargetDBConnection, udl2_conf)
+initialize_db(ProdDBConnection, udl2_conf)
 # using edcore connection class to init statsdb connection
 # this needs a flat config file rather than udl2 which needs nested config
 edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf, allow_schema_create=True)

@@ -250,7 +250,7 @@ def match_deleted_records(conf, match_conf):
                                                     'move_to_target',
                                                     'matched_deleted_records')
             if matched.rowcount > 0:
-                for row in matched.fetch_all():
+                for row in matched.fetchall():
                     matched_results.append(dict(zip(match_conf['match_delete_fact_asmt_outcome_row_in_prod']['columns'],
                                                     row)))
     return matched_results

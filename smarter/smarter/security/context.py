@@ -73,11 +73,10 @@ def check_context(state_code, student_guids):
 
 def __get_user_info():
     '''
-    Returns user context
+    Returns user object.  This is not the session object
 
     '''
-    # get user
-    return authenticated_userid(pyramid.threadlocal.get_current_request()).get_user()
+    return authenticated_userid(pyramid.threadlocal.get_current_request())
 
 
 def __get_context_instance(role, connector):

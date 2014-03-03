@@ -51,9 +51,9 @@ class TestServices(Unittest_with_edcore_sqlite):
 
         dummy_session = Session()
         dummy_session.set_user_context([RoleRelation("TEACHER", self.__tenant_name, "NC", "228", "242")])
-
         dummy_session.set_uid('a5ddfe12-740d-4487-9179-de70f6ac33be')
-        self.__config.testing_securitypolicy(dummy_session)
+        # For context security, we save the user object, not the session
+        self.__config.testing_securitypolicy(dummy_session.get_user())
 
         # celery settings for UT
         settings = {'services.celery.CELERY_ALWAYS_EAGER': True}

@@ -9,15 +9,12 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from smarter.security.context import check_context
-from smarter.security.constants import RolesConstants
-from smarter.reports.helpers.constants import Constants
 # Import the roles below so test can run as a standalone
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
-from edauth.security.session import Session
 from edcore.security.tenant import set_tenant_map
 
 
@@ -31,6 +28,10 @@ class TestContext(Unittest_with_edcore_sqlite):
         set_tenant_map({self.__tenant_name: "NC"})
         defined_roles = [(Allow, 'TEACHER', ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        dummy_session = create_test_session(['TEACHER'])
+        dummy_session.set_user_context([RoleRelation("TEACHER", get_unittest_tenant_name(), "NC", "228", "242")])
+        # For Context Security, we need to save the user object
+        self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def tearDown(self):
         # reset the registry
@@ -106,13 +107,6 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.assertFalse(context)
 
     def test_check_context_with_context_as_teacher(self):
-        dummy_session = create_test_session(['TEACHER'])
-        defined_roles = [(Allow, 'TEACHER', ('view', 'logout'))]
-        edauth.set_roles(defined_roles)
-        dummy_session.set_user_context([RoleRelation("TEACHER", get_unittest_tenant_name(), "NC", "228", "242")])
-
-        self.__config.testing_securitypolicy(dummy_session)
-
         context = check_context('NC', ['8b315698-7436-40f3-8cc1-28d4734b57e1'])
         self.assertTrue(context)
 

@@ -58,7 +58,7 @@ def get_batches_to_migrate(tenant=None):
     return batches
 
 
-def report_udl_stats_batch_status(batch_guid):
+def report_udl_stats_batch_status(batch_guid, migrate_load_status):
     """This method populates udl_stats for batches that had successful migration
 
     :param batch_guid: The batch that was successfully migrated
@@ -68,7 +68,7 @@ def report_udl_stats_batch_status(batch_guid):
     logger.info('Master: Reporting batch status to udl_stats')
     with StatsDBConnection() as connector:
         udl_stats_table = connector.get_table(UdlStatsConstants.UDL_STATS)
-        update_query = udl_stats_table.update().values(load_status=UdlStatsConstants.MIGRATE_INGESTED).\
+        update_query = udl_stats_table.update().values(load_status=migrate_load_status).\
             where(udl_stats_table.c.batch_guid == batch_guid)
         rtn = connector.execute(update_query)
         rowcount = rtn.rowcount
@@ -244,22 +244,32 @@ def migrate_batch(batch):
         try:
             # start transaction for this batch
             trans = dest_connector.get_transaction()
+            report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
             tables_to_migrate = get_tables_to_migrate(dest_connector)
             # migrate all tables
             migrate_all_tables(batch_guid, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
-            report_udl_stats_batch_status(batch_guid)
+            report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
             # commit transaction
             trans.commit()
             logger.info('Master: Migration successful for batch: ' + batch_guid)
             rtn = True
         except EdMigrateException as e:
+            logger.info('EdMigrateException happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
             trans.rollback()
+            try:
+                report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
+            except Exception as e:
+                pass
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
             trans.rollback()
+            try:
+                report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
+            except Exception as e:
+                pass
     return rtn
 
 

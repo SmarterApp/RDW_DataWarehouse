@@ -121,10 +121,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite,
         batches_to_migrate = get_batches_to_migrate('hotdog')
         self.assertEqual(1, len(batches_to_migrate))
         self.assertEqual(UdlStatsConstants.UDL_STATUS_INGESTED, batches_to_migrate[0][UdlStatsConstants.LOAD_STATUS])
-        updated_count = report_udl_stats_batch_status(batches_to_migrate[0][UdlStatsConstants.BATCH_GUID])
+        updated_count = report_udl_stats_batch_status(batches_to_migrate[0][UdlStatsConstants.BATCH_GUID], UdlStatsConstants.MIGRATE_INGESTED)
         self.assertEqual(1, updated_count)
         batches_to_migrate = get_batches_to_migrate('hotdog')
         self.assertEqual(0, len(batches_to_migrate))
 
     def test_report_udl_stats_batch_status_non_exist_batch_id(self):
-        self.assertRaises(EdMigrateUdl_statException, report_udl_stats_batch_status, 'non-exist-uuid')
+        self.assertRaises(EdMigrateUdl_statException, report_udl_stats_batch_status, 'non-exist-uuid', UdlStatsConstants.MIGRATE_IN_PROCESS)

@@ -267,7 +267,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_non_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -285,7 +284,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -303,7 +301,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -321,7 +318,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',

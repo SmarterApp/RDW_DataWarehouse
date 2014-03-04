@@ -11,8 +11,7 @@ from pyramid import testing
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth

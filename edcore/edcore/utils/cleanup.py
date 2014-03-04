@@ -1,4 +1,4 @@
-def get_filtered_tables(connector, table_name_prefix):
+def get_filtered_tables(connector, table_name_prefix=None):
     """This function returns list of tables starting with table_name_prefix from schema metadata
 
     :param connector: The connection to the database
@@ -24,7 +24,6 @@ def cleanup_table(connector, column_name, value, table_name):
     if column_name in table.columns:
         delete_query = table.delete(table.c[column_name] == value)
         connector.execute(delete_query)
-
 
 def cleanup_all_tables(connector, column_name, value, table_name_prefix=None, tables=None):
     """

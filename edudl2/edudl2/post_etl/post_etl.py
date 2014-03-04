@@ -2,7 +2,7 @@ import logging
 import os
 import shutil
 import edudl2.udl2.message_keys as mk
-import edcore.utils.cleanup as cleanup
+from edcore.utils.cleanup import cleanup_all_tables
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 
 __author__ = 'sravi'
@@ -37,9 +37,9 @@ def cleanup_udl_tables(guid_batch):
     """
     """
     with UDL2DBConnection() as connector:
-        cleanup.cleanup_all_tables(connector=connector, column_name='guid_batch', 
+        cleanup_all_tables(connector=connector, column_name='guid_batch', 
             value=guid_batch, table_name_prefix='int_')
-        cleanup.cleanup_all_tables(connector=connector, column_name='guid_batch', 
+        cleanup_all_tables(connector=connector, column_name='guid_batch', 
             value=guid_batch, table_name_prefix='stg_')
 
 

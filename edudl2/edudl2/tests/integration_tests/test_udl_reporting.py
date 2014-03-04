@@ -1,12 +1,13 @@
 '''
 Created on Feb 21, 2014
 
-@author: bpatel
+@author: bpatel, nparoha
 '''
 import time
 import unittest
 import subprocess
 import os
+import fnmatch
 import shutil
 from uuid import uuid4
 import glob
@@ -19,26 +20,50 @@ from sqlalchemy.sql.expression import and_
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
 DIM_TABLE = 'dim_asmt'
 FACT_TABLE = 'fact_asmt_outcome'
-PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
-FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_file_math_data.tar.gz.gpg'),
-             'file2': os.path.join(PATH_TO_FILES, 'test_file_ela_data.tar.gz.gpg')}
+PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
 
 
 @unittest.skip("skipping this test till starschema change has been made")
 class Test(unittest.TestCase):
 
     def setUp(self):
+        # Get files and directories to be used for the tests
+        self.gpg_filenames = self.get_all_test_file_names(PATH_TO_FILES)
         self.tenant_dir = TENANT_DIR
+        # Get connections for UDL and Edware databases
         self.ed_connector = TargetDBConnection()
         self.connector = UDL2DBConnection()
 
-    def tearDown(self):
-        self.ed_connector.close_connection()
-        self.connector.close_connection()
-        if os.path.exists(self.tenant_dir):
-            shutil.rmtree(self.tenant_dir)
+    def test_validation(self):
+        # Truncate the database
+        self.empty_table(self.connector, self.ed_connector)
+        # Copy files to tenant_dir and run udl pipeline
+        self.run_udl_pipeline()
+        # Validate the UDL database and Edware database upon successful run of the UDL pipeline
+        self.validate_UDL_database(self.connector)
+        self.validate_edware_database(self.ed_connector)
+
+    def get_all_test_file_names(self, file_path):
+        '''
+        Returns a list containing all gpg file names inside the edudl2/tests/data/udl_to_reporting_e2e_integration directory
+        :param file_path: file path containing all gpg files
+        :type file_path: string
+        :return all_files: list of all gpg file names
+        :type all_files: list
+        '''
+        all_files = []
+        for file in os.listdir(file_path):
+            if fnmatch.fnmatch(file, '*.gpg'):
+                all_files.append(str(file))
 
     def empty_table(self, connector, ed_connector):
+        '''
+        Truncates the udl batch_table and all the tables from the edware database
+        param connector: UDL database connection
+        type connector: db connection
+        param ed_connector: Edware database connection
+        type ed_connector: db connection
+        '''
         #Delete all data from batch_table
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         result = connector.execute(batch_table.delete())
@@ -47,6 +72,7 @@ class Test(unittest.TestCase):
         number_of_row = len(result1)
         print(number_of_row)
         self.assertEqual(number_of_row, 0)
+
         #Delete all table data from edware schema
         table_list = ed_connector.get_metadata().sorted_tables
         table_list.reverse()
@@ -58,48 +84,87 @@ class Test(unittest.TestCase):
             print(number_of_row)
             self.assertEqual(number_of_row, 0)
 
-# Validate that in Batch_Table for given guid every udl_phase output is Success
+    def run_udl_pipeline(self):
+        '''
+        Run pipeline with given guid
+        '''
+        # Reads the udl2_conf.ini file from /opt/edware directory
+        self.conf = udl2_conf
+        # Copy the gpg test data  files from the edudl2/tests/data directory to the /opt/tmp directory
+        self.copy_file_to_tmp()
+        # set file path to tenant directory that includes all the gpg files
+        arch_file = self.tenant_dir
+        here = os.path.dirname(__file__)
+        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
+        # Set the command to run UDL pipeline
+        command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
+        print(command)
+        # Run the UDL pipeline using the command
+        subprocess.call(command, shell=True)
+        # Validate the job status
+        self.check_job_completion(self.connector)
+
     def validate_UDL_database(self, connector):
+        '''
+        Validate that in Batch_Table for given guid every udl_phase output is Success
+        Validate that there are no failures in udl_phase_step_status
+        '''
         #Validate UDL_Batch table have data for two successful batch.
         time.sleep(5)
+        # Get UDL batch_table connection
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        # Prepare Query for finding all batch_guid's
         query = select([batch_table.c.guid_batch]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
-        result = connector.execute(query).fetchall()
-        number_of_guid = len(result)
-        self.assertEqual(number_of_guid, 2)
-        print("UDL varification successful")
+        all_successful_batch_guids = connector.execute(query).fetchall()
 
-#Validate that for given guid data loded on star schema
+        # Assert that there are no failures for each batch_guid
+        for each in all_successful_batch_guids:
+            failure_query = select([batch_table.c.udl_phase]), and_(batch_table.c.udl_phase_step_status == 'FAIL', batch_table.c.guid_batch == each)
+            num_failures = connector.execute(failure_query).fetchall()
+            self.assertIsNone(len(num_failures), "Failures found in batch guid " + each)
+
+        # Assert that UDL runs 30 times for 30 test data files
+        number_of_guid = len(all_successful_batch_guids)
+        self.assertEqual(number_of_guid, 30)
+        print("UDL verification successful")
+
     def validate_edware_database(self, ed_connector):
+        '''
+        Validate that for the given batch_guid, data is loaded on star schema
+        '''
         #Validate dim_asmt table for asmt_guid
         edware_table = ed_connector.get_table(DIM_TABLE)
-        output = select([edware_table.c.asmt_guid])
-        output_data = ed_connector.execute(output).fetchall()
-        print(output_data)
-        tuple_str = [('b114f49a-c941-41e6-bef4-adc1973f24cb',), ('d87a2cdc-e5a2-4fe1-a2c0-06c5b2f82008',)]
-        self.assertEqual(tuple_str, output_data)
-        print('dim_asmt table varification is successfull')
-        #Validate Fact_asmt table for student_guid and asmt_score
-        fact_table = ed_connector.get_table(FACT_TABLE)
-        output_data_math = select([fact_table.c.asmt_score]).where(fact_table.c.student_guid == '44a2591f-f156-413e-af5b-aa9647c5a9a0')
-        output_table_math = ed_connector.execute(output_data_math).fetchall()
-        output_data_ela = select([fact_table.c.asmt_score]).where(fact_table.c.student_guid == '579499b3-384d-4411-9bdf-d5edb72ddd0b')
-        output_table_ela = ed_connector.execute(output_data_ela).fetchall()
-        print(output_table_math)
-        print(output_table_ela)
+        query_asmt_guids = select([edware_table.c.asmt_guid])
+        all_asmt_guids = ed_connector.execute(query_asmt_guids).fetchall()
+        self.assertEqual(len(all_asmt_guids), 30, "30 asmt guids not found")
+        print('dim_asmt table verification is successful')
 
-#Copy file to tenant folder
+#        #Validate Fact_asmt table for student_guid and asmt_score
+#        fact_table = ed_connector.get_table(FACT_TABLE)
+#        output_data_math = select([fact_table.c.asmt_score]).where(fact_table.c.student_guid == '44a2591f-f156-413e-af5b-aa9647c5a9a0')
+#        output_table_math = ed_connector.execute(output_data_math).fetchall()
+#        output_data_ela = select([fact_table.c.asmt_score]).where(fact_table.c.student_guid == '579499b3-384d-4411-9bdf-d5edb72ddd0b')
+#        output_table_ela = ed_connector.execute(output_data_ela).fetchall()
+#        print(output_table_math)
+#        print(output_table_ela)
+
     def copy_file_to_tmp(self):
+        '''
+        Copy the gpg files from edudl2/tests/data/ to a tenant directory so that the tests can be re used
+        '''
+        # Create a tenant directory if does not exist already
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
         else:
             os.makedirs(self.tenant_dir)
-        for file in FILE_DICT.values():
+        # Copy all the files from tests/data directory to tenant directory
+        for file in self.gpg_filenames:
             files = shutil.copy2(file, self.tenant_dir)
-            print(files)
 
-    #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-    def check_job_completion(self, connector, max_wait=30):
+    def check_job_completion(self, connector, max_wait=600):
+        '''
+        Checks the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
+        '''
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
         timer = 0
@@ -110,23 +175,11 @@ class Test(unittest.TestCase):
             result = connector.execute(query).fetchall()
         print('Waited for', timer, 'second(s) for job to complete.')
 
-# Run pipeline with given guid.
-    def run_udl_pipeline(self):
-        self.conf = udl2_conf
-        self.copy_file_to_tmp()
-        arch_file = self.tenant_dir
-        here = os.path.dirname(__file__)
-        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.check_job_completion(self.connector)
-
-    def test_validation(self):
-        #self.empty_table(self.connector, self.ed_connector)
-        #self.run_udl_pipeline()
-        #self.validate_UDL_database(self.connector)
-        self.validate_edware_database(self.ed_connector)
+    def tearDown(self):
+        self.ed_connector.close_connection()
+        self.connector.close_connection()
+        if os.path.exists(self.tenant_dir):
+            shutil.rmtree(self.tenant_dir)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

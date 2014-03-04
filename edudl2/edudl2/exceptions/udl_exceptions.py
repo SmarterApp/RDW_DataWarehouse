@@ -34,3 +34,26 @@ class DeleteRecordNotFound(UDLException):
                                                                     asmt_guid=row['asmt_guid'],
                                                                     date_taken=row['date_taken'])}
             insert_to_table(UDL2DBConnection, 'ERR_LIST', values)
+
+
+class UDLDataIntegrityError(UDLException):
+
+    def __init__(self, batch_guid, error, schema_and_table):
+        self._batch_guid = batch_guid
+        self._error = str(error)
+        self._schema = schema_and_table
+
+    def __str__(self):
+        return "Data integrity violence found for batch: {batch_guid} in {schema}, error message: {msg}".\
+            format(batch_guid=self._batch_guid, msg=self._error, schema=self._schema)
+
+    def insert_err_list(self, stat_conn, error_source, failure_time):
+        values = {
+            'err_source': 4,
+            'record_sid': '',
+            'guid_batch': self._batch_guid,
+            'create_date': failure_time,
+            'err_code': ErrorCode.DATA_INTEGRITY_ERROR,
+            'err_input': self._error
+        }
+        insert_to_table(UDL2DBConnection, 'ERR_LIST', values)

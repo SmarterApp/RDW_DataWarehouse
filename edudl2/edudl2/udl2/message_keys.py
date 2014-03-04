@@ -112,3 +112,6 @@ TASK_URL = 'task_status_url'
 # serializing pipeline
 LOOP_PIPELINE = 'loop_pipeline'
 TENANT_SEARCH_PATHS = 'tenant_search_paths'
+
+#notification
+CALLBACK_URL = 'callback_url'

@@ -7,12 +7,12 @@ from sqlalchemy.sql.expression import select, and_, distinct, func, true, null
 from smarter.trigger.cache.recache import CacheTrigger
 import logging
 from smarter.trigger.utils import run_cron_job
-from smarter.trigger.database import constants
 from smarter.reports.helpers.constants import Constants
 import json
 import os
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.database.utils.constants import UdlStatsConstants
 
 
 logger = logging.getLogger('smarter')
@@ -23,15 +23,15 @@ def prepare_ed_stats():
     Get stats data to determine data that has not been cached
     '''
     with StatsDBConnection() as connector:
-        udl_stats = connector.get_table(constants.Constants.UDL_STATS)
-        query = select([udl_stats.c.tenant.label(constants.Constants.TENANT),
-                        udl_stats.c.state_code.label(constants.Constants.STATE_CODE),
-                        udl_stats.c.load_start.label(constants.Constants.LOAD_START),
-                        udl_stats.c.load_end.label(constants.Constants.LOAD_END),
-                        udl_stats.c.record_loaded_count.label(constants.Constants.RECORD_LOADED_COUNT),
-                        udl_stats.c.batch_guid.label(constants.Constants.BATCH_GUID), ],
+        udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
+        query = select([udl_stats.c.tenant.label(UdlStatsConstants.TENANT),
+                        udl_stats.c.state_code.label(UdlStatsConstants.STATE_CODE),
+                        udl_stats.c.load_start.label(UdlStatsConstants.LOAD_START),
+                        udl_stats.c.load_end.label(UdlStatsConstants.LOAD_END),
+                        udl_stats.c.record_loaded_count.label(UdlStatsConstants.RECORD_LOADED_COUNT),
+                        udl_stats.c.batch_guid.label(UdlStatsConstants.BATCH_GUID), ],
                        from_obj=[udl_stats])
-        query = query.where(udl_stats.c.load_status == constants.Constants.INGESTED)
+        query = query.where(udl_stats.c.load_status == UdlStatsConstants.MIGRATE_INGESTED)
         query = query.where(and_(udl_stats.c.last_pre_cached == null()))
         return connector.get_result(query)
 
@@ -96,7 +96,7 @@ def update_ed_stats_for_precached(tenant, state_code, batch_guid):
     :param string state_code:  stateCode of the state
     '''
     with StatsDBConnection() as connector:
-        udl_stats = connector.get_table(constants.Constants.UDL_STATS)
+        udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
         stmt = udl_stats.update(values={udl_stats.c.last_pre_cached: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant).where(udl_stats.c.batch_guid == batch_guid)
         connector.execute(stmt)
 
@@ -110,9 +110,9 @@ def precached_task(settings):
     filter_settings = read_config_from_json_file(settings.get('trigger.recache.filter.file'))
     udl_stats_results = prepare_ed_stats()
     for udl_stats_result in udl_stats_results:
-        tenant = udl_stats_result.get(constants.Constants.TENANT)
-        state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
-        batch_guid = udl_stats_result.get(constants.Constants.BATCH_GUID)
+        tenant = udl_stats_result.get(UdlStatsConstants.TENANT)
+        state_code = udl_stats_result.get(UdlStatsConstants.STATE_CODE)
+        batch_guid = udl_stats_result.get(UdlStatsConstants.BATCH_GUID)
         fact_asmt_outcome_results = prepare_pre_cache(tenant, state_code, batch_guid)
         triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_results, filter_settings)
         if triggered_success:

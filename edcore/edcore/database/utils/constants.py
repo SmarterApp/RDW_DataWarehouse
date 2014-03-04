@@ -18,9 +18,14 @@ class UdlStatsConstants():
     LOAD_TYPE = 'load_type'
     LOAD_STATUS = 'load_status'
     RECORD_LOADED_COUNT = 'record_loaded_count'
+    LAST_PRE_CACHED = 'last_pre_cached'
+    LAST_PDF_TASK_REQUESTED = 'last_pdf_task_requested'
     UDL_STATS = 'udl_stats'
     # Available Load Status
     UDL_STATUS_RECEIVED = 'udl.received'
     UDL_STATUS_FAILED = 'udl.failed'
     UDL_STATUS_LOADING = 'udl.loading'
     UDL_STATUS_INGESTED = 'udl.ingested'
+    MIGRATE_INGESTED = 'migrate.ingested'
+    #load_type
+    LOAD_TYPE_ASSESSMENT = 'assessment'

@@ -1,21 +1,21 @@
-__author__ = 'sravi'
-
-from sqlalchemy.sql.expression import select
-
+from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException,\
+    EdMigrateUdl_statException, EdMigrateException
+from sqlalchemy.sql.expression import select, and_, func
 from edmigrate.utils.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
+import logging
+from edcore.database.utils.constants import UdlStatsConstants
 
+__author__ = 'sravi'
 # This is a hack needed for now for migration.
 # These tables will be dropped in future
 TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
-
-# batches to be migrated
-batches_to_migrate = {}
+logger = logging.getLogger('edmigrate')
 
 
-def get_daily_delta_batches_to_migrate(tenant):
+def get_batches_to_migrate(tenant=None):
     """ This function returns daily batches to be migrated for a given tenant
 
     :param tenant: The tenant to be migrated
@@ -35,24 +35,27 @@ def get_daily_delta_batches_to_migrate(tenant):
             ])}
             An empty dict if no batches found to be migrated
     """
-    print('Master: Getting daily delta batches to migrate')
+    logger.info('Master: Getting daily delta batches to migrate')
+
+    batches = []
     with StatsDBConnection() as connector:
-        batches = {}
-        udl_daily_status_table = connector.get_table(Constants.UDL_DAILY_STATS_TABLE)
+        udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
         query = \
-            select([udl_daily_status_table.c.batch_guid,
-                    udl_daily_status_table.c.tenant,
-                    udl_daily_status_table.c.state_code,
-                    udl_daily_status_table.c.record_loaded_count,
-                    udl_daily_status_table.c.udl_start,
-                    udl_daily_status_table.c.udl_end],
-                   from_obj=[udl_daily_status_table]).\
-            where(udl_daily_status_table.c.tenant == tenant).\
-            order_by(udl_daily_status_table.c.file_arrived)
-        udl_daily_status_rows = connector.get_result(query)
-        for row in udl_daily_status_rows:
-            batches[row[Constants.BATCH_GUID]] = row
-        return batches
+            select([udl_status_table.c.batch_guid,
+                    udl_status_table.c.tenant,
+                    udl_status_table.c.state_code,
+                    udl_status_table.c.record_loaded_count,
+                    udl_status_table.c.load_status,
+                    udl_status_table.c.load_start,
+                    udl_status_table.c.load_end],
+                   from_obj=[udl_status_table]).\
+            where(and_(udl_status_table.c.load_type == UdlStatsConstants.LOAD_TYPE_ASSESSMENT, udl_status_table.c.load_status == UdlStatsConstants.UDL_STATUS_INGESTED)).\
+            order_by(udl_status_table.c.file_arrived)
+        if tenant:
+            query = query.where(and_(udl_status_table.c.tenant == tenant))
+        batches = connector.get_result(query)
+            # batches[row[Constants.BATCH_GUID]] = row
+    return batches
 
 
 def report_udl_stats_batch_status(batch_guid):
@@ -61,20 +64,17 @@ def report_udl_stats_batch_status(batch_guid):
     :param batch_guid: The batch that was successfully migrated
     :returns : Nothing
     """
-    print('Master: Reporting batch status to udl_stats')
+    rowcount = 0
+    logger.info('Master: Reporting batch status to udl_stats')
     with StatsDBConnection() as connector:
-        udl_daily_stats_batch_record = batches_to_migrate[batch_guid]
-        udl_stats_table = connector.get_table(Constants.UDL_STATS_TABLE)
-        udl_stats = {
-            Constants.BATCH_GUID: udl_daily_stats_batch_record[Constants.BATCH_GUID],
-            Constants.TENANT: udl_daily_stats_batch_record[Constants.TENANT],
-            Constants.STATE_CODE: udl_daily_stats_batch_record[Constants.STATE_CODE],
-            Constants.RECORD_LOADED_COUNT: udl_daily_stats_batch_record[Constants.RECORD_LOADED_COUNT],
-            Constants.LOAD_START: udl_daily_stats_batch_record[Constants.UDL_START],
-            Constants.LOAD_END: udl_daily_stats_batch_record[Constants.UDL_END],
-            Constants.LOAD_STATUS: Constants.STATUS_INGESTED
-        }
-        connector.execute(udl_stats_table.insert(), False, udl_stats)
+        udl_stats_table = connector.get_table(UdlStatsConstants.UDL_STATS)
+        update_query = udl_stats_table.update().values(load_status=UdlStatsConstants.MIGRATE_INGESTED).\
+            where(udl_stats_table.c.batch_guid == batch_guid)
+        rtn = connector.execute(update_query)
+        rowcount = rtn.rowcount
+        if rowcount == 0:
+            raise EdMigrateUdl_statException('Failed to update record for batch_guid=' + batch_guid)
+    return rowcount
 
 
 def get_tables_to_migrate(connector):
@@ -84,7 +84,12 @@ def get_tables_to_migrate(connector):
     :returns : A list of table names
              [dim_section, dim_student, fact_asmt_outcome]
     """
-    all_tables = [table.split('.')[1] for table in connector.get_metadata().tables.keys()]
+    all_tables = []
+    for table in connector.get_metadata().tables.keys():
+        if '.' in table:
+            all_tables.append(table.split('.')[1])
+        else:
+            all_tables.append(table)
     return all_tables
 
 
@@ -118,7 +123,7 @@ def get_source_query(source_tab, batch_guid, migrate_all=False):
     return source_tab.select().where(source_tab.c.batch_guid == batch_guid)
 
 
-def migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, table_name, batch_size=100):
+def migrate_dims_insert(batch_guid, source_connector, dest_connector, table_name, batch_size=100):
     """Load prod fact table with delta from pre-prod
 
     :param batch_guid: Batch Guid of the batch under migration
@@ -132,43 +137,74 @@ def migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, t
     source_tab = source_connector.get_table(table_name)
     dest_Tab = dest_connector.get_table(table_name)
 
-    if table_name in TABLES_NOT_CONNECTED_WITH_BATCH:
-        query = get_source_query(source_tab, batch_guid, migrate_all=True)
-    else:
+    if table_name not in TABLES_NOT_CONNECTED_WITH_BATCH:
         query = get_source_query(source_tab, batch_guid)
+        # get handle to query result iterator
+        rows = yield_rows(source_connector, query, batch_size)
+        for batch in rows:
+            # execute insert to target schema in batches
+            logger.info('Bulk Inserting batch of size: ' + str(len(batch)))
+            dest_connector.execute(dest_Tab.insert(), False, batch)
+
+
+def migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector, batch_size=100):
+    """Load prod fact table with delta from pre-prod
+
+    :param batch_guid: Batch Guid of the batch under migration
+    :param source_connector: Source connection
+    :param dest_connector: Destination connection
+    :param table_name: name of the table to be migrated
+    :param batch_size: batch size for migration
+
+    :returns number of record updated
+    """
+    source_fact_asmt_outcome_table = source_connector.get_table(Constants.FACT_ASMT_OUTCOME)
+    dest_fact_asmt_outcome_table = dest_connector.get_table(Constants.FACT_ASMT_OUTCOME)
+
+    delete_query = select([source_fact_asmt_outcome_table.c.asmnt_outcome_rec_id]).\
+        where(and_(source_fact_asmt_outcome_table.c.batch_guid == batch_guid,
+                   source_fact_asmt_outcome_table.c.status == 'D'))
     # get handle to query result iterator
-    rows = yield_rows(source_connector, query, batch_size)
-    for batch in rows:
-        # execute insert to target schema in batches
-        print('Bulk Inserting batch of size: ' + str(len(batch)))
-        dest_connector.execute(dest_Tab.insert(), False, batch)
+    proxy_rows = yield_rows(source_connector, delete_query, batch_size)
+    temp_asmt_outcome_rec_ids = []
+    asmt_outcome_rec_ids = []
+
+    for rows in proxy_rows:
+        for row in rows:
+            asmt_outcome_rec_id = row[Constants.ASMNT_OUTCOME_REC_ID]
+            temp_asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
+            asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
+            if len(temp_asmt_outcome_rec_ids) >= batch_size:
+                if not check_recrods_for_delete(dest_connector, temp_asmt_outcome_rec_ids):
+                    raise EdMigrateRecordAlreadyDeletedException
+                del temp_asmt_outcome_rec_ids[:]
+    if temp_asmt_outcome_rec_ids:
+        if not check_recrods_for_delete(dest_connector, temp_asmt_outcome_rec_ids):
+            raise EdMigrateRecordAlreadyDeletedException
+    # mark as delete
+    if asmt_outcome_rec_ids:
+        update_query = dest_fact_asmt_outcome_table.update(dest_fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_(asmt_outcome_rec_ids)).values(status='D')
+        rtn = dest_connector.execute(update_query)
+        return rtn.rowcount
+    return 0
 
 
-def migrate_fact(batch_guid, source_connector, dest_connector):
-    """Migrate fact table for the given batch from source to destination
-
-    :param batch_guid: Batch Guid of the batch under migration
-    :param source_connector: Source connection
-    :param dest_connector: Destination connection
-
-    :returns Nothing
-    """
-    print('Migrating fact for batch: ' + batch_guid)
-    migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME)
-
-
-def migrate_dims(batch_guid, source_connector, dest_connector, table):
-    """Migrate the given table for the given batch from source to destination
-
-    :param batch_guid: Batch Guid of the batch under migration
-    :param source_connector: Source connection
-    :param dest_connector: Destination connection
-    :param table: Table to be migrated
-
-    :returns Nothing
-    """
-    print('Migrating dimension for batch: ' + batch_guid + ' table: ' + table)
-    migrate_from_preprod_to_prod(batch_guid, source_connector, dest_connector, table)
+def check_recrods_for_delete(connector, asmt_outcome_rec_ids):
+    data_ok = False
+    # check number of asmt_outcome_rec_id to be deleted
+    number_of_ids = len(asmt_outcome_rec_ids)
+    fact_asmt_outcome_table = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+    # build query to count how many records are ready to be deleted.
+    query = select([func.count().label('asmt_outcome_rec_ids')], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_(asmt_outcome_rec_ids)).\
+        select_from(fact_asmt_outcome_table).\
+        where(fact_asmt_outcome_table.c.status == 'C')
+    result = connector.execute(query)
+    rows = result.fetchall()
+    if rows is not None:
+        count_asmt_outcome_rec_ids = rows[0]['asmt_outcome_rec_ids']
+        if count_asmt_outcome_rec_ids == number_of_ids:
+            data_ok = True
+    return data_ok
 
 
 def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):
@@ -181,24 +217,27 @@ def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):
 
     :returns Nothing
     """
-    print('Migrating all tables for batch: ' + batch_guid)
+    logger.info('Migrating all tables for batch: ' + batch_guid)
     # migrate dims first
     for table in list(filter(lambda x: x.startswith('dim_'), tables)):
-        migrate_dims(batch_guid, source_connector, dest_connector, table)
+        migrate_dims_insert(batch_guid, source_connector, dest_connector, table)
     # migrate fact
-    migrate_fact(batch_guid, source_connector, dest_connector)
+    migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector)
 
 
-def migrate_batch(batch_guid, tenant):
+def migrate_batch(batch):
     """Migrates data for the given batch and given tenant
 
     :param batch_guid: Batch Guid of the batch under migration
     :param tenant: Tenant name of the tenant to which this batch belongs to
                     This is needed to grab the right source and destination connection
 
-    :returns Nothing
+    :returns true: sucess, false: fail (for UT purpose)
     """
-    print('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
+    rtn = False
+    batch_guid = batch[UdlStatsConstants.BATCH_GUID]
+    tenant = batch[UdlStatsConstants.TENANT]
+    logger.info('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
 
     with EdMigrateDestConnection(tenant) as dest_connector, \
             EdMigrateSourceConnection(tenant) as source_connector:
@@ -212,11 +251,16 @@ def migrate_batch(batch_guid, tenant):
             report_udl_stats_batch_status(batch_guid)
             # commit transaction
             trans.commit()
-            print('Master: Migration successful for batch: ' + batch_guid)
-        except Exception as e:
-            print('Exception happened while migrating batch: ' + batch_guid, ' - Rollback initiated')
-            print(e)
+            logger.info('Master: Migration successful for batch: ' + batch_guid)
+            rtn = True
+        except EdMigrateException as e:
+            logger.info(e)
             trans.rollback()
+        except Exception as e:
+            logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
+            logger.info(e)
+            trans.rollback()
+    return rtn
 
 
 def start_migrate_daily_delta(tenant):
@@ -226,10 +270,9 @@ def start_migrate_daily_delta(tenant):
 
     :returns Nothing
     """
-    global batches_to_migrate
-    batches_to_migrate = get_daily_delta_batches_to_migrate(tenant)
-    for batch_guid in batches_to_migrate.keys():
-        migrate_batch(batch_guid=batch_guid, tenant=tenant)
+    batches_to_migrate = get_batches_to_migrate(tenant)
+    for batch in batches_to_migrate:
+        migrate_batch(batch=batch)
 
 if __name__ == '__main__':
     # TODO: remove this. temp entry point for testing migration as a script

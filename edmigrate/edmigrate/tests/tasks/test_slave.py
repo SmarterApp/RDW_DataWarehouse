@@ -1,3 +1,4 @@
+from edmigrate.tasks.slave import slaves_register
 __author__ = 'sravi'
 
 import unittest
@@ -19,8 +20,8 @@ class TestSlaveWorker(Unittest_with_repmgr_sqlite):
     def tearDown(self):
         pass
 
-    def test_slaves_get_ready_for_data_migrate(self):
-        pass
+#    def test_slaves_register(self):
+#        slaves_register()
 
 
 if __name__ == "__main__":

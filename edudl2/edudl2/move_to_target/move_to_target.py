@@ -1,5 +1,6 @@
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from collections import OrderedDict
+from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
@@ -314,7 +315,10 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                     'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
                                     'move_to_target',
                                     'update_deleted_record_rec_id')
-            except Exception:
+            except IntegrityError as ie:
+                # TODO: write to err_list,
+                pass
+            except Exception as e:
                 pass
 
 

@@ -1,10 +1,11 @@
 from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
-from edudl2.udl_exceptions.udl_exceptions import DeleteRecordNotFound
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats, insert_to_table
+from edudl2.exceptions.errorcodes import ErrorCode
+from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -50,17 +51,14 @@ class Udl2BaseTask(Task):
                                         error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()
         # Write to udl stats table on exceptions
-        update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_FAILED})
+        update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
         # Write to ERR_LIST
         if isinstance(exc, DeleteRecordNotFound):
-            # TODO: Use constants
-            # TODO: Error code and other values
-            values = {'err_source': 4,
-                      'guid_batch': guid_batch,
-                      'created_date': failure_time,
-                      'record_sid': 123,
-                      'err_code': 31}
-            insert_to_table(UDL2DBConnection, 'ERR_LIST', values)
+            # TODO: udl phase step number
+            try:
+                exc.insert_err_list(UDL2DBConnection, 4, failure_time)
+            except NotImplemented:
+                pass
         msg = {}
         msg.update(args[0])
         msg.update({mk.PIPELINE_STATE: 'error'})

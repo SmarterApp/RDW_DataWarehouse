@@ -45,7 +45,7 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
             UdlStatsConstants.STATE_CODE: 'AB',
             UdlStatsConstants.FILE_ARRIVED: datetime.now(),
             UdlStatsConstants.TENANT: 'tenant',
-            UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_RECEIVED
+            UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
         }
         insert_udl_stats(udl_stats)
         with StatsDBConnection() as conn:
@@ -61,7 +61,7 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
             UdlStatsConstants.STATE_CODE: 'AB',
             UdlStatsConstants.FILE_ARRIVED: datetime.now(),
             UdlStatsConstants.TENANT: 'tenant',
-            UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_RECEIVED
+            UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
         }
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')

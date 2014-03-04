@@ -174,18 +174,19 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   )
 
     err_list = Table('ERR_LIST', metadata,
-                     Column('record_sid', BigInteger, nullable=False),
-                     Column('guid_batch', String(256), nullable=False),
+                     Column('record_sid', BigInteger, primary_key=True, nullable=False),
+                     Column('guid_batch', String(256), primary_key=True, nullable=False),
                      Column('err_code', BigInteger, nullable=True),
                      Column('err_source', BigInteger, nullable=True),
                      Column('created_date', TIMESTAMP, nullable=False, server_default=text('NOW()')),
+                     Column('err_input', Text, nullable=False, server_default='')
                      )
 
     int_sbac_asmt = Table('INT_SBAC_ASMT', metadata,
                           Column('record_sid', BigInteger, primary_key=True),
                           Column('guid_batch', String(256), nullable=False),
                           Column('guid_asmt', String(50), nullable=False),
-                          Column('type', String(16), nullable=False),
+                          Column('type', String(32), nullable=False),
                           Column('period', String(32), nullable=False),
                           Column('year', SmallInteger, nullable=False),
                           Column('version', String(16), nullable=False),
@@ -400,7 +401,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
     return metadata
 
 
-def generate_udl2_sequences(schema_name, metadata):
+def generate_udl2_sequences(schema_name=None, metadata=None):
     '''
     generate_udl2_sequences returns all udl2 related sequences as a tuple.
     '''

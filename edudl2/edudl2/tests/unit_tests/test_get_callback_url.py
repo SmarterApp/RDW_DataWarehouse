@@ -1,6 +1,6 @@
-from edudl2.get_load_type import get_load_type
+from edudl2.get_callback_url import get_callback_url
 import tempfile
-__author__ = 'tshewchuk'
+__author__ = 'ablum'
 
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
@@ -27,12 +27,14 @@ class TestGetLoadType(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_expanded_dir)
 
-    def test_get_load_type_from_valid_content(self):
+    def test_get_callback_url_from_valid_json(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        value = get_load_type.get_load_type(self.test_expanded_dir)
+        callback_url = get_callback_url.get_callback_url(self.test_expanded_dir, 'studentregistration')
 
-        self.assertEqual('studentregistration', value)
+        self.assertEqual('StateTestReg.gov/StuReg/CallBack'.lower(), callback_url)
 
-    def test_get_load_type_from_invalid_content_json(self):
-        shutil.copy(os.path.join(self.data_dir, 'test_invalid_content_type.json'), self.test_expanded_dir)
-        self.assertRaises(ValueError, get_load_type.get_load_type, self.test_expanded_dir)
+    def test_get_callback_url_from_invalid_loadtype(self):
+        shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
+        callback_url = get_callback_url.get_callback_url(self.test_expanded_dir, 'assessment')
+
+        self.assertEqual(None, callback_url)

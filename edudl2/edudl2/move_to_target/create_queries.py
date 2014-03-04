@@ -325,8 +325,8 @@ def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matching
     '''
     matched_prod_values = matched_preprod_values.copy()
     matched_prod_values['status'] = matching_conf['status']
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matched_prod_values.keys())])
-    params = [bindparam(c, matched_prod_values[c]) for c in sorted(matched_prod_values.keys())]
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matching_conf['condition'])])
+    params = [bindparam(c, matched_prod_values[c]) for c in sorted(matching_conf['condition'])]
     query = text("SELECT {columns} "
                  "FROM {source_schema_and_table} "
                  "WHERE {condition_clause}".format(source_schema_and_table=combine_schema_and_table(schema_name,

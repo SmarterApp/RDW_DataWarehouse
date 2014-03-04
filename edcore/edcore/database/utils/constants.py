@@ -20,7 +20,7 @@ class UdlStatsConstants():
     RECORD_LOADED_COUNT = 'record_loaded_count'
     UDL_STATS = 'udl_stats'
     # Available Load Status
-    STATUS_RECEIVED = 'udl.received'
-    STATUS_FAILED = 'udl.failed'
-    STATUS_LOADING = 'udl.loading'
-    STATUS_INGESTED = 'udl.ingested'
+    UDL_STATUS_RECEIVED = 'udl.received'
+    UDL_STATUS_FAILED = 'udl.failed'
+    UDL_STATUS_LOADING = 'udl.loading'
+    UDL_STATUS_INGESTED = 'udl.ingested'

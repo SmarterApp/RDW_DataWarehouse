@@ -48,7 +48,7 @@ def task(msg):
                                     working_schema=conf[mk.TARGET_DB_SCHEMA], size_records=affected_rows)
     benchmark.record_benchmark()
     # Update udl stats
-    update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_START: start_time, UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_LOADING})
+    update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_START: start_time, UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_LOADING})
     return msg
 
 

@@ -3,7 +3,7 @@ from celery.utils.log import get_task_logger
 from edudl2.udl2.celery import celery
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.udl2 import message_keys as mk, W_load_from_integration_to_star,\
-    W_load_sr_integration_to_target, W_all_done, W_post_etl
+    W_load_sr_integration_to_target, W_all_done, W_post_etl, W_job_status_notification
 from celery.canvas import chain
 
 logger = get_task_logger(__name__)
@@ -20,6 +20,8 @@ def task(msg):
                                    W_load_from_integration_to_star.handle_deletions.s()],
                     "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
 
-    post_etl_tasks = [W_post_etl.task.s(), W_all_done.task.s()]
+    post_etl_tasks = {"assessment": [W_post_etl.task.s(), W_all_done.task.s()],
+                      "studentregistration": [W_post_etl.task.s(), W_all_done.task.s(),
+                                              W_job_status_notification.task.s()]}
 
-    chain(target_tasks[load_type] + post_etl_tasks).delay()
+    chain(target_tasks[load_type] + post_etl_tasks[load_type]).delay()

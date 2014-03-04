@@ -13,6 +13,7 @@ common:
             - edudl2.udl2.W_file_arrived
             - edudl2.udl2.W_file_decrypter
             - edudl2.udl2.W_file_expander
+            - edudl2.udl2.W_get_callback_url
             - edudl2.udl2.W_simple_file_validator
             - edudl2.udl2.W_file_splitter
             - edudl2.udl2.W_parallel_csv_load
@@ -61,6 +62,8 @@ common:
     passphrase: sbac udl2
     tenant_position: -4
     search_wait_time: 10
+    callback_url_key:
+        studentregistration: source.testregcallbackurl
     load_type_key: content
     load_type:
         assessment: assessment
@@ -190,6 +193,8 @@ qa:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: /home/udl2/.gnupg
+    sr_notification_timeout: 30
+    sr_notification_retries: 5
     edware_stats:
         db:
             schema_name: edware_stats
@@ -321,6 +326,8 @@ development:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: ~/.gnupg
+    sr_notification_timeout: 30
+    sr_notification_retries: 5
 jenksins_dev:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -448,3 +455,5 @@ jenksins_dev:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: ~/.gnupg
+    sr_notification_timeout: 30
+    sr_notification_retries: 5

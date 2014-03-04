@@ -15,6 +15,7 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   match_delete_fact_asmt_outcome_row_in_prod)
+from edudl2.move_to_target.query_helper import QueryHelper
 
 
 DBDRIVER = "postgresql"
@@ -240,7 +241,7 @@ def match_deleted_records(conf, match_conf):
     with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
         for candidate in candidates:
 
-            query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.TARGET_DB_SCHEMA],
+            query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.PROD_DB_SCHEMA],
                                                                match_conf['prod_table'],
                                                                match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
                                                                dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'],
@@ -254,6 +255,29 @@ def match_deleted_records(conf, match_conf):
                     matched_results.append(dict(zip(match_conf['match_delete_fact_asmt_outcome_row_in_prod']['columns'],
                                                     row)))
     return matched_results
+
+
+def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
+    affected_rows = 0
+    with TargetDBConnection(tenant_name) as target_conn, ProdDBConnection(tenant_name) as prod_conn:
+        # TODO rename QueryHelper
+        target_db_helper = QueryHelper(target_conn, guid_batch, match_conf)
+        prod_db_helper = QueryHelper(prod_conn, guid_batch, match_conf)
+        for record in target_db_helper.find_all():
+            matched = prod_db_helper.find_by_natural_key(record)
+            if not matched:
+                continue
+            identical = target_db_helper.is_identical(matched, record)
+            if not identical:
+                # TODO update dim & fact table?
+                # TODO what if student_rec_id already exists?
+                target_db_helper.update_to_match(matched)
+            else:
+                # TODO what about fact_asmt_outcome?
+                # TODO constraint in fact
+                target_db_helper.delete_by_guid(record)
+            affected_rows += 1
+    return affected_rows
 
 
 def check_mismatched_deletions(conf, match_conf):
@@ -271,13 +295,14 @@ def check_mismatched_deletions(conf, match_conf):
                                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
                                                    'move_to_target',
                                                    'checked_mismatched_deletions')
+    mismatched_rows = []
     if mismatches.rowcount > 0:
         for mismatch in mismatches:
-            record = dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'],
-                              mismatch))
-        raise DeleteRecordNotFound(record['student_guid'], record['asmt_guid'], record['date_taken'],
-                                   " Not found in  {edschema}.{table}".format(edschema=conf[mk.PROD_DB_SCHEMA],
-                                                                              table=match_conf['prod_table']))
+            mismatched_rows.append(dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'], mismatch)))
+        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
+                                   mismatched_rows,
+                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                             table=match_conf['prod_table']))
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):

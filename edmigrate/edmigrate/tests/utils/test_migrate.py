@@ -5,7 +5,7 @@ from edmigrate.tests.utils.unittest_with_preprod_sqlite import Unittest_with_pre
     get_unittest_tenant_name as get_unittest_preprod_tenant_name
 from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException
-from sqlalchemy.sql.expression import select, func, and_
+from sqlalchemy.sql.expression import select, func
 from edmigrate.utils.constants import Constants
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection

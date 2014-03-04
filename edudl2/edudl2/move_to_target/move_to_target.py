@@ -239,8 +239,7 @@ def match_deleted_records(conf, match_conf):
                                                    'move_to_target',
                                                    'matched_deleted_records')
     with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
-        for candidate in candidates:
-
+        for candidate in candidates.fetchall():
             query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.PROD_DB_SCHEMA],
                                                                match_conf['prod_table'],
                                                                match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
@@ -311,13 +310,20 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
     and update the asmnt_outcome_rec_id in pre-prod to prod value so migration can work faster
     '''
     logger.info('update_deleted_record_rec_id')
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
         for matched_value in matched_values:
             query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
                                                          match_conf['target_table'],
                                                          conf[mk.GUID_BATCH],
                                                          match_conf['update_matched_fact_asmt_outcome_row'],
                                                          matched_value)
+            try:
+                execute_udl_queries(conn, [query],
+                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
+                                    'move_to_target',
+                                    'update_deleted_record_rec_id')
+            except Exception:
+                pass
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

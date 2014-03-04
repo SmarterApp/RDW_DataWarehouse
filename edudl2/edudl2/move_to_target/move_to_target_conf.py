@@ -42,6 +42,7 @@ def get_move_to_target_conf():
                                                     'status': 'W'},
             'match_delete_fact_asmt_outcome_row_in_prod': {'columns': ['asmnt_outcome_rec_id', 'student_guid',
                                                                        'asmt_guid', 'date_taken'],
+                                                           'condition': ['student_guid', 'asmt_guid', 'date_taken', 'status'],
                                                            'status': 'C'},
             'update_matched_fact_asmt_outcome_row': {'columns': {'asmnt_outcome_rec_id': 'asmnt_outcome_rec_id',
                                                                  'status': 'new_status'},

@@ -9,6 +9,7 @@ def create_fdw_server_query(fdw_server):
 
 
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
+    # bug, when csv_file name is longer than 63 chars, it causes foreign data wrapper fails to create mapping.
     ddl_parts = ['CREATE FOREIGN TABLE IF NOT EXISTS "{csv_schema}"."{csv_table}" (',
                  ', '.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
                  ") SERVER {fdw_server} ",

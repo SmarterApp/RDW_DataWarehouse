@@ -11,7 +11,7 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2_util.database_util import connect_db, get_table_columns_info,\
     get_schema_metadata
-from edudl2.udl2.database import UDL_METADATA
+from edudl2.metadata.udl2_metadata import generate_udl2_metadata
 
 
 logger = logging.getLogger()
@@ -84,63 +84,47 @@ class TestUdl2Database(unittest.TestCase):
         ddl_db_column_sizes = [str(c[2]) for c in ddl_in_db]
         return ddl_code_column_sizes == ddl_db_column_sizes
 
-    def _compare_columns(self, ddl_in_code, ddl_in_db):
-        if len(ddl_in_code) != len(ddl_in_db):
+    def _compare_columns(self, ddl_metadata, db_metadata, table_name):
+        ddl_columns = ddl_metadata.tables[table_name].columns
+        db_columns = db_metadata.tables[table_name].columns
+        if len(ddl_columns) != len(db_columns):
             return False
-        elif not self._compare_column_names(ddl_in_code, ddl_in_db):
-            return False
-        elif not self._compare_column_types(ddl_in_code, ddl_in_db):
-            return False
-        elif not self._compare_column_sizes(ddl_in_code, ddl_in_db):
-            return False
+        for col1, col2 in zip(ddl_columns, db_columns):
+            if col1.name != col2.name:
+                return False
+            if not self._is_same_type(col1, col2):
+                return False
         else:
             return True
 
-    def _compare_table_keys(self, table_keys_in_code, table_meta):
-        foreign_k = table_keys_in_code.get('foreign', [])
-        # TODO: Deterimine how to check unique keys
+    def _is_same_type(self, col1, col2):
+        # have to check by isinstance() or type names because reflect metadata contains database(i.e. postgresql) specific types
+        return isinstance(col2.type, type(col1.type)) or col1.__class__.__name__.lower() == col2.__class__.__name__.lower()
 
+    def _compare_table_keys(self, ddl_meta, table_meta):
         # check that there are the same number of foreign keys
-        self.assertEqual(len(table_meta.foreign_keys), len(foreign_k), 'length of foreign keys not equal')
-
-        for col in table_meta.c:
-            # Get foreign key definitions
-            db_fks = col.foreign_keys
-
-            # if no foreign keys in db for column, continue
-            if not db_fks:
-                continue
-
-            # get list of foreign keys from code ddl for the current table
-            code_fks = [x for x in foreign_k if x[0] == col.key]
-            self.assertEquals(len(db_fks), len(code_fks))
-
-            # place foreign keys in sets and compare them
-            db_fks_targets = {x.target_fullname for x in db_fks}
-            code_fks_targets = {x[1] for x in code_fks}
-
-            # if the symmetric_difference of sets is not empty fail
-            if code_fks_targets ^ db_fks_targets:
-                return False
+        self.assertEqual(ddl_meta.foreign_keys, table_meta.foreign_keys, 'foreign keys not equal')
+        # check unique keys
+        pk1 = [c.name for c in ddl_meta.primary_key.columns]
+        pk2 = [c.name for c in table_meta.primary_key.columns]
+        self.assertEqual(pk1, pk2, 'primary keys not equal')
 
         return True
 
     def _compare_table_defition_in_code_and_database(self, table_name):
         (conn, engine) = self._create_conn_engine(self.conf)
-        ddl_in_code = UDL_METADATA['TABLES'][table_name]['columns']
-        ddl_in_db = get_table_columns_info(conn, table_name)
-        ddl_in_code = sorted(ddl_in_code, key=lambda tup: tup[0])
-        ddl_in_db = sorted(ddl_in_db, key=lambda tup: tup[0])
-        print('ddl_in_code', ddl_in_code, '\nddl_in_db', ddl_in_db)
-        return self._compare_columns(ddl_in_code, ddl_in_db)
+        db_metadata = get_schema_metadata(engine)
+        ddl_metadata = generate_udl2_metadata()
+        return self._compare_columns(ddl_metadata, db_metadata, table_name)
 
     def _compare_table_key_definitions_in_code_and_db(self, table_name):
         (conn, engine) = self._create_conn_engine(self.conf)
         db_metadata = get_schema_metadata(engine)
         table_metadata = db_metadata.tables[table_name]
-        table_keys_in_code = UDL_METADATA['TABLES'][table_name]['keys']
+        metadata_in_code = generate_udl2_metadata()
+        ddl_metadata = metadata_in_code.tables[table_name]
 
-        return self._compare_table_keys(table_keys_in_code, table_metadata)
+        return self._compare_table_keys(ddl_metadata, table_metadata)
 
     def test_STG_SBAC_ASMT_OUTCOME(self):
         table_name = 'STG_SBAC_ASMT_OUTCOME'

@@ -24,6 +24,8 @@ from edudl2.udl2_util import file_util
 from edudl2.fileloader.json_loader import load_json
 from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2_util.measurement import BatchTableBenchmark
+from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.query import update_udl_stats
 
 logger = get_task_logger(__name__)
 
@@ -45,7 +47,8 @@ def task(msg):
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time, task_id=str(task.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA], size_records=affected_rows)
     benchmark.record_benchmark()
-
+    # Update udl stats
+    update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_START: start_time, UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_LOADING})
     return msg
 
 

@@ -26,6 +26,7 @@ def get_summary_distribution(state_code, district_guid=None, school_guid=None, a
         query = query.where(fact_asmt_outcome.c.state_code == state_code)
         query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)
         query = query.where(fact_asmt_outcome.c.most_recent)
+        query = query.where(fact_asmt_outcome.c.status == 'C')
         if (district_guid is not None):
             query = query.where(fact_asmt_outcome.c.district_guid == district_guid)
         if (school_guid is not None):

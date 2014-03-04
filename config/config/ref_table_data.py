@@ -327,7 +327,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4_min', 'fact_asmt_outcome', 'asmt_claim_4_score_range_min', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4_max', 'fact_asmt_outcome', 'asmt_claim_4_score_range_max', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'asmt_claim_4_perf_lvl', 'fact_asmt_outcome', 'asmt_claim_4_perf_lvl', None, None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', "op", 'fact_asmt_outcome', 'status', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'op', 'fact_asmt_outcome', 'status', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'TRUE', 'fact_asmt_outcome', 'most_recent', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', 'fact_asmt_outcome', 'batch_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'asmt_type', 'fact_asmt_outcome', 'asmt_type', None, None),

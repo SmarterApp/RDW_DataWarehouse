@@ -1,9 +1,9 @@
-from edudl2.udl2.database import generate_udl2_metadata
 __author__ = 'swimberly'
 
 from database.connector import DBConnection
 from database.generic_connector import setup_db_connection_from_ini
 from edschema.metadata_generator import generate_ed_metadata
+from edudl2.metadata.udl2_metadata import generate_udl2_metadata
 
 
 UDL_NAMESPACE = 'udl2_db_conn'
@@ -98,7 +98,7 @@ class ProdDBConnection(DBConnection):
         """
         Returns datasource name for Production table
         """
-        return TARGET_NAMESPACE + '.' + tenant
+        return PRODUCTION_NAMESPACE + '.' + tenant
 
     @staticmethod
     def generate_metadata(schema_name=None, bind=None):

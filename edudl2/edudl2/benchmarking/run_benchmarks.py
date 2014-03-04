@@ -8,7 +8,7 @@ import os
 from datetime import date
 from sqlalchemy.sql import select
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from scripts.driver import start_pipeline
+from edudl2.udl2.udl2_pipeline import get_pipeline_chain
 from edudl2.udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
@@ -73,7 +73,7 @@ def run_pipeline(msg):
 
     # run pipeline with the two files and the newly constructed message
     #start_pipeline(csv_file, json_file, udl2_conf, batch_guid_forced=None, **new_msg)
-    start_pipeline(files, udl2_conf, batch_guid_forced=None, **new_msg)
+    get_pipeline_chain(files, udl2_conf, batch_guid_forced=None, **new_msg)
 
 
 @celery.task(name="benchmarking.run_benchmarking.error_handler")

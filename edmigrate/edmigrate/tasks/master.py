@@ -1,3 +1,4 @@
+from edmigrate.tasks.base import BaseTask
 __author__ = 'sravi'
 
 from time import sleep
@@ -24,7 +25,7 @@ TENANT = 'cat'
 BROADCAST_QUEUE = get_setting(Config.BROADCAST_QUEUE)
 
 
-@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh')
+@celery.task(name='task.edmigrate.master.prepare_edware_data_refresh', base=BaseTask)
 def prepare_edware_data_refresh():
     '''
     Broadcast message to all slave nodes to register
@@ -36,7 +37,7 @@ def prepare_edware_data_refresh():
     slaves_register.apply_async(queue=BROADCAST_QUEUE)
 
 
-@celery.task(name='task.edmigrate.master.start_edware_data_refresh')
+@celery.task(name='task.edmigrate.master.start_edware_data_refresh', base=BaseTask)
 def start_edware_data_refresh():
     '''
     Step 1: send message to all slaves to initiate protocol for data refresh

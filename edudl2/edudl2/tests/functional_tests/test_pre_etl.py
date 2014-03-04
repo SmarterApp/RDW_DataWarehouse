@@ -1,5 +1,4 @@
 import unittest
-from edudl2.udl2.errorcodes import BATCH_REC_FAILED
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.database_util import connect_db, execute_query_with_result, execute_queries
 from uuid import uuid4
@@ -9,6 +8,7 @@ from edudl2.udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DB
 from edudl2.udl2_util.config_reader import read_ini_file
 import tempfile
 import shutil
+from edudl2.exceptions.errorcodes import ErrorCode
 
 
 class PreEtlTest(unittest.TestCase):
@@ -99,7 +99,7 @@ class PreEtlTest(unittest.TestCase):
             self.assertEqual(len(content), 0)
         else:
             self.assertTrue(len(content) > 0)
-            expected_error_code = BATCH_REC_FAILED
+            expected_error_code = ErrorCode.BATCH_REC_FAILED
 
             # get error code in log message
             actual_error_code = content[0].split(']')[1].split(':')[0].strip()

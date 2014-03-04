@@ -174,7 +174,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
                                Column('section_rec_id', BigInteger, ForeignKey(sections.c.section_rec_id), nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
-                               Column('where_taken_name', String(256), primary_key=True),
+                               Column('where_taken_name', String(256)),
                                Column('asmt_grade', String(10), nullable=False),
                                Column('enrl_grade', String(10), nullable=False),
                                Column('date_taken', String(8), nullable=False),
@@ -237,7 +237,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('acc_streamline_mode', SmallInteger, nullable=False),
                                )
 
-    Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_rec_id, unique=True)
     Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
     Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.most_recent, unique=False)
     Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.most_recent, unique=False)

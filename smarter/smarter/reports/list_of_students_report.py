@@ -210,6 +210,7 @@ def get_list_of_students(params):
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
+        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
         query = apply_filter_to_query(query, fact_asmt_outcome, params)
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))

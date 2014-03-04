@@ -59,10 +59,8 @@ class IntToStarFTest(UDLTestHelper):
         move_to_target.explode_data_to_fact_table(conf, list(table_map.values())[0], list(table_map.keys())[0], column_map['fact_asmt_outcome'], column_types)
 
         # handle deletion case
-        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         matched_results = move_to_target.match_deleted_records(conf, match_conf)
-        print('matched_results')
-        print(matched_results)
         move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_results)
         move_to_target.check_mismatched_deletions(conf, match_conf)
 
@@ -81,34 +79,37 @@ class IntToStarFTest(UDLTestHelper):
         int_asmt_avgs = self.get_integration_asmt_score_avgs()
         star_asmt_avgs = self.get_edware_asmt_score_avgs()
 
-        assert int_asmt_avgs == star_asmt_avgs
+        self.assertEqual(int_asmt_avgs, star_asmt_avgs)
 
         # check demographic counts
         int_demo_dict = self.get_integration_demographic_counts()
         star_demo_dict = self.get_star_schema_demographic_counts()
 
-        assert int_demo_dict == star_demo_dict
+        self.assertEqual(int_demo_dict, star_demo_dict)
 
     def test_match_deleted_records(self):
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
-        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        phase_number = 4
+        conf = move_to_target_setup.generate_conf(guid_batch, phase_number, 'assessment', 'edware')
+        match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         matched_value = {}
         move_to_target.match_deleted_records(conf, match_conf)
         self.assertEqual(True, True)
 
     def test_check_mismatched_deletions(self):
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
-        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        phase_number = 4
+        conf = move_to_target_setup.generate_conf(guid_batch, phase_number, 'assessment', 'edware')
+        match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         matched_value = {}
         move_to_target.check_mismatched_deletions(conf, match_conf)
         self.assertEqual(True, True)
 
     def test_update_deleted_record_rec_id(self):
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'assessment', 'edware')
-        match_conf = move_to_target_setup.get_move_to_target_conf()[4]
+        phase_number = 4
+        conf = move_to_target_setup.generate_conf(guid_batch, phase_number, 'assessment', 'edware')
+        match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         matched_value = {}
         move_to_target.update_deleted_record_rec_id(conf, match_conf, matched_value)
         self.assertEqual(True, True)

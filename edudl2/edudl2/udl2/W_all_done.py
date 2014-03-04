@@ -4,16 +4,14 @@ Created on Sep 10, 2013
 @author: swimberly
 '''
 import datetime
-
-from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
-
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import celery
-from edudl2.udl2.Constants import UdlStatsConstants
-from edudl2.udl2.status import insert_udl_daily_stats
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
+from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.query import update_udl_stats
+from edcore.utils.utils import merge_dict
 
 
 logger = get_task_logger(__name__)
@@ -31,20 +29,13 @@ def report_udl_batch_metrics_to_log(msg, end_time, pipeline_status):
         logger.info('Total Records Processed: ' + str(msg[mk.TOTAL_ROWS_LOADED]))
 
 
-def report_batch_to_udl_daily_stats(msg, end_time):
+def report_batch_to_udl_stats(msg, end_time, status):
     logger.info('Reporting to UDL daily stats')
-    if mk.TOTAL_ROWS_LOADED in msg:
-        total_rows_loaded = msg[mk.TOTAL_ROWS_LOADED]
-    udl_batch_stats = {
-        UdlStatsConstants.BATCH_GUID: msg[mk.GUID_BATCH],
-        UdlStatsConstants.STATE_CODE: 'XX',
-        UdlStatsConstants.FILE_ARRIVED: msg[mk.START_TIMESTAMP],
-        UdlStatsConstants.TENANT: msg[mk.TENANT_NAME],
-        UdlStatsConstants.RECORD_LOADED_COUNT: total_rows_loaded,
-        UdlStatsConstants.UDL_START: msg[mk.START_TIMESTAMP],
-        UdlStatsConstants.UDL_END: end_time
-    }
-    insert_udl_daily_stats(udl_batch_stats)
+    stats = {}
+    # TODO: it's always zero
+    stats[UdlStatsConstants.RECORD_LOADED_COUNT] = msg[mk.TOTAL_ROWS_LOADED] if mk.TOTAL_ROWS_LOADED in msg else 0
+    load_status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
+    update_udl_stats(msg[mk.GUID_BATCH], merge_dict(stats, {UdlStatsConstants.LOAD_END: end_time, UdlStatsConstants.LOAD_STATUS: load_status}))
 
 
 @celery.task(name='udl2.W_all_done.task', base=Udl2BaseTask)
@@ -61,10 +52,9 @@ def task(msg):
                                     start_time, end_time, udl_phase_step_status=pipeline_status)
     benchmark.record_benchmark()
 
-    # record batch stats to udl daily stats table
+    # record batch stats to udl stats table
     # this will be used by migration script to move the data from pre-prod to prod
-    report_batch_to_udl_daily_stats(msg, end_time)
-
+    report_batch_to_udl_stats(msg, end_time, pipeline_status)
     # report the batch metrics in Human readable format to the UDL log
     report_udl_batch_metrics_to_log(msg, end_time, pipeline_status)
     return msg

@@ -1,9 +1,9 @@
 from edudl2.file_finder.file_finder import find_files_in_directories
-from edudl2.udl2.udl2_pipeline import get_pipeline_chain
 __author__ = 'swimberly'
 
 from edudl2.udl2.celery import udl2_conf, celery
 from edudl2.udl2 import message_keys as mk
+import edudl2.udl2.udl2_pipeline as udl2_pipeline
 
 
 @celery.task(name="udl2.W_get_udl_file.get_next_file")
@@ -23,12 +23,13 @@ def get_next_file(msg):
         mk.LOOP_PIPELINE: True,
         mk.TENANT_SEARCH_PATHS: tenant_dirs,
         mk.PARTS: msg[mk.PARTS],
+        # TODO: Load type is needed?
         mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
     }
 
     if len(files_in_dir) > 0:
         print('picking up file:', files_in_dir[0])
-        pipeline = get_pipeline_chain(files_in_dir[0], msg[mk.LOAD_TYPE], msg[mk.PARTS], None, next_file_msg)
+        pipeline = udl2_pipeline.get_pipeline_chain(files_in_dir[0], msg[mk.LOAD_TYPE], msg[mk.PARTS], None, next_file_msg)
         (pipeline | get_next_file.si(next_file_msg)).apply_async()
         return "File found and pipeline scheduled"
     else:

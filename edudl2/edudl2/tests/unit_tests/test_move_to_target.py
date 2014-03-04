@@ -6,7 +6,7 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query,\
-    create_select_columns_in_table_query, find_unmatched_deleted_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,\
+    create_select_columns_in_table_query, find_deleted_fact_asmt_outcome_rows,\
     match_delete_fact_asmt_outcome_row_in_prod, update_matched_fact_asmt_outcome_row
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
@@ -46,18 +46,22 @@ class TestMoveToTarget(unittest.TestCase):
         column_types = get_expected_column_types_for_fact_table(target_table)
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, column_mapping['asmt_rec_id'],
+        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT],
+                                                                    target_table, column_mapping['asmt_rec_id'],
                                                                     column_mapping['section_rec_id'], guid_batch,
-                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
+                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER],
+                                                                    conf[mk.SOURCE_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = get_expected_update_student_rec_id_query(target_table)
         expected_query_5 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
         expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4, expected_query_5]
-        actual_value = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
+        actual_value = create_queries_for_move_to_fact_table(conf, source_table,
+                                                             target_table, column_mapping,
+                                                             column_types)
         self.maxDiff = None
         self.assertEqual(len(expected_value), len(actual_value))
         for i in range(len(expected_value)):
-            self.assertEqual(expected_value[i].strip(), actual_value[i].strip())
+            self.assertEqual(expected_value[i].strip(), compile_query_to_sql_text(actual_value[i]).strip())
 
     def test_create_insert_query_for_dim_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'
@@ -68,7 +72,7 @@ class TestMoveToTarget(unittest.TestCase):
         actual_value = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True, 'C')
         expected_value = get_expected_insert_query_for_dim_inst_hier(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], target_table, guid_batch,
                                                                      conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
-        self.assertEqual(expected_value, actual_value)
+        self.assertEqual(expected_value.strip(' '), compile_query_to_sql_text(actual_value).strip(' '))
 
     # We'll disable this test for now, as it's plagued by an obsequious bug, and there are other sufficient tests.
     def dont_create_insert_query_for_sr_target_table(self):
@@ -89,8 +93,8 @@ class TestMoveToTarget(unittest.TestCase):
         self.assertEqual(expected_value, actual_value)
 
     def test_create_select_columns_in_table_query(self):
-        query = create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'})
-        self.assertEqual(query, "SELECT DISTINCT CA,CB FROM \"schema\".\"table\" WHERE condA='valueA'")
+        query = compile_query_to_sql_text(create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'}))
+        self.assertEqual(query, "SELECT DISTINCT CA, CB FROM \"schema\".\"table\" WHERE condA = 'valueA'")
 
     def test_create_sr_table_select_insert_query(self):
         conf = {
@@ -126,36 +130,50 @@ class TestMoveToTarget(unittest.TestCase):
                          "WHERE op = ''D'' AND table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
 
     def test_update_matched_fact_asmt_outcome_row(self):
-        query = compile_query_to_sql_text(update_matched_fact_asmt_outcome_row('schema',
-                                                                               'table', 'guid_1', [('col_a_a', 'col_a_b')],
-                                                                               [('status', 'W')], {'col_a_b': '1',
-                                                                                                   'asmnt_rec_id': '2',
-                                                                                                   'status': 'C'}))
+        match_conf = get_move_to_target_conf()['handle_deletions']
+        query = update_matched_fact_asmt_outcome_row('edware',
+                                                     match_conf['target_table'],
+                                                     'batch_guid_1',
+                                                     match_conf['update_matched_fact_asmt_outcome_row'],
+                                                     {'asmnt_outcome_rec_id': 2,
+                                                      'asmt_guid': 'asmnt_guid_1',
+                                                      'student_guid': 'student_guid_1',
+                                                      'date_taken': '20140101',
+                                                      'status': 'C'})
+        query = compile_query_to_sql_text(query)
         logger.info(query)
-        self.assertEqual(query, "UPDATE \"schema\".\"table\" SET asmnt_outcome_rec_id = '2', status = 'D' " +
-                         "WHERE batch_guid = 'guid_1' AND col_a_a = '1' AND status = 'W'")
+        self.assertEqual(query, "UPDATE \"edware\".\"fact_asmt_outcome\" "
+                                "SET asmnt_outcome_rec_id = 2, status = 'D' "
+                                "WHERE batch_guid = 'batch_guid_1' AND asmt_guid = 'asmnt_guid_1' "
+                                "AND date_taken = '20140101' AND status = 'W' AND student_guid = 'student_guid_1'")
 
     def test_match_delete_fact_asmt_outcome_row_in_prod(self):
-        query = compile_query_to_sql_text(match_delete_fact_asmt_outcome_row_in_prod('schema',
-                                                                                     'table', [('col_a_a', 'col_a_b')],
-                                                                                     [('status', 'C')], {'col_a_a': '1'}))
+        match_conf = get_move_to_target_conf()['handle_deletions']
+        query = match_delete_fact_asmt_outcome_row_in_prod('edware',
+                                                           match_conf['prod_table'],
+                                                           match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
+                                                           {'asmt_guid': 'asmt_guid_1',
+                                                            'student_guid': 'student_guid_1',
+                                                            'date_taken': '20140101',
+                                                            'status': 'W'})
+        query = compile_query_to_sql_text(query)
         logger.info(query)
-        self.assertEqual(query, "SELECT asmnt_rec_id, col_a_b, status FROM \"schema\".\"table\" WHERE col_a_b = '1' AND status = 'C'")
+        self.assertEqual(query, "SELECT asmnt_outcome_rec_id, student_guid, asmt_guid, date_taken "
+                                "FROM \"edware\".\"fact_asmt_outcome\" "
+                                "WHERE asmt_guid = 'asmt_guid_1' AND date_taken = '20140101' "
+                                "AND status = 'C' AND student_guid = 'student_guid_1'")
 
     def test_find_deleted_fact_asmt_outcome_rows(self):
-        query = compile_query_to_sql_text(find_deleted_fact_asmt_outcome_rows('schema', 'table', 'guid_1',
-                                                                              [('col_a_a', 'col_a_b')],
-                                                                              [('status', 'W')]))
+        match_conf = get_move_to_target_conf()['handle_deletions']
+        query = find_deleted_fact_asmt_outcome_rows('edware',
+                                                    match_conf['target_table'],
+                                                    'batch_guid_1',
+                                                    match_conf['find_deleted_fact_asmt_outcome_rows'])
+        query = compile_query_to_sql_text(query)
         logger.info(query)
         self.assertEqual(query,
-                         "SELECT col_a_a ,status FROM \"schema\".\"table\" WHERE batch_guid = 'guid_1' AND status in ('W')")
-
-    def test_find_unmatched_deleted_fact_asmt_outcome_row(self):
-        query = compile_query_to_sql_text(find_unmatched_deleted_fact_asmt_outcome_row('scheme', 'table', 'guid',
-                                                                                       [('status', 'W')]))
-        logger.info(query)
-        self.assertEqual(query,
-                         "SELECT status FROM \"scheme\".\"table\" WHERE status in ('W') and batch_guid = 'guid'")
+                         "SELECT asmnt_outcome_rec_id, student_guid, asmt_guid, date_taken, status FROM \"edware\".\"fact_asmt_outcome\" WHERE "
+                         "batch_guid = 'batch_guid_1' AND status = 'W'")
 
 
 def generate_conf(guid_batch, udl2_conf):
@@ -207,18 +225,18 @@ def get_expected_column_types_for_fact_table(table_name):
 
 
 def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, section_rec_id, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."{table_name}"(asmnt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
+    return 'INSERT INTO "edware"."{table_name}" (asmnt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
            'school_guid,section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,status,most_recent,batch_guid) '\
-           ' SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
+           'SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
            '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\'\'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
            'score_claim_4,score_claim_4_min,score_claim_4_max,\'\'\'\',True,guid_batch '\
-           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE op = \'\'C\'\' AND guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmnt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
+           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmnt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
            'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
            'section_guid character varying(50),inst_hier_rec_id bigint,section_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
            'asmt_grade character varying(10),enrl_grade character varying(10),date_taken character varying(8),date_taken_day smallint,date_taken_month smallint,'\
@@ -233,15 +251,15 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
 
 def get_expected_update_inst_hier_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET inst_hier_rec_id=dim.dim_inst_hier_rec_id FROM '\
-        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid,school_guid AS dim_school_guid,state_code AS dim_state_code '\
-        'FROM "edware"."dim_inst_hier") dim WHERE inst_hier_rec_id=-1 AND district_guid=dim_district_guid AND '\
-        'school_guid=dim_school_guid AND state_code=dim_state_code'.format(table_name=table_name)
+        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, district_guid AS dim_district_guid, school_guid AS dim_school_guid, state_code AS dim_state_code  '\
+        'FROM "edware"."dim_inst_hier") dim  WHERE inst_hier_rec_id =  -1 AND district_guid = dim_district_guid AND '\
+        'school_guid = dim_school_guid AND state_code = dim_state_code'.format(table_name=table_name)
 
 
 def get_expected_update_student_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET student_rec_id=dim.dim_student_rec_id FROM '\
-        '(SELECT student_rec_id AS dim_student_rec_id, student_guid AS dim_student_guid ' \
-        'FROM "edware"."dim_student") dim WHERE student_rec_id=-1 AND student_guid=dim_student_guid'.format(table_name=table_name)
+        '(SELECT student_rec_id AS dim_student_rec_id, student_guid AS dim_student_guid  ' \
+        'FROM "edware"."dim_student") dim  WHERE student_rec_id =  -1 AND student_guid = dim_student_guid'.format(table_name=table_name)
 
 
 def get_expected_column_types_for_dim_inst_hier(table_name):
@@ -256,15 +274,16 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
 
 
 def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, guid_batch, dbname, user, password):
-    return 'INSERT INTO \"edware\"."{table_name}"(inst_hier_rec_id,state_name,state_code,district_guid,district_name,'\
-           'school_guid,school_name,school_category,from_date,to_date,most_recent)  SELECT * FROM '\
-           'dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), '\
-           '* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,'\
-           'to_char(CURRENT_TIMESTAMP, \'\'yyyymmdd\'\'),\'\'99991231\'\',True FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE op = \'\'C\'\' AND guid_batch=\'\'{guid_batch}\'\') as y\') '\
-           'AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),'\
-           'district_name character varying(256),school_guid character varying(50),school_name character varying(256),'\
-           'school_category character varying(20),from_date character varying(8),to_date character varying(8),'\
-           'most_recent boolean);'.format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
+    return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_name,state_code,district_guid,district_name,"\
+           "school_guid,school_name,school_category,from_date,to_date,most_recent) SELECT * FROM "\
+           "dblink('host={host} port={port} dbname={dbname} user={user} password={password}', " \
+           "'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), "\
+           "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,"\
+           "to_char(CURRENT_TIMESTAMP, ''yyyymmdd''),''99991231'',True FROM \"udl2\".\"INT_SBAC_ASMT_OUTCOME\" WHERE op = ''C'' AND guid_batch=''{guid_batch}'') as y') "\
+           "AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),"\
+           "district_name character varying(256),school_guid character varying(50),school_name character varying(256),"\
+           "school_category character varying(20),from_date character varying(8),to_date character varying(8),"\
+           "most_recent boolean);".format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):

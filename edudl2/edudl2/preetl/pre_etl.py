@@ -2,9 +2,9 @@ from uuid import uuid4
 import logging
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries
-from edudl2.udl2.errorcodes import BATCH_REC_FAILED
 from edudl2.preetl.create_queries import insert_batch_row_query
 from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.exceptions.errorcodes import ErrorCode
 
 
 def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced=None):
@@ -42,7 +42,7 @@ def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced
         return guid_batch
 
     except Exception as e:
-        logger.error(BATCH_REC_FAILED + ': ' + str(e))
+        logger.error(ErrorCode.BATCH_REC_FAILED + ': ' + str(e))
         return None
 
 

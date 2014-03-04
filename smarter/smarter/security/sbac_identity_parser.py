@@ -16,8 +16,8 @@ class SbacIdentityParser(IdentityParser):
     SCHOOL_GUID_INDEX = 15
     '''
     format of string in memberOf
-    0      1    2     3        4      5              6             7       8     9                  10               11         12       13                    14                  15            16
-    RoleId|Name|Level|ClientID|Client|GroupOfStateID|GroupOfStates|StateID|State|GroupOfDistrictsID|GroupOfDistricts|DistrictID|District|GroupOfInstitutionsID|GroupOfInstitutions|InstitutionID|Institution
+     0      1    2     3        4      5              6             7       8     9                  10               11         12       13                    14                  15            16
+    |RoleId|Name|Level|ClientID|Client|GroupOfStateID|GroupOfStates|StateID|State|GroupOfDistrictsID|GroupOfDistricts|DistrictID|District|GroupOfInstitutionsID|GroupOfInstitutions|InstitutionID|Institution|
     '''
     @staticmethod
     def get_role_relationship_chain(attributes):
@@ -28,7 +28,7 @@ class SbacIdentityParser(IdentityParser):
         tenancy_chain = []
         if memberOf:
             tenancy_chain = memberOf[0].split('|')
-            # remove first and last item as they're always blank strings
+            # remove first and last items as they're always blank strings
             tenancy_chain.pop(0)
             tenancy_chain.pop()
         relations = []

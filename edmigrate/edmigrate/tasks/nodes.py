@@ -1,3 +1,4 @@
+from edmigrate.tasks.base import BaseTask
 __author__ = 'sravi'
 
 from edmigrate.celery import celery, logger
@@ -25,7 +26,7 @@ def get_all_registered_slave_nodes():
     return all_nodes
 
 
-@celery.task(name='task.edmigrate.nodes.register_node')
+@celery.task(name='task.edmigrate.nodes.register_node', base=BaseTask)
 def register_slave_node(host, group):
     '''
     register a slave node based on host and group info

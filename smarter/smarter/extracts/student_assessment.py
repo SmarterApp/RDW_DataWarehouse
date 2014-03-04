@@ -64,15 +64,19 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome.c.asmt_score_range_max.label(fact_asmt_outcome_label.get('asmt_score_range_max', 'asmt_score_range_max')),
                                     fact_asmt_outcome.c.asmt_perf_lvl.label(fact_asmt_outcome_label.get('asmt_perf_lvl', 'asmt_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_1_score.label(fact_asmt_outcome_label.get('asmt_claim_1_score', 'asmt_claim_1_score')),
+                                    fact_asmt_outcome.c.asmt_claim_1_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_1_perf_lvl', 'asmt_claim_1_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_1_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_1_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_1_score_range_max', 'asmt_claim_1_score_range_max')),
                                     fact_asmt_outcome.c.asmt_claim_2_score.label(fact_asmt_outcome_label.get('asmt_claim_2_score', 'asmt_claim_2_score')),
+                                    fact_asmt_outcome.c.asmt_claim_2_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_2_perf_lvl', 'asmt_claim_2_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_2_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_2_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_2_score_range_max', 'asmt_claim_2_score_range_max')),
                                     fact_asmt_outcome.c.asmt_claim_3_score.label(fact_asmt_outcome_label.get('asmt_claim_3_score', 'asmt_claim_3_score')),
+                                    fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_3_perf_lvl', 'asmt_claim_3_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_3_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_3_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_3_score_range_max', 'asmt_claim_3_score_range_max')),
                                     fact_asmt_outcome.c.asmt_claim_4_score.label(fact_asmt_outcome_label.get('asmt_claim_4_score', 'asmt_claim_4_score')),
+                                    fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label(fact_asmt_outcome_label.get('asmt_claim_4_perf_lvl', 'asmt_claim_4_perf_lvl')),
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_4_score_range_max', 'asmt_claim_4_score_range_max')),
                                     fact_asmt_outcome.c.dmg_eth_hsp.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_HSP, Constants.DMG_ETH_HSP)),
@@ -109,7 +113,8 @@ def get_extract_assessment_query(params):
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
-        query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)
+        query = query.where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))
+        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
         if school_guid is not None:
             query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
         if district_guid is not None:

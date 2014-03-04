@@ -1,19 +1,16 @@
-from sqlalchemy import select, delete, update
+from sqlalchemy import select, delete, update, and_
+
+BATCH_GUID = 'batch_guid'
+MOST_RECENT = 'most_recent'
 
 
 class Matcher():
 
-    def __init__(self, matched_columns, update_columns):
+    def __init__(self, matched_columns):
         self._matched_columns = matched_columns
-        self._update_columns = update_columns
 
     def match(self, r1, r2):
         return Matcher.match_in_columns(r1, r2, self._matched_columns)
-
-    def is_identical(self, r1, r2):
-        if not self.match(r1, r2):
-            return False
-        return Matcher.match_in_columns(r1, r2, self._update_columns)
 
     @staticmethod
     def match_in_columns(r1, r2, columns):
@@ -28,13 +25,14 @@ class QueryHelper():
 
     def __init__(self, connector, batch_guid, conf):
         self._conn = connector
-        self._table_name = conf['prod_table']
-        self._guid_col_name = conf['guid_column']
-        self._update_col_names = conf['update_columns']
-        self._matcher = Matcher(conf['matched_columns'], self._update_col_names)
+        self._table_name = conf['table_name']
+        self._dependant_table_conf = conf['dependant_table']
+        self._guid_col_names = conf['guid_columns']
+        self._matcher = Matcher(conf['key_columns'])
+        self._update_col_names = self._dependant_table_conf['columns']
         self._table = connector.get_table(self._table_name)
-        self._guid_column = self._table.c[self._guid_col_name]
-        self._batch_clause = (self._table.c['batch_guid'] == batch_guid)
+        self._dependant_table = connector.get_table(self._dependant_table_conf['name'])
+        self._batch_clause = (self._table.c[BATCH_GUID] == batch_guid)
 
     def find_all(self):
         query = select([self._table]).where(self._batch_clause)
@@ -43,10 +41,8 @@ class QueryHelper():
     def find_by_natural_key(self, record):
         if not record:
             return None
-        guid = record[self._guid_col_name]
-        #TODO natual key may contain multiple columns
-        #TODO add most recent flag
-        query = select([self._table]).where(self._guid_column == guid)
+        guid_clause = self._get_guid(record)
+        query = select([self._table]).where(guid_clause).where(self._table.c[MOST_RECENT] == 'TRUE')
         results = self._conn.execute(query)
         for result in results:
             if self._matcher.match(record, result):
@@ -54,18 +50,23 @@ class QueryHelper():
         else:
             return None
 
+    def _get_guid(self, record):
+        conditions = []
+        for col_name in self._guid_col_names:
+            conditions.append(self._table.c[col_name] == record[col_name])
+        return and_(*conditions)
+
     def delete_by_guid(self, record):
         if not record:
             return None
-        guid = record[self._guid_col_name]
-        query = delete(self._table).where(self._guid_column == guid).where(self._batch_clause)
+        guid_clause = self._get_guid(record)
+        query = delete(self._table).where(guid_clause).where(self._batch_clause)
         self._conn.execute(query)
 
-    def is_identical(self, record1, record2):
-        return self._matcher.is_identical(record1, record2)
-
-    def update_to_match(self, record):
-        guid = record[self._guid_col_name]
-        values = {self._table.c[col]: record[col] for col in self._update_col_names}
-        query = update(self._table).values(values).where(self._guid_column == guid).where(self._batch_clause)
+    def update_dependant(self, old_record, new_record):
+        columns = self._dependant_table.c
+        conditions = (columns[col] == old_record[col] for col in self._update_col_names)
+        values = {columns[col]: new_record[col] for col in self._update_col_names}
+        query = update(self._dependant_table).values(values).where(and_(*conditions)).\
+            where(self._dependant_table.c[BATCH_GUID] == old_record[BATCH_GUID])
         self._conn.execute(query)

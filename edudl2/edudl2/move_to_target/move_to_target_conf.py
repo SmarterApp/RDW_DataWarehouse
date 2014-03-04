@@ -51,9 +51,9 @@ def get_move_to_target_conf():
                                                      'status': 'W'},
         },
         'handle_duplication': [{
-            'prod_table': 'dim_student',
-            'guid_column': 'student_guid',
-            'matched_columns': [
+            'table_name': 'dim_student',
+            'guid_columns': ['student_guid'],
+            'key_columns': [
                 'student_guid',
                 'first_name',
                 'middle_name',
@@ -70,10 +70,13 @@ def get_move_to_target_conf():
                 'district_guid',
                 'school_guid',
             ],
-            'update_columns': [
-                'student_rec_id'
-            ]
-        }]
+            'dependant_table': {
+                'name': 'fact_asmt_outcome',
+                'columns': [
+                    'student_rec_id'
+                ]
+            }
+        }],
     }
 
     return conf

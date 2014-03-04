@@ -98,7 +98,7 @@ class ProdDBConnection(DBConnection):
         """
         Returns datasource name for Production table
         """
-        return PRODUCTION_NAMESPACE + '.' + tenant
+        return TARGET_NAMESPACE + '.' + tenant
 
     @staticmethod
     def generate_metadata(schema_name=None, bind=None):

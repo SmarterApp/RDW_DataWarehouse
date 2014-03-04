@@ -55,18 +55,10 @@ class Udl2BaseTask(Task):
         # Write to ERR_LIST
         if isinstance(exc, DeleteRecordNotFound):
             # TODO: udl phase step number
-            for row in exc.rows:
-                values = {'err_source': 4,
-                          'guid_batch': exc.batch_guid,
-                          'created_date': failure_time,
-                          'record_sid': row['asmnt_outcome_rec_id'],
-                          'err_code': ErrorCode.DELETE_RECORD_NOT_FOUND,
-                          'err_input': "student_guid:{student_guid}, "
-                                       "asmt_guid:{asmt_guid}, "
-                                       "date_taken:{date_taken}".format(student_guid=row['student_guid'],
-                                                                        asmt_guid=row['asmt_guid'],
-                                                                        date_taken=row['date_taken'])}
-                insert_to_table(UDL2DBConnection, 'ERR_LIST', values)
+            try:
+                exc.insert_err_list(UDL2DBConnection, 4, failure_time)
+            except NotImplemented:
+                pass
         msg = {}
         msg.update(args[0])
         msg.update({mk.PIPELINE_STATE: 'error'})

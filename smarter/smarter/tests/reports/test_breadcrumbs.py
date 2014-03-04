@@ -5,13 +5,16 @@ Created on Mar 8, 2013
 '''
 import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
+from pyramid.security import Allow
+import edauth
+from edauth.security.user import RoleRelation
 
 
 class TestContext(Unittest_with_edcore_sqlite):
@@ -25,21 +28,16 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_session = create_test_session(['TEACHER'], uid='272')
+        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
+        # Set up context security
+        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
+        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
-
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
 
     def testStateContext(self):
         results = get_breadcrumbs_context(state_code='NC')

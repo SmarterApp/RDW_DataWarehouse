@@ -23,7 +23,6 @@ class Test(unittest.TestCase):
 
     def test_read_metadata(self):
         tables = get_list_of_tables()
-        # user_session table will be removed soon.
         # but for now just counting it.
         self.assertEqual(2, len(tables))
 

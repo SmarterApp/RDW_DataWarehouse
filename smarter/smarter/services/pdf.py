@@ -20,6 +20,7 @@ from smarter.reports.helpers.constants import AssessmentType, Constants
 import services.celery
 from edauth.utils import to_bool
 from edapi.decorators import validate_params
+import sys
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
@@ -108,11 +109,11 @@ def send_pdf_request(params):
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
         raise EdApiHTTPForbiddenAccess(e.msg)
-    except PdfGenerationError as e:
+    except (PdfGenerationError, TimeoutError) as e:
         raise EdApiHTTPInternalServerError(e.msg)
-    except TimeoutError as e:
+    except:
         # if celery get task got timed out...
-        raise EdApiHTTPInternalServerError(e.msg)
+        raise EdApiHTTPInternalServerError("Internal Error")
 
     return response
 

@@ -3,12 +3,13 @@ Created on May 7, 2013
 
 @author: dip
 '''
-from sqlalchemy.sql.expression import Select, select, or_
+from sqlalchemy.sql.expression import Select, or_
 from pyramid.security import authenticated_userid
 import pyramid
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
 from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.security.tenant import get_tenant_by_state_code
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
@@ -22,18 +23,18 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
     kwargs.pop(Constants.STATE_CODE, None)
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get user role and guid
-        (guid, roles) = __get_user_info(connector)
+        user = __get_user_info()
 
         # Build query
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 
         # Look up each role for its context security object
         clauses = []
-        for role in roles:
+        for role in user.get_roles():
             context = __get_context_instance(role, connector)
 
             # Get context security expression to attach to where clause
-            clause = context.get_context(guid)
+            clause = context.get_context(get_tenant_by_state_code(state_code), user)
             if clause is not None:
                 clauses.append(clause)
 
@@ -56,44 +57,26 @@ def check_context(state_code, student_guids):
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get user role and guid
-        (guid, roles) = __get_user_info(connector)
+        user = __get_user_info()
 
         # Look up each role for its context security object
-        for role in roles:
+        for role in user.get_roles():
             context = __get_context_instance(role, connector)
 
-            has_context = context.check_context(guid, student_guids)
+            has_context = context.check_context(get_tenant_by_state_code(state_code), user, student_guids)
             if has_context:
                 # One of the roles has context to the resource, we can stop checking
-                break
+                return True
 
-    return has_context
+    return False
 
 
-def __get_user_info(connector):
+def __get_user_info():
     '''
-    Returns user guid and roles
+    Returns user object.  This is not the session object
 
-    :param connector: dbconection that is used to query database
-    :type connector: DBConnection
     '''
-    # get role and context
-    user = authenticated_userid(pyramid.threadlocal.get_current_request())
-    roles = user.get_roles()
-    user_id = user.get_uid()
-
-    # read from user_mapping table to map uid to guid
-    user_mapping = connector.get_table(Constants.USER_MAPPING)
-    guid_query = select([user_mapping.c.guid],
-                        from_obj=[user_mapping], limit=1)
-    guid_query = guid_query.where(user_mapping.c.user_id == user_id)
-    result = connector.get_result(guid_query)
-
-    guid = None
-    if result:
-        guid = result[0][Constants.GUID]
-
-    return (guid, roles)
+    return authenticated_userid(pyramid.threadlocal.get_current_request())
 
 
 def __get_context_instance(role, connector):

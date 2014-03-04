@@ -11,12 +11,12 @@ class TestDefaultContextSecurity(unittest.TestCase):
 
     def test_get_context(self):
         default_context = DefaultRole("connection")
-        clause = default_context.get_context('123')
+        clause = default_context.get_context('tenant', {})
         self.assertIsNone(clause)
 
     def test_check_context(self):
         default_context = DefaultRole("connection")
-        context = default_context.check_context('123', [])
+        context = default_context.check_context('tenant', {}, [])
         self.assertTrue(context)
 
 if __name__ == "__main__":

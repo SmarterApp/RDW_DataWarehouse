@@ -5,7 +5,7 @@ from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_ge
                          W_simple_file_validator, W_file_splitter, W_file_content_validator,
                          W_load_json_to_integration, W_load_to_integration_table,
                          W_load_from_integration_to_star, W_load_sr_integration_to_target,
-                         W_parallel_csv_load, W_post_etl, W_all_done)
+                         W_parallel_csv_load, W_post_etl, W_all_done, W_job_status_notification)
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 
@@ -53,9 +53,11 @@ def determine_end_chain(msg, load_type):
                                        W_load_from_integration_to_star.handle_deletions.s()],
                         "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
 
-        post_etl_tasks = [W_post_etl.task.s(), W_all_done.task.s()]
+        post_etl_tasks = {"assessment": [W_post_etl.task.s(), W_all_done.task.s()],
+                          "studentregistration": [W_post_etl.task.s(), W_all_done.task.s(),
+                                                  W_job_status_notification.task.s()]}
 
-        return chain(target_tasks[load_type] + post_etl_tasks)
+        return chain(target_tasks[load_type] + post_etl_tasks[load_type])
 
 
 def _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, initial_msg):

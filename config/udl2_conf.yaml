@@ -189,6 +189,8 @@ qa:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: /home/udl2/.gnupg
+    sr_notification_timeout: 30
+    sr_notification_retries: 5
 development:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -316,6 +318,8 @@ development:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: ~/.gnupg
+    sr_notification_timeout: 30
+    sr_notification_retries: 5
 jenksins_dev:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -443,3 +447,5 @@ jenksins_dev:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: ~/.gnupg
+    sr_notification_timeout: 30
+    sr_notification_retries: 5

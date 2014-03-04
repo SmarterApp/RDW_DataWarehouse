@@ -1,3 +1,5 @@
+from edudl2.notification.notification_messages import get_notification_message
+
 __author__ = 'tshewchuk'
 
 """
@@ -45,13 +47,14 @@ def create_notification_body(udl2_conf, guid_batch):
 
     status_codes = {mk.SUCCESS: 'Success', mk.FAILURE: 'Failed'}
 
-    # Get the job status and error messages
+    # Get the job status
     with UDL2DBConnection() as source_conn:
         batch_table = source_conn.get_table(udl2_conf['udl2_db'][mk.BATCH_TABLE])
         batch_select = select([batch_table.c.udl_phase_step_status]).where(batch_table.c.guid_batch == guid_batch).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
         status = source_conn.execute(batch_select).fetchone()[0]
-        # TODO: Populate job error messages with actual data when this task is implemented.
-        message = []
+
+    #Get error or success messages
+    message = get_notification_message(status, guid_batch)
 
     # Get the job and test registration ids
     with TargetDBConnection() as target_conn:

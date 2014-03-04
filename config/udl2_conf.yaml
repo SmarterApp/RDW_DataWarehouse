@@ -104,6 +104,7 @@ qa:
         db_driver: postgresql
         json_lz_table: LZ_JSON
         csv_lz_table: LZ_CSV
+        err_list_table: ERR_LIST
         master_metadata_table: MASTER_METADATA
         # sqlalchemy specific
         echo: False
@@ -237,6 +238,7 @@ development:
         db_driver: postgresql
         json_lz_table: LZ_JSON
         csv_lz_table: LZ_CSV
+        err_list_table: ERR_LIST
         master_metadata_table: MASTER_METADATA
     target_db:
         db_schema: edware
@@ -367,6 +369,7 @@ jenksins_dev:
         json_lz_table: LZ_JSON
         csv_lz_table: LZ_CSV
         master_metadata_table: MASTER_METADATA
+        err_list_table: ERR_LIST
     target_db:
         db_schema: edware
         db_name: edware

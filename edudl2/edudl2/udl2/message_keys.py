@@ -50,6 +50,7 @@ CSV_TABLE = 'csv_table'
 FDW_SERVER = 'fdw_server'
 REF_TABLE = 'ref_table'
 CSV_LZ_TABLE = 'csv_lz_table'
+ERR_LIST_TABLE = 'err_list_table'
 
 # keys for conf sent to move_to_integration.move_data_from_staging_to_integration(conf)
 SOURCE_DB_DRIVER = 'source_db_driver'

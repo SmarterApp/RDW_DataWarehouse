@@ -411,6 +411,16 @@ function setup_for_udl {
     sleep 2
 }
 
+function run_udl_e2e_tests {
+    echo "Running integration tests"
+# Regenerate ini for e2e tests
+
+    cd "$WORKSPACE/edudl2/edudl2/tests/integration_tests"
+    nosetests test_udl_reporting.py
+    echo "Finished udl data load"
+    
+}
+
 function main {
 	
     get_opts $@
@@ -440,6 +450,9 @@ function main {
         if (! $RUN_END_TO_END;) then
            setup_python33_functional_test_dependencies
            run_python33_functional_tests
+        else
+            #setup_for_udl
+            #run_udl_e2e_tests
         fi
         setup_functional_test_dependencies
         run_functional_tests

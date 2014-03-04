@@ -450,7 +450,7 @@ function main {
         if (! $RUN_END_TO_END;) then
            setup_python33_functional_test_dependencies
            run_python33_functional_tests
-        else
+        #else
             #setup_for_udl
             #run_udl_e2e_tests
         fi

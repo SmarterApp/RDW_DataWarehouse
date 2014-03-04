@@ -319,9 +319,9 @@ development:
         db_schema: edware_sds_1_11
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: localhost
-        db_port: 5432
-        db_database: edware_prod
+        db_host: edwdbsrv4.poc.dum.edwdc.net
+        db_port: 9999
+        db_database: edware
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql
@@ -450,7 +450,7 @@ jenksins_dev:
         # TBD make sure it is the production setting
         db_host: edwdbsrv4.poc.dum.edwdc.net
         db_port: 9999
-        db_database: edware_prod
+        db_database: edware
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql

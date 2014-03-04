@@ -155,7 +155,7 @@ def handle_insertion_dim_tables(msg):
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
     # generate config dict
-    configs = get_move_to_target_conf()[5]['dim_tables']
+    configs = get_move_to_target_conf()['handle_duplication']
     affected_rows = 0
     for match_conf in configs:
         num_of_rows = update_or_delete_duplicate_record(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)

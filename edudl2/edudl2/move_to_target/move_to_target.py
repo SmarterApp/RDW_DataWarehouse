@@ -238,7 +238,6 @@ def match_deleted_records(conf, match_conf):
                                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
                                                    'move_to_target',
                                                    'matched_deleted_records')
-    print('here')
     with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
         for candidate in candidates:
 
@@ -296,13 +295,14 @@ def check_mismatched_deletions(conf, match_conf):
                                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
                                                    'move_to_target',
                                                    'checked_mismatched_deletions')
+    mismatched_rows = []
     if mismatches.rowcount > 0:
         for mismatch in mismatches:
-            record = dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'],
-                              mismatch))
-            raise DeleteRecordNotFound(record['student_guid'], record['asmt_guid'], record['date_taken'],
-                                       " Not found in  {edschema}.{table}".format(edschema=conf[mk.PROD_DB_SCHEMA],
-                                                                                  table=match_conf['prod_table']))
+            mismatched_rows.append(dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'], mismatch)))
+        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
+                                   mismatched_rows,
+                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                             table=match_conf['prod_table']))
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):

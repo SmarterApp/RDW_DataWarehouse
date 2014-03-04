@@ -13,6 +13,7 @@ common:
             - edudl2.udl2.W_file_arrived
             - edudl2.udl2.W_file_decrypter
             - edudl2.udl2.W_file_expander
+            - edudl2.udl2.W_get_callback_url
             - edudl2.udl2.W_simple_file_validator
             - edudl2.udl2.W_file_splitter
             - edudl2.udl2.W_parallel_csv_load
@@ -61,6 +62,8 @@ common:
     passphrase: sbac udl2
     tenant_position: -4
     search_wait_time: 10
+    callback_url_key:
+        studentregistration: source.testregcallbackurl
     load_type_key: content
     load_type:
         assessment: assessment

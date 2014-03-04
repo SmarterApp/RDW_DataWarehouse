@@ -29,17 +29,11 @@ def task(incoming_msg):
     @param incoming_msg: the message received from the penultimate step in the UDL process. Contains all params needed
     """
     start_time = datetime.datetime.now()
-    tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
     guid_batch = incoming_msg[mk.GUID_BATCH]
     load_type = incoming_msg[mk.LOAD_TYPE]
-    work_zone_directories_to_cleanup = {
-        mk.ARRIVED: tenant_directory_paths[mk.ARRIVED],
-        mk.DECRYPTED: tenant_directory_paths[mk.DECRYPTED],
-        mk.EXPANDED: tenant_directory_paths[mk.EXPANDED],
-        mk.SUBFILES: tenant_directory_paths[mk.SUBFILES]
-    }
+    
     # do the cleanup
-    post_etl.cleanup_work_zone(work_zone_directories_to_cleanup)
+    post_etl.cleanup(incoming_msg)
     finish_time = datetime.datetime.now()
 
     # Benchmark

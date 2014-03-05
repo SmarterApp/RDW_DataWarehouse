@@ -1,4 +1,4 @@
-from edmigrate.utils.migrate import check_recrods_for_delete, \
+from edmigrate.utils.migrate import check_records_for_delete, \
     get_batches_to_migrate, migrate_fact_asmt_outcome, migrate_batch, \
     report_udl_stats_batch_status
 from edmigrate.tests.utils.unittest_with_preprod_sqlite import Unittest_with_preprod_sqlite, \
@@ -36,13 +36,13 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite,
     def test_check_recrods_for_delete_pass(self):
         conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         asmt_outcome_rec_ids = [1011691, 1011681, 1011671, 1011661, ]
-        result = check_recrods_for_delete(conn, asmt_outcome_rec_ids)
+        result = check_records_for_delete(conn, asmt_outcome_rec_ids)
         self.assertTrue(result)
 
     def test_check_recrods_for_delete_with_already_deleted(self):
         conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         asmt_outcome_rec_ids = [1011691, 1011681, 1011671, 1011661, 91011691]
-        result = check_recrods_for_delete(conn, asmt_outcome_rec_ids)
+        result = check_records_for_delete(conn, asmt_outcome_rec_ids)
         self.assertFalse(result)
 
     def test_migrate_fact_asmt_outcome(self):
@@ -58,8 +58,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite,
         self.assertEqual(3, row['asmt_outcome_rec_ids'])
         rset.close()
 
-        updated_count = migrate_fact_asmt_outcome(batch_guid, preprod_conn, prod_conn)
-        self.assertEqual(3, updated_count)
+        delete_count, insert_count = migrate_fact_asmt_outcome(batch_guid, preprod_conn, prod_conn)
+        self.assertEqual(3, delete_count)
+        self.assertEqual(3, insert_count)
         rset = prod_conn.execute(query_c)
         row = rset.fetchone()
         self.assertEqual(0, row['asmt_outcome_rec_ids'])

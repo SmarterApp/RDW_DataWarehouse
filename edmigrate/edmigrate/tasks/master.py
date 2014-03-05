@@ -139,6 +139,7 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     # TODO: Error handling - If slaves are not in sync how long to wait to repeat this check
     return status
 
+
 @celery.task(name='task.edmigrate.master.cleanup', base=BaseTask)
 def cleanup(tenant_name):
     """

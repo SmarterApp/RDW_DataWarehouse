@@ -2,6 +2,7 @@ from edmigrate.database.migrate_source_connector import EdMigrateSourceConnectio
 from edcore.utils.cleanup import cleanup_all_tables
 from edmigrate.utils.constants import Constants
 
+
 def cleanup_tables(connector, batch_guid, table_name_prefix, tables):
     """
     clean up migration tables

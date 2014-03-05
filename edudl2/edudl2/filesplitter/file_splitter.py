@@ -2,37 +2,22 @@ import os
 import csv
 import math
 import itertools
+from uuid import uuid4
+from edudl2.udl2_util.file_util import create_directory
 
 
-def create_output_destination(file_name, output_path):
-    # create output template from supplied input file path
-    base = os.path.splitext(os.path.basename(file_name))[0]
-    # TODO:  We shouldn't use the base name, use something shorter in length "part.1" or so
-    output_name_template = (base + '_part_').replace(' ', '')
-
-    # create output directory
-    output_dir = output_path
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    return output_name_template, output_dir
+def validate_file(file_name):
+    if not (os.path.exists(file_name) and os.path.isfile(file_name)) or os.path.getsize(file_name) <= 0:
+        raise Exception('Unable to split invalid.')
 
 
-def check_file_size(file_name):
-    file_size = os.path.getsize(file_name)
-    if file_size <= 0:
-        raise Exception('Unable to split, file has size of zero')
-
-
-def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='./'):
+def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='./'):
     '''
     Split files into either parts or row limit
     # TODO:  Figure out why we have to send a a list of a list back and the importance of the row
     '''
-    isValid = os.path.exists(file_name) and os.path.isfile(file_name)
-    if isValid is False:
-        raise Exception('File not found!')
-    check_file_size(file_name)
-    output_name_template, output_dir = create_output_destination(file_name, output_path)
+    validate_file(file_name)
+    create_directory(output_dir)
 
     with open(file_name) as csvfile:
         data = csv.reader(csvfile, delimiter=delimiter)
@@ -47,7 +32,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
         split_file_list = []
         for i in range(1, parts + 1):
             csvfile.seek(0)
-            output_file = os.path.join(output_dir, output_name_template + str(i) + '.csv')
+            output_file = os.path.join(output_dir, 'part_' + str(uuid4()) + '.csv')
             with open(output_file, 'w') as writerfile:
                 row_count = 0
                 start = row_limit * (i - 1) + 1

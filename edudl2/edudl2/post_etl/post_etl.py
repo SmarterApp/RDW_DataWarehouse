@@ -34,15 +34,16 @@ def cleanup_work_zone(work_zone_directories_to_cleanup):
             shutil.rmtree(directory)
     return True
 
+
 def cleanup_udl_tables(guid_batch):
     """
     """
     with UDL2DBConnection() as connector:
         schema_name = udl2_conf['udl2_db']['db_schema']
-        cleanup_all_tables(connector=connector, schema_name=schema_name, 
-            column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='int_')
-        cleanup_all_tables(connector=connector, schema_name=schema_name, 
-            column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='stg_')
+        cleanup_all_tables(connector=connector, schema_name=schema_name,
+                           column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='int_')
+        cleanup_all_tables(connector=connector, schema_name=schema_name,
+                           column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='stg_')
 
 
 def cleanup(msg):

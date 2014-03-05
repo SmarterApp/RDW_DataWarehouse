@@ -21,20 +21,25 @@ def get_filtered_tables(connector, table_name_prefix=None):
     return all_tables
 
 
-def get_delete_table_query(schema_name, table_name, column_name, value, batch_size):
-    query_template = "DELETE FROM {schema_name}.{table_name} WHERE ctid IN " + \
-                     "(SELECT ctid FROM {schema_name}.{table_name} WHERE {column_name} = :value " + \
-                     " ORDER BY ctid LIMIT :batch_size)"
-    query = query_template.format(schema_name= '\"' + schema_name + '\"',
-                         table_name='\"' + table_name + '\"',
-                         column_name=column_name)
+def _get_schema_table_name(schema_name, table_name):
+    return '\"' + schema_name + '\".' + '\"' + table_name + '\"' \
+           if schema_name is not None else '\"' + table_name + '\"'
+
+
+def get_delete_table_query(schema_name, table_name, column_name, value, batch_size, row_locator):
+    query_template = "DELETE FROM {schema_table_name} WHERE {row_locator} IN " +\
+                     "(SELECT {row_locator} FROM {schema_table_name} WHERE {column_name} = :value " +\
+                     "ORDER BY {row_locator} LIMIT :batch_size)"
+    query = query_template.format(schema_table_name=_get_schema_table_name(schema_name, table_name),
+                                  column_name=column_name,
+                                  row_locator=row_locator)
     params = [bindparam('value', value), bindparam('batch_size', batch_size)]
     return text(query, bindparams=params)
 
 
-def _delete_rows_in_batches(connector, schema_name, table_name, column_name, value, batch_size=10000):
+def _delete_rows_in_batches(connector, schema_name, table_name, column_name, value, row_locator, batch_size=10000):
     rows_deleted = -1
-    query_to_delete_rows = get_delete_table_query(schema_name, table_name, column_name, value, batch_size)
+    query_to_delete_rows = get_delete_table_query(schema_name, table_name, column_name, value, batch_size, row_locator)
     while rows_deleted is not 0:
         result = connector.execute(query_to_delete_rows)
         rows_deleted = result.rowcount
@@ -45,7 +50,7 @@ def _delete_all_rows(connector, table, column_name, value):
     connector.execute(delete_query)
 
 
-def cleanup_table(connector, schema_name, column_name, value, batch_delete, table_name):
+def cleanup_table(connector, schema_name, column_name, value, batch_delete, table_name, row_locator='ctid'):
     """
     cleanup table for the given column and value
     """
@@ -54,13 +59,13 @@ def cleanup_table(connector, schema_name, column_name, value, batch_delete, tabl
         if not batch_delete:
             _delete_all_rows(connector, table, column_name, value)
         else:
-            _delete_rows_in_batches(connector, schema_name, table_name, column_name, value)
+            _delete_rows_in_batches(connector, schema_name, table_name, column_name, value, row_locator)
 
 
 def cleanup_all_tables(connector, schema_name, column_name, value, batch_delete=True, table_name_prefix=None, tables=None):
     """
     cleanup all tables for the given column and matching value
-    
+
     All rows matching the given guid_batch will be delted from all the tables
     in the given connector schema
     """

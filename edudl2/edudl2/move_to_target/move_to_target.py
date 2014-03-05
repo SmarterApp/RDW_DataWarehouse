@@ -203,7 +203,6 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
         logger.info(compile_query_to_sql_text(query))
 
         # execute the query
-        print(conf[mk.TENANT_NAME])
         affected_rows = execute_udl_queries(conn, [query],
                                             'Exception -- exploding data from integration to target ' +
                                             '{target_table}'.format(target_table=target_table),

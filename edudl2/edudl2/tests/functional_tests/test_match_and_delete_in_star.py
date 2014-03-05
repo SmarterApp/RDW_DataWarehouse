@@ -30,10 +30,11 @@ class MatchAndDeleteFTest(UDLTestHelper):
         self.fact_table_prefix = 'fact_'
         self.insert_sql = 'INSERT INTO "{staging_schema}"."{staging_table}" ({columns_string}) VALUES ({value_string});'
         self.count_sql = ' SELECT COUNT(*) FROM "{schema}"."{table}" '
-        self.matched_prod_values = [{}, {}]
+        self.match_sql = ' SELECT COUNT(*) FROM "{schema}"."{table}" WHERE status = :status'
 
     def tearDown(self):
-        super(MatchAndDeleteFTest, self).tearDown()
+        #super(MatchAndDeleteFTest, self).tearDown()
+        pass
 
     def generate_insert_items(self, header, row):
         row = [r if str(r) != '' else '0' for r in row]
@@ -107,31 +108,32 @@ class MatchAndDeleteFTest(UDLTestHelper):
                                                   column_map['fact_asmt_outcome'],
                                                   column_types)
 
-    def test_1_match_deleted_records(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
+    def count_rows(self, status=None):
+        if status is None:
+            query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
+                                               table='fact_asmt_outcome'))
+        else:
+            query = text(self.match_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
+                                               table='fact_asmt_outcome'),
+                         bindparams=[bindparam('status', status)])
         result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
+        return int(result.fetchall()[0][0])
+
+    def test_match_deleted_records(self):
+        self.load_int_to_star()
+        self.assertEqual(27, self.count_rows())
         matched_prod_values = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        self.assertListEqual(self.matched_prod_values, matched_prod_values)
+        self.assertEqual(13, len(matched_prod_values))
+        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, matched_prod_values)
+        self.assertEqual(14, self.count_rows('W'))
+        self.assertEqual(13, self.count_rows('D'))
 
-    def test_2_update_deleted_record_rec_id(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
-        result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
-        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, self.matched_prod_values)
-        self.assertIsNotNone(result)
-
+    @skip('in dev')
     def test_3_check_mismatched_deletions(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
-        result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
-        # first there should be no exception, so it just return None
         result = move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
         self.assertIsNotNone(result)
 
+    @skip('in dev')
     def test_5_check_mismatched_deletions_2(self):
         query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
                                            table='fact_asmt_outcome'))

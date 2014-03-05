@@ -30,7 +30,6 @@ class IntToStarFTest(UDLTestHelper):
         self.fact_table_prefix = 'fact_'
         self.insert_sql = 'INSERT INTO "{staging_schema}"."{staging_table}" ({columns_string}) VALUES ({value_string});'
         self.count_sql = ' SELECT COUNT(*) FROM "{schema}"."{table}" '
-        self.matched_prod_values = [{}, {}]
 
     def tearDown(self):
         super(IntToStarFTest, self).tearDown()

@@ -302,6 +302,11 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
     update rows in the batch that have a match in prod with correct deletion status for migration.
     and update the asmnt_outcome_rec_id in pre-prod to prod value so migration can work faster
     '''
+    e = UDLDataIntegrityError(conf[mk.GUID_BATCH], IntegrityError('a', 'b', 'c'),
+                              "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                        table=match_conf['prod_table']))
+    failure_time = datetime.datetime.now()
+    e.insert_err_list(UDL2DBConnection, 4, failure_time)
     logger.info('update_deleted_record_rec_id')
     with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
         for matched_value in matched_values:
@@ -317,9 +322,11 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                     'update_deleted_record_rec_id')
             except IntegrityError as ie:
                 # write to err_list
-                raise UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
-                                            "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                                      table=match_conf['prod_table']))
+                e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
+                                          "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                          table=match_conf['prod_table']))
+                failure_time = datetime.datetime.now()
+                e.insert_err_list(UDL2DBConnection, 4, failure_time)
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

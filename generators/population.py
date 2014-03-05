@@ -9,6 +9,7 @@ import datetime
 import random
 
 import general.generators.population as general_pop_gen
+import general.util.gaussian_distribution as rand_gaussian
 import project.sbac.util.id_gen as sbac_id_gen
 
 from general.model.school import School
@@ -25,6 +26,7 @@ def generate_student(school: School, grade):
     """
     # Run the General generator
     s = general_pop_gen.generate_student(school, grade, SBACStudent)
+    s.district = school.district
 
     # Get the demographic config
     demo_config = school.demo_config[str(grade)]
@@ -51,6 +53,33 @@ def generate_student(school: School, grade):
     s.save()
 
     return s
+
+
+def repopulate_school_grade(school: School, grade, grade_students):
+    """
+    Take a school grade and make sure it has enough students. The list of students is updated in-place.
+
+    @param school: The school to potentially re-populate
+    @param grade: The grade in the school to potentially re-populate
+    @param grade_students: The students currently in the grade for this school
+    """
+    # Re-populate grades if necessary
+    if len(grade_students) < (school.student_count_avg / 20):
+        student_count = int(rand_gaussian.gauss_one(school.student_count_min,
+                                                    school.student_count_max,
+                                                    school.student_count_avg))
+        print('  Creating ' + str(student_count) + ' students in grade ' + str(grade) +
+              ' for school ' + school.name)
+        for k in range(student_count):
+            s = generate_student(school, grade)
+            grade_students.append(s)
+    else:
+        # The grade is populated, but see if we should add a few new students
+        # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
+        for k in range(random.choice([0, 0, 1, 2, 3, 4])):
+            s = generate_student(school, grade)
+            grade_students.append(s)
+        print('  Grade ' + str(grade) + ' sufficiently populated for school ' + school.name)
 
 
 def _generate_date_enter_us_school(grade):

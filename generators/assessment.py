@@ -86,7 +86,7 @@ def generate_assessment(asmt_type, period_month, period_year, subject, from_date
 
 
 def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: Section,
-                                inst_hier: InstitutionHierarchy, month_taken=4):
+                                inst_hier: InstitutionHierarchy, month_taken=4, save_to_mongo=True):
     """
     Generate an assessment outcome for a given student.
 
@@ -94,6 +94,8 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     @param assessment: The assessment to create the outcome for
     @param section: The section this assessment is related to
     @param inst_hier: The institution hierarchy this student belongs to
+    @param month_taken: The month the assessment was taken (optional, defaults to 4 (April))
+    @param save_to_mongo: If the outcome should be saved to Mongo (optional, defaults to True)
     @returns: The assessment outcome
     """
     # Create cut-point lists
@@ -142,7 +144,8 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         sao.claim_4_perf_lvl = _pick_performance_level(sao.claim_4_score, claim_cut_points)
 
     # Save and return the object
-    sao.save()
+    if save_to_mongo:
+        sao.save()
 
     return sao
 

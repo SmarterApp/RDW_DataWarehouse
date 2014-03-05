@@ -127,3 +127,37 @@ def generate_institution_hierarchy(state: State, district: District, school: Sch
     ih.save()
 
     return ih
+
+
+def sort_schools_by_type(schools):
+    """
+    Sort a list of schools into elementary, middle, and high schools.
+
+    @param schools: Schools to sort
+    @returns: Dictionary of sorted schools
+    """
+    schools_by_type = {'elem': [], 'middle': [], 'high': []}
+    for school in schools:
+        # Sort the school
+        if 'Elementary School' in school.type_str:
+            schools_by_type['elem'].append(school)
+        elif 'Middle School' in school.type_str:
+            schools_by_type['middle'].append(school)
+        else:
+            schools_by_type['high'].append(school)
+    return schools_by_type
+
+
+def set_up_schools_with_grades(schools, grades_of_concern):
+    """
+    Build a dictionary that associates each school with the grades of concern that a given school has.
+
+    @param schools: Schools to set up
+    @param grades_of_concern: The overall set of grades that we are concerned with
+    @returns: Dictionary of schools to dictionary of grades
+    """
+    schools_with_grades = {}
+    for school in schools:
+        grades_for_school = grades_of_concern.intersection(school.config['grades'])
+        schools_with_grades[school] = dict(zip(grades_for_school, [[] for _ in range(len(grades_for_school))]))
+    return schools_with_grades

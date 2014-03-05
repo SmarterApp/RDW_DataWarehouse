@@ -37,10 +37,10 @@ def cleanup_udl_tables(guid_batch):
     """
     """
     with UDL2DBConnection() as connector:
-        cleanup_all_tables(connector=connector, column_name='guid_batch', 
-            value=guid_batch, table_name_prefix='int_')
-        cleanup_all_tables(connector=connector, column_name='guid_batch', 
-            value=guid_batch, table_name_prefix='stg_')
+        cleanup_all_tables(connector=connector, schema_name='', 
+            column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='int_')
+        cleanup_all_tables(connector=connector, schema_name='', 
+            column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='stg_')
 
 
 def cleanup(msg):

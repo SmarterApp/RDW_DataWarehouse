@@ -56,38 +56,23 @@ class TestCleanup(Unittest_with_edcore_sqlite):
     def test_cleanup_table_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_table(connection, 'batch_guid', test_batch_guid, 'fact_asmt_outcome')
+            cleanup.cleanup_table(connection, 'edware', 'batch_guid', test_batch_guid, False, 'fact_asmt_outcome')
             self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
 
     def test_cleanup_table_for_invalid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-xxxxxxx'
-            cleanup.cleanup_table(connection, 'batch_guid', test_batch_guid, 'fact_asmt_outcome')
-            fao = connection.get_table('fact_asmt_outcome')
-            query = select([func.count(fao.c.asmnt_outcome_rec_id)], from_obj=[fao])
-            query = query.where(fao.c.batch_guid == test_batch_guid)
-            results = connection.execute(query)
-            fao_rows = results.first()
-            self.assertEquals(0, fao_rows[0])
+            cleanup.cleanup_table(connection, 'edware', 'batch_guid', test_batch_guid, False, 'fact_asmt_outcome')
+            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
 
     def test_cleanup_all_tables_with_prefix_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_all_tables(connection, 'batch_guid', test_batch_guid, table_name_prefix='fact_')
-            fao = connection.get_table('fact_asmt_outcome')
-            query = select([func.count(fao.c.asmnt_outcome_rec_id)], from_obj=[fao])
-            query = query.where(fao.c.batch_guid == test_batch_guid)
-            results = connection.execute(query)
-            fao_rows = results.first()
-            self.assertEquals(0, fao_rows[0])
+            cleanup.cleanup_all_tables(connection,'edware', 'batch_guid', test_batch_guid, False, table_name_prefix='fact_')
+            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
 
     def test_cleanup_all_tables_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_all_tables(connection, 'batch_guid', test_batch_guid, tables=['fact_asmt_outcome'])
-            fao = connection.get_table('fact_asmt_outcome')
-            query = select([func.count(fao.c.asmnt_outcome_rec_id)], from_obj=[fao])
-            query = query.where(fao.c.batch_guid == test_batch_guid)
-            results = connection.execute(query)
-            fao_rows = results.first()
-            self.assertEquals(0, fao_rows[0])
+            cleanup.cleanup_all_tables(connection, 'edware', 'batch_guid', test_batch_guid, False, tables=['fact_asmt_outcome'])
+            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)

@@ -1,3 +1,8 @@
+__author__ = 'sravi'
+
+from sqlalchemy.sql.expression import text, bindparam
+
+
 def get_filtered_tables(connector, table_name_prefix=None):
     """This function returns list of tables starting with table_name_prefix from schema metadata
 
@@ -16,16 +21,43 @@ def get_filtered_tables(connector, table_name_prefix=None):
     return all_tables
 
 
-def cleanup_table(connector, column_name, value, table_name):
+def get_delete_table_query(schema_name, table_name, column_name, value, batch_size):
+    query_template = "DELETE FROM {schema_name}.{table_name} WHERE ctid IN " + \
+                     "(SELECT ctid FROM {schema_name}.{table_name} WHERE {column_name} = :value " + \
+                     " ORDER BY ctid LIMIT :batch_size)"
+    query = query_template.format(schema_name=schema_name,
+                         table_name=table_name,
+                         column_name=column_name)
+    params = [bindparam('value', value), bindparam('batch_size', batch_size)]
+    return text(query, bindparams=params)
+
+
+def _delete_rows_in_batches(connector, schema_name, table_name, column_name, value, batch_size=10000):
+    rows_deleted = -1
+    query_to_delete_rows = get_delete_table_query(schema_name, table_name, column_name, value, batch_size)
+    while rows_deleted is not 0:
+        result = connector.execute(query_to_delete_rows)
+        rows_deleted = result.rowcount
+
+
+def _delete_all_rows(connector, table, column_name, value):
+    delete_query = table.delete(table.c[column_name] == value)
+    connector.execute(delete_query)
+
+
+def cleanup_table(connector, schema_name, column_name, value, batch_delete, table_name):
     """
     cleanup table for the given column and value
     """
     table = connector.get_table(table_name)
     if column_name in table.columns:
-        delete_query = table.delete(table.c[column_name] == value)
-        connector.execute(delete_query)
+        if not batch_delete:
+            _delete_all_rows(connector, table, column_name, value)
+        else:
+            _delete_rows_in_batches(connector, schema_name, table_name, column_name, value)
 
-def cleanup_all_tables(connector, column_name, value, table_name_prefix=None, tables=None):
+
+def cleanup_all_tables(connector, schema_name, column_name, value, batch_delete=True, table_name_prefix=None, tables=None):
     """
     cleanup all tables for the given column and matching value
     
@@ -34,4 +66,4 @@ def cleanup_all_tables(connector, column_name, value, table_name_prefix=None, ta
     """
     tables_to_cleanup = get_filtered_tables(connector, table_name_prefix) if tables is None else tables
     for table in tables_to_cleanup:
-        cleanup_table(connector, column_name, value, table)
+        cleanup_table(connector, schema_name, column_name, value, batch_delete, table)

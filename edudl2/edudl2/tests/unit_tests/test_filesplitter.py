@@ -4,8 +4,7 @@ import shutil
 import csv
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.filesplitter.file_splitter import create_output_destination,\
-    run_command, get_list_split_files
+from edudl2.filesplitter.file_splitter import create_output_destination
 import tempfile
 
 
@@ -41,33 +40,4 @@ class Test(unittest.TestCase):
         #check if directory created correctly
         self.assertTrue(os.path.exists(output_dir))
         self.assertEqual(template, 'test_part_')
-        #clean up test directory
-        #shutil.rmtree(root)
 
-    def test_run_command(self):
-        #define test command
-        test_command = 'ls'
-        #call run command
-        output, err = run_command(test_command)
-        #check there is output and no error
-        self.assertIsNotNone(output)
-        self.assertIsNone(err)
-
-    def test_get_list_split_files(self):
-        #create test split files
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
-        for i in range(0, 5):
-            output_file = open(os.path.join(self.output_dir, self.output_template + str(i)), 'w', newline='')
-            writer = csv.writer(output_file, delimiter=',')
-            for n in range(1, 6):
-                row = ['Row' + str(n), 'fdsa', 'asdf']
-                writer.writerow(row)
-            output_file.close()
-        output_list = get_list_split_files(self.output_template, self.output_dir)
-        for entry in output_list:
-            self.assertTrue(self.output_template in entry[0])
-            self.assertEqual(entry[1], 5)
-            self.assertEqual(entry[2], entry[1] * int(entry[0][-1]) + 1)
-        #cleanup
-        shutil.rmtree(self.output_dir)

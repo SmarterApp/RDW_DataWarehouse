@@ -3,6 +3,7 @@ from edcore.utils.cleanup import cleanup_all_tables
 from edmigrate.utils.constants import Constants
 from edmigrate.celery import conf
 
+
 def cleanup_tables(connector, schema_name, batch_guid, table_name_prefix, tables):
     """
     clean up migration tables

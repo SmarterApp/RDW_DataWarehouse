@@ -26,6 +26,8 @@ class UdlStatsConstants():
     UDL_STATUS_FAILED = 'udl.failed'
     UDL_STATUS_LOADING = 'udl.loading'
     UDL_STATUS_INGESTED = 'udl.ingested'
+    MIGRATE_IN_PROCESS = 'migrate.in_process'
     MIGRATE_INGESTED = 'migrate.ingested'
+    MIGRATE_FAILED = 'migrate.failed'
     #load_type
     LOAD_TYPE_ASSESSMENT = 'assessment'

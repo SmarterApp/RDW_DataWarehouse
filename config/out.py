@@ -62,8 +62,7 @@ FAO_FORMAT = {'format': 'csv',
                           {'name': 'dmg_prg_lep', 'val': 'student.prg_lep'},
                           {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
                           {'name': 'dmg_prg_tt1', 'val': 'student.prg_title_1'},
-                          {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'}]
-              }
+                          {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'}]}
 
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',
@@ -121,8 +120,7 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'asmt_cut_point_4', 'val': 'assessment.overall_cut_point_4'},
                                {'name': 'from_date', 'val': 'assessment.from_date'},
                                {'name': 'to_date', 'val': 'assessment.to_date'},
-                               {'name': 'most_recent', 'val': 'assessment.most_recent'}]
-                   }
+                               {'name': 'most_recent', 'val': 'assessment.most_recent'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
                     'name': '<YEAR>_METADATA_ASMT_ID_<GUID>.json',
@@ -259,8 +257,7 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                   {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
                                   {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
                                   {'name': 'asmt_year', 'val': 'assessment.period_year'},
-                                  {'name': 'asmt_subject', 'val': 'assessment.subject'}
-                      ]}
+                                  {'name': 'asmt_subject', 'val': 'assessment.subject'}]}
 
 SR_FORMAT = {'format': 'csv',
              'name': 'sr_<YEAR>.csv',
@@ -298,8 +295,7 @@ SR_FORMAT = {'format': 'csv',
                          {'name': 'LimitedEnglishProficiencyEntryDate', 'val': 'student.prg_lep_entry_date'},
                          {'name': 'LEPExitDate', 'val': 'student.prg_lep_exit_date'},
                          {'name': 'TitleIIILanguageInstructionProgramType', 'val': 'student.lang_title_3_prg'},
-                         {'name': 'PrimaryDisabilityType', 'val': 'student.prg_primary_disability'}]
-             }
+                         {'name': 'PrimaryDisabilityType', 'val': 'student.prg_primary_disability'}]}
 
 REGISTRATION_SYSTEM_FORMAT = {'format': 'json',
                               'name': 'sr_<YEAR>.json',

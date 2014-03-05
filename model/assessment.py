@@ -5,7 +5,7 @@ Model an assessment for the SBAC assessment.
 @date: February 24, 2014
 """
 
-from mongoengine import BooleanField, DateTimeField, Document, FloatField, IntField, StringField
+from mongoengine import BooleanField, DateTimeField, FloatField, IntField, StringField
 
 import project.sbac.config.cfg as sbac_config
 

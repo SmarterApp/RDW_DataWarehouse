@@ -93,7 +93,7 @@ def _generate_date_enter_us_school(grade):
     current_year = int(datetime.datetime.now().year)
     entry_year = current_year - grade - 1
     entry_month = random.randint(8, 9)
-    entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1,15)
+    entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1, 15)
     doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
     return doe
 
@@ -108,7 +108,7 @@ def _generate_date_lep_entry(grade):
     current_year = int(datetime.datetime.now().year)
     entry_year = current_year - (grade if grade < 5 else random.randint(4, grade))
     entry_month = random.randint(8, 9)
-    entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1,15)
+    entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1, 15)
     doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
     return doe
 

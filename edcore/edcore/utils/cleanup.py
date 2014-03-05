@@ -25,8 +25,8 @@ def get_delete_table_query(schema_name, table_name, column_name, value, batch_si
     query_template = "DELETE FROM {schema_name}.{table_name} WHERE ctid IN " + \
                      "(SELECT ctid FROM {schema_name}.{table_name} WHERE {column_name} = :value " + \
                      " ORDER BY ctid LIMIT :batch_size)"
-    query = query_template.format(schema_name=schema_name,
-                         table_name=table_name,
+    query = query_template.format(schema_name= '\"' + schema_name + '\"',
+                         table_name='\"' + table_name + '\"',
                          column_name=column_name)
     params = [bindparam('value', value), bindparam('batch_size', batch_size)]
     return text(query, bindparams=params)

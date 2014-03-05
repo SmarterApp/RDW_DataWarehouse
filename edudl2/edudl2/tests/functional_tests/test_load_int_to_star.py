@@ -80,12 +80,6 @@ class IntToStarFTest(UDLTestHelper):
             except_msg = "Unable to insert into %s" % table
             execute_queries(self.udl2_conn, insert_array, except_msg)
 
-    def add_delete_prod_record(self):
-        pass
-
-    def remove_delete_prod_record(self):
-        pass
-
     def test_1_load_int_to_star(self):
         self.load_int_sbac_asmt()
         self.load_int_sbac_asmt_outcome()
@@ -99,6 +93,7 @@ class IntToStarFTest(UDLTestHelper):
             target_columns = column_map[target]
             column_types = move_to_target_setup.get_table_column_types(self.conf, target, list(target_columns.keys()))
             move_to_target.explode_data_to_dim_table(self.conf, table_map[target], target, target_columns, column_types)
+
         # explode to fact table
         table_map, column_map = move_to_target_setup.get_table_and_column_mapping(self.conf,
                                                                                   self.load_to_fact_task_name,
@@ -136,41 +131,3 @@ class IntToStarFTest(UDLTestHelper):
         star_demo_dict = self.get_star_schema_demographic_counts()
 
         self.assertEqual(int_demo_dict, star_demo_dict)
-
-    @skip('In development')
-    def test_2_match_deleted_records(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
-        result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
-        matched_prod_values = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        self.assertListEqual(self.matched_prod_values, matched_prod_values)
-
-    @skip('In development')
-    def test_3_update_deleted_record_rec_id(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
-        result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
-        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, self.matched_prod_values)
-        self.assertIsNotNone(result)
-
-    @skip('In development')
-    def test_4_check_mismatched_deletions(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
-        result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
-        # first there should be no exception, so it just return None
-        result = move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
-        self.assertIsNotNone(result)
-
-    @skip('In development')
-    def test_5_check_mismatched_deletions_2(self):
-        query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                           table='fact_asmt_outcome'))
-        result = self.target_conn.execute(query)
-        print(result.fetchall()[0][0])
-        # now add one more row on the fact_asmt_outcome, this should trigger exception
-        # add code that insert one more row
-        self.assertRaises(DeleteRecordNotFound, move_to_target.check_mismatched_deletions(self.conf, self.match_conf))

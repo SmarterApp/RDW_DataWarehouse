@@ -50,6 +50,7 @@ CSV_TABLE = 'csv_table'
 FDW_SERVER = 'fdw_server'
 REF_TABLE = 'ref_table'
 CSV_LZ_TABLE = 'csv_lz_table'
+ERR_LIST_TABLE = 'err_list_table'
 
 # keys for conf sent to move_to_integration.move_data_from_staging_to_integration(conf)
 SOURCE_DB_DRIVER = 'source_db_driver'
@@ -108,6 +109,8 @@ TIME_FOR_ONE_MILLION_RECORDS = 'time_for_one_million_records'
 BATCH_TABLE = 'batch_table'
 USER_EMAIL = 'user_email'
 TASK_URL = 'task_status_url'
+TASK_URL = 'task_status_url'
+CALLBACK_URL = 'callback_url'
 
 # serializing pipeline
 LOOP_PIPELINE = 'loop_pipeline'

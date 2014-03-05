@@ -11,12 +11,12 @@ class TestBase(unittest.TestCase):
 
     def test_get_context(self):
         base = BaseRole('connector')
-        context = base.get_context("guid")
+        context = base.get_context("tenant", {})
         self.assertIsNone(context)
 
     def test_check_context(self):
         base = BaseRole('connector')
-        context = base.check_context("guid", [])
+        context = base.check_context("tenant", {}, [])
         self.assertIsNone(context)
 
 if __name__ == "__main__":

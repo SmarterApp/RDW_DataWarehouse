@@ -99,12 +99,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     Index('dim_student_idx', students.c.student_guid, students.c.most_recent, unique=False)
 
-    user_mapping = Table('user_mapping', metadata,
-                         Column('user_id', String(50), primary_key=True),
-                         Column('guid', String(50), nullable=False),
-                         )
-    Index('user_mapping_idx', user_mapping.c.user_id, unique=True)
-
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
                        Column('batch_guid', String(50), nullable=True),

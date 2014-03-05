@@ -13,6 +13,10 @@ from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
 from edauth.tests.test_helper.create_session import create_test_session
 from beaker.cache import cache_managers, cache_regions
+from edcore.tests.utils.unittest_with_edcore_sqlite import get_unittest_tenant_name
+from edauth.security.user import RoleRelation
+from pyramid.security import Allow
+import edauth
 
 
 class TestCallback(unittest.TestCase):
@@ -41,7 +45,11 @@ class TestCallback(unittest.TestCase):
     def test_session_with_role_returned(self):
         # Prepare session
         session = create_test_session(roles=['TEACHER', 'STAFF'], uid='linda.kim', full_name='Linda Kim', save_to_backend=True)
-
+        defined_roles = [(Allow, 'TEACHER', ('view', 'logout')), (Allow, 'STAFF', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
+        # Set up context security
+        session.set_user_context([RoleRelation("TEACHER", get_unittest_tenant_name(), "NC", "228", "242"),
+                                  RoleRelation("STAFF", get_unittest_tenant_name(), "NC", "228", "242")])
         roles = session_check(session.get_session_id(), None)
         self.assertIn("TEACHER", roles)
         self.assertIn("STAFF", roles)

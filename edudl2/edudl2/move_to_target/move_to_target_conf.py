@@ -39,9 +39,11 @@ def get_move_to_target_conf():
             'prod_table': 'fact_asmt_outcome',
             'target_table': 'fact_asmt_outcome',
             'find_deleted_fact_asmt_outcome_rows': {'columns': ['asmnt_outcome_rec_id', 'student_guid', 'asmt_guid', 'date_taken', 'status'],
+                                                    'condition': ['status'],
                                                     'status': 'W'},
             'match_delete_fact_asmt_outcome_row_in_prod': {'columns': ['asmnt_outcome_rec_id', 'student_guid',
                                                                        'asmt_guid', 'date_taken'],
+                                                           'condition': ['student_guid', 'asmt_guid', 'date_taken', 'status'],
                                                            'status': 'C'},
             'update_matched_fact_asmt_outcome_row': {'columns': {'asmnt_outcome_rec_id': 'asmnt_outcome_rec_id',
                                                                  'status': 'new_status'},
@@ -50,9 +52,9 @@ def get_move_to_target_conf():
                                                      'status': 'W'},
         },
         'handle_duplication': [{
-            'prod_table': 'dim_student',
-            'guid_column': 'student_guid',
-            'matched_columns': [
+            'table_name': 'dim_student',
+            'guid_columns': ['student_guid'],
+            'key_columns': [
                 'student_guid',
                 'first_name',
                 'middle_name',
@@ -69,10 +71,13 @@ def get_move_to_target_conf():
                 'district_guid',
                 'school_guid',
             ],
-            'update_columns': [
-                'student_rec_id'
-            ]
-        }]
+            'dependant_table': {
+                'name': 'fact_asmt_outcome',
+                'columns': [
+                    'student_rec_id'
+                ]
+            }
+        }],
     }
 
     return conf

@@ -68,6 +68,90 @@ common:
     load_type:
         assessment: assessment
         student_registration: studentregistration
+    sr_notification_timeout: 30
+    sr_notification_retries: 5
+    udl2_db:
+      csv_schema: udl2  # PostgresQL for UDL2 processing. This is not the target database.
+      reference_schema: udl2
+      fdw_server: udl2_fdw_server
+      staging_schema: udl2
+      integration_schema: udl2
+      ref_tables:
+          assessment: REF_COLUMN_MAPPING
+          studentregistration: SR_REF_COLUMN_MAPPING
+      staging_tables:
+          assessment: STG_SBAC_ASMT_OUTCOME
+          studentregistration: STG_SBAC_STU_REG
+      json_integration_tables:
+          assessment: INT_SBAC_ASMT
+          studentregistration: INT_SBAC_STU_REG_META
+      csv_integration_tables:
+          assessment: INT_SBAC_ASMT_OUTCOME
+          studentregistration: INT_SBAC_STU_REG
+      batch_table: UDL_BATCH
+      db_name: udl2
+      db_database: udl2
+      db_schema: udl2
+      db_user: udl2
+      db_pass: udl2abc1234
+      db_driver: postgresql
+      json_lz_table: LZ_JSON
+      csv_lz_table: LZ_CSV
+      err_list_table: ERR_LIST
+      master_metadata_table: MASTER_METADATA
+      # sqlalchemy specific
+      echo: False
+      max_overflow: 10
+      pool_size: 20
+    udl2_db_conn:
+      db_schema: udl2
+      echo: False
+      max_overflow: 10
+      pool_size: 20
+    target_db_conn:
+        edware:
+          echo: False
+          max_overflow: 10
+          pool_size: 20
+          db_database: edware
+          db_user: edware
+          db_pass: edware2013
+        ca:
+          echo: False
+          max_overflow: 10
+          pool_size: 20
+          db_database: edware
+          db_user: edware
+          db_pass: edware2013
+        func_tests:
+          echo: False
+          max_overflow: 10
+          pool_size: 20
+          db_database: edware
+          db_user: edware
+          db_pass: edware2013
+    prod_db_conn:
+        edware:
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        ca:
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
+        func_tests:
+            echo: False
+            max_overflow: 10
+            pool_size: 20
+            db_database: edware
+            db_user: edware
+            db_pass: edware2013
 qa:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -76,73 +160,20 @@ qa:
         work: /opt/edware/zones/landing/work/           # this is the where the file are use for work. this should always be local for speed
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
     udl2_db:
-        csv_schema: udl2  # PostgresQL for UDL2 processing. This is not the target database.
-        reference_schema: udl2
-        fdw_server: udl2_fdw_server
-        staging_schema: udl2
-        integration_schema: udl2
-        ref_tables:
-            assessment: REF_COLUMN_MAPPING
-            studentregistration: SR_REF_COLUMN_MAPPING
-        staging_tables:
-            assessment: STG_SBAC_ASMT_OUTCOME
-            studentregistration: STG_SBAC_STU_REG
-        json_integration_tables:
-            assessment: INT_SBAC_ASMT
-            studentregistration: INT_SBAC_STU_REG_META
-        csv_integration_tables:
-            assessment: INT_SBAC_ASMT_OUTCOME
-            studentregistration: INT_SBAC_STU_REG
-        batch_table: UDL_BATCH
         db_host: rbtmqudl0.qa.dum.edwdc.net
         db_port: 5432
-        db_name: udl2
-        db_database: udl2
-        db_schema: udl2
-        db_user: udl2
-        db_pass: udl2abc1234
-        db_driver: postgresql
-        json_lz_table: LZ_JSON
-        csv_lz_table: LZ_CSV
-        master_metadata_table: MASTER_METADATA
-        # sqlalchemy specific
-        echo: False
-        max_overflow: 10
-        pool_size: 20
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@rbtmqudl0.qa.dum.edwdc.net:5432/udl2
-        db_schema: udl2
-        echo: False
-        max_overflow: 10
-        pool_size: 20
     target_db_conn:
         edware:
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
     target_db:
         db_schema: edware
         db_name: edware
@@ -158,30 +189,12 @@ qa:
         edware:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_sds_1_11
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_sds_1_11_dog
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware_funcional_tests
             db_schema: edware_sds_1_11
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
     prod_db:
         db_schema: edware_sds_1_11
         db_name: edware
@@ -207,44 +220,25 @@ development:
         datafiles: /opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: /opt/edware/zones/tests/                 # this is for running unit tests.
     udl2_db:
-        csv_schema: udl2  # PostgresQL for UDL2 processing. This is not the target database.
-        reference_schema: udl2
-        fdw_server: udl2_fdw_server
-        staging_schema: udl2
-        integration_schema: udl2
-        ref_tables:
-            assessment: REF_COLUMN_MAPPING
-            studentregistration: SR_REF_COLUMN_MAPPING
-        staging_tables:
-            assessment: STG_SBAC_ASMT_OUTCOME
-            studentregistration: STG_SBAC_STU_REG
-        json_integration_tables:
-            assessment: INT_SBAC_ASMT
-            studentregistration: INT_SBAC_STU_REG_META
-        csv_integration_tables:
-            assessment: INT_SBAC_ASMT_OUTCOME
-            studentregistration: INT_SBAC_STU_REG
-        batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432
-        db_name: udl2
-        db_database: udl2
         db_schema: udl2
         db_user: udl2
         db_pass: udl2abc1234
         db_driver: postgresql
         json_lz_table: LZ_JSON
         csv_lz_table: LZ_CSV
+        err_list_table: ERR_LIST
         master_metadata_table: MASTER_METADATA
     target_db:
         db_schema: edware
         db_name: edware
-        # TBD make sure it is the production setting
-        db_host: localhost
-        db_port: 5432
         db_database: edware
+        # TBD make sure it is the production setting
         db_user: edware
         db_pass: edware2013
+        db_host: localhost
+        db_port: 5432
         db_driver: postgresql
         sr_target_table: student_reg
     udl2_db_conn:
@@ -261,65 +255,29 @@ development:
         edware:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: ftest_test_schema
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_11
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_11_dog
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
             db_schema: edware_sds_1_11
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
     prod_db:
         db_schema: edware_sds_1_11
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: localhost
-        db_port: 5432
-        db_database: edware_prod
+        db_host: edwdbsrv4.poc.dum.edwdc.net
+        db_port: 9999
+        db_database: edware
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql
@@ -334,35 +292,9 @@ jenksins_dev:
         datafiles: $WORKSPACE/opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: $WORKSPACE/opt/edware/zones/tests/                 # this is for running unit tests.
     udl2_db:
-        csv_schema: udl2  # PostgresQL for UDL2 processing. This is not the target database.
-        reference_schema: udl2
-        fdw_server: udl2_fdw_server
-        staging_schema: udl2
-        integration_schema: udl2
-        ref_tables:
-            assessment: REF_COLUMN_MAPPING
-            studentregistration: SR_REF_COLUMN_MAPPING
-        staging_tables:
-            assessment: STG_SBAC_ASMT_OUTCOME
-            studentregistration: STG_SBAC_STU_REG
-        json_integration_tables:
-            assessment: INT_SBAC_ASMT
-            studentregistration: INT_SBAC_STU_REG_META
-        csv_integration_tables:
-            assessment: INT_SBAC_ASMT_OUTCOME
-            studentregistration: INT_SBAC_STU_REG
         batch_table: UDL_BATCH
         db_host: localhost
         db_port: 5432
-        db_name: udl2
-        db_database: udl2
-        db_schema: udl2
-        db_user: udl2
-        db_pass: udl2abc1234
-        db_driver: postgresql
-        json_lz_table: LZ_JSON
-        csv_lz_table: LZ_CSV
-        master_metadata_table: MASTER_METADATA
     target_db:
         db_schema: edware
         db_name: edware
@@ -388,65 +320,29 @@ jenksins_dev:
         edware:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: ftest_test_schema
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_11
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_11_dog
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
             db_schema: edware_sds_1_11
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
     prod_db:
         db_schema: edware_sds_1_11
         db_name: edware
         # TBD make sure it is the production setting
         db_host: edwdbsrv4.poc.dum.edwdc.net
         db_port: 9999
-        db_database: edware_prod
+        db_database: edware
         db_user: edware
         db_pass: edware2013
         db_driver: postgresql

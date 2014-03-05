@@ -104,11 +104,11 @@ def process_async_extraction_request(params, is_tenant_level=True):
     return response
 
 
-@cache_region('public.shortlived')
 def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_year, asmt_type, asmt_subject):
     '''
     query all asmt_guid and asmt_grade by given extract request params
     '''
+    # TODO: remove dim_asmt
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)

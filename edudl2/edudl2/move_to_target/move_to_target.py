@@ -1,10 +1,11 @@
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from collections import OrderedDict
+from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
 from edcore.utils.utils import compile_query_to_sql_text
-from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
+from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
@@ -239,8 +240,7 @@ def match_deleted_records(conf, match_conf):
                                                    'move_to_target',
                                                    'matched_deleted_records')
     with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
-        for candidate in candidates:
-
+        for candidate in candidates.fetchall():
             query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.PROD_DB_SCHEMA],
                                                                match_conf['prod_table'],
                                                                match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
@@ -260,22 +260,14 @@ def match_deleted_records(conf, match_conf):
 def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
     affected_rows = 0
     with TargetDBConnection(tenant_name) as target_conn, ProdDBConnection(tenant_name) as prod_conn:
-        # TODO rename QueryHelper
         target_db_helper = QueryHelper(target_conn, guid_batch, match_conf)
         prod_db_helper = QueryHelper(prod_conn, guid_batch, match_conf)
         for record in target_db_helper.find_all():
             matched = prod_db_helper.find_by_natural_key(record)
             if not matched:
                 continue
-            identical = target_db_helper.is_identical(matched, record)
-            if not identical:
-                # TODO update dim & fact table?
-                # TODO what if student_rec_id already exists?
-                target_db_helper.update_to_match(matched)
-            else:
-                # TODO what about fact_asmt_outcome?
-                # TODO constraint in fact
-                target_db_helper.delete_by_guid(record)
+            target_db_helper.update_dependant(record, matched)
+            target_db_helper.delete_by_guid(record)
             affected_rows += 1
     return affected_rows
 
@@ -311,13 +303,25 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
     and update the asmnt_outcome_rec_id in pre-prod to prod value so migration can work faster
     '''
     logger.info('update_deleted_record_rec_id')
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
         for matched_value in matched_values:
             query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
                                                          match_conf['target_table'],
                                                          conf[mk.GUID_BATCH],
                                                          match_conf['update_matched_fact_asmt_outcome_row'],
                                                          matched_value)
+            try:
+                execute_udl_queries(conn, [query],
+                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
+                                    'move_to_target',
+                                    'update_deleted_record_rec_id')
+            except IntegrityError as ie:
+                # write to err_list
+                e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
+                                          "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                                    table=match_conf['prod_table']))
+                failure_time = datetime.datetime.now()
+                e.insert_err_list(UDL2DBConnection, 4, failure_time)
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

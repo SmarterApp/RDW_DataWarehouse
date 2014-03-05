@@ -20,17 +20,19 @@ def get_filtered_tables(connector, table_name_prefix=None):
         all_tables = [table for table in all_tables if table.lower().startswith(table_name_prefix.lower())]
     return all_tables
 
+
 def _get_schema_table_name(schema_name, table_name):
     return '\"' + schema_name + '\".' + '\"' + table_name + '\"' \
-    if schema_name is not None else '\"' + table_name + '\"'
+           if schema_name is not None else '\"' + table_name + '\"'
+
 
 def get_delete_table_query(schema_name, table_name, column_name, value, batch_size, row_locator):
-    query_template = "DELETE FROM {schema_table_name} WHERE {row_locator} IN " + \
-                     "(SELECT {row_locator} FROM {schema_table_name} WHERE {column_name} = :value " + \
+    query_template = "DELETE FROM {schema_table_name} WHERE {row_locator} IN " +\
+                     "(SELECT {row_locator} FROM {schema_table_name} WHERE {column_name} = :value " +\
                      "ORDER BY {row_locator} LIMIT :batch_size)"
-    query = query_template.format(schema_table_name= _get_schema_table_name(schema_name, table_name),
-                         column_name=column_name,
-                         row_locator=row_locator)
+    query = query_template.format(schema_table_name=_get_schema_table_name(schema_name, table_name),
+                                  column_name=column_name,
+                                  row_locator=row_locator)
     params = [bindparam('value', value), bindparam('batch_size', batch_size)]
     return text(query, bindparams=params)
 
@@ -48,7 +50,7 @@ def _delete_all_rows(connector, table, column_name, value):
     connector.execute(delete_query)
 
 
-def cleanup_table(connector, schema_name, column_name, value, batch_delete, table_name, row_locator= 'ctid'):
+def cleanup_table(connector, schema_name, column_name, value, batch_delete, table_name, row_locator='ctid'):
     """
     cleanup table for the given column and value
     """
@@ -63,7 +65,7 @@ def cleanup_table(connector, schema_name, column_name, value, batch_delete, tabl
 def cleanup_all_tables(connector, schema_name, column_name, value, batch_delete=True, table_name_prefix=None, tables=None):
     """
     cleanup all tables for the given column and matching value
-    
+
     All rows matching the given guid_batch will be delted from all the tables
     in the given connector schema
     """

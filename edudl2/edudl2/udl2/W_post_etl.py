@@ -31,7 +31,7 @@ def task(incoming_msg):
     start_time = datetime.datetime.now()
     guid_batch = incoming_msg[mk.GUID_BATCH]
     load_type = incoming_msg[mk.LOAD_TYPE]
-    
+
     # do the cleanup
     post_etl.cleanup(incoming_msg)
     finish_time = datetime.datetime.now()

@@ -30,9 +30,10 @@ def prepare_ed_stats():
                         udl_stats.c.load_end.label(UdlStatsConstants.LOAD_END),
                         udl_stats.c.record_loaded_count.label(UdlStatsConstants.RECORD_LOADED_COUNT),
                         udl_stats.c.batch_guid.label(UdlStatsConstants.BATCH_GUID), ],
-                       from_obj=[udl_stats])
-        query = query.where(udl_stats.c.load_status == UdlStatsConstants.MIGRATE_INGESTED)
-        query = query.where(and_(udl_stats.c.last_pre_cached == null()))
+                       from_obj=[udl_stats]).\
+                       where(and_(udl_stats.c.load_status == UdlStatsConstants.MIGRATE_INGESTED,
+                                  udl_stats.c.last_pre_cached == null(),
+                                  udl_stats.c.load_type == UdlStatsConstants.LOAD_TYPE_ASSESSMENT))
         return connector.get_result(query)
 
 

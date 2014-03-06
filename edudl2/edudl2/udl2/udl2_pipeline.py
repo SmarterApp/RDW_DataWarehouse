@@ -5,9 +5,8 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_get_load_type, W_get_callback_url,
                          W_simple_file_validator, W_file_splitter, W_file_content_validator,
-                         W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star,
-                         W_load_sr_integration_to_target, W_parallel_csv_load, W_determine_end_chain,
-                         W_post_etl, W_all_done, W_job_status_notification)
+                         W_load_json_to_integration, W_load_to_integration_table,
+                         W_parallel_csv_load, W_determine_end_chain)
 from edcore.utils.utils import merge_dict
 __author__ = 'swimberly'
 
@@ -42,23 +41,10 @@ def get_pipeline_chain(archive_file, load_type='Unknown', file_parts=4, batch_gu
                            W_parallel_csv_load.task.s(),
                            W_file_content_validator.task.s(), W_load_json_to_integration.task.s(),
                            W_load_to_integration_table.task.s(),
+                           # The end tasks are in the W_determine_end_chain.py file until we resolve the awkward 3 way dependency
                            W_determine_end_chain.task.s())
 
     return pipeline_chain
-
-
-def determine_end_chain(msg, load_type):
-        target_tasks = {"assessment": [W_load_from_integration_to_star.explode_to_dims.s(msg),
-                                       W_load_from_integration_to_star.explode_to_fact.s(),
-                                       # W_load_from_integration_to_star.handle_insertion_dim_tables.s(),
-                                       W_load_from_integration_to_star.handle_deletions.s()],
-                        "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
-
-        post_etl_tasks = {"assessment": [W_post_etl.task.s(), W_all_done.task.s()],
-                          "studentregistration": [W_post_etl.task.s(), W_all_done.task.s(),
-                                                  W_job_status_notification.task.s()]}
-
-        return chain(target_tasks[load_type] + post_etl_tasks[load_type])
 
 
 def _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, initial_msg):

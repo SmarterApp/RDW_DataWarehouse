@@ -32,6 +32,9 @@ class Test(unittest.TestCase):
     def test_split_file_invalid_file(self):
         self.assertRaises(Exception, split_file, '/i/dont/exist')
 
+    def test_split_file_empty_csv(self):
+        self.assertRaises(Exception, split_file, self._prepare_data, 0)
+
     def test_split_file_by_equal_parts(self):
         rows = 3
         parts = 3

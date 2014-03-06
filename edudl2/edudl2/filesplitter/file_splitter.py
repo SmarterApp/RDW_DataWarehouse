@@ -9,18 +9,18 @@ from edudl2.udl2_util.file_util import create_directory
 def validate_file(file_name):
     '''
     Simple validation that file exists
-    TODO:  we might need to do more validation for csv
+    TODO:  we might need to do more validation for csv,
     '''
     return False if not (os.path.exists(file_name) and os.path.isfile(file_name)) or os.path.getsize(file_name) <= 0 else True
 
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='./'):
     '''
-    Split files into either parts or row limit
+    Split files into either parts or row limit so we can process smaller files
     Precedence of parts over row_limit when both are supplied
     '''
     if not validate_file(file_name):
-        raise Exception('Unable to split invalid.')
+        raise Exception('Unable to split invalid file')
     create_directory(output_dir)
 
     with open(file_name) as csvfile:
@@ -30,6 +30,8 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
         # Get the total number of records
         for row in data:
             total_rows += 1
+        if total_rows is 0:
+            raise Exception('CSV file has no data')
         if parts is 0:
             parts = math.ceil(total_rows / row_limit)
         # Recalculate values

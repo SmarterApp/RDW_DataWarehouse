@@ -10,6 +10,8 @@ from unittest import skip
 
 class MatchAndDeleteFTest(UDLTestHelper):
 
+    matched_prod_values = None
+
     @classmethod
     def setUpClass(cls):
         super(MatchAndDeleteFTest, cls).setUpClass()
@@ -119,12 +121,15 @@ class MatchAndDeleteFTest(UDLTestHelper):
         result = self.target_conn.execute(query)
         return int(result.fetchall()[0][0])
 
-    def test_match_deleted_records(self):
+    def test_01_match_deleted_records(self):
         self.load_int_to_star()
         self.assertEqual(27, self.count_rows())
-        matched_prod_values = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        self.assertEqual(13, len(matched_prod_values))
-        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, matched_prod_values)
+        MatchAndDeleteFTest.matched_prod_values = move_to_target.match_deleted_records(self.conf, self.match_conf)
+        self.assertEqual(13, len(MatchAndDeleteFTest.matched_prod_values))
+
+    def test_02_match_deleted_records(self):
+        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf,
+                                                             MatchAndDeleteFTest.matched_prod_values)
         self.assertEqual(14, self.count_rows('W'))
         self.assertEqual(13, self.count_rows('D'))
 

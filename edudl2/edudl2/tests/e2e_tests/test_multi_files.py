@@ -19,7 +19,6 @@ TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
 FILE_DICT = {}
 
 
-@unittest.skip("skipping this test")
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):

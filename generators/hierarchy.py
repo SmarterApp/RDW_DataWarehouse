@@ -5,6 +5,8 @@ Generate SBAC-specific hierarchy components.
 @date: Febraury 24, 2014
 """
 
+import random
+
 import general.generators.hierarchy as general_hier_gen
 import general.util.id_gen as general_id_gen
 import project.sbac.config.cfg as sbac_config
@@ -74,6 +76,10 @@ def generate_school(school_type, district: District):
 
     # Set the SR guid
     s.guid_sr = sbac_id_gen.get_sr_uuid()
+
+    # Decide if the school takes interim assessments
+    if random.random() < sbac_config.INTERIM_ASMT_RATE:
+        s.takes_interim_asmts = True
 
     # Save the school
     s.save()

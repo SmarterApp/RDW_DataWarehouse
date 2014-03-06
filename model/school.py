@@ -5,7 +5,7 @@ Model the SBAC-specific items of a school.
 @date: February 22, 2014
 """
 
-from mongoengine import StringField
+from mongoengine import BooleanField, StringField
 
 from general.model.school import School
 
@@ -15,3 +15,4 @@ class SBACSchool(School):
     The SBAC-specific school class.
     """
     guid_sr = StringField(required=True)
+    takes_interim_asmts = BooleanField(required=True, default=False)

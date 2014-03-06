@@ -115,30 +115,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEqual(status, 'SUCCESS')
             self.assertEqual(load, self.load_type, 'Not the expected load type.')
 
-    #Validate the staging table
-    def validate_staging_table(self, file_to_load):
-        staging_table = self.udl_connector.get_table(udl2_conf['udl2_db']['staging_tables'][self.load_type])
-        query = select([staging_table.c.guid_student], staging_table.c.guid_batch == self.batch_id)
-        result = self.udl_connector.execute(query).fetchall()
-        print('Number of rows in staging table:', len(result))
-        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in staging table.')
-
-    #Validate the json integration table
-    def validate_json_integration_table(self, file_to_load):
-        json_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['json_integration_tables'][self.load_type])
-        query = select([json_int_table.c.guid_registration], json_int_table.c.guid_batch == self.batch_id)
-        result = self.udl_connector.execute(query).fetchall()
-        print('Number of rows in json integration table:', len(result))
-        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_json_file'], 'Unexpected number of records in json integration table.')
-
-    #Validate the csv integration table
-    def validate_csv_integration_table(self, file_to_load):
-        csv_int_table = self.udl_connector.get_table(udl2_conf['udl2_db']['csv_integration_tables'][self.load_type])
-        query = select([csv_int_table.c.guid_student], csv_int_table.c.guid_batch == self.batch_id)
-        result = self.udl_connector.execute(query).fetchall()
-        print('Number of rows in csv integration table:', len(result))
-        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in csv integration table.')
-
     #Validate the target table
     def validate_stu_reg_target_table(self, file_to_load):
         target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
@@ -245,9 +221,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.run_udl_pipeline('original_data')
         self.validate_successful_job_completion()
         self.validate_load_type()
-        self.validate_staging_table('original_data')
-        self.validate_json_integration_table('original_data')
-        self.validate_csv_integration_table('original_data')
         self.validate_stu_reg_target_table('original_data')
         self.validate_student_data('original_data')
         self.validate_total_number_in_target('original_data')
@@ -261,9 +234,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.batch_id = str(uuid4())
         self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
         self.validate_successful_job_completion()
-        self.validate_staging_table('data_for_different_test_center_than_original_data')
-        self.validate_json_integration_table('data_for_different_test_center_than_original_data')
-        self.validate_csv_integration_table('data_for_different_test_center_than_original_data')
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
         self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
@@ -276,9 +246,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.batch_id = str(uuid4())
         self.run_udl_pipeline('data_to_overwrite_original_data')
         self.validate_successful_job_completion()
-        self.validate_staging_table('data_to_overwrite_original_data')
-        self.validate_json_integration_table('data_to_overwrite_original_data')
-        self.validate_csv_integration_table('data_to_overwrite_original_data')
         self.validate_stu_reg_target_table('data_to_overwrite_original_data')
         self.validate_student_data('data_to_overwrite_original_data')
         self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')

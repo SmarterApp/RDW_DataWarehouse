@@ -5,8 +5,12 @@
 	<link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap-theme.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../css/style.css" />
-	<script data-main="../js/src/modules/EDWARE.individualStudentReport" src="../js/3p/require.js"></script>
-	<script src="../js/src/main.js"></script>
+	<script src="../js/3p/require.js"></script>
+	<script>
+         require(['../js/src/main.js'], function(){
+           require(['Edware.IndividualStudentReport']);
+         });
+        </script>
 	<link rel="shortcut icon" href="../images/icons/favicon.ico" />
     </head>
     <body class="isr">

@@ -13,6 +13,7 @@ import general.util.gaussian_distribution as rand_gaussian
 import project.sbac.util.id_gen as sbac_id_gen
 
 from general.model.school import School
+from general.model.student import Student
 from project.sbac.model.student import SBACStudent
 
 
@@ -55,6 +56,27 @@ def generate_student(school: School, grade, acad_year=datetime.datetime.now().ye
     s.save()
 
     return s
+
+
+def advance_student(student: Student, schools_by_type):
+    """
+    Take a student and advance them to the next grade. If the next grade takes the student out of the current school,
+    pick a new school for them to go to.
+
+    @param student: The student to move
+    @param schools_by_type: Potential new schools for a student to be enrolled in
+    @returns: True if the student still exists in the system, False if they do not
+    """
+    # Use the general generator to advance the student
+    rslt = general_pop_gen.advance_student(student, schools_by_type)
+
+    # If we are not keeping the student, don't worry about them
+    if not rslt:
+        return rslt
+
+    # TODO: Change things like LEP status or IEP status, etc
+
+    return True
 
 
 def repopulate_school_grade(school: School, grade, grade_students, acad_year=datetime.datetime.now().year):

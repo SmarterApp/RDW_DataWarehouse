@@ -7,6 +7,10 @@ from edudl2.udl2_util.file_util import create_directory
 
 
 def validate_file(file_name):
+    '''
+    Simple validation that file exists
+    TODO:  we might need to do more validation for csv
+    '''
     return False if not (os.path.exists(file_name) and os.path.isfile(file_name)) or os.path.getsize(file_name) <= 0 else True
 
 
@@ -43,7 +47,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
                 end = i * row_limit + 1
                 # Slice the iterator based on start and end
                 for row in itertools.islice(data, start, end):
-                    csvwriter = csv.writer(writerfile, delimiter=',')
+                    csvwriter = csv.writer(writerfile, delimiter=delimiter)
                     csvwriter.writerow(row)
                     row_count += 1
                 split_file_list.append([output_file, row_count, start])

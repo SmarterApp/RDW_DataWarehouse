@@ -13,6 +13,7 @@ require({
     templates: '../templates',
     usmap: '../3p/usmap/jquery.usmap',
     raphael: '../3p/usmap/raphael',
+    cs: '../3p/cs',
 
     // modules
     'Edware.LandingPage': 'modules/EDWARE.LandingPage',

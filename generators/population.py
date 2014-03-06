@@ -99,8 +99,7 @@ def generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year)
     entry_year = acad_year - grade - 1
     entry_month = random.randint(8, 9)
     entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1, 15)
-    doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
-    return doe
+    return datetime.date(entry_year, entry_month, entry_day)
 
 
 def generate_date_lep_entry(grade, acad_year=datetime.datetime.now().year):
@@ -113,8 +112,7 @@ def generate_date_lep_entry(grade, acad_year=datetime.datetime.now().year):
     entry_year = acad_year - (grade if grade < 5 else random.randint(4, grade))
     entry_month = random.randint(8, 9)
     entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1, 15)
-    doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
-    return doe
+    return datetime.date(entry_year, entry_month, entry_day)
 
 
 def generate_date_lep_exit(grade, acad_year=datetime.datetime.now().year):
@@ -129,8 +127,7 @@ def generate_date_lep_exit(grade, acad_year=datetime.datetime.now().year):
     entry_year = acad_year - (3 if grade > 3 else 1)
     entry_month = random.randint(3, 6)
     entry_day = random.randint(1, 30)
-    doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
-    return doe
+    return datetime.date(entry_year, entry_month, entry_day)
 
 
 def generate_derived_demographic(student):

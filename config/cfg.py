@@ -5,7 +5,9 @@ The input configuration for the SBAC project.
 @date: February 25, 2014
 """
 
-HIERARCHY_FROM_DATE = '2012-09-01'
+import datetime
+
+HIERARCHY_FROM_DATE = datetime.date(2012, 9, 1)
 HIERARCHY_TO_DATE = None
 HIERARCHY_MOST_RECENT = True
 

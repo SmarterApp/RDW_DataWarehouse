@@ -5,6 +5,8 @@ An assessment generator for the SBAC assessment.
 @date: March 3, 2014
 """
 
+import datetime
+
 import general.util.gaussian_distribution as rand_gauss
 import general.util.id_gen as id_gen
 import project.sbac.config.cfg as sbac_config
@@ -115,7 +117,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.inst_hierarchy = inst_hier
 
     # Create the date taken
-    sao.date_taken = str(assessment.period_year) + '-' + str(month_taken) + '-15'
+    sao.date_taken = datetime.date(assessment.period_year, month_taken, 15)
 
     # Create overall score and performance level
     sao.overall_score = int(rand_gauss.gauss_one(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX,

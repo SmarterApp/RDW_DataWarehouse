@@ -319,7 +319,7 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                 # write to err_list
                 e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
                                           "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                          table=match_conf['prod_table']))
+                                                                    table=match_conf['prod_table']))
                 failure_time = datetime.datetime.now()
                 e.insert_err_list(UDL2DBConnection, 4, failure_time)
 

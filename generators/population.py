@@ -10,6 +10,7 @@ import random
 
 import general.generators.population as general_pop_gen
 import general.util.gaussian_distribution as rand_gaussian
+import project.sbac.config.cfg as sbac_in_config
 import project.sbac.util.id_gen as sbac_id_gen
 
 from general.model.school import School
@@ -203,8 +204,8 @@ def set_lang_items(student, acad_year=datetime.datetime.now().year):
                                                   'ShelteredEnglishInstruction', 'StructuredEnglishImmersion', 'SDAIE',
                                                   'ContentBasedESL', 'PullOutESL', 'Other'])
 
-        # Decide if to set entry date for LEP (will for 60%)
-        if random.randint(1, 10) < 7:
+        # Decide if to set entry date for LEP
+        if random.random() < sbac_in_config.LEP_HAS_ENTRY_DATE_RATE:
             student.prg_lep_entry_date = generate_date_lep_entry(student.grade, acad_year)
 
         # Set an exit date if the proficiency level is good enough

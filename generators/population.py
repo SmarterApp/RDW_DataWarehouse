@@ -16,16 +16,18 @@ from general.model.school import School
 from project.sbac.model.student import SBACStudent
 
 
-def generate_student(school: School, grade):
+def generate_student(school: School, grade, acad_year=datetime.datetime.now().year):
     """
     Generate a student.
 
     @param school: The school the student belongs to
     @param grade: The grade the student belongs to
+    @param acad_year: The current academic year this student is being created for (optional, defaults to your machine
+                      clock's current year)
     @return: The student
     """
     # Run the General generator
-    s = general_pop_gen.generate_student(school, grade, SBACStudent)
+    s = general_pop_gen.generate_student(school, grade, acad_year, SBACStudent)
     s.district = school.district
 
     # Get the demographic config
@@ -34,8 +36,8 @@ def generate_student(school: School, grade):
     # Set other specifics
     s.guid_sr = sbac_id_gen.get_sr_uuid()
     s.external_ssid = sbac_id_gen.get_sr_uuid()
-    s.school_entry_date = _generate_date_enter_us_school(s.grade)
-    s.derived_demographic = _generate_derived_demographic(s)
+    s.school_entry_date = generate_date_enter_us_school(s.grade, acad_year)
+    s.derived_demographic = generate_derived_demographic(s)
     s.prg_migrant = general_pop_gen.determine_demo_option_selected(demo_config['migrant'])
     s.prg_idea = general_pop_gen.determine_demo_option_selected(demo_config['idea'])
     s.prg_primary_disability = random.choice(['', '',  # Allow blanks and give them higher weight
@@ -47,7 +49,7 @@ def generate_student(school: School, grade):
         s.prg_primary_disability = None
 
     # Set language items
-    _set_lang_items(s)
+    set_lang_items(s, acad_year)
 
     # Save and return object
     s.save()
@@ -55,13 +57,15 @@ def generate_student(school: School, grade):
     return s
 
 
-def repopulate_school_grade(school: School, grade, grade_students):
+def repopulate_school_grade(school: School, grade, grade_students, acad_year=datetime.datetime.now().year):
     """
     Take a school grade and make sure it has enough students. The list of students is updated in-place.
 
     @param school: The school to potentially re-populate
     @param grade: The grade in the school to potentially re-populate
     @param grade_students: The students currently in the grade for this school
+    @param acad_year: The current academic year that the repopulation is occurring within (optional, defaults to your
+                      machine clock's current year)
     """
     # Re-populate grades if necessary
     if len(grade_students) < (school.student_count_avg / 20):
@@ -71,64 +75,65 @@ def repopulate_school_grade(school: School, grade, grade_students):
         print('  Creating ' + str(student_count) + ' students in grade ' + str(grade) +
               ' for school ' + school.name)
         for k in range(student_count):
-            s = generate_student(school, grade)
+            s = generate_student(school, grade, acad_year)
             grade_students.append(s)
     else:
         # The grade is populated, but see if we should add a few new students
         # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
         for k in range(random.choice([0, 0, 1, 2, 3, 4])):
-            s = generate_student(school, grade)
+            s = generate_student(school, grade, acad_year)
             grade_students.append(s)
         print('  Grade ' + str(grade) + ' sufficiently populated for school ' + school.name)
 
 
-def _generate_date_enter_us_school(grade):
+def generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):
     """
     Generates an appropriate date of when a student would have entered a US school, assuming all students entered
     school in grade K.
 
     @param grade: the current grade of the student
+    @param acad_year: The current academic year to use to create the date (optional, defaults to your machine clock's
+                      current year)
     @return: a date object that represents the student's entry date
     """
-    current_year = int(datetime.datetime.now().year)
-    entry_year = current_year - grade - 1
+    entry_year = acad_year - grade - 1
     entry_month = random.randint(8, 9)
     entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1, 15)
     doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
     return doe
 
 
-def _generate_date_lep_entry(grade):
+def generate_date_lep_entry(grade, acad_year=datetime.datetime.now().year):
     """
     Generates an appropriate date of when a student would have been designated as LEP
 
     @param grade: the current grade of the student
     @return: a date object that represents the student's entry date
     """
-    current_year = int(datetime.datetime.now().year)
-    entry_year = current_year - (grade if grade < 5 else random.randint(4, grade))
+    entry_year = acad_year - (grade if grade < 5 else random.randint(4, grade))
     entry_month = random.randint(8, 9)
     entry_day = random.randint(15, 31) if entry_month == 8 else random.randint(1, 15)
     doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
     return doe
 
 
-def _generate_date_lep_exit(grade):
+def generate_date_lep_exit(grade, acad_year=datetime.datetime.now().year):
     """
     Generates an appropriate date of when a student would have been promoted from LEP status
 
     @param grade: the current grade of the student
+    @param acad_year: The current academic year to use to create the date (optional, defaults to your machine clock's
+                      current year)
     @return: a date object that represents the student's exit date
     """
-    current_year = int(datetime.datetime.now().year)
-    entry_year = current_year - (3 if grade > 3 else 1)
+    entry_year = acad_year - (3 if grade > 3 else 1)
     entry_month = random.randint(3, 6)
     entry_day = random.randint(1, 30)
     doe = datetime.date(entry_year, entry_month, entry_day).strftime("%Y-%m-%d")
     return doe
 
 
-def _generate_derived_demographic(student):
+def generate_derived_demographic(student):
     """
     Generate the derived demographic value for a student.
 
@@ -161,11 +166,13 @@ def _generate_derived_demographic(student):
         return -1
 
 
-def _set_lang_items(student):
+def set_lang_items(student, acad_year=datetime.datetime.now().year):
     """
     Set the language values for a student.
 
     @param student: The student to configure
+    @param acad_year: The current academic year to use to create the date (optional, defaults to your machine clock's
+                      current year)
     """
     if student.prg_lep:
         # Pick a random non-English language
@@ -179,9 +186,9 @@ def _set_lang_items(student):
 
         # Decide if to set entry date for LEP (will for 60%)
         if random.randint(1, 10) < 7:
-            student.prg_lep_entry_date = _generate_date_lep_entry(student.grade)
+            student.prg_lep_entry_date = generate_date_lep_entry(student.grade, acad_year)
 
         # Set an exit date if the proficiency level is good enough
         if student.lang_prof_level in ['good', 'very good']:
-            student.prg_lep_exit_date = _generate_date_lep_exit(student.grade)
+            student.prg_lep_exit_date = generate_date_lep_exit(student.grade, acad_year)
             student.lang_title_3_prg = None

@@ -20,35 +20,42 @@ class UDLTestHelper(unittest.TestCase):
         cls.udl2_conn, cls.udl2_engine = database._create_conn_engine(cls.udl2_conf['udl2_db'])
         cls.target_conn, cls.target_engine = database._create_conn_engine(cls.udl2_conf['target_db'])
         cls.prod_conn, cls.prod_engine = database._create_conn_engine(cls.udl2_conf['prod_db'])
+        cls.truncate_edware_tables()
+        cls.truncate_udl_tables()
 
     @classmethod
     def tearDownClass(cls):
+        cls.truncate_edware_tables()
+        cls.truncate_udl_tables()
         cls.udl2_conn.close()
         cls.target_conn.close()
         cls.prod_conn.close()
 
     def setUp(self):
-        self.truncate_edware_tables()
-        self.truncate_udl_tables()
+        #self.truncate_edware_tables()
+        #self.truncate_udl_tables()
+        pass
 
     def tearDown(self):
         #self.truncate_edware_tables()
         #self.truncate_udl_tables()
         pass
 
+    @classmethod
     def truncate_edware_tables(self):
         template = """
             TRUNCATE "{target_schema}"."{target_table}" CASCADE
             """
-
         sql_dim_asmt = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_asmt')
         sql_dim_inst_hier = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_inst_hier')
         sql_dim_section = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_section')
         sql_dim_student = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_student')
         sql_fact_asmt_outcome = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='fact_asmt_outcome')
         except_msg = "Unable to clean up target db tabels"
-        execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section, sql_dim_student, sql_fact_asmt_outcome], except_msg)
+        execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section,
+                                           sql_dim_student, sql_fact_asmt_outcome], except_msg)
 
+    @classmethod
     def truncate_udl_tables(self):
         sql_template = """
             TRUNCATE "{staging_schema}"."{staging_table}" CASCADE

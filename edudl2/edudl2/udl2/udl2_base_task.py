@@ -57,7 +57,7 @@ class Udl2BaseTask(Task):
             # TODO: udl phase step number
             try:
                 exc.insert_err_list(UDL2DBConnection, 4, failure_time)
-            except NotImplemented:
+            except Exception:
                 pass
         msg = {}
         msg.update(args[0])

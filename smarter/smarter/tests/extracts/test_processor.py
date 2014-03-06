@@ -339,7 +339,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test___get_extract_request_user_info(self):
         result = _get_extract_request_user_info()
         self.assertIsInstance(result[0], str)
-        self.assertEqual('testtenant', result[2])
+        self.assertEqual('tomcat', result[2])
 
     def test__create_tasks_with_responses_non_tenant_level(self):
         params = {'stateCode': 'NC',

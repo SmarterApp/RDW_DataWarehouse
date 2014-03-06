@@ -50,9 +50,9 @@ class UDLDataIntegrityError(UDLException):
     def insert_err_list(self, stat_conn, error_source, failure_time):
         values = {
             'err_source': 4,
-            'record_sid': '',
+            'record_sid': 123,
             'guid_batch': self._batch_guid,
-            'create_date': failure_time,
+            'created_date': failure_time,
             'err_code': ErrorCode.DATA_INTEGRITY_ERROR,
             'err_input': self._error
         }

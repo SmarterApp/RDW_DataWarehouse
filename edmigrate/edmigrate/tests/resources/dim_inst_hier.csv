@@ -1,0 +1,18 @@
+inst_hier_rec_id,state_name,state_code,district_guid,district_name,school_guid,school_name,school_category,from_date,to_date,most_recent
+243,North Carolina,NC,228,Sunset School District,242,Sunset - Eastern Elementary,Elementary School,20000101,99991231,TRUE
+246,North Carolina,NC,228,Sunset School District,245,Sunset - Western Middle,Middle School,20000101,99991231,TRUE
+249,North Carolina,NC,228,Sunset School District,248,Sunset Central High,High School,20000101,99991231,TRUE
+940,North Carolina,NC,229,Daybreak School District,939,Daybreak - Western Middle,Middle School,20000101,99991231,TRUE
+943,North Carolina,NC,229,Daybreak School District,942,Daybreak Central High,High School,20000101,99991231,TRUE
+937,North Carolina,NC,229,Daybreak School District,936,Daybreak - Western Elementary,Elementary School,20000101,99991231,TRUE
+10054,North Carolina,NC,2ce72d77-1de2-4137-a083-77935831b817,Dealfish Pademelon SD,9f033bff-7d5b-4800-8ad4-67f063b0ccd4,Mountainash Serrano Jr Middle,Middle School,20120901,99991231,TRUE
+10388,North Carolina,NC,2ce72d77-1de2-4137-a083-77935831b817,Dealfish Pademelon SD,18283a0a-a139-4233-b8c0-f5c5aeea51d2,Nyala Aurochs High School,High School,20120901,99991231,TRUE
+10495,North Carolina,NC,2ce72d77-1de2-4137-a083-77935831b817,Dealfish Pademelon SD,ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4,Serotine Planetree Elementary School,Elementary School,20120901,99991231,TRUE
+10640,North Carolina,NC,2ce72d77-1de2-4137-a083-77935831b817,Dealfish Pademelon SD,0eab62f5-6c97-4302-abff-7bfdc61f527c,Dolphin Razorfish Sch,Elementary School,20120901,99991231,TRUE
+10814,North Carolina,NC,0513ba44-e8ec-4186-9a0e-8481e9c16206,Ropefish Lynx Public Schools,fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41,Hickory Cornetfish Jr Middle,Middle School,20120901,99991231,TRUE
+11136,North Carolina,NC,0513ba44-e8ec-4186-9a0e-8481e9c16206,Ropefish Lynx Public Schools,1cc294ff-7b3f-4531-b9fc-9526138e4141,Nunbird Manefish HS,High School,20120901,99991231,TRUE
+11243,North Carolina,NC,0513ba44-e8ec-4186-9a0e-8481e9c16206,Ropefish Lynx Public Schools,52a84cfa-4cc6-46db-8b59-5938fd1daf12,Sandpiper Peccary Elementary,Elementary School,20120901,99991231,TRUE
+11397,North Carolina,NC,0513ba44-e8ec-4186-9a0e-8481e9c16206,Ropefish Lynx Public Schools,e70e2681-ada0-4b21-9871-d747358297f0,Kangaroo Hippopotamus Community Middle,Middle School,20120901,99991231,TRUE
+11706,North Carolina,NC,c912df4b-acdf-40ac-9a91-f66aefac7851,Swallow Harrier District,f7de5f75-b5ff-441a-9ed0-cd0e965f7719,Serval Spearfish Middle,Middle School,20120901,99991231,TRUE
+12050,North Carolina,NC,c912df4b-acdf-40ac-9a91-f66aefac7851,Swallow Harrier District,fc85bac1-f471-4425-8848-c6cb28058614,Gorilla Tapiti High School,High School,20120901,99991231,TRUE
+12147,North Carolina,NC,c912df4b-acdf-40ac-9a91-f66aefac7851,Swallow Harrier District,429804d2-50db-4e0e-aa94-96ed8a36d7d5,Blobfish Pintail Sch,Elementary School,20120901,99991231,TRUE

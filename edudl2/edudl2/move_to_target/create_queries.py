@@ -12,11 +12,12 @@ def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_b
     @column_name:
     @guid_batch
     '''
-    query = text("SELECT DISTINCT " + column_name + " " +
-                 "FROM " + combine_schema_and_table(schema_name, table_name) + " " +
-                 "WHERE guid_batch=:guid_batch",
+    query = text("SELECT DISTINCT {column_name} "
+                 "FROM {schema_and_table} "
+                 "WHERE guid_batch=:guid_batch".format(column_name=column_name,
+                                                       schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                 table_name)),
                  bindparams=[bindparam('guid_batch', guid_batch)])
-
     return query
 
 
@@ -26,14 +27,14 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
     Create query to find distict asmt_rec_id for a given batch in source table
 
     '''
-    sql_template = "SELECT DISTINCT {rec_id_column_name} " + \
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE {guid_column_name_in_target}=:guid_column_value_got"
-    return text(sql_template.format(rec_id_column_name=rec_id_column_name,
-                                    source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                     target_table_name),
-                                    guid_column_name_in_target=guid_column_name_in_target),
-                bindparams=[bindparam('guid_column_value_got', guid_column_value)])
+    query = text("SELECT DISTINCT {rec_id_column_name} "
+                 "FROM {source_schema_and_table} "
+                 "WHERE {guid_column_name_in_target}=:guid_column_value_got".format(rec_id_column_name=rec_id_column_name,
+                                                                                    source_schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                                                     target_table_name),
+                                                                                    guid_column_name_in_target=guid_column_name_in_target),
+                 bindparams=[bindparam('guid_column_value_got', guid_column_value)])
+    return query
 
 
 def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
@@ -254,28 +255,30 @@ def create_information_query(target_table):
     '''
     Main function to crate query to get column types in a table. 'information_schema.columns' is used.
     '''
-    query = "SELECT column_name, data_type, character_maximum_length " +\
-            "FROM information_schema.columns " +\
-            "WHERE table_name = :target_table"
-    return text(query, bindparams=[bindparam('target_table', target_table)])
+    query = text("SELECT column_name, data_type, character_maximum_length "
+                 "FROM information_schema.columns "
+                 "WHERE table_name = :target_table",
+                 bindparams=[bindparam('target_table', target_table)])
+
+    return query
 
 
 def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
     '''
-    return '\"' + schema_name + '\".\"' + table_name + '\"'
+    return '"{schema}"."{table}"'.format(schema=schema_name, table=table_name)
 
 
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):
     '''
     Function to get target table and source table mapping in a specific udl phase
     '''
-    sql_template = "SELECT distinct target_table, source_table " + \
-                   "FROM {source_schema_and_table} " + \
-                   "WHERE phase = :phase "
-    return text(sql_template.format(source_schema_and_table=combine_schema_and_table(schema_name, table_name)),
-                bindparams=[bindparam('phase', phase_number)])
+    query = text("SELECT distinct target_table, source_table "
+                 "FROM {source_schema_and_table} "
+                 "WHERE phase = :phase ".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name)),
+                 bindparams=[bindparam('phase', phase_number)])
+    return query
 
 
 def get_column_mapping_query(schema_name, ref_table, target_table, source_table=None):
@@ -296,25 +299,29 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
     else:
         where_statement = " WHERE target_table= :target_table"
 
-    mapping_query = "SELECT target_column, source_column FROM {source_schema_and_ref_table} {where_statement}"
-    mapping_query = mapping_query.format(source_schema_and_ref_table=combine_schema_and_table(schema_name, ref_table),
-                                         where_statement=where_statement)
-    return text(mapping_query, bindparams=params)
+    query = text("SELECT target_column, source_column "
+                 "FROM {source_schema_and_ref_table} "
+                 "{where_statement}".format(source_schema_and_ref_table=combine_schema_and_table(schema_name, ref_table),
+                                            where_statement=where_statement),
+                 bindparams=params)
+    return query
 
 
 def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matching_conf):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    params = [bindparam('batch_guid', batch_guid),
-              bindparam('status', matching_conf['status'])]
-    query = text("SELECT {cols} "
+    columns = ", ".join(matching_conf['columns'])
+    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in matching_conf['condition']])
+    params = [bindparam('batch_guid', batch_guid)]
+    params.extend([bindparam(c, matching_conf[c]) for c in matching_conf['condition']])
+    query = text("SELECT {columns} "
                  "FROM {source_schema_and_table} "
                  "WHERE batch_guid = :batch_guid "
-                 "AND status = :status".format(cols=", ".join(matching_conf['columns']),
-                                               source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                table_name)
-                                               ),
+                 "AND {condition}".format(columns=columns,
+                                          source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                                          condition=condition_clause
+                                          ),
                  bindparams=params)
     return query
 

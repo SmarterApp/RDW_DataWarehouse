@@ -165,7 +165,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   TaskConstants.TASK_TASK_ID: 'abc'}]
         tasks_group = route_tasks(self._tenant, 'request', tasks)
         self.assertIsInstance(tasks_group, group)
-        self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_json('testtenant', 'request', 'abc', 'abc', 'abc')")
+        self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_json('tomcat', 'request', 'abc', 'abc', 'abc')")
 
     def test_route_tasks_csv_request(self):
         tasks = [{TaskConstants.TASK_IS_JSON_REQUEST: False,
@@ -175,7 +175,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         from edextract.tasks.extract import route_tasks
         tasks_group = route_tasks(self._tenant, 'request', tasks)
         self.assertIsInstance(tasks_group, group)
-        self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_csv('testtenant', 'request', 'abc', 'abc', 'abc')")
+        self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_csv('tomcat', 'request', 'abc', 'abc', 'abc')")
 
     def test_route_tasks_json_request_multi_requests(self):
         from edextract.tasks.extract import route_tasks
@@ -189,8 +189,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   TaskConstants.TASK_TASK_ID: 'def'}]
         tasks_group = route_tasks(self._tenant, 'request', tasks)
         self.assertIsInstance(tasks_group, group)
-        self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_json('testtenant', 'request', 'abc', 'abc', 'abc')")
-        self.assertEqual(str(tasks_group.kwargs['tasks'][1]), "tasks.extract.generate_csv('testtenant', 'request', 'def', 'def', 'def')")
+        self.assertEqual(str(tasks_group.kwargs['tasks'][0]), "tasks.extract.generate_json('tomcat', 'request', 'abc', 'abc', 'abc')")
+        self.assertEqual(str(tasks_group.kwargs['tasks'][1]), "tasks.extract.generate_csv('tomcat', 'request', 'def', 'def', 'def')")
 
     def test_archive_with_encryption(self):
         from edextract.tasks.extract import archive_with_encryption

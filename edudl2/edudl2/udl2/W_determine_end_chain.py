@@ -24,4 +24,8 @@ def task(msg):
                       "studentregistration": [W_post_etl.task.s(), W_all_done.task.s(),
                                               W_job_status_notification.task.s()]}
 
-    chain(target_tasks[load_type] + post_etl_tasks[load_type]).delay()
+    result = chain(target_tasks[load_type] + post_etl_tasks[load_type]).delay()
+
+    outgoing_msg = result.get()
+
+    return outgoing_msg

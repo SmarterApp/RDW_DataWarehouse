@@ -9,7 +9,7 @@ import shutil
 import subprocess
 from time import sleep
 from edudl2.udl2.udl2_connector import UDL2DBConnection
-from sqlalchemy.sql import select
+from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 
 
@@ -19,6 +19,7 @@ TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
 FILE_DICT = {}
 
 
+@unittest.skip("skipping this test")
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):
@@ -82,7 +83,7 @@ class ValidateMultiFiles(unittest.TestCase):
 #Connect to UDL database through config_file
     def connect_verify_udl(self, connector):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table.c.guid_batch]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
+        query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
         result = connector.execute(query).fetchall()
         number_of_guid = len(result)
         self.assertEqual(number_of_guid, 3)

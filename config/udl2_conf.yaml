@@ -188,15 +188,15 @@ qa:
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware_sds_1_11
+            db_schema: edware_sds_1_12
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware_sds_1_11_dog
+            db_schema: edware_sds_1_12_dog
         func_tests:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware_funcional_tests
-            db_schema: edware_sds_1_11
+            db_schema: edware_sds_1_12
     prod_db:
-        db_schema: edware_sds_1_11
+        db_schema: edware_sds_1_12
         db_name: edware
         # TBD make sure it is the production setting
         db_host: dwpool1.qa.dum.edwdc.net
@@ -264,15 +264,15 @@ development:
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_11
+            db_schema: edware_sds_1_12
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_11_dog
+            db_schema: edware_sds_1_12_dog
         func_tests:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
-            db_schema: edware_sds_1_11
+            db_schema: edware_sds_1_12
     prod_db:
-        db_schema: edware_sds_1_11
+        db_schema: edware_sds_1_12
         db_name: edware
         # TBD make sure it is the production setting
         db_host: edwdbsrv4.poc.dum.edwdc.net
@@ -329,15 +329,15 @@ jenksins_dev:
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_11
+            db_schema: edware_sds_1_12
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_11_dog
+            db_schema: edware_sds_1_12_dog
         func_tests:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
-            db_schema: edware_sds_1_11
+            db_schema: edware_sds_1_12
     prod_db:
-        db_schema: edware_sds_1_11
+        db_schema: edware_sds_1_12
         db_name: edware
         # TBD make sure it is the production setting
         db_host: edwdbsrv4.poc.dum.edwdc.net

@@ -7,22 +7,22 @@ from edudl2.udl2_util.file_util import create_directory
 
 
 def validate_file(file_name):
-    if not (os.path.exists(file_name) and os.path.isfile(file_name)) or os.path.getsize(file_name) <= 0:
-        raise Exception('Unable to split invalid.')
+    return False if not (os.path.exists(file_name) and os.path.isfile(file_name)) or os.path.getsize(file_name) <= 0 else True
 
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='./'):
     '''
     Split files into either parts or row limit
-    # TODO:  Figure out why we have to send a a list of a list back and the importance of the row
     '''
-    validate_file(file_name)
+    if not validate_file(file_name):
+        raise Exception('Unable to split invalid.')
     create_directory(output_dir)
 
     with open(file_name) as csvfile:
         data = csv.reader(csvfile, delimiter=delimiter)
         header = next(data)
         total_rows = 0
+        # Get the total number of records
         for row in data:
             total_rows += 1
         if parts is 0:
@@ -37,6 +37,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
                 row_count = 0
                 start = row_limit * (i - 1) + 1
                 end = i * row_limit + 1
+                # Slice the iterator based on start and end
                 for row in itertools.islice(data, start, end):
                     csvwriter = csv.writer(writerfile, delimiter=',')
                     csvwriter.writerow(row)

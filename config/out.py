@@ -260,7 +260,7 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                   {'name': 'asmt_subject', 'val': 'assessment.subject'}]}
 
 SR_FORMAT = {'format': 'csv',
-             'name': 'sr_<YEAR>.csv',
+             'name': '<YEAR>_sr_<GUID>.csv',
              'columns': [{'name': 'StateName', 'val': 'state.name'},
                          {'name': 'StateAbbreviation', 'val': 'state.code'},
                          {'name': 'ResponsibleDistrictIdentifier', 'val': 'district.guid_sr'},
@@ -298,7 +298,7 @@ SR_FORMAT = {'format': 'csv',
                          {'name': 'PrimaryDisabilityType', 'val': 'student.prg_primary_disability'}]}
 
 REGISTRATION_SYSTEM_FORMAT = {'format': 'json',
-                              'name': 'sr_<YEAR>.json',
+                              'name': '<YEAR>_sr_<GUID>.json',
                               'layout': {
                                   'Content': 'StudentRegistration',
                                   'Identification': {

@@ -13,7 +13,7 @@ STATE_TYPES = {'california': {'district_types_and_counts': {'Big Average': 50, '
                                                             'Small Very Poor': 50, 'Small Very Good': 50},
                              'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                              'demographics': 'california'},
-               'devel': {'district_types_and_counts': {'Small Average': 1},
+               'devel': {'district_types_and_counts': {'Small Average': 4},
                          'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                          'demographics': 'california'}
                }

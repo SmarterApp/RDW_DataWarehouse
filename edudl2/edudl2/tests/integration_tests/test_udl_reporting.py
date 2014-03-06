@@ -26,15 +26,17 @@ PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_re
 @unittest.skip("skipping this test till starschema change has been made")
 class Test(unittest.TestCase):
 
+    def __init__(self, *args, **kwargs):
+        unittest.TestCase.__init__(self, *args, **kwargs)
+
     def setUp(self):
-        # Get files and directories to be used for the tests
-        self.gpg_filenames = self.get_all_test_file_names(PATH_TO_FILES)
         self.tenant_dir = TENANT_DIR
         # Get connections for UDL and Edware databases
         self.ed_connector = TargetDBConnection()
         self.connector = UDL2DBConnection()
 
     def test_validation(self):
+        self.copy_files_to_tenantdir(PATH_TO_FILES)
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)
         # Copy files to tenant_dir and run udl pipeline
@@ -42,19 +44,6 @@ class Test(unittest.TestCase):
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
         self.validate_UDL_database(self.connector)
         self.validate_edware_database(self.ed_connector)
-
-    def get_all_test_file_names(self, file_path):
-        '''
-        Returns a list containing all gpg file names inside the edudl2/tests/data/udl_to_reporting_e2e_integration directory
-        :param file_path: file path containing all gpg files
-        :type file_path: string
-        :return all_files: list of all gpg file names
-        :type all_files: list
-        '''
-        all_files = []
-        for file in os.listdir(file_path):
-            if fnmatch.fnmatch(file, '*.gpg'):
-                all_files.append(str(file))
 
     def empty_table(self, connector, ed_connector):
         '''
@@ -96,6 +85,8 @@ class Test(unittest.TestCase):
         arch_file = self.tenant_dir
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
+#        # Get files and directories to be used for the tests
+#        self.gpg_filenames = self.get_all_file_names(PATH_TO_FILES)
         # Set the command to run UDL pipeline
         command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
         print(command)
@@ -148,17 +139,25 @@ class Test(unittest.TestCase):
 #        print(output_table_math)
 #        print(output_table_ela)
 
-    def copy_file_to_tmp(self):
+    def copy_files_to_tenantdir(self, file_path):
         '''
-        Copy the gpg files from edudl2/tests/data/ to a tenant directory so that the tests can be re used
+        Copies the gpg files from  edudl2/tests/data/udl_to_reporting_e2e_integration to the tenant directory
+        :param file_path: file path containing all gpg files
+        :type file_path: string
         '''
+        # Get all file paths from tests/data/udl_to_reporting_e2e_integration directory
+        all_files = []
+        for file in os.listdir(file_path):
+            if fnmatch.fnmatch(file, '*.gpg'):
+                all_files.append(os.path.join(file_path + '/' + str(file)))
+
         # Create a tenant directory if does not exist already
         if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
+            print("Tenant directory already exists")
         else:
             os.makedirs(self.tenant_dir)
         # Copy all the files from tests/data directory to tenant directory
-        for file in self.gpg_filenames:
+        for file in all_files:
             files = shutil.copy2(file, self.tenant_dir)
 
     def check_job_completion(self, connector, max_wait=600):

@@ -6,15 +6,15 @@
   optimize: 'uglify',
   modules: [
     {
-      name : "modules/Edware.comparingPopulationsReport"
+      name : "modules/EDWARE.comparingPopulationsReport"
     },
     {
-      name : "modules/Edware.individualStudentReport"
+      name : "modules/EDWARE.individualStudentReport"
     },
     {
-      name : "modules/Edware.studentListReport"
+      name : "modules/EDWARE.studentListReport"
     },
     {
-      name: "modules/Edware.stateMap"
+      name: "modules/EDWARE.stateMap"
     }]
 })

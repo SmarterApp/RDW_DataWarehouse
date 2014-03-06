@@ -14,7 +14,7 @@ from database.data_importer import import_csv_dir
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles
 
-csv_imported = False
+csv_imported = {}
 
 
 class UT_Base(unittest.TestCase):
@@ -29,7 +29,7 @@ class UT_Base(unittest.TestCase):
         # destroy sqlite just in case
         destroy_sqlite()
         global csv_imported
-        csv_imported = False
+        csv_imported = {}
 
     def get_Metadata(self):
         dbUtil = component.queryUtility(IDbUtil)
@@ -37,28 +37,29 @@ class UT_Base(unittest.TestCase):
 
 
 class Unittest_with_sqlite(UT_Base):
-    csv_imported = False
+    # csv_imported = False
 
     @classmethod
-    def setUpClass(cls, datasource_name='', metadata=None):
+    def setUpClass(cls, datasource_name='', metadata=None, resources_dir=None):
         Unittest_with_sqlite.datasource_name = datasource_name
         # create db engine for sqlite
         create_sqlite(use_metadata_from_db=True, echo=False, metadata=metadata, datasource_name=datasource_name)
         # create test data in the sqlite
         generate_cvs_templates(datasource_name=Unittest_with_sqlite.datasource_name)
         here = os.path.abspath(os.path.dirname(__file__))
-        resources_dir = os.path.abspath(os.path.join(os.path.join(here, '..', 'resources')))
+        if resources_dir is None:
+            resources_dir = os.path.abspath(os.path.join(os.path.join(here, '..', 'resources')))
         global csv_imported
-        if not csv_imported:
+        if not csv_imported.get(datasource_name + '.' + resources_dir, False):
             import_csv_dir(resources_dir, datasource_name=Unittest_with_sqlite.datasource_name)
-            csv_imported = True
+            csv_imported[datasource_name + '.' + resources_dir] = True
 
     @classmethod
     def tearDownClass(cls):
         # destroy sqlite just in case
         destroy_sqlite(datasource_name=Unittest_with_sqlite.datasource_name)
         global csv_imported
-        csv_imported = False
+        csv_imported = {}
 
     def get_Metadata(self):
         dbUtil = component.queryUtility(IDbUtil, name=Unittest_with_sqlite.datasource_name)

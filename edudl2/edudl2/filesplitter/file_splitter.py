@@ -13,6 +13,7 @@ def validate_file(file_name):
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='./'):
     '''
     Split files into either parts or row limit
+    Precedence of parts over row_limit when both are supplied
     '''
     if not validate_file(file_name):
         raise Exception('Unable to split invalid.')
@@ -27,11 +28,14 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
             total_rows += 1
         if parts is 0:
             parts = math.ceil(total_rows / row_limit)
+        # Recalculate values
         row_limit = math.ceil(total_rows / parts)
+        parts = math.ceil(total_rows / row_limit)
         # Split files
         split_file_list = []
         for i in range(1, parts + 1):
             csvfile.seek(0)
+            # Generate file names that will be loaded into fdw
             output_file = os.path.join(output_dir, 'part_' + str(uuid4()) + '.csv')
             with open(output_file, 'w') as writerfile:
                 row_count = 0
@@ -43,9 +47,6 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
                     csvwriter.writerow(row)
                     row_count += 1
                 split_file_list.append([output_file, row_count, start])
-            # TODO: what is the significance of filesize?
-            if i is 1:
-                file_size = os.path.getsize(output_file)
 
     # save headers to output dir
     header_path = os.path.join(output_dir, 'headers.csv')
@@ -54,4 +55,4 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_dir='.
         header_writer.writerow(header)
         csv_header_file.flush()  # EJ, make sure the file is writtend into disk. this happens only when benchmark prints frames
 
-    return split_file_list, header_path, total_rows, file_size
+    return split_file_list, header_path, total_rows, os.path.getsize(file_name)

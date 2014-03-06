@@ -32,8 +32,88 @@ class Test(unittest.TestCase):
     def test_split_file_invalid_file(self):
         self.assertRaises(Exception, split_file, '/i/dont/exist')
 
-#    def test_split_file_valid_file(self):
-#        split_file(file_name, parts=3, output_dir=self.output_dir)
-#
-#    def __prepare_data(self):
-        
+    def test_split_file_by_equal_parts(self):
+        rows = 3
+        parts = 3
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), parts)
+        self.assertIn('part', split_file_list[0][0])
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+
+    def test_split_file_by_odd_rows_even_split(self):
+        rows = 5
+        parts = 2
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), parts)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], 3)
+        self.assertEqual(split_file_list[1][1], 2)
+        # Check row starting counts
+        self.assertEqual(split_file_list[0][2], 1)
+        self.assertEqual(split_file_list[1][2], 4)
+
+    def test_split_file_by_even_rows_even_split(self):
+        rows = 4
+        parts = 2
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), parts)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], 2)
+        self.assertEqual(split_file_list[1][1], 2)
+        # Check row starting counts
+        self.assertEqual(split_file_list[0][2], 1)
+        self.assertEqual(split_file_list[1][2], 3)
+
+    def test_split_file_by_less_rows_than_parts(self):
+        rows = 1
+        parts = 4
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), 1)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], rows)
+        self.assertEqual(split_file_list[0][1], 1)
+
+    def test_split_file_by_row_limit_less_than_total(self):
+        rows = 1
+        row_limit = 4
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), row_limit=row_limit, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), 1)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], rows)
+        self.assertEqual(split_file_list[0][1], 1)
+
+    def test_split_file_by_row_limit_more_than_total(self):
+        rows = 10
+        row_limit = 4
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), row_limit=row_limit, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), 3)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], 4)
+        self.assertEqual(split_file_list[1][1], 4)
+        self.assertEqual(split_file_list[2][1], 2)
+
+    def _prepare_data(self, rows=1):
+        file_path = os.path.join(self.output_dir, 'test.csv')
+        with open(file_path, 'w') as csvfile:
+            csv_writer = csv.writer(csvfile, delimiter=',')
+            csv_writer.writerow('a,b,c')
+            for i in range(0, rows):
+                csv_writer.writerow('aa,bb,cc')
+        return file_path

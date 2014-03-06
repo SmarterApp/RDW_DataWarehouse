@@ -124,6 +124,8 @@ def handle_deletions(msg):
     phase_number = msg[mk.PHASE]
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
+    # pass down the affected row from previous stage
+    affected_rows = msg[mk.TOTAL_ROWS_LOADED]
 
     # generate config dict
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
@@ -131,7 +133,7 @@ def handle_deletions(msg):
     matched_results = match_deleted_records(conf, match_conf)
     update_deleted_record_rec_id(conf, match_conf, matched_results)
     check_mismatched_deletions(conf, match_conf)
-    affected_rows = 0
+
     finish_time = datetime.datetime.now()
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
 

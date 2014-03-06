@@ -15,11 +15,11 @@ require({
     raphael: '../3p/usmap/raphael',
 
     // modules
-    'Edware.LandingPage': 'modules/Edware.LandingPage',
-    'Edware.ComparingPopulationsReport': 'modules/Edware.comparingPopulationsReport',
-    'Edware.StudentListReport': 'modules/Edware.studentListReport',
-    'Edware.IndividualStudentReport': 'modules/Edware.individualStudentReport',
-    'Edware.StateMap': 'modules/Edware.stateMap',
+    'Edware.LandingPage': 'modules/EDWARE.LandingPage',
+    'Edware.ComparingPopulationsReport': 'modules/EDWARE.comparingPopulationsReport',
+    'Edware.StudentListReport': 'modules/EDWARE.studentListReport',
+    'Edware.IndividualStudentReport': 'modules/EDWARE.individualStudentReport',
+    'Edware.StateMap': 'modules/EDWARE.stateMap',
 
     edwareUtil: 'modules/EDWARE.util',
     edwareConstants: 'modules/EDWARE.constants',

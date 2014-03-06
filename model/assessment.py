@@ -18,6 +18,7 @@ class SBACAssessment(Assessment):
     """
     asmt_type = StringField(required=True)
     period = StringField(required=True)
+    period_month = IntField(required=True, default=4)
     period_year = IntField(required=True)
     version = StringField(required=True)
     subject = StringField(required=True)

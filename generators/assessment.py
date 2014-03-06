@@ -5,6 +5,7 @@ An assessment generator for the SBAC assessment.
 @date: March 3, 2014
 """
 
+import calendar
 import datetime
 
 import general.util.gaussian_distribution as rand_gauss
@@ -36,12 +37,21 @@ def generate_assessment(asmt_type, period_month, period_year, subject, from_date
         raise KeyError("Subject '" + subject + "' not found in claim definitions")
     claims = sbac_config.CLAIM_DEFINITIONS[subject]
 
+    # Set the period
+    full_period = str(period_month) + ' ' + str(period_year)
+    if type(period_month) is int:
+        if period_month > 8:
+            full_period = calendar.month_name[period_month] + ' ' + str(period_year - 1)
+        else:
+            full_period = calendar.month_name[period_month] + ' ' + str(period_year)
+
     # Create the object
     sa = SBACAssessment()
     sa.rec_id = id_gen.get_rec_id()
     sa.guid = id_gen.get_uuid()
     sa.asmt_type = asmt_type
-    sa.period = period_month + ' ' + str(period_year)
+    sa.period = full_period
+    sa.period_month = 4 if type(period_month) is str else period_month
     sa.period_year = period_year
     sa.version = sbac_config.ASMT_VERSION
     sa.subject = subject
@@ -88,7 +98,7 @@ def generate_assessment(asmt_type, period_month, period_year, subject, from_date
 
 
 def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: Section,
-                                inst_hier: InstitutionHierarchy, month_taken=4, save_to_mongo=True):
+                                inst_hier: InstitutionHierarchy, save_to_mongo=True):
     """
     Generate an assessment outcome for a given student.
 
@@ -96,7 +106,6 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     @param assessment: The assessment to create the outcome for
     @param section: The section this assessment is related to
     @param inst_hier: The institution hierarchy this student belongs to
-    @param month_taken: The month the assessment was taken (optional, defaults to 4 (April))
     @param save_to_mongo: If the outcome should be saved to Mongo (optional, defaults to True)
     @returns: The assessment outcome
     """
@@ -117,33 +126,36 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.inst_hierarchy = inst_hier
 
     # Create the date taken
-    sao.date_taken = datetime.date(assessment.period_year, month_taken, 15)
+    if assessment.period_month > 8:
+        sao.date_taken = datetime.date(assessment.period_year - 1, assessment.period_month, 15)
+    else:
+        sao.date_taken = datetime.date(assessment.period_year, assessment.period_month, 15)
 
     # Create overall score and performance level
     sao.overall_score = int(rand_gauss.gauss_one(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX,
                                                  sbac_config.ASMT_SCORE_AVG, sbac_config.ASMT_SCORE_STD))
     sao.overall_score_range_min = sao.overall_score - 20 if sao.overall_score > sbac_config.ASMT_SCORE_MIN + 20 else sbac_config.ASMT_SCORE_MIN
     sao.overall_score_range_max = sao.overall_score + 20 if sao.overall_score < sbac_config.ASMT_SCORE_MAX - 20 else sbac_config.ASMT_SCORE_MAX
-    sao.overall_perf_lvl = _pick_performance_level(sao.overall_score, overall_cut_points)
+    sao.overall_perf_lvl = pick_performance_level(sao.overall_score, overall_cut_points)
 
     # Create claim scores and performance levels
     sao.claim_1_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_1_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_1_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-    sao.claim_1_perf_lvl = _pick_performance_level(sao.claim_1_score, claim_cut_points)
+    sao.claim_1_perf_lvl = pick_performance_level(sao.claim_1_score, claim_cut_points)
     sao.claim_2_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_2_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_2_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-    sao.claim_2_perf_lvl = _pick_performance_level(sao.claim_2_score, claim_cut_points)
+    sao.claim_2_perf_lvl = pick_performance_level(sao.claim_2_score, claim_cut_points)
     sao.claim_3_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_3_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_3_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-    sao.claim_3_perf_lvl = _pick_performance_level(sao.claim_3_score, claim_cut_points)
+    sao.claim_3_perf_lvl = pick_performance_level(sao.claim_3_score, claim_cut_points)
     if assessment.claim_4_name is not None:
         sao.claim_4_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
         sao.claim_4_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
         sao.claim_4_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-        sao.claim_4_perf_lvl = _pick_performance_level(sao.claim_4_score, claim_cut_points)
+        sao.claim_4_perf_lvl = pick_performance_level(sao.claim_4_score, claim_cut_points)
 
     # Save and return the object
     if save_to_mongo:
@@ -152,7 +164,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     return sao
 
 
-def _pick_performance_level(score, cut_points):
+def pick_performance_level(score, cut_points):
     """
     Pick the performance level for a given score and cut points.
 

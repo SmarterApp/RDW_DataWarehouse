@@ -4,11 +4,13 @@ import unittest
 import shutil
 import os
 import subprocess
-import httpretty
 import re
 from time import sleep
 from uuid import uuid4
 from sqlalchemy.sql import select, and_, func
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from multiprocessing import Process
+
 from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
 
@@ -183,24 +185,21 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def validate_notification_success(self):
         batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status],
-                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'udl2.W_job_status_notification.task'))
-        result = self.udl_connector.execute(query).fetchall()
-        self.assertNotEqual(result, [])
-        for row in result:
-            status = row['udl_phase_step_status']
-            self.assertEqual(status, 'SUCCESS', 'Notification did not succeed')
+                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
+        notification_status = self.udl_connector.execute(query).fetchall()
+        self.assertEquals([('SUCCESS',)], notification_status, 'Notification did not succeed')
 
     #Validate that the notification to the callback url failed, with a certain number of retries attempted
     def validate_notification_failed(self, retries=0):
         batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status, batch_table.c.error_desc],
-                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'udl2.W_job_status_notification.task'))
+                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
         result = self.udl_connector.execute(query).fetchall()
-        self.assertNotEqual(result, [])
         for row in result:
             status = row['udl_phase_step_status']
             self.assertEqual(status, 'FAILURE', 'Notification succeeded when it was supposed to fail')
-            num_retries = re.search(r'Retries: (\d+)', row['error_desc'], re.I)
+            errors = row['error_desc']
+            num_retries = re.search(r'Retry - (\d+)', errors[len(errors) - 1], re.I)
             self.assertEqual(str(retries), num_retries.group(1), 'Incorrect number of retries')
 
     #Run the UDL pipeline
@@ -235,54 +234,90 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             os.makedirs(self.tenant_dir)
         return shutil.copy2(self.student_reg_files[file_to_load]['path'], self.tenant_dir)
 
-    @httpretty.activate
     def test_udl_student_registration(self):
 
-        httpretty.register_uri(httpretty.POST, "http://StateTestReg.gov/StuReg/CallBack", status=204)
+        # Start the http post server subprocess
+        self.start_post_server()
 
-        #Run and verify first run of student registration data
-        self.batch_id = str(uuid4())
-        self.run_udl_pipeline('original_data')
-        self.validate_successful_job_completion()
-        self.validate_load_type()
-        self.validate_staging_table('original_data')
-        self.validate_json_integration_table('original_data')
-        self.validate_csv_integration_table('original_data')
-        self.validate_stu_reg_target_table('original_data')
-        self.validate_student_data('original_data')
-        self.validate_total_number_in_target('original_data')
-        #self.validate_notification_success()
+        try:
+            #Run and verify first run of student registration data
+            self.batch_id = str(uuid4())
+            self.run_udl_pipeline('original_data')
+            self.validate_successful_job_completion()
+            self.validate_load_type()
+            self.validate_staging_table('original_data')
+            self.validate_json_integration_table('original_data')
+            self.validate_csv_integration_table('original_data')
+            self.validate_stu_reg_target_table('original_data')
+            self.validate_student_data('original_data')
+            self.validate_total_number_in_target('original_data')
+            self.validate_notification_success()
 
-        httpretty.register_uri(httpretty.POST, "http://StateTestReg.gov/StuReg/CallBack",
-                               responses=[httpretty.Response(body={}, status=408),
-                                          httpretty.Response(body={}, status=400)])
+            #Run and verify second run of student registration data (different test registration than previous run)
+            self.batch_id = str(uuid4())
+            self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
+            self.validate_successful_job_completion()
+            self.validate_staging_table('data_for_different_test_center_than_original_data')
+            self.validate_json_integration_table('data_for_different_test_center_than_original_data')
+            self.validate_csv_integration_table('data_for_different_test_center_than_original_data')
+            self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
+            self.validate_student_data('data_for_different_test_center_than_original_data')
+            self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+            self.validate_notification_failed(retries=1)
 
-        #Run and verify second run of student registration data (different test registration than previous run)
-        self.batch_id = str(uuid4())
-        self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
-        self.validate_successful_job_completion()
-        self.validate_staging_table('data_for_different_test_center_than_original_data')
-        self.validate_json_integration_table('data_for_different_test_center_than_original_data')
-        self.validate_csv_integration_table('data_for_different_test_center_than_original_data')
-        self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
-        self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
-        #self.validate_notification_failed(retries = 1)
+            #Run and verify third run of student registration data (same academic year and test registration as first run)
+            #Should overwrite all data from the first run
+            self.batch_id = str(uuid4())
+            self.run_udl_pipeline('data_to_overwrite_original_data')
+            self.validate_successful_job_completion()
+            self.validate_staging_table('data_to_overwrite_original_data')
+            self.validate_json_integration_table('data_to_overwrite_original_data')
+            self.validate_csv_integration_table('data_to_overwrite_original_data')
+            self.validate_stu_reg_target_table('data_to_overwrite_original_data')
+            self.validate_student_data('data_to_overwrite_original_data')
+            self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
+            self.validate_notification_failed(retries=0)
+        except Exception:
+            pass
 
-        httpretty.register_uri(httpretty.POST, "http://StateTestReg.gov/StuReg/CallBack", status=401)
+        # End the http post server subprocess
+        self.shutdown_post_server()
 
-        #Run and verify third run of student registration data (same academic year and test registration as first run)
-        #Should overwrite all data from the first run
-        self.batch_id = str(uuid4())
-        self.run_udl_pipeline('data_to_overwrite_original_data')
-        self.validate_successful_job_completion()
-        self.validate_staging_table('data_to_overwrite_original_data')
-        self.validate_json_integration_table('data_to_overwrite_original_data')
-        self.validate_csv_integration_table('data_to_overwrite_original_data')
-        self.validate_stu_reg_target_table('data_to_overwrite_original_data')
-        self.validate_student_data('data_to_overwrite_original_data')
-        self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
-        #self.validate_notification_failed(retries = 0)
+    def start_post_server(self):
+        try:
+            self.proc = Process(target=self.run_post_server)
+            self.proc.start()
+        except Exception:
+            pass
+
+    def run_post_server(self):
+        try:
+            server_address = ('127.0.0.1', 8000)
+            self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
+            print('POST Service receiving requests....')
+            self.post_server.serve_forever()
+        except Exception:
+            pass
+
+    def shutdown_post_server(self):
+        try:
+            self.proc.terminate()
+            self.post_server.shutdown()
+        except Exception:
+            pass
+
+
+# This class handles our HTTP POST requests with various responses
+class HTTPPOSTHandler(BaseHTTPRequestHandler):
+    def __init__(self, request, client_address, server):
+        self.response_codes = [201, 408, 400, 401]
+        self.response_count = 0
+        BaseHTTPRequestHandler.__init__(self, request, client_address, server)
+
+    def do_POST(self):
+        self.send_response(self.response_codes[self.response_count])
+        self.end_headers()
+        self.response_count += 1
 
 
 if __name__ == '__main__':

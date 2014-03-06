@@ -76,7 +76,7 @@ class TestNotification(unittest.TestCase):
         notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'test_registration_id': '111-222-333', 'message': ''}
 
         # Send the status.
-        callback_url = 'http://somebogusurl/somebogusendpoint'
+        callback_url = 'http://SomeBogusurl/SomeBogusEndpoint'
         notification_status, notification_messages = post_notification(self.udl2_conf, callback_url, notification_body)
 
         # Verify results.
@@ -85,7 +85,7 @@ class TestNotification(unittest.TestCase):
         self.assertEquals('Job completed successfully', notification_messages[0])
 
     def register_url(self, return_statuses):
-        url = "http://mytesturi/myendpoint"
+        url = "http://MyTestUri/MyEndpoint"
         responses = [httpretty.Response(body={}, status=return_status) for return_status in return_statuses]
         httpretty.register_uri(httpretty.POST, url, responses=responses)
         return url

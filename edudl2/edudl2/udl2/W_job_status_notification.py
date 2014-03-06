@@ -26,17 +26,16 @@ def task(msg):
     """
 
     # Get job parameters.
-    load_type = msg[mk.LOAD_TYPE]
     guid_batch = msg[mk.GUID_BATCH]
-    callback_url = msg[mk.CALLBACK_URL]
     start_time = datetime.datetime.now()
 
     # Send the status.
-    notification_status, notification_messages = post_udl_job_status(udl2_conf, guid_batch, callback_url)
+    notification_status, notification_messages = post_udl_job_status(udl2_conf, guid_batch, msg[mk.CALLBACK_URL],
+                                                                     msg[mk.STUDENT_REG_GUID], msg[mk.REG_SYSTEM_ID])
 
     # Post the notification status and errors to the UDL_BATCH DB table.
     end_time = datetime.datetime.now()
-    benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_JOB_STATUS_NOTIFICATION',
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], 'UDL_JOB_STATUS_NOTIFICATION',
                                     start_time, end_time, udl_phase_step_status=notification_status,
                                     error_desc=notification_messages)
     benchmark.record_benchmark()

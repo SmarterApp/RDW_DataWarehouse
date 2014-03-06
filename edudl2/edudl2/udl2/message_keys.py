@@ -109,11 +109,12 @@ BATCH_TABLE = 'batch_table'
 USER_EMAIL = 'user_email'
 TASK_URL = 'task_status_url'
 TASK_URL = 'task_status_url'
-CALLBACK_URL = 'callback_url'
 
 # serializing pipeline
 LOOP_PIPELINE = 'loop_pipeline'
 TENANT_SEARCH_PATHS = 'tenant_search_paths'
 
-#notification
+# notification
+STUDENT_REG_GUID = 'student_reg_guid'
+REG_SYSTEM_ID = 'reg_system_id'
 CALLBACK_URL = 'callback_url'

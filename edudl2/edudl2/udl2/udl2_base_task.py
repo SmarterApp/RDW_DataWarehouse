@@ -27,13 +27,33 @@ logger = get_task_logger(__name__)
 class Udl2BaseTask(Task):
     abstract = True
 
+    def get_post_etl_error_chain(self, msg):
+        tasks = {"assessment": [udl2.W_all_done.task.s(msg)],
+                 "studentregistration": [udl2.W_all_done.task.s(msg),
+                                         udl2.W_job_status_notification.task.s()]}
+        return chain(tasks[msg[mk.LOAD_TYPE]])
+
+    def get_all_done_error_chain(self, msg):
+        if msg[mk.LOAD_TYPE] == "studentregistration":
+            return chain(udl2.W_job_status_notification.task.s(msg))
+        else:
+            return None
+
+    def get_default_error_chain(self, msg):
+        if msg[mk.LOAD_TYPE] == "studentregistration":
+            return chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s(), udl2.W_job_status_notification.task.s())
+        else:
+            return chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
+
     def __get_pipeline_error_handler_chain(self, msg, task_name):
         if task_name == 'udl2.W_post_etl.task':
-            error_handler_chain = udl2.W_all_done.task.s(msg)
+            error_handler_chain = self.get_post_etl_error_chain(msg)
         elif task_name == 'udl2.W_all_done.task':
+            error_handler_chain = self.get_all_done_error_chain(msg)
+        elif task_name == 'udl2.W_job_status_notification.task':
             error_handler_chain = None
         else:
-            error_handler_chain = chain(udl2.W_post_etl.task.s(msg), udl2.W_all_done.task.s())
+            error_handler_chain = self.get_default_error_chain(msg)
         return error_handler_chain
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):

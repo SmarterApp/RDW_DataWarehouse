@@ -8,11 +8,11 @@ of the current completed UDL job to the job client.
 from requests import post
 from requests.exceptions import RequestException
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.udl2_connector import UDL2DBConnection
 from sqlalchemy.sql import select
 
 
-def post_udl_job_status(udl2_conf, guid_batch, callback_url):
+def post_udl_job_status(udl2_conf, guid_batch, callback_url, student_reg_guid, reg_system_id):
     """
     Post the status and any errors of the current completed UDL job referenced by guid_batch
     to the client via callback_url
@@ -25,7 +25,7 @@ def post_udl_job_status(udl2_conf, guid_batch, callback_url):
     """
 
     # Get the post request body.
-    notification_body = create_notification_body(udl2_conf, guid_batch)
+    notification_body = create_notification_body(udl2_conf, guid_batch, student_reg_guid, reg_system_id)
 
     # Send the job status and messages to the callback URL.
     notification_status, notification_messages = post_notification(udl2_conf, callback_url, notification_body)
@@ -33,7 +33,7 @@ def post_udl_job_status(udl2_conf, guid_batch, callback_url):
     return notification_status, notification_messages
 
 
-def create_notification_body(udl2_conf, guid_batch):
+def create_notification_body(udl2_conf, guid_batch, id, test_registration_id):
     """
     Create the notification request body for the job referenced by guid_batch.
 
@@ -53,13 +53,8 @@ def create_notification_body(udl2_conf, guid_batch):
         # TODO: Populate job error messages with actual data when this task is implemented.
         message = []
 
-    # Get the job and test registration ids
-    with TargetDBConnection() as target_conn:
-        student_reg_table = target_conn.get_table(udl2_conf['target_db']['sr_target_table'])
-        student_reg_select = select([student_reg_table.c.student_reg_guid, student_reg_table.c.reg_system_id]).where(student_reg_table.c.batch_guid == guid_batch)
-        id, test_registration_id = target_conn.execute(student_reg_select).fetchone()
-
     notification_body = {'status': status_codes[status], 'id': id, 'test_registration_id': test_registration_id, 'message': message}
+
     return notification_body
 
 

@@ -72,8 +72,8 @@ common:
     load_type:
         assessment: assessment
         student_registration: studentregistration
-    sr_notification_timeout: 30
     sr_notification_retries: 5
+    sr_notification_retry_interval: 30
     udl2_db:
       csv_schema: udl2  # PostgresQL for UDL2 processing. This is not the target database.
       reference_schema: udl2

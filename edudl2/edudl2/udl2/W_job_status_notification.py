@@ -25,19 +25,29 @@ def task(msg):
     It then logs the status of the notification, and exits.
     """
 
-    # Get job parameters.
-    guid_batch = msg[mk.GUID_BATCH]
-    start_time = datetime.datetime.now()
-
     # Send the status.
-    notification_status, notification_messages = post_udl_job_status(udl2_conf, guid_batch, msg[mk.CALLBACK_URL],
-                                                                     msg[mk.STUDENT_REG_GUID], msg[mk.REG_SYSTEM_ID])
+    start_time = datetime.datetime.now()
+    notification_status, notification_messages = post_udl_job_status(get_conf(msg))
 
     # Post the notification status and errors to the UDL_BATCH DB table.
     end_time = datetime.datetime.now()
-    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], 'UDL_JOB_STATUS_NOTIFICATION',
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], 'UDL_JOB_STATUS_NOTIFICATION',
                                     start_time, end_time, udl_phase_step_status=notification_status,
                                     error_desc=notification_messages)
     benchmark.record_benchmark()
 
     return msg
+
+
+def get_conf(msg):
+    conf = {
+        mk.CALLBACK_URL: msg[mk.CALLBACK_URL],
+        mk.STUDENT_REG_GUID: msg[mk.STUDENT_REG_GUID],
+        mk.REG_SYSTEM_ID: msg[mk.REG_SYSTEM_ID],
+        mk.GUID_BATCH: msg[mk.GUID_BATCH],
+        mk.BATCH_TABLE: udl2_conf['udl2_db'][mk.BATCH_TABLE],
+        'retries': udl2_conf['sr_notification_retries'],
+        'retry_interval': udl2_conf['sr_notification_retry_interval']
+    }
+
+    return conf

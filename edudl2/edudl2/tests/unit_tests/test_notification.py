@@ -47,8 +47,7 @@ class TestNotification(unittest.TestCase):
         self.assertEquals('408 Client Error: Request a Timeout', notification_messages[0])
         self.assertEquals('Retry 1 - 408 Client Error: Request a Timeout', notification_messages[1])
         self.assertEquals('Retry 2 - 201 Created: Job completed successfully', notification_messages[2])
-        # TODO: Re-enable when logic is fixed.
-        #self.assertGreaterEqual((end_time - start_time).seconds, 2)  # Cumulative retry intervals.
+        self.assertGreaterEqual((end_time - start_time).seconds, 2)  # Cumulative retry intervals.
 
     @httpretty.activate
     def test_post_notification_failure_with_retries(self):
@@ -69,12 +68,11 @@ class TestNotification(unittest.TestCase):
         self.assertEquals('Retry 2 - 408 Client Error: Request a Timeout', notification_messages[2])
         self.assertEquals('Retry 3 - 408 Client Error: Request a Timeout', notification_messages[3])
         self.assertEquals('Retry 4 - 408 Client Error: Request a Timeout', notification_messages[4])
-        # TODO: Re-enable when logic is fixed.
         #self.assertGreaterEqual((end_time - start_time).seconds, 5)  # Cumulative retry intervals.
 
-    # TODO: Reactivate this test once the timeout functionality is working.
+    @unittest.skip('Skip until we find out how to make POST requests actually timeout')
     @httpretty.activate
-    def dont_post_notification_timeout(self):
+    def test_post_notification_timeout(self):
         # Create the notification request body.
         notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'test_registration_id': '111-222-333', 'message': ''}
 

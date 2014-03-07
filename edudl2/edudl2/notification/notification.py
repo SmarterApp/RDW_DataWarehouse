@@ -116,7 +116,7 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
                 retry += 1
                 if re is not req_exc.Timeout:
                     # TODO: Fix this!
-                    #sleep(retry_interval)
+                    sleep(retry_interval)
                     pass
             else:
                 # Non-retryable error.

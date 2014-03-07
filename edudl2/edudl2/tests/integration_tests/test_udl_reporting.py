@@ -106,6 +106,7 @@ class Test(unittest.TestCase):
         # Get UDL batch_table connection
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         # Prepare Query for finding all batch_guid's for SUCCESS scenarios and for FAILURE scenarios
+        #TODO add error handling
         success_query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
         failure_query = select([batch_table]).where(batch_table.c.udl_phase_step_status == 'FAILURE')
         timer = 0
@@ -123,9 +124,9 @@ class Test(unittest.TestCase):
 
     def validate_edware_database(self, ed_connector):
         '''
-        Validate that for the given batch_guid, data is loaded on star schema
+        Validate edware schema for Dim_asmt table and fact_asmt_table
         '''
-        #Validate dim_asmt table for asmt_guid
+        #Validate dim_asmt table : All the asmt_guid for 30 batch has been loded to dim_table
         edware_table = ed_connector.get_table(DIM_TABLE)
         query_asmt_guids = select([edware_table.c.asmt_guid])
         all_asmt_guids = ed_connector.execute(query_asmt_guids).fetchall()
@@ -133,7 +134,7 @@ class Test(unittest.TestCase):
                          "%i asmt guids not found" % EXPECTED_UNIQUE_BATCH_GUIDS)
         print('dim_asmt table verification is successful')
 
-        #Validate Fact_asmt table for total rows
+        #Validate Fact_asmt table for totalnumber of rows
         fact_table = ed_connector.get_table(FACT_TABLE)
         query_rows = select([fact_table])
         total_number_rows = ed_connector.execute(query_rows).fetchall()

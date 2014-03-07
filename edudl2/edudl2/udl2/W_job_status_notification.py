@@ -22,7 +22,11 @@ def task(msg):
     """
     This is the main function for the W_job_status_notification task.  It extracts the job callback URL
     provided by the client, and calls the method which sends the job status and any errors to the client.
-    It then logs the status of the notification, and exits.
+    It then logs the status of the notification, and returns.
+
+    @param msg: UDL pipeline message with job-specific parameters
+
+    @return: UDL pipeline message
     """
 
     # Send the status.
@@ -40,6 +44,13 @@ def task(msg):
 
 
 def get_conf(msg):
+    """
+    Generate the job-specific notification configuration.
+
+    @param msg: UDL pipeline message with job-specific parameters
+
+    @return: Job-specific configuration
+    """
     conf = {
         mk.CALLBACK_URL: msg[mk.CALLBACK_URL],
         mk.STUDENT_REG_GUID: msg[mk.STUDENT_REG_GUID],

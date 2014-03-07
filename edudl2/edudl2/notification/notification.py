@@ -1,5 +1,3 @@
-from edudl2.notification.notification_messages import get_notification_message
-
 __author__ = 'tshewchuk'
 
 """
@@ -9,11 +7,12 @@ of the current completed UDL job to the job client.
 
 from sqlalchemy.sql import select, and_
 from requests import post
-from requests.exceptions import RequestException
+import requests.exceptions as req_exc
 from time import sleep
 
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.notification.notification_messages import get_notification_message
 
 
 def post_udl_job_status(conf):
@@ -82,16 +81,19 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
     @return: Notification status and messages
     """
 
-    SUCCESS_MESSAGE = 'Job completed successfully'
-    RETRY_CODES = [408]
+    success_message = 'Job completed successfully'
+    retry_codes = [408]
 
-    # Retry up to the configured amount of times, if a retry code was received.
+    # Attempt HTTP POST of notification body.
+    # Retry up to the configured amount of times, if a retry error occurred.
     notification_messages = []
     retry = 0
+    notification_status = mk.FAILURE
     while retry < retries:
         status_code = 0
+        message_prefix = 'Retry ' + str(retry) + ' - ' if retry else ''
+
         try:
-            message_prefix = 'Retry ' + str(retry) + ' - ' if retry else ''
             response = post(callback_url, notification_body, timeout=retry_interval)
             status_code = response.status_code
 
@@ -100,20 +102,28 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
 
             # Success!
             notification_status = mk.SUCCESS
-            notification_messages.append(message_prefix + str(status_code) + ' Created: ' + SUCCESS_MESSAGE)
+            notification_messages.append(message_prefix + str(status_code) + ' Created: ' + success_message)
             break
-        except RequestException as re:
+
+        except req_exc.RequestException as re:
             # Failure.
-            notification_status = mk.FAILURE
             notification_messages.append(message_prefix + str(re.args[0]))
 
-            # Only retry on retry code received.
-            if status_code not in RETRY_CODES:
+            # Check if the error is retryable.
+            if re in [req_exc.ConnectionError, req_exc.HTTPError, req_exc.Timeout] or status_code in retry_codes:
+                # Retryable error.
+                retry += 1
+                if re is not req_exc.Timeout:
+                    # TODO: Fix this!
+                    #sleep(retry_interval)
+                    pass
+            else:
+                # Non-retryable error.
                 break
 
-            # Wait for retry interval, and try again up to retry limit.
-            # TODO: FIX THIS!!!
-            #sleep(retry_interval)
-            retry += 1
+        except Exception as ex:
+            # Non-requests-related exception; don't retry.
+            notification_messages.append(message_prefix + str(ex.args[0]))
+            break
 
     return notification_status, notification_messages

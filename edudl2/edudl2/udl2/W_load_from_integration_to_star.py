@@ -126,9 +126,12 @@ def handle_deletions(msg):
     tenant_name = msg[mk.TENANT_NAME]
     # pass down the affected row from previous stage
     affected_rows = msg[mk.TOTAL_ROWS_LOADED]
+    udl_phase_step = 'HANDLE DELETION IN FACT'
 
     # generate config dict
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    conf[mk.UDL_PHASE_STEP] = udl_phase_step
+    conf[mk.WORKING_SCHEMA] = msg['dim_tables'][0][mk.WORKING_SCHEMA]
     match_conf = get_move_to_target_conf()['handle_deletions']
     matched_results = match_deleted_records(conf, match_conf)
     update_deleted_record_rec_id(conf, match_conf, matched_results)
@@ -138,10 +141,9 @@ def handle_deletions(msg):
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
 
     # Create benchmark object ant record benchmark
-    udl_phase_step = 'HANDLE DELETION IN FACT'
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], handle_deletions.name, start_time, finish_time,
-                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(handle_deletions.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA])
+                                    udl_phase_step=udl_phase_step, size_records=affected_rows,
+                                    task_id=str(handle_deletions.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file decrypter

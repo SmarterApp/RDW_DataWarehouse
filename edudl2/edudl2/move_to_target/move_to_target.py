@@ -294,7 +294,9 @@ def check_mismatched_deletions(conf, match_conf):
         raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
                                    mismatched_rows,
                                    "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                             table=match_conf['prod_table']))
+                                                             table=match_conf['prod_table']),
+                                   conf[mk.UDL_PHASE_STEP],
+                                   conf[mk.WORKING_SCHEMA])
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):
@@ -319,7 +321,9 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                 # write to err_list
                 e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
                                           "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                                    table=match_conf['prod_table']))
+                                                                    table=match_conf['prod_table']),
+                                          conf[mk.UDL_PHASE_STEP],
+                                          conf[mk.WORKING_SCHEMA])
                 failure_time = datetime.datetime.now()
                 e.insert_err_list(UDL2DBConnection, 4, failure_time)
 

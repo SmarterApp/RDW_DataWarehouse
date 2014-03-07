@@ -2,6 +2,8 @@ __author__ = 'swimberly'
 from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edcore.database.utils.query import insert_to_table
+import re
+import ast
 
 
 class UDLException(Exception):
@@ -10,10 +12,12 @@ class UDLException(Exception):
 
 
 class DeleteRecordNotFound(UDLException):
-    def __init__(self, batch_guid, rows, schema_and_table):
+    def __init__(self, batch_guid, rows, schema_and_table, udl_phase_step='', working_schema=''):
         self.batch_guid = batch_guid
         self.rows = rows
         self.schema_and_table = schema_and_table
+        self.udl_phase_step = udl_phase_step
+        self.working_schema = working_schema
 
     def __str__(self):
         return "DeleteRecordNotFound for batch_guid: {batch_guid}, "\
@@ -23,7 +27,7 @@ class DeleteRecordNotFound(UDLException):
 
     def insert_err_list(self, stat_conn, error_source, failure_time):
         for row in self.rows:
-            values = {'err_source': 4,
+            values = {'err_source': error_source,
                       'guid_batch': self.batch_guid,
                       'created_date': failure_time,
                       'record_sid': row['asmnt_outcome_rec_id'],
@@ -38,22 +42,59 @@ class DeleteRecordNotFound(UDLException):
 
 class UDLDataIntegrityError(UDLException):
 
-    def __init__(self, batch_guid, error, schema_and_table):
+    def __init__(self, batch_guid, error, schema_and_table, udl_phase_step='', working_schema=''):
         self._batch_guid = batch_guid
         self._error = str(error)
         self._schema = schema_and_table
+        self.udl_phase_step = udl_phase_step
+        self.working_schema = working_schema
 
     def __str__(self):
         return "Data integrity violence found for batch: {batch_guid} in {schema}, error message: {msg}".\
             format(batch_guid=self._batch_guid, msg=self._error, schema=self._schema)
 
+    def convert_messages(self, message):
+        # search postgres IntegrityError response for {}, Because that's input data
+        #
+        # """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"
+        # DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
+        #'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s,
+        # # status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s
+        # AND date_taken = %(date_taken)s AND status = %(status)s AND student_guid = %(student_guid)s'
+        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'date_taken': '20150207', 'asmt_guid': 'guid_1',
+        # 'new_status': 'D', 'batch_guid': 'guid_3', 'student_guid': 'guid_5'}
+        #
+        pattern = re.compile(r'(\{[^\{\}]+\})')
+        error_input = re.findall(pattern, message)
+        error = ast.literal_eval(error_input[0])
+        return "student_guid:{sg}, asmt_guid:{ag}, date_taken:{dt}".format(sg=error['student_guid'],
+                                                                           ag=error['asmt_guid'],
+                                                                           dt=error['date_taken'])
+
+    def get_record_id(self, message):
+        # search postgres IntegrityError response for (), the 2nd one is the key id we have conflict
+        # Message Example:
+        #
+        # """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"
+        # DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
+        #'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s,
+        # # status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s
+        # AND date_taken = %(date_taken)s AND status = %(status)s AND student_guid = %(student_guid)s'
+        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'date_taken': '20150207', 'asmt_guid': 'guid_1',
+        # 'new_status': 'D', 'batch_guid': 'guid_3', 'student_guid': 'guid_5'}
+        #
+        pattern = re.compile(r'(\([^\(\)\s]+\))')
+        return re.findall(pattern, message)[2].lstrip('(').rstrip(')')
+
     def insert_err_list(self, stat_conn, error_source, failure_time):
+        record_id = self.get_record_id(self._error)
+        err_input = self.convert_messages(self._error)
         values = {
-            'err_source': 4,
-            'record_sid': 123,
+            'err_source': error_source,
+            'record_sid': record_id,
             'guid_batch': self._batch_guid,
             'created_date': failure_time,
             'err_code': ErrorCode.DATA_INTEGRITY_ERROR,
-            'err_input': self._error
+            'err_input': err_input
         }
         insert_to_table(UDL2DBConnection, 'ERR_LIST', values)

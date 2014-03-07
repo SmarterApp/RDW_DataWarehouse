@@ -23,7 +23,7 @@ PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
 PATH = '/opt/edware/zones/landing/work/test_tenant'
 
 
-@unittest.skip("skipping this test for now")
+#@unittest.skip("skipping this test for now")
 class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):
@@ -31,7 +31,7 @@ class Test_Insert_Delete(unittest.TestCase):
         self.ed_connector = TargetDBConnection()
         self.connector = UDL2DBConnection()
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.archived_file = os.path.join(data_dir, 'test_data_update_delete_record.tar.gz.gpg')
+        self.archived_file = os.path.join(data_dir, 'test_data_update_delete_record.tar.gz.asc')
 
     def tearDown(self):
         self.ed_connector.close_connection()

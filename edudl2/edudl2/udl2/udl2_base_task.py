@@ -64,8 +64,17 @@ class Udl2BaseTask(Task):
         guid_batch = args[0][mk.GUID_BATCH]
         load_type = args[0][mk.LOAD_TYPE]
         failure_time = datetime.datetime.now()
-        benchmark = BatchTableBenchmark(guid_batch, load_type, self.name,
-                                        start_timestamp=failure_time, end_timestamp=failure_time,
+        udl_phase_step = ''
+        working_schema = ''
+        if isinstance(exc, UDLException):
+            udl_phase_step = exc.udl_phase_step
+            working_schema = exc.working_schema
+        benchmark = BatchTableBenchmark(guid_batch, load_type,
+                                        udl_phase=self.name,
+                                        start_timestamp=failure_time,
+                                        end_timestamp=failure_time,
+                                        udl_phase_step=udl_phase_step,
+                                        working_schema=working_schema,
                                         udl_phase_step_status=mk.FAILURE,
                                         task_id=str(self.request.id),
                                         error_desc=str(exc), stack_trace=einfo.traceback)
@@ -73,12 +82,11 @@ class Udl2BaseTask(Task):
         # Write to udl stats table on exceptions
         update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
         # Write to ERR_LIST
-        if isinstance(exc, UDLException):
-            # TODO: udl phase step number
-            try:
-                exc.insert_err_list(UDL2DBConnection, 4, failure_time)
-            except Exception:
-                pass
+
+        try:
+            exc.insert_err_list(UDL2DBConnection, 4, failure_time)
+        except Exception:
+            pass
         msg = {}
         msg.update(args[0])
         msg.update({mk.PIPELINE_STATE: 'error'})

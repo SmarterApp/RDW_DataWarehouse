@@ -28,8 +28,7 @@ class TestNotification(unittest.TestCase):
 
         # Verify results.
         self.assertEquals(mk.SUCCESS, notification_status)
-        self.assertEquals(1, len(notification_messages))
-        self.assertEquals('201 Created: Job completed successfully', notification_messages[0])
+        self.assertEquals(None, notification_messages)
 
     @httpretty.activate
     def test_post_notification_success_with_retries(self):

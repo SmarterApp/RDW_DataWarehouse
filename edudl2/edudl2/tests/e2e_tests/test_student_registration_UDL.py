@@ -170,7 +170,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEqual(expected_status, notification_status)
             errors = row['error_desc']
             num_retries = 0
-            last_retry_pos = errors.rfind('Retry ') + 6
+            last_retry_pos = errors.rfind('Retry ') + 6 if errors else 0
             if last_retry_pos > 6:
                 num_retries = int(errors[last_retry_pos: last_retry_pos + 1])
             self.assertEqual(expected_retries, num_retries, 'Incorrect number of retries')
@@ -229,7 +229,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.validate_stu_reg_target_table('original_data')
             self.validate_student_data('original_data')
             self.validate_total_number_in_target('original_data')
-            self.validate_notification('SUCCESS', ['201'], 0)
+            self.validate_notification('SUCCESS', [], 0)
         except Exception:
             self.shutdown_post_server()
             raise

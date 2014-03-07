@@ -13,21 +13,19 @@ import unittest
 from time import sleep
 import unittest
 import subprocess
+import tempfile
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
 DIM_TABLE = 'dim_asmt'
 STG_TABLE = 'STG_SBAC_ASMT_OUTCOME'
 INT_TABLE = 'INT_SBAC_ASMT_OUTCOME'
 FACT_TABLE = 'fact_asmt_outcome'
-PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
-PATH = '/opt/edware/zones/landing/work/test_tenant'
 
 
-@unittest.skip("skipping this test for now")
+#@unittest.skip("skipping this test for now")
 class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):
-        self.tenant_dir = TENANT_DIR
+        self.tenant_dir = tempfile.mkdtemp()
         self.ed_connector = TargetDBConnection()
         self.connector = UDL2DBConnection()
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -41,23 +39,16 @@ class Test_Insert_Delete(unittest.TestCase):
 
     def empty_table(self, connector, ed_connector):
         #Delete all data from batch_table
-        udl_table_list = connector.get_metadata().sorted_tables
-        udl_table_list.reverse()
-        for table in udl_table_list:
-            all_udl_table = connector.execute(table.delete())
-            udl_query = select([table])
-            udl_result = connector.execute(udl_query).fetchall()
-            number_of_row = len(udl_result)
-            print(number_of_row)
-            self.assertEqual(number_of_row, 0)
-#         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-#         result = connector.execute(batch_table.delete())
-#         query = select([batch_table])
-#         result1 = connector.execute(query).fetchall()
-#         number_of_row = len(result1)
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        result = connector.execute(batch_table.delete())
+        query = select([batch_table])
+        result1 = connector.execute(query).fetchall()
+        number_of_row = len(result1)
+        self.assertEqual(number_of_row, 0)
         print(number_of_row)
         self.assertEqual(number_of_row, 0)
-        #Delete all table data from edware schema
+
+        #Delete all table data from edware databse
         table_list = ed_connector.get_metadata().sorted_tables
         table_list.reverse()
         for table in table_list:
@@ -68,6 +59,7 @@ class Test_Insert_Delete(unittest.TestCase):
             print(number_of_row)
             self.assertEqual(number_of_row, 0)
 
+    #Run UDL pipeline with file in tenant dir
     def run_udl_pipeline(self):
         self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
@@ -80,22 +72,20 @@ class Test_Insert_Delete(unittest.TestCase):
 
     #Copy file to tenant folder
     def copy_file_to_tmp(self):
-        if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
-        else:
-            os.makedirs(self.tenant_dir)
+
         return shutil.copy2(self.archived_file, self.tenant_dir)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, connector, max_wait=30):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
+        query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
         timer = 0
         result = connector.execute(query).fetchall()
         while timer < max_wait and result == []:
             sleep(0.25)
             timer += 0.25
             result = connector.execute(query).fetchall()
+        self.assertEqual(len(result), 1, "UDl Pipeline Failure.")
         print('Waited for', timer, 'second(s) for job to complete.')
 
     # Validate edware database
@@ -103,40 +93,25 @@ class Test_Insert_Delete(unittest.TestCase):
         fact_table = ed_connector.get_table(FACT_TABLE)
         delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
         delete_output_table = ed_connector.execute(delete_output_data).fetchall()
-        print(delete_output_table)
+        expected_status_val_D = [('D',)]
+        self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
         #Verify Update record
         update_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
         update_output_table = ed_connector.execute(update_output_data).fetchall()
-        print(update_output_table)
+        expected_status_val_U = [('D',), ('I',)]
+        self.assertEquals(update_output_table, expected_status_val_U, 'Status is wrong for update record')
 
-    # validate udl dtabase:STG, INT and UDL_BATCH
-    def validate_udl_database(self, connector):
-        #Validate UDL_Batch table have data for two successful batch.
-        time.sleep(5)
-        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
-        result = connector.execute(query).fetchall()
-        number_of_guid = len(result)
-        print('number of batch_guid in table', number_of_guid)
-        #self.assertEqual(number_of_guid, 4)
-        print("UDL varification successful")
-        #Validate STG  table for status change to W with second udl pipeline run
-        staging_table = self.connector.get_table(STG_TABLE)
-        #staging_table = self.connector.get_table(udl2_conf['udl2_db']['stg_table'])
-        query1 = select([staging_table.c.op]).where(staging_table.c.guid_student == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
-        result1 = self.connector.execute(query1).fetchall()
-        print(len(result1))
-        print('Number of rows in staging table:', len(result1))
-        # Validate INT table
-        int_table = self.connector.get_table(INT_TABLE)
-        int_table_query = select([staging_table.c.op]).where(int_table.c.guid_student == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
-        int_result = self.connector.execute(int_table_query).fetchall()
-        print('number of raw in int_table:', len(int_result))
+        # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
+        update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.status == 'I'))
+        new_asmt_score = ed_connector.execute(update_asmt_score).fetchall()
+        print('Updated asmt_score after update is:', new_asmt_score)
+        expected_asmt_score = [(1500,)]
+        self.assertEquals(new_asmt_score, expected_asmt_score)
 
     def test_validation(self):
         self.empty_table(self.connector, self.ed_connector)
         self.run_udl_pipeline()
-        self.validate_udl_database(self.connector)
+        #self.validate_udl_database(self.connector)
         self.validate_edware_database(self.ed_connector)
 
 

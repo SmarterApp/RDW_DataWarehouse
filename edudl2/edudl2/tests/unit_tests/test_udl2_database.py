@@ -27,8 +27,10 @@ class TestUdl2Database(unittest.TestCase):
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path)
         self.conf = conf_tup[0]
+        (self.conn, self.engine) = self._create_conn_engine(self.conf)
 
     def tearDown(self):
+        self.conn.close()
         pass
 
     def _create_conn_engine(self, udl2_conf):
@@ -112,14 +114,14 @@ class TestUdl2Database(unittest.TestCase):
         return True
 
     def _compare_table_defition_in_code_and_database(self, table_name):
-        (conn, engine) = self._create_conn_engine(self.conf)
-        db_metadata = get_schema_metadata(engine)
+        #(conn, engine) = self._create_conn_engine(self.conf)
+        db_metadata = get_schema_metadata(self.engine)
         ddl_metadata = generate_udl2_metadata()
         return self._compare_columns(ddl_metadata, db_metadata, table_name)
 
     def _compare_table_key_definitions_in_code_and_db(self, table_name):
-        (conn, engine) = self._create_conn_engine(self.conf)
-        db_metadata = get_schema_metadata(engine)
+        #(conn, engine) = self._create_conn_engine(self.conf)
+        db_metadata = get_schema_metadata(self.engine)
         table_metadata = db_metadata.tables[table_name]
         metadata_in_code = generate_udl2_metadata()
         ddl_metadata = metadata_in_code.tables[table_name]

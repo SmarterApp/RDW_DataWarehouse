@@ -22,7 +22,7 @@ DIM_TABLE = 'dim_asmt'
 FACT_TABLE = 'fact_asmt_outcome'
 PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
 EXPECTED_UNIQUE_BATCH_GUIDS = 30
-EXPECTED_ROWS = 958 
+EXPECTED_ROWS = 958
 # TODO EXPECTED_ROWS should be 1186
 
 
@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, max_wait = 200):
+    def validate_UDL_database(self, connector, max_wait=200):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -111,16 +111,16 @@ class Test(unittest.TestCase):
         timer = 0
         all_successful_batch_guids = []
         while timer <= max_wait and len(all_successful_batch_guids) is not EXPECTED_UNIQUE_BATCH_GUIDS:
-             sleep(0.25)
-             timer += 0.25
-             all_successful_batch_guids = connector.execute(success_query).fetchall()
-             failure_batch_data = connector.execute(failure_query).fetchall()
-#             if len(failure_batch_data) is not None:
-#                 break
+            sleep(0.25)
+            timer += 0.25
+            all_successful_batch_guids = connector.execute(success_query).fetchall()
+            failure_batch_data = connector.execute(failure_query).fetchall()
+#           if len(failure_batch_data) is not None:
+#               break
         self.assertEqual(len(all_successful_batch_guids), EXPECTED_UNIQUE_BATCH_GUIDS, "30 guids not found.")
         print("UDL verification successful")
         print('Waited for', timer, 'second(s) for job to complete.')
- 
+
     def validate_edware_database(self, ed_connector):
         '''
         Validate that for the given batch_guid, data is loaded on star schema
@@ -129,7 +129,8 @@ class Test(unittest.TestCase):
         edware_table = ed_connector.get_table(DIM_TABLE)
         query_asmt_guids = select([edware_table.c.asmt_guid])
         all_asmt_guids = ed_connector.execute(query_asmt_guids).fetchall()
-        self.assertEqual(len(all_asmt_guids), EXPECTED_UNIQUE_BATCH_GUIDS, "%i asmt guids not found" %EXPECTED_UNIQUE_BATCH_GUIDS)
+        self.assertEqual(len(all_asmt_guids), EXPECTED_UNIQUE_BATCH_GUIDS,
+                         "%i asmt guids not found" % EXPECTED_UNIQUE_BATCH_GUIDS)
         print('dim_asmt table verification is successful')
 
         #Validate Fact_asmt table for total rows
@@ -138,7 +139,8 @@ class Test(unittest.TestCase):
         total_number_rows = ed_connector.execute(query_rows).fetchall()
         number_rows = len(total_number_rows)
         print(number_rows)
-        self.assertEqual(number_rows, EXPECTED_ROWS, "Total number of rows in FACT_ASMT is less than %i" %EXPECTED_ROWS)
+        self.assertEqual(number_rows, EXPECTED_ROWS,
+                         "Total number of rows in FACT_ASMT is less than %i" % EXPECTED_ROWS)
 
     def copy_files_to_tenantdir(self, file_path):
         '''
@@ -151,7 +153,8 @@ class Test(unittest.TestCase):
         for file in os.listdir(file_path):
             if fnmatch.fnmatch(file, '*.gpg'):
                 all_files.append(os.path.join(file_path + '/' + str(file)))
-        self.assertEqual(len(all_files), EXPECTED_UNIQUE_BATCH_GUIDS, "%i files not found." %EXPECTED_UNIQUE_BATCH_GUIDS)
+        self.assertEqual(len(all_files), EXPECTED_UNIQUE_BATCH_GUIDS, "%i files not found."
+                                                                      % EXPECTED_UNIQUE_BATCH_GUIDS)
         # Create a tenant directory if does not exist already
         if os.path.exists(self.tenant_dir):
             print("Tenant directory already exists")
@@ -161,19 +164,20 @@ class Test(unittest.TestCase):
         for file in all_files:
             files = shutil.copy2(file, self.tenant_dir)
 
-#     def check_job_completion(self, connector, max_wait=600):
-#         '''
-#         Checks the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-#         '''
-#         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-#         query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
-#         timer = 0
-#         result = connector.execute(query).fetchall()
-#         while timer < max_wait and result == []:
-#             sleep(0.25)
-#             timer += 0.25
-#             result = connector.execute(query).fetchall()
-#         print('Waited for', timer, 'second(s) for job to complete.')
+    @unittest.skip('still in development, skip for now')
+    def check_job_completion(self, connector, max_wait=600):
+        '''
+        Checks the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
+        '''
+        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
+        timer = 0
+        result = connector.execute(query).fetchall()
+        while timer < max_wait and result == []:
+            sleep(0.25)
+            timer += 0.25
+            result = connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for job to complete.')
 
     def tearDown(self):
         self.ed_connector.close_connection()

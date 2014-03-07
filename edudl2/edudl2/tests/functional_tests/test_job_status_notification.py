@@ -1,3 +1,5 @@
+import json
+
 __author__ = 'smuhit'
 
 import httpretty
@@ -21,6 +23,7 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         self.successful_batch = os.path.join(sr_data_dir, "UDL_BATCH_success.csv")
         self.successful_batch_id = "17a2e644-be41-47d9-a730-74c1a4cfaae7"
         self.failed_batch = os.path.join(sr_data_dir, "UDL_BATCH_failure.csv")
+        self.failed_err_list = os.path.join(sr_data_dir, "ERR_LIST.csv")
         self.failed_batch_id = "1a109333-8587-4875-8839-293356469f9a"
 
     def tearDown(self):
@@ -28,8 +31,8 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         self.udl_engine.dispose()
 
     #Load file to udl batch table. If empty is true, empties out the batch table first
-    def load_to_udl_batch(self, file, empty=True):
-        batch_table = get_sqlalch_table_object(self.udl2_conn, udl2_conf['udl2_db']['db_schema'], udl2_conf['udl2_db']['batch_table'])
+    def load_to_table(self, file, empty=True, table=udl2_conf['udl2_db']['batch_table']):
+        batch_table = get_sqlalch_table_object(self.udl2_conn, udl2_conf['udl2_db']['db_schema'], table)
         if empty:
             self.udl2_conn.execute(batch_table.delete())
             query = select([func.count()]).select_from(batch_table)
@@ -40,9 +43,9 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
 
     #Check batch table to see if the notification was successful
     def verify_notification_success(self, guid):
-        batch_table = self.udl2_conn.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = get_sqlalch_table_object(self.udl2_conn, udl2_conf['udl2_db']['db_schema'], udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status],
-                       and_(batch_table.c.guid_batch == guid, batch_table.c.udl_phase == 'udl2.W_job_status_notification.task'))
+                       and_(batch_table.c.guid_batch == guid, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
         result = self.udl2_conn.execute(query).fetchall()
         self.assertNotEqual(result, [])
         for row in result:
@@ -50,17 +53,35 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
             self.assertEqual(status, 'SUCCESS', 'Notification did not succeed')
 
     @httpretty.activate
-    @unittest.skip('In development')
     def test_successful_job_status(self):
 
-        def request_callback(method, uri, headers, body):
-            return(204, headers, body)
-
-        httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", body=request_callback)
-        self.load_to_udl_batch(self.successful_batch)
+        httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com")
+        self.load_to_table(self.successful_batch)
         msg = generate_message(self.successful_batch_id)
         job_notify(msg)
+
+        request = httpretty.last_request().parsed_body
+
+        self.assertEquals(request['status'], ['Success'])
+        self.assertEquals(request['id'], ['wxyz5678'])
+
         self.verify_notification_success(self.successful_batch_id)
+
+    @httpretty.activate
+    def test_failure_job_status(self):
+
+        httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com")
+        self.load_to_table(self.failed_batch)
+        self.load_to_table(self.failed_err_list, table=udl2_conf['udl2_db'][mk.ERR_LIST_TABLE])
+        msg = generate_message(self.failed_batch_id)
+        job_notify(msg)
+
+        request = httpretty.last_request().parsed_body
+
+        self.assertEquals(len(request['message']), 2)
+        self.assertTrue('simple file validator error' in request['message'][0])
+        self.assertTrue('5000' in request['message'][1])
+        self.verify_notification_success(self.failed_batch_id)
 
 
 def get_csv_dict_list(filename):

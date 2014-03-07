@@ -34,12 +34,14 @@ def retrieve_job_error_messages(guid_batch):
         error_message_select = select([batch_table.c.error_desc]).where(batch_table.c.guid_batch == guid_batch).where(batch_table.c.udl_phase_step_status == mk.FAILURE)
         error_messages = source_conn.execute(error_message_select)
 
-        messages.append(error_messages)
+        messages.append([r[0] for r in error_messages if r])
 
         err_list_table = source_conn.get_table(udl2_conf['udl2_db'][mk.ERR_LIST_TABLE])
         err_list_select = select([err_list_table.c.err_code, err_list_table.c.err_source]).where(batch_table.c.guid_batch == guid_batch)
         err_list_result = source_conn.execute(err_list_select)
+        formatted_results = _format_row_errors(err_list_result)
 
-        messages.append(_format_row_errors(err_list_result))
+        if formatted_results:
+            messages.append(formatted_results)
 
     return messages

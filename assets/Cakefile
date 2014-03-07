@@ -12,7 +12,7 @@ shell = require 'shelljs'
 coffeepath = 'coffee'
 lesspath = 'less'
 jspath = 'js/src'
-test_path = 'test/src'
+test_path = 'test/js/src'
 coffeedoc = 'coffeedoc'
 
 buildCoffee = (source, target) ->
@@ -30,7 +30,7 @@ mkdir = (destDir) ->
     if not fs.existsSync destDir
         # recursively create the directory
         wrench.mkdirSyncRecursive destDir, '0755'
-        
+
 walkDir = (srcDir, fn) ->
     walker = walk.walkSync srcDir
     walker.on 'file', (root, fileStat, next) ->
@@ -46,7 +46,7 @@ deleteExistingCss = (assetsDir) ->
             files.forEach (file) ->
               if path.extname(file) == '.css'
                   fs.unlinkSync path.join cssDir, file
-              
+
 copyAssets = (assetsDest, assetsDir) ->
     # Copy assets into smarter/assets
     if fs.existsSync assetsDest
@@ -63,10 +63,14 @@ copyScripts = () ->
       # delete build directory
       wrench.rmdirSyncRecursive buildDir
 
+copyLibraries = () ->
+  copyAssets 'test/js/3p', 'js/3p'
+
 task 'build:coffee', ->
-    walkDir coffeepath, (source) -> 
+    walkDir coffeepath, (source) ->
       buildCoffee(source, jspath)
       buildCoffee(source, test_path)
+    copyLibraries()
     # genereate coffee doc
     shell.exec('coffeedoc --parser requirejs ' + coffeepath)
 
@@ -74,7 +78,7 @@ task 'build:less', ->
     compile 'less/style.less', 'css/style.css'
     compile 'less/grayscale.less', 'css/grayscale.css'
     compile 'less/pdf.less', 'css/pdf.css'
-    
+
 task 'optimize', 'Optimize javascript', ->
     optimizer = 'js/3p/r.js'
     buildScript = path.join(jspath, "app.build.js")
@@ -84,20 +88,20 @@ task 'optimize', 'Optimize javascript', ->
 task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
- 
-task 'watch', ->    
+
+task 'watch', ->
     invoke 'build'
-    
+
     lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true, useFsEvents: false})
     coffeeWatcher = chokidar.watch(coffeepath, {persistent: true, ignoreInitial: true, useFsEvents: false})
-    
+
     coffeeWatcher.on 'add', (path, stats) ->
         buildCoffee(path, jspath)
         buildCoffee(path, test_path)
     coffeeWatcher.on 'change', (path, stats) ->
         buildCoffee(path, jspath)
         buildCoffee(path, test_path)
-    
+
     lessWatcher.on 'add', (path, stats) ->
         invoke 'build:less'
     lessWatcher.on 'change', (path, stats) ->
@@ -112,8 +116,8 @@ task 'copy', 'Copy assets into smarter', (options) ->
   smarterDir = options.smarter or path.join(currentDir, '../smarter')
   # resolves handles both abs and relative path
   assetsDir = path.resolve currentDir, assetsDir
-  assetsDest = path.join(smarterDir, 'assets') 
-  
+  assetsDest = path.join(smarterDir, 'assets')
+
   copyAssets  assetsDest, assetsDir
 
 option '-a', '--assets [ASSETS_DIR]', 'set the directory for assets'
@@ -128,17 +132,17 @@ task 'setup', 'Compile assets into smarter', (options) ->
     watch = options.watch or 'FALSE'
     mode = mode.toUpperCase()
     watch = watch.toUpperCase()
-    
+
     # resolves handles both abs and relative path
     assetsDir = path.resolve currentDir, assetsDir
     smarterDir = path.resolve currentDir, smarterDir
-    
-    assetsDest = path.join(smarterDir, 'assets')    
+
+    assetsDest = path.join(smarterDir, 'assets')
     # Delete old css
     deleteExistingCss assetsDir
     # Prevent from minify, because we are not able to include unit test coverage on uglifed code.
     flour.minifiers.disable 'js'
-    
+
     if mode == 'DEV'
       if watch == 'TRUE'
         invoke 'watch'

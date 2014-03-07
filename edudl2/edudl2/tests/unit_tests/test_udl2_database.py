@@ -20,18 +20,22 @@ logger.level = logging.DEBUG
 
 class TestUdl2Database(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path)
-        self.conf = conf_tup[0]
+        cls.conf = conf_tup[0]
+        (cls.conn, cls.engine) = cls._create_conn_engine(cls.conf)
 
-    def tearDown(self):
-        pass
+    @classmethod
+    def tearDownClass(cls):
+        cls.conn.close()
 
-    def _create_conn_engine(self, udl2_conf):
+    @classmethod
+    def _create_conn_engine(cls, udl2_conf):
         (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
                                     udl2_conf['udl2_db']['db_user'],
                                     udl2_conf['udl2_db']['db_pass'],
@@ -112,14 +116,14 @@ class TestUdl2Database(unittest.TestCase):
         return True
 
     def _compare_table_defition_in_code_and_database(self, table_name):
-        (conn, engine) = self._create_conn_engine(self.conf)
-        db_metadata = get_schema_metadata(engine)
+        #(conn, engine) = self._create_conn_engine(self.conf)
+        db_metadata = get_schema_metadata(TestUdl2Database.engine)
         ddl_metadata = generate_udl2_metadata()
         return self._compare_columns(ddl_metadata, db_metadata, table_name)
 
     def _compare_table_key_definitions_in_code_and_db(self, table_name):
-        (conn, engine) = self._create_conn_engine(self.conf)
-        db_metadata = get_schema_metadata(engine)
+        #(conn, engine) = self._create_conn_engine(self.conf)
+        db_metadata = get_schema_metadata(TestUdl2Database.engine)
         table_metadata = db_metadata.tables[table_name]
         metadata_in_code = generate_udl2_metadata()
         ddl_metadata = metadata_in_code.tables[table_name]

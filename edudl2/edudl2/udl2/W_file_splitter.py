@@ -17,24 +17,19 @@ def task(incoming_msg):
     '''
     This is the celery task for splitting file
     '''
-
     start_time = datetime.datetime.now()
-
-    # Get necessary params for file_splitter
     guid_batch = incoming_msg[mk.GUID_BATCH]
     parts = incoming_msg[mk.PARTS]
     load_type = incoming_msg[mk.LOAD_TYPE]
-
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
     expanded_dir = tenant_directory_paths[mk.EXPANDED]
     csv_file = get_file_type_from_dir('.csv', expanded_dir)
 
     subfiles_dir = tenant_directory_paths[mk.SUBFILES]
-    #file_util.create_directory(subfiles_dir)
 
     # do actual work of splitting file
     split_file_tuple_list, header_file_path, \
-        totalrows, filesize = split_file(csv_file, parts=parts, output_path=subfiles_dir)
+        totalrows, filesize = split_file(csv_file, parts=parts, output_dir=subfiles_dir)
 
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time

@@ -1,9 +1,9 @@
-require({
-  // version
+require {
+  # version
   urlArgs: 'v1',
   baseUrl: '../js/src/',
   paths: {
-    // globals
+    # globals
     jquery: '../3p/jquery-1.7.2.min',
     jqGrid: '../3p/jquery.jqGrid.min',
     bootstrap: '../3p/bootstrap.min',
@@ -14,8 +14,9 @@ require({
     usmap: '../3p/usmap/jquery.usmap',
     raphael: '../3p/usmap/raphael',
     cs: '../3p/cs',
+    'coffee-script': '../3p/coffee-script',
 
-    // modules
+    # modules
     'Edware.LandingPage': 'modules/EDWARE.LandingPage',
     'Edware.ComparingPopulationsReport': 'modules/EDWARE.comparingPopulationsReport',
     'Edware.StudentListReport': 'modules/EDWARE.studentListReport',
@@ -55,9 +56,9 @@ require({
     edwareRedirect: 'modules/EDWARE.stateViewRedirect',
     edwarePopover: 'widgets/popover/EDWARE.popover',
 
-    // widgets
+    # widgets
 
-    // templates
+    # templates
     edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
     edwareConfidenceLevelBarTemplate: 'widgets/confidenceLevelBar/template.html',
     edwareLOSConfidenceLevelBarTemplate: 'widgets/losConfidenceLevelBar/template.html',
@@ -84,8 +85,6 @@ require({
   },
   shim: {
     'jqGrid': {
-      //These script dependencies should be loaded before loading
-      //jqGrid
       deps: ['jquery'],
       exports: 'jqGrid'
     },
@@ -98,25 +97,25 @@ require({
       exports: 'usmap'
     },
   }
-});
+}
 
-(function(){
-  //setup google analytics
-  (function(i, s, o, g, r, a, m) {
-    i['GoogleAnalyticsObject'] = r;
-    i[r] = i[r] ||
-      function() {
-	(i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-    a = s.createElement(o), m = s.getElementsByTagName(o)[0];
-    a.async = 1;
-    a.src = g;
+(() ->
+  # setup google analytics
+  ((i, s, o, g, r, a, m) ->
+    i['GoogleAnalyticsObject'] = r
+    i[r] = i[r] || () ->
+      (i[r].q = i[r].q || []).push(arguments)
+    i[r].l = 1 * new Date()
+    a = s.createElement(o)
+    m = s.getElementsByTagName(o)[0]
+    a.async = 1
+    a.src = g
     m.parentNode.insertBefore(a, m)
-  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+  )(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga')
 
-  ga('create', 'UA-43067000-1', 'edwdc.net');
+  ga('create', 'UA-43067000-1', 'edwdc.net')
   ga('send', 'pageview', {
     'page':  window.location.pathname,
     'location': window.location.protocol + "://" + window.location.host + window.location.pathname,
-    'title': document.title});
-}).call(this);
+    'title': document.title})
+)(this)

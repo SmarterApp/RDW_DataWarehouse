@@ -4,9 +4,8 @@ import shutil
 import csv
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.filesplitter.file_splitter import create_output_destination,\
-    run_command, get_list_split_files
 import tempfile
+from edudl2.filesplitter.file_splitter import validate_file, split_file
 
 
 class Test(unittest.TestCase):
@@ -17,57 +16,107 @@ class Test(unittest.TestCase):
         except Exception:
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path)
-        udl2_conf = conf_tup[0]
-        self.conf = udl2_conf
-        #define test file name and directory
-        self.test_output_path = udl2_conf['zones']['tests'] + 'this/is/a/'
-        self.test_file_name = 'test.csv'
+        self.conf = conf_tup[0]
         self.output_dir = tempfile.mkdtemp()
-        self.output_template = 'split_part_'
-        return
 
     def tearDown(self):
         shutil.rmtree(self.output_dir, ignore_errors=True)
 
-    def test_create_output_dest(self):
-        #if directory exists, delete it
-        base = os.path.splitext(os.path.basename(self.test_file_name))[0]
-        root = '/'.join(self.test_output_path.split('/')[0:-3]) + '/'
-        output_dir = os.path.join(self.test_output_path, base)
-        if os.path.exists(output_dir):
-            shutil.rmtree(root)
-        #call function to create output destination
-        template, directory = create_output_destination(self.test_file_name, self.test_output_path + '/' + base)
-        #check if directory created correctly
-        self.assertTrue(os.path.exists(output_dir))
-        self.assertEqual(template, 'test_part_')
-        #clean up test directory
-        #shutil.rmtree(root)
+    def test_validate_file_invalid_files(self):
+        self.assertFalse(validate_file('/i/dont/exist'))
+        self.assertFalse(validate_file(os.path.dirname(__file__)))
 
-    def test_run_command(self):
-        #define test command
-        test_command = 'ls'
-        #call run command
-        output, err = run_command(test_command)
-        #check there is output and no error
-        self.assertIsNotNone(output)
-        self.assertIsNone(err)
+    def test_validate_file_valid_files(self):
+        self.assertTrue(__file__)
 
-    def test_get_list_split_files(self):
-        #create test split files
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
-        for i in range(0, 5):
-            output_file = open(os.path.join(self.output_dir, self.output_template + str(i)), 'w', newline='')
-            writer = csv.writer(output_file, delimiter=',')
-            for n in range(1, 6):
-                row = ['Row' + str(n), 'fdsa', 'asdf']
-                writer.writerow(row)
-            output_file.close()
-        output_list = get_list_split_files(self.output_template, self.output_dir)
-        for entry in output_list:
-            self.assertTrue(self.output_template in entry[0])
-            self.assertEqual(entry[1], 5)
-            self.assertEqual(entry[2], entry[1] * int(entry[0][-1]) + 1)
-        #cleanup
-        shutil.rmtree(self.output_dir)
+    def test_split_file_invalid_file(self):
+        self.assertRaises(Exception, split_file, '/i/dont/exist')
+
+    def test_split_file_empty_csv(self):
+        self.assertRaises(Exception, split_file, self._prepare_data, 0)
+
+    def test_split_file_by_equal_parts(self):
+        rows = 3
+        parts = 3
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), parts)
+        self.assertIn('part', split_file_list[0][0])
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+
+    def test_split_file_by_odd_rows_even_split(self):
+        rows = 5
+        parts = 2
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), parts)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], 3)
+        self.assertEqual(split_file_list[1][1], 2)
+        # Check row starting counts
+        self.assertEqual(split_file_list[0][2], 1)
+        self.assertEqual(split_file_list[1][2], 4)
+
+    def test_split_file_by_even_rows_even_split(self):
+        rows = 4
+        parts = 2
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), parts)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], 2)
+        self.assertEqual(split_file_list[1][1], 2)
+        # Check row starting counts
+        self.assertEqual(split_file_list[0][2], 1)
+        self.assertEqual(split_file_list[1][2], 3)
+
+    def test_split_file_by_less_rows_than_parts(self):
+        rows = 1
+        parts = 4
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), parts=parts, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), 1)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], rows)
+        self.assertEqual(split_file_list[0][1], 1)
+
+    def test_split_file_by_row_limit_less_than_total(self):
+        rows = 1
+        row_limit = 4
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), row_limit=row_limit, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), 1)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], rows)
+        self.assertEqual(split_file_list[0][1], 1)
+
+    def test_split_file_by_row_limit_more_than_total(self):
+        rows = 10
+        row_limit = 4
+        split_file_list, header_path, total_rows, file_size = split_file(self._prepare_data(rows), row_limit=row_limit, output_dir=self.output_dir)
+        self.assertEqual(len(split_file_list), 3)
+        self.assertIn('headers.csv', header_path)
+        self.assertEqual(total_rows, rows)
+        self.assertTrue(file_size > 0)
+        # Check row counts
+        self.assertEqual(split_file_list[0][1], 4)
+        self.assertEqual(split_file_list[1][1], 4)
+        self.assertEqual(split_file_list[2][1], 2)
+
+    def _prepare_data(self, rows=1):
+        file_path = os.path.join(self.output_dir, 'test.csv')
+        with open(file_path, 'w') as csvfile:
+            csv_writer = csv.writer(csvfile, delimiter=',')
+            csv_writer.writerow('a,b,c')
+            for i in range(0, rows):
+                csv_writer.writerow('aa,bb,cc')
+        return file_path

@@ -44,6 +44,11 @@ class ValidatePostUDLCleanup(unittest.TestCase):
             status = row['udl_phase_step_status']
             self.assertEqual(status, 'SUCCESS')
         print('UDL validation is successful')
+        query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.guid_batch == guid_batch_id))
+        output_result = connector.execute(query).fetchall()
+        print(output_result)
+        tuple_str = [('SUCCESS',)]
+        self.assertEquals(output_result, tuple_str)
 
 #Validate that for given guid data loded on star schema
     def validate_edware_database(self, ed_connector):

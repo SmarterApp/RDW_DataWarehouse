@@ -98,8 +98,10 @@ class Test_Insert_Delete(unittest.TestCase):
         #Verify Update record
         update_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
         update_output_table = ed_connector.execute(update_output_data).fetchall()
-        expected_status_val_U = [('D',), ('I',)]
-        #self.assertEquals(update_output_table, expected_status_val_U, 'Status is wrong for update record')
+#        expected_status_val_U = [('D',), ('I',)]
+        self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
+        self.assertIn(('I',), update_output_table, "Insert status I is not found in the Update record")
+#        self.assertEquals(sorted(update_output_table), sorted(expected_status_val_U), 'Status is wrong for update record')
 
         # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
         update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.status == 'I'))

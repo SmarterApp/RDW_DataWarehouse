@@ -419,22 +419,42 @@ def setup_udl2_schema(udl2_conf):
     create whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
+    target_db = udl2_conf['target_db']
+    udl2_db = udl2_conf['udl2_db']
+
     # Create schema, tables and sequences
-    (udl2_db_conn, udl2_db_engine) = _create_conn_engine(udl2_conf['udl2_db'])
-    udl2_schema_name = udl2_conf['udl2_db']['db_schema']
+    (udl2_db_conn, udl2_db_engine) = _create_conn_engine(udl2_db)
+    udl2_schema_name = udl2_db['db_schema']
     udl2_metadata = create_udl2_schema(udl2_db_engine, udl2_db_conn, udl2_schema_name)
     create_udl2_sequence(udl2_db_conn, udl2_schema_name, udl2_metadata)
 
     # create db_link and fdw
-    create_dblink_extension(udl2_conf['target_db'])
-    create_dblink_extension(udl2_conf['udl2_db'])
-    create_foreign_data_wrapper_extension(udl2_conf['udl2_db'])
-    create_foreign_data_wrapper_server(udl2_conf['udl2_db'])
+    create_dblink_extension(target_db)
+    create_dblink_extension(udl2_db)
+    create_foreign_data_wrapper_extension(udl2_db)
+    create_foreign_data_wrapper_server(udl2_db)
 
     # load data and stored procedures
-    load_fake_record_in_star_schema(udl2_conf['target_db'])
-    load_reference_data(udl2_conf['udl2_db'])
-    load_stored_proc(udl2_conf['udl2_db'])
+    drop_foreign_keys_on_fact_asmt_outcome(target_db)
+    load_fake_record_in_star_schema(target_db)
+    load_reference_data(udl2_db)
+    load_stored_proc(udl2_db)
+
+
+def drop_foreign_keys_on_fact_asmt_outcome(target_conf):
+    '''
+    drop foreign key constraints of fact_asmt_outcome table in target db.
+    @param target_db: The configuration dictionary for
+    '''
+    print('drop constraits in udl2 star schema')
+    (conn, engine) = _create_conn_engine(target_conf)
+    constraints = ['fact_asmt_outcome_student_rec_id_fkey', 'fact_asmt_outcome_asmt_rec_id_fkey', 'fact_asmt_outcome_inst_hier_rec_id_fkey']
+    for constraint in constraints:
+        sql = text("ALTER TABLE {schema}.{table} DROP CONSTRAINT {constraint}".format(schema=target_conf['db_schema'],
+                                                                                      table='fact_asmt_outcome',
+                                                                                      constraint=constraint))
+        except_msg = "fail to drop constraint on fact_asmt_outcome in star schema %s" % target_conf['db_schema']
+        execute_queries(conn, [sql], except_msg)
 
 
 def teardown_udl2_schema(udl2_conf):

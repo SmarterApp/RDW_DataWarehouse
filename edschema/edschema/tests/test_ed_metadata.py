@@ -13,7 +13,7 @@ class TestEdMetadata(Unittest_with_sqlite):
 
     def test_number_of_tables(self):
         # check number of tables
-        self.assertEqual(8, len(self.get_Metadata().tables), "Number of table does not match")
+        self.assertEqual(7, len(self.get_Metadata().tables), "Number of table does not match")
 
     # Test dim_district data
     def test_dim_inst_hier_type(self):
@@ -51,7 +51,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             counter = 0
             for result in results:
                 counter = counter + 1
-            self.assertEqual(counter, 1186)
+            self.assertEqual(counter, 1190)
 
     # Test student_registration data
     def test_student_registration(self):

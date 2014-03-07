@@ -203,12 +203,14 @@ class ValidateTableData(unittest.TestCase):
             self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
             self.verify_notification_success(self.udl_connector, self.guid_batch_id)
         except Exception:
-            pass
+            self.shutdown_post_server()
+            raise
 
         # End the http post server subprocess
         self.shutdown_post_server()
 
     def start_post_server(self):
+        self.receive_requests = True
         try:
             self.proc = Process(target=self.run_post_server)
             self.proc.start()
@@ -218,14 +220,18 @@ class ValidateTableData(unittest.TestCase):
     def run_post_server(self):
         try:
             server_address = ('127.0.0.1', 8001)
-            post_server = HTTPServer(server_address, HTTPPOSTHandler)
+            self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
+            self.post_server.timeout = 0.25
             print('POST Service receiving requests....')
-            post_server.serve_forever()
-        except Exception:
-            pass
+            while self.receive_requests:
+                self.post_server.handle_request()
+        finally:
+            print('POST Service stop receiving requests.')
 
     def shutdown_post_server(self):
         try:
+            self.receive_requests = False
+            sleep(0.5)  # Give server time to stop listening
             self.proc.terminate()
             self.post_server.shutdown()
         except Exception:

@@ -1,10 +1,11 @@
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from collections import OrderedDict
+from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
 from edcore.utils.utils import compile_query_to_sql_text
-from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
+from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from config.ref_table_data import op_table_conf
 from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
@@ -314,8 +315,13 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                     'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
                                     'move_to_target',
                                     'update_deleted_record_rec_id')
-            except Exception:
-                pass
+            except IntegrityError as ie:
+                # write to err_list
+                e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
+                                          "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                                    table=match_conf['prod_table']))
+                failure_time = datetime.datetime.now()
+                e.insert_err_list(UDL2DBConnection, 4, failure_time)
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

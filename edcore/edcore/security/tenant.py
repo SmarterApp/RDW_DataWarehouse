@@ -40,3 +40,12 @@ def get_state_code_to_tenant_map():
     '''
     global TENANT_MAP
     return reverse_map(TENANT_MAP)
+
+
+def get_tenant_by_state_code(state_code):
+    '''
+    Returns teant given state_code
+    @param param: state_code
+    '''
+    global TENANT_MAP
+    return reverse_map(TENANT_MAP).get(state_code)

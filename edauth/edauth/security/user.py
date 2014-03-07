@@ -103,7 +103,7 @@ class User(object):
         @param info: user information
         @type info: dict
         '''
-        for k, v in self.__info.items():
+        for k, _ in self.__info.items():
             value = info.get(k, None)
             if value is not None:
                 self.__info[k] = value
@@ -143,19 +143,21 @@ class User(object):
         '''
         self.__info[UserConstants.NAME][UserConstants.LASTNAME] = last_name
 
-    def set_context(self, context):
-        self.user_context = UserContext(context)
+    def set_context(self, role_inst_rel_list_all):
         # For now set the roles and tenant like this to make everything continue to work
         roles = []
         tenants = []
         state_codes = []
-        for c in context:
+        role_inst_rel_list = [rel_chain for rel_chain in role_inst_rel_list_all if not Roles.has_undefined_roles([rel_chain.role])]
+        for c in role_inst_rel_list:
             roles.append(c.role)
             tenants.append(c.tenant)
             state_codes.append(c.state_code)
         # We need to make sure that there are we know about all the roles
         if Roles.has_undefined_roles(roles):
             roles.append(Roles.get_invalid_role())
+        self.__context = UserContext(role_inst_rel_list)
+
         self.__info[UserConstants.ROLES] = roles
         self.__info[UserConstants.TENANT] = tenants
         self.__info[UserConstants.STATECODE] = state_codes
@@ -187,3 +189,6 @@ class User(object):
 
     def get_guid(self):
         return self.__info[UserConstants.GUID]
+
+    def get_context(self):
+        return self.__context

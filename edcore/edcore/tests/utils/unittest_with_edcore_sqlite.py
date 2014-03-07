@@ -13,8 +13,10 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 
 class Unittest_with_edcore_sqlite(Unittest_with_sqlite):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass(EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name()))
+    def setUpClass(cls, datasource_name=None, metadata=None, resources_dir=None):
+        if datasource_name is None:
+            datasource_name = EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name())
+        super().setUpClass(datasource_name=datasource_name, metadata=metadata, resources_dir=resources_dir)
 
     @classmethod
     def tearDownClass(cls):
@@ -39,4 +41,4 @@ def compile_big_int_sqlite(type_, compiler, **kw):
 
 
 def get_unittest_tenant_name():
-    return 'testtenant'
+    return 'tomcat'

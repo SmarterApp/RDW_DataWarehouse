@@ -28,21 +28,12 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(), user_id='272', guid='272')
         dummy_session = create_test_session(['TEACHER'], uid='272')
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
-
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
 
     def test_get_custom_metadata(self):
         tenant = get_unittest_tenant_name()

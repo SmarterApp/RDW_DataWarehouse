@@ -5,7 +5,7 @@ from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats, insert_to_table
 from edudl2.exceptions.errorcodes import ErrorCode
-from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
+from edudl2.exceptions.udl_exceptions import UDLException
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
 import datetime
@@ -73,11 +73,11 @@ class Udl2BaseTask(Task):
         # Write to udl stats table on exceptions
         update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
         # Write to ERR_LIST
-        if isinstance(exc, DeleteRecordNotFound):
+        if isinstance(exc, UDLException):
             # TODO: udl phase step number
             try:
                 exc.insert_err_list(UDL2DBConnection, 4, failure_time)
-            except NotImplemented:
+            except Exception:
                 pass
         msg = {}
         msg.update(args[0])

@@ -14,6 +14,9 @@ from pyramid.registry import Registry
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from sqlalchemy.sql.expression import select
 from edauth.tests.test_helper.create_session import create_test_session
+from pyramid.security import Allow
+from edauth.security.user import RoleRelation
+import edauth
 
 
 class TestStudentAssessment(Unittest_with_edcore_sqlite):
@@ -25,20 +28,17 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         reg.settings = {}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(), user_id='1023', guid='1023')
-        dummy_session = create_test_session(['SCHOOL_EDUCATION_ADMINISTRATOR_1'])
+        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
+        # Set up context security
+        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
+        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
+
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
         self.__request = None
         testing.tearDown()
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
 
     def test_get_extract_assessment_query(self):
         params = {'stateCode': 'CA',

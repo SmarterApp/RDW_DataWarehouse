@@ -56,23 +56,12 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        # Set up context security
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(),
-                               user_id='272', guid='272')
         dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
-
-        # delete user_mapping entries
-        with UnittestEdcoreDBConnection() as connection:
-            user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.delete())
         cache_managers.clear()
 
     @classmethod
@@ -228,7 +217,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_tasks_for_non_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -247,7 +235,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_tasks_for_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -280,7 +267,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_non_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -298,7 +284,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -316,7 +301,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -334,7 +318,6 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
@@ -356,7 +339,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test___get_extract_request_user_info(self):
         result = _get_extract_request_user_info()
         self.assertIsInstance(result[0], str)
-        self.assertEqual('testtenant', result[2])
+        self.assertEqual('tomcat', result[2])
 
     def test__create_tasks_with_responses_non_tenant_level(self):
         params = {'stateCode': 'NC',

@@ -7,8 +7,13 @@
 	<meta name="description" content="" />
 	<link rel="stylesheet" href="css/qunit.css" />
 	<script src="js/3p/qunit.js"></script>
-	<script data-main="js/test-require-configs" src="js/3p/require.js"></script>
+	<script src="js/3p/require.js"></script>
 	<script src="js/3p/blanket.js" data-cover-only="//EDWARE.*/"></script>
+        <script>
+         require(['js/test-require-configs.js'], function(){
+           console.log("Hello World");
+         });
+        </script>
     </head>
     <body>
 	<h1 id="qunit-header">EDWARE Test Suite</h1>

@@ -34,6 +34,7 @@ def get_extract_assessment_query(params):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        # TODO: Look at removing dim_asmt
         query = select_with_context([dim_asmt.c.asmt_guid.label(dim_asmt_label.get(Constants.ASMT_GUID, Constants.ASMT_GUID)),
                                     fact_asmt_outcome.c.where_taken_id.label(fact_asmt_outcome_label.get('where_taken_id', 'guid_asmt_location')),
                                     fact_asmt_outcome.c.where_taken_name.label(dim_asmt_label.get('where_taken_name', 'name_asmt_location')),

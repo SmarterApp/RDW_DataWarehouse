@@ -7,6 +7,7 @@ import time
 import unittest
 import subprocess
 import os
+import tempfile
 import fnmatch
 import shutil
 from uuid import uuid4
@@ -17,36 +18,40 @@ from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-DIM_TABLE = 'dim_asmt'
-FACT_TABLE = 'fact_asmt_outcome'
-PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
-EXPECTED_UNIQUE_BATCH_GUIDS = 30
-EXPECTED_ROWS = 958
+# TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
+# DIM_TABLE = 'dim_asmt'
+# FACT_TABLE = 'fact_asmt_outcome'
+# PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
+# EXPECTED_UNIQUE_BATCH_GUIDS = 30
+# expected_rows = 958
 # TODO EXPECTED_ROWS should be 1186
 
 
-@unittest.skip("skipping this test till starschema change has been made")
+@unittest.skip("skipping this test till till ready for jenkins")
 class Test(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.tenant_dir = TENANT_DIR
+        self.tenant_dir = tempfile.mkdtemp()
         # Get connections for UDL and Edware databases
         self.ed_connector = TargetDBConnection()
         self.connector = UDL2DBConnection()
-
+        self.dim_table = 'dim_asmt'
+        self.fact_table = 'fact_asmt_outcome'
+        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
+        self.expected_unique_batch_guids = 30
+        self.expected_rows = 958
+        
     def test_validation(self):
-        #self.copy_files_to_tenantdir(PATH_TO_FILES)
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)
         # Copy files to tenant_dir and run udl pipeline
         self.run_udl_pipeline()
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
-        self.validate_UDL_database(self.connector)
-        self.validate_edware_database(self.ed_connector)
+        self.validate_UDL_database(self.connector, self.expected_unique_batch_guids)
+        self.validate_edware_database(self.ed_connector, self.dim_table, self.fact_table, self.expected_rows, self.expected_unique_batch_guids)
 
     def empty_table(self, connector, ed_connector):
         '''
@@ -81,7 +86,7 @@ class Test(unittest.TestCase):
         # Reads the udl2_conf.ini file from /opt/edware directory
         self.conf = udl2_conf
         # Copy the gpg test data  files from the edudl2/tests/data directory to the /opt/tmp directory
-        self.copy_files_to_tenantdir(PATH_TO_FILES)
+        self.copy_files_to_tenantdir(self.data_dir, self.expected_unique_batch_guids)
         # set file path to tenant directory that includes all the gpg files
         arch_file = self.tenant_dir
         here = os.path.dirname(__file__)
@@ -94,7 +99,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, max_wait=200):
+    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=200):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -111,39 +116,41 @@ class Test(unittest.TestCase):
         failure_query = select([batch_table]).where(batch_table.c.udl_phase_step_status == 'FAILURE')
         timer = 0
         all_successful_batch_guids = []
-        while timer <= max_wait and len(all_successful_batch_guids) is not EXPECTED_UNIQUE_BATCH_GUIDS:
+        while timer <= max_wait and len(all_successful_batch_guids) is not expected_unique_batch_guids:
             sleep(0.25)
             timer += 0.25
             all_successful_batch_guids = connector.execute(success_query).fetchall()
             failure_batch_data = connector.execute(failure_query).fetchall()
 #           if len(failure_batch_data) is not None:
 #               break
-        self.assertEqual(len(all_successful_batch_guids), EXPECTED_UNIQUE_BATCH_GUIDS, "30 guids not found.")
+        self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "30 guids not found.")
         print("UDL verification successful")
+        print(len(all_successful_batch_guids))
         print('Waited for', timer, 'second(s) for job to complete.')
 
-    def validate_edware_database(self, ed_connector):
+    def validate_edware_database(self, ed_connector, dim_table, fact_table, expected_rows, expected_unique_batch_guids):
         '''
         Validate edware schema for Dim_asmt table and fact_asmt_table
         '''
         #Validate dim_asmt table : All the asmt_guid for 30 batch has been loded to dim_table
-        edware_table = ed_connector.get_table(DIM_TABLE)
+        edware_table = ed_connector.get_table(dim_table)
         query_asmt_guids = select([edware_table.c.asmt_guid])
         all_asmt_guids = ed_connector.execute(query_asmt_guids).fetchall()
-        self.assertEqual(len(all_asmt_guids), EXPECTED_UNIQUE_BATCH_GUIDS,
-                         "%i asmt guids not found" % EXPECTED_UNIQUE_BATCH_GUIDS)
+        print(len(all_asmt_guids))
+        self.assertEqual(len(all_asmt_guids), expected_unique_batch_guids,
+                         "%i asmt guids not found" % expected_unique_batch_guids)
         print('dim_asmt table verification is successful')
 
         #Validate Fact_asmt table for totalnumber of rows
-        fact_table = ed_connector.get_table(FACT_TABLE)
-        query_rows = select([fact_table])
+        fact_asmt_table = ed_connector.get_table(fact_table)
+        query_rows = select([fact_asmt_table])
         total_number_rows = ed_connector.execute(query_rows).fetchall()
         number_rows = len(total_number_rows)
         print(number_rows)
-        self.assertEqual(number_rows, EXPECTED_ROWS,
-                         "Total number of rows in FACT_ASMT is less than %i" % EXPECTED_ROWS)
+        self.assertEqual(number_rows, expected_rows,
+                         "Total number of rows in FACT_ASMT is less than %i" % expected_rows)
 
-    def copy_files_to_tenantdir(self, file_path):
+    def copy_files_to_tenantdir(self, file_path, expected_unique_batch_guids):
         '''
         Copies the gpg files from  edudl2/tests/data/udl_to_reporting_e2e_integration to the tenant directory
         :param file_path: file path containing all gpg files
@@ -154,8 +161,8 @@ class Test(unittest.TestCase):
         for file in os.listdir(file_path):
             if fnmatch.fnmatch(file, '*.gpg'):
                 all_files.append(os.path.join(file_path + '/' + str(file)))
-        self.assertEqual(len(all_files), EXPECTED_UNIQUE_BATCH_GUIDS, "%i files not found."
-                                                                      % EXPECTED_UNIQUE_BATCH_GUIDS)
+        self.assertEqual(len(all_files), expected_unique_batch_guids, "%i files not found."
+                                                                      % expected_unique_batch_guids)
         # Create a tenant directory if does not exist already
         if os.path.exists(self.tenant_dir):
             print("Tenant directory already exists")

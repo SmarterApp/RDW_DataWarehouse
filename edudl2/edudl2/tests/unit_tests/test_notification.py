@@ -68,7 +68,7 @@ class TestNotification(unittest.TestCase):
         self.assertEquals('Retry 2 - 408 Client Error: Request a Timeout', notification_messages[2])
         self.assertEquals('Retry 3 - 408 Client Error: Request a Timeout', notification_messages[3])
         self.assertEquals('Retry 4 - 408 Client Error: Request a Timeout', notification_messages[4])
-        #self.assertGreaterEqual((end_time - start_time).seconds, 5)  # Cumulative retry intervals.
+        self.assertGreaterEqual((end_time - start_time).seconds, 5)  # Cumulative retry intervals.
 
     @unittest.skip('Skip until we find out how to make POST requests actually timeout')
     @httpretty.activate

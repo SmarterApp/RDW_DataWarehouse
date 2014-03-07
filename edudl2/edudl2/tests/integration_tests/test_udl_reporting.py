@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
         self.expected_unique_batch_guids = 30
         self.expected_rows = 958
-        
+
     def test_validation(self):
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)

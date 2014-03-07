@@ -51,7 +51,7 @@ def get_move_to_target_conf():
                                                      'condition': ['student_guid', 'asmt_guid', 'date_taken', 'status'],
                                                      'status': 'W'},
         },
-        'handle_duplication': [{
+        'handle_record_upsert': [{
             'table_name': 'dim_student',
             'guid_columns': ['student_guid'],
             'key_columns': [

@@ -153,13 +153,17 @@ def handle_deletions(msg):
     return outgoing_msg
 
 
-@celery.task(name='udl2.W_load_from_integration_to_star.handle_insertion_dim_tables', base=Udl2BaseTask)
-def handle_insertion_dim_tables(msg):
+@celery.task(name='udl2.W_load_from_integration_to_star.handle_record_upsert', base=Udl2BaseTask)
+def handle_record_upsert(msg):
+    '''
+    Match records in current batch with production database, such that
+    existing records only get updated to avoid duplication.
+    '''
     logger.info('LOAD_FROM_INT_TO_STAR: detect duplications in target tables.')
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
     # generate config dict
-    configs = get_move_to_target_conf()['handle_duplication']
+    configs = get_move_to_target_conf()['handle_record_upsert']
     affected_rows = 0
     for match_conf in configs:
         num_of_rows = update_or_delete_duplicate_record(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)
@@ -168,8 +172,8 @@ def handle_insertion_dim_tables(msg):
 
     # Create benchmark object ant record benchmark
     udl_phase_step = 'Delete duplicate record in dim tables'
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], handle_insertion_dim_tables.name, start_time, finish_time,
-                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(handle_insertion_dim_tables.request.id),
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], handle_record_upsert.name, start_time, finish_time,
+                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(handle_record_upsert.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 

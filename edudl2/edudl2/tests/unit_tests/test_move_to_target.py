@@ -13,11 +13,14 @@ from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 from edudl2.move_to_target.move_to_target_setup import Column
 from edcore.utils.utils import compile_query_to_sql_text
+from edudl2.udl2.udl2_connector import TargetDBConnection, DBConnection
+from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import logging
 logger = logging.getLogger(__name__)
 
 
-class TestMoveToTarget(unittest.TestCase):
+class TestMoveToTarget(Unittest_with_sqlite):
 
     def setUp(self,):
         # TODO: don't rely on env. var
@@ -30,6 +33,10 @@ class TestMoveToTarget(unittest.TestCase):
         udl2_conf = conf_tup[0]
         self.conf = udl2_conf
         self.maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        Unittest_with_sqlite.setUpClass()
 
     def tearDown(self,):
         pass
@@ -174,6 +181,94 @@ class TestMoveToTarget(unittest.TestCase):
         self.assertEqual(query,
                          "SELECT asmnt_outcome_rec_id, student_guid, asmt_guid, date_taken, status FROM \"edware\".\"fact_asmt_outcome\" WHERE "
                          "batch_guid = 'batch_guid_1' AND status = 'W'")
+
+    def test_handle_record_upsert_find_all(self):
+        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        guid_batch = None
+        with DBConnection() as conn:
+            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            all_records = helper.find_all()
+            self.assertIsNotNone(all_records, "Find all should return some value")
+            actual_rows = all_records.fetchall()
+            self.assertEqual(len(actual_rows), 894, "Find all should return all records")
+
+    def test_handle_record_upsert_find_by_natural_key(self):
+        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        guid_batch = None
+        example_record = {
+            'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
+            'first_name': 'Richard',
+            'middle_name': None,
+            'last_name': 'Mccarty',
+            'address_1': '493 Longfin South Ave',
+            'address_2': None,
+            'city': 'Common tern Gurnard',
+            'zip_code': '11363',
+            'gender': 'male',
+            'email': 'richard.mccarty@gangessharkbrownhyaenaprimary.edu',
+            'dob': '20040312',
+            'grade': '3',
+            'state_code': 'NC',
+            'district_guid': '228',
+            'school_guid': '242',
+        }
+        bad_record = {
+            'student_guid': 'not_really_exist'
+        }
+
+        with DBConnection() as conn:
+            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            m1 = helper.find_by_natural_key(example_record)
+            self.assertIsNotNone(m1, "Find_by_natural_key should return matched value")
+            self.assertEqual(m1['student_guid'], example_record['student_guid'], "Matched records should have the same student guid")
+            m2 = helper.find_by_natural_key(bad_record)
+            self.assertIsNone(m2, "Find_by_natural_key should return None if not match found")
+            example_record['first_name'] = 'Sadish'
+            m3 = helper.find_by_natural_key(example_record)
+            self.assertIsNone(m3, "Find_by_natural_key should return None if not match found")
+
+    def test_handle_record_upsert_update_dependant(self):
+        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        guid_batch = None
+        old_record = {
+            'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
+            'student_rec_id': '348',
+            'batch_guid': None
+        }
+        new_record = {
+            'student_guid': 'c72e98d5-ddb6-4cde-90d2-cdb215e67e84',
+            'student_rec_id': '350',
+            'batch_guid': None
+        }
+        with DBConnection() as conn:
+            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            helper.update_dependant(old_record, new_record)
+            all_records = helper.find_all()
+            for record in all_records:
+                self.assertNotEqual(record['student_rec_id'], old_record['student_rec_id'])
+
+    # TODO have to figure out how to bypass foreign key constraints
+    def handle_record_upsert_delete_by_guid(self):
+        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        guid_batch = None
+        old_record = {
+            'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
+            'student_rec_id': '348',
+            'batch_guid': None
+        }
+        new_record = {
+            'student_guid': 'c72e98d5-ddb6-4cde-90d2-cdb215e67e84',
+            'student_rec_id': '350',
+            'batch_guid': None
+        }
+        with DBConnection() as conn:
+            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            # update in dependant table to by pass constraints
+            helper.update_dependant(old_record, new_record)
+            helper.delete_by_guid(old_record)
+            all_records = helper.find_all()
+            for record in all_records:
+                self.assertNotEqual(record['student_guid'], old_record['student_guid'])
 
 
 def generate_conf(guid_batch, udl2_conf):

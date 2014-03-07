@@ -26,7 +26,9 @@ def task(msg):
 
     target_tasks = {"assessment": [W_load_from_integration_to_star.explode_to_dims.s(msg),
                                    W_load_from_integration_to_star.explode_to_fact.s(),
-                                   W_load_from_integration_to_star.handle_deletions.s()],
+                                   W_load_from_integration_to_star.handle_deletions.s(),
+                                   W_load_from_integration_to_star.handle_record_upsert.s()
+                                   ],
                     "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
 
     post_etl_tasks = {"assessment": [W_post_etl.task.s(msg), W_all_done.task.s()],

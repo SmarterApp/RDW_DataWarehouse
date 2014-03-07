@@ -62,7 +62,7 @@ FAO_FORMAT = {'format': 'csv',
                           {'name': 'dmg_prg_lep', 'val': 'student.prg_lep'},
                           {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
                           {'name': 'dmg_prg_tt1', 'val': 'student.prg_title_1'},
-                          {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'}]}
+                          {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'},]}
 
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',
@@ -257,7 +257,21 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                   {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
                                   {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
                                   {'name': 'asmt_year', 'val': 'assessment.period_year'},
-                                  {'name': 'asmt_subject', 'val': 'assessment.subject'}]}
+                                  {'name': 'asmt_subject', 'val': 'assessment.subject'},
+                                  {'name': 'acc_asl_video_embed', 'val': 'assessment.acc_asl_video_embed'},
+                                  {'name': 'acc_asl_human_nonembed', 'val': 'assessment.acc_asl_human_nonembed'},
+                                  {'name': 'acc_braile_embed', 'val': 'assessment.acc_braile_embed'},
+                                  {'name': 'acc_closed_captioning_embed', 'val': 'assessment.acc_closed_captioning_embed'},
+                                  {'name': 'acc_text_to_speech_embed', 'val': 'assessment.acc_text_to_speech_embed'},
+                                  {'name': 'acc_abacus_nonembed', 'val': 'assessment.acc_abacus_nonembed'},
+                                  {'name': 'acc_alternate_response_options_nonembed', 'val': 'assessment.acc_alternate_response_options_nonembed'},
+                                  {'name': 'acc_calculator_nonembed', 'val': 'assessment.acc_calculator_nonembed'},
+                                  {'name': 'acc_multiplication_table_nonembed', 'val': 'assessment.acc_multiplication_table_nonembed'},
+                                  {'name': 'acc_print_on_demand_nonembed', 'val': 'assessment.acc_print_on_demand_nonembed'},
+                                  {'name': 'acc_read_aloud_nonembed', 'val': 'assessment.acc_read_aloud_nonembed'},
+                                  {'name': 'acc_scribe_nonembed', 'val': 'assessment.acc_scribe_nonembed'},
+                                  {'name': 'acc_speech_to_text_nonembed', 'val': 'assessment.acc_speech_to_text_nonembed'},
+                                  {'name': 'acc_streamline_mode', 'val': 'assessment.acc_streamline_mode'}]}
 
 SR_FORMAT = {'format': 'csv',
              'name': 'sr_<YEAR>.csv',

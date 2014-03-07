@@ -31,7 +31,7 @@ class TestNotification(unittest.TestCase):
         pass
         self.assertEquals(mk.SUCCESS, notification_status)
         self.assertEquals(1, len(notification_messages))
-        self.assertEquals('Job completed successfully', notification_messages[0])
+        self.assertEquals('201 Created: Job completed successfully', notification_messages[0])
 
     @httpretty.activate
     def test_post_notification_success_with_retries(self):
@@ -47,7 +47,7 @@ class TestNotification(unittest.TestCase):
         self.assertEquals(3, len(notification_messages))
         self.assertEquals('408 Client Error: Request a Timeout', notification_messages[0])
         self.assertEquals('Retry 1 - 408 Client Error: Request a Timeout', notification_messages[1])
-        self.assertEquals('Retry 2 - Job completed successfully', notification_messages[2])
+        self.assertEquals('Retry 2 - 201 Created: Job completed successfully', notification_messages[2])
 
     @httpretty.activate
     def test_post_notification_failure_with_retries(self):

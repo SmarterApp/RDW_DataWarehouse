@@ -159,30 +159,22 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         print('Total number of rows in target table:', count)
         self.assertEqual(count, expected_number, 'Unexpected number of rows in target table')
 
-    #Validate that the notification to the callback url was successful
-    def validate_notification_success(self):
-        batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table.c.udl_phase_step_status],
-                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
-        notification_status = self.udl_connector.execute(query).fetchall()
-        self.assertEquals([('SUCCESS',)], notification_status, 'Notification did not succeed')
-
-    #Validate that the notification to the callback url failed, with a certain number of retries attempted
-    def validate_notification_failed(self, error_codes, retries=0):
+    #Validate that the notification to the callback url matches the status, with a certain number of retries attempted
+    def validate_notification(self, expected_status, expected_error_codes, expected_retries):
         batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status, batch_table.c.error_desc],
                        and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
         result = self.udl_connector.execute(query).fetchall()
         for row in result:
-            status = row['udl_phase_step_status']
-            self.assertEqual(status, 'FAILURE', 'Notification succeeded when it was supposed to fail')
+            notification_status = row['udl_phase_step_status']
+            self.assertEqual(expected_status, notification_status)
             errors = row['error_desc']
             num_retries = 0
             last_retry_pos = errors.rfind('Retry ') + 6
             if last_retry_pos > 6:
                 num_retries = errors[last_retry_pos: last_retry_pos + 1]
-            self.assertEqual(retries, int(num_retries), 'Incorrect number of retries')
-            for error_code in error_codes:
+            self.assertEqual(expected_retries, int(num_retries), 'Incorrect number of retries')
+            for error_code in expected_error_codes:
                 self.assertTrue(error_code in errors)
 
     #Run the UDL pipeline
@@ -231,7 +223,21 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.validate_stu_reg_target_table('original_data')
             self.validate_student_data('original_data')
             self.validate_total_number_in_target('original_data')
-            self.validate_notification_success()
+            self.validate_notification('SUCCESS', ['201'], 0)
+        except Exception:
+            self.shutdown_post_server()
+            raise
+
+        try:
+            #Run and verify first run of student registration data, with some retries
+            self.batch_id = str(uuid4())
+            self.run_udl_pipeline('original_data')
+            self.validate_successful_job_completion()
+            self.validate_load_type()
+            self.validate_stu_reg_target_table('original_data')
+            self.validate_student_data('original_data')
+            self.validate_total_number_in_target('original_data')
+            self.validate_notification('SUCCESS', ['408', '408', '408', '201'], 3)
         except Exception:
             self.shutdown_post_server()
             raise
@@ -244,7 +250,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
             self.validate_student_data('data_for_different_test_center_than_original_data')
             self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
-            self.validate_notification_failed(['408', '400'], retries=1)
+            self.validate_notification('FAILURE', ['408', '400'], 1)
         except Exception:
             self.shutdown_post_server()
             raise
@@ -258,7 +264,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.validate_stu_reg_target_table('data_to_overwrite_original_data')
             self.validate_student_data('data_to_overwrite_original_data')
             self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
-            self.validate_notification_failed(['401'], retries=0)
+            self.validate_notification('FAILURE', ['401'], 0)
         except Exception:
             self.shutdown_post_server()
             raise
@@ -298,7 +304,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 # This class handles our HTTP POST requests with various responses
 class HTTPPOSTHandler(BaseHTTPRequestHandler):
     response_count = 0
-    response_codes = [201, 408, 400, 401]
+    response_codes = [201, 408, 408, 408, 201, 408, 400, 401]
 
     def __init__(self, request, client_address, server):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)

@@ -94,7 +94,7 @@ def post_notification(udl2_conf, callback_url, notification_body):
 
             # Success!
             notification_status = mk.SUCCESS
-            notification_messages.append(message_prefix + SUCCESS_MESSAGE)
+            notification_messages.append(message_prefix + str(status_code) + ' Created: ' + SUCCESS_MESSAGE)
             break
         except RequestException as re:
             # Failure.

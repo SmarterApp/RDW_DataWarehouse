@@ -147,8 +147,10 @@ class ValidateTableData(unittest.TestCase):
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status],
                        and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
-        notification_status = udl_connector.execute(query).fetchall()
-        self.assertEquals([('SUCCESS',)], notification_status, 'Notification did not succeed')
+        result = udl_connector.execute(query).fetchall()
+        for row in result:
+            notification_status = row['udl_phase_step_status']
+            self.assertEqual('SUCCESS', notification_status)
 
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())

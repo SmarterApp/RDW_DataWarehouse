@@ -1,6 +1,8 @@
 #globals ok $ EDWARE test require module equals deepEqual
 QUnit.config.autostart = false;
 
+
+# TODO fix all UTs
 require [
   # "cs!test.EDWARE.dataProxy",
   # "cs!test.EDWARE.util",
@@ -15,8 +17,8 @@ require [
   # "cs!test.EDWARE.download",
   # "cs!test.EDWARE.footer",
   # "cs!test.EDWARE.header"
-  # "cs!test.EDWARE.asmtDropdown"
-  # "cs!test.EDWARE.print"
+  # "cs!../test.EDWARE.asmtDropdown"
+  # "cs!../test.EDWARE.print"
   "cs!../test.EDWARE.grid.formatters"
 ], ()->
   QUnit.start()

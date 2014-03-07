@@ -22,12 +22,13 @@ edapi/build
 edapi/dist
 smarter/smarter/assets
 assets/css/*.css
+assets/js/src/main.js
 assets/js/src/modules/*
 assets/js/src/widgets/*
 assets/node_modules
 assets/test/src/*
-assets/test/js/3p/*
-assets/test/js/src/*
+assets/test/js/3p/**
+assets/test/js/src/**
 assets/docs/
 node_modules
 .coverage

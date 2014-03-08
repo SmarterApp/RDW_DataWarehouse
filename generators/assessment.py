@@ -8,6 +8,7 @@ An assessment generator for the SBAC assessment.
 import calendar
 import datetime
 
+import general.generators.assessment as gen_asmt_generator
 import general.util.gaussian_distribution as rand_gauss
 import general.util.id_gen as id_gen
 import project.sbac.config.cfg as sbac_config
@@ -45,10 +46,10 @@ def generate_assessment(asmt_type, period_month, period_year, subject, from_date
         else:
             full_period = calendar.month_name[period_month] + ' ' + str(period_year)
 
-    # Create the object
-    sa = SBACAssessment()
-    sa.rec_id = id_gen.get_rec_id()
-    sa.guid = id_gen.get_uuid()
+    # Run the General generator
+    sa = gen_asmt_generator.generate_assessment(SBACAssessment)
+
+    # Set other specifics
     sa.asmt_type = asmt_type
     sa.period = full_period
     sa.period_month = 4 if type(period_month) is str else period_month
@@ -116,13 +117,10 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         overall_cut_points.append(assessment.overall_cut_point_4)
     claim_cut_points = [assessment.claim_cut_point_1, assessment.claim_cut_point_2]
 
-    # Create the outcome object
-    sao = SBACAssessmentOutcome()
-    sao.rec_id = id_gen.get_rec_id()
-    sao.guid = id_gen.get_uuid()
-    sao.student = student
-    sao.assessment = assessment
-    sao.section = section
+    # Run the General generator
+    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, section, SBACAssessment)
+
+    # Set other specifics
     sao.inst_hierarchy = inst_hier
 
     # Create the date taken

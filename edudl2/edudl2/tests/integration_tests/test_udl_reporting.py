@@ -27,7 +27,7 @@ from sqlalchemy.sql.expression import and_
 # TODO EXPECTED_ROWS should be 1186
 
 
-@unittest.skip("skipping this test till till ready for jenkins")
+#@unittest.skip("skipping this test till till ready for jenkins")
 class Test(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
         self.fact_table = 'fact_asmt_outcome'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
         self.expected_unique_batch_guids = 30
-        self.expected_rows = 958
+        self.expected_rows = 957
 
     def test_validation(self):
         # Truncate the database
@@ -99,7 +99,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=200):
+    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=600):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -146,7 +146,6 @@ class Test(unittest.TestCase):
         query_rows = select([fact_asmt_table])
         total_number_rows = ed_connector.execute(query_rows).fetchall()
         number_rows = len(total_number_rows)
-        print(number_rows)
         self.assertEqual(number_rows, expected_rows,
                          "Total number of rows in FACT_ASMT is less than %i" % expected_rows)
 

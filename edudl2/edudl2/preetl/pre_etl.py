@@ -3,7 +3,7 @@ import logging
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.preetl.create_queries import insert_batch_row_query
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edudl2.exceptions.errorcodes import ErrorCode
 
 
@@ -35,7 +35,7 @@ def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced
         # create the insertion query
         insert_query = insert_batch_row_query(schema, batch_table, **parm)
 
-        with UDL2DBConnection() as conn:
+        with get_udl_connection() as conn:
             # insert into batch table
             execute_udl_queries(conn, [insert_query], 'Exception in pre_etl, execute query to insert into batch table', 'pre_etl', 'pre_etl_job')
 

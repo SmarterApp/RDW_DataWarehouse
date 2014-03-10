@@ -10,7 +10,7 @@ from sqlalchemy.sql import select, and_, func
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
 
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
@@ -74,8 +74,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             }
         }
         self.tenant_dir = TENANT_DIR
-        self.target_connector = TargetDBConnection()
-        self.udl_connector = UDL2DBConnection()
+        self.target_connector = get_target_connection()
+        self.udl_connector = get_udl_connection()
         self.load_type = udl2_conf['load_type']['student_registration']
         self.empty_target_table()
         self.receive_requests = True

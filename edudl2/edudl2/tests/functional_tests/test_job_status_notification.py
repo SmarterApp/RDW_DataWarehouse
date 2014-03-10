@@ -83,20 +83,21 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         old_retry_max = udl2_conf['sr_notification_retries']
         old_retry_interval = udl2_conf['sr_notification_retry_interval']
         udl2_conf['sr_notification_retries'] = 3
-        udl2_conf['sr_notification_retry_interval'] = 1
+        udl2_conf['sr_notification_retry_interval'] = 0.25
 
-        httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=408)
-        self.load_to_table(self.successful_batch)
-        msg = generate_message(self.successful_batch_id)
-        job_notify(msg)
+        try:
+            httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=408)
+            self.load_to_table(self.successful_batch)
+            msg = generate_message(self.successful_batch_id)
+            job_notify(msg)
 
-        request = httpretty.last_request().parsed_body
-        self.verify_successful_request_body(request)
+            request = httpretty.last_request().parsed_body
+            self.verify_successful_request_body(request)
 
-        self.verify_notification_failed(self.successful_batch_id, 3)
-
-        udl2_conf['sr_notification_retries'] = old_retry_max
-        udl2_conf['sr_notification_retry_interval'] = old_retry_interval
+            self.verify_notification_failed(self.successful_batch_id, 3)
+        finally:
+            udl2_conf['sr_notification_retries'] = old_retry_max
+            udl2_conf['sr_notification_retry_interval'] = old_retry_interval
 
     def test_notification_failed_with_non_retryable_error_code(self):
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=401)

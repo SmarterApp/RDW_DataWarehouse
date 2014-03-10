@@ -10,7 +10,7 @@ from edudl2.udl2_util.file_util import extract_file_name
 from edudl2.udl2.Constants import TableConstants
 import logging
 
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 
 
 DBDRIVER = "postgresql"
@@ -196,7 +196,7 @@ def load_file(conf):
     # print("I am the file loader, about to load file %s" % extract_file_name(conf[mk.FILE_TO_LOAD]))
 
     # connect to database
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         # start loading file process
         time_for_load_as_seconds = load_data_process(conn, conf)
 

@@ -7,9 +7,10 @@ from edudl2.udl2_util.database_util import connect_db
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import uuid
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
+from edudl2.udl2.udl2_connector import initialize_db_target, initialize_db_udl
 from edudl2.udl2_util.config_reader import read_ini_file
 from datetime import datetime
+import time
 
 
 STG_SBAC_ASMT_OUTCOME_COLUMNS = 'record_sid,op,guid_batch,src_file_rec_num,guid_asmt,guid_asmt_location,name_asmt_location,grade_asmt,name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,guid_student,external_student_id,name_student_first,name_student_middle,name_student_last,address_student_line1,address_student_line2,address_student_city,address_student_zip,gender_student,email_student,dob_student,grade_enrolled,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,dmg_prg_lep,dmg_prg_504,dmg_prg_tt1,date_assessed,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,score_claim_1,score_claim_1_min,score_claim_1_max,asmt_claim_1_perf_lvl,score_claim_2,score_claim_2_min,score_claim_2_max,asmt_claim_2_perf_lvl,score_claim_3,score_claim_3_min,score_claim_3_max,asmt_claim_3_perf_lvl,score_claim_4,score_claim_4_min,score_claim_4_max,asmt_claim_4_perf_lvl,asmt_type,asmt_subject,asmt_year,acc_asl_video_embed,acc_asl_human_nonembed,acc_braile_embed,acc_closed_captioning_embed,acc_text_to_speech_embed,acc_abacus_nonembed,acc_alternate_response_options_nonembed,acc_calculator_nonembed,acc_multiplication_table_nonembed,acc_print_on_demand_nonembed,acc_read_aloud_nonembed,acc_scribe_nonembed,acc_speech_to_text_nonembed,acc_streamline_mode'
@@ -58,8 +59,8 @@ class FileLoaderFTest(unittest.TestCase):
         conn, _engine = connect_db(self.conf[mk.SOURCE_DB_DRIVER], self.conf[mk.TARGET_DB_USER], self.conf[mk.TARGET_DB_PASSWORD],
                                    self.conf[mk.TARGET_DB_HOST], self.conf[mk.TARGET_DB_PORT], self.conf[mk.TARGET_DB_NAME])
         self.conn = conn
-        initialize_db(TargetDBConnection, self.udl2_conf)
-        initialize_db(UDL2DBConnection, self.udl2_conf)
+        initialize_db_target(self.udl2_conf)
+        initialize_db_udl(self.udl2_conf)
 
     def test_assessment_row_number(self):
         # load data
@@ -89,7 +90,8 @@ class FileLoaderFTest(unittest.TestCase):
         self.conf[mk.ROW_START] = 24
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
-
+        # wait for a while to avoid timing issue.
+        time.sleep(20)
         # get the result of db
         records_in_db = get_rows_in_table(self.conf, self.conn, STG_SBAC_ASMT_OUTCOME_COLUMNS)
 

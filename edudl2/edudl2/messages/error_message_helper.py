@@ -1,6 +1,6 @@
 from sqlalchemy import select, and_
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edudl2.udl2 import message_keys as mk
 
 __author__ = 'ablum'
@@ -28,7 +28,7 @@ def fetch_msg(err_code):
 
 def retrieve_job_error_messages(guid_batch):
     messages = []
-    with UDL2DBConnection() as source_conn:
+    with get_udl_connection() as source_conn:
         batch_table = source_conn.get_table(udl2_conf['udl2_db'][mk.BATCH_TABLE])
         error_message_select = select([batch_table.c.error_desc]).where(and_(batch_table.c.guid_batch == guid_batch, batch_table.c.udl_phase_step_status == mk.FAILURE))
         error_messages = source_conn.execute(error_message_select)

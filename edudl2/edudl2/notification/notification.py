@@ -1,3 +1,6 @@
+from edudl2.notification.notification_messages import get_notification_message
+from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection
+
 __author__ = 'tshewchuk'
 
 """
@@ -13,6 +16,7 @@ from time import sleep
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edudl2.notification.notification_messages import get_notification_message
+from sqlalchemy.sql import select
 
 
 def post_udl_job_status(conf):
@@ -51,7 +55,8 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id):
     status_codes = {mk.SUCCESS: 'Success', mk.FAILURE: 'Failed'}
 
     # Get the job status
-    with UDL2DBConnection() as source_conn:
+
+    with get_udl_connection() as source_conn:
         batch_table = source_conn.get_table(batch_table)
         batch_select = select([batch_table.c.udl_phase_step_status]).where(and_(batch_table.c.guid_batch == guid_batch,
                                                                                 batch_table.c.udl_phase == 'UDL_COMPLETE'))

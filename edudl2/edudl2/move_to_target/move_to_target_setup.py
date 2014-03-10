@@ -1,3 +1,4 @@
+from edudl2.udl2.udl2_connector import get_target_connection
 __author__ = 'swimberly'
 
 from collections import OrderedDict, namedtuple
@@ -7,7 +8,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, get_column_mapping_query,
                                                   create_information_query)
 from edudl2.udl2_util.database_util import execute_udl_query_with_result
-from edudl2. udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2. udl2.udl2_connector import get_udl_connection
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 
 Column = namedtuple('Column', ['src_col', 'type'])
@@ -20,7 +21,7 @@ def get_table_and_column_mapping(conf, task_name, table_name_prefix=None):
     @param table_name_prefix: the prefix of the table name
     '''
 
-    with UDL2DBConnection() as conn_source:
+    with get_udl_connection() as conn_source:
         table_map = get_table_mapping(conn_source, task_name, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
         column_map = get_column_mapping_from_int_to_star(conn_source, task_name, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
 
@@ -126,7 +127,7 @@ def get_table_column_types(conf, target_table, column_names):
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     tenant = conf[mk.TENANT_NAME]
 
-    with TargetDBConnection(tenant) as conn:
+    with get_target_connection(tenant) as conn:
 
         query = create_information_query(target_table)
 

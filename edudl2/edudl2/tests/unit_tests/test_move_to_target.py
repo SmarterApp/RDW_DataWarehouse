@@ -13,10 +13,10 @@ from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 from edudl2.move_to_target.move_to_target_setup import Column
 from edcore.utils.utils import compile_query_to_sql_text
-from edudl2.udl2.udl2_connector import TargetDBConnection, DBConnection
 from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import logging
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from database.connector import DBConnection
 logger = logging.getLogger(__name__)
 
 

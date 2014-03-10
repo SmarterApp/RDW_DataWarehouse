@@ -15,7 +15,6 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   match_delete_fact_asmt_outcome_row_in_prod)
-from edudl2.move_to_target.query_helper import QueryHelper
 from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper

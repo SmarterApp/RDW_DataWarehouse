@@ -97,8 +97,7 @@ DIM_INST_HIER_FORMAT = {'format': 'csv',
                                     {'name': 'from_date', 'val': 'institution_hierarchy.from_date',
                                      'filter': 'date_Y_m_d'},
                                     {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Y_m_d'},
-                                    {'name': 'most_recent', 'val': 'institution_hierarchy.most_recent'}]
-                        }
+                                    {'name': 'most_recent', 'val': 'institution_hierarchy.most_recent'}]}
 
 DIM_SECTION_FORMAT = {'format': 'csv',
                       'name': 'dim_section.csv',

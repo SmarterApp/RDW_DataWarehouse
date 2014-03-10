@@ -10,5 +10,5 @@ python3.3 -m edschema.metadata_generator --metadata stats -s edware_stats -d edw
 # use virtualenv to run initialization script
 # otherwise, it must be python3.3
 
-python3.3 -m edudl2.udl2.database $1 $2 --action setup
+python3.3 -m edudl2.database.init_database $1 $2 --action setup
 

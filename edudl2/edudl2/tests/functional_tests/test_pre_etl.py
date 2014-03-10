@@ -4,7 +4,7 @@ from edudl2.udl2_util.database_util import connect_db, execute_query_with_result
 from uuid import uuid4
 import os
 from edudl2.preetl.pre_etl import pre_etl_job
-from edudl2.udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
+from edudl2.database.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
 from edudl2.udl2_util.config_reader import read_ini_file
 import tempfile
 import shutil

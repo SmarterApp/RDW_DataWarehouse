@@ -8,7 +8,7 @@ import os
 import shutil
 import subprocess
 from time import sleep
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 

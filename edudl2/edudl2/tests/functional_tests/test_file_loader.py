@@ -7,7 +7,7 @@ from edudl2.udl2_util.database_util import connect_db
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import uuid
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
+from edudl2.database.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
 from edudl2.udl2_util.config_reader import read_ini_file
 from datetime import datetime
 

@@ -2,7 +2,7 @@
 
 # use virtualenv to run initialization script
 
-python -m edudl2.udl2.database $1 $2 --action teardown
+python -m edudl2.database.init_database $1 $2 --action teardown
 
 # teardown edware star schema
 

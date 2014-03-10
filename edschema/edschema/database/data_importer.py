@@ -3,7 +3,7 @@ Created on Feb 27, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 import os
 import csv
 import logging

@@ -8,7 +8,7 @@ import os
 import shutil
 from uuid import uuid4
 import glob
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection
 from sqlalchemy.sql import select, delete
 from edudl2.udl2.celery import udl2_conf
 from time import sleep

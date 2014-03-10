@@ -9,7 +9,7 @@ from edudl2.fileloader.file_loader import load_file
 from edudl2.udl2 import message_keys as mk
 import edudl2.rule_maker.rules.code_generator_special_rules as sr
 from edudl2.tests.functional_tests.util import UDLTestHelper
-from edudl2.udl2.udl2_connector import initialize_db, UDL2DBConnection
+from edudl2.database.udl2_connector import initialize_db, UDL2DBConnection
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from uuid import uuid4
 

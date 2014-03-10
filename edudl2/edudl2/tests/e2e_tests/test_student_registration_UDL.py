@@ -10,7 +10,7 @@ from sqlalchemy.sql import select, and_, func
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
 
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.udl2.celery import udl2_conf
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'

@@ -4,7 +4,7 @@ Created on Mar 1, 2013
 @author: dip
 '''
 from sqlalchemy.engine import engine_from_config
-from database.connector import DbUtil, IDbUtil
+from edschema.database.connector import DbUtil, IDbUtil
 from zope import component
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy.exc import DBAPIError

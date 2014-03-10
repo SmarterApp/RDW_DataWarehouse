@@ -7,7 +7,7 @@ import logging
 from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from config.ref_table_data import op_table_conf
-from edudl2.udl2.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
+from edudl2.database.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_column_and_type_mapping
 from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,

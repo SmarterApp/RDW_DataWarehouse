@@ -1,7 +1,7 @@
 from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats, insert_to_table
 from edudl2.exceptions.errorcodes import ErrorCode

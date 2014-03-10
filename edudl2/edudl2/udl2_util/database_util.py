@@ -23,7 +23,6 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     '''
     Connect to database via sqlalchemy
     '''
-
     # TODO:define conf_args content
     db_string = '{db_driver}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'.format(db_driver=db_driver,
                                                                                              db_user=db_user,

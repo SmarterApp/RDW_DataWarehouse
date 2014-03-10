@@ -4,9 +4,9 @@ Created on Jun 25, 2013
 @author: dip
 '''
 import unittest
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from edschema.metadata.stats_metadata import generate_stats_metadata
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 
 
 class TestStatsMetadata(Unittest_with_sqlite):

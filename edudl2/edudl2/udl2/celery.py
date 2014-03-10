@@ -6,7 +6,7 @@ from edcore.database.stats_connector import StatsDBConnection
 import edcore.database as edcoredb
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection, ProdDBConnection, initialize_db
+from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection, ProdDBConnection, initialize_db
 
 
 def setup_udl2_queues(conf):
@@ -42,6 +42,7 @@ except Exception:
     config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
 # get udl2 configuration as nested and flat dictionary
+# TODO: Refactor to use either flat or map structure
 udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
 
 # the celery instance has to be named as celery due to celery driver looks for this object in celery.py
@@ -53,13 +54,8 @@ celery = Celery(udl2_conf['celery']['root'],
                 include=udl2_conf['celery']['include'])
 
 # Create all queues entities to be use by task functions
-
 udl2_queues = setup_udl2_queues(udl2_conf)
-
 celery = setup_celery_conf(udl2_conf, celery, udl2_queues)
-
-# configuration options for file splitter
-FILE_SPLITTER_CONF = udl2_conf['file_splitter']
 
 # TODO: Change udl2 to use edcore connection class for all connections
 

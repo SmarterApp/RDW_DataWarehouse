@@ -3,7 +3,7 @@ import logging
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.preetl.create_queries import insert_batch_row_query
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection
 from edudl2.exceptions.errorcodes import ErrorCode
 
 
@@ -23,7 +23,7 @@ def pre_etl_job(udl2_conf, log_file=None, load_type='Unknown', batch_guid_forced
         # prepare content to be inserted into batch table
         parm = {mk.GUID_BATCH: guid_batch,
                 mk.LOAD_TYPE: load_type,
-                mk.WORKING_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+                mk.WORKING_SCHEMA: udl2_conf['udl2_db']['db_schema'],
                 mk.UDL_PHASE: 'PRE ETL',
                 mk.UDL_LEAF: str(False),
                 mk.UDL_PHASE_STEP_STATUS: mk.SUCCESS

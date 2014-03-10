@@ -75,11 +75,7 @@ common:
     sr_notification_retries: 5
     sr_notification_retry_interval: 30
     udl2_db:
-      csv_schema: udl2  # PostgresQL for UDL2 processing. This is not the target database.
-      reference_schema: udl2
       fdw_server: udl2_fdw_server
-      staging_schema: udl2
-      integration_schema: udl2
       ref_tables:
           assessment: REF_COLUMN_MAPPING
           studentregistration: SR_REF_COLUMN_MAPPING

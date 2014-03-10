@@ -11,7 +11,7 @@ import requests.exceptions as req_exc
 from time import sleep
 
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection
 from edudl2.notification.notification_messages import get_notification_message
 
 

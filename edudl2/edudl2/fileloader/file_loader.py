@@ -10,10 +10,9 @@ from edudl2.udl2_util.file_util import extract_file_name
 from edudl2.udl2.Constants import TableConstants
 import logging
 
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection
 
 
-DBDRIVER = "postgresql"
 DATA_TYPE_IN_FDW_TABLE = 'text'
 logger = logging.getLogger(__name__)
 
@@ -193,15 +192,12 @@ def load_file(conf):
     Main function to initiate file loader
     '''
     # log for start the file loader
-    # print("I am the file loader, about to load file %s" % extract_file_name(conf[mk.FILE_TO_LOAD]))
-
     # connect to database
     with UDL2DBConnection() as conn:
         # start loading file process
         time_for_load_as_seconds = load_data_process(conn, conf)
 
     # log for end the file loader
-    # print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf[mk.FILE_TO_LOAD]), time_for_load_as_seconds))
 
 
 if __name__ == '__main__':

@@ -4,13 +4,13 @@ Created on Mar 1, 2013
 @author: tosako
 '''
 import unittest
-from edvalidator.edvalidator import get_list_of_tables, read_csv, check_tables, \
+from edschema.edvalidator.edvalidator import get_list_of_tables, read_csv, check_tables, \
     check_fields, check_fields_in_order
-from database.connector import DBConnection
-from edvalidator.tests.test_csv_files import get_resource_file, \
+from edschema.database.connector import DBConnection
+from edschema.edvalidator.tests.test_csv_files import get_resource_file, \
     get_resource_dir
-from database.sqlite_connector import create_sqlite, destroy_sqlite
-from edvalidator.tests.utils.metadata import generate_test_metadata
+from edschema.database.sqlite_connector import create_sqlite, destroy_sqlite
+from edschema.edvalidator.tests.utils.metadata import generate_test_metadata
 
 
 class Test(unittest.TestCase):

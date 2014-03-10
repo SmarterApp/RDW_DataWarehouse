@@ -7,7 +7,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, get_column_mapping_query,
                                                   create_information_query)
 from edudl2.udl2_util.database_util import execute_udl_query_with_result
-from edudl2. udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 
 Column = namedtuple('Column', ['src_col', 'type'])

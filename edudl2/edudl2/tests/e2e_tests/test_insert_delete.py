@@ -6,7 +6,7 @@ Created on Feb 28, 2014
 import time
 import os
 import shutil
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection
 from sqlalchemy.sql import select, delete, and_
 from edudl2.udl2.celery import udl2_conf
 import unittest

@@ -5,7 +5,7 @@ Created on Jun 3, 2013
 '''
 import unittest
 from zope import component
-from database.connector import IDbUtil
+from edschema.database.connector import IDbUtil
 from edcore.database import get_data_source_names, initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.datasource import setup_tenant_db_connection

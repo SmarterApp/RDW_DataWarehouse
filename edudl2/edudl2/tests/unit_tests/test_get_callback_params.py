@@ -29,9 +29,7 @@ class TestGetLoadType(unittest.TestCase):
 
     def test_get_callback_params_from_valid_loadtype(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        student_reg_guid = get_callback_params.get_callback_param(self.test_expanded_dir, 'studentregistration', 'student_reg_guid_key')
-        reg_system_id = get_callback_params.get_callback_param(self.test_expanded_dir, 'studentregistration', 'reg_system_id_key')
-        callback_url = get_callback_params.get_callback_param(self.test_expanded_dir, 'studentregistration', 'callback_url_key')
+        student_reg_guid, reg_system_id, callback_url = get_callback_params.get_callback_params(self.test_expanded_dir, 'studentregistration')
 
         self.assertEqual('009a34ee-4609-4b13-8ca2-ed1bc0386afb', student_reg_guid)
         self.assertEqual('800b3654-4406-4a90-9591-be84b67054df', reg_system_id)
@@ -39,9 +37,7 @@ class TestGetLoadType(unittest.TestCase):
 
     def test_get_callback_params_from_invalid_loadtype(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        student_reg_guid = get_callback_params.get_callback_param(self.test_expanded_dir, 'assessment', 'student_reg_guid_key')
-        reg_system_id = get_callback_params.get_callback_param(self.test_expanded_dir, 'assessment', 'reg_system_id_key')
-        callback_url = get_callback_params.get_callback_param(self.test_expanded_dir, 'assessment', 'callback_url_key')
+        student_reg_guid, reg_system_id, callback_url = get_callback_params.get_callback_params(self.test_expanded_dir, 'assessment')
 
         self.assertEqual(None, student_reg_guid)
         self.assertEqual(None, reg_system_id)

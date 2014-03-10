@@ -8,6 +8,7 @@ An assessment generator for the SBAC assessment.
 import general.util.gaussian_distribution as rand_gauss
 import general.util.id_gen as id_gen
 import project.sbac.config.cfg as sbac_config
+import random as rnd
 
 from general.model.section import Section
 from project.sbac.model.assessment import SBACAssessment
@@ -144,20 +145,20 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         sao.claim_4_perf_lvl = _pick_performance_level(sao.claim_4_score, claim_cut_points)
 
     # Create accommodations details
-    sao.acc_asl_video_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_asl_video_embed'][assessment.subject]])
-    sao.acc_asl_human_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_asl_human_nonembed'][assessment.subject]])
-    sao.acc_braile_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_braile_embed'][assessment.subject]])
-    sao.acc_closed_captioning_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_closed_captioning_embed'][assessment.subject]])
-    sao.acc_text_to_speech_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_text_to_speech_embed'][assessment.subject]])
-    sao.acc_abacus_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_abacus_nonembed'][assessment.subject]])
-    sao.acc_alternate_response_options_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_alternate_response_options_nonembed'][assessment.subject]])
-    sao.acc_calculator_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_calculator_nonembed'][assessment.subject]])
-    sao.acc_multiplication_table_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_multiplication_table_nonembed'][assessment.subject]])
-    sao.acc_print_on_demand_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_asl_video_embed'][assessment.subject]])
-    sao.acc_read_aloud_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_read_aloud_nonembed'][assessment.subject]])
-    sao.acc_scribe_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_scribe_nonembed'][assessment.subject]])
-    sao.acc_speech_to_text_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_speech_to_text_nonembed'][assessment.subject]])
-    sao.acc_streamline_mode = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS[['acc_streamline_mode'][assessment.subject]])
+    sao.acc_asl_video_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_asl_video_embed'][assessment.subject])
+    sao.acc_asl_human_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_asl_human_nonembed'][assessment.subject])
+    sao.acc_braile_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_braile_embed'][assessment.subject])
+    sao.acc_closed_captioning_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_closed_captioning_embed'][assessment.subject])
+    sao.acc_text_to_speech_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_text_to_speech_embed'][assessment.subject])
+    sao.acc_abacus_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_abacus_nonembed'][assessment.subject])
+    sao.acc_alternate_response_options_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_alternate_response_options_nonembed'][assessment.subject])
+    sao.acc_calculator_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_calculator_nonembed'][assessment.subject])
+    sao.acc_multiplication_table_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_multiplication_table_nonembed'][assessment.subject])
+    sao.acc_print_on_demand_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_asl_video_embed'][assessment.subject])
+    sao.acc_read_aloud_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_read_aloud_nonembed'][assessment.subject])
+    sao.acc_scribe_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_scribe_nonembed'][assessment.subject])
+    sao.acc_speech_to_text_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_speech_to_text_nonembed'][assessment.subject])
+    sao.acc_streamline_mode = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_streamline_mode'][assessment.subject])
     
     # Save and return the object
     if save_to_mongo:
@@ -187,9 +188,9 @@ def _pick_default_accommodation_code(code):
     If code is 0 return 0.
 
     @param code: The code to generate
-    @return: Generated rando code
+    @return: Generated random code
     """
     if code == 0:
         return code
     else:
-        return rand_gauss.gauss_one(4, 10)
+        return rnd.randint(4, 10)

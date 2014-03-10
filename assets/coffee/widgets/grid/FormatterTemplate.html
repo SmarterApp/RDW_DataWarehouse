@@ -12,19 +12,19 @@
             <div class='alignmentHighlightSection'>
                 <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
             </div>
-	            {{#hasTextReplacement}}
-	            <div>{{displayText}}</div>
-	            {{/hasTextReplacement}}
-	
-	            {{^hasTextReplacement}}
-		     	<div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
-	            {{/hasTextReplacement}}
+                {{#hasTextReplacement}}
+                <div>{{displayText}}</div>
+                {{/hasTextReplacement}}
+
+                {{^hasTextReplacement}}
+                 <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
+                {{/hasTextReplacement}}
         </div>
     </div>
 
     <div id="TOTAL_POPULATION_TEMPLATE">
-    	<div class='totalPop {{export}}'>
-    	{{#hasTextReplacement}}
+        <div class='totalPop {{export}}'>
+        {{#hasTextReplacement}}
         {{#subject.unfilteredTotal}}
         <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
         <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
@@ -33,8 +33,8 @@
         {{/hasTextReplacement}}
 
         {{^hasTextReplacement}}
-    	<div class='studentsTotal'>{{subject.total}}
-    	{{#subject.unfilteredTotal}}
+        <div class='studentsTotal'>{{subject.total}}
+        {{#subject.unfilteredTotal}}
         <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
         <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
         <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>

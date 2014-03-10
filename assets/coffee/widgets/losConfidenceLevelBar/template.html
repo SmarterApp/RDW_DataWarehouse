@@ -1,11 +1,11 @@
 <div class="scoreWrapper" style="width: {{bar_width}}px;">
-	<div class="indicator" style="margin-left: {{asmt_score_pos}}px;"/>
-	<div class="interval" style="margin-left: {{asmt_errorband_min_range}}px; width: {{asmt_errorband_width}}px">
+    <div class="indicator" style="margin-left: {{asmt_score_pos}}px;"/>
+    <div class="interval" style="margin-left: {{asmt_errorband_min_range}}px; width: {{asmt_errorband_width}}px">
             <div class="cutLine" style="left: {{cutLine}}px"></div>
         </div>
 </div>
 <div class="progress" style="width: {{bar_width}}px;">
-	{{#cut_point_intervals}}
-		<div class="bar" style="background-color: {{bg_color}} !important; opacity: .15; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=15); background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}) !important; background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}) !important; background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}) !important; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;"></div>
-	{{/cut_point_intervals}}
+    {{#cut_point_intervals}}
+        <div class="bar" style="background-color: {{bg_color}} !important; opacity: .15; -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=15); background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}) !important; background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}) !important; background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}) !important; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;"></div>
+    {{/cut_point_intervals}}
 </div>

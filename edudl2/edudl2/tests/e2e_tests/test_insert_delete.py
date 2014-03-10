@@ -21,7 +21,7 @@ INT_TABLE = 'INT_SBAC_ASMT_OUTCOME'
 FACT_TABLE = 'fact_asmt_outcome'
 
 
-#@unittest.skip("skipping this test for now")
+@unittest.skip("skipping this test for now")
 class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):

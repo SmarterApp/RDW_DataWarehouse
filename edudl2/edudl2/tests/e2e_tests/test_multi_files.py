@@ -92,6 +92,8 @@ class ValidateMultiFiles(unittest.TestCase):
     def test_database(self):
         self.empty_batch_table(self.connector)
         self.udl_run()
+        # wait for a while
+        sleep(10)
         self.connect_verify_udl(self.connector)
 
 if __name__ == "__main__":

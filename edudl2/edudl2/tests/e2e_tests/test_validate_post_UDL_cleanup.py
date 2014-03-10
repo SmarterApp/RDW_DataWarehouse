@@ -118,8 +118,14 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
     def test_validation(self):
         self.run_udl_pipeline()
+        # wait for a while
+        sleep(5)
         self.validate_UDL_database(self.connector)
+        # wait for a while
+        sleep(5)
         self.validate_edware_database(self.ed_connector)
+        # wait for a while
+        sleep(5)
         self.validate_workzone()
 
 if __name__ == "__main__":

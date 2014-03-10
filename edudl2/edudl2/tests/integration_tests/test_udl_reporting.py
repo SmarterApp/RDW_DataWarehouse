@@ -27,7 +27,7 @@ from sqlalchemy.sql.expression import and_
 # TODO EXPECTED_ROWS should be 1186
 
 
-#@unittest.skip("skipping this test till till ready for jenkins")
+@unittest.skip("skipping this test till till ready for jenkins")
 class Test(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):

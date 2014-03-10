@@ -118,7 +118,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     claim_cut_points = [assessment.claim_cut_point_1, assessment.claim_cut_point_2]
 
     # Run the General generator
-    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, section, SBACAssessment)
+    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, section, SBACAssessmentOutcome)
 
     # Set other specifics
     sao.inst_hierarchy = inst_hier

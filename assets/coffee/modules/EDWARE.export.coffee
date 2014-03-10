@@ -150,7 +150,7 @@ define [
       x.document.close();
 
     create: () ->
-      # Blobs and saveAs (or saveBlob)	:
+      # Blobs and saveAs (or saveBlob):
       if (this.BlobBuilder && (window.saveAs || navigator.saveBlob))
         # Support IE 10+
         return this.saveAsBlob.bind(this)

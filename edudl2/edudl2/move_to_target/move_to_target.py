@@ -18,6 +18,7 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
 from edudl2.move_to_target.query_helper import QueryHelper
 from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
+from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
 
 
 DBDRIVER = "postgresql"
@@ -259,15 +260,26 @@ def match_deleted_records(conf, match_conf):
 
 
 def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
+    '''
+    Updates or deletes records that have already existed in production database.
+
+    :param tenant_name: tenant name, to get target database connection
+    :param guid_batch:  batch buid
+    :param match_conf:  configurations for move_to_target to match tables for
+                        foreign key rec ids for dim_asmt, dim_student, and dim_inst_hier.
+                        See move_to_target_conf.py
+    '''
     affected_rows = 0
     with get_target_connection(tenant_name) as target_conn, get_prod_connection(tenant_name) as prod_conn:
-        target_db_helper = QueryHelper(target_conn, guid_batch, match_conf)
-        prod_db_helper = QueryHelper(prod_conn, guid_batch, match_conf)
+        target_db_helper = HanldeUpsertHelper(target_conn, guid_batch, match_conf)
+        prod_db_helper = HanldeUpsertHelper(prod_conn, guid_batch, match_conf)
         for record in target_db_helper.find_all():
             matched = prod_db_helper.find_by_natural_key(record)
             if not matched:
                 continue
+            # update dependant database tables record
             target_db_helper.update_dependant(record, matched)
+            # remove existing record from target db to avoid duplication
             target_db_helper.delete_by_guid(record)
             affected_rows += 1
     return affected_rows
@@ -295,7 +307,9 @@ def check_mismatched_deletions(conf, match_conf):
         raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
                                    mismatched_rows,
                                    "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                             table=match_conf['prod_table']))
+                                                             table=match_conf['prod_table']),
+                                   conf[mk.UDL_PHASE_STEP],
+                                   conf[mk.WORKING_SCHEMA])
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):
@@ -320,7 +334,9 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                 # write to err_list
                 e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
                                           "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                                    table=match_conf['prod_table']))
+                                                                    table=match_conf['prod_table']),
+                                          conf[mk.UDL_PHASE_STEP],
+                                          conf[mk.WORKING_SCHEMA])
                 failure_time = datetime.datetime.now()
                 e.insert_err_list(get_udl_connection, 4, failure_time)
 

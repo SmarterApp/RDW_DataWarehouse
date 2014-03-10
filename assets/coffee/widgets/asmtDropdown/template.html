@@ -3,21 +3,21 @@
         <span id="selectedAsmtType">{{defaultValue}}</span></button>
     <ul class="dropdown-menu asmtDropdownMenu" role="menu">
         {{#dropdownValues}}
-	{{#hasAsmtSubject}}
+    {{#hasAsmtSubject}}
         <li>
-	    <span class="asmtTypeText">{{asmt_year}} · {{asmt_grade}} · {{asmt_type}}</span>
-	    <ul class="asmtDropdownOption">
-		{{#asmts}}
-		<li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}' data-asmtguid='{{asmt_guid}}' data-year='{{asmt_year}}' data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}'><span class="subjectText">{{asmt_subject_text}}</span></li>
-		{{/asmts}}
-	    </ul>
-	</li>
-	{{/hasAsmtSubject}}
-	{{^hasAsmtSubject}}
+        <span class="asmtTypeText">{{asmt_year}} · {{asmt_grade}} · {{asmt_type}}</span>
+        <ul class="asmtDropdownOption">
+        {{#asmts}}
+        <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}' data-asmtguid='{{asmt_guid}}' data-year='{{asmt_year}}' data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}'><span class="subjectText">{{asmt_subject_text}}</span></li>
+        {{/asmts}}
+        </ul>
+    </li>
+    {{/hasAsmtSubject}}
+    {{^hasAsmtSubject}}
         <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}' data-asmtguid='{{asmt_guid}}' data-year='{{asmt_year}}' data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}'>
-	    <span class="asmtTypeText">{{asmt_year}} · {{asmt_grade}} · {{asmt_type}}</span>
-	</li>
-	{{/hasAsmtSubject}}
+        <span class="asmtTypeText">{{asmt_year}} · {{asmt_grade}} · {{asmt_type}}</span>
+    </li>
+    {{/hasAsmtSubject}}
         {{/dropdownValues}}
     </ul>
 </div>

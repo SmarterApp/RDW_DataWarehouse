@@ -9,8 +9,6 @@ from uuid import uuid4
 from sqlalchemy.sql import select, and_, func
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
-import datetime
-from dateutil import parser
 
 from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
@@ -161,6 +159,14 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate that the notification to the callback url matches the status, with a certain number of retries attempted
     def validate_notification(self, expected_status, expected_error_codes, expected_retries):
+        # If there are job notification retries, wait for job notification to finish.
+        if expected_retries > 0:
+            retry_interval = udl2_conf['sr_notification_retry_interval']
+            expected_duration = expected_retries * retry_interval
+            max_wait_time = expected_duration + (retry_interval / 2)
+            self.check_notification_completion(max_wait=max_wait_time)
+
+        # Get the job results.
         batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.udl_phase_step_status, batch_table.c.error_desc, batch_table.c.duration],
                        and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
@@ -170,18 +176,15 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEqual(expected_status, notification_status)
             errors = row['error_desc']
             num_retries = 0
-            last_retry_pos = errors.rfind('Retry ') + 6
+            last_retry_pos = errors.rfind('Retry ') + 6 if errors else 0
             if last_retry_pos > 6:
                 num_retries = int(errors[last_retry_pos: last_retry_pos + 1])
             self.assertEqual(expected_retries, num_retries, 'Incorrect number of retries')
             for error_code in expected_error_codes:
                 self.assertTrue(error_code in errors)
-            if num_retries > 0:
-                retry_interval = udl2_conf['sr_notification_retry_interval']
-                # TODO: Re-enable when logic is fixed.
-                #expected_duration = num_retries * retry_interval
-                #duration = parser.parse(row['duration']).second
-                #self.assertGreaterEqual(duration, expected_duration)
+            if expected_retries > 0:
+                duration = row['duration'].seconds
+                self.assertGreaterEqual(duration, expected_duration)
 
     #Run the UDL pipeline
     def run_udl_pipeline(self, file_to_load, max_wait=30):
@@ -207,6 +210,20 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         print('Waited for', timer, 'second(s) for job to complete.')
         self.assertTrue(result, "No result retrieved")
 
+    #Check the batch table periodically for completion of the UDL job status notification, waiting up to max_wait seconds
+    def check_notification_completion(self, max_wait=30):
+        batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        query = select([batch_table.c.udl_phase],
+                       and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
+        timer = 0
+        result = self.udl_connector.execute(query).fetchall()
+        while timer < max_wait and not result:
+            sleep(0.25)
+            timer += 0.25
+            result = self.udl_connector.execute(query).fetchall()
+        print('Waited for', timer, 'second(s) for notification to complete.')
+        self.assertTrue(result, "No result retrieved")
+
     #Copy file to tenant directory
     def copy_file_to_tmp(self, file_to_load):
         if os.path.exists(self.tenant_dir):
@@ -229,7 +246,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.validate_stu_reg_target_table('original_data')
             self.validate_student_data('original_data')
             self.validate_total_number_in_target('original_data')
-            self.validate_notification('SUCCESS', ['201'], 0)
+            self.validate_notification('SUCCESS', [], 0)
         except Exception:
             self.shutdown_post_server()
             raise

@@ -99,7 +99,7 @@ define [
       # reset all filters
       this.filters.each () ->
         $(this).trigger RESET_DROPDOWN
-  	  # load params from session storage
+      # load params from session storage
       params = this.storage.load()
       # reset params
       if params

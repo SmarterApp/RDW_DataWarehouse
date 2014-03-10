@@ -30,7 +30,7 @@ def get_next_file(msg):
     if len(files_in_dir) > 0:
         print('picking up file:', files_in_dir[0])
         pipeline = udl2_pipeline.get_pipeline_chain(files_in_dir[0], msg[mk.LOAD_TYPE], msg[mk.PARTS], None, next_file_msg)
-        (pipeline | get_next_file.si(next_file_msg)).apply_async()
+        pipeline.apply_async()
         return "File found and pipeline scheduled"
     else:
         get_next_file.apply_async((next_file_msg,), countdown=udl2_conf['search_wait_time'])

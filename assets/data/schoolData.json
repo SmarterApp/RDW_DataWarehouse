@@ -1,112 +1,112 @@
 {
-	"context": {
+    "context": {
         "grade": "1",
         "school_name": "Sunset Central High",
         "state_name": "NY",
         "district_name": "Sunset School District"
     },
-	"schoolData": [
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		},
-		{
-			"name": "school 1",
-			"subject1": {
-				"score": "1200",
-				"total_students": "1253435"
-			},
-			"subject2": {
-				"score": "1400",
-				"total_students": "1454545"
-			} 
-		}
-	],
-	"summaryData": {
+    "schoolData": [
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        },
+        {
+            "name": "school 1",
+            "subject1": {
+                "score": "1200",
+                "total_students": "1253435"
+            },
+            "subject2": {
+                "score": "1400",
+                "total_students": "1454545"
+            }
+        }
+    ],
+    "summaryData": {
         "subject1.score": 322320,
         "subject1.total_students": 32343423,
         "subject2.score": 3423232,

@@ -107,7 +107,8 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
 
             # Success!
             notification_status = mk.SUCCESS
-            notification_messages.append(message_prefix + str(status_code) + ' Created: ' + success_message)
+            if retry > 0:
+                notification_messages.append(message_prefix + str(status_code) + ' Created: ' + success_message)
             break
 
         except req_exc.RequestException as re:
@@ -119,8 +120,7 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
                 # Retryable error.
                 retry += 1
                 if re is not req_exc.Timeout:
-                    # TODO: Fix this!
-                    #sleep(retry_interval)
+                    sleep(retry_interval)
                     pass
             else:
                 # Non-retryable error.
@@ -130,5 +130,9 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
             # Non-requests-related exception; don't retry.
             notification_messages.append(message_prefix + str(ex.args[0]))
             break
+
+    # Leave error description blank, if no messages.
+    if not notification_messages:
+        notification_messages = None
 
     return notification_status, notification_messages

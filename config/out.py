@@ -64,6 +64,26 @@ FAO_FORMAT = {'format': 'csv',
                           {'name': 'dmg_prg_tt1', 'val': 'student.prg_title_1'},
                           {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'}]}
 
+DIM_STUDENT_FORMAT = {'format': 'csv',
+                      'name': 'dim_student.csv',
+                      'columns': [{'name': 'student_rec_id', 'val': 'student.rec_id'},
+                                  {'name': 'student_guid', 'val': 'student.guid'},
+                                  {'name': 'section_guid', 'val': 'section.guid'},
+                                  {'name': 'first_name', 'val': 'student.first_name'},
+                                  {'name': 'last_name', 'val': 'student.last_name'},
+                                  {'name': 'address_1', 'val': 'student.address_line_1'},
+                                  {'name': 'address_2', 'val': 'student.address_line_2'},
+                                  {'name': 'city', 'val': 'student.address_city'},
+                                  {'name': 'zip_code', 'val': 'student.address_zip'},
+                                  {'name': 'gender', 'val': 'student.gender'},
+                                  {'name': 'state_code', 'val': 'state.code'},
+                                  {'name': 'district_guid', 'val': 'district.guid'},
+                                  {'name': 'school_guid', 'val': 'school.guid'},
+                                  {'name': 'from_date', 'val': 'section.from_date', 'filter': 'date_Y_m_d'},
+                                  {'name': 'most_recent', 'val': 'section.most_recent'},
+                                  {'name': 'middle_name', 'val': 'student.middle_name'},
+                                  {'name': 'to_date', 'val': 'section.to_date', 'filter': 'date_Y_m_d'}]}
+
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',
                         'columns': [{'name': 'inst_hier_rec_id', 'val': 'institution_hierarchy.rec_id'},
@@ -79,6 +99,21 @@ DIM_INST_HIER_FORMAT = {'format': 'csv',
                                     {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Y_m_d'},
                                     {'name': 'most_recent', 'val': 'institution_hierarchy.most_recent'}]
                         }
+
+DIM_SECTION_FORMAT = {'format': 'csv',
+                      'name': 'dim_section.csv',
+                      'columns': [{'name': 'section_rec_id', 'val': 'section.rec_id'},
+                                  {'name': 'section_guid', 'val': 'section.guid'},
+                                  {'name': 'section_name', 'val': 'section.name'},
+                                  {'name': 'grade', 'val': 'section.grade'},
+                                  {'name': 'class_name', 'val': 'class.name'},
+                                  {'name': 'subject_name', 'val': 'class.subject'},
+                                  {'name': 'state_code', 'val': 'state.code'},
+                                  {'name': 'district_guid', 'val': 'district.guid'},
+                                  {'name': 'school_guid', 'val': 'school.guid'},
+                                  {'name': 'from_date', 'val': 'section.from_date', 'filter': 'date_Y_m_d'},
+                                  {'name': 'to_date', 'val': 'section.to_date', 'filter': 'date_Y_m_d'},
+                                  {'name': 'most_recent', 'val': 'section.most_recent'}]}
 
 DIM_ASMT_FORMAT = {'format': 'csv',
                    'name': 'dim_asmt.csv',

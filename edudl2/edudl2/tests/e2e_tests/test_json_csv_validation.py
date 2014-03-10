@@ -246,6 +246,9 @@ class HTTPPOSTHandler(BaseHTTPRequestHandler):
         self.send_response(201)
         self.end_headers()
 
+    def log_message(self, format, *args):
+        return
+
 
 if __name__ == '__main__':
     unittest.main()

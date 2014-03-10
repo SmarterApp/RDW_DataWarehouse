@@ -324,6 +324,9 @@ class HTTPPOSTHandler(BaseHTTPRequestHandler):
         self.end_headers()
         HTTPPOSTHandler.response_count += 1
 
+    def log_message(self, format, *args):
+        return
+
 
 if __name__ == '__main__':
     unittest.main()

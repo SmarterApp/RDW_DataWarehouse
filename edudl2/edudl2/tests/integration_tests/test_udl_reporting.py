@@ -19,16 +19,8 @@ from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
 
-# TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-# DIM_TABLE = 'dim_asmt'
-# FACT_TABLE = 'fact_asmt_outcome'
-# PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
-# EXPECTED_UNIQUE_BATCH_GUIDS = 30
-# expected_rows = 958
 
-
-#@unittest.skip("skipping this test till till ready for jenkins")
-@attr('integration')
+#@attr('integration')
 class Test(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -46,7 +38,6 @@ class Test(unittest.TestCase):
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
 
-    @unittest.skip("skipping this test till till ready for jenkins")
     def test_validation(self):
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)

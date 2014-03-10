@@ -422,7 +422,6 @@ function run_udl_integration_tests {
     cd $WORKSPACE/edudl2/edudl2/tests/integration_tests
     nosetests test_udl_reporting.py
     echo "Finished udl data load"
-    check_pep8 $WORKSPACE/edudl2/edudl2/tests/integration_tests
 }
 
 function main {

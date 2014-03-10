@@ -93,7 +93,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=600):
+    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=800):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -114,7 +114,9 @@ class Test(unittest.TestCase):
             sleep(0.25)
             timer += 0.25
             all_successful_batch_guids = connector.execute(success_query).fetchall()
-            failure_batch_data = connector.execute(failure_query).fetchall()
+            print(len(all_successful_batch_guids))
+            print(timer)
+            #failure_batch_data = connector.execute(failure_query).fetchall()
 #           if len(failure_batch_data) is not None:
 #               break
         self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "30 guids not found.")

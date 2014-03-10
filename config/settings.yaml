@@ -616,6 +616,44 @@ test:
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
 
+integration:
+  '[app:main]':
+    cache:
+      regions: public.data, public.filtered_data, public.shortlived, session
+      type: memory
+      public.data.expire: 10
+      public.shortlived.expire: 10
+    edware:
+      db:
+        cat:
+          schema_name: edware
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        dog:
+          schema_name: edware
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+    edware_stats:
+      db:
+        schema_name: edware_stats
+        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
+    extract:
+      gpg.homedir: ../../edware/config/gpg
+      gpg.keyserver: None
+    extract.celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate.celery:
+      BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
+    services.celery:
+        BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edextract
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+    mode: dev
+    trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
+
 jenkins_int:
   '[app:main]':
     services.celery:

@@ -36,7 +36,7 @@ class TestMoveToTarget(Unittest_with_sqlite):
 
     @classmethod
     def setUpClass(cls):
-        Unittest_with_sqlite.setUpClass()
+        Unittest_with_sqlite.setUpClass(force_foreign_keys=False)
 
     def tearDown(self,):
         pass
@@ -190,7 +190,7 @@ class TestMoveToTarget(Unittest_with_sqlite):
             all_records = helper.find_all()
             self.assertIsNotNone(all_records, "Find all should return some value")
             actual_rows = all_records.fetchall()
-            self.assertEqual(len(actual_rows), 894, "Find all should return all records")
+            self.assertEqual(len(actual_rows), 893, "Find all should return all records")
 
     def test_handle_record_upsert_find_by_natural_key(self):
         match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
@@ -247,18 +247,17 @@ class TestMoveToTarget(Unittest_with_sqlite):
             for record in all_records:
                 self.assertNotEqual(record['student_rec_id'], old_record['student_rec_id'])
 
-    # TODO have to figure out how to bypass foreign key constraints
-    def handle_record_upsert_delete_by_guid(self):
+    def test_handle_record_upsert_delete_by_guid(self):
         match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
         guid_batch = None
         old_record = {
-            'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
-            'student_rec_id': '348',
+            'student_guid': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
+            'student_rec_id': '356',
             'batch_guid': None
         }
         new_record = {
-            'student_guid': 'c72e98d5-ddb6-4cde-90d2-cdb215e67e84',
-            'student_rec_id': '350',
+            'student_guid': '72d8248d-0e8f-404b-8763-a5b7bcdaf535',
+            'student_rec_id': '353',
             'batch_guid': None
         }
         with DBConnection() as conn:

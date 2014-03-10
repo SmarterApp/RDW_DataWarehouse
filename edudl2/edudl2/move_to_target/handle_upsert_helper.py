@@ -62,7 +62,7 @@ class HanldeUpsertHelper():
         if not record:
             return None
         guid_clause = self._get_guid(record)
-        query = select([self._table]).where(guid_clause).where(self._table.c[MOST_RECENT] == True)
+        query = select([self._table]).where(guid_clause).where(self._table.c[MOST_RECENT].__eq__(True))
         results = self._conn.execute(query)
         for result in results:
             if self._matcher.match(record, result):

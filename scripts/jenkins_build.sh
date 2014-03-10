@@ -455,7 +455,6 @@ function main {
            setup_python33_functional_test_dependencies
            run_python33_functional_tests
         else
-            setup_virtualenv edudl2
             setup_for_udl
             run_udl_integration_tests
         fi

@@ -80,7 +80,8 @@ def advance_student(student: Student, schools_by_type):
     return True
 
 
-def repopulate_school_grade(school: School, grade, grade_students, acad_year=datetime.datetime.now().year):
+def repopulate_school_grade(school: School, grade, grade_students, acad_year=datetime.datetime.now().year,
+                            printer=print):
     """
     Take a school grade and make sure it has enough students. The list of students is updated in-place.
 
@@ -89,14 +90,15 @@ def repopulate_school_grade(school: School, grade, grade_students, acad_year=dat
     @param grade_students: The students currently in the grade for this school
     @param acad_year: The current academic year that the repopulation is occurring within (optional, defaults to your
                       machine clock's current year)
+    @param printer: Function to use to print to console (optional, defaults to print)
     """
     # Re-populate grades if necessary
     if len(grade_students) < (school.student_count_avg / 20):
         student_count = int(rand_gaussian.gauss_one(school.student_count_min,
                                                     school.student_count_max,
                                                     school.student_count_avg))
-        print('  Creating ' + str(student_count) + ' students in grade ' + str(grade) +
-              ' for school ' + school.name)
+        printer('  Creating ' + str(student_count) + ' students in grade ' + str(grade) +
+                ' for school ' + school.name + '(' + school.district.name + ')')
         for k in range(student_count):
             s = generate_student(school, grade, acad_year)
             grade_students.append(s)
@@ -106,7 +108,8 @@ def repopulate_school_grade(school: School, grade, grade_students, acad_year=dat
         for k in range(random.choice([0, 0, 1, 2, 3, 4])):
             s = generate_student(school, grade, acad_year)
             grade_students.append(s)
-        print('  Grade ' + str(grade) + ' sufficiently populated for school ' + school.name)
+        printer('  Grade ' + str(grade) + ' sufficiently populated for school ' + school.name + '(' +
+                school.district.name + ')')
 
 
 def generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):

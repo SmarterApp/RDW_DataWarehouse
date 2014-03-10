@@ -44,6 +44,7 @@ class Test(unittest.TestCase):
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
 
+    @unittest.skip("skipping this test till till ready for jenkins")
     def test_validation(self):
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)
@@ -171,7 +172,6 @@ class Test(unittest.TestCase):
         for file in all_files:
             files = shutil.copy2(file, self.tenant_dir)
 
-    @unittest.skip('still in development, skip for now')
     def check_job_completion(self, connector, max_wait=600):
         '''
         Checks the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds

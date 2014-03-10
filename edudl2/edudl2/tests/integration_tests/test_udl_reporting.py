@@ -11,7 +11,7 @@ import fnmatch
 import shutil
 from uuid import uuid4
 import glob
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, delete
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
@@ -35,8 +35,8 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.tenant_dir = TENANT_DIR
         # Get connections for UDL and Edware databases
-        self.ed_connector = TargetDBConnection()
-        self.connector = UDL2DBConnection()
+        self.ed_connector = get_target_connection()
+        self.connector = get_udl_connection()
 
     def test_validation(self):
         #self.copy_files_to_tenantdir(PATH_TO_FILES)

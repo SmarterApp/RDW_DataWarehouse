@@ -1,6 +1,6 @@
+from edudl2.udl2.udl2_connector import get_udl_connection
 __author__ = 'swimberly'
 from edudl2.exceptions.errorcodes import ErrorCode
-from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edcore.database.utils.query import insert_to_table
 
 
@@ -33,7 +33,7 @@ class DeleteRecordNotFound(UDLException):
                                    "date_taken:{date_taken}".format(student_guid=row['student_guid'],
                                                                     asmt_guid=row['asmt_guid'],
                                                                     date_taken=row['date_taken'])}
-            insert_to_table(UDL2DBConnection, 'ERR_LIST', values)
+            insert_to_table(get_udl_connection, 'ERR_LIST', values)
 
 
 class UDLDataIntegrityError(UDLException):
@@ -56,4 +56,4 @@ class UDLDataIntegrityError(UDLException):
             'err_code': ErrorCode.DATA_INTEGRITY_ERROR,
             'err_input': self._error
         }
-        insert_to_table(UDL2DBConnection, 'ERR_LIST', values)
+        insert_to_table(get_udl_connection, 'ERR_LIST', values)

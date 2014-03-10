@@ -8,7 +8,7 @@ import os
 import shutil
 from uuid import uuid4
 import glob
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, delete
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
@@ -26,8 +26,8 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         self.tenant_dir = TENANT_DIR
-        self.ed_connector = TargetDBConnection()
-        self.connector = UDL2DBConnection()
+        self.ed_connector = get_target_connection()
+        self.connector = get_udl_connection()
 
     def tearDown(self):
         self.ed_connector.close_connection()
@@ -118,9 +118,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
     def test_validation(self):
         self.run_udl_pipeline()
-        #with UDL2DBConnection() as connector:
         self.validate_UDL_database(self.connector)
-        #with TargetDBConnection() as ed_connector:
         self.validate_edware_database(self.ed_connector)
         self.validate_workzone()
 

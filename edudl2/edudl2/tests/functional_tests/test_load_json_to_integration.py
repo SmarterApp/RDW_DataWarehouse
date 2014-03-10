@@ -5,7 +5,7 @@ from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2 import message_keys as mk
 from uuid import uuid4
 from sqlalchemy.sql import select
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edudl2.udl2.celery import udl2_conf
 import os
 import unittest
@@ -17,7 +17,7 @@ STUDENT_REGISTRATION_JSON_COLUMNS = ['record_sid', 'guid_batch', 'guid_registrat
 class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
 
     def setUp(self):
-        self.udl2_conn = UDL2DBConnection()
+        self.udl2_conn = get_udl_connection()
 
     def tearDown(self):
         self.udl2_conn.close_connection()

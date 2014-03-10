@@ -6,7 +6,7 @@ Created on Feb 28, 2014
 import time
 import os
 import shutil
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, delete, and_
 from edudl2.udl2.celery import udl2_conf
 import unittest
@@ -28,8 +28,8 @@ class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):
         self.tenant_dir = TENANT_DIR
-        self.ed_connector = TargetDBConnection()
-        self.connector = UDL2DBConnection()
+        self.ed_connector = get_target_connection()
+        self.connector = get_udl_connection()
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.archived_file = os.path.join(data_dir, 'test_data_update_delete_record.tar.gz.gpg')
 

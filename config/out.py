@@ -98,7 +98,7 @@ DIM_INST_HIER_FORMAT = {'format': 'csv',
                                      'filter': 'date_Y_m_d'},
                                     {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Y_m_d'},
                                     {'name': 'most_recent', 'val': 'institution_hierarchy.most_recent'}]
-                        }
+}
 
 DIM_SECTION_FORMAT = {'format': 'csv',
                       'name': 'dim_section.csv',
@@ -294,7 +294,30 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                   {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
                                   {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
                                   {'name': 'asmt_year', 'val': 'assessment.period_year'},
-                                  {'name': 'asmt_subject', 'val': 'assessment.subject'}]}
+                                  {'name': 'asmt_subject', 'val': 'assessment.subject'},
+                                  {'name': 'acc_asl_video_embed', 'val': 'assessment_outcome.acc_asl_video_embed'},
+                                  {'name': 'acc_asl_human_nonembed',
+                                   'val': 'assessment_outcome.acc_asl_human_nonembed'},
+                                  {'name': 'acc_braile_embed', 'val': 'assessment_outcome.acc_braile_embed'},
+                                  {'name': 'acc_closed_captioning_embed',
+                                   'val': 'assessment_outcome.acc_closed_captioning_embed'},
+                                  {'name': 'acc_text_to_speech_embed',
+                                   'val': 'assessment_outcome.acc_text_to_speech_embed'},
+                                  {'name': 'acc_abacus_nonembed', 'val': 'assessment_outcome.acc_abacus_nonembed'},
+                                  {'name': 'acc_alternate_response_options_nonembed',
+                                   'val': 'assessment_outcome.acc_alternate_response_options_nonembed'},
+                                  {'name': 'acc_calculator_nonembed',
+                                   'val': 'assessment_outcome.acc_calculator_nonembed'},
+                                  {'name': 'acc_multiplication_table_nonembed',
+                                   'val': 'assessment_outcome.acc_multiplication_table_nonembed'},
+                                  {'name': 'acc_print_on_demand_nonembed',
+                                   'val': 'assessment_outcome.acc_print_on_demand_nonembed'},
+                                  {'name': 'acc_read_aloud_nonembed',
+                                   'val': 'assessment_outcome.acc_read_aloud_nonembed'},
+                                  {'name': 'acc_scribe_nonembed', 'val': 'assessment_outcome.acc_scribe_nonembed'},
+                                  {'name': 'acc_speech_to_text_nonembed',
+                                   'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
+                                  {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'}]}
 
 SR_FORMAT = {'format': 'csv',
              'name': '<YEAR>_sr_<GUID>.csv',
@@ -349,4 +372,4 @@ REGISTRATION_SYSTEM_FORMAT = {'format': 'json',
                                       'TestRegSysID': 'registration_system.sys_guid',
                                       'RestRegCallbackURL': 'registration_system.callback_url'
                                   }}
-                              }
+}

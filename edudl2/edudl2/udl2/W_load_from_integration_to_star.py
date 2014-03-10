@@ -11,10 +11,16 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
     explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions,\
-    update_or_delete_duplicate_record
+    update_or_delete_duplicate_record, create_target_schema_for_batch
 
 logger = get_task_logger(__name__)
 
+
+@celery.task(name='udl2.W_load_from_integration_to_star.create_target_schema', base=Udl2BaseTask)
+def create_target_schema(msg):
+    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE], msg[mk.TENANT_NAME])
+    create_target_schema_for_batch(conf)
+    return msg
 
 #*************implemented via group*************
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims', base=Udl2BaseTask)

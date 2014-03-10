@@ -18,11 +18,22 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
 from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
-
+from edschema.metadata.ed_metadata import generate_ed_metadata
+from sqlalchemy.schema import CreateSchema
 
 DBDRIVER = "postgresql"
 FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
+
+
+def create_target_schema_for_batch(conf):
+     with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+        engine = conn.get_engine()
+        schema_name = conf[mk.GUID_BATCH]
+        print(engine)
+        conn.execute(CreateSchema(schema_name))
+        metadata = generate_ed_metadata(schema_name=schema_name, bind=engine)
+        metadata.create_all(engine)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):

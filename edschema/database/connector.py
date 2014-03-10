@@ -63,6 +63,10 @@ class DBConnection(ConnectionBase):
     def __del__(self):
         self.close_connection()
 
+    def get_engine(self):
+        dbUtil = component.queryUtility(IDbUtil, name=self.__name)
+        return dbUtil.get_engine()
+
     def get_result(self, query):
         '''
         query and get result

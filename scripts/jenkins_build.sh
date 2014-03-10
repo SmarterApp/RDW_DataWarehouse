@@ -107,7 +107,6 @@ function get_opts {
     MODE='UNIT'
     RUN_UNIT_TEST=true
     RUN_END_TO_END=false
-    RUN_UDL_INT=false
 
     while getopts ":m:d:ufbhne" opt; do
         case $opt in 
@@ -138,10 +137,6 @@ function get_opts {
                ;;
             d) 
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$OPTARG")
-               ;;
-            i)
-               echo "UDL Integration test mode"
-               RUN_UDL_INT=true
                ;;
             ?)
                echo "Invalid params"
@@ -362,7 +357,11 @@ function build_egg {
 
 function generate_ini {
 	cd "$WORKSPACE/config"
-	python generate_ini.py -e jenkins_dev -i settings.yaml
+	if $RUN_END_TO_END; then
+		python generate_ini.py -e jenkins_int -i settings.yaml
+	else
+		python generate_ini.py -e jenkins_dev -i settings.yaml
+	fi
 }
 
 function generate_docs {
@@ -417,12 +416,8 @@ function setup_for_udl {
 }
 
 function run_udl_integration_tests {
-    echo "Running integration tests"
-	# Regenerate ini for integration tests
-    echo "Setting up ini for udl to reporting integration tests"
-    cd "$WORKSPACE/config"
-    python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
-    cp udl2_conf.ini /opt/edware/conf/udl2_conf.ini 
+    echo "Running UDL integration tests"
+	# Regenerate ini for integration tests as part of setup_for_udl
  
     cd "$WORKSPACE/edudl2/edudl2/tests/integration_tests"
     nosetests test_udl_reporting.py
@@ -449,7 +444,6 @@ function main {
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG
         #build_egg $MAIN_PKG
-
     elif [ ${MODE:=""} == "FUNC" ]; then
         setup_virtualenv $@
         generate_ini
@@ -460,21 +454,13 @@ function main {
         if (! $RUN_END_TO_END;) then
            setup_python33_functional_test_dependencies
            run_python33_functional_tests
-        #else
-            #setup_for_udl
-            #run_udl_integration_tests
+        else
+            setup_for_udl
+            run_udl_integration_tests
         fi
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"
-
-    elif [ ${MODE:=""} == "UDL_INT" ]; then
-        setup_virtualenv $@
-        setup_unit_test_dependencies
-        if [ ${MAIN_PKG:=""} == "edudl2" ]; then
-        	setup_for_udl
-        	run_udl_integration_tests
-	    fi
 
     elif [ ${MODE:=""} == "RPM" ]; then
         build_rpm $MAIN_PKG

@@ -10,6 +10,7 @@ import os
 import tempfile
 import fnmatch
 import shutil
+from nose.plugins.attrib import attr
 from uuid import uuid4
 import glob
 from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
@@ -24,10 +25,10 @@ from sqlalchemy.sql.expression import and_
 # PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
 # EXPECTED_UNIQUE_BATCH_GUIDS = 30
 # expected_rows = 958
-# TODO EXPECTED_ROWS should be 1186
 
 
-@unittest.skip("skipping this test till till ready for jenkins")
+#@unittest.skip("skipping this test till till ready for jenkins")
+@attr('integration')
 class Test(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -43,6 +44,7 @@ class Test(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
+        # TODO EXPECTED_ROWS should be 1186
 
     @unittest.skip("skipping this test till till ready for jenkins")
     def test_validation(self):

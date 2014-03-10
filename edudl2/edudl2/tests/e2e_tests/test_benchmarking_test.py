@@ -7,7 +7,7 @@ import unittest
 import subprocess
 import os
 import shutil
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
@@ -18,7 +18,7 @@ class ValidateTableData(unittest.TestCase):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/ftest_test_tenant/'
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
-        self.connector = UDL2DBConnection()
+        self.connector = get_udl_connection()
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):

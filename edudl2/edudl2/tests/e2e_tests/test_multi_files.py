@@ -8,7 +8,7 @@ import os
 import shutil
 import subprocess
 from time import sleep
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 
@@ -28,7 +28,7 @@ class ValidateMultiFiles(unittest.TestCase):
                      'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
                      'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
         self.tenant_dir = TENANT_DIR
-        self.connector = UDL2DBConnection()
+        self.connector = get_udl_connection()
 
 #teardown tenant folder
     def tearDown(self):

@@ -17,7 +17,7 @@ import os
 import logging
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +128,6 @@ class BatchTableBenchmark(object):
         Record the benchmark information for the this instance of the benchmarking information
         '''
 
-        with UDL2DBConnection() as connector:
+        with get_udl_connection() as connector:
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
             connector.execute(batch_table.insert(), False, self.get_result_dict())

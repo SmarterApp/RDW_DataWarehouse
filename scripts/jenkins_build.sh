@@ -95,7 +95,6 @@ function run_unit_tests {
 	    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
 	fi
 
-    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
     if [ -f coverage.xml ]; then
        # move coverage results
        mv coverage.xml $WORKSPACE/coverage.xml

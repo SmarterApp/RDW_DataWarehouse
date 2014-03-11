@@ -28,7 +28,15 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
-        self.tenant_dir = tempfile.mkdtemp()
+        TENANT_DIR = '/opt/edware/zones/landing/arrivals/nc/nc_user/filedrop'
+#        TENANT_DIR = '/tmp/nc/nc_user/filedrop'
+#        if os.path.exists(TENANT_DIR):
+#            print("Tenant directory already exists")
+#        else:
+#            os.makedirs(TENANT_DIR, 077)
+#            print(TENANT_DIR)
+        self.tenant_dir = TENANT_DIR
+        #self.tenant_dir = tempfile.mkdtemp()
         # Get connections for UDL and Edware databases
         self.ed_connector = get_target_connection()
         self.connector = get_udl_connection()

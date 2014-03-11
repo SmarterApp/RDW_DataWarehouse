@@ -89,7 +89,7 @@ function run_unit_tests {
    
     cd "$WORKSPACE/$1"
 
-	if [ ${MAIN_PKG} == "edudl2" ]; then
+	if [ $MAIN_PKG == "edudl2" ]; then
 	    nosetests --exclude-dir=integration_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
 	else
 	    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml

@@ -77,6 +77,72 @@ def get_move_to_target_conf():
                     'student_rec_id'
                 ]
             }
+        }, {
+            'table_name': 'dim_asmt',
+            'guid_columns': ['asmt_guid'],
+            'key_columns': [
+                'asmt_guid',
+                'asmt_type',
+                'asmt_period',
+                'asmt_period_year',
+                'asmt_version',
+                'asmt_subject',
+                'asmt_claim_1_name',
+                'asmt_claim_2_name',
+                'asmt_claim_3_name',
+                'asmt_claim_4_name',
+                'asmt_perf_lvl_name_1',
+                'asmt_perf_lvl_name_2',
+                'asmt_perf_lvl_name_3',
+                'asmt_perf_lvl_name_4',
+                'asmt_perf_lvl_name_5',
+                'asmt_claim_perf_lvl_name_1',
+                'asmt_claim_perf_lvl_name_2',
+                'asmt_claim_perf_lvl_name_3',
+                'asmt_score_min',
+                'asmt_score_max',
+                'asmt_claim_1_score_min',
+                'asmt_claim_1_score_max',
+                'asmt_claim_1_score_weight',
+                'asmt_claim_2_score_min',
+                'asmt_claim_2_score_max',
+                'asmt_claim_2_score_weight',
+                'asmt_claim_3_score_min',
+                'asmt_claim_3_score_max',
+                'asmt_claim_3_score_weight',
+                'asmt_claim_4_score_min',
+                'asmt_claim_4_score_max',
+                'asmt_claim_4_score_weight',
+                'asmt_cut_point_1',
+                'asmt_cut_point_2',
+                'asmt_cut_point_3',
+                'asmt_cut_point_4',
+            ],
+            'dependant_table': {
+                'name': 'fact_asmt_outcome',
+                'columns': [
+                    'asmt_rec_id'
+                ]
+            }
+        }, {
+            'table_name': 'dim_inst_hier',
+            'guid_columns': ['state_code', 'district_guid', 'school_guid'],
+            'key_columns': [
+                'inst_hier_rec_id',
+                'state_name',
+                'state_code',
+                'district_guid',
+                'district_name',
+                'school_guid',
+                'school_name',
+                'school_category',
+            ],
+            'dependant_table': {
+                'name': 'fact_asmt_outcome',
+                'columns': [
+                    'inst_hier_rec_id'
+                ]
+            }
         }],
     }
 

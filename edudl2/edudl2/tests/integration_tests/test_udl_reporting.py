@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
 
-    @unittest.skip("we disable the integration for now, we need to disable integration test in edudl2, but keep in smarter e2e")
+    #@unittest.skip("we disable the integration for now, we need to disable integration test in edudl2, but keep in smarter e2e")
     def test_validation(self):
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)
@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=800):
+    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=400):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.

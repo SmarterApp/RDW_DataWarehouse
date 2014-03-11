@@ -67,7 +67,7 @@ class TestNotification(unittest.TestCase):
 
         # Verify results.
         self.assertEquals(mk.PENDING, notification_status)
-        self.assertRegex(notification_error, 'nodename nor servname provided, or not known')
+        self.assertRegex(notification_error, "Max retries exceeded with url")
 
     def register_url(self, return_statuses):
         url = "http://MyTestUri/MyEndpoint"

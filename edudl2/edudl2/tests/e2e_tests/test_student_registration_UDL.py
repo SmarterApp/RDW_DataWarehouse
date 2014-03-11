@@ -235,7 +235,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         return shutil.copy2(self.student_reg_files[file_to_load]['path'], self.tenant_dir)
 
     def test_udl_student_registration(self):
-
         # Run and verify first run of student registration data
         self.batch_id = str(uuid4())
         self.run_udl_pipeline('original_data')
@@ -247,14 +246,24 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_notification(mk.SUCCESS, [], 0)
 
         # Run and verify second run of student registration data (different test registration than previous run)
-        # Should retry notification once, then succeed
+        # Should retry notification twice, then succeed
         self.batch_id = str(uuid4())
         self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
         self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
-        self.validate_notification(mk.SUCCESS, ['408'], 1)
+        self.validate_notification(mk.SUCCESS, ['408', '408'], 2)
+
+        # Run and verify second run of student registration data again
+        # Should max out on retry attempts, then fail
+        self.batch_id = str(uuid4())
+        self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
+        self.validate_successful_job_completion()
+        self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
+        self.validate_student_data('data_for_different_test_center_than_original_data')
+        self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_notification(mk.FAILURE, ['408', '408', '408', '408', '408'], 4)
 
         # Run and verify third run of student registration data (same academic year and test registration as first run)
         # Should overwrite all data from the first run, and fail on notification
@@ -298,7 +307,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 # This class handles our HTTP POST requests with various responses
 class HTTPPOSTHandler(BaseHTTPRequestHandler):
     response_count = 0
-    response_codes = [201, 408, 201, 401]
+    response_codes = [201, 408, 408, 201, 408, 408, 408, 408, 408, 401]
 
     def __init__(self, request, client_address, server):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)

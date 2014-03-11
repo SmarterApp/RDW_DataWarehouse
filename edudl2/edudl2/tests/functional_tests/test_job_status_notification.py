@@ -80,26 +80,6 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         self.assertTrue('simple file validator error' in request['message'][0])
         self.assertTrue('5000' in request['message'][1])
 
-    def test_notification_failed_after_max_retries(self):
-        old_retry_max = udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS]
-        old_retry_interval = udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL]
-        udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = 3
-        udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = 1
-
-        try:
-            httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=408)
-            self.load_to_table(self.successful_batch)
-            msg = generate_message(self.successful_batch_id)
-            job_notify(msg)
-
-            request = httpretty.last_request().parsed_body
-            self.verify_successful_request_body(request)
-
-            self.verify_notification_failed(self.successful_batch_id, 3)
-        finally:
-            udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = old_retry_max
-            udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = old_retry_interval
-
     def test_notification_failed_with_non_retryable_error_code(self):
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=401)
         self.load_to_table(self.successful_batch)

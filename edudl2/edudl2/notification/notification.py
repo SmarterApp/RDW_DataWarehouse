@@ -33,11 +33,10 @@ def post_udl_job_status(conf):
     notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[mk.STUDENT_REG_GUID],
                                                  conf[mk.REG_SYSTEM_ID])
 
-    notification_status, notification_errors = post_notification(conf[mk.CALLBACK_URL], conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS],
-                                                                 conf[ck.SR_NOTIFICATION_RETRY_INTERVAL],
-                                                                 conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
+    notification_status, notification_error = post_notification(conf[mk.CALLBACK_URL],
+                                                                conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
 
-    return notification_status, notification_errors
+    return notification_status, notification_error
 
 
 def create_notification_body(guid_batch, batch_table, id, test_registration_id):
@@ -71,7 +70,7 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id):
     return notification_body
 
 
-def post_notification(callback_url, max_attempts, retry_interval, timeout_interval, notification_body):
+def post_notification(callback_url, timeout_interval, notification_body):
     """
     Send an HTTP POST request with the job status and any errors, and wait for a reply.
     If HTTP return status is "SUCCESS", return with SUCCESS status.
@@ -80,8 +79,6 @@ def post_notification(callback_url, max_attempts, retry_interval, timeout_interv
     return with FAILURE status and the reason.
 
     @param callback_url: Callback URL to which to post the notification
-    @param max_attempts: Maximum number of HTTP POST attempts
-    @param retry_interval: Interval between retry attempts
     @param timeout_interval: HTTP POST timeout setting
     @param notification_body: Body of notification HTTP POST request
 
@@ -91,54 +88,40 @@ def post_notification(callback_url, max_attempts, retry_interval, timeout_interv
     retry_codes = [408]
 
     # Attempt HTTP POST of notification body.
-    # Retry up to the configured amount of times, if a retryable error occurred.
-    notification_errors = []
-    notification_status = mk.FAILURE
-    for attempt in range(0, max_attempts):
-        status_code = 0
+    status_code = 0
 
-        try:
-            response = post(callback_url, notification_body, timeout=timeout_interval)
-            status_code = response.status_code
+    try:
+        response = post(callback_url, notification_body, timeout=timeout_interval)
+        status_code = response.status_code
 
-            # Throw an exception for all responses but success.
-            response.raise_for_status()
+        # Throw an exception for all responses but success.
+        response.raise_for_status()
 
-            # Success!
-            notification_status = mk.SUCCESS
-            notification_errors = None
-            break
+        # Success!
+        notification_status = mk.SUCCESS
+        notification_error = None
 
-        except (req_exc.ConnectionError, req_exc.Timeout) as exc:
-            # Retryable error.
-            notification_errors.append(str(exc.args[0]))
-            wait_seconds_interval(retry_interval)
+    except (req_exc.ConnectionError, req_exc.Timeout) as exc:
+        # Retryable error.
+        notification_status = mk.PENDING
+        notification_error = str(exc.args[0])
 
-        except (req_exc.HTTPError) as exc:
-            # Possible retryable error.  Retry if status code indicates so.
-            notification_errors.append(str(exc.args[0]))
-            if status_code in retry_codes:
-                wait_seconds_interval(retry_interval)
-            else:
-                break
+    except (req_exc.HTTPError) as exc:
+        # Possible retryable error.  Retry if status code indicates so.
+        notification_error = str(exc.args[0])
+        if status_code in retry_codes:
+            notification_status = mk.PENDING
+        else:
+            notification_status = mk.FAILURE
 
-        except req_exc.RequestException as exc:
-            # Non-retryable requests-related exception; don't retry.
-            notification_errors.append(str(exc.args[0]))
-            break
+    except req_exc.RequestException as exc:
+        # Non-retryable requests-related exception; don't retry.
+        notification_status = mk.FAILURE
+        notification_error = str(exc.args[0])
 
-        except Exception as exc:
-            # Non-requests-related exception; don't retry.
-            notification_errors.append(str(exc.args[0]))
-            break
+    except Exception as exc:
+        # Non-requests-related exception; don't retry.
+        notification_status = mk.FAILURE
+        notification_error = str(exc.args[0])
 
-    return notification_status, notification_errors
-
-
-def wait_seconds_interval(seconds):
-    """
-    Wait for the specified interval in seconds.
-
-    @param seconds: Number of seconds to wait
-    """
-    sleep(seconds)
+    return notification_status, notification_error

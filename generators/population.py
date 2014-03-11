@@ -70,7 +70,7 @@ def advance_student(student: Student, schools_by_type, drop_out_rate=.5):
     @returns: True if the student still exists in the system, False if they do not
     """
     # Use the general generator to advance the student
-    rslt = general_pop_gen.advance_student(student, schools_by_type, drop_out_rate)
+    rslt = general_pop_gen.advance_student(student, schools_by_type, drop_out_rate=drop_out_rate)
 
     # If we are not keeping the student, don't worry about them
     if not rslt:

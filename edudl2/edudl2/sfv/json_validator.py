@@ -1,6 +1,6 @@
 import json
 import os
-from edudl2.sfv import error_codes
+from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2_util.udl_mappings import get_json_validation_mapping
 
@@ -30,7 +30,7 @@ class JsonValidator():
         error_list = []
         for validator in self.validators:
             result = validator.execute(dir_path, file_name, batch_sid)
-            if result[0] != error_codes.STATUS_OK:
+            if result[0] != ErrorCode.STATUS_OK:
                 error_list.append(result)
             else:
                 pass
@@ -56,9 +56,9 @@ class IsValidJsonFile(object):
         with open(complete_path) as f:
             try:
                 json.load(f)
-                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+                return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
             except ValueError:
-                return (error_codes.SRC_JSON_INVALID_STRUCTURE, dir_path, file_name, batch_sid)
+                return (ErrorCode.SRC_JSON_INVALID_STRUCTURE, dir_path, file_name, batch_sid)
 
 
 class HasExpectedFormat(object):
@@ -89,8 +89,8 @@ class HasExpectedFormat(object):
             for field in mapping.keys():
                 path = mapping[field]
                 if not self.does_json_path_exist(json_object, path):
-                    return (error_codes.SRC_JSON_INVALID_FORMAT, dir_path, file_name, batch_sid, field)
-            return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+                    return (ErrorCode.SRC_JSON_INVALID_FORMAT, dir_path, file_name, batch_sid, field)
+            return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
 
     def does_json_path_exist(self, json_object, path):
         '''

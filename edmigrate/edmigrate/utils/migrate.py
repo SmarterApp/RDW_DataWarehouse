@@ -139,7 +139,6 @@ def migrate_dims_insert(batch_guid, source_connector, dest_connector, table_name
 
     :returns Nothing
     """
-    import pdb; pdb.set_trace()
     source_tab = source_connector.get_table(table_name, schema_name=batch_guid)
     dest_Tab = dest_connector.get_table(table_name)
 
@@ -281,10 +280,9 @@ def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):
     # migrate dims first
     # CR, check status field, if it does not exist, then call migrate_dims_insert.
     for table in list(filter(lambda x: x.startswith('dim_'), tables)):
-        import pdb; pdb.set_trace()
         migrate_dims_insert(batch_guid, source_connector, dest_connector, table)
     # migrate fact
-    #migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector)
+    migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector)
 
 
 def migrate_batch(batch):
@@ -308,7 +306,6 @@ def migrate_batch(batch):
             trans = dest_connector.get_transaction()
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
             tables_to_migrate = get_tables_to_migrate(dest_connector, batch_guid)
-            import pdb; pdb.set_trace()
             # migrate all tables
             migrate_all_tables(batch_guid, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
@@ -320,6 +317,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            print(e)
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
@@ -337,7 +335,6 @@ def start_migrate_daily_delta(tenant):
     """
     batches_to_migrate = get_batches_to_migrate(tenant)
     for batch in batches_to_migrate:
-        import pdb; pdb.set_trace()
         migrate_batch(batch=batch)
 
 if __name__ == '__main__':
@@ -345,7 +342,6 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(sys.argv[1])
     settings = config['app:main']
-    import pdb; pdb.set_trace()
     initialize_db(EdMigrateDestConnection, settings, allow_schema_create=True)
     initialize_db(EdMigrateSourceConnection, settings, allow_schema_create=True)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)

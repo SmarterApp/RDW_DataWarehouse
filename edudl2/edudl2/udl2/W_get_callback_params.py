@@ -26,11 +26,9 @@ def task(msg):
     logger.info('W_GET_CALLBACK_URL: Callback URL is <%s>' % callback_url)
     end_time = datetime.datetime.now()
 
-    # benchmark
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
     benchmark.record_benchmark()
 
-    # Outgoing message to be piped to the file validator
     outgoing_msg = {}
     outgoing_msg.update(msg)
     outgoing_msg.update({mk.STUDENT_REG_GUID: student_reg_guid})

@@ -10,6 +10,7 @@ import datetime
 from celery.utils.log import get_task_logger
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.celery import celery, udl2_conf
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.notification.notification import post_udl_job_status
@@ -29,15 +30,13 @@ def task(msg):
     @return: UDL pipeline message
     """
 
-    # Send the status.
     start_time = datetime.datetime.now()
-    notification_status, notification_messages = post_udl_job_status(get_conf(msg))
+    notification_status, notification_errors = post_udl_job_status(get_conf(msg))
 
-    # Post the notification status and errors to the UDL_BATCH DB table.
     end_time = datetime.datetime.now()
     benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], 'UDL_JOB_STATUS_NOTIFICATION',
                                     start_time, end_time, udl_phase_step_status=notification_status,
-                                    error_desc=notification_messages)
+                                    error_desc=notification_errors)
     benchmark.record_benchmark()
 
     return msg
@@ -51,14 +50,16 @@ def get_conf(msg):
 
     @return: Job-specific configuration
     """
+
     conf = {
         mk.CALLBACK_URL: msg[mk.CALLBACK_URL],
         mk.STUDENT_REG_GUID: msg[mk.STUDENT_REG_GUID],
         mk.REG_SYSTEM_ID: msg[mk.REG_SYSTEM_ID],
         mk.GUID_BATCH: msg[mk.GUID_BATCH],
         mk.BATCH_TABLE: udl2_conf['udl2_db'][mk.BATCH_TABLE],
-        'retries': udl2_conf['sr_notification_retries'],
-        'retry_interval': udl2_conf['sr_notification_retry_interval']
+        ck.SR_NOTIFICATION_MAX_ATTEMPTS: udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS],
+        ck.SR_NOTIFICATION_RETRY_INTERVAL: udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL],
+        ck.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL]
     }
 
     return conf

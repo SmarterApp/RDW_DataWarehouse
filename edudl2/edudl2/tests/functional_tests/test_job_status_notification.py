@@ -11,6 +11,7 @@ from sqlalchemy import select, func, and_
 from edudl2.udl2_util.database_util import get_sqlalch_table_object, connect_db
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.W_job_status_notification import task as job_notify
 
 
@@ -79,10 +80,10 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         self.assertTrue('5000' in request['message'][1])
 
     def test_notification_failed_after_max_retries(self):
-        old_retry_max = udl2_conf['sr_notification_retries']
-        old_retry_interval = udl2_conf['sr_notification_retry_interval']
-        udl2_conf['sr_notification_retries'] = 3
-        udl2_conf['sr_notification_retry_interval'] = 1
+        old_retry_max = udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS]
+        old_retry_interval = udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL]
+        udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = 3
+        udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = 1
 
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=408)
         self.load_to_table(self.successful_batch)
@@ -94,8 +95,8 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
 
         self.verify_notification_failed(self.successful_batch_id, 3)
 
-        udl2_conf['sr_notification_retries'] = old_retry_max
-        udl2_conf['sr_notification_retry_interval'] = old_retry_interval
+        udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = old_retry_max
+        udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = old_retry_interval
 
     def test_notification_failed_with_non_retryable_error_code(self):
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=401)

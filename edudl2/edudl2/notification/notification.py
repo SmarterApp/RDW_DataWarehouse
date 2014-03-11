@@ -11,6 +11,7 @@ import requests.exceptions as req_exc
 from time import sleep
 
 from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.udl2_connector import UDL2DBConnection
 from edudl2.notification.notification_messages import get_notification_message
 
@@ -21,29 +22,28 @@ def post_udl_job_status(conf):
     to the client via callback_url
 
     @param conf: Notification task configuration
-    @param guid_batch: Batch GUID of current job
-    @param callback_url: Callback URL for notification
 
-    @return: Notification status and messages
+    @return: Notification status and any error messages
     """
 
-    # Get the post request body.
     notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[mk.STUDENT_REG_GUID],
                                                  conf[mk.REG_SYSTEM_ID])
 
-    # Send the job status and messages to the callback URL.
-    notification_status, notification_messages = post_notification(conf[mk.CALLBACK_URL], conf['retries'],
-                                                                   conf['retry_interval'], notification_body)
+    notification_status, notification_errors = post_notification(conf[mk.CALLBACK_URL], conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS],
+                                                                 conf[ck.SR_NOTIFICATION_RETRY_INTERVAL],
+                                                                 conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
 
-    return notification_status, notification_messages
+    return notification_status, notification_errors
 
 
 def create_notification_body(guid_batch, batch_table, id, test_registration_id):
     """
     Create the notification request body for the job referenced by guid_batch.
 
-    @param conf: Notification task configuration
     @param guid_batch: Batch GUID of current job
+    @param batch_table: Batch table name
+    @param id: Student GUID
+    @param test_registration_id: Test registration system ID
 
     @return: Notification request body
     """
@@ -57,7 +57,7 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id):
                                                                                 batch_table.c.udl_phase == 'UDL_COMPLETE'))
         status = source_conn.execute(batch_select).fetchone()[0]
 
-    #Get error or success messages
+    # Get error messages
     message = get_notification_message(status, guid_batch)
 
     notification_body = {'status': status_codes[status], 'id': id, 'test_registration_id': test_registration_id,
@@ -66,7 +66,7 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id):
     return notification_body
 
 
-def post_notification(callback_url, retries, retry_interval, notification_body):
+def post_notification(callback_url, max_attempts, retry_interval, timeout_interval, notification_body):
     """
     Send an HTTP POST request with the job status and any errors, and wait for a reply.
     If HTTP return status is "SUCCESS", return with SUCCESS status.
@@ -74,27 +74,26 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
     If HTTP return status is other than the retry codes, or wait timeout is reached,
     return with FAILURE status and the reason.
 
-    @param conf: Notification task configuration
     @param callback_url: Callback URL to which to post the notification
+    @param max_attempts: Maximum number of HTTP POST attempts
+    @param retry_interval: Interval between retry attempts
+    @param timeout_interval: HTTP POST timeout setting
     @param notification_body: Body of notification HTTP POST request
 
     @return: Notification status and messages
     """
 
-    success_message = 'Job completed successfully'
     retry_codes = [408]
 
     # Attempt HTTP POST of notification body.
-    # Retry up to the configured amount of times, if a retry error occurred.
-    notification_messages = []
-    retry = 0
+    # Retry up to the configured amount of times, if a retryable error occurred.
+    notification_errors = []
     notification_status = mk.FAILURE
-    while retry < retries:
+    for attempt in range(0, max_attempts):
         status_code = 0
-        message_prefix = 'Retry ' + str(retry) + ' - ' if retry else ''
 
         try:
-            response = post(callback_url, notification_body, timeout=retry_interval)
+            response = post(callback_url, notification_body, timeout=timeout_interval)
             status_code = response.status_code
 
             # Throw an exception for all responses but success.
@@ -102,32 +101,39 @@ def post_notification(callback_url, retries, retry_interval, notification_body):
 
             # Success!
             notification_status = mk.SUCCESS
-            if retry > 0:
-                notification_messages.append(message_prefix + str(status_code) + ' Created: ' + success_message)
+            notification_errors = None
             break
 
-        except req_exc.RequestException as re:
-            # Failure.
-            notification_messages.append(message_prefix + str(re.args[0]))
+        except (req_exc.ConnectionError, req_exc.Timeout) as exc:
+            # Retryable error.
+            notification_errors.append(str(exc.args[0]))
+            wait_seconds_interval(retry_interval)
 
-            # Check if the error is retryable.
-            if re in [req_exc.ConnectionError, req_exc.HTTPError, req_exc.Timeout] or status_code in retry_codes:
-                # Retryable error.
-                retry += 1
-                if re is not req_exc.Timeout:
-                    sleep(retry_interval)
-                    pass
+        except (req_exc.HTTPError) as exc:
+            # Possible retryable error.  Retry if status code indicates so.
+            notification_errors.append(str(exc.args[0]))
+            if status_code in retry_codes:
+                wait_seconds_interval(retry_interval)
             else:
-                # Non-retryable error.
                 break
 
-        except Exception as ex:
-            # Non-requests-related exception; don't retry.
-            notification_messages.append(message_prefix + str(ex.args[0]))
+        except req_exc.RequestException as exc:
+            # Non-retryable requests-related exception; don't retry.
+            notification_errors.append(str(exc.args[0]))
             break
 
-    # Leave error description blank, if no messages.
-    if not notification_messages:
-        notification_messages = None
+        except Exception as exc:
+            # Non-requests-related exception; don't retry.
+            notification_errors.append(str(exc.args[0]))
+            break
 
-    return notification_status, notification_messages
+    return notification_status, notification_errors
+
+
+def wait_seconds_interval(seconds):
+    """
+    Wait for the specified interval in seconds.
+
+    @param seconds: Number of seconds to wait
+    """
+    sleep(seconds)

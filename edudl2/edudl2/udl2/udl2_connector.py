@@ -9,158 +9,91 @@ from edudl2.metadata.udl2_metadata import generate_udl2_metadata
 UDL_NAMESPACE = 'udl2_db_conn'
 TARGET_NAMESPACE = 'target_db_conn'
 PRODUCTION_NAMESPACE = 'prod_db_conn'
+DEFAULT_TENANT = 'edware'
 
 
 class UDL2DBConnection(DBConnection):
     """
     DBConnector for the UDL Database
     """
-    def __init__(self, tenant=None):
-        name = UDL2DBConnection.get_datasource_name()
-        if tenant:
-            name += '.' + tenant
-        super().__init__(name=name)
+    def __init__(self, tenant=None, namespace=UDL_NAMESPACE):
+        self.datasource_name = namespace + (('.' + tenant) if tenant else '')
+        super().__init__(name=self.datasource_name)
 
-    @staticmethod
-    def get_namespace():
-        return UDL_NAMESPACE
+    def get_namespace(self):
+        return self.namespace
 
-    @staticmethod
-    def get_datasource_name(**kwargs):
+    def get_datasource_name(self):
         '''
         Returns datasource name for UDL Stats
         '''
-        return UDL_NAMESPACE
-
-    @staticmethod
-    def generate_metadata(schema_name=None, bind=None):
-        """
-        Generate Metadata for UDL
-        """
-        return generate_udl2_metadata(schema_name=schema_name, bind=bind)
-
-    @staticmethod
-    def allows_multiple_tenants():
-        """
-        Does this connection class support multiple tenants
-        """
-        return False
+        return self.datasource_name
 
 
-class TargetDBConnection(DBConnection):
-    """
-    DBConnector for UDL Target Database
-    """
-    def __init__(self, tenant='edware'):
-        name = TargetDBConnection.get_datasource_name(tenant)
-        super().__init__(name=name)
-
-    @staticmethod
-    def get_namespace():
-        return TARGET_NAMESPACE
-
-    @staticmethod
-    def get_datasource_name(tenant="edware"):
-        """
-        Returns datasource name for UDL Stats
-        """
-        return TARGET_NAMESPACE + '.' + tenant
-
-    @staticmethod
-    def generate_metadata(schema_name=None, bind=None):
-        """
-        Generate Metadata for Target
-        """
-        return generate_ed_metadata(schema_name=schema_name, bind=bind)
-
-    @staticmethod
-    def allows_multiple_tenants():
-        """
-        Does this connection class support multiple tenants
-        """
-        return True
+def get_udl_connection(tenant='edware'):
+    '''
+    Get UDL connection
+    '''
+    return UDL2DBConnection(tenant=tenant, namespace=UDL_NAMESPACE)
 
 
-class ProdDBConnection(DBConnection):
-    """
-    DBConnector for Edware Production Database
-    """
-    def __init__(self, tenant='edware'):
-        name = ProdDBConnection.get_datasource_name(tenant)
-        super().__init__(name=name)
-
-    @staticmethod
-    def get_namespace():
-        return PRODUCTION_NAMESPACE
-
-    @staticmethod
-    def get_datasource_name(tenant="edware"):
-        """
-        Returns datasource name for Production table
-        """
-        return PRODUCTION_NAMESPACE + '.' + tenant
-
-    @staticmethod
-    def generate_metadata(schema_name=None, bind=None):
-        """
-        Generate Metadata for Target
-        """
-        return generate_ed_metadata(schema_name=schema_name, bind=bind)
-
-    @staticmethod
-    def allows_multiple_tenants():
-        """
-        Does this connection class support multiple tenants
-        """
-        return True
+def get_target_connection(tenant='edware'):
+    '''
+    Get Target connection
+    '''
+    return UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
 
 
-def initialize_db(connector_cls, udl2_conf, allow_schema_create=False):
+def get_prod_connection(tenant='edware'):
+    '''
+    Get Target connection
+    '''
+    return UDL2DBConnection(tenant, namespace=PRODUCTION_NAMESPACE)
+
+
+def initialize_db_udl(udl2_conf):
+    initialize_db(UDL_NAMESPACE, generate_udl2_metadata, False, udl2_conf)
+
+
+def initialize_db_target(udl2_conf):
+    initialize_db(TARGET_NAMESPACE, generate_ed_metadata, True, udl2_conf)
+
+
+def initialize_db_prod(udl2_conf):
+    initialize_db(PRODUCTION_NAMESPACE, generate_ed_metadata, True, udl2_conf)
+
+
+def initialize_db(namespace, metadata_generator, allows_multiple_tenants, udl2_conf, allow_schema_create=False):
     """
     Setup connection for udl2
-    :param connector_cls:
+    :param connector:
     :param udl2_conf:
     :param allow_schema_create:
     :return:
     """
-    # will need to update if multiple tenants exist for udl2
-    #schema = udl2_conf['udl2_db']['db_schema']
-    tenants = {}
-
-    if connector_cls.allows_multiple_tenants():
+    if allows_multiple_tenants:
         # Get information for all tenants listed
-        for tenant_name in udl2_conf[connector_cls.get_namespace()]:
-            tenants[tenant_name] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant_name)
+        for tenant_name in udl2_conf[namespace]:
+            create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator, tenant_name)
 
         # add default tenant information to dict (this should already be listed)
         default_tenant = udl2_conf['multi_tenant']['default_tenant']
-        tenants[default_tenant] = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, default_tenant)
-
-    if tenants:
-        for tenant in tenants:
-            settings, schema = tenants[tenant]
-            metadata = connector_cls.generate_metadata(schema)
-            setup_db_connection_from_ini(settings, '', metadata, connector_cls.get_datasource_name(tenant), allow_schema_create)
+        create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator, default_tenant)
 
     else:
-        settings, schema = create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf)
-        metadata = connector_cls.generate_metadata(schema)
-        setup_db_connection_from_ini(settings, '', metadata, connector_cls.get_datasource_name(), allow_schema_create)
+        create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator)
 
 
-def create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant=None):
+def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator, tenant=None):
     """
 
-    :param connector_cls:
+    :param namespace:
     :param udl2_conf:
-    :return: A tuple contain (settings_dict, schema_name)
     """
-    namespace = connector_cls.get_datasource_name(tenant=tenant)
-    db_dict = udl2_conf[namespace.split('.')[0]]
-    if tenant:
-        tenant_dict = db_dict[namespace.split('.')[1]]
-    else:
-        tenant_dict = db_dict
+    lookup_tenant = tenant if tenant else DEFAULT_TENANT
+    datasource_name = namespace + '.' + lookup_tenant
+    db_dict = udl2_conf[namespace]
+    tenant_dict = db_dict[lookup_tenant] if tenant else db_dict
 
     schema_name = tenant_dict['db_schema']
 
@@ -170,4 +103,5 @@ def create_sqlalchemy_settings_from_conf(connector_cls, udl2_conf, tenant=None):
         'echo': tenant_dict['echo'],
         'pool_size': tenant_dict['pool_size'],
     }
-    return settings, schema_name
+    metadata = metadata_generator(schema_name)
+    setup_db_connection_from_ini(settings, '', metadata, datasource_name, allow_schema_create)

@@ -35,14 +35,14 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
 
     #Load file to udl batch table. If empty is true, empties out the batch table first
     def load_to_table(self, file, empty=True, table=udl2_conf['udl2_db']['batch_table']):
-        batch_table = get_sqlalch_table_object(self.udl2_conn, udl2_conf['udl2_db']['db_schema'], table)
+        table = get_sqlalch_table_object(self.udl2_conn, udl2_conf['udl2_db']['db_schema'], table)
         if empty:
-            self.udl2_conn.execute(batch_table.delete())
-            query = select([func.count()]).select_from(batch_table)
+            self.udl2_conn.execute(table.delete())
+            query = select([func.count()]).select_from(table)
             count = self.udl2_conn.execute(query).fetchall()[0][0]
             self.assertEqual(count, 0, 'Could not empty out batch table correctly')
         dict_list = get_csv_dict_list(file)
-        self.udl2_conn.execute(batch_table.insert(), dict_list)
+        self.udl2_conn.execute(table.insert(), dict_list)
 
     #Check batch table to see if the notification was successful
     def verify_notification_success(self, guid):
@@ -75,6 +75,7 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
 
     #Check the body of the notification on a failed UDL run
     def verify_failed_request_body(self, request):
+        self.assertEquals(request['status'], ['Failed'])
         self.assertEquals(len(request['message']), 2)
         self.assertTrue('simple file validator error' in request['message'][0])
         self.assertTrue('5000' in request['message'][1])
@@ -85,18 +86,19 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = 3
         udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = 1
 
-        httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=408)
-        self.load_to_table(self.successful_batch)
-        msg = generate_message(self.successful_batch_id)
-        job_notify(msg)
+        try:
+            httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=408)
+            self.load_to_table(self.successful_batch)
+            msg = generate_message(self.successful_batch_id)
+            job_notify(msg)
 
-        request = httpretty.last_request().parsed_body
-        self.verify_successful_request_body(request)
+            request = httpretty.last_request().parsed_body
+            self.verify_successful_request_body(request)
 
-        self.verify_notification_failed(self.successful_batch_id, 3)
-
-        udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = old_retry_max
-        udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = old_retry_interval
+            self.verify_notification_failed(self.successful_batch_id, 3)
+        finally:
+            udl2_conf[ck.SR_NOTIFICATION_MAX_ATTEMPTS] = old_retry_max
+            udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL] = old_retry_interval
 
     def test_notification_failed_with_non_retryable_error_code(self):
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=401)

@@ -13,22 +13,14 @@ import shutil
 from nose.plugins.attrib import attr
 from uuid import uuid4
 import glob
-from edudl2.udl2.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, delete
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
 
-# TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-# DIM_TABLE = 'dim_asmt'
-# FACT_TABLE = 'fact_asmt_outcome'
-# PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
-# EXPECTED_UNIQUE_BATCH_GUIDS = 30
-# expected_rows = 958
 
-
-#@unittest.skip("skipping this test till till ready for jenkins")
-@attr('integration')
+#@attr('integration')
 class Test(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -37,8 +29,8 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.tenant_dir = tempfile.mkdtemp()
         # Get connections for UDL and Edware databases
-        self.ed_connector = TargetDBConnection()
-        self.connector = UDL2DBConnection()
+        self.ed_connector = get_target_connection()
+        self.connector = get_udl_connection()
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
@@ -46,7 +38,6 @@ class Test(unittest.TestCase):
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
 
-    @unittest.skip("skipping this test till till ready for jenkins")
     def test_validation(self):
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)
@@ -102,7 +93,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=600):
+    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=800):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -123,7 +114,9 @@ class Test(unittest.TestCase):
             sleep(0.25)
             timer += 0.25
             all_successful_batch_guids = connector.execute(success_query).fetchall()
-            failure_batch_data = connector.execute(failure_query).fetchall()
+            print(len(all_successful_batch_guids))
+            print(timer)
+            #failure_batch_data = connector.execute(failure_query).fetchall()
 #           if len(failure_batch_data) is not None:
 #               break
         self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "30 guids not found.")

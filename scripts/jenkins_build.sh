@@ -217,20 +217,14 @@ function run_functional_tests {
 
     cd "$WORKSPACE/$FUNC_DIR"
 
-    #sed -i.bak 's/port = 6543/port = 80/g' test.ini
-    #sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
-    #export DISPLAY=:6.0
+    sed -i.bak 's/port = 6543/port = 80/g' test.ini
+    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    export DISPLAY=:6.0
     
     if $RUN_END_TO_END; then
-       sed -i.bak 's/port = 6543/port = 80/g' jenkins_int.ini
-       sed -i.bak "s/host=localhost/host=$HOSTNAME/g" jenkins_int.ini
-       export DISPLAY=:6.0
        cd e2e_tests
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
-       sed -i.bak 's/port = 6543/port = 80/g' test.ini
-       sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
-       export DISPLAY=:6.0
        nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi
@@ -424,11 +418,10 @@ function setup_for_udl {
 function run_udl_integration_tests {
     echo "Running UDL integration tests"
 	# Regenerate ini for integration tests as part of setup_for_udl
- 
-    cd "$WORKSPACE/edudl2/edudl2/tests/integration_tests"
+
+    cd $WORKSPACE/edudl2/edudl2/tests/integration_tests
     nosetests test_udl_reporting.py
     echo "Finished udl data load"
-    check_pep8 "$WORKSPACE/edudl2/edudl2/tests/integration_tests"
 }
 
 function main {

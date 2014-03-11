@@ -47,7 +47,8 @@ def task(incoming_msg):
     finish_time = datetime.datetime.now()
 
     # Benchmark
-    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time,
+                                    task_id=str(task.request.id), tenant=tenant_name, input_file=input_source_file)
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file decrypter

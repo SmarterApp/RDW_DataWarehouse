@@ -1,7 +1,7 @@
 from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats, insert_to_table
 from edudl2.exceptions.errorcodes import ErrorCode
@@ -82,9 +82,8 @@ class Udl2BaseTask(Task):
         # Write to udl stats table on exceptions
         update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
         # Write to ERR_LIST
-
         try:
-            exc.insert_err_list(UDL2DBConnection, 4, failure_time)
+            exc.insert_err_list(get_udl_connection, 4, failure_time)
         except Exception:
             pass
         msg = {}

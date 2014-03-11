@@ -2,7 +2,7 @@ import datetime
 from edudl2.udl2_util.database_util import execute_udl_queries, get_table_columns_info, execute_udl_query_with_result
 from edudl2.udl2 import message_keys as mk
 import logging
-from edudl2.udl2.udl2_connector import UDL2DBConnection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edudl2.fileloader.prepare_queries import get_column_mapping_query
 from sqlalchemy.sql.expression import text, bindparam
 
@@ -15,7 +15,7 @@ def move_data_from_staging_to_integration(conf):
     @param conf: configration dictionary, the format is defined in W_load_to_integration_table.py
            note: udl2_conf is the udl2_conf dictionary that stores all configuration settings
     '''
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         # get the column mapping from ref table
         target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, conf[mk.REF_TABLE], conf[mk.SOURCE_DB_TABLE],
                                                                                            conf[mk.TARGET_DB_TABLE], conf[mk.SOURCE_DB_SCHEMA])

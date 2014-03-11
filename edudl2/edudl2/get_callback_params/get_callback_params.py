@@ -6,26 +6,26 @@ __author__ = 'ablum'
 logger = logging.getLogger(__name__)
 
 
-def get_callback_param(json_file_dir, load_type, key_name):
+def get_callback_params(json_file_dir, load_type):
     """
     Get the callback parameter for this UDL job from the json file
 
     @param json_file_dir: A directory that houses the json file
-    @param load_type: The load type for the UDL job
-    @param key_name: The configured key name for finding the path to the value in the json file
+    @param load_type: The key path of an attribute in a nested json structure
 
     @return: the callback parameter
     @rtype: string
     """
-
-    param = None
+    student_reg_guid = None
+    reg_system_id = None
+    callback_url = None
 
     try:
-        param_key_path = udl2_conf[key_name][load_type]
-        param_keys = param_key_path.split('.')
-        param = get_value_from_json(json_file_dir, *param_keys)
+        student_reg_guid = get_value_from_json(json_file_dir, udl2_conf['student_reg_guid_key'][load_type])
+        reg_system_id = get_value_from_json(json_file_dir, udl2_conf['reg_system_id_key'][load_type])
+        callback_url = get_value_from_json(json_file_dir, udl2_conf['callback_url_key'][load_type])
 
     except KeyError:
         logger.error('Loadtype %s is not configured for callback notification' % load_type)
 
-    return param
+    return student_reg_guid, reg_system_id, callback_url

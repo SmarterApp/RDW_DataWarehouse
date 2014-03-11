@@ -57,11 +57,20 @@ def get_attribute_value_from_json_keypath(json_file_path, *attribute_key_path):
     return attribute_value
 
 
-def get_value_from_json(json_file_dir, *attribute_key_path):
+def get_value_from_json(json_file_dir, attribute_key_path):
+    '''
+    Gets a nested attribute from a json file
+    @param json_file_dir: The directory name which contains a json file
+    @type string
+    @param attribute_key_path: The key for which to retrieve the value. A nested value can be denoted using '.' between each key.
+    @type string
+    @return: the value of the key from the json
+    '''
 
     json_file_name = get_json_file_in_dir(json_file_dir)
     json_file_path = os.path.join(json_file_dir, json_file_name)
 
-    attribute = get_attribute_value_from_json_keypath(json_file_path, *attribute_key_path)
+    keys = attribute_key_path.split('.')
+    attribute = get_attribute_value_from_json_keypath(json_file_path, *keys)
 
     return attribute

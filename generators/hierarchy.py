@@ -135,23 +135,20 @@ def generate_institution_hierarchy(state: State, district: District, school: Sch
     return ih
 
 
-def sort_schools_by_type(schools):
+def sort_schools_by_grade(schools):
     """
-    Sort a list of schools into elementary, middle, and high schools.
+    Sort a list of schools by grades available in the school.
 
     @param schools: Schools to sort
     @returns: Dictionary of sorted schools
     """
-    schools_by_type = {'elem': [], 'middle': [], 'high': []}
+    schools_by_grade = {}
     for school in schools:
-        # Sort the school
-        if 'Elementary School' in school.type_str:
-            schools_by_type['elem'].append(school)
-        elif 'Middle School' in school.type_str:
-            schools_by_type['middle'].append(school)
-        else:
-            schools_by_type['high'].append(school)
-    return schools_by_type
+        for grade in school.grades:
+            if grade not in schools_by_grade:
+                schools_by_grade[grade] = []
+            schools_by_grade[grade].append(school)
+    return schools_by_grade
 
 
 def set_up_schools_with_grades(schools, grades_of_concern):

@@ -58,18 +58,18 @@ def generate_student(school: School, grade, acad_year=datetime.datetime.now().ye
     return s
 
 
-def advance_student(student: Student, schools_by_type, drop_out_rate=.5):
+def advance_student(student: Student, schools_by_grade, drop_out_rate=.5):
     """
     Take a student and advance them to the next grade. If the next grade takes the student out of the current school,
     pick a new school for them to go to.
 
     @param student: The student to move
-    @param schools_by_type: Potential new schools for a student to be enrolled in
+    @param schools_by_grade: Potential new schools for a student to be enrolled in
     @param drop_out_rate: The rate that a student will drop out at if they are not advanced
     @returns: True if the student still exists in the system, False if they do not
     """
     # Use the general generator to advance the student
-    rslt = general_pop_gen.advance_student(student, schools_by_type, drop_out_rate=drop_out_rate)
+    rslt = general_pop_gen.advance_student(student, schools_by_grade, drop_out_rate=drop_out_rate)
 
     # If we are not keeping the student, don't worry about them
     if not rslt:

@@ -7,10 +7,9 @@ An assessment generator for the SBAC assessment.
 
 import calendar
 import datetime
+import random
 
 import general.generators.assessment as gen_asmt_generator
-import general.util.gaussian_distribution as rand_gauss
-import general.util.id_gen as id_gen
 import project.sbac.config.cfg as sbac_config
 
 from general.model.section import Section
@@ -130,27 +129,26 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         sao.date_taken = datetime.date(assessment.period_year, assessment.period_month, 15)
 
     # Create overall score and performance level
-    sao.overall_score = int(rand_gauss.gauss_one(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX,
-                                                 sbac_config.ASMT_SCORE_AVG, sbac_config.ASMT_SCORE_STD))
+    sao.overall_score = int(random.uniform(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX))
     sao.overall_score_range_min = sao.overall_score - 20 if sao.overall_score > sbac_config.ASMT_SCORE_MIN + 20 else sbac_config.ASMT_SCORE_MIN
     sao.overall_score_range_max = sao.overall_score + 20 if sao.overall_score < sbac_config.ASMT_SCORE_MAX - 20 else sbac_config.ASMT_SCORE_MAX
     sao.overall_perf_lvl = pick_performance_level(sao.overall_score, overall_cut_points)
 
     # Create claim scores and performance levels
-    sao.claim_1_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
+    sao.claim_1_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_1_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_1_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
     sao.claim_1_perf_lvl = pick_performance_level(sao.claim_1_score, claim_cut_points)
-    sao.claim_2_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
+    sao.claim_2_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_2_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_2_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
     sao.claim_2_perf_lvl = pick_performance_level(sao.claim_2_score, claim_cut_points)
-    sao.claim_3_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
+    sao.claim_3_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_3_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_3_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
     sao.claim_3_perf_lvl = pick_performance_level(sao.claim_3_score, claim_cut_points)
     if assessment.claim_4_name is not None:
-        sao.claim_4_score = int(rand_gauss.gauss_one(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
+        sao.claim_4_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
         sao.claim_4_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
         sao.claim_4_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
         sao.claim_4_perf_lvl = pick_performance_level(sao.claim_4_score, claim_cut_points)

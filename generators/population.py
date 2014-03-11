@@ -9,7 +9,6 @@ import datetime
 import random
 
 import general.generators.population as general_pop_gen
-import general.util.gaussian_distribution as rand_gaussian
 import project.sbac.config.cfg as sbac_in_config
 import project.sbac.util.id_gen as sbac_id_gen
 
@@ -93,9 +92,8 @@ def repopulate_school_grade(school: School, grade, grade_students, acad_year=dat
     """
     # Re-populate grades if necessary
     if len(grade_students) < (school.student_count_avg / 20):
-        student_count = int(rand_gaussian.gauss_one(school.student_count_min,
-                                                    school.student_count_max,
-                                                    school.student_count_avg))
+        student_count = int(random.triangular(school.student_count_min, school.student_count_max,
+                                              school.student_count_avg))
         print('  Creating ' + str(student_count) + ' students in grade ' + str(grade) +
               ' for school ' + school.name + '(' + school.district.name + ')')
         for k in range(student_count):

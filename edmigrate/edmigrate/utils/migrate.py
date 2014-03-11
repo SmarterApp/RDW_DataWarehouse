@@ -57,6 +57,7 @@ def get_batches_to_migrate(tenant=None):
             order_by(udl_status_table.c.file_arrived)
         if tenant:
             query = query.where(and_(udl_status_table.c.tenant == tenant))
+        print(query)
         batches = connector.get_result(query)
             # batches[row[Constants.BATCH_GUID]] = row
     return batches
@@ -81,7 +82,7 @@ def report_udl_stats_batch_status(batch_guid, migrate_load_status):
     return rowcount
 
 
-def get_tables_to_migrate(connector):
+def get_tables_to_migrate(connector, batch_guid):
     """This function returns list of tables to be migrated based on schema metadata
 
     :param connector: The connection to the database
@@ -138,7 +139,8 @@ def migrate_dims_insert(batch_guid, source_connector, dest_connector, table_name
 
     :returns Nothing
     """
-    source_tab = source_connector.get_table(table_name)
+    import pdb; pdb.set_trace()
+    source_tab = source_connector.get_table(table_name, schema_name=batch_guid)
     dest_Tab = dest_connector.get_table(table_name)
 
     if table_name not in TABLES_NOT_CONNECTED_WITH_BATCH:
@@ -164,7 +166,7 @@ def migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector, batc
     """
     delete_count = 0
     insert_count = 0
-    source_fact_asmt_outcome_table = source_connector.get_table(Constants.FACT_ASMT_OUTCOME)
+    source_fact_asmt_outcome_table = source_connector.get_table(Constants.FACT_ASMT_OUTCOME, schema_name=batch_guid)
 
     # CR, change to use PK instead of specific field name.
     delete_query = select([source_fact_asmt_outcome_table.c.asmnt_outcome_rec_id]).\
@@ -182,14 +184,14 @@ def migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector, batc
             temp_asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
             asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
             if len(temp_asmt_outcome_rec_ids) >= batch_size:
-                if check_records_for_delete(dest_connector, temp_asmt_outcome_rec_ids):
-                    delete_count += preprod_to_prod_delete_records(source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
+                if check_records_for_delete(batch_guid, dest_connector, temp_asmt_outcome_rec_ids):
+                    delete_count += preprod_to_prod_delete_records(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
                 else:
                     raise EdMigrateRecordAlreadyDeletedException
                 del temp_asmt_outcome_rec_ids[:]
     if temp_asmt_outcome_rec_ids:
         if check_records_for_delete(dest_connector, temp_asmt_outcome_rec_ids):
-            delete_count += preprod_to_prod_delete_records(source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
+            delete_count += preprod_to_prod_delete_records(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
         else:
             raise EdMigrateRecordAlreadyDeletedException
         del temp_asmt_outcome_rec_ids[:]
@@ -208,15 +210,15 @@ def migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector, batc
             temp_asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
             asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
             if len(temp_asmt_outcome_rec_ids) >= batch_size:
-                insert_count += preprod_to_prod_insert_records(source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
+                insert_count += preprod_to_prod_insert_records(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
                 del temp_asmt_outcome_rec_ids[:]
     if temp_asmt_outcome_rec_ids:
-        insert_count += preprod_to_prod_insert_records(source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
+        insert_count += preprod_to_prod_insert_records(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
         del temp_asmt_outcome_rec_ids[:]
     return delete_count, insert_count
 
 
-def preprod_to_prod_delete_records(source_connector, dest_connector, table_name, primary_key_field_name, primary_keys):
+def preprod_to_prod_delete_records(batch_guid, source_connector, dest_connector, table_name, primary_key_field_name, primary_keys):
     count = 0
     dest_table = dest_connector.get_table(table_name)
     dest_primary_key_field = dest_table.columns[primary_key_field_name]
@@ -231,10 +233,10 @@ def preprod_to_prod_delete_records(source_connector, dest_connector, table_name,
     return count
 
 
-def preprod_to_prod_insert_records(source_connector, dest_connector, table_name, primary_key_field_name, primary_keys):
+def preprod_to_prod_insert_records(batch_guid, source_connector, dest_connector, table_name, primary_key_field_name, primary_keys):
     count = 0
     dest_table = dest_connector.get_table(table_name)
-    source_table = source_connector.get_table(table_name)
+    source_table = source_connector.get_table(table_name, schema_name=batch_guid)
     source_primary_key_field = source_table.columns[primary_key_field_name]
     select_query = source_table.select(source_primary_key_field.in_(primary_keys)).where(source_table.c.status == 'C')
     rset = source_connector.execute(select_query)
@@ -279,9 +281,10 @@ def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):
     # migrate dims first
     # CR, check status field, if it does not exist, then call migrate_dims_insert.
     for table in list(filter(lambda x: x.startswith('dim_'), tables)):
+        import pdb; pdb.set_trace()
         migrate_dims_insert(batch_guid, source_connector, dest_connector, table)
     # migrate fact
-    migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector)
+    #migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector)
 
 
 def migrate_batch(batch):
@@ -304,7 +307,8 @@ def migrate_batch(batch):
             # start transaction for this batch
             trans = dest_connector.get_transaction()
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
-            tables_to_migrate = get_tables_to_migrate(dest_connector)
+            tables_to_migrate = get_tables_to_migrate(dest_connector, batch_guid)
+            import pdb; pdb.set_trace()
             # migrate all tables
             migrate_all_tables(batch_guid, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
@@ -333,6 +337,7 @@ def start_migrate_daily_delta(tenant):
     """
     batches_to_migrate = get_batches_to_migrate(tenant)
     for batch in batches_to_migrate:
+        import pdb; pdb.set_trace()
         migrate_batch(batch=batch)
 
 if __name__ == '__main__':
@@ -340,7 +345,8 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(sys.argv[1])
     settings = config['app:main']
+    import pdb; pdb.set_trace()
     initialize_db(EdMigrateDestConnection, settings, allow_schema_create=True)
     initialize_db(EdMigrateSourceConnection, settings, allow_schema_create=True)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
-    start_migrate_daily_delta('cat')
+    start_migrate_daily_delta('ca')

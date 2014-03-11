@@ -89,12 +89,7 @@ function run_unit_tests {
    
     cd "$WORKSPACE/$1"
 
-	if [ $MAIN_PKG == "edudl2" ]; then
-	    nosetests --exclude-dir=integration_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
-	else
-	    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
-	fi
-
+	nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
     if [ -f coverage.xml ]; then
        # move coverage results
        mv coverage.xml $WORKSPACE/coverage.xml

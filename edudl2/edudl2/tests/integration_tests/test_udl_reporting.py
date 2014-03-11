@@ -38,6 +38,7 @@ class Test(unittest.TestCase):
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
 
+    @unittest.skip("we disable the integration for now, we need to disable integration test in edudl2, but keep in smarter e2e")
     def test_validation(self):
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)

@@ -88,8 +88,11 @@ function run_unit_tests {
     echo "Running unit tests"
    
     cd "$WORKSPACE/$1"
-     
-    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
+	if  [ ${MAIN_PKG:=""} == "edudl2" ]; then
+	    nosetests --exclude-dir=integration_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
+	else
+	    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
+	fi     
 
     if [ -f coverage.xml ]; then
        # move coverage results

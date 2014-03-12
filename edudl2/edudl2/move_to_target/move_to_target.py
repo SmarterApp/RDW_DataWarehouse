@@ -27,10 +27,12 @@ logger = logging.getLogger(__name__)
 
 
 def create_target_schema_for_batch(conf):
+    """
+    creates the target star schema needed for this batch
+    """
      with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
         engine = conn.get_engine()
         schema_name = conf[mk.GUID_BATCH]
-        print(engine)
         conn.execute(CreateSchema(schema_name))
         metadata = generate_ed_metadata(schema_name=schema_name, bind=engine)
         metadata.create_all(engine)

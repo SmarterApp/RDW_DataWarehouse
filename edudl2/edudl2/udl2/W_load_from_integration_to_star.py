@@ -18,6 +18,9 @@ logger = get_task_logger(__name__)
 
 @celery.task(name='udl2.W_load_from_integration_to_star.create_target_schema', base=Udl2BaseTask)
 def create_target_schema(msg):
+    """
+    Task to create target star schema
+    """
     conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE], msg[mk.TENANT_NAME])
     create_target_schema_for_batch(conf)
     return msg

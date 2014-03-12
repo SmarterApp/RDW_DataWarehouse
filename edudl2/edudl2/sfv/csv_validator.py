@@ -11,7 +11,7 @@ import os
 import csv
 import re
 
-from edudl2.sfv import error_codes
+from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.sfv import sfv_util
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2_util.file_util import abs_path_join
@@ -56,7 +56,7 @@ class CsvValidator():
         error_list = []
         for validation in self.csv_validations:
             result = validation.execute(dir_path, file_name, batch_sid)
-            if result[0] != error_codes.STATUS_OK:
+            if result[0] != ErrorCode.STATUS_OK:
                 error_list.append(result)
             else:
                 pass
@@ -80,13 +80,13 @@ class IsSourceFolderAccessible(object):
 
         try:
             if os.path.exists(dir_path) and os.path.isdir(dir_path) and os.access(dir_path, os.R_OK):
-                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+                return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
             else:
-                return (error_codes.SRC_FOLDER_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+                return (ErrorCode.SRC_FOLDER_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
 
 class IsSourceFileAccessible(object):
@@ -107,13 +107,13 @@ class IsSourceFileAccessible(object):
 
         try:
             if os.path.exists(full_path) and os.access(full_path, os.R_OK) and os.path.isfile(full_path):
-                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+                return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
             else:
-                return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+                return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
 
 class IsFileBlank(object):
@@ -134,13 +134,13 @@ class IsFileBlank(object):
 
         try:
             if os.stat(full_path).st_size > 0:
-                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+                return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
             else:
-                return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+                return (ErrorCode.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
 
 class IsSourceFileCommaDelimited(object):
@@ -163,9 +163,9 @@ class IsSourceFileCommaDelimited(object):
         try:
             file_to_validate = open(full_path, 'rU')
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
         sample_data = None
         # use csv.sniffer to detect the dialect, then close the file
@@ -190,7 +190,7 @@ class IsSourceFileCommaDelimited(object):
                 dialect = csv.Sniffer().sniff(sample_data, ',')
             except csv.Error as e:
                 # if the hack fails then we'll throw the exception
-                return (error_codes.SRC_FILE_WRONG_DELIMITER, dir_path, file_name, batch_sid)
+                return (ErrorCode.SRC_FILE_WRONG_DELIMITER, dir_path, file_name, batch_sid)
 
         file_to_validate.close()
 
@@ -199,9 +199,9 @@ class IsSourceFileCommaDelimited(object):
             print('Wrong delim')
             print(dialect)
             print(dialect.delimiter)
-            return (error_codes.SRC_FILE_WRONG_DELIMITER, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_WRONG_DELIMITER, dir_path, file_name, batch_sid)
 
-        return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+        return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
 
 
 class DoesSourceFileContainDuplicateHeaders(object):
@@ -231,17 +231,17 @@ class DoesSourceFileContainDuplicateHeaders(object):
                 while headers is None or len(headers) == 0:
                     headers = next(reader)
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
         for header in headers:
             if header.lower() in processed_headers:
-                return (error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, dir_path, file_name, batch_sid)
+                return (ErrorCode.SRC_FILE_HAS_DUPLICATE_HEADERS, dir_path, file_name, batch_sid)
             elif len(header) > 0:
                 processed_headers.append(header.lower())
 
-        return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+        return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
 
 
 class DoesSourceFileContainHeaders(object):
@@ -270,18 +270,18 @@ class DoesSourceFileContainHeaders(object):
                         if len(first_four_lines) >= 4:
                             break
         except FileNotFoundError as e:
-            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
-            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
         if len(first_four_lines) == 0:
             # No rows, so no header.
-            return (error_codes.SRC_FILE_HAS_NO_HEADERS, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_HAS_NO_HEADERS, dir_path, file_name, batch_sid)
 
         header = first_four_lines[0]
         if all([not bool(column.strip()) for column in header.split(",")]):
             # Header contains no names. Just commas and spaces.
-            return (error_codes.SRC_FILE_HAS_NO_HEADERS, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_HAS_NO_HEADERS, dir_path, file_name, batch_sid)
 
         # Pass first 4 lines to CSV header sniffer
         first_four_lines_str = os.linesep.join(first_four_lines)
@@ -289,9 +289,9 @@ class DoesSourceFileContainHeaders(object):
         has_headers = csv.Sniffer().has_header(first_four_lines_str)
 
         if not has_headers:
-            return (error_codes.SRC_FILE_HAS_NO_HEADERS, dir_path, file_name, batch_sid)
+            return (ErrorCode.SRC_FILE_HAS_NO_HEADERS, dir_path, file_name, batch_sid)
         else:
-            return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+            return (ErrorCode.STATUS_OK, dir_path, file_name, batch_sid)
 
 
 class IsCsvWellFormed(object):
@@ -334,18 +334,18 @@ class IsCsvWellFormed(object):
                         line = next(file_reader)
                     # execute to make sure we haven't hit the end of the file
                     except StopIteration:
-                        return error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
+                        return ErrorCode.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
 
                     # validate the number of data entries
                     if len(line) != num_headers or self._empty_header_has_data(headers, line):
-                        return error_codes.SRC_FILE_HEADERS_MISMATCH_DATA, dir_path, file_name, batch_sid
+                        return ErrorCode.SRC_FILE_HEADERS_MISMATCH_DATA, dir_path, file_name, batch_sid
         except FileNotFoundError as e:
-            return error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
+            return ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
         except Exception as e1:
-            return error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
+            return ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
 
         # we passed all tests
-        return error_codes.STATUS_OK, dir_path, file_name, batch_sid
+        return ErrorCode.STATUS_OK, dir_path, file_name, batch_sid
 
     def _empty_header_has_data(self, headers, line):
         """
@@ -387,13 +387,13 @@ class DoesSourceFileHaveData(object):
             next(file_reader)
             next(file_reader)
         except StopIteration:
-            return error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
+            return ErrorCode.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
         except FileNotFoundError as e:
-            return error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
+            return ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
         except Exception as e1:
-            return error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
+            return ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
 
-        return error_codes.STATUS_OK, dir_path, file_name, batch_sid
+        return ErrorCode.STATUS_OK, dir_path, file_name, batch_sid
 
 
 class DoesSourceFileInExpectedFormat(object):
@@ -430,13 +430,13 @@ class DoesSourceFileInExpectedFormat(object):
             if not self.are_eq(header_row, self.expected_csv_fields):
                 new_expected = [x for x in self.expected_csv_fields if x != 'op']
                 if not self.are_eq(header_row, new_expected):
-                    return error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid
+                    return ErrorCode.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid
 
         except StopIteration:
-            return error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
+            return ErrorCode.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid
         except FileNotFoundError as e:
-            return error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
+            return ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid
         except Exception as e1:
-            return error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
+            return ErrorCode.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid
 
-        return error_codes.STATUS_OK, dir_path, file_name, batch_sid
+        return ErrorCode.STATUS_OK, dir_path, file_name, batch_sid

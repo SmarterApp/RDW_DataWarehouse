@@ -182,16 +182,10 @@ def migrate_fact_asmt_outcome(batch_guid, source_connector, dest_connector, batc
             temp_asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
             asmt_outcome_rec_ids.append(asmt_outcome_rec_id)
             if len(temp_asmt_outcome_rec_ids) >= batch_size:
-                if check_records_for_delete(batch_guid, dest_connector, temp_asmt_outcome_rec_ids):
-                    delete_count += preprod_to_prod_delete_records(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
-                else:
-                    raise EdMigrateRecordAlreadyDeletedException
+                delete_count += preprod_to_prod_delete_records(source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
                 del temp_asmt_outcome_rec_ids[:]
     if temp_asmt_outcome_rec_ids:
-        if check_records_for_delete(dest_connector, temp_asmt_outcome_rec_ids):
-            delete_count += preprod_to_prod_delete_records(batch_guid, source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
-        else:
-            raise EdMigrateRecordAlreadyDeletedException
+        delete_count += preprod_to_prod_delete_records(source_connector, dest_connector, Constants.FACT_ASMT_OUTCOME, Constants.ASMNT_OUTCOME_REC_ID, asmt_outcome_rec_ids)
         del temp_asmt_outcome_rec_ids[:]
 
     # for Insert
@@ -221,10 +215,10 @@ def preprod_to_prod_delete_records(batch_guid, source_connector, dest_connector,
     dest_table = dest_connector.get_table(table_name)
     dest_primary_key_field = dest_table.columns[primary_key_field_name]
 
-    update_query = dest_table.update(dest_primary_key_field.in_(primary_keys)).values(status='D')
+    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.status == 'C')).values(status='D')
     deleted_count = dest_connector.execute(update_query).rowcount
     if deleted_count != len(primary_keys):
-        raise EdMigrateException
+        raise EdMigrateRecordAlreadyDeletedException
     else:
         count += deleted_count
 
@@ -244,25 +238,6 @@ def preprod_to_prod_insert_records(batch_guid, source_connector, dest_connector,
         for row in rows:
             count += dest_connector.execute(dest_table.insert().values(dict(row.items()))).rowcount
     return count
-
-
-# CR, make generic
-def check_records_for_delete(connector, asmt_outcome_rec_ids):
-    data_ok = False
-    # check number of asmt_outcome_rec_id to be deleted
-    number_of_ids = len(asmt_outcome_rec_ids)
-    fact_asmt_outcome_table = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-    # build query to count how many records are ready to be deleted.
-    query = select([func.count().label('asmt_outcome_rec_ids')], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_(asmt_outcome_rec_ids)).\
-        select_from(fact_asmt_outcome_table).\
-        where(fact_asmt_outcome_table.c.status == 'C')
-    result = connector.execute(query)
-    rows = result.fetchall()
-    if rows is not None:
-        count_asmt_outcome_rec_ids = rows[0]['asmt_outcome_rec_ids']
-        if count_asmt_outcome_rec_ids == number_of_ids:
-            data_ok = True
-    return data_ok
 
 
 def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):

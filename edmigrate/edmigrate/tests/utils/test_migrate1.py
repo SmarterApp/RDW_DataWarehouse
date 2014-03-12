@@ -1,5 +1,4 @@
-from edmigrate.utils.migrate import check_records_for_delete, \
-    get_batches_to_migrate, migrate_fact_asmt_outcome, migrate_batch, \
+from edmigrate.utils.migrate import get_batches_to_migrate, migrate_fact_asmt_outcome, migrate_batch, \
     report_udl_stats_batch_status
 from edmigrate.tests.utils.unittest_with_preprod_sqlite import Unittest_with_preprod_sqlite, \
     get_unittest_tenant_name as get_unittest_preprod_tenant_name
@@ -32,18 +31,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite,
 
     def tearDown(self):
         pass
-
-    def test_check_recrods_for_delete_pass(self):
-        conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
-        asmt_outcome_rec_ids = [1011691, 1011681, 1011671, 1011661, ]
-        result = check_records_for_delete(conn, asmt_outcome_rec_ids)
-        self.assertTrue(result)
-
-    def test_check_recrods_for_delete_with_already_deleted(self):
-        conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
-        asmt_outcome_rec_ids = [1011691, 1011681, 1011671, 1011661, 91011691]
-        result = check_records_for_delete(conn, asmt_outcome_rec_ids)
-        self.assertFalse(result)
 
     def test_migrate_fact_asmt_outcome(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())

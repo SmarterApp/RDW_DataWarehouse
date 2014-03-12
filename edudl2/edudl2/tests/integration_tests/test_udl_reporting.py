@@ -27,7 +27,16 @@ class Test(unittest.TestCase):
         unittest.TestCase.__init__(self, *args, **kwargs)
 
     def setUp(self):
-        self.tenant_dir = tempfile.mkdtemp()
+        print("Running setup in test_udl_reporting.py")
+        TENANT_DIR = '/opt/edware/zones/landing/arrivals/nc/nc_user/filedrop'
+#        TENANT_DIR = '/tmp/nc/nc_user/filedrop'
+#        if os.path.exists(TENANT_DIR):
+#            print("Tenant directory already exists")
+#        else:
+#            os.makedirs(TENANT_DIR, 077)
+#            print(TENANT_DIR)
+        self.tenant_dir = TENANT_DIR
+        #self.tenant_dir = tempfile.mkdtemp()
         # Get connections for UDL and Edware databases
         self.ed_connector = get_target_connection()
         self.connector = get_udl_connection()
@@ -38,15 +47,20 @@ class Test(unittest.TestCase):
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
 
-    @unittest.skip("we disable the integration for now, we need to disable integration test in edudl2, but keep in smarter e2e")
+    #@unittest.skip("we disable the integration for now, we need to disable integration test in edudl2, but keep in smarter e2e")
     def test_validation(self):
+        print("Running UDL Integration tests test_udl_reporting.py")
         # Truncate the database
         self.empty_table(self.connector, self.ed_connector)
+        print("Completed empty_table")
         # Copy files to tenant_dir and run udl pipeline
         self.run_udl_pipeline()
+        print("Completed run_udl_pipeline")
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
         self.validate_UDL_database(self.connector, self.expected_unique_batch_guids)
+        print("Completed validate_UDL_database")
         self.validate_edware_database(self.ed_connector, self.dim_table, self.fact_table, self.expected_rows, self.expected_unique_batch_guids)
+        print("Completed validate_edware_database")
 
     def empty_table(self, connector, ed_connector):
         '''
@@ -56,6 +70,7 @@ class Test(unittest.TestCase):
         param ed_connector: Edware database connection
         type ed_connector: db connection
         '''
+        print("Entered empty_table")
         #Delete all data from batch_table
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         result = connector.execute(batch_table.delete())
@@ -78,6 +93,7 @@ class Test(unittest.TestCase):
         '''
         Run pipeline with given guid
         '''
+        print("Entered run_udl_pipeline")
         # Reads the udl2_conf.ini file from /opt/edware directory
         self.conf = udl2_conf
         # Copy the gpg test data  files from the edudl2/tests/data directory to the /opt/tmp directory
@@ -94,7 +110,7 @@ class Test(unittest.TestCase):
         # Validate the job status
         #self.check_job_completion(self.connector)
 
-    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=800):
+    def validate_UDL_database(self, connector, expected_unique_batch_guids, max_wait=400):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -103,6 +119,7 @@ class Test(unittest.TestCase):
         :param max_wait: Maximum wait time for the UDL pipeline to complete run
         :type max_wait: int
         '''
+        print("Entered validate_UDL_database")
         # Get UDL batch_table connection
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         # Prepare Query for finding all batch_guid's for SUCCESS scenarios and for FAILURE scenarios
@@ -127,6 +144,7 @@ class Test(unittest.TestCase):
         '''
         Validate edware schema for Dim_asmt table and fact_asmt_table
         '''
+        print("ENtered validate_edware_database")
         #Validate dim_asmt table : All the asmt_guid for 30 batch has been loded to dim_table
         edware_table = ed_connector.get_table(dim_table)
         query_asmt_guids = select([edware_table.c.asmt_guid])
@@ -152,6 +170,7 @@ class Test(unittest.TestCase):
         :param file_path: file path containing all gpg files
         :type file_path: string
         '''
+        print("entered copy_files_to_tenantdir")
         # Get all file paths from tests/data/udl_to_reporting_e2e_integration directory
         all_files = []
         for file in os.listdir(file_path):
@@ -164,6 +183,7 @@ class Test(unittest.TestCase):
             print("Tenant directory already exists")
         else:
             os.makedirs(self.tenant_dir)
+            print(self.tenant_dir)
         # Copy all the files from tests/data directory to tenant directory
         for file in all_files:
             files = shutil.copy2(file, self.tenant_dir)
@@ -172,6 +192,7 @@ class Test(unittest.TestCase):
         '''
         Checks the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
         '''
+        print("entered check_job_completion")
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
         timer = 0

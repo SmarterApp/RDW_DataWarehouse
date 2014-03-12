@@ -157,6 +157,7 @@ common:
             db_database: edware
             db_user: edware
             db_pass: edware2013
+
 qa:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -215,6 +216,7 @@ qa:
         db:
             schema_name: edware_stats
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware_stats
+
 development:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -287,6 +289,10 @@ development:
         db_pass: edware2013
         db_driver: postgresql
     gpg_home: ~/.gnupg
+    sr_notification_max_attempts: 5
+    sr_notification_retry_interval: 1
+    sr_notification_timeout_interval: 1
+
 jenksins_dev:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.

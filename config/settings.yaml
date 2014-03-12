@@ -74,6 +74,7 @@ common:
 
     # Static cache max age
     smarter.resources.static.max_age: 3600
+    smarter.reports.year_back: 5
     # We support dev, prod, and test (env that runs FT) modes
     mode: dev
     # Run npm update (dev mode only)
@@ -571,6 +572,7 @@ development:
 
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
+    smarter.reports.year_back: 5
     # Always generate pdf regardless if it exists in file system
     pdf:
       always_generate: True
@@ -784,6 +786,7 @@ air:
         metadata: ../../resource/air_idp_metadata.xml
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
+    smarter.reports.year_back: 5
     # Always generate pdf regardless if it exists in file system
     pdf:
       always_generate: True

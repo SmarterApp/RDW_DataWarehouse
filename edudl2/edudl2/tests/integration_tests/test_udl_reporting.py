@@ -3,51 +3,57 @@ Created on Feb 21, 2014
 
 @author: bpatel, nparoha
 '''
-import time
-import unittest
 import subprocess
 import os
-import tempfile
 import fnmatch
 import shutil
-from nose.plugins.attrib import attr
-from uuid import uuid4
-import glob
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
-from sqlalchemy.sql import select, delete
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection,\
+    get_prod_connection
+from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
+import unittest
 
 
-@attr('integration')
-class Test(unittest.TestCase):
+@unittest.skipIf(os.environ.get('INTEGRATION', 0) is not '1', "INTEGRATION_TEST IS NOT '1'")
+class TestUDLReportingIntegration(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
 
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
-        TENANT_DIR = '/opt/edware/zones/landing/arrivals/nc/nc_user/filedrop'
-#        TENANT_DIR = '/tmp/nc/nc_user/filedrop'
-#        if os.path.exists(TENANT_DIR):
-#            print("Tenant directory already exists")
-#        else:
-#            os.makedirs(TENANT_DIR, 077)
-#            print(TENANT_DIR)
-        self.tenant_dir = TENANT_DIR
-        #self.tenant_dir = tempfile.mkdtemp()
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/nc/nc_user/filedrop'
         # Get connections for UDL and Edware databases
         self.ed_connector = get_target_connection()
         self.connector = get_udl_connection()
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "udl_to_reporting_e2e_integration")
+        self.here = os.path.dirname(__file__)
+        self.data_dir = os.path.join(self.here, "..", "data", "udl_to_reporting_e2e_integration")
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
+        self.delete_pre_prod_tables()
 
-    #@unittest.skip("we disable the integration for now, we need to disable integration test in edudl2, but keep in smarter e2e")
+    def tearDown(self):
+        self.ed_connector.close_connection()
+        self.connector.close_connection()
+        if os.path.exists(self.tenant_dir):
+            shutil.rmtree(self.tenant_dir)
+        # reload SDS so we don't mess up other tests
+        self.delete_pre_prod_tables()
+        command = 'python ' + os.path.join(self.here, "../../../scripts/populate_pre_prod_database.py")
+        subprocess.call(command, shell=True)
+
+    def delete_pre_prod_tables(self):
+        with get_prod_connection() as conn:
+            # TODO: read from ini the name of schema
+            metadata = conn.get_metadata(reflect=True, schema_name='edware_pre_prod')
+            for table in reversed(metadata.sorted_tables):
+                conn.execute(table.delete())
+
     def test_validation(self):
         print("Running UDL Integration tests test_udl_reporting.py")
         # Truncate the database
@@ -203,11 +209,6 @@ class Test(unittest.TestCase):
             result = connector.execute(query).fetchall()
         print('Waited for', timer, 'second(s) for job to complete.')
 
-    def tearDown(self):
-        self.ed_connector.close_connection()
-        self.connector.close_connection()
-        if os.path.exists(self.tenant_dir):
-            shutil.rmtree(self.tenant_dir)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

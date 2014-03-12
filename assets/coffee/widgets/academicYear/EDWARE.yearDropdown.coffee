@@ -38,6 +38,7 @@ define [
       $('li', @container).click ->
         value = $(this).data('value')
         edwarePreferences.saveAsmtYearPreference(value)
+        self.setSelectedValue value
         self.callback(value)
 
 

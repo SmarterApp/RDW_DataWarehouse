@@ -7,21 +7,26 @@ import argparse
 assets_dir = ''
 smarter_dir = ''
 
+
 def run_cake_task(task, message):
     print(message)
     command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'PROD', '-a', assets_dir, '-s', smarter_dir, task]
     rtn_code = subprocess.call(command_opts)
     if rtn_code != 0:
-        print('Cake command fail in %s' % message)   
+        print('Cake command fail in %s' % message)
+
 
 def optimize_javascript():
     run_cake_task('optimize', 'Optimizing Javascript')
-    
+
+
 def compile():
     run_cake_task('setup', 'Compiling coffeescripts')
-    
+
+
 def copy_assets():
-    run_cake_task('copy','Copying Assets')
+    run_cake_task('copy', 'Copying Assets')
+
 
 def main(config_file):
     config = configparser.ConfigParser()

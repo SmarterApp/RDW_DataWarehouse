@@ -1,6 +1,6 @@
 from edudl2.sfv import simple_file_validator
 from edudl2.sfv import csv_validator
-from edudl2.sfv import error_codes
+from edudl2.exceptions.errorcodes import ErrorCode
 import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import os
@@ -33,23 +33,23 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir, 'nonexistent.csv', 1)
-        self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
+        self.assertEqual(results[0][0], ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir, 'nonexistent.csv', 1)
-        self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
+        self.assertEqual(results[0][0], ErrorCode.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
 
     def test_simple_file_validator_invalid_extension(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir, 'invalid_ext.xls', 1)
-        self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
+        self.assertEqual(results[0][0], ErrorCode.SRC_FILE_TYPE_NOT_SUPPORTED)
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir, 'invalid_ext.xls', 1)
-        self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
+        self.assertEqual(results[0][0], ErrorCode.SRC_FILE_TYPE_NOT_SUPPORTED)
 
     def test_for_source_file_with_less_number_of_columns(self):
         test_csv_fields = {'guid_batch', 'student_guid'}
         validator = csv_validator.DoesSourceFileInExpectedFormat('assessment', csv_fields=test_csv_fields)
-        error_code_expected = error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
+        error_code_expected = ErrorCode.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
         results = [validator.execute(self.data_dir,
                                      'invalid_csv.csv', 1)]
         self.assertEqual(len(results), 1)
@@ -58,7 +58,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
     def test_for_source_file_with_mismatched_format(self):
         test_csv_fields = {'guid_batch', 'student_guid'}
         validator = csv_validator.DoesSourceFileInExpectedFormat('studentregistration', csv_fields=test_csv_fields)
-        error_code_expected = error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
+        error_code_expected = ErrorCode.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
         results = [validator.execute(self.data_dir,
                                      'invalid_csv.csv', 1)]
         self.assertEqual(len(results), 1)
@@ -67,7 +67,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
     def test_simple_file_validator_wrong_delimiter(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir, 'REALDATA_3005.csv', 1)
-        self.assertEqual(results[1][0], error_codes.SRC_FILE_WRONG_DELIMITER)
+        self.assertEqual(results[1][0], ErrorCode.SRC_FILE_WRONG_DELIMITER)
 
     def test_for_source_file_with_matching_columns(self):
         test_csv_fields = ['date_assessed', 'dob_student', 'type_school', 'address_student_city', 'address_student_line1', 'address_student_line2', 'address_student_zip',
@@ -95,7 +95,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir,
                                     'student_registration_data/test_invalid_student_reg.json', 1)
-        error_code_expected = error_codes.SRC_JSON_INVALID_FORMAT
+        error_code_expected = ErrorCode.SRC_JSON_INVALID_FORMAT
         expected_field = 'academic_year'
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0][0], error_code_expected)

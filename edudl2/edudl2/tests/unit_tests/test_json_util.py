@@ -59,10 +59,10 @@ class TestJsonUtils(unittest.TestCase):
 
     def test_get_nested_keys(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        key = get_value_from_json(self.test_expanded_dir, 'source', 'testregcallbackurl')
+        key = get_value_from_json(self.test_expanded_dir, 'source.testregcallbackurl')
         self.assertEqual('StateTestReg.gov/StuReg/CallBack', key)
 
     def test_missing_nested_keys(self):
         shutil.copy(os.path.join(self.data_dir, 'test_valid_content_type.json'), self.test_expanded_dir)
-        value = get_value_from_json(self.test_expanded_dir, 'source', 'incorrectkey1', 'incorrectkey2')
+        value = get_value_from_json(self.test_expanded_dir, 'source.incorrectkey1.incorrectkey2')
         self.assertEqual(None, value)

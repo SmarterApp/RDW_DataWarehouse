@@ -14,8 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from uuid import uuid4
 from time import sleep
 from multiprocessing import Process
-
-from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
 from sqlalchemy.sql.expression import and_, select
 
@@ -38,8 +37,8 @@ class ValidateTableData(unittest.TestCase):
                      'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
                      'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
         self.archived_file = FILE_DICT
-        self.connector = TargetDBConnection()
-        self.udl_connector = UDL2DBConnection()
+        self.connector = get_target_connection()
+        self.udl_connector = get_udl_connection()
         self.tenant_dir = TENANT_DIR
         here = os.path.dirname(__file__)
         self.driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
@@ -245,6 +244,9 @@ class HTTPPOSTHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         self.send_response(201)
         self.end_headers()
+
+    def log_message(self, format, *args):
+        return
 
 
 if __name__ == '__main__':

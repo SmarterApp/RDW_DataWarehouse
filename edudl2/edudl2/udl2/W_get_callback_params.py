@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from celery.utils.log import get_task_logger
 import datetime
-from edudl2.get_callback_params.get_callback_params import get_callback_param
+from edudl2.get_callback_params.get_callback_params import get_callback_params
 from edudl2.udl2.celery import celery
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
@@ -19,18 +19,14 @@ def task(msg):
     tenant_directory_paths = msg[mk.TENANT_DIRECTORY_PATHS]
     expanded_dir = tenant_directory_paths[mk.EXPANDED]
 
-    student_reg_guid = get_callback_param(expanded_dir, msg[mk.LOAD_TYPE], 'student_reg_guid_key')
-    reg_system_id = get_callback_param(expanded_dir, msg[mk.LOAD_TYPE], 'reg_system_id_key')
-    callback_url = get_callback_param(expanded_dir, msg[mk.LOAD_TYPE], 'callback_url_key')
+    student_reg_guid, reg_system_id, callback_url = get_callback_params(expanded_dir, msg[mk.LOAD_TYPE])
 
     logger.info('W_GET_CALLBACK_URL: Callback URL is <%s>' % callback_url)
     end_time = datetime.datetime.now()
 
-    # benchmark
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
     benchmark.record_benchmark()
 
-    # Outgoing message to be piped to the file validator
     outgoing_msg = {}
     outgoing_msg.update(msg)
     outgoing_msg.update({mk.STUDENT_REG_GUID: student_reg_guid})

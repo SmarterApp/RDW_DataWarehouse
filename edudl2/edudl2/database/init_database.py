@@ -17,7 +17,8 @@ from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.database.metadata.udl2_metadata import generate_udl2_sequences
 from edudl2.database.udl2_connector import UDL2DBConnection, initialize_db,\
-    TargetDBConnection
+    get_target_connection, initialize_db_udl, initialize_db_target,\
+    get_udl_connection
 from edudl2.database.populate_ref_info import populate_ref_column_map,\
     populate_stored_proc
 
@@ -164,7 +165,7 @@ def load_fake_record_in_star_schema():
     @param udl2_conf: The configuration dictionary for
     '''
     print('load fake record')
-    with TargetDBConnection() as conn:
+    with get_target_connection() as conn:
         dim_section = conn.get_table('dim_section')
         dim_inst_hier = conn.get_table('dim_inst_hier')
         stmt = dim_section.insert({'section_rec_id': 1,
@@ -226,13 +227,13 @@ def setup_udl2_schema(udl2_conf):
     initialize_db(UDL2DBConnection, udl2_conf, allow_schema_create=True)
     udl2_schema_name = udl2_conf['udl2_db']['db_schema']
     create_udl2_sequence(udl2_schema_name)
-    create_dblink_extension(UDL2DBConnection, udl2_schema_name)
+    create_dblink_extension(get_udl_connection, udl2_schema_name)
     create_foreign_data_wrapper_extension(udl2_schema_name)
     create_foreign_data_wrapper_server(udl2_conf['udl2_db']['fdw_server'])
 
     # Create dblink pre-prod schema
-    initialize_db(TargetDBConnection, udl2_conf)
-    create_dblink_extension(TargetDBConnection, udl2_conf['target_db']['db_schema'])
+    initialize_db_udl(udl2_conf)
+    create_dblink_extension(get_target_connection, udl2_conf['target_db']['db_schema'])
 
     # load data and stored procedures
     load_fake_record_in_star_schema()
@@ -255,8 +256,8 @@ def teardown_udl2_schema(udl2_conf):
     drop_schema(udl2_conf['udl2_db']['db_schema'])
     
     # Drop dblink in pre-prod 
-    initialize_db(TargetDBConnection, udl2_conf)
-    drop_dblink_extension(TargetDBConnection)
+    initialize_db_target(udl2_conf)
+    drop_dblink_extension(get_target_connection)
 
 
 def main():

@@ -4,7 +4,7 @@ from edudl2.udl2_util.database_util import connect_db, execute_query_with_result
 from uuid import uuid4
 import os
 from edudl2.preetl.pre_etl import pre_etl_job
-from edudl2.database.udl2_connector import initialize_db, TargetDBConnection, UDL2DBConnection
+from edudl2.database.udl2_connector import initialize_db_udl
 from edudl2.udl2_util.config_reader import read_ini_file
 import tempfile
 import shutil
@@ -18,7 +18,7 @@ class PreEtlTest(unittest.TestCase):
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path_file)
         self.udl2_conf = conf_tup[0]
-        initialize_db(UDL2DBConnection, self.udl2_conf)
+        initialize_db_udl(self.udl2_conf)
 
         # create test error log file
         self.temp_dir = tempfile.mkdtemp()

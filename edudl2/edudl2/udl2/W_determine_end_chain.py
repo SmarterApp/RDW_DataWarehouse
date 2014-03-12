@@ -9,6 +9,15 @@ from celery.canvas import chain
 logger = get_task_logger(__name__)
 
 
+def _get_loop_dir_task(msg):
+    loop_tasks = []
+    if mk.LOOP_PIPELINE in msg and msg[mk.LOOP_PIPELINE] is True:
+        import edudl2.udl2.W_get_udl_file as W_get_udl_file
+        return [W_get_udl_file.get_next_file.s()]
+
+    return loop_tasks
+
+
 @celery.task(name='udl2.W_determine_end_chain.task', base=Udl2BaseTask)
 def task(msg):
     logger.info(task.name)
@@ -17,15 +26,15 @@ def task(msg):
 
     target_tasks = {"assessment": [W_load_from_integration_to_star.explode_to_dims.s(msg),
                                    W_load_from_integration_to_star.explode_to_fact.s(),
-                                   W_load_from_integration_to_star.handle_deletions.s()],
+                                   W_load_from_integration_to_star.handle_deletions.s(),
+                                   W_load_from_integration_to_star.handle_record_upsert.s()
+                                   ],
                     "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
 
     post_etl_tasks = {"assessment": [W_post_etl.task.s(), W_all_done.task.s()],
                       "studentregistration": [W_post_etl.task.s(), W_all_done.task.s(),
                                               W_job_status_notification.task.s()]}
 
-    result = chain(target_tasks[load_type] + post_etl_tasks[load_type]).delay()
+    loop_dir_tasks = _get_loop_dir_task(msg)
 
-    outgoing_msg = result.get()
-
-    return outgoing_msg
+    chain(target_tasks[load_type] + post_etl_tasks[load_type] + loop_dir_tasks).delay()

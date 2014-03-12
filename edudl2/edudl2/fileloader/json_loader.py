@@ -18,7 +18,7 @@ import argparse
 import json
 import edudl2.udl2_util.database_util as db_util
 from edudl2.udl2 import message_keys as mk
-from edudl2.database.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import get_udl_connection
 import time
 from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 
@@ -90,7 +90,7 @@ def load_to_table(data_dict, guid_batch, int_table):
     '''
 
     # Create sqlalchemy connection and get table information from sqlalchemy
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         s_int_table = conn.get_table(int_table)
         data_dict = fix_empty_strings(data_dict)
         data_dict[mk.GUID_BATCH] = guid_batch

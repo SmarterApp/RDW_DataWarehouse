@@ -8,7 +8,7 @@ import os
 import shutil
 import subprocess
 from time import sleep
-from edudl2.database.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 
@@ -28,7 +28,7 @@ class ValidateMultiFiles(unittest.TestCase):
                      'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
                      'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
         self.tenant_dir = TENANT_DIR
-        self.connector = UDL2DBConnection()
+        self.connector = get_udl_connection()
 
 #teardown tenant folder
     def tearDown(self):
@@ -54,7 +54,8 @@ class ValidateMultiFiles(unittest.TestCase):
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
         print(command)
-        subprocess.call(command, shell=True)
+        p = subprocess.Popen(command, shell=True)
+        returncode = p.wait()
         self.check_job_completion(self.connector)
 
 #Copy file to tenant folder
@@ -92,6 +93,8 @@ class ValidateMultiFiles(unittest.TestCase):
     def test_database(self):
         self.empty_batch_table(self.connector)
         self.udl_run()
+        # wait for a while
+        sleep(10)
         self.connect_verify_udl(self.connector)
 
 if __name__ == "__main__":

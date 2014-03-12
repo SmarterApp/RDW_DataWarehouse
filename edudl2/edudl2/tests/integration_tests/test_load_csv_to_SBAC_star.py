@@ -7,6 +7,7 @@
 #HENSHIN_FILE_LOCATIONS = '/opt/wgen/edware-udl/zones/datafiles/henshin_out'
 #
 #
+#@unittest.skip("still in development")
 #class ITestLoadCsvToSBACStar(unittest.TestCase):
 #
 #    def setUp(self):
@@ -24,6 +25,7 @@
 #        subprocess.call("rm {henshin_dir}/METADATA*".format(henshin_dir=HENSHIN_FILE_LOCATIONS), shell=True)
 #        subprocess.call("rm {henshin_dir}/REALDATA*".format(henshin_dir=HENSHIN_FILE_LOCATIONS), shell=True)
 #
+#    @unittest.skip("still in development")
 #    def test_load_csv_to_sbac_star(self):
 #        for each in range(self.file_count):
 #            print("driver.py -c {henshin_dir}/REALDATA_ASMT_ID_{count}.csv -j {henshin_dir}/METADATA_ASMT_ID_{count}.json".format(count=each, henshin_dir=HENSHIN_FILE_LOCATIONS))

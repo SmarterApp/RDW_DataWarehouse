@@ -37,30 +37,6 @@ def generate_table(schema_name=None, bind=None):
           Column('UDL_completion_duration', VARCHAR(50), nullable=False),
           Column('file_size', VARCHAR(50), nullable=False)
           )
-    Table('UDL_BATCH', metadata,
-          Column('batch_sid', BigInteger, primary_key=True, nullable=False),
-          Column('guid_batch', VARCHAR(256), nullable=False),
-          Column('load_type', VARCHAR(50), nullable=True),
-          Column('working_schema', VARCHAR(50), nullable=True),
-          Column('udl_phase', VARCHAR(256), nullable=True),
-          Column('udl_phase_step', VARCHAR(50), nullable=True),
-          Column('udl_phase_step_status', VARCHAR(50), nullable=True),
-          Column('udl_leaf', Boolean, nullable=True),
-          Column('size_records', BigInteger, nullable=True),
-          Column('size_units', BigInteger, nullable=True),
-          Column('start_timestamp', TIMESTAMP(True), nullable=True),
-          Column('end_timestamp', TIMESTAMP(True), nullable=True),
-          Column('duration', Interval, nullable=True),
-          Column('time_for_one_million_records', Time, nullable=True),
-          Column('records_per_hour', BigInteger, nullable=True),
-          Column('task_id', VARCHAR(256), nullable=True),
-          Column('task_status_url', VARCHAR(256), nullable=True),
-          Column('user_sid', BigInteger, nullable=True),
-          Column('user_email', VARCHAR(256), nullable=True),
-          Column('created_date', TIMESTAMP(True), nullable=True),
-          Column('mod_date', TIMESTAMP(True), nullable=False)
-          )
-
     return metadata
 
 

@@ -9,9 +9,10 @@ from uuid import uuid4
 from sqlalchemy.sql import select, and_, func
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
-
-from edudl2.database.udl2_connector import UDL2DBConnection, TargetDBConnection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import configuration_keys as ck
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
 
@@ -74,13 +75,15 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             }
         }
         self.tenant_dir = TENANT_DIR
-        self.target_connector = TargetDBConnection()
-        self.udl_connector = UDL2DBConnection()
+        self.target_connector = get_target_connection()
+        self.udl_connector = get_udl_connection()
         self.load_type = udl2_conf['load_type']['student_registration']
         self.empty_target_table()
         self.receive_requests = True
+        self.start_http_post_server()
 
     def tearDown(self):
+        self.shutdown_http_post_server()
         self.udl_connector.close_connection()
         self.target_connector.close_connection()
         if os.path.exists(self.tenant_dir):
@@ -102,7 +105,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.assertNotEqual(result, [])
         for row in result:
             status = row['udl_phase_step_status']
-            self.assertEqual(status, 'SUCCESS', 'UDL process did not complete successfully')
+            self.assertEqual(status, mk.SUCCESS, 'UDL process did not complete successfully')
 
     #Validate that the load type received is student registration
     def validate_load_type(self):
@@ -114,7 +117,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             status = row['udl_phase_step_status']
             load = row['load_type']
             print('Load type:', load)
-            self.assertEqual(status, 'SUCCESS')
+            self.assertEqual(status, mk.SUCCESS)
             self.assertEqual(load, self.load_type, 'Not the expected load type.')
 
     #Validate the target table
@@ -157,11 +160,11 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         print('Total number of rows in target table:', count)
         self.assertEqual(count, expected_number, 'Unexpected number of rows in target table')
 
-    #Validate that the notification to the callback url matches the status, with a certain number of retries attempted
+    # Validate that the notification to the callback url matches the status, with a certain number of retries attempted
     def validate_notification(self, expected_status, expected_error_codes, expected_retries):
         # If there are job notification retries, wait for job notification to finish.
         if expected_retries > 0:
-            retry_interval = udl2_conf['sr_notification_retry_interval']
+            retry_interval = udl2_conf[ck.SR_NOTIFICATION_RETRY_INTERVAL]
             expected_duration = expected_retries * retry_interval
             max_wait_time = expected_duration + (retry_interval / 2)
             self.check_notification_completion(max_wait=max_wait_time)
@@ -175,13 +178,11 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             notification_status = row['udl_phase_step_status']
             self.assertEqual(expected_status, notification_status)
             errors = row['error_desc']
-            num_retries = 0
-            last_retry_pos = errors.rfind('Retry ') + 6 if errors else 0
-            if last_retry_pos > 6:
-                num_retries = int(errors[last_retry_pos: last_retry_pos + 1])
-            self.assertEqual(expected_retries, num_retries, 'Incorrect number of retries')
-            for error_code in expected_error_codes:
-                self.assertTrue(error_code in errors)
+            if expected_status == mk.FAILURE:
+                num_retries = errors.count(',')
+                self.assertEqual(expected_retries, num_retries, 'Incorrect number of retries')
+                for error_code in expected_error_codes:
+                    self.assertTrue(error_code in errors)
             if expected_retries > 0:
                 duration = row['duration'].seconds
                 self.assertGreaterEqual(duration, expected_duration)
@@ -233,64 +234,55 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         return shutil.copy2(self.student_reg_files[file_to_load]['path'], self.tenant_dir)
 
     def test_udl_student_registration(self):
+        # Run and verify first run of student registration data
+        self.batch_id = str(uuid4())
+        self.run_udl_pipeline('original_data')
+        self.validate_successful_job_completion()
+        self.validate_load_type()
+        self.validate_stu_reg_target_table('original_data')
+        self.validate_student_data('original_data')
+        self.validate_total_number_in_target('original_data')
+        self.validate_notification(mk.SUCCESS, [], 0)
 
-        # Start the http post server subprocess
-        self.start_post_server()
+        # Run and verify second run of student registration data (different test registration than previous run)
+        # Should retry notification twice, then succeed
+        self.batch_id = str(uuid4())
+        self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
+        self.validate_successful_job_completion()
+        self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
+        self.validate_student_data('data_for_different_test_center_than_original_data')
+        self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_notification(mk.SUCCESS, ['408', '408'], 2)
 
-        try:
-            #Run and verify first run of student registration data
-            self.batch_id = str(uuid4())
-            self.run_udl_pipeline('original_data')
-            self.validate_successful_job_completion()
-            self.validate_load_type()
-            self.validate_stu_reg_target_table('original_data')
-            self.validate_student_data('original_data')
-            self.validate_total_number_in_target('original_data')
-            self.validate_notification('SUCCESS', [], 0)
-        except Exception:
-            self.shutdown_post_server()
-            raise
+        # Run and verify second run of student registration data again
+        # Should max out on retry attempts, then fail
+        self.batch_id = str(uuid4())
+        self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
+        self.validate_successful_job_completion()
+        self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
+        self.validate_student_data('data_for_different_test_center_than_original_data')
+        self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_notification(mk.FAILURE, ['408', '408', '408', '408', '408'], 4)
 
-        try:
-            #Run and verify second run of student registration data (different test registration than previous run)
-            #Should retry once, then succeed
-            self.batch_id = str(uuid4())
-            self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
-            self.validate_successful_job_completion()
-            self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
-            self.validate_student_data('data_for_different_test_center_than_original_data')
-            self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
-            self.validate_notification('SUCCESS', ['408', '201'], 1)
-        except Exception:
-            self.shutdown_post_server()
-            raise
+        # Run and verify third run of student registration data (same academic year and test registration as first run)
+        # Should overwrite all data from the first run, and fail on notification
+        self.batch_id = str(uuid4())
+        self.run_udl_pipeline('data_to_overwrite_original_data')
+        self.validate_successful_job_completion()
+        self.validate_stu_reg_target_table('data_to_overwrite_original_data')
+        self.validate_student_data('data_to_overwrite_original_data')
+        self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_notification(mk.FAILURE, ['401'], 0)
 
-        try:
-            #Run and verify third run of student registration data (same academic year and test registration as first run)
-            #Should overwrite all data from the first run
-            self.batch_id = str(uuid4())
-            self.run_udl_pipeline('data_to_overwrite_original_data')
-            self.validate_successful_job_completion()
-            self.validate_stu_reg_target_table('data_to_overwrite_original_data')
-            self.validate_student_data('data_to_overwrite_original_data')
-            self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
-            self.validate_notification('FAILURE', ['401'], 0)
-        except Exception:
-            self.shutdown_post_server()
-            raise
-
-        # End the http post server subprocess
-        self.shutdown_post_server()
-
-    def start_post_server(self):
+    def start_http_post_server(self):
         self.receive_requests = True
         try:
-            self.proc = Process(target=self.run_post_server)
+            self.proc = Process(target=self.run_http_post_server)
             self.proc.start()
         except Exception:
             pass
 
-    def run_post_server(self):
+    def run_http_post_server(self):
         try:
             server_address = ('127.0.0.1', 8000)
             self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
@@ -301,7 +293,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         finally:
             print('POST Service stop receiving requests.')
 
-    def shutdown_post_server(self):
+    def shutdown_http_post_server(self):
         try:
             self.receive_requests = False
             sleep(0.5)  # Give server time to stop listening
@@ -314,7 +306,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 # This class handles our HTTP POST requests with various responses
 class HTTPPOSTHandler(BaseHTTPRequestHandler):
     response_count = 0
-    response_codes = [201, 408, 201, 401]
+    response_codes = [201, 408, 408, 201, 408, 408, 408, 408, 408, 401]
 
     def __init__(self, request, client_address, server):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)
@@ -323,6 +315,9 @@ class HTTPPOSTHandler(BaseHTTPRequestHandler):
         self.send_response(HTTPPOSTHandler.response_codes[HTTPPOSTHandler.response_count])
         self.end_headers()
         HTTPPOSTHandler.response_count += 1
+
+    def log_message(self, format, *args):
+        return
 
 
 if __name__ == '__main__':

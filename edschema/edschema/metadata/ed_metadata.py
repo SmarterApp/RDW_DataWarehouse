@@ -285,5 +285,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('extract_date', String(10), nullable=False),
                                  Column('reg_system_id', String(50), nullable=False),
                                  )
+    Index('student_reg_system_id_yearx', student_registration.c.reg_system_id, student_registration.c.academic_year, unique=False)
 
     return metadata

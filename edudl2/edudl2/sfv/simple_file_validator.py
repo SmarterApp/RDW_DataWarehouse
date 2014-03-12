@@ -11,7 +11,7 @@ b) Checking the file has data and the application has permissions to access it
 
 import os
 
-from edudl2.sfv import error_codes
+from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.sfv import csv_validator
 from edudl2.sfv import json_validator
 
@@ -45,7 +45,7 @@ class SimpleFileValidator():
             result = validator.execute(dir_path, file_name, guid_batch)
             return result
         else:
-            return [(error_codes.SRC_FILE_TYPE_NOT_SUPPORTED,
+            return [(ErrorCode.SRC_FILE_TYPE_NOT_SUPPORTED,
                     dir_path,
                     file_name,
                     guid_batch)]

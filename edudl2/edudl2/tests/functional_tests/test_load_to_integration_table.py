@@ -9,7 +9,7 @@ from edudl2.fileloader.file_loader import load_file
 from edudl2.udl2 import message_keys as mk
 import edudl2.rule_maker.rules.code_generator_special_rules as sr
 from edudl2.tests.functional_tests.util import UDLTestHelper
-from edudl2.database.udl2_connector import initialize_db, UDL2DBConnection
+from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from uuid import uuid4
 
@@ -19,7 +19,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
     @classmethod
     def setUpClass(cls):
         super(FuncTestLoadToIntegrationTable, cls).setUpClass()
-        initialize_db(UDL2DBConnection, cls.udl2_conf)
+        initialize_db_udl(cls.udl2_conf)
 
     def load_file_to_stage(self, data_file, header_file, load_type, staging_table, guid):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -176,7 +176,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                                   'substr(A.us_school_entry_date, 1, 10)', 'substr(A.lep_entry_date, 1, 10)',
                                                   'substr(A.lep_exit_date, 1, 10)', 'substr(A.t3_program_type, 1, 27)',
                                                   'substr(A.prim_disability_type, 1, 3)', 'A.created_date']
-        with UDL2DBConnection() as conn:
+        with get_udl_connection() as conn:
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
                                                                                                'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',

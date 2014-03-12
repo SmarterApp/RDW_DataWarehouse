@@ -17,7 +17,7 @@ import os
 import logging
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
-from edudl2.database.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import get_udl_connection
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +96,7 @@ class BatchTableBenchmark(object):
 
     def __init__(self, guid_batch, load_type, udl_phase, start_timestamp, end_timestamp, working_schema=None, size_records=None, size_units=None,
                  udl_phase_step_status=mk.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None,
-                 error_desc=None, stack_trace=None):
+                 error_desc=None, stack_trace=None, tenant='', input_file=''):
         '''Constructor'''
         self.guid_batch = guid_batch
         self.load_type = load_type
@@ -116,6 +116,8 @@ class BatchTableBenchmark(object):
         self.user_sid = user_sid
         self.error_desc = error_desc
         self.stack_trace = stack_trace
+        self.tenant = tenant
+        self.input_file = input_file
 
     def get_result_dict(self):
         '''
@@ -128,6 +130,6 @@ class BatchTableBenchmark(object):
         Record the benchmark information for the this instance of the benchmarking information
         '''
 
-        with UDL2DBConnection() as connector:
+        with get_udl_connection() as connector:
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
             connector.execute(batch_table.insert(), False, self.get_result_dict())

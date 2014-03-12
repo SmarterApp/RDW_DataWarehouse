@@ -1,122 +1,122 @@
 {
-	"not_stated_message": "{{percentage}}% 記載なし",
-	"grades" : {
-		"display" : "学年",
-		"tag" : "学年",
-		"name" : "grade",
-		"options" : [
-			{
-				"label" : "3年生",
-				"value" : "3"
-			},
-			{
-				"label" : "4年生",
-				"value" : "4"
-			},
-			{
-				"label" : "5年生",
-				"value" : "5"
-			},
-			{
-				"label" : "6年生",
-				"value" : "6"
-			},
-			{
-				"label" : "7年生",
-				"value" : "7"
-			},
-			{
-				"label" : "8年生",
-				"value" : "8"
-			},
-			{
-				"label" : "11年生",
-				"value" : "11"
-			}
-		]
-	},
-	"filters" : [
-		{
-			"display" : "英語未熟者 (LEP)*",
-			"tag" : "LEP",
-			"name" : "dmgPrgLep",
-			"comment" : "*あなたの状態はELLとして学生を識別する場合は、このカテゴリには、英語学習者（ELL）が含まれ",
-			"options" : [
+    "not_stated_message": "{{percentage}}% 記載なし",
+    "grades" : {
+        "display" : "学年",
+        "tag" : "学年",
+        "name" : "grade",
+        "options" : [
+            {
+                "label" : "3年生",
+                "value" : "3"
+            },
+            {
+                "label" : "4年生",
+                "value" : "4"
+            },
+            {
+                "label" : "5年生",
+                "value" : "5"
+            },
+            {
+                "label" : "6年生",
+                "value" : "6"
+            },
+            {
+                "label" : "7年生",
+                "value" : "7"
+            },
+            {
+                "label" : "8年生",
+                "value" : "8"
+            },
+            {
+                "label" : "11年生",
+                "value" : "11"
+            }
+        ]
+    },
+    "filters" : [
+        {
+            "display" : "英語未熟者 (LEP)*",
+            "tag" : "LEP",
+            "name" : "dmgPrgLep",
+            "comment" : "*あなたの状態はELLとして学生を識別する場合は、このカテゴリには、英語学習者（ELL）が含まれ",
+            "options" : [
 
-				{
-					"label": "はい",
-				  	"value": "Y"
-				},
-				{
-					"label": "いいえ",
-				  	"value": "N"
-				},
-				{
-					"label": "未記入",
-				  	"value": "NS"
-				}
-			]
-		},
-		{
-			"display" : "人種/民族",
-			"tag" : "人種/民族",
-			"name" : "ethnicity",
-			"comment" : "*ヒスパニックまたはラテン系ではない",
-			"options" : [
-				{
-					"label": "あらゆる人種のヒスパニックまたはラテン系",
-				  	"value": "3"
-				},
-				{
-					"label": "アメリカインディアンもしくはアラスカ原住民*",
-				  	"value": "4"
-				},
-				{
-					"label": "アジア人*",
-				  	"value": "2"
-				},
-				{
-					"label": "黒人もしくはアフリカ系アメリカ人*",
-				  	"value": "1"
-				},
-				{
-					"label": "ハワイ原住民もしくは太平洋諸島系原住民*",
-				  	"value": "5"
-				},
-				{
-					"label": "白人*",
-				  	"value": "6"
-				},
-				{
-					"label": "多人種*",
-				  	"value": "7"
-				},
-				{
-					"label": "未記入",
-				  	"value": "0"
-				}
-			]
-		},
-		{
-			"display" : "IEP",
-			"tag" : "IEP",
-			"name" : "dmgPrgIep",
-			"comment": "*IEPの分類はGIEP（すなわち、ギフテッド学生）を持つ学生が含まれていない",
-			"options" : [
-				{
-					"label": "はい",
-				  	"value": "Y"
-				},
-				{
-					"label": "いいえ",
-				  	"value": "N"
-				},
-				{
-					"label": "未記入",
-				  	"value": "NS"
-				}
-			]
-		},
+                {
+                    "label": "はい",
+                      "value": "Y"
+                },
+                {
+                    "label": "いいえ",
+                      "value": "N"
+                },
+                {
+                    "label": "未記入",
+                      "value": "NS"
+                }
+            ]
+        },
+        {
+            "display" : "人種/民族",
+            "tag" : "人種/民族",
+            "name" : "ethnicity",
+            "comment" : "*ヒスパニックまたはラテン系ではない",
+            "options" : [
+                {
+                    "label": "あらゆる人種のヒスパニックまたはラテン系",
+                      "value": "3"
+                },
+                {
+                    "label": "アメリカインディアンもしくはアラスカ原住民*",
+                      "value": "4"
+                },
+                {
+                    "label": "アジア人*",
+                      "value": "2"
+                },
+                {
+                    "label": "黒人もしくはアフリカ系アメリカ人*",
+                      "value": "1"
+                },
+                {
+                    "label": "ハワイ原住民もしくは太平洋諸島系原住民*",
+                      "value": "5"
+                },
+                {
+                    "label": "白人*",
+                      "value": "6"
+                },
+                {
+                    "label": "多人種*",
+                      "value": "7"
+                },
+                {
+                    "label": "未記入",
+                      "value": "0"
+                }
+            ]
+        },
+        {
+            "display" : "IEP",
+            "tag" : "IEP",
+            "name" : "dmgPrgIep",
+            "comment": "*IEPの分類はGIEP（すなわち、ギフテッド学生）を持つ学生が含まれていない",
+            "options" : [
+                {
+                    "label": "はい",
+                      "value": "Y"
+                },
+                {
+                    "label": "いいえ",
+                      "value": "N"
+                },
+                {
+                    "label": "未記入",
+                      "value": "NS"
+                }
+            ]
+        },
         {
             "display" : "性別",
             "tag" : "性別",
@@ -136,23 +136,23 @@
                 }
             ]
         },
-		{
-			"display" : "504",
-			"tag" : "504",
-			"name" : "dmgPrg504",
-			"options" : [
-				{
-					"label" : "はい",
-					"value" : "Y"
-				},{
-					"label" : "いいえ",
-					"value" : "N"
-				},
-				{
-					"label": "未記入",
-				  	"value": "NS"
-				}
-			]
-		}
-	]
+        {
+            "display" : "504",
+            "tag" : "504",
+            "name" : "dmgPrg504",
+            "options" : [
+                {
+                    "label" : "はい",
+                    "value" : "Y"
+                },{
+                    "label" : "いいえ",
+                    "value" : "N"
+                },
+                {
+                    "label": "未記入",
+                      "value": "NS"
+                }
+            ]
+        }
+    ]
 }

@@ -5,9 +5,9 @@ from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
 from edcore.utils.utils import compile_query_to_sql_text
+from edudl2.exceptions.errorcodes import ErrorSource
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from config.ref_table_data import op_table_conf
-from edudl2.database.udl2_connector import TargetDBConnection, UDL2DBConnection, ProdDBConnection
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_column_and_type_mapping
 from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
@@ -16,7 +16,9 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   match_delete_fact_asmt_outcome_row_in_prod)
-from edudl2.move_to_target.query_helper import QueryHelper
+from edudl2.database.udl2_connector import get_target_connection, get_udl_connection,\
+    get_prod_connection
+from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
 
 
 DBDRIVER = "postgresql"
@@ -54,7 +56,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
     # create database connection (connect to target)
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
 
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
@@ -106,7 +108,7 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     2. Select asmt_rec_id from dim_asmt by the same guid_amst got from 1. It should have 1 value
     '''
     # connect to integration table, to get the value of guid_asmt
-    with UDL2DBConnection() as conn_to_source_db:
+    with get_udl_connection() as conn_to_source_db:
         query_to_get_guid = select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA],
                                                             source_table_name,
                                                             guid_column_name_in_source, conf[mk.GUID_BATCH])
@@ -115,7 +117,7 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
                                                         guid_column_name_in_source)
 
     # connect to target table, to get the value of asmt_rec_id
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn_to_target_db:
         query_to_get_rec_id = select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA],
                                                                 target_table_name,
                                                                 rec_id_column_name,
@@ -191,7 +193,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     @param column_types: data types of all columns in one target table
     '''
     # create database connection to target
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
 
         # create insertion query
         # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
@@ -229,7 +231,7 @@ def match_deleted_records(conf, match_conf):
     candidates = []
     matched_results = []
     logger.info('in match_deleted_records')
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as target_conn:
+    with get_target_connection(conf[mk.TENANT_NAME]) as target_conn:
 
         query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
                                                     match_conf['target_table'],
@@ -239,7 +241,7 @@ def match_deleted_records(conf, match_conf):
                                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
                                                    'move_to_target',
                                                    'matched_deleted_records')
-    with ProdDBConnection(conf[mk.TENANT_NAME]) as prod_conn:
+    with get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
         for candidate in candidates.fetchall():
             query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.PROD_DB_SCHEMA],
                                                                match_conf['prod_table'],
@@ -258,15 +260,26 @@ def match_deleted_records(conf, match_conf):
 
 
 def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
+    '''
+    Updates or deletes records that have already existed in production database.
+
+    :param tenant_name: tenant name, to get target database connection
+    :param guid_batch:  batch buid
+    :param match_conf:  configurations for move_to_target to match tables for
+                        foreign key rec ids for dim_asmt, dim_student, and dim_inst_hier.
+                        See move_to_target_conf.py
+    '''
     affected_rows = 0
-    with TargetDBConnection(tenant_name) as target_conn, ProdDBConnection(tenant_name) as prod_conn:
-        target_db_helper = QueryHelper(target_conn, guid_batch, match_conf)
-        prod_db_helper = QueryHelper(prod_conn, guid_batch, match_conf)
+    with get_target_connection(tenant_name) as target_conn, get_prod_connection(tenant_name) as prod_conn:
+        target_db_helper = HanldeUpsertHelper(target_conn, guid_batch, match_conf)
+        prod_db_helper = HanldeUpsertHelper(prod_conn, guid_batch, match_conf)
         for record in target_db_helper.find_all():
             matched = prod_db_helper.find_by_natural_key(record)
             if not matched:
                 continue
+            # update dependant database tables record
             target_db_helper.update_dependant(record, matched)
+            # remove existing record from target db to avoid duplication
             target_db_helper.delete_by_guid(record)
             affected_rows += 1
     return affected_rows
@@ -278,7 +291,7 @@ def check_mismatched_deletions(conf, match_conf):
     so we will raise error for this udl batch
     '''
     logger.info('check_mismatched_deletions')
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
         query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
                                                     match_conf['target_table'],
                                                     conf[mk.GUID_BATCH],
@@ -294,7 +307,10 @@ def check_mismatched_deletions(conf, match_conf):
         raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
                                    mismatched_rows,
                                    "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                             table=match_conf['prod_table']))
+                                                             table=match_conf['prod_table']),
+                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
+                                   conf[mk.UDL_PHASE_STEP],
+                                   conf[mk.WORKING_SCHEMA])
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):
@@ -303,7 +319,7 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
     and update the asmnt_outcome_rec_id in pre-prod to prod value so migration can work faster
     '''
     logger.info('update_deleted_record_rec_id')
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
         for matched_value in matched_values:
             query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
                                                          match_conf['target_table'],
@@ -319,9 +335,12 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                 # write to err_list
                 e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
                                           "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                                    table=match_conf['prod_table']))
+                                                                    table=match_conf['prod_table']),
+                                          ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
+                                          conf[mk.UDL_PHASE_STEP],
+                                          conf[mk.WORKING_SCHEMA])
                 failure_time = datetime.datetime.now()
-                e.insert_err_list(UDL2DBConnection, 4, failure_time)
+                e.insert_err_list(failure_time)
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):
@@ -337,7 +356,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
     @return: Number of inserted rows
     '''
 
-    with UDL2DBConnection() as conn_to_source_db:
+    with get_udl_connection() as conn_to_source_db:
 
         column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,
                                                               target_table, source_tables)
@@ -345,7 +364,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
         delete_criteria = get_current_stu_reg_delete_criteria(conn_to_source_db, conf[mk.GUID_BATCH],
                                                               conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE])
 
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn_to_target_db:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn_to_target_db:
 
         # Cleanup any existing records with matching registration system id and academic year.
         delete_query = create_delete_query(conf[mk.TARGET_DB_SCHEMA], target_table, delete_criteria)

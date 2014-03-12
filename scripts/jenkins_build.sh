@@ -88,9 +88,8 @@ function run_unit_tests {
     echo "Running unit tests"
    
     cd "$WORKSPACE/$1"
-     
-    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
 
+	nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
     if [ -f coverage.xml ]; then
        # move coverage results
        mv coverage.xml $WORKSPACE/coverage.xml
@@ -283,6 +282,10 @@ function restart_apache {
     fi
 }
 
+function restart_memcached {
+    /usr/bin/sudo /etc/init.d/memcached restart
+}
+
 function restart_celeryd {
    /usr/bin/sudo /etc/init.d/celeryd-services restart
    /usr/bin/sudo /etc/init.d/celeryd-edextract restart
@@ -357,7 +360,11 @@ function build_egg {
 
 function generate_ini {
 	cd "$WORKSPACE/config"
-	python generate_ini.py -e jenkins_dev -i settings.yaml
+	if $RUN_END_TO_END; then
+		python generate_ini.py -e jenkins_int -i settings.yaml
+	else
+		python generate_ini.py -e jenkins_dev -i settings.yaml
+	fi
 }
 
 function generate_docs {
@@ -411,14 +418,13 @@ function setup_for_udl {
     sleep 2
 }
 
-function run_udl_e2e_tests {
-    echo "Running integration tests"
-# Regenerate ini for e2e tests
+function run_udl_integration_tests {
+    echo "Running UDL integration tests"
+	# Regenerate ini for integration tests as part of setup_for_udl
 
-    cd "$WORKSPACE/edudl2/edudl2/tests/integration_tests"
-    nosetests test_udl_reporting.py
+    cd $WORKSPACE/edudl2/edudl2/tests/integration_tests
+    INTEGRATION=1 nosetests -v test_udl_reporting.py
     echo "Finished udl data load"
-    
 }
 
 function main {
@@ -445,18 +451,21 @@ function main {
         generate_ini
         create_sym_link_for_apache
         restart_apache
+        # Restart memcached
+        restart_memcached
         restart_celeryd
         import_data_from_csv
         if (! $RUN_END_TO_END;) then
            setup_python33_functional_test_dependencies
            run_python33_functional_tests
-        #else
-            #setup_for_udl
-            #run_udl_e2e_tests
+        else
+            setup_for_udl
+            run_udl_integration_tests
         fi
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"
+
     elif [ ${MODE:=""} == "RPM" ]; then
         build_rpm $MAIN_PKG
     fi

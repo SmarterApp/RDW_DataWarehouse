@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy.schema import MetaData, Sequence
+from sqlalchemy.schema import MetaData, Sequence, Index
 from sqlalchemy import Table, Column, text
 from sqlalchemy.types import Text, Boolean, TIMESTAMP, Interval, TIME
 from sqlalchemy.types import BigInteger, SmallInteger, String, Float
@@ -29,6 +29,8 @@ def generate_udl2_metadata(schema_name=None, bind=None):
     udl_batch = Table('UDL_BATCH', metadata,
                       Column('batch_sid', BigInteger, primary_key=True),
                       Column('guid_batch', String(256), nullable=False),
+                      Column('tenant', String(256), nullable=False, server_default=''),
+                      Column('input_file', Text, nullable=False, server_default=''),
                       Column('load_type', String(50), nullable=True),
                       Column('working_schema', String(50), nullable=True),
                       Column('udl_phase', String(256), nullable=True),
@@ -92,6 +94,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('prim_disability_type', String(256), nullable=True),
                              Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                              )
+    Index('STG_SBAC_STU_REG_guid_batchx', stg_sbac_stu_reg.c.guid_batch, unique=False)
 
     stg_sbac_asmt_outcome = Table('STG_SBAC_ASMT_OUTCOME', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
@@ -178,6 +181,8 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                      Column('guid_batch', String(256), primary_key=True, nullable=False),
                      Column('err_code', BigInteger, nullable=True),
                      Column('err_source', BigInteger, nullable=True),
+                     Column('err_code_text', Text, nullable=True),
+                     Column('err_source_text', Text, nullable=True),
                      Column('created_date', TIMESTAMP, nullable=False, server_default=text('NOW()')),
                      Column('err_input', Text, nullable=False, server_default='')
                      )
@@ -347,6 +352,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('prim_disability_type', String(3), nullable=True,),
                              Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                              )
+    Index('INT_SBAC_STU_REG_guid_batchx', int_sbac_stu_reg.c.guid_batch, unique=False)
 
     int_sbac_stu_reg_meta = Table('INT_SBAC_STU_REG_META', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),

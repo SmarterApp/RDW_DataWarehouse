@@ -1,5 +1,6 @@
 define [
   "jquery"
+  "bootstrap"
   "mustache"
   "moment"
   "text!CSVOptionsTemplate"
@@ -9,7 +10,7 @@ define [
   "edwarePreferences"
   "edwareExport"
   "edwareDataProxy"
-], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
+], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 

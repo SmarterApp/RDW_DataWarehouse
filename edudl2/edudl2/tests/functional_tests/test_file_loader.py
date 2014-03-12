@@ -104,7 +104,6 @@ class FileLoaderFTest(unittest.TestCase):
         self.conf[mk.ROW_START] = 24
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
-
         # get the result of db
         records_in_db = get_rows_in_table(self.conf, self.conn, STG_SBAC_STU_REG_COLUMNS)
 

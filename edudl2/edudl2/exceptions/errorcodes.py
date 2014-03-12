@@ -70,7 +70,7 @@ class ErrorCode(object):
     @classmethod
     def getText(cls, code):
         try:
-            message = cls.messages[code]
+            message = cls.messages[str(code)]
         except KeyError:
             message = ''
         return message
@@ -81,14 +81,14 @@ class ErrorSource(object):
     DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE = '2',
 
     sources = {
-        '1': 'MISMATCHED FACT ASMT OUTCOME RECORD',
-        '2': 'DELETE FACT ASMT OUTCOME RECORD MORE THAN ONCE',
+        '1': 'MISMATCHED_FACT_ASMT_OUTCOME_RECORD',
+        '2': 'DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE',
     }
 
     @classmethod
     def getText(cls, code):
         try:
-            source = cls.sources[code]
+            source = cls.sources[str(code)]
         except KeyError:
             source = ''
         return source

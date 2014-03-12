@@ -340,7 +340,7 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                           conf[mk.UDL_PHASE_STEP],
                                           conf[mk.WORKING_SCHEMA])
                 failure_time = datetime.datetime.now()
-                e.insert_err_list(get_udl_connection, failure_time)
+                e.insert_err_list(failure_time)
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

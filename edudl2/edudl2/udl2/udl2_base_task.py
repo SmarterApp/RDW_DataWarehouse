@@ -83,7 +83,7 @@ class Udl2BaseTask(Task):
         update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
         # Write to ERR_LIST
         try:
-            exc.insert_err_list(get_udl_connection, failure_time)
+            exc.insert_err_list(failure_time)
         except Exception:
             pass
         msg = {}

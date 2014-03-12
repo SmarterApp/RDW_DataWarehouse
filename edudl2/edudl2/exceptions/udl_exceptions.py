@@ -26,7 +26,7 @@ class DeleteRecordNotFound(UDLException):
                                                                      total_rows=len(self.rows),
                                                                      schema=self.schema_and_table)
 
-    def insert_err_list(self, stat_conn, failure_time):
+    def insert_err_list(self, failure_time):
         for row in self.rows:
             values = {'err_source': self.error_source,
                       'err_source_text': ErrorSource.getText(self.error_source),
@@ -90,7 +90,7 @@ class UDLDataIntegrityError(UDLException):
         pattern = re.compile(r'(\([^\(\)\s]+\))')
         return re.findall(pattern, message)[2].lstrip('(').rstrip(')')
 
-    def insert_err_list(self, stat_conn, failure_time):
+    def insert_err_list(self, failure_time):
         record_id = self.get_record_id(self._error)
         err_input = self.convert_messages(self._error)
         values = {

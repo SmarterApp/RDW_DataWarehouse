@@ -338,7 +338,7 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                                                     table=match_conf['prod_table']),
                                           ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
                                           conf[mk.UDL_PHASE_STEP],
-                                          conf[mk.WORKING_SCHEMA]),
+                                          conf[mk.WORKING_SCHEMA])
                 failure_time = datetime.datetime.now()
                 e.insert_err_list(get_udl_connection, failure_time)
 

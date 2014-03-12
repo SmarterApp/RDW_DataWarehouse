@@ -78,7 +78,8 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     expectParams = {
       "asmtType": ["summative","interim"],
       "extractType": ["studentAssessment"],
-      "asmtSubject": ["Math","ELA"]
+      "asmtSubject": ["Math","ELA"],
+      "stateCode": ["NC"]
     }
     deepEqual params, expectParams, "Should be able to get all user selected parameters"
 

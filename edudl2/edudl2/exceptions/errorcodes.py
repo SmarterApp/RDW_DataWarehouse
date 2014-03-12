@@ -36,8 +36,6 @@ class ErrorCode(object):
     BATCH_REC_FAILED = '2005'
     DATA_INTEGRITY_ERROR = '1001'
 
-
-class ErrorCodeMessage(object):
     messages = {
         # system code
         '-1': 'NOT_IMPLEMENTED',
@@ -76,3 +74,21 @@ class ErrorCodeMessage(object):
         except KeyError:
             message = ''
         return message
+
+
+class ErrorSource(object):
+    MISMATCHED_FACT_ASMT_OUTCOME_RECORD = '1',
+    DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE = '2',
+
+    sources = {
+        '1': 'MISMATCHED FACT ASMT OUTCOME RECORD',
+        '2': 'DELETE FACT ASMT OUTCOME RECORD MORE THAN ONCE',
+    }
+
+    @classmethod
+    def getText(cls, code):
+        try:
+            source = cls.sources[code]
+        except KeyError:
+            source = ''
+        return source

@@ -5,6 +5,7 @@ from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
 from edcore.utils.utils import compile_query_to_sql_text
+from edudl2.exceptions.errorcodes import ErrorSource
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from config.ref_table_data import op_table_conf
 from edudl2.udl2_util.measurement import BatchTableBenchmark
@@ -307,6 +308,7 @@ def check_mismatched_deletions(conf, match_conf):
                                    mismatched_rows,
                                    "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
                                                              table=match_conf['prod_table']),
+                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
                                    conf[mk.UDL_PHASE_STEP],
                                    conf[mk.WORKING_SCHEMA])
 
@@ -334,10 +336,11 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                 e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
                                           "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
                                                                     table=match_conf['prod_table']),
+                                          ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
                                           conf[mk.UDL_PHASE_STEP],
-                                          conf[mk.WORKING_SCHEMA])
+                                          conf[mk.WORKING_SCHEMA]),
                 failure_time = datetime.datetime.now()
-                e.insert_err_list(get_udl_connection, 4, failure_time)
+                e.insert_err_list(get_udl_connection, failure_time)
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

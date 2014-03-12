@@ -31,7 +31,7 @@ def create_target_schema_for_batch(conf):
     """
     creates the target star schema needed for this batch
     """
-    with TargetDBConnection(conf[mk.TENANT_NAME]) as conn:
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
         engine = conn.get_engine()
         schema_name = conf[mk.GUID_BATCH]
         conn.execute(CreateSchema(schema_name))

@@ -2,8 +2,10 @@ body.isr {
 
     body {border: solid 1px @color-A8;}
 
-    #infoBar li.download {
-	display: none;
+    #infoBar li{
+        &.download &.academicYearArea {
+	    display: none;
+        }
     }
 
     #actionBar {

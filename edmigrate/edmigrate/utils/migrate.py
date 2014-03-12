@@ -314,6 +314,7 @@ def start_migrate_daily_delta(tenant):
     for batch in batches_to_migrate:
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         migrate_batch(batch=batch)
+        cleanup_batch(batch[UdlStatsConstants.BATCH_GUID], tenant)
 
 if __name__ == '__main__':
     # TODO: remove this. temp entry point for testing migration as a script

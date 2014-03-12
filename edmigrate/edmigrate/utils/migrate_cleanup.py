@@ -6,17 +6,12 @@ from edmigrate.celery import conf
 
 def cleanup_batch(schema_name, tenant):
     """
-    cleanup this batch
+    Drops the entire schema given by the schema_name from the given tenants pre-prod database
     """
     # clearing up the targetDB/pre-prod database for the batch and tenant
     with EdMigrateSourceConnection(tenant) as source_connector:
         # drop schema
         drop_schema(source_connector, schema_name)
-
-
-def cleanup_tenant_batches(tenant):
-    # TODO: to be implemented
-    pass
 
 if __name__ == '__main__':
     # TODO: remove this. temp entry point for testing cleanup as a script

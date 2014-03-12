@@ -273,7 +273,7 @@ def get_row_number_in_table(conf, conn):
 
 
 def get_rows_in_table(conf, conn, columns):
-    query = 'SELECT {columns} FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'], columns=columns)
+    query = 'SELECT {columns} FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\' ORDER BY src_file_rec_num ASC'.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'], columns=columns)
     print(query)
     trans = conn.begin()
     try:

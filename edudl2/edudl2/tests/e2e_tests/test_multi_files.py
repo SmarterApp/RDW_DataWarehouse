@@ -54,7 +54,8 @@ class ValidateMultiFiles(unittest.TestCase):
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
         print(command)
-        subprocess.call(command, shell=True)
+        p = subprocess.Popen(command, shell=True)
+        returncode = p.wait()
         self.check_job_completion(self.connector)
 
 #Copy file to tenant folder

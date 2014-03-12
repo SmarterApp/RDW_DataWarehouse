@@ -24,14 +24,16 @@ def start_pipeline(archive_file=None, load_type='Unknown', file_parts=4, batch_g
     :type udl2: dict
     '''
     if archive_file:
-        get_pipeline_chain(archive_file, load_type, file_parts, batch_guid_forced).delay()
+        result = get_pipeline_chain(archive_file, load_type, file_parts, batch_guid_forced).delay()
     elif tenant_dirs:
         msg = {
             mk.TENANT_SEARCH_PATHS: tenant_dirs,
             mk.PARTS: file_parts,
             mk.LOAD_TYPE: load_type,
         }
-        get_next_file.apply_async((msg,))
+        result = get_next_file.apply_async((msg,))
+    if result.ready():
+        return result.successful()
 
 
 def create_unique_file_name(file_path):

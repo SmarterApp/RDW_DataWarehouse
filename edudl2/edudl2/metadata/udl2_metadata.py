@@ -181,6 +181,8 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                      Column('guid_batch', String(256), primary_key=True, nullable=False),
                      Column('err_code', BigInteger, nullable=True),
                      Column('err_source', BigInteger, nullable=True),
+                     Column('err_code_text', Text, nullable=True),
+                     Column('err_source_text', Text, nullable=True),
                      Column('created_date', TIMESTAMP, nullable=False, server_default=text('NOW()')),
                      Column('err_input', Text, nullable=False, server_default='')
                      )

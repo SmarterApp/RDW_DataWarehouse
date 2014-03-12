@@ -2,6 +2,7 @@ from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException, EdMigrateException
 from sqlalchemy.sql.expression import select, and_, func
 from edmigrate.utils.constants import Constants
+from edmigrate.utils.migrate_cleanup import cleanup_batch
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
@@ -288,6 +289,8 @@ def migrate_batch(batch):
             migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
+            # cleanup pre-prod
+            cleanup_batch(batch_guid, tenant)
             # commit transaction
             trans.commit()
             logger.info('Master: Migration successful for batch: ' + batch_guid)
@@ -314,7 +317,6 @@ def start_migrate_daily_delta(tenant):
     for batch in batches_to_migrate:
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         migrate_batch(batch=batch)
-        cleanup_batch(batch[UdlStatsConstants.BATCH_GUID], tenant)
 
 if __name__ == '__main__':
     # TODO: remove this. temp entry point for testing migration as a script

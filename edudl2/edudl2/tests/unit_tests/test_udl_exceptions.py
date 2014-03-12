@@ -1,5 +1,6 @@
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
-from edudl2.exceptions.errorcodes import ErrorSource
+from edudl2.exceptions.errorcodes import ErrorSource, ErrorCode
+import ast
 __author__ = 'ejen'
 import unittest
 import os
@@ -31,3 +32,19 @@ class TestUdlExceptions(unittest.TestCase):
         self.assertEqual(str(exception),
                          "DeleteRecordNotFound for batch_guid: test_batch_guid_1, "
                          "1 record(s) not found in schema.table")
+
+    def test_error_code(self):
+        attrs = dir(ErrorCode)
+        constants = [j for j in [i for i in attrs if i not in ('getText', 'messages')] if j[0:2] != '__']
+        for c in constants:
+            key = eval('ErrorCode.' + c)
+            self.assertEqual(ErrorCode.getText(key),
+                             ErrorCode.messages[key])
+
+    def test_error_source(self):
+        attrs = dir(ErrorSource)
+        constants = [j for j in [i for i in attrs if i not in ('getText', 'sources')] if j[0:2] != '__']
+        for c in constants:
+            key = eval('ErrorSource.' + c)
+            self.assertEqual(ErrorSource.getText(key),
+                             ErrorSource.sources[key])

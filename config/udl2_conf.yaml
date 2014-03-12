@@ -270,20 +270,20 @@ development:
             db_schema: ftest_test_schema
     prod_db_conn:
         edware:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_12
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: edware_pre_prod
         ca:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_12_dog
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: edware_pre_prod
         func_tests:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
-            db_schema: edware_sds_1_12
+            url: postgresql://edware:edware2013@localhost:5432/edware_functional_tests
+            db_schema: edware_pre_prod
     prod_db:
-        db_schema: edware_sds_1_12
+        db_schema: edware_pre_prod
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: edwdbsrv4.poc.dum.edwdc.net
-        db_port: 9999
+        db_host: localhost
+        db_port: 5432
         db_database: edware
         db_user: edware
         db_pass: edware2013

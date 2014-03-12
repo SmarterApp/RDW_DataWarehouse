@@ -62,6 +62,8 @@ class UDLTestHelper(unittest.TestCase):
                                                    staging_table='INT_SBAC_ASMT_OUTCOME')
         sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
                                                    staging_table='STG_SBAC_ASMT_OUTCOME')
+        sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                                                   staging_table='ERR_LIST')
 
         except_msg = "Unable to clean up udl tables"
         execute_queries(self.udl2_conn,

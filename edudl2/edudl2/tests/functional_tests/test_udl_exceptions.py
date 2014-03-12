@@ -24,7 +24,7 @@ DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
         self.udl_phase_step = "Handle Deletion"
         self.working_schema = "edware"
 
-    @unittest.skip("")
+    @skip("under development")
     def test_exception_insert_err_list(self):
         exc = UDLDataIntegrityError(self.guid_batch, self.insert_error_message, self.schema_table,
                                     self.error_source, self.udl_phase_step, self.working_schema)

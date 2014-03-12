@@ -96,13 +96,13 @@ def repopulate_school_grade(school: School, grade, grade_students, acad_year=dat
                                               school.student_count_avg))
         print('  Creating ' + str(student_count) + ' students in grade ' + str(grade) +
               ' for school ' + school.name + '(' + school.district.name + ')')
-        for k in range(student_count):
+        for _ in range(student_count):
             s = generate_student(school, grade, acad_year)
             grade_students.append(s)
     else:
         # The grade is populated, but see if we should add a few new students
         # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
-        for k in range(random.choice([0, 0, 1, 2, 3, 4])):
+        for _ in range(random.choice([0, 0, 1, 2, 3, 4])):
             s = generate_student(school, grade, acad_year)
             grade_students.append(s)
         print('  Grade ' + str(grade) + ' sufficiently populated for school ' + school.name + '(' +

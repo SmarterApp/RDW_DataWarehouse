@@ -108,9 +108,9 @@ class DBConnection(ConnectionBase):
     def get_table(self, table_name, schema_name=None):
         return Table(table_name, self.get_metadata(schema_name=schema_name))
 
-    def get_metadata(self, reflect=False, schema_name=None):
+    def get_metadata(self, schema_name=None):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
-        if reflect or schema_name is not None:
+        if schema_name is not None:
             metadata = schema.MetaData(bind=dbUtil.get_engine(), schema=schema_name)
             metadata.reflect(views=True)
             return metadata

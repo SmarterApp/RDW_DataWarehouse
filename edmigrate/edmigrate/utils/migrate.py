@@ -57,7 +57,6 @@ def get_batches_to_migrate(tenant=None):
             order_by(udl_status_table.c.file_arrived)
         if tenant:
             query = query.where(and_(udl_status_table.c.tenant == tenant))
-        print(query)
         batches = connector.get_result(query)
             # batches[row[Constants.BATCH_GUID]] = row
     return batches
@@ -317,7 +316,6 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
-            print(e)
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)

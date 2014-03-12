@@ -129,17 +129,16 @@ def migrate_table(batch_guid, source_connector, dest_connector, table_name, batc
     # if there is a status column, it's a candidate for deletes
     has_status = 'status' in source_table.columns
     if has_status:
-        delete_query = select([primary_key]).\
-                   where(and_(source_table.c.batch_guid == batch_guid, source_table.c.status == 'D'))
+        delete_query = select([primary_key]).where(and_(source_table.c.batch_guid == batch_guid, source_table.c.status == 'D'))
         delete_count = _process_batch(source_connector, dest_connector, preprod_to_prod_delete_records, delete_query, table_name,
-                       primary_key, batch_size)
+                                      primary_key, batch_size)
 
     # for Insert
     insert_query = select([source_table]).where(source_table.c.batch_guid == batch_guid)
     if has_status:
         insert_query = insert_query.where(source_table.c.status == 'C')
     insert_count = _process_batch(source_connector, dest_connector, preprod_to_prod_insert_records, insert_query, table_name,
-                       primary_key, batch_size)
+                                  primary_key, batch_size)
     return delete_count, insert_count
 
 

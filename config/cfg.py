@@ -13,7 +13,7 @@ HIERARCHY_MOST_RECENT = True
 
 LEP_HAS_ENTRY_DATE_RATE = .9
 
-HAS_ASMT_RESULT_BUT_NOT_IN_SR_RATE = .015
+HAS_ASMT_RESULT_IN_SR_FILE_RATE = .985  # The rate at which students with assessment results are in the SR CSV file
 
 NOT_ADVANCED_DROP_OUT_RATE = .4
 

@@ -20,12 +20,17 @@ define ["jquery"], ($) ->
     bodyLeft = $body.offset().left
     bodyRight = bodyLeft + $body.width()
 
-    if popLeft < bodyLeft or popRight > bodyRight
+    if popLeft < bodyLeft
       popLeft = bodyLeft - popLeft + 20
       $popover.css "left", "+=#{popLeft}"
       arrowLeft = $popover.width() / 2 - popLeft
       $(".arrow", $popover).css "left", arrowLeft
 
+    if popRight > bodyRight
+      popRight = popRight - bodyRight + 20
+      $popover.css "left", "-=#{popRight}"
+      arrowLeft = $popover.width() / 2 + popRight
+      $(".arrow", $popover).css "left", arrowLeft
 
   $.fn.edwarePopover = (config) ->
     # setup default template with customized class name

@@ -7,6 +7,8 @@ from edapi.cache import cache_region
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
 
+DEFAULT_YEAR_BACK = 1
+
 
 @cache_region('public.shortlived')
 def get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade=None, student_guids=None):
@@ -31,3 +33,27 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             query = query.where(and_(fact_asmt_outcome.c.student_guid.in_(student_guids)))
         results = connection.get_result(query)
     return results
+
+
+@cache_region('public.data')
+def get_academic_years(state_code, year_back=None):
+    '''
+    Gets academic years.
+    '''
+    if not year_back or year_back <= 0:
+        year_back = DEFAULT_YEAR_BACK
+    with EdCoreDBConnection(state_code=state_code) as connection:
+        dim_asmt = connection.get_table(Constants.DIM_ASMT)
+        query = select([dim_asmt.c.asmt_period_year]).distinct().order_by(dim_asmt.c.asmt_period_year.desc())
+        results = connection.execute(query).fetchmany(size=year_back)
+    return list(r[Constants.ASMT_PERIOD_YEAR] for r in results)
+
+
+def set_default_year_back(year_back):
+    '''
+    Set default year back.
+    '''
+    if not year_back:
+        return
+    global DEFAULT_YEAR_BACK
+    DEFAULT_YEAR_BACK = int(year_back)

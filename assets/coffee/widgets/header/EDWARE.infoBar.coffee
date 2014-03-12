@@ -5,20 +5,22 @@ define [
   "text!InfoBarTemplate"
   "edwareDownload"
   "edwarePopover"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover) ->
+  "edwareYearDropdown"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown) ->
 
   class ReportInfoBar
 
     constructor: (@container, @config) ->
       #TODO how to specify what information expected?
-      this.initialize()
-      this.bindEvents()
+      @initialize()
+      @bindEvents()
 
     initialize: () ->
-      $(this.container).html Mustache.to_html InfoBarTemplate,
+      $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
-      this.createDownloadMenu() if not this.edwareDownloadMenu
+      @createDownloadMenu() if not @edwareDownloadMenu
+      @createAcademicYear() if not @academicYear
 
     bindEvents: () ->
       self = this
@@ -33,8 +35,18 @@ define [
       # set report info text
       $('.reportInfoWrapper').append @config.reportInfoText
 
+      # bind academic year info popover
+      $('.academicYearInfoIcon').edwarePopover
+        content: 'placeholder'
+
     createDownloadMenu: () ->
-      this.edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
+      @edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
+
+    createAcademicYear: () ->
+      return if not @config.academicYears
+      options = @config.academicYears.options
+      callback = @config.academicYears.callback
+      @academicYear ?= $('#academicYear').createYearDropdown options, callback
 
   create = (container, config) ->
     new ReportInfoBar(container, config)

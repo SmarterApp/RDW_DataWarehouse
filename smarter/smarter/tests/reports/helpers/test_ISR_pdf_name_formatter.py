@@ -13,6 +13,9 @@ from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 from edauth.tests.test_helper.create_session import create_test_session
+from pyramid.security import Allow
+import edauth
+from edauth.security.user import RoleRelation
 
 
 class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
@@ -26,6 +29,8 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         reg.settings['cache.type'] = 'memory'
         dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
+        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
         self.__config.testing_securitypolicy(dummy_session)
 
     def test_generate_isr_report_path_by_student_guid(self):

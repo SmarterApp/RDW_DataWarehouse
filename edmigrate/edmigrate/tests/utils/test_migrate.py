@@ -21,11 +21,11 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     test_tenant = 'tomcat'
 
     def setUp(self):
-        self.__tenant = TestExtractTask.test_tenant
+        self.__tenant = TestMigrate.test_tenant
 
     @classmethod
     def setUpClass(cls):
-        Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestExtractTask.test_tenant))
+        Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestMigrate.test_tenant))
         Unittest_with_preprod_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 

@@ -105,8 +105,6 @@ class FileLoaderFTest(unittest.TestCase):
         self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
 
-        # wait for a while to avoid timing issue.
-        time.sleep(20)
         # get the result of db
         records_in_db = get_rows_in_table(self.conf, self.conn, STG_SBAC_STU_REG_COLUMNS)
 

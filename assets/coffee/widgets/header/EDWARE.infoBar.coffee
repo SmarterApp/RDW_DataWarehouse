@@ -19,6 +19,7 @@ define [
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
+        labels: @config.labels
       @createDownloadMenu() if not @edwareDownloadMenu
       @createAcademicYear() if not @academicYear
 

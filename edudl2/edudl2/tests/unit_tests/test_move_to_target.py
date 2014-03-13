@@ -15,8 +15,8 @@ from edudl2.move_to_target.move_to_target_setup import Column
 from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
 import logging
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
-from database.connector import DBConnection
+from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from edschema.database.connector import DBConnection
 logger = logging.getLogger(__name__)
 
 
@@ -278,7 +278,7 @@ def generate_conf(guid_batch, udl2_conf):
               mk.GUID_BATCH: guid_batch,
 
               # source schema
-              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
               # source database setting
               mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
               mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],

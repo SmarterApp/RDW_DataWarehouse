@@ -48,9 +48,9 @@ class FileLoaderFTest(unittest.TestCase):
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_DRIVER: self.udl2_conf['udl2_db']['db_driver'],
-            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['csv_schema'],
+            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.FDW_SERVER: self.udl2_conf['udl2_db']['fdw_server'],
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.ROW_START: 1,
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
             mk.APPLY_RULES: False

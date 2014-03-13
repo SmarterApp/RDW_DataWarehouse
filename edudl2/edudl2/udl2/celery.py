@@ -7,8 +7,6 @@ import edcore.database as edcoredb
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.database.udl2_connector import initialize_db_target, initialize_db_udl, initialize_db_prod
-from edudl2.metadata.udl2_metadata import generate_udl2_metadata
-from edschema.metadata.ed_metadata import generate_ed_metadata
 
 
 def setup_udl2_queues(conf):

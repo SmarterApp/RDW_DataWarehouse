@@ -13,21 +13,14 @@ from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 
 
-PATH_TO_FILES = ''
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
-
-FILE_DICT = {}
-
-
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):
-        global PATH_TO_FILES, FILE_DICT
-        PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
-        FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_source_file_tar_gzipped.tar.gz.gpg'),
-                     'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
-                     'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
-        self.tenant_dir = TENANT_DIR
+        path_to_files = os.path.join(os.path.dirname(__file__), "..", "data")
+        self.file_dict = {'file1': os.path.join(path_to_files, 'test_source_file_tar_gzipped.tar.gz.gpg'),
+                     'file2': os.path.join(path_to_files, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
+                     'file3': os.path.join(path_to_files, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
         self.connector = get_udl_connection()
 
 #teardown tenant folder
@@ -64,7 +57,7 @@ class ValidateMultiFiles(unittest.TestCase):
             print("tenant dir already exists")
         else:
             os.makedirs(self.tenant_dir)
-        for file in FILE_DICT.values():
+        for file in self.file_dict.values():
             files = shutil.copy2(file, self.tenant_dir)
             print(files)
 
@@ -74,7 +67,7 @@ class ValidateMultiFiles(unittest.TestCase):
         query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
         timer = 0
         result = connector.execute(query).fetchall()
-        while timer < max_wait and len(result) < len(FILE_DICT):
+        while timer < max_wait and len(result) < len(self.file_dict):
             sleep(0.25)
             timer += 0.25
             result = connector.execute(query).fetchall()

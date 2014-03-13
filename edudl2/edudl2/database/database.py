@@ -21,6 +21,7 @@ from edudl2.database.udl2_connector import UDL2DBConnection, initialize_db,\
     get_udl_connection
 from edudl2.database.populate_ref_info import populate_ref_column_map,\
     populate_stored_proc
+from sqlalchemy.sql.expression import text
 
 
 def _parse_args():
@@ -43,7 +44,7 @@ def drop_schema(schema_name):
     drop schemas according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         conn.execute(DropSchema(schema_name, cascade=True))
 
 
@@ -54,7 +55,7 @@ def drop_tables():
     '''
     print("drop tables")
     try:
-        with UDL2DBConnection() as conn:
+        with get_udl_connection() as conn:
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(DropTable(table))
@@ -68,7 +69,7 @@ def create_udl2_sequence(schema_name):
     @param udl2_conf: The configuration dictionary for
     '''
     print("create sequences")
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         metadata = conn.get_metadata()
         for sequence in generate_udl2_sequences(schema_name, metadata):
             conn.execute(CreateSequence(sequence))
@@ -80,7 +81,7 @@ def drop_udl2_sequences():
     '''
     try:
         print("drop sequences")
-        with UDL2DBConnection() as conn:
+        with get_udl_connection() as conn:
             for seq in generate_udl2_sequences():
                 conn.execute(DropSequence(seq))
     except Exception as e:
@@ -94,7 +95,7 @@ def create_foreign_data_wrapper_extension(schema_name):
     '''
     print('create foreign data wrapper extension')
     sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (schema_name)
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         except_msg = "fail to create foreign data wrapper extension"
         execute_udl_queries(conn, [sql], except_msg)
 
@@ -105,7 +106,7 @@ def drop_foreign_data_wrapper_extension():
     '''
     print('drop foreign data wrapper extension')
     sql = "DROP EXTENSION IF EXISTS file_fdw CASCADE"
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         except_msg = "fail to drop foreign data wrapper extension"
         execute_udl_queries(conn, [sql], except_msg)
 
@@ -141,7 +142,7 @@ def create_foreign_data_wrapper_server(fdw_server):
     '''
     print('create foreign data wrapper server')
     sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (fdw_server)
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         except_msg = "fail to create foreign data wrapper server"
         execute_udl_queries(conn, [sql], except_msg)
 
@@ -153,7 +154,7 @@ def drop_foreign_data_wrapper_server(fdw_server):
     '''
     print('drop foreign data wrapper server')
     sql = "DROP SERVER IF EXISTS %s CASCADE" % (fdw_server)
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         except_msg = "fail to drop foreign data wrapper server"
         execute_udl_queries(conn, [sql], except_msg)
 
@@ -218,13 +219,29 @@ def load_stored_proc(udl2_conf):
     populate_stored_proc(udl2_conf['ref_tables']['assessment'], udl2_conf['ref_tables']['studentregistration'])
 
 
+def drop_foreign_keys_on_fact_asmt_outcome(schema_name):
+    '''
+    drop foreign key constraints of fact_asmt_outcome table in target db.
+    @param target_db: The configuration dictionary for
+    '''
+    print('drop constraits in udl2 star schema')
+    constraints = ['fact_asmt_outcome_student_rec_id_fkey', 'fact_asmt_outcome_asmt_rec_id_fkey', 'fact_asmt_outcome_inst_hier_rec_id_fkey']
+    with get_target_connection() as conn:
+        for constraint in constraints:
+            sql = text("ALTER TABLE {schema}.{table} DROP CONSTRAINT {constraint}".format(schema=schema_name,
+                                                                                          table='fact_asmt_outcome',
+                                                                                          constraint=constraint))
+            except_msg = "fail to drop constraint on fact_asmt_outcome in star schema %s" % schema_name
+            execute_udl_queries(conn, [sql], except_msg)
+
+
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
     # Setup udl2 schema
-    initialize_db(UDL2DBConnection, udl2_conf, allow_schema_create=True)
+    initialize_db_udl(udl2_conf, allow_create_schema=True)
     udl2_schema_name = udl2_conf['udl2_db']['db_schema']
     create_udl2_sequence(udl2_schema_name)
     create_dblink_extension(get_udl_connection, udl2_schema_name)
@@ -232,11 +249,13 @@ def setup_udl2_schema(udl2_conf):
     create_foreign_data_wrapper_server(udl2_conf['udl2_db']['fdw_server'])
 
     # Create dblink pre-prod schema
-    initialize_db_udl(udl2_conf)
-    create_dblink_extension(get_target_connection, udl2_conf['target_db']['db_schema'])
-
-    # load data and stored procedures
+    target_schema_name = udl2_conf['target_db']['db_schema']
+    initialize_db_target(udl2_conf)
+    create_dblink_extension(get_target_connection, target_schema_name)
     load_fake_record_in_star_schema()
+    drop_foreign_keys_on_fact_asmt_outcome(target_schema_name)
+    
+    # load data and stored procedures into target table
     load_reference_data(udl2_conf['udl2_db'])
     load_stored_proc(udl2_conf['udl2_db'])
 
@@ -247,12 +266,12 @@ def teardown_udl2_schema(udl2_conf):
     @param udl2_conf: The configuration dictionary for
     '''
     # Tear down udl2 schema
-    initialize_db(UDL2DBConnection, udl2_conf)
+    initialize_db_udl(udl2_conf)
     drop_udl2_sequences()
     drop_tables()
     drop_foreign_data_wrapper_server(udl2_conf['udl2_db']['fdw_server'])
     drop_foreign_data_wrapper_extension()
-    drop_dblink_extension(UDL2DBConnection)
+    drop_dblink_extension(get_udl_connection)
     drop_schema(udl2_conf['udl2_db']['db_schema'])
     
     # Drop dblink in pre-prod 

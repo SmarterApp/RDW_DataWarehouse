@@ -177,7 +177,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
         # db driver
         mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
         # source schema
-        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
         # source database setting
         mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
         mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],

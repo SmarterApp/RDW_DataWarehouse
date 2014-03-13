@@ -40,7 +40,7 @@ class PreEtlTest(unittest.TestCase):
 
         # check one row is inserted in batch table
         query = 'SELECT COUNT(*) from "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                             schema=self.udl2_conf['udl2_db']['staging_schema'],
+                                                                                                             schema=self.udl2_conf['udl2_db']['db_schema'],
                                                                                                              batch_table=self.udl2_conf['udl2_db']['batch_table'])
         (conn, _engine) = connect_db(self.udl2_conf['udl2_db']['db_driver'],
                                      self.udl2_conf['udl2_db']['db_user'],
@@ -57,7 +57,7 @@ class PreEtlTest(unittest.TestCase):
 
         # delete this row
         delete_query = 'DELETE FROM "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                           schema=self.udl2_conf['udl2_db']['staging_schema'],
+                                                                                                           schema=self.udl2_conf['udl2_db']['db_schema'],
                                                                                                            batch_table=self.udl2_conf['udl2_db']['batch_table'])
         execute_queries(conn, [delete_query], 'Exception in test_pre_etl_job 2', caller_module='PreEtlTest', caller_func='test_pre_etl_job')
         conn.close()
@@ -70,7 +70,7 @@ class PreEtlTest(unittest.TestCase):
 
         # check one row is inserted in batch table
         query = 'SELECT COUNT(*) from "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                             schema=self.udl2_conf['udl2_db']['staging_schema'],
+                                                                                                             schema=self.udl2_conf['udl2_db']['db_schema'],
                                                                                                              batch_table=self.udl2_conf['udl2_db']['batch_table'])
         (conn, _engine) = connect_db(self.udl2_conf['udl2_db']['db_driver'],
                                      self.udl2_conf['udl2_db']['db_user'],
@@ -87,7 +87,7 @@ class PreEtlTest(unittest.TestCase):
 
         # delete this row
         delete_query = 'DELETE FROM "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                           schema=self.udl2_conf['udl2_db']['staging_schema'],
+                                                                                                           schema=self.udl2_conf['udl2_db']['db_schema'],
                                                                                                            batch_table=self.udl2_conf['udl2_db']['batch_table'])
         execute_queries(conn, [delete_query], 'Exception in test_pre_etl_job 2', caller_module='PreEtlTest', caller_func='test_pre_etl_job')
         conn.close()

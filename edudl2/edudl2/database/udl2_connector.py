@@ -1,5 +1,6 @@
 from edudl2.database.metadata.udl2_metadata import generate_udl2_metadata
 from edschema.database.connector import DBConnection
+from edschema.database.generic_connector import setup_db_connection_from_ini
 __author__ = 'swimberly'
 
 from edschema.metadata_generator import generate_ed_metadata
@@ -50,8 +51,8 @@ def get_prod_connection(tenant='edware'):
     return UDL2DBConnection(tenant, namespace=PRODUCTION_NAMESPACE)
 
 
-def initialize_db_udl(udl2_conf):
-    initialize_db(UDL_NAMESPACE, generate_udl2_metadata, False, udl2_conf)
+def initialize_db_udl(udl2_conf, allow_create_schema=False):
+    initialize_db(UDL_NAMESPACE, generate_udl2_metadata, False, udl2_conf, allow_create_schema)
 
 
 def initialize_db_target(udl2_conf):

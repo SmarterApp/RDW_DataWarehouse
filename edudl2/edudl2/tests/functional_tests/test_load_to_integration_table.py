@@ -33,11 +33,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
             mk.FDW_SERVER: 'udl2_fdw_server',
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: staging_table,
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
@@ -50,7 +50,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
             WHERE guid_batch = '{guid_batch}'
         """
-        sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['staging_schema'],
+        sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
                                   staging_table=table,
                                   guid_batch=self.udl2_conf['guid_batch'])
         result = self.udl2_conn.execute(sql)
@@ -70,7 +70,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.SOURCE_DB_USER: self.udl2_conf['udl2_db']['db_user'],
             mk.SOURCE_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.SOURCE_DB_TABLE: self.udl2_conf['udl2_db']['staging_tables'][load_type],
 
             # target database setting
@@ -79,11 +79,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: self.udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
-            mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
 
         }
         return conf
@@ -180,6 +180,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
                                                                                                'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
-                                                                                               self.udl2_conf['udl2_db']['staging_schema'])
+                                                                                               self.udl2_conf['udl2_db']['db_schema'])
             self.assertEqual(expected_target_columns, target_columns)
             self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)

@@ -7,7 +7,7 @@ import datetime
 from sqlalchemy.sql.expression import select, bindparam
 from sqlalchemy.exc import ProgrammingError
 from edudl2.rule_maker.rules.transformation_code_generator import generate_transformations
-from edudl2.database.udl2_connector import UDL2DBConnection
+from edudl2.database.udl2_connector import get_udl_connection
 
 
 def populate_ref_column_map(conf_dict, ref_table_name):
@@ -20,7 +20,7 @@ def populate_ref_column_map(conf_dict, ref_table_name):
     @param schema_name: the name of the reference schema
     @param ref_table_name: the name of the reference table for column mapping data
     '''
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         col_map_table = conn.get_table(ref_table_name)
         col_map_data = conf_dict['column_mappings']
         col_map_columns = conf_dict['column_definitions']
@@ -43,7 +43,7 @@ def populate_stored_proc(*ref_tables):
     @rtype: list
     '''
     # TODO Use a transcation instead
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         # get unique list of transformation rules from all ref tables
         trans_rules = set()
         for ref_table_name in ref_tables:
@@ -94,7 +94,7 @@ def get_transformation_rule_names(ref_table_name):
     @return: The list of transformations rules without duplicates
     @rtype: list
     '''
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         # get column_mapping table object
         col_map_table = conn.get_table(ref_table_name)
         trans_rules = []
@@ -126,7 +126,7 @@ def update_column_mappings(rule_map_list, ref_table_name):
     if not rule_map_list:
         print('NO FUNCTIONS ADDED TO DATABASE')
         return
-    with UDL2DBConnection() as conn:
+    with get_udl_connection() as conn:
         # get column_mapping table object
         col_map_table = conn.get_table(ref_table_name)
 

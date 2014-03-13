@@ -33,7 +33,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
         }
         return conf
 

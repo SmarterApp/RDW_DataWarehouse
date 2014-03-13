@@ -4,6 +4,9 @@ from edudl2.udl2_util.database_util import execute_queries
 import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
+from edudl2.udl2.udl2_connector import initialize_db_target, initialize_db_udl, initialize_db_prod,\
+    get_udl_connection, get_target_connection, get_prod_connection
+from edcore.database import initialize_db
 
 
 class UDLTestHelper(unittest.TestCase):
@@ -20,6 +23,9 @@ class UDLTestHelper(unittest.TestCase):
         cls.udl2_conn, cls.udl2_engine = database._create_conn_engine(cls.udl2_conf['udl2_db'])
         cls.target_conn, cls.target_engine = database._create_conn_engine(cls.udl2_conf['target_db'])
         cls.prod_conn, cls.prod_engine = database._create_conn_engine(cls.udl2_conf['prod_db'])
+        initialize_db_udl(cls.udl2_conf)
+        initialize_db_target(cls.udl2_conf)
+        initialize_db_prod(cls.udl2_conf)
         cls.truncate_edware_tables()
         cls.truncate_udl_tables()
 
@@ -30,16 +36,6 @@ class UDLTestHelper(unittest.TestCase):
         cls.udl2_conn.close()
         cls.target_conn.close()
         cls.prod_conn.close()
-
-    def setUp(self):
-        #self.truncate_edware_tables()
-        #self.truncate_udl_tables()
-        pass
-
-    def tearDown(self):
-        #self.truncate_edware_tables()
-        #self.truncate_udl_tables()
-        pass
 
     @classmethod
     def truncate_edware_tables(self):
@@ -53,7 +49,7 @@ class UDLTestHelper(unittest.TestCase):
         sql_fact_asmt_outcome = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='fact_asmt_outcome')
         except_msg = "Unable to clean up target db tabels"
         execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section,
-                                           sql_dim_student, sql_fact_asmt_outcome], except_msg)
+                        sql_dim_student, sql_fact_asmt_outcome], except_msg)
 
     @classmethod
     def truncate_udl_tables(self):
@@ -66,9 +62,12 @@ class UDLTestHelper(unittest.TestCase):
                                                    staging_table='INT_SBAC_ASMT_OUTCOME')
         sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
                                                    staging_table='STG_SBAC_ASMT_OUTCOME')
+        sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                                                   staging_table='ERR_LIST')
 
         except_msg = "Unable to clean up udl tables"
-        execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt_outcome], except_msg)
+        execute_queries(self.udl2_conn,
+                        [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt_outcome], except_msg)
 
     def get_staging_asmt_score_avgs(self):
         stg_avg_query = """ select avg(score_asmt::int),
@@ -132,6 +131,7 @@ class UDLTestHelper(unittest.TestCase):
         avg(asmt_claim_4_score),
         avg(asmt_claim_4_score_range_min),
         avg(asmt_claim_4_score_range_max) from edware.fact_asmt_outcome """
+
         result = self.target_conn.execute(star_avg_query)
         for row in result:
             star_asmt_avgs = row
@@ -182,10 +182,10 @@ class UDLTestHelper(unittest.TestCase):
         for entry in demographics:
             #get staging
             demo_query = """ select count({demographic}) from "edware"."fact_asmt_outcome" where {demographic};""".format(demographic=entry)
+
             result = self.target_conn.execute(demo_query)
             for row in result:
                 demo_count = row[0]
-
             results_dict[entry] = demo_count
 
         #get derived ethnicity

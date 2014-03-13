@@ -73,13 +73,13 @@ def cleanup_all_tables(connector, schema_name, column_name, value, batch_delete=
     for table in tables_to_cleanup:
         cleanup_table(connector, schema_name, column_name, value, batch_delete, table)
 
+
 def drop_schema(connector, schema_name):
     """
     Drops the entire schema
-    
+
     @param connector: connection to the database
     @param schema_name: name of the schema to be dropped
     """
     metadata = connector.get_metadata(schema_name=schema_name)
     metadata.drop_all()
-

@@ -138,8 +138,8 @@ class FTestMoveToTarget(unittest.TestCase):
             mk.TARGET_DB_SCHEMA: BATCH_GUID['assessment'],
             mk.TARGET_DB_PASSWORD: self.tenant_info['target_schema_passwd']
         }
-        result = get_tenant_target_db_information(self.tenant_info['tenant_code'], 
-            target_schema=BATCH_GUID['assessment'])
+        result = get_tenant_target_db_information(self.tenant_info['tenant_code'],
+                                                  target_schema=BATCH_GUID['assessment'])
 
         self.assertDictEqual(result, expected)
 
@@ -151,8 +151,8 @@ class FTestMoveToTarget(unittest.TestCase):
             mk.TARGET_DB_SCHEMA: BATCH_GUID['assessment'],
             mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn']['edware']['db_pass']
         }
-        result = get_tenant_target_db_information(self.tenant_info['tenant_code'], 
-                target_schema=BATCH_GUID['assessment'])
+        result = get_tenant_target_db_information(self.tenant_info['tenant_code'],
+                                                  target_schema=BATCH_GUID['assessment'])
 
         self.assertDictEqual(result, expected)
 

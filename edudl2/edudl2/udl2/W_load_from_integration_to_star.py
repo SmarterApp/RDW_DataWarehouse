@@ -32,6 +32,7 @@ def create_target_schema(msg):
     benchmark.record_benchmark()
     return msg
 
+
 #*************implemented via group*************
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims', base=Udl2BaseTask)
 def explode_to_dims(msg):

@@ -169,7 +169,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
     :param tenant_code: the tenants 2 letter code
     :return: A dictionary of the config details
     """
-    tenant_target_db_info = get_tenant_target_db_information(tenant_code, target_schema = target_schema)
+    tenant_target_db_info = get_tenant_target_db_information(tenant_code, target_schema=target_schema)
     tenant_prod_db_info = get_tenant_prod_db_information(tenant_code)
 
     conf = {

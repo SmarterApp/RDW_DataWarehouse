@@ -120,7 +120,7 @@ def generate_institution_hierarchy(state: State, district: District, school: Sch
     """
     # Create the object
     ih = InstitutionHierarchy()
-    ih.rec_id = general_id_gen.get_rec_id()
+    ih.rec_id = general_id_gen.get_rec_id('inst_hier')
     ih.guid = general_id_gen.get_uuid()
     ih.state = state
     ih.district = district

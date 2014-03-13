@@ -19,17 +19,19 @@ from project.sbac.model.institutionhierarchy import InstitutionHierarchy
 from project.sbac.model.student import SBACStudent
 
 
-def generate_assessment(asmt_type, period_month, period_year, subject, from_date=None, to_date=None, most_recent=False):
+def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None, most_recent=False,
+                        asmt_year_adj=0):
     """
     Generate an assessment object.
 
     @param asmt_type: Assessment type
-    @param period_month: Month of assessment period
-    @param period_year: Year of assessment period
+    @param period: Period within assessment year
+    @param asmt_year: Assessment year
     @param subject: Assessment subject
     @param from_date: Assessment from date
     @param to_date: Assessment to date
     @param most_recent: If the assessment is the most recent
+    @param asmt_yaer_adj: An amount to adjust the assessment period year by
     @returns: The assessment object
     """
     # Get the claim definitions for this subject
@@ -37,22 +39,13 @@ def generate_assessment(asmt_type, period_month, period_year, subject, from_date
         raise KeyError("Subject '" + subject + "' not found in claim definitions")
     claims = sbac_config.CLAIM_DEFINITIONS[subject]
 
-    # Set the period
-    full_period = str(period_month) + ' ' + str(period_year)
-    if type(period_month) is int:
-        if period_month > 8:
-            full_period = calendar.month_name[period_month] + ' ' + str(period_year - 1)
-        else:
-            full_period = calendar.month_name[period_month] + ' ' + str(period_year)
-
     # Run the General generator
     sa = gen_asmt_generator.generate_assessment(SBACAssessment)
 
     # Set other specifics
     sa.asmt_type = asmt_type
-    sa.period = full_period
-    sa.period_month = 4 if type(period_month) is str else period_month
-    sa.period_year = period_year
+    sa.period = period + ' ' + str((asmt_year + asmt_year_adj))
+    sa.period_year = asmt_year + asmt_year_adj
     sa.version = sbac_config.ASMT_VERSION
     sa.subject = subject
     sa.claim_1_name = claims[0]['name']
@@ -123,10 +116,14 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.inst_hierarchy = inst_hier
 
     # Create the date taken
-    if assessment.period_month > 8:
-        sao.date_taken = datetime.date(assessment.period_year - 1, assessment.period_month, 15)
-    else:
-        sao.date_taken = datetime.date(assessment.period_year, assessment.period_month, 15)
+    period_month = 9
+    if assessment.asmt_type == 'SUMMATIVE':
+        period_month = 4
+    elif 'Winter' in assessment.period:
+        period_month = 12
+    elif 'Spring' in assessment.period:
+        period_month = 2
+    sao.date_taken = datetime.date(assessment.period_year, period_month, 15)
 
     # Create overall score and performance level
     sao.overall_score = int(random.uniform(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX))

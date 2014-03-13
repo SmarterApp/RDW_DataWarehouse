@@ -94,3 +94,4 @@ class Constants():
     RAW_EXPORT = 'raw'
     MOST_RECENT = 'most_recent'
     ASMT_YEAR = 'asmt_year'
+    ACADEMIC_YEAR = 'academicYear'

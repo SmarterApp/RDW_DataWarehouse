@@ -522,11 +522,15 @@
                 {
                     "display": "Student Assessment Results",
                     "value": "studentAssessment"
+                },
+                {
+                    "display": "Student Registration Statistics",
+                    "value": "studentRegistrationStatistics"
                 }
             ]
         },
         "asmtYear": {
-            "name": "Assessment Year",
+            "name": "Academic Year",
             "key": "asmtYear",
             "options": [
                 {

@@ -1,11 +1,7 @@
-from edmigrate.tasks.slave import slaves_register
 __author__ = 'sravi'
 
 import unittest
-import os
-import shutil
-from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite, \
-    Unittest_with_repmgr_sqlite_no_data_load, UnittestRepMgrDBConnection
+from edcore.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 
 
 class TestSlaveWorker(Unittest_with_repmgr_sqlite):

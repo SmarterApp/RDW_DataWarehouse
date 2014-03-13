@@ -1,4 +1,5 @@
 from edmigrate.tasks.base import BaseTask
+from edmigrate.utils.queries import get_slave_node_id_from_hostname
 __author__ = 'sravi'
 
 import socket
@@ -6,30 +7,54 @@ from edmigrate.celery import celery, logger
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call
-from edmigrate.tasks.nodes import register_slave_node
 from edmigrate.settings.config import Config, get_setting
 
 
 pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-node_group_id = get_setting(Config.REPLICATION_GROUP)
-# TODO: change this to node id from repmgr.conf instead of hostname from Socket
-node_id = socket.gethostname()
 
 
-@celery.task(name='task.edmigrate.slave.slaves_register', ignore_result=True, base=BaseTask)
-def slaves_register():
+@celery.task(name='task.edmigrate.slave.discover_slaves', ignore_result=True, base=BaseTask)
+def discover_slaves():
     '''
-    Registers current node to master.  This task will call task
-    `register_slave_node` and send a tuple `(host, group_id)` to message
-    queue to register on master node.
+    Slaves identify itself by returning its node_id, and hostname
     '''
-    logger.info("Slave: Register node %s %s to master", node_id, node_group_id)
-    register_slave_node.delay(node_id, node_group_id)
+    logger.info("Slave: Register")
+    return _get_node_id('tenant')
 
 
-@celery.task(name='task.edmigrate.slave.slaves_end_data_migrate', ignore_result=True)
+def remove_from_pgpool(group):
+    '''
+    Changes iptable rule to reject access from pgpool. System user who
+    runs celery task should have priviledge to manipulate iptables.
+    '''
+    if _get_node_id() is not group:
+        return
+    logger.info("Slave: Blocking pgpool")
+    call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+    return True
+
+
+def remove_from_replication(group):
+    '''
+    Changes iptable rule to reject access from pgpool. System user who
+    runs celery task should have priviledge to manipulate iptables.
+    '''
+    return True
+
+
+def _get_node_id(tenant):
+    return get_slave_node_id_from_hostname(tenant, _get_host_name())
+
+
+def _get_host_name():
+    # TODO: read from postgres, if possible, instead of hostname from Socket
+    return socket.gethostname()
+
+
+#################################################
+# TODO:  Code below needs to be sanitized
 def slaves_end_data_migrate(tenant, group):
-    if node_group_id is not group:
+    if _get_node_id() is not group:
         return
     unblock_pgpool(group)
     resume_replication(tenant, group)
@@ -49,12 +74,11 @@ def is_replication_paused(connector):
         return True
 
 
-@celery.task(name='task.edmigrate.slave.pause_replication', ignore_result=True, base=BaseTask)
 def pause_replication(tenant, group):
     '''
     Pauses replication on current node.
     '''
-    if node_group_id is not group:
+    if _get_node_id() is not group:
         return
     logger.info("Slave: Pausing replication on node %s" % node_id)
     with RepMgrDBConnection(tenant) as connector:
@@ -62,7 +86,6 @@ def pause_replication(tenant, group):
             connector.execute("select pg_xlog_replay_pause()")
 
 
-@celery.task(name='task.edmigrate.slave.resume_replication', ignore_result=True, base=BaseTask)
 def resume_replication(tenant, group):
     '''
     Resumes replication on current node.
@@ -77,19 +100,6 @@ def resume_replication(tenant, group):
             except OperationalError as e:
                 # TODO
                 pass
-    return True
-
-
-@celery.task(name='task.edmigrate.slave.block_pgpool', ignore_result=True, base=BaseTask)
-def block_pgpool(group):
-    '''
-    Changes iptable rule to reject access from pgpool. System user who
-    runs celery task should have priviledge to manipulate iptables.
-    '''
-    if node_group_id is not group:
-        return
-    logger.info("Slave: Blocking pgpool")
-    call(['iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
     return True
 
 

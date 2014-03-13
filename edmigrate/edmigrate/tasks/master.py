@@ -4,8 +4,8 @@ __author__ = 'sravi'
 from time import sleep
 from celery.canvas import chain
 from edmigrate.celery import celery, logger
-from edmigrate.tasks.slave import slaves_register, slaves_end_data_migrate, \
-    pause_replication, resume_replication, block_pgpool, unblock_pgpool
+from edmigrate.tasks.slave import slaves_end_data_migrate, \
+    pause_replication, resume_replication, unblock_pgpool, discover_slaves
 from edmigrate.utils.constants import Constants
 from edmigrate.tasks.nodes import registered_slaves, get_registered_slave_nodes_for_group, get_all_registered_slave_nodes
 import edmigrate.utils.queries as queries
@@ -35,7 +35,7 @@ def prepare_edware_data_refresh():
     nodes.registered_nodes collection.
     '''
     logger.info("preparing edware data refresh")
-    slaves_register.apply_async(queue=BROADCAST_QUEUE)
+    discover_slaves.apply_async(queue=BROADCAST_QUEUE)
 
 
 @celery.task(name='task.edmigrate.master.start_edware_data_refresh', base=BaseTask)

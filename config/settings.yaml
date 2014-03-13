@@ -152,7 +152,6 @@ common:
             exchange: direct
             key: extract_sync
     migrate:
-      replication.group: 'A'
       broadcast.queue: 'edmigrate_slaves'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       master_scheduler.hour: 1

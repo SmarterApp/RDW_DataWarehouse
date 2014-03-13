@@ -161,29 +161,11 @@ common:
       lag_tolerence_in_bytes: 10
       timeout: 30
     migrate.celery:
-      CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave', 'edmigrate.tasks.nodes')
+      CELERY_IMPORTS: ('edmigrate.tasks.slave')
       CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 1
-      CELERY_DEFAULT_QUEUE: edmigrate_master
-      CELERY_DEFAULT_ROUTING_KEY: edmigrate
-      CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERYBEAT_SCHEDULE:
-        -   name: prepare-migration
-            task: task.edmigrate.master.prepare_edware_data_refresh
-            schedule: cron
-            hour: 1
-            min: 0
-        -   name: start-migration
-            task: task.edmigrate.master.start_edware_data_refresh
-            schedule: cron
-            hour: 1
-            min: 10
+      CELERY_DEFAULT_QUEUE: edmigrate_slaves
       CELERY_QUEUES:
-        -   name: edmigrate_master
-            exchange: direct
-            key: edmigrate_master
-        -   name: edmigrate_slaves
+            name: edmigrate_slaves
             exchange: fanout
             key: ''
     sftp.jail.base_path: /sftp

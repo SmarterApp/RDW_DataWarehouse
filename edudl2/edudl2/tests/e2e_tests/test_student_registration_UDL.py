@@ -79,7 +79,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.target_connector = get_target_connection()
         self.udl_connector = get_udl_connection()
         self.load_type = udl2_conf['load_type']['student_registration']
-        self.empty_target_table()
+        #self.empty_target_table()
         self.receive_requests = True
         self.start_http_post_server()
 
@@ -123,7 +123,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate the target table
     def validate_stu_reg_target_table(self, file_to_load):
-        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
         query = select([target_table.c.student_guid], target_table.c.batch_guid == self.batch_id)
         result = self.target_connector.execute(query).fetchall()
         print('Number of rows for current job in target table:', len(result))
@@ -133,7 +133,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def validate_student_data(self, file_to_load):
         student = self.student_reg_files[file_to_load]['test_student']
 
-        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
         query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,
                         target_table.c.gender, target_table.c.student_dob, target_table.c.dmg_eth_hsp,
                         target_table.c.dmg_prg_504, target_table.c.academic_year, target_table.c.reg_system_id],
@@ -155,7 +155,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         expected_number = 0
         for arg in args:
             expected_number += self.student_reg_files[arg]['num_records_in_data_file']
-        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
         query = select([func.count()]).select_from(target_table)
         count = self.target_connector.execute(query).fetchall()[0][0]
         print('Total number of rows in target table:', count)
@@ -252,7 +252,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_total_number_in_target('data_for_different_test_center_than_original_data')
         self.validate_notification(mk.SUCCESS, ['408', '408'], 2)
 
         # Run and verify second run of student registration data again
@@ -262,7 +262,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_total_number_in_target('original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_total_number_in_target('data_for_different_test_center_than_original_data')
         self.validate_notification(mk.FAILURE, ['408', '408', '408', '408', '408'], 4)
 
         # Run and verify third run of student registration data (same academic year and test registration as first run)
@@ -272,7 +272,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_to_overwrite_original_data')
         self.validate_student_data('data_to_overwrite_original_data')
-        self.validate_total_number_in_target('data_to_overwrite_original_data', 'data_for_different_test_center_than_original_data')
+        self.validate_total_number_in_target('data_to_overwrite_original_data')
         self.validate_notification(mk.FAILURE, ['401'], 0)
 
     def start_http_post_server(self):

@@ -21,9 +21,15 @@ def create_target_schema(msg):
     """
     Task to create target star schema
     """
-    # check if target_db_schema is injected, if so use it else use batch_guid as the schema name
+    start_time = datetime.datetime.now()
     conf = _get_conf(msg)
     create_target_schema_for_batch(conf)
+    end_time = datetime.datetime.now()
+
+    # Create benchmark object ant record benchmark
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], create_target_schema.name, start_time, end_time,
+                                    task_id=str(create_target_schema.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
+    benchmark.record_benchmark()
     return msg
 
 #*************implemented via group*************

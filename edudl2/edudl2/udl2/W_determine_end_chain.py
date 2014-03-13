@@ -30,7 +30,8 @@ def task(msg):
                                    W_load_from_integration_to_star.handle_deletions.s(),
                                    W_load_from_integration_to_star.handle_record_upsert.s()
                                    ],
-                    "studentregistration": [W_load_sr_integration_to_target.task.s(msg)]}
+                    "studentregistration": [W_load_from_integration_to_star.create_target_schema.s(msg),
+                                            W_load_sr_integration_to_target.task.s()]}
 
     post_etl_tasks = {"assessment": [W_post_etl.task.s(), W_all_done.task.s()],
                       "studentregistration": [W_post_etl.task.s(), W_all_done.task.s(),

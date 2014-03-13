@@ -135,10 +135,11 @@ class FTestMoveToTarget(unittest.TestCase):
         expected = {
             mk.TARGET_DB_NAME: self.tenant_info['target_db_name'],
             mk.TARGET_DB_USER: self.tenant_info['target_schema_user_name'],
-            mk.TARGET_DB_SCHEMA: self.tenant_info['target_schema_name'],
+            mk.TARGET_DB_SCHEMA: BATCH_GUID['assessment'],
             mk.TARGET_DB_PASSWORD: self.tenant_info['target_schema_passwd']
         }
-        result = get_tenant_target_db_information(self.tenant_info['tenant_code'])
+        result = get_tenant_target_db_information(self.tenant_info['tenant_code'], 
+            target_schema=BATCH_GUID['assessment'])
 
         self.assertDictEqual(result, expected)
 
@@ -147,10 +148,11 @@ class FTestMoveToTarget(unittest.TestCase):
         expected = {
             mk.TARGET_DB_NAME: udl2_conf['target_db_conn']['edware']['db_database'],
             mk.TARGET_DB_USER: udl2_conf['target_db_conn']['edware']['db_user'],
-            mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn']['edware']['db_schema'],
+            mk.TARGET_DB_SCHEMA: BATCH_GUID['assessment'],
             mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn']['edware']['db_pass']
         }
-        result = get_tenant_target_db_information(self.tenant_info['tenant_code'])
+        result = get_tenant_target_db_information(self.tenant_info['tenant_code'], 
+                target_schema=BATCH_GUID['assessment'])
 
         self.assertDictEqual(result, expected)
 
@@ -222,6 +224,7 @@ class FTestMoveToTarget(unittest.TestCase):
             mk.LOAD_TYPE: udl2_conf['load_type'][type],
             mk.PHASE: 4,
             mk.TENANT_NAME: self.tenant_info['tenant_code'],
+            mk.TARGET_DB_SCHEMA: self.tenant_info['target_schema_name']
         }
 
 

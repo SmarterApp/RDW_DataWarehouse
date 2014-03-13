@@ -22,7 +22,8 @@ def task(msg):
     source_tables = [udl2_conf['udl2_db']['csv_integration_tables'][load_type], udl2_conf['udl2_db']['json_integration_tables'][load_type]]
     target_table = udl2_conf['target_db']['sr_target_table']
 
-    conf = generate_conf(guid_batch, msg[mk.PHASE], load_type, msg[mk.TENANT_NAME])
+    target_schema = msg[mk.TARGET_DB_SCHEMA] if mk.TARGET_DB_SCHEMA in msg else msg[mk.GUID_BATCH]
+    conf = generate_conf(guid_batch, msg[mk.PHASE], load_type, msg[mk.TENANT_NAME], target_schema)
     affected_rows = move_data_from_int_tables_to_target_table(conf, task.name, source_tables, target_table)
 
     end_time = datetime.datetime.now()

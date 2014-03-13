@@ -33,7 +33,7 @@ def create_target_schema_for_batch(conf):
     """
     with get_target_connection(conf[mk.TENANT_NAME]) as conn:
         engine = conn.get_engine()
-        schema_name = conf[mk.GUID_BATCH]
+        schema_name = conf[mk.TARGET_DB_SCHEMA]
         conn.execute(CreateSchema(schema_name))
         metadata = generate_ed_metadata(schema_name=schema_name, bind=engine)
         metadata.create_all(engine)

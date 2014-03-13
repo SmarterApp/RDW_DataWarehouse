@@ -21,7 +21,8 @@ def create_target_schema(msg):
     """
     Task to create target star schema
     """
-    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE], msg[mk.TENANT_NAME])
+    # check if target_db_schema is injected, if so use it else use batch_guid as the schema name
+    conf = _get_conf(msg)
     create_target_schema_for_batch(conf)
     return msg
 
@@ -33,7 +34,7 @@ def explode_to_dims(msg):
     In the input batch object, guid_batch is provided.
     '''
     start_time = datetime.datetime.now()
-    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE], msg[mk.TENANT_NAME])
+    conf = _get_conf(msg)
     table_map, column_map = get_table_and_column_mapping(conf, explode_to_dims.name, 'dim_')
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
@@ -93,8 +94,7 @@ def explode_to_fact(msg):
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
 
-    # generate config dict
-    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    conf = _get_conf(msg)
     # get fact table column mapping
     fact_table_map, fact_column_map = get_table_and_column_mapping(conf, explode_to_fact.name, 'fact_')
     fact_table = list(fact_table_map.keys())[0]
@@ -137,8 +137,7 @@ def handle_deletions(msg):
     affected_rows = msg[mk.TOTAL_ROWS_LOADED]
     udl_phase_step = 'HANDLE DELETION IN FACT'
 
-    # generate config dict
-    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    conf = _get_conf(msg)
     conf[mk.UDL_PHASE_STEP] = udl_phase_step
     conf[mk.WORKING_SCHEMA] = msg['dim_tables'][0][mk.WORKING_SCHEMA]
     match_conf = get_move_to_target_conf()['handle_deletions']
@@ -194,5 +193,7 @@ def _get_conf(msg):
     phase_number = msg[mk.PHASE]
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
-    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    # if target schema name is specifically injected use that else use batch_guid as the schema name always
+    target_schema = msg[mk.TARGET_DB_SCHEMA] if mk.TARGET_DB_SCHEMA in msg else msg[mk.GUID_BATCH]
+    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name, target_schema)
     return conf

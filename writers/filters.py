@@ -28,7 +28,18 @@ def filter_yesnoblank(val):
     return 'Yes' if val else 'No' if random.randint(1, 100) < 93 else ''
 
 
+def filter_always_true(val):
+    """
+    Always return True.
+
+    @param val: The value that is ignored
+    @returns: True
+    """
+    return True
+
+
 SBAC_FILTERS = {
     'yesno': filter_yesno,
-    'yesnoblank': filter_yesnoblank
+    'yesnoblank': filter_yesnoblank,
+    'always_true': filter_always_true
 }

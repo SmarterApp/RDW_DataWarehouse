@@ -36,7 +36,8 @@ def generate_student(school: School, grade, acad_year=datetime.datetime.now().ye
 
     # Set other specifics
     s.guid_sr = sbac_id_gen.get_sr_uuid()
-    s.external_ssid = sbac_id_gen.get_sr_uuid()
+    s.external_ssid = s.guid + 'ext'
+    s.external_ssid_sr = sbac_id_gen.get_sr_uuid()
     s.school_entry_date = generate_date_enter_us_school(s.grade, acad_year)
     s.derived_demographic = generate_derived_demographic(s)
     s.prg_migrant = general_pop_gen.determine_demo_option_selected(demo_config['migrant'])

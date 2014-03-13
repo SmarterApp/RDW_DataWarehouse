@@ -17,7 +17,8 @@ class SBACStudent(Student):
     """
     district = ReferenceField(District, required=True)
     guid_sr = StringField(required=True, max_length=30)
-    external_ssid = StringField(required=True, max_length=30)
+    external_ssid = StringField(required=True, max_length=40)
+    external_ssid_sr = StringField(required=True, max_length=30)
     school_entry_date = DateTimeField(required=False)
     prg_migrant = BooleanField(required=False)
     prg_idea = BooleanField(required=False)

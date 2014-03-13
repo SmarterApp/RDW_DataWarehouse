@@ -11,7 +11,7 @@ DEFAULT_YEAR_BACK = 1
 
 
 @cache_region('public.shortlived')
-def get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade=None, student_guids=None):
+def get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade=None, student_guids=None, asmt_year=None):
     '''
     Get asmt administration for a list of students. There is no PII in the results and it can be stored in shortlived cache
     '''
@@ -31,6 +31,8 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         if student_guids:
             query = query.where(and_(fact_asmt_outcome.c.student_guid.in_(student_guids)))
+        if asmt_year:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
         results = connection.get_result(query)
     return results
 
@@ -57,3 +59,11 @@ def set_default_year_back(year_back):
         return
     global DEFAULT_YEAR_BACK
     DEFAULT_YEAR_BACK = int(year_back)
+
+
+def get_default_academic_year(params):
+    '''
+    Get latest academic year by state code as default.
+    '''
+    state_code = params.get(Constants.STATECODE)
+    return get_academic_years(state_code)[0]

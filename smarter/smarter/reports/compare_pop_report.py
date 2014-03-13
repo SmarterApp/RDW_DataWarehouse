@@ -25,7 +25,7 @@ from edcore.utils.utils import merge_dict
 from copy import deepcopy
 import time
 from collections import OrderedDict, namedtuple
-from smarter.reports.student_administration import get_academic_years
+from smarter.reports.student_administration import get_academic_years, get_default_academic_year
 
 
 REPORT_NAME = "comparing_populations"
@@ -179,14 +179,6 @@ def set_default_min_cell_size(default_min_cell_size):
     '''
     global DEFAULT_MIN_CELL_SIZE
     DEFAULT_MIN_CELL_SIZE = default_min_cell_size
-
-
-def get_default_academic_year(params):
-    '''
-    Get latest academic year by state code as default.
-    '''
-    state_code = params.get(Constants.STATECODE)
-    return get_academic_years(state_code)[0]
 
 
 class ComparingPopReport(object):

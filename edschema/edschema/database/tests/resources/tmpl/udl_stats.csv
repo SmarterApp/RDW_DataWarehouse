@@ -1,6 +1,0 @@
-state_code,tenant,load_type,file_arrived,load_start,load_end,load_status,batch_guid,record_loaded_count,last_pdf_task_requested,last_pre_cached
-NC,Tenant 406,Load Type 407,,,,Load Status 408,Batch Guid 409,627,,
-NC,Tenant 410,Load Type 411,,,,Load Status 412,Batch Guid 413,999,,
-NC,Tenant 414,Load Type 415,,,,Load Status 416,Batch Guid 417,245,,
-NC,Tenant 418,Load Type 419,,,,Load Status 420,Batch Guid 421,934,,
-NC,Tenant 422,Load Type 423,,,,Load Status 424,Batch Guid 425,589,,

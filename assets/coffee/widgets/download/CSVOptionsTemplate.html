@@ -17,9 +17,9 @@
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu report_type" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            <li><label><input type="radio" name="reportType" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -27,7 +27,7 @@
             </tr>
             {{/extractType}}
             {{#asmtYear}}
-            <tr style="display:none">
+            <tr class="rpt_option sr_rpt">
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group" data-option-name="{{name}}">
@@ -45,7 +45,7 @@
             </tr>
             {{/asmtYear}}
             {{#asmtType}}
-            <tr>
+            <tr class="rpt_option assm_rpt">
                 <td>{{name}}</td>
                 <td>
                     <div id="asmtType" class="btn-group" data-option-name="{{name}}">
@@ -59,7 +59,7 @@
             </tr>
             {{/asmtType}}
             {{#subject}}
-            <tr>
+            <tr class="rpt_option assm_rpt">
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group" data-option-name="{{name}}">

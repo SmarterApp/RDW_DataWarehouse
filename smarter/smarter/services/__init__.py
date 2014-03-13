@@ -25,3 +25,6 @@ def includeme(config):
 
     # Add extract
     config.add_route('extract', '/services/extract')
+
+    # Add extract for student registration
+    config.add_route('student_registration_statistics', '/services/extract/student_registration_statistics')

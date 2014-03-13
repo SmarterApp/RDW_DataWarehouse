@@ -37,16 +37,19 @@ define [
       }
       this.container.html output
       this.message = $('#message', this.container)
-      this.dropdownMenu = $('ul.dropdown-menu, ul.checkbox-menu', this.container)
+      this.reportTypeDropdownMenu = $('ul.dropdown-menu.report_type', this.container)
+      this.dropdownMenu = $('ul.dropdown-menu', this.container)
+      this.checkboxMenu = $('ul.checkbox-menu', this.container)
       this.submitBtn = $('.btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
       this.selectDefault()
+      this.setMainPulldownLabel()
 
     bindEvents: ()->
       self = this
-      # prevent dropdown memu from disappearing
-      $(this.dropdownMenu).click (e) ->
-        e.stopPropagation()
+      # prevent dropdown menu from disappearing
+      $(this.reportTypeDropdownMenu).click (e) ->
+        self.setMainPulldownLabel()
 
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
@@ -76,7 +79,17 @@ define [
           else
             # disable button and all the input checkboxes
             self.disableInput()
-            self.sendRequest "/services/extract"
+            if self.reportType == 'studentRegistrationStatistics'
+              self.sendRequest "/services/extract/student_registration_statistics"
+            else
+              self.sendRequest "/services/extract"
+
+    setMainPulldownLabel: ()->
+      self = this
+      $('span.dropdown-display', self.reportTypeDropdownMenu.parent()).text($('input:checked', self.reportTypeDropdownMenu).attr('data-label'))
+      self.reportType = $('input:checked', self.reportTypeDropdownMenu).val()
+      $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics');
+      $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment');
 
     validate: ($dropdown) ->
       # check selected options
@@ -183,6 +196,12 @@ define [
     getParams: ()->
       params = {}
       this.dropdownMenu.each (index, param)->
+        $param = $(param)
+        key = $param.data('key')
+        params[key] = []
+        $param.find('input:checked').each ()->
+          params[key].push $(this).attr('value')
+      this.checkboxMenu.each (index, param)->
         $param = $(param)
         key = $param.data('key')
         params[key] = []

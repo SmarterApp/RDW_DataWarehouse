@@ -282,6 +282,10 @@ function restart_apache {
     fi
 }
 
+function restart_memcached {
+    /usr/bin/sudo /etc/init.d/memcached restart
+}
+
 function restart_celeryd {
    /usr/bin/sudo /etc/init.d/celeryd-services restart
    /usr/bin/sudo /etc/init.d/celeryd-edextract restart
@@ -447,6 +451,8 @@ function main {
         generate_ini
         create_sym_link_for_apache
         restart_apache
+        # Restart memcached
+        restart_memcached
         restart_celeryd
         import_data_from_csv
         if (! $RUN_END_TO_END;) then

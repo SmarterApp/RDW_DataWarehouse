@@ -82,7 +82,7 @@ if __name__ == '__main__':
         exit(-1)
 
     if __resource is None:
-        __resource = os.path.join(os.path.join(os.path.join(os.path.join(parent_dir, 'edschema'), 'database'), 'tests'), 'resources')
+        __resource = os.path.join(parent_dir, 'edschema', 'edschema', 'database', 'tests', 'resources')
 
     if os.path.exists(__resource) is False:
         print('Error: resources directory does not exist')

@@ -26,7 +26,7 @@ def load_data(tenant_name):
     Load sds data into pre-prod database
     '''
     here = os.path.abspath(os.path.dirname(__file__))
-    resource_dir = os.path.join(here, '../../edschema/database/tests/resources/')
+    resource_dir = os.path.join(here, '../../edschema/edschema/database/tests/resources/')
     import_csv_dir(resource_dir, PRODUCTION_NAMESPACE + "." + tenant_name)
 
 

@@ -35,7 +35,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
-        self.delete_pre_prod_tables()
+        self.delete_prod_tables()
 
     def tearDown(self):
         self.ed_connector.close_connection()
@@ -43,14 +43,14 @@ class TestUDLReportingIntegration(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
         # reload SDS so we don't mess up other tests
-        self.delete_pre_prod_tables()
-        command = 'python ' + os.path.join(self.here, "../../../scripts/populate_pre_prod_database.py")
+        self.delete_prod_tables()
+        command = 'python ' + os.path.join(self.here, "../../../scripts/populate_prod_database.py")
         subprocess.call(command, shell=True)
 
-    def delete_pre_prod_tables(self):
+    def delete_prod_tables(self):
         with get_prod_connection() as conn:
             # TODO: read from ini the name of schema
-            metadata = conn.get_metadata(reflect=True, schema_name='edware_pre_prod')
+            metadata = conn.get_metadata(reflect=True, schema_name='edware_prod')
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
 

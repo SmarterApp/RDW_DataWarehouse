@@ -23,7 +23,7 @@ def main():
 
 def load_data(tenant_name):
     '''
-    Load sds data into pre-prod database
+    Load sds data into prod database
     '''
     here = os.path.abspath(os.path.dirname(__file__))
     resource_dir = os.path.join(here, '../../edschema/database/tests/resources/')

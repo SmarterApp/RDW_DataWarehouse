@@ -13,6 +13,7 @@ from sqlalchemy.sql import select, delete
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
+from sqlalchemy.schema import DropSchema
 
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
@@ -34,6 +35,8 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        metadata = self.ed_connector.get_metadata(schema_name=guid_batch_id)
+        metadata.drop_all()
 
 # Validate that in Batch_Table for given guid every udl_phase output is Success
     def validate_UDL_database(self, connector):
@@ -51,8 +54,8 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.assertEquals(output_result, tuple_str)
 
 #Validate that for given guid data loded on star schema
-    def validate_edware_database(self, ed_connector):
-            edware_table = ed_connector.get_table(FACT_TABLE)
+    def validate_edware_database(self, ed_connector, schema_name):
+            edware_table = ed_connector.get_table(FACT_TABLE, schema_name=schema_name)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
             output_data = ed_connector.execute(output).fetchall()
             print(edware_table.c.batch_guid)
@@ -123,7 +126,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.validate_UDL_database(self.connector)
         # wait for a while
         sleep(5)
-        self.validate_edware_database(self.ed_connector)
+        self.validate_edware_database(self.ed_connector, schema_name=guid_batch_id)
         # wait for a while
         sleep(5)
         self.validate_workzone()

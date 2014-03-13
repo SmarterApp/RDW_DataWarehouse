@@ -13,7 +13,7 @@ class CacheTrigger(object):
 
     def __init__(self, tenant, state_code, filter_config):
         self.state_code = state_code
-        self.academic_years = get_academic_years(state_code)
+        self.academic_years = get_academic_years(state_code, tenant)
         self.init_filters(tenant, filter_config)
 
     def recache_state_view_report(self):

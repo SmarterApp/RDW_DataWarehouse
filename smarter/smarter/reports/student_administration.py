@@ -36,13 +36,13 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
 
 
 @cache_region('public.data')
-def get_academic_years(state_code, year_back=None):
+def get_academic_years(state_code, tenant=None, year_back=None):
     '''
     Gets academic years.
     '''
     if not year_back or year_back <= 0:
         year_back = DEFAULT_YEAR_BACK
-    with EdCoreDBConnection(state_code=state_code) as connection:
+    with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connection:
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
         query = select([dim_asmt.c.asmt_period_year]).distinct().order_by(dim_asmt.c.asmt_period_year.desc())
         results = connection.execute(query).fetchmany(size=year_back)

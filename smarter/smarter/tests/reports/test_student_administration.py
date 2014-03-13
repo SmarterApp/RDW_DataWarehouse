@@ -46,7 +46,7 @@ class TestStudentAdministration(Unittest_with_edcore_sqlite):
             (5, [2015, 2012]),
         ]
         for year_back, expect in test_cases:
-            results = get_academic_years(state_code, year_back)
+            results = get_academic_years(state_code, year_back=year_back)
             self.assertEqual(expect, results, "%d most recent academic year should be %r" % (year_back, expect))
 
     def test_set_default_year_back(self):

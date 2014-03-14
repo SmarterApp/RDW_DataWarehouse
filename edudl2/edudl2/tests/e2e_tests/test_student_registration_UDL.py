@@ -82,6 +82,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         #self.empty_target_table()
         self.receive_requests = True
         self.start_http_post_server()
+        self.batches = []
 
     def tearDown(self):
         self.shutdown_http_post_server()
@@ -89,6 +90,13 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.target_connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        for batch in self.batches:
+            self.drop_target_schema(batch)
+    
+    def drop_target_schema(self, schema_name):
+        import pdb;pdb.set_trace();
+        metadata = self.target_connector.get_metadata(schema_name=schema_name)
+        metadata.drop_all()
 
     #Empty target table
     def empty_target_table(self):
@@ -126,8 +134,9 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
         query = select([target_table.c.student_guid], target_table.c.batch_guid == self.batch_id)
         result = self.target_connector.execute(query).fetchall()
-        print('Number of rows for current job in target table:', len(result))
-        self.assertEqual(len(result), self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in target table.')
+        record_count = len(result)
+        print('Number of rows for current job in target table:', record_count)
+        self.assertEqual(record_count, self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in target table.')
 
     #Validate a student's data
     def validate_student_data(self, file_to_load):
@@ -237,6 +246,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def test_udl_student_registration(self):
         # Run and verify first run of student registration data
         self.batch_id = str(uuid4())
+        self.batches.append(self.batch_id)
         self.run_udl_pipeline('original_data')
         self.validate_successful_job_completion()
         self.validate_load_type()
@@ -248,6 +258,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         # Run and verify second run of student registration data (different test registration than previous run)
         # Should retry notification twice, then succeed
         self.batch_id = str(uuid4())
+        self.batches.append(self.batch_id)
         self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
@@ -258,6 +269,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         # Run and verify second run of student registration data again
         # Should max out on retry attempts, then fail
         self.batch_id = str(uuid4())
+        self.batches.append(self.batch_id)
         self.run_udl_pipeline('data_for_different_test_center_than_original_data', 45)
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
@@ -268,6 +280,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         # Run and verify third run of student registration data (same academic year and test registration as first run)
         # Should overwrite all data from the first run, and fail on notification
         self.batch_id = str(uuid4())
+        self.batches.append(self.batch_id)
         self.run_udl_pipeline('data_to_overwrite_original_data')
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_to_overwrite_original_data')

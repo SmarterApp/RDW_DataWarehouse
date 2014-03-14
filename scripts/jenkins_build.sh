@@ -225,7 +225,7 @@ function run_functional_tests {
        cd e2e_tests
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
-       nosetests --exclude-dir=e2e_tests -v --with-xunitmp --xunitmp-file=$WORKSPACE/nosetests.xml --processes=4 --process-timeout=1000
+       nosetests --exclude-dir=e2e_tests -v --with-xunitmp --xunitmp-file=$WORKSPACE/nosetests.xml --processes=6 --process-timeout=1000
        generate_docs edware_test/edware_test/functional_tests
     fi
 

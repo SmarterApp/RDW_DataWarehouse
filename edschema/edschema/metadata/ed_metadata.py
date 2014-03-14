@@ -166,7 +166,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('school_guid', String(50), nullable=False),
                                Column('section_guid', String(50), nullable=False),
                                Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
-                               Column('section_rec_id', BigInteger, ForeignKey(sections.c.section_rec_id), nullable=False),
+                               Column('section_rec_id', BigInteger, nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                Column('where_taken_name', String(256)),
                                Column('asmt_grade', String(10), nullable=False),

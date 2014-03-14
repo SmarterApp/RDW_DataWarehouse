@@ -8,9 +8,6 @@ from edmigrate.database.migrate_source_connector import EdMigrateSourceConnectio
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 import logging
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.database import initialize_db
-import configparser
-import sys
 
 __author__ = 'sravi'
 # This is a hack needed for now for migration.
@@ -276,13 +273,3 @@ def start_migrate_daily_delta(tenant):
     for batch in batches_to_migrate:
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         migrate_batch(batch=batch)
-
-if __name__ == '__main__':
-    # TODO: remove this. temp entry point for testing migration as a script
-    config = configparser.ConfigParser()
-    config.read(sys.argv[1])
-    settings = config['app:main']
-    initialize_db(EdMigrateDestConnection, settings, allow_schema_create=True)
-    initialize_db(EdMigrateSourceConnection, settings, allow_schema_create=True)
-    initialize_db(StatsDBConnection, settings, allow_schema_create=True)
-    start_migrate_daily_delta('ca')

@@ -245,8 +245,6 @@ def migrate_batch(batch):
             migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
-            # cleanup pre-prod
-            cleanup_batch(batch_guid, tenant)
             # commit transaction
             trans.commit()
             logger.info('Master: Migration successful for batch: ' + batch_guid)
@@ -259,6 +257,9 @@ def migrate_batch(batch):
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
             except Exception as e:
                 pass
+    if rtn:
+        # clean up preprod
+        cleanup_batch(batch_guid, tenant)
     return rtn
 
 

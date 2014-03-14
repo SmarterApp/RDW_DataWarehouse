@@ -14,13 +14,22 @@ from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
 import unittest
+from integration_tests.migrate_helper import start_migrate,\
+    get_prod_table_count, get_stats_table_has_migrated_ingested_status,\
+    setUpMigrationConnection
 
 
-@unittest.skipIf(os.environ.get('INTEGRATION', 0) is not '1', "INTEGRATION_TEST IS NOT '1'")
 class TestUDLReportingIntegration(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
+
+    @classmethod
+    def setUpClass(cls):
+        '''
+        Reads development ini and setup connection for migrations
+        '''
+        setUpMigrationConnection()
 
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
@@ -28,22 +37,20 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome'
         self.here = os.path.dirname(__file__)
-        self.data_dir = os.path.join(self.here, "..", "data", "udl_to_reporting_e2e_integration")
+        self.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
         self.delete_prod_tables()
 
     def tearDown(self):
-        self.ed_connector.close_connection()
-        self.connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
 
     def delete_prod_tables(self):
         with get_prod_connection() as conn:
             # TODO: read from ini the name of schema
-            metadata = conn.get_metadata(reflect=True, schema_name='edware_prod')
+            metadata = conn.get_metadata(schema_name='edware_prod')
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
 
@@ -58,8 +65,16 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
         self.validate_UDL_database(self.expected_unique_batch_guids)
         print("Completed validate_UDL_database")
-        self.validate_edware_database(self.ed_connector, self.dim_table, self.fact_table, self.expected_rows, self.expected_unique_batch_guids)
-        print("Completed validate_edware_database")
+        self.migrate_data()
+
+    def migrate_data(self):
+        start_migrate()
+        tenant = 'cat'
+        results = get_stats_table_has_migrated_ingested_status(tenant)
+        for result in results:
+            self.assertEqual(result['load_status'], 'migrate.ingested')
+        self.assertEqual(get_prod_table_count(tenant, 'fact_asmt_outcome'), 957)
+        self.assertEqual(get_prod_table_count(tenant, 'dim_asmt'), 30)
 
     def empty_table(self):
         '''
@@ -101,7 +116,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # set file path to tenant directory that includes all the gpg files
         arch_file = self.tenant_dir
         here = os.path.dirname(__file__)
-        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
+        driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
         # Set the command to run UDL pipeline
         command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
         print(command)
@@ -140,31 +155,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
             print("UDL verification successful")
             print(len(all_successful_batch_guids))
             print('Waited for', timer, 'second(s) for job to complete.')
-
-    def validate_edware_database(self, dim_table, fact_table, expected_rows, expected_unique_batch_guids):
-        '''
-        Validate edware schema for Dim_asmt table and fact_asmt_table
-        '''
-        with get_target_connection() as ed_connector:
-            print("ENtered validate_edware_database")
-            #Validate dim_asmt table : All the asmt_guid for 30 batch has been loded to dim_table
-            edware_table = ed_connector.get_table(dim_table)
-            query_asmt_guids = select([edware_table.c.asmt_guid])
-            all_asmt_guids = ed_connector.execute(query_asmt_guids).fetchall()
-            print(len(all_asmt_guids))
-            ## TODO: Enable this step
-    #        self.assertEqual(len(all_asmt_guids), expected_unique_batch_guids,
-    #                         "%i asmt guids not found" % expected_unique_batch_guids)
-            print('dim_asmt table verification is successful')
-
-            #Validate Fact_asmt table for totalnumber of rows
-            fact_asmt_table = ed_connector.get_table(fact_table)
-            query_rows = select([fact_asmt_table])
-            total_number_rows = ed_connector.execute(query_rows).fetchall()
-            number_rows = len(total_number_rows)
-            ## TODO: Enable this step
-    #        self.assertEqual(number_rows, expected_rows,
-    #                         "Total number of rows in FACT_ASMT is less than %i" % expected_rows)
 
     def copy_files_to_tenantdir(self, file_path, expected_unique_batch_guids):
         '''

@@ -24,7 +24,7 @@ STUDENT_REGISTRATION_PARAMS = {
         Constants.ACADEMIC_YEAR: {
             "type": "array",
             "items": {
-                "type": "string",
+                "type": "integer",
                 "pattern": "^\d{4}$"
             },
             "minItems": 1,

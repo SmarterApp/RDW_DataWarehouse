@@ -31,7 +31,15 @@
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group {{name}}" data-option-name="{{name}}">
-                        <input id="academicYear">
+                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                            <span class='dropdown-display'>{{options.0.display}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
                     </div>
                 </td>
             </tr>
@@ -69,15 +77,7 @@
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
-                            <span class='dropdown-display'>{{options.0.display}}</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" data-key="{{key}}">
-                            {{#options}}
-                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
-                            {{/options}}
-                        </ul>
+                        <input id="academicYear" data-label="{{name}}" data-key="{{key}}">
                     </div>
                 </td>
             </tr>

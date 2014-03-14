@@ -73,7 +73,7 @@ define [
         invalidFields = []
         # check if button is 'Close' or 'Request'
         if $(this).data('dismiss') != 'modal'
-          $('tr.rpt_option:not(.disabled)', self.container).each ()->
+          $('tr.rpt_option:not(.disabled) div.btn-group', self.container).each ()->
             $dropdown = $(this)
             if not self.validate($dropdown)
               $dropdown.addClass('invalid')
@@ -103,6 +103,9 @@ define [
     getSelectedOptions: ($dropdown)->
       # get selected option text
       checked = []
+      if this.reportType == 'studentRegistrationStatistics'
+          if $( "#academicYear" ).spinner( "value" ) != null
+              checked.push $( "#academicYear" ).data('label')
       $dropdown.find('input:checked').each () ->
           checked.push $(this).data('label')
       checked
@@ -211,6 +214,11 @@ define [
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
+      $('tr.rpt_option:not(.disabled) #academicYear', this.container).each (index, param)->
+        $param = $(param)
+        key = $param.data('key')
+        params[key] = []
+        params[key].push $(this).spinner( "value" );
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
@@ -220,9 +228,7 @@ define [
       $('#CSVModal').modal()
 
     createSpinner: () ->
-      $("#academicYear").spinner()
-      date = new Date()
-      $("#academicYear").val date.getFullYear()
+      $( "#academicYear" ).spinner({ numberFormat: "n" }, {min: 0}).spinner("value", (new Date()).getFullYear());
 
   class DownloadMenu
 

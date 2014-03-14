@@ -77,7 +77,10 @@ def cleanup_all_tables(connector, schema_name, column_name, value, batch_delete=
         cleanup_table(connector, schema_name, column_name, value, batch_delete, table)
 
 
-def _get_schema_check_query(schema_name):    
+def _get_schema_check_query(schema_name):
+    """
+    returns the sql query to look for schema presence
+    """
     return select([("schema_name")]).select_from("information_schema.schemata").where("schema_name = '" + schema_name + "'")
 
 
@@ -97,10 +100,11 @@ def create_schema(connector, metadata_generator, schema_name):
     @param connector: connection to the database
     @param schema_name: name of the schema to be dropped
     """
-    engine=connector.get_engine()
+    engine = connector.get_engine()
     connector.execute(CreateSchema(schema_name))
     metadata = metadata_generator(schema_name=schema_name, bind=engine)
     metadata.create_all()
+
 
 def drop_schema(connector, schema_name):
     """

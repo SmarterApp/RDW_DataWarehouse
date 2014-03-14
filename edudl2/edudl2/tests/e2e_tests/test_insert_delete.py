@@ -22,7 +22,7 @@ INT_TABLE = 'INT_SBAC_ASMT_OUTCOME'
 FACT_TABLE = 'fact_asmt_outcome'
 
 
-@unittest.skip("test failed at jenkins, under investigation")
+#@unittest.skip("test failed at jenkins, under investigation")
 class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):
@@ -46,7 +46,6 @@ class Test_Insert_Delete(unittest.TestCase):
         result1 = connector.execute(query).fetchall()
         number_of_row = len(result1)
         self.assertEqual(number_of_row, 0)
-        print(number_of_row)
         self.assertEqual(number_of_row, 0)
 
         #Delete all table data from edware databse
@@ -57,7 +56,6 @@ class Test_Insert_Delete(unittest.TestCase):
             query1 = select([table])
             result2 = ed_connector.execute(query1).fetchall()
             number_of_row = len(result2)
-            print(number_of_row)
             self.assertEqual(number_of_row, 0)
 
     #Run UDL pipeline with file in tenant dir

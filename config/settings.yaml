@@ -675,10 +675,10 @@ jenkins_int:
     edware:
       db:
         cat:
-          schema_name: edware
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         dog:
-          schema_name: edware
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:
       db:

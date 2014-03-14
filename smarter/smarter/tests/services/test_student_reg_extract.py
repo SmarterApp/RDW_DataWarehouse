@@ -60,7 +60,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
 
     def test_post_sr_extraction_request(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'academicYear': [2015]}
+        self.__request.json_body = {'academicYear': [2015], "stateCode": ["NC"]}
         response = post_sr_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)

@@ -16,6 +16,7 @@ class SBACAssessment(Assessment):
     """
     The SBAC-specific assessment class.
     """
+    rec_id = IntField(required=True)
     asmt_type = StringField(required=True)
     period = StringField(required=True)
     period_year = IntField(required=True)

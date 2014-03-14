@@ -16,6 +16,7 @@ class InstitutionHierarchy(Document):
     """
     Model an institution hierarchy.
     """
+    rec_id = IntField(required=True)
     guid = StringField(required=True)
     state = ReferenceField(State, required=True)
     district = ReferenceField(District, required=True)

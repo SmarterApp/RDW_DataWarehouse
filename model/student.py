@@ -15,6 +15,7 @@ class SBACStudent(Student):
     """
     The SBAC-specific student class.
     """
+    rec_id = IntField(required=True)
     district = ReferenceField(District, required=True)
     guid_sr = StringField(required=True, max_length=30)
     external_ssid = StringField(required=True, max_length=40)

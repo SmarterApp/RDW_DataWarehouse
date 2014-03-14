@@ -9,6 +9,7 @@ import datetime
 import random
 
 import general.generators.population as general_pop_gen
+import general.util.id_gen as general_id_gen
 import project.sbac.config.cfg as sbac_in_config
 import project.sbac.util.id_gen as sbac_id_gen
 
@@ -30,6 +31,7 @@ def generate_student(school: School, grade, acad_year=datetime.datetime.now().ye
     # Run the General generator
     s = general_pop_gen.generate_student(school, grade, acad_year, SBACStudent)
     s.district = school.district
+    s.rec_id = general_id_gen.get_rec_id('student')
 
     # Get the demographic config
     demo_config = school.demo_config[str(grade)]
@@ -75,6 +77,10 @@ def advance_student(student: Student, schools_by_grade, drop_out_rate=.5):
     # If we are not keeping the student, don't worry about them
     if not rslt:
         return rslt
+
+    # Change the record ID if the student is being advanced
+    if not student.held_back:
+        student.rec_id = general_id_gen.get_rec_id('student')
 
     # TODO: Change things like LEP status or IEP status, etc
 

@@ -5,11 +5,11 @@ An assessment generator for the SBAC assessment.
 @date: March 3, 2014
 """
 
-import calendar
 import datetime
 import random
 
 import general.generators.assessment as gen_asmt_generator
+import general.util.id_gen as gen_id_gen
 import project.sbac.config.cfg as sbac_config
 
 from general.model.section import Section
@@ -43,6 +43,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa = gen_asmt_generator.generate_assessment(SBACAssessment)
 
     # Set other specifics
+    sa.rec_id = gen_id_gen.get_rec_id('assessment')
     sa.asmt_type = asmt_type
     sa.period = period + ' ' + str((asmt_year + asmt_year_adj))
     sa.period_year = asmt_year + asmt_year_adj

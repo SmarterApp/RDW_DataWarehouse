@@ -92,7 +92,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             shutil.rmtree(self.tenant_dir)
         for batch in self.batches:
             self.drop_target_schema(batch)
-    
+
     def drop_target_schema(self, schema_name):
         metadata = self.target_connector.get_metadata(schema_name=schema_name)
         metadata.drop_all()

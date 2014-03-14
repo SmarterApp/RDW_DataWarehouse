@@ -1,5 +1,6 @@
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.queries import get_slave_node_id_from_hostname
+from edmigrate.utils.constants import Constants
 __author__ = 'sravi'
 
 import socket
@@ -114,3 +115,8 @@ def unblock_pgpool(group):
     logger.info("Slave: Resuming pgpool")
     call(['iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
     return True
+
+
+@celery.task(name=Constants.SLAVE_TASK, ignore_result=True)
+def task():
+    pass

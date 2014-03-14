@@ -94,7 +94,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.drop_target_schema(batch)
     
     def drop_target_schema(self, schema_name):
-        import pdb;pdb.set_trace();
         metadata = self.target_connector.get_metadata(schema_name=schema_name)
         metadata.drop_all()
 

@@ -1,7 +1,5 @@
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edcore.utils.cleanup import drop_schema, schema_exists
-from edmigrate.utils.constants import Constants
-from edmigrate.celery import conf
 
 
 def cleanup_batch(schema_name, tenant):
@@ -13,7 +11,3 @@ def cleanup_batch(schema_name, tenant):
         # drop schema
         if schema_exists(source_connector, schema_name):
             drop_schema(source_connector, schema_name)
-
-if __name__ == '__main__':
-    import edmigrate.celery as c
-    cleanup_batch('test-xxx-yyy-zzz', 'cat')

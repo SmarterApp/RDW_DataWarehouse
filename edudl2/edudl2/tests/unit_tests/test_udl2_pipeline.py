@@ -1,4 +1,6 @@
 from edudl2.udl2.udl2_pipeline import get_pipeline_chain
+from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.udl2.celery import udl2_conf
 __author__ = 'swimberly'
 
 import unittest
@@ -9,6 +11,11 @@ MESSAGE_KEYS = ['start_timestamp', 'landing_zone_work_dir', 'load_type', 'batch_
 
 
 class TestUDL2Pipeline(unittest.TestCase):
+
+    def setUp(self):
+        self.udl_connector = get_udl_connection()
+        batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        self.udl_connector.execute(batch_table.delete())
 
     def test_get_pipeline_chain_check_type(self):
         arch_file = 'path_to_some_file'

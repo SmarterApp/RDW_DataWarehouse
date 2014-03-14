@@ -18,7 +18,7 @@ class RepMgrDBConnection(DBConnection):
         super().__init__(name=self.get_datasource_name(tenant))
 
     def get_metadata(self, schema_name=None):
-        return super(RepMgrDBConnection, self).get_metadata(reflect=True, schema_name=schema_name)
+        return super(RepMgrDBConnection, self).get_metadata(schema_name=schema_name)
 
     @staticmethod
     def get_namespace():

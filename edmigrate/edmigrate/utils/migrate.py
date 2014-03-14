@@ -2,6 +2,7 @@ from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException
 from sqlalchemy.sql.expression import select, and_
 from edmigrate.utils.constants import Constants
+from edmigrate.utils.migrate_cleanup import cleanup_batch
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
@@ -80,7 +81,7 @@ def report_udl_stats_batch_status(batch_guid, migrate_load_status):
     return rowcount
 
 
-def get_tables_to_migrate(connector):
+def get_tables_to_migrate(connector, batch_guid):
     """This function returns list of tables to be migrated based on schema metadata
 
     :param connector: The connection to the database
@@ -111,10 +112,11 @@ def yield_rows(connector, query, batch_size):
         rows = result.fetchmany(batch_size)
 
 
-def migrate_table(batch_guid, source_connector, dest_connector, table_name, batch_size=100):
+def migrate_table(batch_guid, schema_name, source_connector, dest_connector, table_name, batch_size=100):
     """Load prod fact table with delta from pre-prod
 
     :param batch_guid: Batch Guid of the batch under migration
+    :param schema_name: Schema name for this batch
     :param source_connector: Source connection
     :param dest_connector: Destination connection
     :param table_name: name of the table to be migrated
@@ -123,7 +125,7 @@ def migrate_table(batch_guid, source_connector, dest_connector, table_name, batc
     :returns number of record updated
     """
     delete_count = 0
-    source_table = source_connector.get_table(table_name)
+    source_table = source_connector.get_table(table_name, schema_name=schema_name)
     # TODO: make it possible for composites
     primary_key = source_table.primary_key.columns.keys()[0]
     # if there is a status column, it's a candidate for deletes
@@ -199,10 +201,11 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     return dest_connector.execute(dest_table.insert(), False, batch).rowcount
 
 
-def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):
+def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables):
     """Migrate all tables for the given batch from source to destination
 
     :param batch_guid: Batch Guid of the batch under migration
+    :param schema_name: Schema name for this batch
     :param source_connector: Source connection
     :param dest_connector: Destination connection
     :param tables: list of Tables to be migrated
@@ -213,10 +216,10 @@ def migrate_all_tables(batch_guid, source_connector, dest_connector, tables):
     # TODO - we want it to be configurable what to migrate and in which order
     # migrate dims first
     for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('dim_')), tables)):
-        migrate_table(batch_guid, source_connector, dest_connector, table)
+        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
     # migrate facts
     for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('fact_')), tables)):
-        migrate_table(batch_guid, source_connector, dest_connector, table)
+        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
 
 
 def migrate_batch(batch):
@@ -231,6 +234,7 @@ def migrate_batch(batch):
     rtn = False
     batch_guid = batch[UdlStatsConstants.BATCH_GUID]
     tenant = batch[UdlStatsConstants.TENANT]
+    schema_name = batch[UdlStatsConstants.SCHEMA_NAME]
     logger.info('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
 
     with EdMigrateDestConnection(tenant) as dest_connector, \
@@ -239,11 +243,13 @@ def migrate_batch(batch):
             # start transaction for this batch
             trans = dest_connector.get_transaction()
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
-            tables_to_migrate = get_tables_to_migrate(dest_connector)
+            tables_to_migrate = get_tables_to_migrate(dest_connector, batch_guid)
             # migrate all tables
-            migrate_all_tables(batch_guid, source_connector, dest_connector, tables_to_migrate)
+            migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
+            # cleanup pre-prod
+            cleanup_batch(batch_guid, tenant)
             # commit transaction
             trans.commit()
             logger.info('Master: Migration successful for batch: ' + batch_guid)
@@ -268,6 +274,7 @@ def start_migrate_daily_delta(tenant):
     """
     batches_to_migrate = get_batches_to_migrate(tenant)
     for batch in batches_to_migrate:
+        batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         migrate_batch(batch=batch)
 
 if __name__ == '__main__':
@@ -278,4 +285,4 @@ if __name__ == '__main__':
     initialize_db(EdMigrateDestConnection, settings, allow_schema_create=True)
     initialize_db(EdMigrateSourceConnection, settings, allow_schema_create=True)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
-    start_migrate_daily_delta('cat')
+    start_migrate_daily_delta('ca')

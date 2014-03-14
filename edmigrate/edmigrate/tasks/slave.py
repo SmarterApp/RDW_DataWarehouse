@@ -1,13 +1,12 @@
 __author__ = 'sravi'
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.queries import get_slave_node_id_from_hostname
-import socket
+from edmigrate.utils.constants import Constants
 from edmigrate.celery import celery, logger
 from edcore.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call
 from edmigrate.settings.config import Config, get_setting
-from edmigrate.utils.constants import Constants
 from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected,\
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
 
@@ -159,3 +158,6 @@ def slave_task(command, slaves):
     else:
         if node_id in slaves:
             COMMAND_HANDLERS[command](hostname, node_id, amqp_url)
+        else:
+            # ignore the command
+            pass

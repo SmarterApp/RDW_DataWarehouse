@@ -32,6 +32,7 @@ define [
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
         asmtYear: this.config['asmtYear']
+        academicYear: this.config['academicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
       }
@@ -49,6 +50,7 @@ define [
       self = this
       # prevent dropdown menu from disappearing
       $(this.reportTypeDropdownMenu).click (e) ->
+        $('div.error', self.messages).remove()
         self.setMainPulldownLabel()
 
       $('input:checkbox', this.container).click (e)->
@@ -69,7 +71,7 @@ define [
         invalidFields = []
         # check if button is 'Close' or 'Request'
         if $(this).data('dismiss') != 'modal'
-          $('div.btn-group', self.container).each ()->
+          $('tr.rpt_option:not(.disabled)', self.container).each ()->
             $dropdown = $(this)
             if not self.validate($dropdown)
               $dropdown.addClass('invalid')
@@ -100,7 +102,7 @@ define [
       # get selected option text
       checked = []
       $dropdown.find('input:checked').each () ->
-        checked.push $(this).data('label')
+          checked.push $(this).data('label')
       checked
 
     selectDefault: ()->
@@ -195,13 +197,13 @@ define [
 
     getParams: ()->
       params = {}
-      this.dropdownMenu.each (index, param)->
+      $('tr.rpt_option:not(.disabled) ul.checkbox-menu', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
-      this.checkboxMenu.each (index, param)->
+      $('tr.rpt_option:not(.disabled) ul.dropdown-menu', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')
         params[key] = []

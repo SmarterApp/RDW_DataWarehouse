@@ -420,10 +420,8 @@ function setup_for_udl {
 
 function run_udl_integration_tests {
     echo "Running UDL integration tests"
-	# Regenerate ini for integration tests as part of setup_for_udl
-
-    cd $WORKSPACE/edudl2/edudl2/tests/integration_tests
-    INTEGRATION=1 nosetests -v test_udl_reporting.py
+    cd $WORKSPACE/integration_tests
+    nosetests
     echo "Finished udl data load"
 }
 

@@ -81,7 +81,8 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa.claim_cut_point_1 = sbac_config.CLAIM_SCORE_CUT_POINT_1
     sa.claim_cut_point_2 = sbac_config.CLAIM_SCORE_CUT_POINT_2
     sa.from_date = from_date if from_date is not None else sbac_config.HIERARCHY_FROM_DATE
-    sa.to_date = to_date
+    sa.to_date = to_date if to_date is not None else sbac_config.HIERARCHY_TO_DATE
+    sa.effective_date = sbac_config.ASMT_EFFECTIVE_DATE
     sa.most_recent = most_recent
 
     # Save and return the object

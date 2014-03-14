@@ -8,7 +8,7 @@ The input configuration for the SBAC project.
 import datetime
 
 HIERARCHY_FROM_DATE = datetime.date(2012, 9, 1)
-HIERARCHY_TO_DATE = None
+HIERARCHY_TO_DATE = datetime.date(9999, 12, 31)
 HIERARCHY_MOST_RECENT = True
 
 LEP_HAS_ENTRY_DATE_RATE = .9
@@ -20,6 +20,8 @@ NOT_ADVANCED_DROP_OUT_RATE = .4
 SUBJECTS = ['ELA', 'Math']
 
 INTERIM_ASMT_RATE = .85
+
+ASMT_EFFECTIVE_DATE = datetime.date(2012, 9, 1)
 
 ASMT_SCORE_MIN = 1200
 ASMT_SCORE_MAX = 2400

@@ -55,4 +55,5 @@ class SBACAssessment(Assessment):
     claim_cut_point_2 = IntField(required=True)
     from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
     to_date = DateTimeField(required=False)
+    effective_date = DateTimeField(required=False)
     most_recent = BooleanField(required=True, default=False)

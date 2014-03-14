@@ -46,13 +46,10 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     claim_3_score_range_max = IntField(required=True, min_value=sbac_config.CLAIM_SCORE_MIN,
                                        max_value=sbac_config.CLAIM_SCORE_MAX)
     claim_3_perf_lvl = IntField(required=True, min_value=1, max_value=5)
-    claim_4_score = IntField(required=False, min_value=sbac_config.CLAIM_SCORE_MIN,
-                             max_value=sbac_config.CLAIM_SCORE_MAX)
-    claim_4_score_range_min = IntField(required=False, min_value=sbac_config.CLAIM_SCORE_MIN,
-                                       max_value=sbac_config.CLAIM_SCORE_MAX)
-    claim_4_score_range_max = IntField(required=False, min_value=sbac_config.CLAIM_SCORE_MIN,
-                                       max_value=sbac_config.CLAIM_SCORE_MAX)
-    claim_4_perf_lvl = IntField(required=False, min_value=1, max_value=5)
+    claim_4_score = IntField(required=True, default=0)
+    claim_4_score_range_min = IntField(required=True, default=0)
+    claim_4_score_range_max = IntField(required=True, default=0)
+    claim_4_perf_lvl = IntField(required=True, min_value=0, max_value=5, default=0)
     acc_asl_video_embed = IntField(required=True, default=0, min_value=0, max_value=10)
     acc_asl_human_nonembed = IntField(required=True, default=0, min_value=0, max_value=10)
     acc_braile_embed = IntField(required=True, default=0, min_value=0, max_value=10)

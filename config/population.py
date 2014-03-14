@@ -222,5 +222,42 @@ DEMOGRAPHICS = {'california': {'1': {'gender': {'male': {'name': 'Male', 'perc':
                                       'econ_dis': {'name': 'Economically Disadvantaged', 'perc': .53},
                                       'migrant': {'name': 'Migrant Status', 'perc': .0355}
                                       }
-                               }
+                               },
+                'typical1': {'1': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '2': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '3': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '4': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '5': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '6': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '7': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '8': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '9': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                    'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                    },
+                              '10': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                     'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                     },
+                              '11': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                     'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                     },
+                              '12': {'idea': {'name': 'IDEA Indicator', 'perc': .1},
+                                     'migrant': {'name': 'Migrant Status', 'perc': .0355}
+                                     }
+                              }
                 }

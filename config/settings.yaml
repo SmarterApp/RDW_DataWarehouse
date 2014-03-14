@@ -529,8 +529,8 @@ development:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_12
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
+        schema_name: edware_stats
+        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
     edware_rep:
       db:
         cat:
@@ -544,7 +544,7 @@ development:
     migrate_dest:
       db:
         cat:
-          schema_name: edware_live
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     extract:
       gpg.homedir: ../../edware/config/gpg

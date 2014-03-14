@@ -1,6 +1,9 @@
 __author__ = 'sravi'
 
 from sqlalchemy.sql.expression import text, bindparam
+from sqlalchemy.sql import select
+from sqlalchemy.schema import CreateSchema, DropSchema
+from edschema.metadata_generator import generate_ed_metadata
 
 
 def get_filtered_tables(connector, table_name_prefix=None):
@@ -72,3 +75,44 @@ def cleanup_all_tables(connector, schema_name, column_name, value, batch_delete=
     tables_to_cleanup = get_filtered_tables(connector, table_name_prefix) if tables is None else tables
     for table in tables_to_cleanup:
         cleanup_table(connector, schema_name, column_name, value, batch_delete, table)
+
+
+def _get_schema_check_query(schema_name):
+    """
+    returns the sql query to look for schema presence
+    """
+    return select([("schema_name")]).select_from("information_schema.schemata").where("schema_name = '" + schema_name + "'")
+
+
+def schema_exists(connector, schema_name):
+    """
+    check if schema with the given name exists in the database defined by given connection
+    """
+    query = _get_schema_check_query(schema_name)
+    result = connector.execute(query).fetchone()
+    return True if result is not None else False
+
+
+def create_schema(connector, metadata_generator, schema_name):
+    """
+    Creates a schema defined by the connector database and metadata
+
+    @param connector: connection to the database
+    @param schema_name: name of the schema to be dropped
+    """
+    engine = connector.get_engine()
+    connector.execute(CreateSchema(schema_name))
+    metadata = metadata_generator(schema_name=schema_name, bind=engine)
+    metadata.create_all()
+
+
+def drop_schema(connector, schema_name):
+    """
+    Drops the entire schema
+
+    @param connector: connection to the database
+    @param schema_name: name of the schema to be dropped
+    """
+    metadata = connector.get_metadata(schema_name=schema_name)
+    metadata.drop_all()
+    connector.execute(DropSchema(schema_name, cascade=True))

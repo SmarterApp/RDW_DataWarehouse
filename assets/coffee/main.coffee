@@ -6,6 +6,7 @@ require {
     # globals
     jquery: '../3p/jquery-1.7.2.min',
     jqGrid: '../3p/jquery.jqGrid.min',
+    jqueryui: '../3p/jquery-ui-1.10.4.min',
     bootstrap: '../3p/bootstrap.min',
     text: '../3p/text',
     mustache: '../3p/mustache',

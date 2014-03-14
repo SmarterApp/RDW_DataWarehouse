@@ -2,6 +2,7 @@ define [
   "jquery"
   "mustache"
   "moment"
+  "jqueryui"
   "text!CSVOptionsTemplate"
   "text!DownloadMenuTemplate"
   "edwareConstants"
@@ -9,7 +10,7 @@ define [
   "edwarePreferences"
   "edwareExport"
   "edwareDataProxy"
-], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
+], ($, Mustache, moment, jqueryui, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -43,6 +44,7 @@ define [
       this.checkboxMenu = $('ul.checkbox-menu', this.container)
       this.submitBtn = $('.btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
+      this.createSpinner()
       this.selectDefault()
       this.setMainPulldownLabel()
 
@@ -217,6 +219,10 @@ define [
     show: () ->
       $('#CSVModal').modal()
 
+    createSpinner: () ->
+      $("#academicYear").spinner()
+      date = new Date()
+      $("#academicYear").val date.getFullYear()
 
   class DownloadMenu
 

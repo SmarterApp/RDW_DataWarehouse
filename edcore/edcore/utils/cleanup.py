@@ -3,6 +3,7 @@ __author__ = 'sravi'
 from sqlalchemy.sql.expression import text, bindparam
 from sqlalchemy.sql import select
 from sqlalchemy.schema import CreateSchema, DropSchema
+from edschema.metadata_generator import generate_ed_metadata
 
 
 def get_filtered_tables(connector, table_name_prefix=None):
@@ -89,7 +90,7 @@ def schema_exists(connector, schema_name):
     return True if result is not None else False
 
 
-def create_schema(connector, schema_name):
+def create_schema(connector, metadata_generator, schema_name):
     """
     Creates a schema defined by the connector database and metadata
 
@@ -98,7 +99,7 @@ def create_schema(connector, schema_name):
     """
     engine=connector.get_engine()
     connector.execute(CreateSchema(schema_name))
-    metadata = connector.generate_metadata(schema_name=schema_name, bind=engine)
+    metadata = metadata_generator(schema_name=schema_name, bind=engine)
     metadata.create_all()
 
 def drop_schema(connector, schema_name):

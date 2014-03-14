@@ -20,10 +20,12 @@ from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
 from edcore.utils.cleanup import drop_schema, create_schema, schema_exists
+from edschema.metadata_generator import generate_ed_metadata
 
 DBDRIVER = "postgresql"
 FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
+
 
 def create_target_schema_for_batch(conf):
     """
@@ -33,7 +35,7 @@ def create_target_schema_for_batch(conf):
         schema_name = conf[mk.TARGET_DB_SCHEMA]
         if schema_exists(conn, schema_name):
             drop_schema(conn, schema_name)
-        create_schema(conn, schema_name)
+        create_schema(conn, generate_ed_metadata, schema_name)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):

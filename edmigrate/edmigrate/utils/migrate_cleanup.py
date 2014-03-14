@@ -13,3 +13,7 @@ def cleanup_batch(schema_name, tenant):
         # drop schema
         if schema_exists(source_connector, schema_name):
             drop_schema(source_connector, schema_name)
+
+if __name__ == '__main__':
+    import edmigrate.celery as c
+    cleanup_batch('test-xxx-yyy-zzz', 'cat')

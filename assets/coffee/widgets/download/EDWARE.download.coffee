@@ -157,7 +157,6 @@ define [
       $('input:checkbox', this.container).attr('disabled', 'disabled')
       $('#academicYear').spinner('disable')
       $('button.report_type', self.container).attr('disabled', 'disabled')
-      $('ui-icon', self.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->
       taskResponse = response['tasks'].map this.toDisplay.bind(this)

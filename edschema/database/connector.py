@@ -104,14 +104,9 @@ class DBConnection(ConnectionBase):
     def get_table(self, table_name):
         return Table(table_name, self.get_metadata())
 
-    def get_metadata(self, reflect=False, schema_name=None):
+    def get_metadata(self):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
-        if reflect:
-            metadata = schema.MetaData(bind=dbUtil.get_engine(), schema=schema_name)
-            metadata.reflect(views=True)
-            return metadata
-        else:
-            return dbUtil.get_metadata()
+        return dbUtil.get_metadata()
 
     def execute(self, statement, stream_results=False, *multiparams, **params):
         return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)

@@ -514,9 +514,8 @@ development:
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:
-        cat:
-          schema_name: repmgr_edware_pg_cluster
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+        schema_name: repmgr_edware_pg_cluster
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     migrate_source:
       db:
         cat:

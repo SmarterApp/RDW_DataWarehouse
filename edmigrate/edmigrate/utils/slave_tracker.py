@@ -6,6 +6,8 @@ Created on Mar 14, 2014
 import threading
 from edmigrate.utils.constants import Constants
 import time
+from edmigrate.exceptions import SlaveAlreadyRegisteredException,\
+    SlaveNotRegisteredException, SlaveStatusTimedoutException
 
 
 class Singleton(type):
@@ -17,27 +19,6 @@ class Singleton(type):
         return self._instances[self]
 
 
-class SlaveTrackerException(Exception):
-    def __init__(self, msg='SlaveTrackerException'):
-        self.__msg = msg
-
-    def __str__(self):
-        return repr(self.__msg)
-
-
-class SlaveAlreadyRegisteredException(SlaveTrackerException):
-    def __init__(self, node_id):
-        SlaveTrackerException.__init__(self, msg='Slave [' + node_id + '] has already registered')
-
-
-class SlaveNotRegisteredException(SlaveTrackerException):
-    def __init__(self, node_id):
-        SlaveTrackerException.__init__(self, msg='Slave [' + node_id + '] was not registered')
-
-
-class SlaveStatusTimedoutException(SlaveTrackerException):
-    def __init__(self, node_id, timeout):
-        SlaveTrackerException.__init__(self, msg='Timedout after ' + timeout + ' seconds. Slave [' + node_id + '] was not registered')
 
 
 class SlaveTracker(metaclass=Singleton):
@@ -87,9 +68,16 @@ class SlaveTracker(metaclass=Singleton):
     def is_master_disconnected(self, node_id, timeout=5):
         return self._is_slave_status(node_id, Constants.SLAVE_MASTER_CONNECTION_STATUS, Constants.SLAVE_CONNECTION_STATUS_DISCONNECTED, timeout=timeout)
 
-    def get_slave_ids(self):
+    def get_slave_ids(self, slave_group=None):
         self.__lock.acquire()
-        ids = self.__slaves.keys()
+        if slave_group:
+            ids = []
+            for node_id in self.__slaves:
+                node = self.__slaves[node_id]
+                if node[Constants.SLAVE_GROUP] == slave_group:
+                    ids.append(node_id)
+        else:
+            ids = self.__slaves.keys()
         self.__lock.release()
         return ids.sort()
 

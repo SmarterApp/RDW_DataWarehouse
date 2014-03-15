@@ -259,14 +259,14 @@ def migrate_batch(batch):
     return rtn
 
 
-def start_migrate_daily_delta(tenant):
+def start_migrate_daily_delta(tenant=None):
     """migration starting point for a tenant
 
     :param tenant: Tenant name of the tenant to perform the migration
 
     :returns Nothing
     """
-    batches_to_migrate = get_batches_to_migrate(tenant)
+    batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     for batch in batches_to_migrate:
         migrate_batch(batch=batch)
 

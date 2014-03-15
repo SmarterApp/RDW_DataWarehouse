@@ -92,8 +92,8 @@ define [
       self = this
       $('span.dropdown-display', self.reportTypeDropdownMenu.parent()).text($('input:checked', self.reportTypeDropdownMenu).attr('data-label'))
       self.reportType = $('input:checked', self.reportTypeDropdownMenu).val()
-      $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics');
-      $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment');
+      $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics')
+      $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment')
 
     validate: ($dropdown) ->
       # check selected options
@@ -150,10 +150,14 @@ define [
     enableInput: () ->
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
+      $('#academicYear').spinner('enable')
 
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')
       $('input:checkbox', this.container).attr('disabled', 'disabled')
+      $('#academicYear').spinner('disable')
+      $('button.report_type', self.container).attr('disabled', 'disabled')
+      $('ui-icon', self.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->
       taskResponse = response['tasks'].map this.toDisplay.bind(this)

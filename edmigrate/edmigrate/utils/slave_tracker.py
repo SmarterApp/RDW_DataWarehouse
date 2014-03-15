@@ -79,7 +79,7 @@ class SlaveTracker(metaclass=Singleton):
         else:
             ids = self.__slaves.keys()
         self.__lock.release()
-        return ids.sort()
+        return ids
 
     def reset(self):
         self.__lock.acquire()
@@ -108,4 +108,4 @@ class SlaveTracker(metaclass=Singleton):
                 time.sleep(1)
             else:
                 break
-        return node[name] == expected_value
+        return node.get(name, None) == expected_value

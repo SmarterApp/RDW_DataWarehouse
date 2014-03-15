@@ -38,17 +38,18 @@ class SlaveTrackerException(EdMigrateException):
 
 class SlaveAlreadyRegisteredException(SlaveTrackerException):
     def __init__(self, node_id):
-        super().__init__(self, msg='Slave [' + node_id + '] has already registered')
+        super().__init__(msg="Slave [%d] has already registered" % (node_id))
+        
 
 
 class SlaveNotRegisteredException(SlaveTrackerException):
     def __init__(self, node_id):
-        super().__init__(self, msg='Slave [' + node_id + '] was not registered')
+        super().__init__(msg='Slave [' + str(node_id) + '] was not registered')
 
 
 class SlaveStatusTimedoutException(SlaveTrackerException):
     def __init__(self, node_id, timeout):
-        super().__init__(self, msg='Timedout after ' + timeout + ' seconds. Slave [' + node_id + '] was not registered')
+        super().__init__(msg='Timedout after ' + str(timeout) + ' seconds. Slave [' + str(node_id) + '] was not registered')
 
 
 class ReplicationMonitorException(EdMigrateException):

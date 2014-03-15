@@ -2,6 +2,7 @@ define [
   "jquery"
   "mustache"
   "moment"
+  "jqueryui"
   "text!CSVOptionsTemplate"
   "text!DownloadMenuTemplate"
   "edwareConstants"
@@ -9,7 +10,7 @@ define [
   "edwarePreferences"
   "edwareExport"
   "edwareDataProxy"
-], ($, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
+], ($, Mustache, moment, jqueryui, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -32,6 +33,7 @@ define [
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
         asmtYear: this.config['asmtYear']
+        academicYear: this.config['academicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
       }
@@ -42,6 +44,7 @@ define [
       this.checkboxMenu = $('ul.checkbox-menu', this.container)
       this.submitBtn = $('.btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
+      this.createSpinner()
       this.selectDefault()
       this.setMainPulldownLabel()
 
@@ -49,6 +52,7 @@ define [
       self = this
       # prevent dropdown menu from disappearing
       $(this.reportTypeDropdownMenu).click (e) ->
+        $('div.error', self.messages).remove()
         self.setMainPulldownLabel()
 
       $('input:checkbox', this.container).click (e)->
@@ -69,7 +73,7 @@ define [
         invalidFields = []
         # check if button is 'Close' or 'Request'
         if $(this).data('dismiss') != 'modal'
-          $('div.btn-group', self.container).each ()->
+          $('tr.rpt_option:not(.disabled) div.btn-group', self.container).each ()->
             $dropdown = $(this)
             if not self.validate($dropdown)
               $dropdown.addClass('invalid')
@@ -88,8 +92,8 @@ define [
       self = this
       $('span.dropdown-display', self.reportTypeDropdownMenu.parent()).text($('input:checked', self.reportTypeDropdownMenu).attr('data-label'))
       self.reportType = $('input:checked', self.reportTypeDropdownMenu).val()
-      $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics');
-      $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment');
+      $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics')
+      $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment')
 
     validate: ($dropdown) ->
       # check selected options
@@ -99,8 +103,11 @@ define [
     getSelectedOptions: ($dropdown)->
       # get selected option text
       checked = []
+      if this.reportType == 'studentRegistrationStatistics'
+          if $( "#academicYear" ).spinner( "value" ) != null
+              checked.push $( "#academicYear" ).data('label')
       $dropdown.find('input:checked').each () ->
-        checked.push $(this).data('label')
+          checked.push $(this).data('label')
       checked
 
     selectDefault: ()->
@@ -143,10 +150,13 @@ define [
     enableInput: () ->
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
+      $('#academicYear').spinner('enable')
 
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')
       $('input:checkbox', this.container).attr('disabled', 'disabled')
+      $('#academicYear').spinner('disable')
+      $('button.report_type', self.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->
       taskResponse = response['tasks'].map this.toDisplay.bind(this)
@@ -195,18 +205,23 @@ define [
 
     getParams: ()->
       params = {}
-      this.dropdownMenu.each (index, param)->
+      $('tr.rpt_option:not(.disabled) ul.checkbox-menu', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
-      this.checkboxMenu.each (index, param)->
+      $('tr.rpt_option:not(.disabled) ul.dropdown-menu', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
+      $('tr.rpt_option:not(.disabled) #academicYear', this.container).each (index, param)->
+        $param = $(param)
+        key = $param.data('key')
+        params[key] = []
+        params[key].push $(this).spinner( "value" );
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
@@ -215,6 +230,8 @@ define [
     show: () ->
       $('#CSVModal').modal()
 
+    createSpinner: () ->
+      $( "#academicYear" ).spinner({ numberFormat: "n" }, {min: 0}).spinner("value", (new Date()).getFullYear());
 
   class DownloadMenu
 

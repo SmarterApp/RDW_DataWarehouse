@@ -34,7 +34,7 @@ class UnittestRepMgrDBConnection(RepMgrDBConnection):
         super().__init__(tenant=get_unittest_tenant_name())
 
     def get_metadata(self, schema_name=None):
-        return super(RepMgrDBConnection, self).get_metadata(reflect=True, schema_name=None)
+        return super(RepMgrDBConnection, self).get_metadata(schema_name=None)
 
 
 # Fixes failing test for schema definitions with BigIntegers

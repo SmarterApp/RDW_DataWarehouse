@@ -14,6 +14,7 @@ from time import sleep
 import unittest
 import subprocess
 import tempfile
+from uuid import uuid4
 
 DIM_TABLE = 'dim_asmt'
 STG_TABLE = 'STG_SBAC_ASMT_OUTCOME'
@@ -25,7 +26,7 @@ FACT_TABLE = 'fact_asmt_outcome'
 class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):
-        self.tenant_dir = tempfile.mkdtemp()
+        self.tenant_dir = '/opt/edware/test_tenant/test_user/filedrop'
         self.ed_connector = get_target_connection()
         self.connector = get_udl_connection()
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -45,7 +46,6 @@ class Test_Insert_Delete(unittest.TestCase):
         result1 = connector.execute(query).fetchall()
         number_of_row = len(result1)
         self.assertEqual(number_of_row, 0)
-        print(number_of_row)
         self.assertEqual(number_of_row, 0)
 
         #Delete all table data from edware databse
@@ -56,23 +56,26 @@ class Test_Insert_Delete(unittest.TestCase):
             query1 = select([table])
             result2 = ed_connector.execute(query1).fetchall()
             number_of_row = len(result2)
-            print(number_of_row)
             self.assertEqual(number_of_row, 0)
 
     #Run UDL pipeline with file in tenant dir
-    def run_udl_pipeline(self):
+    def run_udl_pipeline(self, guid_batch_id):
         self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        command = "python {driver_path} -a {file_path}".format(driver_path=driver_path, file_path=arch_file)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.connector)
 
     #Copy file to tenant folder
     def copy_file_to_tmp(self):
-
+        if os.path.exists(self.tenant_dir):
+            print("tenant dir already exists")
+        else:
+            print("copying")
+            os.makedirs(self.tenant_dir)
         return shutil.copy2(self.archived_file, self.tenant_dir)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
@@ -89,19 +92,18 @@ class Test_Insert_Delete(unittest.TestCase):
         print('Waited for', timer, 'second(s) for job to complete.')
 
     # Validate edware database
-    def validate_edware_database(self, ed_connector):
-        fact_table = ed_connector.get_table(FACT_TABLE)
+    def validate_edware_database(self, ed_connector, schema_name):
+        fact_table = ed_connector.get_table(FACT_TABLE, schema_name=schema_name)
         delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
         delete_output_table = ed_connector.execute(delete_output_data).fetchall()
         expected_status_val_D = [('D',)]
+        #verify delete record
         self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
         #Verify Update record
         update_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
         update_output_table = ed_connector.execute(update_output_data).fetchall()
-#        expected_status_val_U = [('D',), ('I',)]
         self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
         self.assertIn(('I',), update_output_table, "Insert status I is not found in the Update record")
-#        self.assertEquals(sorted(update_output_table), sorted(expected_status_val_U), 'Status is wrong for update record')
 
         # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
         update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.status == 'I'))
@@ -110,12 +112,12 @@ class Test_Insert_Delete(unittest.TestCase):
         expected_asmt_score = [(1500,)]
         self.assertEquals(new_asmt_score, expected_asmt_score)
 
-    @unittest.skip("test failed at jenkins, under investigation")
+#    @unittest.skip("test failed at jenkins, under investigation")
     def test_validation(self):
         self.empty_table(self.connector, self.ed_connector)
-        self.run_udl_pipeline()
-        #self.validate_udl_database(self.connector)
-        self.validate_edware_database(self.ed_connector)
+        self.guid_batch_id = str(uuid4())
+        self.run_udl_pipeline(self.guid_batch_id)
+        self.validate_edware_database(self.ed_connector, schema_name=self.guid_batch_id)
 
 
 if __name__ == "__main__":

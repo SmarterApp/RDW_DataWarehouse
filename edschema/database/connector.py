@@ -63,6 +63,10 @@ class DBConnection(ConnectionBase):
     def __del__(self):
         self.close_connection()
 
+    def get_engine(self):
+        dbUtil = component.queryUtility(IDbUtil, name=self.__name)
+        return dbUtil.get_engine()
+
     def get_result(self, query):
         '''
         query and get result
@@ -101,8 +105,8 @@ class DBConnection(ConnectionBase):
             rows = result.fetchmany(fetch_size)
 
     # return Table Metadata
-    def get_table(self, table_name):
-        return Table(table_name, self.get_metadata())
+    def get_table(self, table_name, schema_name=None):
+        return Table(table_name, self.get_metadata(schema_name=schema_name))
 
     def get_metadata(self):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)

@@ -9,17 +9,17 @@
         </div>
         <table class='csv_options_table'>
             {{#extractType}}
-            <tr>
+            <tr class="rpt_option">
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                    <div class="btn-group {{name}}" data-option-name="{{name}}">
+                        <button class="btn dropdown-toggle btn-small report_type" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu report_type" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="radio" name="reportType" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            <li><label><input class="reportType {{value}}" type="radio" name="reportType" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -27,10 +27,10 @@
             </tr>
             {{/extractType}}
             {{#asmtYear}}
-            <tr class="rpt_option sr_rpt">
+            <tr class="rpt_option assm_rpt" style="display:none">
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group" data-option-name="{{name}}">
+                    <div class="btn-group {{name}}" data-option-name="{{name}}">
                         <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
@@ -72,6 +72,16 @@
                 </td>
             </tr>
             {{/subject}}
+            {{#academicYear}}
+            <tr class="rpt_option sr_rpt">
+                <td>{{name}}</td>
+                <td>
+                    <div class="ui-spinner ui-widget ui-widget-content" data-option-name="{{name}}">
+                        <input id="academicYear" data-label="{{name}}" data-key="{{key}}">
+                    </div>
+                </td>
+            </tr>
+            {{/academicYear}}
         </table>
     </div>
     <div class="modal-footer">
@@ -88,7 +98,7 @@
      {{#singleSuccess}}
      <div class="success">
        {{#success.0}}
-       Your request for <b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b> Tests Results made on {{requestDate}} at {{requestTime}} was successful!
+       Your request for <b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}} {{academicYear}}</b> Tests Results made on {{requestDate}} at {{requestTime}} was successful!
        Please contact your site administrator in 24 hours to download the requested report.  The name of your file is {{fileName}}.
        {{/success.0}}
      </div>
@@ -127,7 +137,7 @@
 
     <script type="text/template" id="IndividualValidationTemplate">
        <div class="error">Please select at least one {{optionName}} to continue.</div>
-    </script>    
+    </script>
 
     <script type="text/template" id="CombinedValidationTemplate">
        <div class="error">
@@ -139,7 +149,8 @@
           </ul>
        </div>
     </script>
+
     <script type="text/template" id="DownloadMenuTemplate">
        Hello WOrld
-    </script>  
+    </script>
 </div>

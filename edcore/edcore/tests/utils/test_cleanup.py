@@ -112,3 +112,9 @@ class TestCleanup(Unittest_with_edcore_sqlite):
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
             cleanup.cleanup_all_tables(connection, 'edware', 'batch_guid', test_batch_guid, False, tables=['fact_asmt_outcome'])
             self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
+
+    def test_get_schema_check_query(self):
+        expected_query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_schema'"
+        query = cleanup._get_schema_check_query('test_schema')
+        query_string = str(query).replace("\n", "")
+        self.assertEquals(query_string, expected_query)

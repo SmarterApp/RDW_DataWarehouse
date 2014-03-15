@@ -1,5 +1,4 @@
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
-from collections import OrderedDict
 from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
@@ -12,18 +11,30 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_column_and_type_mapping
 from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
                                                   enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
-                                                  create_information_query, create_select_columns_in_table_query,
+                                                  create_select_columns_in_table_query,
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   match_delete_fact_asmt_outcome_row_in_prod)
 from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
-
+from edcore.utils.cleanup import drop_schema, create_schema, schema_exists
+from edschema.metadata_generator import generate_ed_metadata
 
 DBDRIVER = "postgresql"
 FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
+
+
+def create_target_schema_for_batch(conf):
+    """
+    creates the target star schema needed for this batch
+    """
+    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
+        schema_name = conf[mk.TARGET_DB_SCHEMA]
+        if schema_exists(conn, schema_name):
+            drop_schema(conn, schema_name)
+        create_schema(conn, generate_ed_metadata, schema_name)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
@@ -112,7 +123,6 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
         query_to_get_guid = select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA],
                                                             source_table_name,
                                                             guid_column_name_in_source, conf[mk.GUID_BATCH])
-        # print(query_to_get_guid)
         guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid,
                                                         guid_column_name_in_source)
 
@@ -122,8 +132,8 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
                                                                 target_table_name,
                                                                 rec_id_column_name,
                                                                 guid_column_name_in_target,
-                                                                guid_column_value)
-        # print(query_to_get_rec_id)
+                                                                guid_column_value,
+                                                                conf[mk.GUID_BATCH])
         asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
 
     return asmt_rec_id, rec_id_column_name

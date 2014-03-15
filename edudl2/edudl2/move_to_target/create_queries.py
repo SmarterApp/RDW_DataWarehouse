@@ -22,18 +22,19 @@ def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_b
 
 
 def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target,
-                                      guid_column_value):
+                                      guid_column_value, guid_batch):
     '''
     Create query to find distict asmt_rec_id for a given batch in source table
 
     '''
-    query = text("SELECT DISTINCT {rec_id_column_name} "
+    query = text("SELECT {rec_id_column_name} "
                  "FROM {source_schema_and_table} "
-                 "WHERE {guid_column_name_in_target}=:guid_column_value_got".format(rec_id_column_name=rec_id_column_name,
-                                                                                    source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                                                     target_table_name),
-                                                                                    guid_column_name_in_target=guid_column_name_in_target),
-                 bindparams=[bindparam('guid_column_value_got', guid_column_value)])
+                 "WHERE {guid_column_name_in_target}=:guid_column_value_got "
+                 "AND batch_guid=:guid_batch".format(rec_id_column_name=rec_id_column_name,
+                                                     source_schema_and_table=combine_schema_and_table(schema_name,
+                                                                                                      target_table_name),
+                                                     guid_column_name_in_target=guid_column_name_in_target),
+                 bindparams=[bindparam('guid_column_value_got', guid_column_value), bindparam('guid_batch', guid_batch)])
     return query
 
 

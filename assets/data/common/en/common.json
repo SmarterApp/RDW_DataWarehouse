@@ -529,8 +529,18 @@
                 }
             ]
         },
-        "asmtYear": {
+        "academicYear": {
             "name": "Academic Year",
+            "key": "academicYear",
+            "options": [
+                {
+                    "display": "2014 - 2015",
+                    "value": "2015"
+                }
+            ]
+        },
+        "asmtYear": {
+            "name": "Assessment Year",
             "key": "asmtYear",
             "options": [
                 {

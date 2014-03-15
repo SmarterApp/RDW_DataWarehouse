@@ -1,4 +1,4 @@
-from smarter.services.student_reg_extract import get_sr_extract_service
+from smarter.services.student_reg_extract import post_sr_extract_service
 
 __author__ = 'ablum'
 
@@ -14,7 +14,6 @@ from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sq
 import smarter.extracts.format
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from edapi.utils import convert_query_string_to_dict_arrays
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
@@ -59,28 +58,15 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.__request = None
         testing.tearDown()
 
-    def test_get_sr_extraction_request(self):
-        self.__request.GET['academicYear'] = '2015'
-        params = convert_query_string_to_dict_arrays(self.__request.GET)
-        response = get_sr_extract_service(params, self.__request)
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_sr_extraction_request_invalid_params(self):
-        self.__request.GET['academic_year'] = '2015'
-        params = convert_query_string_to_dict_arrays(self.__request.GET)
-
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_sr_extract_service, params, self.__request)
-
     def test_post_sr_extraction_request(self):
-        self.__request.GET['academicYear'] = '2015'
-        params = convert_query_string_to_dict_arrays(self.__request.GET)
-        response = get_sr_extract_service(params, self.__request)
+        self.__request.method = 'POST'
+        self.__request.json_body = {'academicYear': [2015], "stateCode": ["NC"]}
+        response = post_sr_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
 
     def test_post_sr_extraction_request_invalid_params(self):
-        self.__request.GET['academic_year'] = '2015'
-        params = convert_query_string_to_dict_arrays(self.__request.GET)
+        self.__request.method = 'POST'
+        self.__request.json_body = {'academic_year': [2015]}
 
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_sr_extract_service, params, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_extract_service, self.__request)

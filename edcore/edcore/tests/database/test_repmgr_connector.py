@@ -25,7 +25,7 @@ class TestRepMgrConnector(Unittest_with_repmgr_sqlite):
 
     def test_get_datasource_name_without_tenant(self):
         name = RepMgrDBConnection.get_datasource_name()
-        self.assertEquals(name, None)
+        self.assertEquals(name, 'edware_rep.db.')
 
     def test_get_db_config_prefix(self):
         name = RepMgrDBConnection.get_db_config_prefix('dummy')

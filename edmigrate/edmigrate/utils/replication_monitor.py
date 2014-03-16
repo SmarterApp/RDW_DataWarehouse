@@ -7,8 +7,8 @@ from edcore.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.utils.constants import Constants
 from sqlalchemy.sql.expression import select
 import time
-from edmigrate.exceptions import NoReplicationToMonitorException,\
-    ReplicationToMonitorOrphanNodeException,\
+from edmigrate.exceptions import NoReplicationToMonitorException, \
+    ReplicationToMonitorOrphanNodeException, \
     ReplicationToMonitorTimeoutException
 import configparser
 import sys
@@ -18,6 +18,7 @@ import logging
 
 
 logger = logging.getLogger('edmigrate')
+
 
 def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolalance=100, time_lag_tolalance=60, timeout=3600):
     with RepMgrDBConnection() as connector:
@@ -42,18 +43,17 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
                 copied_node_ids.remove(standby_node)
                 if time_lag.total_seconds() > time_lag_tolalance or replication_lag > replication_lag_tolalance or apply_lag > apply_lag_tolalance:
                     logger.debug('Node ID[' + str(standby_node) + '] has not completely replicated yet. replication_lag[' + str(replication_lag) + '] apply_lag[' + str(apply_lag) + '] time_lag[' + str(time_lag) + ']')
-                    replication_in_process=True
+                    replication_in_process = True
             if copied_node_ids:
                 for copied_node_id in copied_node_ids:
-                    logger.info('Node ID['+copied_node_id+'] is not monitored by repmgr')
+                    logger.info('Node ID[' + copied_node_id + '] is not monitored by repmgr')
                 raise ReplicationToMonitorOrphanNodeException
             if replication_in_process:
                 if time.time() - start_time > timeout:
                     raise ReplicationToMonitorTimeoutException
             else:
                 break
-                
-                    
+
 
 if __name__ == '__main__':
     # TODO: remove this. temp entry point for testing migration as a script

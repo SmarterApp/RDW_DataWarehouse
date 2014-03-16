@@ -106,7 +106,7 @@ class DBConnection(ConnectionBase):
 
     # return Table Metadata
     def get_table(self, table_name, schema_name=None):
-        return Table(table_name, self.get_metadata(schema_name=schema_name))
+        return Table(table_name, self.get_metadata())
 
     def get_metadata(self):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)

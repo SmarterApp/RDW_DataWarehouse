@@ -24,10 +24,12 @@ def setup_db_connection_from_ini(settings, prefix, metadata_func, datasource_nam
     if prefix + 'pool_size' not in settings.keys():
         extra['poolclass'] = NullPool
     schema_key = prefix + 'schema_name'
-    schema_name = settings[schema_key]
+    schema_name = settings.get(schema_key)
     settings.pop(schema_key, None)
     engine = engine_from_config(settings, prefix, **extra)
-    metadata = metadata_func(schema_name=schema_name, bind=engine)
+    metadata = None
+    if metadata_func:
+        metadata = metadata_func(schema_name=schema_name, bind=engine)
     # Create schema and its tables
     if allow_schema_create is True:
         connection = engine.connect()

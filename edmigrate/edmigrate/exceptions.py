@@ -31,6 +31,7 @@ class EdMigrateUdl_statException(EdMigrateException):
     def __init__(self, msg='Cannot update record in udl_stat table'):
         super().__init__(msg)
 
+
 class SlaveTrackerException(EdMigrateException):
     def __init__(self, msg='SlaveTrackerException'):
         super().__init__(msg)
@@ -39,7 +40,6 @@ class SlaveTrackerException(EdMigrateException):
 class SlaveAlreadyRegisteredException(SlaveTrackerException):
     def __init__(self, node_id):
         super().__init__(msg="Slave [%d] has already registered" % (node_id))
-        
 
 
 class SlaveNotRegisteredException(SlaveTrackerException):
@@ -56,17 +56,21 @@ class ReplicationMonitorException(EdMigrateException):
     def __init__(self, msg='Replication Monitor Exception'):
         super().__init__(msg)
 
+
 class NoReplicationToMonitorException(ReplicationMonitorException):
     def __init__(self, msg='No Replication to monitor'):
         super().__init__(msg)
+
 
 class ReplicationToMonitorOrphanNodeException(ReplicationMonitorException):
     def __init__(self, msg='Orphan Node was detected'):
         super().__init__(msg)
 
+
 class ReplicationToMonitorTimeoutException(ReplicationMonitorException):
     def __init__(self, msg='Replication Monitor Timeout Exception'):
         super().__init__(msg)
+
 
 class ConductorTimeoutException(EdMigrateException):
     def __init__(self, msg='Conductor Timeout Exception'):

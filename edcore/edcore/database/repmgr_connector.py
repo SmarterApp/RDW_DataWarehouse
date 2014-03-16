@@ -44,6 +44,8 @@ class RepMgrDBConnection(DBConnection):
         '''
         Generates metadata for repmgr
         '''
-        metadata = schema.MetaData(bind=bind, schema=schema_name)
-        metadata.reflect(views=True)
+        metadata = None
+        if bind:
+            metadata = schema.MetaData(bind=bind, schema=schema_name)
+            metadata.reflect(views=True)
         return metadata

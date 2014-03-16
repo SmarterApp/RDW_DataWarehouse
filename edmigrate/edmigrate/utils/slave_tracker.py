@@ -19,8 +19,6 @@ class Singleton(type):
         return self._instances[self]
 
 
-
-
 class SlaveTracker(metaclass=Singleton):
     __lock = threading.Lock()
 

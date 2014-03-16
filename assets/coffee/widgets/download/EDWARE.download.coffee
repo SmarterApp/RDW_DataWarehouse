@@ -151,6 +151,7 @@ define [
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
       $('#academicYear').spinner('enable')
+      $('button.report_type', self.container).removeAttr 'disabled'
 
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')

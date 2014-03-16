@@ -62,6 +62,8 @@ def __cast_data_type(column, value):
                     value = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
                 else:
                     value = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S%z')
+            elif column.type.python_type is datetime.timedelta:
+                value = datetime.timedelta(seconds=int(value))
             else:
                 value = column.type.python_type(value)
         except:

@@ -3,7 +3,6 @@ Created on Mar 14, 2014
 
 @author: tosako
 '''
-from edcore.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.utils.constants import Constants
 from sqlalchemy.sql.expression import select
 import time
@@ -15,6 +14,7 @@ import sys
 from edcore.database import initialize_db
 import copy
 import logging
+from edmigrate.database.repmgr_connector import RepMgrDBConnection
 
 
 logger = logging.getLogger('edmigrate')
@@ -46,19 +46,12 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
                     replication_in_process = True
             if copied_node_ids:
                 for copied_node_id in copied_node_ids:
-                    logger.info('Node ID[' + copied_node_id + '] is not monitored by repmgr')
-                raise ReplicationToMonitorOrphanNodeException
+                    logger.info('Node ID[' + str(copied_node_id) + '] is not monitored by repmgr')
+                raise ReplicationToMonitorOrphanNodeException('Node ID[' + str(copied_node_id) + '] is not monitored by repmgr')
             if replication_in_process:
                 if time.time() - start_time > timeout:
-                    raise ReplicationToMonitorTimeoutException
+                    raise ReplicationToMonitorTimeoutException('Replication Monitor Timeout Exception, timeout: ' + str(timeout) + 'seconds')
+                time.sleep(1)
             else:
                 break
-
-
-if __name__ == '__main__':
-    # TODO: remove this. temp entry point for testing migration as a script
-    config = configparser.ConfigParser()
-    config.read(sys.argv[1])
-    settings = config['app:main']
-    initialize_db(RepMgrDBConnection, settings, allow_schema_create=False)
-    replication_monitor([2, 3, 4], timeout=10)
+    return True

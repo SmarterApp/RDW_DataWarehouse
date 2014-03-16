@@ -16,7 +16,6 @@ import json
 
 class Test(unittest.TestCase):
 
-
     def setUp(self):
         self.__conn = Connection(transport=Transport)
         self.__conn.connect()
@@ -31,7 +30,7 @@ class Test(unittest.TestCase):
         self.assertEqual(111, body[Constants.MESSAGE_NODE_ID])
         self.assertEqual(self.__exchange.name, exchange)
         self.assertEqual(self.__routing_key, routing_key)
-        
+
     def test_acknowledgement_pgpool_disconnected(self):
         message, exchange, routing_key = acknowledgement_pgpool_disconnected(111, self.__conn, self.__exchange, self.__routing_key)
         body = json.loads(message['body'])
@@ -47,7 +46,7 @@ class Test(unittest.TestCase):
         self.assertEqual(111, body[Constants.MESSAGE_NODE_ID])
         self.assertEqual(self.__exchange.name, exchange)
         self.assertEqual(self.__routing_key, routing_key)
-    
+
     def test_acknowledgement_master_disconnected(self):
         message, exchange, routing_key = acknowledgement_master_disconnected(111, self.__conn, self.__exchange, self.__routing_key)
         body = json.loads(message['body'])
@@ -55,7 +54,7 @@ class Test(unittest.TestCase):
         self.assertEqual(111, body[Constants.MESSAGE_NODE_ID])
         self.assertEqual(self.__exchange.name, exchange)
         self.assertEqual(self.__routing_key, routing_key)
-    
+
     def test_acknowledgement_master_connected(self):
         message, exchange, routing_key = acknowledgement_master_connected(111, self.__conn, self.__exchange, self.__routing_key)
         body = json.loads(message['body'])

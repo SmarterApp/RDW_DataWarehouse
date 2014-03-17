@@ -14,31 +14,24 @@ define [
 
     initialize: () ->
       output = Mustache.to_html YearDropdownTemplate,
-        options: @getAcademicYears()
+        options: @years
       $(@container).html output
 
     setDefaultOption: () ->
       asmtYear = edwarePreferences.getAsmtYearPreference()
       asmtYear ?= @years[0]
-      @setSelectedValue asmtYear
+      @setSelectedValue (asmtYear - 1) + " - " + asmtYear
 
     setSelectedValue: (year) ->
-      $("#selectedAcademicYear").html @toDisplay(year)
-
-    getAcademicYears: ()->
-      for year in @years
-        "display": @toDisplay(year),
-        "value": year
-
-    toDisplay: (year)->
-      (year - 1) + " - " + year
+      $("#selectedAcademicYear").html(year)
 
     bindEvents: () ->
       self = this
       $('li', @container).click ->
+        display = $(this).data('display')
+        self.setSelectedValue display
         value = $(this).data('value')
         edwarePreferences.saveAsmtYearPreference(value)
-        self.setSelectedValue value
         self.callback(value)
 
 

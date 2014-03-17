@@ -27,7 +27,7 @@
             </tr>
             {{/extractType}}
             {{#asmtYear}}
-            <tr style="display:none">
+            <tr>
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group" data-option-name="{{name}}">
@@ -35,9 +35,9 @@
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            <li><label><input type="radio" name="asmtYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -127,7 +127,7 @@
 
     <script type="text/template" id="IndividualValidationTemplate">
        <div class="error">Please select at least one {{optionName}} to continue.</div>
-    </script>    
+    </script>
 
     <script type="text/template" id="CombinedValidationTemplate">
        <div class="error">
@@ -141,5 +141,5 @@
     </script>
     <script type="text/template" id="DownloadMenuTemplate">
        Hello WOrld
-    </script>  
+    </script>
 </div>

@@ -49,6 +49,15 @@ define [
       $(this.dropdownMenu).click (e) ->
         e.stopPropagation()
 
+      # set up academic years
+      $('input:radio', @container).click (e) ->
+        $this = $(this)
+        display = $this.data('label')
+        $dropdown = $this.closest('.btn-group')
+        # display selected option
+        $dropdown.find('.dropdown-display').html display
+        $dropdown.removeClass 'open'
+
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
         $dropdown = $this.closest('.btn-group')
@@ -237,6 +246,7 @@ define [
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
       params['asmtType'] = asmtType.toUpperCase()
       params['asmtSubject'] = edwarePreferences.getSubjectPreference()
+      params['asmtYear'] = edwarePreferences.getAsmtYearPreference()
       url = window.location.protocol + "//" + window.location.host + "/services/extract?sync=true&" + $.param(params, true)
       window.location = url
 

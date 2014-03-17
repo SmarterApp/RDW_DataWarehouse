@@ -11,7 +11,6 @@ define [
   class ReportInfoBar
 
     constructor: (@container, @config) ->
-      #TODO how to specify what information expected?
       @initialize()
       @bindEvents()
 
@@ -20,8 +19,9 @@ define [
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
-      @createDownloadMenu() if not @edwareDownloadMenu
-      @createAcademicYear() if not @academicYear
+      years = getAcademicYears @config.academicYears.options
+      @createDownloadMenu(years)
+      @createAcademicYear(years)
 
     bindEvents: () ->
       self = this
@@ -40,14 +40,22 @@ define [
       $('.academicYearInfoIcon').edwarePopover
         content: 'placeholder'
 
-    createDownloadMenu: () ->
-      @edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
+    createDownloadMenu: (years) ->
+      # merge academic years to JSON config
+      @config.CSVOptions.asmtYear.options = years
+      @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
 
-    createAcademicYear: () ->
-      return if not @config.academicYears
-      options = @config.academicYears.options
+    getAcademicYears = (years)->
+      for year in years
+        "display": toDisplay(year),
+        "value": year
+
+    toDisplay = (year)->
+      (year - 1) + " - " + year
+
+    createAcademicYear: (years) ->
       callback = @config.academicYears.callback
-      @academicYear ?= $('#academicYear').createYearDropdown options, callback
+      @academicYear ?= $('#academicYear').createYearDropdown years, callback
 
   create = (container, config) ->
     new ReportInfoBar(container, config)

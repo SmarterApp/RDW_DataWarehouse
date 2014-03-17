@@ -1,5 +1,5 @@
 import logging
-from edmigrate.main import get_broker_url
+from edmigrate.utils.utils import get_broker_url
 __author__ = 'sravi'
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants

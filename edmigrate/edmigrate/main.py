@@ -16,6 +16,7 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from kombu import Connection
 from edmigrate.conductor_controller import ConductorController
+from edmigrate.utils.utils import get_broker_url
 
 
 def get_ini_file():
@@ -35,14 +36,6 @@ def read_ini(file):
     config = configparser.ConfigParser()
     config.read(file)
     return config['app:main']
-
-
-def get_broker_url(settings):
-    url = "memory://"
-    celery_always_eager = settings.get('migrate.celery.celery_always_eager', False)
-    if not celery_always_eager:
-        url = settings.get('migrate.celery.BROKER_URL', url)
-    return url
 
 
 def main(file=None, tenant='cat'):

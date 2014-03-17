@@ -46,12 +46,6 @@ def main(file=None, tenant='cat'):
     start_migrate_daily_delta(tenant)
 
 
-def setup_db_connection(settings):
-    initialize_db(RepMgrDBConnection, settings)
-    initialize_db(StatsDBConnection, settings)
-    initialize_db(EdMigrateSourceConnection, settings)
-    initialize_db(EdMigrateDestConnection, settings)
-
 if __name__ == '__main__':
     # Entry point for testing migration
     # python main.py [tenant]

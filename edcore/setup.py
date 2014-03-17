@@ -6,6 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 install_requires = [
     'pyramid == 1.4',
+    'apscheduler==2.1.1',
     'psycopg2 == 2.5.1']
 
 tests_require = [

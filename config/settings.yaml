@@ -163,11 +163,11 @@ common:
     migrate.celery:
       CELERY_IMPORTS: ('edmigrate.tasks.slave')
       CELERY_RESULT_BACKEND: amqp
-      CELERY_DEFAULT_QUEUE: edmigrate_slaves
+      CELERY_DEFAULT_QUEUE: celery
       CELERY_QUEUES:
-            name: edmigrate_slaves
+        -   name: edmigrate_slaves
             exchange: fanout
-            key: ''
+            key: edmigrate_slaves
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net

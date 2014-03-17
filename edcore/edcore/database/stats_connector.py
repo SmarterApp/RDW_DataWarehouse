@@ -3,7 +3,7 @@ Created on Mar 5, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from edschema.metadata.stats_metadata import generate_stats_metadata
 
 config_namespace = 'edware_stats.db'

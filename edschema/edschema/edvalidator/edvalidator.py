@@ -4,13 +4,13 @@ Created on Feb 28, 2013
 @author: tosako
 '''
 import argparse
-from database.sqlite_connector import create_sqlite, destroy_sqlite
+from edschema.database.sqlite_connector import create_sqlite, destroy_sqlite
 import os
 from zope import component
-from database.connector import IDbUtil
+from edschema.database.connector import IDbUtil
 import sys
 import csv
-from database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir
 
 
 def read_csv(dir_name):

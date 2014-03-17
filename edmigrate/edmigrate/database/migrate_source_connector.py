@@ -3,8 +3,8 @@ Created on Feb 14, 2014
 
 @author: sravi
 '''
-from database.connector import DBConnection
 from edschema.metadata.ed_metadata import generate_ed_metadata
+from edschema.database.connector import DBConnection
 
 config_namespace = 'migrate_source.db'
 

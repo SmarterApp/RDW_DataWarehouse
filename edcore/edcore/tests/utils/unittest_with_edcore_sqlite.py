@@ -3,7 +3,7 @@ Created on Mar 5, 2013
 
 @author: tosako
 '''
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite,\
+from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite,\
     Unittest_with_sqlite_no_data_load
 
 from sqlalchemy.types import BigInteger

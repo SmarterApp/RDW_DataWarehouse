@@ -5,9 +5,9 @@ Created on Mar 4, 2013
 '''
 import unittest
 import os
-from edvalidator.edvalidator import run_validation
-from edvalidator.tests.utils.metadata import generate_test_metadata
-from database.data_importer import DataImporterCastException
+from edschema.edvalidator.edvalidator import run_validation
+from edschema.edvalidator.tests.utils.metadata import generate_test_metadata
+from edschema.database.data_importer import DataImporterCastException
 
 
 class Test(unittest.TestCase):

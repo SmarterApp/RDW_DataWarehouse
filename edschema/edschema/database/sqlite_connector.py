@@ -4,7 +4,7 @@ Created on Feb 8, 2013
 @author: tosako
 '''
 from sqlalchemy.engine import create_engine
-from database.connector import DbUtil, IDbUtil
+from edschema.database.connector import DbUtil, IDbUtil
 from zope import component
 from edschema.metadata.ed_metadata import generate_ed_metadata
 import sqlite3

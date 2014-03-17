@@ -4,7 +4,7 @@ Created on Jan 15, 2013
 @author: tosako
 '''
 
-from database.interfaces import ConnectionBase
+from edschema.database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table

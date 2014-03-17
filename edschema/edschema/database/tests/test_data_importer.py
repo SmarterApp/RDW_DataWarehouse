@@ -5,9 +5,9 @@ Created on Mar 2, 2013
 '''
 import unittest
 import os
-from database.data_importer import import_csv_dir, DataImporterLengthException
-from database.sqlite_connector import create_sqlite, destroy_sqlite
-from database.tests.utils.metadata import generate_test_metadata
+from edschema.database.data_importer import import_csv_dir, DataImporterLengthException
+from edschema.database.sqlite_connector import create_sqlite, destroy_sqlite
+from edschema.database.tests.utils.metadata import generate_test_metadata
 
 
 class Test(unittest.TestCase):

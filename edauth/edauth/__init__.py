@@ -6,7 +6,7 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from edauth.security.callback import session_check
 from edauth.utils import convert_to_int
 from edauth.security.roles import Roles
-from database.generic_connector import setup_db_connection_from_ini
+from edschema.database.generic_connector import setup_db_connection_from_ini
 from edauth.security.policy import EdAuthAuthenticationPolicy
 from edauth.security.utils import AESCipher, ICipher
 from zope import component

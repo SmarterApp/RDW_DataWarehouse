@@ -3,8 +3,8 @@ Created on Feb 27, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnection
-from database.tests.utils.data_gen import generate_data
+from edschema.database.connector import DBConnection
+from edschema.database.tests.utils.data_gen import generate_data
 
 
 def import_data():

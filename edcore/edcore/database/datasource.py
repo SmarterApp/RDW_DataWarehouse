@@ -3,7 +3,7 @@ Created on Jun 3, 2013
 
 @author: dip
 '''
-from database.generic_connector import setup_db_connection_from_ini
+from edschema.database.generic_connector import setup_db_connection_from_ini
 from copy import deepcopy
 
 

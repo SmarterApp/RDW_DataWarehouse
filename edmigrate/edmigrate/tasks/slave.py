@@ -12,6 +12,7 @@ from time import sleep
 from kombu import Connection
 from kombu.entity import Exchange
 import socket
+from sqlalchemy.sql.expression import text
 
 
 def get_hostname():
@@ -21,7 +22,8 @@ def get_hostname():
 def get_slave_node_id_from_hostname(hostname):
     node_id = None
     with RepMgrDBConnection() as conn:
-        results = conn.execute("select * from repl_nodes")
+        repl_nodes = conn.get_table(Constants.REPL_NODES)
+        results = conn.execute(repl_nodes.select())
         nodes = results.fetchall()
         for node in nodes:
             if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=hostname)) >= 0:
@@ -32,7 +34,7 @@ def get_slave_node_id_from_hostname(hostname):
 
 def check_replication_status(connector):
     try:
-        result = connector.execute("select pg_is_xlog_replay_paused()")
+        result = connector.execute(text("select pg_is_xlog_replay_paused()"))
         replication_paused = result.fetchone()['pg_is_xlog_replay_paused']
     except OperationalError as e:
         #logger.info("Error occurs when query replication status: %s" % e)
@@ -110,7 +112,7 @@ def connect_master(host_name, node_id, conn, exchange, routing_key):
     status = False
     with RepMgrDBConnection() as connector:
         try:
-            connector.execute("select pg_xlog_replay_resume()")
+            connector.execute(text("select pg_xlog_replay_resume()"))
         except OperationalError as e:
             pass
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
@@ -125,7 +127,7 @@ def disconnect_master(host_name, node_id, conn, exchange, routing_key):
     status = False
     with RepMgrDBConnection() as connector:
         try:
-            connector.execute("select pg_xlog_replay_pause()")
+            connector.execute(text("select pg_xlog_replay_pause()"))
         except OperationalError as e:
             pass
         #verify replication status

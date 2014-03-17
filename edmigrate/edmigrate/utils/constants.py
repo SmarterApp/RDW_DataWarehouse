@@ -9,6 +9,7 @@ class Constants():
     REPL_STATUS = 'repl_status'
     REPL_NODES = 'repl_nodes'
     REPL_NODE_CONN_INFO = 'conninfo'
+    REPL_NODE_CLUSTER = 'cluster'
     ID = 'id'
     REPL_STANDBY_NODE = 'standby_node'
     REPLICATION_LAG = 'replication_lag'

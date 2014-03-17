@@ -6,8 +6,7 @@ from sqlalchemy.sql.expression import and_
 from edapi.cache import cache_region
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
-
-DEFAULT_YEAR_BACK = 1
+import pyramid.threadlocal
 
 
 @cache_region('public.shortlived')
@@ -37,28 +36,19 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     return results
 
 
-@cache_region('public.data')
-def get_academic_years(state_code, tenant=None, year_back=None):
+@cache_region('public.shortlived')
+def get_academic_years(state_code, tenant=None, years_back=None):
     '''
     Gets academic years.
     '''
-    if not year_back or year_back <= 0:
-        year_back = DEFAULT_YEAR_BACK
+    if not years_back or years_back <= 0:
+        years_back = pyramid.threadlocal.get_current_registry().settings.get('smarter.reports.year_back', "1")
+        years_back = int(years_back)
     with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connection:
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
         query = select([dim_asmt.c.asmt_period_year]).distinct().order_by(dim_asmt.c.asmt_period_year.desc())
-        results = connection.execute(query).fetchmany(size=year_back)
+        results = connection.execute(query).fetchmany(size=years_back)
     return list(r[Constants.ASMT_PERIOD_YEAR] for r in results)
-
-
-def set_default_year_back(year_back):
-    '''
-    Set default year back.
-    '''
-    if not year_back:
-        return
-    global DEFAULT_YEAR_BACK
-    DEFAULT_YEAR_BACK = int(year_back)
 
 
 def get_default_academic_year(params):

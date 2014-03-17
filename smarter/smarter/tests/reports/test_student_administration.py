@@ -9,7 +9,7 @@ from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
 from smarter.reports import student_administration
-from smarter.reports.student_administration import get_academic_years, set_default_year_back
+from smarter.reports.student_administration import get_academic_years
 
 
 class TestStudentAdministration(Unittest_with_edcore_sqlite):
@@ -48,14 +48,3 @@ class TestStudentAdministration(Unittest_with_edcore_sqlite):
         for year_back, expect in test_cases:
             results = get_academic_years(state_code, None, year_back)
             self.assertEqual(expect, results, "%d most recent academic year should be %r" % (year_back, expect))
-
-    def test_set_default_year_back(self):
-        self.assertEqual(student_administration.DEFAULT_YEAR_BACK, 1, "Default number of year back should be 1")
-        test_cases = [
-            (None, 1),
-            (-1, -1),
-            (3, 3)
-        ]
-        for year_back, expect in test_cases:
-            set_default_year_back(year_back)
-            self.assertEqual(expect, student_administration.DEFAULT_YEAR_BACK, "default year back not equal")

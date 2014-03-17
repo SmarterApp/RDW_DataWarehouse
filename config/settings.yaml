@@ -546,11 +546,6 @@ development:
       db:
         schema_name: edware_stats
         url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
-    edware_rep:
-      db:
-        cat:
-          schema_name: repmgr_edware_pg_cluster
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
@@ -675,10 +670,10 @@ jenkins_int:
     edware:
       db:
         cat:
-          schema_name: edware
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         dog:
-          schema_name: edware
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:
       db:

@@ -3,10 +3,10 @@ Created on Jan 31, 2014
 
 @author: ejen
 '''
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite, Unittest_with_sqlite_no_data_load
+from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite, Unittest_with_sqlite_no_data_load
 from sqlalchemy.ext.compiler import compiles
 from edcore.database.repmgr_connector import RepMgrDBConnection
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from edschema.metadata.repmgr_metadata import generate_repmgr_metadata
 from sqlalchemy.types import BigInteger
 

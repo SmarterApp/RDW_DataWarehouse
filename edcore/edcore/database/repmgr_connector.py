@@ -3,7 +3,7 @@ Created on Jan 29, 2014
 
 @author: sravi
 '''
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 
 config_namespace = 'edware_rep.db'
 

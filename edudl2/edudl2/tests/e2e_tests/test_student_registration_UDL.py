@@ -94,7 +94,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.drop_target_schema(batch)
 
     def drop_target_schema(self, schema_name):
-        metadata = self.target_connector.get_metadata(schema_name=schema_name)
+        self.target_connector.set_metadata(schema_name, reflect=True)
+        metadata = self.target_connector.get_metadata()
         metadata.drop_all()
 
     #Empty target table
@@ -130,7 +131,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate the target table
     def validate_stu_reg_target_table(self, file_to_load):
-        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
+        self.target_connector.set_metadata(self.batch_id, reflect=True)
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
         query = select([target_table.c.student_guid], target_table.c.batch_guid == self.batch_id)
         result = self.target_connector.execute(query).fetchall()
         record_count = len(result)
@@ -140,8 +142,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     #Validate a student's data
     def validate_student_data(self, file_to_load):
         student = self.student_reg_files[file_to_load]['test_student']
-
-        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
+        self.target_connector.set_metadata(self.batch_id, reflect=True)
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
         query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,
                         target_table.c.gender, target_table.c.student_dob, target_table.c.dmg_eth_hsp,
                         target_table.c.dmg_prg_504, target_table.c.academic_year, target_table.c.reg_system_id],
@@ -163,7 +165,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         expected_number = 0
         for arg in args:
             expected_number += self.student_reg_files[arg]['num_records_in_data_file']
-        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'], schema_name=self.batch_id)
+        self.target_connector.set_metadata(self.batch_id, reflect=True)
+        target_table = self.target_connector.get_table(udl2_conf['target_db']['sr_target_table'])
         query = select([func.count()]).select_from(target_table)
         count = self.target_connector.execute(query).fetchall()[0][0]
         print('Total number of rows in target table:', count)

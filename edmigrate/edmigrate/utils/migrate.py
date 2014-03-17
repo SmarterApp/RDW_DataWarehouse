@@ -122,7 +122,8 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     :returns number of record updated
     """
     delete_count = 0
-    source_table = source_connector.get_table(table_name, schema_name=schema_name)
+    source_connector.set_metadata(schema_name, reflect=True)
+    source_table = source_connector.get_table(table_name)
     # TODO: make it possible for composites
     primary_key = source_table.primary_key.columns.keys()[0]
     # if there is a status column, it's a candidate for deletes

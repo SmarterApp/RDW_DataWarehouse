@@ -11,7 +11,6 @@ from uuid import uuid4
 from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
-import glob
 from time import sleep
 from sqlalchemy.sql.expression import and_
 
@@ -38,7 +37,8 @@ class ValidateSchemaChange(unittest.TestCase):
         self.udl_connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        metadata = self.ed_connector.get_metadata(schema_name=guid_batch_id)
+        self.ed_connector.set_metadata(guid_batch_id, reflect=True)
+        metadata = self.ed_connector.get_metadata()
         metadata.drop_all()
 
     # Run the pipeline
@@ -74,7 +74,8 @@ class ValidateSchemaChange(unittest.TestCase):
 
     #Validate that for given batch guid data loded on star schema and student_rec_id in not -1
     def validate_edware_database(self, ed_connector):
-            edware_table = ed_connector.get_table(FACT_TABLE, schema_name=guid_batch_id)
+            ed_connector.set_metadata(guid_batch_id, reflect=True)
+            edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
             output_val = select([edware_table.c.student_rec_id]).where(edware_table.c.batch_guid == guid_batch_id)
             output_data = ed_connector.execute(output).fetchall()

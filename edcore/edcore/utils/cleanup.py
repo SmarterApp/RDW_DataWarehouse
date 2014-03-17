@@ -112,6 +112,7 @@ def drop_schema(connector, schema_name):
     @param connector: connection to the database
     @param schema_name: name of the schema to be dropped
     """
-    metadata = connector.get_metadata(schema_name=schema_name)
+    connector.set_metadata(schema_name, reflect=True)
+    metadata = connector.get_metadata()
     metadata.drop_all()
     connector.execute(DropSchema(schema_name, cascade=True))

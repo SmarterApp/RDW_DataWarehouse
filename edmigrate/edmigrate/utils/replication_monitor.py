@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import select
 import time
 from edmigrate.exceptions import NoReplicationToMonitorException, \
     ReplicationToMonitorOrphanNodeException, \
-    ReplicationToMonitorTimeoutException
+    ReplicationToMonitorOutOfSyncException
 import copy
 import logging
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
@@ -19,6 +19,7 @@ logger = logging.getLogger('edmigrate')
 
 def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolalance=100, time_lag_tolalance=60, timeout=3600):
     with RepMgrDBConnection() as connector:
+        out_of_sync_ids = []
         repl_status = connector.get_table(Constants.REPL_STATUS)
         query = select([repl_status.c.standby_node.label(Constants.REPL_STANDBY_NODE),
                         repl_status.c.replication_lag.label(Constants.REPLICATION_LAG),
@@ -31,7 +32,6 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
             status_records = connector.get_result(query)
             if not status_records:
                 raise NoReplicationToMonitorException
-            replication_in_process = False
             for status_record in status_records:
                 standby_node = status_record[Constants.REPL_STANDBY_NODE]
                 replication_lag = int(status_record[Constants.REPLICATION_LAG].split(' ')[0])
@@ -40,14 +40,14 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
                 copied_node_ids.remove(standby_node)
                 if time_lag.total_seconds() > time_lag_tolalance or replication_lag > replication_lag_tolalance or apply_lag > apply_lag_tolalance:
                     logger.debug('Node ID[' + str(standby_node) + '] has not completely replicated yet. replication_lag[' + str(replication_lag) + '] apply_lag[' + str(apply_lag) + '] time_lag[' + str(time_lag) + ']')
-                    replication_in_process = True
+                    out_of_sync_ids.append(standby_node)
             if copied_node_ids:
                 for copied_node_id in copied_node_ids:
                     logger.info('Node ID[' + str(copied_node_id) + '] is not monitored by repmgr')
                 raise ReplicationToMonitorOrphanNodeException('Node ID[' + str(copied_node_id) + '] is not monitored by repmgr')
-            if replication_in_process:
+            if out_of_sync_ids:
                 if time.time() - start_time > timeout:
-                    raise ReplicationToMonitorTimeoutException('Replication Monitor Timeout Exception, timeout: ' + str(timeout) + 'seconds')
+                    raise ReplicationToMonitorOutOfSyncException('Replication Monitor out of sync' + ', '.join(str(x) for x in out_of_sync_ids) + ', timeout: ' + str(timeout) + 'seconds')
                 time.sleep(1)
             else:
                 break

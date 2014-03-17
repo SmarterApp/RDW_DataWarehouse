@@ -61,11 +61,12 @@ for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
 csv_writer.register_filters(SBAC_FILTERS)
 
 
-def assign_team_configuration_options(team):
+def assign_team_configuration_options(team, state_type):
     """
     Assign configuration options that are specific to one team.
 
     @param team: Name of team to assign options for
+    @param state_type: Type of state to generate
     """
     global STATES, YEARS, ASMT_YEARS, INTERIM_ASMT_PERIODS, NUMBER_REGISTRATION_SYSTEMS
 
@@ -75,13 +76,13 @@ def assign_team_configuration_options(team):
 
     # Assign options
     if team == 'arkanoids':
-        STATES = [{'name': 'Example State', 'code': 'ES', 'type': 'devel'}]
+        STATES = [{'name': 'North Carolina', 'code': 'NC', 'type': state_type}]
         YEARS = [2015, 2016]  # Expected sorted lowest to highest
         ASMT_YEARS = [2016]  # The years to generate summative assessments for
         INTERIM_ASMT_PERIODS = []  # The periods for interim assessments
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
     elif team == 'sonics':
-        STATES = [{'name': 'Example State', 'code': 'ES', 'type': 'devel'}]
+        STATES = [{'name': 'North Carolina', 'code': 'NC', 'type': state_type}]
         YEARS = [2015, 2016, 2017]  # Expected sorted lowest to highest
         ASMT_YEARS = [2015, 2016, 2017]  # The years to generate summative assessments for
         INTERIM_ASMT_PERIODS = [('Fall', -1), ('Winter', -1), ('Spring', 0)]  # The periods for interim assessments
@@ -256,13 +257,16 @@ def run_one_year(asmt_year):
 if __name__ == '__main__':
     # Argument parsing for task-specific arguments
     parser = argparse.ArgumentParser(description='SBAC data generation task.')
-    parser.add_argument('-tn', '--team', dest='team_name', action='store', default='sonics',
+    parser.add_argument('-t', '--team', dest='team_name', action='store', default='sonics',
                         help='Specify the name of the team to generate data for (sonics, arkanoids)',
+                        required=False)
+    parser.add_argument('-s', '--state', dest='state_type', action='store', default='devel',
+                        help='Specify the type of state to generate data for (devel, typical_1, california)',
                         required=False)
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
-    assign_team_configuration_options(args.team_name)
+    assign_team_configuration_options(args.team_name, args.state_type)
 
     # Verify output directory exists
     if not os.path.exists('out'):

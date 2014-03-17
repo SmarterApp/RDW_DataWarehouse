@@ -67,8 +67,8 @@ class ReplicationToMonitorOrphanNodeException(ReplicationMonitorException):
         super().__init__(msg)
 
 
-class ReplicationToMonitorTimeoutException(ReplicationMonitorException):
-    def __init__(self, msg='Replication Monitor Timeout Exception'):
+class ReplicationToMonitorOutOfSyncException(ReplicationMonitorException):
+    def __init__(self, msg='Replication Monitor Out of Sync Exception'):
         super().__init__(msg)
 
 

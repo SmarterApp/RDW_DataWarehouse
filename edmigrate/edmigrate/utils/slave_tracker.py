@@ -6,7 +6,7 @@ Created on Mar 14, 2014
 import threading
 from edmigrate.utils.constants import Constants
 import time
-from edmigrate.exceptions import SlaveAlreadyRegisteredException,\
+from edmigrate.exceptions import SlaveAlreadyRegisteredException, \
     SlaveNotRegisteredException, SlaveStatusTimedoutException
 
 
@@ -66,17 +66,26 @@ class SlaveTracker(metaclass=Singleton):
     def is_master_disconnected(self, node_id, timeout=5):
         return self._is_slave_status(node_id, Constants.SLAVE_MASTER_CONNECTION_STATUS, Constants.SLAVE_CONNECTION_STATUS_DISCONNECTED, timeout=timeout)
 
-    def get_slave_ids(self, slave_group=None):
-        self.__lock.acquire()
-        if slave_group:
-            ids = []
-            for node_id in self.__slaves:
-                node = self.__slaves[node_id]
-                if node[Constants.SLAVE_GROUP] == slave_group:
-                    ids.append(node_id)
-        else:
-            ids = self.__slaves.keys()
-        self.__lock.release()
+    def get_slave_ids(self, slave_group=None, timeout=0):
+        ids = []
+        start_time = time.time()
+        while True:
+            self.__lock.acquire()
+            if slave_group:
+                for node_id in self.__slaves:
+                    node = self.__slaves[node_id]
+                    if node[Constants.SLAVE_GROUP] == slave_group:
+                        ids.append(node_id)
+            else:
+                ids = self.__slaves.keys()
+            self.__lock.release()
+            end_time = time.time()
+            if not ids and timeout > 0:
+                if end_time - start_time > timeout:
+                    break
+                time.sleep(1)
+            else:
+                break
         return ids
 
     def reset(self):

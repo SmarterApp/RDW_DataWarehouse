@@ -9,9 +9,6 @@ import time
 from edmigrate.exceptions import NoReplicationToMonitorException, \
     ReplicationToMonitorOrphanNodeException, \
     ReplicationToMonitorTimeoutException
-import configparser
-import sys
-from edcore.database import initialize_db
 import copy
 import logging
 from edmigrate.database.repmgr_connector import RepMgrDBConnection

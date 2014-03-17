@@ -1,11 +1,12 @@
 import logging
+from edmigrate.main import get_broker_url
 __author__ = 'sravi'
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call, check_output
-from edmigrate.settings.config import Config, get_setting
+from edmigrate.settings.config import Config, get_setting, settings
 from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected,\
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
 from time import sleep
@@ -173,14 +174,14 @@ def slave_task(command, slaves):
     """
     host_name = get_hostname()
     node_id = get_slave_node_id_from_hostname(host_name)
-    conn = Connection(transport=Constants.CONDUCTOR_TRANSPORT)
-    exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
-    routing_key = Constants.CONDUCTOR_ROUTING_KEY
-    if command == Constants.COMMAND_FIND_SLAVE:
-        COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
-    else:
-        if node_id in slaves:
+    with Connection(get_broker_url(settings)) as conn:
+        exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
+        routing_key = Constants.CONDUCTOR_ROUTING_KEY
+        if command == Constants.COMMAND_FIND_SLAVE:
             COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
         else:
-            # ignore the command
-            pass
+            if node_id in slaves:
+                COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
+            else:
+                # ignore the command
+                pass

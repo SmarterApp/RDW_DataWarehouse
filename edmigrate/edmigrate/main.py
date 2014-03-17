@@ -10,10 +10,10 @@ import sys
 from edmigrate.utils.migrate import start_migrate_daily_delta
 import os
 from edcore.database import initialize_db
-from edcore.database.repmgr_connector import RepMgrDBConnection
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
+from edmigrate.database.repmgr_connector import RepMgrDBConnection
 
 
 def get_ini_file():

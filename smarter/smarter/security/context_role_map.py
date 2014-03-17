@@ -4,7 +4,7 @@ Created on May 9, 2013
 @author: dip
 '''
 import pyramid.threadlocal
-from edauth.utils import to_bool
+from edcore.utils.utils import to_bool
 
 
 class ContextRoleMap():

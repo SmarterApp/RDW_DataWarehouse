@@ -4,7 +4,7 @@ This is the top-level package for EdAuth.
 '''
 from pyramid.authorization import ACLAuthorizationPolicy
 from edauth.security.callback import session_check
-from edauth.utils import convert_to_int, to_bool
+from edauth.utils import convert_to_int
 from edauth.security.roles import Roles
 from database.generic_connector import setup_db_connection_from_ini
 from edauth.security.policy import EdAuthAuthenticationPolicy
@@ -13,6 +13,7 @@ from zope import component
 import logging
 from apscheduler.scheduler import Scheduler
 from edauth.security.session_backend import ISessionBackend, SessionBackend
+from edcore.utils.utils import to_bool
 
 
 logger = logging.getLogger(__name__)

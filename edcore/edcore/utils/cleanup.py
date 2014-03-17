@@ -3,7 +3,6 @@ __author__ = 'sravi'
 from sqlalchemy.sql.expression import text, bindparam
 from sqlalchemy.sql import select
 from sqlalchemy.schema import CreateSchema, DropSchema
-from edschema.metadata_generator import generate_ed_metadata
 
 
 def get_filtered_tables(connector, table_name_prefix=None):

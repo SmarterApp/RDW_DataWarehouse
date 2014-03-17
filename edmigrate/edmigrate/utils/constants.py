@@ -25,7 +25,7 @@ class Constants():
     STATUS_CREATED = 'C'
     STATUS_DELETED = 'D'
 
-    SLAVE_TASK = 'edmigrate.slave.task'
+    SLAVE_TASK = 'edmigrate.tasks.slave'
     COMMAND_FIND_SLAVE = 'FIND_SLAVE'
     COMMAND_DISCONNECT_PGPOOL = 'DISCONNECT_PGPOOL'
     COMMAND_CONNECT_PGPOOL = 'CONNECT_PGPOOL'

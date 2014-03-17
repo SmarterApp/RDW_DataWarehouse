@@ -1,8 +1,7 @@
-data-generation
+project-sbac
 ========
 
-The goal of this project is to provide a platform to generate fixtures data for system testing. Aimed at education
-data, the data-generation project will create schools, students, and exam scores. It will populate a flexible schema.
+This is the SBAC-specific stuff for data generation.
 
 ##Installation
 
@@ -28,7 +27,7 @@ installed with pip.
 
 Again, if you have multiple `pip`s, make sure this is a Python 3 version.
 
-###Create virtual environment
+###Create Virtual Environment
 
 Optional, but recommended. To set up a virtual environment, execute the following command:
 
@@ -41,6 +40,10 @@ virtual environment with this command:
 
 Note that `data-gen-env` is the same name that was used with the creation of the environment. If you change the name of
 the environment in the first command, change it in this command too.
+
+###Install Core Fixture Data Generation Library
+
+    pip install path/to/FixtureDataGeneration-Core-0.1.tar.gz
 
 ###Install Run Dependencies
 
@@ -82,43 +85,3 @@ purposes. To run the unit tests, start from the root of the project and call:
 
 As you develop new functionality, make sure to write accompanying unit tests so as maintain good code coverage and the
 confidence that comes with it.
-
-##Branching
-
-We are following a specific branching strategy for this project.
-
-###master
-
-As is common, all code on the `master` branch is fully functional and believed to be defect free. The only merges that
-should be made into `master` should be from the `development` branch.
-
-###development
-
-This is the branch that new work is merged in to. Note that active development work should not take place in this
-branch. When a feature is complete it is merged into the `development` branch. It is acceptable to make bug fixes
-directly on development if the bug exists on `development`.
-
-###Feature
-
-A feature branch is where active development work should take place. Create a feature branch using this command:
-
-    git checkout -b <branch_name> development
-
-`<branch_name>` should be substituted with the desired name of the branch. As you can see, the branch is created from
-the `development` branch. Once work is complete and verified, merge the code into `development`:
-
-    git checkout development
-    git merge --no-ff <branch_name>
-    git push origin development
-
-Note the `--no-ff` flag. This prevents git from doing a fast-forward merge, if one is possible. By preventing this, git
-is forced to create a new commit object which preserves historical information.
-
-You should also make it a habit to clean up feature branches after they have been merged back into `development`:
-
-    git branch -d <branch_name>
-
-###Other Notes
-
-There is no expectation that feature branches be published to origin. It is recommended that you use many small
-check-ins during your daily development on a feature branch.

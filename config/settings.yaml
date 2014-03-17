@@ -163,9 +163,9 @@ common:
     migrate.celery:
       CELERY_IMPORTS: ('edmigrate.tasks.slave')
       CELERY_RESULT_BACKEND: amqp
-      CELERY_DEFAULT_QUEUE: edmigrate_slaves
-      CELERY_DEFAULT_ROUTING_KEY: edmigrate_slaves
-      CELERY_DEFAULT_EXCHANGE_TYPE: fandout
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: default
+      CELERY_DEFAULT_EXCHANGE_TYPE: direct
       CELERY_QUEUES:
         -   name: edmigrate_slaves
             exchange: fanout

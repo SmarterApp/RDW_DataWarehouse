@@ -535,7 +535,7 @@ development:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
     migrate:
-      pgpool.hostname: ''
+      pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
     migrate.celery:
       CELERYBEAT_SCHEDULE:
         -   name: prepare-migration

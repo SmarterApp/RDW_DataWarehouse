@@ -2,20 +2,34 @@ __author__ = 'sravi'
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.celery import celery, logger
-from edcore.database.repmgr_connector import RepMgrDBConnection
+from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call, check_output
 from edmigrate.settings.config import Config, get_setting
-from edmigrate.utils.queries import get_slave_node_id_from_hostname
 from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected,\
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
 from time import sleep
+from kombu import Connection
+from kombu.entity import Exchange, Queue
+import logging
 
-pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+logger = logging.getLevelName('edmigrate')
 
 
 def get_hostname(socket):
     return socket.gethostname()
+
+
+def get_slave_node_id_from_hostname(hostname):
+    node_id = None
+    with RepMgrDBConnection() as conn:
+        results = conn.execute("SELECT * FROM repl_nodes")
+        nodes = results.fetchall()
+        for node in nodes:
+            if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=hostname)) > 0:
+                node_id = node[Constants.ID]
+                break
+    return node_id
 
 
 def check_replication_status(connector, cluster_name):
@@ -44,42 +58,75 @@ def is_replication_active(connector):
     return check_replication_status(connector) == Constants.REPLICATION_STATUS_ACTIVE
 
 
-def check_iptable_has_pgpool():
+def check_iptable_has_blocked_pgpool():
     output = check_output(['sudo', 'iptables', '-L'])
+    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     lines = output.split('\n')
     found = False
     for line in lines:
-        if line.find('pgpool') >= 0:
+        if line.find(pgpool) >= 0 \
+                and line.find('reject-with icmp-port-unreachable') >= 0 \
+                and line.find('REJECT') == 0:
             found = True
             break
     return found
 
 
-def connect_pgpool(cluster_name, host_name, node_id, amqp_url, tenant):
+def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Resuming pgpool")
-    call(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
-    acknowledgement_pgpool_connected(node_id, amqp_url)
+    # perform multiple times disable in case it was blocked multiple times in iptables
+    status = False
+    max_retries = get_setting(Config.MAX_RETRIES)
+    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+    output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+    while output != 'iptables: No chain/target/match by that name.':
+        sleep(Constants.REPLICATION_CHECK_INTERVAL)
+        output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+        max_retries -= 1
+    if not check_iptable_has_blocked_pgpool():
+        status = True
+    if status:
+        acknowledgement_pgpool_connected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to unblock pgpool")
 
 
-def disconnect_pgpool(cluster_name, host_name, node_id, amqp_url, tenant):
+def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Blocking pgpool")
-    call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
-    acknowledgement_pgpool_disconnected(node_id, amqp_url)
+    status = False
+    # only add rules when there is no rule in iptables
+    max_retries = get_setting(Config.MAX_RETRIES)
+    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+    while not check_iptable_has_blocked_pgpool() and max_retries >= 0:
+        call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+        sleep(Constants.REPLICATION_CHECK_INTERVAL)
+        max_retries -= 1
+    if check_iptable_has_blocked_pgpool():
+        status = True
+    if status:
+        acknowledgement_pgpool_disconnected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to block pgpool")
 
 
-def connect_master(cluster_name, host_name, node_id, amqp_url, tenant):
-    with RepMgrDBConnection(tenant) as connector:
+def connect_master(host_name, node_id, conn, exchange, routing_key):
+    status = False
+    with RepMgrDBConnection() as connector:
         try:
             connector.execute("select pg_xlog_replay_resume()")
         except OperationalError as e:
             pass
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         status = is_replication_active(connector)
-    acknowledgement_master_connected(node_id, amqp_url)
+    if status:
+        acknowledgement_master_connected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to connect master")
 
 
-def disconnect_master(cluser_name, host_name, node_id, amqp_url, tenant):
-    with RepMgrDBConnection(tenant) as connector:
+def disconnect_master(host_name, node_id, conn, exchange, routing_key):
+    status = False
+    with RepMgrDBConnection() as connector:
         try:
             connector.execute("select pg_xlog_replay_pause()")
         except OperationalError as e:
@@ -87,7 +134,10 @@ def disconnect_master(cluser_name, host_name, node_id, amqp_url, tenant):
         #verify replication status
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         status = is_replication_paused(connector)
-    acknowledgement_master_disconnected(node_id, amqp_url)
+    if status:
+        acknowledgement_master_disconnected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to disconnect from master")
 
 
 COMMAND_HANDLERS = {
@@ -109,18 +159,20 @@ def slave_task(command, slaves):
     For other tasks. Slave task checks membership of current slave node in slaves argument represented in node_id.
     Those tasks are executed if and only if membership is true.
     """
-
-    tenant = get_setting('tenant', 'cat')
-    cluster_name = get_setting('cluster_name', '')
     host_name = get_hostname()
-    node_id = get_slave_node_id_from_hostname(tenant, host_name)
-    amqp_url = get_setting('broker_url', 'amqp://localhost:5672/')
-
+    node_id = get_slave_node_id_from_hostname(host_name)
+    conn = Connection(transport=Constants.CONDUCTOR_TRANSPORT)
+    exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
+    routing_key = Constants.CONDUCTOR_ROUTING_KEY
     if command == Constants.COMMAND_FIND_SLAVE:
-        register_slave(node_id, amqp_url)
+        if node_id is not None:
+            register_slave(node_id, conn, exchange, routing_key)
+        else:
+            # log errors
+            logger.info("{hostname} has no node_id".format(hostname=host_name))
     else:
         if node_id in slaves:
-            COMMAND_HANDLERS[command](cluster_name, host_name, node_id, amqp_url, conn)
+            COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
         else:
             # ignore the command
             pass

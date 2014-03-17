@@ -6,7 +6,6 @@ Created on Mar 13, 2014
 @author: dip
 '''
 import configparser
-import sys
 from edmigrate.utils.migrate import start_migrate_daily_delta
 import os
 from edcore.database import initialize_db
@@ -18,6 +17,7 @@ from kombu import Connection
 from edmigrate.conductor_controller import ConductorController
 from argparse import ArgumentParser
 from edmigrate.utils.utils import get_broker_url
+from edmigrate.edmigrate_celery import setup_celery
 
 
 def get_ini_file():
@@ -50,6 +50,7 @@ def main(file=None, tenant='cat', run_migrate_only=False):
     if run_migrate_only:
         start_migrate_daily_delta(tenant)
     else:
+        setup_celery(settings)
         url = get_broker_url(settings)
         with Connection(url) as connect:
             controller = ConductorController(connect)

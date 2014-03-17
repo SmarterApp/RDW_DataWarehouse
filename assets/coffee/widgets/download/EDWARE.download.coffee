@@ -102,15 +102,19 @@ define [
       if this.reportType is 'studentRegistrationStatistics'
         isValid = this.validate_sr_options $dropdown
       else
-        isValid = this.validate_sasmt_options $dropdown
+        isValid = this.validate_input_options $dropdown
       isValid
 
-    validate_sasmt_options: ($dropdown) ->
+    validate_input_options: ($dropdown) ->
       checked = this.getSelectedOptions $dropdown
       checked.length isnt 0
 
     validate_sr_options: ($dropdown) ->
-      $("#academicYear").spinner( "value" ) isnt null
+      checked = []
+      if $("#academicYear").spinner( "value" ) != null
+        checked.push $("#academicYear").data('label')
+      allChecked = checked.concat this.getSelectedOptions $dropdown
+      allChecked.length isnt 0
 
     getSelectedOptions: ($dropdown)->
       # get selected option text

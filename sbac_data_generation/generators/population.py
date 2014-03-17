@@ -8,17 +8,16 @@ Augment the generation of population elements with SBAC-specific items.
 import datetime
 import random
 
-import general.generators.population as general_pop_gen
-import general.util.id_gen as general_id_gen
-import project.sbac.config.cfg as sbac_in_config
-import project.sbac.util.id_gen as sbac_id_gen
+import data_generation.generators.population as general_pop_gen
+import data_generation.util.id_gen as general_id_gen
+import sbac_data_generation.config.cfg as sbac_in_config
+import sbac_data_generation.util.id_gen as sbac_id_gen
 
-from general.model.school import School
-from general.model.student import Student
-from project.sbac.model.student import SBACStudent
+from sbac_data_generation.model.school import SBACSchool
+from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_student(school: School, grade, acad_year=datetime.datetime.now().year):
+def generate_student(school: SBACSchool, grade, acad_year=datetime.datetime.now().year):
     """
     Generate a student.
 
@@ -61,7 +60,7 @@ def generate_student(school: School, grade, acad_year=datetime.datetime.now().ye
     return s
 
 
-def advance_student(student: Student, schools_by_grade, drop_out_rate=.5):
+def advance_student(student: SBACStudent, schools_by_grade, drop_out_rate=.5):
     """
     Take a student and advance them to the next grade. If the next grade takes the student out of the current school,
     pick a new school for them to go to.
@@ -87,7 +86,7 @@ def advance_student(student: Student, schools_by_grade, drop_out_rate=.5):
     return True
 
 
-def repopulate_school_grade(school: School, grade, grade_students, acad_year=datetime.datetime.now().year):
+def repopulate_school_grade(school: SBACSchool, grade, grade_students, acad_year=datetime.datetime.now().year):
     """
     Take a school grade and make sure it has enough students. The list of students is updated in-place.
 

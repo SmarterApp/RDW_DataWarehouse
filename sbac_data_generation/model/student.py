@@ -7,8 +7,8 @@ Model the SBAC-specific items of a student.
 
 from mongoengine import BooleanField, DateTimeField, IntField, ReferenceField, StringField
 
-from general.model.district import District
-from general.model.student import Student
+from data_generation.model.student import Student
+from sbac_data_generation.model.district import SBACDistrict
 
 
 class SBACStudent(Student):
@@ -16,7 +16,7 @@ class SBACStudent(Student):
     The SBAC-specific student class.
     """
     rec_id = IntField(required=True)
-    district = ReferenceField(District, required=True)
+    district = ReferenceField(SBACDistrict, required=True)
     guid_sr = StringField(required=True, max_length=30)
     external_ssid = StringField(required=True, max_length=40)
     external_ssid_sr = StringField(required=True, max_length=30)

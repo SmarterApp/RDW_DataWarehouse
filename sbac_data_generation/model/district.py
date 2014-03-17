@@ -7,7 +7,7 @@ Model the SBAC-specific items of a district.
 
 from mongoengine import StringField
 
-from general.model.district import District
+from data_generation.model.district import District
 
 
 class SBACDistrict(District):

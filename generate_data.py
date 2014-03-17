@@ -15,28 +15,28 @@ import random
 from mongoengine import connect
 from pymongo import Connection
 
-import general.config.hierarchy as hier_config
-import general.config.population as pop_config
-import general.generators.enrollment as enroll_gen
-import general.generators.population as pop_gen
-import general.util.hiearchy as hier_util
-import general.writers.csv as csv_writer
-import general.writers.json as json_writer
-import project.sbac.config.cfg as sbac_in_config
-import project.sbac.config.hierarchy as sbac_hier_config
-import project.sbac.config.out as sbac_out_config
-import project.sbac.config.population as sbac_pop_config
-import project.sbac.generators.assessment as sbac_asmt_gen
-import project.sbac.generators.hierarchy as sbac_hier_gen
-import project.sbac.generators.population as sbac_pop_gen
+import data_generation.config.hierarchy as hier_config
+import data_generation.config.population as pop_config
+import data_generation.generators.enrollment as enroll_gen
+import data_generation.generators.population as pop_gen
+import data_generation.util.hiearchy as hier_util
+import data_generation.writers.csv as csv_writer
+import data_generation.writers.json as json_writer
+import sbac_data_generation.config.cfg as sbac_in_config
+import sbac_data_generation.config.hierarchy as sbac_hier_config
+import sbac_data_generation.config.out as sbac_out_config
+import sbac_data_generation.config.population as sbac_pop_config
+import sbac_data_generation.generators.assessment as sbac_asmt_gen
+import sbac_data_generation.generators.hierarchy as sbac_hier_gen
+import sbac_data_generation.generators.population as sbac_pop_gen
 
-from general import run_id as global_run_id
-from general.model.district import District
-from general.model.school import School
-from general.model.state import State
-from project.sbac.model.institutionhierarchy import InstitutionHierarchy
-from project.sbac.model.student import SBACStudent
-from project.sbac.writers.filters import SBAC_FILTERS
+from data_generation import run_id as global_run_id
+from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.school import SBACSchool
+from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
+from sbac_data_generation.model.student import SBACStudent
+from sbac_data_generation.writers.filters import SBAC_FILTERS
 
 # See assign_team_configuration_options for these values
 STATES = []
@@ -148,12 +148,12 @@ def run_one_year(asmt_year):
         csv_writer.prepare_csv_file(file_name, sr_out_cols)
 
     # Re-traverse the hierarchy
-    for state in State.objects(run_id=global_run_id):
+    for state in SBACState.objects(run_id=global_run_id):
         # Get the assessment rates by subject
         asmt_rates_by_subect = state.config['subjects_and_percentages']
 
-        for district in District.objects(state=state):
-            schools = School.objects(district=district)
+        for district in SBACDistrict.objects(state=state):
+            schools = SBACSchool.objects(district=district)
 
             # Get the registration system and set up the SR out file name
             reg_sys = DISTRICT_TO_REG_SYS[district]

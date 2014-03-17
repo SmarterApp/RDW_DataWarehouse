@@ -7,7 +7,7 @@ Model the SBAC-specific items of a state.
 
 from mongoengine import StringField
 
-from general.model.state import State
+from data_generation.model.state import State
 
 
 class SBACState(State):

@@ -8,15 +8,15 @@ An assessment generator for the SBAC assessment.
 import datetime
 import random
 
-import general.generators.assessment as gen_asmt_generator
-import general.util.id_gen as gen_id_gen
-import project.sbac.config.cfg as sbac_config
+import data_generation.generators.assessment as gen_asmt_generator
+import data_generation.util.id_gen as gen_id_gen
+import sbac_data_generation.config.cfg as sbac_config
 
-from general.model.section import Section
-from project.sbac.model.assessment import SBACAssessment
-from project.sbac.model.assessmentoutcome import SBACAssessmentOutcome
-from project.sbac.model.institutionhierarchy import InstitutionHierarchy
-from project.sbac.model.student import SBACStudent
+from sbac_data_generation.model.assessment import SBACAssessment
+from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
+from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
+from sbac_data_generation.model.section import SBACSection
+from sbac_data_generation.model.student import SBACStudent
 
 
 def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None, most_recent=False,
@@ -92,7 +92,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     return sa
 
 
-def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: Section,
+def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: SBACSection,
                                 inst_hier: InstitutionHierarchy, save_to_mongo=True):
     """
     Generate an assessment outcome for a given student.

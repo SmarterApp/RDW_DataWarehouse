@@ -7,19 +7,16 @@ Generate SBAC-specific hierarchy components.
 
 import random
 
-import general.generators.hierarchy as general_hier_gen
-import general.util.id_gen as general_id_gen
-import project.sbac.config.cfg as sbac_config
-import project.sbac.util.id_gen as sbac_id_gen
+import data_generation.generators.hierarchy as general_hier_gen
+import data_generation.util.id_gen as general_id_gen
+import sbac_data_generation.config.cfg as sbac_config
+import sbac_data_generation.util.id_gen as sbac_id_gen
 
-from general.model.district import District
-from general.model.school import School
-from general.model.state import State
-from project.sbac.model.district import SBACDistrict
-from project.sbac.model.institutionhierarchy import InstitutionHierarchy
-from project.sbac.model.registrationsystem import SBACRegistrationSystem
-from project.sbac.model.school import SBACSchool
-from project.sbac.model.state import SBACState
+from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
+from sbac_data_generation.model.registrationsystem import SBACRegistrationSystem
+from sbac_data_generation.model.school import SBACSchool
+from sbac_data_generation.model.state import SBACState
 
 
 def generate_state(state_type, name, code):
@@ -43,7 +40,7 @@ def generate_state(state_type, name, code):
     return s
 
 
-def generate_district(district_type, state: State):
+def generate_district(district_type, state: SBACState):
     """
     Generate a district specified by the parameters.
 
@@ -63,7 +60,7 @@ def generate_district(district_type, state: State):
     return d
 
 
-def generate_school(school_type, district: District):
+def generate_school(school_type, district: SBACDistrict):
     """
     Generate a school specified by the parameters.
 
@@ -109,7 +106,7 @@ def generate_registration_system(year, extract_date):
     return ars
 
 
-def generate_institution_hierarchy(state: State, district: District, school: School):
+def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, school: SBACSchool):
     """
     Generate a hierarchy institution object for a set of hierarchy institutions.
 

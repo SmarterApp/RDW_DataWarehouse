@@ -7,7 +7,7 @@ Model the SBAC-specific items of a school.
 
 from mongoengine import BooleanField, StringField
 
-from general.model.school import School
+from data_generation.model.school import School
 
 
 class SBACSchool(School):

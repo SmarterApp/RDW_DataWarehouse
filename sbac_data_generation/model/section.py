@@ -7,7 +7,7 @@ Model the SBAC-specific items of a section.
 
 from mongoengine import IntField
 
-from general.model.section import Section
+from data_generation.model.section import Section
 
 
 class SBACSection(Section):

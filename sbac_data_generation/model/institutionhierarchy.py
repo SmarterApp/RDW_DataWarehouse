@@ -7,9 +7,9 @@ Model an institution hierarchy as defined for SBAC.
 
 from mongoengine import BooleanField, DateTimeField, Document, IntField, ReferenceField, StringField
 
-from general.model.district import District
-from general.model.school import School
-from general.model.state import State
+from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.school import SBACSchool
+from sbac_data_generation.model.state import SBACState
 
 
 class InstitutionHierarchy(Document):
@@ -18,9 +18,9 @@ class InstitutionHierarchy(Document):
     """
     rec_id = IntField(required=True)
     guid = StringField(required=True)
-    state = ReferenceField(State, required=True)
-    district = ReferenceField(District, required=True)
-    school = ReferenceField(School, required=True)
+    state = ReferenceField(SBACState, required=True)
+    district = ReferenceField(SBACDistrict, required=True)
+    school = ReferenceField(SBACSchool, required=True)
     from_date = DateTimeField(required=True)
     to_date = DateTimeField(required=False)
     most_recent = BooleanField(required=True)

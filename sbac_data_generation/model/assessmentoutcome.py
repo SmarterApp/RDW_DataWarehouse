@@ -7,10 +7,10 @@ Model an assessment outcome (an instance of a student taking an assessment) for 
 
 from mongoengine import IntField, ReferenceField
 
-import project.sbac.config.cfg as sbac_config
+import sbac_data_generation.config.cfg as sbac_config
 
-from general.model.assessmentoutcome import AssessmentOutcome
-from project.sbac.model.institutionhierarchy import InstitutionHierarchy
+from data_generation.model.assessmentoutcome import AssessmentOutcome
+from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 
 
 class SBACAssessmentOutcome(AssessmentOutcome):

@@ -7,11 +7,11 @@ Generate enrollment elements that can be related to SBAC assessments.
 
 import datetime
 
-import general.generators.enrollment as general_enroll_gen
-import general.util.id_gen as id_gen
+import data_generation.generators.enrollment as general_enroll_gen
+import data_generation.util.id_gen as id_gen
 
-from general.model.clss import Class
-from project.sbac.model.section import SBACSection
+from data_generation.model.clss import Class
+from sbac_data_generation.model.section import SBACSection
 
 
 def generate_section(clss: Class, name, grade, year=datetime.datetime.now().year, most_recent=None):

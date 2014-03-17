@@ -264,6 +264,10 @@ if __name__ == '__main__':
     # Set team-specific configuration options
     assign_team_configuration_options(args.team_name)
 
+    # Verify output directory exists
+    if not os.path.exists('out'):
+        os.makedirs('out')
+
     # Connect to MongoDB and drop an existing datagen database
     c = Connection()
     if 'datagen' in c.database_names():

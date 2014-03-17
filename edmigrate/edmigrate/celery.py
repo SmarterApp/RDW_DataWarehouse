@@ -4,7 +4,7 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
 from edmigrate.settings.config import setup_settings
 from edcore.database import initialize_db
-from edcore.database.repmgr_connector import RepMgrDBConnection
+from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection

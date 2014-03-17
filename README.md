@@ -43,7 +43,7 @@ the environment in the first command, change it in this command too.
 
 ###Install Core Fixture Data Generation Library
 
-    pip install path/to/FixtureDataGeneration-Core-0.1.tar.gz
+    pip install http://10.168.7.90/archive/FixtureDataGeneration-Core-0.1.tar.gz
 
 ###Install Run Dependencies
 

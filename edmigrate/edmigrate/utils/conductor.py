@@ -13,7 +13,7 @@ from edmigrate.exceptions import ConductorTimeoutException
 
 
 class Conductor:
-    def __init__(self, exchange_name):
+    def __init__(self):
         self.__slave_trakcer = SlaveTracker()
 
     def find_slaves(self):
@@ -26,38 +26,38 @@ class Conductor:
                 # set group A for "0" or group B for "1"
                 self.__slave_trakcer.set_slave_group(slave_ids[idx], Constants.SLAVE_GROUP_A if idx % 2 == 0 else Constants.SLAVE_GROUP_B)
 
-    def send_disconnect_PGPool(self, slave_group):
+    def send_disconnect_PGPool(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_DISCONNECT_PGPOOL, group_ids))  # @UndefinedVariable
 
-    def send_connect_PGPool(self, slave_group):
+    def send_connect_PGPool(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_CONNECT_PGPOOL, group_ids))  # @UndefinedVariable
 
-    def send_disconnect_master(self, slave_group):
+    def send_disconnect_master(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_DISCONNECT_MASTER, group_ids))  # @UndefinedVariable
 
-    def send_connect_master(self, slave_group):
+    def send_connect_master(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_CONNECT_MASTER, group_ids))  # @UndefinedVariable
 
     def migrate(self):
         start_migrate_daily_delta()
 
-    def wait_PGPool_disconnected(self, slave_group, timeout=30):
+    def wait_PGPool_disconnected(self, slave_group=None, timeout=30):
         self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_pgpool_disconnected)
 
-    def wait_PGPool_connected(self, slave_group, timeout=30):
+    def wait_PGPool_connected(self, slave_group=None, timeout=30):
         self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_pgpool_connected)
 
-    def wait_master_disconnected(self, slave_group, timeout=30):
+    def wait_master_disconnected(self, slave_group=None, timeout=30):
         self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_master_disconnected)
 
-    def wait_master_connected(self, slave_group, timeout=30):
+    def wait_master_connected(self, slave_group=None, timeout=30):
         self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_master_connected)
 
-    def monitor_replication_status(self, slave_group):
+    def monitor_replication_status(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         replication_monitor(group_ids)
 

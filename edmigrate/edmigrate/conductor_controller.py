@@ -14,6 +14,7 @@ from edmigrate.utils.constants import Constants
 
 logger = logging.getLogger('edmigrate')
 
+
 class ConductorController(threading.Thread):
     def __init__(self, connection):
         self.__connenctor = connection

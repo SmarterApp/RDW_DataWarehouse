@@ -10,7 +10,7 @@ from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_m
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
 from time import sleep
 from kombu import Connection
-from kombu.entity import Exchange, Queue
+from kombu.entity import Exchange
 import socket
 
 
@@ -21,10 +21,10 @@ def get_hostname():
 def get_slave_node_id_from_hostname(hostname):
     node_id = None
     with RepMgrDBConnection() as conn:
-        results = conn.execute("SELECT * FROM repl_nodes")
+        results = conn.execute("select * from repl_nodes")
         nodes = results.fetchall()
         for node in nodes:
-            if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=hostname)) > 0:
+            if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=hostname)) >= 0:
                 node_id = node[Constants.ID]
                 break
     return node_id

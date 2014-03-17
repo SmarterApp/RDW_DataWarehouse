@@ -3,12 +3,12 @@ Created on Mar 1, 2013
 
 @author: dip
 '''
-from database.generic_connector import setup_db_connection_from_ini
+from edschema.database.generic_connector import setup_db_connection_from_ini
 import os
-from database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir
 import argparse
 import configparser
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from edcore.database import get_data_source_names
 from edcore.database import initialize_db
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         exit(-1)
 
     if __resource is None:
-        __resource = os.path.join(os.path.join(os.path.join(os.path.join(parent_dir, 'edschema'), 'database'), 'tests'), 'resources')
+        __resource = os.path.join(parent_dir, 'edschema', 'edschema', 'database', 'tests', 'resources')
 
     if os.path.exists(__resource) is False:
         print('Error: resources directory does not exist')

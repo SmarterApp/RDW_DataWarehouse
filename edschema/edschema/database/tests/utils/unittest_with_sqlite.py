@@ -4,12 +4,12 @@ Created on Feb 9, 2013
 @author: tosako
 '''
 import unittest
-from database.sqlite_connector import create_sqlite, destroy_sqlite
-from database.tests.utils.data_gen import generate_cvs_templates
+from edschema.database.sqlite_connector import create_sqlite, destroy_sqlite
+from edschema.database.tests.utils.data_gen import generate_cvs_templates
 from zope import component
-from database.connector import IDbUtil
+from edschema.database.connector import IDbUtil
 import os
-from database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir
 
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles

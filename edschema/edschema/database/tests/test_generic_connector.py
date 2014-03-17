@@ -4,9 +4,9 @@ Created on Mar 4, 2013
 @author: dip
 '''
 import unittest
-from database.generic_connector import setup_db_connection_from_ini
+from edschema.database.generic_connector import setup_db_connection_from_ini
 from zope import component
-from database.connector import IDbUtil, DBConnection
+from edschema.database.connector import IDbUtil, DBConnection
 
 
 class TestGenericConnector(unittest.TestCase):

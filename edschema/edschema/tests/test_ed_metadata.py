@@ -4,8 +4,8 @@ Created on Feb 8, 2013
 @author: tosako
 '''
 import unittest
-from database.connector import DBConnection
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from edschema.database.connector import DBConnection
+from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import types
 
 

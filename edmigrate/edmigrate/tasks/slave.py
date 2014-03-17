@@ -11,12 +11,10 @@ from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_m
 from time import sleep
 from kombu import Connection
 from kombu.entity import Exchange, Queue
-import logging
-
-logger = logging.getLevelName('edmigrate')
+import socket
 
 
-def get_hostname(socket):
+def get_hostname():
     return socket.gethostname()
 
 
@@ -140,7 +138,16 @@ def disconnect_master(host_name, node_id, conn, exchange, routing_key):
         logger.info("Fail to disconnect from master")
 
 
+def find_slave(host_name, node_id, conn, exchange, routing_key):
+    if node_id is not None:
+        register_slave(node_id, conn, exchange, routing_key)
+    else:
+        # log errors
+        logger.info("{hostname} has no node_id".format(hostname=host_name))
+
+
 COMMAND_HANDLERS = {
+    Constants.COMMAND_FIND_SLAVE: find_slave,
     Constants.COMMAND_CONNECT_MASTER: connect_master,
     Constants.COMMAND_DISCONNECT_MASTER: disconnect_master,
     Constants.COMMAND_CONNECT_PGPOOL: connect_pgpool,
@@ -165,11 +172,7 @@ def slave_task(command, slaves):
     exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
     routing_key = Constants.CONDUCTOR_ROUTING_KEY
     if command == Constants.COMMAND_FIND_SLAVE:
-        if node_id is not None:
-            register_slave(node_id, conn, exchange, routing_key)
-        else:
-            # log errors
-            logger.info("{hostname} has no node_id".format(hostname=host_name))
+        COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
     else:
         if node_id in slaves:
             COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)

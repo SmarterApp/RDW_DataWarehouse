@@ -82,7 +82,7 @@ def create_queue(queue):
     exchange_type = queue[CELERY_QUEUE_EXCHANGE]
     routing_key = queue[CELERY_QUEUE_ROUTING_KEY]
     if exchange_type == 'fanout':
-        return Broadcast(name, exchange=Exchange(type=exchange_type), routing_key=routing_key)
+        return Broadcast(name, exchange=Exchange(name=name, type=exchange_type), routing_key=routing_key)
     else:
         return Queue(name, exchange=Exchange(type=exchange_type), routing_key=routing_key)
 

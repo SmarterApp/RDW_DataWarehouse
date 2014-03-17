@@ -42,6 +42,7 @@ class Consumer(ConsumerMixin):
     def on_message(self, body, message):
         message_ack_command = body[Constants.MESSAGE_ACK_COMMAND]
         node_id = body[Constants.MESSAGE_NODE_ID]
+        #print("on_mesage " + str(node_id)+" msg " + message_ack_command)
         try:
             if message_ack_command == Constants.ACK_COMMAND_FIND_SLAVE:
                 self.__slave_tracker.add_slave(node_id)

@@ -29,7 +29,7 @@ def main(config_file, resource_dir, tenant_to_update, state_code):
         import_csv_dir(resource_dir, tenant)
         if tenant_to_update in tenant:
             update_state_code(tenant, state_code)
-            update_aca_year(tenant)
+#            update_aca_year(tenant)
 
 def delete_data(name):
     '''
@@ -58,13 +58,13 @@ def update_state_code(tenant, state_code):
             connection.execute(stmt)
         state_name_stmt = update(dim_inst_hier).values(state_name='California')
         connection.execute(state_name_stmt)
-
-def update_aca_year(tenant):
-    '''Update acadamic year'''
-    with DBConnection(tenant) as connection:
-        dim_asmt = connection.get_table("dim_asmt")
-        new_query = update([dim_asmt]).where(dim_asmt.c.asmt_period_year == '2016').values({dim_asmt.c.asmt_period:'Spring 2015', dim_asmt.c.asmt_period_year:'2015', dim_asmt.c.ceffective_date :'20150101',dim_asmt.c.from_date:'20150101'})
-        connection.execute(new_query)
+#
+#def update_aca_year(tenant):
+#    '''Update acadamic year'''
+#    with DBConnection(tenant) as connection:
+#        dim_asmt = connection.get_table("dim_asmt")
+#        new_query = update([dim_asmt]).where(dim_asmt.c.asmt_period_year == '2016').values({dim_asmt.c.asmt_period:'Spring 2015', dim_asmt.c.asmt_period_year:'2015', dim_asmt.c.effective_date :'20150101',dim_asmt.c.from_date:'20150101'})
+#        connection.execute(new_query)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Import csv')

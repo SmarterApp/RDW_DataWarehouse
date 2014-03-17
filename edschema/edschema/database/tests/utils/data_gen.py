@@ -8,7 +8,7 @@ from random import choice, randrange
 import shutil
 import uuid
 import datetime
-from database.connector import IDbUtil
+from edschema.database.connector import IDbUtil
 from zope import component
 import csv
 

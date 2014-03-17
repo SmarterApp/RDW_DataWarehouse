@@ -5,8 +5,7 @@ Created on Mar 13, 2014
 
 @author: dip
 '''
-from edmigrate.main import main, read_ini
-import os
+from edmigrate.main import main, read_ini, get_ini_file
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from sqlalchemy.sql.functions import count
 from sqlalchemy.sql.expression import select, and_
@@ -30,16 +29,6 @@ def start_migrate(tenant='cat'):
 
 def get_config():
     return read_ini(get_ini_file())
-
-
-def get_ini_file():
-    jenkins_ini = '/opt/edware/conf/smarter.ini'
-    if os.path.exists(jenkins_ini):
-        ini_file = jenkins_ini
-    else:
-        here = os.path.abspath(os.path.dirname(__file__))
-        ini_file = os.path.join(here, '../../config/development.ini')
-    return ini_file
 
 
 def get_prod_table_count(tenant, table_name):

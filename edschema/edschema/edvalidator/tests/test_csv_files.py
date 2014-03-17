@@ -5,7 +5,7 @@ Created on Mar 1, 2013
 '''
 import unittest
 import os
-from edvalidator.edvalidator import read_csv, read_fields_name
+from edschema.edvalidator.edvalidator import read_csv, read_fields_name
 
 
 class Test(unittest.TestCase):

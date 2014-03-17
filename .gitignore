@@ -32,7 +32,7 @@ assets/test/js/src/**
 assets/docs/
 node_modules
 .coverage
-edschema/database/tests/resources/tmpl
+edschema/edschema/database/tests/resources/tmpl
 */build/
 config/development.ini
 */docs/_build

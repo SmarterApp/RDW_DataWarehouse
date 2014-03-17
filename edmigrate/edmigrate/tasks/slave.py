@@ -13,7 +13,7 @@ from kombu import Connection
 from kombu.entity import Exchange
 import socket
 from sqlalchemy.sql.expression import text
-from edmigrate.setup_celery import celery
+from edmigrate.edmigrate_celery import celery
 
 
 logger = logging.getLogger('edmigrate')

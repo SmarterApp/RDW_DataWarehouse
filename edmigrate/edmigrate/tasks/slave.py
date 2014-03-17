@@ -155,7 +155,7 @@ COMMAND_HANDLERS = {
 }
 
 
-@celery.tasks(name=Constants.SLAVE_TASK, ignore_result=True, base=BaseTask)
+@celery.task(name=Constants.SLAVE_TASK, ignore_result=True, base=BaseTask)
 def slave_task(command, slaves):
     """
     This is a slave task that runs on slave database. It assumes only one celery worker per node. So task

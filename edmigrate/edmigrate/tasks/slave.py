@@ -30,7 +30,7 @@ def get_slave_node_id_from_hostname(hostname):
     return node_id
 
 
-def check_replication_status(connector, cluster_name):
+def check_replication_status(connector):
     try:
         result = connector.execute("select pg_is_xlog_replay_paused()")
         replication_paused = result.fetchone()['pg_is_xlog_replay_paused']
@@ -56,9 +56,8 @@ def is_replication_active(connector):
     return check_replication_status(connector) == Constants.REPLICATION_STATUS_ACTIVE
 
 
-def check_iptable_has_blocked_pgpool():
+def check_iptable_has_blocked_pgpool(pgpool):
     output = check_output(['sudo', 'iptables', '-L'])
-    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     lines = output.split('\n')
     found = False
     for line in lines:
@@ -81,7 +80,7 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
         max_retries -= 1
-    if not check_iptable_has_blocked_pgpool():
+    if not check_iptable_has_blocked_pgpool(pgpool):
         status = True
     if status:
         acknowledgement_pgpool_connected(node_id, conn, exchange, routing_key)
@@ -99,7 +98,7 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
         call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         max_retries -= 1
-    if check_iptable_has_blocked_pgpool():
+    if check_iptable_has_blocked_pgpool(pgpool):
         status = True
     if status:
         acknowledgement_pgpool_disconnected(node_id, conn, exchange, routing_key)

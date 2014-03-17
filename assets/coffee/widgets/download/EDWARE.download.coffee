@@ -20,6 +20,11 @@ define [
 
   COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
 
+  TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Test Results"}
+
+  REQUEST_ENDPOINT = {"studentRegistrationStatistics": "/services/extract/student_registration_statistics", "studentAssessment": "/services/extract"}
+
+
   class CSVDownloadModal
 
     constructor: (@container, @config) ->
@@ -83,10 +88,7 @@ define [
           else
             # disable button and all the input checkboxes
             self.disableInput()
-            if self.reportType == 'studentRegistrationStatistics'
-              self.sendRequest "/services/extract/student_registration_statistics"
-            else
-              self.sendRequest "/services/extract"
+            self.sendRequest REQUEST_ENDPOINT[self.reportType]
 
     setMainPulldownLabel: ()->
       self = this
@@ -96,16 +98,23 @@ define [
       $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment');
 
     validate: ($dropdown) ->
-      # check selected options
+      isValid  = false
+      if this.reportType is 'studentRegistrationStatistics'
+        isValid = this.validate_sr_options $dropdown
+      else
+        isValid = this.validate_sasmt_options $dropdown
+      isValid
+
+    validate_sasmt_options: ($dropdown) ->
       checked = this.getSelectedOptions $dropdown
       checked.length isnt 0
+
+    validate_sr_options: ($dropdown) ->
+      $("#academicYear").spinner( "value" ) isnt null
 
     getSelectedOptions: ($dropdown)->
       # get selected option text
       checked = []
-      if this.reportType == 'studentRegistrationStatistics'
-          if $( "#academicYear" ).spinner( "value" ) != null
-              checked.push $( "#academicYear" ).data('label')
       $dropdown.find('input:checked').each () ->
           checked.push $(this).data('label')
       checked
@@ -166,10 +175,12 @@ define [
         this.showCloseButton()
       else
         this.enableInput()
+
       this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
         requestTime: this.requestTime
         requestDate: this.requestDate
         fileName: fileName
+        testName: TEST_NAME[this.reportType]
         # success messages
         success: success
         singleSuccess: success.length == 1

@@ -7,7 +7,7 @@ Created on Nov 7, 2013
 
 class ExtractType():
     studentAssessment = 'studentAssessment'
-    studentRegistrationStatstics = 'studentRegistrationStatistics'
+    studentRegistrationStatistics = 'studentRegistrationStatistics'
 
 
 class Constants():

@@ -15,7 +15,7 @@ STUDENT_REGISTRATION_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^" + ExtractType.studentRegistrationStatstics + "$"
+                "pattern": "^" + ExtractType.studentRegistrationStatistics + "$"
             },
             "minItems": 1,
             "uniqueItems": True,

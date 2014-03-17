@@ -1,4 +1,3 @@
-from edmigrate.main import setup_db_connection
 __author__ = 'sravi'
 
 from edworker.celery import setup_celery as setup, configure_celeryd,\
@@ -27,5 +26,4 @@ celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
     # We should only need to setup db connection in prod mode
-    setup_db_connection(conf)
     setup_settings(conf)

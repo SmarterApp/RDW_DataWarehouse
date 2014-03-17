@@ -1,7 +1,7 @@
+import logging
 __author__ = 'sravi'
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
-from edmigrate.celery import celery, logger
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call, check_output
@@ -13,6 +13,10 @@ from kombu import Connection
 from kombu.entity import Exchange
 import socket
 from sqlalchemy.sql.expression import text
+from edmigrate.setup_celery import celery
+
+
+logger = logging.getLogger('edmigrate')
 
 
 def get_hostname():

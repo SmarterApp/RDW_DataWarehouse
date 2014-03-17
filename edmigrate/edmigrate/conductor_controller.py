@@ -17,7 +17,7 @@ logger = logging.getLogger('edmigrate')
 
 class ConductorController(threading.Thread):
     def __init__(self, connection):
-        self.__connenctor = connection
+        self.__connection = connection
         self.__thread = ConsumerThread(self.__connection)
         self.__thread.start()
         self.__slave_tracker = SlaveTracker()

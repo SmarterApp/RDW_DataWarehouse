@@ -54,9 +54,9 @@ def main(file=None, tenant='cat'):
     initialize_db(EdMigrateSourceConnection, settings)
     initialize_db(EdMigrateDestConnection, settings)
     url = get_broker_url(settings)
-    #with Connection(url) as connect:
-    #    controller = ConductorController(connect)
-    #    controller.start()
+    with Connection(url) as connect:
+        controller = ConductorController(connect)
+        controller.start()
     #start_migrate_daily_delta(tenant)
 
 

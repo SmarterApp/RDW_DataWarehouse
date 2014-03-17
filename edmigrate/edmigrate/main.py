@@ -14,6 +14,8 @@ from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
+from kombu import Connection
+from edmigrate.conductor_controller import ConductorController
 
 
 def get_ini_file():
@@ -35,6 +37,14 @@ def read_ini(file):
     return config['app:main']
 
 
+def get_broker_url(settings):
+    url = "memory://"
+    celery_always_eager = settings.get('migrate.celery.celery_always_eager', False)
+    if not celery_always_eager:
+        url = settings.get('migrate.celery.BROKER_URL', url)
+    return url
+
+
 def main(file=None, tenant='cat'):
     if file is None:
         file = get_ini_file()
@@ -43,7 +53,11 @@ def main(file=None, tenant='cat'):
     initialize_db(StatsDBConnection, settings)
     initialize_db(EdMigrateSourceConnection, settings)
     initialize_db(EdMigrateDestConnection, settings)
-    start_migrate_daily_delta(tenant)
+    url = get_broker_url(settings)
+    #with Connection(url) as connect:
+    #    controller = ConductorController(connect)
+    #    controller.start()
+    #start_migrate_daily_delta(tenant)
 
 
 if __name__ == '__main__':

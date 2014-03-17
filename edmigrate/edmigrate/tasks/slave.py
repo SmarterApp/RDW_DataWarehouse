@@ -172,6 +172,7 @@ def slave_task(command, slaves):
     For other tasks. Slave task checks membership of current slave node in slaves argument represented in node_id.
     Those tasks are executed if and only if membership is true.
     """
+    print(command)
     host_name = get_hostname()
     node_id = get_slave_node_id_from_hostname(host_name)
     with Connection(get_broker_url(settings)) as conn:

@@ -92,7 +92,8 @@ class ValidateMultiFiles(unittest.TestCase):
             self.drop_schema(batch[0])
 
     def drop_schema(self, schema_name):
-        metadata = self.target_connector.get_metadata(schema_name=schema_name)
+        self.target_connector.set_metadata(schema_name, reflect=True)
+        metadata = self.target_connector.get_metadata()
         metadata.drop_all()
 
     #Test method for edware db

@@ -4,12 +4,16 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
-requires = ['pymongo',
+requires = ['FixtureDataGeneration-Core == 0.1',
+            'pymongo',
             'mongoengine']
 
 tests_require = requires + ['nose',
+                            'nose-mongoengine',
                             'pep8',
                             'coverage']
+
+private_repositories = ['http://10.168.7.90/archive']
 
 setuptools.setup(name='FixtureDataGeneration-SBAC',
                  version='0.1',
@@ -31,4 +35,5 @@ setuptools.setup(name='FixtureDataGeneration-SBAC',
                  test_suite='nose.collector',
                  install_requires=requires,
                  tests_require=tests_require,
+                 dependency_links=private_repositories,
                  entry_points='')

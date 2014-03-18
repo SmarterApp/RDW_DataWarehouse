@@ -121,7 +121,7 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
 
 
 def connect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Resuming pgpool")
+    logger.info("Slave: Resuming master via iptables")
     # perform multiple times disable in case it was blocked multiple times in iptables
     status = False
     max_retries = Constants.REPLICATION_MAX_RETRIES
@@ -138,11 +138,11 @@ def connect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
     if status:
         acknowledgement_master_connected(node_id, conn, exchange, routing_key)
     else:
-        logger.info("Fail to unblock pgpool")
+        logger.info("Fail to resume master via iptables")
 
 
 def disconnect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Blocking pgpool via iptables")
+    logger.info("Slave: Blocking master via iptables")
     status = False
     # only add rules when there is no rule in iptables
     max_retries = Constants.REPLICATION_MAX_RETRIES

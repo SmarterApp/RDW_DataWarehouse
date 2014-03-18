@@ -27,6 +27,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
+from edcore.security.tenant import set_tenant_map
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -62,6 +63,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         setup_celery(settings)
         # for UT purposes
         smarter.extracts.format.json_column_mapping = {}
+        set_tenant_map({'tomcat': 'NC'})
 
     def tearDown(self):
         self.__request = None
@@ -120,16 +122,18 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         params = {'asmtGrade': '6',
                   'asmtSubject': ['Math'],
                   'asmtType': 'SUMMATIVE',
+                  'asmtYear': '2016',
                   'stateCode': 'NC'}
         name = generate_zip_file_name(params)
-        self.assertIn('ASMT_GRADE_6_MATH_SUMMATIVE', name)
+        self.assertIn('ASMT_2016_GRADE_6_MATH_SUMMATIVE', name)
 
     def test_generate_zip_file_name_for_schools(self):
         params = {'asmtSubject': ['Math', 'ELA'],
                   'asmtType': 'Summative',
+                  'asmtYear': '2016',
                   'stateCode': 'NC'}
         name = generate_zip_file_name(params)
-        self.assertIn('ASMT_ELA_MATH_SUMMATIVE', name)
+        self.assertIn('ASMT_2016_ELA_MATH_SUMMATIVE', name)
 
     def test_post_invalid_payload(self):
         self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service)
@@ -152,6 +156,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['schoolGuid'] = '936'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
+        self.__request.GET['asmtYear'] = '2016'
         response = get_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')
@@ -211,6 +216,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['schoolGuid'] = '936'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
+        self.__request.GET['asmtYear'] = '2016'
         params = convert_query_string_to_dict_arrays(self.__request.GET)
         response = send_extraction_request(params)
         content_type = response._headerlist[0]

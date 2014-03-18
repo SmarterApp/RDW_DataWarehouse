@@ -46,21 +46,6 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         node_id = get_slave_node_id_from_hostname(hostname)
         self.assertEqual(node_id, self.node_id)
 
-    @skip("under development")
-    def test_check_replication_status(self):
-        check_replication_status()
-        self.assertEqual(True, False)
-
-    @skip("under development")
-    def test_is_replication_paused(self):
-        is_replication_paused()
-        self.assertEqual(True, False)
-
-    @skip("under development")
-    def test_is_replication_active(self):
-        is_replication_active()
-        self.assertEqual(True, False)
-
     def test_parse_iptable_output_0(self):
         not_found = parse_iptable_output(self.noblock_firewall_output, self.pgpool)
         self.assertFalse(not_found)

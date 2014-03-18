@@ -31,8 +31,10 @@ class ConductorController(threading.Thread):
         if slaves_ids:
             number_of_slaves = len(slaves_ids)
             if number_of_slaves == 1:
+                logger.debug('Starting single slave migration process')
                 self.single_slave_process()
             else:
+                logger.debug('Starting regular slave migration process')
                 self.regular_process()
         else:
             logger.info('No slave was detected')

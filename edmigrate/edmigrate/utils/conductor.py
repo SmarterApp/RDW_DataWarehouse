@@ -10,6 +10,10 @@ from edmigrate.utils.migrate import start_migrate_daily_delta
 from edmigrate.utils.replication_monitor import replication_monitor
 import time
 from edmigrate.exceptions import ConductorTimeoutException
+import logging
+
+
+logger = logging.getLogger('edmigrate')
 
 
 class Conductor:
@@ -29,18 +33,22 @@ class Conductor:
     def send_disconnect_PGPool(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_DISCONNECT_PGPOOL, group_ids))  # @UndefinedVariable
+        self.__log(Constants.COMMAND_DISCONNECT_PGPOOL, slave_group, group_ids)
 
     def send_connect_PGPool(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_CONNECT_PGPOOL, group_ids))  # @UndefinedVariable
+        self.__log(Constants.COMMAND_DISCONNECT_MASTER, slave_group, group_ids)
 
     def send_disconnect_master(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_DISCONNECT_MASTER, group_ids))  # @UndefinedVariable
+        self.__log(Constants.COMMAND_DISCONNECT_MASTER, slave_group, group_ids)
 
     def send_connect_master(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_CONNECT_MASTER, group_ids))  # @UndefinedVariable
+        self.__log(Constants.COMMAND_CONNECT_MASTER, slave_group, group_ids)
 
     def migrate(self):
         start_migrate_daily_delta()
@@ -69,3 +77,11 @@ class Conductor:
                 if time.time() - start_time > timeout:
                     raise ConductorTimeoutException(func + 'timeout')
                 time.sleep(1)
+        if group_ids:
+            logger.debug('function[' + func.__name__ + '] returned [' + ', '.join(str(x) for x in group_ids) + ']')
+        else:
+            logger.debug('function[' + func.__name__ + '] returned [None]')
+
+    @staticmethod
+    def __log(self, command, slave_group, group_ids):
+        logger.debug('Sent command[' + command + '] to group name[' + slave_group if slave_group else 'None' + '] ids[' + ', '.join(str(x) for x in group_ids) + ']')

@@ -42,7 +42,8 @@ class Consumer(ConsumerMixin):
     def on_message(self, body, message):
         message_ack_command = body[Constants.MESSAGE_ACK_COMMAND]
         node_id = body[Constants.MESSAGE_NODE_ID]
-        #print("on_mesage " + str(node_id)+" msg " + message_ack_command)
+        logger.debug('Message Received from node_id[' + str(node_id) + ' message[' + message_ack_command + ']')
+        # print("on_mesage " + str(node_id)+" msg " + message_ack_command)
         try:
             if message_ack_command == Constants.ACK_COMMAND_FIND_SLAVE:
                 self.__slave_tracker.add_slave(node_id)
@@ -58,7 +59,7 @@ class Consumer(ConsumerMixin):
             logger.error(e)
         message.ack()
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    with BrokerConnection("amqp://guest:guest@localhost:5672") as connection:
 #        try:
 #            Consumer(connection).run()

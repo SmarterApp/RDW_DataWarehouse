@@ -18,6 +18,10 @@ from edmigrate.conductor_controller import ConductorController
 from argparse import ArgumentParser
 from edmigrate.utils.utils import get_broker_url
 from edmigrate.edmigrate_celery import setup_celery
+import logging
+
+
+logger = logging.getLogger('edmigrate')
 
 
 def get_ini_file():
@@ -40,6 +44,7 @@ def read_ini(file):
 
 
 def main(file=None, tenant='cat', run_migrate_only=False):
+    logger.debug('edmigrate main program has started')
     if file is None:
         file = get_ini_file()
     settings = read_ini(file)

@@ -283,7 +283,7 @@ function restart_apache {
 }
 
 function restart_memcached {
-    /usr/bin/sudo /etc/init.d/memcached restart
+    /etc/init.d/memcached restart
 }
 
 function restart_celeryd {

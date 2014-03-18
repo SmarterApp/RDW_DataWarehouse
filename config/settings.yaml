@@ -530,7 +530,7 @@ development:
     edware_rep:
       db:
         schema_name: repmgr_edware_pg_cluster
-        url: postgresql+psycopg2://repmgr:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None

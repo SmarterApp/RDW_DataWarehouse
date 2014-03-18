@@ -43,7 +43,7 @@ def setup_settings(config):
     '''
     global settings
     for item in LIST_OF_CONFIG:
-        key = item[0]
+        key = item[0].lower()
         to_type = item[1]
         default = item[2]
         settings[key] = to_type(config.get(key, default))
@@ -55,4 +55,4 @@ def get_setting(key, default_value=None):
 
     :params string key:  lookup key
     '''
-    return settings.get(key, default_value)
+    return settings.get(key.lower(), default_value)

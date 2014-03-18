@@ -26,9 +26,9 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(get_broker_url(), "memory://")
 
     def test_get_broker_enpty_settings_with_broker(self):
-        settings = {'migrate.celery.BROKER_URL': 'mybrokerURL'}
+        settings = {'migrate.celery.broker_url': 'mybrokerURL'}
         setup_settings(settings)
-        self.assertEqual(get_broker_url(), settings['migrate.celery.BROKER_URL'])
+        self.assertEqual(get_broker_url(), settings['migrate.celery.broker_url'])
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

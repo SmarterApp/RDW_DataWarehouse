@@ -169,7 +169,33 @@ hr {
 
     &:hover {
         background-position: initial;
-    background-color: @color-C6;
+        background-color: @color-C6;
+    }
+}
+
+.edware-btn-flat {
+    border: solid 1px @color-B15;
+    background-color: @color-white;
+    color: @color-B1;
+    background-image: none;
+}
+
+ul.edware-dropdown-menu {
+    li {
+        padding: 5px 0px;
+        border-bottom: solid 1px #e2e2e2;
+
+        &>* {
+            padding-left: 10px;
+        }
+
+        &:last-child { border-bottom: none; }
+
+        &:hover {
+            color: #f4f4f4;
+            background-color: #096aac;
+        }
+
     }
 }
 

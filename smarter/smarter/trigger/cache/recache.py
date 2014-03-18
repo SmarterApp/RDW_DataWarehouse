@@ -6,48 +6,59 @@ Created on Jun 20, 2013
 from smarter.reports.compare_pop_report import ComparingPopReport,\
     get_comparing_populations_cache_key, get_comparing_populations_cache_route
 from edapi.cache import region_invalidate
+from smarter.reports.student_administration import get_academic_years
 
 
 class CacheTrigger(object):
 
     def __init__(self, tenant, state_code, filter_config):
+        self.tenant = tenant
         self.state_code = state_code
-        self.report = ComparingPopReport(stateCode=state_code, tenant=tenant)
+        self.academic_years = get_academic_years(state_code, tenant)
+        self.latest_year = self.academic_years[0]
         self.init_filters(tenant, filter_config)
 
     def recache_state_view_report(self):
         '''
-        Flush and recache state view report
+        Recache state view report for all assessment years
+        '''
+        # cache all academic years without filters
+        for year in self.academic_years:
+            self._cache_with_district_guid(district_guid=None,
+                                           filter={}, year=year)
+        # cache state view reports with filters, only for latest year
+        for filter in self.__state_filters:
+            self._cache_with_district_guid(district_guid=None,
+                                           filter=filter, year=self.latest_year)
+
+    def _cache_with_district_guid(self, district_guid, filter, year):
+        '''
+        Flush and recache state view report for a particular year
 
         :param string state_code:  stateCode representing the state
         :rtype:  dict
         :returns: comparing populations state view report
         '''
-        # Ensure that district guid is None
-        self.report.set_district_guid(None)
-        for state_filter in self.__state_filters:
-            self.report.set_filters(state_filter)
-            region_name = get_comparing_populations_cache_route(self.report)
-            args = get_comparing_populations_cache_key(self.report)
-            flush_report_in_cache_region(self.report.get_report, region_name, *args)
-            self.report.get_report()
+        report = ComparingPopReport(stateCode=self.state_code,
+                                    tenant=self.tenant, asmtYear=year)
+        report.set_district_guid(district_guid)
+        report.set_filters(filter)
+        region_name = get_comparing_populations_cache_route(report)
+        args = get_comparing_populations_cache_key(report)
+        flush_report_in_cache_region(report.get_report, region_name, *args)
+        report.get_report()
 
     def recache_district_view_report(self, district_guid):
         '''
-        Flush and recache district report
-
-        :param string state_code:  stateCode representing the state
-        :param string district_guid: districtGuid representing the district
-        :rtype: dict
-        :returns: comparing populations district view report
+        Recache district view report for all assessment years
         '''
-        self.report.set_district_guid(district_guid)
-        for district_filter in self.__district_filters:
-            self.report.set_filters(district_filter)
-            region_name = get_comparing_populations_cache_route(self.report)
-            args = get_comparing_populations_cache_key(self.report)
-            flush_report_in_cache_region(self.report.get_report, region_name, *args)
-            self.report.get_report()
+        # cache all academic years without filters
+        for year in self.academic_years:
+            self._cache_with_district_guid(district_guid=district_guid,
+                                           filter={}, year=year)
+        for filter in self.__district_filters:
+            self._cache_with_district_guid(district_guid=district_guid,
+                                           filter=filter, year=self.latest_year)
 
     def init_filters(self, tenant, settings):
         '''
@@ -65,7 +76,7 @@ class CacheTrigger(object):
         if filters is None:
             filters = settings.get(suffix, [])
         # Always append empty filter
-        filters.append({})
+        # filters.append({})
         return filters
 
 

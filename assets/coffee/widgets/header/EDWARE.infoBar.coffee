@@ -5,20 +5,23 @@ define [
   "text!InfoBarTemplate"
   "edwareDownload"
   "edwarePopover"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover) ->
+  "edwareYearDropdown"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown) ->
 
   class ReportInfoBar
 
     constructor: (@container, @config) ->
-      #TODO how to specify what information expected?
-      this.initialize()
-      this.bindEvents()
+      @initialize()
+      @bindEvents()
 
     initialize: () ->
-      $(this.container).html Mustache.to_html InfoBarTemplate,
+      $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
-      this.createDownloadMenu() if not this.edwareDownloadMenu
+        labels: @config.labels
+      years = getAcademicYears @config.academicYears?.options
+      @createDownloadMenu(years)
+      @createAcademicYear(years)
 
     bindEvents: () ->
       self = this
@@ -33,8 +36,28 @@ define [
       # set report info text
       $('.reportInfoWrapper').append @config.reportInfoText
 
-    createDownloadMenu: () ->
-      this.edwareDownloadMenu = new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
+      # bind academic year info popover
+      $('.academicYearInfoIcon').edwarePopover
+        content: 'placeholder'
+
+    createDownloadMenu: (years) ->
+      # merge academic years to JSON config
+      @config.CSVOptions.asmtYear.options = years if years
+      @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
+
+    getAcademicYears = (years)->
+      return if not years
+      for year in years
+        "display": toDisplay(year),
+        "value": year
+
+    toDisplay = (year)->
+      (year - 1) + " - " + year
+
+    createAcademicYear: (years) ->
+      return if not years
+      callback = @config.academicYears.callback
+      @academicYear ?= $('#academicYear').createYearDropdown years, callback
 
   create = (container, config) ->
     new ReportInfoBar(container, config)

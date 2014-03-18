@@ -6,10 +6,11 @@ from sqlalchemy.sql.expression import and_
 from edapi.cache import cache_region
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
+import pyramid.threadlocal
 
 
 @cache_region('public.shortlived')
-def get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade=None, student_guids=None):
+def get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade=None, student_guids=None, asmt_year=None):
     '''
     Get asmt administration for a list of students. There is no PII in the results and it can be stored in shortlived cache
     '''
@@ -29,5 +30,30 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         if student_guids:
             query = query.where(and_(fact_asmt_outcome.c.student_guid.in_(student_guids)))
+        if asmt_year:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
         results = connection.get_result(query)
     return results
+
+
+@cache_region('public.shortlived')
+def get_academic_years(state_code, tenant=None, years_back=None):
+    '''
+    Gets academic years.
+    '''
+    if not years_back or years_back <= 0:
+        years_back = pyramid.threadlocal.get_current_registry().settings.get('smarter.reports.year_back', "1")
+        years_back = int(years_back)
+    with EdCoreDBConnection(tenant=tenant, state_code=state_code) as connection:
+        dim_asmt = connection.get_table(Constants.DIM_ASMT)
+        query = select([dim_asmt.c.asmt_period_year]).distinct().order_by(dim_asmt.c.asmt_period_year.desc())
+        results = connection.execute(query).fetchmany(size=years_back)
+    return list(r[Constants.ASMT_PERIOD_YEAR] for r in results)
+
+
+def get_default_academic_year(params):
+    '''
+    Get latest academic year by state code as default.
+    '''
+    state_code = params.get(Constants.STATECODE)
+    return get_academic_years(state_code)[0]

@@ -17,6 +17,7 @@ define [
       this.sortBy = this.getSortBy()
       asmtType = $('#selectedAsmtType').text() || this.labels.summative
       this.asmtType = asmtType.replace(/\s+/g, ' ')
+      this.asmtYear = $('#selectedAcademicYear').text()
       this.isSticky = $('.stickyState').data('label')
       this.filters = this.buildFilters()
       this.breadcrumb = this.getBreadcrumb()
@@ -59,6 +60,7 @@ define [
       records.push edwareUtil.escapeCSV [this.labels.compare, this.isSticky]
       records.push edwareUtil.escapeCSV [this.labels.asmt_type, this.asmtType]
       records.push edwareUtil.escapeCSV [this.labels.total_count, this.table.getGridParam("reccount")]
+      records.push edwareUtil.escapeCSV [this.labels.academic_year, this.asmtYear]
       for i in [records.length .. 9] # fix first 10 rows as headers
         records.push ''
       records

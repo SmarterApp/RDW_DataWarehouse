@@ -28,17 +28,22 @@ from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants
 from edapi.cache import cache_region
 from celery.canvas import chain
+from edcore.security.tenant import get_tenant_by_state_code
 
 
 log = logging.getLogger('smarter')
 
 
 def process_sync_extract_request(params):
+    '''
+    TODO add doc string
+    '''
     settings = get_current_registry().settings
     queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
     archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
     tasks = []
-    request_id, user, tenant = _get_extract_request_user_info()
+    state_code = params[Constants.STATECODE]
+    request_id, user, tenant = _get_extract_request_user_info(state_code)
     extract_params = copy.deepcopy(params)
     for subject in params[Constants.ASMTSUBJECT]:
         extract_params[Constants.ASMTSUBJECT] = subject
@@ -69,11 +74,11 @@ def process_async_extraction_request(params, is_tenant_level=True):
     tasks = []
     response = {}
     task_responses = []
-    request_id, user, tenant = _get_extract_request_user_info()
+    state_code = params[Constants.STATECODE][0]
+    request_id, user, tenant = _get_extract_request_user_info(state_code)
 
     for s in params[Constants.ASMTSUBJECT]:
         for t in params[Constants.ASMTTYPE]:
-            # TODO: handle year and stateCode/tenant
             param = ({Constants.ASMTSUBJECT: s,
                      Constants.ASMTTYPE: t,
                      Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
@@ -83,7 +88,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
                              Extract.EXTRACTTYPE: ExtractType.studentAssessment,
                              Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
                              Constants.ASMTTYPE: param[Constants.ASMTTYPE],
-                             # Constants.ASMTYEAR: task[Constants.ASMTYEAR],
+                             Constants.ASMTYEAR: param[Constants.ASMTYEAR],
                              Extract.REQUESTID: request_id}
 
             # separate by grades if no grade is specified
@@ -225,11 +230,15 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     return task
 
 
-def _get_extract_request_user_info():
+def _get_extract_request_user_info(state_code=None):
     # Generate an uuid for this extract request
     request_id = str(uuid4())
     user = authenticated_userid(get_current_request())
-    tenant = user.get_tenants()[0]
+    # mapping state code to tenant
+    if state_code:
+        tenant = get_tenant_by_state_code(state_code)
+    else:
+        tenant = user.get_tenants()[0]
     return request_id, user, tenant
 
 
@@ -244,12 +253,14 @@ def get_extract_work_zone_path(tenant, request_id):
 
 def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
     identifier = '_' + param.get(Constants.STATECODE) if is_tenant_level else ''
-    file_name = 'ASMT{identifier}_{asmtGrade}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(identifier=identifier,
-                                                                                                            asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
-                                                                                                            asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                                                                                                            asmtType=param[Constants.ASMTTYPE].upper(),
-                                                                                                            currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                                                                                                            asmtGuid=param[Constants.ASMTGUID])
+    file_name = 'ASMT_{asmtYear}{identifier}_{asmtGrade}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.\
+                format(identifier=identifier,
+                       asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
+                       asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                       asmtType=param[Constants.ASMTTYPE].upper(),
+                       currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                       asmtYear=param[Constants.ASMTYEAR],
+                       asmtGuid=param[Constants.ASMTGUID])
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
 
 

@@ -14,11 +14,10 @@ require [
   # "cs!test.EDWARE.comparingPopulation",
   # "cs!test.EDWARE.breadcrumb",
   # "cs!test.EDWARE.edwareFilter",
-  # "cs!test.EDWARE.download",
-  # "cs!test.EDWARE.footer",
-  # "cs!test.EDWARE.header"
-  # "cs!../test.EDWARE.asmtDropdown"
-  # "cs!../test.EDWARE.print"
+  "cs!../test.EDWARE.download",
+  #FIXME "cs!test.EDWARE.header"
+  "cs!../test.EDWARE.asmtDropdown"
+  "cs!../test.EDWARE.print"
   "cs!../test.EDWARE.grid.formatters"
 ], ()->
   QUnit.start()

@@ -22,7 +22,6 @@ class ConductorController(threading.Thread):
         self.__connection = connection
         self.__slave_find_wait = slave_find_wait
         self.__interval = interval
-        self.__thread = ConsumerThread(self.__connection)
         self.__slave_tracker = SlaveTracker()
         self.__slave_tracker.reset()
         self.__conductor = Conductor()

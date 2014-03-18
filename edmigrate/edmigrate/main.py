@@ -20,6 +20,7 @@ from edmigrate.utils.utils import get_broker_url
 from edmigrate.edmigrate_celery import setup_celery
 import logging
 import logging.config
+from edmigrate.utils.consumer import ConsumerThread
 
 
 logger = logging.getLogger('edmigrate')
@@ -61,8 +62,11 @@ def main(file=None, tenant='cat', run_migrate_only=False):
         url = get_broker_url()
         connect = Connection(url)
         logger.debug('connection: ' + url)
+        consumerThread = ConsumerThread(connect)
         controller = ConductorController(connect)
+        consumerThread.start()
         controller.start()
+        consumerThread.join()
         controller.join()
 
 

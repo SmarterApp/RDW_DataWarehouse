@@ -30,7 +30,7 @@ class ConsumerThread(threading.Thread):
 class Consumer(ConsumerMixin):
     routing_key = Constants.CONDUCTOR_ROUTING_KEY
     exchange = Exchange(Constants.CONDUCTOR_EXCHANGE, type='direct')
-    queue = Queue('edmigrate_conductor', exchange, routing_key=routing_key)
+    queue = Queue('edmigrate_conductor', exchange=exchange, routing_key=routing_key, durable=False)
 
     def __init__(self, connection):
         self.connection = connection

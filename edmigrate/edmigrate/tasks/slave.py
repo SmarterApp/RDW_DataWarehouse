@@ -65,7 +65,7 @@ def is_replication_active(connector):
 
 def check_iptable_has_blocked_pgpool(pgpool):
     output = check_output(['sudo', 'iptables', '-L'])
-    lines = output.split('\n')
+    lines = str(output).split('\n')
     found = False
     for line in lines:
         if line.find(pgpool) >= 0 \

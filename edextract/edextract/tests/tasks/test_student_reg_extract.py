@@ -1,7 +1,7 @@
 __author__ = 'tshewchuk'
 
 """
-This module contains methods to test the different Student Registration report generators.
+This module contains methods to test the Student Registration extraction logic.
 """
 
 import unittest

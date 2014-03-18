@@ -7,14 +7,14 @@ This module contains the tasks specific to student registration report extractio
 import csv
 import os.path
 import logging
-from celery.canvas import chain
 
+from celery.canvas import chain
 from edextract.tasks.student_reg_constants import ReportType
 from edextract.tasks.student_reg_constants import Constants as TaskConstants
 from edextract.status.constants import Constants
 from edextract.tasks.extract import MAX_RETRY, DEFAULT_RETRY_DELAY, prepare_path, archive_with_encryption, remote_copy
 from edextract.celery import celery
-from edextract.utils.student_reg_report_generator import generate_sr_statistics_report_data, generate_sr_completion_report_data
+from edextract.student_reg_report_generation.student_reg_report_generator import generate_sr_statistics_report_data, generate_sr_completion_report_data
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.exceptions import ExtractionError
 

@@ -275,6 +275,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False)

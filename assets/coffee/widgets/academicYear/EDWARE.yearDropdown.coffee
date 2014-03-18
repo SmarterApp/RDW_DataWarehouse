@@ -19,7 +19,9 @@ define [
 
     setDefaultOption: () ->
       asmtYear = edwarePreferences.getAsmtYearPreference()
-      asmtYear ?= @years[0]
+      if not asmtYear
+        asmtYear = @years[0].value
+        edwarePreferences.saveAsmtYearPreference(asmtYear)
       @setSelectedValue (asmtYear - 1) + " - " + asmtYear
 
     setSelectedValue: (year) ->

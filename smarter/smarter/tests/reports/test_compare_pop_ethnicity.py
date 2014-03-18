@@ -50,7 +50,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_HISPANIC]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -61,7 +61,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_BLACK]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -73,7 +73,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -85,7 +85,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_WHITE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -97,7 +97,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_AMERICAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -109,7 +109,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_PACIFIC]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -121,7 +121,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_MULTI]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -133,7 +133,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_NOT_STATED]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -145,7 +145,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN, filters.FILTERS_ETHNICITY_WHITE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
@@ -157,7 +157,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants.ASMTYEAR] = 2012
+        testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_AMERICAN,
                                                 filters.FILTERS_ETHNICITY_ASIAN,
                                                 filters.FILTERS_ETHNICITY_BLACK,

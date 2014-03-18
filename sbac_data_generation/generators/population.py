@@ -81,10 +81,6 @@ def advance_student(student: SBACStudent, schools_by_grade, drop_out_rate=.5, sa
     if not rslt:
         return rslt
 
-    # Change the record ID if the student is being advanced
-    if not student.held_back:
-        student.rec_id = general_id_gen.get_rec_id('student')
-
     # TODO: Change things like LEP status or IEP status, etc
 
     return True

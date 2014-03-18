@@ -183,7 +183,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
         # check district-level results
         records = results[Constants.RECORDS]
-        self.assertEqual(2, len(records), "5 districts in the list")
+        self.assertEqual(4, len(records), "4 districts in the list")
         found_district = False
         for record in records:
             if record[Constants.ID] == '228':

@@ -30,6 +30,10 @@ from edextract.tasks.constants import Constants as TaskConstants
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
+from pyramid.security import Allow
+from edauth.security.user import RoleRelation
+import edauth
+from edcore.security.tenant import TENANT_MAP
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -58,6 +62,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
         dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config.testing_securitypolicy(dummy_session)
+        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
+        TENANT_MAP['DUMMY_TENANT'] = 'DUMMY_STATE'
+        TENANT_MAP['tomcat'] = 'NC'
 
     def tearDown(self):
         # reset the registry
@@ -86,9 +94,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
+                  'asmtYear': '2015',
                   'asmtGrade': '6'}
         path = get_extract_file_path(params, 'tenant', 'request_id', is_tenant_level=True)
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_6_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_6_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_school(self):
@@ -99,9 +108,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': 'abc',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGrade': '1'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_1_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_1_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_grade(self):
@@ -111,9 +121,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_5_UUUU_ABC_', path)
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_5_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_extract_work_zone_path(self):
@@ -170,6 +181,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': 'INTERIM COMPREHENSIVE',
                   'asmtSubject': ['ELA'],
+                  'asmtYear': '2016',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         zip_data = process_sync_extract_request(params)
         self.assertIsNotNone(zip_data)
@@ -182,6 +194,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
                   'asmtGrade': ['3'],
+                  'asmtYear': ['2016'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         response = process_async_extraction_request(params)
         self.assertIn('.zip.gpg', response['fileName'])
@@ -210,10 +223,11 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         file_name = get_asmt_metadata_file_path(params, "tenant", "id")
         self.assertIn('/tmp/work_zone/tenant/id/data', file_name)
-        self.assertIn('METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)
+        self.assertIn('METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)
 
     def test__create_tasks_for_non_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -225,6 +239,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
         results = _create_tasks('request_id', user, 'tenant', params, query)
@@ -243,6 +258,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
         results = _create_tasks('request_id', user, 'tenant', params, query, is_tenant_level=True)
@@ -250,7 +266,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(len(results), 2)
         self.assertFalse(results[0][TaskConstants.TASK_IS_JSON_REQUEST])
         self.assertTrue(results[1][TaskConstants.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', results[0][TaskConstants.TASK_FILE_NAME])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_5', results[0][TaskConstants.TASK_FILE_NAME])
 
     def test__create_asmt_metadata_task(self):
         params = {'stateCode': 'CA',
@@ -281,7 +297,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False)
         self.assertIsNotNone(task)
         self.assertFalse(task[TaskConstants.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -293,12 +309,13 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=False)
         self.assertIsNotNone(task)
         self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -310,12 +327,13 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertFalse(task[TaskConstants.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_CA_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -327,20 +345,21 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtGrade': '5',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc',
+                  'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertTrue(task[TaskConstants.TASK_IS_JSON_REQUEST])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
 
     def test__get_extract_work_zone_base_dir(self):
         self.assertEqual('/tmp/work_zone', _get_extract_work_zone_base_dir())
 
     def test___get_extract_request_user_info(self):
-        result = _get_extract_request_user_info()
+        result = _get_extract_request_user_info('DUMMY_STATE')
         self.assertIsInstance(result[0], str)
-        self.assertEqual('tomcat', result[2])
+        self.assertEqual('DUMMY_TENANT', result[2])
 
     def test__create_tasks_with_responses_non_tenant_level(self):
         params = {'stateCode': 'NC',
@@ -348,6 +367,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'schoolGuid': '242',
                   'asmtGrade': '3',
                   'asmtSubject': 'Math',
+                  'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE'}
         user = User()
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
@@ -361,6 +381,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'schoolGuid': '242',
                   'asmtGrade': '3',
                   'asmtSubject': 'NoSubject',
+                  'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE'}
         user = User()
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
@@ -373,6 +394,7 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'districtGuid': '228',
                   'schoolGuid': '242',
                   'asmtSubject': 'Math',
+                  'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE'}
         user = User()
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)

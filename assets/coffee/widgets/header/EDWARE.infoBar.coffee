@@ -19,7 +19,7 @@ define [
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
-      years = getAcademicYears @config.academicYears.options
+      years = getAcademicYears @config.academicYears?.options
       @createDownloadMenu(years)
       @createAcademicYear(years)
 
@@ -42,10 +42,11 @@ define [
 
     createDownloadMenu: (years) ->
       # merge academic years to JSON config
-      @config.CSVOptions.asmtYear.options = years
+      @config.CSVOptions.asmtYear.options = years if years
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
 
     getAcademicYears = (years)->
+      return if not years
       for year in years
         "display": toDisplay(year),
         "value": year
@@ -54,6 +55,7 @@ define [
       (year - 1) + " - " + year
 
     createAcademicYear: (years) ->
+      return if not years
       callback = @config.academicYears.callback
       @academicYear ?= $('#academicYear').createYearDropdown years, callback
 

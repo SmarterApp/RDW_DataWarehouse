@@ -57,7 +57,7 @@ define [
     createAcademicYear: (years) ->
       return if not years
       callback = @config.academicYears.callback
-      @academicYear ?= $('#academicYear').createYearDropdown years, callback
+      @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
   create = (container, config) ->
     new ReportInfoBar(container, config)

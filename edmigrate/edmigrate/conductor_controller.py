@@ -18,9 +18,10 @@ logger = logging.getLogger('edmigrate')
 
 class ConductorController(threading.Thread):
     def __init__(self, connection, slave_find_wait=5, interval=300):
+        threading.Thread.__init__(self)
         self.__connection = connection
         self.__slave_find_wait = slave_find_wait
-        self.__interval = slave_find_wait
+        self.__interval = interval
         self.__thread = ConsumerThread(self.__connection)
         self.__slave_tracker = SlaveTracker()
         self.__slave_tracker.reset()

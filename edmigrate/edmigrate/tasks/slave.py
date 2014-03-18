@@ -218,7 +218,7 @@ def slave_task(command, slaves):
     with Connection(get_broker_url()) as conn:
         exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
         routing_key = Constants.CONDUCTOR_ROUTING_KEY
-        if command == Constants.COMMAND_FIND_SLAVE:
+        if slaves is None or command in [Constants.COMMAND_FIND_SLAVE, Constants.COMMAND_RESET_SLAVES]:
             COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
         else:
             if node_id in slaves:

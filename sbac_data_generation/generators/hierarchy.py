@@ -19,13 +19,14 @@ from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.state import SBACState
 
 
-def generate_state(state_type, name, code):
+def generate_state(state_type, name, code, save_to_mongo=True):
     """
     Generate a state of the given state type.
 
     @param state_type: The type of state to generate
     @param name: The name of the state
     @param code: The two-character code of the state
+    @param save_to_mongo: If the new state object should be saved to Mongo
     @returns: The state
     """
     # Run the general generator
@@ -35,17 +36,19 @@ def generate_state(state_type, name, code):
     s.guid_sr = sbac_id_gen.get_sr_uuid()
 
     # Save the state
-    s.save()
+    if save_to_mongo:
+        s.save()
 
     return s
 
 
-def generate_district(district_type, state: SBACState):
+def generate_district(district_type, state: SBACState, save_to_mongo=True):
     """
     Generate a district specified by the parameters.
 
     @param district_type: The type of district to generate
     @param state: The state the district belongs to
+    @param save_to_mongo: If the new district object should be saved to Mongo
     @returns: The district
     """
     # Run the general generator
@@ -55,17 +58,19 @@ def generate_district(district_type, state: SBACState):
     d.guid_sr = sbac_id_gen.get_sr_uuid()
 
     # Save the district
-    d.save()
+    if save_to_mongo:
+        d.save()
 
     return d
 
 
-def generate_school(school_type, district: SBACDistrict):
+def generate_school(school_type, district: SBACDistrict, save_to_mongo=True):
     """
     Generate a school specified by the parameters.
 
     @param school_type: The type of school to generate
     @param district: The district the school belongs to
+    @param save_to_mongo: If the new school object should be saved to Mongo
     @returns: The school
     """
     # Run the general generator
@@ -79,17 +84,19 @@ def generate_school(school_type, district: SBACDistrict):
         s.takes_interim_asmts = True
 
     # Save the school
-    s.save()
+    if save_to_mongo:
+        s.save()
 
     return s
 
 
-def generate_registration_system(year, extract_date):
+def generate_registration_system(year, extract_date, save_to_mongo=True):
     """
     Generate a registration system.
 
     @param year: The academic year
     @param extract_date: The date of the data extract
+    @param save_to_mongo: If the new registration system object should be saved to Mongo
     @returns: The registration system
     """
     # Create the object
@@ -101,18 +108,20 @@ def generate_registration_system(year, extract_date):
     ars.callback_url = 'SateTestReg.gov/StuReg/CallBack'
 
     # Save the registration system
-    ars.save()
+    if save_to_mongo:
+        ars.save()
 
     return ars
 
 
-def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, school: SBACSchool):
+def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, school: SBACSchool, save_to_mongo=True):
     """
     Generate a hierarchy institution object for a set of hierarchy institutions.
 
     @param state: The state in the hierarchy
     @param district: The district in the hierarchy
     @param school: The school in the hierarchy
+    @param save_to_mongo: If the new hierarchy object should be saved to Mongo
     @returns: An institution hierarchy object
     """
     # Create the object
@@ -127,7 +136,8 @@ def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, sch
     ih.most_recent = sbac_config.HIERARCHY_MOST_RECENT
 
     # Save and return the object
-    ih.save()
+    if save_to_mongo:
+        ih.save()
 
     return ih
 

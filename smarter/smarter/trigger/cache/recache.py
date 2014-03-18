@@ -25,13 +25,13 @@ class CacheTrigger(object):
         # cache all academic years without filters
         for year in self.academic_years:
             self._cache_with_district_guid(district_guid=None,
-                                           filter={}, year=year)
+                                           filters={}, year=year)
         # cache state view reports with filters, only for latest year
-        for filter in self.__state_filters:
+        for _filter in self.__state_filters:
             self._cache_with_district_guid(district_guid=None,
-                                           filter=filter, year=self.latest_year)
+                                           filters=_filter, year=self.latest_year)
 
-    def _cache_with_district_guid(self, district_guid, filter, year):
+    def _cache_with_district_guid(self, district_guid, filters, year):
         '''
         Flush and recache state view report for a particular year
 
@@ -42,7 +42,7 @@ class CacheTrigger(object):
         report = ComparingPopReport(stateCode=self.state_code,
                                     tenant=self.tenant, asmtYear=year)
         report.set_district_guid(district_guid)
-        report.set_filters(filter)
+        report.set_filters(filters)
         region_name = get_comparing_populations_cache_route(report)
         args = get_comparing_populations_cache_key(report)
         flush_report_in_cache_region(report.get_report, region_name, *args)
@@ -55,10 +55,10 @@ class CacheTrigger(object):
         # cache all academic years without filters
         for year in self.academic_years:
             self._cache_with_district_guid(district_guid=district_guid,
-                                           filter={}, year=year)
-        for filter in self.__district_filters:
+                                           filters={}, year=year)
+        for _filter in self.__district_filters:
             self._cache_with_district_guid(district_guid=district_guid,
-                                           filter=filter, year=self.latest_year)
+                                           filters=_filter, year=self.latest_year)
 
     def init_filters(self, tenant, settings):
         '''

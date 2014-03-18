@@ -55,16 +55,16 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
 #Validate that for given guid data loded on star schema
     def validate_edware_database(self, ed_connector, schema_name):
-            ed_connector.set_metadata(schema_name, reflect=True)
-            edware_table = ed_connector.get_table(FACT_TABLE)
-            output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
-            output_data = ed_connector.execute(output).fetchall()
-            print(edware_table.c.batch_guid)
-            row_count = len(output_data)
-            self.assertGreater(row_count, 1, "Data is loaded to star shema")
-            truple_str = (guid_batch_id, )
-            self.assertIn(truple_str, output_data, "assert successful")
-            print('edware schema validation is successful')
+        ed_connector.set_metadata(schema_name, reflect=True)
+        edware_table = ed_connector.get_table(FACT_TABLE)
+        output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
+        output_data = ed_connector.execute(output).fetchall()
+        print(edware_table.c.batch_guid)
+        row_count = len(output_data)
+        self.assertGreater(row_count, 1, "Data is loaded to star shema")
+        truple_str = (guid_batch_id, )
+        self.assertIn(truple_str, output_data, "assert successful")
+        print('edware schema validation is successful')
 
 #Copy file to tenant folder
     def copy_file_to_tmp(self):

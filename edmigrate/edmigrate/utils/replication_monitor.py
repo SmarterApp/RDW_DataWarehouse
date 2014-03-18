@@ -29,6 +29,7 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
                        repl_status.c.standby_node.in_(node_ids))
         start_time = time.time()
         while True:
+            out_of_sync_ids[:] = []
             copied_node_ids = copy.deepcopy(node_ids)
             status_records = connector.get_result(query)
             if not status_records:

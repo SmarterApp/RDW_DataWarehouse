@@ -5,7 +5,7 @@ from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
-from subprocess import call, check_output
+import subprocess
 from edmigrate.settings.config import Config, get_setting, settings
 from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected, \
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
@@ -76,7 +76,7 @@ def parse_iptable_output(output, pgpool):
 
 
 def check_iptable_has_blocked_pgpool(pgpool):
-    output = check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
+    output = subprocess.check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
     return parse_iptable_output(output, pgpool)
 
 
@@ -86,10 +86,12 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
     status = False
     max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
+    output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
+                                     universal_newlines=True)
     while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
+        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
+                                         universal_newlines=True)
         max_retries -= 1
     if not check_iptable_has_blocked_pgpool(pgpool):
         status = True
@@ -106,7 +108,8 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     while not check_iptable_has_blocked_pgpool(pgpool) and max_retries >= 0:
-        call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
+        output = subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
+                                         universal_newlines=True)
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         max_retries -= 1
     if check_iptable_has_blocked_pgpool(pgpool):

@@ -64,13 +64,13 @@ def is_replication_active(connector):
 
 
 def check_iptable_has_blocked_pgpool(pgpool):
-    output = check_output(['sudo', 'iptables', '-L'])
-    lines = str(output).split('\n')
+    output = check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
+    lines = output.split('\n')
     found = False
     for line in lines:
         if line.find(pgpool) >= 0 \
                 and line.find('reject-with icmp-port-unreachable') >= 0 \
-                and line.find('REJECT') == 0:
+                and line.find('REJECT') >= 0:
             found = True
             break
     return found
@@ -82,10 +82,10 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
     status = False
     max_retries = get_setting(Config.MAX_RETRIES)
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+    output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
     while output != 'iptables: No chain/target/match by that name.':
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+        output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
         max_retries -= 1
     if not check_iptable_has_blocked_pgpool(pgpool):
         status = True
@@ -102,7 +102,7 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     max_retries = get_setting(Config.MAX_RETRIES)
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     while not check_iptable_has_blocked_pgpool(pgpool) and max_retries >= 0:
-        call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
+        call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         max_retries -= 1
     if check_iptable_has_blocked_pgpool(pgpool):

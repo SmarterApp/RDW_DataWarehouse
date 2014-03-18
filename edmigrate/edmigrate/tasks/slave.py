@@ -124,6 +124,7 @@ def connect_master(host_name, node_id, conn, exchange, routing_key):
             connector.execute(text("select pg_xlog_replay_resume()"))
         except OperationalError as e:
             pass
+            logger.info("Fail to resume replication")
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         status = is_replication_active(connector)
     if status:
@@ -139,6 +140,7 @@ def disconnect_master(host_name, node_id, conn, exchange, routing_key):
             connector.execute(text("select pg_xlog_replay_pause()"))
         except OperationalError as e:
             pass
+            logger.info("Fail to suspend replication")
         # verify replication status
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         status = is_replication_paused(connector)

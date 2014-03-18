@@ -19,6 +19,7 @@ from argparse import ArgumentParser
 from edmigrate.utils.utils import get_broker_url
 from edmigrate.edmigrate_celery import setup_celery
 import logging
+import logging.config
 
 
 logger = logging.getLogger('edmigrate')
@@ -47,6 +48,7 @@ def main(file=None, tenant='cat', run_migrate_only=False):
     logger.debug('edmigrate main program has started')
     if file is None:
         file = get_ini_file()
+    logging.config.fileConfig(file)
     settings = read_ini(file)
     initialize_db(RepMgrDBConnection, settings)
     initialize_db(StatsDBConnection, settings)

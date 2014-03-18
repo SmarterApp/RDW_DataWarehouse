@@ -13,5 +13,3 @@ class Constants():
     DEFAULT_QUEUE_NAME = 'extract'
     SYNC_QUEUE_NAME = 'extract_sync'
     ARCHIVE_QUEUE_NAME = 'extract_archve'
-    TASK_HEADER = 'task_header'
-    TASK_DATA = 'task_data'

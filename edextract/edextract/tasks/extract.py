@@ -43,19 +43,6 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     workflow.apply_async()
 
 
-@celery.task(name='task.extract.start_sr_extract')
-def start_sr_extract(tenant, request_id, public_key_id, encrypted_archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, sr_report_data, queue=TaskConstants.DEFAULT_QUEUE_NAME):
-    '''
-    entry point to start an extract request for one or more extract tasks
-    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
-    '''
-    workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
-                     sr_csv_extract_task.subtask(tenant, request_id, sr_report_data[TaskConstants.TASK_TASK_ID], sr_report_data[TaskConstants.TASK_FILE_NAME], sr_report_data[TaskConstants.CSV_HEADER], sr_report_data[TaskConstants.CSV_DATA]),
-                     archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                     remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
-    workflow.apply_async()
-
-
 @celery.task(name='task.extract.prepare_path')
 def prepare_path(tenant, request_id, paths):
     '''
@@ -285,70 +272,5 @@ def generate_json(tenant, request_id, task_id, query, output_file):
                 raise ExtractionError()
             except ExtractionError as exc:
                 raise generate_json.retry(args=[tenant, request_id, task_id, query, output_file], exc=exc)
-        else:
-            raise ExtractionError()
-
-
-@celery.task(name="tasks.extract.generate_sr_csv",
-             max_retries=MAX_RETRY,
-             default_retry_delay=DEFAULT_RETRY_DELAY)
-def sr_csv_extract_task(tenant, request_id, task_id, output_file, header, data):
-    '''
-    This is the celery entry point to execute data extraction query for student registration report.
-    It writes the report data into the specified csv file.
-
-    @param tenant: tenant of the user
-    @param request_id: Report request ID
-    @param task_id: Report data extract task ID
-    @param output_file: CSV output file name
-    @param header: CSV output file header row
-    @param data: CSV output file data rows
-    '''
-
-    log.info('execute tasks.extract.generate_csv for task ' + task_id)
-    task_info = {Constants.TASK_ID: task_id,
-                 Constants.CELERY_TASK_ID: generate_csv.request.id,
-                 Constants.REQUEST_GUID: request_id}
-    retriable = False
-    exception_thrown = False
-    try:
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
-        if tenant is None:
-            insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
-        else:
-            if not os.path.isdir(os.path.dirname(output_file)):
-                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
-            with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w') as csvfile:
-                csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
-                csvwriter.writerow(header)
-                for row in data:
-                    csvwriter.writerow(row)
-                insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
-    except FileNotFoundError as e:
-        # which thrown from prepare_path
-        # unrecoverable error, do not try to retry celery task.  it's just wasting time.
-        if os.path.isfile(output_file):
-            # file should be deleted if there is an error
-            os.unlink(output_file)
-        log.error(e)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
-        exception_thrown = True
-    except Exception as e:
-        if os.path.isfile(output_file):
-            # file should be deleted if there is an error
-            os.unlink(output_file)
-        log.error(e)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
-        retriable = True
-        exception_thrown = True
-
-    if exception_thrown:
-        if retriable:
-            # this looks funny to you, but this is just a working around solution for celery bug
-            # since exc option is not really working for retry.
-            try:
-                raise ExtractionError()
-            except ExtractionError as exc:
-                raise generate_csv.retry(args=[tenant, request_id, task_id, output_file, header, data], exc=exc)
         else:
             raise ExtractionError()

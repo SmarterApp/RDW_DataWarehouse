@@ -19,6 +19,7 @@ import csv
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
+from config import get_setting, Config
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -233,6 +234,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tenant = 'es'
         gatekeeper = 'foo'
         sftp_info = ['127.0.0.2', 'nobody', '/dev/null']
+        print(get_setting(Config.MAX_RETRIES))
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()

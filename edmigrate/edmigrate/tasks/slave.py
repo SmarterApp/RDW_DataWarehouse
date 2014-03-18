@@ -63,8 +63,7 @@ def is_replication_active(connector):
     return check_replication_status(connector) == Constants.REPLICATION_STATUS_ACTIVE
 
 
-def check_iptable_has_blocked_pgpool(pgpool):
-    output = check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
+def parse_iptable_output(output, pgpool):
     lines = output.split('\n')
     found = False
     for line in lines:
@@ -74,6 +73,11 @@ def check_iptable_has_blocked_pgpool(pgpool):
             found = True
             break
     return found
+
+
+def check_iptable_has_blocked_pgpool(pgpool):
+    output = check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
+    return parse_iptable_output(output, pgpool)
 
 
 def connect_pgpool(host_name, node_id, conn, exchange, routing_key):

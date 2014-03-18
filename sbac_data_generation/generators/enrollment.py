@@ -11,8 +11,10 @@ import data_generation.generators.enrollment as general_enroll_gen
 import data_generation.util.id_gen as id_gen
 
 from sbac_data_generation.model.clss import SBACClass
+from sbac_data_generation.model.enrollment import SBACEnrollment
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.section import SBACSection
+from sbac_data_generation.model.student import SBACStudent
 
 
 def generate_class(name, subject, school: SBACSchool, save_to_mongo=True):
@@ -60,3 +62,23 @@ def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().
         s.save()
 
     return s
+
+
+def generate_enrollment(section: SBACSection, student: SBACStudent, grade=None, save_to_mongo=True):
+    """
+    Generate an enrollment record linking a student with a section.
+
+    @param section: The section the student is enrolled in
+    @param student: The student enrolled in the section
+    @param grade: The grade of the student at the time of enrollment (defaults to student current grade)
+    @param save_to_mongo: If the newly created section should be saved to Mongo
+    @returns: An enrollment object
+    """
+    # Create the general enrollment
+    e = general_enroll_gen.generate_enrollment(section, student, grade, SBACEnrollment)
+
+    # Save and return the enrollment
+    if save_to_mongo:
+        e.save()
+
+    return e

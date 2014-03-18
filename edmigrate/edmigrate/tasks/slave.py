@@ -61,22 +61,27 @@ def parse_iptable_output(output, pgpool):
 
 
 def check_iptable_has_blocked_machine(hostname):
-    output = subprocess.check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
+    try:
+        output = subprocess.check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
+    except subprocess.CalledProcessError:
+        pass
     return parse_iptable_output(output, hostname)
 
 
 def remove_pgpool_iptable_rules(pgpool, max_retries):
     status = False
-    output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
-                                     universal_newlines=True)
-    while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
-        sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        try:
+    try:
+        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
+                                         universal_newlines=True)
+        while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
+            sleep(Constants.REPLICATION_CHECK_INTERVAL)
             output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
                                              universal_newlines=True)
-        except subprocess.CalledProcessError:
-            break
-        max_retries -= 1
+            max_retries -= 1
+    except subprocess.CalledProcessError:
+        status = True
+        max_retries = -1
+        pass
     if not check_iptable_has_blocked_machine(pgpool):
         status = True
     return status
@@ -120,16 +125,18 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
 
 def remove_master_iptable_rules(master, max_retries):
     status = False
-    output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
-                                     universal_newlines=True)
-    while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
-        sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        try:
+    try:
+        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
+                                         universal_newlines=True)
+        while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
+            sleep(Constants.REPLICATION_CHECK_INTERVAL)
             output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
                                              universal_newlines=True)
-        except subprocess.CalledProcessError:
-            break
-        max_retries -= 1
+            max_retries -= 1
+    except subprocess.CalledProcessError:
+        status = True
+        max_retries = -1
+        pass
     if not check_iptable_has_blocked_machine(master):
         status = True
     return status
@@ -198,7 +205,7 @@ COMMAND_HANDLERS = {
     Constants.COMMAND_DISCONNECT_MASTER: disconnect_master,
     Constants.COMMAND_CONNECT_PGPOOL: connect_pgpool,
     Constants.COMMAND_DISCONNECT_PGPOOL: disconnect_pgpool,
-    Constants.COMMAND_RESET_SLAVES: register_slave
+    Constants.COMMAND_RESET_SLAVES: reset_slaves
 }
 
 

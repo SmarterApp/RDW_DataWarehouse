@@ -1,6 +1,7 @@
 {
     "labels": {
         "achievement_level_descriptors": "アチーブメントレベルの記述 (ALD)",
+        "academic_year": "学年",
         "ald_cutpoints": "ALD カットポイント",
         "ald_color_coded": "ALD色分け",
         "align": "整列",

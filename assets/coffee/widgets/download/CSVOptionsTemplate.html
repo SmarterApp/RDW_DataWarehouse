@@ -27,7 +27,7 @@
             </tr>
             {{/extractType}}
             {{#asmtYear}}
-            <tr class="rpt_option assm_rpt" style="display:none">
+            <tr class="rpt_option assm_rpt">
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group {{name}}" data-option-name="{{name}}">
@@ -35,9 +35,9 @@
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            <li><label><input type="radio" name="asmtYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>

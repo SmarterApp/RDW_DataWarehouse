@@ -1,0 +1,12 @@
+<div class="btn-group">
+    <button type="button" class="btn edware-btn-flat dropdown-toggle" data-toggle="dropdown">
+        <span id="selectedAcademicYear"></span><i class="edware-icon-globalheader-downarrow marginLeft8"></i>
+    </button>
+    <ul class="dropdown-menu edware-dropdown-menu" role="menu">
+        {{#options}}
+        <li class="asmtYearButton" data-display='{{display}}' data-value='{{value}}'>
+            <span>{{display}}</span>
+        </li>
+        {{/options}}
+    </ul>
+</div>

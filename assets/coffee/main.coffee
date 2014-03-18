@@ -58,6 +58,7 @@ require {
     edwarePopover: 'widgets/popover/EDWARE.popover',
 
     # widgets
+    edwareYearDropdown: 'widgets/academicYear/EDWARE.yearDropdown',
 
     # templates
     edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
@@ -82,7 +83,8 @@ require {
     AsmtDropdownTemplate: 'widgets/asmtDropdown/template.html',
     PrintTemplate: 'widgets/print/template.html',
     HelpMenuTemplate: 'widgets/header/helpMenuTemplate.html',
-    headerTemplateHtml: 'widgets/header/template.html'
+    headerTemplateHtml: 'widgets/header/template.html',
+    YearDropdownTemplate: 'widgets/academicYear/template.html',
   },
   shim: {
     'jqGrid': {

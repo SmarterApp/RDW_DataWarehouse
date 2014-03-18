@@ -84,6 +84,7 @@ define [
           return
         self.summaryData = self.data.summary
         self.asmtSubjectsData = self.data.subjects
+        self.academicYears = self.data.asmt_period_year
         self.notStatedData = self.data.not_stated
         #Check for colors, set to default color if it's null
         for subject, value of self.data.metadata
@@ -103,8 +104,6 @@ define [
         for key, value of self.asmtSubjectsData
           subjects.push value
         edwarePreferences.saveSubjectPreference subjects
-        # Resets assessment type preferences
-        # edwarePreferences.saveAsmtPreference Constants.ASMT_TYPE.SUMMATIVE
 
     displayNoResults: () ->
       # no results
@@ -219,6 +218,9 @@ define [
         reportInfoText: @config.reportInfo
         labels: @labels
         CSVOptions: @config.CSVOptions
+        academicYears:
+          options: @academicYears
+          callback: @onAcademicYearSelected.bind(this)
 
     renderReportActionBar: () ->
       self = this
@@ -226,6 +228,10 @@ define [
       @config.reportName = Constants.REPORT_NAME.CPOP
       @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
         self.reload self.param
+
+    onAcademicYearSelected: (year) ->
+      @param['asmtYear'] = year
+      @reload @param
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
@@ -331,7 +337,7 @@ define [
           subjectData = item['results'][subject]
           if subjectData
             this.appendColor subjectData, this.colorsData[subject]
-          if subjectData['hasInterim'] 
+          if subjectData['hasInterim']
             interimCount += 1
         # Summary row hasInterim when one of the rows is an Interim row and Summary row has no data
         this.summaryData['results'][subject]['hasInterim'] = (interimCount > 0 and this.summaryData['results'][subject]['total'] is 0)

@@ -135,7 +135,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
         self.validate_udl_stats(self.guid_batch_id)
         self.validate_err_list(self.guid_batch_id)
-        #self.drop_schema(schema_name=self.guid_batch_id)
 
     def test_del_rec_twice_same_batch(self):
         self.empty_table()
@@ -144,7 +143,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
         self.validate_err_list_table(self.guid_batch_id)
         self.validate_udl_stats(self.guid_batch_id)
-        #self.drop_schema(schema_name=self.guid_batch_id)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

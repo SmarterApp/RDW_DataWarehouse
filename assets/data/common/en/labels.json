@@ -1,6 +1,7 @@
 {
     "labels": {
         "achievement_level_descriptors": "Achievement Level Descriptors (ALD)",
+        "academic_year": "Academic year",
         "ald_color_coded": "ALD color coded",
         "ald_cutpoints": "ALD Cutpoints",
         "align": "Align",

@@ -29,7 +29,8 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.DEFAULT_ROUTUNG_KEY, str, 'edmigrate'),
                   (Config.DEFAULT_ROUTUNG_QUEUE, str, 'edmigrate_master'),
                   (Config.BROKER_URL, str, 'memory://'),
-                  (Config.EAGER_MODE, bool, False)]
+                  (Config.EAGER_MODE, bool, False),
+                  (Config.MASTER_HOSTNAME, str, 'localhost')]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

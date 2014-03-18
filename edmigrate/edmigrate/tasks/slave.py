@@ -84,10 +84,10 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Resuming pgpool")
     # perform multiple times disable in case it was blocked multiple times in iptables
     status = False
-    max_retries = get_setting(Config.MAX_RETRIES)
+    max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
-    while output != 'iptables: No chain/target/match by that name.':
+    while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         output = check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)
         max_retries -= 1
@@ -103,7 +103,7 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Blocking pgpool")
     status = False
     # only add rules when there is no rule in iptables
-    max_retries = get_setting(Config.MAX_RETRIES)
+    max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     while not check_iptable_has_blocked_pgpool(pgpool) and max_retries >= 0:
         call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'], universal_newlines=True)

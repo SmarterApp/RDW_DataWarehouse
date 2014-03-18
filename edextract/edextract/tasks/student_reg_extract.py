@@ -79,7 +79,7 @@ def generate_csv(tenant, request_id, task_id, report_type, state_code, academic_
                 else:
                     raise ExtractionError('Invalid report type')
 
-                csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
+                csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
                 csvwriter.writerow(header)
                 for row in data:
                     csvwriter.writerow(row)

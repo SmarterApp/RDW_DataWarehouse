@@ -48,13 +48,10 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
         Unittest_with_stats_sqlite.setUpClass()
 
     def tearDown(self):
-        pass
         shutil.rmtree(self.__tmp_dir)
 
     def test_generate_statistics_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        last_year = '2013'
-        this_year = '2014'
         result = generate_csv.apply(args=[self._tenant, '0', '1', ReportType.STATISTICS, 'NJ', 2014, output])    # @UndefinedVariable
         result.get()
         self.assertTrue(os.path.exists(output))
@@ -64,13 +61,9 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
             for row in data:
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 1)
-        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value',
-                                       '{last_year} Count'.format(last_year=last_year),
-                                       '{last_year} Percent of Total'.format(last_year=last_year),
-                                       '{this_year} Count'.format(this_year=this_year), '{this_year} Percent of Total'.format(this_year=this_year),
-                                       'Change in Count', 'Percent Difference in Count', 'Change in Percent of Total',
-                                       '{this_year} Matched IDs to {last_year} Count'.format(last_year=last_year, this_year=this_year),
-                                       '{this_year} Matched IDs Percent of {last_year} count'.format(last_year=last_year, this_year=this_year)])
+        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', '2013 Count', '2013 Percent of Total',
+                                       '2014 Count', '2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
+                                       'Change in Percent of Total','2014 Matched IDs to 2013 Count', '2014 Matched IDs Percent of 2013 count'])
 
     def test_generate_completion_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')

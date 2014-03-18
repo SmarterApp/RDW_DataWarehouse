@@ -31,6 +31,10 @@ def acknowledgement_master_connected(node_id, connection, exchange, routing_key)
     return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_CONNECT_MASTER, connection, exchange, routing_key)
 
 
+def acknowledgement_reset_slaves(node_id, connection, exchange, routing_key):
+    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_RESET_SLAVES, connection, exchange, routing_key)
+
+
 def __send_message_to_conductor(node_id, command, connection, exchange, routing_key):
     '''
     return should be None unless you are Unit Testing with Connection which uses Mock Transport

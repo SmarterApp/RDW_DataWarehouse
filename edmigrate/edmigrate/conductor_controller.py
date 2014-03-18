@@ -10,6 +10,7 @@ from edmigrate.utils.conductor import Conductor
 import time
 import logging
 from edmigrate.utils.constants import Constants
+from edmigrate.exceptions import EdMigrateException
 
 
 logger = logging.getLogger('edmigrate')
@@ -25,6 +26,7 @@ class ConductorController(threading.Thread):
         self.__conductor = Conductor()
 
     def start(self, slave_find_wait=5):
+        self.__conductor.reset_slaves()
         self.__conductor.find_slaves()
         time.sleep(slave_find_wait)
         slaves_ids = self.__slave_tracker.get_slave_ids()
@@ -40,23 +42,29 @@ class ConductorController(threading.Thread):
             logger.info('No slave was detected')
 
     def regular_process(self):
-        self.__conductor.grouping_slaves()
-        self.__conductor.send_disconnect_PGPool(slave_group=Constants.SLAVE_GROUP_A)
-        self.__conductor.wait_PGPool_disconnected(slave_group=Constants.SLAVE_GROUP_A)
-        self.__conductor.send_disconnect_master(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.wait_master_disconnected(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.migrate()
-        self.__conductor.monitor_replication_status(slave_group=Constants.SLAVE_GROUP_A)
-        self.__conductor.send_connect_PGPool(slave_group=Constants.SLAVE_GROUP_A)
-        self.__conductor.wait_PGPool_connected(slave_group=Constants.SLAVE_GROUP_A)
-        self.__conductor.send_disconnect_PGPool(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.wait_PGPool_disconnected(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.send_connect_master(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.wait_master_connected(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.monitor_replication_status(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.send_connect_PGPool(slave_group=Constants.SLAVE_GROUP_B)
-        self.__conductor.wait_master_connected(slave_group=Constants.SLAVE_GROUP_B)
+        try:
+            self.__conductor.grouping_slaves()
+            self.__conductor.send_disconnect_PGPool(slave_group=Constants.SLAVE_GROUP_A)
+            self.__conductor.wait_PGPool_disconnected(slave_group=Constants.SLAVE_GROUP_A)
+            self.__conductor.send_disconnect_master(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.wait_master_disconnected(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.migrate()
+            self.__conductor.monitor_replication_status(slave_group=Constants.SLAVE_GROUP_A)
+            self.__conductor.send_connect_PGPool(slave_group=Constants.SLAVE_GROUP_A)
+            self.__conductor.wait_PGPool_connected(slave_group=Constants.SLAVE_GROUP_A)
+            self.__conductor.send_disconnect_PGPool(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.wait_PGPool_disconnected(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.send_connect_master(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.wait_master_connected(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.monitor_replication_status(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.send_connect_PGPool(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.wait_master_connected(slave_group=Constants.SLAVE_GROUP_B)
+        except EdMigrateException as e:
+            logger.info(e)
 
     def single_slave_process(self):
-        self.__conductor.migrate()
-        self.__conductor.monitor_replication_status()
+        try:
+            self.__conductor.migrate()
+            self.__conductor.monitor_replication_status()
+        except EdMigrateException as e:
+            logger.info(e)

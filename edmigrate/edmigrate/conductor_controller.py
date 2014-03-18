@@ -17,15 +17,21 @@ logger = logging.getLogger('edmigrate')
 
 
 class ConductorController(threading.Thread):
-    def __init__(self, connection):
+    def __init__(self, connection, slave_find_wait=5, interval=300):
         self.__connection = connection
+        self.__slave_find_wait = slave_find_wait
+        self.__interval = slave_find_wait
         self.__thread = ConsumerThread(self.__connection)
-        self.__thread.start()
         self.__slave_tracker = SlaveTracker()
         self.__slave_tracker.reset()
         self.__conductor = Conductor()
 
-    def start(self, slave_find_wait=5):
+    def run(self):
+        while True:
+            self.process(slave_find_wait=self.__slave_find_wait)
+            time.sleep(self.__interval)
+
+    def process(self, slave_find_wait=5):
         self.__conductor.reset_slaves()
         self.__conductor.find_slaves()
         time.sleep(slave_find_wait)

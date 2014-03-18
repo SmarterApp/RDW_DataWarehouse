@@ -20,7 +20,7 @@ from sbac_data_generation.model.student import SBACStudent
 
 
 def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None, most_recent=False,
-                        asmt_year_adj=0):
+                        asmt_year_adj=0, save_to_mongo=True):
     """
     Generate an assessment object.
 
@@ -32,6 +32,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     @param to_date: Assessment to date
     @param most_recent: If the assessment is the most recent
     @param asmt_yaer_adj: An amount to adjust the assessment period year by
+    @param save_to_mongo: If the new assessment object should be saved to Mongo
     @returns: The assessment object
     """
     # Get the claim definitions for this subject
@@ -87,7 +88,8 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa.most_recent = most_recent
 
     # Save and return the object
-    sa.save()
+    if save_to_mongo:
+        sa.save()
 
     return sa
 
@@ -101,7 +103,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     @param assessment: The assessment to create the outcome for
     @param section: The section this assessment is related to
     @param inst_hier: The institution hierarchy this student belongs to
-    @param save_to_mongo: If the outcome should be saved to Mongo (optional, defaults to True)
+    @param save_to_mongo: If the outcome should be saved to Mongo
     @returns: The assessment outcome
     """
     # Create cut-point lists

@@ -17,7 +17,7 @@ from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_student(school: SBACSchool, grade, acad_year=datetime.datetime.now().year):
+def generate_student(school: SBACSchool, grade, acad_year=datetime.datetime.now().year, save_to_mongo=True):
     """
     Generate a student.
 
@@ -25,6 +25,7 @@ def generate_student(school: SBACSchool, grade, acad_year=datetime.datetime.now(
     @param grade: The grade the student belongs to
     @param acad_year: The current academic year this student is being created for (optional, defaults to your machine
                       clock's current year)
+    @param save_to_mongo: If the new student should be saved to Mongo
     @return: The student
     """
     # Run the General generator
@@ -55,12 +56,13 @@ def generate_student(school: SBACSchool, grade, acad_year=datetime.datetime.now(
     set_lang_items(s, acad_year)
 
     # Save and return object
-    s.save()
+    if save_to_mongo:
+        s.save()
 
     return s
 
 
-def advance_student(student: SBACStudent, schools_by_grade, drop_out_rate=.5):
+def advance_student(student: SBACStudent, schools_by_grade, drop_out_rate=.5, save_to_mongo=True):
     """
     Take a student and advance them to the next grade. If the next grade takes the student out of the current school,
     pick a new school for them to go to.
@@ -68,25 +70,24 @@ def advance_student(student: SBACStudent, schools_by_grade, drop_out_rate=.5):
     @param student: The student to move
     @param schools_by_grade: Potential new schools for a student to be enrolled in
     @param drop_out_rate: The rate that a student will drop out at if they are not advanced
+    @param save_to_mongo: If any changes to the student should be saved in Mongo
     @returns: True if the student still exists in the system, False if they do not
     """
     # Use the general generator to advance the student
-    rslt = general_pop_gen.advance_student(student, schools_by_grade, drop_out_rate=drop_out_rate)
+    rslt = general_pop_gen.advance_student(student, schools_by_grade, drop_out_rate=drop_out_rate,
+                                           save_to_mongo=save_to_mongo)
 
     # If we are not keeping the student, don't worry about them
     if not rslt:
         return rslt
-
-    # Change the record ID if the student is being advanced
-    if not student.held_back:
-        student.rec_id = general_id_gen.get_rec_id('student')
 
     # TODO: Change things like LEP status or IEP status, etc
 
     return True
 
 
-def repopulate_school_grade(school: SBACSchool, grade, grade_students, acad_year=datetime.datetime.now().year):
+def repopulate_school_grade(school: SBACSchool, grade, grade_students, acad_year=datetime.datetime.now().year,
+                            save_to_mongo=True):
     """
     Take a school grade and make sure it has enough students. The list of students is updated in-place.
 
@@ -95,23 +96,24 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, acad_year
     @param grade_students: The students currently in the grade for this school
     @param acad_year: The current academic year that the repopulation is occurring within (optional, defaults to your
                       machine clock's current year)
+    @param save_to_mongo: If any newly created students should be saved to Mongo
     """
     # Re-populate grades if necessary
     if len(grade_students) < (school.student_count_avg / 20):
         student_count = int(random.triangular(school.student_count_min, school.student_count_max,
                                               school.student_count_avg))
-        print('  Creating %i students in grade %i for school %s (%s)' % (student_count, grade, school.name,
-                                                                         school.district.name))
+        print('    Creating %i students in grade %i for school %s (%s)' % (student_count, grade, school.name,
+                                                                           school.district.name))
         for _ in range(student_count):
-            s = generate_student(school, grade, acad_year)
+            s = generate_student(school, grade, acad_year, save_to_mongo=save_to_mongo)
             grade_students.append(s)
     else:
         # The grade is populated, but see if we should add a few new students
         # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
         for _ in range(random.choice([0, 0, 1, 2, 3, 4])):
-            s = generate_student(school, grade, acad_year)
+            s = generate_student(school, grade, acad_year, save_to_mongo=save_to_mongo)
             grade_students.append(s)
-        print('  Grade %i sufficiently populated for school %s (%s)' % (grade, school.name, school.district.name))
+        print('    Grade %i sufficiently populated for school %s (%s)' % (grade, school.name, school.district.name))
 
 
 def generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):

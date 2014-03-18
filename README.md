@@ -41,10 +41,6 @@ virtual environment with this command:
 Note that `data-gen-env` is the same name that was used with the creation of the environment. If you change the name of
 the environment in the first command, change it in this command too.
 
-###Install Core Fixture Data Generation Library
-
-    pip install http://10.168.7.90/archive/FixtureDataGeneration-Core-0.1.tar.gz
-
 ###Install Run Dependencies
 
 Once you have your environment activated (or you've decided not to use an environment), go into your repository and run

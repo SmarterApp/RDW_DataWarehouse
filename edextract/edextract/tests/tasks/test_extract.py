@@ -98,7 +98,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 2)
         self.assertEqual(csv_data[0], ['asmt_guid', 'asmt_period'])
-        self.assertEqual(csv_data[1], ['22', 'Spring 2012'])
+        self.assertEqual(csv_data[1], ['22', 'Spring 2016'])
 
     def test_generate_csv_with_bad_file(self):
         from edextract.tasks.extract import generate_csv

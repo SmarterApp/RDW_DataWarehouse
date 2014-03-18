@@ -36,8 +36,8 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     """
 
     workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
-                     generate_csv.subtask(tenant, request_id, report_task[TaskConstants.TASK_TASK_ID], report_task[TaskConstants.REPORT_TYPE], report_task[TaskConstants.STATE_CODE],
-                                          report_task[TaskConstants.ACADEMIC_YEAR], report_task[TaskConstants.TASK_FILE_NAME], queues=queue, immutable=True),
+                     generate_csv.subtask(args=[tenant, request_id, report_task[TaskConstants.TASK_TASK_ID], report_task[TaskConstants.REPORT_TYPE], report_task[TaskConstants.STATE_CODE],
+                                          report_task[TaskConstants.ACADEMIC_YEAR], report_task[TaskConstants.TASK_FILE_NAME]], queues=queue, immutable=True),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queues=queue, immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
     workflow.apply_async()

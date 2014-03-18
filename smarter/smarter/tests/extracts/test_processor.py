@@ -15,7 +15,7 @@ from smarter.extracts.processor import process_async_extraction_request, \
     get_pickup_zone_info, process_sync_extract_request, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
-    _get_extract_work_zone_base_dir, _get_extract_request_user_info, \
+    _get_extract_work_zone_base_dir, get_extract_request_user_info, \
     _create_tasks_with_responses
 from pyramid.registry import Registry
 from edapi.exceptions import NotFoundException
@@ -355,8 +355,8 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test__get_extract_work_zone_base_dir(self):
         self.assertEqual('/tmp/work_zone', _get_extract_work_zone_base_dir())
 
-    def test___get_extract_request_user_info(self):
-        result = _get_extract_request_user_info('NC')
+    def test_get_extract_request_user_info(self):
+        result = get_extract_request_user_info('NC')
         self.assertIsInstance(result[0], str)
         self.assertEqual('tomcat', result[2])
 

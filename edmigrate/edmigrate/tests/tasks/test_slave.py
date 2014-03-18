@@ -5,8 +5,9 @@ from mocket.mocket import Mocket
 from edmigrate.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.tasks.slave import get_hostname, get_slave_node_id_from_hostname, check_replication_status,\
-    is_replication_paused, is_replication_active, check_iptable_has_blocked_pgpool, connect_pgpool,\
-    disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task, parse_iptable_output
+    is_replication_paused, is_replication_active, connect_pgpool,\
+    disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task, parse_iptable_output,\
+    check_iptable_has_blocked_machine
 from edmigrate.utils.constants import Constants
 import subprocess
 
@@ -77,19 +78,19 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
     def test_check_iptable_has_blocked_pgpool_0(self):
         with patch('subprocess.check_output') as MockSubprocess:
             MockSubprocess.return_value = self.noblock_firewall_output
-            result = check_iptable_has_blocked_pgpool(self.pgpool)
+            result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertFalse(result)
 
     def test_check_iptable_has_blocked_pgpool_1(self):
         with patch('subprocess.check_output') as MockSubprocess:
             MockSubprocess.return_value = self.block_once_output
-            result = check_iptable_has_blocked_pgpool(self.pgpool)
+            result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertTrue(result)
 
     def test_check_iptable_has_blocked_pgpool_2(self):
         with patch('subprocess.check_output') as MockSubprocess:
             MockSubprocess.return_value = self.block_twice_output
-            result = check_iptable_has_blocked_pgpool(self.pgpool)
+            result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertTrue(result)
 
     @skip("under development")

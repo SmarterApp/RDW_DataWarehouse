@@ -4,7 +4,7 @@ Created on Feb 3rd, 2013
 @author: ejen
 '''
 from sqlalchemy.schema import MetaData, Table, Column
-from sqlalchemy.types import String, BigInteger, Text, Integer, Interval, DateTime
+from sqlalchemy.types import Text, Integer, Interval, DateTime
 import datetime
 
 

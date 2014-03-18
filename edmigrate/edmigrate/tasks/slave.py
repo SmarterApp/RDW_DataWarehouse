@@ -6,7 +6,7 @@ from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 import subprocess
-from edmigrate.settings.config import Config, get_setting, settings
+from edmigrate.settings.config import Config, get_setting
 from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected, \
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
 from time import sleep

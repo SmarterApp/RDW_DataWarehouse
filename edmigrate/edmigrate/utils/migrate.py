@@ -56,7 +56,6 @@ def get_batches_to_migrate(tenant=None):
         if tenant:
             query = query.where(and_(udl_status_table.c.tenant == tenant))
         batches = connector.get_result(query)
-            # batches[row[Constants.BATCH_GUID]] = row
     return batches
 
 

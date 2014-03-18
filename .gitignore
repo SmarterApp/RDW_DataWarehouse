@@ -41,5 +41,5 @@ nosetests.xml
 .idea
 
 # Output
-func_out
-out
+func_out*
+out*

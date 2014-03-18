@@ -57,9 +57,9 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual(21, student_report['date_taken_day'])
-        self.assertEqual(9, student_report['date_taken_month'])
-        self.assertEqual(2012, student_report['date_taken_year'])
+        self.assertEqual(6, student_report['date_taken_day'])
+        self.assertEqual(1, student_report['date_taken_month'])
+        self.assertEqual(2016, student_report['date_taken_year'])
 
     def test_custom_metadata(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "stateCode": 'NC'}

@@ -85,12 +85,12 @@ class Test_Error_In_Migration(unittest.TestCase):
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
-            delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9')
+            delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '41b7c6a8-0ea9-407d-91c7-8caec7976b6e')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
             print(delete_output_table)
             expected_status_val_D = [('D',)]
             self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
-        ed_connector.close_connection()
+        #ed_connector.close_connection()
 
     #Run UDL pipeline second time with file in tenant dir
     def run_udl_second_time(self, guid_batch_id):

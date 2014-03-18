@@ -18,7 +18,7 @@ import tempfile
 from uuid import uuid4
 
 
-@unittest.skip("test failed at jenkins, under investigation")
+#@unittest.skip("test failed at jenkins, under investigation")
 class Test_Insert_Delete(unittest.TestCase):
 
     def setUp(self):
@@ -114,7 +114,6 @@ class Test_Insert_Delete(unittest.TestCase):
             expected_asmt_score = [(1500,)]
             self.assertEquals(new_asmt_score, expected_asmt_score)
 
-#    @unittest.skip("test failed at jenkins, under investigation")
     def test_validation(self):
         self.empty_table()
         self.run_udl_pipeline()

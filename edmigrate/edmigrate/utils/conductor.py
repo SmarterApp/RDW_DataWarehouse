@@ -77,7 +77,7 @@ class Conductor:
         for node_id in group_ids:
             while not func(node_id):
                 if time.time() - start_time > timeout:
-                    raise ConductorTimeoutException(func + 'timeout')
+                    raise ConductorTimeoutException(func.__name__ + ' timeout')
                 time.sleep(1)
         if group_ids:
             logger.debug('function[' + func.__name__ + '] returned [' + ', '.join(str(x) for x in group_ids) + ']')
@@ -85,5 +85,5 @@ class Conductor:
             logger.debug('function[' + func.__name__ + '] returned [None]')
 
     @staticmethod
-    def __log(self, command, slave_group, group_ids):
-        logger.debug('Sent command[' + command + '] to group name[' + slave_group if slave_group else 'None' + '] ids[' + ', '.join(str(x) for x in group_ids) + ']')
+    def __log(command, slave_group, group_ids):
+        logger.debug('Sent command[' + command + '] to group name[' + (slave_group if slave_group else 'None') + '] ids[' + ', '.join(str(x) for x in group_ids) + ']')

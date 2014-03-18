@@ -7,7 +7,7 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from sqlalchemy.exc import OperationalError
 from subprocess import call, check_output
 from edmigrate.settings.config import Config, get_setting, settings
-from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected,\
+from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected, \
     acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
 from time import sleep
 from kombu import Connection
@@ -42,7 +42,7 @@ def check_replication_status(connector):
         result = connector.execute(text("select pg_is_xlog_replay_paused()"))
         replication_paused = result.fetchone()['pg_is_xlog_replay_paused']
     except OperationalError as e:
-        #logger.info("Error occurs when query replication status: %s" % e)
+        # logger.info("Error occurs when query replication status: %s" % e)
         replication_paused = Constants.REPLICATION_STATUS_UNSURE
     return replication_paused
 
@@ -135,7 +135,7 @@ def disconnect_master(host_name, node_id, conn, exchange, routing_key):
             connector.execute(text("select pg_xlog_replay_pause()"))
         except OperationalError as e:
             pass
-        #verify replication status
+        # verify replication status
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         status = is_replication_paused(connector)
     if status:

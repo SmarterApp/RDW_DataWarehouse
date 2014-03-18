@@ -1,3 +1,4 @@
+from edcore.database.stats_connector import StatsDBConnection
 __author__ = 'sravi'
 from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
@@ -29,4 +30,5 @@ if prod_config:
     # We should only need to setup db connection in prod mode
     #setup_db_connection(conf)
     initialize_db(RepMgrDBConnection, conf)
+    initialize_db(StatsDBConnection, conf)
     setup_settings(conf)

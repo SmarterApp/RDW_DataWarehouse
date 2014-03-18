@@ -39,15 +39,14 @@ class ConductorController(threading.Thread):
         if slaves_ids:
             number_of_slaves = len(slaves_ids)
             if number_of_slaves == 1:
-                logger.debug('Starting single slave migration process')
                 self.single_slave_process()
             else:
-                logger.debug('Starting regular slave migration process')
                 self.regular_process()
         else:
             logger.info('No slave was detected')
 
     def regular_process(self):
+        logger.debug('Starting regular slave migration process')
         try:
             self.__conductor.grouping_slaves()
             self.__conductor.send_disconnect_PGPool(slave_group=Constants.SLAVE_GROUP_A)
@@ -67,10 +66,13 @@ class ConductorController(threading.Thread):
             self.__conductor.wait_master_connected(slave_group=Constants.SLAVE_GROUP_B)
         except EdMigrateException as e:
             logger.info(e)
+        logger.debug('End of regular slave migration process')
 
     def single_slave_process(self):
+        logger.debug('Starting single slave migration process')
         try:
             self.__conductor.migrate()
             self.__conductor.monitor_replication_status()
         except EdMigrateException as e:
             logger.info(e)
+        logger.debug('End of single slave migration process')

@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
+from unittest import skip
 from mocket.mocket import Mocket
 from edmigrate.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
@@ -40,43 +41,53 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         node_id = get_slave_node_id_from_hostname(hostname)
         self.assertEqual(node_id, self.node_id)
 
-#    def test_check_replication_status(self):
-#        check_replication_status()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_check_replication_status(self):
+        check_replication_status()
+        self.assertEqual(True, False)
 
-#    def test_is_replication_paused(self):
-#        is_replication_paused()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_is_replication_paused(self):
+        is_replication_paused()
+        self.assertEqual(True, False)
 
-#    def test_is_replication_active(self):
-#        is_replication_active()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_is_replication_active(self):
+        is_replication_active()
+        self.assertEqual(True, False)
 
-#    def test_check_iptable_has_blocked_pgpool(self):
-#        pgpool = 'localhost'
-#        check_iptable_has_blocked_pgpool(pgpool)
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_check_iptable_has_blocked_pgpool(self):
+        pgpool = 'localhost'
+        check_iptable_has_blocked_pgpool(pgpool)
+        self.assertEqual(True, False)
 
-#    def test_find_slave(self):
-#        find_slave()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_find_slave(self):
+        find_slave()
+        self.assertEqual(True, False)
 
-#    def test_connect_pgpool(self):
-#        connect_pgpool()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_connect_pgpool(self):
+        connect_pgpool()
+        self.assertEqual(True, False)
 
-#    def test_disconnect_pgpool(self):
-#        disconnect_pgpool()
-#        self.assertEqual()
+    @skip("under development")
+    def test_disconnect_pgpool(self):
+        disconnect_pgpool()
+        self.assertEqual()
 
-#    def test_connect_master(self):
-#        connect_master()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_connect_master(self):
+        connect_master()
+        self.assertEqual(True, False)
 
-#    def test_disconnect_master(self):
-#        disconnect_master()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_disconnect_master(self):
+        disconnect_master()
+        self.assertEqual(True, False)
 
-#    def test_slave_task(self):
-#        slave_task()
-#        self.assertEqual(True, False)
+    @skip("under development")
+    def test_slave_task(self):
+        slave_task()
+        self.assertEqual(True, False)

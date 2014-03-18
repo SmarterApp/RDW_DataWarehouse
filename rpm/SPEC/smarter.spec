@@ -56,35 +56,45 @@ python compile_assets.py
 cd -
 
 cd ${WORKSPACE}/config
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edcore
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edschema
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edauth
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edapi
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edworker
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/services
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edextract
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edmigrate
+python setup.py clean --all
 python setup.py install
 cd -
 cd %{buildroot}/opt/edware/smarter
 rm -rf assets
 mv ../assets .
+python setup.py clean --all
 python setup.py install
 cd -
 

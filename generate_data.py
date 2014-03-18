@@ -9,6 +9,7 @@ Command line arguments:
 """
 
 import argparse
+import datetime
 import os
 import random
 
@@ -268,6 +269,9 @@ if __name__ == '__main__':
     # Set team-specific configuration options
     assign_team_configuration_options(args.team_name, args.state_type)
 
+    # Record current (start) time
+    tstart = datetime.datetime.now()
+
     # Verify output directory exists
     if not os.path.exists('out'):
         os.makedirs('out')
@@ -350,5 +354,25 @@ if __name__ == '__main__':
 
     # Run for each year
     for year in YEARS:
+        # Record current (start) time
+        year_tstart = datetime.datetime.now()
+
+        # Process the year
         print('RUNNING FOR %i' % year)
         run_one_year(year)
+
+        # Mark the current time
+        year_tend = datetime.datetime.now()
+
+        # Print run statistics for the year
+        print('YEAR TOOK:  %s' % (year_tend - year_tstart))
+
+    # Record now current (end) time
+    tend = datetime.datetime.now()
+
+    # Print statistics
+    print()
+    print('Run began at:  %s' % tstart)
+    print('Run ended at:  %s' % tend)
+    print('Run run took:  %s' % (tend - tstart))
+    print()

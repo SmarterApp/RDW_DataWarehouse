@@ -40,9 +40,9 @@ def cleanup_udl_tables(guid_batch):
     """
     with get_udl_connection() as connector:
         schema_name = udl2_conf['udl2_db']['db_schema']
-        cleanup_all_tables(connector=connector, schema_name=schema_name,
+        cleanup_all_tables(connector=connector,
                            column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='int_')
-        cleanup_all_tables(connector=connector, schema_name=schema_name,
+        cleanup_all_tables(connector=connector,
                            column_name='guid_batch', value=guid_batch, batch_delete=True, table_name_prefix='stg_')
 
 

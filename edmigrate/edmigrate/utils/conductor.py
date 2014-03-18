@@ -43,7 +43,7 @@ class Conductor:
     def send_connect_PGPool(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
         slave_task.apply_async((Constants.COMMAND_CONNECT_PGPOOL, group_ids))  # @UndefinedVariable
-        self.__log(Constants.COMMAND_DISCONNECT_MASTER, slave_group, group_ids)
+        self.__log(Constants.COMMAND_CONNECT_PGPOOL, slave_group, group_ids)
 
     def send_disconnect_master(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)

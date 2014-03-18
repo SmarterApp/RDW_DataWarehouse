@@ -59,10 +59,11 @@ def main(file=None, tenant='cat', run_migrate_only=False):
     else:
         setup_celery(settings)
         url = get_broker_url()
-        with Connection(url) as connect:
-            logger.debug('connection: ' + url)
-            controller = ConductorController(connect)
-            controller.start()
+        connect = Connection(url)
+        logger.debug('connection: ' + url)
+        controller = ConductorController(connect)
+        controller.start()
+        controller.join()
 
 
 if __name__ == '__main__':

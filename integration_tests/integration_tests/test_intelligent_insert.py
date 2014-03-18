@@ -21,6 +21,7 @@ from integration_tests.migrate_helper import start_migrate,\
 from edcore.database.stats_connector import StatsDBConnection
 
 
+
 @unittest.skip("skipping this test till till ready for jenkins")
 class Test_Error_In_Migration(unittest.TestCase):
 
@@ -37,7 +38,7 @@ class Test_Error_In_Migration(unittest.TestCase):
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
-        self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
+        self.archived_file = os.path.join(self.data_dir, 'test_int_insert.tar.gz.gpg')
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -65,6 +66,9 @@ class Test_Error_In_Migration(unittest.TestCase):
         #Delete all data from udl_stats table
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
+            query = select([table.c.load_status])
+            result=conn.execute(query).fetchall()
+            print(result)
             conn.execute(table.delete())
             query = select([table])
             query_tab = conn.execute(query).fetchall()
@@ -109,22 +113,22 @@ class Test_Error_In_Migration(unittest.TestCase):
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
-            delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9')
+            delete_output_data = select([fact_table.c.student_guid])
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
-            print(delete_output_table)
-            expected_status_val_D = [('D',)]
-            self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
+            self.assertEquals(len(delete_output_table),2,"Data has not been loaded into fact_table")
         ed_connector.close_connection()
 
     def test_validation(self):
+        time.sleep(15)
         self.empty_table()
         self.create_schema()
-        self.migrate_data()
 
     def test_error_validation(self):
         self.empty_table()
         self.empty_stat_table()
         self.create_schema()
+        self.migrate_data()
+        #self.validate_prod(guid_batch_id)
 
     def create_schema(self):
         self.guid_batch_id = str(uuid4())
@@ -137,6 +141,14 @@ class Test_Error_In_Migration(unittest.TestCase):
         results = get_stats_table_has_migrated_ingested_status(tenant)
         for result in results:
             self.assertEqual(result['load_status'], 'migrate.ingested')
+
+#     def validate_prod(self, guid_batch_id):
+#         with get_prod_connection() as conn:
+#             fact_table = conn.get_table('fact_asmt_outcome')
+#             query = select([fact_table.c.student_guid]).where(fact_table.c.batch_guid == guid_batch_id)
+#             result = conn.execute(query).fatchall()
+#             print(len(result))
+#             
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

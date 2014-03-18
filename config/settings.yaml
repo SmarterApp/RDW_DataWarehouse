@@ -151,6 +151,7 @@ common:
     migrate:
       broadcast.queue: 'edmigrate_slaves'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
       master_scheduler.hour: 1
       master_scheduler.min: 0
       retries_allowed: 5
@@ -321,6 +322,7 @@ qa:
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -534,6 +536,7 @@ development:
       gpg.keyserver: None
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
+      master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'
     migrate.celery:
       CELERYBEAT_SCHEDULE:
         -   name: prepare-migration

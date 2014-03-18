@@ -75,9 +75,9 @@ def parse_iptable_output(output, pgpool):
     return found
 
 
-def check_iptable_has_blocked_pgpool(pgpool):
+def check_iptable_has_blocked_machine(hostname):
     output = subprocess.check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
-    return parse_iptable_output(output, pgpool)
+    return parse_iptable_output(output, hostname)
 
 
 def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
@@ -93,7 +93,7 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
         output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
                                          universal_newlines=True)
         max_retries -= 1
-    if not check_iptable_has_blocked_pgpool(pgpool):
+    if not check_iptable_has_blocked_machine(pgpool):
         status = True
     if status:
         acknowledgement_pgpool_connected(node_id, conn, exchange, routing_key)
@@ -107,17 +107,57 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     # only add rules when there is no rule in iptables
     max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    while not check_iptable_has_blocked_pgpool(pgpool) and max_retries >= 0:
+    while not check_iptable_has_blocked_machine(pgpool) and max_retries >= 0:
         output = subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
                                          universal_newlines=True)
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         max_retries -= 1
-    if check_iptable_has_blocked_pgpool(pgpool):
+    if check_iptable_has_blocked_machine(pgpool):
         status = True
     if status:
         acknowledgement_pgpool_disconnected(node_id, conn, exchange, routing_key)
     else:
         logger.info("Fail to block pgpool")
+
+
+def connect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
+    logger.info("Slave: Resuming pgpool")
+    # perform multiple times disable in case it was blocked multiple times in iptables
+    status = False
+    max_retries = Constants.REPLICATION_MAX_RETRIES
+    master = get_setting(Config.MASTER_HOSTNAME)
+    output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
+                                     universal_newlines=True)
+    while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
+        sleep(Constants.REPLICATION_CHECK_INTERVAL)
+        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
+                                         universal_newlines=True)
+        max_retries -= 1
+    if not check_iptable_has_blocked_machine(master):
+        status = True
+    if status:
+        acknowledgement_master_connected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to unblock pgpool")
+
+
+def disconnect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
+    logger.info("Slave: Blocking pgpool via iptables")
+    status = False
+    # only add rules when there is no rule in iptables
+    max_retries = Constants.REPLICATION_MAX_RETRIES
+    master = get_setting(Config.MASTER_HOSTNAME)
+    while not check_iptable_has_blocked_machine(master) and max_retries >= 0:
+        output = subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', master, '-j', 'REJECT'],
+                                         universal_newlines=True)
+        sleep(Constants.REPLICATION_CHECK_INTERVAL)
+        max_retries -= 1
+    if check_iptable_has_blocked_machine(master):
+        status = True
+    if status:
+        acknowledgement_master_disconnected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to block master via iptables")
 
 
 def connect_master(host_name, node_id, conn, exchange, routing_key):
@@ -163,8 +203,8 @@ def find_slave(host_name, node_id, conn, exchange, routing_key):
 
 COMMAND_HANDLERS = {
     Constants.COMMAND_FIND_SLAVE: find_slave,
-    Constants.COMMAND_CONNECT_MASTER: connect_master,
-    Constants.COMMAND_DISCONNECT_MASTER: disconnect_master,
+    Constants.COMMAND_CONNECT_MASTER: connect_master_via_iptable,
+    Constants.COMMAND_DISCONNECT_MASTER: disconnect_master_via_iptable,
     Constants.COMMAND_CONNECT_PGPOOL: connect_pgpool,
     Constants.COMMAND_DISCONNECT_PGPOOL: disconnect_pgpool
 }

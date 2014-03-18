@@ -10,6 +10,7 @@ class Config():
     BROADCAST_QUEUE = 'migrate.broadcast.queue'
     LAG_TOLERENCE_IN_BYTES = 'migrate.lag_tolerence_in_bytes'
     PGPOOL_HOSTNAME = 'migrate.pgpool.hostname'
+    MASTER_HOSTNAME = 'migrate.master.hostname'
     DEFAULT_ROUTUNG_KEY = 'migrate.celery.CELERY_DEFAULT_ROUTING_KEY'
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'

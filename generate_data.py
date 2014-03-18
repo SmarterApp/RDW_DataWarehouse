@@ -18,7 +18,6 @@ from pymongo import Connection
 
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
-import data_generation.generators.enrollment as enroll_gen
 import data_generation.generators.population as pop_gen
 import data_generation.util.hiearchy as hier_util
 import data_generation.writers.csv as csv_writer
@@ -28,6 +27,7 @@ import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
 import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as sbac_asmt_gen
+import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
 

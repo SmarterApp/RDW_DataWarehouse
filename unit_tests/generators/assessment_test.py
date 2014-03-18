@@ -7,13 +7,13 @@ Unit tests for the project.sbac.generators.assessement module.
 
 import datetime
 
+from nose.tools import assert_equal, assert_in, assert_not_in
+
 import sbac_data_generation.generators.assessment as assessment
 import sbac_data_generation.generators.population as pop_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import data_generation.generators.enrollment as general_enroll_gen
 import sbac_data_generation.generators.enrollment as enroll_gen
-
-from nose.tools import assert_equal, assert_in, assert_not_in
 
 
 def test_pick_default_accommodation_code_0():

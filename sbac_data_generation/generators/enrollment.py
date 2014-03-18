@@ -52,7 +52,7 @@ def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().
     @returns: A section object
     """
     # Generate the general section
-    s = general_enroll_gen.generate_section(clss, name, grade, year, most_recent, SBACSection)
+    s = general_enroll_gen.generate_section(clss, name, grade, year, most_recent, sub_class=SBACSection)
 
     # Add additional attributes
     s.rec_id = id_gen.get_rec_id('section')
@@ -75,7 +75,7 @@ def generate_enrollment(section: SBACSection, student: SBACStudent, grade=None, 
     @returns: An enrollment object
     """
     # Create the general enrollment
-    e = general_enroll_gen.generate_enrollment(section, student, grade, SBACEnrollment)
+    e = general_enroll_gen.generate_enrollment(section, student, grade, sub_class=SBACEnrollment)
 
     # Save and return the enrollment
     if save_to_mongo:

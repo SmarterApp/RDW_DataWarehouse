@@ -30,7 +30,7 @@ def generate_state(state_type, name, code, save_to_mongo=True):
     @returns: The state
     """
     # Run the general generator
-    s = general_hier_gen.generate_state(state_type, name, code, SBACState)
+    s = general_hier_gen.generate_state(state_type, name, code, sub_class=SBACState)
 
     # Set the SR guid
     s.guid_sr = sbac_id_gen.get_sr_uuid()
@@ -52,7 +52,7 @@ def generate_district(district_type, state: SBACState, save_to_mongo=True):
     @returns: The district
     """
     # Run the general generator
-    d = general_hier_gen.generate_district(district_type, state, SBACDistrict)
+    d = general_hier_gen.generate_district(district_type, state, sub_class=SBACDistrict)
 
     # Set the SR guid
     d.guid_sr = sbac_id_gen.get_sr_uuid()
@@ -74,7 +74,7 @@ def generate_school(school_type, district: SBACDistrict, save_to_mongo=True):
     @returns: The school
     """
     # Run the general generator
-    s = general_hier_gen.generate_school(school_type, district, SBACSchool)
+    s = general_hier_gen.generate_school(school_type, district, sub_class=SBACSchool)
 
     # Set the SR guid
     s.guid_sr = sbac_id_gen.get_sr_uuid()

@@ -35,6 +35,7 @@ def create_target_schema_for_batch(conf):
         if schema_exists(conn, schema_name):
             drop_schema(conn, schema_name)
         create_schema(conn, generate_ed_metadata, schema_name)
+        conn.set_metadata(schema_name, reflect=True)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):

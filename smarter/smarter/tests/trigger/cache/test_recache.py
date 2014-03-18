@@ -11,6 +11,7 @@ from smarter.trigger.cache.recache import CacheTrigger,\
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edapi.cache import cache_region, region_invalidate
+from edcore.security.tenant import set_tenant_map
 
 
 @cache_region('unittest')
@@ -24,9 +25,10 @@ class TestRecache(Unittest_with_edcore_sqlite):
         cache_managers.clear()
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data, public.filtered_data, unittest'
+            'cache.regions': 'public.data, public.filtered_data, unittest, public.shortlived'
         }
         self.cache_mgr = CacheManager(**parse_cache_config_options(cache_opts))
+        set_tenant_map({'tomcat': 'NC', get_unittest_tenant_name(): 'NC'})
 
     def tearDown(self):
         cache_managers.clear()
@@ -36,44 +38,22 @@ class TestRecache(Unittest_with_edcore_sqlite):
         cache_trigger.recache_state_view_report()
 #        self.validate_cache_has_expected_number_of_item(2)
 
-    def test_recache_state_view_report_invalid_tenant(self):
-        cache_trigger = CacheTrigger('i_dont_exists', 'NC', {})
-        self.assertRaises(AttributeError, cache_trigger.recache_state_view_report)
-
     def test_recache_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
         cache_trigger.recache_district_view_report('228')
 #        self.validate_cache_has_expected_number_of_item(2)
 
-    def test_recache_district_view_report_invalid_tenant(self):
-        cache_trigger = CacheTrigger('i_dont_exists', 'NC', {})
-        self.assertRaises(Exception, cache_trigger.recache_district_view_report, '228')
-
     def test_flush_state_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
         cache_trigger.recache_state_view_report()
-#        self.validate_cache_has_expected_number_of_item(2)
-        args = ['NC', []]
-        flush_report_in_cache_region(cache_trigger.report.get_report, 'public.data', *args)
-#        self.validate_cache_has_expected_number_of_item(1)
 
     def test_flush_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NC', {})
         cache_trigger.recache_district_view_report('228')
-        #self.validate_cache_has_expected_number_of_item(2)
-        args = ['NC', '228', []]
-        flush_report_in_cache_region(cache_trigger.report.get_report, 'public.data', *args)
-#        self.validate_cache_has_expected_number_of_item(1)
 
     def test_flush_report_in_cache_region_with_empty_cache(self):
         region_invalidate(dummy_method, 'unittest', ('NC'))
         self.assertTrue(len(cache_managers.keys()), 0)
-
-    def test_flush_report_in_cache_region(self):
-        dummy_method('NC')
-#        self.validate_cache_has_expected_number_of_item(2)
-        region_invalidate(dummy_method, 'unittest', ('NC'))
-#        self.validate_cache_has_expected_number_of_item(1)
 
     def test_flush_unconfigured_region(self):
         self.assertRaises(KeyError, region_invalidate, dummy_method, 'unconfigured_region', 'NC')

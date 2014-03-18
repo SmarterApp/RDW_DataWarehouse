@@ -1,39 +1,54 @@
 '''
-Created on Feb 28, 2014
+Created on Mar 7, 2014
 
 @author: bpatel
 '''
+from sqlalchemy.schema import DropSchema
+import unittest
 import time
 import os
 import shutil
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, delete, and_
-from sqlalchemy.schema import DropSchema
 from edudl2.udl2.celery import udl2_conf
-import unittest
 from time import sleep
-import unittest
 import subprocess
 import tempfile
 from uuid import uuid4
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
+from integration_tests.migrate_helper import start_migrate,\
+    get_prod_table_count, get_stats_table_has_migrated_ingested_status,\
+    setUpMigrationConnection
+from edcore.database.stats_connector import StatsDBConnection
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
-class Test_Insert_Delete(unittest.TestCase):
+@unittest.skip("skipping this test till till ready for jenkins")
+class Test_Error_In_Migration(unittest.TestCase):
+
+    def __init__(self, *args, **kwargs):
+        unittest.TestCase.__init__(self, *args, **kwargs)
+
+    @classmethod
+    def setUpClass(cls):
+        '''
+        Reads development ini and setup connection for migrations
+        '''
+        setUpMigrationConnection()
 
     def setUp(self):
-        self.guid_batch_id = str(uuid4())
-        self.tenant_dir = '/opt/edware/test_tenant/test_user/filedrop'
-        self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
-        self.archived_file = os.path.join(self.data_dir, 'test_data_update_delete_record.tar.gz.gpg')
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
+        self.data_dir = os.path.join(os.path.dirname(__file__), "data")
+        self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        #self.drop_schema(schema_name=self.guid_batch_id)
+
+    def drop_schema(self, schema_name):
         with get_target_connection() as ed_connector:
-            metadata = ed_connector.get_metadata(schema_name=self.guid_batch_id)
+            metadata = ed_connector.get_metadata(schema_name=schema_name)
             metadata.drop_all()
-            ed_connector.execute(DropSchema(self.guid_batch_id, cascade=True))
+            ed_connector.execute(DropSchema(schema_name, cascade=True))
 
     def empty_table(self):
         #Delete all data from batch_table
@@ -44,26 +59,25 @@ class Test_Insert_Delete(unittest.TestCase):
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
-            self.assertEqual(number_of_row, 0)
+            print(number_of_row)
 
-        #Delete all table data from edware databse
-        with get_target_connection() as ed_connector:
-            table_list = ed_connector.get_metadata().sorted_tables
-            table_list.reverse()
-            for table in table_list:
-                all_table = ed_connector.execute(table.delete())
-                query1 = select([table])
-                result2 = ed_connector.execute(query1).fetchall()
-                number_of_row = len(result2)
-                self.assertEqual(number_of_row, 0)
+    def empty_stat_table(self):
+        #Delete all data from udl_stats table
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            conn.execute(table.delete())
+            query = select([table])
+            query_tab = conn.execute(query).fetchall()
+            no_rows = len(query_tab)
+            print(no_rows)
 
     #Run UDL pipeline with file in tenant dir
-    def run_udl_pipeline(self):
+    def run_udl_pipeline(self, guid_batch_id):
         self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
-        driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=self.guid_batch_id)
+        driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion()
@@ -88,37 +102,41 @@ class Test_Insert_Delete(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()
-            self.assertEqual(len(result), 1, "UDl Pipeline Failure.")
+            self.assertEqual(len(result), 1, "1 guids not found.")
             print('Waited for', timer, 'second(s) for job to complete.')
 
     # Validate edware database
     def validate_edware_database(self, schema_name):
-        print('schema name is:', schema_name)
         with get_target_connection() as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
-            delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
+            delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
+            print(delete_output_table)
             expected_status_val_D = [('D',)]
-            #verify delete record
             self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
-            #Verify Update record
-            update_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
-            update_output_table = ed_connector.execute(update_output_data).fetchall()
-            self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
-            self.assertIn(('I',), update_output_table, "Insert status I is not found in the Update record")
-
-            # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.status == 'I'))
-            new_asmt_score = ed_connector.execute(update_asmt_score).fetchall()
-            print('Updated asmt_score after update is:', new_asmt_score)
-            expected_asmt_score = [(1500,)]
-            self.assertEquals(new_asmt_score, expected_asmt_score)
+        ed_connector.close_connection()
 
     def test_validation(self):
         self.empty_table()
-        self.run_udl_pipeline()
+        self.create_schema()
+        self.migrate_data()
+
+    def test_error_validation(self):
+        self.empty_table()
+        self.empty_stat_table()
+        self.create_schema()
+
+    def create_schema(self):
+        self.guid_batch_id = str(uuid4())
+        self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)
 
+    def migrate_data(self):
+        start_migrate()
+        tenant = 'cat'
+        results = get_stats_table_has_migrated_ingested_status(tenant)
+        for result in results:
+            self.assertEqual(result['load_status'], 'migrate.ingested')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

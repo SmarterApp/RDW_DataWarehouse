@@ -22,7 +22,7 @@ define ["jquery", "edwareAsmtDropdown", "edwarePreferences"], ($, edwareAsmtDrop
     edwarePreferences.saveAsmtPreference({ asmtType: 'asmtType2', display: 'display2', value: 'value2'})
     dropdown = new EdwareAsmtDropdown($('#asmtDropdownContainer'), dropdownValues)
     ok $('.asmtTypeButton')[0], 'Should create an asmt type dropdown menu'
-    equal $('#selectedAsmtType').text(), 'display2', 'Should select asmtType2 by default'
+    equal $('#selectedAsmtType').text(), 'display1', 'Should select asmtType1 by default'
 
   test "Test selecting option", ->
     edwarePreferences.saveAsmtPreference({ asmtType: 'asmtType1', display: 'display1', value: 'value2'})

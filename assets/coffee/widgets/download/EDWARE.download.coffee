@@ -1,5 +1,6 @@
 define [
   "jquery"
+  "bootstrap"
   "mustache"
   "moment"
   "jqueryui"
@@ -10,7 +11,7 @@ define [
   "edwarePreferences"
   "edwareExport"
   "edwareDataProxy"
-], ($, Mustache, moment, jqueryui, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
+], ($, bootstrap, Mustache, moment, jqueryui, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -59,6 +60,15 @@ define [
       $(this.reportTypeDropdownMenu).click (e) ->
         $('div.error', self.messages).remove()
         self.setMainPulldownLabel()
+
+      # set up academic years
+      $('input:radio', @container).click (e) ->
+        $this = $(this)
+        display = $this.data('label')
+        $dropdown = $this.closest('.btn-group')
+        # display selected option
+        $dropdown.find('.dropdown-display').html display
+        $dropdown.removeClass 'open'
 
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
@@ -288,6 +298,7 @@ define [
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
       params['asmtType'] = asmtType.toUpperCase()
       params['asmtSubject'] = edwarePreferences.getSubjectPreference()
+      params['asmtYear'] = edwarePreferences.getAsmtYearPreference()
       url = window.location.protocol + "//" + window.location.host + "/services/extract?sync=true&" + $.param(params, true)
       window.location = url
 

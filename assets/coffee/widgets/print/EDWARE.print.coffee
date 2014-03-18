@@ -1,9 +1,10 @@
 define [
   "jquery"
+  "bootstrap"
   "mustache"
   "text!PrintTemplate"
   "edwarePreferences"
-], ($, Mustache, PrintTemplate, edwarePreferences) ->
+], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences) ->
 
   class PrintModal
 

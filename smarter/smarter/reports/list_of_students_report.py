@@ -24,7 +24,8 @@ from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
-from smarter.reports.student_administration import get_student_list_asmt_administration
+from smarter.reports.student_administration import get_student_list_asmt_administration,\
+    get_academic_years, get_default_academic_year
 
 REPORT_NAME = "list_of_students"
 
@@ -57,6 +58,11 @@ REPORT_PARAMS = merge_dict({
             "type": "string",
             "pattern": "^(" + Constants.ELA + "|" + Constants.MATH + ")$",
         }
+    },
+    Constants.ASMTYEAR: {
+        "type": "integer",
+        "required": False,
+        "pattern": "^[1-9][0-9]{3}$"
     }
 }, FILTERS_CONFIG)
 
@@ -76,6 +82,11 @@ def get_list_of_students_report(params):
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = params.get(Constants.ASMTGRADE)
     asmtSubject = params.get(Constants.ASMTSUBJECT)
+    asmtYear = params.get(Constants.ASMTYEAR)
+    # set default asmt year
+    if not asmtYear:
+        asmtYear = get_default_academic_year(params)
+        params[Constants.ASMTYEAR] = asmtYear
 
     asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
 
@@ -138,13 +149,14 @@ def get_list_of_students_report(params):
     asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
     # color metadata
     custom_metadata_map = get_custom_metadata(stateCode, None)
-    los_results['metadata'] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
-    los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
-    los_results['subjects'] = __reverse_map(subjects_map)
+    los_results[Constants.METADATA] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
+    los_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
+    los_results[Constants.SUBJECTS] = __reverse_map(subjects_map)
     # query not stated students count
     los_results[Constants.NOT_STATED] = get_not_stated_count(params)
 
-    los_results['asmt_administration'] = asmt_administration
+    los_results[Constants.ASMT_ADMINISTRATION] = asmt_administration
+    los_results[Constants.ASMT_PERIOD_YEAR] = get_academic_years(stateCode)
 
     return los_results
 
@@ -155,6 +167,7 @@ def get_list_of_students(params):
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = params.get(Constants.ASMTGRADE)
     asmtSubject = params.get(Constants.ASMTSUBJECT)
+    asmtYear = params.get(Constants.ASMTYEAR)
     with EdCoreDBConnection(state_code=stateCode) as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -209,6 +222,7 @@ def get_list_of_students(params):
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
+        query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmtYear))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
         query = apply_filter_to_query(query, fact_asmt_outcome, params)

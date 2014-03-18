@@ -13,11 +13,13 @@ def get_metadata_file_name(params):
     '''
     Returns file name of json metadata
     '''
-    return "METADATA_ASMT_{stateCode}_GRADE_{asmtGrade}_{asmtSubject}_{asmtType}_{asmtGuid}.json".format(stateCode=params.get(Constants.STATECODE).upper(),
-                                                                                                         asmtGrade=params.get(Constants.ASMTGRADE).upper(),
-                                                                                                         asmtSubject=params.get(Constants.ASMTSUBJECT).upper(),
-                                                                                                         asmtType=params.get(Constants.ASMTTYPE).upper(),
-                                                                                                         asmtGuid=params.get(Constants.ASMTGUID))
+    return "METADATA_ASMT_{asmtYear}_{stateCode}_GRADE_{asmtGrade}_{asmtSubject}_{asmtType}_{asmtGuid}.json".\
+        format(stateCode=params.get(Constants.STATECODE).upper(),
+               asmtGrade=params.get(Constants.ASMTGRADE).upper(),
+               asmtSubject=params.get(Constants.ASMTSUBJECT).upper(),
+               asmtType=params.get(Constants.ASMTTYPE).upper(),
+               asmtYear=params.get(Constants.ASMTYEAR),
+               asmtGuid=params.get(Constants.ASMTGUID))
 
 
 def get_asmt_metadata(state_code, asmt_guid):

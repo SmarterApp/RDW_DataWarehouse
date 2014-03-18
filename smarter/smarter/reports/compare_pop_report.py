@@ -25,6 +25,8 @@ from edcore.utils.utils import merge_dict
 from copy import deepcopy
 import time
 from collections import OrderedDict, namedtuple
+from smarter.reports.student_administration import get_academic_years, get_default_academic_year
+
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -49,6 +51,11 @@ DEFAULT_MIN_CELL_SIZE = 0
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
+        Constants.ASMTYEAR: {
+            "type": "integer",
+            "required": False,
+            "pattern": "^[1-9][0-9]{3}$"
         }
     }, FILTERS_CONFIG))
 @user_info
@@ -57,6 +64,10 @@ def get_comparing_populations_report(params):
     '''
     Comparing Populations Report
     '''
+    # set default asmt year
+    if not Constants.ASMTYEAR in params:
+        params[Constants.ASMTYEAR] = get_default_academic_year(params)
+
     report = ComparingPopReport(**params).get_report()
     # query not stated students count
     report[Constants.NOT_STATED] = get_not_stated_count(params)
@@ -155,6 +166,7 @@ def get_comparing_populations_cache_key(comparing_pop):
         cache_args.append(comparing_pop.district_guid)
     # We cache based on summative and interim as well
     cache_args.append(comparing_pop.asmt_type)
+    cache_args.append(comparing_pop.asmt_year)
     filters = comparing_pop.filters
     # sorts dictionary of keys
     cache_args.append(sorted(filters.items(), key=lambda x: x[0]))
@@ -173,7 +185,7 @@ class ComparingPopReport(object):
     '''
     Comparing populations report
     '''
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, tenant=None, **filters):
+    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, **filters):
         '''
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district, could be None
@@ -185,6 +197,7 @@ class ComparingPopReport(object):
         self.district_guid = districtGuid
         self.school_guid = schoolGuid
         self.asmt_type = asmtType
+        self.asmt_year = asmtYear
         self.tenant = tenant
         self.filters = filters
 
@@ -213,7 +226,8 @@ class ComparingPopReport(object):
         :returns: A comparing populations report based on parameters supplied
         '''
         params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid,
-                  Constants.SCHOOLGUID: self.school_guid, Constants.ASMTTYPE: self.asmt_type, 'filters': self.filters}
+                  Constants.SCHOOLGUID: self.school_guid, Constants.ASMTTYPE: self.asmt_type,
+                  Constants.ASMTYEAR: self.asmt_year, 'filters': self.filters}
         results = self.run_query(**params)
 
         # Only return 404 if results is empty and there are no filters being applied
@@ -249,11 +263,13 @@ class ComparingPopReport(object):
         for result in results:
             record_manager.update_record(result)
 
+        state_code = param.get(Constants.STATECODE)
         # bind the results
         return {Constants.METADATA: custom_metadata,
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
-                Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}
+                Constants.CONTEXT: get_breadcrumbs_context(state_code=state_code, district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant),
+                Constants.ASMT_PERIOD_YEAR: get_academic_years(state_code, self.tenant)}
 
     @staticmethod
     def get_asmt_levels(subjects, metadata):
@@ -417,11 +433,12 @@ class QueryHelper():
     '''
     Helper class to build a sqlalchemy query based on the view type (state, district, or school)
     '''
-    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, filters=None):
+    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, filters=None):
         self._state_code = stateCode
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
         self._asmt_type = asmtType
+        self._asmt_year = asmtYear
         self._filters = filters
         if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._f = self.get_query_for_state_view
@@ -444,7 +461,7 @@ class QueryHelper():
                    func.count().label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))], **kwargs)\
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == self._asmt_type,
-                        self._fact_asmt_outcome.c.status == 'C'))\
+                        self._fact_asmt_outcome.c.status == 'C', self._fact_asmt_outcome.c.asmt_year == self._asmt_year))\
             .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .order_by(self._fact_asmt_outcome.c.asmt_subject.desc())

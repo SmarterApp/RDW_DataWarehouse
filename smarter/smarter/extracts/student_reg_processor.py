@@ -1,100 +1,58 @@
-'''
-Celery Tasks for data extraction
+__author__ = 'tshewchuk'
 
-Created on Nov 5, 2013
+"""
+This module provides methods for extracting student registration report information into archive files for the user.
+"""
 
-@author: ejen
-'''
 import logging
+import os
+import tempfile
+import copy
+import pyramid.threadlocal
+from uuid import uuid4
+
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query
 from edcore.utils.utils import compile_query_to_sql_text
 from pyramid.security import authenticated_userid
-import pyramid.threadlocal
-from uuid import uuid4
 from edextract.status.status import create_new_entry
 from edextract.tasks.extract import start_extract, archive, route_tasks, prepare_path
 from pyramid.threadlocal import get_current_request, get_current_registry
 from datetime import datetime
-import os
-import tempfile
 from edapi.exceptions import NotFoundException
-import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants
-from edapi.cache import cache_region
-from celery.canvas import chain
-from edcore.security.tenant import get_tenant_by_state_code
 
 
 log = logging.getLogger('smarter')
 
 
-def process_sync_extract_request(params):
-    '''
-    TODO add doc string
-    '''
-    settings = get_current_registry().settings
-    queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
-    archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
-    tasks = []
-    state_code = params[Constants.STATECODE]
-    request_id, user, tenant = _get_extract_request_user_info(state_code)
-    extract_params = copy.deepcopy(params)
-    for subject in params[Constants.ASMTSUBJECT]:
-        extract_params[Constants.ASMTSUBJECT] = subject
-        subject_tasks, task_responses = _create_tasks_with_responses(request_id, user, tenant, extract_params)
-        tasks += subject_tasks
-    if tasks:
-        directory_to_archive = get_extract_work_zone_path(tenant, request_id)
-        celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        # Synchronous calls to generate json and csv and then to archive
-        # BUG, it still routes to 'extract' queue due to chain
-#        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
-#                       route_tasks(tenant, request_id, tasks, queue_name=queue),
-#                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
-        prepare_path.apply_async(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
-        route_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
-        return result.get(timeout=celery_timeout)
-    else:
-        raise NotFoundException("There are no results")
-
-
 def process_async_extraction_request(params, is_tenant_level=True):
-    '''
-    :param dict params: contains query parameter.  Value for each pair is expected to be a list
-    :param bool is_tenant_level:  True if it is a tenant level request
-    '''
+    """
+    @param params: Extract request parameters
+
+    @return:  Extract response
+    """
+
     queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     tasks = []
     response = {}
     task_responses = []
-    state_code = params[Constants.STATECODE][0]
-    request_id, user, tenant = _get_extract_request_user_info(state_code)
+    request_id, user, tenant = _get_extract_request_user_info()
 
-    for s in params[Constants.ASMTSUBJECT]:
-        for t in params[Constants.ASMTTYPE]:
-            param = ({Constants.ASMTSUBJECT: s,
-                     Constants.ASMTTYPE: t,
-                     Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE][0]})
+    param = ({Constants.STATECODE: params[Constants.STATECODE][0],
+              Constants.ACADEMIC_YEAR: params[Constants.ACADEMIC_YEAR][0]})
 
-            task_response = {Constants.STATECODE: param[Constants.STATECODE],
-                             Extract.EXTRACTTYPE: ExtractType.studentAssessment,
-                             Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
-                             Constants.ASMTTYPE: param[Constants.ASMTTYPE],
-                             Constants.ASMTYEAR: param[Constants.ASMTYEAR],
-                             Extract.REQUESTID: request_id}
-
-            # separate by grades if no grade is specified
-            __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
-            tasks += __tasks
-            task_responses += __task_responses
+    task_response = {Constants.STATECODE: param[Constants.STATECODE],
+                     Extract.EXTRACTTYPE: ExtractType.studentRegistrationStatistics,
+                     Extract.REQUESTID: request_id}
+    __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
+    tasks += __tasks
+    task_responses += __task_responses
 
     response['tasks'] = task_responses
     if len(tasks) > 0:
@@ -230,15 +188,11 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     return task
 
 
-def _get_extract_request_user_info(state_code=None):
+def _get_extract_request_user_info():
     # Generate an uuid for this extract request
     request_id = str(uuid4())
     user = authenticated_userid(get_current_request())
-    # mapping state code to tenant
-    if state_code:
-        tenant = get_tenant_by_state_code(state_code)
-    else:
-        tenant = user.get_tenants()[0]
+    tenant = user.get_tenants()[0]
     return request_id, user, tenant
 
 
@@ -253,14 +207,12 @@ def get_extract_work_zone_path(tenant, request_id):
 
 def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
     identifier = '_' + param.get(Constants.STATECODE) if is_tenant_level else ''
-    file_name = 'ASMT_{asmtYear}{identifier}_{asmtGrade}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.\
-                format(identifier=identifier,
-                       asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
-                       asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                       asmtType=param[Constants.ASMTTYPE].upper(),
-                       currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                       asmtYear=param[Constants.ASMTYEAR],
-                       asmtGuid=param[Constants.ASMTGUID])
+    file_name = 'ASMT{identifier}_{asmtGrade}_{asmtSubject}_{asmtType}_{currentTime}_{asmtGuid}.csv'.format(identifier=identifier,
+                                                                                                            asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
+                                                                                                            asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                                                                                                            asmtType=param[Constants.ASMTTYPE].upper(),
+                                                                                                            currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                                                                                                            asmtGuid=param[Constants.ASMTGUID])
     return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
 
 

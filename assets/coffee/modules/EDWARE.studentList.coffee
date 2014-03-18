@@ -125,7 +125,7 @@ define [
       @stickyCompare ?= new EdwareGridStickyCompare @labels, ()->
         self.updateView()
 
-    reload: (params) ->
+    reload: (@params) ->
       @fetchData params
       @stickyCompare.setReportInfo Constants.REPORT_JSON_NAME.LOS, "student", params
 
@@ -134,6 +134,7 @@ define [
       @contextData = data.context
       @subjectsData = data.subjects
       @userData = data.user_info
+      @academicYears = data.asmt_period_year
       @grade = @contextData['items'][4]
 
       @renderBreadcrumbs(data.context)
@@ -185,6 +186,13 @@ define [
         reportInfoText: @config.reportInfo
         labels: @labels
         CSVOptions: @config.CSVOptions
+        academicYears:
+          options: @academicYears
+          callback: @onAcademicYearSelected.bind(this)
+
+    onAcademicYearSelected: (year) ->
+      @params['asmtYear'] = year
+      @reload @params
 
     renderReportActionBar: () ->
       self = this

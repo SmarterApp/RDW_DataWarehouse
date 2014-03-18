@@ -8,7 +8,8 @@ from sqlalchemy.exc import OperationalError
 import subprocess
 from edmigrate.settings.config import Config, get_setting
 from edmigrate.utils.reply_to_conductor import register_slave, acknowledgement_master_connected, \
-    acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected
+    acknowledgement_master_disconnected, acknowledgement_pgpool_connected, acknowledgement_pgpool_disconnected,\
+    acknowledgement_reset_slaves
 from time import sleep
 from kombu import Connection
 from kombu.entity import Exchange
@@ -47,22 +48,6 @@ def check_replication_status(connector):
     return replication_paused
 
 
-def is_replication_paused(connector):
-    '''
-    Check if replication is paused.
-    Returns true if replication is not running on current node, returns false otherwise.
-    '''
-    return check_replication_status(connector) == Constants.REPLICATION_STATUS_PAUSE
-
-
-def is_replication_active(connector):
-    '''
-    Check if replication is paused.
-    Returns true if replication is not running on current node, returns false otherwise.
-    '''
-    return check_replication_status(connector) == Constants.REPLICATION_STATUS_ACTIVE
-
-
 def parse_iptable_output(output, pgpool):
     lines = output.split('\n')
     found = False
@@ -80,12 +65,8 @@ def check_iptable_has_blocked_machine(hostname):
     return parse_iptable_output(output, hostname)
 
 
-def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Resuming pgpool")
-    # perform multiple times disable in case it was blocked multiple times in iptables
+def remove_pgpool_iptable_rules(pgpool, max_retries):
     status = False
-    max_retries = Constants.REPLICATION_MAX_RETRIES
-    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
     output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
                                      universal_newlines=True)
     while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
@@ -95,6 +76,27 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
         max_retries -= 1
     if not check_iptable_has_blocked_machine(pgpool):
         status = True
+    return status
+
+
+def add_pgpool_iptable_rules(pgpool, max_retries):
+    status = False
+    while not check_iptable_has_blocked_machine(pgpool) and max_retries >= 0:
+        output = subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
+                                         universal_newlines=True)
+        sleep(Constants.REPLICATION_CHECK_INTERVAL)
+        max_retries -= 1
+    if check_iptable_has_blocked_machine(pgpool):
+        status = True
+    return status
+
+
+def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
+    logger.info("Slave: Resuming pgpool")
+    # perform multiple times disable in case it was blocked multiple times in iptables
+    max_retries = Constants.REPLICATION_MAX_RETRIES
+    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+    status = remove_pgpool_iptable_rules(pgpool, max_retries)
     if status:
         acknowledgement_pgpool_connected(node_id, conn, exchange, routing_key)
     else:
@@ -103,29 +105,18 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
 
 def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Blocking pgpool")
-    status = False
     # only add rules when there is no rule in iptables
     max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    while not check_iptable_has_blocked_machine(pgpool) and max_retries >= 0:
-        output = subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
-                                         universal_newlines=True)
-        sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        max_retries -= 1
-    if check_iptable_has_blocked_machine(pgpool):
-        status = True
+    status = add_pgpool_iptable_rules(pgpool, max_retries)
     if status:
         acknowledgement_pgpool_disconnected(node_id, conn, exchange, routing_key)
     else:
         logger.info("Fail to block pgpool")
 
 
-def connect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Resuming master via iptables")
-    # perform multiple times disable in case it was blocked multiple times in iptables
+def remove_master_iptable_rules(master, max_retries):
     status = False
-    max_retries = Constants.REPLICATION_MAX_RETRIES
-    master = get_setting(Config.MASTER_HOSTNAME)
     output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
                                      universal_newlines=True)
     while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
@@ -135,18 +126,11 @@ def connect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
         max_retries -= 1
     if not check_iptable_has_blocked_machine(master):
         status = True
-    if status:
-        acknowledgement_master_connected(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to resume master via iptables")
+    return status
 
 
-def disconnect_master_via_iptable(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Blocking master via iptables")
+def add_master_table_rules(master, max_retries):
     status = False
-    # only add rules when there is no rule in iptables
-    max_retries = Constants.REPLICATION_MAX_RETRIES
-    master = get_setting(Config.MASTER_HOSTNAME)
     while not check_iptable_has_blocked_machine(master) and max_retries >= 0:
         output = subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', master, '-j', 'REJECT'],
                                          universal_newlines=True)
@@ -154,43 +138,44 @@ def disconnect_master_via_iptable(host_name, node_id, conn, exchange, routing_ke
         max_retries -= 1
     if check_iptable_has_blocked_machine(master):
         status = True
+    return status
+
+
+def connect_master(host_name, node_id, conn, exchange, routing_key):
+    logger.info("Slave: Resuming master via iptables")
+    # perform multiple times disable in case it was blocked multiple times in iptables
+    max_retries = Constants.REPLICATION_MAX_RETRIES
+    master = get_setting(Config.MASTER_HOSTNAME)
+    status = clean_master_iptable_rules(master, max_retries)
+    if status:
+        acknowledgement_master_connected(node_id, conn, exchange, routing_key)
+    else:
+        logger.info("Fail to resume master via iptables")
+
+
+def disconnect_master(host_name, node_id, conn, exchange, routing_key):
+    logger.info("Slave: Blocking master via iptables")
+    # only add rules when there is no rule in iptables
+    max_retries = Constants.REPLICATION_MAX_RETRIES
+    master = get_setting(Config.MASTER_HOSTNAME)
+    status = add_master_table_rules(master, max_retries)
     if status:
         acknowledgement_master_disconnected(node_id, conn, exchange, routing_key)
     else:
         logger.info("Fail to block master via iptables")
 
 
-def connect_master(host_name, node_id, conn, exchange, routing_key):
-    status = False
-    with RepMgrDBConnection() as connector:
-        try:
-            connector.execute(text("select pg_xlog_replay_resume()"))
-        except OperationalError as e:
-            pass
-            logger.info("Fail to resume replication")
-        sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        status = is_replication_active(connector)
-    if status:
-        acknowledgement_master_connected(node_id, conn, exchange, routing_key)
+def reset_slaves(host_name, node_id, conn, exchange, routing_key):
+    logger.info("Slave: Reset slaves iptables")
+    master = get_setting(Config.MASTER_HOSTNAME)
+    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+    max_retries = Constants.REPLICATION_MAX_RETRIES
+    status_1 = remove_pgpool_iptable_rules(pgpool, max_retries)
+    status_2 = remove_master_iptable_rules(master, max_retries)
+    if status_1 and status_2:
+        acknowledgement_reset_slaves(node_id, conn, exchange, routing_key)
     else:
-        logger.info("Fail to connect master")
-
-
-def disconnect_master(host_name, node_id, conn, exchange, routing_key):
-    status = False
-    with RepMgrDBConnection() as connector:
-        try:
-            connector.execute(text("select pg_xlog_replay_pause()"))
-        except OperationalError as e:
-            pass
-            logger.info("Fail to suspend replication")
-        # verify replication status
-        sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        status = is_replication_paused(connector)
-    if status:
-        acknowledgement_master_disconnected(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to disconnect from master")
+        logger.info("Fail to reset slaves iptables")
 
 
 def find_slave(host_name, node_id, conn, exchange, routing_key):
@@ -203,10 +188,11 @@ def find_slave(host_name, node_id, conn, exchange, routing_key):
 
 COMMAND_HANDLERS = {
     Constants.COMMAND_FIND_SLAVE: find_slave,
-    Constants.COMMAND_CONNECT_MASTER: connect_master_via_iptable,
-    Constants.COMMAND_DISCONNECT_MASTER: disconnect_master_via_iptable,
+    Constants.COMMAND_CONNECT_MASTER: connect_master,
+    Constants.COMMAND_DISCONNECT_MASTER: disconnect_master,
     Constants.COMMAND_CONNECT_PGPOOL: connect_pgpool,
-    Constants.COMMAND_DISCONNECT_PGPOOL: disconnect_pgpool
+    Constants.COMMAND_DISCONNECT_PGPOOL: disconnect_pgpool,
+    Constants.COMMAND_RESET_SLAVES: register_slave
 }
 
 

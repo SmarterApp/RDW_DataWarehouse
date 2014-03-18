@@ -4,10 +4,8 @@ from unittest import skip
 from mocket.mocket import Mocket
 from edmigrate.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
-from edmigrate.tasks.slave import get_hostname, get_slave_node_id_from_hostname, check_replication_status,\
-    is_replication_paused, is_replication_active, connect_pgpool,\
-    disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task, parse_iptable_output,\
-    check_iptable_has_blocked_machine
+from edmigrate.tasks.slave import get_hostname, get_slave_node_id_from_hostname, check_iptable_has_blocked_machine, \
+    connect_pgpool, disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task, parse_iptable_output
 from edmigrate.utils.constants import Constants
 import subprocess
 

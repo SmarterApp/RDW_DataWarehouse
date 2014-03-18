@@ -71,8 +71,11 @@ def remove_pgpool_iptable_rules(pgpool, max_retries):
                                      universal_newlines=True)
     while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
-                                         universal_newlines=True)
+        try:
+            output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', pgpool, '-j', 'REJECT'],
+                                             universal_newlines=True)
+        except subprocess.CalledProcessError:
+            break
         max_retries -= 1
     if not check_iptable_has_blocked_machine(pgpool):
         status = True
@@ -121,8 +124,11 @@ def remove_master_iptable_rules(master, max_retries):
                                      universal_newlines=True)
     while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
-                                         universal_newlines=True)
+        try:
+            output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', master, '-j', 'REJECT'],
+                                             universal_newlines=True)
+        except subprocess.CalledProcessError:
+            break
         max_retries -= 1
     if not check_iptable_has_blocked_machine(master):
         status = True
@@ -146,7 +152,7 @@ def connect_master(host_name, node_id, conn, exchange, routing_key):
     # perform multiple times disable in case it was blocked multiple times in iptables
     max_retries = Constants.REPLICATION_MAX_RETRIES
     master = get_setting(Config.MASTER_HOSTNAME)
-    status = clean_master_iptable_rules(master, max_retries)
+    status = remove_master_iptable_rules(master, max_retries)
     if status:
         acknowledgement_master_connected(node_id, conn, exchange, routing_key)
     else:

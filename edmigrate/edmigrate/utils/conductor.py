@@ -11,6 +11,7 @@ from edmigrate.utils.replication_monitor import replication_monitor
 import time
 from edmigrate.exceptions import ConductorTimeoutException
 import logging
+from edmigrate.settings.config import Config, get_setting
 
 
 logger = logging.getLogger('edmigrate')
@@ -19,9 +20,10 @@ logger = logging.getLogger('edmigrate')
 class Conductor:
     def __init__(self):
         self.__slave_trakcer = SlaveTracker()
+        self.__broadcast_queue = get_setting(Config.BROADCAST_QUEUE)
 
     def find_slaves(self):
-        slave_task.apply_async((Constants.COMMAND_FIND_SLAVE, None))  # @UndefinedVariable
+        slave_task.apply_async((Constants.COMMAND_FIND_SLAVE, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
 
     def grouping_slaves(self):
         slave_ids = self.__slave_trakcer.get_slave_ids()

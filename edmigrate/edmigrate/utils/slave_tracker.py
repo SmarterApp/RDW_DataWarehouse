@@ -77,7 +77,8 @@ class SlaveTracker(metaclass=Singleton):
                     if node[Constants.SLAVE_GROUP] == slave_group:
                         ids.append(node_id)
             else:
-                ids = self.__slaves.keys()
+                for k in self.__slaves.keys():
+                    ids.append(k)
             self.__lock.release()
             end_time = time.time()
             if not ids and timeout > 0:

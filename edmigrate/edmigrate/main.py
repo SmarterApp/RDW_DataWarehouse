@@ -58,6 +58,7 @@ def main(file=None, tenant='cat', run_migrate_only=False):
         setup_celery(settings)
         url = get_broker_url(settings)
         with Connection(url) as connect:
+            logger.debug('connection: ' + url)
             controller = ConductorController(connect)
             controller.start()
 

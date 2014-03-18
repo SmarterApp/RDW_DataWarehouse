@@ -28,8 +28,8 @@ class ConsumerThread(threading.Thread):
 
 
 class Consumer(ConsumerMixin):
-    routing_key = 'edmigrate.conductor'
-    exchange = Exchange('edmigrate_conductor', type='direct')
+    routing_key = Constants.CONDUCTOR_ROUTING_KEY
+    exchange = Exchange(Constants.CONDUCTOR_EXCHANGE, type='direct')
     queue = Queue('edmigrate_conductor', exchange, routing_key=routing_key)
 
     def __init__(self, connection):

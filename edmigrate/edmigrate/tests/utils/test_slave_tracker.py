@@ -30,6 +30,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1, len(slaves))
         self.assertRaises(SlaveAlreadyRegisteredException, slavetracker1.add_slave, 123)
         slavetracker1.add_slave(2)
+        slaves = slavetracker2.get_slave_ids()
         self.assertEqual(2, len(slaves))
         self.assertIn(123, slaves)
         self.assertIn(2, slaves)

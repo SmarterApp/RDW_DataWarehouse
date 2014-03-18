@@ -53,5 +53,4 @@ class Constants():
     REPLICATION_CHECK_INTERVAL = 1
     CONDUCTOR_EXCHANGE = 'edmigrate_conductor'
     CONDUCTOR_QUEUE = 'edmigrate_conductor'
-    CONDUCTOR_TRANSPORT = 'edmigrate_conductor'
-    CONDUCTOR_ROUTING_KEY = 'edmigrate_conductor'
+    CONDUCTOR_ROUTING_KEY = 'edmigrate.conductor'

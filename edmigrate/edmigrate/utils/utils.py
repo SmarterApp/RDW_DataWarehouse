@@ -3,7 +3,7 @@ Created on Mar 17, 2014
 
 @author: tosako
 '''
-from edmigrate.settings.config import Config, get_setting
+from edmigrate.settings.config import get_setting, Config
 
 
 def get_broker_url():

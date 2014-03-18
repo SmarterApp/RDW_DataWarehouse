@@ -33,7 +33,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 from edauth.security.user import RoleRelation
 import edauth
-from edcore.security.tenant import TENANT_MAP
+from edcore.security.tenant import set_tenant_map
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -61,11 +61,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
         dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        self.__config.testing_securitypolicy(dummy_session)
         defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
         edauth.set_roles(defined_roles)
-        TENANT_MAP['DUMMY_TENANT'] = 'DUMMY_STATE'
-        TENANT_MAP['tomcat'] = 'NC'
+        self.__config.testing_securitypolicy(dummy_session.get_user())
+        set_tenant_map({'tomcat': 'NC'})
 
     def tearDown(self):
         # reset the registry
@@ -357,9 +356,9 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual('/tmp/work_zone', _get_extract_work_zone_base_dir())
 
     def test___get_extract_request_user_info(self):
-        result = _get_extract_request_user_info('DUMMY_STATE')
+        result = _get_extract_request_user_info('NC')
         self.assertIsInstance(result[0], str)
-        self.assertEqual('DUMMY_TENANT', result[2])
+        self.assertEqual('tomcat', result[2])
 
     def test__create_tasks_with_responses_non_tenant_level(self):
         params = {'stateCode': 'NC',

@@ -18,8 +18,8 @@ import json
 import csv
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
-from edextract.settings.config import setup_settings, get_setting
-from config import Config
+from edextract.settings.config import setup_settings
+from config import get_setting, Config
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

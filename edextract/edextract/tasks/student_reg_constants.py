@@ -13,7 +13,7 @@ class ReportType():
 class Constants():
     TASK_TASK_ID = 'task_id'
     REPORT_TYPE = 'report_type'
-    STATE_CODE = 'state_code'
-    ACADEMIC_YEAR = 'academic_year'
+    STATE_CODE = 'stateCode'
+    ACADEMIC_YEAR = 'academicYear'
     TASK_FILE_NAME = 'file_name'
     DEFAULT_QUEUE_NAME = 'extract'

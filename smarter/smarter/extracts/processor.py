@@ -38,7 +38,7 @@ def process_sync_extract_request(params):
     queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
     archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
     tasks = []
-    request_id, user, tenant = _get_extract_request_user_info()
+    request_id, user, tenant = get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
     for subject in params[Constants.ASMTSUBJECT]:
         extract_params[Constants.ASMTSUBJECT] = subject
@@ -69,7 +69,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
     tasks = []
     response = {}
     task_responses = []
-    request_id, user, tenant = _get_extract_request_user_info()
+    request_id, user, tenant = get_extract_request_user_info()
 
     for s in params[Constants.ASMTSUBJECT]:
         for t in params[Constants.ASMTTYPE]:
@@ -225,7 +225,7 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     return task
 
 
-def _get_extract_request_user_info():
+def get_extract_request_user_info():
     # Generate an uuid for this extract request
     request_id = str(uuid4())
     user = authenticated_userid(get_current_request())

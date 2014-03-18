@@ -13,6 +13,7 @@ class Config():
     DEFAULT_ROUTUNG_KEY = 'migrate.celery.CELERY_DEFAULT_ROUTING_KEY'
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'
+    EAGER_MODE = 'migrate.celery.celery_always_eager'
 
 
 # list of configurations that are specific to edmigrate
@@ -26,7 +27,8 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.PGPOOL_HOSTNAME, str, None),
                   (Config.DEFAULT_ROUTUNG_KEY, str, 'edmigrate'),
                   (Config.DEFAULT_ROUTUNG_QUEUE, str, 'edmigrate_master'),
-                  (Config.BROKER_URL, str, 'memory://')]
+                  (Config.BROKER_URL, str, 'memory://'),
+                  (Config.EAGER_MODE, bool, False)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

@@ -174,7 +174,7 @@ def slave_task(command, slaves):
     """
     host_name = get_hostname()
     node_id = get_slave_node_id_from_hostname(host_name)
-    with Connection(get_broker_url(settings)) as conn:
+    with Connection(get_broker_url()) as conn:
         exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
         routing_key = Constants.CONDUCTOR_ROUTING_KEY
         if command == Constants.COMMAND_FIND_SLAVE:

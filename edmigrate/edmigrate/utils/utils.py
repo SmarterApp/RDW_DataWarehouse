@@ -3,12 +3,12 @@ Created on Mar 17, 2014
 
 @author: tosako
 '''
+from edmigrate.settings.config import Config, get_setting
 
 
-def get_broker_url(settings):
+def get_broker_url():
     url = "memory://"
-    celery_always_eager = settings.get('migrate.celery.celery_always_eager', False)
+    celery_always_eager = get_setting(Config.EAGER_MODE, False)
     if not celery_always_eager:
-        url = settings.get('migrate.celery.BROKER_URL', url)
-    # FIX ME
-    return 'amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate'
+        url = get_setting(Config.BROKER_URL, url)
+    return url

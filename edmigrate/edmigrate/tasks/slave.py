@@ -101,7 +101,7 @@ def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     # only add rules when there is no rule in iptables
     max_retries = get_setting(Config.MAX_RETRIES)
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    while not check_iptable_has_blocked_pgpool() and max_retries >= 0:
+    while not check_iptable_has_blocked_pgpool(pgpool) and max_retries >= 0:
         call(['sudo', 'iptables', '-I', 'PGSQL', '-s', pgpool, '-j', 'REJECT'])
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
         max_retries -= 1

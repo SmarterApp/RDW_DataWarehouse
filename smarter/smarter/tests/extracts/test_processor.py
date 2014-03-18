@@ -31,7 +31,6 @@ from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
-from edauth.security.user import RoleRelation
 import edauth
 from edcore.security.tenant import set_tenant_map
 

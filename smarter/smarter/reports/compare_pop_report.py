@@ -269,7 +269,7 @@ class ComparingPopReport(object):
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=state_code, district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant),
-                Constants.ASMT_PERIOD_YEAR: get_academic_years(state_code)}
+                Constants.ASMT_PERIOD_YEAR: get_academic_years(state_code, self.tenant)}
 
     @staticmethod
     def get_asmt_levels(subjects, metadata):

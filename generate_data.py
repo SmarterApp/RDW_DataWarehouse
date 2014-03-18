@@ -19,7 +19,6 @@ from pymongo import Connection
 
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
-import data_generation.generators.population as pop_gen
 import data_generation.util.hiearchy as hier_util
 import data_generation.writers.csv as csv_writer
 import data_generation.writers.json as json_writer
@@ -32,15 +31,11 @@ import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
 
-from data_generation import run_id as global_run_id
 from sbac_data_generation.model.district import SBACDistrict
-from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.state import SBACState
-from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
-from sbac_data_generation.model.student import SBACStudent
 from sbac_data_generation.writers.filters import SBAC_FILTERS
 
-OUT_PATH_ROOT = 'out1/'
+OUT_PATH_ROOT = 'out'
 
 # See assign_team_configuration_options for these values
 STATES = []

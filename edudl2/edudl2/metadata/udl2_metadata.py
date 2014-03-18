@@ -293,7 +293,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('score_claim_4_min', SmallInteger, nullable=True),
                                   Column('score_claim_4_max', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                                  Column('asmt_type', String(16), nullable=False),
+                                  Column('asmt_type', String(32), nullable=False),
                                   Column('asmt_subject', String(32), nullable=False),
                                   Column('asmt_year', SmallInteger, nullable=False),
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),

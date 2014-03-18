@@ -38,6 +38,8 @@ class ValidateSchemaChange(unittest.TestCase):
         self.udl_connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        metadata = self.ed_connector.get_metadata(schema_name=guid_batch_id)
+        metadata.drop_all()
 
     # Run the pipeline
     def run_udl_pipeline(self):
@@ -72,7 +74,7 @@ class ValidateSchemaChange(unittest.TestCase):
 
     #Validate that for given batch guid data loded on star schema and student_rec_id in not -1
     def validate_edware_database(self, ed_connector):
-            edware_table = ed_connector.get_table(FACT_TABLE)
+            edware_table = ed_connector.get_table(FACT_TABLE, schema_name=guid_batch_id)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
             output_val = select([edware_table.c.student_rec_id]).where(edware_table.c.batch_guid == guid_batch_id)
             output_data = ed_connector.execute(output).fetchall()

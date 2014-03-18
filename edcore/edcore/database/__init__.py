@@ -1,5 +1,5 @@
-from database.generic_connector import setup_db_connection_from_ini
-from database.connector import IDbUtil
+from edschema.database.generic_connector import setup_db_connection_from_ini
+from edschema.database.connector import IDbUtil
 from zope.component import getUtilitiesFor
 from edcore.database.datasource import setup_tenant_db_connection
 

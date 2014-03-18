@@ -7,7 +7,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from sqlalchemy.sql.expression import select
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from services.tasks import health_check
 import pyramid.threadlocal
 from edcore.database import get_data_source_names

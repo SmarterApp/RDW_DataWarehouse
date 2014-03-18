@@ -522,6 +522,20 @@
                 {
                     "display": "Student Assessment Results",
                     "value": "studentAssessment"
+                },
+                {
+                    "display": "Student Registration Statistics",
+                    "value": "studentRegistrationStatistics"
+                }
+            ]
+        },
+        "academicYear": {
+            "name": "Academic Year",
+            "key": "academicYear",
+            "options": [
+                {
+                    "display": "2014 - 2015",
+                    "value": "2015"
                 }
             ]
         },

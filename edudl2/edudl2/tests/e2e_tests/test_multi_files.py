@@ -8,7 +8,7 @@ import os
 import shutil
 import subprocess
 from time import sleep
-from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 
@@ -29,13 +29,14 @@ class ValidateMultiFiles(unittest.TestCase):
                      'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
         self.tenant_dir = TENANT_DIR
         self.connector = get_udl_connection()
+        self.target_connector = get_target_connection()
 
-#teardown tenant folder
+    #teardown tenant folder
     def tearDown(self):
         shutil.rmtree(self.tenant_dir)
         self.connector.close_connection()
 
-#Delete all data from Batch table
+    #Delete all data from Batch table
     def empty_batch_table(self, connector):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         result = connector.execute(batch_table.delete())
@@ -45,7 +46,7 @@ class ValidateMultiFiles(unittest.TestCase):
         print(number_of_row)
         print("Sucessfully delete all data from Batch Table")
 
-#Run UDL
+    #Run UDL
     def udl_run(self):
         self.conf = udl2_conf
         self.copy_file_to_tmp()
@@ -58,7 +59,7 @@ class ValidateMultiFiles(unittest.TestCase):
         returncode = p.wait()
         self.check_job_completion(self.connector)
 
-#Copy file to tenant folder
+    #Copy file to tenant folder
     def copy_file_to_tmp(self):
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
@@ -80,16 +81,21 @@ class ValidateMultiFiles(unittest.TestCase):
             result = connector.execute(query).fetchall()
         print('Waited for', timer, 'second(s) for job to complete.')
 
-#Connect to UDL database through config_file
+    #Connect to UDL database through config_file
     def connect_verify_udl(self, connector):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
         query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
         result = connector.execute(query).fetchall()
         number_of_guid = len(result)
         self.assertEqual(number_of_guid, 3)
-        print(result)
+        for batch in result:
+            self.drop_schema(batch[0])
 
-#Test method for edware db
+    def drop_schema(self, schema_name):
+        metadata = self.target_connector.get_metadata(schema_name=schema_name)
+        metadata.drop_all()
+
+    #Test method for edware db
     def test_database(self):
         self.empty_batch_table(self.connector)
         self.udl_run()

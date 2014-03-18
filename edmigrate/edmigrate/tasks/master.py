@@ -11,7 +11,6 @@ from edmigrate.tasks.nodes import registered_slaves, get_registered_slave_nodes_
 import edmigrate.utils.queries as queries
 import edmigrate.utils.migrate as migrate
 from edmigrate.settings.config import Config, get_setting
-from edmigrate.utils.migrate_cleanup import cleanup_tenant_batches
 
 MAX_RETRY = get_setting(Config.MAX_RETRIES)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
@@ -138,13 +137,3 @@ def verify_slaves_repl_status(tenant, slaves, lag_tolerence_in_bytes):
     status = queries.are_slaves_in_sync_with_master(tenant, slaves, lag_tolerence_in_bytes)
     # TODO: Error handling - If slaves are not in sync how long to wait to repeat this check
     return status
-
-
-@celery.task(name='task.edmigrate.master.cleanup', base=BaseTask)
-def cleanup(tenant_name):
-    """
-    Migrator cleanup up operation
-
-    """
-    # cleanup
-    cleanup_tenant_batches(tenant_name)

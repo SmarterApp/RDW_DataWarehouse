@@ -22,7 +22,7 @@ class IntToStarFTest(UDLTestHelper):
         self.load_type = 'assessment'
         self.tenant_code = 'edware'
         self.conf = move_to_target_setup.generate_conf(self.guid_batch, self.phase_number,
-                                                       self.load_type, self.tenant_code)
+                                                       self.load_type, self.tenant_code, target_schema='edware')
         self.match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         self.load_to_dim_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task"
         self.load_to_fact_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_fact"

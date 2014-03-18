@@ -3,12 +3,12 @@ Created on Mar 1, 2013
 
 @author: dip
 '''
-from database.generic_connector import setup_db_connection_from_ini
+from edschema.database.generic_connector import setup_db_connection_from_ini
 import os
-from database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir
 import argparse
 import configparser
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from edcore.database import get_data_source_names
 from edcore.database import initialize_db
@@ -30,6 +30,7 @@ def main(config_file, resource_dir, tenant_to_update, state_code):
         if tenant_to_update in tenant:
             update_state_code(tenant, state_code)
             update_aca_year(tenant)
+
 
 def delete_data(name):
     '''
@@ -59,20 +60,21 @@ def update_state_code(tenant, state_code):
         state_name_stmt = update(dim_inst_hier).values(state_name='California')
         connection.execute(state_name_stmt)
 
+
 def update_aca_year(tenant):
     '''Update acadamic year'''
     with DBConnection(tenant) as connection:
         dim_asmt = connection.get_table("dim_asmt")
-        dim_query = update(dim_asmt).where(dim_asmt.c.asmt_period_year == '2016').values({dim_asmt.c.asmt_period:'Spring 2015', 
-                                                                                            dim_asmt.c.asmt_period_year:'2015', 
-                                                                                            dim_asmt.c.effective_date :'20150101',
-                                                                                            dim_asmt.c.from_date:'20150101'})
+        dim_query = update(dim_asmt).where(dim_asmt.c.asmt_period_year == '2016').values({dim_asmt.c.asmt_period: 'Spring 2015',
+                                                                                          dim_asmt.c.asmt_period_year: '2015',
+                                                                                          dim_asmt.c.effective_date: '20150101',
+                                                                                          dim_asmt.c.from_date: '20150101'})
         fact_asmt = connection.get_table("fact_asmt_outcome")
-        fact_query = update(fact_asmt).where(fact_asmt.c.asmt_year == '2016').values({fact_asmt.c.asmt_year:'2015',
-                                                                                     fact_asmt.c.date_taken:'20150106',
-                                                                                     fact_asmt.c.date_taken_day:'6',
-                                                                                     fact_asmt.c.date_taken_month:'1',
-                                                                                     fact_asmt.c.date_taken_year:'2015'})
+        fact_query = update(fact_asmt).where(fact_asmt.c.asmt_year == '2016').values({fact_asmt.c.asmt_year: '2015',
+                                                                                     fact_asmt.c.date_taken: '20150106',
+                                                                                     fact_asmt.c.date_taken_day: '6',
+                                                                                     fact_asmt.c.date_taken_month: '1',
+                                                                                     fact_asmt.c.date_taken_year: '2015'})
         connection.execute(dim_query)
         connection.execute(fact_query)
 
@@ -99,7 +101,7 @@ if __name__ == '__main__':
         exit(-1)
 
     if __resource is None:
-        __resource = os.path.join(os.path.join(os.path.join(os.path.join(parent_dir, 'edschema'), 'database'), 'tests'), 'resources')
+        __resource = os.path.join(parent_dir, 'edschema', 'edschema', 'database', 'tests', 'resources')
 
     if os.path.exists(__resource) is False:
         print('Error: resources directory does not exist')

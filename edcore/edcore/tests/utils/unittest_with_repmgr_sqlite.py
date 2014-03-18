@@ -3,10 +3,10 @@ Created on Jan 31, 2014
 
 @author: ejen
 '''
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite, Unittest_with_sqlite_no_data_load
+from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite, Unittest_with_sqlite_no_data_load
 from sqlalchemy.ext.compiler import compiles
 from edcore.database.repmgr_connector import RepMgrDBConnection
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from edschema.metadata.repmgr_metadata import generate_repmgr_metadata
 from sqlalchemy.types import BigInteger
 
@@ -34,7 +34,7 @@ class UnittestRepMgrDBConnection(RepMgrDBConnection):
         super().__init__(tenant=get_unittest_tenant_name())
 
     def get_metadata(self, schema_name=None):
-        return super(RepMgrDBConnection, self).get_metadata(reflect=True, schema_name=None)
+        return super(RepMgrDBConnection, self).get_metadata(schema_name=None)
 
 
 # Fixes failing test for schema definitions with BigIntegers

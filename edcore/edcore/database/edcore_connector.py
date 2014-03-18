@@ -3,7 +3,7 @@ Created on Mar 5, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnection
+from edschema.database.connector import DBConnection
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import get_current_request
 from edschema.metadata.ed_metadata import generate_ed_metadata

@@ -19,3 +19,5 @@ class Constants():
     ASMNT_OUTCOME_REC_ID = 'asmnt_outcome_rec_id'
     WHERE_TAKEN_NAME = 'where_taken_name'
     STATUS = 'status'
+    STATUS_CREATED = 'C'
+    STATUS_DELETED = 'D'

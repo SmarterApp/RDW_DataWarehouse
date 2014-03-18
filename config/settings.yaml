@@ -195,6 +195,21 @@ common:
       sftp.private_key_file: /var/lib/jenkins/.ssh/id_rsa
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
+    migrate_source:
+      db:
+        cat:
+          schema_name: edware
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+    migrate_dest:
+      db:
+        cat:
+          schema_name: edware_prod
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+    edware_rep:
+      db:
+        cat:
+          schema_name: repmgr_edware_pg_cluster
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -531,7 +546,7 @@ development:
     edware_stats:
       db:
         schema_name: edware_sds_1_13
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats      
     edware_rep:
       db:
         cat:
@@ -672,10 +687,10 @@ jenkins_int:
     edware:
       db:
         cat:
-          schema_name: edware
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         dog:
-          schema_name: edware
+          schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:
       db:

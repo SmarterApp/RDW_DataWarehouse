@@ -1,4 +1,4 @@
-define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"], ($, edwareDownload, edwarePreferences, edwareClientStorage) ->
+define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", "edwareDataProxy"], ($, edwareDownload, edwarePreferences, edwareClientStorage, edwareDataProxy) ->
 
   CSVDownloadModal = edwareDownload.CSVDownloadModal
 
@@ -11,7 +11,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
   $.ajax {
     dataType: "json"
     async: false
-    url: "resources/CSVOptionsConfig.json"
+    url: "../resources/CSVOptionsConfig.json"
     success: (data) ->
       config = data.CSVOptions
   }
@@ -29,9 +29,8 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
       $("body").append "<div id='gridTable'></div>"
       # mock ajax call
       options = {}
-      $.ajaxBackup = $.ajax
-      $.ajax = (url, param) ->
-        options = param
+      $.ajaxBackup = edwareDataProxy.getDatafromSource
+      edwareDataProxy.getDatafromSource = (url, param) ->
         done: (callback) ->
           callback ({'fileName': 'i', 'tasks': ['status': 'ok']})
         fail: (callback) ->
@@ -41,7 +40,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
       $("#CSVDownloadContainer").remove()
       $("#DownloadMenuContainer").remove()
       $("#gridTable").remove()
-      $.ajax = $.ajaxBackup
+      edwareDataProxy.getDatafromSource = $.ajaxBackup
 
   test "Test download widget", ->
     ok edwareDownload, "Should define download widget"
@@ -71,7 +70,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
     dropdown = secondOption.closest('.btn-group').children('span.dropdown-display')
     actualText = dropdown.text()
     equal actualText, secondOption.text(), "Click events should set event target text to dropdown menu"
-    
+
   test "Test send request", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('ul input').attr('checked','')
@@ -79,7 +78,8 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
     expectParams = {
       "asmtType": ["summative","interim"],
       "extractType": ["studentAssessment"],
-      "asmtSubject": ["Math","ELA"]
+      "asmtSubject": ["Math","ELA"],
+      "stateCode": ["NC"]
     }
     deepEqual params, expectParams, "Should be able to get all user selected parameters"
 
@@ -92,18 +92,18 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     model.sendRequest '/services/extract'
     ok $('#message').find('.success')[0], "Should display success message"
- 
+
   test "Test request button click event", 1, ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('.btn-primary').trigger 'click'
     ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
-        
-  test "Test validating parameters", ->    
+
+  test "Test validating parameters", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('.dropdown-menu input').removeAttr 'checked'
     $('.btn-primary').trigger 'click'
     ok $('#message').find('.error')[0], "Should display invalid message"
-  
+
   test "Test invalid selection", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('.dropdown-menu input').removeAttr 'checked'
@@ -123,12 +123,12 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage"],
     ok modal, "Modal should hide away backdrop from body element"
 
   test "Test send CSV request", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig);
+    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig)
     downloadMenu.sendCSVRequest()
     ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
 
   test "Test click export button", ->
-    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig);
+    downloadMenu = new DownloadMenu('#DownloadMenuContainer', downloadMenuConfig)
     downloadMenu.show()
     $('.btn-primary', '#DownloadMenuModal').trigger 'click'
     ok true, "Test"

@@ -1,4 +1,7 @@
+from pyramid.security import Allow
+import edauth
 from edauth.security.user import User
+from edcore.security.tenant import set_tenant_map
 from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request
 
 __author__ = 'ablum'
@@ -41,7 +44,10 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
         dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        self.__config.testing_securitypolicy(dummy_session)
+        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
+        self.__config.testing_securitypolicy(dummy_session.get_user())
+        set_tenant_map({'tomcat': 'NC'})
 
     def tearDown(self):
         # reset the registry
@@ -55,15 +61,15 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_create_task_info(self):
         params = {'stateCode': 'NC',
-                  'academicYear': '2015'}
+                  'academicYear': [2015]}
         user = User()
         results = _create_task_info("request_id", user, 'tenant', params)
         self.assertEqual(len(results), 4)
 
     def test_process_async_extraction_request(self):
         params = {'stateCode': 'NC',
-                  'academicYear': ['2015']}
+                  'academicYear': [2015]}
         response = process_async_extraction_request(params)
         self.assertIn('.zip.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
-        self.assertEqual(response['tasks'][0]['academicYear'], '2015')
+        self.assertEqual(response['tasks'][0]['academicYear'], 2015)

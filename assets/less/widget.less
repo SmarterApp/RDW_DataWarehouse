@@ -1492,6 +1492,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
                 label {
                     display: inline-block;
                     margin-top: 5px;
+                    padding-left: 0px;
                     color: @color-black;
                     width: 100%;
 
@@ -1505,8 +1506,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
                 }
 
                 li {
-                    margin-left: 10px;
-                    margin-right: 10px;
+                    padding: 0 10px;
                 }
 
                 &.checkbox-menu {
@@ -1582,7 +1582,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
             height: 26px;
             font-size: 14px;
 
-            &:nth-last-child(-n+2) {
+            &:nth-last-child(-n+3) {
                 border: none;
             }
 
@@ -1687,6 +1687,23 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
                 vertical-align: baseline;
                 padding-left: 10px;
             }
+        }
+    }
+
+    .academicYearArea {
+
+        font-size: 13px;
+
+        #academicYear {
+            margin-top: -3px;
+
+            ul {
+                min-width: 115px;
+            }
+        }
+
+        #selectedAcademicYear, .asmtYearButton {
+            font-size: 13px;
         }
     }
 

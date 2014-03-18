@@ -14,8 +14,14 @@ require [
     # Add filter to the page
     edwareDataProxy.getDataForFilter().done (configs)->
       filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
-        asmt = edwarePreferences.getAsmtPreference()
-        param.asmtType = asmt?.asmtType
+        param = mergeWithPreference(param)
         studentGrid.reload(param)
       filter.loadReport()
       filter.update {}
+
+  mergeWithPreference = (params)->
+    asmtYear = edwarePreferences.getAsmtYearPreference()
+    params['asmtYear'] = asmtYear if asmtYear
+    asmt = edwarePreferences.getAsmtPreference()
+    params.asmtType = asmt?.asmtType
+    params

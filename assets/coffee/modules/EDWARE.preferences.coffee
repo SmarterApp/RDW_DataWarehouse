@@ -14,6 +14,13 @@ define [
   $(document).on 'click', '#logout_button', () ->
     shortTermStorage.clear()
 
+  saveAsmtYearPreference = (year) ->
+    savePreferences {"asmtYear": year}
+
+  getAsmtYearPreference = () ->
+    pref = getPreferences() || {}
+    pref["asmtYear"]
+
   saveAsmtPreference = (asmt) ->
     savePreferences {"asmt" : asmt}
 
@@ -69,3 +76,5 @@ define [
   saveSelectedLanguage: saveSelectedLanguage
   getInterimInfo:getInterimInfo
   saveInterimInfo:saveInterimInfo
+  saveAsmtYearPreference: saveAsmtYearPreference
+  getAsmtYearPreference: getAsmtYearPreference

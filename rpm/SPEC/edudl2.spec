@@ -37,18 +37,23 @@ virtualenv-3.3 --distribute virtualenv/udl2
 source virtualenv/udl2/bin/activate
 
 cd ${WORKSPACE}/config
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edcore
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edschema
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edworker
+python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edudl2
+python setup.py clean --all
 python setup.py install
 cd -
 

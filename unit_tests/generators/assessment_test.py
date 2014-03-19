@@ -45,7 +45,7 @@ def test_pick_default_accommodation_code_four():
 
 
 def test_pick_performance_level():
-    cut_points = [10, 20, 30, 40]
+    cut_points = [10, 20, 30]
     perf_level = asmt_gen.pick_performance_level(5, cut_points)
     assert 1 == perf_level
     perf_level = asmt_gen.pick_performance_level(10, cut_points)

@@ -189,7 +189,7 @@ def pick_performance_level(score, cut_points):
         if score < cut_point:
             return i + 1
 
-    return len(cut_points)
+    return len(cut_points) + 1
 
 
 def _pick_default_accommodation_code(default_code):

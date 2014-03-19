@@ -5,7 +5,8 @@ from mocket.mocket import Mocket
 from edmigrate.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.tasks.slave import get_hostname, get_slave_node_id_from_hostname, check_iptable_has_blocked_machine, \
-    connect_pgpool, disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task, parse_iptable_output
+    connect_pgpool, disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task,\
+    parse_iptable_output, reset_slaves
 from edmigrate.utils.constants import Constants
 import subprocess
 
@@ -93,8 +94,30 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
             routing_key = None
             exchange = None
             conn = None
-            find_slave('localhost', None, None, None, None)
-        MockLogger.assert_called_once_with("localhost has no node_id")
+            find_slave(self.hostname, None, None, None, None)
+        MockLogger.assert_called_once_with("{hostname} has no node_id".format(hostname=self.hostname))
+
+    @skip("under development")
+    def test_reset_slaves_0(self):
+        with patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves') as MockConductor:
+            MockConductor.return_value = lambda: None
+            node_id = 1
+            routing_key = None
+            exchange = None
+            conn = None
+            reset_slaves(self.hostname, node_id, conn, exchange, routing_key)
+        MockConductor.assert_called_once_with(node_id, conn, exchange, routing_key)
+
+    @skip("under development")
+    def test_reset_slaves_1(self):
+        with patch('logging.Logger.info') as MockLogger:
+            MockLogger.return_value = lambda: None
+            node_id = None
+            routing_key = None
+            exchange = None
+            conn = None
+            reset_slaves('localhost', None, None, None, None)
+        MockLogger.assert_called_once_with("Fail to reset slaves iptables")
 
     @skip("under development")
     def test_connect_pgpool(self):

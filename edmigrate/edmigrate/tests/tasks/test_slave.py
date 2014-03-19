@@ -44,8 +44,7 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         self.assertEqual(hostname, self.hostname)
 
     def test_get_slave_node_id_from_hostname(self):
-        hostname = self.hostname
-        node_id = get_slave_node_id_from_hostname(hostname)
+        node_id = get_slave_node_id_from_hostname(self.hostname)
         self.assertEqual(node_id, self.node_id)
 
     def test_parse_iptable_output_0(self):
@@ -60,42 +59,36 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         found = parse_iptable_output(self.block_twice_output, self.pgpool)
         self.assertTrue(found)
 
-    def test_check_iptable_has_blocked_pgpool_0(self):
-        with patch('subprocess.check_output') as MockSubprocess:
-            MockSubprocess.return_value = self.noblock_firewall_output
-            result = check_iptable_has_blocked_machine(self.pgpool)
+    @patch('subprocess.check_output')
+    def test_check_iptable_has_blocked_pgpool_0(self, MockSubprocess):
+        MockSubprocess.return_value = self.noblock_firewall_output
+        result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertFalse(result)
 
-    def test_check_iptable_has_blocked_pgpool_1(self):
-        with patch('subprocess.check_output') as MockSubprocess:
-            MockSubprocess.return_value = self.block_once_output
-            result = check_iptable_has_blocked_machine(self.pgpool)
+    @patch('subprocess.check_output')
+    def test_check_iptable_has_blocked_pgpool_1(self, MockSubprocess):
+        MockSubprocess.return_value = self.block_once_output
+        result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertTrue(result)
 
-    def test_check_iptable_has_blocked_pgpool_2(self):
-        with patch('subprocess.check_output') as MockSubprocess:
-            MockSubprocess.return_value = self.block_twice_output
-            result = check_iptable_has_blocked_machine(self.pgpool)
+    @patch('subprocess.check_output')
+    def test_check_iptable_has_blocked_pgpool_2(self, MockSubprocess):
+        MockSubprocess.return_value = self.block_twice_output
+        result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertTrue(result)
 
-    def test_find_slave_0(self):
-        with patch('edmigrate.utils.reply_to_conductor.register_slave') as MockConductor:
-            MockConductor.return_value = lambda: None
-            node_id = 1
-            routing_key = None
-            exchange = None
-            conn = None
-            find_slave('localhost', node_id, conn, exchange, routing_key)
+    @patch('edmigrate.utils.reply_to_conductor.register_slave')
+    def test_find_slave_0(self, MockConductor):
+        MockConductor.return_value = lambda: None
+        node_id, routing_key, exchange, conn = 1, None, None, None
+        find_slave('localhost', node_id, conn, exchange, routing_key)
         MockConductor.assert_called_once_with(node_id, conn, exchange, routing_key)
 
-    def test_find_slave_1(self):
-        with patch('logging.Logger.info') as MockLogger:
-            MockLogger.return_value = lambda: None
-            node_id = None
-            routing_key = None
-            exchange = None
-            conn = None
-            find_slave(self.hostname, None, None, None, None)
+    @patch('logging.Logger.info')
+    def test_find_slave_1(self, MockLogger):
+        MockLogger.return_value = lambda: None
+        node_id, routing_key, exchange, conn = None, None, None, None
+        find_slave(self.hostname, node_id, conn, exchange, routing_key)
         MockLogger.assert_called_once_with("{hostname} has no node_id".format(hostname=self.hostname))
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -104,27 +97,11 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_reset_slaves_0(self, MockConductor, MockSubprocess):
-        print(edmigrate.settings.config.settings)
-        print(get_setting(Config.PGPOOL_HOSTNAME))
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.noblock_firewall_output
-        node_id = 1
-        routing_key = None
-        exchange = None
-        conn = None
+        node_id, routing_key, exchange, conn = 1, None, None, None
         reset_slaves(self.hostname, node_id, conn, exchange, routing_key)
         MockConductor.assert_called_once_with(node_id, conn, exchange, routing_key)
-
-    @skip("under development")
-    def test_reset_slaves_1(self):
-        with patch('logging.Logger.info') as MockLogger:
-            MockLogger.return_value = lambda: None
-            node_id = None
-            routing_key = None
-            exchange = None
-            conn = None
-            reset_slaves('localhost', None, None, None, None)
-        MockLogger.assert_called_once_with("Fail to reset slaves iptables")
 
     @skip("under development")
     def test_remove_iptable_rules(self):
@@ -132,12 +109,19 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @skip("under development")
     def test_add_iptable_rules(self):
-        self.assertTrue(Fasle)
+        self.assertTrue(False)
 
-    @skip("under development")
-    def test_connect_pgpool(self):
-        connect_pgpool()
-        self.assertEqual(True, False)
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwec.net'})
+    @patch("subprocess.check_output")
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
+    def test_connect_pgpool(self, MockConductor, MockSubprocess):
+        MockConductor.return_value = lambda: None
+        MockSubprocess.return_value = self.noblock_firewall_output
+        node_id, routing_key, exchange, conn = 1, None, None, None
+        connect_pgpool(self.hostname, node_id, conn, exchange, routing_key)
+        MockConductor.assert_called_once_with(node_id, conn, exchange, routing_key)
 
     @skip("under development")
     def test_disconnect_pgpool(self):

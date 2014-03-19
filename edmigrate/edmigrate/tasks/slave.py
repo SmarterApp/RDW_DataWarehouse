@@ -50,12 +50,11 @@ def check_iptable_has_blocked_machine(hostname):
     try:
         output = subprocess.check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
     except subprocess.CalledProcessError:
-        pass
+        logging.info("Slave has problem to use iptables, Please check with administrator")
     return parse_iptable_output(output, hostname)
 
 
 def remove_iptable_rules(hostname, max_retries):
-    status = False
     try:
         output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
                                          universal_newlines=True)
@@ -65,24 +64,18 @@ def remove_iptable_rules(hostname, max_retries):
                                              universal_newlines=True)
             max_retries -= 1
     except subprocess.CalledProcessError:
-        max_retries = -1
         logger.info("Slave failed to remove rules to reject {hostname}".format(hostname=hostname))
-    if not check_iptable_has_blocked_machine(hostname):
-        status = True
-    return status
+    return not check_iptable_has_blocked_machine(hostname)
 
 
 def add_iptable_rules(hostname):
-    status = False
     try:
         subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
                                 universal_newlines=True)
         sleep(Constants.REPLICATION_CHECK_INTERVAL)
     except subprocess.CalledProcessError:
         logger.info("Slave failed to add rules to reject {hostname}".format(hostname=hostname))
-    if check_iptable_has_blocked_machine(hostname):
-        status = True
-    return status
+    return check_iptable_has_blocked_machine(hostname)
 
 
 def connect_pgpool(host_name, node_id, conn, exchange, routing_key):

@@ -76,10 +76,15 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
             result = check_iptable_has_blocked_machine(self.pgpool)
         self.assertTrue(result)
 
-    @skip("under development")
-    def test_find_slave(self):
-        find_slave()
-        self.assertEqual(True, False)
+    def test_find_slave_0(self):
+        with patch('edmigrate.utils.reply_to_conductor.register_slave') as MockConductor:
+            MockConductor.return_value = lambda: None
+            #MockLogger.info.return_value = lambda: None
+            routing_key = None
+            exchange = None
+            conn = None
+            find_slave('localhost', 1, conn, exchange, routing_key)
+            MockConductor.assert_called_once_with(1, conn, exchange, routing_key)
 
     @skip("under development")
     def test_connect_pgpool(self):

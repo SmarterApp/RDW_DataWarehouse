@@ -19,7 +19,7 @@ from integration_tests.migrate_helper import start_migrate,\
     get_prod_table_count, get_stats_table_has_migrated_ingested_status,\
     setUpMigrationConnection
 from edcore.database.stats_connector import StatsDBConnection
-
+from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 @unittest.skip("skipping this test till till ready for jenkins")
@@ -43,6 +43,8 @@ class Test_Error_In_Migration(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        drop_target_schema(self.guid_batch_id)
+        
         #self.drop_schema(schema_name=self.guid_batch_id)
 
     def drop_schema(self, schema_name):
@@ -60,7 +62,6 @@ class Test_Error_In_Migration(unittest.TestCase):
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
-            print(number_of_row)
 
     def empty_stat_table(self):
         #Delete all data from udl_stats table
@@ -70,8 +71,8 @@ class Test_Error_In_Migration(unittest.TestCase):
             query = select([table])
             query_tab = conn.execute(query).fetchall()
             no_rows = len(query_tab)
-            print(no_rows)
-
+            self.assertEqual(no_rows, 0)
+            
     #Run UDL pipeline with file in tenant dir
     def run_udl_pipeline(self, guid_batch_id):
         self.conf = udl2_conf
@@ -109,19 +110,20 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Validate edware database
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
+            ed_connector.set_metadata(schema_name, reflect=True)
+            fact_table = ed_connector.get_table('fact_asmt_outcome')
             delete_output_data = select([fact_table.c.student_guid])
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
-            print(len(delete_output_table))
             self.assertEquals(len(delete_output_table),2,"Data has not been loaded into fact_table")
         ed_connector.close_connection()
 
     def validate_prepod_dim_tables(self, schema_name):
         with get_target_connection() as connection:
-            dim_inst_hier = connection.get_table('dim_inst_hier', schema_name)
-            dim_section = connection.get_table('dim_section', schema_name)
-            fact_asmt = connection.get_table('fact_asmt_outcome', schema_name)
-            dim_student = connection.get_table('dim_student', schema_name)
+            connection.set_metadata(schema_name, reflect=True)
+            dim_inst_hier = connection.get_table('dim_inst_hier')
+            dim_section = connection.get_table('dim_section')
+            fact_asmt = connection.get_table('fact_asmt_outcome')
+            dim_student = connection.get_table('dim_student')
             delete_output_data = select([fact_asmt.c.student_guid])
             delete_output_table = connection.execute(delete_output_data).fetchall()
             print(len(delete_output_table))
@@ -140,15 +142,15 @@ class Test_Error_In_Migration(unittest.TestCase):
         self.validate_edware_database(schema_name=self.guid_batch_id)
         self.validate_prepod_dim_tables(schema_name=self.guid_batch_id)
 
-#     def test_error_validation(self):
-#         self.empty_table()
-#         self.empty_stat_table()
-#         self.guid_batch_id = str(uuid4())
-#         self.run_udl_pipeline(self.guid_batch_id)
-#         self.validate_edware_database(schema_name=self.guid_batch_id)
-#         self.migrate_data()
-#         self.validate_udl_stats()
-#         self.validate_prod(self.guid_batch_id)
+    def test_error_validation(self):
+        self.empty_table()
+        self.empty_stat_table()
+        self.guid_batch_id = str(uuid4())
+        self.run_udl_pipeline(self.guid_batch_id)
+        self.validate_edware_database(schema_name=self.guid_batch_id)
+        self.migrate_data()
+        self.validate_udl_stats()
+        self.validate_prod(self.guid_batch_id)
 
     def validate_udl_stats(self):
         with StatsDBConnection() as conn:

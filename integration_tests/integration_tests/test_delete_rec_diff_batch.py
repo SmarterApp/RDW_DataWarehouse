@@ -108,7 +108,8 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Validate edware database
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
+            ed_connector.set_metadata(schema_name, reflect=True)
+            fact_table = ed_connector.get_table('fact_asmt_outcome')
             delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
             print(delete_output_table)

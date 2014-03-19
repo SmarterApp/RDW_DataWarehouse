@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+. /opt/virtualenv/smarter/bin/activate
+PIDFILE="/opt/edware/run/edmigrate.pid"
+EDMIGRATED="python -m edmigrate.main -d -p $PIDFILE"
+
+start() {
+	echo -n "Starting edmigrate: "
+	daemon $EDMIGRATED
+	RETVAL=$?
+}
+
+stop() {
+	echo -n "Stopping edmigrate: "
+	killproc -p $PIDFILE
+	RETVAL=$?
+}
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	*)
+
+	echo $"Usage: edmigrate {start|stop}"
+	exit 2
+esac
+deactivate
+exit $RETVAL

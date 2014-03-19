@@ -4,10 +4,22 @@
 @date: March 18, 2014
 """
 
+import data_generation.config.hierarchy as hier_config
+import data_generation.config.population as pop_config
+import sbac_data_generation.config.hierarchy as sbac_hier_config
+import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as asmt_gen
 import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
+
+
+def setup_module():
+    hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
+    pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california']
+    for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
+        if grade in pop_config.DEMOGRAPHICS['typical1']:
+            pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
 
 
 def test_assessment_outcome_get_object_set():
@@ -18,9 +30,9 @@ def test_assessment_outcome_get_object_set():
     ih = hier_gen.generate_institution_hierarchy(state, district, school)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
     section = enroll_gen.generate_section(clss, 'Section', 3, 2014)
-    asmt = asmt_gen.generate_assessment()
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
     student = pop_gen.generate_student(school, 3)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, ih)
 
     # Tests
     objs = asmt_out.get_object_set()

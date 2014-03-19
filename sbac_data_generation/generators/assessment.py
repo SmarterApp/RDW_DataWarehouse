@@ -43,11 +43,20 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     # Run the General generator
     sa = gen_asmt_generator.generate_assessment(SBACAssessment)
 
+    # Determine the period month
+    period_month = 9
+    if asmt_type == 'SUMMATIVE':
+        period_month = 4
+    elif 'Winter' in period:
+        period_month = 12
+    elif 'Spring' in period:
+        period_month = 2
+
     # Set other specifics
     sa.rec_id = gen_id_gen.get_rec_id('assessment')
     sa.asmt_type = asmt_type
     sa.period = period + ' ' + str((asmt_year + asmt_year_adj))
-    sa.period_year = asmt_year + asmt_year_adj
+    sa.period_year = asmt_year
     sa.version = sbac_config.ASMT_VERSION
     sa.subject = subject
     sa.claim_1_name = claims[0]['name']
@@ -84,7 +93,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa.claim_cut_point_2 = sbac_config.CLAIM_SCORE_CUT_POINT_2
     sa.from_date = from_date if from_date is not None else sbac_config.HIERARCHY_FROM_DATE
     sa.to_date = to_date if to_date is not None else sbac_config.HIERARCHY_TO_DATE
-    sa.effective_date = sbac_config.ASMT_EFFECTIVE_DATE
+    sa.effective_date = datetime.date(asmt_year + asmt_year_adj, period_month, 15)
     sa.most_recent = most_recent
 
     # Save and return the object
@@ -120,14 +129,17 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.inst_hierarchy = inst_hier
 
     # Create the date taken
+    year_adj = 1
     period_month = 9
     if assessment.asmt_type == 'SUMMATIVE':
+        year_adj = 0
         period_month = 4
     elif 'Winter' in assessment.period:
         period_month = 12
     elif 'Spring' in assessment.period:
+        year_adj = 0
         period_month = 2
-    sao.date_taken = datetime.date(assessment.period_year, period_month, 15)
+    sao.date_taken = datetime.date(assessment.period_year - year_adj, period_month, 15)
 
     # Create overall score and performance level
     sao.overall_score = int(random.uniform(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX))

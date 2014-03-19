@@ -52,7 +52,7 @@ class Constants():
     REPLICATION_STATUS_ACTIVE = 'f'
     REPLICATION_STATUS_UNSURE = 'n'
     REPLICATION_CHECK_INTERVAL = 0.001
-    REPLICATION_MAX_RETRIES = 5
+    REPLICATION_MAX_RETRIES = 100
     CONDUCTOR_EXCHANGE = 'edmigrate_conductor'
     CONDUCTOR_QUEUE = 'edmigrate_conductor'
     CONDUCTOR_ROUTING_KEY = 'edmigrate.conductor'

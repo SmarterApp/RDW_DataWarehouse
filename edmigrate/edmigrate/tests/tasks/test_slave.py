@@ -7,8 +7,9 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.tasks.slave import get_hostname, get_slave_node_id_from_hostname, check_iptable_has_blocked_machine, \
     connect_pgpool, disconnect_pgpool, connect_master, disconnect_master, find_slave, slave_task,\
     parse_iptable_output, reset_slaves
+from edmigrate.settings.config import Config, get_setting
+import edmigrate.settings.config
 from edmigrate.utils.constants import Constants
-import subprocess
 
 
 class SlaveTaskTest(Unittest_with_repmgr_sqlite):
@@ -97,15 +98,21 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
             find_slave(self.hostname, None, None, None, None)
         MockLogger.assert_called_once_with("{hostname} has no node_id".format(hostname=self.hostname))
 
-    @skip("under development")
-    def test_reset_slaves_0(self):
-        with patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves') as MockConductor:
-            MockConductor.return_value = lambda: None
-            node_id = 1
-            routing_key = None
-            exchange = None
-            conn = None
-            reset_slaves(self.hostname, node_id, conn, exchange, routing_key)
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwec.net'})
+    @patch("subprocess.check_output")
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    def test_reset_slaves_0(self, MockConductor, MockSubprocess):
+        print(edmigrate.settings.config.settings)
+        print(get_setting(Config.PGPOOL_HOSTNAME))
+        MockConductor.return_value = lambda: None
+        MockSubprocess.return_value = self.noblock_firewall_output
+        node_id = 1
+        routing_key = None
+        exchange = None
+        conn = None
+        reset_slaves(self.hostname, node_id, conn, exchange, routing_key)
         MockConductor.assert_called_once_with(node_id, conn, exchange, routing_key)
 
     @skip("under development")
@@ -118,6 +125,14 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
             conn = None
             reset_slaves('localhost', None, None, None, None)
         MockLogger.assert_called_once_with("Fail to reset slaves iptables")
+
+    @skip("under development")
+    def test_remove_iptable_rules(self):
+        self.assertTrue(False)
+
+    @skip("under development")
+    def test_add_iptable_rules(self):
+        self.assertTrue(Fasle)
 
     @skip("under development")
     def test_connect_pgpool(self):

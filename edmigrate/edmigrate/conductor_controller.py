@@ -4,7 +4,6 @@ Created on Mar 17, 2014
 @author: tosako
 '''
 import threading
-from edmigrate.utils.consumer import ConsumerThread
 from edmigrate.utils.slave_tracker import SlaveTracker
 from edmigrate.utils.conductor import Conductor
 import time
@@ -23,7 +22,6 @@ class ConductorController(threading.Thread):
         self.__slave_find_wait = slave_find_wait
         self.__interval = interval
         self.__slave_tracker = SlaveTracker()
-        self.__slave_tracker.reset()
         self.__conductor = Conductor()
 
     def run(self):
@@ -32,6 +30,7 @@ class ConductorController(threading.Thread):
             time.sleep(self.__interval)
 
     def process(self, slave_find_wait=5):
+        self.__slave_tracker.reset()
         self.__conductor.reset_slaves()
         self.__conductor.find_slaves()
         time.sleep(slave_find_wait)

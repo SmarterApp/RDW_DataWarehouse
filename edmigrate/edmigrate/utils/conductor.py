@@ -24,9 +24,11 @@ class Conductor:
 
     def reset_slaves(self):
         slave_task.apply_async((Constants.COMMAND_RESET_SLAVES, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
+        self.__log(Constants.COMMAND_RESET_SLAVES, None, None)
 
     def find_slaves(self):
         slave_task.apply_async((Constants.COMMAND_FIND_SLAVE, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
+        self.__log(Constants.COMMAND_FIND_SLAVE, None, None)
 
     def grouping_slaves(self):
         slave_ids = self.__slave_trakcer.get_slave_ids()
@@ -89,4 +91,6 @@ class Conductor:
 
     @staticmethod
     def __log(command, slave_group, group_ids):
+        if group_ids is None:
+            group_ids = []
         logger.debug('Sent command[' + command + '] to group name[' + (slave_group if slave_group else 'None') + '] ids[' + ', '.join(str(x) for x in group_ids) + ']')

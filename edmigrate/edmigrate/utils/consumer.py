@@ -37,7 +37,9 @@ class Consumer(ConsumerMixin):
         self.__slave_tracker = SlaveTracker()
 
     def get_consumers(self, Consumer, channel):
-        return [Consumer(self.queue, callbacks=[self.on_message])]
+        consumer = Consumer(self.queue, callbacks=[self.on_message])
+        consumer.purge()
+        return [consumer]
 
     def on_message(self, body, message):
         message_ack_command = body[Constants.MESSAGE_ACK_COMMAND]
@@ -57,7 +59,8 @@ class Consumer(ConsumerMixin):
                 self.__slave_tracker.set_pgpool_disconnected(node_id)
         except SlaveNotRegisteredException as e:
             logger.error(e)
-        message.ack()
+        finally:
+            message.ack()
 
 # if __name__ == "__main__":
 #    with BrokerConnection("amqp://guest:guest@localhost:5672") as connection:

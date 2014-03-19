@@ -65,23 +65,21 @@ def remove_iptable_rules(hostname, max_retries):
                                              universal_newlines=True)
             max_retries -= 1
     except subprocess.CalledProcessError:
-        status = True
         max_retries = -1
+        logger.info("Slave failed to remove rules to reject {hostname}".format(hostname=hostname))
     if not check_iptable_has_blocked_machine(hostname):
         status = True
     return status
 
 
-def add_iptable_rules(hostname, max_retries):
+def add_iptable_rules(hostname):
     status = False
     try:
-        while not check_iptable_has_blocked_machine(hostname) and max_retries >= 0:
-            subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
-                                    universal_newlines=True)
-            sleep(Constants.REPLICATION_CHECK_INTERVAL)
-            max_retries -= 1
+        subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
+                                universal_newlines=True)
+        sleep(Constants.REPLICATION_CHECK_INTERVAL)
     except subprocess.CalledProcessError:
-        max_retries = -1
+        logger.info("Slave failed to add rules to reject {hostname}".format(hostname=hostname))
     if check_iptable_has_blocked_machine(hostname):
         status = True
     return status
@@ -102,9 +100,8 @@ def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
 def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Blocking pgpool")
     # only add rules when there is no rule in iptables
-    max_retries = Constants.REPLICATION_MAX_RETRIES
     pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    status = add_iptable_rules(pgpool, max_retries)
+    status = add_iptable_rules(pgpool)
     if status:
         reply_to_conductor.acknowledgement_pgpool_disconnected(node_id, conn, exchange, routing_key)
     else:
@@ -126,9 +123,8 @@ def connect_master(host_name, node_id, conn, exchange, routing_key):
 def disconnect_master(host_name, node_id, conn, exchange, routing_key):
     logger.info("Slave: Blocking master via iptables")
     # only add rules when there is no rule in iptables
-    max_retries = Constants.REPLICATION_MAX_RETRIES
     master = get_setting(Config.MASTER_HOSTNAME)
-    status = add_iptable_rules(master, max_retries)
+    status = add_iptable_rules(master)
     if status:
         reply_to_conductor.acknowledgement_master_disconnected(node_id, conn, exchange, routing_key)
     else:
@@ -184,9 +180,11 @@ def slave_task(command, slaves):
         routing_key = Constants.CONDUCTOR_ROUTING_KEY
         if slaves is None or command in [Constants.COMMAND_FIND_SLAVE, Constants.COMMAND_RESET_SLAVES]:
             COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
-        else:
+        elif command in COMMAND_HANDLERS:
             if node_id in slaves:
                 COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
             else:
                 # ignore the command
-                pass
+                logger.info("{command} is ignored by slave".format(command=command))
+        else:
+            logger.info("{command} is not implemented by slave".format(command=command))

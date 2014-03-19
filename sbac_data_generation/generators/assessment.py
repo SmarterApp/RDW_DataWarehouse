@@ -192,15 +192,17 @@ def pick_performance_level(score, cut_points):
     return len(cut_points)
 
 
-def _pick_default_accommodation_code(code):
+def _pick_default_accommodation_code(default_code):
     """
-    Pick accomdation code of 4 to 10 randomly if code is 4.
+    Pick accommodation code of 4 to 10 randomly if code is 4.
     If code is 0 return 0.
 
-    @param code: The code to generate
+    @param default_code: The default code from configuration
     @return: Generated random code
     """
-    if code == 0:
-        return code
-    else:
+    if default_code == 0:
+        return default_code
+    elif default_code == 4:
         return random.randint(4, 10)
+    else:
+        raise ValueError('Accommodation code less than zero or greater than ten')

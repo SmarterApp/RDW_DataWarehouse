@@ -7,6 +7,8 @@ Unit tests for the project.sbac.generators.assessement module.
 
 import datetime
 
+from nose.tools import assert_raises
+
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
 import sbac_data_generation.config.hierarchy as sbac_hier_config
@@ -25,31 +27,21 @@ def setup_module():
             pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
 
 
+def test_pick_default_accommodation_code_negative():
+    assert_raises(ValueError, asmt_gen._pick_default_accommodation_code, -1)
+
+
+def test_pick_default_accommodation_code_too_big():
+    assert_raises(ValueError, asmt_gen._pick_default_accommodation_code, 5)
+
+
 def test_pick_default_accommodation_code_0():
     code = asmt_gen._pick_default_accommodation_code(0)
     assert code == 0
 
 
-def test_pick_default_accommodation_code_non_zero():
-    allowed_codes = [4, 5, 6, 7, 8, 9, 10]
-    code = asmt_gen._pick_default_accommodation_code(4)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(5)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(6)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(7)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(8)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(9)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(10)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(100)
-    assert code in allowed_codes
-    code = asmt_gen._pick_default_accommodation_code(-2)
-    assert code in allowed_codes
+def test_pick_default_accommodation_code_four():
+    assert 4 <= asmt_gen._pick_default_accommodation_code(4) <= 10
 
 
 def test_pick_performance_level():

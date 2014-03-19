@@ -79,12 +79,22 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
     def test_find_slave_0(self):
         with patch('edmigrate.utils.reply_to_conductor.register_slave') as MockConductor:
             MockConductor.return_value = lambda: None
-            #MockLogger.info.return_value = lambda: None
+            node_id = 1
             routing_key = None
             exchange = None
             conn = None
-            find_slave('localhost', 1, conn, exchange, routing_key)
-            MockConductor.assert_called_once_with(1, conn, exchange, routing_key)
+            find_slave('localhost', node_id, conn, exchange, routing_key)
+        MockConductor.assert_called_once_with(node_id, conn, exchange, routing_key)
+
+    def test_find_slave_1(self):
+        with patch('logging.Logger.info') as MockLogger:
+            MockLogger.return_value = lambda: None
+            node_id = None
+            routing_key = None
+            exchange = None
+            conn = None
+            find_slave('localhost', None, None, None, None)
+        MockLogger.assert_called_once_with("localhost has no node_id")
 
     @skip("under development")
     def test_connect_pgpool(self):

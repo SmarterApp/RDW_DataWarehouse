@@ -19,6 +19,7 @@ CELERY_BROADCAST_QUEUES = 'CELERY_BROADCAST_QUEUES'
 CELERY_QUEUE_NAME = 'name'
 CELERY_QUEUE_EXCHANGE = 'exchange'
 CELERY_QUEUE_ROUTING_KEY = 'key'
+CELERY_QUEUES_DURABLE = 'durable'
 CELERYBEAT_SCHEDULE_NAME = 'name'
 CELERYBEAT_SCHEDULE_TASK = 'task'
 CELERYBEAT_SCHEDULE_SCH = 'schedule'
@@ -81,10 +82,11 @@ def create_queue(queue):
     name = queue[CELERY_QUEUE_NAME]
     exchange_type = queue[CELERY_QUEUE_EXCHANGE]
     routing_key = queue[CELERY_QUEUE_ROUTING_KEY]
+    durable = queue[CELERY_QUEUES_DURABLE] if CELERY_QUEUES_DURABLE in queue else True
     if exchange_type == 'fanout':
-        return Broadcast(name)
+        return Broadcast(name, durable=durable)
     else:
-        return Queue(name, exchange=Exchange(type=exchange_type), routing_key=routing_key)
+        return Queue(name, exchange=Exchange(type=exchange_type), durable=durable, routing_key=routing_key)
 
 
 def configure_celeryd(name, prefix='celery'):

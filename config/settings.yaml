@@ -169,6 +169,7 @@ common:
         -   name: edmigrate_slaves
             exchange: fanout
             key: edmigrate_slaves
+            durable: False
       CELERY_ROUTES:
         - edmigrate.tasks.slave:
             queue: edmigrate_slaves

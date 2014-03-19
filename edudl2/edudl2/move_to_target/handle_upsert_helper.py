@@ -28,7 +28,7 @@ class _Matcher():
             return True
 
 
-class HanldeUpsertHelper():
+class HandleUpsertHelper():
     '''
     Query helper to handle upserts. This class provides useful
     functions to manipulate tables defined in move_to_target_conf

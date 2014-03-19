@@ -8,15 +8,15 @@ This test cover following two scenario:
 '''
 import os
 import shutil
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
-from sqlalchemy.schema import DropSchema
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
 import subprocess
 from uuid import uuid4
 import unittest
+from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 class Test_Err_Handling_Scenario(unittest.TestCase):
@@ -29,14 +29,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        self.drop_schema(schema_name=self.guid_batch_id)
-
-    def drop_schema(self, schema_name):
-        with get_target_connection() as ed_connector:
-            ed_connector.set_metadata(ed_connector, reflect=True)
-            metadata = ed_connector.get_metadata()
-            metadata.drop_all()
-            ed_connector.execute(DropSchema(schema_name, cascade=True))
+        drop_target_schema(self.guid_batch_id)
 
     def empty_table(self):
         #Delete all data from batch_table

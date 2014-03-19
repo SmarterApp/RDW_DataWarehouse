@@ -7,12 +7,12 @@ import os
 import shutil
 from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select, and_
-from sqlalchemy.schema import DropSchema
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
 import subprocess
 from uuid import uuid4
 import unittest
+from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 #@unittest.skip("test failed at jenkins, under investigation")
@@ -27,11 +27,7 @@ class Test_Insert_Delete(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        with get_target_connection() as ed_connector:
-            ed_connector.set_metadata(self.guid_batch_id, reflect=True)
-            metadata = ed_connector.get_metadata()
-            metadata.drop_all()
-            ed_connector.execute(DropSchema(self.guid_batch_id, cascade=True))
+        drop_target_schema(self.guid_batch_id)
 
     def empty_table(self):
         #Delete all data from batch_table
@@ -42,18 +38,6 @@ class Test_Insert_Delete(unittest.TestCase):
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
-            self.assertEqual(number_of_row, 0)
-
-        #Delete all table data from edware databse
-        with get_target_connection() as ed_connector:
-            table_list = ed_connector.get_metadata().sorted_tables
-            table_list.reverse()
-            for table in table_list:
-                all_table = ed_connector.execute(table.delete())
-                query1 = select([table])
-                result2 = ed_connector.execute(query1).fetchall()
-                number_of_row = len(result2)
-                self.assertEqual(number_of_row, 0)
 
     #Run UDL pipeline with file in tenant dir
     def run_udl_pipeline(self):

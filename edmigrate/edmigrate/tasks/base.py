@@ -27,4 +27,4 @@ class BaseTask(Task):
         # Write to udl stats table on exceptions
         # TODO:  get batch_guid
         batch_guid = 'temp'
-        update_udl_stats(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.STATUS_FAILED})
+        update_udl_stats(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.MIGRATE_FAILED})

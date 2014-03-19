@@ -35,9 +35,6 @@ common:
         cat.state_code: NC
         dog.state_code: CA
         echo: False
-    edware_rep:
-      db:
-        cat.state_code: NC
     trigger:
       recache:
         enable: False
@@ -153,9 +150,9 @@ common:
             exchange: direct
             key: extract_sync
     migrate:
-      replication.group: 'A'
       broadcast.queue: 'edmigrate_slaves'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
       master_scheduler.hour: 1
       master_scheduler.min: 0
       retries_allowed: 5
@@ -163,31 +160,20 @@ common:
       lag_tolerence_in_bytes: 10
       timeout: 30
     migrate.celery:
-      CELERY_IMPORTS: ('edmigrate.tasks.master', 'edmigrate.tasks.slave', 'edmigrate.tasks.nodes')
+      CELERY_IMPORTS: ('edmigrate.tasks.slave')
       CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 1
-      CELERY_DEFAULT_QUEUE: edmigrate_master
-      CELERY_DEFAULT_ROUTING_KEY: edmigrate
+      CELERY_DEFAULT_QUEUE: celery
+      CELERY_DEFAULT_ROUTING_KEY: default
       CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERYBEAT_SCHEDULE:
-        -   name: prepare-migration
-            task: task.edmigrate.master.prepare_edware_data_refresh
-            schedule: cron
-            hour: 1
-            min: 0
-        -   name: start-migration
-            task: task.edmigrate.master.start_edware_data_refresh
-            schedule: cron
-            hour: 1
-            min: 10
       CELERY_QUEUES:
-        -   name: edmigrate_master
-            exchange: direct
-            key: edmigrate_master
         -   name: edmigrate_slaves
             exchange: fanout
-            key: ''
+            key: edmigrate_slaves
+            durable: False
+      CELERY_ROUTES:
+        - edmigrate.tasks.slave:
+            queue: edmigrate_slaves
+            routing_keys: edmigrate_slaves
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -205,11 +191,6 @@ common:
         cat:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
-    edware_rep:
-      db:
-        cat:
-          schema_name: repmgr_edware_pg_cluster
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -343,6 +324,7 @@ qa:
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -545,28 +527,18 @@ development:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_1_13
-        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats      
+        schema_name: edware_stats
+        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware_stats
     edware_rep:
       db:
-        cat:
-          schema_name: repmgr_edware_pg_cluster
-          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-    migrate_source:
-      db:
-        cat:
-          schema_name: edware
-          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
-    migrate_dest:
-      db:
-        cat:
-          schema_name: edware_live
-          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        schema_name: repmgr_edware_pg_cluster
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     extract:
       gpg.homedir: ../../edware/config/gpg
       gpg.keyserver: None
     migrate:
-      pgpool.hostname: ''
+      pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
+      master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'
     migrate.celery:
       CELERYBEAT_SCHEDULE:
         -   name: prepare-migration
@@ -587,7 +559,6 @@ development:
 
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
-    smarter.reports.year_back: 5
     # Always generate pdf regardless if it exists in file system
     pdf:
       always_generate: True
@@ -801,7 +772,6 @@ air:
         metadata: ../../resource/air_idp_metadata.xml
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
-    smarter.reports.year_back: 5
     # Always generate pdf regardless if it exists in file system
     pdf:
       always_generate: True

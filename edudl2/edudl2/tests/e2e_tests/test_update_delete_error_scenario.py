@@ -6,21 +6,17 @@ This test cover following two scenario:
 1. Try to delete record not exist in production
 2. Try to delete same record twice in same migration batch( file having delete record twice for same student)
 '''
-import unittest
-import time
 import os
 import shutil
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.udl2.udl2_connector import get_udl_connection
 from edcore.database.stats_connector import StatsDBConnection
-from sqlalchemy.sql import select, delete, and_
-from sqlalchemy.schema import DropSchema
+from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
-import unittest
 from time import sleep
-import unittest
 import subprocess
-import tempfile
 from uuid import uuid4
+import unittest
+from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 class Test_Err_Handling_Scenario(unittest.TestCase):
@@ -33,13 +29,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        self.drop_schema(schema_name=self.guid_batch_id)
-
-    def drop_schema(self, schema_name):
-        with get_target_connection() as ed_connector:
-            metadata = ed_connector.get_metadata(schema_name=schema_name)
-            metadata.drop_all()
-            ed_connector.execute(DropSchema(schema_name, cascade=True))
+        drop_target_schema(self.guid_batch_id)
 
     def empty_table(self):
         #Delete all data from batch_table

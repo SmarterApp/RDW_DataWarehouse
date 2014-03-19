@@ -50,7 +50,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
     def delete_prod_tables(self):
         with get_prod_connection() as conn:
             # TODO: read from ini the name of schema
-            metadata = conn.get_metadata(schema_name='edware_prod')
+            metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
 

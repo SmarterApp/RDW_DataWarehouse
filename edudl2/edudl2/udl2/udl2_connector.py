@@ -102,6 +102,7 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
         'max_overflow': tenant_dict['max_overflow'],
         'echo': tenant_dict['echo'],
         'pool_size': tenant_dict['pool_size'],
+        'schema_name': schema_name
     }
     metadata = metadata_generator(schema_name)
-    setup_db_connection_from_ini(settings, '', metadata, datasource_name, allow_schema_create)
+    setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

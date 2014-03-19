@@ -56,7 +56,6 @@ def get_batches_to_migrate(tenant=None):
         if tenant:
             query = query.where(and_(udl_status_table.c.tenant == tenant))
         batches = connector.get_result(query)
-            # batches[row[Constants.BATCH_GUID]] = row
     return batches
 
 
@@ -122,7 +121,8 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     :returns number of record updated
     """
     delete_count = 0
-    source_table = source_connector.get_table(table_name, schema_name=schema_name)
+    source_connector.set_metadata(schema_name, reflect=True)
+    source_table = source_connector.get_table(table_name)
     # TODO: make it possible for composites
     primary_key = source_table.primary_key.columns.keys()[0]
     # if there is a status column, it's a candidate for deletes
@@ -263,14 +263,15 @@ def migrate_batch(batch):
     return rtn
 
 
-def start_migrate_daily_delta(tenant):
+def start_migrate_daily_delta(tenant=None):
     """migration starting point for a tenant
 
     :param tenant: Tenant name of the tenant to perform the migration
 
     :returns Nothing
     """
-    batches_to_migrate = get_batches_to_migrate(tenant)
+    batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     for batch in batches_to_migrate:
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
+        logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
         migrate_batch(batch=batch)

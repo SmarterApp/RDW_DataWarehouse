@@ -66,9 +66,6 @@ class Test_Error_In_Migration(unittest.TestCase):
         #Delete all data from udl_stats table
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
-            query = select([table.c.load_status])
-            result=conn.execute(query).fetchall()
-            print(result)
             conn.execute(table.delete())
             query = select([table])
             query_tab = conn.execute(query).fetchall()
@@ -115,25 +112,51 @@ class Test_Error_In_Migration(unittest.TestCase):
             fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
             delete_output_data = select([fact_table.c.student_guid])
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
+            print(len(delete_output_table))
             self.assertEquals(len(delete_output_table),2,"Data has not been loaded into fact_table")
         ed_connector.close_connection()
 
-    def test_validation(self):
-        time.sleep(15)
-        self.empty_table()
-        self.create_schema()
+    def validate_prepod_dim_tables(self, schema_name):
+        with get_target_connection() as connection:
+            dim_inst_hier = connection.get_table('dim_inst_hier', schema_name)
+            dim_section = connection.get_table('dim_section', schema_name)
+            fact_asmt = connection.get_table('fact_asmt_outcome', schema_name)
+            dim_student = connection.get_table('dim_student', schema_name)
+            delete_output_data = select([fact_asmt.c.student_guid])
+            delete_output_table = connection.execute(delete_output_data).fetchall()
+            print(len(delete_output_table))
+            tables = [dim_inst_hier, dim_section, fact_asmt, dim_student]
+            for table in tables: 
+                query = select([table])
+                result = connection.execute(query).fetchall()
+                print(len(result))
 
-    def test_error_validation(self):
+    def test_validation(self):
+        #time.sleep(15)
         self.empty_table()
         self.empty_stat_table()
-        self.create_schema()
-        self.migrate_data()
-        #self.validate_prod(guid_batch_id)
-
-    def create_schema(self):
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)
+        self.validate_prepod_dim_tables(schema_name=self.guid_batch_id)
+
+#     def test_error_validation(self):
+#         self.empty_table()
+#         self.empty_stat_table()
+#         self.guid_batch_id = str(uuid4())
+#         self.run_udl_pipeline(self.guid_batch_id)
+#         self.validate_edware_database(schema_name=self.guid_batch_id)
+#         self.migrate_data()
+#         self.validate_udl_stats()
+#         self.validate_prod(self.guid_batch_id)
+
+    def validate_udl_stats(self):
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            query = select([table.c.load_status])
+            result = conn.execute(query).fetchall()
+            expected_result = [('migrate.ingested',)]
+            self.assertEquals(result, expected_result)
 
     def migrate_data(self):
         start_migrate()
@@ -142,13 +165,13 @@ class Test_Error_In_Migration(unittest.TestCase):
         for result in results:
             self.assertEqual(result['load_status'], 'migrate.ingested')
 
-#     def validate_prod(self, guid_batch_id):
-#         with get_prod_connection() as conn:
-#             fact_table = conn.get_table('fact_asmt_outcome')
-#             query = select([fact_table.c.student_guid]).where(fact_table.c.batch_guid == guid_batch_id)
-#             result = conn.execute(query).fatchall()
-#             print(len(result))
-#             
+    def validate_prod(self, guid_batch_id):
+        with get_prod_connection() as conn:
+            fact_table = conn.get_table('fact_asmt_outcome')
+            query = select([fact_table.c.student_guid]).where(fact_table.c.batch_guid == guid_batch_id)
+            result = conn.execute(query).fetchall()
+            expected_no_rows = 2
+            self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

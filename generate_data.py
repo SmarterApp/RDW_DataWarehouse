@@ -146,9 +146,6 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rat
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
         ao2.date_taken += datetime.timedelta(days=5)
         return [ao, ao2]
-    elif random.random() < delete_rate:
-        # Set the original outcome object to deleted
-        ao.result_status = 'D'
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = 'D'
@@ -160,6 +157,9 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rat
 
         # Return
         return [ao, ao2]
+    elif random.random() < delete_rate:
+        # Set the original outcome object to deleted
+        ao.result_status = 'D'
 
     return [ao]
 

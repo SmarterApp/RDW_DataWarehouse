@@ -1,5 +1,5 @@
 """
-Unit tests for the project.sbac.generators.assessement module.
+Unit tests for the sbac_data_generation.generators.assessement module.
 
 @author: nestep
 @date: March 18, 2014

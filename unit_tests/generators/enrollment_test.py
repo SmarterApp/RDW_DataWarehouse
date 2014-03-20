@@ -1,5 +1,5 @@
 """
-Unit tests for the project.sbac.generators.enrollment module.
+Unit tests for the sbac_data_generation.generators.enrollment module.
 
 @author: nestep
 @date: March 20, 2014

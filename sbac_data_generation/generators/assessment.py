@@ -19,8 +19,8 @@ from sbac_data_generation.model.section import SBACSection
 from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None, most_recent=False,
-                        asmt_year_adj=0, save_to_mongo=True):
+def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None, most_recent=True,
+                        asmt_year_adj=0, claim_definitions=sbac_config.CLAIM_DEFINITIONS, save_to_mongo=True):
     """
     Generate an assessment object.
 
@@ -31,14 +31,15 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     @param from_date: Assessment from date
     @param to_date: Assessment to date
     @param most_recent: If the assessment is the most recent
-    @param asmt_yaer_adj: An amount to adjust the assessment period year by
+    @param asmt_year_adj: An amount to adjust the assessment period year by
+    @param claim_definitions: Definitions for claims to generate
     @param save_to_mongo: If the new assessment object should be saved to Mongo
     @returns: The assessment object
     """
     # Get the claim definitions for this subject
-    if subject not in sbac_config.CLAIM_DEFINITIONS:
+    if subject not in claim_definitions:
         raise KeyError("Subject '" + subject + "' not found in claim definitions")
-    claims = sbac_config.CLAIM_DEFINITIONS[subject]
+    claims = claim_definitions[subject]
 
     # Run the General generator
     sa = gen_asmt_generator.generate_assessment(SBACAssessment)
@@ -133,38 +134,38 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     period_month = 9
     if assessment.asmt_type == 'SUMMATIVE':
         year_adj = 0
-        period_month = 4
+        period_month = 5
     elif 'Winter' in assessment.period:
         period_month = 12
     elif 'Spring' in assessment.period:
         year_adj = 0
-        period_month = 2
+        period_month = 3
     sao.date_taken = datetime.date(assessment.period_year - year_adj, period_month, 15)
 
     # Create overall score and performance level
     sao.overall_score = int(random.uniform(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX))
     sao.overall_score_range_min = sao.overall_score - 20 if sao.overall_score > sbac_config.ASMT_SCORE_MIN + 20 else sbac_config.ASMT_SCORE_MIN
     sao.overall_score_range_max = sao.overall_score + 20 if sao.overall_score < sbac_config.ASMT_SCORE_MAX - 20 else sbac_config.ASMT_SCORE_MAX
-    sao.overall_perf_lvl = pick_performance_level(sao.overall_score, overall_cut_points)
+    sao.overall_perf_lvl = _pick_performance_level(sao.overall_score, overall_cut_points)
 
     # Create claim scores and performance levels
     sao.claim_1_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_1_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_1_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-    sao.claim_1_perf_lvl = pick_performance_level(sao.claim_1_score, claim_cut_points)
+    sao.claim_1_perf_lvl = _pick_performance_level(sao.claim_1_score, claim_cut_points)
     sao.claim_2_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_2_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_2_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-    sao.claim_2_perf_lvl = pick_performance_level(sao.claim_2_score, claim_cut_points)
+    sao.claim_2_perf_lvl = _pick_performance_level(sao.claim_2_score, claim_cut_points)
     sao.claim_3_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
     sao.claim_3_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
     sao.claim_3_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-    sao.claim_3_perf_lvl = pick_performance_level(sao.claim_3_score, claim_cut_points)
+    sao.claim_3_perf_lvl = _pick_performance_level(sao.claim_3_score, claim_cut_points)
     if assessment.claim_4_name is not None:
         sao.claim_4_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
         sao.claim_4_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
         sao.claim_4_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
-        sao.claim_4_perf_lvl = pick_performance_level(sao.claim_4_score, claim_cut_points)
+        sao.claim_4_perf_lvl = _pick_performance_level(sao.claim_4_score, claim_cut_points)
 
     # Create accommodations details
     sao.acc_asl_video_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_asl_video_embed'][assessment.subject])
@@ -189,7 +190,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     return sao
 
 
-def pick_performance_level(score, cut_points):
+def _pick_performance_level(score, cut_points):
     """
     Pick the performance level for a given score and cut points.
 

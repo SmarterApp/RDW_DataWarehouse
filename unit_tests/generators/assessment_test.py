@@ -27,6 +27,283 @@ def setup_module():
             pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
 
 
+def test_generate_assessment():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.asmt_type == 'SUMMATIVE'
+    assert asmt.period == 'Spring 2015'
+    assert asmt.period_year == 2015
+    assert asmt.version == 'V1'
+    assert asmt.subject == 'Math'
+    assert asmt.from_date == datetime.date(2012, 9, 1)
+    assert asmt.to_date == datetime.date(9999, 12, 31)
+    assert asmt.most_recent
+
+
+def test_generate_assessment_invalid_subject():
+    assert_raises(KeyError, asmt_gen.generate_assessment, 'SUMMATIVE', 'Spring', 2015, 'Subject', claim_definitions={})
+
+
+def test_generate_assessment_claims_ela():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
+    assert asmt.claim_1_name == 'Reading'
+    assert asmt.claim_1_score_min == 1200
+    assert asmt.claim_1_score_max == 2400
+    assert asmt.claim_1_score_weight == .2
+    assert asmt.claim_2_name == 'Writing'
+    assert asmt.claim_2_score_min == 1200
+    assert asmt.claim_2_score_max == 2400
+    assert asmt.claim_2_score_weight == .25
+    assert asmt.claim_3_name == 'Listening'
+    assert asmt.claim_3_score_min == 1200
+    assert asmt.claim_3_score_max == 2400
+    assert asmt.claim_3_score_weight == .25
+    assert asmt.claim_4_name == 'Research & Inquiry'
+    assert asmt.claim_4_score_min == 1200
+    assert asmt.claim_4_score_max == 2400
+    assert asmt.claim_4_score_weight == .3
+
+
+def test_generate_assessment_claims_math():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.claim_1_name == 'Concepts & Procedures'
+    assert asmt.claim_1_score_min == 1200
+    assert asmt.claim_1_score_max == 2400
+    assert asmt.claim_1_score_weight == .4
+    assert asmt.claim_2_name == 'Problem Solving and Modeling & Data Analysis'
+    assert asmt.claim_2_score_min == 1200
+    assert asmt.claim_2_score_max == 2400
+    assert asmt.claim_2_score_weight == .45
+    assert asmt.claim_3_name == 'Communicating Reasoning'
+    assert asmt.claim_3_score_min == 1200
+    assert asmt.claim_3_score_max == 2400
+    assert asmt.claim_3_score_weight == .15
+    assert asmt.claim_4_name is None
+    assert asmt.claim_4_score_min is None
+    assert asmt.claim_4_score_max is None
+    assert asmt.claim_4_score_weight is None
+
+
+def test_generate_assessment_perf_lvl_names():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.perf_lvl_name_1 == 'Minimal Understanding'
+    assert asmt.perf_lvl_name_2 == 'Partial Understanding'
+    assert asmt.perf_lvl_name_3 == 'Adequate Understanding'
+    assert asmt.perf_lvl_name_4 == 'Thorough Understanding'
+    assert asmt.perf_lvl_name_5 is None
+
+
+def test_generate_assessment_claim_perf_lvl_names():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.claim_perf_lvl_name_1 == 'Below Standard'
+    assert asmt.claim_perf_lvl_name_2 == 'At/Near Standard'
+    assert asmt.claim_perf_lvl_name_3 == 'Above Standard'
+
+
+def test_generate_assessment_cut_points():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.overall_cut_point_1 == 1400
+    assert asmt.overall_cut_point_2 == 1800
+    assert asmt.overall_cut_point_3 == 2100
+    assert asmt.overall_cut_point_4 is None
+
+
+def test_generate_assessment_overall_scores():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.overall_score_min == 1200
+    assert asmt.overall_score_max == 2400
+    assert asmt.overall_cut_point_2 == 1800
+    assert asmt.overall_cut_point_3 == 2100
+    assert asmt.overall_cut_point_4 is None
+
+
+def test_generate_assessment_summative_effective_date():
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    assert asmt.period_year == 2015
+    assert asmt.effective_date == datetime.date(2015, 4, 15)
+
+
+def test_generate_assessment_interim_fall_effective_date():
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math', asmt_year_adj=-1)
+    assert asmt.period_year == 2015
+    assert asmt.effective_date == datetime.date(2014, 9, 15)
+
+
+def test_generate_assessment_interim_winter_effective_date():
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math', asmt_year_adj=-1)
+    assert asmt.period_year == 2015
+    assert asmt.effective_date == datetime.date(2014, 12, 15)
+
+
+def test_generate_assessment_interim_spring_effective_date():
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math')
+    assert asmt.period_year == 2015
+    assert asmt.effective_date == datetime.date(2015, 2, 15)
+
+
+def test_generate_assessment_outcome_scores():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Tests
+    assert 1200 <= asmt_out.overall_score <= 2400
+    assert 1200 <= asmt_out.overall_score_range_min <= 2400
+    assert 1200 <= asmt_out.overall_score_range_max <= 2400
+    assert 1200 <= asmt_out.claim_1_score <= 2400
+    assert 1200 <= asmt_out.claim_1_score_range_min <= 2400
+    assert 1200 <= asmt_out.claim_1_score_range_max <= 2400
+    assert 1200 <= asmt_out.claim_2_score <= 2400
+    assert 1200 <= asmt_out.claim_2_score_range_min <= 2400
+    assert 1200 <= asmt_out.claim_2_score_range_max <= 2400
+    assert 1200 <= asmt_out.claim_3_score <= 2400
+    assert 1200 <= asmt_out.claim_3_score_range_min <= 2400
+    assert 1200 <= asmt_out.claim_3_score_range_max <= 2400
+
+
+def test_generate_assessment_outcome_summative_taken_date():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Test
+    assert asmt_out.date_taken == datetime.date(2015, 5, 15)
+
+
+def test_generate_assessment_outcome_interim_fall_taken_date():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Test
+    assert asmt_out.date_taken == datetime.date(2014, 9, 15)
+
+
+def test_generate_assessment_outcome_interim_winter_taken_date():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Test
+    assert asmt_out.date_taken == datetime.date(2014, 12, 15)
+
+
+def test_generate_assessment_outcome_interim_spring_taken_date():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Test
+    assert asmt_out.date_taken == datetime.date(2015, 3, 15)
+
+
+def test_generate_assessment_outcome_accommodations_ela():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Tests
+    assert 4 <= asmt_out.acc_asl_video_embed <= 10
+    assert 4 <= asmt_out.acc_asl_human_nonembed <= 10
+    assert 4 <= asmt_out.acc_braile_embed <= 10
+    assert 4 <= asmt_out.acc_closed_captioning_embed <= 10
+    assert 4 <= asmt_out.acc_text_to_speech_embed <= 10
+    assert asmt_out.acc_abacus_nonembed == 0
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
+    assert asmt_out.acc_calculator_nonembed == 0
+    assert asmt_out.acc_multiplication_table_nonembed == 0
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
+    assert 4 <= asmt_out.acc_read_aloud_nonembed <= 10
+    assert 4 <= asmt_out.acc_scribe_nonembed <= 10
+    assert 4 <= asmt_out.acc_speech_to_text_nonembed <= 10
+    assert 4 <= asmt_out.acc_streamline_mode <= 10
+
+
+def test_generate_assessment_outcome_accommodations_math():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Tests
+    assert 4 <= asmt_out.acc_asl_video_embed <= 10
+    assert 4 <= asmt_out.acc_asl_human_nonembed <= 10
+    assert 4 <= asmt_out.acc_braile_embed <= 10
+    assert asmt_out.acc_closed_captioning_embed == 0
+    assert asmt_out.acc_text_to_speech_embed == 0
+    assert 4 <= asmt_out.acc_abacus_nonembed <= 10
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
+    assert 4 <= asmt_out.acc_calculator_nonembed <= 10
+    assert 4 <= asmt_out.acc_multiplication_table_nonembed <= 10
+    assert 4 <= asmt_out.acc_alternate_response_options_nonembed <= 10
+    assert asmt_out.acc_read_aloud_nonembed == 0
+    assert asmt_out.acc_scribe_nonembed == 0
+    assert asmt_out.acc_speech_to_text_nonembed == 0
+    assert 4 <= asmt_out.acc_streamline_mode <= 10
+
+
+def test_pick_performance_levels():
+    cut_points = [1600, 1800, 2100]
+    assert asmt_gen._pick_performance_level(1390, cut_points) == 1
+    assert asmt_gen._pick_performance_level(1790, cut_points) == 2
+    assert asmt_gen._pick_performance_level(1810, cut_points) == 3
+    assert asmt_gen._pick_performance_level(2110, cut_points) == 4
+
+
+def test_pick_performance_level_on_cut_points():
+    cut_points = [1600, 1800, 2100]
+    assert asmt_gen._pick_performance_level(1600, cut_points) == 2
+    assert asmt_gen._pick_performance_level(1800, cut_points) == 3
+    assert asmt_gen._pick_performance_level(2100, cut_points) == 4
+
+
 def test_pick_default_accommodation_code_negative():
     assert_raises(ValueError, asmt_gen._pick_default_accommodation_code, -1)
 
@@ -42,109 +319,3 @@ def test_pick_default_accommodation_code_0():
 
 def test_pick_default_accommodation_code_four():
     assert 4 <= asmt_gen._pick_default_accommodation_code(4) <= 10
-
-
-def test_pick_performance_level():
-    cut_points = [10, 20, 30]
-    perf_level = asmt_gen.pick_performance_level(5, cut_points)
-    assert 1 == perf_level
-    perf_level = asmt_gen.pick_performance_level(10, cut_points)
-    assert 2 == perf_level
-    perf_level = asmt_gen.pick_performance_level(-2, cut_points)
-    assert 1 == perf_level
-    perf_level = asmt_gen.pick_performance_level(300, cut_points)
-    assert 4 == perf_level
-
-
-def test_generate_assessment_sbac():
-    # Create the object
-    assmt_type = 'SUMMATIVE'
-    period_month = 'Spring'
-    assmt_full_period = 'Spring 2015'
-    period_year = 2015
-    assmt_subject = 'ELA'
-    sbac_assmt = asmt_gen.generate_assessment(assmt_type, period_month, period_year, assmt_subject)
-
-    # Tests
-    assert assmt_type == sbac_assmt.asmt_type
-    assert assmt_full_period == sbac_assmt.period
-    assert period_year == sbac_assmt.period_year
-    assert 'V1' == sbac_assmt.version
-    assert assmt_subject == sbac_assmt.subject
-    assert 'Reading' == sbac_assmt.claim_1_name
-    assert 'Writing' == sbac_assmt.claim_2_name
-    assert 'Listening' == sbac_assmt.claim_3_name
-    assert 'Research & Inquiry' == sbac_assmt.claim_4_name
-    assert 'Minimal Understanding' == sbac_assmt.perf_lvl_name_1
-    assert 'Partial Understanding' == sbac_assmt.perf_lvl_name_2
-    assert 'Adequate Understanding' == sbac_assmt.perf_lvl_name_3
-    assert 'Thorough Understanding' == sbac_assmt.perf_lvl_name_4
-    assert None == sbac_assmt.perf_lvl_name_5
-    assert 1200 == sbac_assmt.overall_score_min
-    assert 2400 == sbac_assmt.overall_score_max
-    assert 1200 == sbac_assmt.claim_1_score_min
-    assert 2400 == sbac_assmt.claim_1_score_max
-    assert 0.2 == sbac_assmt.claim_1_score_weight
-    assert 1200 == sbac_assmt.claim_2_score_min
-    assert 2400 == sbac_assmt.claim_2_score_max
-    assert 0.25 == sbac_assmt.claim_2_score_weight
-    assert 1200 == sbac_assmt.claim_3_score_min
-    assert 2400 == sbac_assmt.claim_3_score_max
-    assert 0.25 == sbac_assmt.claim_3_score_weight
-    assert 1200 == sbac_assmt.claim_4_score_min
-    assert 2400 == sbac_assmt.claim_4_score_max
-    assert 0.30 == sbac_assmt.claim_4_score_weight
-    assert 'Below Standard' == sbac_assmt.claim_perf_lvl_name_1
-    assert 'At/Near Standard' == sbac_assmt.claim_perf_lvl_name_2
-    assert 'Above Standard' == sbac_assmt.claim_perf_lvl_name_3
-    assert 1400 == sbac_assmt.overall_cut_point_1
-    assert 1800 == sbac_assmt.overall_cut_point_2
-    assert 2100 == sbac_assmt.overall_cut_point_3
-    assert None == sbac_assmt.overall_cut_point_4
-    assert 1600 == sbac_assmt.claim_cut_point_1
-    assert 2000 == sbac_assmt.claim_cut_point_2
-    assert datetime.date(2012, 9, 1) == sbac_assmt.from_date
-    assert datetime.date(9999, 12, 31) == sbac_assmt.to_date
-    assert False == sbac_assmt.most_recent
-
-
-def test_generate_assessment_outcome():
-    # Create the objects
-    sbac_assmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
-    sbac_state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    sbac_district = hier_gen.generate_district('Small Average', sbac_state)
-    sbac_school = hier_gen.generate_school('Elementary School', sbac_district)
-    sbac_class = enroll_gen.generate_class('Class', 'ELA', sbac_school)
-    section = enroll_gen.generate_section(sbac_class, 'Section', 3, 2015)
-    student = pop_gen.generate_student(sbac_school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(sbac_state, sbac_district, sbac_school)
-    assmt_outcome = asmt_gen.generate_assessment_outcome(student, sbac_assmt, section, institution_hierarchy)
-
-    # Tests
-    valid_accomodation_codes = [0, 4, 5, 6, 7, 8, 9, 10]
-    assert 1199 < assmt_outcome.overall_score < 2401
-    assert 1199 < assmt_outcome.overall_score_range_min < 2401
-    assert 1199 < assmt_outcome.overall_score_range_max < 2401
-    assert 1199 < assmt_outcome.claim_1_score < 2401
-    assert 1199 < assmt_outcome.claim_1_score_range_min < 2401
-    assert 1199 < assmt_outcome.claim_1_score_range_max < 2401
-    assert 1199 < assmt_outcome.claim_2_score < 2401
-    assert 1199 < assmt_outcome.claim_2_score_range_min < 2401
-    assert 1199 < assmt_outcome.claim_2_score_range_max < 2401
-    assert 1199 < assmt_outcome.claim_3_score < 2401
-    assert 1199 < assmt_outcome.claim_3_score_range_min < 2401
-    assert 1199 < assmt_outcome.claim_3_score_range_max < 2401
-    assert assmt_outcome.acc_asl_video_embed in valid_accomodation_codes
-    assert assmt_outcome.acc_asl_human_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_braile_embed in valid_accomodation_codes
-    assert assmt_outcome.acc_closed_captioning_embed in valid_accomodation_codes
-    assert assmt_outcome.acc_text_to_speech_embed in valid_accomodation_codes
-    assert assmt_outcome.acc_abacus_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_alternate_response_options_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_calculator_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_multiplication_table_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_alternate_response_options_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_read_aloud_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_scribe_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_speech_to_text_nonembed in valid_accomodation_codes
-    assert assmt_outcome.acc_streamline_mode in valid_accomodation_codes

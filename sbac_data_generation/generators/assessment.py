@@ -144,8 +144,10 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
 
     # Create overall score and performance level
     sao.overall_score = int(random.uniform(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX))
-    sao.overall_score_range_min = sao.overall_score - 20 if sao.overall_score > sbac_config.ASMT_SCORE_MIN + 20 else sbac_config.ASMT_SCORE_MIN
-    sao.overall_score_range_max = sao.overall_score + 20 if sao.overall_score < sbac_config.ASMT_SCORE_MAX - 20 else sbac_config.ASMT_SCORE_MAX
+    overall_range_min = random.randint(50, 100)  # Total score range is between 100 and 200 points around score
+    overall_range_max = random.randint(50, 100)  # Total score range is between 100 and 200 points around score
+    sao.overall_score_range_min = max(sao.overall_score - overall_range_min, sbac_config.ASMT_SCORE_MIN)
+    sao.overall_score_range_max = min(sao.overall_score + overall_range_max, sbac_config.ASMT_SCORE_MAX)
     sao.overall_perf_lvl = _pick_performance_level(sao.overall_score, overall_cut_points)
 
     # Create claim scores and performance levels

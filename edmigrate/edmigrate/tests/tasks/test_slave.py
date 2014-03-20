@@ -29,11 +29,119 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
             conn.execute(repl_nodes.insert().values({Constants.ID: self.node_id,
                                                      Constants.REPL_NODE_CLUSTER: self.cluster,
                                                      Constants.REPL_NODE_CONN_INFO: 'host=localhost user=repmgr dbname=test'}))
-        self.noblock_firewall_output = 'Chain INPUT (policy ACCEPT)\ntarget     prot opt source               destination         \nACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \nACCEPT     icmp --  anywhere             anywhere            \nACCEPT     all  --  anywhere             anywhere            \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \nPGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain FORWARD (policy ACCEPT)\ntarget     prot opt source               destination         \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain OUTPUT (policy ACCEPT)\ntarget     prot opt source               destination         \n\nChain PGSQL (1 references)\ntarget     prot opt source               destination         \nACCEPT     all  --  anywhere             anywhere            \n'
+        self.noblock_firewall_output = 'Chain INPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
+            'ACCEPT     icmp --  anywhere             anywhere            \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
+            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain FORWARD (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain OUTPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            '\n'\
+            'Chain PGSQL (1 references)\n'\
+            'target     prot opt source               destination         \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'
 
-        self.block_once_output = 'Chain INPUT (policy ACCEPT)\ntarget     prot opt source               destination         \nACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \nACCEPT     icmp --  anywhere             anywhere            \nACCEPT     all  --  anywhere             anywhere            \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \nPGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain FORWARD (policy ACCEPT)\ntarget     prot opt source               destination         \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain OUTPUT (policy ACCEPT)\ntarget     prot opt source               destination         \n\nChain PGSQL (1 references)\ntarget     prot opt source               destination         \nREJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \nACCEPT     all  --  anywhere             anywhere            \n'
-        self.block_twice_output = 'Chain INPUT (policy ACCEPT)\ntarget     prot opt source               destination         \nACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \nACCEPT     icmp --  anywhere             anywhere            \nACCEPT     all  --  anywhere             anywhere            \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \nPGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain FORWARD (policy ACCEPT)\ntarget     prot opt source               destination         \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain OUTPUT (policy ACCEPT)\ntarget     prot opt source               destination         \n\nChain PGSQL (1 references)\ntarget     prot opt source               destination         \nREJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \nREJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \nACCEPT     all  --  anywhere             anywhere            \n'
-        self.block_master_once_output = 'Chain INPUT (policy ACCEPT)\ntarget     prot opt source               destination         \nACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \nACCEPT     icmp --  anywhere             anywhere            \nACCEPT     all  --  anywhere             anywhere            \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \nACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \nPGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain FORWARD (policy ACCEPT)\ntarget     prot opt source               destination         \nREJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n\nChain OUTPUT (policy ACCEPT)\ntarget     prot opt source               destination         \n\nChain PGSQL (1 references)\ntarget     prot opt source               destination         \nREJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \nACCEPT     all  --  anywhere             anywhere            \n'
+        self.block_once_output = 'Chain INPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
+            'ACCEPT     icmp --  anywhere             anywhere            \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
+            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain FORWARD (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain OUTPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            '\n'\
+            'Chain PGSQL (1 references)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'
+        self.block_twice_output = 'Chain INPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
+            'ACCEPT     icmp --  anywhere             anywhere            \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
+            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain FORWARD (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain OUTPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            '\n'\
+            'Chain PGSQL (1 references)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'
+        self.block_master_once_output = 'Chain INPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
+            'ACCEPT     icmp --  anywhere             anywhere            \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
+            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
+            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain FORWARD (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
+            '\n'\
+            'Chain OUTPUT (policy ACCEPT)\n'\
+            'target     prot opt source               destination         \n'\
+            '\n'\
+            'Chain PGSQL (1 references)\n'\
+            'target     prot opt source               destination         \n'\
+            'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'ACCEPT     all  --  anywhere             anywhere            \n'
 
     def tearDown(self):
         with RepMgrDBConnection() as conn:

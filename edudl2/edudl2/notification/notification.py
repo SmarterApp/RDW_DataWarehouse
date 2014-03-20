@@ -23,6 +23,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def post_udl_job_status(conf):
     """
     Post the status and any errors of the current completed UDL job referenced by guid_batch

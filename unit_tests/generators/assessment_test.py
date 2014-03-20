@@ -36,7 +36,6 @@ def test_generate_assessment():
     assert asmt.subject == 'Math'
     assert asmt.from_date == datetime.date(2015, 5, 15)
     assert asmt.to_date == datetime.date(9999, 12, 31)
-    assert asmt.most_recent
 
 
 def test_generate_assessment_invalid_subject():

@@ -133,7 +133,6 @@ def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, sch
     ih.school = school
     ih.from_date = sbac_config.HIERARCHY_FROM_DATE
     ih.to_date = sbac_config.HIERARCHY_TO_DATE
-    ih.most_recent = sbac_config.HIERARCHY_MOST_RECENT
 
     # Save and return the object
     if save_to_mongo:

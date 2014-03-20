@@ -9,7 +9,6 @@ import datetime
 
 HIERARCHY_FROM_DATE = datetime.date(2012, 9, 1)
 HIERARCHY_TO_DATE = datetime.date(9999, 12, 31)
-HIERARCHY_MOST_RECENT = True
 
 LEP_HAS_ENTRY_DATE_RATE = .9
 

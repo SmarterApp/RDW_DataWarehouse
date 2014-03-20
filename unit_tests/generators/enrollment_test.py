@@ -47,7 +47,6 @@ def test_generate_section_defaults():
     assert section.grade == 3
     assert section.from_date == datetime.date(datetime.datetime.now().year, 9, 1)
     assert section.to_date == datetime.date(datetime.datetime.now().year + 1, 6, 1)
-    assert not section.most_recent
 
 
 def test_generate_section_specific_year():
@@ -65,25 +64,6 @@ def test_generate_section_specific_year():
     assert section.grade == 3
     assert section.from_date == datetime.date(2017, 9, 1)
     assert section.to_date == datetime.date(2018, 6, 1)
-    assert not section.most_recent
-
-
-def test_generate_section_most_recent():
-    # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
-    clss = enroll_gen.generate_class('Class 01', 'Math', school)
-    section = enroll_gen.generate_section(clss, 'Section 01', 3, 2017, most_recent=True)
-
-    # Tests
-    assert_is_instance(section, SBACSection)
-    assert section.clss == clss
-    assert section.name == 'Section 01'
-    assert section.grade == 3
-    assert section.from_date == datetime.date(2017, 9, 1)
-    assert section.to_date is None
-    assert section.most_recent
 
 
 def test_generate_enrollment_defaults():

@@ -273,9 +273,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
         # Advance the students forward in the grades
         for guid, student in students.items():
             # Move the student forward (false from the advance method means the student disappears)
-            if sbac_pop_gen.advance_student(student, schools_by_grade,
-                                            drop_out_rate=sbac_in_config.NOT_ADVANCED_DROP_OUT_RATE,
-                                            save_to_mongo=False):
+            if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):
                 schools_with_grades[student.school][student.grade].append(student)
 
         # With the students moved around, we will re-populate empty grades and create sections and assessments with

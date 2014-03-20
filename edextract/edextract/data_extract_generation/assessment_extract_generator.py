@@ -18,9 +18,9 @@ def generate_csv(output_file, task_info, extract_args):
     """
     Write data extract to CSV file.
 
-    @param extract_args: Arguments to this extract function
-    @param csv_file: File to which to write extract data in CSV format
-    @param task_info: Information specific to the celery task calling this function
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_csv
     """
 
     tenant = extract_args[TaskConstants.TENANT]
@@ -43,9 +43,9 @@ def generate_json(output_file, task_info, extract_args):
     """
     Write data extract to JSON file.
 
-    @param extract_args: Arguments to this extract function
-    @param json_file: File to which to write extract data in JSON format
-    @param task_info: Information specific to the celery task calling this function
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_json
     """
 
     tenant = extract_args[TaskConstants.TENANT]

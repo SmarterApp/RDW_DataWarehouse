@@ -171,7 +171,8 @@ def generate_extract_file(tenant, request_id, task_id, output_file, extract_func
     @param extract_args: Arguments to callback function
     """
 
-    log.info('execute {task_name} for task {task_id}'.format(task_name=generate_extract_file.name, task_id=task_id))
+    log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_extract_file.name,
+                                                                                          task_id=task_id, extract_type=extract_func.__name__))
 
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_extract_file.request.id,

@@ -10,9 +10,8 @@ import shutil
 import csv
 
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-from edextract.data_extract_generation.student_reg_report_generator import (generate_statistics_report_data,
-                                                                            generate_completion_report_data,
-                                                                            generate_report)
+from edextract.data_extract_generation.student_reg_report_generator import (generate_statistics_report_data, generate_statistics_report,
+                                                                            generate_completion_report_data, generate_completion_report)
 from edextract.status.constants import Constants
 from edextract.tasks.student_reg_constants import Constants as TaskConstants
 
@@ -48,8 +47,8 @@ class TestStudentRegReportGenerator(Unittest_with_stats_sqlite):
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {TaskConstants.STATE_CODE: 'NJ', TaskConstants.ACADEMIC_YEAR: 2014, TaskConstants.GEN_REPORT_DATA_FUNC: generate_statistics_report_data}
-        generate_report(output, task_info, extract_args)
+        extract_args = {TaskConstants.STATE_CODE: 'NJ', TaskConstants.ACADEMIC_YEAR: 2014}
+        generate_statistics_report(output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         csv_data = []
         with open(output) as out:
@@ -66,8 +65,8 @@ class TestStudentRegReportGenerator(Unittest_with_stats_sqlite):
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {TaskConstants.STATE_CODE: 'NJ', TaskConstants.ACADEMIC_YEAR: 2014, TaskConstants.GEN_REPORT_DATA_FUNC: generate_completion_report_data}
-        generate_report(output, task_info, extract_args)
+        extract_args = {TaskConstants.STATE_CODE: 'NJ', TaskConstants.ACADEMIC_YEAR: 2014}
+        generate_completion_report(output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         csv_data = []
         with open(output) as out:

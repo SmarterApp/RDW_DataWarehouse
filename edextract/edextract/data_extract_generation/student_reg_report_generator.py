@@ -71,21 +71,44 @@ def generate_completion_report_data(state_code, academic_year):
     return header, data
 
 
-def generate_report(output_file, task_info, extract_args):
+def generate_statistics_report(output_file, task_info, extract_args):
+    """
+    Run generate_report with the arguments, directing it to call generate_statistics_report_data.
+
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_statistics_report_data
+    """
+
+    generate_report(output_file, task_info, extract_args, generate_statistics_report_data)
+
+
+def generate_completion_report(output_file, task_info, extract_args):
+    """
+    Run generate_report with the arguments, directing it to call generate_completion_report_data.
+
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_completion_report_data
+    """
+
+    generate_report(output_file, task_info, extract_args, generate_completion_report_data)
+
+
+def generate_report(output_file, task_info, extract_args, data_extract_func):
     """
     Generate the student registration statistics report CSV file.
 
-    @param tenant: tenant of the user
-    @param request_id: Report request ID
-    @param task_id: Report data extract task ID
-    @param output_file: CSV output file name
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_completion_report_data
+    @param data_extract_func: Function to perform the specific report data extraction
     """
 
     state_code = extract_args[TaskConstants.STATE_CODE]
     academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
-    generate_report_data = extract_args[TaskConstants.GEN_REPORT_DATA_FUNC]
 
-    header, data = generate_report_data(state_code, academic_year)
+    header, data = data_extract_func(state_code, academic_year)
 
     with open(output_file, 'w') as csv_file:
         csvwriter = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)

@@ -12,8 +12,7 @@ from edextract.tasks.student_reg_constants import Constants as TaskConstants, Re
 from edextract.tasks.extract import prepare_path, archive_with_encryption, remote_copy
 from edextract.celery import celery
 from edextract.tasks.extract import generate_extract_file
-from edextract.data_extract_generation.student_reg_report_generator import (generate_report, generate_statistics_report_data,
-                                                                            generate_completion_report_data)
+from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 
 
 log = logging.getLogger('edstudentregextract')
@@ -34,13 +33,12 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
 
     task_id = report_task[TaskConstants.TASK_TASK_ID]
     output_file = report_task[TaskConstants.TASK_FILE_NAME]
-    extract_func = generate_report
     extract_args = {TaskConstants.STATE_CODE: report_task[TaskConstants.STATE_CODE], TaskConstants.ACADEMIC_YEAR: report_task[TaskConstants.ACADEMIC_YEAR]}
     report_type = report_task[TaskConstants.REPORT_TYPE]
     if report_type == ReportType.STATISTICS:
-        extract_args.update({TaskConstants.GEN_REPORT_DATA_FUNC: generate_statistics_report_data})
+        extract_func = generate_statistics_report
     elif report_type == ReportType.COMPLETION:
-        extract_args.update({TaskConstants.GEN_REPORT_DATA_FUNC: generate_completion_report_data})
+        extract_func = generate_completion_report
     else:
         raise ValueError('Invalid report type')
 

@@ -38,7 +38,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     """
     # Get the claim definitions for this subject
     if subject not in claim_definitions:
-        raise KeyError("Subject '" + subject + "' not found in claim definitions")
+        raise KeyError("Subject '%s' not found in claim definitions" % subject)
     claims = claim_definitions[subject]
 
     # Run the General generator

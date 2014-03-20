@@ -187,7 +187,7 @@ def generate_derived_demographic(student):
             elif len(races) == 1:
                 return races[0]
             else:
-                raise Exception("No race?")
+                raise Exception('No race?')
     except Exception as ex:
         print('Generate derived demographic column error: %s' % str(ex))
         return -1

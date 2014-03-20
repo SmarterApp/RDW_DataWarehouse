@@ -39,11 +39,11 @@ class TestStudentAdministration(Unittest_with_edcore_sqlite):
         state_code = 'NC'
         test_cases = [
             # year_back, expect_value
-            (-1, [2015]),
-            (0, [2015]),
-            (1, [2015]),
-            (2, [2015, 2012]),
-            (5, [2015, 2012]),
+            (-1, [2016]),
+            (0, [2016]),
+            (1, [2016]),
+            (2, [2016, 2015]),
+            (5, [2016, 2015]),
         ]
         for year_back, expect in test_cases:
             results = get_academic_years(state_code, None, year_back)

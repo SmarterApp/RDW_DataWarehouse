@@ -4,8 +4,14 @@ __author__ = 'tshewchuk'
 This module contains methods to obtain data for the different Student Registration report types.
 """
 
+import csv
 
-def generate_sr_statistics_report_data(state_code, academic_year):
+from edextract.status.constants import Constants
+from edextract.tasks.student_reg_constants import Constants as TaskConstants
+from edextract.status.status import ExtractStatus, insert_extract_stats
+
+
+def generate_statistics_report_data(state_code, academic_year):
     """
     This method generates the data for the student registration statistics report.
 
@@ -36,7 +42,7 @@ def generate_sr_statistics_report_data(state_code, academic_year):
     return header, data
 
 
-def generate_sr_completion_report_data(state_code, academic_year):
+def generate_completion_report_data(state_code, academic_year):
     """
     This method generates the data for the student registration completion report.
 
@@ -63,3 +69,27 @@ def generate_sr_completion_report_data(state_code, academic_year):
     data = []
 
     return header, data
+
+
+def generate_report(output_file, task_info, extract_args):
+    """
+    Generate the student registration statistics report CSV file.
+
+    @param tenant: tenant of the user
+    @param request_id: Report request ID
+    @param task_id: Report data extract task ID
+    @param output_file: CSV output file name
+    """
+
+    state_code = extract_args[TaskConstants.STATE_CODE]
+    academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
+    generate_report_data = extract_args[TaskConstants.GEN_REPORT_DATA_FUNC]
+
+    header, data = generate_report_data(state_code, academic_year)
+
+    with open(output_file, 'w') as csv_file:
+        csvwriter = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)
+        csvwriter.writerow(header)
+        for row in data:
+            csvwriter.writerow(row)
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})

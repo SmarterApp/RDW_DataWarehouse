@@ -122,13 +122,13 @@ def test_generate_assessment_summative_effective_date():
 
 
 def test_generate_assessment_interim_fall_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math', asmt_year_adj=-1)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math')
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2014, 9, 15)
 
 
 def test_generate_assessment_interim_winter_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math', asmt_year_adj=-1)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math')
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2014, 12, 15)
 

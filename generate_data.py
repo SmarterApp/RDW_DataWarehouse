@@ -88,11 +88,11 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
     elif team == 'sonics':
         YEARS = [2015, 2016, 2017]  # Expected sorted lowest to highest
         ASMT_YEARS = [2015, 2016, 2017]  # The years to generate summative assessments for
-        INTERIM_ASMT_PERIODS = [('Fall', -1), ('Winter', -1), ('Spring', 0)]  # The periods for interim assessments
+        INTERIM_ASMT_PERIODS = ['Fall', 'Winter', 'Spring']  # The periods for interim assessments
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
 
 
-def create_assessment_object(asmt_type, period, year, subject, year_adj=0):
+def create_assessment_object(asmt_type, period, year, subject):
     """
     Create a new assessment object and write it out to JSON.
 
@@ -100,10 +100,9 @@ def create_assessment_object(asmt_type, period, year, subject, year_adj=0):
     @param period: Period (month) of assessment to create
     @param year: Year of assessment to create
     @param subject: Subject of assessment to create
-    @param year_adj: An option adjustment to the assessment period year
     @returns: New assessment object
     """
-    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, asmt_year_adj=year_adj)
+    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject)
     file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', asmt.guid)
     json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
                                      root_path=OUT_PATH_ROOT)
@@ -312,7 +311,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         # Grab the interim assessment objects
                         interim_asmts = []
                         if school.takes_interim_asmts:
-                            for period, year_adj in INTERIM_ASMT_PERIODS:
+                            for period in INTERIM_ASMT_PERIODS:
                                 key = str(asmt_year) + 'interim' + period + str(grade) + subject
                                 interim_asmts.append(assessments[key])
 
@@ -371,9 +370,9 @@ def generate_state_data(state: SBACState):
                 assessments[asmt_key_summ] = create_assessment_object('SUMMATIVE', 'Spring', year, subject)
 
                 # Create the interim assessments
-                for period, year_adj in INTERIM_ASMT_PERIODS:
+                for period in INTERIM_ASMT_PERIODS:
                     asmt_key_intrm = str(year) + 'interim' + period + str(grade) + subject
-                    asmt_intrm = create_assessment_object('INTERIM COMPREHENSIVE', period, year, subject, year_adj)
+                    asmt_intrm = create_assessment_object('INTERIM COMPREHENSIVE', period, year, subject)
                     assessments[asmt_key_intrm] = asmt_intrm
 
     # Build the districts

@@ -34,7 +34,7 @@ def test_generate_assessment():
     assert asmt.period_year == 2015
     assert asmt.version == 'V1'
     assert asmt.subject == 'Math'
-    assert asmt.from_date == datetime.date(2012, 9, 1)
+    assert asmt.from_date == datetime.date(2015, 5, 15)
     assert asmt.to_date == datetime.date(9999, 12, 31)
     assert asmt.most_recent
 
@@ -119,7 +119,7 @@ def test_generate_assessment_overall_scores():
 def test_generate_assessment_summative_effective_date():
     asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
     assert asmt.period_year == 2015
-    assert asmt.effective_date == datetime.date(2015, 4, 15)
+    assert asmt.effective_date == datetime.date(2015, 5, 15)
 
 
 def test_generate_assessment_interim_fall_effective_date():
@@ -137,7 +137,7 @@ def test_generate_assessment_interim_winter_effective_date():
 def test_generate_assessment_interim_spring_effective_date():
     asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math')
     assert asmt.period_year == 2015
-    assert asmt.effective_date == datetime.date(2015, 2, 15)
+    assert asmt.effective_date == datetime.date(2015, 3, 15)
 
 
 def test_generate_assessment_outcome_scores():

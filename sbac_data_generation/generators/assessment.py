@@ -47,11 +47,11 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     # Determine the period month
     period_month = 9
     if asmt_type == 'SUMMATIVE':
-        period_month = 4
+        period_month = 5
     elif 'Winter' in period:
         period_month = 12
     elif 'Spring' in period:
-        period_month = 2
+        period_month = 3
 
     # Set other specifics
     sa.rec_id = gen_id_gen.get_rec_id('assessment')
@@ -92,9 +92,9 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa.overall_cut_point_4 = sbac_config.ASMT_SCORE_CUT_POINT_4
     sa.claim_cut_point_1 = sbac_config.CLAIM_SCORE_CUT_POINT_1
     sa.claim_cut_point_2 = sbac_config.CLAIM_SCORE_CUT_POINT_2
-    sa.from_date = from_date if from_date is not None else sbac_config.HIERARCHY_FROM_DATE
-    sa.to_date = to_date if to_date is not None else sbac_config.HIERARCHY_TO_DATE
     sa.effective_date = datetime.date(asmt_year + asmt_year_adj, period_month, 15)
+    sa.from_date = from_date if from_date is not None else sa.effective_date
+    sa.to_date = to_date if to_date is not None else sbac_config.ASMT_TO_DATE
     sa.most_recent = most_recent
 
     # Save and return the object

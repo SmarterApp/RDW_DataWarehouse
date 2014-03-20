@@ -1,7 +1,7 @@
 __author__ = 'tshewchuk'
 
 """
-This module contains methods to test the different Student Registration report generators.
+This module contains methods to test the Student Registration extraction logic.
 """
 
 import unittest
@@ -11,16 +11,17 @@ import shutil
 import csv
 
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
-from edextract.tasks.student_reg_extract import generate_csv
+from edcore.tests.utils.unittest_with_edcore_sqlite import get_unittest_tenant_name
+from edextract.tasks.extract import generate_extract_file
+from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 
 from edextract.celery import setup_celery
-from edextract.tasks.student_reg_constants import ReportType
+from edextract.tasks.student_reg_constants import Constants
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 
 
-class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
+class TestStudentRegExtractTask(Unittest_with_stats_sqlite):
 
     def setUp(self):
         here = os.path.abspath(os.path.dirname(__file__))
@@ -44,18 +45,15 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
 
     @classmethod
     def setUpClass(cls):
-        Unittest_with_edcore_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 
     def tearDown(self):
-        pass
         shutil.rmtree(self.__tmp_dir)
 
     def test_generate_statistics_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        last_year = '2013'
-        this_year = '2014'
-        result = generate_csv.apply(args=[self._tenant, '0', '1', ReportType.STATISTICS, 'NJ', 2014, output])    # @UndefinedVariable
+        extract_args = {Constants.STATE_CODE: 'NJ', Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[self._tenant, '0', '1', output, generate_statistics_report, extract_args])
         result.get()
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -64,17 +62,14 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
             for row in data:
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 1)
-        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value',
-                                       '{last_year} Count'.format(last_year=last_year),
-                                       '{last_year} Percent of Total'.format(last_year=last_year),
-                                       '{this_year} Count'.format(this_year=this_year), '{this_year} Percent of Total'.format(this_year=this_year),
-                                       'Change in Count', 'Percent Difference in Count', 'Change in Percent of Total',
-                                       '{this_year} Matched IDs to {last_year} Count'.format(last_year=last_year, this_year=this_year),
-                                       '{this_year} Matched IDs Percent of {last_year} count'.format(last_year=last_year, this_year=this_year)])
+        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', '2013 Count', '2013 Percent of Total',
+                                       '2014 Count', '2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
+                                       'Change in Percent of Total', '2014 Matched IDs to 2013 Count', '2014 Matched IDs Percent of 2013 count'])
 
     def test_generate_completion_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')
-        result = generate_csv.apply(args=[self._tenant, '0', '1', ReportType.COMPLETION, 'NJ', 2014, output])    # @UndefinedVariable
+        extract_args = {Constants.STATE_CODE: 'NJ', Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[self._tenant, '0', '1', output, generate_completion_report, extract_args])
         result.get()
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -89,18 +84,15 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
 
     def test_generate_csv_no_tenant(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        result = generate_csv.apply(args=[None, '0', '1', ReportType.STATISTICS, 'NJ', 2014, output])    # @UndefinedVariable
+        extract_args = {Constants.STATE_CODE: 'NJ', Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[None, '0', '1', output, generate_statistics_report, extract_args])
         result.get()
         self.assertFalse(os.path.exists(output))
 
     def test_generate_csv_bad_file(self):
         output = 'C:'
-        result = generate_csv.apply(args=[self._tenant, '0', '1', ReportType.STATISTICS, 'NJ', 2014, output])    # @UndefinedVariable
-        self.assertRaises(ExtractionError, result.get,)
-
-    def test_generate_csv_bad_report_type(self):
-        output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        result = generate_csv.apply(args=[self._tenant, '0', '1', 'bad_report_type', 'NJ', 2014, output])    # @UndefinedVariable
+        extract_args = {Constants.STATE_CODE: 'NJ', Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[self._tenant, '0', '1', output, generate_statistics_report, extract_args])
         self.assertRaises(ExtractionError, result.get,)
 
 

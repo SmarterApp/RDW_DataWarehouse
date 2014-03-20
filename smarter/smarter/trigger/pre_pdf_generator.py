@@ -7,11 +7,11 @@ from sqlalchemy.sql.expression import select, and_, func, true, null, distinct
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
 import logging
-from smarter.trigger.utils import run_cron_job
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
+from edcore.utils.utils import run_cron_job
 
 
 logger = logging.getLogger('smarter')

@@ -30,3 +30,48 @@ class EdMigrateUdl_statException(EdMigrateException):
     '''
     def __init__(self, msg='Cannot update record in udl_stat table'):
         super().__init__(msg)
+
+
+class SlaveTrackerException(EdMigrateException):
+    def __init__(self, msg='SlaveTrackerException'):
+        super().__init__(msg)
+
+
+class SlaveAlreadyRegisteredException(SlaveTrackerException):
+    def __init__(self, node_id):
+        super().__init__(msg="Slave [%d] has already registered" % (node_id))
+
+
+class SlaveNotRegisteredException(SlaveTrackerException):
+    def __init__(self, node_id):
+        super().__init__(msg='Slave [' + str(node_id) + '] was not registered')
+
+
+class SlaveStatusTimedoutException(SlaveTrackerException):
+    def __init__(self, node_id, timeout):
+        super().__init__(msg='Timedout after ' + str(timeout) + ' seconds. Slave [' + str(node_id) + '] was not registered')
+
+
+class ReplicationMonitorException(EdMigrateException):
+    def __init__(self, msg='Replication Monitor Exception'):
+        super().__init__(msg)
+
+
+class NoReplicationToMonitorException(ReplicationMonitorException):
+    def __init__(self, msg='No Replication to monitor'):
+        super().__init__(msg)
+
+
+class ReplicationToMonitorOrphanNodeException(ReplicationMonitorException):
+    def __init__(self, msg='Orphan Node was detected'):
+        super().__init__(msg)
+
+
+class ReplicationToMonitorOutOfSyncException(ReplicationMonitorException):
+    def __init__(self, msg='Replication Monitor Out of Sync Exception'):
+        super().__init__(msg)
+
+
+class ConductorTimeoutException(EdMigrateException):
+    def __init__(self, msg='Conductor Timeout Exception'):
+        super().__init__(msg)

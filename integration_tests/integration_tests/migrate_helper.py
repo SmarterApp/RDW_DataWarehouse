@@ -11,12 +11,13 @@ from sqlalchemy.sql.functions import count
 from sqlalchemy.sql.expression import select, and_
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
-from edmigrate.celery import setup_db_connection
+from edcore.database import initialize_db
 
 
 def setUpMigrationConnection():
     setting = get_config()
-    setup_db_connection(setting)
+    initialize_db(StatsDBConnection, setting)
+    initialize_db(EdMigrateDestConnection, setting)
 
 
 def start_migrate(tenant='cat'):
@@ -24,7 +25,7 @@ def start_migrate(tenant='cat'):
     Migrate from pre-prod to prod
     '''
     ini_file = get_ini_file()
-    main(ini_file, tenant)
+    main(ini_file, tenant, run_migrate_only=True)
 
 
 def get_config():

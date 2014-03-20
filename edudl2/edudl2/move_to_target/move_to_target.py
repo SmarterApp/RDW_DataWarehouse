@@ -17,7 +17,7 @@ from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_quer
                                                   match_delete_fact_asmt_outcome_row_in_prod)
 from edudl2.udl2.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
-from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
+from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edcore.utils.cleanup import drop_schema, create_schema, schema_exists
 from edschema.metadata_generator import generate_ed_metadata
 
@@ -35,6 +35,7 @@ def create_target_schema_for_batch(conf):
         if schema_exists(conn, schema_name):
             drop_schema(conn, schema_name)
         create_schema(conn, generate_ed_metadata, schema_name)
+        conn.set_metadata(schema_name, reflect=True)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
@@ -281,8 +282,8 @@ def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
     '''
     affected_rows = 0
     with get_target_connection(tenant_name) as target_conn, get_prod_connection(tenant_name) as prod_conn:
-        target_db_helper = HanldeUpsertHelper(target_conn, guid_batch, match_conf)
-        prod_db_helper = HanldeUpsertHelper(prod_conn, guid_batch, match_conf)
+        target_db_helper = HandleUpsertHelper(target_conn, guid_batch, match_conf)
+        prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, match_conf)
         for record in target_db_helper.find_all():
             matched = prod_db_helper.find_by_natural_key(record)
             if not matched:

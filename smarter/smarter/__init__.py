@@ -19,6 +19,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from services.celery import setup_celery as setup_services_celery, PREFIX as servicesPrefix
 from edextract.celery import setup_celery as setup_extract_celery, PREFIX as edextractPrefix
 from edcore.security.tenant import set_tenant_map
+from smarter.reports.student_administration import set_default_year_back
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -53,6 +54,9 @@ def main(global_config, **settings):
 
     # save tenancy mapping
     set_tenant_map(tenant_mapping)
+
+    year_back = settings['smarter.reports.year_back']
+    set_default_year_back(year_back)
 
     # setup celery
     setup_services_celery(settings, prefix=servicesPrefix)

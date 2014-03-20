@@ -4,16 +4,16 @@ __author__ = 'tshewchuk'
 This module contains the tasks specific to student registration report extraction.
 """
 
-import csv
 import os.path
 import logging
 
 from celery.canvas import chain
-from edextract.tasks.student_reg_constants import Constants as TaskConstants
+from edextract.tasks.student_reg_constants import Constants as TaskConstants, ReportType
 from edextract.tasks.extract import prepare_path, archive_with_encryption, remote_copy
 from edextract.celery import celery
 from edextract.tasks.extract import generate_extract_file
-from edextract.data_extract_generation.student_reg_report_generator import generate_report
+from edextract.data_extract_generation.student_reg_report_generator import (generate_report, generate_statistics_report_data,
+                                                                            generate_completion_report_data)
 
 
 log = logging.getLogger('edstudentregextract')
@@ -36,6 +36,13 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     output_file = report_task[TaskConstants.TASK_FILE_NAME]
     extract_func = generate_report
     extract_args = {TaskConstants.STATE_CODE: report_task[TaskConstants.STATE_CODE], TaskConstants.ACADEMIC_YEAR: report_task[TaskConstants.ACADEMIC_YEAR]}
+    report_type = report_task[TaskConstants.REPORT_TYPE]
+    if report_type == ReportType.STATISTICS:
+        extract_args.update({TaskConstants.GEN_REPORT_DATA_FUNC: generate_statistics_report_data})
+    elif report_type == ReportType.COMPLETION:
+        extract_args.update({TaskConstants.GEN_REPORT_DATA_FUNC: generate_completion_report_data})
+    else:
+        raise ValueError('Invalid report type')
 
     workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
                      generate_extract_file.subtask(args=[tenant, request_id, task_id, output_file, extract_func, extract_args], queues=queue, immutable=True),

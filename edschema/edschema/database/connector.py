@@ -8,7 +8,7 @@ from edschema.database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
-from sqlalchemy import MetaData, schema
+from sqlalchemy import schema
 from collections import OrderedDict
 import logging
 
@@ -23,6 +23,9 @@ class IDbUtil(interface.Interface):
     def get_metadata(self):
         pass
 
+    def set_metadata(self):
+        pass
+
 
 @implementer(IDbUtil)
 class DbUtil:
@@ -35,6 +38,9 @@ class DbUtil:
 
     def get_metadata(self):
         return self.__metadata
+
+    def set_metadata(self, metadata):
+        self.__metadata = metadata
 
 
 class DBConnection(ConnectionBase):
@@ -105,17 +111,22 @@ class DBConnection(ConnectionBase):
             rows = result.fetchmany(fetch_size)
 
     # return Table Metadata
-    def get_table(self, table_name, schema_name=None):
-        return Table(table_name, self.get_metadata(schema_name=schema_name))
+    def get_table(self, table_name):
+        return Table(table_name, self.get_metadata())
 
-    def get_metadata(self, schema_name=None):
+    def get_metadata(self):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
-        if schema_name is not None:
-            metadata = schema.MetaData(bind=dbUtil.get_engine(), schema=schema_name)
+        return dbUtil.get_metadata()
+
+    def set_metadata(self, schema_name, reflect=False, metadata_func=None):
+        metadata = None
+        if reflect:
+            metadata = schema.MetaData(bind=self.get_engine(), schema=schema_name)
             metadata.reflect(views=True)
-            return metadata
-        else:
-            return dbUtil.get_metadata()
+        elif metadata_func:
+            metadata = metadata_func(schema_name=schema_name, bind=self.get_engine())
+        dbUtil = component.queryUtility(IDbUtil, name=self.__name)
+        dbUtil.set_metadata(metadata)
 
     def execute(self, statement, stream_results=False, *multiparams, **params):
         return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)

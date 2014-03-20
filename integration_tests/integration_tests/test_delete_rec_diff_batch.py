@@ -35,7 +35,7 @@ class Test_Error_In_Migration(unittest.TestCase):
         setUpMigrationConnection()
 
     def setUp(self):
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
 
@@ -60,6 +60,8 @@ class Test_Error_In_Migration(unittest.TestCase):
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
             print(number_of_row)
+
+    def empty_stat_table(self):
         #Delete all data from udl_stats table
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
@@ -106,7 +108,8 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Validate edware database
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome', schema_name=schema_name)
+            ed_connector.set_metadata(schema_name, reflect=True)
+            fact_table = ed_connector.get_table('fact_asmt_outcome')
             delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
             print(delete_output_table)
@@ -115,14 +118,16 @@ class Test_Error_In_Migration(unittest.TestCase):
         ed_connector.close_connection()
 
     def test_validation(self):
+        self.empty_table()
         self.create_schema()
         self.migrate_data()
 
     def test_error_validation(self):
+        self.empty_table()
+        self.empty_stat_table()
         self.create_schema()
 
     def create_schema(self):
-        self.empty_table()
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)

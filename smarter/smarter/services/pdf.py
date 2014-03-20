@@ -18,9 +18,9 @@ from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from smarter.reports.helpers.constants import AssessmentType, Constants
 import services.celery
-from edauth.utils import to_bool
 from edapi.decorators import validate_params
 import sys
+from edcore.utils.utils import to_bool
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']

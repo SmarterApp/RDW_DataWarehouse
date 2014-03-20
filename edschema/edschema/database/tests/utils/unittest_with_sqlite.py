@@ -40,10 +40,10 @@ class Unittest_with_sqlite(UT_Base):
     # csv_imported = False
 
     @classmethod
-    def setUpClass(cls, datasource_name='', metadata=None, resources_dir=None, force_foreign_keys=True):
+    def setUpClass(cls, datasource_name='', metadata=None, resources_dir=None, force_foreign_keys=True, use_metadata_from_db=True):
         Unittest_with_sqlite.datasource_name = datasource_name
         # create db engine for sqlite
-        create_sqlite(use_metadata_from_db=True, echo=False, metadata=metadata, datasource_name=datasource_name, force_foreign_keys=force_foreign_keys)
+        create_sqlite(use_metadata_from_db=use_metadata_from_db, echo=False, metadata=metadata, datasource_name=datasource_name, force_foreign_keys=force_foreign_keys)
         # create test data in the sqlite
         generate_cvs_templates(datasource_name=Unittest_with_sqlite.datasource_name)
         here = os.path.abspath(os.path.dirname(__file__))

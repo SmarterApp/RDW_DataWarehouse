@@ -6,13 +6,13 @@ Created on Jun 20, 2013
 from sqlalchemy.sql.expression import select, and_, distinct, func, true, null
 from smarter.trigger.cache.recache import CacheTrigger
 import logging
-from smarter.trigger.utils import run_cron_job
 from smarter.reports.helpers.constants import Constants
 import json
 import os
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
+from edcore.utils.utils import run_cron_job
 
 
 logger = logging.getLogger('smarter')

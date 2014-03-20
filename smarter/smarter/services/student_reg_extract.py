@@ -4,6 +4,7 @@ from pyramid.view import view_config
 from edapi.decorators import validate_params
 from edapi.logging import audit_event
 from edapi.utils import convert_query_string_to_dict_arrays
+from smarter.extracts.student_reg_processor import process_async_extraction_request
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 
@@ -63,4 +64,6 @@ def post_sr_extract_service(context, request):
 
     params = convert_query_string_to_dict_arrays(request.json_body)
 
-    return Response(body=json.dumps({'tasks': [{Extract.STATUS: Extract.OK}], 'filename': ""}), content_type='application/json')
+    results = process_async_extraction_request(params)
+
+    return Response(body=json.dumps(results), content_type='application/json')

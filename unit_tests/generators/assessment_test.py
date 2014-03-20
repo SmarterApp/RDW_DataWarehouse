@@ -139,6 +139,22 @@ def test_generate_assessment_interim_spring_effective_date():
     assert asmt.effective_date == datetime.date(2015, 3, 15)
 
 
+def test_generate_assessment_outcome_default_status():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Test
+    assert asmt_out.result_status == 'C'
+
+
 def test_generate_assessment_outcome_scores():
     # Create objects
     asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')

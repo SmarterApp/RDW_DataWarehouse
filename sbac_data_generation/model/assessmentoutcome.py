@@ -5,7 +5,7 @@ Model an assessment outcome (an instance of a student taking an assessment) for 
 @date: March 3, 2014
 """
 
-from mongoengine import IntField, ReferenceField
+from mongoengine import IntField, ReferenceField, StringField
 
 import sbac_data_generation.config.cfg as sbac_config
 
@@ -18,6 +18,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     The SBAC-specific assessment outcome class.
     """
     inst_hierarchy = ReferenceField(InstitutionHierarchy, required=True)
+    result_status = StringField(required=True, default='C')
     overall_score = IntField(required=True, min_value=sbac_config.ASMT_SCORE_MIN,
                              max_value=sbac_config.ASMT_SCORE_MAX)
     overall_score_range_min = IntField(required=True, min_value=sbac_config.ASMT_SCORE_MIN,

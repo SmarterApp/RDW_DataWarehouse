@@ -1,5 +1,5 @@
 from edmigrate.utils.migrate import get_batches_to_migrate, migrate_batch, \
-    report_udl_stats_batch_status, migrate_table
+    report_udl_stats_batch_status, migrate_table, cleanup_batch
 from edmigrate.tests.utils.unittest_with_preprod_sqlite import Unittest_with_preprod_sqlite, \
     get_unittest_tenant_name as get_unittest_preprod_tenant_name
 from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
@@ -74,12 +74,17 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         batches_to_migrate = get_batches_to_migrate('test')
         self.assertEqual(4, len(batches_to_migrate))
 
-    @unittest.skip("skipping. Needs to be fixed")
     def test_migrate_batch(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant, UdlStatsConstants.SCHEMA_NAME: None}
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
+
+    def test_cleanup_batch(self):
+        batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
+        batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant, UdlStatsConstants.SCHEMA_NAME: batch_guid}
+        rtn = cleanup_batch(batch)
+        self.assertFalse(rtn)
 
     def test_migrate_batch_with_roll_back(self):
         batch = {UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38', UdlStatsConstants.TENANT: 'tomcat', UdlStatsConstants.SCHEMA_NAME: None}

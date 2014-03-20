@@ -9,6 +9,8 @@ from sqlalchemy.sql.expression import select
 from sqlalchemy import func
 import edcore.utils.cleanup as cleanup
 from edcore.utils.utils import compile_query_to_sql_text
+import sqlite3
+from edschema.metadata_generator import generate_ed_metadata
 
 
 class TestCleanup(Unittest_with_edcore_sqlite):
@@ -66,7 +68,41 @@ class TestCleanup(Unittest_with_edcore_sqlite):
             self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
 
     def test_get_schema_check_query(self):
-        expected_query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'test_schema'"
-        query = cleanup._get_schema_check_query('test_schema')
+        expected_query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'"
+        query = cleanup._get_schema_check_query('90901b70-ddaa-11e2-a95d-68a86d3c2f82')
         query_string = str(compile_query_to_sql_text(query)).replace("\n", "")
         self.assertEquals(query_string, expected_query)
+
+    def test_schema_exists_raises_exception_with_sqlite(self):
+        with UnittestEdcoreDBConnection() as connection:
+            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+            with self.assertRaises(Exception) as cm:
+                cleanup.schema_exists(connection, test_batch_guid)
+            the_exception = cm.exception
+            self.assertEquals(the_exception.__class__.__name__, 'OperationalError')
+            self.assertTrue('no such table: information_schema.schemata' in str(the_exception))
+
+    def test_drop_schema(self):
+        with UnittestEdcoreDBConnection() as connection:
+            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+            with self.assertRaises(Exception) as cm:
+                cleanup.drop_schema(connection, test_batch_guid)
+            the_exception = cm.exception
+            self.assertEquals(the_exception.__class__.__name__, 'OperationalError')
+
+    def test_create_schema(self):
+        with UnittestEdcoreDBConnection() as connection:
+            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+            with self.assertRaises(Exception) as cm:
+                cleanup.create_schema(connection, generate_ed_metadata, test_batch_guid)
+            the_exception = cm.exception
+            self.assertEquals(the_exception.__class__.__name__, 'OperationalError')
+            self.assertTrue('near "SCHEMA": syntax error' in str(the_exception))
+
+    def test_get_drop_schema_cmd(self):
+        test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+        self.assertEquals(str(cleanup.get_drop_schema_cmd(schema_name=test_batch_guid)), 'DROP SCHEMA "90901b70-ddaa-11e2-a95d-68a86d3c2f82" CASCADE')
+
+    def test_get_create_schema_cmd(self):
+        test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+        self.assertEquals(str(cleanup.get_create_schema_cmd(schema_name=test_batch_guid)), 'CREATE SCHEMA "90901b70-ddaa-11e2-a95d-68a86d3c2f82"')

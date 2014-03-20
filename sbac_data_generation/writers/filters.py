@@ -20,10 +20,10 @@ def filter_yesno(val):
 
 def filter_yesnoblank(val):
     """
-    Filter a True/False value as Yes/No, but when no have a 7% chance that the value will be blank.
+    Filter a True/False value as Yes/No, but when no have a 8% chance that the value will be blank.
 
     @param val: The value to filter
-    @returns: Yes or No if value is True or False respectively, but 7% of time 'No' will be blank.
+    @returns: Yes or No if value is True or False respectively, but 8% of time 'No' will be blank.
     """
     return 'Yes' if val else 'No' if random.randint(1, 100) < 93 else ''
 

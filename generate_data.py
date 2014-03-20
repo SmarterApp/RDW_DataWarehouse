@@ -113,7 +113,93 @@ def create_assessment_object(asmt_type, period, year, subject, year_adj=0):
     return asmt
 
 
-def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments, asmt_rates_by_subject):
+def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rate=sbac_in_config.ASMT_SKIP_RATE,
+                                     retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
+                                     delete_rate=sbac_in_config.ASMT_DELETE_RATE,
+                                     update_rate=sbac_in_config.ASMT_UPDATE_RATE):
+    """
+    Create the outcome(s) for a single assessment for a student. If the student is determined to have skipped the
+    assessment, the resulting array will be empty. Otherwise, one outcome will be created with the chance that a second
+    outcome is also created. A second outcome will be created if the assessment is re-taken or updated. If the
+    assessment is determined to have been deleted, no second record will be created.
+
+    @param student: The student to create an outcome for
+    @param asmt: The assessment to create an outcome for
+    @param section: The section this assessment relates to
+    @param inst_hier: The institution hierarchy this assessment relates to
+    @param skip_rate: The rate (chance) that this student skips the assessment
+    @param retake_rate: The rate (chance) that this student will re-take the assessment
+    @param delete_rate: The rate (chance) that this student's result will be deleted
+    @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
+    @returns: Array of outcomes
+    """
+    # Make sure they are taking the assessment
+    if random.random() < skip_rate:
+        return []
+
+    # Create the original outcome object
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
+
+    # Decide if something special is happening
+    if random.random() < retake_rate:
+        # Set the original outcome object to inactive, create a new outcome, and return
+        ao.result_status = 'I'
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
+        return [ao, ao2]
+    elif random.random() < delete_rate:
+        # Set the original outcome object to deleted
+        ao.result_status = 'D'
+    elif random.random() < update_rate:
+        # Set the original outcome object to deleted, create a new outcome, and return
+        ao.result_status = 'D'
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
+        return [ao, ao2]
+
+    return [ao]
+
+
+def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
+                                      skip_rate=sbac_in_config.ASMT_SKIP_RATE,
+                                      retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
+                                      delete_rate=sbac_in_config.ASMT_DELETE_RATE,
+                                      update_rate=sbac_in_config.ASMT_UPDATE_RATE):
+    """
+    Create a set of assessment outcome object(s) for a student. If the student is determined to have skipped the
+    assessment, the resulting array will be empty. Otherwise, one outcome will be created with the chance that a second
+    outcome is also created. A second outcome will be created if the assessment is re-taken or updated. If the
+    assessment is determined to have been deleted, no second record will be created.
+
+    @param student: The student to create outcomes for
+    @param asmt_summ: The summative assessment object
+    @param interim_asmts: The interim assessment objects
+    @param section: The section these assessments relate to
+    @param inst_hier: The institution hierarchy these assessments relate to
+    @param skip_rate: The rate (chance) that this student skips an assessment
+    @param retake_rate: The rate (chance) that this student will re-take an assessment
+    @param delete_rate: The rate (chance) that this student's result will be deleted
+    @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
+    @returns: Array of outcomes
+    """
+    # Have array for return
+    outcomes = []
+
+    # Create the summative assessment outcome
+    outcomes.extend(create_assessment_outcome_object(student, asmt_summ, section, inst_hier, skip_rate,
+                                                     retake_rate, delete_rate, update_rate))
+
+    # Generate interim assessment results (list will be empty if school does not perform
+    # interim assessments)
+    for asmt in interim_asmts:
+        # Create the interim assessment outcome
+        outcomes.extend(create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rate, retake_rate,
+                                                         delete_rate, update_rate))
+
+    # Return the outcomes
+    return outcomes
+
+
+def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments,
+                           asmt_skip_rates_by_subject):
     """
     Generate an entire data set for a single district.
 
@@ -121,7 +207,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     @param district: District to generate data for
     @param reg_sys_guid: GUID for the registration system this district is assigned to
     @param assessments: Dictionary of all assessment objects
-    @param asmt_rates_by_subject: The rate that students take an assessment for a given subject
+    @param asmt_skip_rates_by_subject: The rate that students skip a given assessment
     """
     # Set up output file names and columns
     sr_out_cols = sbac_out_config.SR_FORMAT['columns']
@@ -203,6 +289,9 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                 if asmt_year in ASMT_YEARS:
                     first_subject = True
                     for subject in sbac_in_config.SUBJECTS:
+                        # Get the subject skip rate
+                        skip_rate = asmt_skip_rates_by_subject[subject]
+
                         # Create a class and a section for this grade and subject
                         clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
                         section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, asmt_year, False)
@@ -220,20 +309,10 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                                 interim_asmts.append(assessments[key])
 
                         for student in grade_students:
-                            # Potentially create the summative assessment outcome for this student
-                            if random.random() < asmt_rates_by_subject[subject]:
-                                ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt_summ, section,
-                                                                               inst_hier, save_to_mongo=False)
-                                assessment_results.append(ao)
-
-                            # Generate interim assessment results (list will be empty if school does not perform
-                            # interim assessments)
-                            for asmt in interim_asmts:
-                                # Students take interim assessment at the same rate as they take the summative one
-                                if random.random() < asmt_rates_by_subject[subject]:
-                                    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section,
-                                                                                   inst_hier, save_to_mongo=False)
-                                    assessment_results.append(ao)
+                            # Create the outcome(s)
+                            assessment_results.extend(create_assessment_outcome_objects(student, asmt_summ,
+                                                                                        interim_asmts, section,
+                                                                                        inst_hier, skip_rate))
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -272,7 +351,7 @@ def generate_state_data(state: SBACState):
     @param state: State to generate data for
     """
     # Grab the assessment rates by subjects
-    asmt_rates_by_subject = state.config['subjects_and_percentages']
+    asmt_skip_rates_by_subject = state.config['subject_skip_percentages']
 
     # Create the assessment objects
     assessments = {}
@@ -298,7 +377,7 @@ def generate_state_data(state: SBACState):
 
             # Generate the district data set
             generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS), assessments,
-                                   asmt_rates_by_subject)
+                                   asmt_skip_rates_by_subject)
 
 
 if __name__ == '__main__':

@@ -17,8 +17,8 @@ def get_notification_message(status, guid_batch):
 
     messages = []
     if status == mk.SUCCESS:
-        messages.append(SUCCESS_MESSAGE)
+        messages.extend(SUCCESS_MESSAGE)
     else:
-        messages.append(retrieve_job_error_messages(guid_batch))
+        messages.extend(retrieve_job_error_messages(guid_batch))
 
     return messages

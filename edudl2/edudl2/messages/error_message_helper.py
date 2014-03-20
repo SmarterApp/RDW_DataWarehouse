@@ -32,15 +32,14 @@ def retrieve_job_error_messages(guid_batch):
         batch_table = source_conn.get_table(udl2_conf['udl2_db'][mk.BATCH_TABLE])
         error_message_select = select([batch_table.c.error_desc]).where(and_(batch_table.c.guid_batch == guid_batch, batch_table.c.udl_phase_step_status == mk.FAILURE))
         error_messages = source_conn.execute(error_message_select)
-
-        messages.append([r[0] for r in error_messages if r])
+        messages.extend([r[0] for r in error_messages if r[0]])
 
         err_list_table = source_conn.get_table(udl2_conf['udl2_db'][mk.ERR_LIST_TABLE])
-        err_list_select = select([err_list_table.c.err_code, err_list_table.c.err_source]).where(batch_table.c.guid_batch == guid_batch)
+        err_list_select = select([err_list_table.c.err_code, err_list_table.c.err_source]).where(err_list_table.c.guid_batch == guid_batch)
         err_list_result = source_conn.execute(err_list_select)
         formatted_results = _format_row_errors(err_list_result)
 
         if formatted_results:
-            messages.append(formatted_results)
+            messages.extend(formatted_results)
 
     return messages

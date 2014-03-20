@@ -70,12 +70,12 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
 
     #Check the body of the notification on a successful UDL run
     def verify_successful_request_body(self, request):
-        self.assertEquals(request['status'], ['Success'])
-        self.assertEquals(request['id'], ['wxyz5678'])
+        self.assertEquals(request['status'], 'Success')
+        self.assertEquals(request['id'], 'wxyz5678')
 
     #Check the body of the notification on a failed UDL run
     def verify_failed_request_body(self, request):
-        self.assertEquals(request['status'], ['Failed'])
+        self.assertEquals(request['status'], 'Failed')
         self.assertEquals(len(request['message']), 2)
         self.assertTrue('simple file validator error' in request['message'][0])
         self.assertTrue('5000' in request['message'][1])
@@ -87,8 +87,8 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         job_notify(msg)
 
         request = httpretty.last_request().parsed_body
-        self.verify_successful_request_body(request)
 
+        self.verify_successful_request_body(request)
         self.verify_notification_failed(self.successful_batch_id, 1)
 
     def test_successful_job_status(self):
@@ -98,8 +98,8 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         job_notify(msg)
 
         request = httpretty.last_request().parsed_body
-        self.verify_successful_request_body(request)
 
+        self.verify_successful_request_body(request)
         self.verify_notification_success(self.successful_batch_id)
 
     def test_failure_job_status(self):
@@ -111,8 +111,8 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         job_notify(msg)
 
         request = httpretty.last_request().parsed_body
-        self.verify_failed_request_body(request)
 
+        self.verify_failed_request_body(request)
         self.verify_notification_success(self.failed_batch_id)
 
 

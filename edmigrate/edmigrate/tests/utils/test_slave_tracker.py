@@ -54,19 +54,19 @@ class Test(unittest.TestCase):
 
     def test_set_master_connected(self):
         slavetracker1 = SlaveTracker()
-        self.assertTrue(slavetracker1.is_master_connected(123))
-        self.assertFalse(slavetracker1.is_master_disconnected(123))
-        slavetracker1.set_master_disconnected(123)
-        self.assertFalse(slavetracker1.is_master_connected(123))
-        self.assertTrue(slavetracker1.is_master_disconnected(123))
+        self.assertTrue(slavetracker1.is_replication_started(123))
+        self.assertFalse(slavetracker1.is_replication_stopped(123))
+        slavetracker1.set_replication_stopped(123)
+        self.assertFalse(slavetracker1.is_replication_started(123))
+        self.assertTrue(slavetracker1.is_replication_stopped(123))
 
     def test_set_master_disconnected(self):
         slavetracker1 = SlaveTracker()
-        slavetracker1.set_master_disconnected(123)
-        self.assertFalse(slavetracker1.is_master_connected(123))
-        self.assertTrue(slavetracker1.is_master_disconnected(123))
-        slavetracker1.set_master_connected(123)
-        self.assertTrue(slavetracker1.is_master_connected(123))
+        slavetracker1.set_replication_stopped(123)
+        self.assertFalse(slavetracker1.is_replication_started(123))
+        self.assertTrue(slavetracker1.is_replication_stopped(123))
+        slavetracker1.set_replication_started(123)
+        self.assertTrue(slavetracker1.is_replication_started(123))
         self.assertFalse(slavetracker1.is_pgpool_disconnected(123))
 
     def test_set_pgpool_connected_no_slave_exist(self):

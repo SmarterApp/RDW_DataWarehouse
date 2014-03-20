@@ -59,13 +59,13 @@ def main(file=None, tenant='cat', run_migrate_only=False):
         file = get_ini_file()
     logging.config.fileConfig(file)
     settings = read_ini(file)
-    initialize_db(RepMgrDBConnection, settings)
     initialize_db(StatsDBConnection, settings)
     initialize_db(EdMigrateSourceConnection, settings)
     initialize_db(EdMigrateDestConnection, settings)
     if run_migrate_only:
         start_migrate_daily_delta(tenant)
     else:
+        initialize_db(RepMgrDBConnection, settings)
         setup_celery(settings)
         url = get_broker_url()
         connect = Connection(url)
@@ -119,6 +119,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edmigrate.pid', help="pid file for daemon")
     parser.add_argument('-d', dest='daemon', action='store_true', default=False, help="daemon")
     args = parser.parse_args()
+    #CR do not daemon when migrateOnly
     if args.daemon:
         create_daemon(args.pidfile)
     main(tenant=args.tenant, run_migrate_only=args.migrate_only)

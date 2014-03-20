@@ -24,11 +24,11 @@ def acknowledgement_pgpool_connected(node_id, connection, exchange, routing_key)
 
 
 def acknowledgement_master_disconnected(node_id, connection, exchange, routing_key):
-    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_DISCONNECT_MASTER, connection, exchange, routing_key)
+    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_STOP_REPLICATION, connection, exchange, routing_key)
 
 
 def acknowledgement_master_connected(node_id, connection, exchange, routing_key):
-    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_CONNECT_MASTER, connection, exchange, routing_key)
+    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_START_REPLICATION, connection, exchange, routing_key)
 
 
 def acknowledgement_reset_slaves(node_id, connection, exchange, routing_key):

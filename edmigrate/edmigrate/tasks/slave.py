@@ -147,8 +147,8 @@ def find_slave(host_name, node_id, conn, exchange, routing_key):
 
 COMMAND_HANDLERS = {
     Constants.COMMAND_FIND_SLAVE: find_slave,
-    Constants.COMMAND_CONNECT_MASTER: connect_master,
-    Constants.COMMAND_DISCONNECT_MASTER: disconnect_master,
+    Constants.COMMAND_START_REPLICATION: connect_master,
+    Constants.COMMAND_STOP_REPLICATION: disconnect_master,
     Constants.COMMAND_CONNECT_PGPOOL: connect_pgpool,
     Constants.COMMAND_DISCONNECT_PGPOOL: disconnect_pgpool,
     Constants.COMMAND_RESET_SLAVES: reset_slaves

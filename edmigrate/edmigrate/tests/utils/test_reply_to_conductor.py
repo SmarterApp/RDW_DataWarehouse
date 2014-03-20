@@ -50,7 +50,7 @@ class Test(unittest.TestCase):
     def test_acknowledgement_master_disconnected(self):
         message, exchange, routing_key = acknowledgement_master_disconnected(111, self.__conn, self.__exchange, self.__routing_key)
         body = json.loads(message['body'])
-        self.assertEqual(Constants.ACK_COMMAND_DISCONNECT_MASTER, body[Constants.MESSAGE_ACK_COMMAND])
+        self.assertEqual(Constants.ACK_COMMAND_STOP_REPLICATION, body[Constants.MESSAGE_ACK_COMMAND])
         self.assertEqual(111, body[Constants.MESSAGE_NODE_ID])
         self.assertEqual(self.__exchange.name, exchange)
         self.assertEqual(self.__routing_key, routing_key)
@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
     def test_acknowledgement_master_connected(self):
         message, exchange, routing_key = acknowledgement_master_connected(111, self.__conn, self.__exchange, self.__routing_key)
         body = json.loads(message['body'])
-        self.assertEqual(Constants.ACK_COMMAND_CONNECT_MASTER, body[Constants.MESSAGE_ACK_COMMAND])
+        self.assertEqual(Constants.ACK_COMMAND_START_REPLICATION, body[Constants.MESSAGE_ACK_COMMAND])
         self.assertEqual(111, body[Constants.MESSAGE_NODE_ID])
         self.assertEqual(self.__exchange.name, exchange)
         self.assertEqual(self.__routing_key, routing_key)

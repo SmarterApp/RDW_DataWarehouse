@@ -17,7 +17,7 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 logger = logging.getLogger('edmigrate')
 
 
-def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolalance=100, time_lag_tolalance=60, timeout=3600):
+def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, timeout=3600*8):
     logger.debug('replication_monitor has started for node_ids[' + ', '.join(str(x) for x in node_ids) + ']')
     with RepMgrDBConnection() as connector:
         out_of_sync_ids = []
@@ -40,7 +40,7 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
                 apply_lag = int(status_record[Constants.APPLY_LAG].split(' ')[0])
                 time_lag = status_record[Constants.TIME_LAG]
                 copied_node_ids.remove(standby_node)
-                if time_lag.total_seconds() > time_lag_tolalance or replication_lag > replication_lag_tolalance or apply_lag > apply_lag_tolalance:
+                if time_lag.total_seconds() > time_lag_tolerance or replication_lag > replication_lag_tolerance or apply_lag > apply_lag_tolerance:
                     logger.debug('Node ID[' + str(standby_node) + '] has not completely replicated yet. replication_lag[' + str(replication_lag) + '] apply_lag[' + str(apply_lag) + '] time_lag[' + str(time_lag) + ']')
                     out_of_sync_ids.append(standby_node)
                 else:
@@ -51,9 +51,9 @@ def replication_monitor(node_ids, replication_lag_tolalance=100, apply_lag_tolal
                 raise ReplicationToMonitorOrphanNodeException('Node ID[' + str(copied_node_id) + '] is not monitored by repmgr')
             if out_of_sync_ids:
                 if time.time() - start_time > timeout:
-                    logger.debug('Replication Monitor out of sync' + ', '.join(str(x) for x in out_of_sync_ids) + ', timeout: ' + str(timeout) + 'seconds')
+                    logger.error('Replication Monitor out of sync' + ', '.join(str(x) for x in out_of_sync_ids) + ', timeout: ' + str(timeout) + 'seconds')
                     raise ReplicationToMonitorOutOfSyncException('Replication Monitor out of sync' + ', '.join(str(x) for x in out_of_sync_ids) + ', timeout: ' + str(timeout) + 'seconds')
-                time.sleep(1)
+                time.sleep(10)
             else:
                 break
     return True

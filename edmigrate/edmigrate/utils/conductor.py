@@ -47,15 +47,15 @@ class Conductor:
         slave_task.apply_async((Constants.COMMAND_CONNECT_PGPOOL, group_ids))  # @UndefinedVariable
         self.__log(Constants.COMMAND_CONNECT_PGPOOL, slave_group, group_ids)
 
-    def send_disconnect_master(self, slave_group=None):
+    def send_stop_replication(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
-        slave_task.apply_async((Constants.COMMAND_DISCONNECT_MASTER, group_ids))  # @UndefinedVariable
-        self.__log(Constants.COMMAND_DISCONNECT_MASTER, slave_group, group_ids)
+        slave_task.apply_async((Constants.COMMAND_STOP_REPLICATION, group_ids))  # @UndefinedVariable
+        self.__log(Constants.COMMAND_STOP_REPLICATION, slave_group, group_ids)
 
-    def send_connect_master(self, slave_group=None):
+    def send_start_replication(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)
-        slave_task.apply_async((Constants.COMMAND_CONNECT_MASTER, group_ids))  # @UndefinedVariable
-        self.__log(Constants.COMMAND_CONNECT_MASTER, slave_group, group_ids)
+        slave_task.apply_async((Constants.COMMAND_START_REPLICATION, group_ids))  # @UndefinedVariable
+        self.__log(Constants.COMMAND_START_REPLICATION, slave_group, group_ids)
 
     def migrate(self):
         start_migrate_daily_delta()
@@ -66,11 +66,11 @@ class Conductor:
     def wait_PGPool_connected(self, slave_group=None, timeout=30):
         self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_pgpool_connected)
 
-    def wait_master_disconnected(self, slave_group=None, timeout=30):
-        self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_master_disconnected)
+    def wait_replication_stopped(self, slave_group=None, timeout=30):
+        self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_replication_stopped)
 
-    def wait_master_connected(self, slave_group=None, timeout=30):
-        self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_master_connected)
+    def wait_replication_started(self, slave_group=None, timeout=30):
+        self.__wait_for_status(slave_group, timeout, self.__slave_trakcer.is_replication_started)
 
     def monitor_replication_status(self, slave_group=None):
         group_ids = self.__slave_trakcer.get_slave_ids(slave_group=slave_group)

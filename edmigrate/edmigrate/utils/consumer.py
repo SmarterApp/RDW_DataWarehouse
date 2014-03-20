@@ -28,13 +28,24 @@ class ConsumerThread(threading.Thread):
 
 
 class Consumer(ConsumerMixin):
+    '''
+    Consume messages from slaves
+    '''
     routing_key = Constants.CONDUCTOR_ROUTING_KEY
     exchange = Exchange(Constants.CONDUCTOR_EXCHANGE, type='direct')
+
     queue = Queue('edmigrate_conductor', exchange=exchange, routing_key=routing_key, durable=False)
 
     def __init__(self, connection):
         self.connection = connection
         self.__slave_tracker = SlaveTracker()
+        self.__CONSUMER_COMMAND_HANDLERS = {
+            Constants.ACK_COMMAND_FIND_SLAVE: self.__slave_tracker.add_slave,
+            Constants.ACK_COMMAND_START_REPLICATION: self.__slave_tracker.set_replication_started,
+            Constants.ACK_COMMAND_CONNECT_PGPOOL: self.__slave_tracker.set_pgpool_connected,
+            Constants.ACK_COMMAND_STOP_REPLICATION: self.__slave_tracker.set_replication_stopped,
+            Constants.ACK_COMMAND_DISCONNECT_PGPOOL: self.__slave_tracker.set_pgpool_disconnected
+        }
 
     def get_consumers(self, Consumer, channel):
         consumer = Consumer(self.queue, callbacks=[self.on_message])
@@ -44,27 +55,14 @@ class Consumer(ConsumerMixin):
     def on_message(self, body, message):
         message_ack_command = body[Constants.MESSAGE_ACK_COMMAND]
         node_id = body[Constants.MESSAGE_NODE_ID]
-        logger.debug('Message Received from node_id[' + str(node_id) + ' message[' + message_ack_command + ']')
-        # print("on_mesage " + str(node_id)+" msg " + message_ack_command)
+        logger.debug('Message Received from node_id[' + str(node_id) + '] message[' + message_ack_command + ']')
         try:
-            if message_ack_command == Constants.ACK_COMMAND_FIND_SLAVE:
-                self.__slave_tracker.add_slave(node_id)
-            elif message_ack_command == Constants.ACK_COMMAND_CONNECT_MASTER:
-                self.__slave_tracker.set_master_connected(node_id)
-            elif message_ack_command == Constants.ACK_COMMAND_CONNECT_PGPOOL:
-                self.__slave_tracker.set_pgpool_connected(node_id)
-            elif message_ack_command == Constants.ACK_COMMAND_DISCONNECT_MASTER:
-                self.__slave_tracker.set_master_disconnected(node_id)
-            elif message_ack_command == Constants.ACK_COMMAND_DISCONNECT_PGPOOL:
-                self.__slave_tracker.set_pgpool_disconnected(node_id)
+            function = self.__CONSUMER_COMMAND_HANDLERS.get(message_ack_command)
+            if function:
+                function(node_id)
+            else:
+                logger.debug('No handler for message[' + message_ack_command + '] from node_id[' + str(node_id) + ']')
         except SlaveNotRegisteredException as e:
             logger.error(e)
         finally:
             message.ack()
-
-# if __name__ == "__main__":
-#    with BrokerConnection("amqp://guest:guest@localhost:5672") as connection:
-#        try:
-#            Consumer(connection).run()
-#        except KeyboardInterrupt:
-#            print('bye!')

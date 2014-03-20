@@ -15,23 +15,28 @@ from edmigrate.exceptions import EdMigrateException
 logger = logging.getLogger('edmigrate')
 
 
+#CR Use cron instead of sleep
+
 class ConductorController(threading.Thread):
-    def __init__(self, connection, slave_find_wait=5, interval=300):
+    def __init__(self, connection, slave_find_wait=5, run_interval=300):
         threading.Thread.__init__(self)
         self.__connection = connection
         self.__slave_find_wait = slave_find_wait
-        self.__interval = interval
+        self.__run_interval = run_interval
         self.__slave_tracker = SlaveTracker()
         self.__conductor = Conductor()
 
     def run(self):
         while True:
             self.process(slave_find_wait=self.__slave_find_wait)
-            time.sleep(self.__interval)
+            time.sleep(self.__run_interval)
 
-    def process(self, slave_find_wait=5):
+    def __reset_all(self):
         self.__slave_tracker.reset()
         self.__conductor.reset_slaves()
+
+    def process(self, slave_find_wait=5):
+        self.__reset_all()
         self.__conductor.find_slaves()
         time.sleep(slave_find_wait)
         slaves_ids = self.__slave_tracker.get_slave_ids()
@@ -54,9 +59,9 @@ class ConductorController(threading.Thread):
             logger.debug('regular_process: 3')
             self.__conductor.wait_PGPool_disconnected(slave_group=Constants.SLAVE_GROUP_A)
             logger.debug('regular_process: 4')
-            self.__conductor.send_disconnect_master(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.send_stop_replication(slave_group=Constants.SLAVE_GROUP_B)
             logger.debug('regular_process: 5')
-            self.__conductor.wait_master_disconnected(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.wait_replication_stopped(slave_group=Constants.SLAVE_GROUP_B)
             logger.debug('regular_process: 6')
             self.__conductor.migrate()
             logger.debug('regular_process: 7')
@@ -70,9 +75,9 @@ class ConductorController(threading.Thread):
             logger.debug('regular_process: 11')
             self.__conductor.wait_PGPool_disconnected(slave_group=Constants.SLAVE_GROUP_B)
             logger.debug('regular_process: 12')
-            self.__conductor.send_connect_master(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.send_start_replication(slave_group=Constants.SLAVE_GROUP_B)
             logger.debug('regular_process: 13')
-            self.__conductor.wait_master_connected(slave_group=Constants.SLAVE_GROUP_B)
+            self.__conductor.wait_replication_started(slave_group=Constants.SLAVE_GROUP_B)
             logger.debug('regular_process: 14')
             self.__conductor.monitor_replication_status(slave_group=Constants.SLAVE_GROUP_B)
             logger.debug('regular_process: 15')

@@ -32,16 +32,16 @@ class Test(Unittest_with_repmgr_sqlite):
         end_time = time.time()
         self.assertTrue(end_time - start_time > timeout)
 
-    def test_replication_monitor_replication_lag_tolalance(self):
+    def test_replication_monitor_replication_lag_tolerance(self):
         timeout = 1
         self.assertRaises(ReplicationToMonitorOutOfSyncException, replication_monitor, [5], timeout=timeout)
-        rtn = replication_monitor([5], replication_lag_tolalance=1050)
+        rtn = replication_monitor([5], replication_lag_tolerance=1050)
         self.assertTrue(rtn)
 
     def test_replication_monitor_apply_lag(self):
         timeout = 1
         self.assertRaises(ReplicationToMonitorOutOfSyncException, replication_monitor, [6], timeout=timeout)
-        rtn = replication_monitor([6], apply_lag_tolalance=1050)
+        rtn = replication_monitor([6], apply_lag_tolerance=1050)
         self.assertTrue(rtn)
 
 if __name__ == "__main__":

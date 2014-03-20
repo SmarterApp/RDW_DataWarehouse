@@ -64,12 +64,14 @@ def generate_district(district_type, state: SBACState, save_to_mongo=True):
     return d
 
 
-def generate_school(school_type, district: SBACDistrict, save_to_mongo=True):
+def generate_school(school_type, district: SBACDistrict, interim_asmt_rate=sbac_config.INTERIM_ASMT_RATE,
+                    save_to_mongo=True):
     """
     Generate a school specified by the parameters.
 
     @param school_type: The type of school to generate
     @param district: The district the school belongs to
+    @param interim_asmt_rate: The rate (chance) that students in this school will take interim assessments
     @param save_to_mongo: If the new school object should be saved to Mongo
     @returns: The school
     """
@@ -80,7 +82,7 @@ def generate_school(school_type, district: SBACDistrict, save_to_mongo=True):
     s.guid_sr = sbac_id_gen.get_sr_uuid()
 
     # Decide if the school takes interim assessments
-    if random.random() < sbac_config.INTERIM_ASMT_RATE:
+    if random.random() < interim_asmt_rate:
         s.takes_interim_asmts = True
 
     # Save the school

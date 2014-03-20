@@ -20,7 +20,7 @@ class TestNotification(unittest.TestCase):
     @httpretty.activate
     def test_post_notification_success_no_retries(self):
         # Create the notification request body.
-        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'test_registration_id': '111-222-333', 'message': ''}
+        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'testRegistrationId': '111-222-333', 'message': ''}
 
         # Send the status.
         callback_url = self.register_url([201])
@@ -33,7 +33,7 @@ class TestNotification(unittest.TestCase):
     @httpretty.activate
     def test_post_notification_pending(self):
         # Create the notification request body.
-        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'test_registration_id': '111-222-333', 'message': ''}
+        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'testRegistrationId': '111-222-333', 'message': ''}
 
         # Send the status.
         callback_url = self.register_url([408])
@@ -46,7 +46,7 @@ class TestNotification(unittest.TestCase):
     @httpretty.activate
     def test_post_notification_failure(self):
         # Create the notification request body.
-        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'test_registration_id': '111-222-333', 'message': ''}
+        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'testRegistrationId': '111-222-333', 'message': ''}
 
         # Send the status.
         callback_url = self.register_url([401])
@@ -59,7 +59,7 @@ class TestNotification(unittest.TestCase):
     @httpretty.activate
     def test_post_notification_pending_connection_error(self):
         # Create the notification request body.
-        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'test_registration_id': '111-222-333', 'message': ''}
+        notification_body = {'status': mk.SUCCESS, 'id': 'aaa-bbb-ccc', 'testRegistrationId': '111-222-333', 'message': ''}
 
         # Send the status.
         callback_url = 'http://SomeBogusurl/SomeBogusEndpoint'

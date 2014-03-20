@@ -19,5 +19,6 @@ require [
   "cs!../test.EDWARE.asmtDropdown"
   "cs!../test.EDWARE.print"
   "cs!../test.EDWARE.grid.formatters"
+  "cs!../test.EDWARE.yearDropdown"
 ], ()->
   QUnit.start()

@@ -1,18 +1,21 @@
-define ["jquery", "edwarePrint"], ($, edwarePrint) ->
+define ["jquery", "edwarePrint", "edwarePreferences"],
+($, edwarePrint, edwarePreferences) ->
 
   PrintModal = edwarePrint.PrintModal
   create = edwarePrint.create
 
   backupWindowOpenHandler = window.open
-  
+
   module "EDWARE.Print",
     setup: ->
+      edwarePreferences.saveAsmtPreference({"asmtType": "SUMMATIVE"})
       $("body").append "<div id='printModalContainer'></div>"
       # mock window.open function
       window.open = (url)->
         'Mocked url'
 
     teardown: ->
+      edwarePreferences.clearAsmtPreference()
       $('#printModalContainer').remove()
       window.open = backupWindowOpenHandler
 

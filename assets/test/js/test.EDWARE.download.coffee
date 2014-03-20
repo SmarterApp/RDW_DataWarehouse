@@ -72,6 +72,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     equal actualText, secondOption.text(), "Click events should set event target text to dropdown menu"
 
   test "Test send request", ->
+    edwareClientStorage.filterStorage.save({"stateCode": "NC"})
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('ul input').attr('checked','')
     params = model.getParams()
@@ -82,6 +83,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
       "stateCode": ["NC"]
     }
     deepEqual params, expectParams, "Should be able to get all user selected parameters"
+    edwareClientStorage.clearAll()
 
   test "Test failed request", 1, ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)

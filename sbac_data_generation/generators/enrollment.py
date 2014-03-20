@@ -37,7 +37,7 @@ def generate_class(name, subject, school: SBACSchool, save_to_mongo=True):
     return s
 
 
-def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().year, most_recent=None,
+def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().year, most_recent=False,
                      save_to_mongo=True):
     """
     Generate a section for a given class. This will also generate the necessary number of teaching staff for the

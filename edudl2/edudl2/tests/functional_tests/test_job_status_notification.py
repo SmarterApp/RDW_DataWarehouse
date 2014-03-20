@@ -72,6 +72,9 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
     def verify_successful_request_body(self, request):
         self.assertEquals(request['status'], 'Success')
         self.assertEquals(request['id'], 'wxyz5678')
+        self.assertEquals(request['message'], ['Job completed successfully'])
+        self.assertEquals(request['testRegistrationId'], 'abcd1234')
+        self.assertEquals(len(request), 4)
 
     #Check the body of the notification on a failed UDL run
     def verify_failed_request_body(self, request):
@@ -79,6 +82,12 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         self.assertEquals(len(request['message']), 2)
         self.assertTrue('simple file validator error' in request['message'][0])
         self.assertTrue('5000' in request['message'][1])
+        self.assertEquals(request['testRegistrationId'], 'abcd1234')
+        self.assertEquals(request['id'], 'wxyz5678')
+        self.assertEquals(len(request), 4)
+
+    def verify_header(self, headers):
+        self.assertEquals(headers['Content-type'], 'application/json')
 
     def test_notification_failed_with_non_retryable_error_code(self):
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com", status=401)
@@ -89,6 +98,7 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         request = httpretty.last_request().parsed_body
 
         self.verify_successful_request_body(request)
+        self.verify_header(httpretty.last_request().headers)
         self.verify_notification_failed(self.successful_batch_id, 1)
 
     def test_successful_job_status(self):
@@ -100,6 +110,7 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         request = httpretty.last_request().parsed_body
 
         self.verify_successful_request_body(request)
+        self.verify_header(httpretty.last_request().headers)
         self.verify_notification_success(self.successful_batch_id)
 
     def test_failure_job_status(self):
@@ -113,6 +124,7 @@ class FunctionalTestJobStatusNotification(unittest.TestCase):
         request = httpretty.last_request().parsed_body
 
         self.verify_failed_request_body(request)
+        self.verify_header(httpretty.last_request().headers)
         self.verify_notification_success(self.failed_batch_id)
 
 

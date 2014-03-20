@@ -17,7 +17,7 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 logger = logging.getLogger('edmigrate')
 
 
-def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, timeout=3600*8):
+def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, timeout=28800):
     logger.debug('replication_monitor has started for node_ids[' + ', '.join(str(x) for x in node_ids) + ']')
     with RepMgrDBConnection() as connector:
         out_of_sync_ids = []

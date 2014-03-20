@@ -9,14 +9,7 @@ import datetime
 
 from nose.tools import assert_is_instance, assert_raises, assert_regexp_matches
 
-import data_generation.config.hierarchy as hier_config
-import data_generation.config.population as pop_config
-import sbac_data_generation.config.hierarchy as sbac_hier_config
-import sbac_data_generation.config.population as sbac_pop_config
-import sbac_data_generation.generators.assessment as asmt_gen
-import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
-import sbac_data_generation.generators.population as pop_gen
 
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.school import SBACSchool

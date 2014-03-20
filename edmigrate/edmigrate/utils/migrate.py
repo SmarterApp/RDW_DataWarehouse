@@ -2,12 +2,12 @@ from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException
 from sqlalchemy.sql.expression import select, and_
 from edmigrate.utils.constants import Constants
-from edmigrate.utils.migrate_cleanup import cleanup_batch
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 import logging
 from edcore.database.utils.constants import UdlStatsConstants
+from edcore.utils.cleanup import drop_schema, schema_exists
 
 __author__ = 'sravi'
 # This is a hack needed for now for migration.
@@ -223,8 +223,6 @@ def migrate_batch(batch):
     """Migrates data for the given batch and given tenant
 
     :param batch_guid: Batch Guid of the batch under migration
-    :param tenant: Tenant name of the tenant to which this batch belongs to
-                    This is needed to grab the right source and destination connection
 
     :returns true: sucess, false: fail (for UT purpose)
     """
@@ -257,9 +255,31 @@ def migrate_batch(batch):
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
             except Exception as e:
                 pass
-    if rtn:
-        # clean up preprod
-        cleanup_batch(batch_guid, tenant)
+    return rtn
+
+
+def cleanup_batch(batch):
+    """Cleanup the pre-prod schema for the given batch
+
+    :param batch_guid: Batch Guid of the batch under migration
+
+    :returns true: sucess, false: fail (for UT purpose)
+    """
+    rtn = False
+    batch_guid = batch[UdlStatsConstants.BATCH_GUID]
+    tenant = batch[UdlStatsConstants.TENANT]
+    schema_name = batch[UdlStatsConstants.SCHEMA_NAME]
+    logger.info('Cleaning up batch: ' + batch_guid + ',for tenant: ' + tenant)
+    with EdMigrateSourceConnection(tenant) as source_connector:
+        try:
+            # drop schema if exists
+            if schema_exists(source_connector, schema_name):
+                drop_schema(source_connector, schema_name)
+            logger.info('Master: Cleanup successful for batch: ' + batch_guid)
+            rtn = True
+        except Exception as e:
+            logger.info('Exception happened while cleaning up batch: ' + batch_guid)
+            logger.info(e)
     return rtn
 
 
@@ -275,3 +295,4 @@ def start_migrate_daily_delta(tenant=None):
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
         migrate_batch(batch=batch)
+        cleanup_batch(batch=batch)

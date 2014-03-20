@@ -53,6 +53,20 @@ def schema_exists(connector, schema_name):
     return True if result is not None else False
 
 
+def get_drop_schema_cmd(schema_name):
+    """
+    returns the drop schema command for the given schema_name
+    """
+    return DropSchema(schema_name, cascade=True)
+
+
+def get_create_schema_cmd(schema_name):
+    """
+    returns the create schema command for the given schema_name
+    """
+    return CreateSchema(schema_name)
+
+
 def create_schema(connector, metadata_generator, schema_name):
     """
     Creates a schema defined by the connector database and metadata
@@ -61,7 +75,7 @@ def create_schema(connector, metadata_generator, schema_name):
     @param schema_name: name of the schema to be dropped
     """
     engine = connector.get_engine()
-    connector.execute(CreateSchema(schema_name))
+    connector.execute(get_create_schema_cmd(schema_name))
     metadata = metadata_generator(schema_name=schema_name, bind=engine)
     metadata.create_all()
 
@@ -76,4 +90,4 @@ def drop_schema(connector, schema_name):
     connector.set_metadata(schema_name, reflect=True)
     metadata = connector.get_metadata()
     metadata.drop_all()
-    connector.execute(DropSchema(schema_name, cascade=True))
+    connector.execute(get_drop_schema_cmd())

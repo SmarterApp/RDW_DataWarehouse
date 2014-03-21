@@ -20,15 +20,6 @@ def convert_to_int(value):
     return converted_value
 
 
-def to_bool(val):
-    '''
-    boolean True/False converter
-
-    :param val: the converted value
-    '''
-    return val and val.lower() in ('true', 'True')
-
-
 def enum(*sequential, **named):
     '''
     enum

@@ -6,6 +6,7 @@ require {
     # globals
     jquery: '../3p/jquery-1.7.2.min',
     jqGrid: '../3p/jquery.jqGrid.min',
+    jqueryui: '../3p/jquery-ui-1.10.4.min',
     bootstrap: '../3p/bootstrap.min',
     text: '../3p/text',
     mustache: '../3p/mustache',
@@ -57,6 +58,7 @@ require {
     edwarePopover: 'widgets/popover/EDWARE.popover',
 
     # widgets
+    edwareYearDropdown: 'widgets/academicYear/EDWARE.yearDropdown',
 
     # templates
     edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
@@ -81,7 +83,8 @@ require {
     AsmtDropdownTemplate: 'widgets/asmtDropdown/template.html',
     PrintTemplate: 'widgets/print/template.html',
     HelpMenuTemplate: 'widgets/header/helpMenuTemplate.html',
-    headerTemplateHtml: 'widgets/header/template.html'
+    headerTemplateHtml: 'widgets/header/template.html',
+    YearDropdownTemplate: 'widgets/academicYear/template.html',
   },
   shim: {
     'jqGrid': {

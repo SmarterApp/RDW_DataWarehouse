@@ -125,8 +125,7 @@ def get_table_column_types(conf, target_table, column_names):
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     tenant = conf[mk.TENANT_NAME]
 
-    with get_target_connection(tenant) as conn:
-
+    with get_target_connection(tenant, conf[mk.GUID_BATCH]) as conn:
         query = create_information_query(target_table)
 
         try:
@@ -158,7 +157,7 @@ def create_group_tuple(task_name, arg_list):
     return tuple(grouped_tasks)
 
 
-def generate_conf(guid_batch, phase_number, load_type, tenant_code):
+def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schema):
     """
     Return all needed configuration information
     :param guid_batch: the guid for the batch
@@ -167,7 +166,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
     :param tenant_code: the tenants 2 letter code
     :return: A dictionary of the config details
     """
-    tenant_target_db_info = get_tenant_target_db_information(tenant_code)
+    tenant_target_db_info = get_tenant_target_db_information(tenant_code, target_schema=target_schema)
     tenant_prod_db_info = get_tenant_prod_db_information(tenant_code)
 
     conf = {
@@ -199,7 +198,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
     return conf
 
 
-def get_tenant_target_db_information(tenant_code):
+def get_tenant_target_db_information(tenant_code, target_schema):
     """
     If multi-tenancy is on look in the Master metadata table to pull out
     information about this tenant, otherwise get the target db info from udl2_conf
@@ -211,7 +210,7 @@ def get_tenant_target_db_information(tenant_code):
     return {
         mk.TARGET_DB_NAME: udl2_conf['target_db_conn'][tenant_code]['db_database'],
         mk.TARGET_DB_USER: udl2_conf['target_db_conn'][tenant_code]['db_user'],
-        mk.TARGET_DB_SCHEMA: udl2_conf['target_db_conn'][tenant_code]['db_schema'],
+        mk.TARGET_DB_SCHEMA: target_schema,
         mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn'][tenant_code]['db_pass'],
     }
 

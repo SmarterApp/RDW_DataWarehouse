@@ -13,7 +13,7 @@ from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 from edudl2.move_to_target.move_to_target_setup import Column
 from edcore.utils.utils import compile_query_to_sql_text
-from edudl2.move_to_target.handle_upsert_helper import HanldeUpsertHelper
+from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 import logging
 from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from edschema.database.connector import DBConnection
@@ -186,7 +186,7 @@ class TestMoveToTarget(Unittest_with_sqlite):
         match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
         guid_batch = None
         with DBConnection() as conn:
-            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
             all_records = helper.find_all()
             self.assertIsNotNone(all_records, "Find all should return some value")
             actual_rows = all_records.fetchall()
@@ -217,7 +217,7 @@ class TestMoveToTarget(Unittest_with_sqlite):
         }
 
         with DBConnection() as conn:
-            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
             m1 = helper.find_by_natural_key(example_record)
             self.assertIsNotNone(m1, "Find_by_natural_key should return matched value")
             self.assertEqual(m1['student_guid'], example_record['student_guid'], "Matched records should have the same student guid")
@@ -241,7 +241,7 @@ class TestMoveToTarget(Unittest_with_sqlite):
             'batch_guid': None
         }
         with DBConnection() as conn:
-            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
             helper.update_dependant(old_record, new_record)
             all_records = helper.find_all()
             for record in all_records:
@@ -261,7 +261,7 @@ class TestMoveToTarget(Unittest_with_sqlite):
             'batch_guid': None
         }
         with DBConnection() as conn:
-            helper = HanldeUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
             # update in dependant table to by pass constraints
             helper.update_dependant(old_record, new_record)
             helper.delete_by_guid(old_record)

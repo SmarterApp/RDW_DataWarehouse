@@ -441,6 +441,7 @@ def setup_udl2_schema(udl2_conf):
     load_stored_proc(udl2_db)
 
 
+# TODO:  We might not need this anymore if we dont initialize target db from here
 def drop_foreign_keys_on_fact_asmt_outcome(target_conf):
     '''
     drop foreign key constraints of fact_asmt_outcome table in target db.

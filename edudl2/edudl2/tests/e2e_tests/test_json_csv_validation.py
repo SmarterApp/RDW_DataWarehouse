@@ -55,7 +55,6 @@ class ValidateTableData(unittest.TestCase):
         self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp(file_to_load)
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch)
         self.connect_to_star_shema(self.connector)
@@ -86,7 +85,6 @@ class ValidateTableData(unittest.TestCase):
     def connect_to_star_shema(self, connector):
         # Connect to DB and make sure that star shma dont have any data
         fact_table = connector.get_table(FACT_TABLE)
-        print(fact_table.c.batch_guid)
         output = select([fact_table.c.batch_guid])
         output_data = connector.execute(output).fetchall()
         trp_str = (self.guid_batch_id,)

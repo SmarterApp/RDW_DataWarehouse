@@ -10,13 +10,13 @@ from uuid import uuid4
 import glob
 from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select
-from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
+from edudl2.tests.e2e_tests.database_helper import drop_target_schema
+from edudl2.udl2.celery import udl2_conf
 
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
-guid_batch_id = str(uuid4())
 path = '/opt/edware/zones/landing/work/test_tenant'
 FACT_TABLE = 'fact_asmt_outcome'
 
@@ -26,39 +26,40 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         self.tenant_dir = TENANT_DIR
-        self.ed_connector = get_target_connection()
-        self.connector = get_udl_connection()
+        self.batch_id = str(uuid4())
 
     def tearDown(self):
-        self.ed_connector.close_connection()
-        self.connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
+        drop_target_schema(self.batch_id)
 
 # Validate that in Batch_Table for given guid every udl_phase output is Success
-    def validate_UDL_database(self, connector):
-        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        output = select([batch_table.c.udl_phase_step_status, batch_table.c.guid_batch]).where(batch_table.c.guid_batch == guid_batch_id)
-        output_data = connector.execute(output).fetchall()
-        for row in output_data:
-            status = row['udl_phase_step_status']
-            self.assertEqual(status, 'SUCCESS')
-        print('UDL validation is successful')
-        query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.guid_batch == guid_batch_id))
-        output_result = connector.execute(query).fetchall()
-        print(output_result)
-        tuple_str = [('SUCCESS',)]
-        self.assertEquals(output_result, tuple_str)
+    def validate_UDL_database(self):
+        with get_udl_connection() as connector:
+            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            output = select([batch_table.c.udl_phase_step_status, batch_table.c.guid_batch]).where(batch_table.c.guid_batch == self.batch_id)
+            output_data = connector.execute(output).fetchall()
+            for row in output_data:
+                status = row['udl_phase_step_status']
+                self.assertEqual(status, 'SUCCESS')
+            print('UDL validation is successful')
+            query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.guid_batch == self.batch_id))
+            output_result = connector.execute(query).fetchall()
+            print(output_result)
+            tuple_str = [('SUCCESS',)]
+            self.assertEquals(output_result, tuple_str)
 
 #Validate that for given guid data loded on star schema
-    def validate_edware_database(self, ed_connector):
+    def validate_edware_database(self, schema_name):
+        with get_target_connection() as ed_connector:
+            ed_connector.set_metadata_by_reflect(schema_name)
             edware_table = ed_connector.get_table(FACT_TABLE)
-            output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == guid_batch_id)
+            output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.batch_id)
             output_data = ed_connector.execute(output).fetchall()
             print(edware_table.c.batch_guid)
             row_count = len(output_data)
             self.assertGreater(row_count, 1, "Data is loaded to star shema")
-            truple_str = (guid_batch_id, )
+            truple_str = (self.batch_id, )
             self.assertIn(truple_str, output_data, "assert successful")
             print('edware schema validation is successful')
 
@@ -71,16 +72,17 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         return shutil.copy2(self.archived_file, self.tenant_dir)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-    def check_job_completion(self, connector, max_wait=30):
-        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-        query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
-        timer = 0
-        result = connector.execute(query).fetchall()
-        while timer < max_wait and result == []:
-            sleep(0.25)
-            timer += 0.25
+    def check_job_completion(self, max_wait=30):
+        with get_udl_connection() as connector:
+            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
+            timer = 0
             result = connector.execute(query).fetchall()
-        print('Waited for', timer, 'second(s) for job to complete.')
+            while timer < max_wait and result == []:
+                sleep(0.25)
+                timer += 0.25
+                result = connector.execute(query).fetchall()
+            print('Waited for', timer, 'second(s) for job to complete.')
 
 # Run pipeline with given guid.
     def run_udl_pipeline(self):
@@ -88,10 +90,10 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=guid_batch_id)
+        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=self.batch_id)
         print(command)
         subprocess.call(command, shell=True)
-        self.check_job_completion(self.connector)
+        self.check_job_completion()
 
 #Validate that after pipeline complete,workzone folder is clean
     def validate_workzone(self):
@@ -100,19 +102,19 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.expanded_path = os.path.join(path, 'expanded')
         self.subfiles_path = os.path.join(path, 'subfiles')
 
-        arrival_dir = glob.glob(self.arrivals_path + '*' + guid_batch_id)
+        arrival_dir = glob.glob(self.arrivals_path + '*' + self.batch_id)
         print("work-arrivals folder empty")
         self.assertEqual(0, len(arrival_dir))
 
-        decrypted_dir = glob.glob(self.decrypted_path + '*' + guid_batch_id)
+        decrypted_dir = glob.glob(self.decrypted_path + '*' + self.batch_id)
         print("work-decrypted folder emptydata ")
         self.assertEqual(0, len(decrypted_dir))
 
-        expanded_dir = glob.glob(self.expanded_path + '*' + guid_batch_id)
+        expanded_dir = glob.glob(self.expanded_path + '*' + self.batch_id)
         print("work-expanded folder emptydata ")
         self.assertEqual(0, len(expanded_dir))
 
-        subfiles_dir = glob.glob(self.subfiles_path + '*' + guid_batch_id)
+        subfiles_dir = glob.glob(self.subfiles_path + '*' + self.batch_id)
         print("work-subfiles folder emptydata ")
         self.assertEqual(0, len(subfiles_dir))
 
@@ -120,12 +122,8 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.run_udl_pipeline()
         # wait for a while
         sleep(5)
-        self.validate_UDL_database(self.connector)
-        # wait for a while
-        sleep(5)
-        self.validate_edware_database(self.ed_connector)
-        # wait for a while
-        sleep(5)
+        self.validate_UDL_database()
+        self.validate_edware_database(schema_name=self.batch_id)
         self.validate_workzone()
 
 if __name__ == "__main__":

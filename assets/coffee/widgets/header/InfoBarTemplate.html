@@ -12,5 +12,14 @@
         </div>
     {{/subjects}}
     </li>
+    <li class="academicYearArea pull-right">
+        <span class="info pull-left">{{labels.academic_year}}: <i class="edware-icon-info-mark marginRight8 academicYearInfoIcon"></i></span>
+        <div id="academicYearAnchor" class="pull-left"></div>
+    </li>
 </ul>
+<div class="reminderMessage" style="display: none;">
+    <i class="edware-icon-triangle"></i>
+    You are viewing a previous academic year.
+    <a href="#">Return to <span class='latestYear'>{{latestYear}}</span></a>.
+</div>
 <div class="CSVDownloadContainer"></div>

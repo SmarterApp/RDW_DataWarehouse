@@ -1,5 +1,14 @@
 from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql.expression import select
+from edudl2.notification.notification_messages import get_notification_message
+from sqlalchemy.sql import and_
+from requests import post
+import json
+import requests.exceptions as req_exc
+from edudl2.udl2 import message_keys as mk
+from edudl2.udl2 import configuration_keys as ck
+import logging
+
 __author__ = 'tshewchuk'
 
 """
@@ -7,12 +16,7 @@ This package contains the methods needed to post notification of the status, and
 of the current completed UDL job to the job client.
 """
 
-from sqlalchemy.sql import and_
-from requests import post
-import requests.exceptions as req_exc
-from edudl2.udl2 import message_keys as mk
-from edudl2.udl2 import configuration_keys as ck
-from edudl2.notification.notification_messages import get_notification_message
+logger = logging.getLogger(__name__)
 
 
 def post_udl_job_status(conf):
@@ -59,7 +63,7 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id):
     # Get error messages
     message = get_notification_message(status, guid_batch)
 
-    notification_body = {'status': status_codes[status], 'id': id, 'test_registration_id': test_registration_id,
+    notification_body = {'status': status_codes[status], 'id': id, 'testRegistrationId': test_registration_id,
                          'message': message}
 
     return notification_body
@@ -85,8 +89,12 @@ def post_notification(callback_url, timeout_interval, notification_body):
     # Attempt HTTP POST of notification body.
     status_code = 0
 
+    logger.debug('Notification payload -- %s' % json.dumps(notification_body))
+
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+
     try:
-        response = post(callback_url, notification_body, timeout=timeout_interval)
+        response = post(callback_url, json.dumps(notification_body), timeout=timeout_interval, headers=headers)
         status_code = response.status_code
 
         # Throw an exception for all responses but success.

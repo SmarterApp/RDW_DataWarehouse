@@ -2,9 +2,10 @@ import os
 import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.database.udl2_connector import initialize_db_udl,\
-    initialize_db_target, initialize_db_prod, get_udl_connection,\
-    get_target_connection
+from edudl2.udl2_util.database_util import execute_queries
+from edudl2.database.udl2_connector import initialize_db_target,\
+    initialize_db_udl, initialize_db_prod, get_target_connection,\
+    get_udl_connection
 
 
 class UDLTestHelper(unittest.TestCase):
@@ -29,29 +30,30 @@ class UDLTestHelper(unittest.TestCase):
         cls.truncate_edware_tables()
         cls.truncate_udl_tables()
 
-    def setUp(self):
-        #self.truncate_edware_tables()
-        #self.truncate_udl_tables()
-        pass
-
-    def tearDown(self):
-        #self.truncate_edware_tables()
-        #self.truncate_udl_tables()
-        pass
-
     @classmethod
     def truncate_edware_tables(self):
-        with get_target_connection() as conn:
-            metadata = conn.get_metadata(reflect=True, schema_name=self.udl2_conf['target_db']['db_schema'])
+        with get_target_connection(schema_name=self.udl2_conf['target_db']['db_schema']) as conn:
+            metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
 
     @classmethod
     def truncate_udl_tables(self):
-        with get_udl_connection() as conn:
-            for t in ['INT_SBAC_ASMT', 'INT_SBAC_ASMT_OUTCOME', 'STG_SBAC_ASMT_OUTCOME']:
-                table = conn.get_table(t)
-                conn.execute(table.delete())
+        sql_template = """
+            TRUNCATE "{staging_schema}"."{staging_table}" CASCADE
+            """
+        sql_int_asmt = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                                           staging_table='INT_SBAC_ASMT')
+        sql_int_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                                                   staging_table='INT_SBAC_ASMT_OUTCOME')
+        sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                                                   staging_table='STG_SBAC_ASMT_OUTCOME')
+        sql_stg_err_list = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                                                   staging_table='ERR_LIST')
+
+        except_msg = "Unable to clean up udl tables"
+        execute_queries(self.udl2_conn,
+                        [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt_outcome, sql_stg_err_list], except_msg)
 
     def get_staging_asmt_score_avgs(self):
         stg_avg_query = """ select avg(score_asmt::int),

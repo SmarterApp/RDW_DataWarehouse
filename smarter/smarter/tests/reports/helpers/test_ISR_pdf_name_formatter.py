@@ -13,6 +13,9 @@ from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 from edauth.tests.test_helper.create_session import create_test_session
+from pyramid.security import Allow
+import edauth
+from edauth.security.user import RoleRelation
 
 
 class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
@@ -26,11 +29,13 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         reg.settings['cache.type'] = 'memory'
         dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
+        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
         self.__config.testing_securitypolicy(dummy_session)
 
     def test_generate_isr_report_path_by_student_guid(self):
         file_name = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        self.assertEqual(file_name, os.path.join('/', 'NC', '2012', '228', '242', '3', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.en.pdf'))
+        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '3', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.en.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_exist(self):
         self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
@@ -41,7 +46,7 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
 
     def test_generate_isr_report_path_by_student_guid_for_grayScale(self):
         file_name = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=True, lang='jp')
-        self.assertEqual(file_name, os.path.join('/', 'NC', '2012', '228', '242', '3', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.jp.g.pdf'))
+        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '3', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.jp.g.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_existd_for_grayScale(self):
         self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4', grayScale=True)

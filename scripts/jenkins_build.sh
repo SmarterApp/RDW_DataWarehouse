@@ -283,7 +283,7 @@ function restart_apache {
 }
 
 function restart_memcached {
-    /usr/bin/sudo /etc/init.d/memcached restart
+    /etc/init.d/memcached restart
 }
 
 function restart_celeryd {
@@ -308,7 +308,7 @@ function import_data_from_csv {
     cp "${WORKSPACE}/config/${INI_FILE_FOR_ENV}" "${WORKSPACE}/config/data_copy.ini"
     sed -i.bak "s/edwdbsrv4.poc.dum.edwdc.net:9999/edwdbsrv1.poc.dum.edwdc.net:5432/" ${WORKSPACE}/config/data_copy.ini
     
-    python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/database/tests/resources
+    python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources
 }
 
 function build_rpm {
@@ -420,10 +420,8 @@ function setup_for_udl {
 
 function run_udl_integration_tests {
     echo "Running UDL integration tests"
-	# Regenerate ini for integration tests as part of setup_for_udl
-
-    cd $WORKSPACE/edudl2/edudl2/tests/integration_tests
-    INTEGRATION=1 nosetests -v test_udl_reporting.py
+    cd $WORKSPACE/integration_tests
+    nosetests
     echo "Finished udl data load"
 }
 

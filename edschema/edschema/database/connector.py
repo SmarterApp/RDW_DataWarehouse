@@ -8,7 +8,7 @@ from edschema.database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
-from sqlalchemy import MetaData, schema
+from sqlalchemy import schema
 from collections import OrderedDict
 import logging
 
@@ -23,6 +23,9 @@ class IDbUtil(interface.Interface):
     def get_metadata(self):
         pass
 
+    def set_metadata(self):
+        pass
+
 
 @implementer(IDbUtil)
 class DbUtil:
@@ -35,6 +38,9 @@ class DbUtil:
 
     def get_metadata(self):
         return self.__metadata
+
+    def set_metadata(self, metadata):
+        self.__metadata = metadata
 
 
 class DBConnection(ConnectionBase):
@@ -62,6 +68,10 @@ class DBConnection(ConnectionBase):
 
     def __del__(self):
         self.close_connection()
+
+    def get_engine(self):
+        dbUtil = component.queryUtility(IDbUtil, name=self.__name)
+        return dbUtil.get_engine()
 
     def get_result(self, query):
         '''
@@ -104,14 +114,28 @@ class DBConnection(ConnectionBase):
     def get_table(self, table_name):
         return Table(table_name, self.get_metadata())
 
-    def get_metadata(self, reflect=False, schema_name=None):
+    def get_metadata(self):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
-        if reflect:
-            metadata = schema.MetaData(bind=dbUtil.get_engine(), schema=schema_name)
-            metadata.reflect(views=True)
-            return metadata
-        else:
-            return dbUtil.get_metadata()
+        return dbUtil.get_metadata()
+
+    def set_metadata_by_generate(self, schema_name, metadata_func):
+        '''
+        Set metadata by passing in a function that generates its metadata
+        '''
+        metadata = metadata_func(schema_name=schema_name, bind=self.get_engine())
+        self._set_metadata(metadata)
+
+    def set_metadata_by_reflect(self, schema_name):
+        '''
+        Given a schema name, reflect on current database and set the metadata
+        '''
+        metadata = schema.MetaData(bind=self.get_engine(), schema=schema_name)
+        metadata.reflect(views=True)
+        self._set_metadata(metadata)
+
+    def _set_metadata(self, metadata):
+        dbUtil = component.queryUtility(IDbUtil, name=self.__name)
+        dbUtil.set_metadata(metadata)
 
     def execute(self, statement, stream_results=False, *multiparams, **params):
         return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)

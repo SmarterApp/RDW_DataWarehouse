@@ -69,6 +69,7 @@ class Constants():
     FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
     CUSTOM_METADATA = 'custom_metadata'
     ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'
+    ASMT_ADMINISTRATION = 'asmt_administration'
     MIN_CELL_SIZE = "min_cell_size"
     MATH = 'Math'
     ELA = 'ELA'
@@ -94,3 +95,4 @@ class Constants():
     RAW_EXPORT = 'raw'
     MOST_RECENT = 'most_recent'
     ASMT_YEAR = 'asmt_year'
+    ACADEMIC_YEAR = 'academicYear'

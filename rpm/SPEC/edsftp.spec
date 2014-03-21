@@ -31,6 +31,7 @@ virtualenv-3.3 --distribute virtualenv/edsftp
 source virtualenv/edsftp/bin/activate
 
 cd ${WORKSPACE}/edsftp
+python setup.py clean --all
 python setup.py install
 cd -
 

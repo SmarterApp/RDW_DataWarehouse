@@ -11,9 +11,26 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
     explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions,\
-    update_or_delete_duplicate_record
+    update_or_delete_duplicate_record, create_target_schema_for_batch
 
 logger = get_task_logger(__name__)
+
+
+@celery.task(name='udl2.W_load_from_integration_to_star.create_target_schema', base=Udl2BaseTask)
+def create_target_schema(msg):
+    """
+    Task to create target star schema
+    """
+    start_time = datetime.datetime.now()
+    conf = _get_conf(msg)
+    create_target_schema_for_batch(conf)
+    end_time = datetime.datetime.now()
+
+    # Create benchmark object ant record benchmark
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], create_target_schema.name, start_time, end_time,
+                                    task_id=str(create_target_schema.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
+    benchmark.record_benchmark()
+    return msg
 
 
 #*************implemented via group*************
@@ -24,7 +41,7 @@ def explode_to_dims(msg):
     In the input batch object, guid_batch is provided.
     '''
     start_time = datetime.datetime.now()
-    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE], msg[mk.TENANT_NAME])
+    conf = _get_conf(msg)
     table_map, column_map = get_table_and_column_mapping(conf, explode_to_dims.name, 'dim_')
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
@@ -84,8 +101,7 @@ def explode_to_fact(msg):
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
 
-    # generate config dict
-    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    conf = _get_conf(msg)
     # get fact table column mapping
     fact_table_map, fact_column_map = get_table_and_column_mapping(conf, explode_to_fact.name, 'fact_')
     fact_table = list(fact_table_map.keys())[0]
@@ -128,8 +144,7 @@ def handle_deletions(msg):
     affected_rows = msg[mk.TOTAL_ROWS_LOADED]
     udl_phase_step = 'HANDLE DELETION IN FACT'
 
-    # generate config dict
-    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    conf = _get_conf(msg)
     conf[mk.UDL_PHASE_STEP] = udl_phase_step
     conf[mk.WORKING_SCHEMA] = msg['dim_tables'][0][mk.WORKING_SCHEMA]
     match_conf = get_move_to_target_conf()['handle_deletions']
@@ -185,5 +200,7 @@ def _get_conf(msg):
     phase_number = msg[mk.PHASE]
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
-    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name)
+    # if target schema name is specifically injected use that else use batch_guid as the schema name always
+    target_schema = msg[mk.TARGET_DB_SCHEMA] if mk.TARGET_DB_SCHEMA in msg else msg[mk.GUID_BATCH]
+    conf = generate_conf(guid_batch, phase_number, load_type, tenant_name, target_schema)
     return conf

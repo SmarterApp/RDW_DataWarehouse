@@ -3,12 +3,14 @@ Created on Mar 4, 2014
 
 @author: sravi
 '''
-import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from sqlalchemy.sql.expression import select
 from sqlalchemy import func
 import edcore.utils.cleanup as cleanup
+from edcore.utils.utils import compile_query_to_sql_text
+import sqlite3
+from edschema.metadata_generator import generate_ed_metadata
 
 
 class TestCleanup(Unittest_with_edcore_sqlite):
@@ -53,62 +55,54 @@ class TestCleanup(Unittest_with_edcore_sqlite):
             self.assertTrue(len(set(all_tables).intersection(self.dim_tables
                             + self.fact_tables + self.other_tables)) > 0)
 
-    def test_get_delete_table_query_for_batch_delete_with_schema_name(self):
-        query = cleanup.get_delete_table_query('edware', 'fact_asmt_outcome', 'batch_guid',
-                                               '90901b70-ddaa-11e2-a95d-68a86d3c2f82', 100, 'ROWID')
-        expected_query = 'DELETE FROM "edware"."fact_asmt_outcome" WHERE ROWID IN ' + \
-            '(SELECT ROWID FROM "edware"."fact_asmt_outcome" WHERE batch_guid = :value ' +  \
-            'ORDER BY ROWID LIMIT :batch_size)'
-        self.assertEquals(str(query), expected_query)
-
-    def test_get_delete_table_query_for_batch_delete_null_schema_name(self):
-        query = cleanup.get_delete_table_query(None, 'fact_asmt_outcome', 'batch_guid',
-                                               '90901b70-ddaa-11e2-a95d-68a86d3c2f82', 100, 'ROWID')
-        expected_query = 'DELETE FROM "fact_asmt_outcome" WHERE ROWID IN ' + \
-            '(SELECT ROWID FROM "fact_asmt_outcome" WHERE batch_guid = :value ' +  \
-            'ORDER BY ROWID LIMIT :batch_size)'
-        self.assertEquals(str(query), expected_query)
-
-    def test_get_schema_table_name(self):
-        schema_table_name = cleanup._get_schema_table_name('edware', 'dim_asmt')
-        self.assertEqual(schema_table_name, '"edware"."dim_asmt"')
-        schema_table_name = cleanup._get_schema_table_name(None, 'dim_asmt')
-        self.assertEqual(schema_table_name, '"dim_asmt"')
-
-    def test_delete_rows_in_batches(self):
-        with UnittestEdcoreDBConnection() as connection:
-            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup._delete_rows_in_batches(connection, None, 'fact_asmt_outcome',
-                                            'batch_guid', test_batch_guid, 'ROWID', 100)
-            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
-
-    def test_cleanup_table_for_valid_batch_guid(self):
-        with UnittestEdcoreDBConnection() as connection:
-            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_table(connection, 'edware', 'batch_guid', test_batch_guid, False, 'fact_asmt_outcome')
-            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
-
-    def test_cleanup_table_in_batches_for_valid_batch_guid(self):
-        with UnittestEdcoreDBConnection() as connection:
-            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_table(connection, None, 'batch_guid', test_batch_guid, True,
-                                  'fact_asmt_outcome', 'ROWID')
-            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
-
-    def test_cleanup_table_for_invalid_batch_guid(self):
-        with UnittestEdcoreDBConnection() as connection:
-            test_batch_guid = '90901b70-ddaa-11e2-a95d-xxxxxxx'
-            cleanup.cleanup_table(connection, 'edware', 'batch_guid', test_batch_guid, False, 'fact_asmt_outcome')
-            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
-
     def test_cleanup_all_tables_with_prefix_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_all_tables(connection, 'edware', 'batch_guid', test_batch_guid, False, table_name_prefix='fact_')
+            cleanup.cleanup_all_tables(connection, 'batch_guid', test_batch_guid, False, table_name_prefix='fact_')
             self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
 
     def test_cleanup_all_tables_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup.cleanup_all_tables(connection, 'edware', 'batch_guid', test_batch_guid, False, tables=['fact_asmt_outcome'])
+            cleanup.cleanup_all_tables(connection, 'batch_guid', test_batch_guid, False, tables=['fact_asmt_outcome'])
             self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
+
+    def test_get_schema_check_query(self):
+        expected_query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'"
+        query = cleanup._get_schema_check_query('90901b70-ddaa-11e2-a95d-68a86d3c2f82')
+        query_string = str(compile_query_to_sql_text(query)).replace("\n", "")
+        self.assertEquals(query_string, expected_query)
+
+    def test_schema_exists_raises_exception_with_sqlite(self):
+        with UnittestEdcoreDBConnection() as connection:
+            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+            with self.assertRaises(Exception) as cm:
+                cleanup.schema_exists(connection, test_batch_guid)
+            the_exception = cm.exception
+            self.assertEquals(the_exception.__class__.__name__, 'OperationalError')
+            self.assertTrue('no such table: information_schema.schemata' in str(the_exception))
+
+    def test_drop_schema(self):
+        with UnittestEdcoreDBConnection() as connection:
+            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+            with self.assertRaises(Exception) as cm:
+                cleanup.drop_schema(connection, test_batch_guid)
+            the_exception = cm.exception
+            self.assertEquals(the_exception.__class__.__name__, 'OperationalError')
+
+    def test_create_schema(self):
+        with UnittestEdcoreDBConnection() as connection:
+            test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+            with self.assertRaises(Exception) as cm:
+                cleanup.create_schema(connection, generate_ed_metadata, test_batch_guid)
+            the_exception = cm.exception
+            self.assertEquals(the_exception.__class__.__name__, 'OperationalError')
+            self.assertTrue('near "SCHEMA": syntax error' in str(the_exception))
+
+    def test_get_drop_schema_cmd(self):
+        test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+        self.assertEquals(str(cleanup.get_drop_schema_cmd(schema_name=test_batch_guid)), 'DROP SCHEMA "90901b70-ddaa-11e2-a95d-68a86d3c2f82" CASCADE')
+
+    def test_get_create_schema_cmd(self):
+        test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
+        self.assertEquals(str(cleanup.get_create_schema_cmd(schema_name=test_batch_guid)), 'CREATE SCHEMA "90901b70-ddaa-11e2-a95d-68a86d3c2f82"')

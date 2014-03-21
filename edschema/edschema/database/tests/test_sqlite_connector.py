@@ -4,7 +4,7 @@ Created on Feb 28, 2013
 @author: tosako
 '''
 import unittest
-from edschema.database.sqlite_connector import create_sqlite
+from edschema. database.sqlite_connector import create_sqlite
 from zope import component
 from edschema.database.connector import IDbUtil
 from sqlalchemy.types import BigInteger

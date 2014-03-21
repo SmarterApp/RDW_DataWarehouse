@@ -8,7 +8,9 @@ requires = [
     "celery==3.0.23",
     "anyjson==0.3.3",
     "amqp==1.0.13",
-    "apscheduler==2.1.1"
+    "apscheduler==2.1.1",
+    "mocket==1.0.0",
+    "mock==1.0.1"
 ]
 
 tests_require = requires

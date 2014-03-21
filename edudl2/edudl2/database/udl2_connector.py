@@ -2,7 +2,6 @@ from edudl2.database.metadata.udl2_metadata import generate_udl2_metadata
 from edschema.database.connector import DBConnection
 from edschema.database.generic_connector import setup_db_connection_from_ini
 __author__ = 'swimberly'
-
 from edschema.metadata_generator import generate_ed_metadata
 
 
@@ -37,11 +36,14 @@ def get_udl_connection(tenant='edware'):
     return UDL2DBConnection(tenant=tenant, namespace=UDL_NAMESPACE)
 
 
-def get_target_connection(tenant='edware'):
+def get_target_connection(tenant='edware', schema_name=None):
     '''
     Get Target connection
     '''
-    return UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
+    conn = UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
+    if schema_name:
+        conn.set_metadata_by_reflect(schema_name)
+    return conn
 
 
 def get_prod_connection(tenant='edware'):
@@ -102,6 +104,6 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
         'max_overflow': tenant_dict['max_overflow'],
         'echo': tenant_dict['echo'],
         'pool_size': tenant_dict['pool_size'],
+        'schema_name': schema_name
     }
-    metadata = metadata_generator(schema_name)
-    setup_db_connection_from_ini(settings, '', metadata, datasource_name, allow_schema_create)
+    setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

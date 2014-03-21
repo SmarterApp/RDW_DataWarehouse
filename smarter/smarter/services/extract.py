@@ -13,7 +13,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPInternalServerError
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
-from smarter.extracts.processor import process_async_extraction_request,\
+from smarter.extracts.student_asmt_processor import process_async_extraction_request,\
     process_sync_extract_request
 from smarter.extracts.constants import ExtractType, Constants as Extract
 from datetime import datetime
@@ -168,6 +168,7 @@ def send_extraction_request(params):
                               Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None])[0],
                               Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None])[0],
                               Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None])[0],
+                              Constants.ASMTYEAR: params.get(Constants.ASMTYEAR, [None])[0],
                               Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None])[0],
                               Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
             zip_file_name = generate_zip_file_name(extract_params)
@@ -200,7 +201,9 @@ def generate_zip_file_name(params):
     asmtSubjects = '_'.join(subjects)
     asmtGrade = params.get(Constants.ASMTGRADE)
     identifier = '_GRADE_' + str(asmtGrade) if asmtGrade is not None else ''
-    return "ASMT{identifier}_{asmtSubject}_{asmtType}_{timestamp}.zip".format(identifier=identifier,
-                                                                              asmtSubject=asmtSubjects.upper(),
-                                                                              asmtType=params.get(Constants.ASMTTYPE).upper(),
-                                                                              timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
+    return "ASMT_{asmtYear}{identifier}_{asmtSubject}_{asmtType}_{timestamp}.zip".\
+        format(identifier=identifier,
+               asmtSubject=asmtSubjects.upper(),
+               asmtType=params.get(Constants.ASMTTYPE).upper(),
+               asmtYear=params.get(Constants.ASMTYEAR),
+               timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

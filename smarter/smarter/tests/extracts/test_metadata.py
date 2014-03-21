@@ -48,9 +48,10 @@ class TestMetadata(Unittest_with_edcore_sqlite):
                   Constants.ASMTGUID: 'abc',
                   Constants.ASMTGRADE: '5',
                   Constants.ASMTSUBJECT: 'dd',
+                  Constants.ASMTYEAR: '2015',
                   Constants.ASMTTYPE: 'bb'}
         filename = get_metadata_file_name(params)
-        self.assertEqual(filename, 'METADATA_ASMT_UT_GRADE_5_DD_BB_abc.json')
+        self.assertEqual(filename, 'METADATA_ASMT_2015_UT_GRADE_5_DD_BB_abc.json')
 
     def test_get_asmt_metadata_query(self):
         asmt_guid = '20'

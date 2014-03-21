@@ -13,11 +13,13 @@ import configparser
 from edworker.celeryconfig import get_config
 
 CELERY_QUEUES = 'CELERY_QUEUES'
+CELERY_ROUTES = 'CELERY_ROUTES'
 CELERYBEAT_SCHEDULE = 'CELERYBEAT_SCHEDULE'
 CELERY_BROADCAST_QUEUES = 'CELERY_BROADCAST_QUEUES'
 CELERY_QUEUE_NAME = 'name'
 CELERY_QUEUE_EXCHANGE = 'exchange'
 CELERY_QUEUE_ROUTING_KEY = 'key'
+CELERY_QUEUES_DURABLE = 'durable'
 CELERYBEAT_SCHEDULE_NAME = 'name'
 CELERYBEAT_SCHEDULE_TASK = 'task'
 CELERYBEAT_SCHEDULE_SCH = 'schedule'
@@ -48,6 +50,12 @@ def setup_celery(celery, settings, prefix='celery'):
             beat_schedules[schedule[CELERYBEAT_SCHEDULE_NAME]] = get_schedule(schedule)
         celery_config[CELERY_QUEUES] = real_queues
         celery_config[CELERYBEAT_SCHEDULE] = beat_schedules
+    if celery_config.get(CELERY_ROUTES):
+        real_routes = {}
+        for route in celery_config.get(CELERY_ROUTES):
+            for task, route_info in route.items():
+                real_routes[task] = route_info
+        celery_config[CELERY_ROUTES] = real_routes
     celery.config_from_object(celery_config)
 
 
@@ -74,10 +82,11 @@ def create_queue(queue):
     name = queue[CELERY_QUEUE_NAME]
     exchange_type = queue[CELERY_QUEUE_EXCHANGE]
     routing_key = queue[CELERY_QUEUE_ROUTING_KEY]
+    durable = queue[CELERY_QUEUES_DURABLE] if CELERY_QUEUES_DURABLE in queue else True
     if exchange_type == 'fanout':
-        return Broadcast(name)
+        return Broadcast(name, durable=durable)
     else:
-        return Queue(name, exchange=Exchange(exchange_type), routing_key=routing_key)
+        return Queue(name, exchange=Exchange(type=exchange_type), durable=durable, routing_key=routing_key)
 
 
 def configure_celeryd(name, prefix='celery'):

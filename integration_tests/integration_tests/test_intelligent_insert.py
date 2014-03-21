@@ -2,6 +2,9 @@
 Created on Mar 7, 2014
 
 @author: bpatel
+This test will validate intelligent insert to dim tables.
+Test Scenario: 1) Test file contans two insert data process through udl and migrate data to prod
+               2) Smae file again process through udl and validate that same records have not been added to pre-pod dim_table.
 '''
 from sqlalchemy.schema import DropSchema
 import unittest
@@ -16,24 +19,16 @@ import tempfile
 from uuid import uuid4
 from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
 from integration_tests.migrate_helper import start_migrate,\
-    get_prod_table_count, get_stats_table_has_migrated_ingested_status,\
-    setUpMigrationConnection
+    get_prod_table_count, get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 @unittest.skip("skipping this test till till ready for jenkins")
-class Test_Error_In_Migration(unittest.TestCase):
+class Test_Intelligent_Insert(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
-
-    @classmethod
-    def setUpClass(cls):
-        '''
-        Reads development ini and setup connection for migrations
-        '''
-        setUpMigrationConnection()
 
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
@@ -43,7 +38,8 @@ class Test_Error_In_Migration(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        drop_target_schema(self.guid_batch_id)
+        # drop pre prod schema
+        #drop_target_schema(self.guid_batch_id)
         
         #self.drop_schema(schema_name=self.guid_batch_id)
 
@@ -53,7 +49,7 @@ class Test_Error_In_Migration(unittest.TestCase):
             metadata.drop_all()
             ed_connector.execute(DropSchema(schema_name, cascade=True))
 
-    def empty_table(self):
+    def empty_batch_table(self):
         #Delete all data from batch_table
         with get_udl_connection() as connector:
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
@@ -63,8 +59,8 @@ class Test_Error_In_Migration(unittest.TestCase):
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
 
-    def empty_stat_table(self):
-        #Delete all data from udl_stats table
+    def empty_stats_table(self):
+        #Delete all data from udl_stats table inside edware_stats DB
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
             conn.execute(table.delete())
@@ -107,16 +103,17 @@ class Test_Error_In_Migration(unittest.TestCase):
             self.assertEqual(len(result), 1, "1 guids not found.")
             print('Waited for', timer, 'second(s) for job to complete.')
 
-    # Validate edware database
+    # Validate preprod edware schema
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
             ed_connector.set_metadata(schema_name, reflect=True)
             fact_table = ed_connector.get_table('fact_asmt_outcome')
-            delete_output_data = select([fact_table.c.student_guid])
-            delete_output_table = ed_connector.execute(delete_output_data).fetchall()
-            self.assertEquals(len(delete_output_table),2,"Data has not been loaded into fact_table")
-        ed_connector.close_connection()
+            pre_prod_data = select([fact_table.c.student_guid])
+            pre_prod_table = ed_connector.execute(pre_prod_data).fetchall()
+            self.assertEquals(len(pre_prod_table),2,"Data has not been loaded into fact_table")
+        #ed_connector.close_connection()
 
+    # Validate preprod tables after second run of udl pipeline.
     def validate_prepod_dim_tables(self, schema_name):
         with get_target_connection() as connection:
             connection.set_metadata(schema_name, reflect=True)
@@ -126,25 +123,25 @@ class Test_Error_In_Migration(unittest.TestCase):
             dim_student = connection.get_table('dim_student')
             delete_output_data = select([fact_asmt.c.student_guid])
             delete_output_table = connection.execute(delete_output_data).fetchall()
-            print(len(delete_output_table))
             tables = [dim_inst_hier, dim_section, fact_asmt, dim_student]
             for table in tables: 
                 query = select([table])
                 result = connection.execute(query).fetchall()
                 print(len(result))
-
+  
     def test_validation(self):
-        #time.sleep(15)
-        self.empty_table()
-        self.empty_stat_table()
+        self.empty_batch_table()
+        self.empty_stats_table()
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)
         self.validate_prepod_dim_tables(schema_name=self.guid_batch_id)
 
+    # This method will call first, it will run the UDL and migrate data to production
     def test_error_validation(self):
-        self.empty_table()
-        self.empty_stat_table()
+        # truncate batch_table and udl_stats table
+        self.empty_batch_table()
+        self.empty_stats_table()
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)
@@ -152,6 +149,7 @@ class Test_Error_In_Migration(unittest.TestCase):
         self.validate_udl_stats()
         self.validate_prod(self.guid_batch_id)
 
+    # Validate udl_stats table under edware_stats DB
     def validate_udl_stats(self):
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
@@ -160,6 +158,7 @@ class Test_Error_In_Migration(unittest.TestCase):
             expected_result = [('migrate.ingested',)]
             self.assertEquals(result, expected_result)
 
+    # Trigger migration
     def migrate_data(self):
         start_migrate()
         tenant = 'cat'
@@ -167,12 +166,15 @@ class Test_Error_In_Migration(unittest.TestCase):
         for result in results:
             self.assertEqual(result['load_status'], 'migrate.ingested')
 
+    # Validate prod that data has been migrated to production machine successfully.
     def validate_prod(self, guid_batch_id):
         with get_prod_connection() as conn:
+            #conn.set_metadata(guid_batch_id, reflect=True)
             fact_table = conn.get_table('fact_asmt_outcome')
             query = select([fact_table.c.student_guid]).where(fact_table.c.batch_guid == guid_batch_id)
             result = conn.execute(query).fetchall()
             expected_no_rows = 2
+            print(result)
             self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
 
 if __name__ == "__main__":

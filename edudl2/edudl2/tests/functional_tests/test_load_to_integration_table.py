@@ -50,14 +50,15 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
             WHERE guid_batch = '{guid_batch}'
         """
-        sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
-                                  staging_table=table,
-                                  guid_batch=self.udl2_conf['guid_batch'])
-        result = self.udl2_conn.execute(sql)
-        count = 0
-        for row in result:
-            count = row[0]
-        return count
+        with get_udl_connection() as conn:
+            sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+                                      staging_table=table,
+                                      guid_batch=self.udl2_conf['guid_batch'])
+            result = conn.execute(sql)
+            count = 0
+            for row in result:
+                count = row[0]
+            return count
 
     def generate_conf_for_moving_from_stg_to_int(self, guid_batch, load_type):
         conf = {
@@ -146,14 +147,15 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                         'two or more races 3': {'src_column': "'y', 'y', 'n', 'y', 'y', 'y'", 'expected_code': 7}
                         }
         sql_template = 'SELECT %s;' % function_name
-        for _key, value in prepare_data.items():
-            sql = sql_template.format(src_column=value['src_column'])
-            result = self.udl2_conn.execute(sql)
-            actual_value = ''
-            for r in result:
-                actual_value = r[0]
-                break
-            self.assertEqual(actual_value, value['expected_code'])
+        with get_udl_connection() as conn:
+            for _key, value in prepare_data.items():
+                sql = sql_template.format(src_column=value['src_column'])
+                result = conn.execute(sql)
+                actual_value = ''
+                for r in result:
+                    actual_value = r[0]
+                    break
+                self.assertEqual(actual_value, value['expected_code'])
 
     def test_get_column_mapping_from_stg_to_int(self):
         expected_target_columns = ['guid_batch', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',

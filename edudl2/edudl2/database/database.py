@@ -16,8 +16,8 @@ from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.database.metadata.udl2_metadata import generate_udl2_sequences
-from edudl2.database.udl2_connector import UDL2DBConnection, initialize_db,\
-    get_target_connection, initialize_db_udl, initialize_db_target,\
+from edudl2.database.udl2_connector import get_target_connection, initialize_db_udl,\
+    initialize_db_target,\
     get_udl_connection
 from edudl2.database.populate_ref_info import populate_ref_column_map,\
     populate_stored_proc
@@ -117,7 +117,7 @@ def create_dblink_extension(cls, schema_name):
     @param udl2_conf: The configuration dictionary for
     '''
     print('create dblink extension')
-    sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (schema_name)
+    sql = "CREATE EXTENSION IF NOT EXISTS dblink"
     print(sql)
     with cls() as conn:
         except_msg = "fail to create dblink extension"
@@ -248,14 +248,12 @@ def setup_udl2_schema(udl2_conf):
     create_foreign_data_wrapper_extension(udl2_schema_name)
     create_foreign_data_wrapper_server(udl2_conf['udl2_db']['fdw_server'])
 
-    # Create dblink pre-prod schema
+    # Create dblink in pre-prod schema
     target_schema_name = udl2_conf['target_db']['db_schema']
     initialize_db_target(udl2_conf)
     create_dblink_extension(get_target_connection, target_schema_name)
-    load_fake_record_in_star_schema()
-    drop_foreign_keys_on_fact_asmt_outcome(target_schema_name)
-    
-    # load data and stored procedures into target table
+
+    # load data and stored procedures into udl tables
     load_reference_data(udl2_conf['udl2_db'])
     load_stored_proc(udl2_conf['udl2_db'])
 
@@ -273,8 +271,8 @@ def teardown_udl2_schema(udl2_conf):
     drop_foreign_data_wrapper_extension()
     drop_dblink_extension(get_udl_connection)
     drop_schema(udl2_conf['udl2_db']['db_schema'])
-    
-    # Drop dblink in pre-prod 
+
+    # Drop dblink in pre-prod
     initialize_db_target(udl2_conf)
     drop_dblink_extension(get_target_connection)
 

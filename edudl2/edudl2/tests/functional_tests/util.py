@@ -39,21 +39,11 @@ class UDLTestHelper(unittest.TestCase):
 
     @classmethod
     def truncate_udl_tables(self):
-        sql_template = """
-            TRUNCATE "{staging_schema}"."{staging_table}" CASCADE
-            """
-        sql_int_asmt = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                           staging_table='INT_SBAC_ASMT')
-        sql_int_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                                   staging_table='INT_SBAC_ASMT_OUTCOME')
-        sql_stg_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                                   staging_table='STG_SBAC_ASMT_OUTCOME')
-        sql_stg_err_list = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                                   staging_table='ERR_LIST')
-
-        except_msg = "Unable to clean up udl tables"
-        execute_queries(self.udl2_conn,
-                        [sql_int_asmt, sql_int_asmt_outcome, sql_stg_asmt_outcome, sql_stg_err_list], except_msg)
+        tables = ['INT_SBAC_ASMT', 'INT_SBAC_ASMT_OUTCOME', 'STG_SBAC_ASMT_OUTCOME', 'ERR_LIST']
+        with get_udl_connection() as conn:
+            for t in tables:
+                table = conn.get_table(t)
+                conn.execute(table.delete())
 
     def get_staging_asmt_score_avgs(self):
         stg_avg_query = """ select avg(score_asmt::int),
@@ -134,7 +124,7 @@ class UDLTestHelper(unittest.TestCase):
                 result = conn.execute(demo_query)
                 for row in result:
                     demo_count = row[0]
-    
+
                 results_dict[entry] = demo_count
 
         return results_dict
@@ -171,9 +161,9 @@ class UDLTestHelper(unittest.TestCase):
                 result = conn.execute(demo_query)
                 for row in result:
                     demo_count = row[0]
-    
+
                 results_dict[entry] = demo_count
-    
+
                 #get derived ethnicity
                 eth_query = """ select count({demographic}) from "edware"."fact_asmt_outcome" where {demographic} IS NOT NULL;""".format(demographic='dmg_eth_derived')
                 result = conn.execute(eth_query)

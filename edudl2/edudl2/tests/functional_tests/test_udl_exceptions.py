@@ -1,8 +1,8 @@
 from edudl2.exceptions.errorcodes import ErrorSource
-from edudl2.exceptions.udl_exceptions import UDLDataIntegrityError
+from edudl2.exceptions.udl_exceptions import UDLDataIntegrityError,\
+    DeleteRecordNotFound
 from edudl2.tests.functional_tests.util import UDLTestHelper
-from unittest import skip
-from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy import select
 import datetime
 

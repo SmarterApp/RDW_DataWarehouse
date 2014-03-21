@@ -5,20 +5,17 @@ This test will validate that if we try to delete same record in two different ba
 '''
 from sqlalchemy.schema import DropSchema
 import unittest
-import time
 import os
 import shutil
-from sqlalchemy.sql import select, delete, and_
+from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
 import subprocess
-import tempfile
 from uuid import uuid4
 from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
 from integration_tests.migrate_helper import start_migrate,\
-    get_prod_table_count, get_stats_table_has_migrated_ingested_status
+    get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
-from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 @unittest.skip("skipping this test till till ready for jenkins")
@@ -41,7 +38,7 @@ class Test_Error_In_Migration(unittest.TestCase):
 
     def drop_schema(self, schema_name):
         with get_target_connection() as ed_connector:
-            ed_connector.set_metadata(schema_name, reflect=True)
+            ed_connector.set_metadata_by_reflect(schema_name)
             metadata = ed_connector.get_metadata()
             metadata.drop_all()
             ed_connector.execute(DropSchema(schema_name, cascade=True))
@@ -104,7 +101,7 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Validate edware database
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
-            ed_connector.set_metadata(schema_name, reflect=True)
+            ed_connector.set_metadata_by_reflect(schema_name)
             fact_table = ed_connector.get_table('fact_asmt_outcome')
             prod_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9', )
             prod_output_table = ed_connector.execute(prod_output_data).fetchall()
@@ -146,7 +143,6 @@ class Test_Error_In_Migration(unittest.TestCase):
 
     def validate_prod(self):
         with get_prod_connection() as conn:
-            #conn.set_metadata(guid_batch_id, reflect=True)
             fact_table = conn.get_table('fact_asmt_outcome')
             query = select([fact_table], and_(fact_table.c.student_guid == 'c1040ce9-0ac3-44b2-b36a-8643e78a03b9', fact_table.c.status == 'D'))
             result = conn.execute(query).fetchall()

@@ -121,7 +121,7 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     :returns number of record updated
     """
     delete_count = 0
-    source_connector.set_metadata(schema_name, reflect=True)
+    source_connector.set_metadata_by_reflect(schema_name)
     source_table = source_connector.get_table(table_name)
     # TODO: make it possible for composites
     primary_key = source_table.primary_key.columns.keys()[0]

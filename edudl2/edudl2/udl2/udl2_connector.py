@@ -43,7 +43,7 @@ def get_target_connection(tenant='edware', schema_name=None):
     '''
     conn = UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
     if schema_name:
-        conn.set_metadata(schema_name, reflect=True)
+        conn.set_metadata_by_reflect(schema_name)
     return conn
 
 

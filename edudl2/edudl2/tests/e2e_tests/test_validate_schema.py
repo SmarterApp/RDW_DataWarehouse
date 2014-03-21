@@ -71,7 +71,7 @@ class ValidateSchemaChange(unittest.TestCase):
     #Validate that for given batch guid data loded on star schema and student_rec_id in not -1
     def validate_edware_database(self):
         with get_target_connection() as ed_connector:
-            ed_connector.set_metadata(self.guid_batch_id, reflect=True)
+            ed_connector.set_metadata_by_reflect(self.guid_batch_id)
             edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.guid_batch_id)
             output_val = select([edware_table.c.student_rec_id]).where(edware_table.c.batch_guid == self.guid_batch_id)

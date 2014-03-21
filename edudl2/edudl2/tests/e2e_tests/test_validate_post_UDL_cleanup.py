@@ -52,7 +52,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 #Validate that for given guid data loded on star schema
     def validate_edware_database(self, schema_name):
         with get_target_connection() as ed_connector:
-            ed_connector.set_metadata(schema_name, reflect=True)
+            ed_connector.set_metadata_by_reflect(schema_name)
             edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.batch_id)
             output_data = ed_connector.execute(output).fetchall()

@@ -6,7 +6,8 @@ Created on Mar 15, 2014
 import unittest
 from edmigrate.utils.slave_tracker import SlaveTracker
 from edmigrate.exceptions import SlaveAlreadyRegisteredException, \
-    SlaveNotRegisteredException, SlaveStatusTimedoutException
+    SlaveNotRegisteredException, SlaveStatusTimedoutException,\
+    SlaveDelayedRegistrationException
 from edmigrate.utils.constants import Constants
 import time
 
@@ -16,7 +17,9 @@ class Test(unittest.TestCase):
     def setUp(self):
         slavetracker1 = SlaveTracker()
         slavetracker1.reset()
+        slavetracker1.set_accept_slave(True)
         slavetracker1.add_slave(123)
+        slavetracker1.set_accept_slave(False)
 
     def test_singletone(self):
         slavetracker1 = SlaveTracker()
@@ -28,8 +31,10 @@ class Test(unittest.TestCase):
         slavetracker2 = SlaveTracker()
         slaves = slavetracker2.get_slave_ids()
         self.assertEqual(1, len(slaves))
+        slavetracker1.set_accept_slave(True)
         self.assertRaises(SlaveAlreadyRegisteredException, slavetracker1.add_slave, 123)
         slavetracker1.add_slave(2)
+        slavetracker1.set_accept_slave(False)
         slaves = slavetracker2.get_slave_ids()
         self.assertEqual(2, len(slaves))
         self.assertIn(123, slaves)
@@ -81,7 +86,9 @@ class Test(unittest.TestCase):
         slavetracker1 = SlaveTracker()
         ids = slavetracker1.get_slave_ids()
         self.assertEqual(1, len(ids))
+        slavetracker1.set_accept_slave(True)
         slavetracker1.add_slave(1)
+        slavetracker1.set_accept_slave(False)
         ids = slavetracker1.get_slave_ids('A')
         self.assertEqual(0, len(ids))
         slavetracker1.set_slave_group(123, 'A')
@@ -119,6 +126,22 @@ class Test(unittest.TestCase):
         self.assertRaises(SlaveStatusTimedoutException, slavetracker1._is_slave_status, 1, 'test', 'abc', timeout)
         end_time = time.time()
         self.assertTrue(end_time - start_time > timeout)
+
+    def test_set_accept_slave(self):
+        slavetracker1 = SlaveTracker()
+        slavetracker1.reset()
+        ids = slavetracker1.get_slave_ids()
+        self.assertEqual(0, len(ids))
+        slavetracker1.set_accept_slave(True)
+        slavetracker1.add_slave(1)
+        slavetracker1.add_slave(2)
+        slavetracker1.set_accept_slave(False)
+        ids = slavetracker1.get_slave_ids()
+        self.assertEqual(2, len(ids))
+        self.assertRaises(SlaveDelayedRegistrationException, slavetracker1.add_slave, 3)
+        ids = slavetracker1.get_slave_ids()
+        self.assertEqual(2, len(ids))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.test_singletone']

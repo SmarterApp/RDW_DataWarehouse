@@ -8,7 +8,7 @@ from edmigrate.utils.constants import Constants
 import time
 from edmigrate.exceptions import SlaveAlreadyRegisteredException, \
     SlaveNotRegisteredException, SlaveStatusTimedoutException,\
-    SlaveStatusLockingTimedoutException
+    SlaveStatusLockingTimedoutException, SlaveDelayedRegistrationException
 
 
 class Singleton(type):
@@ -29,6 +29,7 @@ class SlaveTracker(metaclass=Singleton):
 
     def __init__(self, timeout=5):
         self.__timeout = timeout
+        self.__accept_slave = False
         try:
             if self.__lock.acquire(timeout=self.__timeout):
                 self.__slaves = {}
@@ -48,21 +49,34 @@ class SlaveTracker(metaclass=Singleton):
             if self.__lock.locked():
                 self.__lock.release()
 
-    def add_slave(self, node_id):
+    def set_accept_slave(self, accept=True):
         try:
             if self.__lock.acquire(timeout=self.__timeout):
-                if node_id in self.__slaves:
-                    raise SlaveAlreadyRegisteredException(node_id)
-                node = {}
-                node[Constants.SLAVE_GROUP] = None
-                node[Constants.SLAVE_PGPOOL_CONNECTION_STATUS] = Constants.SLAVE_CONNECTION_STATUS_CONNECTED
-                node[Constants.SLAVE_REPLICATION_STATUS] = Constants.SLAVE_REPLICATION_STATUS_STARTED
-                self.__slaves[node_id] = node
+                self.__accept_slave = accept
             else:
                 raise SlaveStatusLockingTimedoutException()
         finally:
             if self.__lock.locked():
                 self.__lock.release()
+
+    def add_slave(self, node_id):
+        if self.__accept_slave:
+            try:
+                if self.__lock.acquire(timeout=self.__timeout):
+                    if node_id in self.__slaves:
+                        raise SlaveAlreadyRegisteredException(node_id)
+                    node = {}
+                    node[Constants.SLAVE_GROUP] = None
+                    node[Constants.SLAVE_PGPOOL_CONNECTION_STATUS] = Constants.SLAVE_CONNECTION_STATUS_CONNECTED
+                    node[Constants.SLAVE_REPLICATION_STATUS] = Constants.SLAVE_REPLICATION_STATUS_STARTED
+                    self.__slaves[node_id] = node
+                else:
+                    raise SlaveStatusLockingTimedoutException()
+            finally:
+                if self.__lock.locked():
+                    self.__lock.release()
+        else:
+            raise SlaveDelayedRegistrationException(node_id)
 
     def set_pgpool_connected(self, node_id):
         self._set_slave_status(node_id, Constants.SLAVE_PGPOOL_CONNECTION_STATUS, Constants.SLAVE_CONNECTION_STATUS_CONNECTED)
@@ -128,6 +142,7 @@ class SlaveTracker(metaclass=Singleton):
         finally:
             if self.__lock.locked():
                 self.__lock.release()
+        self.set_accept_slave(False)
 
     def _set_slave_status(self, node_id, name, status):
         try:

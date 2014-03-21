@@ -26,6 +26,12 @@ class Conductor:
         slave_task.apply_async((Constants.COMMAND_RESET_SLAVES, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_RESET_SLAVES, None, None)
 
+    def accept_slaves(self):
+        self.__slave_trakcer.set_accept_slave(True)
+
+    def reject_slaves(self):
+        self.__slave_trakcer.set_accept_slave(False)
+
     def find_slaves(self):
         slave_task.apply_async((Constants.COMMAND_FIND_SLAVE, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_FIND_SLAVE, None, None)

@@ -42,6 +42,10 @@ class SlaveAlreadyRegisteredException(SlaveTrackerException):
         super().__init__(msg="Slave [%d] has already registered" % (node_id))
 
 
+class SlaveDelayedRegistrationException(SlaveTrackerException):
+    def __init__(self, node_id):
+        super().__init__(msg="Delayed registration slave [%d], it won't be registered." % (node_id))
+
 class SlaveNotRegisteredException(SlaveTrackerException):
     def __init__(self, node_id):
         super().__init__(msg='Slave [' + str(node_id) + '] was not registered')

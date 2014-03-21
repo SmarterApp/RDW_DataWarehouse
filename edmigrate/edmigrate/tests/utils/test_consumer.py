@@ -25,6 +25,7 @@ class Test(unittest.TestCase):
         self.__thread.start()
         time.sleep(1)
         SlaveTracker().reset()
+        SlaveTracker().set_accept_slave(True)
 
     def tearDown(self):
         self.__thread.stop()

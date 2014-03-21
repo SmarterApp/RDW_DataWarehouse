@@ -14,21 +14,21 @@ from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
-def generate_csv(output_file, task_info, extract_args):
+def generate_csv(tenant, output_file, task_info, extract_args):
     """
     Write data extract to CSV file.
 
+    @param tenant: Requestor's tenant ID
     @param output_file: File pathname of extract file
     @param task_info: Task information for recording stats
     @param extract_args: Arguments specific to generate_csv
     """
 
-    tenant = extract_args[TaskConstants.TENANT]
     query = extract_args[TaskConstants.TASK_QUERY]
 
     with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w') as csv_file:
         results = connection.get_streaming_result(query)  # this result is a generator
-        csvwriter = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_NONE)
+        csvwriter = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         header = []
         for result in results:
             if len(header) is 0:
@@ -39,16 +39,16 @@ def generate_csv(output_file, task_info, extract_args):
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def generate_json(output_file, task_info, extract_args):
+def generate_json(tenant, output_file, task_info, extract_args):
     """
     Write data extract to JSON file.
 
+    @param tenant: Requestor's tenant ID
     @param output_file: File pathname of extract file
     @param task_info: Task information for recording stats
     @param extract_args: Arguments specific to generate_json
     """
 
-    tenant = extract_args[TaskConstants.TENANT]
     query = extract_args[TaskConstants.TASK_QUERY]
 
     with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w') as json_file:

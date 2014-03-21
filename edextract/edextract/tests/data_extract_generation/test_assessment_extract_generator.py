@@ -42,8 +42,8 @@ class TestAssessmentExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-        generate_csv(output, task_info, extract_args)
+        extract_args = {TaskConstants.TASK_QUERY: query}
+        generate_csv(self._tenant, output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         csv_data = []
         with open(output) as out:
@@ -63,8 +63,8 @@ class TestAssessmentExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-        generate_json(output, task_info, extract_args)
+        extract_args = {TaskConstants.TASK_QUERY: query}
+        generate_json(self._tenant, output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         with open(output) as out:
             data = json.load(out)

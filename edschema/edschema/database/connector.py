@@ -118,13 +118,22 @@ class DBConnection(ConnectionBase):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
         return dbUtil.get_metadata()
 
-    def set_metadata(self, schema_name, reflect=False, metadata_func=None):
-        metadata = None
-        if reflect:
-            metadata = schema.MetaData(bind=self.get_engine(), schema=schema_name)
-            metadata.reflect(views=True)
-        elif metadata_func:
-            metadata = metadata_func(schema_name=schema_name, bind=self.get_engine())
+    def set_metadata_by_generate(self, schema_name, metadata_func):
+        '''
+        Set metadata by passing in a function that generates its metadata
+        '''
+        metadata = metadata_func(schema_name=schema_name, bind=self.get_engine())
+        self._set_metadata(metadata)
+
+    def set_metadata_by_reflect(self, schema_name):
+        '''
+        Given a schema name, reflect on current database and set the metadata
+        '''
+        metadata = schema.MetaData(bind=self.get_engine(), schema=schema_name)
+        metadata.reflect(views=True)
+        self._set_metadata(metadata)
+
+    def _set_metadata(self, metadata):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
         dbUtil.set_metadata(metadata)
 

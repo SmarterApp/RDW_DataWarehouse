@@ -45,11 +45,11 @@ class TestConnector(unittest.TestCase):
         db = DBConnection('unittest')
         self.assertIsInstance(db.get_metadata(), DummyMetadata)
 
-    def test_set_metadata(self):
+    def test_set_metadata_by_generate(self):
         dbUtil = DbUtil(engine=DummyEngine(), metadata=DummyMetadata())
         component.provideUtility(dbUtil, IDbUtil, name='unittest')
         db = DBConnection('unittest')
-        db.set_metadata('schema_name', metadata_func=dummyFunc)
+        db.set_metadata_by_generate('schema_name', dummyFunc)
         metadata = db.get_metadata()
         self.assertEqual(metadata, dummyFunc())
 

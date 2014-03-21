@@ -127,8 +127,7 @@ def get_table_column_types(conf, target_table, column_names):
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     tenant = conf[mk.TENANT_NAME]
 
-    with get_target_connection(tenant) as conn:
-
+    with get_target_connection(tenant, conf[mk.GUID_BATCH]) as conn:
         query = create_information_query(target_table)
 
         try:

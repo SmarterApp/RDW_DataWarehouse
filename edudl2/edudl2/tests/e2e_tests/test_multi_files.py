@@ -14,18 +14,13 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
-PATH_TO_FILES = ''
-FILE_DICT = {}
-
-
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):
-        global PATH_TO_FILES, FILE_DICT
-        PATH_TO_FILES = os.path.join(os.path.dirname(__file__), "..", "data")
-        FILE_DICT = {'file1': os.path.join(PATH_TO_FILES, 'test_source_file_tar_gzipped.tar.gz.gpg'),
-                     'file2': os.path.join(PATH_TO_FILES, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
-                     'file3': os.path.join(PATH_TO_FILES, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
+        path = os.path.join(os.path.dirname(__file__), "..", "data")
+        self.files = {'file1': os.path.join(path, 'test_source_file_tar_gzipped.tar.gz.gpg'),
+                      'file2': os.path.join(path, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
+                      'file3': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
 
     #teardown tenant folder
@@ -62,7 +57,7 @@ class ValidateMultiFiles(unittest.TestCase):
             print("tenant dir already exists")
         else:
             os.makedirs(self.tenant_dir)
-        for file in FILE_DICT.values():
+        for file in self.files.values():
             files = shutil.copy2(file, self.tenant_dir)
             print(files)
 
@@ -73,7 +68,7 @@ class ValidateMultiFiles(unittest.TestCase):
             query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
             timer = 0
             result = connector.execute(query).fetchall()
-            while timer < max_wait and len(result) < len(FILE_DICT):
+            while timer < max_wait and len(result) < len(self.files):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()

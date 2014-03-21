@@ -31,7 +31,8 @@ def process_async_extraction_request(params):
 
     queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     response = {}
-    request_id, user, tenant = processor.get_extract_request_user_info()
+    state_code = params[EndpointConstants.STATECODE][0]
+    request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
     extract_params = {TaskConstants.STATE_CODE: params[EndpointConstants.STATECODE][0],
                       TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR][0],

@@ -1,4 +1,4 @@
-from smarter.services.student_reg_extract import post_sr_extract_service
+from smarter.services.student_reg_extract_service import post_sr_extract_service
 
 __author__ = 'ablum'
 

@@ -142,24 +142,24 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rat
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
-        ao.result_status = 'I'
+        ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
         ao2.date_taken += datetime.timedelta(days=5)
         return [ao, ao2]
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
-        ao.result_status = 'D'
+        ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
 
         # See if the updated record should be deleted
         if random.random() < delete_rate:
-            ao2.result_status = 'D'
+            ao2.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
         # Return
         return [ao, ao2]
     elif random.random() < delete_rate:
         # Set the original outcome object to deleted
-        ao.result_status = 'D'
+        ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
     return [ao]
 

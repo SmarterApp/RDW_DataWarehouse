@@ -37,11 +37,14 @@ def get_udl_connection(tenant='edware'):
     return UDL2DBConnection(tenant=tenant, namespace=UDL_NAMESPACE)
 
 
-def get_target_connection(tenant='edware'):
+def get_target_connection(tenant='edware', schema_name=None):
     '''
     Get Target connection
     '''
-    return UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
+    conn = UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
+    if schema_name:
+        conn.set_metadata(schema_name, reflect=True)
+    return conn
 
 
 def get_prod_connection(tenant='edware'):
@@ -104,5 +107,4 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
         'pool_size': tenant_dict['pool_size'],
         'schema_name': schema_name
     }
-    metadata = metadata_generator(schema_name)
     setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

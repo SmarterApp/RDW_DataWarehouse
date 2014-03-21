@@ -112,7 +112,7 @@ class ComparingPopStatReport:
         _fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([count().label(Constants.COUNT)],
                        from_obj=[_fact_asmt_outcome])\
-            .where(and_(_fact_asmt_outcome.c.most_recent == true(), _fact_asmt_outcome.c.asmt_type == self.asmt_type, _fact_asmt_outcome.c.status == 'C'))
+            .where(and_(_fact_asmt_outcome.c.rec_status == Constants.CURRENT, _fact_asmt_outcome.c.asmt_type == self.asmt_type))
         if self.state_code is not None:
             query = query.where(and_(_fact_asmt_outcome.c.state_code == self.state_code))
         if self.district_guid is not None:

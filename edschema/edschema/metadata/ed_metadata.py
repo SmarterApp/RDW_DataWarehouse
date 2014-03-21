@@ -46,7 +46,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                         Column('school_category', String(20), nullable=False),
                         Column('from_date', String(8), nullable=False),
                         Column('to_date', String(8), nullable=True),
-                        Column('most_recent', Boolean),
+                        Column('rec_status', String(1), nullable=False),
                         )
 
     Index('dim_inst_hier_idx', instit_hier.c.inst_hier_rec_id, unique=True)
@@ -65,11 +65,11 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('school_guid', String(50), nullable=False),
                      Column('from_date', String(8), nullable=False),
                      Column('to_date', String(8), nullable=True),
-                     Column('most_recent', Boolean),
+                     Column('rec_status', String(1), nullable=False),
                      )
 
     Index('dim_section_idx', sections.c.section_rec_id, unique=True)
-    Index('dim_section_current_idx', sections.c.section_guid, sections.c.subject_name, sections.c.grade, sections.c.most_recent, unique=False)
+    Index('dim_section_current_idx', sections.c.section_guid, sections.c.subject_name, sections.c.grade, sections.c.rec_status, unique=False)
     Index('dim_section_dim_inst_hier_idx', sections.c.state_code, sections.c.district_guid, sections.c.school_guid, sections.c.from_date, sections.c.to_date, unique=False)
 
     # NB! Figure out uniques in dim_student
@@ -94,10 +94,10 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('school_guid', String(50), nullable=False),
                      Column('from_date', String(8), nullable=False),
                      Column('to_date', String(8), nullable=True),
-                     Column('most_recent', Boolean),
+                     Column('rec_status', String(1), nullable=False),
                      )
 
-    Index('dim_student_idx', students.c.student_guid, students.c.most_recent, unique=False)
+    Index('dim_student_idx', students.c.student_guid, students.c.rec_status, unique=False)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
@@ -141,11 +141,11 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        Column('from_date', String(8), nullable=False),
                        Column('to_date', String(8), nullable=True),
                        Column('effective_date', String(8), nullable=True),
-                       Column('most_recent', Boolean),
+                       Column('rec_status', String(1), nullable=False),
                        )
 
     Index('dim_asmt_rec_idx', assessment.c.asmt_rec_id, unique=True)
-    Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.most_recent, unique=False)
+    Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.rec_status, unique=False)
 
     custom_metadata = Table('custom_metadata', metadata,
                             Column('state_code', String(2), nullable=False),
@@ -195,8 +195,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
                                Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                               Column('status', String(2), nullable=False),
-                               Column('most_recent', Boolean),
+                               Column('rec_status', String(1), nullable=False),
                                Column('batch_guid', String(50), nullable=True),
                                # Add 4 assessment columns
                                Column('asmt_type', String(32), nullable=False),
@@ -231,17 +230,17 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('acc_streamline_mode', SmallInteger, nullable=False),
                                )
 
-    Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
-    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.most_recent, unique=False)
-    Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.most_recent, unique=False)
-    Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.most_recent, unique=False)
+    Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
+    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.rec_status, unique=False)
+    Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.rec_status, unique=False)
+    Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.rec_status, unique=False)
     # Filtering related indices
-    Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.asmt_grade, unique=False)
-    Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_lep, unique=False)
-    Index('fact_asmt_outcome_504', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_504, unique=False)
-    Index('fact_asmt_outcome_tt1', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_tt1, unique=False)
-    Index('fact_asmt_outcome_iep', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_iep, unique=False)
-    Index('fact_asmt_outcome_gender', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_type, assessment_outcome.c.gender, unique=False)
+    Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.asmt_grade, unique=False)
+    Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_lep, unique=False)
+    Index('fact_asmt_outcome_504', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_504, unique=False)
+    Index('fact_asmt_outcome_tt1', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_tt1, unique=False)
+    Index('fact_asmt_outcome_iep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_iep, unique=False)
+    Index('fact_asmt_outcome_gender', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.gender, unique=False)
 
     student_registration = Table('student_reg', metadata,
                                  Column('student_reg_rec_id', BigInteger, primary_key=True),

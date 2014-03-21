@@ -27,9 +27,9 @@ def generate_isr_report_path_by_student_guid(state_code, pdf_report_base_dir='/'
                         fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
                        from_obj=[fact_asmt_outcome
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
-                                                      dim_asmt.c.most_recent,
+                                                      dim_asmt.c.rec_status == Constants.CURRENT,
                                                       dim_asmt.c.asmt_type == asmt_type))])
-        query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
+        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT, fact_asmt_outcome.c.student_guid == student_guid))
         result = connection.get_result(query)
         if result:
             first_record = result[0]

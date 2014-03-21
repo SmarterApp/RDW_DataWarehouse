@@ -93,6 +93,6 @@ class Constants():
     DMG_ETH_WHT = 'dmg_eth_wht'
     NOT_STATED = 'not_stated'
     RAW_EXPORT = 'raw'
-    MOST_RECENT = 'most_recent'
     ASMT_YEAR = 'asmt_year'
     ACADEMIC_YEAR = 'academicYear'
+    CURRENT = 'C'

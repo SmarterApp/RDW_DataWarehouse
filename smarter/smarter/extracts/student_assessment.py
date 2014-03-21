@@ -14,7 +14,7 @@ def get_extract_assessment_query(params):
     """
     private method to generate SQLAlchemy object or sql code for extraction
 
-    :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit, most_recent
+    :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit
     """
     state_code = params.get(Constants.STATECODE)
     district_guid = params.get(Constants.DISTRICTGUID)
@@ -115,7 +115,7 @@ def get_extract_assessment_query(params):
 
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
         query = query.where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))
-        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
+        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
         if school_guid is not None:
             query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
         if district_guid is not None:

@@ -28,7 +28,7 @@ class BaseRole(object):
         fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([distinct(fact_asmt_outcome.c.student_guid)],
                        from_obj=[fact_asmt_outcome])
-        query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid.in_(student_guids)))
+        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT, fact_asmt_outcome.c.student_guid.in_(student_guids)))
         return query
 
 

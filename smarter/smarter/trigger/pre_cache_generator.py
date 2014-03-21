@@ -3,7 +3,7 @@ Created on Jun 20, 2013
 
 @author: tosako
 '''
-from sqlalchemy.sql.expression import select, and_, distinct, func, true, null
+from sqlalchemy.sql.expression import select, and_, distinct, func, null
 from smarter.trigger.cache.recache import CacheTrigger
 import logging
 from smarter.reports.helpers.constants import Constants
@@ -52,7 +52,7 @@ def prepare_pre_cache(tenant, state_code, batch_guid):
         query = select([distinct(fact_asmt_outcome.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome.c.batch_guid == batch_guid))
-        query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
+        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
         results = connector.get_result(query)
         return results
 

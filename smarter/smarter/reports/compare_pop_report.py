@@ -460,8 +460,8 @@ class QueryHelper():
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
                    func.count().label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))], **kwargs)\
-            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == self._asmt_type,
-                        self._fact_asmt_outcome.c.status == 'C', self._fact_asmt_outcome.c.asmt_year == self._asmt_year))\
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.asmt_type == self._asmt_type,
+                        self._fact_asmt_outcome.c.rec_status == Constants.CURRENT, self._fact_asmt_outcome.c.asmt_year == self._asmt_year))\
             .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .order_by(self._fact_asmt_outcome.c.asmt_subject.desc())

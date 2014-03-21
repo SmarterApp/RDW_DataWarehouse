@@ -8,7 +8,6 @@ Created on Mar 8, 2013
 @author: dip
 '''
 from sqlalchemy.sql import and_, select
-from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
 from edcore.database.edcore_connector import EdCoreDBConnection
 
@@ -32,7 +31,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
                             dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME)],
                            from_obj=[dim_inst_hier], limit=1)
 
-            query = query.where(and_(dim_inst_hier.c.most_recent == true()))
+            query = query.where(and_(dim_inst_hier.c.rec_status == Constants.CURRENT))
             # Currently, we only have state_id from comparing population report
             if state_code is not None:
                 query = query.where(and_(dim_inst_hier.c.state_code == state_code))

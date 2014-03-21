@@ -13,7 +13,7 @@ import os
 import pyramid.threadlocal
 
 from smarter.extracts.constants import Constants as Extract, ExtractType
-from edextract.tasks.student_reg_constants import Constants as TaskConstants, ReportType
+from edextract.tasks.constants import Constants as TaskConstants, ReportType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
 from edextract.tasks.student_reg_extract import start_extract
 from pyramid.threadlocal import get_current_registry

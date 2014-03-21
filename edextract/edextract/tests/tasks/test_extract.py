@@ -7,20 +7,27 @@ import unittest
 import tempfile
 import os
 import shutil
-import re
+import json
+import csv
 from zipfile import ZipFile
+from collections import OrderedDict
+
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore_sqlite, UnittestEdcoreDBConnection,
+                                                            get_unittest_tenant_name)
 from sqlalchemy.sql.expression import select
 from edextract.celery import setup_celery
 from edextract.tasks.constants import Constants as TaskConstants
-import json
-import csv
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
-from edextract.data_extract_generation.assessment_extract_generator import generate_csv, generate_json
+from edextract.data_extract_generation.constants import ExtractionDataType
+from edextract.tasks.extract import route_tasks
+from edextract.tasks.extract import generate_extract_file
+from edextract.tasks.extract import archive
+from edextract.tasks.extract import archive_with_encryption
+from edextract.tasks.extract import remote_copy
+from edextract.tasks.extract import prepare_path
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -59,7 +66,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         pass
 
     def test_archive(self):
-        from edextract.tasks.extract import archive
         open(self.__tmp_zip, 'wb').write(archive('req_id', self.__tmp_dir))
         zipfile = ZipFile(self.__tmp_zip, "r")
         namelist = zipfile.namelist()
@@ -77,22 +83,28 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         zipfile.close()
 
     def test_generate_csv_no_tenant(self):
-        from edextract.tasks.extract import generate_extract_file
         output = '/tmp/unittest.csv.gz.pgp'
-        extract_args = {'tenant': None, TaskConstants.TASK_QUERY: None}
-        result = generate_extract_file.apply(args=[None, '0', '1', output, generate_csv, extract_args])    # @UndefinedVariable
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: None
+        }
+        result = generate_extract_file.apply(args=[None, '0', task, ExtractionDataType.ASMT_CSV])    # @UndefinedVariable
         result.get()
         self.assertFalse(os.path.exists(output))
 
     def test_generate_csv(self):
-        from edextract.tasks.extract import generate_extract_file
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '22')
         output = os.path.join(self.__tmp_dir, 'asmt.csv')
-        extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-        result = generate_extract_file.apply(args=[self._tenant, 'request_id', 'task_id', output, generate_csv, extract_args])    # @UndefinedVariable
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: query
+        }
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.ASMT_CSV])    # @UndefinedVariable
         result.get()
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -105,104 +117,118 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(csv_data[1], ['22', 'Spring 2016'])
 
     def test_generate_csv_with_bad_file(self):
-        from edextract.tasks.extract import generate_extract_file
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '2123122')
-            output = 'C:'
-            extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-            result = generate_extract_file.apply(args=[self._tenant, 'request_id', 'task_id', output, generate_csv, extract_args])    # @UndefinedVariable
-            self.assertRaises(ExtractionError, result.get,)
+        output = 'C:'
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: query
+        }
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.ASMT_CSV])    # @UndefinedVariable
+        self.assertRaises(ExtractionError, result.get,)
 
     def test_generate_json(self):
-        from edextract.tasks.extract import generate_extract_file
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '22')
             output = os.path.join(self.__tmp_dir, 'asmt.json')
-            extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-            results = generate_extract_file.apply(args=[self._tenant, 'request_id', 'task_id', output, generate_json, extract_args])    # @UndefinedVariable
-            results.get()
-            self.assertTrue(os.path.exists(output))
-            with open(output) as out:
-                data = json.load(out)
-            self.assertEqual(data['asmt_guid'], '22')
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: query
+        }
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.ASMT_JSON])    # @UndefinedVariable
+        results.get()
+        self.assertTrue(os.path.exists(output))
+        with open(output) as out:
+            data = json.load(out)
+        self.assertEqual(data['asmt_guid'], '22')
 
     def test_generate_json_not_writable(self):
-        from edextract.tasks.extract import generate_extract_file
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '22')
-            output = os.path.join('', 'asmt.json')
-            extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-            results = generate_extract_file.apply(args=[self._tenant, 'request_id', 'task_id', output, generate_json, extract_args])    # @UndefinedVariable
-            self.assertRaises(ExtractionError, results.get)
+        output = os.path.join('', 'asmt.json')
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: query
+        }
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.ASMT_JSON])    # @UndefinedVariable
+        self.assertRaises(ExtractionError, results.get)
 
     def test_generate_json_with_no_results(self):
-        from edextract.tasks.extract import generate_extract_file
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '2123122')
-            output = os.path.join(self.__tmp_dir, 'asmt.json')
-            extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-            results = generate_extract_file.apply(args=[self._tenant, 'request_id', 'task_id', output, generate_json, extract_args])    # @UndefinedVariable
-            results.get()
-            self.assertTrue(os.path.exists(output))
-            statinfo = os.stat(output)
-            self.assertEqual(0, statinfo.st_size)
+        output = os.path.join(self.__tmp_dir, 'asmt.json')
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: query
+        }
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.ASMT_JSON])    # @UndefinedVariable
+        results.get()
+        self.assertTrue(os.path.exists(output))
+        statinfo = os.stat(output)
+        self.assertEqual(0, statinfo.st_size)
 
     def test_generate_json_with_bad_file(self):
-        from edextract.tasks.extract import generate_extract_file
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
             query = query.where(dim_asmt.c.asmt_guid == '2123122')
-            output = 'C:'
-            extract_args = {'tenant': self._tenant, TaskConstants.TASK_QUERY: query}
-            results = generate_extract_file.apply(args=[self._tenant, 'request_id', 'task_id', output, generate_json, extract_args])    # @UndefinedVariable
-            self.assertRaises(ExtractionError, results.get)
+        output = 'C:'
+        task = {
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.TASK_FILE_NAME: output,
+            TaskConstants.TASK_QUERY: query
+        }
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.ASMT_JSON])    # @UndefinedVariable
+        self.assertRaises(ExtractionError, results.get)
 
     def test_route_tasks_json_request(self):
-        from edextract.tasks.extract import route_tasks
-        tasks = [{TaskConstants.TASK_IS_JSON_REQUEST: True,
-                  TaskConstants.TASK_FILE_NAME: 'abc',
-                  TaskConstants.TASK_QUERY: 'abc',
-                  TaskConstants.TASK_TASK_ID: 'abc'}]
+        # Have to use OrderedDict here to ensure order in results.
+        tasks = [OrderedDict([(TaskConstants.TASK_IS_JSON_REQUEST, True),
+                              (TaskConstants.TASK_FILE_NAME, 'abc'),
+                              (TaskConstants.TASK_QUERY, 'abc'),
+                              (TaskConstants.TASK_TASK_ID, 'abc')])]
         tasks_group = route_tasks(self._tenant, 'request', tasks)
         self.assertIsInstance(tasks_group, group)
-        self.assertTrue(re.match(r"tasks.extract.generate_extract_file\('tomcat', 'request', 'abc', 'abc', <function generate_json at 0x[0-9a-fA-F]+>, \{['tenant': 'tomcat', 'query': 'abc']|['query': 'abc', 'tenant': 'tomcat']\}\)", str(tasks_group.kwargs['tasks'][0])))
+        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('is_json_request', True), ('file_name', 'abc'), ('query', 'abc'), ('task_id', 'abc')]), 'Assessment JSON Extract')", str(tasks_group.kwargs['tasks'][0]))
 
     def test_route_tasks_csv_request(self):
-        tasks = [{TaskConstants.TASK_IS_JSON_REQUEST: False,
-                  TaskConstants.TASK_FILE_NAME: 'abc',
-                  TaskConstants.TASK_QUERY: 'abc',
-                  TaskConstants.TASK_TASK_ID: 'abc'}]
-        from edextract.tasks.extract import route_tasks
+        # Have to use OrderedDict here to ensure order in results.
+        tasks = [OrderedDict([(TaskConstants.TASK_IS_JSON_REQUEST, False),
+                              (TaskConstants.TASK_FILE_NAME, 'abc'),
+                              (TaskConstants.TASK_QUERY, 'abc'),
+                              (TaskConstants.TASK_TASK_ID, 'abc')])]
         tasks_group = route_tasks(self._tenant, 'request', tasks)
         self.assertIsInstance(tasks_group, group)
-        self.assertTrue(re.match(r"tasks.extract.generate_extract_file\('tomcat', 'request', 'abc', 'abc', <function generate_csv at 0x[0-9a-fA-F]+>, \{['tenant': 'tomcat', 'query': 'abc']|['query': 'abc', 'tenant': 'tomcat']\}\)", str(tasks_group.kwargs['tasks'][0])))
+        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('is_json_request', False), ('file_name', 'abc'), ('query', 'abc'), ('task_id', 'abc')]), 'Assessment CSV Extract')", str(tasks_group.kwargs['tasks'][0]))
 
     def test_route_tasks_json_request_multi_requests(self):
-        from edextract.tasks.extract import route_tasks
-        tasks = [{TaskConstants.TASK_IS_JSON_REQUEST: True,
-                  TaskConstants.TASK_FILE_NAME: 'abc',
-                  TaskConstants.TASK_QUERY: 'abc',
-                  TaskConstants.TASK_TASK_ID: 'abc'},
-                 {TaskConstants.TASK_IS_JSON_REQUEST: False,
-                  TaskConstants.TASK_FILE_NAME: 'def',
-                  TaskConstants.TASK_QUERY: 'def',
-                  TaskConstants.TASK_TASK_ID: 'def'}]
+        # Have to use OrderedDicts here to ensure order in results.
+        tasks = [OrderedDict([(TaskConstants.TASK_IS_JSON_REQUEST, True),
+                              (TaskConstants.TASK_FILE_NAME, 'abc'),
+                              (TaskConstants.TASK_QUERY, 'abc'),
+                              (TaskConstants.TASK_TASK_ID, 'abc')]),
+                 OrderedDict([(TaskConstants.TASK_IS_JSON_REQUEST, False),
+                              (TaskConstants.TASK_FILE_NAME, 'def'),
+                              (TaskConstants.TASK_QUERY, 'def'),
+                              (TaskConstants.TASK_TASK_ID, 'def')])]
         tasks_group = route_tasks(self._tenant, 'request', tasks)
         self.assertIsInstance(tasks_group, group)
-        self.assertTrue(re.match(r"tasks.extract.generate_extract_file\('tomcat', 'request', 'abc', 'abc', <function generate_json at 0x[0-9a-fA-F]+>, \{['tenant': 'tomcat', 'query': 'abc']|['query': 'abc', 'tenant': 'tomcat']\}\)", str(tasks_group.kwargs['tasks'][0])))
-        self.assertTrue(re.match(r"tasks.extract.generate_extract_file\('tomcat', 'request', 'def', 'def', <function generate_csv at 0x[0-9a-fA-F]+>, \{['tenant': 'tomcat', 'query': 'def']|['query': 'def', 'tenant': 'tomcat']\}\)", str(tasks_group.kwargs['tasks'][1])))
+        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('is_json_request', True), ('file_name', 'abc'), ('query', 'abc'), ('task_id', 'abc')]), 'Assessment JSON Extract')", str(tasks_group.kwargs['tasks'][0]))
+        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('is_json_request', False), ('file_name', 'def'), ('query', 'def'), ('task_id', 'def')]), 'Assessment CSV Extract')", str(tasks_group.kwargs['tasks'][1]))
 
     def test_archive_with_encryption(self):
-        from edextract.tasks.extract import archive_with_encryption
         files = ['test_0.csv', 'test_1.csv', 'test.json']
         with tempfile.TemporaryDirectory() as _dir:
             csv_dir = os.path.join(_dir, 'csv')
@@ -220,7 +246,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             self.assertTrue(os.path.exists(gpg_file))
 
     def test_archive_with_encryption_no_recipients(self):
-        from edextract.tasks.extract import archive_with_encryption
         files = ['test_0.csv', 'test_1.csv', 'test.json']
         with tempfile.TemporaryDirectory() as _dir:
             csv_dir = os.path.join(_dir, 'csv')
@@ -237,7 +262,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             self.assertRaises(ExtractionError, result.get)
 
     def test_remote_copy(self):
-        from edextract.tasks.extract import remote_copy
         request_id = '1'
         tenant = 'es'
         gatekeeper = 'foo'
@@ -252,8 +276,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tmp_dir = tempfile.mkdtemp()
         shutil.rmtree(tmp_dir, ignore_errors=True)
         self.assertFalse(os.path.exists(tmp_dir))
-        from edextract.tasks.extract import prepare_path
-        prepare_path.apply(args=["tenant", "id", [tmp_dir]]).get()    # @UndefinedVariable
+        prepare_path.apply(args=["id", [tmp_dir]]).get()    # @UndefinedVariable
         self.assertTrue(os.path.exists(tmp_dir))
 
 

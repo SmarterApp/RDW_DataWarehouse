@@ -17,7 +17,8 @@ from edextract.tasks.extract import generate_extract_file
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 
 from edextract.celery import setup_celery
-from edextract.tasks.student_reg_constants import Constants
+from edextract.tasks.constants import Constants
+from edextract.data_extract_generation.constants import ExtractionDataType
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 
@@ -54,8 +55,10 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
 
     def test_generate_statistics_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        extract_args = {Constants.ACADEMIC_YEAR: 2014}
-        result = generate_extract_file.apply(args=[self._tenant, '0', '1', output, generate_statistics_report, extract_args])
+        task = {Constants.TASK_TASK_ID: 'task_id',
+                Constants.TASK_FILE_NAME: output,
+                Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.SR_STATISTICS])
         result.get()
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -70,8 +73,10 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
 
     def test_generate_completion_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')
-        extract_args = {Constants.ACADEMIC_YEAR: 2014}
-        result = generate_extract_file.apply(args=[self._tenant, '0', '1', output, generate_completion_report, extract_args])
+        task = {Constants.TASK_TASK_ID: 'task_id',
+                Constants.TASK_FILE_NAME: output,
+                Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.SR_COMPLETION])
         result.get()
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -86,15 +91,19 @@ class TestStudentRegExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats
 
     def test_generate_csv_no_tenant(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        extract_args = {Constants.ACADEMIC_YEAR: 2014}
-        result = generate_extract_file.apply(args=[None, '0', '1', output, generate_statistics_report, extract_args])
+        task = {Constants.TASK_TASK_ID: 'task_id',
+                Constants.TASK_FILE_NAME: output,
+                Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[None, 'request_id', task, ExtractionDataType.SR_STATISTICS])
         result.get()
         self.assertFalse(os.path.exists(output))
 
     def test_generate_csv_bad_file(self):
         output = 'C:'
-        extract_args = {Constants.ACADEMIC_YEAR: 2014}
-        result = generate_extract_file.apply(args=[self._tenant, '0', '1', output, generate_statistics_report, extract_args])
+        task = {Constants.TASK_TASK_ID: 'task_id',
+                Constants.TASK_FILE_NAME: output,
+                Constants.ACADEMIC_YEAR: 2014}
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task, ExtractionDataType.SR_STATISTICS])
         self.assertRaises(ExtractionError, result.get,)
 
 

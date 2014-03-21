@@ -57,7 +57,7 @@ def process_sync_extract_request(params):
 #        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
 #                       route_tasks(tenant, request_id, tasks, queue_name=queue),
 #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
-        prepare_path.apply_async(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
         route_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
         result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)

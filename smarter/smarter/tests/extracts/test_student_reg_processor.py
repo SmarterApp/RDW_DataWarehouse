@@ -8,8 +8,7 @@ __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import \
-    Unittest_with_edcore_sqlite
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
 from pyramid.registry import Registry
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import tempfile

@@ -4,12 +4,12 @@ Created on Mar 13, 2014
 @author: tosako
 '''
 from kombu.mixins import ConsumerMixin
-from kombu.entity import Queue, Exchange
 from edmigrate.utils.constants import Constants
 from edmigrate.utils.slave_tracker import SlaveTracker
 import threading
 import logging
 from edmigrate.exceptions import SlaveNotRegisteredException
+from edmigrate.queues import conductor
 
 logger = logging.getLogger('edmigrate')
 
@@ -31,10 +31,6 @@ class Consumer(ConsumerMixin):
     '''
     Consume messages from slaves
     '''
-    routing_key = Constants.CONDUCTOR_ROUTING_KEY
-    exchange = Exchange(Constants.CONDUCTOR_EXCHANGE, type='direct')
-
-    queue = Queue('edmigrate_conductor', exchange=exchange, routing_key=routing_key, durable=False)
 
     def __init__(self, connection):
         self.connection = connection
@@ -48,7 +44,7 @@ class Consumer(ConsumerMixin):
         }
 
     def get_consumers(self, Consumer, channel):
-        consumer = Consumer(self.queue, callbacks=[self.on_message])
+        consumer = Consumer(conductor.queue, callbacks=[self.on_message])
         consumer.purge()
         return [consumer]
 

@@ -5,7 +5,7 @@ Created on Mar 16, 2014
 '''
 import unittest
 from kombu import Connection
-from edmigrate.utils.consumer import ConsumerThread, Consumer
+from edmigrate.utils.consumer import ConsumerThread
 from edmigrate.utils.slave_tracker import SlaveTracker
 from edmigrate.utils import reply_to_conductor
 import time

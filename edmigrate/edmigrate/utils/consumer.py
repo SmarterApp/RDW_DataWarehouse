@@ -8,7 +8,6 @@ from edmigrate.utils.constants import Constants
 from edmigrate.utils.slave_tracker import SlaveTracker
 import threading
 import logging
-from edmigrate.exceptions import SlaveNotRegisteredException
 from edmigrate.queues import conductor
 
 logger = logging.getLogger('edmigrate')
@@ -44,21 +43,21 @@ class Consumer(ConsumerMixin):
         }
 
     def get_consumers(self, Consumer, channel):
+        conductor.queue(channel).purge()
         consumer = Consumer(conductor.queue, callbacks=[self.on_message])
-        consumer.purge()
         return [consumer]
 
     def on_message(self, body, message):
-        message_ack_command = body[Constants.MESSAGE_ACK_COMMAND]
-        node_id = body[Constants.MESSAGE_NODE_ID]
-        logger.debug('Message Received from node_id[' + str(node_id) + '] message[' + message_ack_command + ']')
         try:
+            message_ack_command = body[Constants.MESSAGE_ACK_COMMAND]
+            node_id = body[Constants.MESSAGE_NODE_ID]
+            logger.debug('Message Received from node_id[' + str(node_id) + '] message[' + message_ack_command + ']')
             function = self.__CONSUMER_COMMAND_HANDLERS.get(message_ack_command)
             if function:
                 function(node_id)
             else:
                 logger.debug('No handler for message[' + message_ack_command + '] from node_id[' + str(node_id) + ']')
-        except SlaveNotRegisteredException as e:
+        except Exception as e:
             logger.error(e)
         finally:
             message.ack()

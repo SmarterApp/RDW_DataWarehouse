@@ -32,7 +32,7 @@ define [
     setSelectedValue: (display, value) ->
       $("#selectedAcademicYear").html(display)
       $reminder =  $(".reminderMessage")
-      if value is @latestYear
+      if not value || value is @latestYear
         $reminder.hide()
       else
         $reminder.show()

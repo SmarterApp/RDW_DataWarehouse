@@ -52,6 +52,11 @@ class SlaveStatusTimedoutException(SlaveTrackerException):
         super().__init__(msg='Timedout after ' + str(timeout) + ' seconds. Slave [' + str(node_id) + '] was not registered')
 
 
+class SlaveStatusLockingTimedoutException(SlaveTrackerException):
+    def __init__(self):
+        super().__init__(msg='Thread Lock Timedout')
+
+
 class ReplicationMonitorException(EdMigrateException):
     def __init__(self, msg='Replication Monitor Exception'):
         super().__init__(msg)

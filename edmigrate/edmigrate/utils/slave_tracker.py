@@ -7,11 +7,9 @@ import threading
 from edmigrate.utils.constants import Constants
 import time
 from edmigrate.exceptions import SlaveAlreadyRegisteredException, \
-    SlaveNotRegisteredException, SlaveStatusTimedoutException
+    SlaveNotRegisteredException, SlaveStatusTimedoutException,\
+    SlaveStatusLockingTimedoutException
 
-
-# CR add timeout for acuire. check boolean
-# raise exception for false return
 
 class Singleton(type):
     _instances = {}
@@ -22,35 +20,49 @@ class Singleton(type):
         return self._instances[self]
 
 
-# CR add comment
 class SlaveTracker(metaclass=Singleton):
+    '''
+    SlaveTracker is Singleton object which is shared between main thread and feedback (consumer) thread.
+    tracking status of all registered slaves.
+    '''
     __lock = threading.Lock()
 
     def __init__(self, timeout=5):
         self.__timeout = timeout
-        self.__lock.acquire(timeout=self.__timeout)
-        self.__slaves = {}
-        self.__lock.release()
+        try:
+            if self.__lock.acquire(timeout=self.__timeout):
+                self.__slaves = {}
+            else:
+                raise SlaveStatusLockingTimedoutException()
+        finally:
+            if self.__lock.locked():
+                self.__lock.release()
 
     def set_timeout(self, timeout):
         try:
-            self.__lock.acquire(timeout=self.__timeout)
-            self.__timeout = timeout
+            if self.__lock.acquire(timeout=self.__timeout):
+                self.__timeout = timeout
+            else:
+                raise SlaveStatusLockingTimedoutException()
         finally:
-            self.__lock.release()
+            if self.__lock.locked():
+                self.__lock.release()
 
     def add_slave(self, node_id):
         try:
-            self.__lock.acquire(timeout=self.__timeout)
-            if node_id in self.__slaves:
-                raise SlaveAlreadyRegisteredException(node_id)
-            node = {}
-            node[Constants.SLAVE_GROUP] = None
-            node[Constants.SLAVE_PGPOOL_CONNECTION_STATUS] = Constants.SLAVE_CONNECTION_STATUS_CONNECTED
-            node[Constants.SLAVE_REPLICATION_STATUS] = Constants.SLAVE_REPLICATION_STATUS_STARTED
-            self.__slaves[node_id] = node
+            if self.__lock.acquire(timeout=self.__timeout):
+                if node_id in self.__slaves:
+                    raise SlaveAlreadyRegisteredException(node_id)
+                node = {}
+                node[Constants.SLAVE_GROUP] = None
+                node[Constants.SLAVE_PGPOOL_CONNECTION_STATUS] = Constants.SLAVE_CONNECTION_STATUS_CONNECTED
+                node[Constants.SLAVE_REPLICATION_STATUS] = Constants.SLAVE_REPLICATION_STATUS_STARTED
+                self.__slaves[node_id] = node
+            else:
+                raise SlaveStatusLockingTimedoutException()
         finally:
-            self.__lock.release()
+            if self.__lock.locked():
+                self.__lock.release()
 
     def set_pgpool_connected(self, node_id):
         self._set_slave_status(node_id, Constants.SLAVE_PGPOOL_CONNECTION_STATUS, Constants.SLAVE_CONNECTION_STATUS_CONNECTED)
@@ -84,17 +96,20 @@ class SlaveTracker(metaclass=Singleton):
         start_time = time.time()
         while True:
             try:
-                self.__lock.acquire(timeout=self.__timeout)
-                if slave_group:
-                    for node_id in self.__slaves:
-                        node = self.__slaves[node_id]
-                        if node[Constants.SLAVE_GROUP] == slave_group:
-                            ids.append(node_id)
+                if self.__lock.acquire(timeout=self.__timeout):
+                    if slave_group:
+                        for node_id in self.__slaves:
+                            node = self.__slaves[node_id]
+                            if node[Constants.SLAVE_GROUP] == slave_group:
+                                ids.append(node_id)
+                    else:
+                        for k in self.__slaves.keys():
+                            ids.append(k)
                 else:
-                    for k in self.__slaves.keys():
-                        ids.append(k)
+                    raise SlaveStatusLockingTimedoutException()
             finally:
-                self.__lock.release()
+                if self.__lock.locked():
+                    self.__lock.release()
             end_time = time.time()
             if not ids and timeout > 0:
                 if end_time - start_time > timeout:
@@ -106,29 +121,38 @@ class SlaveTracker(metaclass=Singleton):
 
     def reset(self):
         try:
-            self.__lock.acquire(timeout=self.__timeout)
-            self.__slaves.clear()
+            if self.__lock.acquire(timeout=self.__timeout):
+                self.__slaves.clear()
+            else:
+                raise SlaveStatusLockingTimedoutException()
         finally:
-            self.__lock.release()
+            if self.__lock.locked():
+                self.__lock.release()
 
     def _set_slave_status(self, node_id, name, status):
         try:
-            self.__lock.acquire(timeout=self.__timeout)
-            node = self.__slaves.get(node_id)
-            if not node:
-                raise SlaveNotRegisteredException(node_id)
-            node[name] = status
+            if self.__lock.acquire(timeout=self.__timeout):
+                node = self.__slaves.get(node_id)
+                if not node:
+                    raise SlaveNotRegisteredException(node_id)
+                node[name] = status
+            else:
+                raise SlaveStatusLockingTimedoutException()
         finally:
-            self.__lock.release()
+            if self.__lock.locked():
+                self.__lock.release()
 
     def _is_slave_status(self, node_id, name, expected_value, timeout=5):
         start_time = time.time()
         while True:
             try:
-                self.__lock.acquire(timeout=self.__timeout)
-                node = self.__slaves.get(node_id)
+                if self.__lock.acquire(timeout=self.__timeout):
+                    node = self.__slaves.get(node_id)
+                else:
+                    raise SlaveStatusLockingTimedoutException()
             finally:
-                self.__lock.release()
+                if self.__lock.locked():
+                    self.__lock.release()
             if not node:
                 current_time = time.time()
                 if current_time - start_time > timeout:

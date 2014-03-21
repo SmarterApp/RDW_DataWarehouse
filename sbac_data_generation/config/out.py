@@ -47,8 +47,7 @@ FAO_FORMAT = {'format': 'csv',
                           {'name': 'asmt_claim_4_score_range_min', 'val': 'assessment_outcome.claim_4_score_range_min'},
                           {'name': 'asmt_claim_4_score_range_max', 'val': 'assessment_outcome.claim_4_score_range_max'},
                           {'name': 'asmt_claim_4_perf_lvl', 'val': 'assessment_outcome.claim_4_perf_lvl'},
-                          {'name': 'status', 'val': 'C'},
-                          {'name': 'most_recent', 'val': 'assessment.most_recent', 'filter': 'always_true'},
+                          {'name': 'status', 'val': 'assessment_outcome.result_status'},
                           {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                           {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
                           {'name': 'asmt_year', 'val': 'assessment.period_year'},
@@ -107,8 +106,7 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
                                   {'name': 'district_guid', 'val': 'district.guid'},
                                   {'name': 'school_guid', 'val': 'school.guid'},
                                   {'name': 'from_date', 'val': '20130901'},
-                                  {'name': 'to_date', 'val': '20270601'},
-                                  {'name': 'most_recent', 'val': 'student.grade', 'filter': 'always_true'}]}
+                                  {'name': 'to_date', 'val': '20270601'}]}
 
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',
@@ -123,8 +121,7 @@ DIM_INST_HIER_FORMAT = {'format': 'csv',
                                     {'name': 'school_category', 'val': 'school.type_str'},
                                     {'name': 'from_date', 'val': 'institution_hierarchy.from_date',
                                      'filter': 'date_Ymd'},
-                                    {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Ymd'},
-                                    {'name': 'most_recent', 'val': 'institution_hierarchy.most_recent'}]}
+                                    {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Ymd'}]}
 
 DIM_SECTION_FORMAT = {'format': 'csv',
                       'name': 'dim_section.csv',
@@ -139,8 +136,7 @@ DIM_SECTION_FORMAT = {'format': 'csv',
                                   {'name': 'district_guid', 'val': 'district.guid'},
                                   {'name': 'school_guid', 'val': 'school.guid'},
                                   {'name': 'from_date', 'val': 'section.from_date', 'filter': 'date_Ymd'},
-                                  {'name': 'to_date', 'val': 'section.to_date', 'filter': 'date_Ymd'},
-                                  {'name': 'most_recent', 'val': 'section.most_recent', 'filter': 'always_true'}]}
+                                  {'name': 'to_date', 'val': 'section.to_date', 'filter': 'date_Ymd'}]}
 
 DIM_ASMT_FORMAT = {'format': 'csv',
                    'name': 'dim_asmt.csv',
@@ -184,8 +180,7 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'asmt_cut_point_4', 'val': 'assessment.overall_cut_point_4'},
                                {'name': 'from_date', 'val': 'assessment.from_date', 'filter': 'date_Ymd'},
                                {'name': 'to_date', 'val': 'assessment.to_date', 'filter': 'date_Ymd'},
-                               {'name': 'effective_date', 'val': 'assessment.effective_date', 'filter': 'date_Ymd'},
-                               {'name': 'most_recent', 'val': 'assessment.most_recent', 'filter': 'always_true'}]}
+                               {'name': 'effective_date', 'val': 'assessment.effective_date', 'filter': 'date_Ymd'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
                     'name': '<YEAR>_METADATA_ASMT_ID_<GUID>.json',

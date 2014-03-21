@@ -19,8 +19,8 @@ from sbac_data_generation.model.section import SBACSection
 from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None, most_recent=True,
-                        asmt_year_adj=0, claim_definitions=sbac_config.CLAIM_DEFINITIONS, save_to_mongo=True):
+def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None,
+                        claim_definitions=sbac_config.CLAIM_DEFINITIONS, save_to_mongo=True):
     """
     Generate an assessment object.
 
@@ -30,8 +30,6 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     @param subject: Assessment subject
     @param from_date: Assessment from date
     @param to_date: Assessment to date
-    @param most_recent: If the assessment is the most recent
-    @param asmt_year_adj: An amount to adjust the assessment period year by
     @param claim_definitions: Definitions for claims to generate
     @param save_to_mongo: If the new assessment object should be saved to Mongo
     @returns: The assessment object
@@ -45,18 +43,21 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa = gen_asmt_generator.generate_assessment(SBACAssessment)
 
     # Determine the period month
+    year_adj = 1
     period_month = 9
     if asmt_type == 'SUMMATIVE':
+        year_adj = 0
         period_month = 5
     elif 'Winter' in period:
         period_month = 12
     elif 'Spring' in period:
+        year_adj = 0
         period_month = 3
 
     # Set other specifics
     sa.rec_id = gen_id_gen.get_rec_id('assessment')
     sa.asmt_type = asmt_type
-    sa.period = period + ' ' + str((asmt_year + asmt_year_adj))
+    sa.period = period + ' ' + str((asmt_year - year_adj))
     sa.period_year = asmt_year
     sa.version = sbac_config.ASMT_VERSION
     sa.subject = subject
@@ -92,10 +93,9 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     sa.overall_cut_point_4 = sbac_config.ASMT_SCORE_CUT_POINT_4
     sa.claim_cut_point_1 = sbac_config.CLAIM_SCORE_CUT_POINT_1
     sa.claim_cut_point_2 = sbac_config.CLAIM_SCORE_CUT_POINT_2
-    sa.effective_date = datetime.date(asmt_year + asmt_year_adj, period_month, 15)
+    sa.effective_date = datetime.date(asmt_year - year_adj, period_month, 15)
     sa.from_date = from_date if from_date is not None else sa.effective_date
     sa.to_date = to_date if to_date is not None else sbac_config.ASMT_TO_DATE
-    sa.most_recent = most_recent
 
     # Save and return the object
     if save_to_mongo:

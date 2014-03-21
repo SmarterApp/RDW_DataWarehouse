@@ -5,7 +5,7 @@ Model an institution hierarchy as defined for SBAC.
 @date: February 24, 2014
 """
 
-from mongoengine import BooleanField, DateTimeField, Document, IntField, ReferenceField, StringField
+from mongoengine import DateTimeField, Document, IntField, ReferenceField, StringField
 
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.school import SBACSchool
@@ -23,7 +23,6 @@ class InstitutionHierarchy(Document):
     school = ReferenceField(SBACSchool, required=True)
     from_date = DateTimeField(required=True)
     to_date = DateTimeField(required=False)
-    most_recent = BooleanField(required=True)
 
     def get_object_set(self):
         """

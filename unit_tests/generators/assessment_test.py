@@ -1,5 +1,5 @@
 """
-Unit tests for the project.sbac.generators.assessement module.
+Unit tests for the sbac_data_generation.generators.assessement module.
 
 @author: nestep
 @date: March 18, 2014
@@ -36,7 +36,6 @@ def test_generate_assessment():
     assert asmt.subject == 'Math'
     assert asmt.from_date == datetime.date(2015, 5, 15)
     assert asmt.to_date == datetime.date(9999, 12, 31)
-    assert asmt.most_recent
 
 
 def test_generate_assessment_invalid_subject():
@@ -123,13 +122,13 @@ def test_generate_assessment_summative_effective_date():
 
 
 def test_generate_assessment_interim_fall_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math', asmt_year_adj=-1)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math')
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2014, 9, 15)
 
 
 def test_generate_assessment_interim_winter_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math', asmt_year_adj=-1)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math')
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2014, 12, 15)
 
@@ -138,6 +137,22 @@ def test_generate_assessment_interim_spring_effective_date():
     asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math')
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2015, 3, 15)
+
+
+def test_generate_assessment_outcome_default_status():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    district = hier_gen.generate_district('Small Average', state)
+    school = hier_gen.generate_school('Elementary School', district)
+    clss = enroll_gen.generate_class('Class', 'ELA', school)
+    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
+    student = pop_gen.generate_student(school, 3, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+
+    # Test
+    assert asmt_out.result_status == 'C'
 
 
 def test_generate_assessment_outcome_scores():

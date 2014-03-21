@@ -37,8 +37,7 @@ def generate_class(name, subject, school: SBACSchool, save_to_mongo=True):
     return s
 
 
-def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().year, most_recent=False,
-                     save_to_mongo=True):
+def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().year, save_to_mongo=True):
     """
     Generate a section for a given class. This will also generate the necessary number of teaching staff for the
     section.
@@ -47,12 +46,11 @@ def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().
     @param name: The name of the section
     @param grade: The grade of students for the section
     @param year: The academic year this section is in
-    @param most_recent: If the section is the most recent section for this grade and class
     @param save_to_mongo: If the newly created section should be saved to Mongo
     @returns: A section object
     """
     # Generate the general section
-    s = general_enroll_gen.generate_section(clss, name, grade, year, most_recent, sub_class=SBACSection)
+    s = general_enroll_gen.generate_section(clss, name, grade, year, sub_class=SBACSection)
 
     # Add additional attributes
     s.rec_id = id_gen.get_rec_id('section')

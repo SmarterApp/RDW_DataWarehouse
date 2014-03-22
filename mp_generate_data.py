@@ -107,6 +107,8 @@ if __name__ == '__main__':
     parser.add_argument('-st', '--state_type', dest='state_type', action='store', default='devel',
                         help='Specify the type of state to generate data for (devel (default), typical_1, california)',
                         required=False)
+    parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
+                        help='Specific the number of sub-processes to spawn (default=2)', required=False)
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
@@ -146,7 +148,7 @@ if __name__ == '__main__':
     districts = generate_state_district_hierarchy()
 
     # Go
-    pool = multiprocessing.Pool(processes=4)
+    pool = multiprocessing.Pool(processes=int(args.process_count))
     pool.map(district_pool_worker, districts)
     pool.close()
     pool.join()

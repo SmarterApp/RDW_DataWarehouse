@@ -14,13 +14,82 @@ Command line arguments:
 
 import argparse
 import datetime
+import multiprocessing
 import os
+import queue
+import random
 
 from mongoengine import connect
 from pymongo import Connection
 
 import generate_data as generate_data
+import sbac_data_generation.config.cfg as sbac_in_config
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
+
+
+def generate_state_district_hierarchy():
+    """
+    Create the the states and districts to generate data for.
+
+    @returns: A list of tuples suitable to be fed into a worker
+    """
+    district_tuples = []
+
+    # Start with states
+    for state_cfg in generate_data.STATES:
+        # Create the state object
+        state = sbac_hier_gen.generate_state(state_cfg['type'], state_cfg['name'], state_cfg['code'])
+        print('Created State: %s' % state.name)
+
+        # Grab the assessment rates by subjects
+        asmt_skip_rates_by_subject = state.config['subject_skip_percentages']
+
+        # Create the assessment objects
+        assessments = {}
+        for year in generate_data.ASMT_YEARS:
+            for subject in sbac_in_config.SUBJECTS:
+                for grade in generate_data.GRADES_OF_CONCERN:
+                    # Create the summative assessment
+                    asmt_key_summ = str(year) + 'summative' + str(grade) + subject
+                    assessments[asmt_key_summ] = generate_data.create_assessment_object('SUMMATIVE', 'Spring', year,
+                                                                                        subject)
+
+                    # Create the interim assessments
+                    for period in generate_data.INTERIM_ASMT_PERIODS:
+                        asmt_key_intrm = str(year) + 'interim' + period + str(grade) + subject
+                        asmt_intrm = generate_data.create_assessment_object('INTERIM COMPREHENSIVE', period, year,
+                                                                            subject)
+                        assessments[asmt_key_intrm] = asmt_intrm
+
+        # Build the districts
+        for district_type, dist_type_count in state.config['district_types_and_counts'].items():
+            for _ in range(dist_type_count):
+                # Create the district
+                district = sbac_hier_gen.generate_district(district_type, state)
+                print('  Created District: %s (%s District)' % (district.name, district.type_str))
+                district_tuples.append((district, assessments, asmt_skip_rates_by_subject))
+
+    # Return the districts
+    return district_tuples
+
+
+def district_pool_worker(worker_args):
+    """
+    Process a single district. This is basically a wrapper for generate_data.generate_district_date that is designed to
+    be called through a multiprocessor.Pool construct.
+
+    @param worker_args: A tuple of the district, assessments, and skip_rates to pass on
+    """
+    # Parse out the arguments
+    district, assessments, skip_rates = worker_args
+
+    # Note that we are processing
+    print('PROCESSING BEGINNING (%s)' % district.name)
+
+    # Start the processing
+    generate_data.generate_district_data(district.state, district,
+                                         random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS), assessments,
+                                         skip_rates)
 
 
 if __name__ == '__main__':
@@ -73,14 +142,14 @@ if __name__ == '__main__':
     # Create the registration systems
     generate_data.REGISTRATION_SYSTEM_GUIDS = generate_data.build_registration_systems(generate_data.YEARS)
 
-    # Start the generation of data
-    for state_cfg in generate_data.STATES:
-        # Create the state object
-        state = sbac_hier_gen.generate_state(state_cfg['type'], state_cfg['name'], state_cfg['code'])
-        print('Created State: %s' % state.name)
+    # Build the states and districts
+    districts = generate_state_district_hierarchy()
 
-        # Process the state
-        generate_data.generate_state_data(state)
+    # Go
+    pool = multiprocessing.Pool(processes=4)
+    pool.map(district_pool_worker, districts)
+    pool.close()
+    pool.join()
 
     # Record now current (end) time
     tend = datetime.datetime.now()

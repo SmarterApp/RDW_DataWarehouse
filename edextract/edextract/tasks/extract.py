@@ -230,5 +230,5 @@ def get_extract_func_and_args(task, extract_type):
         ExtractionDataType.SR_COMPLETION: (generate_completion_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)})
     }
 
-    extract_func, args = extract_funcs_and_args[extract_type][0], extract_funcs_and_args[extract_type][1]
+    extract_func, args = extract_funcs_and_args[extract_type]
     return extract_func, args

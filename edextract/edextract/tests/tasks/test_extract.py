@@ -22,12 +22,8 @@ from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.data_extract_generation.constants import ExtractionDataType
-from edextract.tasks.extract import route_tasks
-from edextract.tasks.extract import generate_extract_file
-from edextract.tasks.extract import archive
-from edextract.tasks.extract import archive_with_encryption
-from edextract.tasks.extract import remote_copy
-from edextract.tasks.extract import prepare_path
+from edextract.tasks.extract import (route_tasks, generate_extract_file, archive, archive_with_encryption, remote_copy,
+                                     prepare_path)
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

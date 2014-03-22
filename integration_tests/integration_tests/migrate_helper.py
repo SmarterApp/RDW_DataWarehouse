@@ -14,10 +14,10 @@ from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database import initialize_db
 
 
-def setUpMigrationConnection():
-    setting = get_config()
-    initialize_db(StatsDBConnection, setting)
-    initialize_db(EdMigrateDestConnection, setting)
+# def setUpMigrationConnection():
+#     setting = get_config()
+#     initialize_db(StatsDBConnection, setting)
+#     initialize_db(EdMigrateDestConnection, setting)
 
 
 def start_migrate(tenant='cat'):
@@ -28,8 +28,8 @@ def start_migrate(tenant='cat'):
     main(ini_file, tenant, run_migrate_only=True)
 
 
-def get_config():
-    return read_ini(get_ini_file())
+# def get_config():
+#     return read_ini(get_ini_file())
 
 
 def get_prod_table_count(tenant, table_name):

@@ -1,4 +1,4 @@
-from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection
 __author__ = 'swimberly'
 from edudl2.exceptions.errorcodes import ErrorCode, ErrorSource
 from edcore.database.utils.query import insert_to_table

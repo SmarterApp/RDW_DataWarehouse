@@ -9,9 +9,8 @@ import logging
 import re
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.udl2_util.database_util import connect_db, get_table_columns_info,\
-    get_schema_metadata
-from edudl2.metadata.udl2_metadata import generate_udl2_metadata
+from edudl2.udl2_util.database_util import connect_db, get_schema_metadata
+from edudl2.database.metadata.udl2_metadata import generate_udl2_metadata
 
 
 logger = logging.getLogger()

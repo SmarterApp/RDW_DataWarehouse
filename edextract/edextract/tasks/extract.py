@@ -66,7 +66,7 @@ def route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEU
     for task in tasks:
         task_id = task[TaskConstants.TASK_TASK_ID]
         output_file = task[TaskConstants.TASK_FILE_NAME]
-        extract_args = {'tenant': tenant, TaskConstants.TASK_QUERY: task[TaskConstants.TASK_QUERY]}
+        extract_args = {TaskConstants.TASK_QUERY: task[TaskConstants.TASK_QUERY]}
         if task.get(TaskConstants.TASK_IS_JSON_REQUEST, False):
             extract_func = generate_json
         else:
@@ -189,7 +189,7 @@ def generate_extract_file(tenant, request_id, task_id, output_file, extract_func
                 raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
 
             # Extract data to file.
-            extract_func(output_file, task_info, extract_args)
+            extract_func(tenant, output_file, task_info, extract_args)
 
     except FileNotFoundError as e:
         # which thrown from prepare_path

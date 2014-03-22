@@ -5,6 +5,10 @@ This file describes the constants needed by student registration report extracti
 """
 
 
+class TableName():
+    STUDENT_REG = 'student_reg'
+
+
 class ReportType():
     STATISTICS = 'statistics'
     COMPLETION = 'completion'

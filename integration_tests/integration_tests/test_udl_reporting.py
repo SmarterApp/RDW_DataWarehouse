@@ -7,7 +7,7 @@ import subprocess
 import os
 import fnmatch
 import shutil
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection,\
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
     get_prod_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
@@ -15,8 +15,8 @@ from time import sleep
 from sqlalchemy.sql.expression import and_
 import unittest
 from integration_tests.migrate_helper import start_migrate,\
-    get_prod_table_count, get_stats_table_has_migrated_ingested_status,\
-    setUpMigrationConnection
+    get_prod_table_count, get_stats_table_has_migrated_ingested_status
+from edcore.database.stats_connector import StatsDBConnection
 
 
 class TestUDLReportingIntegration(unittest.TestCase):
@@ -24,12 +24,12 @@ class TestUDLReportingIntegration(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
 
-    @classmethod
-    def setUpClass(cls):
-        '''
-        Reads development ini and setup connection for migrations
-        '''
-        setUpMigrationConnection()
+#     @classmethod
+#     def setUpClass(cls):
+#         '''
+#         Reads development ini and setup connection for migrations
+#         '''
+#         setUpMigrationConnection()
 
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
@@ -42,6 +42,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
         self.delete_prod_tables()
+        self.empty_stat_table()
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -53,6 +54,16 @@ class TestUDLReportingIntegration(unittest.TestCase):
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
+
+   #Delete all data from udl_stats table
+    def empty_stat_table(self):
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            conn.execute(table.delete())
+            query = select([table])
+            query_tab = conn.execute(query).fetchall()
+            no_rows = len(query_tab)
+            print(no_rows)
 
     def test_validation(self):
         print("Running UDL Integration tests test_udl_reporting.py")
@@ -68,11 +79,13 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.migrate_data()
 
     def migrate_data(self):
+        print("Migration starting:")
         start_migrate()
         tenant = 'cat'
         results = get_stats_table_has_migrated_ingested_status(tenant)
         for result in results:
             self.assertEqual(result['load_status'], 'migrate.ingested')
+        print("Migration finished")
         self.assertEqual(get_prod_table_count(tenant, 'fact_asmt_outcome'), 957)
         self.assertEqual(get_prod_table_count(tenant, 'dim_asmt'), 30)
 

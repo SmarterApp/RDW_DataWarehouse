@@ -80,3 +80,8 @@ class ReplicationToMonitorOutOfSyncException(ReplicationMonitorException):
 class ConductorTimeoutException(EdMigrateException):
     def __init__(self, msg='Conductor Timeout Exception'):
         super().__init__(msg)
+
+
+class PlayerTimeoutException(EdMigrateException):
+    def __init__(self, msg='Player Timeout Exception'):
+        super().__init__(msg)

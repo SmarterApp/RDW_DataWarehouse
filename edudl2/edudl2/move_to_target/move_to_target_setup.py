@@ -1,14 +1,12 @@
-from edudl2.udl2.udl2_connector import get_target_connection
+from edudl2.database.udl2_connector import get_target_connection
 __author__ = 'swimberly'
-
 from collections import OrderedDict, namedtuple
-
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, get_column_mapping_query,
                                                   create_information_query)
 from edudl2.udl2_util.database_util import execute_udl_query_with_result
-from edudl2. udl2.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 
 Column = namedtuple('Column', ['src_col', 'type'])
@@ -178,7 +176,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
         # db driver
         mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
         # source schema
-        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
         # source database setting
         mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
         mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],

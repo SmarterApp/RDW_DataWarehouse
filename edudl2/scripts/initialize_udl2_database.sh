@@ -14,4 +14,4 @@ python3.3 populate_prod_database.py
 # use virtualenv to run initialization script
 # otherwise, it must be python3.3
 
-python3.3 -m edudl2.udl2.database $1 $2 --action setup
+python3.3 -m edudl2.database.database $1 $2 --action setup

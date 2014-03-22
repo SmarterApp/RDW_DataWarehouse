@@ -48,7 +48,7 @@ def generate_conf(guid_batch, load_type):
             mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
             mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
             mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
 
             # target database setting
@@ -57,10 +57,10 @@ def generate_conf(guid_batch, load_type):
             mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
             mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
-            mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+            mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]
             }
     return conf

@@ -18,11 +18,9 @@ import argparse
 import json
 import edudl2.udl2_util.database_util as db_util
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection
 import time
 from edudl2.udl2_util.udl_mappings import get_json_table_mapping
-
-DBDRIVER = "postgresql"
 
 
 def load_json(conf):

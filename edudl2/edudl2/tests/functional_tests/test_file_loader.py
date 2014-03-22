@@ -7,7 +7,7 @@ from edudl2.udl2_util.database_util import connect_db
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import uuid
 from edudl2.udl2 import message_keys as mk
-from edudl2.udl2.udl2_connector import initialize_db_target, initialize_db_udl
+from edudl2.database.udl2_connector import initialize_db_target, initialize_db_udl
 from edudl2.udl2_util.config_reader import read_ini_file
 from datetime import datetime
 import time
@@ -48,9 +48,9 @@ class FileLoaderFTest(unittest.TestCase):
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_DRIVER: self.udl2_conf['udl2_db']['db_driver'],
-            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['csv_schema'],
+            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.FDW_SERVER: self.udl2_conf['udl2_db']['fdw_server'],
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.ROW_START: 1,
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
             mk.APPLY_RULES: False

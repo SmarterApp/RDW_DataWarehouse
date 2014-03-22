@@ -20,7 +20,7 @@ from edextract.exceptions import RemoteCopyError, ExtractionError
 from edextract.utils.data_archiver import encrypted_archive_files, archive_files, GPGPublicKeyException
 from edextract.data_extract_generation.assessment_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
-from edextract.data_extract_generation.constants import ExtractionDataType
+from edextract.tasks.constants import ExtractionDataType
 
 
 log = logging.getLogger('edextract')
@@ -35,7 +35,7 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
-                     route_tasks(tenant, request_id, tasks, queue_name=queue),
+                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queues=queue, immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
     workflow.apply_async()
@@ -60,17 +60,23 @@ def prepare_path(request_id, paths):
         raise ExtractionError()
 
 
-def route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
-    '''
-    Given a list of tasks, route them to either generate_csv or generate_json depending on the task type
-    '''
+def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
+    """
+    Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
+
+    @param tenant: tenant of the user
+    @param request_id: Report request ID
+    @param tasks: List of extract tasks to execute
+    @param queue_name(optional): Queue to which to send celery task requests
+
+    @return: Group of celery tasks to execute
+    """
+
     generate_tasks = []
+
     for task in tasks:
-        if task.get(TaskConstants.TASK_IS_JSON_REQUEST, False):
-            extract_type = ExtractionDataType.ASMT_JSON
-        else:
-            extract_type = ExtractionDataType.ASMT_CSV
-        generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task, extract_type], queue=queue_name, immutable=True))  # @UndefinedVariable
+        generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
+
     return group(generate_tasks)
 
 
@@ -158,7 +164,7 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeou
 
 
 @celery.task(name="tasks.extract.generate_extract_file", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
-def generate_extract_file(tenant, request_id, task, extract_type):
+def generate_extract_file(tenant, request_id, task):
     """
     Generates an extract file given task arguments.
 
@@ -169,6 +175,7 @@ def generate_extract_file(tenant, request_id, task, extract_type):
     """
 
     task_id = task[TaskConstants.TASK_TASK_ID]
+    extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
     log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_extract_file.name,
                                                                                           task_id=task_id, extract_type=extract_type))
     output_file = task[TaskConstants.TASK_FILE_NAME]

@@ -5,14 +5,11 @@ Created on Dec 9, 2013
 '''
 
 
-class ExtractType():
-    CSV = 'csv'
-    JSON = 'json'
-
-
-class ReportType():
-    STATISTICS = 'statistics'
-    COMPLETION = 'completion'
+class ExtractionDataType():
+    SR_STATISTICS = 'StudentRegistrationStatisticsReportCSV'
+    SR_COMPLETION = 'StudentRegistrationCompletionReportCSV'
+    ASMT_CSV = 'AssessmentCSVExtract'
+    ASMT_JSON = 'AssessmentJSONExtract'
 
 
 class Constants():
@@ -27,4 +24,4 @@ class Constants():
     TENANT = 'tenant'
     STATE_CODE = 'state_code'
     ACADEMIC_YEAR = 'academicYear'
-    REPORT_TYPE = 'report_type'
+    EXTRACTION_DATA_TYPE = 'extraction_data_type'

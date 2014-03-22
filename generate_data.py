@@ -92,6 +92,72 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
 
 
+def prepare_output_files(years):
+    """
+    Prepare the output files before the data generation run begins creating data.
+
+    @param first_year: The years for which data will be generated
+    """
+    # Prepare star-schema output files
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
+                                sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
+                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_SECTION_FORMAT['name'],
+                                sbac_out_config.DIM_SECTION_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+
+    # Prepare the landing zone files
+    for year in YEARS:
+        name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(year))
+        csv_writer.prepare_csv_file(name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+
+
+def build_registration_systems(years):
+    """"
+    Build the registration systems that will be used during the data generation run.
+
+    @param years: The years for which data will be generated
+    @returns: A list of GUIDs for the registration systems that were created
+    """
+    # Validate years
+    if len(years) == 0:
+        raise ValueError('Number of specified years is zero')
+
+    # Grab columns and layout for output files
+    sr_out_cols = sbac_out_config.SR_FORMAT['columns']
+    rs_out_layout = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['layout']
+
+    # Build the registration systems for every year
+    guids = []
+    start_year = years[0] - 1
+    for i in range(NUMBER_REGISTRATION_SYSTEMS):
+        # Build the original system
+        rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', save_to_mongo=False)
+        guids.append(rs.guid)
+
+        # Update it over every year
+        for year in YEARS:
+            # Update the system
+            rs.academic_year = year
+            rs.extract_date = str(year - 1) + '-02-27'
+
+            # Create the JSON file
+            file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
+            file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+            json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
+
+            # Prepare the SR CSV file
+            file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+            csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
+
+    # Return the generated GUIDs
+    return guids
+
+
 def create_assessment_object(asmt_type, period, year, subject):
     """
     Create a new assessment object and write it out to JSON.
@@ -428,47 +494,11 @@ if __name__ == '__main__':
     # Connect to MongoDB, datagen database
     connect('datagen')
 
-    # Prepare star-schema output files
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
-                                root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
-                                sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
-                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_SECTION_FORMAT['name'],
-                                sbac_out_config.DIM_SECTION_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
-                                root_path=OUT_PATH_ROOT)
+    # Prepare the output files
+    prepare_output_files(YEARS)
 
-    # Prepare the landing zone files
-    for year in YEARS:
-        name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(year))
-        csv_writer.prepare_csv_file(name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-
-    sr_out_cols = sbac_out_config.SR_FORMAT['columns']
-    rs_out_layout = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['layout']
-
-    # Build the registration systems for every year
-    start_year = YEARS[0] - 1
-    for i in range(NUMBER_REGISTRATION_SYSTEMS):
-        # Build the original system
-        rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', save_to_mongo=False)
-        REGISTRATION_SYSTEM_GUIDS.append(rs.guid)
-
-        # Update it over every year
-        for year in YEARS:
-            # Update the system
-            rs.academic_year = year
-            rs.extract_date = str(year - 1) + '-02-27'
-
-            # Create the JSON file
-            file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
-            file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
-            json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
-
-            # Prepare the SR CSV file
-            file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
-            csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
+    # Create the registration systems
+    REGISTRATION_SYSTEM_GUIDS = build_registration_systems(YEARS)
 
     # Start the generation of data
     for state_cfg in STATES:

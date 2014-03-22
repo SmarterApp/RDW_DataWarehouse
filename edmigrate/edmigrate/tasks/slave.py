@@ -1,3 +1,4 @@
+from edmigrate.queues import conductor
 __author__ = 'sravi'
 import logging
 from edmigrate.utils.utils import get_broker_url
@@ -169,13 +170,12 @@ def slave_task(command, slaves):
     host_name = get_hostname()
     node_id = get_slave_node_id_from_hostname(host_name)
     with Connection(get_broker_url()) as conn:
-        exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
         routing_key = Constants.CONDUCTOR_ROUTING_KEY
         if slaves is None or command in [Constants.COMMAND_FIND_SLAVE, Constants.COMMAND_RESET_SLAVES]:
-            COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
+            COMMAND_HANDLERS[command](host_name, node_id, conn, conductor.exchange, routing_key)
         elif command in COMMAND_HANDLERS:
             if node_id in slaves:
-                COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
+                COMMAND_HANDLERS[command](host_name, node_id, conn, conductor.exchange, routing_key)
             else:
                 # ignore the command
                 logger.info("{command} is ignored by slave".format(command=command))

@@ -7,7 +7,7 @@ import subprocess
 import os
 import fnmatch
 import shutil
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection,\
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
     get_prod_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf

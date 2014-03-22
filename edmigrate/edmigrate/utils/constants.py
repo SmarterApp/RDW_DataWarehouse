@@ -5,6 +5,7 @@ class Constants():
     '''
     Constants related to edmigrate
     '''
+    WORKER_NAME = 'edmigrate'
     REPL_MGR_SCHEMA = 'repmgr_edware_pg_cluster'
     REPL_STATUS = 'repl_status'
     REPL_NODES = 'repl_nodes'
@@ -25,13 +26,13 @@ class Constants():
     STATUS_CREATED = 'C'
     STATUS_DELETED = 'D'
 
-    SLAVE_TASK = 'edmigrate.tasks.slave'
-    COMMAND_FIND_SLAVE = 'FIND_SLAVE'
+    PLAYER_TASK = 'edmigrate.tasks.slave'
+    COMMAND_REGISTER_PLAYER = 'FIND_SLAVE'
     COMMAND_DISCONNECT_PGPOOL = 'DISCONNECT_PGPOOL'
     COMMAND_CONNECT_PGPOOL = 'CONNECT_PGPOOL'
     COMMAND_STOP_REPLICATION = 'STOP_REPLICATION'
     COMMAND_START_REPLICATION = 'START_REPLICATION'
-    COMMAND_RESET_SLAVES = 'RESET_SLAVES'
+    COMMAND_RESET_PLAYERS = 'RESET_SLAVES'
 
     ACK_COMMAND_FIND_SLAVE = 'ACK_FIND_SLAVE'
     ACK_COMMAND_DISCONNECT_PGPOOL = 'ACK_DISCONNECT_PGPOOL'

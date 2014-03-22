@@ -8,7 +8,6 @@ This test cover following two scenario:
 '''
 import os
 import shutil
-from edudl2.udl2.udl2_connector import get_udl_connection
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
@@ -17,6 +16,7 @@ import subprocess
 from uuid import uuid4
 import unittest
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
+from edudl2.database.udl2_connector import get_udl_connection
 
 
 class Test_Err_Handling_Scenario(unittest.TestCase):

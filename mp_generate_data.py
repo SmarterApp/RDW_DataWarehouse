@@ -7,6 +7,7 @@ Command line arguments:
   --state_name STATE_NAME: Name of state to generate data for (defaults to 'North Carolina')
   --state_code STATE_CODE: Code of state to generate data for (defaults to 'NC')
   --state_type STATE_TYPE_NAME: Name of state type to generate data for (expects devel, typical_1, california)
+  --process_count: The number of processes to use to generate data (defaults to 2)
 
 @author: nestep
 @date: March 22, 2014

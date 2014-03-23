@@ -17,6 +17,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     """
     The SBAC-specific assessment outcome class.
     """
+    rec_id = IntField(required=True)
     inst_hierarchy = ReferenceField(InstitutionHierarchy, required=True)
     result_status = StringField(required=True, default=sbac_config.ASMT_STATUS_ACTIVE)
     overall_score = IntField(required=True, min_value=sbac_config.ASMT_SCORE_MIN,

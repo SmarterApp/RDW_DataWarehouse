@@ -322,7 +322,6 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             hierarchies.append(ih)
             inst_hiers[school.guid] = ih
             schools.append(school)
-            print('    Created School: %s (%s)' % (school.name, school.type_str))
 
     # Write out hierarchies for this district
     csv_writer.write_records_to_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
@@ -334,9 +333,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
     # Begin processing the years for data
     students = {}
+    student_count = 0
     for asmt_year in YEARS:
-        print('  YEAR %i' % asmt_year)
-
         # Prepare output file names
         sr_out_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(asmt_year)).replace('<GUID>', reg_sys_guid)
         lz_asmt_out_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(asmt_year))
@@ -362,6 +360,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             for grade, grade_students in grades.items():
                 # Potentially re-populate the student population
                 sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, asmt_year)
+                student_count += len(grade_students)
 
                 # Create assessment results for this year if requested
                 if asmt_year in ASMT_YEARS:
@@ -429,6 +428,9 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     del schools_by_grade
     del students
 
+    # Return the average student count
+    return int(student_count // 3)
+
 
 def generate_state_data(state: SBACState, id_gen):
     """
@@ -458,15 +460,23 @@ def generate_state_data(state: SBACState, id_gen):
                     assessments[asmt_key_intrm] = asmt_intrm
 
     # Build the districts
+    student_count = 0
     for district_type, dist_type_count in state.config['district_types_and_counts'].items():
         for _ in range(dist_type_count):
             # Create the district
             district = sbac_hier_gen.generate_district(district_type, state, id_gen)
-            print('  Created District: %s (%s District)' % (district.name, district.type_str))
+            print('  Creating District: %s (%s District)' % (district.name, district.type_str))
 
             # Generate the district data set
-            generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS), assessments,
-                                   asmt_skip_rates_by_subject, id_gen)
+            count = generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS), assessments,
+                                           asmt_skip_rates_by_subject, id_gen)
+
+            # Print completion of district
+            print('    District created with average of %i students/year' % count)
+            student_count += count
+
+    # Print completion of state
+    print('State %s created with average of  %i students/year' % (state.name, student_count))
 
 
 if __name__ == '__main__':
@@ -526,7 +536,8 @@ if __name__ == '__main__':
     for state_cfg in STATES:
         # Create the state object
         state = sbac_hier_gen.generate_state(state_cfg['type'], state_cfg['name'], state_cfg['code'], idg)
-        print('Created State: %s' % state.name)
+        print()
+        print('Creating State: %s' % state.name)
 
         # Process the state
         generate_state_data(state, idg)

@@ -107,8 +107,6 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen,
     if len(grade_students) < (school.student_count_avg / 20):
         student_count = int(random.triangular(school.student_count_min, school.student_count_max,
                                               school.student_count_avg))
-        print('    Creating %i students in grade %i for school %s (%s)' % (student_count, grade, school.name,
-                                                                           school.district.name))
         for _ in range(student_count):
             s = generate_student(school, grade, id_gen, acad_year, save_to_mongo=save_to_mongo)
             grade_students.append(s)
@@ -118,7 +116,6 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen,
         for _ in range(random.choice(additional_student_choice)):
             s = generate_student(school, grade, id_gen, acad_year, save_to_mongo=save_to_mongo)
             grade_students.append(s)
-        print('    Grade %i sufficiently populated for school %s (%s)' % (grade, school.name, school.district.name))
 
 
 def _generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):

@@ -28,6 +28,11 @@ import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 
 from sbac_data_generation.util.id_gen import IDGen
 
+DISTRICT_TOTAL_COUNT = 0
+DISTRICT_COMPLETE_COUNT = 0
+TOTAL_STUDENT_AVERAGE = 0
+CALLBACK_LOCK = multiprocessing.Lock()
+
 
 def generate_state_district_hierarchy(id_gen):
     """
@@ -36,6 +41,7 @@ def generate_state_district_hierarchy(id_gen):
     @param id_gen: ID generator
     @returns: A list of tuples suitable to be fed into a worker
     """
+    global DISTRICT_TOTAL_COUNT
     district_tuples = []
 
     # Start with states
@@ -71,6 +77,7 @@ def generate_state_district_hierarchy(id_gen):
                 district = sbac_hier_gen.generate_district(district_type, state, id_gen)
                 print('  Created District: %s (%s District)' % (district.name, district.type_str))
                 district_tuples.append((district, assessments, asmt_skip_rates_by_subject))
+                DISTRICT_TOTAL_COUNT += 1
 
     # Return the districts
     return district_tuples
@@ -90,12 +97,27 @@ def district_pool_worker(district, assessments, skip_rates, id_lock, id_mdict):
     id_gen = IDGen(id_lock, id_mdict)
 
     # Note that we are processing
-    print('PROCESSING BEGINNING (%s)' % district.name)
+    print('Starting to generate data for district %s (%s District)' % (district.name, district.type_str))
 
     # Start the processing
-    generate_data.generate_district_data(district.state, district,
-                                         random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS), assessments,
-                                         skip_rates, id_gen)
+    dist_tstart = datetime.datetime.now()
+    count = generate_data.generate_district_data(district.state, district,
+                                                 random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS), assessments,
+                                                 skip_rates, id_gen)
+    dist_tend = datetime.datetime.now()
+    return district.name, count, (dist_tend - dist_tstart)
+
+
+def pool_callback(tpl):
+    global DISTRICT_COMPLETE_COUNT, TOTAL_STUDENT_AVERAGE
+    district_name, student_count, run_time = tpl
+    with CALLBACK_LOCK:
+        DISTRICT_COMPLETE_COUNT += 1
+        TOTAL_STUDENT_AVERAGE += student_count
+        print('District %s generated with average of %i students/year in %s (%i of %i)' % (district_name, student_count,
+                                                                                           run_time,
+                                                                                           DISTRICT_COMPLETE_COUNT,
+                                                                                           DISTRICT_TOTAL_COUNT))
 
 
 if __name__ == '__main__':
@@ -160,9 +182,11 @@ if __name__ == '__main__':
     districts = generate_state_district_hierarchy(idg)
 
     # Go
+    print()
+    print('Processing of districts beginning now')
     pool = multiprocessing.Pool(processes=int(args.process_count))
     for tpl in districts:
-        pool.apply_async(district_pool_worker, args=(tpl[0], tpl[1], tpl[2], lock, mdict))
+        pool.apply_async(district_pool_worker, args=(tpl[0], tpl[1], tpl[2], lock, mdict), callback=pool_callback)
     pool.close()
     pool.join()
 
@@ -170,6 +194,8 @@ if __name__ == '__main__':
     tend = datetime.datetime.now()
 
     # Print statistics
+    print()
+    print('Average students per year: %i' % TOTAL_STUDENT_AVERAGE)
     print()
     print('Run began at:  %s' % tstart)
     print('Run ended at:  %s' % tend)

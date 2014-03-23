@@ -13,6 +13,10 @@ import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
+from sbac_data_generation.util.id_gen import IDGen
+
+ID_GEN = IDGen()
+
 
 def setup_module():
     hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
@@ -24,15 +28,15 @@ def setup_module():
 
 def test_assessment_outcome_get_object_set():
     # Create necessary objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
-    ih = hier_gen.generate_institution_hierarchy(state, district, school)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    ih = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2014)
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
-    student = pop_gen.generate_student(school, 3)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, ih)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2014)
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
+    student = pop_gen.generate_student(school, 3, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, ih, ID_GEN)
 
     # Tests
     objs = asmt_out.get_object_set()
@@ -57,10 +61,10 @@ def test_assessment_outcome_get_object_set():
 
 def test_institution_hierarchy_get_object_set():
     # Create necessary objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
-    ih = hier_gen.generate_institution_hierarchy(state, district, school)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    ih = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
 
     # Tests
     objs = ih.get_object_set()
@@ -77,7 +81,7 @@ def test_institution_hierarchy_get_object_set():
 
 def test_registration_system_get_object_set():
     # Create necessary objects
-    reg_sys = hier_gen.generate_registration_system(2015, '2014-02-25')
+    reg_sys = hier_gen.generate_registration_system(2015, '2014-02-25', ID_GEN)
 
     # Tests
     objs = reg_sys.get_object_set()

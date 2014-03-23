@@ -18,6 +18,10 @@ import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
+from sbac_data_generation.util.id_gen import IDGen
+
+ID_GEN = IDGen()
+
 
 def setup_module():
     hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
@@ -28,7 +32,7 @@ def setup_module():
 
 
 def test_generate_assessment():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.asmt_type == 'SUMMATIVE'
     assert asmt.period == 'Spring 2015'
     assert asmt.period_year == 2015
@@ -39,11 +43,12 @@ def test_generate_assessment():
 
 
 def test_generate_assessment_invalid_subject():
-    assert_raises(KeyError, asmt_gen.generate_assessment, 'SUMMATIVE', 'Spring', 2015, 'Subject', claim_definitions={})
+    assert_raises(KeyError, asmt_gen.generate_assessment, 'SUMMATIVE', 'Spring', 2015, 'Subject', ID_GEN,
+                  claim_definitions={})
 
 
 def test_generate_assessment_claims_ela():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
     assert asmt.claim_1_name == 'Reading'
     assert asmt.claim_1_score_min == 1200
     assert asmt.claim_1_score_max == 2400
@@ -63,7 +68,7 @@ def test_generate_assessment_claims_ela():
 
 
 def test_generate_assessment_claims_math():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.claim_1_name == 'Concepts & Procedures'
     assert asmt.claim_1_score_min == 1200
     assert asmt.claim_1_score_max == 2400
@@ -83,7 +88,7 @@ def test_generate_assessment_claims_math():
 
 
 def test_generate_assessment_perf_lvl_names():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.perf_lvl_name_1 == 'Minimal Understanding'
     assert asmt.perf_lvl_name_2 == 'Partial Understanding'
     assert asmt.perf_lvl_name_3 == 'Adequate Understanding'
@@ -92,14 +97,14 @@ def test_generate_assessment_perf_lvl_names():
 
 
 def test_generate_assessment_claim_perf_lvl_names():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.claim_perf_lvl_name_1 == 'Below Standard'
     assert asmt.claim_perf_lvl_name_2 == 'At/Near Standard'
     assert asmt.claim_perf_lvl_name_3 == 'Above Standard'
 
 
 def test_generate_assessment_cut_points():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.overall_cut_point_1 == 1400
     assert asmt.overall_cut_point_2 == 1800
     assert asmt.overall_cut_point_3 == 2100
@@ -107,7 +112,7 @@ def test_generate_assessment_cut_points():
 
 
 def test_generate_assessment_overall_scores():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.overall_score_min == 1200
     assert asmt.overall_score_max == 2400
     assert asmt.overall_cut_point_2 == 1800
@@ -116,40 +121,40 @@ def test_generate_assessment_overall_scores():
 
 
 def test_generate_assessment_summative_effective_date():
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2015, 5, 15)
 
 
 def test_generate_assessment_interim_fall_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math', ID_GEN)
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2014, 9, 15)
 
 
 def test_generate_assessment_interim_winter_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math', ID_GEN)
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2014, 12, 15)
 
 
 def test_generate_assessment_interim_spring_effective_date():
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math')
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math', ID_GEN)
     assert asmt.period_year == 2015
     assert asmt.effective_date == datetime.date(2015, 3, 15)
 
 
 def test_generate_assessment_outcome_default_status():
     # Create objects
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.result_status == 'C'
@@ -157,15 +162,15 @@ def test_generate_assessment_outcome_default_status():
 
 def test_generate_assessment_outcome_scores():
     # Create objects
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Tests
     assert 1200 <= asmt_out.overall_score <= 2400
@@ -184,15 +189,15 @@ def test_generate_assessment_outcome_scores():
 
 def test_generate_assessment_outcome_summative_taken_date():
     # Create objects
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2015, 5, 15)
@@ -200,15 +205,15 @@ def test_generate_assessment_outcome_summative_taken_date():
 
 def test_generate_assessment_outcome_interim_fall_taken_date():
     # Create objects
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Fall', 2015, 'Math', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2014, 9, 15)
@@ -216,15 +221,15 @@ def test_generate_assessment_outcome_interim_fall_taken_date():
 
 def test_generate_assessment_outcome_interim_winter_taken_date():
     # Create objects
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Winter', 2015, 'Math', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2014, 12, 15)
@@ -232,15 +237,15 @@ def test_generate_assessment_outcome_interim_winter_taken_date():
 
 def test_generate_assessment_outcome_interim_spring_taken_date():
     # Create objects
-    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('INTERIM COMPREHENSIVE', 'Spring', 2015, 'Math', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2015, 3, 15)
@@ -248,15 +253,15 @@ def test_generate_assessment_outcome_interim_spring_taken_date():
 
 def test_generate_assessment_outcome_accommodations_ela():
     # Create objects
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Tests
     assert 4 <= asmt_out.acc_asl_video_embed <= 10
@@ -277,15 +282,15 @@ def test_generate_assessment_outcome_accommodations_ela():
 
 def test_generate_assessment_outcome_accommodations_math():
     # Create objects
-    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math')
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'Math', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, 2015)
-    student = pop_gen.generate_student(school, 3, 2015)
-    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy)
+    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
 
     # Tests
     assert 4 <= asmt_out.acc_asl_video_embed <= 10

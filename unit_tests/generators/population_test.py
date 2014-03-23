@@ -12,6 +12,9 @@ import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
 from sbac_data_generation.model.student import SBACStudent
+from sbac_data_generation.util.id_gen import IDGen
+
+ID_GEN = IDGen()
 
 GUID_REGEX = '[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}'
 SR_GUID_REGEX = '[a-f0-9]{30}'
@@ -20,10 +23,10 @@ EXT_GUID_REGEX = GUID_REGEX + 'ext'
 
 def test_generate_student():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
 
     # Tests
     assert_is_instance(student, SBACStudent)
@@ -36,10 +39,10 @@ def test_generate_student():
 
 def test_advance_student_advanced():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    midl_school = hier_gen.generate_school('Middle School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(midl_school, 6, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    midl_school = hier_gen.generate_school('Middle School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(midl_school, 6, ID_GEN, 2015)
     schools_by_grade = {grade: [midl_school] for grade in midl_school.grades}
 
     # Test
@@ -48,22 +51,22 @@ def test_advance_student_advanced():
 
 def test_advance_student_held_back():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    midl_school = hier_gen.generate_school('Middle School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(midl_school, 6, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    midl_school = hier_gen.generate_school('Middle School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(midl_school, 6, ID_GEN, 2015)
     schools_by_grade = {grade: [midl_school] for grade in midl_school.grades}
 
     # Test
-    assert pop_gen.advance_student(student, schools_by_grade, hold_back_rate=1)
+    assert pop_gen.advance_student(student, schools_by_grade, hold_back_rate=1, drop_out_rate=0)
 
 
 def test_advance_student_drop_out():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    high_school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(high_school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    high_school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(high_school, 11, ID_GEN, 2015)
     schools_by_grade = {grade: [high_school] for grade in high_school.grades}
 
     # Test
@@ -72,11 +75,11 @@ def test_advance_student_drop_out():
 
 def test_repopulate_school_grade_empty():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    elem_school = hier_gen.generate_school('Elementary School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     students = []
-    pop_gen.repopulate_school_grade(elem_school, 3, students, 2015)
+    pop_gen.repopulate_school_grade(elem_school, 3, students, ID_GEN, 2015)
 
     # Test
     assert 10 <= len(students) <= 35
@@ -84,13 +87,13 @@ def test_repopulate_school_grade_empty():
 
 def test_repopulate_school_grade_full_no_additional():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    elem_school = hier_gen.generate_school('Elementary School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     students = []
     for _ in range(30):
-        students.append(pop_gen.generate_student(elem_school, 4, 2015))
-    pop_gen.repopulate_school_grade(elem_school, 4, students, 2015, additional_student_choice=[0])
+        students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, 2015))
+    pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, 2015, additional_student_choice=[0])
 
     # Test
     assert len(students) == 30
@@ -98,13 +101,13 @@ def test_repopulate_school_grade_full_no_additional():
 
 def test_repopulate_school_grade_full_additional():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    elem_school = hier_gen.generate_school('Elementary School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     students = []
     for _ in range(30):
-        students.append(pop_gen.generate_student(elem_school, 4, 2015))
-    pop_gen.repopulate_school_grade(elem_school, 4, students, 2015, additional_student_choice=[2])
+        students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, 2015))
+    pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, 2015, additional_student_choice=[2])
 
     # Test
     assert len(students) == 32
@@ -112,10 +115,10 @@ def test_repopulate_school_grade_full_additional():
 
 def test_generate_derived_demographic_no_ethnicities():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = False
@@ -131,10 +134,10 @@ def test_generate_derived_demographic_no_ethnicities():
 
 def test_generate_derived_demographic_amer_ind():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = True
     student.eth_asian = False
     student.eth_black = False
@@ -150,10 +153,10 @@ def test_generate_derived_demographic_amer_ind():
 
 def test_generate_derived_demographic_asian():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = True
     student.eth_black = False
@@ -169,10 +172,10 @@ def test_generate_derived_demographic_asian():
 
 def test_generate_derived_demographic_black():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = True
@@ -188,10 +191,10 @@ def test_generate_derived_demographic_black():
 
 def test_generate_derived_demographic_hispanic():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = False
@@ -207,10 +210,10 @@ def test_generate_derived_demographic_hispanic():
 
 def test_generate_derived_demographic_multi():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = True
@@ -226,10 +229,10 @@ def test_generate_derived_demographic_multi():
 
 def test_generate_derived_demographic_multi_hispanic():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = False
@@ -245,10 +248,10 @@ def test_generate_derived_demographic_multi_hispanic():
 
 def test_generate_derived_demographic_none():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = False
@@ -264,10 +267,10 @@ def test_generate_derived_demographic_none():
 
 def test_generate_derived_demographic_pacific():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = False
@@ -283,10 +286,10 @@ def test_generate_derived_demographic_pacific():
 
 def test_generate_derived_demographic_white():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.eth_amer_ind = False
     student.eth_asian = False
     student.eth_black = False
@@ -302,10 +305,10 @@ def test_generate_derived_demographic_white():
 
 def test_set_lang_items_not_lep():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.prg_lep = False
     student.lang_code = None
     student.lang_prof_level = None
@@ -324,10 +327,10 @@ def test_set_lang_items_not_lep():
 
 def test_set_lang_items_lep():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.prg_lep = True
     student.lang_code = None
     student.lang_prof_level = None
@@ -344,10 +347,10 @@ def test_set_lang_items_lep():
 
 def test_set_lang_items_lep_no_entry_date():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.prg_lep = True
     student.lang_code = None
     student.lang_prof_level = None
@@ -362,10 +365,10 @@ def test_set_lang_items_lep_no_entry_date():
 
 def test_set_lang_items_lep_entry_date_not_exited():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.prg_lep = True
     student.lang_code = None
     student.lang_prof_level = None
@@ -382,10 +385,10 @@ def test_set_lang_items_lep_entry_date_not_exited():
 
 def test_set_lang_items_lep_entry_date_exited():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
-    student = pop_gen.generate_student(school, 11, 2015)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
+    student = pop_gen.generate_student(school, 11, ID_GEN, 2015)
     student.prg_lep = True
     student.lang_code = None
     student.lang_prof_level = None

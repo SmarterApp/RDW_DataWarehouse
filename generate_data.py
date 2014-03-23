@@ -422,6 +422,13 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             csv_writer.write_records_to_file(fao_out_name, fao_out_cols, assessment_results,
                                              tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
 
+    # Some explicit garbage collection
+    del hierarchies
+    del inst_hiers
+    del schools
+    del schools_by_grade
+    del students
+
 
 def generate_state_data(state: SBACState, id_gen):
     """

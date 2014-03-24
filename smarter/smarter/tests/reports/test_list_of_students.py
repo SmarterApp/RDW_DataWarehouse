@@ -91,7 +91,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
         self.assertTrue('asmt_administration' in results, "asmt_administration is missing")
-        self.assertEquals(len(results['asmt_administration']), 3, "should have 3 different test")
+        self.assertEquals(len(results['asmt_administration']), 2, "should have 2 different test")
 
     def test_ELA_only(self):
         testParam = {}
@@ -139,7 +139,8 @@ class TestLOS(Unittest_with_edcore_sqlite):
         testParam['asmtGrade'] = 3
         testParam['stateCode'] = 'NC'
         testParam['asmtSubject'] = ['Dummy']
-        self.assertRaises(NotFoundException, get_list_of_students_report, testParam)
+        results = get_list_of_students_report(testParam)
+        self.assertEqual(len(results['assessments']), 0, "should return no results")
 
     def test_LOS_with_filters(self):
         testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242'}

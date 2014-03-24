@@ -1,3 +1,8 @@
+'''
+Created on Mar 21, 2014ß
+
+@author: ejen
+'''
 import unittest
 from unittest.mock import patch, MagicMock
 from unittest import skip

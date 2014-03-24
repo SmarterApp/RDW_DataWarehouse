@@ -3,25 +3,14 @@ Created on May 22, 2013
 
 @author: ejen
 '''
-
-from collections import OrderedDict
-
-from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import text
-from sqlalchemy import MetaData
-from sqlalchemy.orm import sessionmaker
-
-
-def print_get_affected_rows(result, action, module, function):
-    '''
-    get affected rows of a query execution and return the info
-    '''
-    return {'amount': result.rowcount, 'action': action, 'unit': 'rows', 'module': module, 'function': function}
+from sqlalchemy.engine import create_engine
+from sqlalchemy.schema import MetaData
 
 
 def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     '''
-    Connect to database via sqlalchemy
+    DO NOT USE THIS.  Benchmarking needs to be refactored not to connection to database like this
     '''
     # TODO:define conf_args content
     db_string = '{db_driver}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'.format(db_driver=db_driver,
@@ -34,6 +23,13 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     engine = create_engine(db_string)
     db_connection = engine.connect()
     return db_connection, engine
+
+
+def print_get_affected_rows(result, action, module, function):
+    '''
+    get affected rows of a query execution and return the info
+    '''
+    return {'amount': result.rowcount, 'action': action, 'unit': 'rows', 'module': module, 'function': function}
 
 
 def execute_udl_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
@@ -69,50 +65,6 @@ def execute_udl_query_with_result(conn, query, except_msg, caller_module=None, c
     :return: result
     """
     trans = conn.get_transaction()
-    # execute queries
-    try:
-        result = conn.execute(query)
-        trans.commit()
-        return result
-    except Exception as e:
-        print(except_msg, e)
-        trans.rollback()
-        raise
-
-
-def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
-    """
-    This should be used when celery is NOT running
-    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
-    :param query: Query to execute
-    :param except_msg: Exception string
-    :return: row_affected_list
-    """
-    trans = conn.begin()
-    # execute queries
-    try:
-        row_affected_list = []
-        for query in list_of_queries:
-            result = conn.execute(query)
-            count = result.rowcount
-            row_affected_list.append(count)
-        trans.commit()
-        return row_affected_list
-    except Exception as e:
-        print(except_msg, e)
-        trans.rollback()
-        raise
-
-
-def execute_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
-    """
-    This should be used when celery is NOT running
-    :param conn: instance of DBConnection or one of its sub-classes (see udl2/udl2_connector.py)
-    :param query: Query to execute
-    :param except_msg: Exception string
-    :return: result
-    """
-    trans = conn.begin()
     # execute queries
     try:
         result = conn.execute(query)
@@ -183,17 +135,3 @@ def get_sqlalch_table_object(db_engine, schema_name, table_name):
     metadata = get_schema_metadata(db_engine, schema_name)
     table = metadata.tables[schema_name + '.' + table_name]
     return table
-
-
-def create_sqlalch_session(db_engine):
-    '''
-    Create and return a sqlalchemy session for the given engine
-    @param db_engine: a SQLAlchemy engine object returned connect_db method
-    @type db_engine: qlalchemy.engine.base.Engine
-    @return: A sqlqlchemy session
-    @rtype: sqlalchemy.orm.session.Session
-    '''
-
-    Session = sessionmaker(bind=db_engine)
-    session = Session()
-    return session

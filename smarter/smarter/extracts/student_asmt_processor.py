@@ -205,13 +205,13 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     '''
     task = {}
     task[TaskConstants.TASK_TASK_ID] = create_new_entry(user, request_id, params)
+    task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
     if asmt_metadata:
         task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
         task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.ASMT_JSON
     else:
         task[TaskConstants.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
         task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.ASMT_CSV
-    task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
     return task
 
 

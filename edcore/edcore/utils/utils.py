@@ -6,6 +6,7 @@ Created on Sep 1, 2013
 from copy import deepcopy
 from psycopg2.extensions import adapt as sqlescape
 from apscheduler.scheduler import Scheduler
+from sqlalchemy.sql.compiler import BIND_TEMPLATES
 
 
 def merge_dict(d1, d2):
@@ -48,8 +49,11 @@ def compile_query_to_sql_text(query):
     '''
     unbound_sql_code = str(query)
     params = query.compile().params
+    template = ':{name}'
+    if query.compile().bindtemplate is BIND_TEMPLATES['pyformat']:
+        template = '%({name})s'
     for k, v in params.items():
-        unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
+        unbound_sql_code = unbound_sql_code.replace(template.format(name=k), str(sqlescape(v)))
     return unbound_sql_code
 
 

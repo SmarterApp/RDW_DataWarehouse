@@ -45,22 +45,22 @@ class Conductor:
 
     def send_disconnect_PGPool(self, player_group=None):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)
-        player_task.apply_async((Constants.COMMAND_DISCONNECT_PGPOOL, group_ids))  # @UndefinedVariable
+        player_task.apply_async((Constants.COMMAND_DISCONNECT_PGPOOL, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_DISCONNECT_PGPOOL, player_group, group_ids)
 
     def send_connect_PGPool(self, player_group=None):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)
-        player_task.apply_async((Constants.COMMAND_CONNECT_PGPOOL, group_ids))  # @UndefinedVariable
+        player_task.apply_async((Constants.COMMAND_CONNECT_PGPOOL, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_CONNECT_PGPOOL, player_group, group_ids)
 
     def send_stop_replication(self, player_group=None):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)
-        player_task.apply_async((Constants.COMMAND_STOP_REPLICATION, group_ids))  # @UndefinedVariable
+        player_task.apply_async((Constants.COMMAND_STOP_REPLICATION, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_STOP_REPLICATION, player_group, group_ids)
 
     def send_start_replication(self, player_group=None):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)
-        player_task.apply_async((Constants.COMMAND_START_REPLICATION, group_ids))  # @UndefinedVariable
+        player_task.apply_async((Constants.COMMAND_START_REPLICATION, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_START_REPLICATION, player_group, group_ids)
 
     def migrate(self):

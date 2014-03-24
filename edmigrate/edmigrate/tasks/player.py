@@ -45,6 +45,9 @@ class Player(metaclass=Singleton):
     def __enter__(self):
         return self
 
+    def __exit__(self, _type, value, tb):
+        pass
+
     def run_command(self, command, nodes):
         if command in self.COMMAND_HANDLERS:
             if nodes is None:

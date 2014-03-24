@@ -25,12 +25,10 @@ define [
     init: (row, assessment, dataSet) ->
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
-      effectiveDate = edwarePreferences.getAsmtPreference()?.effectiveDate
       # This is for links in drill down
       row['params'] = {
         "studentGuid": row['student_guid'],
         "stateCode": row['state_code'],
-        "effectiveDate": effectiveDate
       }
       for key, value of assessment
         cutpoint = dataSet.cutPointsData[key]
@@ -62,7 +60,7 @@ define [
       @subjectsData = data.subjects
       @cutPointsData = @createCutPoints()
       @columnData = @createColumns()
-      # @formatAssessmentsData()
+      @formatAssessmentsData()
 
     createCutPoints: () ->
       cutPointsData = @data.metadata.cutpoints
@@ -206,11 +204,12 @@ define [
       @config.reportName = Constants.REPORT_NAME.LOS
       asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
-      @actionBar = edwareReportActionBar.create '#actionBar', @config, () ->
+      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
+        # save assessment type
+        edwarePreferences.saveAsmtPreference asmt
         self.updateView()
 
     createGrid: () ->
-      @studentsDataSet.formatAssessmentsData()
       @updateView()
       #TODO Set asmt Subject
       subjects = []

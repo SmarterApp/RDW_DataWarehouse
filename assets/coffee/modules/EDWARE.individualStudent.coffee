@@ -97,6 +97,11 @@ define [
           # length info is used for bootstrap to determine how many columns for a claim
           claim.length = 12 / assessment.claims.length
 
+        key = assessment.effective_date + assessment.asmt_type
+        @data[key] ?= []
+        @data[key].push assessment
+
+
   class EdwareISR
 
     constructor: () ->
@@ -134,16 +139,6 @@ define [
         asmt = edwarePreferences.getAsmtPreference()
         asmt?.asmtGuid
 
-    getCurrentAsmtType: () ->
-      if @params['asmtType']
-        currentAsmtType = @params['asmtType']
-      currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
-
-    getCurrentAsmtEffectiveDate: () ->
-      if @params['effectiveDate']
-        currentAsmtED = @params['effectiveDate'].replace(/\./g, '')
-      currentAsmtED || '20170515'
-
     fetchData: () ->
       # Get individual student report data from the server
       self = this
@@ -180,13 +175,21 @@ define [
       @configData.reportName = Constants.REPORT_NAME.ISR
       @configData.asmtTypes = @getAsmtTypes()
       self = this
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, () ->
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->
+        # save assessment type
+        edwarePreferences.saveAsmtForISR(asmt)
         self.render()
         self.renderReportInfo()
 
+    getCacheKey: ()->
+      if @isPdf
+        return @params['effectiveDate'] + @params['asmtType']
+      else
+        return edwarePreferences.getAsmtForISR().join('')
+
     render: () ->
-      effectiveDate = @getCurrentAsmtEffectiveDate()
-      this.data.current = $.grep(this.data.all_results, (asmt, i) -> return asmt.effective_date == effectiveDate)
+      key = @getCacheKey()
+      @data.current = @data[key]
       # use mustache template to display the json data
       output = Mustache.to_html indivStudentReportTemplate, @data
       $("#individualStudentContent").html output
@@ -195,7 +198,7 @@ define [
 
       # Generate Confidence Level bar for each assessment
       i = 0
-      for item, i in this.data.current
+      for item, i in @data.current
         barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
         edwareConfidenceLevelBar.create item, 640, barContainer
 

@@ -150,10 +150,13 @@ common:
             exchange: direct
             key: extract_sync
     migrate:
-      broadcast.queue: 'edmigrate_slaves'
+      broadcast.queue: 'edmigrate_players'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
-      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
+      master.hostname: 'dwpgdw0.qa.dum.edwdc.net'
+      iptables.mock: False
       iptables.chain: 'PGSQL'
+      iptables.command: '/sbin/iptables'
+      iptables.sudo: '/usr/bin/sudo'
       master_scheduler.hour: 1
       master_scheduler.min: 0
       retries_allowed: 5
@@ -161,19 +164,19 @@ common:
       lag_tolerence_in_bytes: 10
       timeout: 30
     migrate.celery:
-      CELERY_IMPORTS: ('edmigrate.tasks.slave')
+      CELERY_IMPORTS: ('edmigrate.tasks.player')
       CELERY_RESULT_BACKEND: amqp
       CELERY_DEFAULT_QUEUE: celery
       CELERY_DEFAULT_ROUTING_KEY: default
       CELERY_DEFAULT_EXCHANGE_TYPE: direct
       CELERY_QUEUES:
-        -   name: edmigrate_slaves
+        -   name: edmigrate_players
             exchange: fanout
-            key: edmigrate_slaves
+            key: edmigrate_players
             durable: False
       CELERY_ROUTES:
-        - edmigrate.tasks.slave:
-            queue: edmigrate_slaves
+        - edmigrate.tasks.player:
+            queue: edmigrate_players
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -538,6 +541,7 @@ development:
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'
+      iptables.mock: True
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
       CELERYBEAT_SCHEDULE:

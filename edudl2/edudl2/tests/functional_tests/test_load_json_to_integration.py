@@ -5,7 +5,7 @@ from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2 import message_keys as mk
 from uuid import uuid4
 from sqlalchemy.sql import select
-from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.celery import udl2_conf
 import os
 import unittest
@@ -33,7 +33,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
         }
         return conf
 

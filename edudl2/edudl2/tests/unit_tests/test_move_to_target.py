@@ -278,7 +278,7 @@ def generate_conf(guid_batch, udl2_conf):
               mk.GUID_BATCH: guid_batch,
 
               # source schema
-              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
               # source database setting
               mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
               mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],

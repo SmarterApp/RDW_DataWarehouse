@@ -10,8 +10,14 @@ class ExtractType():
     studentRegistrationStatistics = 'studentRegistrationStatistics'
 
 
+class ReportType():
+    STATISTICS = 'statistics'
+    COMPLETION = 'completion'
+
+
 class Constants():
     EXTRACTTYPE = 'extractType'
+    REPORT_TYPE = 'report_type'
     STATUS = 'status'
     MESSAGE = 'message'
     REQUESTID = 'requestId'

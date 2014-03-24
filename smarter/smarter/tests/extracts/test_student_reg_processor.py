@@ -2,14 +2,14 @@ from pyramid.security import Allow
 import edauth
 from edauth.security.user import User
 from edcore.security.tenant import set_tenant_map
-from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
+from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
 
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import \
-    Unittest_with_edcore_sqlite
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
 from pyramid.registry import Registry
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import tempfile
@@ -19,7 +19,7 @@ from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
 
 
-class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
+class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def setUp(self):
         self.reg = Registry()
@@ -59,15 +59,26 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         Unittest_with_edcore_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 
-    def test_create_task_info(self):
+    def test__create_task_info(self):
         params = {'stateCode': 'NC',
                   'academicYear': [2015]}
         user = User()
         results = _create_task_info("request_id", user, 'tenant', params)
         self.assertEqual(len(results), 4)
 
+    def test__get_extract_file_path(self):
+        extract_params = {TaskConstants.STATE_CODE: "NC",
+                          TaskConstants.ACADEMIC_YEAR: 2015,
+                          TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
+
+        result = _get_extract_file_path("requestId", "tenant", extract_params)
+        self.assertIn('.csv', result)
+        self.assertIn('requestId', result)
+        self.assertIn('tenant', result)
+        self.assertIn('NC', result)
+
     def test_process_async_extraction_request(self):
-        params = {'stateCode': 'NC',
+        params = {'stateCode': ['NC'],
                   'academicYear': [2015]}
         response = process_async_extraction_request(params)
         self.assertIn('.zip.gpg', response['fileName'])

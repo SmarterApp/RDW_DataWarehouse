@@ -19,6 +19,8 @@ from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError, ExtractionError
 from edextract.utils.data_archiver import encrypted_archive_files, archive_files, GPGPublicKeyException
 from edextract.data_extract_generation.assessment_extract_generator import generate_csv, generate_json
+from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
+from edextract.tasks.constants import ExtractionDataType
 
 
 log = logging.getLogger('edextract')
@@ -32,15 +34,15 @@ def start_extract(tenant, request_id, public_key_id, encrypted_archive_file_name
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    workflow = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
-                     route_tasks(tenant, request_id, tasks, queue_name=queue),
+    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(encrypted_archive_file_name)]], queues=queue, immutable=True),
+                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
                      archive_with_encryption.subtask(args=[request_id, public_key_id, encrypted_archive_file_name, directory_to_archive], queues=queue, immutable=True),
                      remote_copy.subtask(args=[request_id, encrypted_archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
     workflow.apply_async()
 
 
 @celery.task(name='task.extract.prepare_path')
-def prepare_path(tenant, request_id, paths):
+def prepare_path(request_id, paths):
     '''
     Given a list of paths of directories, creates it if it doesn't exist
     '''
@@ -58,20 +60,23 @@ def prepare_path(tenant, request_id, paths):
         raise ExtractionError()
 
 
-def route_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
-    '''
-    Given a list of tasks, route them to either generate_csv or generate_json depending on the task type
-    '''
+def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
+    """
+    Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
+
+    @param tenant: tenant of the user
+    @param request_id: Report request ID
+    @param tasks: List of extract tasks to execute
+    @param queue_name(optional): Queue to which to send celery task requests
+
+    @return: Group of celery tasks to execute
+    """
+
     generate_tasks = []
+
     for task in tasks:
-        task_id = task[TaskConstants.TASK_TASK_ID]
-        output_file = task[TaskConstants.TASK_FILE_NAME]
-        extract_args = {TaskConstants.TASK_QUERY: task[TaskConstants.TASK_QUERY]}
-        if task.get(TaskConstants.TASK_IS_JSON_REQUEST, False):
-            extract_func = generate_json
-        else:
-            extract_func = generate_csv
-        generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task_id, output_file, extract_func, extract_args], queue=queue_name, immutable=True))  # @UndefinedVariable
+        generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
+
     return group(generate_tasks)
 
 
@@ -159,21 +164,21 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeou
 
 
 @celery.task(name="tasks.extract.generate_extract_file", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
-def generate_extract_file(tenant, request_id, task_id, output_file, extract_func, extract_args):
+def generate_extract_file(tenant, request_id, task):
     """
     Generates an extract file given task arguments.
 
     @param tenant: Tenant name
     @param request_id: Extract request ID
-    @param task_id: ID of calling task
-    @param output_file: File to which to write extract data
-    @param extract_func: Callback function to do the actual extraction
-    @param extract_args: Arguments to callback function
+    @param task: Calling task
+    @param extract_type: Specific type of data extract for calling task
     """
 
+    task_id = task[TaskConstants.TASK_TASK_ID]
+    extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
     log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_extract_file.name,
-                                                                                          task_id=task_id, extract_type=extract_func.__name__))
-
+                                                                                          task_id=task_id, extract_type=extract_type))
+    output_file = task[TaskConstants.TASK_FILE_NAME]
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_extract_file.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -189,6 +194,7 @@ def generate_extract_file(tenant, request_id, task_id, output_file, extract_func
                 raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
 
             # Extract data to file.
+            extract_func, extract_args = get_extract_func_and_args(task, extract_type)
             extract_func(tenant, output_file, task_info, extract_args)
 
     except FileNotFoundError as e:
@@ -218,6 +224,18 @@ def generate_extract_file(tenant, request_id, task_id, output_file, extract_func
             try:
                 raise ExtractionError()
             except ExtractionError as exc:
-                raise generate_extract_file.retry(args=[tenant, request_id, task_id, output_file, extract_func, extract_args], exc=exc)
+                raise generate_extract_file.retry(args=[tenant, request_id, task, extract_type], exc=exc)
         else:
             raise ExtractionError()
+
+
+def get_extract_func_and_args(task, extract_type):
+    extract_funcs_and_args = {
+        ExtractionDataType.ASMT_CSV: (generate_csv, {TaskConstants.TASK_QUERY: task.get(TaskConstants.TASK_QUERY, None)}),
+        ExtractionDataType.ASMT_JSON: (generate_json, {TaskConstants.TASK_QUERY: task.get(TaskConstants.TASK_QUERY, None)}),
+        ExtractionDataType.SR_STATISTICS: (generate_statistics_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)}),
+        ExtractionDataType.SR_COMPLETION: (generate_completion_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)})
+    }
+
+    extract_func, args = extract_funcs_and_args[extract_type]
+    return extract_func, args

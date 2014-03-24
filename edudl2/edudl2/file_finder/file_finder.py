@@ -21,9 +21,7 @@ def find_files_in_directories(directories, file_count=0, match_extension=None):
         # sort files by time created and filter possible directories
         files += [x for x in glob.glob(os.path.join(tenant_dir, extension)) if not os.path.isdir(x)]
 
-    print('files in dir', files)
     files_in_dir = sorted(files, key=lambda x: os.stat(x).st_mtime)
-    print('files in dir', files_in_dir)
 
     return files_in_dir[:file_count] if file_count else files_in_dir
 

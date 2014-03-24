@@ -1,7 +1,6 @@
-from edcore.database.stats_connector import StatsDBConnection
 __author__ = 'sravi'
-from edworker.celery import setup_celery as setup, configure_celeryd,\
-    get_config_file
+from edcore.database.stats_connector import StatsDBConnection
+from edworker.celery import setup_celery as setup, configure_celeryd, get_config_file
 from edmigrate.settings.config import setup_settings
 import logging
 from edcore.database import initialize_db

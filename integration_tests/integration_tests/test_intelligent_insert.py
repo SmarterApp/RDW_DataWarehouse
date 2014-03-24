@@ -15,7 +15,7 @@ from edudl2.udl2.celery import udl2_conf
 from time import sleep
 import subprocess
 from uuid import uuid4
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
 from integration_tests.migrate_helper import start_migrate,\
     get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection

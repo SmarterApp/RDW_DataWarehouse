@@ -4,8 +4,8 @@ from edudl2.udl2_util.database_util import execute_queries
 from edudl2.move_to_target import move_to_target, move_to_target_setup
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from sqlalchemy.sql.expression import text, bindparam
-from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
-from unittest import skip
+from edudl2.database.udl2_connector import get_udl_connection,\
+    get_target_connection
 
 
 class IntToStarFTest(UDLTestHelper):
@@ -44,8 +44,7 @@ class IntToStarFTest(UDLTestHelper):
 
     def load_int_sbac_asmt(self):
         table = 'INT_SBAC_ASMT'
-        insert_array = []
-        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT.csv')) as f:
+        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
             header.insert(0, 'record_sid')
@@ -53,31 +52,26 @@ class IntToStarFTest(UDLTestHelper):
                 # set record_sid = 7 in this func test
                 row.insert(0, str(7))
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),
                                     bindparams=params)
-                insert_array.append(insert_query)
-            except_msg = "Unable to insert into %s" % table
-            execute_queries(self.udl2_conn, insert_array, except_msg)
+                conn.execute(insert_query)
 
     def load_int_sbac_asmt_outcome(self):
         table = 'INT_SBAC_ASMT_OUTCOME'
-        insert_array = []
-        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')) as f:
+        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
             for row in cf:
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),
                                     bindparams=params)
-                insert_array.append(insert_query)
-            except_msg = "Unable to insert into %s" % table
-            execute_queries(self.udl2_conn, insert_array, except_msg)
+                conn.execute(insert_query)
 
     def test_1_load_int_to_star(self):
         self.load_int_sbac_asmt()
@@ -112,12 +106,13 @@ class IntToStarFTest(UDLTestHelper):
         move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
 
         # check star schema table counts
-        tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
-        for entry in tables_to_check.keys():
-            query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                               table=entry))
-            result = self.target_conn.execute(query)
-            self.assertEqual(int(result.fetchall()[0][0]), tables_to_check[entry])
+        with get_target_connection() as conn:
+            tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
+            for entry in tables_to_check.keys():
+                query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
+                                                   table=entry))
+                result = conn.execute(query)
+                self.assertEqual(int(result.fetchall()[0][0]), tables_to_check[entry])
 
         # check asmt score avgs
         int_asmt_avgs = self.get_integration_asmt_score_avgs()

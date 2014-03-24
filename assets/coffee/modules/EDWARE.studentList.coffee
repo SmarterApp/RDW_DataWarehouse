@@ -62,7 +62,7 @@ define [
       @subjectsData = data.subjects
       @cutPointsData = @createCutPoints()
       @columnData = @createColumns()
-      @formatAssessmentsData()
+      # @formatAssessmentsData()
 
     createCutPoints: () ->
       cutPointsData = @data.metadata.cutpoints
@@ -196,6 +196,7 @@ define [
           callback: @onAcademicYearSelected.bind(this)
 
     onAcademicYearSelected: (year) ->
+      edwarePreferences.clearAsmtPreference()
       @params['asmtYear'] = year
       @reload @params
 
@@ -209,6 +210,7 @@ define [
         self.updateView()
 
     createGrid: () ->
+      @studentsDataSet.formatAssessmentsData()
       @updateView()
       #TODO Set asmt Subject
       subjects = []

@@ -41,8 +41,8 @@ define [
       self = this
       $('li', @container).click ->
         display = $(this).data('display')
-        self.setSelectedValue display
         value = $(this).data('value')
+        self.setSelectedValue display, value
         edwarePreferences.saveAsmtYearPreference(value)
         self.callback(value)
       $('.reminderMessage a').click ->

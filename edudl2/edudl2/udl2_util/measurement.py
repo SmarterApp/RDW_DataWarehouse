@@ -132,4 +132,4 @@ class BatchTableBenchmark(object):
 
         with get_udl_connection() as connector:
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-            connector.execute(batch_table.insert(), False, self.get_result_dict())
+            connector.execute(batch_table.insert(), self.get_result_dict())

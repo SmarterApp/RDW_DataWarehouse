@@ -1,10 +1,9 @@
 import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from edudl2.udl2_util.database_util import connect_db, execute_query_with_result, execute_queries
 from uuid import uuid4
 import os
 from edudl2.preetl.pre_etl import pre_etl_job
-from edudl2.database.udl2_connector import initialize_db_udl
+from edudl2.database.udl2_connector import initialize_db_udl, get_udl_connection
 from edudl2.udl2_util.config_reader import read_ini_file
 import tempfile
 import shutil
@@ -39,28 +38,20 @@ class PreEtlTest(unittest.TestCase):
         self.assertEqual(batch_guid_forced, batch_guid)
 
         # check one row is inserted in batch table
-        query = 'SELECT COUNT(*) from "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                             schema=self.udl2_conf['udl2_db']['db_schema'],
-                                                                                                             batch_table=self.udl2_conf['udl2_db']['batch_table'])
-        (conn, _engine) = connect_db(self.udl2_conf['udl2_db']['db_driver'],
-                                     self.udl2_conf['udl2_db']['db_user'],
-                                     self.udl2_conf['udl2_db']['db_pass'],
-                                     self.udl2_conf['udl2_db']['db_host'],
-                                     self.udl2_conf['udl2_db']['db_port'],
-                                     self.udl2_conf['udl2_db']['db_database'])
-        result = execute_query_with_result(conn, query, 'Exception in test_pre_etl_job 1', caller_module='PreEtlTest', caller_func='test_pre_etl_job')
-        num_of_row = 0
-        for row in result:
-            num_of_row = row[0]
-            break
-        self.assertEqual(str(num_of_row), '1')
+        with get_udl_connection() as conn:
+            query = 'SELECT COUNT(*) from "{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
+                                                                                                      batch_table=self.udl2_conf['udl2_db']['batch_table'])
+            result = conn.execute(query)
+            num_of_row = 0
+            for row in result:
+                num_of_row = row[0]
+                break
+            self.assertEqual(str(num_of_row), '1')
 
-        # delete this row
-        delete_query = 'DELETE FROM "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                           schema=self.udl2_conf['udl2_db']['db_schema'],
-                                                                                                           batch_table=self.udl2_conf['udl2_db']['batch_table'])
-        execute_queries(conn, [delete_query], 'Exception in test_pre_etl_job 2', caller_module='PreEtlTest', caller_func='test_pre_etl_job')
-        conn.close()
+            # delete this row
+            delete_query = 'DELETE FROM "{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
+                                                                                                    batch_table=self.udl2_conf['udl2_db']['batch_table'])
+            conn.execute(delete_query)
 
     def test_pre_etl_job_forced_guid(self):
         # read log file, should be empty
@@ -69,28 +60,21 @@ class PreEtlTest(unittest.TestCase):
         self._check_log_file(is_empty=True)
 
         # check one row is inserted in batch table
-        query = 'SELECT COUNT(*) from "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                             schema=self.udl2_conf['udl2_db']['db_schema'],
-                                                                                                             batch_table=self.udl2_conf['udl2_db']['batch_table'])
-        (conn, _engine) = connect_db(self.udl2_conf['udl2_db']['db_driver'],
-                                     self.udl2_conf['udl2_db']['db_user'],
-                                     self.udl2_conf['udl2_db']['db_pass'],
-                                     self.udl2_conf['udl2_db']['db_host'],
-                                     self.udl2_conf['udl2_db']['db_port'],
-                                     self.udl2_conf['udl2_db']['db_database'])
-        result = execute_query_with_result(conn, query, 'Exception in test_pre_etl_job 1', caller_module='PreEtlTest', caller_func='test_pre_etl_job')
-        num_of_row = 0
-        for row in result:
-            num_of_row = row[0]
-            break
-        self.assertEqual(str(num_of_row), '1')
+        with get_udl_connection() as conn:
+            query = 'SELECT COUNT(*) from "{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
+                                                                                                      batch_table=self.udl2_conf['udl2_db']['batch_table'])
+            result = conn.execute(query)
+            num_of_row = 0
+            for row in result:
+                num_of_row = row[0]
+                break
+            self.assertEqual(str(num_of_row), '1')
 
-        # delete this row
-        delete_query = 'DELETE FROM "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
-                                                                                                           schema=self.udl2_conf['udl2_db']['db_schema'],
-                                                                                                           batch_table=self.udl2_conf['udl2_db']['batch_table'])
-        execute_queries(conn, [delete_query], 'Exception in test_pre_etl_job 2', caller_module='PreEtlTest', caller_func='test_pre_etl_job')
-        conn.close()
+            # delete this row
+            delete_query = 'DELETE FROM "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,
+                                                                                                               schema=self.udl2_conf['udl2_db']['db_schema'],
+                                                                                                               batch_table=self.udl2_conf['udl2_db']['batch_table'])
+            conn.execute(delete_query)
 
     def _check_log_file(self, is_empty):
         with open(self.test_error_log_file) as f:

@@ -2,7 +2,6 @@ import os
 import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.udl2_util.database_util import execute_queries
 from edudl2.database.udl2_connector import initialize_db_target,\
     initialize_db_udl, initialize_db_prod, get_target_connection,\
     get_udl_connection

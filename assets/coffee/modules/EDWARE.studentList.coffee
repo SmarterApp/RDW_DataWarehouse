@@ -14,7 +14,7 @@ define [
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
 
-  LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
+  LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
   EdwareGridStickyCompare = edwareStickyCompare.EdwareGridStickyCompare
 
@@ -25,8 +25,13 @@ define [
     init: (row, assessment, dataSet) ->
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
+      effectiveDate = edwarePreferences.getAsmtPreference()?.effectiveDate
       # This is for links in drill down
-      row['params'] = {"studentGuid": row['student_guid'], "stateCode": row['state_code']}
+      row['params'] = {
+        "studentGuid": row['student_guid'],
+        "stateCode": row['state_code'],
+        "effectiveDate": effectiveDate
+      }
       for key, value of assessment
         cutpoint = dataSet.cutPointsData[key]
         $.extend value, cutpoint
@@ -282,7 +287,7 @@ define [
         selector.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         selector.effective_date = asmt.effective_date
         selector.asmt_grade = this.grade.name
-        selector.display = "{{effectiveDate}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
+        selector.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
         selector.hasAsmtSubject = true
 
         # add subjects combination, i.e. Math & ELA

@@ -33,10 +33,10 @@ class ConductorController(threading.Thread):
     def process(self, player_find_wait=5):
         with Conductor() as conductor:
             conductor.send_reset_players()
-            conductor.set_accept_player(True)
+            conductor.accept_players()
             conductor.find_players()
             time.sleep(player_find_wait)
-            conductor.set_accept_player(False)
+            conductor.reject_players()
             players_ids = conductor.get_player_ids()
             if players_ids:
                 number_of_players = len(players_ids)

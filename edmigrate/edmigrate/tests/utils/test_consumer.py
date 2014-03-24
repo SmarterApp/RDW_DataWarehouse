@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
         self.__thread.stop()
         self.lock.release()
 
-    def test_ACK_COMMAND_FIND_SLAVE(self):
+    def test_ACK_COMMAND_FIND_PLAYER(self):
         reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
@@ -93,5 +93,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.test_ACK_COMMAND_FIND_SLAVE']
+    # import sys;sys.argv = ['', 'Test.test_ACK_COMMAND_FIND_PLAYER']
     unittest.main()

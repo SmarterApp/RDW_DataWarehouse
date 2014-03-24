@@ -137,7 +137,7 @@ class DBConnection(ConnectionBase):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
         dbUtil.set_metadata(metadata)
 
-    def execute(self, statement, stream_results=False, *multiparams, **params):
+    def execute(self, statement, *multiparams, stream_results=False, **params):
         return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)
 
     def get_transaction(self):

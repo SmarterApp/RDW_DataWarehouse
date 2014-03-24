@@ -13,7 +13,6 @@ from sqlalchemy.schema import CreateSequence, DropSequence, DropTable, DropSchem
 import argparse
 from config import ref_table_data, sr_ref_table_data
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.database.metadata.udl2_metadata import generate_udl2_sequences
 from edudl2.database.udl2_connector import get_target_connection, initialize_db_udl,\
@@ -94,10 +93,8 @@ def create_foreign_data_wrapper_extension(schema_name):
     @param udl2_conf: The configuration dictionary for
     '''
     print('create foreign data wrapper extension')
-    sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (schema_name)
     with get_udl_connection() as conn:
-        except_msg = "fail to create foreign data wrapper extension"
-        execute_udl_queries(conn, [sql], except_msg)
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS file_fdw"))
 
 
 def drop_foreign_data_wrapper_extension():
@@ -105,23 +102,18 @@ def drop_foreign_data_wrapper_extension():
     drop foreign data wrapper extension according to configuration file
     '''
     print('drop foreign data wrapper extension')
-    sql = "DROP EXTENSION IF EXISTS file_fdw CASCADE"
     with get_udl_connection() as conn:
-        except_msg = "fail to drop foreign data wrapper extension"
-        execute_udl_queries(conn, [sql], except_msg)
+        conn.execute(text("DROP EXTENSION IF EXISTS file_fdw CASCADE"))
 
 
-def create_dblink_extension(cls, schema_name):
+def create_dblink_extension(cls):
     '''
     create dblink extension according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
     print('create dblink extension')
-    sql = "CREATE EXTENSION IF NOT EXISTS dblink"
-    print(sql)
     with cls() as conn:
-        except_msg = "fail to create dblink extension"
-        execute_udl_queries(conn, [sql], except_msg)
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink"))
 
 
 def drop_dblink_extension(cls):
@@ -129,10 +121,8 @@ def drop_dblink_extension(cls):
     drop dblink extension according to configuration file
     '''
     print('drop dblink extension')
-    sql = "DROP EXTENSION IF EXISTS dblink CASCADE"
     with cls() as conn:
-        except_msg = "fail to drop dblink extension"
-        execute_udl_queries(conn, [sql], except_msg)
+        conn.execute(text("DROP EXTENSION IF EXISTS dblink CASCADE"))
 
 
 def create_foreign_data_wrapper_server(fdw_server):
@@ -141,10 +131,8 @@ def create_foreign_data_wrapper_server(fdw_server):
     @param udl2_conf: The configuration dictionary for
     '''
     print('create foreign data wrapper server')
-    sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (fdw_server)
     with get_udl_connection() as conn:
-        except_msg = "fail to create foreign data wrapper server"
-        execute_udl_queries(conn, [sql], except_msg)
+        conn.execute(text("CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (fdw_server)))
 
 
 def drop_foreign_data_wrapper_server(fdw_server):
@@ -153,47 +141,8 @@ def drop_foreign_data_wrapper_server(fdw_server):
     @param udl2_conf: The configuration dictionary for
     '''
     print('drop foreign data wrapper server')
-    sql = "DROP SERVER IF EXISTS %s CASCADE" % (fdw_server)
     with get_udl_connection() as conn:
-        except_msg = "fail to drop foreign data wrapper server"
-        execute_udl_queries(conn, [sql], except_msg)
-
-
-def load_fake_record_in_star_schema():
-    '''
-    load two fake records into dim_int_hier and dim_section for integration table to create
-    star schema from integration table
-    @param udl2_conf: The configuration dictionary for
-    '''
-    print('load fake record')
-    with get_target_connection() as conn:
-        dim_section = conn.get_table('dim_section')
-        dim_inst_hier = conn.get_table('dim_inst_hier')
-        stmt = dim_section.insert({'section_rec_id': 1,
-                                   'section_guid': 'fake_value',
-                                   'section_name': 'fake_value',
-                                   'grade': 'fake_value',
-                                   'class_name': 'fake_value',
-                                   'subject_name': 'fake_value',
-                                   'state_code': 'FA',
-                                   'district_guid': 'fake_value',
-                                   'school_guid': 'fake_value',
-                                   'from_date': '99999999',
-                                   'to_date': '00000000',
-                                   'most_recent': False})
-        conn.execute(stmt)
-        stmt = dim_inst_hier.insert({'inst_hier_rec_id': -1,
-                                     'state_name': 'fake_value',
-                                     'state_code': 'FA',
-                                     'district_guid': 'fake_value',
-                                     'district_name': 'fake_value',
-                                     'school_guid': 'fake_value',
-                                     'school_name': 'fake_value',
-                                     'school_category': 'fake_value',
-                                     'from_date': '99999999',
-                                     'to_date': '00000000',
-                                     'most_recent': False})
-        conn.execute(stmt)
+        conn.execute(text("DROP SERVER IF EXISTS %s CASCADE" % (fdw_server)))
 
 
 def load_reference_data(udl2_conf):
@@ -202,7 +151,6 @@ def load_reference_data(udl2_conf):
     @param udl2_conf: The configuration dictionary for
     '''
     asmt_ref_table_info = ref_table_data.ref_table_conf
-    # TODO: Removed udl2_conf['reference_schema'].  It should always be inside udl schema
     populate_ref_column_map(asmt_ref_table_info, udl2_conf['ref_tables']['assessment'])
 
     sr_ref_table_info = sr_ref_table_data.ref_table_conf
@@ -215,24 +163,7 @@ def load_stored_proc(udl2_conf):
     validations into the database.
     @param udl2_conf: The configuration dictionary for
     '''
-    # TODO: I Removed udl2_conf['reference_schema'].  It should always be inside udl schema
     populate_stored_proc(udl2_conf['ref_tables']['assessment'], udl2_conf['ref_tables']['studentregistration'])
-
-
-def drop_foreign_keys_on_fact_asmt_outcome(schema_name):
-    '''
-    drop foreign key constraints of fact_asmt_outcome table in target db.
-    @param target_db: The configuration dictionary for
-    '''
-    print('drop constraits in udl2 star schema')
-    constraints = ['fact_asmt_outcome_student_rec_id_fkey', 'fact_asmt_outcome_asmt_rec_id_fkey', 'fact_asmt_outcome_inst_hier_rec_id_fkey']
-    with get_target_connection() as conn:
-        for constraint in constraints:
-            sql = text("ALTER TABLE {schema}.{table} DROP CONSTRAINT {constraint}".format(schema=schema_name,
-                                                                                          table='fact_asmt_outcome',
-                                                                                          constraint=constraint))
-            except_msg = "fail to drop constraint on fact_asmt_outcome in star schema %s" % schema_name
-            execute_udl_queries(conn, [sql], except_msg)
 
 
 def setup_udl2_schema(udl2_conf):
@@ -244,14 +175,13 @@ def setup_udl2_schema(udl2_conf):
     initialize_db_udl(udl2_conf, allow_create_schema=True)
     udl2_schema_name = udl2_conf['udl2_db']['db_schema']
     create_udl2_sequence(udl2_schema_name)
-    create_dblink_extension(get_udl_connection, udl2_schema_name)
+    create_dblink_extension(get_udl_connection)
     create_foreign_data_wrapper_extension(udl2_schema_name)
     create_foreign_data_wrapper_server(udl2_conf['udl2_db']['fdw_server'])
 
-    # Create dblink in pre-prod schema
-    target_schema_name = udl2_conf['target_db']['db_schema']
+    # Create dblink in pre-prod database
     initialize_db_target(udl2_conf)
-    create_dblink_extension(get_target_connection, target_schema_name)
+    create_dblink_extension(get_target_connection)
 
     # load data and stored procedures into udl tables
     load_reference_data(udl2_conf['udl2_db'])

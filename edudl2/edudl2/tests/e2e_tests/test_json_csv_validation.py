@@ -14,8 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from uuid import uuid4
 from time import sleep
 from multiprocessing import Process
-
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
 from sqlalchemy.sql.expression import and_, select
 

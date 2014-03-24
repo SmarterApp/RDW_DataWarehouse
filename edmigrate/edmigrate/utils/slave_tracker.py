@@ -5,19 +5,11 @@ Created on Mar 14, 2014
 '''
 import threading
 from edmigrate.utils.constants import Constants
+from edmigrate.utils.utils import Singleton
 import time
 from edmigrate.exceptions import SlaveAlreadyRegisteredException, \
     SlaveNotRegisteredException, SlaveStatusTimedoutException,\
     SlaveStatusLockingTimedoutException
-
-
-class Singleton(type):
-    _instances = {}
-
-    def __call__(self, *args, **kwargs):
-        if self not in self._instances:
-            self._instances[self] = super(Singleton, self).__call__(*args, **kwargs)
-        return self._instances[self]
 
 
 class SlaveTracker(metaclass=Singleton):

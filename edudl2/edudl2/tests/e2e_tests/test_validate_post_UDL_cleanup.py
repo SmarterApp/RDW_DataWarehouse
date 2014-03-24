@@ -8,12 +8,12 @@ import os
 import shutil
 from uuid import uuid4
 import glob
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from sqlalchemy.sql import select
-from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from sqlalchemy.sql.expression import and_
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
+from edudl2.udl2.celery import udl2_conf
 
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'

@@ -1,9 +1,11 @@
 __author__ = 'sravi'
 import logging
+import threading
 from edmigrate.utils.utils import get_broker_url
 from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
+from edmigrate.exceptions import PlayerTimeoutException
 import subprocess
 from edmigrate.settings.config import Config, get_setting
 import edmigrate.utils.reply_to_conductor as reply_to_conductor
@@ -12,172 +14,265 @@ from kombu import Connection
 from kombu.entity import Exchange
 import socket
 from edmigrate.edmigrate_celery import celery
+from edmigrate.utils.utils import Singleton
 
 
-logger = logging.getLogger('edmigrate')
+class Player(metaclass=Singleton):
 
+    __lock = threading.Lock()
 
-def get_hostname():
-    return socket.gethostname()
+    def __init__(self, timeout, logger, connection, exchange, routing_key):
+        self.__timeout = timeout
+        try:
+            if self.__lock.acquire(timeout=self.__timeout):
+                self.logger = logger
+                self.connection = connection
+                self.exchange = exchange
+                self.routing_key = routing_key
+                self.node_id = None
+                self.hostname = None
+                self.COMMAND_HANDLERS = {
+                    Constants.COMMAND_REGISTER_PLAYER: self.register_player,
+                    Constants.COMMAND_START_REPLICATION: self.connect_master,
+                    Constants.COMMAND_STOP_REPLICATION: self.disconnect_master,
+                    Constants.COMMAND_CONNECT_PGPOOL: self.connect_pgpool,
+                    Constants.COMMAND_DISCONNECT_PGPOOL: self.disconnect_pgpool,
+                    Constants.COMMAND_RESET_PLAYERS: self.reset_players
+                }
+            else:
+                raise PlayerTimeoutException()
+        finally:
+            if self.__lock.locked():
+                self.__lock.release()
 
+    def run_command(self, command, nodes):
+        if command in self.COMMAND_HANDLERS:
+            if nodes is None:
+                if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
+                    self.COMMAND_HANDLERS[command]()
+                else:
+                    self.logger.error("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
+            else:
+                if self.node_id in nodes:
+                    self.COMMAND_HANDLERS[command]()
+                else:
+                    # ignore the command
+                    self.logger.error("{name}: {command} is ignored because {node} is not in {nodes}"
+                                      .format(command=command, name=self.__class__.__name__,
+                                              node=self.node_id, nodes=str(nodes)))
+        else:
+            self.logger.error("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
 
-def get_slave_node_id_from_hostname(hostname):
-    node_id = None
-    with RepMgrDBConnection() as conn:
-        repl_nodes = conn.get_table(Constants.REPL_NODES)
-        results = conn.execute(repl_nodes.select())
-        nodes = results.fetchall()
-        for node in nodes:
-            if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=hostname)) >= 0:
-                node_id = node[Constants.ID]
+    def set_hostname(self, hostname):
+        '''
+        get hostname for the current node
+        '''
+        self.hostname = hostname
+
+    def set_node_id_from_hostname(self):
+        '''
+        look up repl_nodes for node_id of the host.
+        '''
+        self.node_id = None
+        with RepMgrDBConnection() as conn:
+            repl_nodes = conn.get_table(Constants.REPL_NODES)
+            results = conn.execute(repl_nodes.select())
+            nodes = results.fetchall()
+            for node in nodes:
+                if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=self.hostname)) >= 0:
+                    self.node_id = node[Constants.ID]
+                    break
+        return self.node_id
+
+    def search_blocked_hostname(self, output, hostname):
+        '''
+        @param output: iptable -L output
+        @param hostname: hostname for the machine that are looked up in iptables chain output
+        '''
+        lines = output.split('\n')
+        found = False
+        for line in lines:
+            if line.find(hostname) >= 0 \
+                    and line.find('reject-with icmp-port-unreachable') >= 0 \
+                    and line.find('REJECT') >= 0:
+                found = True
                 break
-    return node_id
+        return found
 
+    def check_iptable_has_blocked_machine(self, hostname):
+        '''
+        Run iptables -L, get the output, and search hostname that is in blocked chain
+        @param hostname: hostname for the blocked machine
+        '''
+        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        try:
+            output = subprocess.check_output(['sudo', 'iptables', '-L', chain], universal_newlines=True)
+        except subprocess.CalledProcessError:
+            self.logger.error("{name}: Problem to use iptables. Please check with administrator".
+                              format(name=self.__class__.__name__,))
+            output = ''
+        return self.search_blocked_hostname(output, hostname)
 
-def parse_iptable_output(output, pgpool):
-    lines = output.split('\n')
-    found = False
-    for line in lines:
-        if line.find(pgpool) >= 0 \
-                and line.find('reject-with icmp-port-unreachable') >= 0 \
-                and line.find('REJECT') >= 0:
-            found = True
-            break
-    return found
-
-
-def check_iptable_has_blocked_machine(hostname):
-    try:
-        output = subprocess.check_output(['sudo', 'iptables', '-L'], universal_newlines=True)
-    except subprocess.CalledProcessError:
-        logging.info("Slave has problem to use iptables, Please check with administrator")
-    return parse_iptable_output(output, hostname)
-
-
-def remove_iptable_rules(hostname, max_retries):
-    try:
-        output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
-                                         universal_newlines=True)
-        while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
-            sleep(Constants.REPLICATION_CHECK_INTERVAL)
-            output = subprocess.check_output(['sudo', 'iptables', '-D', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
+    def remove_iptable_rules(self, hostname, max_retries):
+        '''
+        remove machine from iptables block list
+        @param hostname: hostname to be blocked
+        @param max_retries: maximum time to retry to remove host from iptable block rules
+        '''
+        # the code will try to clean up as many as possible iptables rules that block the host in case multiple
+        # rules are inserted. But in order not fall into infinite loops. we use max_retries in
+        # edmigrate.utils.constants to control maximum number of retries
+        # also, if celery has no privileges to operate iptables, it will trigger exception and return result as false
+        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        try:
+            output = subprocess.check_output(['sudo', 'iptables', '-D', chain, '-s', hostname, '-j', 'REJECT'],
                                              universal_newlines=True)
-            max_retries -= 1
-    except subprocess.CalledProcessError:
-        logger.info("Slave failed to remove rules to reject {hostname}".format(hostname=hostname))
-    return not check_iptable_has_blocked_machine(hostname)
+            while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
+                sleep(Constants.REPLICATION_CHECK_INTERVAL)
+                output = subprocess.check_output(['sudo', 'iptables', '-D', chain, '-s', hostname, '-j', 'REJECT'],
+                                                 universal_newlines=True)
+                max_retries -= 1
+        except subprocess.CalledProcessError:
+            self.logger.error("{name}: Failed to remove rules to reject {hostname}".
+                              format(name=self.__class__.__name__, hostname=hostname))
+        return not self.check_iptable_has_blocked_machine(hostname)
+
+    def add_iptable_rules(self, hostname):
+        '''
+        add machine into iptable block chain
+        @param hostname: hostname for the machine
+        '''
+        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        try:
+            subprocess.check_output(['sudo', 'iptables', '-I', chain, '-s', hostname, '-j', 'REJECT'],
+                                    universal_newlines=True)
+            sleep(Constants.REPLICATION_CHECK_INTERVAL)
+        except subprocess.CalledProcessError:
+            self.logger.error("{name}: Failed to add rules to reject {hostname}".
+                              format(name=self.__class__.__name__, hostname=hostname))
+        return self.check_iptable_has_blocked_machine(hostname)
+
+    def connect_pgpool(self):
+        '''
+        remove iptables rules to enable pgpool access slave database
+        '''
+        pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+        self.logger.info("{name}: Resuming pgpool ( {pgpool} )".
+                         format(name=self.__class__.__name__, pgpool=pgpool))
+        # perform multiple times disable in case it was blocked multiple times in iptables
+        max_retries = Constants.REPLICATION_MAX_RETRIES
+        status = self.remove_iptable_rules(pgpool, max_retries)
+        if status:
+            reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
+                                                                self.exchange, self.routing_key)
+        else:
+            self.logger.error("{name}: Failed to unblock pgpool( {pgpool} )".
+                              format(name=self.__class__.__name__, pgpool=pgpool))
+
+    def disconnect_pgpool(self):
+        '''
+        insert iptables rules to block pgpool to access postgres db
+        '''
+        pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+        self.logger.info("{name}: Blocking pgpool ( {pgpool} )".
+                         format(name=self.__class__.__name__, pgpool=pgpool))
+        # only add rules when there is no rule in iptables
+        status = self.add_iptable_rules(pgpool)
+        if status:
+            reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
+                                                                   self.exchange, self.routing_key)
+        else:
+            self.logger.error("{name}: Failed to block pgpool( {pgpool} )".
+                              format(name=self.__class__.__name__, pgpool=pgpool))
+
+    def connect_master(self):
+        '''
+        remove iptable rules to unblock master from access slave database
+        '''
+        master = get_setting(Config.MASTER_HOSTNAME)
+        self.logger.info("{name}: Resuming master( {master} )".
+                         format(name=self.__class__.__name__, master=master))
+        # perform multiple times disable in case it was blocked multiple times in iptables
+        max_retries = Constants.REPLICATION_MAX_RETRIES
+        status = self.remove_iptable_rules(master, max_retries)
+        if status:
+            reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
+                                                                self.exchange, self.routing_key)
+        else:
+            self.logger.error("{name}: Failed to unblock master( {master} )".
+                              format(name=self.__class__.__name__, master=master))
+
+    def disconnect_master(self):
+        '''
+        insert iptable rules to block master to access slave database
+        '''
+        master = get_setting(Config.MASTER_HOSTNAME)
+        self.logger.info("{name}: Blocking master( {master} )".
+                         format(name=self.__class__.__name__, master=master))
+        # only add rules when there is no rule in iptables
+        status = self.add_iptable_rules(master)
+        if status:
+            reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
+                                                                   self.exchange, self.routing_key)
+        else:
+            self.logger.error("{name}: Failed to block master( {master} )".
+                              format(name=self.__class__.__name__, master=master))
+
+    def reset_players(self):
+        '''
+        reset players. so it will not block pgpool and master database
+        '''
+        master = get_setting(Config.MASTER_HOSTNAME)
+        pgpool = get_setting(Config.PGPOOL_HOSTNAME)
+        self.logger.info("{name}: Reset iptables rules for master ( {master} ) and pgpool ( {pgpool} )".
+                         format(name=self.__class__.__name__, master=master, pgpool=pgpool))
+        max_retries = Constants.REPLICATION_MAX_RETRIES
+        status_1 = self.remove_iptable_rules(pgpool, max_retries)
+        status_2 = self.remove_iptable_rules(master, max_retries)
+        if status_1 and status_2:
+            reply_to_conductor.acknowledgement_reset_slaves(self.node_id, self.connection,
+                                                            self.exchange, self.routing_key)
+        elif status_1 and not status_2:
+            self.logger.error("{name}: Failed to reset iptables for pgpool ( {pgpool} )".
+                              format(name=self.__class__.__name__, pgpool=pgpool))
+        elif not status_1 and status_2:
+            self.logger.error("{name}: Failed to reset iptables for master( {master} )".
+                              format(name=self.__class__.__name__, master=master))
+        else:
+            self.logger.error("{name}: Failed to reset iptable for master( {master} ) and pgpool ( {pgpool} )".
+                              format(name=self.__class__.__name__, master=master, pgpool=pgpool))
+
+    def register_player(self):
+        '''
+        register player to conductor
+        '''
+        self.logger.info("{name}: Register {name} to conductor".format(name=self.__class__.__name__))
+        if self.node_id is not None:
+            reply_to_conductor.register_slave(self.node_id, self.connection, self.exchange, self.routing_key)
+        else:
+            # log errors
+            self.logger.error("{name}: {hostname} has no node_id".
+                              format(name=self.__class__.__name__, hostname=self.hostname))
 
 
-def add_iptable_rules(hostname):
-    try:
-        subprocess.check_output(['sudo', 'iptables', '-I', 'PGSQL', '-s', hostname, '-j', 'REJECT'],
-                                universal_newlines=True)
-        sleep(Constants.REPLICATION_CHECK_INTERVAL)
-    except subprocess.CalledProcessError:
-        logger.info("Slave failed to add rules to reject {hostname}".format(hostname=hostname))
-    return check_iptable_has_blocked_machine(hostname)
+# initialized singleton player object for the slave task in the same worker
+player = Player(5, logging.getLogger(Constants.WORKER_NAME),
+                Connection(get_broker_url()),
+                Exchange(Constants.CONDUCTOR_EXCHANGE),
+                Constants.CONDUCTOR_ROUTING_KEY)
 
 
-def connect_pgpool(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Resuming pgpool")
-    # perform multiple times disable in case it was blocked multiple times in iptables
-    max_retries = Constants.REPLICATION_MAX_RETRIES
-    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    status = remove_iptable_rules(pgpool, max_retries)
-    if status:
-        reply_to_conductor.acknowledgement_pgpool_connected(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to unblock pgpool")
-
-
-def disconnect_pgpool(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Blocking pgpool")
-    # only add rules when there is no rule in iptables
-    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    status = add_iptable_rules(pgpool)
-    if status:
-        reply_to_conductor.acknowledgement_pgpool_disconnected(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to block pgpool")
-
-
-def connect_master(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Resuming master via iptables")
-    # perform multiple times disable in case it was blocked multiple times in iptables
-    max_retries = Constants.REPLICATION_MAX_RETRIES
-    master = get_setting(Config.MASTER_HOSTNAME)
-    status = remove_iptable_rules(master, max_retries)
-    if status:
-        reply_to_conductor.acknowledgement_master_connected(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to resume master via iptables")
-
-
-def disconnect_master(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Blocking master via iptables")
-    # only add rules when there is no rule in iptables
-    master = get_setting(Config.MASTER_HOSTNAME)
-    status = add_iptable_rules(master)
-    if status:
-        reply_to_conductor.acknowledgement_master_disconnected(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to block master via iptables")
-
-
-def reset_slaves(host_name, node_id, conn, exchange, routing_key):
-    logger.info("Slave: Reset slaves iptables")
-    master = get_setting(Config.MASTER_HOSTNAME)
-    pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-    max_retries = Constants.REPLICATION_MAX_RETRIES
-    status_1 = remove_iptable_rules(pgpool, max_retries)
-    status_2 = remove_iptable_rules(master, max_retries)
-    if status_1 and status_2:
-        reply_to_conductor.acknowledgement_reset_slaves(node_id, conn, exchange, routing_key)
-    else:
-        logger.info("Fail to reset slaves iptables")
-
-
-def find_slave(host_name, node_id, conn, exchange, routing_key):
-    if node_id is not None:
-        reply_to_conductor.register_slave(node_id, conn, exchange, routing_key)
-    else:
-        # log errors
-        logger.info("{hostname} has no node_id".format(hostname=host_name))
-
-
-COMMAND_HANDLERS = {
-    Constants.COMMAND_FIND_SLAVE: find_slave,
-    Constants.COMMAND_START_REPLICATION: connect_master,
-    Constants.COMMAND_STOP_REPLICATION: disconnect_master,
-    Constants.COMMAND_CONNECT_PGPOOL: connect_pgpool,
-    Constants.COMMAND_DISCONNECT_PGPOOL: disconnect_pgpool,
-    Constants.COMMAND_RESET_SLAVES: reset_slaves
-}
-
-
-@celery.task(name=Constants.SLAVE_TASK, ignore_result=True, base=BaseTask)
-def slave_task(command, slaves):
+@celery.task(name=Constants.PLAYER_TASK, ignore_result=True, base=BaseTask)
+def slave_task(command, nodes):
     """
-    This is a slave task that runs on slave database. It assumes only one celery worker per node. So task
+    This is a player task that runs on slave database. It assumes only one celery worker per node. So task
     will be a singleton
     Please see https://docs.google.com/a/amplify.com/drawings/d/14K89SK6FLTPCFi0clvmnrTFMaIkc0eDDwQ0kt8CsTCE/
     for architecture
-    One task, COMMAND_FIND_SLAVE is executed regardless slave tasks is included or not
-    For other tasks. Slave task checks membership of current slave node in slaves argument represented in node_id.
-    Those tasks are executed if and only if membership is true.
+    Two tasks, COMMAND_FIND_SLAVE and COMMAND_REST_SLAVE are executed regardless player nodes are included or not
+    For other tasks. Player task checks membership of current player node in nodes argument represented as a list
+    of node_id. Those tasks are executed if and only if membership is true.
     """
-    host_name = get_hostname()
-    node_id = get_slave_node_id_from_hostname(host_name)
-    with Connection(get_broker_url()) as conn:
-        exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
-        routing_key = Constants.CONDUCTOR_ROUTING_KEY
-        if slaves is None or command in [Constants.COMMAND_FIND_SLAVE, Constants.COMMAND_RESET_SLAVES]:
-            COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
-        elif command in COMMAND_HANDLERS:
-            if node_id in slaves:
-                COMMAND_HANDLERS[command](host_name, node_id, conn, exchange, routing_key)
-            else:
-                # ignore the command
-                logger.info("{command} is ignored by slave".format(command=command))
-        else:
-            logger.info("{command} is not implemented by slave".format(command=command))
+    player.set_hostname(socket.gethostname())
+    player.set_node_id_from_hostname()
+    player.run_command(command, nodes)

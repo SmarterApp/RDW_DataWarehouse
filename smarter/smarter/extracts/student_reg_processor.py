@@ -1,8 +1,5 @@
-from datetime import datetime
-from edextract.status.status import create_new_entry
-from smarter.extracts import processor
 
-__author__ = 'tshewchuk'
+__author__ = 'ablum'
 
 """
 This module provides methods for extracting student registration report information into archive files for the user.
@@ -10,13 +7,15 @@ This module provides methods for extracting student registration report informat
 
 import logging
 import os
-import pyramid.threadlocal
-
-from smarter.extracts.constants import Constants as Extract, ExtractType
-from edextract.tasks.student_reg_constants import Constants as TaskConstants, ReportType
-from smarter.reports.helpers.constants import Constants as EndpointConstants
-from edextract.tasks.student_reg_extract import start_extract
+from datetime import datetime
 from pyramid.threadlocal import get_current_registry
+
+from smarter.extracts.constants import Constants as Extract, ExtractType, ReportType
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
+from smarter.reports.helpers.constants import Constants as EndpointConstants
+from edextract.tasks.extract import start_extract
+from edextract.status.status import create_new_entry
+from smarter.extracts import processor
 
 
 log = logging.getLogger('smarter')
@@ -29,14 +28,15 @@ def process_async_extraction_request(params):
     @return:  Extract response
     """
 
-    queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
+    queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     response = {}
     state_code = params[EndpointConstants.STATECODE][0]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
     extract_params = {TaskConstants.STATE_CODE: state_code,
                       TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR][0],
-                      TaskConstants.REPORT_TYPE: ReportType.STATISTICS}
+                      Extract.REPORT_TYPE: ReportType.STATISTICS,
+                      TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
 
     task_response = {TaskConstants.STATE_CODE: extract_params[TaskConstants.STATE_CODE],
                      TaskConstants.ACADEMIC_YEAR: extract_params[TaskConstants.ACADEMIC_YEAR],
@@ -57,7 +57,8 @@ def process_async_extraction_request(params):
     gatekeeper_id = processor.get_gatekeeper(tenant)
     pickup_zone_info = processor.get_pickup_zone_info(tenant)
 
-    start_extract.apply_async(args=[tenant, request_id, public_key_id, encrypted_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, task_info], queue=queue)
+    start_extract.apply_async(args=[tenant, request_id, public_key_id, encrypted_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, [task_info]], queue=queue)
+
     return response
 
 
@@ -72,6 +73,7 @@ def _create_task_info(request_id, user, tenant, extract_params):
 def _get_extract_file_path(request_id, tenant, params):
     file_name = '{stateCode}_{academicYear}_{reportType}_{currentTime}.csv'.format(stateCode=params.get(TaskConstants.STATE_CODE),
                                                                                    academicYear=params.get(TaskConstants.ACADEMIC_YEAR),
-                                                                                   reportType=params.get(TaskConstants.REPORT_TYPE),
+                                                                                   reportType=params.get(Extract.REPORT_TYPE),
                                                                                    currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)

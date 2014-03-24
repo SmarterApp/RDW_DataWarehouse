@@ -6,7 +6,7 @@ Utility methods for CSV and JSON validators
 
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection
 
 
 def get_source_column_values_from_ref_column_mapping(source_table, load_type):

@@ -128,7 +128,6 @@ def get_move_to_target_conf():
             'table_name': 'dim_inst_hier',
             'guid_columns': ['state_code', 'district_guid', 'school_guid'],
             'key_columns': [
-                'inst_hier_rec_id',
                 'state_name',
                 'state_code',
                 'district_guid',

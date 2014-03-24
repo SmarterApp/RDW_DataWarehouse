@@ -5,6 +5,13 @@ Created on Dec 9, 2013
 '''
 
 
+class ExtractionDataType():
+    SR_STATISTICS = 'StudentRegistrationStatisticsReportCSV'
+    SR_COMPLETION = 'StudentRegistrationCompletionReportCSV'
+    ASMT_CSV = 'AssessmentCSVExtract'
+    ASMT_JSON = 'AssessmentJSONExtract'
+
+
 class Constants():
     TASK_IS_JSON_REQUEST = 'is_json_request'
     TASK_TASK_ID = 'task_id'
@@ -15,3 +22,6 @@ class Constants():
     SYNC_QUEUE_NAME = 'extract_sync'
     ARCHIVE_QUEUE_NAME = 'extract_archve'
     TENANT = 'tenant'
+    STATE_CODE = 'state_code'
+    ACADEMIC_YEAR = 'academicYear'
+    EXTRACTION_DATA_TYPE = 'extraction_data_type'

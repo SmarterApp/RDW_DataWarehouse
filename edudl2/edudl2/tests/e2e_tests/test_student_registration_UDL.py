@@ -10,8 +10,7 @@ from uuid import uuid4
 from sqlalchemy.sql import select, and_, func
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
-
-from edudl2.udl2.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck

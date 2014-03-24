@@ -1,4 +1,8 @@
-__author__ = 'sravi'
+'''
+Created on Mar 21, 2014ß
+
+@author: ejen
+'''
 import logging
 import threading
 from edmigrate.utils.utils import get_broker_url

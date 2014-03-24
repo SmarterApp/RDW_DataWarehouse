@@ -23,12 +23,12 @@ class Conductor:
         self.__broadcast_queue = get_setting(Config.BROADCAST_QUEUE)
 
     def reset_slaves(self):
-        slave_task.apply_async((Constants.COMMAND_RESET_SLAVES, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
-        self.__log(Constants.COMMAND_RESET_SLAVES, None, None)
+        slave_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
+        self.__log(Constants.COMMAND_RESET_PLAYERS, None, None)
 
     def find_slaves(self):
-        slave_task.apply_async((Constants.COMMAND_FIND_SLAVE, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
-        self.__log(Constants.COMMAND_FIND_SLAVE, None, None)
+        slave_task.apply_async((Constants.COMMAND_REGISTER_PLAYER, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
+        self.__log(Constants.COMMAND_REGISTER_PLAYER, None, None)
 
     def grouping_slaves(self):
         slave_ids = self.__slave_trakcer.get_slave_ids()

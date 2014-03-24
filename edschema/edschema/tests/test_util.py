@@ -47,6 +47,6 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test get columns
         '''
-        cols1 = get_natural_key_columns(self.__test_table).keys()
+        cols1 = get_natural_key_columns(self.__test_table)
         cols2 = self.__nkix.columns.keys()
         self.assertEquals(set(cols1), set(cols2))

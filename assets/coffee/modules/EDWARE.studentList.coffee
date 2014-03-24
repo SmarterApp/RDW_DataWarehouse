@@ -200,7 +200,7 @@ define [
       @config.reportName = Constants.REPORT_NAME.LOS
       asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
+      @actionBar = edwareReportActionBar.create '#actionBar', @config, () ->
         self.updateView()
 
     createGrid: () ->
@@ -280,9 +280,9 @@ define [
         selector = {}
         # mapping asmt type to capitalized case
         selector.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        selector.asmt_year = asmt.asmt_year
+        selector.effective_date = asmt.effective_date
         selector.asmt_grade = this.grade.name
-        selector.display = "{{asmtYear}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
+        selector.display = "{{effectiveDate}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
         selector.hasAsmtSubject = true
 
         # add subjects combination, i.e. Math & ELA

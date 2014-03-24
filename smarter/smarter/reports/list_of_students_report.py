@@ -88,7 +88,7 @@ def get_list_of_students_report(params):
         asmtYear = get_default_academic_year(params)
         params[Constants.ASMTYEAR] = asmtYear
 
-    asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, None)
+    asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, asmt_year=asmtYear)
 
     results = get_list_of_students(params)
     if not results and not has_filters(params):

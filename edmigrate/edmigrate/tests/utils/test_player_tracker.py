@@ -149,7 +149,7 @@ class Test(unittest.TestCase):
         conductor = Conductor()
         self.assertTrue(playertracker1.is_migration_in_process())
         del conductor
-        self.assertFalse(playertracker1.is_migration_in_process())   
+        self.assertFalse(playertracker1.is_migration_in_process())
 
 
 if __name__ == "__main__":

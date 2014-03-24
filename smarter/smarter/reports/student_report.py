@@ -39,6 +39,7 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 dim_student.c.state_code.label('state_code'),
                                 dim_asmt.c.asmt_subject.label('asmt_subject'),
                                 dim_asmt.c.asmt_period.label('asmt_period'),
+                                dim_asmt.c.asmt_period_year.label('asmt_period_year'),
                                 dim_asmt.c.asmt_type.label('asmt_type'),
                                 dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                 dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -110,7 +111,7 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
     query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.student_guid == student_guid, fact_asmt_outcome.c.status == 'C'))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
-    query = query.order_by(dim_asmt.c.asmt_subject.desc())
+    query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
     return query
 
 
@@ -206,10 +207,10 @@ def get_student_report(params):
             state_code = first_student[Constants.STATE_CODE]
             district_guid = first_student[Constants.DISTRICT_GUID]
             school_guid = first_student[Constants.SCHOOL_GUID]
-            asmt_grade = first_student['grade']
+            asmt_grade = first_student['asmt_grade']
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
-            student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade, [student_guid])
+            student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, None, [student_guid])
         else:
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
 

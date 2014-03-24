@@ -259,7 +259,7 @@ define [
         asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
         asmt.display = "{{asmtYear}} · {{asmtGrade}} · {{asmtType}}"
         asmt.asmt_year = asmt.asmt_year
-        asmt.asmt_grade = @grade.name
+        asmt.asmt_grade = "Grade #{asmt.asmt_grade}"
         asmt.hasAsmtSubject = false
         asmtTypes.push asmt
       asmtTypes

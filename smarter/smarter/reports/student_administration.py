@@ -18,14 +18,14 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     with EdCoreDBConnection(state_code=state_code) as connection:
         fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        query = select([fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type],
+        query = select([fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome.c.asmt_grade],
                        from_obj=[fact_asmt_outcome, dim_asmt])
         query = query.where(fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
             where(fact_asmt_outcome.c.state_code == state_code).\
             where(and_(fact_asmt_outcome.c.school_guid == school_guid)).\
             where(and_(fact_asmt_outcome.c.district_guid == district_guid)).\
             where(and_(fact_asmt_outcome.c.status == 'C')).\
-            group_by(fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type,).\
+            group_by(fact_asmt_outcome.c.asmt_year, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome.c.asmt_grade,).\
             order_by(fact_asmt_outcome.c.asmt_type.desc(), fact_asmt_outcome.c.asmt_year.desc())
         if asmt_grade:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))

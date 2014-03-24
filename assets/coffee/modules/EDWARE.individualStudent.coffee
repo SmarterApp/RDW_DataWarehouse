@@ -257,7 +257,7 @@ define [
       for idx, asmt of @data.asmt_administration
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
-        asmt.display = "{{effectiveDate}} · {{asmtGrade}} · {{asmtType}}"
+        asmt.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}}"
         asmt.effective_date = asmt.effective_date
         asmt.asmt_grade = "Grade #{asmt.asmt_grade}"
         asmt.hasAsmtSubject = false

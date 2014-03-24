@@ -19,9 +19,8 @@ define [
       @container.html(output)
 
     setDefaultOption: () ->
-      # TODO set default option, comment out for now
-      # asmt = edwarePreferences.getAsmtPreference()
-      asmt = undefined
+      # set default option, comment out for now
+      asmt = edwarePreferences.getAsmtPreference()
       if $.isEmptyObject(asmt)
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
@@ -50,6 +49,7 @@ define [
       asmtGuid: $option.data('asmtguid')?.toString()
       asmtView: $option.data('value')
       effectiveDate: $option.data('effectivedate')
+      effectiveDateText: $option.data('effectivedate-text')
       asmtGrade: $option.data('grade')
       subjectText: $option.data('subjecttext')
 
@@ -71,7 +71,7 @@ define [
   (($)->
     $.fn.edwareAsmtDropdown = (dropdownValues, callback) ->
       for asmt in dropdownValues
-        asmt.effective_date = _format_effective_date(asmt.effective_date)
+        asmt.effective_date_text = _format_effective_date(asmt.effective_date)
       new EdwareAsmtDropdown($(this), dropdownValues, callback)
   ) jQuery
 

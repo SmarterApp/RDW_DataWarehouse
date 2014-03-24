@@ -101,9 +101,11 @@ class Player(metaclass=Singleton):
         Run iptables -L, get the output, and search hostname that is in blocked chain
         @param hostname: hostname for the blocked machine
         '''
-        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
+        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
+        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
-            output = subprocess.check_output(['sudo', 'iptables', '-L', chain], universal_newlines=True)
+            output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_LIST, chain], universal_newlines=True)
         except subprocess.CalledProcessError:
             self.logger.error("{name}: Problem to use iptables. Please check with administrator".
                               format(name=self.__class__.__name__,))
@@ -120,13 +122,19 @@ class Player(metaclass=Singleton):
         # rules are inserted. But in order not fall into infinite loops. we use max_retries in
         # edmigrate.utils.constants to control maximum number of retries
         # also, if celery has no privileges to operate iptables, it will trigger exception and return result as false
-        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
+        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
+        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
-            output = subprocess.check_output(['sudo', 'iptables', '-D', chain, '-s', hostname, '-j', 'REJECT'],
+            output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
+                                              Constants.IPTABLES_SOURCE, hostname,
+                                              Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                              universal_newlines=True)
             while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
                 sleep(Constants.REPLICATION_CHECK_INTERVAL)
-                output = subprocess.check_output(['sudo', 'iptables', '-D', chain, '-s', hostname, '-j', 'REJECT'],
+                output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
+                                                  Constants.IPTABLES_SOURCE, hostname,
+                                                  Constants.IPTABLES_TARGET, Constants.IPTABLES_TARGET],
                                                  universal_newlines=True)
                 max_retries -= 1
         except subprocess.CalledProcessError:
@@ -139,9 +147,13 @@ class Player(metaclass=Singleton):
         add machine into iptable block chain
         @param hostname: hostname for the machine
         '''
-        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
+        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
+        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
-            subprocess.check_output(['sudo', 'iptables', '-I', chain, '-s', hostname, '-j', 'REJECT'],
+            subprocess.check_output([sudo, iptables, Constants.IPTABLES_INSERT, chain,
+                                     Constants.IPTABLES_SOURCE, hostname,
+                                     Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                     universal_newlines=True)
             sleep(Constants.REPLICATION_CHECK_INTERVAL)
         except subprocess.CalledProcessError:

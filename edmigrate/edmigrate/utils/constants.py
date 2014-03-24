@@ -5,6 +5,7 @@ class Constants():
     '''
     Constants related to edmigrate
     '''
+    LOCALHOST = 'localhost'
     WORKER_NAME = 'edmigrate'
     REPL_MGR_SCHEMA = 'repmgr_edware_pg_cluster'
     REPL_STATUS = 'repl_status'
@@ -59,3 +60,13 @@ class Constants():
     CONDUCTOR_EXCHANGE = 'edmigrate_conductor'
     CONDUCTOR_QUEUE = 'edmigrate_conductor'
     CONDUCTOR_ROUTING_KEY = 'edmigrate.conductor'
+
+    IPTABLES_SUDO = '/usr/bin/sudo'
+    IPTABLES_CHAIN = 'PGSQL'
+    IPTABLES_COMMAND = '/sbin/iptables'
+    IPTABLES_LIST = '-L'
+    IPTABLES_DELETE = '-D'
+    IPTABLES_INSERT = '-I'
+    IPTABLES_JUMP = '-j'
+    IPTABLES_TARGET = 'REJECT'
+    IPTABLES_SOURCE = '-s'

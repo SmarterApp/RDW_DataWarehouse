@@ -129,7 +129,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_0(self, MockSubprocess):
         logger = MockLogger()
@@ -138,13 +138,14 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.noblock_firewall_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertFalse(result)
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_1(self, MockSubprocess):
         logger = MockLogger()
@@ -153,26 +154,28 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.block_once_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertTrue(result)
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_2(self, MockSubprocess):
         logger = MockLogger()
         player = Player(logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.block_twice_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertTrue(result)
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_node_id(self, MockConductor):
         logger = MockLogger()
@@ -187,7 +190,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_no_node_id(self, MockConductor):
         logger = MockLogger()
@@ -203,7 +206,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_succeed(self, MockConductor, MockSubprocess):
@@ -221,7 +224,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_pgpool_failed(self, MockConductor, MockSubprocess):
@@ -240,7 +243,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_master_failed(self, MockConductor, MockSubprocess):
@@ -259,7 +262,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_both_failed(self, MockConductor, MockSubprocess):
@@ -278,7 +281,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_succeed(self, MockConductor, MockSubprocess):
@@ -295,7 +298,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_failed(self, MockConductor, MockSubprocess):
@@ -312,7 +315,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_disconnect_pgpool_succeed(self, MockConductor, MockSubprocess):
@@ -329,7 +332,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_disconnect_pgpool_failed(self, MockConductor, MockSubprocess):
@@ -346,7 +349,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('subprocess.check_output')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_connect_master_succeed(self, MockConductor, MockSubprocess):
@@ -363,7 +366,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch('subprocess.check_output')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_connect_master_failed(self, MockConductor, MockSubprocess):
@@ -380,7 +383,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_succeed(self, MockConductor, MockSubprocess):
@@ -397,7 +400,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_failed(self, MockConductor, MockSubprocess):
@@ -414,54 +417,60 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     def test_check_iptable_has_blocked_machine_with_exception(self, MockSubprocess):
-        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', '-L', 'iptables', 'PGSQL'])
+        MockSubprocess.side_effect = subprocess.CalledProcessError(1, [Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                                       Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN])
         MockSubprocess.return_value = self.noblock_firewall_output
         logger = MockLogger()
         player = Player(logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.check_iptable_has_blocked_machine(self.hostname)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(1, len(player.logger.err))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     def test_remove_iptable_rules_with_exception(self, MockSubprocess):
-        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', 'iptables', '-L', 'PGSQL'])
+        MockSubprocess.side_effect = subprocess.CalledProcessError(1, [Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                                       Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN])
         MockSubprocess.return_value = self.block_once_output
         logger = MockLogger()
         player = Player(logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.remove_iptable_rules(self.pgpool, Constants.REPLICATION_MAX_RETRIES)
-        MockSubprocess.assert_called_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                           Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
         self.assertEqual(2, len(player.logger.err))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     def test_add_iptable_rules_with_exception(self, MockSubprocess):
-        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', 'iptables', '-L', 'PGSQL'])
+        MockSubprocess.side_effect = subprocess.CalledProcessError(1, [Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                                                       Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN])
         MockSubprocess.return_value = self.block_once_output
         logger = MockLogger()
         player = Player(logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.add_iptable_rules(self.pgpool)
-        MockSubprocess.assert_called_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
+                                           Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
         self.assertEqual(2, len(player.logger.err))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_run_command_start_replication_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -478,7 +487,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_run_command_start_replication_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -496,7 +505,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_run_command_start_replication_without_nodes(self, MockConductor, MockSubprocess):
@@ -514,7 +523,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_run_command_stop_replication_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -531,7 +540,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_run_command_stop_replication_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -548,7 +557,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_run_command_stop_replication_witout_nodes(self, MockConductor, MockSubprocess):
@@ -565,7 +574,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_run_command_disconnect_pgpool_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -581,7 +590,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_run_command_disconnect_pgpool_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -598,7 +607,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_run_command_disconnect_pgpool_without_nodes(self, MockConductor, MockSubprocess):
@@ -615,7 +624,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -631,7 +640,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -648,7 +657,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_without_nodes(self, MockConductor, MockSubprocess):
@@ -665,7 +674,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_run_command_register_player(self, MockConductor, MockSubprocess):
@@ -681,7 +690,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_run_command_register_player_with_node_id(self, MockConductor, MockSubprocess):
@@ -697,7 +706,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players(self, MockConductor, MockSubprocess):
@@ -713,7 +722,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players_with_node_id(self, MockConductor, MockSubprocess):
@@ -729,7 +738,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players_failed(self, MockConductor, MockSubprocess):
@@ -746,7 +755,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players_with_node_id_failed(self, MockConductor, MockSubprocess):
@@ -763,7 +772,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     def test_run_command_not_implemented(self, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
@@ -777,7 +786,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
-                        Config.IPTABLES_CHAIN: 'PGSQL'})
+                        Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch("subprocess.check_output")
     def test_run_command_not_implemented_with_node_id(self, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output

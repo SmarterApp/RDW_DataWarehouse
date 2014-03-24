@@ -254,7 +254,7 @@ class Player(metaclass=Singleton):
 
 
 @celery.task(name=Constants.PLAYER_TASK, ignore_result=True, base=BaseTask)
-def slave_task(command, nodes):
+def player_task(command, nodes):
     """
     This is a player task that runs on slave database. It assumes only one celery worker per node. So task
     will be a singleton

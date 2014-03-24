@@ -1,4 +1,3 @@
-from edmigrate.queues import conductor
 '''
 Created on Mar 21, 2014ß
 

@@ -65,6 +65,7 @@ def main(file=None, tenant='cat', run_migrate_only=False):
     if run_migrate_only:
         start_migrate_daily_delta(tenant)
     else:
+        setup_celery(settings)
         url = get_broker_url()
         connect = Connection(url)
         logger.debug('connection: ' + url)
@@ -72,7 +73,6 @@ def main(file=None, tenant='cat', run_migrate_only=False):
         controller = ConductorController(connect)
         try:
             initialize_db(RepMgrDBConnection, settings)
-            setup_celery(settings)
             consumerThread.start()
             controller.start()
             consumerThread.join()

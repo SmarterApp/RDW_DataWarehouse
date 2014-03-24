@@ -32,9 +32,9 @@ class Conductor:
     def __del__(self):
         self.__player_trakcer.set_migration_in_process(False)
 
-    def send_reset_slaves(self):
+    def send_reset_players(self):
         self.__player_trakcer.reset()
-        slave_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
+        player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_RESET_PLAYERS, None, None)
 
     def accept_players(self):
@@ -51,7 +51,7 @@ class Conductor:
         return self.__player_trakcer.get_player_ids()
 
     def grouping_players(self):
-        player_ids = self.__player_trakcer.get_slave_ids()
+        player_ids = self.__player_trakcer.get_player_ids()
         if player_ids:
             for idx in range(len(player_ids)):
                 # set group A for "0" or group B for "1"

@@ -65,18 +65,24 @@ def main(file=None, tenant='cat', run_migrate_only=False):
     if run_migrate_only:
         start_migrate_daily_delta(tenant)
     else:
-        initialize_db(RepMgrDBConnection, settings)
         setup_celery(settings)
         url = get_broker_url()
         connect = Connection(url)
         logger.debug('connection: ' + url)
         consumerThread = ConsumerThread(connect)
         controller = ConductorController(connect)
-        consumerThread.start()
-        controller.start()
-        consumerThread.join()
-        controller.join()
-
+        try:
+            initialize_db(RepMgrDBConnection, settings)
+            consumerThread.start()
+            controller.start()
+            consumerThread.join()
+            controller.join()
+        except KeyboardInterrupt:
+            logger.debug('terminated by a user')
+            os._exit(0)
+        except Exception as e:
+            logger.error(e)
+            os._exit(1)
 
 def create_daemon(_pidfile):
     global pidfile

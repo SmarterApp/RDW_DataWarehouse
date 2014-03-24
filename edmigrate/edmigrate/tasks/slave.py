@@ -1,9 +1,9 @@
-from edmigrate.queues import conductor
 '''
 Created on Mar 21, 2014ß
 
 @author: ejen
 '''
+from edmigrate.queues import conductor
 from edmigrate.queues import conductor
 import logging
 from edmigrate.utils.utils import get_broker_url
@@ -22,7 +22,10 @@ from edmigrate.utils.utils import Singleton
 
 class Player(metaclass=Singleton):
 
-    def __init__(self, logger=logging.getLogger(Constants.WORKER_NAME), connection=Connection(get_broker_url()), exchange=conductor.exchange, routing_key=Constants.CONDUCTOR_ROUTING_KEY):
+    def __init__(self, logger=logging.getLogger(Constants.WORKER_NAME),
+                 connection=Connection(get_broker_url()),
+                 exchange=conductor.exchange,
+                 routing_key=Constants.CONDUCTOR_ROUTING_KEY):
         self.logger = logger
         self.connection = connection
         self.exchange = exchange

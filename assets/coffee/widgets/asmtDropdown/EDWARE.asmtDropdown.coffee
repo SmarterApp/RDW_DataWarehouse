@@ -19,8 +19,9 @@ define [
       @container.html(output)
 
     setDefaultOption: () ->
-      # set default option
-      asmt = edwarePreferences.getAsmtPreference()
+      # TODO set default option, comment out for now
+      # asmt = edwarePreferences.getAsmtPreference()
+      asmt = undefined
       if $.isEmptyObject(asmt)
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
@@ -48,7 +49,7 @@ define [
       asmtType: $option.data('asmttype')
       asmtGuid: $option.data('asmtguid')?.toString()
       asmtView: $option.data('value')
-      asmtYear: $option.data('year')
+      effectiveDate: $option.data('effectivedate')
       asmtGrade: $option.data('grade')
       subjectText: $option.data('subjecttext')
 
@@ -58,9 +59,19 @@ define [
     getAsmtDisplayText: (asmt)->
       Mustache.to_html @optionTemplate, asmt
 
+  _format_effective_date = (effectiveDate) ->
+    return "" if not effectiveDate
+    effectiveDate = effectiveDate.toString()
+    year = effectiveDate.substr(0, 4)
+    month = effectiveDate.substr(4, 2)
+    day = effectiveDate.substr(6, 2)
+    "#{year}.#{month}.#{day}"
+
   # dropdownValues is an array of values to feed into dropdown
   (($)->
     $.fn.edwareAsmtDropdown = (dropdownValues, callback) ->
+      for asmt in dropdownValues
+        asmt.effective_date = _format_effective_date(asmt.effective_date)
       new EdwareAsmtDropdown($(this), dropdownValues, callback)
   ) jQuery
 

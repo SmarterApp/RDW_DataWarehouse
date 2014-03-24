@@ -23,7 +23,7 @@ define [
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
-      @asmtDropdown ?= @createAsmtDropdown() if @config.asmtTypes
+      @asmtDropdown = @createAsmtDropdown() if @config.asmtTypes
       @printer ?= @createPrint()
 
     createPrint: () ->
@@ -60,7 +60,7 @@ define [
       legendInfo = @config.legendInfo
       colorsData = @config.colorsData
       # merge default color data into sample intervals data
-      sampleColor = colorsData.subject1 || colorsData.subject2        
+      sampleColor = colorsData.subject1 || colorsData.subject2
       for color, i in sampleColor.colors || @config.colors
         legendInfo.sample_intervals.intervals[i].color = color
       legendInfo.sample_intervals

@@ -13,7 +13,7 @@ define [
       @bindEvents()
 
     initialize: () ->
-      @optionTemplate = @dropdownValues[0].display
+      @optionTemplate = @dropdownValues[0]?.display
       output = Mustache.to_html AsmtDropdownTemplate,
         dropdownValues: @dropdownValues
       @container.html(output)
@@ -26,7 +26,7 @@ define [
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
       if not asmt.subjectText
-        asmt.subjectText = @dropdownValues[0].defaultSubjectText
+        asmt.subjectText = @dropdownValues[0]?.defaultSubjectText
       @setSelectedValue @getAsmtDisplayText(asmt)
 
     bindEvents: () ->

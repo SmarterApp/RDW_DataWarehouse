@@ -6,7 +6,7 @@ Created on Mar 16, 2014
 import unittest
 from kombu import Connection
 from edmigrate.utils.consumer import ConsumerThread
-from edmigrate.utils.slave_tracker import SlaveTracker
+from edmigrate.utils.player_tracker import PlayerTracker
 from edmigrate.utils import reply_to_conductor
 import time
 import threading
@@ -24,72 +24,72 @@ class Test(unittest.TestCase):
         self.__thread = ConsumerThread(self.__connection)
         self.__thread.start()
         time.sleep(1)
-        SlaveTracker().reset()
-        SlaveTracker().set_accept_slave(True)
+        PlayerTracker().reset()
+        PlayerTracker().set_accept_player(True)
 
     def tearDown(self):
         self.__thread.stop()
         self.lock.release()
 
     def test_ACK_COMMAND_FIND_SLAVE(self):
-        reply_to_conductor.register_slave(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.register_slave(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        slave_tracker = SlaveTracker()
-        ids = slave_tracker.get_slave_ids(timeout=5)
+        player_tracker = PlayerTracker()
+        ids = player_tracker.get_player_ids(timeout=5)
         self.assertEqual(2, len(ids))
         self.assertIn(112, ids)
         self.assertIn(115, ids)
 
     def test_ACK_COMMAND_DISCONNECT_MASTER(self):
-        reply_to_conductor.register_slave(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.register_slave(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         reply_to_conductor.acknowledgement_master_disconnected(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        slave_tracker = SlaveTracker()
-        self.assertTrue(slave_tracker.is_replication_stopped(112))
-        self.assertFalse(slave_tracker.is_replication_stopped(115))
+        player_tracker = PlayerTracker()
+        self.assertTrue(player_tracker.is_replication_stopped(112))
+        self.assertFalse(player_tracker.is_replication_stopped(115))
 
     def test_ACK_COMMAND_CONNECT_MASTER(self):
-        reply_to_conductor.register_slave(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.register_slave(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        slave_tracker = SlaveTracker()
-        self.assertTrue(slave_tracker.is_replication_started(112))
-        self.assertTrue(slave_tracker.is_replication_started(115))
+        player_tracker = PlayerTracker()
+        self.assertTrue(player_tracker.is_replication_started(112))
+        self.assertTrue(player_tracker.is_replication_started(115))
         reply_to_conductor.acknowledgement_master_disconnected(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        self.assertTrue(slave_tracker.is_replication_stopped(112))
-        self.assertTrue(slave_tracker.is_replication_started(115))
+        self.assertTrue(player_tracker.is_replication_stopped(112))
+        self.assertTrue(player_tracker.is_replication_started(115))
         reply_to_conductor.acknowledgement_master_connected(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        self.assertTrue(slave_tracker.is_replication_started(112))
-        self.assertTrue(slave_tracker.is_replication_started(115))
+        self.assertTrue(player_tracker.is_replication_started(112))
+        self.assertTrue(player_tracker.is_replication_started(115))
 
     def test_ACK_COMMAND_DISCONNECT_PGPOOL(self):
-        reply_to_conductor.register_slave(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.register_slave(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         reply_to_conductor.acknowledgement_pgpool_disconnected(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        slave_tracker = SlaveTracker()
-        self.assertTrue(slave_tracker.is_pgpool_disconnected(112))
-        self.assertFalse(slave_tracker.is_pgpool_disconnected(115))
+        player_tracker = PlayerTracker()
+        self.assertTrue(player_tracker.is_pgpool_disconnected(112))
+        self.assertFalse(player_tracker.is_pgpool_disconnected(115))
 
     def test_ACK_COMMAND_CONNECT_PGPOOL(self):
-        reply_to_conductor.register_slave(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.register_slave(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
+        reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        slave_tracker = SlaveTracker()
-        self.assertTrue(slave_tracker.is_pgpool_connected(112))
-        self.assertTrue(slave_tracker.is_pgpool_connected(115))
+        player_tracker = PlayerTracker()
+        self.assertTrue(player_tracker.is_pgpool_connected(112))
+        self.assertTrue(player_tracker.is_pgpool_connected(115))
         reply_to_conductor.acknowledgement_pgpool_disconnected(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        self.assertTrue(slave_tracker.is_pgpool_disconnected(112))
-        self.assertTrue(slave_tracker.is_pgpool_connected(115))
+        self.assertTrue(player_tracker.is_pgpool_disconnected(112))
+        self.assertTrue(player_tracker.is_pgpool_connected(115))
         reply_to_conductor.acknowledgement_pgpool_connected(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
         time.sleep(1)
-        self.assertTrue(slave_tracker.is_pgpool_connected(112))
-        self.assertTrue(slave_tracker.is_pgpool_connected(115))
+        self.assertTrue(player_tracker.is_pgpool_connected(112))
+        self.assertTrue(player_tracker.is_pgpool_connected(115))
 
 
 if __name__ == "__main__":

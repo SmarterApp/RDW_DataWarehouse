@@ -5,7 +5,7 @@ Created on Mar 13, 2014
 '''
 from kombu.mixins import ConsumerMixin
 from edmigrate.utils.constants import Constants
-from edmigrate.utils.slave_tracker import SlaveTracker
+from edmigrate.utils.player_tracker import PlayerTracker
 import threading
 import logging
 from edmigrate.queues import conductor
@@ -28,18 +28,18 @@ class ConsumerThread(threading.Thread):
 
 class Consumer(ConsumerMixin):
     '''
-    Consume messages from slaves
+    Consume messages from players
     '''
 
     def __init__(self, connection):
         self.connection = connection
-        self.__slave_tracker = SlaveTracker()
+        self.__player_tracker = PlayerTracker()
         self.__CONSUMER_COMMAND_HANDLERS = {
-            Constants.ACK_COMMAND_FIND_SLAVE: self.__slave_tracker.add_slave,
-            Constants.ACK_COMMAND_START_REPLICATION: self.__slave_tracker.set_replication_started,
-            Constants.ACK_COMMAND_CONNECT_PGPOOL: self.__slave_tracker.set_pgpool_connected,
-            Constants.ACK_COMMAND_STOP_REPLICATION: self.__slave_tracker.set_replication_stopped,
-            Constants.ACK_COMMAND_DISCONNECT_PGPOOL: self.__slave_tracker.set_pgpool_disconnected
+            Constants.ACK_COMMAND_FIND_PLAYER: self.__player_tracker.add_player,
+            Constants.ACK_COMMAND_START_REPLICATION: self.__player_tracker.set_replication_started,
+            Constants.ACK_COMMAND_CONNECT_PGPOOL: self.__player_tracker.set_pgpool_connected,
+            Constants.ACK_COMMAND_STOP_REPLICATION: self.__player_tracker.set_replication_stopped,
+            Constants.ACK_COMMAND_DISCONNECT_PGPOOL: self.__player_tracker.set_pgpool_disconnected
         }
 
     def get_consumers(self, Consumer, channel):

@@ -173,7 +173,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
-    @patch('edmigrate.utils.reply_to_conductor.register_slave')
+    @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_node_id(self, MockConductor):
         logger = MockLogger()
         player = Player(logger, self.connection, self.exchange, self.routing_key)
@@ -188,7 +188,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
-    @patch('edmigrate.utils.reply_to_conductor.register_slave')
+    @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_no_node_id(self, MockConductor):
         logger = MockLogger()
         Mocket.disable()
@@ -205,7 +205,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_succeed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
         MockConductor.return_value = lambda: None
@@ -223,7 +223,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_pgpool_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
         MockConductor.return_value = lambda: None
@@ -242,7 +242,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_master_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
         MockConductor.return_value = lambda: None
@@ -261,7 +261,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_both_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
         MockConductor.return_value = lambda: None
@@ -667,7 +667,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.register_slave')
+    @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_run_command_register_player(self, MockConductor, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
@@ -683,7 +683,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.register_slave')
+    @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_run_command_register_player_with_node_id(self, MockConductor, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
@@ -699,7 +699,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players(self, MockConductor, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
@@ -715,7 +715,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players_with_node_id(self, MockConductor, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
@@ -731,7 +731,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players_failed(self, MockConductor, MockSubprocess):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
@@ -748,7 +748,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
-    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
+    @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_run_command_reset_players_with_node_id_failed(self, MockConductor, MockSubprocess):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None

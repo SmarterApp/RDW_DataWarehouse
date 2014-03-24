@@ -4,7 +4,6 @@ Created on Mar 21, 2014ß
 @author: ejen
 '''
 from edmigrate.queues import conductor
-from edmigrate.queues import conductor
 import logging
 from edmigrate.utils.utils import get_broker_url
 from edmigrate.tasks.base import BaseTask
@@ -228,8 +227,8 @@ class Player(metaclass=Singleton):
         status_1 = self.remove_iptable_rules(pgpool, max_retries)
         status_2 = self.remove_iptable_rules(master, max_retries)
         if status_1 and status_2:
-            reply_to_conductor.acknowledgement_reset_slaves(self.node_id, self.connection,
-                                                            self.exchange, self.routing_key)
+            reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
+                                                             self.exchange, self.routing_key)
         elif status_1 and not status_2:
             self.logger.error("{name}: Failed to reset iptables for pgpool ( {pgpool} )".
                               format(name=self.__class__.__name__, pgpool=pgpool))
@@ -246,7 +245,7 @@ class Player(metaclass=Singleton):
         '''
         self.logger.info("{name}: Register {name} to conductor".format(name=self.__class__.__name__))
         if self.node_id is not None:
-            reply_to_conductor.register_slave(self.node_id, self.connection, self.exchange, self.routing_key)
+            reply_to_conductor.register_player(self.node_id, self.connection, self.exchange, self.routing_key)
         else:
             # log errors
             self.logger.error("{name}: {hostname} has no node_id".
@@ -260,7 +259,7 @@ def player_task(command, nodes):
     will be a singleton
     Please see https://docs.google.com/a/amplify.com/drawings/d/14K89SK6FLTPCFi0clvmnrTFMaIkc0eDDwQ0kt8CsTCE/
     for architecture
-    Two tasks, COMMAND_FIND_SLAVE and COMMAND_REST_SLAVE are executed regardless player nodes are included or not
+    Two tasks, COMMAND_FIND_PLAYER and COMMAND_REST_PLAYER are executed regardless player nodes are included or not
     For other tasks. Player task checks membership of current player node in nodes argument represented as a list
     of node_id. Those tasks are executed if and only if membership is true.
     """

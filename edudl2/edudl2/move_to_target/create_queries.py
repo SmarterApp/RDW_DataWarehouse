@@ -332,7 +332,7 @@ def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matching
     create a query to find all delete/updated record in current batch, get the rec_id back
     '''
     matched_prod_values = matched_preprod_values.copy()
-    matched_prod_values['status'] = matching_conf['status']
+    matched_prod_values['rec_status'] = matching_conf['rec_status']
     condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matching_conf['condition'])])
     params = [bindparam(c, matched_prod_values[c]) for c in sorted(matching_conf['condition'])]
     query = text("SELECT {columns} "
@@ -352,7 +352,7 @@ def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, ma
     '''
     set_clause = ", ".join(["{k} = :{v}".format(k=kc, v=kv) for kc, kv in sorted(matching_conf['columns'].items())])
     matched_preprod_values = matched_prod_values.copy()
-    matched_preprod_values['status'] = matching_conf['status']
+    matched_preprod_values['rec_status'] = matching_conf['rec_status']
     del matched_preprod_values['asmnt_outcome_rec_id']
     condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matched_preprod_values.keys())])
     params = [bindparam(c, matched_preprod_values[c]) for c in matched_preprod_values.keys()]

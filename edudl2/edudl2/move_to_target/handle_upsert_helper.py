@@ -3,7 +3,7 @@ from sqlalchemy import select, delete, update, and_
 # Column names constants. Below columns are specific to Edware, and
 # are unlikely to change in future.
 BATCH_GUID = 'batch_guid'
-MOST_RECENT = 'most_recent'
+REC_STATUS = 'rec_status'
 
 
 class _Matcher():
@@ -62,7 +62,7 @@ class HandleUpsertHelper():
         if not record:
             return None
         guid_clause = self._get_guid(record)
-        query = select([self._table]).where(guid_clause).where(self._table.c[MOST_RECENT].__eq__(True))
+        query = select([self._table]).where(guid_clause).where(self._table.c[REC_STATUS].__eq__('C'))
         results = self._conn.execute(query)
         for result in results:
             if self._matcher.match(record, result):

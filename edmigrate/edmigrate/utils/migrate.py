@@ -195,7 +195,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     :returns number of record updated
     '''
     dest_table = dest_connector.get_table(table_name)
-    return dest_connector.execute(dest_table.insert(), False, batch).rowcount
+    return dest_connector.execute(dest_table.insert(), batch).rowcount
 
 
 def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables):

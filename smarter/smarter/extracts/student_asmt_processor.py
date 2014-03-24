@@ -4,9 +4,8 @@ from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query
 from edcore.utils.utils import compile_query_to_sql_text
-import pyramid.threadlocal
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import start_extract, archive, route_tasks, prepare_path
+from edextract.tasks.extract import start_extract, archive, generate_extract_file_tasks, prepare_path
 from pyramid.threadlocal import get_current_registry
 from datetime import datetime
 import os
@@ -15,7 +14,7 @@ import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
-from edextract.tasks.constants import Constants as TaskConstants
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 
 __author__ = 'ablum'
 
@@ -43,8 +42,8 @@ def process_sync_extract_request(params):
 #        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
 #                       route_tasks(tenant, request_id, tasks, queue_name=queue),
 #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
-        prepare_path.apply_async(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
-        route_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
+        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
         result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
@@ -56,7 +55,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
-    queue = pyramid.threadlocal.get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
+    queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     tasks = []
     response = {}
     task_responses = []
@@ -208,10 +207,10 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     task[TaskConstants.TASK_TASK_ID] = create_new_entry(user, request_id, params)
     if asmt_metadata:
         task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
-        task[TaskConstants.TASK_IS_JSON_REQUEST] = True
+        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.ASMT_JSON
     else:
         task[TaskConstants.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
-        task[TaskConstants.TASK_IS_JSON_REQUEST] = False
+        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.ASMT_CSV
     task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
     return task
 

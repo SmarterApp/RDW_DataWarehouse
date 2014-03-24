@@ -1,11 +1,12 @@
 import csv
 import os
-from edudl2.udl2_util.database_util import execute_queries
 from edudl2.move_to_target import move_to_target, move_to_target_setup
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from sqlalchemy.sql.expression import text, bindparam
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
 from unittest import skip
+from edudl2.database.udl2_connector import get_udl_connection,\
+    get_target_connection
 
 
 class MatchAndDeleteFTest(UDLTestHelper):
@@ -48,8 +49,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
 
     def load_int_sbac_asmt(self):
         table = 'INT_SBAC_ASMT'
-        insert_array = []
-        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_DELETE.csv')) as f:
+        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_DELETE.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
             header.insert(0, 'record_sid')
@@ -57,31 +57,26 @@ class MatchAndDeleteFTest(UDLTestHelper):
                 # set record_sid = 7 in this func test
                 row.insert(0, str(7))
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),
                                     bindparams=params)
-                insert_array.append(insert_query)
-            except_msg = "Unable to insert into %s" % table
-            execute_queries(self.udl2_conn, insert_array, except_msg)
+                conn.execute(insert_query)
 
     def load_int_sbac_asmt_outcome(self):
         table = 'INT_SBAC_ASMT_OUTCOME'
-        insert_array = []
-        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_OUTCOME_DELETE.csv')) as f:
+        with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_OUTCOME_DELETE.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
             for row in cf:
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),
                                     bindparams=params)
-                insert_array.append(insert_query)
-            except_msg = "Unable to insert into %s" % table
-            execute_queries(self.udl2_conn, insert_array, except_msg)
+                conn.execute(insert_query)
 
     def load_int_to_star(self):
         self.load_int_sbac_asmt()
@@ -118,7 +113,8 @@ class MatchAndDeleteFTest(UDLTestHelper):
             query = text(self.match_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
                                                table='fact_asmt_outcome'),
                          bindparams=[bindparam('status', status)])
-        result = self.target_conn.execute(query)
+        with get_target_connection() as conn:
+            result = conn.execute(query)
         return int(result.fetchall()[0][0])
 
     def test_01_match_deleted_records(self):

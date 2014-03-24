@@ -11,6 +11,7 @@ class Config():
     LAG_TOLERENCE_IN_BYTES = 'migrate.lag_tolerence_in_bytes'
     PGPOOL_HOSTNAME = 'migrate.pgpool.hostname'
     MASTER_HOSTNAME = 'migrate.master.hostname'
+    IPTABLES_CHAIN = 'migrate.iptables.chain'
     DEFAULT_ROUTUNG_KEY = 'migrate.celery.CELERY_DEFAULT_ROUTING_KEY'
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'
@@ -30,7 +31,8 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.DEFAULT_ROUTUNG_QUEUE, str, 'edmigrate_master'),
                   (Config.BROKER_URL, str, 'memory://'),
                   (Config.EAGER_MODE, bool, False),
-                  (Config.MASTER_HOSTNAME, str, 'localhost')]
+                  (Config.MASTER_HOSTNAME, str, 'localhost'),
+                  (Config.IPTABLES_CHAIN, str, 'PGSQL')]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

@@ -9,7 +9,7 @@ from edudl2.fileloader.file_loader import load_file
 from edudl2.udl2 import message_keys as mk
 import edudl2.rule_maker.rules.code_generator_special_rules as sr
 from edudl2.tests.functional_tests.util import UDLTestHelper
-from edudl2.udl2.udl2_connector import get_udl_connection, initialize_db_udl
+from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from uuid import uuid4
 
@@ -33,11 +33,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
             mk.FDW_SERVER: 'udl2_fdw_server',
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: staging_table,
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
@@ -50,14 +50,15 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
             WHERE guid_batch = '{guid_batch}'
         """
-        sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['staging_schema'],
-                                  staging_table=table,
-                                  guid_batch=self.udl2_conf['guid_batch'])
-        result = self.udl2_conn.execute(sql)
-        count = 0
-        for row in result:
-            count = row[0]
-        return count
+        with get_udl_connection() as conn:
+            sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+                                      staging_table=table,
+                                      guid_batch=self.udl2_conf['guid_batch'])
+            result = conn.execute(sql)
+            count = 0
+            for row in result:
+                count = row[0]
+            return count
 
     def generate_conf_for_moving_from_stg_to_int(self, guid_batch, load_type):
         conf = {
@@ -70,7 +71,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.SOURCE_DB_USER: self.udl2_conf['udl2_db']['db_user'],
             mk.SOURCE_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.SOURCE_DB_TABLE: self.udl2_conf['udl2_db']['staging_tables'][load_type],
 
             # target database setting
@@ -79,11 +80,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
             mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: self.udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
-            mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['staging_schema'],
+            mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
 
         }
         return conf
@@ -146,14 +147,15 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                         'two or more races 3': {'src_column': "'y', 'y', 'n', 'y', 'y', 'y'", 'expected_code': 7}
                         }
         sql_template = 'SELECT %s;' % function_name
-        for _key, value in prepare_data.items():
-            sql = sql_template.format(src_column=value['src_column'])
-            result = self.udl2_conn.execute(sql)
-            actual_value = ''
-            for r in result:
-                actual_value = r[0]
-                break
-            self.assertEqual(actual_value, value['expected_code'])
+        with get_udl_connection() as conn:
+            for _key, value in prepare_data.items():
+                sql = sql_template.format(src_column=value['src_column'])
+                result = conn.execute(sql)
+                actual_value = ''
+                for r in result:
+                    actual_value = r[0]
+                    break
+                self.assertEqual(actual_value, value['expected_code'])
 
     def test_get_column_mapping_from_stg_to_int(self):
         expected_target_columns = ['guid_batch', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',
@@ -180,6 +182,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
                                                                                                'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
-                                                                                               self.udl2_conf['udl2_db']['staging_schema'])
+                                                                                               self.udl2_conf['udl2_db']['db_schema'])
             self.assertEqual(expected_target_columns, target_columns)
             self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)

@@ -18,6 +18,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
+from edcore.security.tenant import set_tenant_map
 
 
 class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -53,6 +54,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         setup_celery(settings)
         # for UT purposes
         smarter.extracts.format.json_column_mapping = {}
+        set_tenant_map({'tomcat': 'NC'})
 
     def tearDown(self):
         self.__request = None

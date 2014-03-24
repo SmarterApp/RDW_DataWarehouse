@@ -39,11 +39,11 @@ class MockLogger(object):
         return "stdout: " + str(self.out) + " stderr: " + str(self.err)
 
 
-class SlaveTaskTest(Unittest_with_repmgr_sqlite):
+class PlayerTaskTest(Unittest_with_repmgr_sqlite):
 
     @classmethod
     def setUpClass(cls):
-        super(SlaveTaskTest, cls).setUpClass()
+        super(PlayerTaskTest, cls).setUpClass()
 
     def setUp(self):
         # clean up singleton durign testing

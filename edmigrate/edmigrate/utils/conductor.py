@@ -20,10 +20,21 @@ logger = logging.getLogger('edmigrate')
 class Conductor:
     def __init__(self):
         self.__player_trakcer = PlayerTracker()
+        self.__player_trakcer.set_migration_in_process(True)
         self.__broadcast_queue = get_setting(Config.BROADCAST_QUEUE)
 
-    def reset_players(self):
-        player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, value, tb):
+        return self.__player_trakcer.set_migration_in_process(False)
+
+    def __del__(self):
+        self.__player_trakcer.set_migration_in_process(False)
+
+    def send_reset_slaves(self):
+        self.__player_trakcer.reset()
+        slave_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_RESET_PLAYERS, None, None)
 
     def accept_players(self):
@@ -36,8 +47,11 @@ class Conductor:
         player_task.apply_async((Constants.COMMAND_REGISTER_PLAYER, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
         self.__log(Constants.COMMAND_REGISTER_PLAYER, None, None)
 
+    def get_player_ids(self):
+        return self.__player_trakcer.get_player_ids()
+
     def grouping_players(self):
-        player_ids = self.__player_trakcer.get_player_ids()
+        player_ids = self.__player_trakcer.get_slave_ids()
         if player_ids:
             for idx in range(len(player_ids)):
                 # set group A for "0" or group B for "1"

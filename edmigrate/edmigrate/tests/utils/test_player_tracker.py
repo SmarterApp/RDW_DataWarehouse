@@ -10,6 +10,7 @@ from edmigrate.exceptions import PlayerAlreadyRegisteredException, \
     PlayerDelayedRegistrationException
 from edmigrate.utils.constants import Constants
 import time
+from edmigrate.utils.conductor import Conductor
 
 
 class Test(unittest.TestCase):
@@ -141,6 +142,14 @@ class Test(unittest.TestCase):
         self.assertRaises(PlayerDelayedRegistrationException, playertracker1.add_player, 3)
         ids = playertracker1.get_player_ids()
         self.assertEqual(2, len(ids))
+
+    def test_is_migration_in_process(self):
+        playertracker1 = PlayerTracker()
+        self.assertFalse(playertracker1.is_migration_in_process())
+        conductor = Conductor()
+        self.assertTrue(playertracker1.is_migration_in_process())
+        del conductor
+        self.assertFalse(playertracker1.is_migration_in_process())   
 
 
 if __name__ == "__main__":

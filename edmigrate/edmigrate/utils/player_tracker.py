@@ -22,9 +22,23 @@ class PlayerTracker(metaclass=Singleton):
     def __init__(self, timeout=5):
         self.__timeout = timeout
         self.__accept_player = False
+        self.__migration_in_process = False
         try:
             if self.__lock.acquire(timeout=self.__timeout):
                 self.__players = {}
+            else:
+                raise PlayerStatusLockingTimedoutException()
+        finally:
+            if self.__lock.locked():
+                self.__lock.release()
+
+    def is_migration_in_process(self):
+        return self.__migration_in_process
+
+    def set_migration_in_process(self, process):
+        try:
+            if self.__lock.acquire(timeout=self.__timeout):
+                self.__migration_in_process = process
             else:
                 raise PlayerStatusLockingTimedoutException()
         finally:

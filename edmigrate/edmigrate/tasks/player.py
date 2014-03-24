@@ -42,6 +42,9 @@ class Player(metaclass=Singleton):
         self.set_hostname(socket.gethostname())
         self.set_node_id_from_hostname()
 
+    def __enter__(self):
+        return self
+
     def run_command(self, command, nodes):
         if command in self.COMMAND_HANDLERS:
             if nodes is None:

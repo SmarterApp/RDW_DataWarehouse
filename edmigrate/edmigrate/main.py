@@ -84,6 +84,7 @@ def main(file=None, tenant='cat', run_migrate_only=False):
             logger.error(e)
             os._exit(1)
 
+
 def create_daemon(_pidfile):
     global pidfile
     pidfile = _pidfile

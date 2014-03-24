@@ -111,7 +111,7 @@ define [
         #reload from server
         window.location.reload()
       asmtType = asmt.asmtType
-      data = @cache[asmtGuid][asmtType][viewName]
+      data = @cache[asmtGuid][asmtType]?[viewName]
       if data
         for item in data
           item.assessments = item[asmtType]

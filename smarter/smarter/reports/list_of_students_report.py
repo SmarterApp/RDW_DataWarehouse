@@ -91,9 +91,6 @@ def get_list_of_students_report(params):
     asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, asmt_year=asmtYear)
 
     results = get_list_of_students(params)
-    if not results and not has_filters(params):
-        raise NotFoundException("There are no results")
-
     subjects_map = get_subjects_map(asmtSubject)
     students = {}
     # Formatting data for Front End

@@ -9,7 +9,7 @@ from unittest import skip
 from mocket.mocket import Mocket
 from edmigrate.tests.utils.unittest_with_repmgr_sqlite import Unittest_with_repmgr_sqlite
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
-from edmigrate.tasks.slave import Player
+from edmigrate.tasks.player import Player
 from edmigrate.settings.config import Config, get_setting
 import edmigrate.settings.config
 from edmigrate.utils.constants import Constants

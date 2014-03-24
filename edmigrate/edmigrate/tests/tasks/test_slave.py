@@ -56,144 +56,24 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
             conn.execute(repl_nodes.insert().values({Constants.ID: self.node_id,
                                                      Constants.REPL_NODE_CLUSTER: self.cluster,
                                                      Constants.REPL_NODE_CONN_INFO: 'host=localhost user=repmgr dbname=test'}))
-        self.noblock_firewall_output = 'Chain INPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
-            'ACCEPT     icmp --  anywhere             anywhere            \n'\
-            'ACCEPT     all  --  anywhere             anywhere            \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
-            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain FORWARD (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain OUTPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            '\n'\
-            'Chain PGSQL (1 references)\n'\
+        self.noblock_firewall_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
 
-        self.block_once_output = 'Chain INPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
-            'ACCEPT     icmp --  anywhere             anywhere            \n'\
-            'ACCEPT     all  --  anywhere             anywhere            \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
-            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain FORWARD (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain OUTPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            '\n'\
-            'Chain PGSQL (1 references)\n'\
+        self.block_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
             'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
-        self.block_twice_output = 'Chain INPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
-            'ACCEPT     icmp --  anywhere             anywhere            \n'\
-            'ACCEPT     all  --  anywhere             anywhere            \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
-            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain FORWARD (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain OUTPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            '\n'\
-            'Chain PGSQL (1 references)\n'\
+        self.block_twice_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
             'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
-        self.block_master_once_output = 'Chain INPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
-            'ACCEPT     icmp --  anywhere             anywhere            \n'\
-            'ACCEPT     all  --  anywhere             anywhere            \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
-            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain FORWARD (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain OUTPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            '\n'\
-            'Chain PGSQL (1 references)\n'\
+        self.block_master_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
             'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
-        self.block_both_once_output = 'Chain INPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED \n'\
-            'ACCEPT     icmp --  anywhere             anywhere            \n'\
-            'ACCEPT     all  --  anywhere             anywhere            \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:http \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:webcache \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:distinct \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:solve \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:pcsync-https \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:amqp \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:personal-agent \n'\
-            'ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:15672 \n'\
-            'PGSQL      tcp  --  anywhere             anywhere            state NEW tcp dpt:postgres flags:FIN,SYN,RST,ACK/SYN \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain FORWARD (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            'REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited \n'\
-            '\n'\
-            'Chain OUTPUT (policy ACCEPT)\n'\
-            'target     prot opt source               destination         \n'\
-            '\n'\
-            'Chain PGSQL (1 references)\n'\
+        self.block_both_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
             'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
@@ -241,6 +121,10 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         found = player.search_blocked_hostname(self.block_twice_output, self.pgpool)
         self.assertTrue(found)
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_0(self, MockSubprocess):
         logger = MockLogger()
@@ -249,9 +133,13 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(5, logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.noblock_firewall_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
         self.assertFalse(result)
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_1(self, MockSubprocess):
         logger = MockLogger()
@@ -260,18 +148,26 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(5, logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.block_once_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
         self.assertTrue(result)
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_2(self, MockSubprocess):
         logger = MockLogger()
         player = Player(5, logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.block_twice_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
         self.assertTrue(result)
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('edmigrate.utils.reply_to_conductor.register_slave')
     def test_register_player_with_node_id(self, MockConductor):
         logger = MockLogger()
@@ -283,6 +179,10 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         self.assertEqual(len(logger.err), 0)
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('edmigrate.utils.reply_to_conductor.register_slave')
     def test_register_player_with_no_node_id(self, MockConductor):
         logger = MockLogger()
@@ -297,7 +197,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_reset_players_succeed(self, MockConductor, MockSubprocess):
@@ -314,7 +215,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_reset_players_with_pgpool_failed(self, MockConductor, MockSubprocess):
@@ -332,7 +234,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_reset_players_with_master_failed(self, MockConductor, MockSubprocess):
@@ -350,7 +253,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_reset_players_with_both_failed(self, MockConductor, MockSubprocess):
@@ -368,7 +272,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_succeed(self, MockConductor, MockSubprocess):
@@ -384,7 +289,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_failed(self, MockConductor, MockSubprocess):
@@ -400,7 +306,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_disconnect_pgpool_succeed(self, MockConductor, MockSubprocess):
@@ -416,7 +323,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_disconnect_pgpool_failed(self, MockConductor, MockSubprocess):
@@ -432,7 +340,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('subprocess.check_output')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_connect_master_succeed(self, MockConductor, MockSubprocess):
@@ -448,7 +357,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch('subprocess.check_output')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_connect_master_failed(self, MockConductor, MockSubprocess):
@@ -464,7 +374,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_succeed(self, MockConductor, MockSubprocess):
@@ -480,7 +391,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_failed(self, MockConductor, MockSubprocess):
@@ -494,44 +406,57 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
         self.assertEqual(1, len(player.logger.err))
         self.assertFalse(MockConductor.called)
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     def test_check_iptable_has_blocked_machine_with_exception(self, MockSubprocess):
-        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', '-L', 'iptables'])
+        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', '-L', 'iptables', 'PGSQL'])
         MockSubprocess.return_value = self.noblock_firewall_output
         logger = MockLogger()
         player = Player(5, logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.check_iptable_has_blocked_machine(self.hostname)
-        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L'], universal_newlines=True)
+        MockSubprocess.assert_called_once_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
         self.assertEqual(1, len(player.logger.err))
 
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     def test_remove_iptable_rules_with_exception(self, MockSubprocess):
-        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', 'iptables', '-L'])
+        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', 'iptables', '-L', 'PGSQL'])
         MockSubprocess.return_value = self.block_once_output
         logger = MockLogger()
         player = Player(5, logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.remove_iptable_rules(self.pgpool, Constants.REPLICATION_MAX_RETRIES)
-        MockSubprocess.assert_called_with(['sudo', 'iptables', '-L'], universal_newlines=True)
-        self.assertEqual(2, MockSubprocess.call_count)
-        self.assertEqual(2, len(player.logger.err))
-
-    @patch("subprocess.check_output")
-    def test_add_iptable_rules_with_exception(self, MockSubprocess):
-        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', 'iptables', '-L'])
-        MockSubprocess.return_value = self.block_once_output
-        logger = MockLogger()
-        player = Player(5, logger, self.connection, self.exchange, self.routing_key)
-        player.set_hostname(socket.gethostname())
-        player.add_iptable_rules(self.pgpool)
-        MockSubprocess.assert_called_with(['sudo', 'iptables', '-L'], universal_newlines=True)
+        MockSubprocess.assert_called_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
         self.assertEqual(2, len(player.logger.err))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
+    @patch("subprocess.check_output")
+    def test_add_iptable_rules_with_exception(self, MockSubprocess):
+        MockSubprocess.side_effect = subprocess.CalledProcessError(1, ['sudo', 'iptables', '-L', 'PGSQL'])
+        MockSubprocess.return_value = self.block_once_output
+        logger = MockLogger()
+        player = Player(5, logger, self.connection, self.exchange, self.routing_key)
+        player.set_hostname(socket.gethostname())
+        player.add_iptable_rules(self.pgpool)
+        MockSubprocess.assert_called_with(['sudo', 'iptables', '-L', 'PGSQL'], universal_newlines=True)
+        self.assertEqual(2, MockSubprocess.call_count)
+        self.assertEqual(2, len(player.logger.err))
+
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_run_command_start_replication_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -547,7 +472,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_run_command_start_replication_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -564,7 +490,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_run_command_start_replication_without_nodes(self, MockConductor, MockSubprocess):
@@ -581,7 +508,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_run_command_stop_replication_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -597,7 +525,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_run_command_stop_replication_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -613,7 +542,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_run_command_stop_replication_witout_nodes(self, MockConductor, MockSubprocess):
@@ -629,7 +559,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_run_command_disconnect_pgpool_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -644,7 +575,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_run_command_disconnect_pgpool_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -660,7 +592,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_run_command_disconnect_pgpool_without_nodes(self, MockConductor, MockSubprocess):
@@ -676,7 +609,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockSubprocess):
@@ -691,7 +625,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_with_node_id_not_in_nodes(self, MockConductor, MockSubprocess):
@@ -707,7 +642,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_without_nodes(self, MockConductor, MockSubprocess):
@@ -723,7 +659,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.register_slave')
     def test_run_command_register_player(self, MockConductor, MockSubprocess):
@@ -738,7 +675,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.register_slave')
     def test_run_command_register_player_with_node_id(self, MockConductor, MockSubprocess):
@@ -753,7 +691,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_run_command_reset_players(self, MockConductor, MockSubprocess):
@@ -768,7 +707,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_run_command_reset_players_with_node_id(self, MockConductor, MockSubprocess):
@@ -783,7 +723,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_run_command_reset_players_failed(self, MockConductor, MockSubprocess):
@@ -799,7 +740,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_slaves')
     def test_run_command_reset_players_with_node_id_failed(self, MockConductor, MockSubprocess):
@@ -815,7 +757,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     def test_run_command_not_implemented(self, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
@@ -828,7 +771,8 @@ class SlaveTaskTest(Unittest_with_repmgr_sqlite):
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
-                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net'})
+                        Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
+                        Config.IPTABLES_CHAIN: 'PGSQL'})
     @patch("subprocess.check_output")
     def test_run_command_not_implemented_with_node_id(self, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output

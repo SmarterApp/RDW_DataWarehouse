@@ -2,15 +2,14 @@ from pyramid.security import Allow
 import edauth
 from edauth.security.user import User
 from edcore.security.tenant import set_tenant_map
-from edextract.tasks.student_reg_constants import Constants as TaskConstants, ReportType
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
 
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import \
-    Unittest_with_edcore_sqlite
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
 from pyramid.registry import Registry
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import tempfile
@@ -70,7 +69,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
     def test__get_extract_file_path(self):
         extract_params = {TaskConstants.STATE_CODE: "NC",
                           TaskConstants.ACADEMIC_YEAR: 2015,
-                          TaskConstants.REPORT_TYPE: ReportType.STATISTICS}
+                          TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
 
         result = _get_extract_file_path("requestId", "tenant", extract_params)
         self.assertIn('.csv', result)

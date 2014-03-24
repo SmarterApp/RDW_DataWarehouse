@@ -5,15 +5,42 @@ This module contains methods to obtain data for the different Student Registrati
 """
 
 import csv
-from sqlalchemy.sql.expression import select
+from sqlalchemy.sql.expression import select, or_
 
 from edextract.status.constants import Constants
-from edextract.tasks.student_reg_constants import Constants as TaskConstants, TableName
+from edextract.tasks.constants import Constants as TaskConstants
+from edextract.data_extract_generation.constants import TableName
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
-def generate_statistics_report_data(tenant, academic_year):
+def generate_statistics_report(tenant, output_file, task_info, extract_args):
+    """
+    Run generate_report with the arguments, directing it to call generate_statistics_report_data.
+
+    @param tenant: Requestor's tenant ID
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_statistics_report_data
+    """
+
+    _generate_report(tenant, output_file, task_info, extract_args, _generate_statistics_report_data)
+
+
+def generate_completion_report(tenant, output_file, task_info, extract_args):
+    """
+    Run generate_report with the arguments, directing it to call generate_completion_report_data.
+
+    @param tenant: Requestor's tenant ID
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_completion_report_data
+    """
+
+    _generate_report(tenant, output_file, task_info, extract_args, _generate_completion_report_data)
+
+
+def _generate_statistics_report_data(tenant, academic_year):
     """
     This method generates the data for the student registration statistics report.
 
@@ -39,12 +66,12 @@ def generate_statistics_report_data(tenant, academic_year):
               'AY{this_year} Matched IDs to AY{last_year} Count'.format(last_year=last_year, this_year=this_year),
               'AY{this_year} Matched IDs Percent of AY{last_year} count'.format(last_year=last_year, this_year=this_year))
 
-    data = get_sr_tenant_data_for_academic_year(tenant, academic_year)
+    data = _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year)
 
     return header, data
 
 
-def generate_completion_report_data(tenant, academic_year):
+def _generate_completion_report_data(tenant, academic_year):
     """
     This method generates the data for the student registration completion report.
 
@@ -73,33 +100,7 @@ def generate_completion_report_data(tenant, academic_year):
     return header, data
 
 
-def generate_statistics_report(tenant, output_file, task_info, extract_args):
-    """
-    Run generate_report with the arguments, directing it to call generate_statistics_report_data.
-
-    @param tenant: Requestor's tenant ID
-    @param output_file: File pathname of extract file
-    @param task_info: Task information for recording stats
-    @param extract_args: Arguments specific to generate_statistics_report_data
-    """
-
-    generate_report(tenant, output_file, task_info, extract_args, generate_statistics_report_data)
-
-
-def generate_completion_report(tenant, output_file, task_info, extract_args):
-    """
-    Run generate_report with the arguments, directing it to call generate_completion_report_data.
-
-    @param tenant: Requestor's tenant ID
-    @param output_file: File pathname of extract file
-    @param task_info: Task information for recording stats
-    @param extract_args: Arguments specific to generate_completion_report_data
-    """
-
-    generate_report(tenant, output_file, task_info, extract_args, generate_completion_report_data)
-
-
-def generate_report(tenant, output_file, task_info, extract_args, data_extract_func):
+def _generate_report(tenant, output_file, task_info, extract_args, data_extract_func):
     """
     Generate the student registration statistics report CSV file.
 
@@ -122,7 +123,7 @@ def generate_report(tenant, output_file, task_info, extract_args, data_extract_f
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def get_sr_tenant_data_for_academic_year(tenant, academic_year):
+def _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year):
     """
     Get all the tenant's student registration data for the academic year.
 
@@ -138,7 +139,9 @@ def get_sr_tenant_data_for_academic_year(tenant, academic_year):
                        student_reg.c.enrl_grade, student_reg.c.dmg_eth_hsp, student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn,
                        student_reg.c.dmg_eth_blk, student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep,
                        student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd, student_reg.c.dmg_sts_mig,
-                       student_reg.c.dmg_multi_race], from_obj=[student_reg]).where(student_reg.c.academic_year == academic_year)
+                       student_reg.c.dmg_multi_race, student_reg.c.academic_year],
+                       from_obj=[student_reg]).where(or_(student_reg.c.academic_year == academic_year,
+                                                         student_reg.c.academic_year == academic_year - 1))
 
         results = connection.get_streaming_result(query)  # This result is a generator
 

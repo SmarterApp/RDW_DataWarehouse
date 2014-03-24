@@ -36,12 +36,10 @@ define [
         subject = asmt.asmtView.split("_")
         # save subject value
         edwarePreferences.saveSubjectPreference subject
-        # save assessment type
-        edwarePreferences.saveAsmtPreference asmt
         displayText = self.getAsmtDisplayText(asmt)
         self.setSelectedValue displayText
         # additional parameters
-        self.callback()
+        self.callback(asmt)
 
     parseAsmtInfo: ($option) ->
       display: $option.data('display')

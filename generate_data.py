@@ -35,6 +35,7 @@ import sbac_data_generation.generators.population as sbac_pop_gen
 
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.util.id_gen import IDGen
 from sbac_data_generation.writers.filters import SBAC_FILTERS
 
 OUT_PATH_ROOT = 'out'
@@ -92,7 +93,75 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
 
 
-def create_assessment_object(asmt_type, period, year, subject):
+def prepare_output_files(years):
+    """
+    Prepare the output files before the data generation run begins creating data.
+
+    @param years: The years for which data will be generated
+    """
+    # Prepare star-schema output files
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
+                                sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
+                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_SECTION_FORMAT['name'],
+                                sbac_out_config.DIM_SECTION_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
+
+    # Prepare the landing zone files
+    for year in years:
+        name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(year))
+        csv_writer.prepare_csv_file(name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+
+
+def build_registration_systems(years, id_gen):
+    """"
+    Build the registration systems that will be used during the data generation run.
+
+    @param years: The years for which data will be generated
+    @param id_gen: ID generator
+    @returns: A list of GUIDs for the registration systems that were created
+    """
+    # Validate years
+    if len(years) == 0:
+        raise ValueError('Number of specified years is zero')
+
+    # Grab columns and layout for output files
+    sr_out_cols = sbac_out_config.SR_FORMAT['columns']
+    rs_out_layout = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['layout']
+
+    # Build the registration systems for every year
+    guids = []
+    start_year = years[0] - 1
+    for i in range(NUMBER_REGISTRATION_SYSTEMS):
+        # Build the original system
+        rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', id_gen,
+                                                        save_to_mongo=False)
+        guids.append(rs.guid)
+
+        # Update it over every year
+        for year in YEARS:
+            # Update the system
+            rs.academic_year = year
+            rs.extract_date = str(year - 1) + '-02-27'
+
+            # Create the JSON file
+            file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
+            file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+            json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
+
+            # Prepare the SR CSV file
+            file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+            csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
+
+    # Return the generated GUIDs
+    return guids
+
+
+def create_assessment_object(asmt_type, period, year, subject, id_gen):
     """
     Create a new assessment object and write it out to JSON.
 
@@ -100,9 +169,10 @@ def create_assessment_object(asmt_type, period, year, subject):
     @param period: Period (month) of assessment to create
     @param year: Year of assessment to create
     @param subject: Subject of assessment to create
+    @param id_gen: ID generator
     @returns: New assessment object
     """
-    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject)
+    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen)
     file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', asmt.guid)
     json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
                                      root_path=OUT_PATH_ROOT)
@@ -112,7 +182,8 @@ def create_assessment_object(asmt_type, period, year, subject):
     return asmt
 
 
-def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rate=sbac_in_config.ASMT_SKIP_RATE,
+def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen,
+                                     skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                      retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                      delete_rate=sbac_in_config.ASMT_DELETE_RATE,
                                      update_rate=sbac_in_config.ASMT_UPDATE_RATE):
@@ -126,6 +197,7 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rat
     @param asmt: The assessment to create an outcome for
     @param section: The section this assessment relates to
     @param inst_hier: The institution hierarchy this assessment relates to
+    @param id_gen: ID generator
     @param skip_rate: The rate (chance) that this student skips the assessment
     @param retake_rate: The rate (chance) that this student will re-take the assessment
     @param delete_rate: The rate (chance) that this student's result will be deleted
@@ -137,19 +209,19 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rat
         return []
 
     # Create the original outcome object
-    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
         ao2.date_taken += datetime.timedelta(days=5)
         return [ao, ao2]
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, save_to_mongo=False)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
 
         # See if the updated record should be deleted
         if random.random() < delete_rate:
@@ -164,7 +236,7 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rat
     return [ao]
 
 
-def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
+def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, id_gen,
                                       skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                       retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                       delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -180,6 +252,7 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     @param interim_asmts: The interim assessment objects
     @param section: The section these assessments relate to
     @param inst_hier: The institution hierarchy these assessments relate to
+    @param id_gen: ID generator
     @param skip_rate: The rate (chance) that this student skips an assessment
     @param retake_rate: The rate (chance) that this student will re-take an assessment
     @param delete_rate: The rate (chance) that this student's result will be deleted
@@ -190,22 +263,22 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     outcomes = []
 
     # Create the summative assessment outcome
-    outcomes.extend(create_assessment_outcome_object(student, asmt_summ, section, inst_hier, skip_rate,
+    outcomes.extend(create_assessment_outcome_object(student, asmt_summ, section, inst_hier, id_gen, skip_rate,
                                                      retake_rate, delete_rate, update_rate))
 
     # Generate interim assessment results (list will be empty if school does not perform
     # interim assessments)
     for asmt in interim_asmts:
         # Create the interim assessment outcome
-        outcomes.extend(create_assessment_outcome_object(student, asmt, section, inst_hier, skip_rate, retake_rate,
-                                                         delete_rate, update_rate))
+        outcomes.extend(create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, skip_rate,
+                                                         retake_rate, delete_rate, update_rate))
 
     # Return the outcomes
     return outcomes
 
 
 def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments,
-                           asmt_skip_rates_by_subject):
+                           asmt_skip_rates_by_subject, id_gen):
     """
     Generate an entire data set for a single district.
 
@@ -214,6 +287,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     @param reg_sys_guid: GUID for the registration system this district is assigned to
     @param assessments: Dictionary of all assessment objects
     @param asmt_skip_rates_by_subject: The rate that students skip a given assessment
+    @param id_gen: ID generator
     """
     # Set up output file names and columns
     sr_out_cols = sbac_out_config.SR_FORMAT['columns']
@@ -243,12 +317,11 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         for j in range(school_type_count):
             # Create the school and institution hierarchy object
-            school = sbac_hier_gen.generate_school(school_type, district)
-            ih = sbac_hier_gen.generate_institution_hierarchy(state, district, school)
+            school = sbac_hier_gen.generate_school(school_type, district, id_gen)
+            ih = sbac_hier_gen.generate_institution_hierarchy(state, district, school, id_gen)
             hierarchies.append(ih)
             inst_hiers[school.guid] = ih
             schools.append(school)
-            print('    Created School: %s (%s)' % (school.name, school.type_str))
 
     # Write out hierarchies for this district
     csv_writer.write_records_to_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
@@ -260,9 +333,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
     # Begin processing the years for data
     students = {}
+    student_count = 0
     for asmt_year in YEARS:
-        print('  YEAR %i' % asmt_year)
-
         # Prepare output file names
         sr_out_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(asmt_year)).replace('<GUID>', reg_sys_guid)
         lz_asmt_out_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(asmt_year))
@@ -287,7 +359,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
             for grade, grade_students in grades.items():
                 # Potentially re-populate the student population
-                sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, asmt_year)
+                sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, asmt_year)
+                student_count += len(grade_students)
 
                 # Create assessment results for this year if requested
                 if asmt_year in ASMT_YEARS:
@@ -298,7 +371,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
                         # Create a class and a section for this grade and subject
                         clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
-                        section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, asmt_year, False)
+                        section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, asmt_year,
+                                                              False)
                         csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
                                                          tbl_name='dim_section', root_path=OUT_PATH_ROOT)
 
@@ -316,7 +390,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                             # Create the outcome(s)
                             assessment_results.extend(create_assessment_outcome_objects(student, asmt_summ,
                                                                                         interim_asmts, section,
-                                                                                        inst_hier, skip_rate))
+                                                                                        inst_hier, id_gen, skip_rate))
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -347,12 +421,23 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             csv_writer.write_records_to_file(fao_out_name, fao_out_cols, assessment_results,
                                              tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
 
+    # Some explicit garbage collection
+    del hierarchies
+    del inst_hiers
+    del schools
+    del schools_by_grade
+    del students
 
-def generate_state_data(state: SBACState):
+    # Return the average student count
+    return int(student_count // 3)
+
+
+def generate_state_data(state: SBACState, id_gen):
     """
     Generate an entire data set for a single state.
 
     @param state: State to generate data for
+    @param id_gen: ID generator
     """
     # Grab the assessment rates by subjects
     asmt_skip_rates_by_subject = state.config['subject_skip_percentages']
@@ -364,24 +449,34 @@ def generate_state_data(state: SBACState):
             for grade in GRADES_OF_CONCERN:
                 # Create the summative assessment
                 asmt_key_summ = str(year) + 'summative' + str(grade) + subject
-                assessments[asmt_key_summ] = create_assessment_object('SUMMATIVE', 'Spring', year, subject)
+                assessments[asmt_key_summ] = create_assessment_object('SUMMATIVE', 'Spring', year, subject,
+                                                                      id_gen)
 
                 # Create the interim assessments
                 for period in INTERIM_ASMT_PERIODS:
                     asmt_key_intrm = str(year) + 'interim' + period + str(grade) + subject
-                    asmt_intrm = create_assessment_object('INTERIM COMPREHENSIVE', period, year, subject)
+                    asmt_intrm = create_assessment_object('INTERIM COMPREHENSIVE', period, year, subject,
+                                                          id_gen)
                     assessments[asmt_key_intrm] = asmt_intrm
 
     # Build the districts
+    student_count = 0
     for district_type, dist_type_count in state.config['district_types_and_counts'].items():
         for _ in range(dist_type_count):
             # Create the district
-            district = sbac_hier_gen.generate_district(district_type, state)
-            print('  Created District: %s (%s District)' % (district.name, district.type_str))
+            district = sbac_hier_gen.generate_district(district_type, state, id_gen)
+            print('  Creating District: %s (%s District)' % (district.name, district.type_str))
 
             # Generate the district data set
-            generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS), assessments,
-                                   asmt_skip_rates_by_subject)
+            count = generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS), assessments,
+                                           asmt_skip_rates_by_subject, id_gen)
+
+            # Print completion of district
+            print('    District created with average of %i students/year' % count)
+            student_count += count
+
+    # Print completion of state
+    print('State %s created with average of  %i students/year' % (state.name, student_count))
 
 
 if __name__ == '__main__':
@@ -425,59 +520,27 @@ if __name__ == '__main__':
         except:
             pass
 
+    # Create the ID generator
+    idg = IDGen()
+
     # Connect to MongoDB, datagen database
     connect('datagen')
 
-    # Prepare star-schema output files
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
-                                root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
-                                sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
-                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_SECTION_FORMAT['name'],
-                                sbac_out_config.DIM_SECTION_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
-                                root_path=OUT_PATH_ROOT)
+    # Prepare the output files
+    prepare_output_files(YEARS)
 
-    # Prepare the landing zone files
-    for year in YEARS:
-        name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(year))
-        csv_writer.prepare_csv_file(name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-
-    sr_out_cols = sbac_out_config.SR_FORMAT['columns']
-    rs_out_layout = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['layout']
-
-    # Build the registration systems for every year
-    start_year = YEARS[0] - 1
-    for i in range(NUMBER_REGISTRATION_SYSTEMS):
-        # Build the original system
-        rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', save_to_mongo=False)
-        REGISTRATION_SYSTEM_GUIDS.append(rs.guid)
-
-        # Update it over every year
-        for year in YEARS:
-            # Update the system
-            rs.academic_year = year
-            rs.extract_date = str(year - 1) + '-02-27'
-
-            # Create the JSON file
-            file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
-            file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
-            json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
-
-            # Prepare the SR CSV file
-            file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
-            csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
+    # Create the registration systems
+    REGISTRATION_SYSTEM_GUIDS = build_registration_systems(YEARS, idg)
 
     # Start the generation of data
     for state_cfg in STATES:
         # Create the state object
-        state = sbac_hier_gen.generate_state(state_cfg['type'], state_cfg['name'], state_cfg['code'])
-        print('Created State: %s' % state.name)
+        state = sbac_hier_gen.generate_state(state_cfg['type'], state_cfg['name'], state_cfg['code'], idg)
+        print()
+        print('Creating State: %s' % state.name)
 
         # Process the state
-        generate_state_data(state)
+        generate_state_data(state, idg)
 
     # Record now current (end) time
     tend = datetime.datetime.now()

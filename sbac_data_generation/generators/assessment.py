@@ -9,7 +9,6 @@ import datetime
 import random
 
 import data_generation.generators.assessment as gen_asmt_generator
-import data_generation.util.id_gen as gen_id_gen
 import sbac_data_generation.config.cfg as sbac_config
 
 from sbac_data_generation.model.assessment import SBACAssessment
@@ -19,7 +18,7 @@ from sbac_data_generation.model.section import SBACSection
 from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, to_date=None,
+def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date=None, to_date=None,
                         claim_definitions=sbac_config.CLAIM_DEFINITIONS, save_to_mongo=True):
     """
     Generate an assessment object.
@@ -28,6 +27,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
     @param period: Period within assessment year
     @param asmt_year: Assessment year
     @param subject: Assessment subject
+    @param id_gen: ID generator
     @param from_date: Assessment from date
     @param to_date: Assessment to date
     @param claim_definitions: Definitions for claims to generate
@@ -55,7 +55,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
         period_month = 3
 
     # Set other specifics
-    sa.rec_id = gen_id_gen.get_rec_id('assessment')
+    sa.rec_id = id_gen.get_rec_id('assessment')
     sa.asmt_type = asmt_type
     sa.period = period + ' ' + str((asmt_year - year_adj))
     sa.period_year = asmt_year
@@ -105,7 +105,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, from_date=None, t
 
 
 def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: SBACSection,
-                                inst_hier: InstitutionHierarchy, save_to_mongo=True):
+                                inst_hier: InstitutionHierarchy, id_gen, save_to_mongo=True):
     """
     Generate an assessment outcome for a given student.
 
@@ -113,6 +113,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     @param assessment: The assessment to create the outcome for
     @param section: The section this assessment is related to
     @param inst_hier: The institution hierarchy this student belongs to
+    @param id_gen: ID generator
     @param save_to_mongo: If the outcome should be saved to Mongo
     @returns: The assessment outcome
     """
@@ -127,6 +128,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, section, SBACAssessmentOutcome)
 
     # Set other specifics
+    sao.rec_id = id_gen.get_rec_id('assessment_outcome')
     sao.inst_hierarchy = inst_hier
 
     # Create the date taken

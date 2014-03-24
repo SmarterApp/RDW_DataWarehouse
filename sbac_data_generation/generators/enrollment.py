@@ -8,7 +8,6 @@ Generate enrollment elements that can be related to SBAC assessments.
 import datetime
 
 import data_generation.generators.enrollment as general_enroll_gen
-import data_generation.util.id_gen as id_gen
 
 from sbac_data_generation.model.clss import SBACClass
 from sbac_data_generation.model.enrollment import SBACEnrollment
@@ -37,7 +36,7 @@ def generate_class(name, subject, school: SBACSchool, save_to_mongo=True):
     return s
 
 
-def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().year, save_to_mongo=True):
+def generate_section(clss: SBACClass, name, grade, id_gen, year=datetime.datetime.now().year, save_to_mongo=True):
     """
     Generate a section for a given class. This will also generate the necessary number of teaching staff for the
     section.
@@ -45,6 +44,7 @@ def generate_section(clss: SBACClass, name, grade, year=datetime.datetime.now().
     @param clss: The class to create a section for
     @param name: The name of the section
     @param grade: The grade of students for the section
+    @param id_gen: ID generator
     @param year: The academic year this section is in
     @param save_to_mongo: If the newly created section should be saved to Mongo
     @returns: A section object

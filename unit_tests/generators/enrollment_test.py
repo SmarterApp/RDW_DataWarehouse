@@ -16,13 +16,16 @@ import sbac_data_generation.generators.population as pop_gen
 from sbac_data_generation.model.clss import SBACClass
 from sbac_data_generation.model.enrollment import SBACEnrollment
 from sbac_data_generation.model.section import SBACSection
+from sbac_data_generation.util.id_gen import IDGen
+
+ID_GEN = IDGen()
 
 
 def test_generate_class():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class 01', 'Math', school)
 
     # Tests
@@ -34,11 +37,11 @@ def test_generate_class():
 
 def test_generate_section_defaults():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class 01', 'Math', school)
-    section = enroll_gen.generate_section(clss, 'Section 01', 3)
+    section = enroll_gen.generate_section(clss, 'Section 01', 3, ID_GEN)
 
     # Tests
     assert_is_instance(section, SBACSection)
@@ -51,11 +54,11 @@ def test_generate_section_defaults():
 
 def test_generate_section_specific_year():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     clss = enroll_gen.generate_class('Class 01', 'Math', school)
-    section = enroll_gen.generate_section(clss, 'Section 01', 3, 2017)
+    section = enroll_gen.generate_section(clss, 'Section 01', 3, ID_GEN, 2017)
 
     # Tests
     assert_is_instance(section, SBACSection)
@@ -68,12 +71,12 @@ def test_generate_section_specific_year():
 
 def test_generate_enrollment_defaults():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
-    student = pop_gen.generate_student(school, 3)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    student = pop_gen.generate_student(school, 3, ID_GEN)
     clss = enroll_gen.generate_class('Class 01', 'Math', school)
-    section = enroll_gen.generate_section(clss, 'Section 01', 3)
+    section = enroll_gen.generate_section(clss, 'Section 01', 3, ID_GEN)
     enrollment = enroll_gen.generate_enrollment(section, student)
 
     # Tests
@@ -85,12 +88,12 @@ def test_generate_enrollment_defaults():
 
 def test_generate_enrollment_grade():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Small Average', state)
-    school = hier_gen.generate_school('Elementary School', district)
-    student = pop_gen.generate_student(school, 3)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    student = pop_gen.generate_student(school, 3, ID_GEN)
     clss = enroll_gen.generate_class('Class 01', 'Math', school)
-    section = enroll_gen.generate_section(clss, 'Section 01', 3)
+    section = enroll_gen.generate_section(clss, 'Section 01', 3, ID_GEN)
     enrollment = enroll_gen.generate_enrollment(section, student, 5)
 
     # Tests

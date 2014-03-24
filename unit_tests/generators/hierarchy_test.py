@@ -14,6 +14,9 @@ import sbac_data_generation.generators.hierarchy as hier_gen
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.util.id_gen import IDGen
+
+ID_GEN = IDGen()
 
 GUID_REGEX = '[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}'
 SR_GUID_REGEX = '[a-f0-9]{30}'
@@ -21,7 +24,7 @@ SR_GUID_REGEX = '[a-f0-9]{30}'
 
 def test_generate_state():
     # Create object
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
 
     # Tests
     assert_is_instance(state, SBACState)
@@ -31,13 +34,13 @@ def test_generate_state():
 
 
 def test_generate_state_invalid_type():
-    assert_raises(LookupError, hier_gen.generate_state, 'unknown', 'Example State', 'ES')
+    assert_raises(LookupError, hier_gen.generate_state, 'unknown', 'Example State', 'ES', ID_GEN)
 
 
 def test_generate_district():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
 
     # Tests
     assert_is_instance(district, SBACDistrict)
@@ -46,15 +49,15 @@ def test_generate_district():
 
 
 def test_generate_district_invalid_type():
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    assert_raises(LookupError, hier_gen.generate_district, 'unknown', state)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    assert_raises(LookupError, hier_gen.generate_district, 'unknown', state, ID_GEN)
 
 
 def test_generate_school():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN)
 
     # Tests
     assert_is_instance(school, SBACSchool)
@@ -63,16 +66,16 @@ def test_generate_school():
 
 
 def test_generate_school_invalid_type():
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    assert_raises(LookupError, hier_gen.generate_school, 'unknown', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    assert_raises(LookupError, hier_gen.generate_school, 'unknown', district, ID_GEN)
 
 
 def test_generate_school_no_interims():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=0)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=0)
 
     # Test
     assert not school.takes_interim_asmts
@@ -80,16 +83,16 @@ def test_generate_school_no_interims():
 
 def test_generate_school_interims():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district, interim_asmt_rate=1)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
 
     # Test
     assert school.takes_interim_asmts
 
 
 def test_generate_registration_system():
-    rs = hier_gen.generate_registration_system(2015, '2014-02-15')
+    rs = hier_gen.generate_registration_system(2015, '2014-02-15', ID_GEN)
     assert_regexp_matches(rs.guid, GUID_REGEX)
     assert_regexp_matches(rs.sys_guid, GUID_REGEX)
     assert rs.academic_year == 2015
@@ -99,10 +102,10 @@ def test_generate_registration_system():
 
 def test_generate_institution_hierarchy():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    school = hier_gen.generate_school('High School', district)
-    ih = hier_gen.generate_institution_hierarchy(state, district, school)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN)
+    ih = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
 
     # Tests
     assert_is_instance(ih.rec_id, int)
@@ -116,14 +119,14 @@ def test_generate_institution_hierarchy():
 
 def test_sort_schools_by_grade():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    elem_school_1 = hier_gen.generate_school('Elementary School', district)
-    elem_school_2 = hier_gen.generate_school('Elementary School', district)
-    elem_school_3 = hier_gen.generate_school('Elementary School', district)
-    midl_school_1 = hier_gen.generate_school('Middle School', district)
-    midl_school_2 = hier_gen.generate_school('Middle School', district)
-    high_school = hier_gen.generate_school('High School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school_1 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school_2 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school_3 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    midl_school_1 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    midl_school_2 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    high_school = hier_gen.generate_school('High School', district, ID_GEN)
     schools_by_grade = hier_gen.sort_schools_by_grade([elem_school_1, elem_school_2, elem_school_3, midl_school_1,
                                                        midl_school_2, high_school])
 
@@ -140,14 +143,14 @@ def test_sort_schools_by_grade():
 
 def test_set_up_schools_with_grades():
     # Create objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES')
-    district = hier_gen.generate_district('Big Average', state)
-    elem_school_1 = hier_gen.generate_school('Elementary School', district)
-    elem_school_2 = hier_gen.generate_school('Elementary School', district)
-    elem_school_3 = hier_gen.generate_school('Elementary School', district)
-    midl_school_1 = hier_gen.generate_school('Middle School', district)
-    midl_school_2 = hier_gen.generate_school('Middle School', district)
-    high_school = hier_gen.generate_school('High School', district)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school_1 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school_2 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school_3 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    midl_school_1 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    midl_school_2 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    high_school = hier_gen.generate_school('High School', district, ID_GEN)
     schools_with_grades = hier_gen.set_up_schools_with_grades([elem_school_1, elem_school_2, elem_school_3,
                                                                midl_school_1, midl_school_2, high_school],
                                                               {3, 4, 5, 6, 7, 8, 11})

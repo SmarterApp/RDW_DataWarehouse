@@ -63,13 +63,21 @@ it:
 
 ##Usage
 
-The main file for running the project is `generate.py`. The following options for the script exist:
+There are two scripts you can choose the start up to generate data. First is `generate_data.py`, which is the
+single-process version. `mp_generate_data.py` is a multi-processed version that generates the same data, but when on the
+right hardware it will do it faster.
 
-* `--task TASK_FILE_NAME`: Specify the name of the task file to run
-
-For the SBAC task:
+For either script, the following arguments apply:
 
 * `--team TEAM_NAME`: Specify the team name to generate SBAC data for (expects `sonics` or `arkanoids`)
+* `--state_name STATE_NAME`: Specify the name of the state that gets generated (defaults to `North Carolina`)
+* `--state_code STATE_CODE`: Specify the code of the state that gets generated (defaults to `NC`)
+* `--state_type STATE_TYPE`: Specify the hierarchy type for the state to generate (expects `devel`, `typical_1`, or
+`california`)
+
+The multi-processed script also takes a flag `--process_count`, which is the number of processes to have running
+simultaneously. Every process will work on one district at a time (e.g. four processes will be working on four
+districts simultaneously) so start as many processes as the hardware can handle. The default is 2.
 
 ##Unit Tests
 

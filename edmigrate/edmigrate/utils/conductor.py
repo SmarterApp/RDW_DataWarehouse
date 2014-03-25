@@ -78,7 +78,7 @@ class Conductor:
         self.__log(Constants.COMMAND_START_REPLICATION, player_group, group_ids)
 
     def migrate(self):
-        start_migrate_daily_delta()
+        return start_migrate_daily_delta()
 
     def wait_PGPool_disconnected(self, player_group=None, timeout=30):
         self.__wait_for_status(player_group, timeout, self.__player_trakcer.is_pgpool_disconnected)

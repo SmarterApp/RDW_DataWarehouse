@@ -43,8 +43,8 @@ class Consumer(ConsumerMixin):
         }
 
     def get_consumers(self, Consumer, channel):
-        conductor.queue(channel).purge()
         consumer = Consumer(conductor.queue, callbacks=[self.on_message])
+        consumer.purge()
         return [consumer]
 
     def on_message(self, body, message):

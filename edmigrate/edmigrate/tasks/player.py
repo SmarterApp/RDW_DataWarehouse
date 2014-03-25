@@ -6,7 +6,6 @@ Created on Mar 21, 2014ß
 from edmigrate.queues import conductor
 import logging
 from edmigrate.utils.utils import get_broker_url
-from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 import subprocess
@@ -17,6 +16,7 @@ from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
+from celery.app.control import Control
 
 
 class Player(metaclass=Singleton):
@@ -42,23 +42,29 @@ class Player(metaclass=Singleton):
         self.set_hostname(socket.gethostname())
         self.set_node_id_from_hostname()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, value, tb):
+        pass
+
     def run_command(self, command, nodes):
         if command in self.COMMAND_HANDLERS:
             if nodes is None:
                 if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
                     self.COMMAND_HANDLERS[command]()
                 else:
-                    self.logger.error("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
+                    self.logger.warning("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
             else:
                 if self.node_id in nodes:
                     self.COMMAND_HANDLERS[command]()
                 else:
                     # ignore the command
-                    self.logger.error("{name}: {command} is ignored because {node} is not in {nodes}"
-                                      .format(command=command, name=self.__class__.__name__,
-                                              node=self.node_id, nodes=str(nodes)))
+                    self.logger.warning("{name}: {command} is ignored because {node} is not in {nodes}"
+                                        .format(command=command, name=self.__class__.__name__,
+                                                node=self.node_id, nodes=str(nodes)))
         else:
-            self.logger.error("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
+            self.logger.warning("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
 
     def set_hostname(self, hostname):
         '''
@@ -134,12 +140,12 @@ class Player(metaclass=Singleton):
                 sleep(Constants.REPLICATION_CHECK_INTERVAL)
                 output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
                                                   Constants.IPTABLES_SOURCE, hostname,
-                                                  Constants.IPTABLES_TARGET, Constants.IPTABLES_TARGET],
+                                                  Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                                  universal_newlines=True)
                 max_retries -= 1
         except subprocess.CalledProcessError:
-            self.logger.error("{name}: Failed to remove rules to reject {hostname}".
-                              format(name=self.__class__.__name__, hostname=hostname))
+            self.logger.warning("{name}: Failed to remove rules to reject {hostname}".
+                                format(name=self.__class__.__name__, hostname=hostname))
         return not self.check_iptable_has_blocked_machine(hostname)
 
     def add_iptable_rules(self, hostname):
@@ -175,8 +181,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to unblock pgpool( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
+            self.logger.warning("{name}: Failed to unblock pgpool( {pgpool} )".
+                                format(name=self.__class__.__name__, pgpool=pgpool))
 
     def disconnect_pgpool(self):
         '''
@@ -191,8 +197,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to block pgpool( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
+            self.logger.warning("{name}: Failed to block pgpool( {pgpool} )".
+                                format(name=self.__class__.__name__, pgpool=pgpool))
 
     def connect_master(self):
         '''
@@ -208,8 +214,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to unblock master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
+            self.logger.warning("{name}: Failed to unblock master( {master} )".
+                                format(name=self.__class__.__name__, master=master))
 
     def disconnect_master(self):
         '''
@@ -224,8 +230,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to block master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
+            self.logger.warning("{name}: Failed to block master( {master} )".
+                                format(name=self.__class__.__name__, master=master))
 
     def reset_players(self):
         '''
@@ -264,7 +270,7 @@ class Player(metaclass=Singleton):
                               format(name=self.__class__.__name__, hostname=self.hostname))
 
 
-@celery.task(name=Constants.PLAYER_TASK, ignore_result=True, base=BaseTask)
+@celery.task(name=Constants.PLAYER_TASK, ignore_result=True)
 def player_task(command, nodes):
     """
     This is a player task that runs on slave database. It assumes only one celery worker per node. So task

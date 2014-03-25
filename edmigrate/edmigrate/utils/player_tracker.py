@@ -55,7 +55,7 @@ class PlayerTracker(metaclass=Singleton):
             if self.__lock.locked():
                 self.__lock.release()
 
-    def set_accept_player(self, accept=True):
+    def set_accept_player(self, accept):
         try:
             if self.__lock.acquire(timeout=self.__timeout):
                 self.__accept_player = accept

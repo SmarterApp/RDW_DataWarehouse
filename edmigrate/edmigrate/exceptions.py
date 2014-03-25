@@ -42,9 +42,14 @@ class PlayerAlreadyRegisteredException(PlayerTrackerException):
         super().__init__(msg="Player [%d] has already registered" % (node_id))
 
 
+#class PlayerLateRegistrationException(PlayerTrackerException):
+#    def __init__(self, node_id):
+#        super().__init__(msg="Late registration player [%d], it won't be registered." % (node_id))
+
+
 class PlayerDelayedRegistrationException(PlayerTrackerException):
     def __init__(self, node_id):
-        super().__init__(msg="Delayed registration player [%d], it won't be registered." % (node_id))
+        super().__init__(msg="Delay registration player [%d], it won't be registered." % (node_id))
 
 
 class PlayerNotRegisteredException(PlayerTrackerException):

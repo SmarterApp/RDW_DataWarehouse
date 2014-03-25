@@ -291,15 +291,15 @@ def start_migrate_daily_delta(tenant=None):
 
     :returns Nothing
     """
-    all_migrate_ok = True
+    migrate_ok_count = 0
     batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     if batches_to_migrate:
         for batch in batches_to_migrate:
             batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
             logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
-            if not migrate_batch(batch=batch):
-                all_migrate_ok = False
+            if migrate_batch(batch=batch):
+                migrate_ok_count += 1
             # cleanup_batch(batch=batch)
     else:
         logger.debug('no batch found to migrate')
-    return all_migrate_ok
+    return migrate_ok_count, len(batches_to_migrate)

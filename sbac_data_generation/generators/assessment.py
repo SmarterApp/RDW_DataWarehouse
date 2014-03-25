@@ -11,11 +11,18 @@ import random
 import data_generation.generators.assessment as gen_asmt_generator
 import sbac_data_generation.config.cfg as sbac_config
 
+import data_generation.config.hierarchy as hierarchy_config
+
 from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.section import SBACSection
 from sbac_data_generation.model.student import SBACStudent
+
+from sbac_data_generation.util.assessment_stats import Properties, RandomLevelByDemographics
+from sbac_data_generation.util.assessment_stats import random_score_given_level
+from sbac_data_generation.util.assessment_stats import random_claims
+from sbac_data_generation.util.assessment_stats import adjust_score
 
 
 def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date=None, to_date=None,
@@ -144,32 +151,72 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
         period_month = 3
     sao.date_taken = datetime.date(assessment.period_year - year_adj, period_month, 15)
 
-    # Create overall score and performance level
-    sao.overall_score = int(random.uniform(sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX))
+    demographics = sbac_config.DEMOGRAPHICS_BY_GRADE[student.grade]
+    level_breakdowns = sbac_config.LEVELS_BY_GRADE_BY_SUBJ[assessment.subject][student.grade]
+    level_generator = RandomLevelByDemographics(demographics, level_breakdowns)
+
+    student_race = ('dmg_eth_2mr' if student.eth_multi else
+                    'dmg_eth_ami' if student.eth_amer_ind else
+                    'dmg_eth_asn' if student.eth_asian else
+                    'dmg_eth_blk' if student.eth_black else
+                    'dmg_eth_hsp' if student.eth_hispanic else
+                    'dmg_eth_pcf' if student.eth_pacific else
+                    'dmg_eth_wht' if student.eth_white else
+                    'dmg_eth_nst')
+
+    student_demographics = Properties(dmg_prg_504=student.prg_sec504,
+                                      dmg_prg_tt1=student.prg_econ_disad,
+                                      dmg_prg_iep=student.prg_iep,
+                                      dmg_prg_lep=student.prg_lep,
+                                      gender=student.gender,
+                                      race=student_race)
+
+    sao.overall_perf_lvl = level_generator.random_level(student_demographics) + 1
+    raw_overall_score = random_score_given_level(sao.overall_perf_lvl - 1,
+                                                 [sbac_config.ASMT_SCORE_MIN] +
+                                                 overall_cut_points +
+                                                 [sbac_config.ASMT_SCORE_MAX])
+
+    school_type = student.school.type_str
+    adjustment = hierarchy_config.SCHOOL_TYPES[school_type]['students'].get('adjust_pld', 0.0)
+    sao.overall_score = adjust_score(raw_overall_score, adjustment,
+                                     sbac_config.ASMT_SCORE_MIN, sbac_config.ASMT_SCORE_MAX)
+
     overall_range_min = random.randint(50, 100)  # Total score range is between 100 and 200 points around score
     overall_range_max = random.randint(50, 100)  # Total score range is between 100 and 200 points around score
-    sao.overall_score_range_min = max(sao.overall_score - overall_range_min, sbac_config.ASMT_SCORE_MIN)
-    sao.overall_score_range_max = min(sao.overall_score + overall_range_max, sbac_config.ASMT_SCORE_MAX)
-    sao.overall_perf_lvl = _pick_performance_level(sao.overall_score, overall_cut_points)
+    sao.overall_score_range_min = max(sbac_config.ASMT_SCORE_MIN, sao.overall_score - overall_range_min)
+    sao.overall_score_range_max = min(sbac_config.ASMT_SCORE_MAX, sao.overall_score + overall_range_max)
 
-    # Create claim scores and performance levels
-    sao.claim_1_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
-    sao.claim_1_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
-    sao.claim_1_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
+    claims = sbac_config.CLAIM_DEFINITIONS[assessment.subject]
+    claim_weights = [claim['weight'] for claim in claims]
+    claim_scores = random_claims(sao.overall_score, claim_weights, sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX)
+
+    sao.claim_1_score = claim_scores[0]
+    sao.claim_1_score_range_min = max(sbac_config.CLAIM_SCORE_MIN, sao.claim_1_score - 20)
+    sao.claim_1_score_range_max = min(sbac_config.CLAIM_SCORE_MAX, sao.claim_1_score + 20)
     sao.claim_1_perf_lvl = _pick_performance_level(sao.claim_1_score, claim_cut_points)
-    sao.claim_2_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
-    sao.claim_2_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
-    sao.claim_2_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
+
+    sao.claim_2_score = claim_scores[1]
+    sao.claim_2_score_range_min = max(sbac_config.CLAIM_SCORE_MIN, sao.claim_2_score - 20)
+    sao.claim_2_score_range_max = min(sbac_config.CLAIM_SCORE_MAX, sao.claim_2_score + 20)
     sao.claim_2_perf_lvl = _pick_performance_level(sao.claim_2_score, claim_cut_points)
-    sao.claim_3_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
-    sao.claim_3_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
-    sao.claim_3_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
+
+    sao.claim_3_score = claim_scores[2]
+    sao.claim_3_score_range_min = max(sbac_config.CLAIM_SCORE_MIN, sao.claim_3_score - 20)
+    sao.claim_3_score_range_max = min(sbac_config.CLAIM_SCORE_MAX, sao.claim_3_score + 20)
     sao.claim_3_perf_lvl = _pick_performance_level(sao.claim_3_score, claim_cut_points)
+
     if assessment.claim_4_name is not None:
-        sao.claim_4_score = int(random.uniform(sbac_config.CLAIM_SCORE_MIN, sbac_config.CLAIM_SCORE_MAX))
-        sao.claim_4_score_range_min = sao.claim_1_score - 20 if sao.claim_1_score > sbac_config.CLAIM_SCORE_MIN + 20 else sbac_config.CLAIM_SCORE_MIN
-        sao.claim_4_score_range_max = sao.claim_1_score + 20 if sao.claim_1_score < sbac_config.CLAIM_SCORE_MAX - 20 else sbac_config.CLAIM_SCORE_MAX
+        if len(claim_scores) != 4:
+            raise Exception("unexpected number of claim scores: %s %s %s" % (assessment.subject, claim_scores, claim_weights))
+
+        sao.claim_4_score = claim_scores[3]
+        sao.claim_4_score_range_min = max(sbac_config.CLAIM_SCORE_MIN, sao.claim_4_score - 20)
+        sao.claim_4_score_range_max = min(sbac_config.CLAIM_SCORE_MAX, sao.claim_4_score + 20)
         sao.claim_4_perf_lvl = _pick_performance_level(sao.claim_4_score, claim_cut_points)
+
+    elif len(claim_scores) != 3:
+        raise Exception("unexpected number of claim scores: %s %s %s" % (assessment.subject, claim_scores, claim_weights))
 
     # Create accommodations details
     sao.acc_asl_video_embed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_asl_video_embed'][assessment.subject])

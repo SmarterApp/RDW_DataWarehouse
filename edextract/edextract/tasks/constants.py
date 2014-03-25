@@ -8,8 +8,8 @@ Created on Dec 9, 2013
 class ExtractionDataType():
     SR_STATISTICS = 'StudentRegistrationStatisticsReportCSV'
     SR_COMPLETION = 'StudentRegistrationCompletionReportCSV'
-    ASMT_CSV = 'AssessmentCSVExtract'
-    ASMT_JSON = 'AssessmentJSONExtract'
+    QUERY_CSV = 'QueryCSVExtract'
+    QUERY_JSON = 'QueryJSONExtract'
 
 
 class Constants():

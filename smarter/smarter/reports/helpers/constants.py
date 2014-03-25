@@ -18,6 +18,7 @@ class Constants():
     constants for reports
     '''
 
+    EFFECTIVEDATE = 'effectiveDate'
     SL = 'sl'
     PDF = 'pdf'
     LANG = 'lang'

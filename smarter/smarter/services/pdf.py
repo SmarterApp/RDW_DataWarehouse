@@ -61,6 +61,11 @@ PDF_PARAMS = {
             "type": "string",
             "required": False,
             "pattern": "^\d+$",
+        },
+        Constants.EFFECTIVEDATE: {
+            "type": "integer",
+            "required": False,
+            "pattern": "^[1-9][0-9]{5}$"
         }
     }
 }

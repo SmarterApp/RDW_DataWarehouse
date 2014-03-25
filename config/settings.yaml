@@ -34,6 +34,7 @@ common:
       db:
         cat.state_code: NC
         dog.state_code: CA
+        fish.state_code: VT
         echo: False
     trigger:
       recache:
@@ -124,6 +125,7 @@ common:
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: kswimberly@amplify.com
+      gpg.public_key.fish: kswimberly@amplify.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
@@ -185,6 +187,7 @@ common:
       sftp.private_key_file: /var/lib/jenkins/.ssh/id_rsa
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
+      gatekeeper.fish: kswimberly
     migrate_source:
       db:
         cat:
@@ -533,6 +536,9 @@ development:
         dog:
           schema_name: edware_sds_1_13_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+        fish:
+          schema_name: edware_sds_1_13_fish
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
         schema_name: edware_stats
@@ -591,6 +597,9 @@ test:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           schema_name: edware_sds_1_13_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        fish:
+          schema_name: edware_sds_1_13_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
@@ -728,6 +737,9 @@ jenkins_dev:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           schema_name: edware_sds_1_13_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        fish:
+          schema_name: edware_sds_1_13_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:

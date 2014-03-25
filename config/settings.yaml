@@ -158,6 +158,7 @@ common:
       iptables.command: '/sbin/iptables'
       iptables.sudo: '/usr/bin/sudo'
       syslog.address: ('/var/run/syslog',)
+      syslog.level: error
       master_scheduler.hour: 1
       master_scheduler.min: 0
       retries_allowed: 5
@@ -329,6 +330,7 @@ qa:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
       syslog.address: ('rsyslog0.qa.dum.edwdc.net', 514)
+      syslog.level: error
     migrate.celery:
       BROKER_URL:amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     auth:
@@ -395,6 +397,7 @@ jenkins_qa:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
     migrate:
       syslog.address: ('rsyslog0.qa.dum.edwdc.net', 514)
+      syslog.level: error
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
@@ -549,6 +552,7 @@ development:
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'
       iptables.mock: True
       syslog.address: ('/var/run/syslog',)
+      syslog.level: error
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
       CELERYBEAT_SCHEDULE:
@@ -603,6 +607,7 @@ test:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
     migrate:
       syslog.address: ('/dev/log',)
+      syslog.level: error
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
@@ -643,6 +648,7 @@ integration:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
     migrate:
       syslog.address: ('/var/run/syslog',)
+      syslog.level: error
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
@@ -664,6 +670,7 @@ jenkins_int:
       CELERYD_CONCURRENCY: 4
     migrate:
       syslog.address: ('/dev/log',)
+      syslog.level: error
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
     extract:
@@ -713,6 +720,7 @@ jenkins_dev:
       CELERYD_CONCURRENCY: 4
     migrate:
       syslog.address: ('/dev/log',)
+      syslog.level: error
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
     extract:

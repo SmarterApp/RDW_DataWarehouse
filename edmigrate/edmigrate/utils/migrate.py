@@ -297,6 +297,6 @@ def start_migrate_daily_delta(tenant=None):
             batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
             logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
             migrate_batch(batch=batch)
-            cleanup_batch(batch=batch)
+            #cleanup_batch(batch=batch)
     else:
         logger.debug('no batch found to migrate')

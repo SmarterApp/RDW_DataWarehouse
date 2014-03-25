@@ -70,3 +70,5 @@ class Constants():
     IPTABLES_JUMP = '-j'
     IPTABLES_TARGET = 'REJECT'
     IPTABLES_SOURCE = '-s'
+
+    SYSLOG_ADDRESS = ('/var/run/syslog',)

@@ -9,7 +9,6 @@ from edmigrate.utils.conductor import Conductor
 import time
 import logging
 from edmigrate.utils.constants import Constants
-from edmigrate.exceptions import EdMigrateException
 
 
 logger = logging.getLogger('edmigrate')
@@ -33,8 +32,10 @@ class ConductorController(threading.Thread):
     def process(self, player_find_wait=5):
         with Conductor() as conductor:
             conductor.send_reset_players()
+            conductor.accept_players()
             conductor.find_players()
             time.sleep(player_find_wait)
+            conductor.reject_players()
             players_ids = conductor.get_player_ids()
             if players_ids:
                 number_of_players = len(players_ids)
@@ -46,7 +47,7 @@ class ConductorController(threading.Thread):
                 logger.info('No player was detected')
 
     def regular_process(self, conductor):
-        logger.debug('Starting regular migration process')
+        logger.info('Starting regular migration process')
         try:
             logger.debug('regular_process: 1 of 16')
             conductor.grouping_players()
@@ -59,38 +60,45 @@ class ConductorController(threading.Thread):
             logger.debug('regular_process: 5 of 16')
             conductor.wait_replication_stopped(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 6 of 16')
-            conductor.migrate()
+            migrate_ok = conductor.migrate()
             logger.debug('regular_process: 7 of 16')
-            conductor.monitor_replication_status(slave_group=Constants.PLAYER_GROUP_A)
+            conductor.monitor_replication_status(player_group=Constants.PLAYER_GROUP_A)
             logger.debug('regular_process: 8 of 16')
-            conductor.send_connect_PGPool(slave_group=Constants.PLAYER_GROUP_A)
+            conductor.send_connect_PGPool(player_group=Constants.PLAYER_GROUP_A)
             logger.debug('regular_process: 9 of 16')
-            conductor.wait_PGPool_connected(slave_group=Constants.PLAYER_GROUP_A)
+            conductor.wait_PGPool_connected(player_group=Constants.PLAYER_GROUP_A)
             logger.debug('regular_process: 10 of 16')
-            conductor.send_disconnect_PGPool(slave_group=Constants.PLAYER_GROUP_B)
+            conductor.send_disconnect_PGPool(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 11 of 16')
-            conductor.wait_PGPool_disconnected(slave_group=Constants.PLAYER_GROUP_B)
+            conductor.wait_PGPool_disconnected(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 12 of 16')
-            conductor.send_start_replication(slave_group=Constants.PLAYER_GROUP_B)
+            conductor.send_start_replication(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 13 of 16')
-            conductor.wait_replication_started(slave_group=Constants.PLAYER_GROUP_B)
+            conductor.wait_replication_started(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 14 of 16')
-            conductor.monitor_replication_status(slave_group=Constants.PLAYER_GROUP_B)
+            conductor.monitor_replication_status(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 15 of 16')
-            conductor.send_connect_PGPool(slave_group=Constants.PLAYER_GROUP_B)
+            conductor.send_connect_PGPool(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: 16 of 16')
-            conductor.wait_PGPool_connected(slave_group=Constants.PLAYER_GROUP_B)
-        except EdMigrateException as e:
-            logger.error('Detected error')
+            conductor.wait_PGPool_connected(player_group=Constants.PLAYER_GROUP_B)
+            if migrate_ok:
+                logger.info('regular_process: success')
+            else:
+                logger.info('regular_process: failed 1 or more migrations')
+        except Exception as e:
+            logger.error('regular_process: failed to migrate, sending reset request to all players')
+            conductor.send_reset_players()
+            logger.error('regular_process: error')
             logger.error(e)
-        logger.debug('End of regular migration process')
+        finally:
+            logger.debug('End of regular migration process')
 
     def single_player_process(self, conductor):
         logger.debug('Starting single player migration process')
         try:
             conductor.migrate()
             conductor.monitor_replication_status()
-        except EdMigrateException as e:
+        except Exception as e:
             logger.error('Detected error')
             logger.error(e)
         logger.debug('End of single player migration process')

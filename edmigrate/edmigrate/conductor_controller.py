@@ -83,7 +83,7 @@ class ConductorController(threading.Thread):
             logger.debug('regular_process: 16 of 16')
             conductor.wait_PGPool_connected(player_group=Constants.PLAYER_GROUP_B)
             logger.debug('regular_process: success')
-        except EdMigrateException as e:
+        except Exception as e:
             logger.error('regular_process: error')
             logger.error(e)
         finally:
@@ -94,7 +94,7 @@ class ConductorController(threading.Thread):
         try:
             conductor.migrate()
             conductor.monitor_replication_status()
-        except EdMigrateException as e:
+        except Exception as e:
             logger.error('Detected error')
             logger.error(e)
         logger.debug('End of single player migration process')

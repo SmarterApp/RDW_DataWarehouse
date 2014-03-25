@@ -186,7 +186,8 @@ common:
       gatekeeper.dog: skong
     migrate_source:
       db:
-        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        cat:
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     migrate_dest:
       db:
         cat:

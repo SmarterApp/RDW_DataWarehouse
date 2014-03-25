@@ -22,7 +22,7 @@ def setup_celery(settings, prefix=PREFIX):
     '''
     setup(celery, settings, prefix)
     setup_settings(settings)
-    setup_syslog(settings)
+    #setup_syslog(settings)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so

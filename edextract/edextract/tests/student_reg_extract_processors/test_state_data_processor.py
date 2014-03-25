@@ -9,7 +9,7 @@ from edextract.student_reg_extract_processors.attribute_constants import Attribu
 from unittest.mock import MagicMock
 
 
-class TestSRStateVisitor(unittest.TestCase):
+class TestStateDataProcessor(unittest.TestCase):
 
     def setUp(self):
         self.results = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC'}

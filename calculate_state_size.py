@@ -10,6 +10,8 @@ import data_generation.util.hiearchy as hier_util
 import sbac_data_generation.config.hierarchy as sbac_hier_config
 
 # Extend general configuration dictionary with SBAC-specific configs
+hier_config.SCHOOL_TYPES.update(sbac_hier_config.SCHOOL_TYPES)
+hier_config.DISTRICT_TYPES.update(sbac_hier_config.DISTRICT_TYPES)
 hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
 
 if __name__ == '__main__':

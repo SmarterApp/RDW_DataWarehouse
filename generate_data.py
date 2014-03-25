@@ -52,6 +52,8 @@ GRADES_OF_CONCERN = {3, 4, 5, 6, 7, 8, 11}  # Made as a set for intersection lat
 REGISTRATION_SYSTEM_GUIDS = []
 
 # Extend general configuration dictionaries with SBAC-specific configs
+hier_config.SCHOOL_TYPES.update(sbac_hier_config.SCHOOL_TYPES)
+hier_config.DISTRICT_TYPES.update(sbac_hier_config.DISTRICT_TYPES)
 hier_config.STATE_TYPES.update(sbac_hier_config.STATE_TYPES)
 pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california']
 for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():

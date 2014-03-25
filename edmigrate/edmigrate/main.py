@@ -63,7 +63,7 @@ def read_ini(file):
 
 def main(file=None, tenant='cat', run_migrate_only=False):
     logger.debug('edmigrate main program has started')
-    if file is None:
+    if file is None or not os.path.exists(file):
         file = get_ini_file()
     logging.config.fileConfig(file)
     settings = read_ini(file)
@@ -133,8 +133,9 @@ if __name__ == '__main__':
     parser.add_argument('-t', dest='tenant', default='cat', help="tenant name")
     parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edmigrate.pid', help="pid file for daemon")
     parser.add_argument('-d', dest='daemon', action='store_true', default=False, help="daemon")
+    parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter.ini', help="ini file")
     args = parser.parse_args()
-    #CR do not daemon when migrateOnly
+    # CR do not daemon when migrateOnly
     if args.daemon:
         create_daemon(args.pidfile)
-    main(tenant=args.tenant, run_migrate_only=args.migrate_only)
+    main(file=args.ini_file, tenant=args.tenant, run_migrate_only=args.migrate_only)

@@ -12,6 +12,8 @@ from edextract.data_extract_generation.constants import TableName
 from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
+from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
+from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
 from edextract.trackers.total_tracker import TotalTracker
 from edcore.database.edcore_connector import EdCoreDBConnection
 
@@ -161,7 +163,8 @@ def _get_tracker_results_for_sr_stat(db_rows):
 
     trackers = [TotalTracker()]
 
-    data_processors = [StateDataProcessor(trackers, hierarchy_map)]
+    data_processors = [StateDataProcessor(trackers, hierarchy_map), DistrictDataProcessor(trackers, hierarchy_map),
+                       SchoolDataProcessor(trackers, hierarchy_map)]
 
     for db_row in db_rows:
         for processor in data_processors:

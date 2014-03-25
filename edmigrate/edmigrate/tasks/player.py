@@ -6,7 +6,6 @@ Created on Mar 21, 2014ß
 from edmigrate.queues import conductor
 import logging
 from edmigrate.utils.utils import get_broker_url
-from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 import subprocess

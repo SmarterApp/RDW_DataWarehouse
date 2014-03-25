@@ -158,6 +158,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
+                               Column('batch_guid', String(50), nullable=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                Column('asmt_guid', String(50), nullable=False),
                                Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
@@ -198,7 +199,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
                                Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
                                Column('rec_status', String(1), nullable=False),
-                               Column('batch_guid', String(50), nullable=True),
+                               Column('from_date', String(8), nullable=False),
+                               Column('to_date', String(8), nullable=True),
                                # Add 4 assessment columns
                                Column('asmt_type', String(32), nullable=False),
                                Column('asmt_year', SmallInteger, nullable=False),

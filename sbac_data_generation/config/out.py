@@ -8,6 +8,7 @@ Define the output format for SBAC assessment and registration data.
 FAO_FORMAT = {'format': 'csv',
               'name': 'fact_asmt_outcome.csv',
               'columns': [{'name': 'asmnt_outcome_rec_id', 'val': 'assessment_outcome.rec_id'},
+                          {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                           {'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
                           {'name': 'asmt_guid', 'val': 'assessment.guid'},
                           {'name': 'student_rec_id', 'val': 'student.rec_id'},
@@ -107,7 +108,8 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
                                   {'name': 'district_guid', 'val': 'district.guid'},
                                   {'name': 'school_guid', 'val': 'school.guid'},
                                   {'name': 'from_date', 'val': '20130901'},
-                                  {'name': 'to_date', 'val': '20270601'}]}
+                                  {'name': 'to_date', 'val': '99991231'},
+                                  {'name': 'rec_status', 'val': 'C'}]}
 
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',
@@ -122,7 +124,8 @@ DIM_INST_HIER_FORMAT = {'format': 'csv',
                                     {'name': 'school_category', 'val': 'school.type_str'},
                                     {'name': 'from_date', 'val': 'institution_hierarchy.from_date',
                                      'filter': 'date_Ymd'},
-                                    {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Ymd'}]}
+                                    {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Ymd'},
+                                    {'name': 'rec_status', 'val': 'C'}]}
 
 DIM_SECTION_FORMAT = {'format': 'csv',
                       'name': 'dim_section.csv',
@@ -137,7 +140,8 @@ DIM_SECTION_FORMAT = {'format': 'csv',
                                   {'name': 'district_guid', 'val': 'district.guid'},
                                   {'name': 'school_guid', 'val': 'school.guid'},
                                   {'name': 'from_date', 'val': 'section.from_date', 'filter': 'date_Ymd'},
-                                  {'name': 'to_date', 'val': 'section.to_date', 'filter': 'date_Ymd'}]}
+                                  {'name': 'to_date', 'val': 'section.to_date', 'filter': 'date_Ymd'},
+                                  {'name': 'rec_status', 'val': 'C'}]}
 
 DIM_ASMT_FORMAT = {'format': 'csv',
                    'name': 'dim_asmt.csv',
@@ -181,7 +185,8 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'asmt_cut_point_4', 'val': 'assessment.overall_cut_point_4'},
                                {'name': 'from_date', 'val': 'assessment.from_date', 'filter': 'date_Ymd'},
                                {'name': 'to_date', 'val': 'assessment.to_date', 'filter': 'date_Ymd'},
-                               {'name': 'effective_date', 'val': 'assessment.effective_date', 'filter': 'date_Ymd'}]}
+                               {'name': 'effective_date', 'val': 'assessment.effective_date', 'filter': 'date_Ymd'},
+                               {'name': 'rec_status', 'val': 'C'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
                     'name': '<YEAR>_METADATA_ASMT_ID_<GUID>.json',

@@ -59,12 +59,12 @@ def generate_json(tenant, output_file, task_info, extract_args):
 
 def _generate_csv_data(tenant, query):
     """
-    Generate the CSV data for the Assessment extract.
+    Generate the CSV data for the extract.
 
     @param tenant: ID of tenant for which toe extract data
     @param query: DB query used to extract the data.
 
-    @return: Assessment CSV extract header and data
+    @return: CSV extract header and data
     """
 
     with EdCoreDBConnection(tenant=tenant) as connection:

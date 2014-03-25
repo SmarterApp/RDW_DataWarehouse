@@ -49,6 +49,13 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             with open(os.path.join(self.__tmp_dir, file), "w") as f:
                 f.write('hello ' + file)
 
+        self.statistics_headers = ['State', 'District', 'School', 'Category', 'Value', 'AY2013 Count', 'AY2013 Percent of Total',
+                                   'AY2014 Count', 'AY2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
+                                   'Change in Percent of Total', 'AY2014 Matched IDs to AY2013 Count', 'AY2014 Matched IDs Percent of AY2013 count']
+        self.completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
+                                   'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
+                                   'Count of Students Assessed', 'Percent of Students Assessed']
+
     @classmethod
     def setUpClass(cls):
         Unittest_with_edcore_sqlite.setUpClass()
@@ -202,7 +209,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS,
             TaskConstants.TASK_TASK_ID: 'task_id',
             TaskConstants.TASK_FILE_NAME: output,
-            TaskConstants.ACADEMIC_YEAR: 2014
+            TaskConstants.ACADEMIC_YEAR: 2014,
+            TaskConstants.CSV_HEADERS: self.statistics_headers,
+            TaskConstants.TASK_QUERY: None
         }
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
         result.get()
@@ -223,7 +232,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_COMPLETION,
             TaskConstants.TASK_TASK_ID: 'task_id',
             TaskConstants.TASK_FILE_NAME: output,
-            TaskConstants.ACADEMIC_YEAR: 2014
+            TaskConstants.ACADEMIC_YEAR: 2014,
+            TaskConstants.CSV_HEADERS: self.completion_headers,
+            TaskConstants.TASK_QUERY: None
         }
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
         result.get()

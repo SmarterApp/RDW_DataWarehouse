@@ -44,66 +44,6 @@ def generate_completion_report(tenant, output_file, task_info, extract_args):
     _generate_report(tenant, output_file, task_info, extract_args, _generate_completion_report_data)
 
 
-def _generate_statistics_report_data(tenant, academic_year):
-    """
-    This method generates the data for the student registration statistics report.
-
-    @param tenant: Requestor's tenant ID
-    @param academic_year: Academic year of report
-
-    @return: Report header and data
-    """
-
-    this_year = str(academic_year)
-    last_year = str(academic_year - 1)
-    header = ('State',
-              'District',
-              'School',
-              'Category',
-              'Value',
-              'AY{last_year} Count'.format(last_year=last_year),
-              'AY{last_year} Percent of Total'.format(last_year=last_year),
-              'AY{this_year} Count'.format(this_year=this_year), 'AY{this_year} Percent of Total'.format(this_year=this_year),
-              'Change in Count',
-              'Percent Difference in Count',
-              'Change in Percent of Total',
-              'AY{this_year} Matched IDs to AY{last_year} Count'.format(last_year=last_year, this_year=this_year),
-              'AY{this_year} Matched IDs Percent of AY{last_year} count'.format(last_year=last_year, this_year=this_year))
-
-    data = _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year)
-
-    return header, data
-
-
-def _generate_completion_report_data(tenant, academic_year):
-    """
-    This method generates the data for the student registration completion report.
-
-    @param tenant: Requestor's tenant ID
-    @param academic_year: Academic year of report
-
-    @return: Report header and data
-    """
-
-    header = ('State',
-              'District',
-              'School',
-              'Grade',
-              'Category',
-              'Value',
-              'Assessment Subject',
-              'Assessment Type',
-              'Assessment Date',
-              'Academic Year',
-              'Count of Students Registered',
-              'Count of Students Assessed',
-              'Percent of Students Assessed')
-
-    data = []
-
-    return header, data
-
-
 def _generate_report(tenant, output_file, task_info, extract_args, data_extract_func):
     """
     Generate the student registration statistics report CSV file.
@@ -116,14 +56,17 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     """
 
     academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
+    query = extract_args[TaskConstants.TASK_QUERY]
 
-    header, data = data_extract_func(tenant, academic_year)
-    write_csv(output_file, header, data)
+    headers = extract_args[TaskConstants.CSV_HEADERS]
+
+    data = data_extract_func(tenant, query)
+    write_csv(output_file, headers, data)
 
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year):
+def _generate_statistics_report_data(tenant, query):
     """
     Get all the tenant's student registration data for the academic year.
 
@@ -134,16 +77,22 @@ def _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year):
     """
 
     with EdCoreDBConnection(tenant=tenant) as connection:
-        student_reg = connection.get_table(TableName.STUDENT_REG)
-        query = select([student_reg.c.state_name, student_reg.c.district_name, student_reg.c.school_name, student_reg.c.gender,
-                       student_reg.c.enrl_grade, student_reg.c.dmg_eth_hsp, student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn,
-                       student_reg.c.dmg_eth_blk, student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep,
-                       student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd, student_reg.c.dmg_sts_mig,
-                       student_reg.c.dmg_multi_race, student_reg.c.academic_year],
-                       from_obj=[student_reg]).where(or_(student_reg.c.academic_year == academic_year,
-                                                         student_reg.c.academic_year == academic_year - 1))
+        results = connection.get_streaming_result(query)  # this result is a generator
 
-        results = connection.get_streaming_result(query)  # This result is a generator
+    data = []
+
+    return data
+
+
+def _generate_completion_report_data(tenant, academic_year):
+    """
+    This method generates the data for the student registration completion report.
+
+    @param tenant: Requestor's tenant ID
+    @param academic_year: Academic year of report
+
+    @return: Report header and data
+    """
 
     data = []
 

@@ -231,10 +231,10 @@ def generate_extract_file(tenant, request_id, task):
 
 def get_extract_func_and_args(task, extract_type):
     extract_funcs_and_args = {
-        ExtractionDataType.QUERY_CSV: (generate_csv, {TaskConstants.TASK_QUERY: task.get(TaskConstants.TASK_QUERY, None)}),
-        ExtractionDataType.QUERY_JSON: (generate_json, {TaskConstants.TASK_QUERY: task.get(TaskConstants.TASK_QUERY, None)}),
-        ExtractionDataType.SR_STATISTICS: (generate_statistics_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)}),
-        ExtractionDataType.SR_COMPLETION: (generate_completion_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)})
+        ExtractionDataType.QUERY_CSV: (generate_csv, task),
+        ExtractionDataType.QUERY_JSON: (generate_json, task),
+        ExtractionDataType.SR_STATISTICS: (generate_statistics_report, task),
+        ExtractionDataType.SR_COMPLETION: (generate_completion_report, task)
     }
 
     extract_func, args = extract_funcs_and_args[extract_type]

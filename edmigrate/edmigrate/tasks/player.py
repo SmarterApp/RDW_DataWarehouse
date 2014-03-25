@@ -140,7 +140,7 @@ class Player(metaclass=Singleton):
                 sleep(Constants.REPLICATION_CHECK_INTERVAL)
                 output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
                                                   Constants.IPTABLES_SOURCE, hostname,
-                                                  Constants.IPTABLES_TARGET, Constants.IPTABLES_TARGET],
+                                                  Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                                  universal_newlines=True)
                 max_retries -= 1
         except subprocess.CalledProcessError:

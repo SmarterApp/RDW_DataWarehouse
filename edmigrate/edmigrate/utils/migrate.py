@@ -250,6 +250,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            logger.exception('migrate rollback because')
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
@@ -296,6 +297,6 @@ def start_migrate_daily_delta(tenant=None):
             batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
             logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
             migrate_batch(batch=batch)
-            cleanup_batch(batch=batch)
+            #cleanup_batch(batch=batch)
     else:
         logger.debug('no batch found to migrate')

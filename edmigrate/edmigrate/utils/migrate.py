@@ -77,10 +77,10 @@ def report_udl_stats_batch_status(batch_guid, migrate_load_status):
 
 
 def get_ordered_tables_to_migrate(connector, batch_guid):
-    """This function returns list of tables to be migrated based on schema metadata
+    """This function returns an ordered list of tables to be migrated based on schema metadata
 
     :param connector: The connection to the database
-    :returns : A list of table names
+    :returns : A list of table names ordered by dependencies
              [dim_section, dim_student, fact_asmt_outcome]
     """
     return [table.name for table in connector.get_metadata().sorted_tables

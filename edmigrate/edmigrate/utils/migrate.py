@@ -1,3 +1,5 @@
+import logging
+import time
 from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException, EdMigrateRecordInsertionException
 from sqlalchemy.sql.expression import select, and_, tuple_
@@ -6,7 +8,6 @@ from edmigrate.utils.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
-import logging
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.utils.cleanup import drop_schema, schema_exists
 from edschema.metadata.util import get_natural_key_columns
@@ -179,7 +180,7 @@ def preprod_to_prod_delete_records(source_connector, dest_connector, table_name,
     dest_table = dest_connector.get_table(table_name)
     dest_primary_key_field = dest_table.columns[primary_key_field_name]
     # set status to D if the status is C for all records in the batch
-    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.rec_status == Constants.STATUS_CREATED)).values(status=Constants.STATUS_DELETED)
+    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.rec_status == Constants.STATUS_CREATED)).values(rec_status=Constants.STATUS_DELETED)
     # if number of updated records doesn't match, that means one of the records was changed from C to D by another batch
     if dest_connector.execute(update_query).rowcount != batch_size:
         raise EdMigrateRecordAlreadyDeletedException
@@ -204,7 +205,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
 
     batch_size = len(key_values)
     # update prod rec_status to inactive for records matching with the natural keys of the records in the current batch
-    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C', tuple_(*key_columns).in_(key_values))).values(rec_status='I')
+    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C', tuple_(*key_columns).in_(key_values))).values(rec_status='I', to_date = time.strftime("%Y%m%d"))
     dest_connector.execute(update_query)
     # insert the new records to prod with rec_status as current
     insert_query = dest_table.insert()
@@ -228,8 +229,8 @@ def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector
     logger.info('Migrating all tables for batch: ' + batch_guid)
     # TODO - we want it to be configurable what to migrate and in which order
     # migrate dims first
-    #for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('dim_')), tables)):
-    #    migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
+    for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('dim_')), tables)):
+        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
     # migrate facts
     for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('fact_')), tables)):
         migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)

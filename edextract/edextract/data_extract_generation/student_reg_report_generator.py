@@ -4,12 +4,12 @@ __author__ = 'tshewchuk'
 This module contains methods to obtain data for the different Student Registration report types.
 """
 
-import csv
 from sqlalchemy.sql.expression import select, or_
 
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.data_extract_generation.constants import TableName
+from edextract.data_extract_generation.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 
@@ -114,13 +114,9 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
 
     header, data = data_extract_func(tenant, academic_year)
+    write_csv(output_file, header, data)
 
-    with open(output_file, 'w') as csv_file:
-        csvwriter = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow(header)
-        for row in data:
-            csvwriter.writerow(row)
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
 def _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year):

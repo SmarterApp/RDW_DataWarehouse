@@ -186,7 +186,7 @@ define [
         asmtType = @params['asmtType'] || Constants.ASMT_TYPE.SUMMATIVE
         return @params['effectiveDate'] + asmtType
       else
-        return edwarePreferences.getAsmtForISR().join('')
+        return edwarePreferences.getAsmtForISR()
 
     render: () ->
       key = @getCacheKey()

@@ -21,30 +21,23 @@ define [
     pref = getPreferences() || {}
     pref["asmtYear"]
 
-  saveEffectiveDate = (effectiveDate) ->
-      savePreferences {"effectiveDate": effectiveDate}
-
   getEffectiveDate = () ->
-      pref = getPreferences() || {}
-      pref["effectiveDate"]
-
-  saveAsmtType = (asmtType) ->
-    savePreferences {"asmtType": asmtType}
+    pref = getPreferences() || {}
+    pref["ISRAsmt"]?.effectiveDate
 
   getAsmtType = () ->
     pref = getPreferences() || {}
-    pref["asmtType"]
+    pref["ISRAsmt"]?.asmtType
 
   saveAsmtPreference = (asmt) ->
     saveAsmtForISR asmt
     savePreferences {"asmt" : asmt}
 
   saveAsmtForISR = (asmt) ->
-    saveEffectiveDate asmt.effectiveDate
-    saveAsmtType asmt.asmtType
+    savePreferences {"ISRAsmt": asmt}
 
   getAsmtForISR = () ->
-    [getEffectiveDate(), getAsmtType()]
+    getEffectiveDate() + getAsmtType()
 
   getAsmtPreference = () ->
     pref = getPreferences()
@@ -100,9 +93,7 @@ define [
   saveInterimInfo:saveInterimInfo
   saveAsmtYearPreference: saveAsmtYearPreference
   getAsmtYearPreference: getAsmtYearPreference
-  saveEffectiveDate: saveEffectiveDate
   getEffectiveDate: getEffectiveDate
-  saveAsmtType: saveAsmtType
   getAsmtType: getAsmtType
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR

@@ -54,17 +54,17 @@ class Player(metaclass=Singleton):
                 if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
                     self.COMMAND_HANDLERS[command]()
                 else:
-                    self.logger.error("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
+                    self.logger.warning("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
             else:
                 if self.node_id in nodes:
                     self.COMMAND_HANDLERS[command]()
                 else:
                     # ignore the command
-                    self.logger.error("{name}: {command} is ignored because {node} is not in {nodes}"
-                                      .format(command=command, name=self.__class__.__name__,
-                                              node=self.node_id, nodes=str(nodes)))
+                    self.logger.warning("{name}: {command} is ignored because {node} is not in {nodes}"
+                                        .format(command=command, name=self.__class__.__name__,
+                                                node=self.node_id, nodes=str(nodes)))
         else:
-            self.logger.error("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
+            self.logger.warning("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
 
     def set_hostname(self, hostname):
         '''
@@ -144,8 +144,8 @@ class Player(metaclass=Singleton):
                                                  universal_newlines=True)
                 max_retries -= 1
         except subprocess.CalledProcessError:
-            self.logger.error("{name}: Failed to remove rules to reject {hostname}".
-                              format(name=self.__class__.__name__, hostname=hostname))
+            self.logger.warning("{name}: Failed to remove rules to reject {hostname}".
+                                format(name=self.__class__.__name__, hostname=hostname))
         return not self.check_iptable_has_blocked_machine(hostname)
 
     def add_iptable_rules(self, hostname):
@@ -181,8 +181,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to unblock pgpool( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
+            self.logger.warning("{name}: Failed to unblock pgpool( {pgpool} )".
+                                format(name=self.__class__.__name__, pgpool=pgpool))
 
     def disconnect_pgpool(self):
         '''
@@ -197,8 +197,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to block pgpool( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
+            self.logger.warning("{name}: Failed to block pgpool( {pgpool} )".
+                                format(name=self.__class__.__name__, pgpool=pgpool))
 
     def connect_master(self):
         '''
@@ -214,8 +214,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to unblock master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
+            self.logger.warning("{name}: Failed to unblock master( {master} )".
+                                format(name=self.__class__.__name__, master=master))
 
     def disconnect_master(self):
         '''
@@ -230,8 +230,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to block master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
+            self.logger.warning("{name}: Failed to block master( {master} )".
+                                format(name=self.__class__.__name__, master=master))
 
     def reset_players(self):
         '''

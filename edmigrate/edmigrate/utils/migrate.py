@@ -304,7 +304,7 @@ def start_migrate_daily_delta(tenant=None):
             logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
             if not migrate_batch(batch=batch):
                 all_migrate_ok = False
-            # cleanup_batch(batch=batch)
+            cleanup_batch(batch=batch)
     else:
         logger.debug('no batch found to migrate')
     return all_migrate_ok

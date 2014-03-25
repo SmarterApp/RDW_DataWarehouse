@@ -1,6 +1,7 @@
 from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
-    EdMigrateUdl_statException
-from sqlalchemy.sql.expression import select, and_
+    EdMigrateUdl_statException, EdMigrateRecordInsertionException
+from sqlalchemy.sql.expression import select, and_, tuple_
+from sqlalchemy import Table, Column, Index
 from edmigrate.utils.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
@@ -8,6 +9,7 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 import logging
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.utils.cleanup import drop_schema, schema_exists
+from edschema.metadata.util import get_natural_key_columns
 
 __author__ = 'sravi'
 # This is a hack needed for now for migration.
@@ -195,7 +197,20 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     :returns number of record updated
     '''
     dest_table = dest_connector.get_table(table_name)
-    return dest_connector.execute(dest_table.insert(), batch).rowcount
+    natural_keys = get_natural_key_columns(dest_table)
+    key_columns = [dest_table.columns[key] for key in natural_keys]
+    key_values = [[row[key] for key in natural_keys] for row in batch]
+
+    batch_size = len(key_values)
+    # update prod rec_status to inactive for records matching with the natural keys of the records in the current batch
+    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C', tuple_(*key_columns).in_(key_values))).values(rec_status='I')
+    dest_connector.execute(update_query)
+    # insert the new records to prod with rec_status as current
+    insert_query = dest_table.insert()
+    records_inserted = dest_connector.execute(insert_query, batch).rowcount
+    if records_inserted != batch_size:
+        raise EdMigrateRecordInsertionException
+    return batch_size
 
 
 def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables):

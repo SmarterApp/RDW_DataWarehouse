@@ -24,6 +24,13 @@ class EdMigrateRecordAlreadyDeletedException(EdMigrateException):
         super().__init__(msg)
 
 
+class EdMigrateRecordInsertionException(EdMigrateException):
+    '''
+    Cannot migrate due to record insertion failure
+    '''
+    def __init__(self, msg='Cannot migrate due to record insertion failure'):
+        super().__init__(msg)
+
 class EdMigrateUdl_statException(EdMigrateException):
     '''
     Something wrong with udl_stat table

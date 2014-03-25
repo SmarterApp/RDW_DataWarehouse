@@ -130,14 +130,14 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     # if there is a status column, it's a candidate for deletes
     has_status = Constants.STATUS in source_table.columns
     if has_status:
-        delete_query = select([primary_key]).where(and_(source_table.c.batch_guid == batch_guid, source_table.c.status == Constants.STATUS_DELETED))
+        delete_query = select([primary_key]).where(and_(source_table.c.batch_guid == batch_guid, source_table.c.rec_status == Constants.STATUS_DELETED))
         delete_count = _process_batch(source_connector, dest_connector, preprod_to_prod_delete_records, delete_query, table_name,
                                       primary_key, batch_size)
 
     # for Insert
     insert_query = select([source_table]).where(source_table.c.batch_guid == batch_guid)
     if has_status:
-        insert_query = insert_query.where(and_(source_table.c.status == Constants.STATUS_CREATED))
+        insert_query = insert_query.where(and_(source_table.c.rec_status == Constants.STATUS_CREATED))
     insert_count = _process_batch(source_connector, dest_connector, preprod_to_prod_insert_records, insert_query, table_name,
                                   primary_key, batch_size)
     return delete_count, insert_count
@@ -179,7 +179,7 @@ def preprod_to_prod_delete_records(source_connector, dest_connector, table_name,
     dest_table = dest_connector.get_table(table_name)
     dest_primary_key_field = dest_table.columns[primary_key_field_name]
     # set status to D if the status is C for all records in the batch
-    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.status == Constants.STATUS_CREATED)).values(status=Constants.STATUS_DELETED)
+    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.rec_status == Constants.STATUS_CREATED)).values(status=Constants.STATUS_DELETED)
     # if number of updated records doesn't match, that means one of the records was changed from C to D by another batch
     if dest_connector.execute(update_query).rowcount != batch_size:
         raise EdMigrateRecordAlreadyDeletedException
@@ -196,6 +196,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
 
     :returns number of record updated
     '''
+    import pdb;pdb.set_trace();
     dest_table = dest_connector.get_table(table_name)
     natural_keys = get_natural_key_columns(dest_table)
     key_columns = [dest_table.columns[key] for key in natural_keys]
@@ -227,8 +228,8 @@ def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector
     logger.info('Migrating all tables for batch: ' + batch_guid)
     # TODO - we want it to be configurable what to migrate and in which order
     # migrate dims first
-    for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('dim_')), tables)):
-        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
+    #for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('dim_')), tables)):
+    #    migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
     # migrate facts
     for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('fact_')), tables)):
         migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
@@ -265,6 +266,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            print(e)
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
@@ -307,7 +309,8 @@ def start_migrate_daily_delta(tenant=None):
     """
     batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     for batch in batches_to_migrate:
+        import pdb;pdb.set_trace();
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
         migrate_batch(batch=batch)
-        cleanup_batch(batch=batch)
+        #cleanup_batch(batch=batch)

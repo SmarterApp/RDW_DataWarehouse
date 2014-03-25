@@ -27,6 +27,6 @@ class TestStatisticsDataGenerator(unittest.TestCase):
         self.assertEquals(result[2], current_year_count)
         self.assertEquals(result[3], 50)
         self.assertEquals(result[4], 10)
-        self.assertEquals(result[5], (1 / 9) * 100)
+        self.assertEquals(result[5], 11.11)
         self.assertEquals(result[6], 0)
 

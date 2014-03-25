@@ -25,4 +25,4 @@ def generate_data_row(current_year_count, previous_year_count, current_year_tota
 
 
 def _percentage(count, total):
-    return count / total * 100
+    return round((count / total * 100), 2)

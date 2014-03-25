@@ -42,7 +42,7 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
                   (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
                   (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO),
-                  (Config.SYSLOG_ADDRESS, str, Constants.SYSLOG_ADDRESS)]
+                  (Config.SYSLOG_ADDRESS, str, None)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini
@@ -74,18 +74,21 @@ def get_setting(key, default_value=None):
 
 def setup_syslog(settings):
     logger = logging.getLogger(Constants.WORKER_NAME)
-    syslog_address = get_setting(Config.SYSLOG_ADDRESS, Constants.SYSLOG_ADDRESS)
+    syslog_address = get_setting(Config.SYSLOG_ADDRESS, None)
     # parse the address settings
     if type(syslog_address) == str:
         syslog_address = ast.literal_eval(syslog_address)
-    # fails when syslog_address is not as tuple. log error to user
-    if type(syslog_address) not in [str, tuple]:
+    # fails when syslog_address is not as tuple, str, or None. log error to user
+    if type(syslog_address) not in [str, tuple, type(None)]:
         logger.error("{name} can't set up syslogger due to configuration error in format ".format(name=Constants.WORKER_NAME))
-    # the input is not in right format
-    if type(syslog_address) == tuple and len(syslog_address) not in [1, 2]:
-        logger.error("{name} can't set up syslogger due to configuration errors in wrong tuple.".format(name=Constants.WORKER_NAME))
 
-    logger = logging.getLogger(Constants.WORKER_NAME)
-    syslog_handler = SysLogHandler(address=syslog_address)
-    syslog_handler.setLevel(logging.ERROR)
-    logger.addHandler(syslog_handler)
+    if syslog_address is not None:
+        # the input is not in right format
+        if type(syslog_address) == tuple and len(syslog_address) not in [1, 2]:
+            logger.error("{name} can't set up syslogger due to configuration errors in wrong tuple.".
+                         format(name=Constants.WORKER_NAME))
+
+        logger = logging.getLogger(Constants.WORKER_NAME)
+        syslog_handler = SysLogHandler(address=syslog_address)
+        syslog_handler.setLevel(logging.ERROR)
+        logger.addHandler(syslog_handler)

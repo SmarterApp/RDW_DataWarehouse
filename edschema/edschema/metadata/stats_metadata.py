@@ -25,7 +25,7 @@ def generate_stats_metadata(schema_name=None, bind=None):
     Index('udl_stats_load_status_type_idx', udl_stats.c.load_status, udl_stats.c.load_status, unique=False)
 
     extract_stats = Table('extract_stats', metadata,
-                          Column('request_guid', String(50), nullable=False, primary_key=True),
+                          Column('request_guid', String(50), nullable=False),
                           Column('timestamp', DateTime, nullable=True),
                           Column('status', String(32), nullable=False),
                           Column('task_id', String(50), nullable=True),
@@ -33,4 +33,5 @@ def generate_stats_metadata(schema_name=None, bind=None):
                           Column('info', Text, nullable=True)
                           )
 
+    Index('extract_stats_request_task_id', extract_stats.c.request_guid, extract_stats.c.task_id, extract_stats.c.celery_task_id, unique=False)
     return metadata

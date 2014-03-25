@@ -6,7 +6,7 @@ SBAC-specific hierarchy configuration.
 """
 
 # District sizes : min/max/avg schools per type of district
-SML_MIN = 9
+SML_MIN = 5
 SML_MAX = 2 * SML_MIN
 SML_AVG = int((SML_MAX + SML_MIN) / 2)
 
@@ -14,8 +14,8 @@ MED_MIN = 5 * SML_MIN  # if small min =  9 then medium min = 40
 MED_MAX = 5 * SML_MAX  # if small max = 18 then medium max = 90
 MED_AVG = int((MED_MAX + MED_MIN) / 2)
 
-BIG_MIN = 5 * MED_MIN  # if medium min = 40 then big min =  200
-BIG_MAX = 5 * MED_MAX  # if medium max = 90 then big max = 450
+BIG_MIN = 4 * MED_MIN  # if medium min = 40 then big min =  200
+BIG_MAX = 4 * MED_MAX  # if medium max = 90 then big max = 450
 BIG_AVG = int((BIG_MAX + BIG_MIN) / 2)
 
 # School ratios
@@ -188,12 +188,12 @@ DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_M
                                                              'Good Elementary School': OTHR_ELEM}}
                   }
 
-STATE_TYPES = {'california': {'district_types_and_counts': {'Big LA': 1, 'Big Average': 59, 'Big Poor': 25,
-                                                            'Big Good': 50, 'Medium Average': 50, 'Medium Poor': 17,
-                                                            'Medium Good': 18, 'Medium Very Poor': 50,
-                                                            'Medium Very Good': 50, 'Small Average': 30,
-                                                            'Small Poor': 50, 'Small Good': 25, 'Small Very Poor': 50,
-                                                            'Small Very Good': 50},
+STATE_TYPES = {'california': {'district_types_and_counts': {'Big LA': 1, 'Big Average': 130, 'Big Poor': 100,
+                                                            'Big Good': 70, 'Medium Average': 100, 'Medium Poor': 35,
+                                                            'Medium Good': 35, 'Medium Very Poor': 100,
+                                                            'Medium Very Good': 100, 'Small Average': 60,
+                                                            'Small Poor': 100, 'Small Good': 50, 'Small Very Poor': 160,
+                                                            'Small Very Good': 70},
                              'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                              'demographics': 'california'},
                'devel': {'district_types_and_counts': {'Small Average': 4},

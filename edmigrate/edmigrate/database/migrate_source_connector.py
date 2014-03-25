@@ -30,20 +30,14 @@ class EdMigrateSourceConnection(DBConnection):
         '''
         Returns datasource name for a tenant
         '''
-        if tenant is None:
-            # Returns None will raise an Exception in base class
-            return None
-        return EdMigrateSourceConnection.get_namespace() + tenant
+        return EdMigrateSourceConnection.get_namespace() + tenant if tenant else EdMigrateSourceConnection.get_namespace()
 
     @staticmethod
     def get_db_config_prefix(tenant=None):
         '''
         Returns database config prefix based on tenant name
         '''
-        if tenant is None:
-            # Returns None will raise an Exception in base class
-            return None
-        return EdMigrateSourceConnection.get_namespace() + tenant + '.'
+        return EdMigrateSourceConnection.get_namespace() + tenant + '.' if tenant else EdMigrateSourceConnection.get_namespace()
 
     @staticmethod
     def generate_metadata(schema_name=None, bind=None):

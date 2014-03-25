@@ -3,51 +3,50 @@ Created on Mar 21, 2014ß
 
 @author: ejen
 '''
+from edmigrate.queues import conductor
 import logging
-import threading
 from edmigrate.utils.utils import get_broker_url
-from edmigrate.tasks.base import BaseTask
 from edmigrate.utils.constants import Constants
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
-from edmigrate.exceptions import PlayerTimeoutException
 import subprocess
 from edmigrate.settings.config import Config, get_setting
 import edmigrate.utils.reply_to_conductor as reply_to_conductor
 from time import sleep
 from kombu import Connection
-from kombu.entity import Exchange
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
+from celery.app.control import Control
 
 
 class Player(metaclass=Singleton):
 
-    __lock = threading.Lock()
+    def __init__(self, logger=logging.getLogger(Constants.WORKER_NAME),
+                 connection=Connection(get_broker_url()),
+                 exchange=conductor.exchange,
+                 routing_key=Constants.CONDUCTOR_ROUTING_KEY):
+        self.logger = logger
+        self.connection = connection
+        self.exchange = exchange
+        self.routing_key = routing_key
+        self.node_id = None
+        self.hostname = None
+        self.COMMAND_HANDLERS = {
+            Constants.COMMAND_REGISTER_PLAYER: self.register_player,
+            Constants.COMMAND_START_REPLICATION: self.connect_master,
+            Constants.COMMAND_STOP_REPLICATION: self.disconnect_master,
+            Constants.COMMAND_CONNECT_PGPOOL: self.connect_pgpool,
+            Constants.COMMAND_DISCONNECT_PGPOOL: self.disconnect_pgpool,
+            Constants.COMMAND_RESET_PLAYERS: self.reset_players
+        }
+        self.set_hostname(socket.gethostname())
+        self.set_node_id_from_hostname()
 
-    def __init__(self, timeout, logger, connection, exchange, routing_key):
-        self.__timeout = timeout
-        try:
-            if self.__lock.acquire(timeout=self.__timeout):
-                self.logger = logger
-                self.connection = connection
-                self.exchange = exchange
-                self.routing_key = routing_key
-                self.node_id = None
-                self.hostname = None
-                self.COMMAND_HANDLERS = {
-                    Constants.COMMAND_REGISTER_PLAYER: self.register_player,
-                    Constants.COMMAND_START_REPLICATION: self.connect_master,
-                    Constants.COMMAND_STOP_REPLICATION: self.disconnect_master,
-                    Constants.COMMAND_CONNECT_PGPOOL: self.connect_pgpool,
-                    Constants.COMMAND_DISCONNECT_PGPOOL: self.disconnect_pgpool,
-                    Constants.COMMAND_RESET_PLAYERS: self.reset_players
-                }
-            else:
-                raise PlayerTimeoutException()
-        finally:
-            if self.__lock.locked():
-                self.__lock.release()
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, value, tb):
+        pass
 
     def run_command(self, command, nodes):
         if command in self.COMMAND_HANDLERS:
@@ -55,17 +54,17 @@ class Player(metaclass=Singleton):
                 if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
                     self.COMMAND_HANDLERS[command]()
                 else:
-                    self.logger.error("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
+                    self.logger.warning("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
             else:
                 if self.node_id in nodes:
                     self.COMMAND_HANDLERS[command]()
                 else:
                     # ignore the command
-                    self.logger.error("{name}: {command} is ignored because {node} is not in {nodes}"
-                                      .format(command=command, name=self.__class__.__name__,
-                                              node=self.node_id, nodes=str(nodes)))
+                    self.logger.warning("{name}: {command} is ignored because {node} is not in {nodes}"
+                                        .format(command=command, name=self.__class__.__name__,
+                                                node=self.node_id, nodes=str(nodes)))
         else:
-            self.logger.error("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
+            self.logger.warning("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
 
     def set_hostname(self, hostname):
         '''
@@ -108,9 +107,11 @@ class Player(metaclass=Singleton):
         Run iptables -L, get the output, and search hostname that is in blocked chain
         @param hostname: hostname for the blocked machine
         '''
-        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
+        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
+        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
-            output = subprocess.check_output(['sudo', 'iptables', '-L', chain], universal_newlines=True)
+            output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_LIST, chain], universal_newlines=True)
         except subprocess.CalledProcessError:
             self.logger.error("{name}: Problem to use iptables. Please check with administrator".
                               format(name=self.__class__.__name__,))
@@ -127,18 +128,24 @@ class Player(metaclass=Singleton):
         # rules are inserted. But in order not fall into infinite loops. we use max_retries in
         # edmigrate.utils.constants to control maximum number of retries
         # also, if celery has no privileges to operate iptables, it will trigger exception and return result as false
-        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
+        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
+        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
-            output = subprocess.check_output(['sudo', 'iptables', '-D', chain, '-s', hostname, '-j', 'REJECT'],
+            output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
+                                              Constants.IPTABLES_SOURCE, hostname,
+                                              Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                              universal_newlines=True)
             while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
                 sleep(Constants.REPLICATION_CHECK_INTERVAL)
-                output = subprocess.check_output(['sudo', 'iptables', '-D', chain, '-s', hostname, '-j', 'REJECT'],
+                output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
+                                                  Constants.IPTABLES_SOURCE, hostname,
+                                                  Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                                  universal_newlines=True)
                 max_retries -= 1
         except subprocess.CalledProcessError:
-            self.logger.error("{name}: Failed to remove rules to reject {hostname}".
-                              format(name=self.__class__.__name__, hostname=hostname))
+            self.logger.warning("{name}: Failed to remove rules to reject {hostname}".
+                                format(name=self.__class__.__name__, hostname=hostname))
         return not self.check_iptable_has_blocked_machine(hostname)
 
     def add_iptable_rules(self, hostname):
@@ -146,9 +153,13 @@ class Player(metaclass=Singleton):
         add machine into iptable block chain
         @param hostname: hostname for the machine
         '''
-        chain = get_setting(Config.IPTABLES_CHAIN, 'PGSQL')
+        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
+        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
+        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
-            subprocess.check_output(['sudo', 'iptables', '-I', chain, '-s', hostname, '-j', 'REJECT'],
+            subprocess.check_output([sudo, iptables, Constants.IPTABLES_INSERT, chain,
+                                     Constants.IPTABLES_SOURCE, hostname,
+                                     Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                     universal_newlines=True)
             sleep(Constants.REPLICATION_CHECK_INTERVAL)
         except subprocess.CalledProcessError:
@@ -170,8 +181,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to unblock pgpool( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
+            self.logger.warning("{name}: Failed to unblock pgpool( {pgpool} )".
+                                format(name=self.__class__.__name__, pgpool=pgpool))
 
     def disconnect_pgpool(self):
         '''
@@ -186,8 +197,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to block pgpool( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
+            self.logger.warning("{name}: Failed to block pgpool( {pgpool} )".
+                                format(name=self.__class__.__name__, pgpool=pgpool))
 
     def connect_master(self):
         '''
@@ -203,8 +214,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to unblock master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
+            self.logger.warning("{name}: Failed to unblock master( {master} )".
+                                format(name=self.__class__.__name__, master=master))
 
     def disconnect_master(self):
         '''
@@ -219,8 +230,8 @@ class Player(metaclass=Singleton):
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
         else:
-            self.logger.error("{name}: Failed to block master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
+            self.logger.warning("{name}: Failed to block master( {master} )".
+                                format(name=self.__class__.__name__, master=master))
 
     def reset_players(self):
         '''
@@ -234,8 +245,8 @@ class Player(metaclass=Singleton):
         status_1 = self.remove_iptable_rules(pgpool, max_retries)
         status_2 = self.remove_iptable_rules(master, max_retries)
         if status_1 and status_2:
-            reply_to_conductor.acknowledgement_reset_slaves(self.node_id, self.connection,
-                                                            self.exchange, self.routing_key)
+            reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
+                                                             self.exchange, self.routing_key)
         elif status_1 and not status_2:
             self.logger.error("{name}: Failed to reset iptables for pgpool ( {pgpool} )".
                               format(name=self.__class__.__name__, pgpool=pgpool))
@@ -252,31 +263,23 @@ class Player(metaclass=Singleton):
         '''
         self.logger.info("{name}: Register {name} to conductor".format(name=self.__class__.__name__))
         if self.node_id is not None:
-            reply_to_conductor.register_slave(self.node_id, self.connection, self.exchange, self.routing_key)
+            reply_to_conductor.register_player(self.node_id, self.connection, self.exchange, self.routing_key)
         else:
             # log errors
             self.logger.error("{name}: {hostname} has no node_id".
                               format(name=self.__class__.__name__, hostname=self.hostname))
 
 
-# initialized singleton player object for the slave task in the same worker
-player = Player(5, logging.getLogger(Constants.WORKER_NAME),
-                Connection(get_broker_url()),
-                Exchange(Constants.CONDUCTOR_EXCHANGE),
-                Constants.CONDUCTOR_ROUTING_KEY)
-
-
-@celery.task(name=Constants.PLAYER_TASK, ignore_result=True, base=BaseTask)
-def slave_task(command, nodes):
+@celery.task(name=Constants.PLAYER_TASK, ignore_result=True)
+def player_task(command, nodes):
     """
     This is a player task that runs on slave database. It assumes only one celery worker per node. So task
     will be a singleton
     Please see https://docs.google.com/a/amplify.com/drawings/d/14K89SK6FLTPCFi0clvmnrTFMaIkc0eDDwQ0kt8CsTCE/
     for architecture
-    Two tasks, COMMAND_FIND_SLAVE and COMMAND_REST_SLAVE are executed regardless player nodes are included or not
+    Two tasks, COMMAND_FIND_PLAYER and COMMAND_REST_PLAYER are executed regardless player nodes are included or not
     For other tasks. Player task checks membership of current player node in nodes argument represented as a list
     of node_id. Those tasks are executed if and only if membership is true.
     """
-    player.set_hostname(socket.gethostname())
-    player.set_node_id_from_hostname()
-    player.run_command(command, nodes)
+    with Player() as player:
+        player.run_command(command, nodes)

@@ -269,7 +269,6 @@ class Player(metaclass=Singleton):
             self.logger.error("{name}: {hostname} has no node_id".
                               format(name=self.__class__.__name__, hostname=self.hostname))
 
-Control.purge()
 
 @celery.task(name=Constants.PLAYER_TASK, ignore_result=True)
 def player_task(command, nodes):

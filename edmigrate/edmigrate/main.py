@@ -35,10 +35,12 @@ def signal_handler(signal, frame):
     os.unlink(pidfile)
     os._exit(0)
 
+
 @atexit.register
 def delete_queue_exchange():
     conductor.exchange.delete()
     conductor.queue.delete()
+
 
 def get_ini_file():
     '''

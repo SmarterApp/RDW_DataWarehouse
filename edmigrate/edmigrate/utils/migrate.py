@@ -250,6 +250,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            logger.exception('migrate rollback because')
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)

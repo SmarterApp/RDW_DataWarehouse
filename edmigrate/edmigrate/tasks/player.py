@@ -17,6 +17,7 @@ from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
+from celery.app.control import Control
 
 
 class Player(metaclass=Singleton):
@@ -269,8 +270,9 @@ class Player(metaclass=Singleton):
             self.logger.error("{name}: {hostname} has no node_id".
                               format(name=self.__class__.__name__, hostname=self.hostname))
 
+Control.purge()
 
-@celery.task(name=Constants.PLAYER_TASK, ignore_result=True, base=BaseTask)
+@celery.task(name=Constants.PLAYER_TASK, ignore_result=True)
 def player_task(command, nodes):
     """
     This is a player task that runs on slave database. It assumes only one celery worker per node. So task

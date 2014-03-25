@@ -23,6 +23,8 @@ import logging.config
 from edmigrate.utils.consumer import ConsumerThread
 import sys
 import signal
+from edmigrate.queues import conductor
+import atexit
 
 
 logger = logging.getLogger('edmigrate')
@@ -33,6 +35,10 @@ def signal_handler(signal, frame):
     os.unlink(pidfile)
     os._exit(0)
 
+@atexit.register
+def delete_queue_exchange():
+    conductor.exchange.delete()
+    conductor.queue.delete()
 
 def get_ini_file():
     '''

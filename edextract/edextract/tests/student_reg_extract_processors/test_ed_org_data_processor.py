@@ -17,6 +17,7 @@ class TestSRStateVisitor(unittest.TestCase):
         self.category_tracker = [self.tracker]
         self.ed_rg_heirarchy_map = {}
 
+        EdOrgDataProcessor.__abstractmethods__ = set()  # Make this class instantiable for these tests only.
         self.data_processor = EdOrgDataProcessor(self.category_tracker, self.ed_rg_heirarchy_map)
 
         self.data = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC'}
@@ -32,7 +33,3 @@ class TestSRStateVisitor(unittest.TestCase):
         self.data_processor._call_trackers('123', self.data)
 
         self.tracker.track.assert_called_with('123', self.data)
-
-
-
-

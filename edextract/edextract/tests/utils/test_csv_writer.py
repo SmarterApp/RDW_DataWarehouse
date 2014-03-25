@@ -10,7 +10,8 @@ import shutil
 import os
 import csv
 
-from edextract.data_extract_generation.csv_writer import write_csv
+from edextract.utils.csv_writer import write_csv
+
 
 class TestCSVWriter(unittest.TestCase):
 

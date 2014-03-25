@@ -9,8 +9,10 @@ from sqlalchemy.sql.expression import select, or_
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.data_extract_generation.constants import TableName
-from edextract.data_extract_generation.csv_writer import write_csv
+from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
+from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
+from edextract.trackers.total_tracker import TotalTracker
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
@@ -140,6 +142,32 @@ def _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year):
                                                          student_reg.c.academic_year == academic_year - 1))
 
         results = connection.get_streaming_result(query)  # This result is a generator
+
+    data = []
+
+    return data
+
+
+def _get_tracker_results_for_sr_stat(db_rows):
+    """
+    Iterate through the database results, creating the student registration statistics report data.
+
+    @param: db_rows: Iterable containing all pertinent database rows.
+
+    @return: List of rows to be included in the CSV report.
+    """
+
+    hierarchy_map = {}
+
+    trackers = [TotalTracker()]
+
+    data_processors = [StateDataProcessor(trackers, hierarchy_map)]
+
+    for db_row in db_rows:
+        for processor in data_processors:
+            processor.process(db_row)
+
+    report_map = sorted(hierarchy_map)
 
     data = []
 

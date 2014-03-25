@@ -1,7 +1,9 @@
 __author__ = 'npandey'
 
+from abc import ABCMeta, abstractmethod
 
-class EdOrgDataProcessor:
+
+class EdOrgDataProcessor(metaclass=ABCMeta):
 
     def __init__(self, category_trackers, ed_org_hierarchy):
         self.category_trackers = category_trackers
@@ -14,5 +16,6 @@ class EdOrgDataProcessor:
         for tracker in self.category_trackers:
             tracker.track(guid, data_row)
 
+    @abstractmethod
     def process_data(self, data_row):
-        pass
+        return

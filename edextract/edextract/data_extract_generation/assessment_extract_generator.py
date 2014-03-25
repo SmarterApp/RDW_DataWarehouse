@@ -7,7 +7,7 @@ This module contains the logic to write to an Assessment CSV or JSON extract fil
 from itertools import chain
 import json
 
-from edextract.data_extract_generation.csv_writer import write_csv
+from edextract.utils.csv_writer import write_csv
 from edextract.utils.json_formatter import format_json
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants

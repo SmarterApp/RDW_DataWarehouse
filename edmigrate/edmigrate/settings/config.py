@@ -1,4 +1,5 @@
 __author__ = 'sravi'
+from edmigrate.utils.constants import Constants
 
 
 class Config():
@@ -12,6 +13,8 @@ class Config():
     PGPOOL_HOSTNAME = 'migrate.pgpool.hostname'
     MASTER_HOSTNAME = 'migrate.master.hostname'
     IPTABLES_CHAIN = 'migrate.iptables.chain'
+    IPTABLES_SUDO = 'migrate.iptables.sudo'
+    IPTABLES_COMMAND = 'migrate.iptables.command'
     DEFAULT_ROUTUNG_KEY = 'migrate.celery.CELERY_DEFAULT_ROUTING_KEY'
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'
@@ -27,12 +30,14 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.BROADCAST_QUEUE, str, None),
                   (Config.LAG_TOLERENCE_IN_BYTES, int, 10),
                   (Config.PGPOOL_HOSTNAME, str, None),
-                  (Config.DEFAULT_ROUTUNG_KEY, str, 'edmigrate'),
-                  (Config.DEFAULT_ROUTUNG_QUEUE, str, 'edmigrate_master'),
+                  (Config.DEFAULT_ROUTUNG_KEY, str, Constants.WORKER_NAME),
+                  (Config.DEFAULT_ROUTUNG_QUEUE, str, Constants.CONDUCTOR_QUEUE),
                   (Config.BROKER_URL, str, 'memory://'),
                   (Config.EAGER_MODE, bool, False),
-                  (Config.MASTER_HOSTNAME, str, 'localhost'),
-                  (Config.IPTABLES_CHAIN, str, 'PGSQL')]
+                  (Config.MASTER_HOSTNAME, str, Constants.LOCALHOST),
+                  (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
+                  (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
+                  (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

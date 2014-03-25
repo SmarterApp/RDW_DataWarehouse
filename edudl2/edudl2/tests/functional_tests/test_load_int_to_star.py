@@ -1,6 +1,5 @@
 import csv
 import os
-from edudl2.udl2_util.database_util import execute_queries
 from edudl2.move_to_target import move_to_target, move_to_target_setup
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from sqlalchemy.sql.expression import text, bindparam

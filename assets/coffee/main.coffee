@@ -54,6 +54,7 @@ require {
     edwareReportActionBar: 'widgets/header/EDWARE.actionBar',
     edwareHelpMenu: 'widgets/header/EDWARE.helpMenu',
     edwarePrint: 'widgets/print/EDWARE.print',
+    edwarePrintURL: 'widgets/print/EDWARE.printURL',
     edwareRedirect: 'modules/EDWARE.stateViewRedirect',
     edwarePopover: 'widgets/popover/EDWARE.popover',
 

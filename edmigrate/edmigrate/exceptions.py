@@ -32,27 +32,32 @@ class EdMigrateUdl_statException(EdMigrateException):
         super().__init__(msg)
 
 
-class SlaveTrackerException(EdMigrateException):
-    def __init__(self, msg='SlaveTrackerException'):
+class PlayerTrackerException(EdMigrateException):
+    def __init__(self, msg='PlayerTrackerException'):
         super().__init__(msg)
 
 
-class SlaveAlreadyRegisteredException(SlaveTrackerException):
+class PlayerAlreadyRegisteredException(PlayerTrackerException):
     def __init__(self, node_id):
-        super().__init__(msg="Slave [%d] has already registered" % (node_id))
+        super().__init__(msg="Player [%d] has already registered" % (node_id))
 
 
-class SlaveNotRegisteredException(SlaveTrackerException):
+class PlayerDelayedRegistrationException(PlayerTrackerException):
     def __init__(self, node_id):
-        super().__init__(msg='Slave [' + str(node_id) + '] was not registered')
+        super().__init__(msg="Delayed registration player [%d], it won't be registered." % (node_id))
 
 
-class SlaveStatusTimedoutException(SlaveTrackerException):
+class PlayerNotRegisteredException(PlayerTrackerException):
+    def __init__(self, node_id):
+        super().__init__(msg='Player [' + str(node_id) + '] was not registered')
+
+
+class PlayerStatusTimedoutException(PlayerTrackerException):
     def __init__(self, node_id, timeout):
-        super().__init__(msg='Timedout after ' + str(timeout) + ' seconds. Slave [' + str(node_id) + '] was not registered')
+        super().__init__(msg='Timedout after ' + str(timeout) + ' seconds. Player [' + str(node_id) + '] was not registered')
 
 
-class SlaveStatusLockingTimedoutException(SlaveTrackerException):
+class PlayerStatusLockingTimedoutException(PlayerTrackerException):
     def __init__(self):
         super().__init__(msg='Thread Lock Timedout')
 
@@ -79,9 +84,4 @@ class ReplicationToMonitorOutOfSyncException(ReplicationMonitorException):
 
 class ConductorTimeoutException(EdMigrateException):
     def __init__(self, msg='Conductor Timeout Exception'):
-        super().__init__(msg)
-
-
-class PlayerTimeoutException(EdMigrateException):
-    def __init__(self, msg='Player Timeout Exception'):
         super().__init__(msg)

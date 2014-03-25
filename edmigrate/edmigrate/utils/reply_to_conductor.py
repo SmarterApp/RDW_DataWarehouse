@@ -11,8 +11,8 @@ import logging
 logger = logging.getLogger('edmigrate')
 
 
-def register_slave(node_id, connection, exchange, routing_key):
-    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_FIND_SLAVE, connection, exchange, routing_key)
+def register_player(node_id, connection, exchange, routing_key):
+    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_FIND_PLAYER, connection, exchange, routing_key)
 
 
 def acknowledgement_pgpool_disconnected(node_id, connection, exchange, routing_key):
@@ -31,8 +31,8 @@ def acknowledgement_master_connected(node_id, connection, exchange, routing_key)
     return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_START_REPLICATION, connection, exchange, routing_key)
 
 
-def acknowledgement_reset_slaves(node_id, connection, exchange, routing_key):
-    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_RESET_SLAVES, connection, exchange, routing_key)
+def acknowledgement_reset_players(node_id, connection, exchange, routing_key):
+    return __send_message_to_conductor(node_id, Constants.ACK_COMMAND_RESET_PLAYERS, connection, exchange, routing_key)
 
 
 def __send_message_to_conductor(node_id, command, connection, exchange, routing_key):

@@ -90,4 +90,4 @@ def drop_schema(connector, schema_name):
     connector.set_metadata_by_reflect(schema_name)
     metadata = connector.get_metadata()
     metadata.drop_all()
-    connector.execute(get_drop_schema_cmd())
+    connector.execute(get_drop_schema_cmd(schema_name))

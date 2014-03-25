@@ -72,3 +72,8 @@ class Constants():
     IPTABLES_SOURCE = '-s'
 
     SYSLOG_ADDRESS = ('/var/run/syslog',)
+    SYSLOG_LEVEL_ERROR = 'error'
+    SYSLOG_LEVEL_CRITICAL = 'critical'
+    SYSLOG_LEVEL_WARNING = 'warning'
+    SYSLOG_LEVEL_INFO = 'info'
+    SYSLOG_LEVEL_DEBUG = 'debug'

@@ -9,7 +9,7 @@ from edmigrate.utils.utils import Singleton
 import time
 from edmigrate.exceptions import PlayerAlreadyRegisteredException, \
     PlayerNotRegisteredException, PlayerStatusTimedoutException,\
-    PlayerStatusLockingTimedoutException, PlayerLateRegistrationException
+    PlayerStatusLockingTimedoutException, PlayerDelayedRegistrationException
 
 
 class PlayerTracker(metaclass=Singleton):
@@ -82,7 +82,7 @@ class PlayerTracker(metaclass=Singleton):
                 if self.__lock.locked():
                     self.__lock.release()
         else:
-            raise PlayerLateRegistrationException(node_id)
+            raise PlayerDelayedRegistrationException(node_id)
 
     def set_pgpool_connected(self, node_id):
         self._set_player_status(node_id, Constants.PLAYER_PGPOOL_CONNECTION_STATUS, Constants.PLAYER_CONNECTION_STATUS_CONNECTED)

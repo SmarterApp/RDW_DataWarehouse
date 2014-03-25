@@ -28,6 +28,7 @@ class MockLogger(object):
     def __init__(self):
         self.out = []
         self.err = []
+        self.warn = []
 
     def info(self, msg):
         self.out.append(msg)
@@ -35,8 +36,11 @@ class MockLogger(object):
     def error(self, msg):
         self.err.append(msg)
 
+    def warn(self, msg):
+        self.warn.append(msg)
+
     def __repr__(self):
-        return "stdout: " + str(self.out) + " stderr: " + str(self.err)
+        return "stdout: " + str(self.out) + " stderr: " + str(self.err) + " warn: " + str(self.warn)
 
 
 class PlayerTaskTest(Unittest_with_repmgr_sqlite):

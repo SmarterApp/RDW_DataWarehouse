@@ -45,9 +45,9 @@ def generate_isr_report_path_by_student_guid(state_code, pdf_report_base_dir='/'
     return file_path
 
 
-def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_guid=None, school_guid=None, asmt_grade=None, student_guid=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=False, lang='en'):
+def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_guid=None, school_guid=None, asmt_grade=None, student_guid=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=False, lang='en', effective_date=None):
     '''
     Generate Individual Student Report absolute file path name
     '''
-    dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, 'isr', asmt_type, student_guid + '.' + lang)
+    dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, 'isr', asmt_type, student_guid + '.' + effective_date + '.' + lang)
     return dirname + (".g.pdf" if grayScale else ".pdf")

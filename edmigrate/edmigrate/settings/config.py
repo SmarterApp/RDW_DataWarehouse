@@ -19,6 +19,7 @@ class Config():
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'
     EAGER_MODE = 'migrate.celery.celery_always_eager'
+    SYSLOG_ADDRESS = 'migrate.syslog.address'
 
 
 # list of configurations that are specific to edmigrate
@@ -37,7 +38,8 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.MASTER_HOSTNAME, str, Constants.LOCALHOST),
                   (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
                   (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
-                  (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO)]
+                  (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO),
+                  (Config.SYSLOG_ADDRESS, tuple, Constants.SYSLOG_ADDRESS)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini

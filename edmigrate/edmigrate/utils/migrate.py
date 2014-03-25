@@ -197,7 +197,6 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
 
     :returns number of record updated
     '''
-    import pdb;pdb.set_trace();
     dest_table = dest_connector.get_table(table_name)
     natural_keys = get_natural_key_columns(dest_table)
     key_columns = [dest_table.columns[key] for key in natural_keys]
@@ -310,8 +309,7 @@ def start_migrate_daily_delta(tenant=None):
     """
     batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     for batch in batches_to_migrate:
-        import pdb;pdb.set_trace();
         batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
         logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
         migrate_batch(batch=batch)
-        #cleanup_batch(batch=batch)
+        cleanup_batch(batch=batch)

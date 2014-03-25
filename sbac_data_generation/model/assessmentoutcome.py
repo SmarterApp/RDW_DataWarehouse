@@ -5,7 +5,9 @@ Model an assessment outcome (an instance of a student taking an assessment) for 
 @date: March 3, 2014
 """
 
-from mongoengine import IntField, ReferenceField, StringField
+import datetime
+
+from mongoengine import DateTimeField, IntField, ReferenceField, StringField
 
 import sbac_data_generation.config.cfg as sbac_config
 
@@ -66,6 +68,8 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     acc_scribe_nonembed = IntField(required=True, default=0, min_value=0, max_value=10)
     acc_speech_to_text_nonembed = IntField(required=True, default=0, min_value=0, max_value=10)
     acc_streamline_mode = IntField(required=True, default=0, min_value=0, max_value=10)
+    from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
+    to_date = DateTimeField(required=True, default=datetime.date(9999, 12, 31))
 
     def get_object_set(self):
         """

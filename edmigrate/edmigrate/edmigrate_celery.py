@@ -1,9 +1,8 @@
 __author__ = 'sravi'
 from edcore.database.stats_connector import StatsDBConnection
 from edworker.celery import setup_celery as setup, configure_celeryd, get_config_file
-from edmigrate.settings.config import setup_settings
+from edmigrate.settings.config import setup_settings, setup_syslog
 import logging
-from logging.handlers import SysLogHandler
 from edcore.database import initialize_db
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.utils.constants import Constants
@@ -11,11 +10,6 @@ from edmigrate.utils.constants import Constants
 
 logger = logging.getLogger(Constants.WORKER_NAME)
 PREFIX = 'migrate.celery'
-
-
-def setup_logs(settings):
-    print(settings)
-    # set up syslog for log level above error
 
 
 def setup_celery(settings, prefix=PREFIX):
@@ -27,8 +21,8 @@ def setup_celery(settings, prefix=PREFIX):
     :param prefix: prefix in configurations used for configuring celery
     '''
     setup(celery, settings, prefix)
-    setup_logs(settings)
     setup_settings(settings)
+    setup_syslog(settings)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
@@ -40,3 +34,4 @@ if prod_config:
     initialize_db(RepMgrDBConnection, conf)
     initialize_db(StatsDBConnection, conf)
     setup_settings(conf)
+    setup_syslog(conf)

@@ -328,7 +328,7 @@ qa:
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
-      syslog.address: ('/dev/log',)
+      syslog.address: ('rsyslog0.qa.dum.edwdc.net', 514)
     migrate.celery:
       BROKER_URL:amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     auth:
@@ -394,7 +394,7 @@ jenkins_qa:
     services.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
     migrate:
-      syslog.address: ('/dev/log',)
+      syslog.address: ('rsyslog0.qa.dum.edwdc.net', 514)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
@@ -642,7 +642,7 @@ integration:
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
     migrate:
-      syslog.address: ('/dev/log',)
+      syslog.address: ('/var/run/syslog',)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:

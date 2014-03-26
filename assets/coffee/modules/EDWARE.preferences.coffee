@@ -42,7 +42,9 @@ define [
   getAsmtPreference = () ->
     pref = getPreferences()
     pref = {} if not pref
-    pref["asmt"]
+    # use ISR assessment preference for ISR report
+    isISR = $('body').hasClass('isr')
+    if isISR then pref['ISRAsmt'] else pref['asmt']
 
   clearAsmtPreference = ->
     saveAsmtPreference {}

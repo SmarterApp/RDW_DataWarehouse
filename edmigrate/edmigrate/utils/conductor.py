@@ -11,14 +11,22 @@ from edmigrate.utils.replication_monitor import replication_monitor
 import time
 from edmigrate.exceptions import ConductorTimeoutException
 import logging
+import threading
 
 
 logger = logging.getLogger('edmigrate')
 
 
 class Conductor:
-    def __init__(self):
+    __lock = threading.Lock()
+
+    def __init__(self, timeout=60):
+        self.__player_trakcer = None
+        if not self.__lock.acquire(timeout=timeout):
+            raise ConductorTimeoutException()
+        logger.debug('Conductor locked')
         self.__player_trakcer = PlayerTracker()
+        self.__player_trakcer.reset()
         self.__player_trakcer.set_migration_in_process(True)
         self.__broadcast_queue = Constants.BROADCAST_EXCHANGE
 
@@ -26,10 +34,20 @@ class Conductor:
         return self
 
     def __exit__(self, exc_type, value, tb):
-        return self.__player_trakcer.set_migration_in_process(False)
+        if self.__player_trakcer:
+            self.__player_trakcer.set_migration_in_process(False)
+        logger.debug('Conductor __exit__')
+        if self.__lock.locked():
+            logger.debug('Conductor releasing lock')
+            self.__lock.release()
 
     def __del__(self):
-        self.__player_trakcer.set_migration_in_process(False)
+        if self.__player_trakcer:
+            self.__player_trakcer.set_migration_in_process(False)
+        logger.debug('Conductor __del__')
+        if self.__lock.locked():
+            logger.debug('Conductor releasing lock')
+            self.__lock.release()
 
     def send_reset_players(self):
         self.__player_trakcer.reset()

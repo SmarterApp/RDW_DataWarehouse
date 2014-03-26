@@ -25,6 +25,7 @@ import sys
 import signal
 from edmigrate.queues import conductor
 import atexit
+from edmigrate.utils.replication_admin_monitor import ReplicationAdminMonitor
 
 
 logger = logging.getLogger('edmigrate')
@@ -79,10 +80,12 @@ def main(file=None, tenant='cat', run_migrate_only=False):
         logger.debug('connection: ' + url)
         consumerThread = ConsumerThread(connect)
         controller = ConductorController(connect)
+        replicationAdminMonitor = ReplicationAdminMonitor()
         try:
             initialize_db(RepMgrDBConnection, settings)
             consumerThread.start()
             controller.start()
+            replicationAdminMonitor.start()
             consumerThread.join()
             controller.join()
         except KeyboardInterrupt:

@@ -45,4 +45,4 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
                         standby_node = status_record[Constants.REPL_STANDBY_NODE]
                         logger.error('Node ID[' + str(standby_node) + '] is out of sync.')
             logger.debug('replication admin monitor finishes')
-            time.sleep(interval_check)
+        time.sleep(interval_check)

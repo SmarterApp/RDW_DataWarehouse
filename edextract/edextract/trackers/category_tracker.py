@@ -9,8 +9,10 @@ from abc import ABCMeta, abstractmethod
 
 class CategoryTracker(metaclass=ABCMeta):
 
-    def __init__(self):
+    def __init__(self, category, value):
         self._map = {}
+        self._category = category
+        self._value = value
 
     def track(self, guid, row):
         """
@@ -20,14 +22,15 @@ class CategoryTracker(metaclass=ABCMeta):
         @param row: Current DB table row to be counted
         """
 
-        year = row['academic_year']
-        if guid in self._map.keys():
-            if year in self._map[guid]:
-                self._map[guid][year] += 1
+        if self.should_increment(row):
+            year = row['academic_year']
+            if guid in self._map.keys():
+                if year in self._map[guid]:
+                    self._map[guid][year] += 1
+                else:
+                    self._map[guid][year] = 1
             else:
-                self._map[guid][year] = 1
-        else:
-            self._map[guid] = {year: 1}
+                self._map[guid] = {year: 1}
 
     def get_map_entry(self, guid):
         """
@@ -43,10 +46,23 @@ class CategoryTracker(metaclass=ABCMeta):
 
         return self._map.get(guid, None)
 
-    @abstractmethod
     def get_category_and_value(self):
         """
-        Abstract method returns category and value names for this class.
+        Returns category and value names for this class.
+
+        @return: Category and value for this class
         """
 
+        return self._category, self._value
+
+    @abstractmethod
+    def should_increment(self, row):
+        """
+        Determine if internal totals map should be updated for a row.
+
+        @param row: Current row to be assessed
+
+        @return: Whether or not to increment the concrete class's totals map
+        @returntype: Boolean
+        """
         return

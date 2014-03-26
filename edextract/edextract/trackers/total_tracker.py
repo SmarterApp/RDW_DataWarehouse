@@ -10,15 +10,8 @@ from edextract.trackers.category_tracker import CategoryTracker
 class TotalTracker(CategoryTracker):
 
     def __init__(self):
-        super().__init__()
-        self._category = 'Total'
-        self._value = 'Total'
+        super().__init__('Total', 'Total')
 
-    def get_category_and_value(self):
-        """
-        Returns category and value names for this class.
+    def should_increment(self, row):
 
-        @return: Category and value for this class
-        """
-
-        return self._category, self._value
+        return True

@@ -41,5 +41,5 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
                     replication_ok = check_replication_ok(status_record, replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance)
                     if not replication_ok:
                         standby_node = status_record[Constants.REPL_STANDBY_NODE]
-                        logger.error('Node ID[' + standby_node + '] is out of sync.')
+                        logger.error('Node ID[' + str(standby_node) + '] is out of sync.')
             time.sleep(interval_check)

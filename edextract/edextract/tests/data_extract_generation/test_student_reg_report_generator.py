@@ -13,7 +13,7 @@ from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sq
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.status.constants import Constants
-from edextract.tasks.constants import Constants as TaskConstants
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 
 
 class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -21,6 +21,13 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
     def setUp(self):
         self.__tmp_dir = tempfile.mkdtemp('file_archiver_test')
         self._tenant = get_unittest_tenant_name()
+        self.query = 'SELECT * FROM student_reg WHERE academic_year == 2015 OR academic_year == 2014'
+        self.statistics_headers = ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
+                                   'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
+                                   'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 count']
+        self.completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
+                                   'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
+                                   'Count of Students Assessed', 'Percent of Students Assessed']
 
     @classmethod
     def setUpClass(cls):
@@ -35,7 +42,12 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {TaskConstants.ACADEMIC_YEAR: 2015}
+        extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS,
+                        TaskConstants.TASK_TASK_ID: 'task_id',
+                        TaskConstants.TASK_FILE_NAME: output,
+                        TaskConstants.ACADEMIC_YEAR: 2015,
+                        TaskConstants.TASK_QUERY: self.query,
+                        TaskConstants.CSV_HEADERS: self.statistics_headers}
         generate_statistics_report(self._tenant, output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -58,7 +70,9 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {TaskConstants.ACADEMIC_YEAR: 2014}
+        extract_args = {TaskConstants.ACADEMIC_YEAR: 2014,
+                        TaskConstants.TASK_QUERY: self.query,
+                        TaskConstants.CSV_HEADERS: self.completion_headers}
         generate_completion_report(self._tenant, output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         csv_data = []

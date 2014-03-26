@@ -18,7 +18,7 @@ from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError, ExtractionError
 from edextract.utils.data_archiver import encrypted_archive_files, archive_files, GPGPublicKeyException
-from edextract.data_extract_generation.assessment_extract_generator import generate_csv, generate_json
+from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
 
@@ -186,7 +186,7 @@ def generate_extract_file(tenant, request_id, task):
     exception_thrown = False
 
     try:
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.GENERATING_JSON})
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
@@ -224,17 +224,17 @@ def generate_extract_file(tenant, request_id, task):
             try:
                 raise ExtractionError()
             except ExtractionError as exc:
-                raise generate_extract_file.retry(args=[tenant, request_id, task, extract_type], exc=exc)
+                raise generate_extract_file.retry(args=[tenant, request_id, task], exc=exc)
         else:
             raise ExtractionError()
 
 
 def get_extract_func_and_args(task, extract_type):
     extract_funcs_and_args = {
-        ExtractionDataType.ASMT_CSV: (generate_csv, {TaskConstants.TASK_QUERY: task.get(TaskConstants.TASK_QUERY, None)}),
-        ExtractionDataType.ASMT_JSON: (generate_json, {TaskConstants.TASK_QUERY: task.get(TaskConstants.TASK_QUERY, None)}),
-        ExtractionDataType.SR_STATISTICS: (generate_statistics_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)}),
-        ExtractionDataType.SR_COMPLETION: (generate_completion_report, {TaskConstants.ACADEMIC_YEAR: task.get(TaskConstants.ACADEMIC_YEAR, None)})
+        ExtractionDataType.QUERY_CSV: (generate_csv, task),
+        ExtractionDataType.QUERY_JSON: (generate_json, task),
+        ExtractionDataType.SR_STATISTICS: (generate_statistics_report, task),
+        ExtractionDataType.SR_COMPLETION: (generate_completion_report, task)
     }
 
     extract_func, args = extract_funcs_and_args[extract_type]

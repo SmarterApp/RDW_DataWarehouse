@@ -14,12 +14,12 @@ from sqlalchemy.sql.expression import select
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore_sqlite, UnittestEdcoreDBConnection,
                                                             get_unittest_tenant_name)
-from edextract.data_extract_generation.assessment_extract_generator import generate_csv, generate_json
+from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 
 
-class TestAssessmentExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
+class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def setUp(self):
         self.__tmp_dir = tempfile.mkdtemp('file_archiver_test')

@@ -34,4 +34,4 @@ if prod_config:
     initialize_db(RepMgrDBConnection, conf)
     initialize_db(StatsDBConnection, conf)
     setup_settings(conf)
-    setup_syslog(conf)
+    #setup_syslog(conf)

@@ -4,6 +4,7 @@ import edudl2.fileloader.prepare_queries as queries
 import random
 import argparse
 from sqlalchemy.exc import NoSuchTableError
+from sqlalchemy.sql.expression import select
 import edudl2.udl2.message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from edudl2.udl2_util.file_util import extract_file_name
@@ -52,14 +53,14 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
     return formatted_header_names, header_types
 
 
-def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table):
+def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table_name, csv_lz_table):
     '''
     Function to get header names in the given ref_table
     '''
     header_names_in_ref_table = []
-    query = queries.get_columns_in_ref_table_query(staging_schema, ref_table, csv_lz_table)
-    csv_columns_in_ref_table = execute_udl_query_with_result(conn, query, 'Exception in getting column names in table %s -- ' % ref_table,
-                                                             'file_loader', 'get_csv_header_names_in_ref_table')
+    ref_table = conn.get_table(ref_table_name)
+    ref_table_columns_query = select([ref_table.c.source_column]).where(ref_table.c.source_table == csv_lz_table)
+    csv_columns_in_ref_table = conn.execute(ref_table_columns_query)
     if csv_columns_in_ref_table:
         header_names_in_ref_table = [name[0] for name in csv_columns_in_ref_table]
     return header_names_in_ref_table
@@ -83,7 +84,7 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
     execute_udl_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --', 'file_loader', 'create_fdw_tables')
 
 
-def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_schema, header_file):
+def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, staging_schema, header_file):
     '''
     Getting field mapping, which maps the columns in staging table, and columns in csv table
     The mapping is defined in the given ref_table except for guid_batch and src_file_rec_num
@@ -92,19 +93,20 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
              transformation_rules - list of transformation rules for corresponding columns
     '''
     # get column mapping from ref table
-    get_column_mapping_query = queries.get_column_mapping_query(staging_schema, ref_table, csv_lz_table)
-    column_mapping = execute_udl_query_with_result(conn, get_column_mapping_query,
-                                                   'Exception in getting column mapping between csv_table and staging table -- ',
-                                                   'file_loader', 'get_fields_map')
-
+    ref_table = conn.get_table(ref_table_name)
+    column_mapping_query = select([ref_table.c.source_column,
+                                   ref_table.c.target_column,
+                                   ref_table.c.stored_proc_name],
+                                  from_obj=ref_table).where(ref_table.c.source_table == csv_lz_table)
+    column_mapping_result = conn.execute(column_mapping_query)
     op_column_present = check_header_contains_op(header_file)
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
     stg_columns = ['guid_batch', 'src_file_rec_num']
     transformation_rules = ['', '']
-    if column_mapping:
-        for mapping in column_mapping:
+    if column_mapping_result:
+        for mapping in column_mapping_result:
             if mapping[1] == TableConstants.OP_COLUMN_NAME and not op_column_present:
                 continue
             csv_table_columns.append(mapping[0])

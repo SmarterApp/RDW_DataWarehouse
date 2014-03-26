@@ -7,7 +7,7 @@ from edmigrate.database.migrate_source_connector import EdMigrateSourceConnectio
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 import logging
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.utils.cleanup import drop_schema, schema_exists
+from edcore.database.utils.utils import drop_schema
 
 __author__ = 'sravi'
 # This is a hack needed for now for migration.
@@ -262,9 +262,7 @@ def cleanup_batch(batch):
     logger.info('Cleaning up batch: ' + batch_guid + ',for tenant: ' + tenant)
     with EdMigrateSourceConnection(tenant) as source_connector:
         try:
-            # drop schema if exists
-            if schema_exists(source_connector, schema_name):
-                drop_schema(source_connector, schema_name)
+            drop_schema(source_connector, schema_name)
             logger.info('Master: Cleanup successful for batch: ' + batch_guid)
             rtn = True
         except Exception as e:

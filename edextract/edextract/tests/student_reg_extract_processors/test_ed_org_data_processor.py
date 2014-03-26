@@ -8,7 +8,7 @@ from edextract.student_reg_extract_processors.attribute_constants import Attribu
 from edextract.trackers.total_tracker import TotalTracker
 
 
-class TestSRStateVisitor(unittest.TestCase):
+class TestEdOrgDataProcessor(unittest.TestCase):
 
     def setUp(self):
         self.tracker = TotalTracker()
@@ -26,8 +26,6 @@ class TestSRStateVisitor(unittest.TestCase):
         self.data_processor._add_to_edorg_hierarchy('123', 'NC')
         self.data_processor._add_to_edorg_hierarchy('456', 'NC', 'Gilfford')
         self.data_processor._add_to_edorg_hierarchy('789', 'NC', 'Gilfford', 'Daybreak School')
-
-        print('Map %s' % self.data_processor.ed_org_hierarchy)
 
     def test_call_tracker(self):
         self.data_processor._call_trackers('123', self.data)

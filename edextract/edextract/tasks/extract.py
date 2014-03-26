@@ -194,8 +194,8 @@ def generate_extract_file(tenant, request_id, task):
                 raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
 
             # Extract data to file.
-            extract_func, extract_args = get_extract_func_and_args(task, extract_type)
-            extract_func(tenant, output_file, task_info, extract_args)
+            extract_func = get_extract_func(extract_type)
+            extract_func(tenant, output_file, task_info, task)
 
     except FileNotFoundError as e:
         # which thrown from prepare_path
@@ -229,13 +229,12 @@ def generate_extract_file(tenant, request_id, task):
             raise ExtractionError()
 
 
-def get_extract_func_and_args(task, extract_type):
+def get_extract_func(extract_type):
     extract_funcs_and_args = {
-        ExtractionDataType.QUERY_CSV: (generate_csv, task),
-        ExtractionDataType.QUERY_JSON: (generate_json, task),
-        ExtractionDataType.SR_STATISTICS: (generate_statistics_report, task),
-        ExtractionDataType.SR_COMPLETION: (generate_completion_report, task)
+        ExtractionDataType.QUERY_CSV: generate_csv,
+        ExtractionDataType.QUERY_JSON: generate_json,
+        ExtractionDataType.SR_STATISTICS: generate_statistics_report,
+        ExtractionDataType.SR_COMPLETION: generate_completion_report
     }
 
-    extract_func, args = extract_funcs_and_args[extract_type]
-    return extract_func, args
+    return extract_funcs_and_args[extract_type]

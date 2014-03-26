@@ -25,6 +25,7 @@ class Conductor:
         self.__player_trakcer = None
         if not self.__lock.acquire(timeout=timeout):
             raise ConductorTimeoutException()
+        logger.debug('Conductor locked')
         self.__player_trakcer = PlayerTracker()
         self.__player_trakcer.reset()
         self.__player_trakcer.set_migration_in_process(True)
@@ -37,12 +38,14 @@ class Conductor:
         if self.__player_trakcer:
             self.__player_trakcer.set_migration_in_process(False)
         if self.__lock.locked():
+            logger.debug('Conductor releasing lock')
             self.__lock.release()
 
     def __del__(self):
         if self.__player_trakcer:
             self.__player_trakcer.set_migration_in_process(False)
         if self.__lock.locked():
+            logger.debug('Conductor releasing lock')
             self.__lock.release()
 
     def send_reset_players(self):

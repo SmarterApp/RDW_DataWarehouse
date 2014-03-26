@@ -155,11 +155,13 @@ def _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academ
     previous_year = academic_year - 1
     edorg_totals = {}
     for _, val in report_map.items():
-        edorg_totals[val] = {previous_year: total_tracker.get_map_entry(val).get(previous_year, 0),
-                             academic_year: total_tracker.get_map_entry(val).get(academic_year, 0)}
+        edorg_totals[val] = {previous_year: total_tracker.get_map_entry(val).get(previous_year, None),
+                             academic_year: total_tracker.get_map_entry(val).get(academic_year, None)}
 
     data = []
     for key, val in report_map.items():
+        previous_year_total = edorg_totals[val][previous_year]
+        current_year_total = edorg_totals[val][academic_year]
         for tracker in trackers:
             state_name = key.state_name
             district_name = key.district_name if key.district_name else 'ALL'
@@ -169,8 +171,21 @@ def _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academ
 
             entry_data = tracker.get_map_entry(val)
             if entry_data:
-                row += generate_data_row(entry_data.get(academic_year, 0), entry_data.get(previous_year, 0),
-                                         edorg_totals[val].get(academic_year, 0), edorg_totals[val].get(previous_year, 0))
+                previous_year_count = get_year_count(entry_data.get(previous_year, 0), previous_year_total)
+                current_year_count = get_year_count(entry_data.get(academic_year, 0), current_year_total)
+                row += generate_data_row(current_year_count, previous_year_count, current_year_total, previous_year_total)
                 data.append(row)
 
     return data
+
+
+def get_year_count(count, total):
+    """
+    Determine the year count for an edorg's category, based on the edorg"s year total.
+
+    @param count: EdOrg's count for some category for the year
+    @param total: EdOrg's total for the year
+
+    @return: Adjusted year count for an edorg's category (int or None)
+    """
+    return None if total is None else count

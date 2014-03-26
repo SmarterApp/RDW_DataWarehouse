@@ -63,6 +63,5 @@ class CategoryTracker(metaclass=ABCMeta):
         @param row: Current row to be assessed
 
         @return: Whether or not to increment the concrete class's totals map
-        @returntype: Boolean
         """
         return

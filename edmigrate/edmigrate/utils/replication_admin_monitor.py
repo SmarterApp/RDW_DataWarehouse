@@ -32,6 +32,7 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
     while True:
         # use Conductor to check replication is ready to monitor.
         # if Conducotor is blocked, it means actual migration is in process.
+        logger.debug('replication admin monitor prepare starting...')
         with Conductor(timeout=-1) as conductor:
             logger.debug('replication admin monitor starts')
             with RepMgrDBConnection() as connector:

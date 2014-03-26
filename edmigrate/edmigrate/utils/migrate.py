@@ -126,7 +126,7 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     source_connector.set_metadata_by_reflect(schema_name)
     source_table = source_connector.get_table(table_name)
     # TODO: make it possible for composites
-    primary_key = source_table.primary_key.columns.keys()[0]
+    primary_key = source_table.primary_key.columns[0]
     # if there is a status column, it's a candidate for deletes
     has_status = Constants.STATUS in source_table.columns
     if has_status:

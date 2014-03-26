@@ -1,7 +1,5 @@
 __author__ = 'sravi'
 from edmigrate.utils.constants import Constants
-import logging
-import logging.config
 
 
 class Config():

@@ -22,10 +22,12 @@ from celery.app.control import Control
 class Player(metaclass=Singleton):
 
     def __init__(self, logger=logging.getLogger(Constants.WORKER_NAME),
+                 sys_logger=logging.getLogger(Constants.SYSLOG_NAME),
                  connection=Connection(get_broker_url()),
                  exchange=conductor.exchange,
                  routing_key=Constants.CONDUCTOR_ROUTING_KEY):
         self.logger = logger
+        self.sys_logger = sys_logger
         self.connection = connection
         self.exchange = exchange
         self.routing_key = routing_key

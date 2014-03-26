@@ -108,25 +108,28 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
 
     def test_search_blocked_hostname_0(self):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockLogger.info.return_value = lambda: None
         MockLogger.error.return_value = lambda: None
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         not_found = player.search_blocked_hostname(self.noblock_firewall_output, self.pgpool)
         self.assertFalse(not_found)
 
     def test_search_blocked_hostname_1(self):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockLogger.info.return_value = lambda: None
         MockLogger.error.return_value = lambda: None
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         found = player.search_blocked_hostname(self.block_once_output, self.pgpool)
         self.assertTrue(found)
 
     def test_search_blocked_hostname_2(self):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockLogger.info.return_value = lambda: None
         MockLogger.error.return_value = lambda: None
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         found = player.search_blocked_hostname(self.block_twice_output, self.pgpool)
         self.assertTrue(found)
 
@@ -137,9 +140,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_0(self, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockLogger.info.return_value = lambda: None
         MockLogger.error.return_value = lambda: None
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.noblock_firewall_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
         MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
@@ -153,9 +157,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_1(self, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockLogger.info.return_value = lambda: None
         MockLogger.error.return_value = lambda: None
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.block_once_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
         MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
@@ -169,7 +174,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('subprocess.check_output')
     def test_check_iptable_has_blocked_pgpool_2(self, MockSubprocess):
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         MockSubprocess.return_value = self.block_twice_output
         result = player.check_iptable_has_blocked_machine(self.pgpool)
         MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
@@ -183,7 +189,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_node_id(self, MockConductor):
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         MockConductor.return_value = lambda: None
@@ -198,8 +205,9 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_no_node_id(self, MockConductor):
         logger = MockLogger()
+        sys_logger = MockLogger()
         Mocket.disable()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         MockConductor.return_value = lambda: None
@@ -215,9 +223,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_succeed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.noblock_firewall_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.reset_players()
@@ -233,9 +242,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_pgpool_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         Mocket.enable()
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
@@ -252,9 +262,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_master_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_master_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         Mocket.enable()
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
@@ -271,9 +282,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_both_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_both_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         Mocket.enable()
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
@@ -290,9 +302,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_succeed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.noblock_firewall_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_pgpool()
@@ -307,9 +320,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_pgpool()
@@ -325,9 +339,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_disconnect_pgpool_succeed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_pgpool()
@@ -342,9 +357,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
     def test_disconnect_pgpool_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.noblock_firewall_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_pgpool()
@@ -360,9 +376,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_connect_master_succeed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_master()
@@ -377,9 +394,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
     def test_connect_master_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_master_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_master()
@@ -395,9 +413,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_succeed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.block_master_once_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_master()
@@ -412,9 +431,10 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_failed(self, MockConductor, MockSubprocess):
         logger = MockLogger()
+        sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockSubprocess.return_value = self.noblock_firewall_output
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_master()
@@ -432,7 +452,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                                                                        Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN])
         MockSubprocess.return_value = self.noblock_firewall_output
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.check_iptable_has_blocked_machine(self.hostname)
         MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
@@ -449,7 +470,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                                                                        Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN])
         MockSubprocess.return_value = self.block_once_output
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.remove_iptable_rules(self.pgpool, Constants.REPLICATION_MAX_RETRIES)
         MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
@@ -468,7 +490,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                                                                        Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN])
         MockSubprocess.return_value = self.block_once_output
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.add_iptable_rules(self.pgpool)
         MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
@@ -486,7 +509,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.add_iptable_rules(self.pgpool)
@@ -503,7 +527,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.add_iptable_rules(self.pgpool)
@@ -522,7 +547,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.add_iptable_rules(self.pgpool)
@@ -541,7 +567,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_master_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.add_iptable_rules(self.pgpool)
@@ -558,7 +585,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_STOP_REPLICATION, [])
@@ -576,7 +604,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_STOP_REPLICATION, None)
@@ -594,7 +623,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_DISCONNECT_PGPOOL, [self.node_id])
@@ -610,7 +640,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_DISCONNECT_PGPOOL, [])
@@ -628,7 +659,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_DISCONNECT_PGPOOL, None)
@@ -646,7 +678,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_master_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_CONNECT_PGPOOL, [self.node_id])
@@ -662,7 +695,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_CONNECT_PGPOOL, [])
@@ -680,7 +714,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_CONNECT_PGPOOL, None)
@@ -698,7 +733,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_REGISTER_PLAYER, None)
@@ -714,7 +750,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_REGISTER_PLAYER, [self.node_id])
@@ -730,7 +767,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_RESET_PLAYERS, None)
@@ -746,7 +784,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.noblock_firewall_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_RESET_PLAYERS, [self.node_id])
@@ -762,7 +801,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_RESET_PLAYERS, None)
@@ -779,7 +819,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockSubprocess.return_value = self.block_both_once_output
         MockConductor.return_value = lambda: None
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_RESET_PLAYERS, [self.node_id])
@@ -794,7 +835,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_run_command_not_implemented(self, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command('Fake Command', None)
@@ -809,7 +851,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_run_command_not_implemented_with_node_id(self, MockSubprocess):
         MockSubprocess.return_value = self.noblock_firewall_output
         logger = MockLogger()
-        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        sys_logger = MockLogger()
+        player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command('Fake Command', [self.node_id])

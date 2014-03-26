@@ -12,6 +12,7 @@ Main method: measure_cpu_plus_elapsed_time(function_to_be_decorated)
 '''
 import inspect
 import imp
+import datetime
 import time
 import os
 import logging
@@ -94,7 +95,7 @@ class BatchTableBenchmark(object):
     Class for maintaining the information required to populate the batch table
     '''
 
-    def __init__(self, guid_batch, load_type, udl_phase, start_timestamp, end_timestamp, working_schema=None, size_records=None, size_units=None,
+    def __init__(self, guid_batch, load_type, udl_phase, start_timestamp, end_timestamp=datetime.datetime.now(), working_schema=None, size_records=None, size_units=None,
                  udl_phase_step_status=mk.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None,
                  error_desc=None, stack_trace=None, tenant='', input_file=''):
         '''Constructor'''

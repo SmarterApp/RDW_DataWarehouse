@@ -1,0 +1,40 @@
+__author__ = 'tshewchuk'
+
+"""
+This module contains unit tests for the functions in the row_data_processor module.
+"""
+
+import unittest
+
+from edextract.trackers.total_tracker import TotalTracker
+from edextract.student_reg_extract_processors.ed_org_data_processor import EdOrgNameKey
+from edextract.data_extract_generation.row_data_processor import process_row_data
+
+
+class TestRowDataProcessor(unittest.TestCase):
+
+    def test_process_row_data(self):
+        rows = (
+            {'state_name': 'New Jersey', 'state_code': 'NJ', 'district_guid': 'district1', 'district_name': 'Central Regional',
+             'school_guid': 'school1', 'school_name': 'Springfield Elementary', 'student_guid': 'student1',
+             'student_first_name': 'Bartholomew', 'student_middle_name': 'Jackson', 'student_last_name': 'Simpson',
+             'gender': 'male', 'enrl_grade': 5, 'dmg_eth_hsp':'t', 'dmg_eth_ami': 'f', 'dmg_eth_asn':'t', 'dmg_eth_blk':'f',
+             'dmg_eth_pcf': 't', 'dmg_eth_wht': 'f', 'dmg_prg_iep': 't', 'dmg_prg_lep': 'f', 'dmg_prg_504': 't',
+             'dmg_sts_ecd': 'f', 'dmg_sts_mig': 't', 'dmg_multi_race': 'f', 'student_reg_guid': 'stu_reg1', 'academic_year': 2014},
+            {'state_name': 'New Jersey', 'state_code': 'NJ', 'district_guid': 'district1', 'district_name': 'Central Regional',
+             'school_guid': 'school1', 'school_name': 'Springfield Elementary', 'student_guid': 'student1',
+             'student_first_name': 'Bartholomew', 'student_middle_name': 'Jackson', 'student_last_name': 'Simpson',
+             'gender': 'male', 'enrl_grade': 5, 'dmg_eth_hsp':'t', 'dmg_eth_ami': 'f', 'dmg_eth_asn':'t', 'dmg_eth_blk':'f',
+             'dmg_eth_pcf': 't', 'dmg_eth_wht': 'f', 'dmg_prg_iep': 't', 'dmg_prg_lep': 'f', 'dmg_prg_504': 't',
+             'dmg_sts_ecd': 'f', 'dmg_sts_mig': 't', 'dmg_multi_race': 'f', 'student_reg_guid': 'stu_reg1', 'academic_year': 2015},
+        )
+        hierarchy_map = {}
+        trackers = [TotalTracker()]
+
+        process_row_data(rows, hierarchy_map, trackers)
+
+        self.assertEquals({EdOrgNameKey('New Jersey', '', ''): 'NJ', EdOrgNameKey('New Jersey', 'Central Regional', ''): 'district1',
+                           EdOrgNameKey('New Jersey', 'Central Regional', 'Springfield Elementary'): 'school1'}, hierarchy_map)
+        self.assertEquals({2014: 1, 2015: 1}, trackers[0].get_map_entry('NJ'))
+        self.assertEquals({2014: 1, 2015: 1}, trackers[0].get_map_entry('district1'))
+        self.assertEquals({2014: 1, 2015: 1}, trackers[0].get_map_entry('school1'))

@@ -18,6 +18,7 @@ logger = logging.getLogger('edmigrate')
 
 class ReplicationAdminMonitor(threading.Thread):
     def __init__(self, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, interval_check=3600):
+        threading.Thread.__init__(self)
         self.__replication_lag_tolerance = replication_lag_tolerance
         self.__apply_lag_tolerance = apply_lag_tolerance
         self.__time_lag_tolerance = time_lag_tolerance

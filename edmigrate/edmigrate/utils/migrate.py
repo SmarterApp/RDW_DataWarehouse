@@ -120,6 +120,9 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
 
     :returns number of record updated
     """
+    if schema_name:
+        logger.debug('migrating schema[' + schema_name + ']')
+    logger.debug('migrating table[' + table_name + ']')
     delete_count = 0
     source_connector.set_metadata_by_reflect(schema_name)
     source_table = source_connector.get_table(table_name)
@@ -250,6 +253,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            logger.exception('exception detail')
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)

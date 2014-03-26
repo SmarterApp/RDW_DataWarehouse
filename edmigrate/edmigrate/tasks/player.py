@@ -16,7 +16,6 @@ from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
-from celery.app.control import Control
 
 
 class Player(metaclass=Singleton):

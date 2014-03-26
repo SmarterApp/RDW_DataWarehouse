@@ -60,6 +60,9 @@ class Constants():
     CONDUCTOR_EXCHANGE = 'edmigrate_conductor'
     CONDUCTOR_QUEUE = 'edmigrate_conductor'
     CONDUCTOR_ROUTING_KEY = 'edmigrate.conductor'
+    BROADCAST_EXCHANGE = 'edmigrate_players'
+    BROADCAST_QUEUE = 'edmigrate_players'
+    BROADCAST_ROUTING_KEY = 'edmigrate_players'
 
     IPTABLES_SUDO = '/usr/bin/sudo'
     IPTABLES_CHAIN = 'PGSQL'

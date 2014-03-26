@@ -11,7 +11,6 @@ from edmigrate.utils.replication_monitor import replication_monitor
 import time
 from edmigrate.exceptions import ConductorTimeoutException
 import logging
-from edmigrate.settings.config import Config, get_setting
 
 
 logger = logging.getLogger('edmigrate')
@@ -21,7 +20,7 @@ class Conductor:
     def __init__(self):
         self.__player_trakcer = PlayerTracker()
         self.__player_trakcer.set_migration_in_process(True)
-        self.__broadcast_queue = get_setting(Config.BROADCAST_QUEUE)
+        self.__broadcast_queue = Constants.BROADCAST_EXCHANGE
 
     def __enter__(self):
         return self

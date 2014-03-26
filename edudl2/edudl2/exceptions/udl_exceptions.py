@@ -71,9 +71,9 @@ class UDLDataIntegrityError(UDLException):
         pattern = re.compile(r'(\{[^\{\}]+\})')
         error_input = re.findall(pattern, message)
         error = ast.literal_eval(error_input[0])
-        return "student_guid:{sg}, asmt_guid:{ag}, date_taken:{dt}".format(sg=error['student_guid'],
-                                                                           ag=error['asmt_guid'],
-                                                                           dt=error['date_taken'])
+        return "student_guid:{sg}, asmt_guid:{ag}, date_taken:{dt}".format(sg=error['student_guid_1'],
+                                                                           ag=error['asmt_guid_1'],
+                                                                           dt=error['date_taken_1'])
 
     def get_record_id(self, message):
         # search postgres IntegrityError response for (), the 2nd one is the key id we have conflict

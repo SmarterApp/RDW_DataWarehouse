@@ -164,13 +164,13 @@ def _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academ
             state_name = key.state_name
             district_name = key.district_name if key.district_name else 'ALL'
             school_name = key.school_name if key.school_name else 'ALL'
-            category, value = total_tracker.get_category_and_value()
+            category, value = tracker.get_category_and_value()
             row = [state_name, district_name, school_name, category, value]
 
             entry_data = tracker.get_map_entry(val)
             if entry_data:
                 row += generate_data_row(entry_data.get(academic_year, 0), entry_data.get(previous_year, 0),
-                                         edorg_totals[val][academic_year], edorg_totals[val][previous_year])
+                                         edorg_totals[val].get(academic_year, 0), edorg_totals[val].get(previous_year, 0))
                 data.append(row)
 
     return data

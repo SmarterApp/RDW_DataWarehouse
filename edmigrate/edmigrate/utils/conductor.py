@@ -37,6 +37,7 @@ class Conductor:
     def __exit__(self, exc_type, value, tb):
         if self.__player_trakcer:
             self.__player_trakcer.set_migration_in_process(False)
+        logger.debug('Conductor __exit__')
         if self.__lock.locked():
             logger.debug('Conductor releasing lock')
             self.__lock.release()
@@ -44,6 +45,7 @@ class Conductor:
     def __del__(self):
         if self.__player_trakcer:
             self.__player_trakcer.set_migration_in_process(False)
+        logger.debug('Conductor __del__')
         if self.__lock.locked():
             logger.debug('Conductor releasing lock')
             self.__lock.release()

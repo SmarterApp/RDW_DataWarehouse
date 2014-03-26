@@ -40,5 +40,9 @@ def _subtract(int1, int2):
         return None
 
 
-def _format_percentage(percent_of_prev_year_total):
-    return str(round(percent_of_prev_year_total, 2)).rstrip('0').rstrip('.')
+def _format_percentage(percent):
+    formatted = percent
+    if percent is not None:
+        formatted = str(round(percent, 2)).rstrip('0').rstrip('.')
+
+    return formatted

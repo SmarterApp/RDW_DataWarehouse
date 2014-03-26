@@ -50,13 +50,13 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
                                        'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 count'])
-        self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '', '', '1217', '100.0', '', '', ''])
-        self.assertEqual(csv_data[2], ['Example State', 'Holly Tinamou County Schools', 'ALL', 'Total', 'Total', '', '', '594', '100.0', '', '', ''])
-        self.assertEqual(csv_data[3], ['Example State', 'Holly Tinamou County Schools', 'Basil Caribou Elementary', 'Total', 'Total', '', '', '89', '100.0', '', '', ''])
-        self.assertEqual(csv_data[4], ['Example State', 'Holly Tinamou County Schools', 'Duck Tityra Sch', 'Total', 'Total', '', '', '88', '100.0', '', '', ''])
-        self.assertEqual(csv_data[9], ['Example State', 'Kudu Woodcreeper Public Schools', 'ALL', 'Total', 'Total', '', '', '623', '100.0', '', '', ''])
-        self.assertEqual(csv_data[14], ['Example State', 'Kudu Woodcreeper Public Schools', 'Saltator Kinkajou Elementary', 'Total', 'Total', '', '', '89', '100.0', '', '', ''])
-        self.assertEqual(csv_data[15], ['Example State', 'Kudu Woodcreeper Public Schools', 'Warbler Serval Middle School', 'Total', 'Total', '', '', '156', '100.0', '', '', ''])
+        self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '', '', '1217', '100', '', '', ''])
+        self.assertEqual(csv_data[2], ['Example State', 'Holly Tinamou County Schools', 'ALL', 'Total', 'Total', '', '', '594', '100', '', '', ''])
+        self.assertEqual(csv_data[3], ['Example State', 'Holly Tinamou County Schools', 'Basil Caribou Elementary', 'Total', 'Total', '', '', '89', '100', '', '', ''])
+        self.assertEqual(csv_data[4], ['Example State', 'Holly Tinamou County Schools', 'Duck Tityra Sch', 'Total', 'Total', '', '', '88', '100', '', '', ''])
+        self.assertEqual(csv_data[9], ['Example State', 'Kudu Woodcreeper Public Schools', 'ALL', 'Total', 'Total', '', '', '623', '100', '', '', ''])
+        self.assertEqual(csv_data[14], ['Example State', 'Kudu Woodcreeper Public Schools', 'Saltator Kinkajou Elementary', 'Total', 'Total', '', '', '89', '100', '', '', ''])
+        self.assertEqual(csv_data[15], ['Example State', 'Kudu Woodcreeper Public Schools', 'Warbler Serval Middle School', 'Total', 'Total', '', '', '156', '100', '', '', ''])
 
     def test_generate_statistics_report_two_years_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat_2_yr.csv')
@@ -72,13 +72,13 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2015 Count', 'AY2015 Percent of Total',
                                        'AY2016 Count', 'AY2016 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2016 Matched IDs to AY2015 Count', 'AY2016 Matched IDs Percent of AY2015 count'])
-        self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '1217', '100.0', '1364', '100.0', '147', '12.08', '0.0'])
-        self.assertEqual(csv_data[2], ['Example State', 'Holly Tinamou County Schools', 'ALL', 'Total', 'Total', '594', '100.0', '668', '100.0', '74', '12.46', '0.0'])
-        self.assertEqual(csv_data[3], ['Example State', 'Holly Tinamou County Schools', 'Basil Caribou Elementary', 'Total', 'Total', '89', '100.0', '91', '100.0', '2', '2.25', '0.0'])
-        self.assertEqual(csv_data[4], ['Example State', 'Holly Tinamou County Schools', 'Duck Tityra Sch', 'Total', 'Total', '88', '100.0', '89', '100.0', '1', '1.14', '0.0'])
-        self.assertEqual(csv_data[9], ['Example State', 'Kudu Woodcreeper Public Schools', 'ALL', 'Total', 'Total', '623', '100.0', '696', '100.0', '73', '11.72', '0.0'])
-        self.assertEqual(csv_data[14], ['Example State', 'Kudu Woodcreeper Public Schools', 'Saltator Kinkajou Elementary', 'Total', 'Total', '89', '100.0', '91', '100.0', '2', '2.25', '0.0'])
-        self.assertEqual(csv_data[15], ['Example State', 'Kudu Woodcreeper Public Schools', 'Warbler Serval Middle School', 'Total', 'Total', '156', '100.0', '233', '100.0', '77', '49.36', '0.0'])
+        self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '1217', '100', '1364', '100', '147', '12.08', '0'])
+        self.assertEqual(csv_data[2], ['Example State', 'Holly Tinamou County Schools', 'ALL', 'Total', 'Total', '594', '100', '668', '100', '74', '12.46', '0'])
+        self.assertEqual(csv_data[3], ['Example State', 'Holly Tinamou County Schools', 'Basil Caribou Elementary', 'Total', 'Total', '89', '100', '91', '100', '2', '2.25', '0'])
+        self.assertEqual(csv_data[4], ['Example State', 'Holly Tinamou County Schools', 'Duck Tityra Sch', 'Total', 'Total', '88', '100', '89', '100', '1', '1.14', '0'])
+        self.assertEqual(csv_data[9], ['Example State', 'Kudu Woodcreeper Public Schools', 'ALL', 'Total', 'Total', '623', '100', '696', '100', '73', '11.72', '0'])
+        self.assertEqual(csv_data[14], ['Example State', 'Kudu Woodcreeper Public Schools', 'Saltator Kinkajou Elementary', 'Total', 'Total', '89', '100', '91', '100', '2', '2.25', '0'])
+        self.assertEqual(csv_data[15], ['Example State', 'Kudu Woodcreeper Public Schools', 'Warbler Serval Middle School', 'Total', 'Total', '156', '100', '233', '100', '77', '49.36', '0'])
 
     def test_generate_completion_report_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')

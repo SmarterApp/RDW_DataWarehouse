@@ -23,6 +23,12 @@ class TestStatisticsDataGenerator(unittest.TestCase):
     def test__format_percent_three_decimal(self):
         self.assertEquals(_format_percentage(50.556), '50.56')
 
+    def test__format_percent_zero(self):
+        self.assertEquals(_format_percentage(0.0), '0')
+
+    def test__format_percent_none(self):
+        self.assertEquals(_format_percentage(None), None)
+
     def test_generate_data_row(self):
         current_year_count = 100
         previous_year_count = 90
@@ -35,9 +41,9 @@ class TestStatisticsDataGenerator(unittest.TestCase):
         self.assertEquals(len(result), 7)
 
         self.assertEquals(result[0], previous_year_count)
-        self.assertEquals(result[1], 50)
+        self.assertEquals(result[1], '50')
         self.assertEquals(result[2], current_year_count)
-        self.assertEquals(result[3], 50)
+        self.assertEquals(result[3], '50')
         self.assertEquals(result[4], 10)
-        self.assertEquals(result[5], 11.11)
-        self.assertEquals(result[6], 0)
+        self.assertEquals(result[5], '11.11')
+        self.assertEquals(result[6], '0')

@@ -204,7 +204,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
-        self.__request.GET['asmtYear'] = '2015'
+        self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['extractType'] = 'studentAssessment'
         response = get_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)

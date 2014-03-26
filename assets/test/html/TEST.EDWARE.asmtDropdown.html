@@ -9,10 +9,11 @@
         <script src="../js/3p/qunit.js"></script>
         <script src="../js/3p/require.js"></script>
         <script src="../js/3p/blanket.js" data-cover-only="//EDWARE.*/"></script>
-
         <script src="../js/src/main.js"></script>
         <script>
-         require(['cs!../test.EDWARE']);
+         require(['cs!../test.EDWARE.asmtDropdown'], function(){
+           QUnit.start();
+         });
         </script>
     </head>
     <body>

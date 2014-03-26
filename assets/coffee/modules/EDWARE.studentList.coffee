@@ -14,7 +14,7 @@ define [
   "edwareReportActionBar"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
 
-  LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
+  LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
   EdwareGridStickyCompare = edwareStickyCompare.EdwareGridStickyCompare
 
@@ -26,7 +26,10 @@ define [
       # Format student name
       row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
       # This is for links in drill down
-      row['params'] = {"studentGuid": row['student_guid'], "stateCode": row['state_code']}
+      row['params'] = {
+        "studentGuid": row['student_guid'],
+        "stateCode": row['state_code'],
+      }
       for key, value of assessment
         cutpoint = dataSet.cutPointsData[key]
         $.extend value, cutpoint
@@ -106,7 +109,7 @@ define [
         #reload from server
         window.location.reload()
       asmtType = asmt.asmtType
-      data = @cache[asmtGuid][asmtType][viewName]
+      data = @cache[asmtGuid][asmtType]?[viewName]
       if data
         for item in data
           item.assessments = item[asmtType]
@@ -191,6 +194,7 @@ define [
           callback: @onAcademicYearSelected.bind(this)
 
     onAcademicYearSelected: (year) ->
+      edwarePreferences.clearAsmtPreference()
       @params['asmtYear'] = year
       @reload @params
 
@@ -200,7 +204,10 @@ define [
       @config.reportName = Constants.REPORT_NAME.LOS
       asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
+      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
+        # save assessment type
+        edwarePreferences.saveAsmtPreference asmt
+        edwarePreferences.saveAsmtForISR asmt
         self.updateView()
 
     createGrid: () ->
@@ -280,9 +287,9 @@ define [
         selector = {}
         # mapping asmt type to capitalized case
         selector.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
-        selector.asmt_year = asmt.asmt_year
+        selector.effective_date = asmt.effective_date
         selector.asmt_grade = this.grade.name
-        selector.display = "{{asmtYear}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
+        selector.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}} · {{subjectText}}"
         selector.hasAsmtSubject = true
 
         # add subjects combination, i.e. Math & ELA

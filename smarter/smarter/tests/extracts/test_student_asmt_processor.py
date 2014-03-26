@@ -352,6 +352,6 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': 'SUMMATIVE'}
         user = User()
         results = _create_tasks_with_responses('request_id', user, 'tenant', params, is_tenant_level=False)
-        self.assertEqual(len(results[0]), 2)
+        self.assertEqual(len(results[0]), 4)
         self.assertEqual(len(results[1]), 1)
         self.assertEqual(results[1][0][Extract.STATUS], Extract.OK)

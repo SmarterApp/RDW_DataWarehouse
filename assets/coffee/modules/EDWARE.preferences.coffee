@@ -44,7 +44,10 @@ define [
     pref = {} if not pref
     # use ISR assessment preference for ISR report
     isISR = $('body').hasClass('isr')
-    if isISR then pref['ISRAsmt'] else pref['asmt']
+    if isISR
+      asmtPreference = pref['ISRAsmt']
+    # otherwise use generic assessment preference
+    asmtPreference || pref['asmt']
 
   clearAsmtPreference = ->
     saveAsmtPreference {}

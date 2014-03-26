@@ -18,6 +18,7 @@ import datetime
 import multiprocessing
 import os
 import random
+import traceback
 
 from mongoengine import connect
 from pymongo import Connection
@@ -101,9 +102,13 @@ def district_pool_worker(district, assessments, skip_rates, id_lock, id_mdict):
 
     # Start the processing
     dist_tstart = datetime.datetime.now()
-    count = generate_data.generate_district_data(district.state, district,
-                                                 random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS), assessments,
-                                                 skip_rates, id_gen)
+    try:
+        count = generate_data.generate_district_data(district.state, district,
+                                                     random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS),
+                                                     assessments, skip_rates, id_gen)
+    except Exception as ex:
+        print('%s' % ex)
+        traceback.print_exc()
     dist_tend = datetime.datetime.now()
     return district.name, count, (dist_tend - dist_tstart)
 

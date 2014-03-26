@@ -641,6 +641,9 @@ integration:
         dog:
           schema_name: edware
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        fish:
+          schema_name: edware
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:
       db:
         schema_name: edware_stats
@@ -687,6 +690,9 @@ jenkins_int:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         dog:
+          schema_name: edware_prod
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        fish:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:

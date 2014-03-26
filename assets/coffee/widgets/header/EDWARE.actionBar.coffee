@@ -10,7 +10,8 @@ define [
   "edwarePreferences"
   "edwarePrint"
   "edwarePopover"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover) ->
+  "edwareConstants"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants) ->
 
   class ReportActionBar
 
@@ -39,7 +40,11 @@ define [
     # Create assessment type dropdown
     createAsmtDropdown: () ->
       self = this
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, (asmtType) ->
+      if @config.reportName is Constants.REPORT_NAME.ISR
+        preference = edwarePreferences.getAsmtForISR
+      else
+        preference = edwarePreferences.getAsmtPreference
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, preference, (asmtType) ->
         self.updateDisclaimer()
         self.reloadCallback asmtType
       @createDisclaimer()

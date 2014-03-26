@@ -207,6 +207,7 @@ define [
       @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtPreference asmt
+        edwarePreferences.saveAsmtForISR asmt
         self.updateView()
 
     createGrid: () ->

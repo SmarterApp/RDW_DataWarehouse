@@ -30,24 +30,18 @@ define [
     pref["ISRAsmt"]?.asmtType
 
   saveAsmtPreference = (asmt) ->
-    saveAsmtForISR asmt
     savePreferences {"asmt" : asmt}
 
   saveAsmtForISR = (asmt) ->
     savePreferences {"ISRAsmt": asmt}
 
   getAsmtForISR = () ->
-    getEffectiveDate() + getAsmtType()
+    pref = getPreferences() || {}
+    pref['ISRAsmt']
 
   getAsmtPreference = () ->
-    pref = getPreferences()
-    pref = {} if not pref
-    # use ISR assessment preference for ISR report
-    isISR = $('body').hasClass('isr')
-    if isISR
-      asmtPreference = pref['ISRAsmt']
-    # otherwise use generic assessment preference
-    asmtPreference || pref['asmt']
+    pref = getPreferences() || {}
+    pref['asmt']
 
   clearAsmtPreference = ->
     saveAsmtPreference {}

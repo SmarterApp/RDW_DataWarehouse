@@ -7,7 +7,7 @@ define [
 
   class EdwareAsmtDropdown
 
-    constructor: (@container, @dropdownValues, @callback) ->
+    constructor: (@container, @dropdownValues, @getAsmtPreference, @callback) ->
       @initialize()
       @setDefaultOption()
       @bindEvents()
@@ -20,11 +20,12 @@ define [
 
     setDefaultOption: () ->
       # set default option, comment out for now
-      asmt = edwarePreferences.getAsmtPreference()
+      asmt = @getAsmtPreference() #edwarePreferences.getAsmtPreference()
       if $.isEmptyObject(asmt)
         # set first option as default value
         asmt = @parseAsmtInfo $('.asmtSelection')
         edwarePreferences.saveAsmtPreference asmt
+        edwarePreferences.saveAsmtForISR asmt
       if not asmt.subjectText
         asmt.subjectText = @dropdownValues[0]?.defaultSubjectText
       @setSelectedValue @getAsmtDisplayText(asmt)
@@ -67,10 +68,10 @@ define [
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->
-    $.fn.edwareAsmtDropdown = (dropdownValues, callback) ->
+    $.fn.edwareAsmtDropdown = (dropdownValues, getAsmtPreference, callback) ->
       for asmt in dropdownValues
         asmt.effective_date_text = _format_effective_date(asmt.effective_date)
-      new EdwareAsmtDropdown($(this), dropdownValues, callback)
+      new EdwareAsmtDropdown($(this), dropdownValues, getAsmtPreference, callback)
   ) jQuery
 
   EdwareAsmtDropdown: EdwareAsmtDropdown

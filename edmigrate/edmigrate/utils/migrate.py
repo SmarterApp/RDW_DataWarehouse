@@ -120,6 +120,8 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
 
     :returns number of record updated
     """
+    logger.debug('migrating schema[' + schema_name + ']')
+    logger.debug('migrating table[' + table_name + ']')
     delete_count = 0
     source_connector.set_metadata_by_reflect(schema_name)
     source_table = source_connector.get_table(table_name)

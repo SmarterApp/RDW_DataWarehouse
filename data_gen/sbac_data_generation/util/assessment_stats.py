@@ -1,11 +1,14 @@
+__author__ = 'mjacob'
 # like sum, but with multiplication
-import random
-from functools import partial, reduce
-from operator import mul
-from general.util.stats import normalize
-from general.util.weighted_choice import weighted_choice
 import bisect
 import math
+import random
+
+from functools import partial, reduce
+from operator import mul
+
+from data_generation.util.stats import normalize
+from data_generation.util.weighted_choice import weighted_choice
 
 
 product = partial(reduce, mul)

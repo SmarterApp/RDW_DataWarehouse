@@ -8,17 +8,15 @@ An assessment generator for the SBAC assessment.
 import datetime
 import random
 
+import data_generation.config.hierarchy as hierarchy_config
 import data_generation.generators.assessment as gen_asmt_generator
 import sbac_data_generation.config.cfg as sbac_config
-
-import data_generation.config.hierarchy as hierarchy_config
 
 from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.section import SBACSection
 from sbac_data_generation.model.student import SBACStudent
-
 from sbac_data_generation.util.assessment_stats import Properties, RandomLevelByDemographics
 from sbac_data_generation.util.assessment_stats import random_score_given_level
 from sbac_data_generation.util.assessment_stats import random_claims

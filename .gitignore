@@ -46,14 +46,16 @@ smarter.egg-info
 # added gitignore file  # 
 # to the csv directory  #
 #########################
-data_gen/.project
-data_gen/DataGeneration/.settings
-data_gen/CreateGenerateLoad/build
-data_gen/.settings
-data_gen/CreateGenerateLoad/src/henshin_out
-data_gen/DataGeneration/build
+data_gen/cover
+data_gen/out*
+data_gen/old/.project
+data_gen/old/DataGeneration/.settings
+data_gen/old/CreateGenerateLoad/build
+data_gen/old/.settings
+data_gen/old/CreateGenerateLoad/src/henshin_out
+data_gen/old/DataGeneration/build
 
-data_gen/DataGeneration/.pydevproject
+data_gen/old/DataGeneration/.pydevproject
 
 config/gpg/random_seed
 data_gen/DataGeneration/datafiles/csv

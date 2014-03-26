@@ -57,8 +57,8 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual(6, student_report['date_taken_day'])
-        self.assertEqual(1, student_report['date_taken_month'])
+        self.assertEqual(10, student_report['date_taken_day'])
+        self.assertEqual(4, student_report['date_taken_month'])
         self.assertEqual(2016, student_report['date_taken_year'])
 
     def test_custom_metadata(self):

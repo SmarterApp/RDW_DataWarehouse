@@ -5,6 +5,7 @@ This module contains methods to obtain data for the different Student Registrati
 """
 
 from sqlalchemy.sql.expression import select, or_
+from collections import OrderedDict
 
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
@@ -15,6 +16,7 @@ from edextract.student_reg_extract_processors.state_data_processor import StateD
 from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
 from edextract.trackers.total_tracker import TotalTracker
+from edextract.data_extract_generation.statistics_data_generator import generate_data_row
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
@@ -130,48 +132,84 @@ def _get_sr_stat_tenant_data_for_academic_year(tenant, academic_year):
     @param tenant: Requestor's tenant ID
     @param academic_year: Academic year of report
 
-    @return:
+    @return: List of rows to be included in the CSV report.
     """
 
     with EdCoreDBConnection(tenant=tenant) as connection:
         student_reg = connection.get_table(TableName.STUDENT_REG)
-        query = select([student_reg.c.state_name, student_reg.c.district_name, student_reg.c.school_name, student_reg.c.gender,
-                       student_reg.c.enrl_grade, student_reg.c.dmg_eth_hsp, student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn,
-                       student_reg.c.dmg_eth_blk, student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep,
-                       student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd, student_reg.c.dmg_sts_mig,
-                       student_reg.c.dmg_multi_race, student_reg.c.academic_year],
+        query = select([student_reg.c.state_code, student_reg.c.state_name, student_reg.c.district_guid, student_reg.c.district_name,
+                        student_reg.c.school_guid, student_reg.c.school_name, student_reg.c.gender, student_reg.c.enrl_grade,
+                        student_reg.c.dmg_eth_hsp, student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn, student_reg.c.dmg_eth_blk,
+                        student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep, student_reg.c.dmg_prg_lep,
+                        student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd, student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race,
+                        student_reg.c.academic_year],
                        from_obj=[student_reg]).where(or_(student_reg.c.academic_year == academic_year,
                                                          student_reg.c.academic_year == academic_year - 1))
 
         results = connection.get_streaming_result(query)  # This result is a generator
 
-    data = []
+        hierarchy_map = {}
+        total_tracker = TotalTracker()
+        trackers = [total_tracker]
 
-    return data
+        _process_db_data_for_sr_stat(results, hierarchy_map, trackers)
+
+    report_map = OrderedDict(sorted(hierarchy_map.items()))
+
+    return _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academic_year)
 
 
-def _get_tracker_results_for_sr_stat(db_rows):
+def _process_db_data_for_sr_stat(db_rows, hierarchy_map, trackers):
     """
     Iterate through the database results, creating the student registration statistics report data.
 
-    @param: db_rows: Iterable containing all pertinent database rows.
+    @param: db_rows: Iterable containing all pertinent database rows
+    @param hierarchy_map: Hierarchical map of basic report format
+    @param trackers: List of trackers containing needed data to fill the report
 
     @return: List of rows to be included in the CSV report.
     """
-
-    hierarchy_map = {}
-
-    trackers = [TotalTracker()]
 
     data_processors = [StateDataProcessor(trackers, hierarchy_map), DistrictDataProcessor(trackers, hierarchy_map),
                        SchoolDataProcessor(trackers, hierarchy_map)]
 
     for db_row in db_rows:
         for processor in data_processors:
-            processor.process(db_row)
+            processor.process_data(db_row)
 
-    report_map = sorted(hierarchy_map)
+
+def _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academic_year):
+    """
+    Use the report map to transform the tracker data into the report data format.
+
+    @param report_map: Hierarchical map of basic report format
+    @param total_tracker: Totals tracker, from which to obtain the EdOrg totals, for percentage calculations
+    @param trackers: List of trackers containing needed data to fill the report
+    @param: academic_year: Academic year of the report
+
+    @return: Report data, as a list of lists
+    """
+
+    # First, get all the edorg totals.
+    previous_year = academic_year - 1
+    edorg_totals = {}
+    for _, val in report_map.items():
+        edorg_totals[val] = {previous_year: total_tracker.get_map_entry(val).get(previous_year, 0),
+                             academic_year: total_tracker.get_map_entry(val).get(academic_year, 0)}
 
     data = []
+    for key, val in report_map.items():
+        for tracker in trackers:
+            state_name = key.state_name
+            district_name = key.district_name if key.district_name else 'ALL'
+            school_name = key.school_name if key.school_name else 'ALL'
+            category, value = total_tracker.get_category_and_value()
+            row = [state_name, district_name, school_name, category, value]
+
+            entry_data = tracker.get_map_entry(val)
+            if entry_data:
+                row += generate_data_row(entry_data.get(academic_year, 0), entry_data.get(previous_year, 0),
+                                         edorg_totals[val][academic_year], edorg_totals[val][previous_year])
+                data.append(row)
 
     return data

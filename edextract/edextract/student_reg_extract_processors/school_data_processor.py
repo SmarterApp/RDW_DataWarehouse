@@ -15,5 +15,5 @@ class SchoolDataProcessor(EdOrgDataProcessor):
 
     def process_data(self, data_row):
         self._call_trackers(data_row[AttributeConstants.SCHOOL_GUID], data_row)
-        self._add_to_edorg_heirarchy(data_row[AttributeConstants.SCHOOL_GUID], data_row[AttributeConstants.STATE_NAME],
+        self._add_to_edorg_hierarchy(data_row[AttributeConstants.SCHOOL_GUID], data_row[AttributeConstants.STATE_NAME],
                                      data_row[AttributeConstants.DISTRICT_NAME], data_row[AttributeConstants.SCHOOL_NAME])

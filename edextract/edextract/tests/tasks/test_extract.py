@@ -202,7 +202,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS,
             TaskConstants.TASK_TASK_ID: 'task_id',
             TaskConstants.TASK_FILE_NAME: output,
-            TaskConstants.ACADEMIC_YEAR: 2014
+            TaskConstants.ACADEMIC_YEAR: 2015
         }
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
         result.get()
@@ -212,10 +212,15 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 1)
-        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2013 Count', 'AY2013 Percent of Total',
-                                       'AY2014 Count', 'AY2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                       'Change in Percent of Total', 'AY2014 Matched IDs to AY2013 Count', 'AY2014 Matched IDs Percent of AY2013 count'])
+        self.assertEqual(len(csv_data), 6)
+        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
+                                       'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
+                                       'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 count'])
+        self.assertEqual(csv_data[1], ['Dummy State', 'ALL', 'ALL', 'Total', 'Total', '9', '100.0', '9', '100.0', '0', '0.0', '0.0'])
+        self.assertEqual(csv_data[2], ['Dummy State', 'Podunk South District', 'ALL', 'Total', 'Total', '4', '100.0', '5', '100.0', '1', '25.0', '0.0'])
+        self.assertEqual(csv_data[3], ['Dummy State', 'Podunk South District', "Thomson's Gazelle High", 'Total', 'Total', '4', '100.0', '5', '100.0', '1', '25.0', '0.0'])
+        self.assertEqual(csv_data[4], ['Dummy State', 'West Podunk School District', 'ALL', 'Total', 'Total', '5', '100.0', '4', '100.0', '-1', '-20.0', '0.0'])
+        self.assertEqual(csv_data[5], ['Dummy State', 'West Podunk School District', 'Saddleback Tortoise High', 'Total', 'Total', '5', '100.0', '4', '100.0', '-1', '-20.0', '0.0'])
 
     def test_generate_sr_completion_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')

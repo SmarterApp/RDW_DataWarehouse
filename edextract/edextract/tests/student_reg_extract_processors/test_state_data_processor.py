@@ -14,14 +14,14 @@ class TestStateDataProcessor(unittest.TestCase):
     def setUp(self):
         self.results = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC'}
         self.category_trackers = []
-        self.ed_rg_heirarchy_map = {}
+        self.ed_rg_hierarchy_map = {}
 
-        self.state_data_processor = StateDataProcessor(self.category_trackers, self.ed_rg_heirarchy_map)
+        self.state_data_processor = StateDataProcessor(self.category_trackers, self.ed_rg_hierarchy_map)
 
     def test_ed_org_map_updates(self):
         self.state_data_processor.process_data(self.results)
-        self.assertEquals(len(self.ed_rg_heirarchy_map), 1)
-        self.assertDictEqual(self.ed_rg_heirarchy_map, {('North Carolina', '', ''): 'NC'})
+        self.assertEquals(len(self.ed_rg_hierarchy_map), 1)
+        self.assertDictEqual(self.ed_rg_hierarchy_map, {('North Carolina', '', ''): 'NC'})
 
     def test_call_to_tracker(self):
         self.state_data_processor._call_trackers = MagicMock(return_value=None)

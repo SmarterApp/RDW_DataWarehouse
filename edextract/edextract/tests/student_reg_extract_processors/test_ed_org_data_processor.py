@@ -23,9 +23,9 @@ class TestSRStateVisitor(unittest.TestCase):
         self.data = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC'}
 
     def test_add_to_ed_org_heirarchy(self):
-        self.data_processor._add_to_edorg_heirarchy('123', 'NC')
-        self.data_processor._add_to_edorg_heirarchy('456', 'NC', 'Gilfford')
-        self.data_processor._add_to_edorg_heirarchy('789', 'NC', 'Gilfford', 'Daybreak School')
+        self.data_processor._add_to_edorg_hierarchy('123', 'NC')
+        self.data_processor._add_to_edorg_hierarchy('456', 'NC', 'Gilfford')
+        self.data_processor._add_to_edorg_hierarchy('789', 'NC', 'Gilfford', 'Daybreak School')
 
         print('Map %s' % self.data_processor.ed_org_hierarchy)
 

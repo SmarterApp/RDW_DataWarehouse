@@ -66,7 +66,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
 
         user = User()
         results = _create_task_info("request_id", user, 'tenant', extract_params)
-        self.assertEqual(len(results), 6)
+        self.assertEqual(len(results), 7)
 
     def test__get_extract_file_path(self):
         extract_params = {TaskConstants.STATE_CODE: "NC",

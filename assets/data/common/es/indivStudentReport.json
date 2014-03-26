@@ -1,0 +1,31 @@
+{
+	"reportInfo": "<h4>Propósito:</h4><p>Este reporte resume todas sus puntuaciones oficiales en un solo lugar. Tiene como objetivo ilustrar el progreso en los estándares específicos de cada grado. Las puntuaciones y las descripciones proporcionan un contexto para entender lo que se ha medido con la evaluación y lo que significan las puntuaciones y las categorías de puntuación.</p><br/><h4>Usos:</h4><ul><li>Como estudiante o como padre, use este reporte para comprender dónde se ubica este estudiante, en términos del grado en que se evalúa, en su camino hacia la preparación para la universidad y carrera profesional.</li><li>Como maestro o administrador, use este reporte para dar apoyo a la colaboración entre maestro, estudiante y padres, ya sea que proporcione contexto para una junta entre padres y maestro o ayude a identificar áreas en las que necesite enfocarse en los años por venir.</li></ul><br/><h4>Comprendiendo su puntuación:</h4><p>La prueba de <em>Smarter Balanced</em> es distinta de otras pruebas con los que usted podría estar familiarizado.</p><ul><li>En primer lugar, es una prueba con criterio de referencia, lo que significa que mide el dominio individual del estudiante sobre un conjunto particular de conocimientos y destrezas académicas.</li><li>En segundo lugar, las pruebas de <em>Smarter Balanced</em> utilizan la tecnología computacional para personalizar cada prueba al estudiante individualmente. Cuando un estudiante contesta correctamente una pregunta, la siguiente pregunta que verá será de una dificultad un poco mayor. De la misma manera, si una respuesta es incorrecta, la siguiente pregunta será un poco menos difícil. Este procedimiento permite medir el conocimiento y las destrezas de los estudiantes de manera más eficiente y precisa.</li><li>Como resultado, las puntuaciones no pretenden comparar a los estudiantes entre sí, sino que buscan determinar cuán bien el estudiante domina el contenido en que se evalúa.</li></ul><br/>",
+	"legendInfo": {
+		"relative_strength_text": "Las flechas muestran su puntuación de la aseveración en comparación con su puntuación general. Una flecha hacia arriba representa una fortaleza relativa, mientras que una flecha hacia abajo puede indicar una debilidad relativa.",
+		"error_band": " El error de una puntuación proviene de cantidad de información proporcionada por la prueba. Se basa en qué tan bien una sola prueba pudo presentar preguntas de dificultad apropiada para el estudiante en la duración asignada de la prueba. Las pruebas de <em>Smarter Balanced</em> se esfuerzan por proveer las puntuaciones más precisas posibles dentro de un tiempo límite razonable ofreciendo una sección de la prueba que se puede adaptar. Proporcionamos un margen de error para mostrar el rango de los valores de puntuación que muy probablemente pudiera obtener un estudiante en una prueba en un día dado."
+	},
+	"accommodationMapping": {
+        "5": " used <strong>without prior registration:</strong>",
+        "6": " was eligible for, but <strong>availability and use are unknown:</strong>",
+        "7": " was eligible for, but <strong>was not available for use:</strong>",
+        "8": " was eligible for and had <strong>available, but use is unknown:</strong>",
+        "9": " was eligible for and had <strong>available, but did not use:</strong>",
+        "10": " was eligible for and had <strong>available, and used:</strong>"
+    },
+    "accommodationColumns": {
+        "acc_asl_video_embed": "ASL Videos",
+        "acc_asl_human_nonembed": "Human ASL Signer",
+        "acc_braile_embed": "Fully Brailled",
+        "acc_closed_captioning_embed": "Closed Captioning: ELA Listening Stimuli",
+        "acc_text_to_speech_embed": "Text-to-speech: ELA Reading Passages",
+        "acc_abacus_nonembed": "Abacus",
+        "acc_alternate_response_options_nonembed": "Alternative Response Options",
+        "acc_calculator_nonembed": "Calculator",
+        "acc_multiplication_table_nonembed": "Multiplication Table",
+        "acc_print_on_demand_nonembed": "Printed Stimuli / Items",
+        "acc_read_aloud_nonembed": "Read-aloud: ELA Reading Passages",
+        "acc_scribe_nonembed": "Scribe: ELA Writing Items",
+        "acc_speech_to_text_nonembed": "Speech-to-text: ELA Writing Items",
+        "acc_streamline_mode": "Streamline Mode"
+    }
+}

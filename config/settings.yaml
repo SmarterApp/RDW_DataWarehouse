@@ -34,6 +34,7 @@ common:
       db:
         cat.state_code: NC
         dog.state_code: CA
+        fish.state_code: VT
         echo: False
     trigger:
       recache:
@@ -124,6 +125,7 @@ common:
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: kswimberly@amplify.com
+      gpg.public_key.fish: kswimberly@amplify.com
       gpg.keyserver: hkp://edwappsrv3.poc.dum.edwdc.net
       sftp.route.base_dir: route
       cleanup.schedule.cron.day: last
@@ -150,10 +152,14 @@ common:
             exchange: direct
             key: extract_sync
     migrate:
-      broadcast.queue: 'edmigrate_slaves'
+      broadcast.queue: 'edmigrate_players'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
-      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
+      master.hostname: 'dwpgdw0.qa.dum.edwdc.net'
+      iptables.mock: False
       iptables.chain: 'PGSQL'
+      iptables.command: '/sbin/iptables'
+      iptables.sudo: '/usr/bin/sudo'
+      syslog.address: ('/var/run/syslog',)
       master_scheduler.hour: 1
       master_scheduler.min: 0
       retries_allowed: 5
@@ -161,19 +167,19 @@ common:
       lag_tolerence_in_bytes: 10
       timeout: 30
     migrate.celery:
-      CELERY_IMPORTS: ('edmigrate.tasks.slave')
+      CELERY_IMPORTS: ('edmigrate.tasks.player')
       CELERY_RESULT_BACKEND: amqp
       CELERY_DEFAULT_QUEUE: celery
       CELERY_DEFAULT_ROUTING_KEY: default
       CELERY_DEFAULT_EXCHANGE_TYPE: direct
       CELERY_QUEUES:
-        -   name: edmigrate_slaves
+        -   name: edmigrate_players
             exchange: fanout
-            key: edmigrate_slaves
+            key: edmigrate_players
             durable: False
       CELERY_ROUTES:
-        - edmigrate.tasks.slave:
-            queue: edmigrate_slaves
+        - edmigrate.tasks.player:
+            queue: edmigrate_players
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -181,13 +187,16 @@ common:
       sftp.private_key_file: /var/lib/jenkins/.ssh/id_rsa
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
+      gatekeeper.fish: kswimberly
     migrate_source:
       db:
-        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        cat:
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     migrate_dest:
       db:
-        schema_name: edware_prod
-        url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+        cat:
+          schema_name: edware_prod
+          url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -322,6 +331,7 @@ qa:
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
+      syslog.address: ('rsyslog0.qa.dum.edwdc.net', 514)
     migrate.celery:
       BROKER_URL:amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     auth:
@@ -386,6 +396,8 @@ jenkins_qa:
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     services.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
+    migrate:
+      syslog.address: ('rsyslog0.qa.dum.edwdc.net', 514)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
@@ -524,6 +536,9 @@ development:
         dog:
           schema_name: edware_sds_1_13_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+        fish:
+          schema_name: edware_sds_1_13_fish
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
         schema_name: edware_stats
@@ -538,6 +553,8 @@ development:
     migrate:
       pgpool.hostname: 'edwdbsrv4.poc.dum.edwdc.net'
       master.hostname: 'edwdbsrv1.poc.dum.edwdc.net'
+      iptables.mock: True
+      syslog.address: ('/var/run/syslog',)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
       CELERYBEAT_SCHEDULE:
@@ -581,6 +598,9 @@ test:
         dog:
           schema_name: edware_sds_1_13_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        fish:
+          schema_name: edware_sds_1_13_fish
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
         schema_name: edware_sds_1_13
@@ -590,6 +610,8 @@ test:
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate:
+      syslog.address: ('/dev/log',)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
@@ -628,6 +650,8 @@ integration:
       gpg.keyserver: None
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
+    migrate:
+      syslog.address: ('/var/run/syslog',)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.qa.dum.edwdc.net/edmigrate
     services.celery:
@@ -647,6 +671,8 @@ jenkins_int:
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4
+    migrate:
+      syslog.address: ('/dev/log',)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
     extract:
@@ -694,6 +720,8 @@ jenkins_dev:
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4
+    migrate:
+      syslog.address: ('/dev/log',)
     migrate.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/edmigrate
     extract:
@@ -709,6 +737,9 @@ jenkins_dev:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           schema_name: edware_sds_1_13_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        fish:
+          schema_name: edware_sds_1_13_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:

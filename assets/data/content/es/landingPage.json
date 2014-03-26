@@ -1,0 +1,36 @@
+{
+    "title": "Reporte de Smarter Balanced",
+    "summary": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "about": {
+        "title": "Conozca más acerca de Smarter Balanced:",
+        "sections": [
+            {
+                "subtitle": "Pruebas",
+                "class": "pruebas",
+                "desc": "Conozca más acerca de las pruebas de Smarter Balanced",
+                "link": "http://www.smarterbalanced.org/smarter-balanced-assessments"
+            }, {
+                "subtitle": "Reportes",
+                "class": "reportes",
+                "desc": "Comprenda mejor el desempeño del estudiante",
+                "link": "#"
+            }, {
+                "subtitle": "Seguridad de la información",
+                "class": "seguridad",
+                "desc": "Conozca cómo Smarter Balanced protege la información del estudiante",
+                "link": "#"
+            }, {
+                "subtitle": "El consorcio",
+                "class": "consorcio",
+                "desc": "Desarrollamos evaluaciones alineadas con los Estándares Estatales Esenciales Comunes",
+                "link": "http://www.smarterbalanced.org"
+            }
+        ]
+    },
+    "copyright": "Smarter Balanced Consortium @ Copyright 2015",
+    "userGuide": "Guía del usuario",
+    "faq": "Preguntas frecuentes",
+    "tutorials": "Tutorías para los reportes",
+    "contact": "Contáctenos",
+    "email": "reporting@smarterbalanced.org"
+}

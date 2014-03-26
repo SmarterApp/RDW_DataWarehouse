@@ -3,6 +3,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from edworker.celery import setup_celery as setup, configure_celeryd, get_config_file
 from edmigrate.settings.config import setup_settings
 import logging
+import logging.config
 from edcore.database import initialize_db
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.utils.constants import Constants

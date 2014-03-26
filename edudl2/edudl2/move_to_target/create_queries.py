@@ -1,7 +1,8 @@
 import re
 from edudl2.udl2 import message_keys as mk
 from sqlalchemy.sql.expression import text, bindparam, select, and_
-from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection,\
+    get_target_connection, get_prod_connection
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -247,64 +248,55 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
     return query
 
 
-def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matching_conf):
+def find_deleted_fact_asmt_outcome_rows(tenant, schema_name, table_name, batch_guid, matching_conf):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    columns = ", ".join(matching_conf['columns'])
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in matching_conf['condition']])
-    params = [bindparam('batch_guid', batch_guid)]
-    params.extend([bindparam(c, matching_conf[c]) for c in matching_conf['condition']])
-    query = text("SELECT {columns} "
-                 "FROM {source_schema_and_table} "
-                 "WHERE batch_guid = :batch_guid "
-                 "AND {condition}".format(columns=columns,
-                                          source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                          condition=condition_clause
-                                          ),
-                 bindparams=params)
+    with get_target_connection(tenant, schema_name) as conn:
+        fact_asmt = conn.get_table(table_name)
+        columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
+        criterias = [fact_asmt.c[criteria] == matching_conf[criteria] for criteria in matching_conf['condition']]
+        query = select(columns, from_obj=fact_asmt).where(and_(fact_asmt.c.batch_guid == batch_guid))
+        for criteria in criterias:
+            query = query.where(and_(criteria))
     return query
 
 
-def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matching_conf, matched_preprod_values):
+def match_delete_fact_asmt_outcome_row_in_prod(tenant_name, schema_name, table_name, matching_conf, matched_preprod_values):
     '''
     create a query to find all delete/updated record in current batch, get the rec_id back
     '''
     matched_prod_values = matched_preprod_values.copy()
     matched_prod_values['status'] = matching_conf['status']
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matching_conf['condition'])])
-    params = [bindparam(c, matched_prod_values[c]) for c in sorted(matching_conf['condition'])]
-    query = text("SELECT {columns} "
-                 "FROM {source_schema_and_table} "
-                 "WHERE {condition_clause}".format(source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                    table_name),
-                                                   columns=", ".join(matching_conf['columns']),
-                                                   condition_clause=condition_clause),
-                 bindparams=params)
+    with get_prod_connection(tenant_name) as conn:
+        fact_asmt = conn.get_table(table_name)
+        columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
+        criterias = [fact_asmt.c[criteria] == matched_prod_values[criteria] for criteria in matching_conf['condition']]
+        query = select(columns, from_obj=fact_asmt)
+        for criteria in criterias:
+            query = query.where(and_(criteria))
     return query
 
 
-def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matching_conf,
+def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, batch_guid, matching_conf,
                                          matched_prod_values):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    set_clause = ", ".join(["{k} = :{v}".format(k=kc, v=kv) for kc, kv in sorted(matching_conf['columns'].items())])
+    values = {}
+    matched_prod_values['status'] = matching_conf['new_status']
+
     matched_preprod_values = matched_prod_values.copy()
     matched_preprod_values['status'] = matching_conf['status']
     del matched_preprod_values['asmnt_outcome_rec_id']
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matched_preprod_values.keys())])
-    params = [bindparam(c, matched_preprod_values[c]) for c in matched_preprod_values.keys()]
-    matched_prod_values['new_status'] = matching_conf['new_status']
-    params.extend([bindparam(v, matched_prod_values[v]) for v in matching_conf['columns'].values()])
-    params.append(bindparam('batch_guid', batch_guid))
-    query = text("UPDATE {target_schema_and_table} "
-                 "SET {set_clause} "
-                 "WHERE batch_guid = :batch_guid "
-                 "AND {condition_clause}".format(condition_clause=condition_clause,
-                                                 set_clause=set_clause,
-                                                 target_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                  table_name)),
 
-                 bindparams=params)
+    for k in matching_conf['columns'].keys():
+        values[k] = matched_prod_values[k]
+    with get_target_connection(tenant_name, schema_name) as conn:
+        fact_asmt = conn.get_table('fact_asmt_outcome')
+        criterias = [fact_asmt.c[k] == v for k, v in matched_preprod_values.items()]
+        query = fact_asmt.update().values(values).where(fact_asmt.c.batch_guid == batch_guid)
+        for criteria in criterias:
+            query = query.where(and_(criteria))
+
     return query

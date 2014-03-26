@@ -25,9 +25,7 @@ import sys
 import signal
 from edmigrate.queues import conductor
 import atexit
-from edmigrate.utils.replication_monitor import replication_admin_monitor,\
-    ReplicationAdminMonitor
-import thread
+from edmigrate.utils.replication_admin_monitor import ReplicationAdminMonitor
 
 
 logger = logging.getLogger('edmigrate')

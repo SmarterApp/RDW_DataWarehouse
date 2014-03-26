@@ -4,6 +4,7 @@ import edudl2.fileloader.prepare_queries as queries
 import random
 import argparse
 from sqlalchemy.exc import NoSuchTableError
+from sqlalchemy.sql.expression import select
 import edudl2.udl2.message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
 from edudl2.udl2_util.file_util import extract_file_name
@@ -52,14 +53,14 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
     return formatted_header_names, header_types
 
 
-def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table):
+def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table_name, csv_lz_table):
     '''
     Function to get header names in the given ref_table
     '''
     header_names_in_ref_table = []
-    query = queries.get_columns_in_ref_table_query(staging_schema, ref_table, csv_lz_table)
-    csv_columns_in_ref_table = execute_udl_query_with_result(conn, query, 'Exception in getting column names in table %s -- ' % ref_table,
-                                                             'file_loader', 'get_csv_header_names_in_ref_table')
+    ref_table = conn.get_table(ref_table_name)
+    ref_table_columns_query = select([ref_table.c.source_column]).where(ref_table.c.source_table == csv_lz_table)
+    csv_columns_in_ref_table = conn.execute(ref_table_columns_query)
     if csv_columns_in_ref_table:
         header_names_in_ref_table = [name[0] for name in csv_columns_in_ref_table]
     return header_names_in_ref_table

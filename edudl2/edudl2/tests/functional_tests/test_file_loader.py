@@ -251,7 +251,6 @@ def get_row_number_in_csv(csv_file):
     prog = subprocess.Popen(cmd_str, stdout=subprocess.PIPE, shell=True)
     (output, err) = prog.communicate()
     rows_in_csv = int(output.split()[0])
-    print('row in csv', rows_in_csv)
     return rows_in_csv
 
 
@@ -272,7 +271,6 @@ def get_row_number_in_table(conf, conn):
 
 def get_rows_in_table(conf, conn, columns):
     query = 'SELECT {columns} FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\' ORDER BY src_file_rec_num ASC'.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'], columns=columns)
-    print(query)
     trans = conn.begin()
     try:
         result = conn.execute(query)

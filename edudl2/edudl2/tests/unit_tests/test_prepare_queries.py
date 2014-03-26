@@ -9,8 +9,7 @@ from edudl2.fileloader.prepare_queries import create_fdw_extension_query,\
     create_ddl_csv_query, create_fdw_server_query, drop_ddl_csv_query,\
     drop_staging_tables_query, create_inserting_into_staging_query,\
     set_sequence_query, create_sequence_query, drop_sequence_query,\
-    apply_transformation_rules, get_column_mapping_query,\
-    get_columns_in_ref_table_query
+    apply_transformation_rules, get_column_mapping_query
 
 
 class TestPrepareQueries(unittest.TestCase):
@@ -106,12 +105,4 @@ class TestPrepareQueries(unittest.TestCase):
         source_table = 'test_source_table'
         actual_value = get_column_mapping_query(staging_schema, ref_table, source_table)
         expected_value = 'SELECT source_column, target_column, stored_proc_name FROM "test_staging_schema"."test_ref_table" WHERE source_table=\'test_source_table\''
-        self.assertEqual(actual_value, expected_value)
-
-    def test_get_columns_in_ref_table_query(self):
-        staging_schema = 'test_staging_schema'
-        ref_table = 'test_ref_table'
-        source_table = 'test_source_table'
-        actual_value = get_columns_in_ref_table_query(staging_schema, ref_table, source_table)
-        expected_value = 'SELECT source_column FROM "test_staging_schema"."test_ref_table" WHERE source_table=\'test_source_table\''
         self.assertEqual(actual_value, expected_value)

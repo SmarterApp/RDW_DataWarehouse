@@ -7,7 +7,7 @@ from edmigrate.database.migrate_source_connector import EdMigrateSourceConnectio
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 import logging
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.utils.cleanup import drop_schema, schema_exists
+from edcore.database.utils.utils import drop_schema
 
 __author__ = 'sravi'
 # This is a hack needed for now for migration.
@@ -37,9 +37,8 @@ def get_batches_to_migrate(tenant=None):
             ])}
             An empty dict if no batches found to be migrated
     """
-    logger.info('Master: Getting daily delta batches to migrate')
+    logger.info('Master: Getting daily delta batches to migrate' + ('with tenant: ' + tenant) if tenant else '')
 
-    batches = []
     with StatsDBConnection() as connector:
         udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
         query = \
@@ -77,20 +76,15 @@ def report_udl_stats_batch_status(batch_guid, migrate_load_status):
     return rowcount
 
 
-def get_tables_to_migrate(connector, batch_guid):
-    """This function returns list of tables to be migrated based on schema metadata
+def get_ordered_tables_to_migrate(connector, batch_guid):
+    """This function returns an ordered list of tables to be migrated based on schema metadata
 
     :param connector: The connection to the database
-    :returns : A list of table names
+    :returns : A list of table names ordered by dependencies
              [dim_section, dim_student, fact_asmt_outcome]
     """
-    all_tables = []
-    for table in connector.get_metadata().tables.keys():
-        if '.' in table:
-            all_tables.append(table.split('.')[1])
-        else:
-            all_tables.append(table)
-    return all_tables
+    return [table.name for table in connector.get_metadata().sorted_tables
+            if table.name not in TABLES_NOT_CONNECTED_WITH_BATCH and (table.name.startswith('dim_') or table.name.startswith('fact_'))]
 
 
 def yield_rows(connector, query, batch_size):
@@ -210,12 +204,7 @@ def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector
     :returns Nothing
     """
     logger.info('Migrating all tables for batch: ' + batch_guid)
-    # TODO - we want it to be configurable what to migrate and in which order
-    # migrate dims first
-    for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('dim_')), tables)):
-        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
-    # migrate facts
-    for table in list(filter(lambda x: (x not in TABLES_NOT_CONNECTED_WITH_BATCH and x.startswith('fact_')), tables)):
+    for table in tables:
         migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
 
 
@@ -238,7 +227,7 @@ def migrate_batch(batch):
             # start transaction for this batch
             trans = dest_connector.get_transaction()
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
-            tables_to_migrate = get_tables_to_migrate(dest_connector, batch_guid)
+            tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, batch_guid)
             # migrate all tables
             migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables_to_migrate)
             # report udl stats with the new batch migrated
@@ -250,6 +239,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            logger.exception('migrate rollback because')
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
@@ -272,9 +262,7 @@ def cleanup_batch(batch):
     logger.info('Cleaning up batch: ' + batch_guid + ',for tenant: ' + tenant)
     with EdMigrateSourceConnection(tenant) as source_connector:
         try:
-            # drop schema if exists
-            if schema_exists(source_connector, schema_name):
-                drop_schema(source_connector, schema_name)
+            drop_schema(source_connector, schema_name)
             logger.info('Master: Cleanup successful for batch: ' + batch_guid)
             rtn = True
         except Exception as e:
@@ -290,9 +278,15 @@ def start_migrate_daily_delta(tenant=None):
 
     :returns Nothing
     """
+    all_migrate_ok = True
     batches_to_migrate = get_batches_to_migrate(tenant=tenant)
-    for batch in batches_to_migrate:
-        batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
-        logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
-        migrate_batch(batch=batch)
-        cleanup_batch(batch=batch)
+    if batches_to_migrate:
+        for batch in batches_to_migrate:
+            batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
+            logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
+            if not migrate_batch(batch=batch):
+                all_migrate_ok = False
+            # cleanup_batch(batch=batch)
+    else:
+        logger.debug('no batch found to migrate')
+    return all_migrate_ok

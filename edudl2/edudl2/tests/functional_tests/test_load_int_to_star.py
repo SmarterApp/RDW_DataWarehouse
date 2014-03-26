@@ -2,9 +2,10 @@ import csv
 import os
 from edudl2.move_to_target import move_to_target, move_to_target_setup
 from edudl2.tests.functional_tests.util import UDLTestHelper
-from sqlalchemy.sql.expression import text, bindparam
+from sqlalchemy.sql.expression import text, bindparam, select
 from edudl2.database.udl2_connector import get_udl_connection,\
     get_target_connection
+from sqlalchemy.sql.functions import count
 
 
 class IntToStarFTest(UDLTestHelper):
@@ -21,17 +22,18 @@ class IntToStarFTest(UDLTestHelper):
         self.load_type = 'assessment'
         self.tenant_code = 'edware'
         self.conf = move_to_target_setup.generate_conf(self.guid_batch, self.phase_number,
-                                                       self.load_type, self.tenant_code, target_schema='edware')
+                                                       self.load_type, self.tenant_code, target_schema=self.guid_batch)
         self.match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         self.load_to_dim_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task"
         self.load_to_fact_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_fact"
         self.dim_table_prefix = 'dim_'
         self.fact_table_prefix = 'fact_'
         self.insert_sql = 'INSERT INTO "{staging_schema}"."{staging_table}" ({columns_string}) VALUES ({value_string});'
-        self.count_sql = ' SELECT COUNT(*) FROM "{schema}"."{table}" '
+        self.create_schema_for_target(self.tenant_code, self.guid_batch)
 
     def tearDown(self):
         super(IntToStarFTest, self).tearDown()
+        self.drop_target_schema(self.tenant_code, self.guid_batch)
 
     def generate_insert_items(self, header, row):
         row = [r if str(r) != '' else '0' for r in row]
@@ -105,22 +107,22 @@ class IntToStarFTest(UDLTestHelper):
         move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
 
         # check star schema table counts
-        with get_target_connection() as conn:
+        with get_target_connection(self.tenant_code, self.guid_batch) as conn:
             tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
             for entry in tables_to_check.keys():
-                query = text(self.count_sql.format(schema=self.udl2_conf['target_db']['db_schema'],
-                                                   table=entry))
+                table = conn.get_table(entry)
+                query = select([count()], from_obj=table)
                 result = conn.execute(query)
                 self.assertEqual(int(result.fetchall()[0][0]), tables_to_check[entry])
 
         # check asmt score avgs
         int_asmt_avgs = self.get_integration_asmt_score_avgs()
-        star_asmt_avgs = self.get_edware_asmt_score_avgs()
+        star_asmt_avgs = self.get_edware_asmt_score_avgs(self.tenant_code, self.guid_batch)
 
         self.assertEqual(int_asmt_avgs, star_asmt_avgs)
 
         # check demographic counts
         int_demo_dict = self.get_integration_demographic_counts()
-        star_demo_dict = self.get_star_schema_demographic_counts()
+        star_demo_dict = self.get_star_schema_demographic_counts(self.tenant_code, self.guid_batch)
 
         self.assertEqual(int_demo_dict, star_demo_dict)

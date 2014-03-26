@@ -4,40 +4,6 @@ from sqlalchemy.sql.expression import text, bindparam
 from edcore.utils.utils import compile_query_to_sql_text
 
 
-def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
-    '''
-    Create query to find distict asmt_guid for a given batch in source table
-    @schema_name:
-    @table_name:
-    @column_name:
-    @guid_batch
-    '''
-    query = text("SELECT DISTINCT {column_name} "
-                 "FROM {schema_and_table} "
-                 "WHERE guid_batch=:guid_batch".format(column_name=column_name,
-                                                       schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                 table_name)),
-                 bindparams=[bindparam('guid_batch', guid_batch)])
-    return query
-
-
-def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target,
-                                      guid_column_value, guid_batch):
-    '''
-    Create query to find distict asmt_rec_id for a given batch in source table
-
-    '''
-    query = text("SELECT {rec_id_column_name} "
-                 "FROM {source_schema_and_table} "
-                 "WHERE {guid_column_name_in_target}=:guid_column_value_got "
-                 "AND batch_guid=:guid_batch".format(rec_id_column_name=rec_id_column_name,
-                                                     source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                      target_table_name),
-                                                     guid_column_name_in_target=guid_column_name_in_target),
-                 bindparams=[bindparam('guid_column_value_got', guid_column_value), bindparam('guid_batch', guid_batch)])
-    return query
-
-
 def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
     '''
     Create a query to select specified columns in a table, with optional select criteria.
@@ -58,7 +24,7 @@ def create_select_columns_in_table_query(schema_name, table_name, column_names, 
         query += (" WHERE " + " AND ".join(["{key} = :{key}".format(key=key) for key in sorted(criteria.keys())]))
         params = [bindparam(key, criteria[key]) for key in sorted(criteria.keys())]
 
-    compile_query_to_sql_text(text(query, bindparams=params))
+    query = compile_query_to_sql_text(text(query, bindparams=params))
     return text(query, bindparams=params)
 
 

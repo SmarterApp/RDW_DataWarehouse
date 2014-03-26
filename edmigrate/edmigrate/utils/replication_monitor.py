@@ -17,16 +17,20 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 logger = logging.getLogger('edmigrate')
 
 
+def replication_administrative_monitor():
+    pass
+
+
 def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, timeout=28800):
-    logger.debug('replication_monitor has started for node_ids[' + ', '.join(str(x) for x in node_ids) + ']')
+    '''
+    monitor replication by specified ids.
+    raise Exception when specified id cannot synchronized within timeout.
+    '''
+    logger.debug('replication_monitor has started for ' + (' node_ids[' + ', '.join(str(x) for x in node_ids) + ']') if node_ids else 'all nodes')
     with RepMgrDBConnection() as connector:
         out_of_sync_ids = []
         repl_status = connector.get_table(Constants.REPL_STATUS)
-        query = select([repl_status.c.standby_node.label(Constants.REPL_STANDBY_NODE),
-                        repl_status.c.replication_lag.label(Constants.REPLICATION_LAG),
-                        repl_status.c.apply_lag.label(Constants.APPLY_LAG),
-                        repl_status.c.time_lag.label(Constants.TIME_LAG)],
-                       repl_status.c.standby_node.in_(node_ids))
+        query = get_repl_status_query(repl_status, node_ids)
         start_time = time.time()
         while True:
             out_of_sync_ids[:] = []
@@ -57,3 +61,13 @@ def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_toler
             else:
                 break
     return True
+
+
+def get_repl_status_query(repl_status, node_ids):
+    query = select([repl_status.c.standby_node.label(Constants.REPL_STANDBY_NODE),
+                    repl_status.c.replication_lag.label(Constants.REPLICATION_LAG),
+                    repl_status.c.apply_lag.label(Constants.APPLY_LAG),
+                    repl_status.c.time_lag.label(Constants.TIME_LAG)])
+    if node_ids:
+        query = query.where(repl_status.c.standby_node.in_(node_ids))
+    return query

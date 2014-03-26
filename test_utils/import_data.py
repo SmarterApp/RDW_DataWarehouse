@@ -16,7 +16,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy import update
 
 
-def main(config_file, resource_dir, tenant_to_update, state_code):
+def main(config_file, resource_dir, tenant_to_update, state_code, state_name, update_year):
     '''
     Imports data from csv
     '''
@@ -25,16 +25,17 @@ def main(config_file, resource_dir, tenant_to_update, state_code):
 
     initialize_db(EdCoreDBConnection, config['app:main'])
     for tenant in get_data_source_names():
-        delete_data(tenant)
-        import_csv_dir(resource_dir, tenant)
         if tenant_to_update in tenant:
-            update_state_code(tenant, state_code)
-            update_aca_year(tenant)
+            delete_data(tenant)
+            import_csv_dir(resource_dir, tenant)
+            update_state(tenant, state_code, state_name)
+            if update_year:
+                update_aca_year(tenant)
 
 
 def delete_data(name):
     '''
-    Delete all the data in all the tabls
+    Delete all the data in all the tables
     '''
     with DBConnection(name) as connection:
         metadata = connection.get_metadata()
@@ -42,7 +43,7 @@ def delete_data(name):
             connection.execute(table.delete())
 
 
-def update_state_code(tenant, state_code):
+def update_state(tenant, state_code, state_name):
     '''
     Update state_code in all the tables for a tenant
     '''
@@ -57,8 +58,10 @@ def update_state_code(tenant, state_code):
         for table in tables:
             stmt = update(table).values(state_code=state_code)
             connection.execute(stmt)
-        state_name_stmt = update(dim_inst_hier).values(state_name='California')
-        connection.execute(state_name_stmt)
+        state_name_tables = [dim_inst_hier, fact_student_reg]
+        for table in state_name_tables:
+            state_name_stmt = update(table).values(state_name=state_name)
+            connection.execute(state_name_stmt)
 
 
 def update_aca_year(tenant):
@@ -82,14 +85,18 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Import csv')
     parser.add_argument('-c', '--config', help='Set the path to ini file')
     parser.add_argument('-r', '--resource', help='Set path to resource directory containing csv')
-    parser.add_argument('-t', '--tenant', help='Update stateCode for tenant')
-    parser.add_argument('-s', '--stateCode', help='StateCode to update with')
+    parser.add_argument('-t', '--tenant', help='Tenant to import data to', default='dog')
+    parser.add_argument('-s', '--stateCode', help='StateCode to update the tenant with', default='CA')
+    parser.add_argument('-n', '--stateName', help='State Name to update the tenant with', default='California')
+    parser.add_argument('-u', '--updateYear', help='If set, updates year', action='store_true', default=False)
     args = parser.parse_args()
 
     __config = args.config
     __resource = args.resource
     __tenant = args.tenant
     __state_code = args.stateCode
+    __state_name = args.stateName
+    __update_year = args.updateYear
 
     parent_dir = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
 
@@ -107,10 +114,4 @@ if __name__ == '__main__':
         print('Error: resources directory does not exist')
         exit(-1)
 
-    if __tenant is None:
-        __tenant = 'dog'
-
-    if __state_code is None:
-        __state_code = 'CA'
-
-    main(__config, __resource, __tenant, __state_code)
+    main(__config, __resource, __tenant, __state_code, __state_name, __update_year)

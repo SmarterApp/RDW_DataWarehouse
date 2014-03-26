@@ -1,0 +1,16 @@
+{
+	"reportInfo": "<h4>Propósito:</h4><p>Este reporte tiene como objetivo proporcionar una perspectiva consolidada de puntuaciones individuales del estudiante en una prueba dada y sirve como vínculo entre perspectivas globales mayores y los reportes individuales del estudiante.</p><br><h4>Usos:</h4><ul><li>Use este reporte para ordenar una lista de estudiantes según sus distintas puntuaciones o alfabéticamente. Si los estudiantes se ordenan según sus puntuaciones generales, se pueden identificar grupos de estudiantes, por ejemplo aquellos que se concentran alrededor de los puntos de ejecución mínima o aquellos que necesitan mucho apoyo adicional.</li></ul><br><h4>Características:</h4><ul><li>Seleccione Matemáticas y ELA o detalle de la materia</li><li>Seleccione estudiantes específicos para enfocar su revisión </li><li>Ordene a los estudiantes por cualquier columna:</li><ul><li>Nombre</li><li>Puntuación general</li><li>Sub-puntuaciones vistas según los detalles de la materia </li></ul><li>Filtrar estudiantes por sus atributos:</li><ul><li>Sexo, raza y grupo étnico </li><li>Dominio Limitado del inglés (<em>Limited English Proficient</em>, LEP)</li><li>Estatus de desventaja</li><li>Discapacidad (504/IEP)</li></ul></ul><br><h4>Más información:</h4><p>Una lista de estudiantes se utiliza más frecuentemente parar ver una sección o una clase de un vistazo para una prueba determinada. Las escalas de puntuaciones generales de un punto único y los márgenes de error se proporcionan para ilustrar una representación espacial del desempeño del estudiante, y la lista muestra cómo se traslapan esos márgenes de error. Las puntuaciones de las aseveraciones se proporcionan en forma numérica, pero se comprenden mejor en relación con la puntuación general y al compararse entre sí como fortalezas y debilidades relativas. La combinación puede resultar en conocimientos útiles en la comprensión de los resultados de una prueba para un grupo de estudiantes.</p><br/>",
+	"legendInfo": {
+		"desc1": "Indicador de la puntuación general",
+		"desc2": "Rango de la escala de puntuación",
+		"desc3": "Margen de error",
+		"desc4": "(el tamaño del margen de error se indica de manera gráfica)",
+		"desc5": "Puntuación numérica",
+		"desc6": "(código de color por Nivel de desempeño)",
+		"desc7": "Puntuación de la aseveración",
+		"desc8": "1381 ",
+		"desc9": "Margen de error",
+		"desc10": "(el tamaño del margen de error se indica de manera numérica)",
+		"error_band": "El error de una puntuación proviene de la cantidad de información proporcionada por la prueba. Se basa en cuán bien una sola prueba puede presentar preguntas de dificultad apropiada para el estudiante en la duración asignada de la prueba. Las pruebas de <em>Smarter Balanced</em> se esfuerzan por proveer las puntuaciones más precisas posibles dentro de un tiempo límite razonable ofreciendo una sección de la prueba que se puede adaptar. Proporcionamos un margen de error para mostrar el rango de los valores de puntuación que muy probablemente pueda obtener un estudiante en una prueba cualquier día dado."
+	}
+}

@@ -67,7 +67,7 @@ def check_replication_ok(status_record, replication_lag_tolerance=100, apply_lag
     return replication_ok
 
 
-def get_repl_status_query(repl_status, node_ids):
+def get_repl_status_query(repl_status, node_ids=None):
     query = select([repl_status.c.standby_node.label(Constants.REPL_STANDBY_NODE),
                     repl_status.c.replication_lag.label(Constants.REPLICATION_LAG),
                     repl_status.c.apply_lag.label(Constants.APPLY_LAG),

@@ -33,6 +33,7 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
         # use Conductor to check replication is ready to monitor.
         # if Conducotor is blocked, it means actual migration is in process.
         with Conductor(timeout=-1) as conductor:
+            logger.debug('replication admin monitor starts')
             with RepMgrDBConnection() as connector:
                 repl_status = connector.get_table(Constants.REPL_STATUS)
                 query = get_repl_status_query(repl_status)
@@ -42,4 +43,5 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
                     if not replication_ok:
                         standby_node = status_record[Constants.REPL_STANDBY_NODE]
                         logger.error('Node ID[' + str(standby_node) + '] is out of sync.')
+            logger.debug('replication admin monitor finishes')
             time.sleep(interval_check)

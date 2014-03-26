@@ -59,11 +59,10 @@ def check_replication_ok(status_record, replication_lag_tolerance=100, apply_lag
     apply_lag = int(status_record[Constants.APPLY_LAG].split(' ')[0])
     time_lag = status_record[Constants.TIME_LAG]
     if time_lag.total_seconds() > time_lag_tolerance or replication_lag > replication_lag_tolerance or apply_lag > apply_lag_tolerance:
-        logger.debug('Node ID[' + str(standby_node) + '] has not completely replicated yet. replication_lag[' + str(replication_lag) + '] apply_lag[' + str(apply_lag) + '] time_lag[' + str(time_lag) + ']')
-        return False
+        logger.debug('replication check: NG. Node ID[' + str(standby_node) + '] replication_lag_tolerance[' + replication_lag_tolerance + '] replication_lag[' + str(replication_lag) + '], apply_lag_tolerance[' + apply_lag_tolerance + '] apply_lag[' + str(apply_lag) + '], time_lag_tolerance[' + time_lag_tolerance + '] time_lag[' + str(time_lag) + ']')
     else:
         replication_ok = True
-        logger.debug('Node ID[' + str(standby_node) + '] has been replicated. replication_lag[' + str(replication_lag) + '] apply_lag[' + str(apply_lag) + '] time_lag[' + str(time_lag) + ']')
+        logger.debug('replication check: OK. Node ID[' + str(standby_node) + ']')
     return replication_ok
 
 

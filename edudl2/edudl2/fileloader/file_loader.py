@@ -84,7 +84,7 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
     execute_udl_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --', 'file_loader', 'create_fdw_tables')
 
 
-def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_schema, header_file):
+def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, staging_schema, header_file):
     '''
     Getting field mapping, which maps the columns in staging table, and columns in csv table
     The mapping is defined in the given ref_table except for guid_batch and src_file_rec_num
@@ -93,19 +93,20 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
              transformation_rules - list of transformation rules for corresponding columns
     '''
     # get column mapping from ref table
-    get_column_mapping_query = queries.get_column_mapping_query(staging_schema, ref_table, csv_lz_table)
-    column_mapping = execute_udl_query_with_result(conn, get_column_mapping_query,
-                                                   'Exception in getting column mapping between csv_table and staging table -- ',
-                                                   'file_loader', 'get_fields_map')
-
+    ref_table = conn.get_table(ref_table_name)
+    column_mapping_query = select([ref_table.c.source_column,
+                                   ref_table.c.target_column,
+                                   ref_table.c.stored_proc_name],
+                                  from_obj=ref_table).where(ref_table.c.source_table == csv_lz_table)
+    column_mapping_result = conn.execute(column_mapping_query)
     op_column_present = check_header_contains_op(header_file)
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
     stg_columns = ['guid_batch', 'src_file_rec_num']
     transformation_rules = ['', '']
-    if column_mapping:
-        for mapping in column_mapping:
+    if column_mapping_result:
+        for mapping in column_mapping_result:
             if mapping[1] == TableConstants.OP_COLUMN_NAME and not op_column_present:
                 continue
             csv_table_columns.append(mapping[0])

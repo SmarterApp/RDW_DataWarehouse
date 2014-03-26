@@ -1,31 +1,7 @@
 import re
 from edudl2.udl2 import message_keys as mk
-from sqlalchemy.sql.expression import text, bindparam
-from edcore.utils.utils import compile_query_to_sql_text
-
-
-def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
-    '''
-    Create a query to select specified columns in a table, with optional select criteria.
-
-    @schema_name: Name of schema in which database resides
-    @table_name: Name of table from which to select columns
-    @column_names: List of columns to include in select
-    @criteria: (optional) Query select criteria
-            This is a dictionary of pairs of field_name : field_value
-
-    @return Select query
-    '''
-    params = []
-    query = "SELECT DISTINCT {columns} FROM {schema_and_table}".format(columns=", ".join(column_names),
-                                                                       schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                                 table_name))
-    if (criteria):
-        query += (" WHERE " + " AND ".join(["{key} = :{key}".format(key=key) for key in sorted(criteria.keys())]))
-        params = [bindparam(key, criteria[key]) for key in sorted(criteria.keys())]
-
-    query = compile_query_to_sql_text(text(query, bindparams=params))
-    return text(query, bindparams=params)
+from sqlalchemy.sql.expression import text, bindparam, select, and_
+from edudl2.database.udl2_connector import get_udl_connection
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -168,7 +144,6 @@ def create_delete_query(schema_name, table_name, criteria=None):
 
     @return Delete query
     '''
-
     query = "DELETE FROM {schema_and_table} ".format(schema_and_table=combine_schema_and_table(schema_name, table_name))
     params = []
     if (criteria):
@@ -222,6 +197,7 @@ def create_information_query(target_table):
     '''
     Main function to crate query to get column types in a table. 'information_schema.columns' is used.
     '''
+    # TODO: Investigate what this is used for
     query = text("SELECT column_name, data_type, character_maximum_length "
                  "FROM information_schema.columns "
                  "WHERE table_name = :target_table",
@@ -241,11 +217,12 @@ def get_dim_table_mapping_query(schema_name, table_name, phase_number):
     '''
     Function to get target table and source table mapping in a specific udl phase
     '''
-    query = text("SELECT distinct target_table, source_table "
-                 "FROM {source_schema_and_table} "
-                 "WHERE phase = :phase ".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name)),
-                 bindparams=[bindparam('phase', phase_number)])
-    return query
+    with get_udl_connection() as conn:
+        table = conn.get_table(table_name)
+        query = select([table.c.target_table,
+                        table.c.source_table],
+                       from_obj=table).where(table.c.phase == phase_number).group_by(table.c.target_table, table.c.source_table)
+        return query
 
 
 def get_column_mapping_query(schema_name, ref_table, target_table, source_table=None):
@@ -259,18 +236,14 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
 
     @return Mapping query
     '''
-    params = [bindparam('target_table', target_table)]
-    if source_table:
-        where_statement = " WHERE target_table= :target_table and source_table= :source_table"
-        params.append(bindparam('source_table', source_table))
-    else:
-        where_statement = " WHERE target_table= :target_table"
-
-    query = text("SELECT target_column, source_column "
-                 "FROM {source_schema_and_ref_table} "
-                 "{where_statement}".format(source_schema_and_ref_table=combine_schema_and_table(schema_name, ref_table),
-                                            where_statement=where_statement),
-                 bindparams=params)
+    with get_udl_connection() as conn:
+        table = conn.get_table(ref_table)
+        query = select([table.c.target_column,
+                        table.c.source_column],
+                       from_obj=table)
+        query = query.where(table.c.target_table == target_table)
+        if source_table:
+            query = query.where(and_(table.c.source_table == source_table))
     return query
 
 

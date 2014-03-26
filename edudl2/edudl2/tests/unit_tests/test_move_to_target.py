@@ -6,7 +6,7 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query,\
-    create_select_columns_in_table_query, find_deleted_fact_asmt_outcome_rows,\
+    find_deleted_fact_asmt_outcome_rows,\
     match_delete_fact_asmt_outcome_row_in_prod, update_matched_fact_asmt_outcome_row
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
@@ -98,10 +98,6 @@ class TestMoveToTarget(Unittest_with_sqlite):
         expected_value = 327.0
         actual_value = calculate_spend_time_as_second(start_time, finish_time)
         self.assertEqual(expected_value, actual_value)
-
-    def test_create_select_columns_in_table_query(self):
-        query = compile_query_to_sql_text(create_select_columns_in_table_query('schema', 'table', ['CA', 'CB'], {'condA': 'valueA'}))
-        self.assertEqual(query, "SELECT DISTINCT CA, CB FROM \"schema\".\"table\" WHERE condA = 'valueA'")
 
     def test_create_sr_table_select_insert_query(self):
         conf = {

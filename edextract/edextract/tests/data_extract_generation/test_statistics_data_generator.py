@@ -41,4 +41,3 @@ class TestStatisticsDataGenerator(unittest.TestCase):
         self.assertEquals(result[4], 10)
         self.assertEquals(result[5], 11.11)
         self.assertEquals(result[6], 0)
-

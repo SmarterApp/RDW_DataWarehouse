@@ -80,7 +80,3 @@ def get_column_mapping_query(staging_schema, ref_table, source_table):
     return 'SELECT source_column, target_column, stored_proc_name FROM "{staging_schema}"."{ref_table}" WHERE source_table=\'{source_table}\''.format(staging_schema=staging_schema,
                                                                                                                                                       ref_table=ref_table,
                                                                                                                                                       source_table=source_table)
-
-
-def get_columns_in_ref_table_query(staging_schema, ref_table, source_table):
-    return 'SELECT source_column FROM "{staging_schema}"."{ref_table}" WHERE source_table=\'{source_table}\''.format(staging_schema=staging_schema, ref_table=ref_table, source_table=source_table)

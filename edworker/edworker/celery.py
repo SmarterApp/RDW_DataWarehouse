@@ -32,6 +32,7 @@ TIMEDELTA = 'timedelta'
 
 def setup_celery_for_caller(celery, settings, prefix='celery'):
     celery_config = get_config(settings, prefix)
+    celery_config[CELERY_ROUTES] = None
     celery.config_from_object(celery_config)
 
 

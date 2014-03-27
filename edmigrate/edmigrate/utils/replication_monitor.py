@@ -37,7 +37,7 @@ def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_toler
                 standby_node = status_record[Constants.REPL_STANDBY_NODE]
                 orphan_node_ids.remove(standby_node)
                 replication_ok = check_replication_ok(status_record, replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance)
-                if replication_ok:
+                if not replication_ok:
                     out_of_sync_ids.append(standby_node)
             if orphan_node_ids:
                 for orphan_node_id in orphan_node_ids:

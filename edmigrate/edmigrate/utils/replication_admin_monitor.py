@@ -7,7 +7,7 @@ import logging
 import threading
 from edmigrate.utils.conductor import Conductor
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
-from edmigrate.utils.replication_monitor import get_repl_status_query,\
+from edmigrate.utils.replication_monitor import get_repl_status_query, \
     check_replication_ok
 from edmigrate.utils.constants import Constants
 import time
@@ -17,12 +17,12 @@ logger = logging.getLogger('edmigrate')
 
 
 class ReplicationAdminMonitor(threading.Thread):
-    def __init__(self, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, interval_check=3600):
+    def __init__(self, settings):
         threading.Thread.__init__(self)
-        self.__replication_lag_tolerance = replication_lag_tolerance
-        self.__apply_lag_tolerance = apply_lag_tolerance
-        self.__time_lag_tolerance = time_lag_tolerance
-        self.__interval_check = interval_check
+        self.__replication_lag_tolerance = settings.get(Constants.REPMGR_ADMIN_REPLICATION_LAG_TOLERANCE, 100)
+        self.__apply_lag_tolerance = settings.get(Constants.REPMGR_ADMIN_APPLY_LAG_TOLERANCE, 100)
+        self.__time_lag_tolerance = settings.get(Constants.REPMGR_ADMIN_TIME_LAG_TOLERANCE, 60)
+        self.__interval_check = settings.get(Constants.REPMGR_ADMIN_CHECK_INTERVAL, 1800)
 
     def run(self):
         replication_admin_monitor(replication_lag_tolerance=self.__replication_lag_tolerance, apply_lag_tolerance=self.__apply_lag_tolerance, time_lag_tolerance=self.__time_lag_tolerance, interval_check=self.__interval_check)
@@ -33,7 +33,7 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
         # use Conductor to check replication is ready to monitor.
         # if Conducotor is blocked, it means actual migration is in process.
         logger.debug('replication admin monitor prepare starting...')
-        with Conductor(timeout=-1) as conductor:
+        with Conductor(locktimeout=-1) as conductor:
             logger.debug('replication admin monitor starts')
             with RepMgrDBConnection() as connector:
                 repl_status = connector.get_table(Constants.REPL_STATUS)

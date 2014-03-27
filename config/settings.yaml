@@ -131,59 +131,61 @@ common:
       job.queue.async: extract
       job.queue.sync: extract_sync
       job.queue.archive: extract_archive
-    extract.celery:
-      CELERY_IMPORTS: ('edextract.tasks.extract',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 20
-      CELERY_DEFAULT_QUEUE: extract
-      CELERY_DEFAULT_ROUTING_KEY: extract
-      CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERY_QUEUES:
-        -   name: celery
-            exchange: direct
-            key: celery
-        -   name: extract
-            exchange: direct
-            key: extract
-        -   name: extract_sync
-            exchange: direct
-            key: extract_sync
+      celery:
+        CELERY_IMPORTS: ('edextract.tasks.extract',)
+        CELERY_RESULT_BACKEND: amqp
+        CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+        CELERYD_CONCURRENCY: 20
+        CELERY_DEFAULT_QUEUE: extract
+        CELERY_DEFAULT_ROUTING_KEY: extract
+        CELERY_DEFAULT_EXCHANGE_TYPE: direct
+        CELERY_QUEUES:
+          -   name: celery
+              exchange: direct
+              key: celery
+          -   name: extract
+              exchange: direct
+              key: extract
+          -   name: extract_sync
+              exchange: direct
+              key: extract_sync
     migrate:
       broadcast.queue: 'edmigrate_players'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
-      master.hostname: 'dwpgdw0.qa.dum.edwdc.net'
       iptables.mock: False
       iptables.chain: 'PGSQL'
       iptables.command: '/sbin/iptables'
       iptables.sudo: '/usr/bin/sudo'
-      master_scheduler.hour: 1
-      master_scheduler.min: 0
-      retries_allowed: 5
-      retry_delay: 5
-      lag_tolerence_in_bytes: 10
-      timeout: 30
-    migrate.celery:
-      CELERY_IMPORTS: ('edmigrate.tasks.player')
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_DEFAULT_QUEUE: celery
-      CELERY_DEFAULT_ROUTING_KEY: default
-      CELERY_DEFAULT_EXCHANGE_TYPE: direct
-      CELERY_QUEUES:
-        -   name: edmigrate_players
-            exchange: fanout
-            key: edmigrate_players
-            durable: False
-      CELERY_ROUTES:
-        - edmigrate.tasks.player:
-            queue: edmigrate_players
-    sftp.jail.base_path: /sftp
-    pickup:
-      sftp.hostname: edwappsrv5.poc.dum.edwdc.net
-      sftp.user: filerouter
-      sftp.private_key_file: /var/lib/jenkins/.ssh/id_rsa
-      gatekeeper.cat: kswimberly
-      gatekeeper.dog: skong
+      timeout: 5
+      celery:
+        CELERY_IMPORTS: ('edmigrate.tasks.player')
+        CELERY_RESULT_BACKEND: amqp
+        CELERY_DEFAULT_QUEUE: celery
+        CELERY_DEFAULT_ROUTING_KEY: default
+        CELERY_DEFAULT_EXCHANGE_TYPE: direct
+        CELERY_QUEUES:
+          -   name: edmigrate_players
+              exchange: fanout
+              key: edmigrate_players
+              durable: False
+        CELERY_ROUTES:
+          - edmigrate.tasks.player:
+              queue: edmigrate_players
+      replication_monitor:
+        replication_lag_tolerance: 100
+        apply_lag_tolerance: 100
+        time_lag_tolerance: 60
+        admin:
+          replication_lag_tolerance: 100
+          apply_lag_tolerance: 100
+          time_lag_tolerance: 60
+          check_interval: 1800
+      conductor:
+        find_player.timeout: 5
+        schedule:
+          cron:
+            day: '*/1'
+                  
     migrate_source:
       db:
         cat:
@@ -193,6 +195,13 @@ common:
         cat:
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
+    sftp.jail.base_path: /sftp
+    pickup:
+      sftp.hostname: edwappsrv5.poc.dum.edwdc.net
+      sftp.user: filerouter
+      sftp.private_key_file: /var/lib/jenkins/.ssh/id_rsa
+      gatekeeper.cat: kswimberly
+      gatekeeper.dog: skong
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0

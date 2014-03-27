@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
 
     def test_conductor_lock(self):
         conductor1 = Conductor()
-        self.assertRaises(ConductorTimeoutException, Conductor, timeout=1)
+        self.assertRaises(ConductorTimeoutException, Conductor, locktimeout=1)
 
 
 if __name__ == "__main__":

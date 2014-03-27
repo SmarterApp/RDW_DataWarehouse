@@ -20,11 +20,10 @@ logger = logging.getLogger('edmigrate')
 class Conductor:
     __lock = threading.Lock()
 
-    def __init__(self, timeout=60):
+    def __init__(self, locktimeout=60):
         self.__player_trakcer = None
-        if not self.__lock.acquire(timeout=timeout):
+        if not self.__lock.acquire(timeout=locktimeout):
             raise ConductorTimeoutException()
-        logger.debug('Conductor locked')
         self.__player_trakcer = PlayerTracker()
         self.__player_trakcer.reset()
         self.__player_trakcer.set_migration_in_process(True)
@@ -36,17 +35,13 @@ class Conductor:
     def __exit__(self, exc_type, value, tb):
         if self.__player_trakcer:
             self.__player_trakcer.set_migration_in_process(False)
-        logger.debug('Conductor __exit__')
         if self.__lock.locked():
-            logger.debug('Conductor releasing lock')
             self.__lock.release()
 
     def __del__(self):
         if self.__player_trakcer:
             self.__player_trakcer.set_migration_in_process(False)
-        logger.debug('Conductor __del__')
         if self.__lock.locked():
-            logger.debug('Conductor releasing lock')
             self.__lock.release()
 
     def send_reset_players(self):

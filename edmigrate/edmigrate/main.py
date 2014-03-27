@@ -14,7 +14,6 @@ from edmigrate.database.migrate_source_connector import EdMigrateSourceConnectio
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from kombu import Connection
-from edmigrate.conductor_controller import ConductorController
 from argparse import ArgumentParser
 from edmigrate.utils.utils import get_broker_url
 from edmigrate.edmigrate_celery import setup_celery
@@ -26,6 +25,9 @@ import signal
 from edmigrate.queues import conductor
 import atexit
 from edmigrate.utils.replication_admin_monitor import ReplicationAdminMonitor
+from edcore.utils.utils import run_cron_job
+from edmigrate.utils.constants import Constants
+from edmigrate import conductor_controller
 
 
 logger = logging.getLogger('edmigrate')
@@ -62,38 +64,38 @@ def read_ini(file):
     return config['app:main']
 
 
-def main(file=None, tenant='cat', run_migrate_only=False):
+def run_cron_migrate(settings):
+    run_cron_job(settings, 'migrate.conductor.', migrate_task)
+
+
+def migrate_task(settings):
+    find_player_timeout = settings.get(Constants.CONDUCTOR_FIND_PLAYERS_TIMEOUT, 5)
+    conductor_controller.process(find_player_timeout)
+
+
+def run_with_conductor(daemon_mode, settings):
     logger.debug('edmigrate main program has started')
-    if file is None or not os.path.exists(file):
-        file = get_ini_file()
-    logging.config.fileConfig(file)
-    settings = read_ini(file)
-    initialize_db(StatsDBConnection, settings)
-    initialize_db(EdMigrateSourceConnection, settings)
-    initialize_db(EdMigrateDestConnection, settings)
-    if run_migrate_only:
-        start_migrate_daily_delta(tenant)
-    else:
-        setup_celery(settings)
-        url = get_broker_url()
-        connect = Connection(url)
-        logger.debug('connection: ' + url)
-        consumerThread = ConsumerThread(connect)
-        controller = ConductorController(connect)
-        replicationAdminMonitor = ReplicationAdminMonitor()
-        try:
-            initialize_db(RepMgrDBConnection, settings)
-            consumerThread.start()
-            controller.start()
-            replicationAdminMonitor.start()
+
+    setup_celery(settings)
+    url = get_broker_url()
+    connect = Connection(url)
+    logger.debug('connection: ' + url)
+    consumerThread = ConsumerThread(connect)
+    replicationAdminMonitor = ReplicationAdminMonitor(settings)
+    try:
+        consumerThread.start()
+        replicationAdminMonitor.start()
+        if daemon_mode:
+            run_cron_migrate(settings)
             consumerThread.join()
-            controller.join()
-        except KeyboardInterrupt:
-            logger.debug('terminated by a user')
-            os._exit(0)
-        except Exception as e:
-            logger.error(e)
-            os._exit(1)
+        else:
+            migrate_task(settings)
+    except KeyboardInterrupt:
+        logger.debug('terminated by a user')
+        os._exit(0)
+    except Exception as e:
+        logger.error(e)
+        os._exit(1)
 
 
 def create_daemon(_pidfile):
@@ -128,9 +130,15 @@ def create_daemon(_pidfile):
     signal.signal(signal.SIGTERM, signal_handler)
 
 
-if __name__ == '__main__':
-    # Entry point for testing migration
-    # python main.py -t dog --migrateOnly
+def initialize_dbs(run_migrate_only, settings):
+    initialize_db(StatsDBConnection, settings)
+    initialize_db(EdMigrateSourceConnection, settings)
+    initialize_db(EdMigrateDestConnection, settings)
+    if not run_migrate_only:
+        initialize_db(RepMgrDBConnection, settings)
+
+
+def main():
     parser = ArgumentParser(description='EdMigrate entry point')
     parser.add_argument('--migrateOnly', action='store_true', dest='migrate_only', default=False, help="migrate only mode")
     parser.add_argument('-t', dest='tenant', default='cat', help="tenant name")
@@ -139,6 +147,24 @@ if __name__ == '__main__':
     parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter.ini', help="ini file")
     args = parser.parse_args()
     # CR do not daemon when migrateOnly
-    if args.daemon:
+    file = args.ini_file
+    if file is None or not os.path.exists(file):
+        file = get_ini_file()
+    logging.config.fileConfig(file)
+    settings = read_ini(file)
+
+    run_migrate_only = args.migrate_only
+
+    initialize_dbs(run_migrate_only, settings)
+
+    daemon_mode = args.daemon
+    tenant = args.tenant
+    if run_migrate_only:
+        start_migrate_daily_delta(tenant)
+        os._exit(0)
+    elif daemon_mode:
         create_daemon(args.pidfile)
-    main(file=args.ini_file, tenant=args.tenant, run_migrate_only=args.migrate_only)
+    run_with_conductor(daemon_mode, settings)
+
+if __name__ == '__main__':
+    main()

@@ -181,6 +181,21 @@ def preprod_to_prod_delete_records(source_connector, dest_connector, table_name,
     return batch_size
 
 
+def deactivate_old_records(dest_connector, dest_table, natural_keys, batch):
+    '''deactivates old records in the destination table based on matching records from batch using natural key combination
+    :param dest_connector: Destination connection
+    :param dest_table: name of the table to be migrated
+    :param natural_keys: natural key combination for the dest_table
+    :batch batch of records to be verified
+    '''
+    key_columns = [dest_table.columns[key] for key in natural_keys]
+    key_values = [[row[key] for key in natural_keys] for row in batch]
+
+    # update prod rec_status to inactive for records matching with the natural keys of the records in the current batch
+    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C', tuple_(*key_columns).in_(key_values))).values(rec_status='I', to_date=time.strftime("%Y%m%d"))
+    dest_connector.execute(update_query)
+
+
 def preprod_to_prod_insert_records(source_connector, dest_connector, table_name, primary_key_field_name, batch):
     '''Process inserts for the batch
     :param source_connector: Source connection
@@ -193,16 +208,12 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     '''
     dest_table = dest_connector.get_table(table_name)
     natural_keys = get_natural_key_columns(dest_table)
-    key_columns = [dest_table.columns[key] for key in natural_keys]
-    key_values = [[row[key] for key in natural_keys] for row in batch]
-
-    batch_size = len(key_values)
-    # update prod rec_status to inactive for records matching with the natural keys of the records in the current batch
-    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C', tuple_(*key_columns).in_(key_values))).values(rec_status='I', to_date = time.strftime("%Y%m%d"))
-    dest_connector.execute(update_query)
+    if natural_keys is not None:
+        deactivate_old_records(dest_connector, dest_table, natural_keys, batch)
     # insert the new records to prod with rec_status as current
     insert_query = dest_table.insert()
     records_inserted = dest_connector.execute(insert_query, batch).rowcount
+    batch_size = len(batch)
     if records_inserted != batch_size:
         raise EdMigrateRecordInsertionException
     return batch_size

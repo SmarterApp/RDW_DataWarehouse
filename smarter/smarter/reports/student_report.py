@@ -39,6 +39,8 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 dim_student.c.state_code.label('state_code'),
                                 dim_asmt.c.asmt_subject.label('asmt_subject'),
                                 dim_asmt.c.asmt_period.label('asmt_period'),
+                                dim_asmt.c.asmt_period_year.label('asmt_period_year'),
+                                dim_asmt.c.effective_date.label('effective_date'),
                                 dim_asmt.c.asmt_type.label('asmt_type'),
                                 dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                 dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -110,40 +112,39 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
     query = query.where(and_(fact_asmt_outcome.c.student_guid == student_guid, fact_asmt_outcome.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
-    query = query.order_by(dim_asmt.c.asmt_subject.desc())
+    query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
     return query
 
 
-def __calculateClaimScoreRelativeDifference(items):
+def __calculateClaimScoreRelativeDifference(item):
     '''
     calcluate relative difference for each claims
     1. find absluate max claim score
     2. calculate relative difference
     '''
-    newItems = items.copy()
-    for item in newItems:
-        asmt_score = item['asmt_score']
-        claims = item['claims']
-        maxAbsDiffScore = 0
-        for claim in claims:
-            score = int(claim['score'])
-            # keep track max score difference
-            if maxAbsDiffScore < abs(asmt_score - score):
-                maxAbsDiffScore = abs(asmt_score - score)
-        for claim in claims:
-            score = int(claim['score'])
-            if maxAbsDiffScore == 0:
-                claim['claim_score_relative_difference'] = 0
-            else:
-                claim['claim_score_relative_difference'] = int((score - asmt_score) / maxAbsDiffScore * 100)
-    return newItems
+    newItem = item.copy()
+    asmt_score = newItem['asmt_score']
+    claims = newItem['claims']
+    maxAbsDiffScore = 0
+    for claim in claims:
+        score = int(claim['score'])
+        # keep track max score difference
+        if maxAbsDiffScore < abs(asmt_score - score):
+            maxAbsDiffScore = abs(asmt_score - score)
+    for claim in claims:
+        score = int(claim['score'])
+        if maxAbsDiffScore == 0:
+            claim['claim_score_relative_difference'] = 0
+        else:
+            claim['claim_score_relative_difference'] = int((score - asmt_score) / maxAbsDiffScore * 100)
+    return newItem
 
 
 def __arrange_results(results, subjects_map, custom_metadata_map):
     '''
     This method arranges the data retrieved from the db to make it easier to consume by the client
     '''
-    new_results = {}
+    new_results = []
     for result in results:
 
         result['student_full_name'] = format_full_name(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
@@ -161,15 +162,12 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
         result['claims'] = get_claims(number_of_claims=5, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
         result['accommodations'] = get_accommodations(result=result)
 
-        if new_results.get(result['asmt_type']) is None:
-            new_results[result['asmt_type']] = []
-
-        new_results[result['asmt_type']].append(result)
+        new_results.append(result)
 
     # rearranging the json so we could use it more easily with mustache
-    for key, value in new_results.items():
-        new_results[key] = __calculateClaimScoreRelativeDifference(value)
-    return {"items": new_results}
+    for idx, value in enumerate(new_results):
+        new_results[idx] = __calculateClaimScoreRelativeDifference(value)
+    return {"all_results": new_results}
 
 
 @report_config(name=REPORT_NAME,
@@ -206,10 +204,10 @@ def get_student_report(params):
             state_code = first_student[Constants.STATE_CODE]
             district_guid = first_student[Constants.DISTRICT_GUID]
             school_guid = first_student[Constants.SCHOOL_GUID]
-            asmt_grade = first_student['grade']
+            asmt_grade = first_student['asmt_grade']
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
-            student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, asmt_grade, [student_guid])
+            student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, None, [student_guid])
         else:
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
 

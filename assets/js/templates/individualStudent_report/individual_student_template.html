@@ -1,6 +1,6 @@
-<h2 class="title printContent">{{current.0.student_full_name}} | {{labels.grade}} {{current.0.grade}}</h2>
+<h2 class="title printContent">{{current.0.student_full_name}} | {{labels.grade}} {{current.0.asmt_grade}}</h2>
 {{#current}}
-<div id="assessmentSection{{count}}" class="innerBox clearfix">
+<div id="assessmentSection{{count}}" class="innerBox clearfix assessmentSection">
     <div class="sidebar pull-left">
         <h1>{{asmt_subject}}</h1>
         <h3 class="type">
@@ -20,7 +20,7 @@
             <img src="../images/smarter_printlogo.png" width="150" height="47" />
         </div>
         <div class="summary">
-            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
+            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.asmt_grade}}</div>
             <span class="label">{{labels.state}}:</span>{{context.items.0.name}} &nbsp;&nbsp;
             <span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}

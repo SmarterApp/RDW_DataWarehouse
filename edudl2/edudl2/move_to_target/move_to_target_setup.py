@@ -18,7 +18,6 @@ def get_table_and_column_mapping(conf, task_name, table_name_prefix=None):
     @param conf: configuration dictionary
     @param table_name_prefix: the prefix of the table name
     '''
-
     with get_udl_connection() as conn_source:
         table_map = get_table_mapping(conn_source, task_name, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
         column_map = get_column_mapping_from_int_to_star(conn_source, task_name, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
@@ -27,6 +26,7 @@ def get_table_and_column_mapping(conf, task_name, table_name_prefix=None):
 
 
 def get_table_mapping(conn, task_name, schema_name, table_name, phase_number, table_name_prefix=None):
+    # TODO: refactor this to get results and query in one
     table_mapping_query = get_dim_table_mapping_query(schema_name, table_name, phase_number)
     table_mapping_result = execute_udl_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', task_name, 'get_table_mapping')
     table_mapping_dict = {}
@@ -42,6 +42,7 @@ def get_table_mapping(conn, task_name, schema_name, table_name, phase_number, ta
 
 
 def get_column_mapping_from_int_to_star(conn, task_name, schema_name, table_name, phase_number, dim_tables):
+    # TODO: refactor this to get results and query in one
     column_map = {}
     for dim_table in dim_tables:
         # get column map for this dim_table

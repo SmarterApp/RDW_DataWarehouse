@@ -60,11 +60,13 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         Unittest_with_stats_sqlite.setUpClass()
 
     def test__create_task_info(self):
-        params = {'stateCode': 'NC',
-                  'academicYear': [2015]}
+        extract_params = {TaskConstants.STATE_CODE: "NC",
+                          TaskConstants.ACADEMIC_YEAR: 2015,
+                          TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
+
         user = User()
-        results = _create_task_info("request_id", user, 'tenant', params)
-        self.assertEqual(len(results), 4)
+        results = _create_task_info("request_id", user, 'tenant', extract_params)
+        self.assertEqual(len(results), 7)
 
     def test__get_extract_file_path(self):
         extract_params = {TaskConstants.STATE_CODE: "NC",

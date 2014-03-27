@@ -45,7 +45,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
 
     def test_student_report(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20, 'stateCode': 'NC'}
-        result = get_student_report(params)['items']['Summative']
+        result = get_student_report(params)['all_results']
         self.assertEqual(1, len(result), "studentGuid should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
         self.assertEqual('2200', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
@@ -53,17 +53,17 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
 
     def test_assessment_header_info(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
-        result = get_student_report(params)['items']['Summative']
-        student_report = result[0]
+        result = get_student_report(params)
+        student_report = result['all_results'][0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual(6, student_report['date_taken_day'])
-        self.assertEqual(1, student_report['date_taken_month'])
+        self.assertEqual(10, student_report['date_taken_day'])
+        self.assertEqual(4, student_report['date_taken_month'])
         self.assertEqual(2016, student_report['date_taken_year'])
 
     def test_custom_metadata(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "stateCode": 'NC'}
-        result = get_student_report(params)['items']['Summative']
+        result = get_student_report(params)['all_results']
         student_report = result[0]
 
         cut_points_list = student_report['cut_point_intervals']
@@ -85,7 +85,7 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
 
     def test_score_interval(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
-        result = get_student_report(params)['items']['Summative']
+        result = get_student_report(params)['all_results']
         student_report = result[0]
 
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_min'] + student_report['asmt_score_interval'])
@@ -102,25 +102,24 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
 
     def test_claims(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', 'stateCode': 'NC'}
-        items = get_student_report(params)['items']['Summative']
+        items = get_student_report(params)['all_results']
         result = items[0]
         self.assertEqual(3, len(result['claims']))
         self.assertEqual('Concepts & Procedures', result['claims'][0]['name'])
         self.assertEqual('Problem Solving and Modeling & Data Analysis', result['claims'][1]['name'])
         self.assertEqual('Communicating Reasoning', result['claims'][2]['name'])
         result = items[1]
-        self.assertEqual(4, len(result['claims']))
-        self.assertEqual('Reading', result['claims'][0]['name'])
-        self.assertEqual('Writing', result['claims'][1]['name'])
-        self.assertEqual('Listening', result['claims'][2]['name'])
-        self.assertEqual('Research & Inquiry', result['claims'][3]['name'])
+        self.assertEqual(3, len(result['claims']))
+        self.assertEqual('Concepts & Procedures', result['claims'][0]['name'])
+        self.assertEqual('Problem Solving and Modeling & Data Analysis', result['claims'][1]['name'])
+        self.assertEqual('Communicating Reasoning', result['claims'][2]['name'])
         self.assertEqual(7, len(result['accommodations']))
-        self.assertEqual(3, len(result['accommodations'][0]))
-        self.assertEqual(2, len(result['accommodations'][5]))
-        self.assertEqual(2, len(result['accommodations'][6]))
-        self.assertEqual(2, len(result['accommodations'][7]))
-        self.assertEqual(2, len(result['accommodations'][9]))
-        self.assertEqual(2, len(result['accommodations'][10]))
+        self.assertEqual(5, len(result['accommodations'][0]))
+        self.assertEqual(1, len(result['accommodations'][5]))
+        self.assertEqual(1, len(result['accommodations'][6]))
+        self.assertEqual(1, len(result['accommodations'][7]))
+        self.assertEqual(3, len(result['accommodations'][9]))
+        self.assertEqual(1, len(result['accommodations'][10]))
 
     def test_invalid_student_id(self):
         params = {'studentGuid': 'invalid', 'stateCode': 'NC'}

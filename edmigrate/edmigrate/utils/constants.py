@@ -74,7 +74,7 @@ class Constants():
     IPTABLES_TARGET = 'REJECT'
     IPTABLES_SOURCE = '-s'
 
-    SYSLOG_NAME = 'edmigrate_syslog'
+    EDMIGRATE_ADMIN_LOGGER = 'edmigrate_admin'
 
     BROKER_URL = 'migrate.celery.BROKER_URL'
     REPMGR_REPLICATION_LAG_TOLERANCE = 'migrate.replication_monitor.replication_lag_tolerance'

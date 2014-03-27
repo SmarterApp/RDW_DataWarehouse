@@ -8,7 +8,7 @@ import unittest
 
 from edextract.trackers.total_tracker import TotalTracker
 from edextract.student_reg_extract_processors.ed_org_data_processor import EdOrgNameKey
-from edextract.data_extract_generation.row_data_processor import process_row_data
+from edextract.student_reg_extract_processors.row_data_processor import process_row_data
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
 from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor

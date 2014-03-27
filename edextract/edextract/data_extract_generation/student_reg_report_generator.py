@@ -15,7 +15,7 @@ from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.trackers.total_tracker import TotalTracker
 from edextract.data_extract_generation.row_data_processor import process_row_data
-from edextract.data_extract_generation.report_data_generator import get_tracker_results
+from edextract.trackers.tracker_results import get_tracker_results
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
 from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor

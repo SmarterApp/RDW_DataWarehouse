@@ -19,19 +19,20 @@ def get_broker_url(config=None):
         config_file = get_config_file()
         if config_file is None:
             config = configparser.ConfigParser()
+            config['app:mian'] = {}
         else:
             config = read_ini(config_file)
 
     url = "memory://"
 
     try:
-        celery_always_eager = config["app:main"].getboolean(Config.EAGER_MODE, False)
+        celery_always_eager = config.getboolean(Config.EAGER_MODE, False)
     except:
         celery_always_eager = False
 
     if not celery_always_eager:
         try:
-            url = config["app:main"].get(Config.BROKER_URL, url)
+            url = config.get(Config.BROKER_URL, url)
         except:
             pass
     return url

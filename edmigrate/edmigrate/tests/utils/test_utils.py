@@ -29,7 +29,7 @@ class TestUtils(unittest.TestCase):
     def test_get_broker_enpty_settings_with_broker(self):
         config = configparser.ConfigParser()
         config['app:main'] = {Config.BROKER_URL: 'mybrokerURL'}
-        self.assertEqual(get_broker_url(config), 'mybrokerURL')
+        self.assertEqual(get_broker_url(config['app:main']), 'mybrokerURL')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

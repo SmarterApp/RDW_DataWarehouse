@@ -65,7 +65,7 @@ def migrate_task(settings):
 
 def run_with_conductor(daemon_mode, settings):
     logger.debug('edmigrate main program has started')
-    url = get_broker_url()
+    url = get_broker_url(settings)
     celery.conf.update(BROKER_URL=url)
     connect = Connection(url)
     logger.debug('connection: ' + url)

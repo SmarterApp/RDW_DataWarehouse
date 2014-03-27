@@ -26,11 +26,11 @@ def generate_csv(tenant, output_file, task_info, extract_args):
     """
 
     query = extract_args[TaskConstants.TASK_QUERY]
-
-    header, data = _generate_csv_data(tenant, query)
-    write_csv(output_file, header, data)
-
-    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
+    with EdCoreDBConnection(tenant=tenant) as connection:
+        results = connection.get_streaming_result(query)  # this result is a generator
+        header, data = _generate_csv_data(results)
+        write_csv(output_file, header, data)
+        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
 def generate_json(tenant, output_file, task_info, extract_args):
@@ -57,7 +57,7 @@ def generate_json(tenant, output_file, task_info, extract_args):
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: "Results length is: " + str(len(results))})
 
 
-def _generate_csv_data(tenant, query):
+def _generate_csv_data(results):
     """
     Generate the CSV data for the extract.
 
@@ -66,13 +66,9 @@ def _generate_csv_data(tenant, query):
 
     @return: CSV extract header and data
     """
-
-    with EdCoreDBConnection(tenant=tenant) as connection:
-        results = connection.get_streaming_result(query)  # this result is a generator
-
-        first = next(results)
-        header = list(first.keys())
-        data = _gen_to_val_list(chain([first], results))
+    first = next(results)
+    header = list(first.keys())
+    data = _gen_to_val_list(chain([first], results))
 
     return header, data
 

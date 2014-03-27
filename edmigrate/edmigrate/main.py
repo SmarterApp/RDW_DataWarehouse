@@ -22,8 +22,6 @@ import logging.config
 from edmigrate.utils.consumer import ConsumerThread
 import sys
 import signal
-from edmigrate.queues import conductor
-import atexit
 from edmigrate.utils.replication_admin_monitor import ReplicationAdminMonitor
 from edcore.utils.utils import run_cron_job
 from edmigrate.utils.constants import Constants
@@ -37,11 +35,6 @@ pidfile = None
 def signal_handler(signal, frame):
     os.unlink(pidfile)
     os._exit(0)
-
-
-@atexit.register
-def delete_queue_exchange():
-    conductor.queue.delete()
 
 
 def get_ini_file():

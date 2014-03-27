@@ -230,11 +230,11 @@ def generate_extract_file(tenant, request_id, task):
 
 
 def get_extract_func(extract_type):
-    extract_funcs_and_args = {
+    extract_funcs = {
         ExtractionDataType.QUERY_CSV: generate_csv,
         ExtractionDataType.QUERY_JSON: generate_json,
         ExtractionDataType.SR_STATISTICS: generate_statistics_report,
         ExtractionDataType.SR_COMPLETION: generate_completion_report
     }
 
-    return extract_funcs_and_args[extract_type]
+    return extract_funcs[extract_type]

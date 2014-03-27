@@ -25,13 +25,13 @@ def get_broker_url(config=None):
     url = "memory://"
 
     try:
-        celery_always_eager = config.getboolean(Config.EAGER_MODE, False)
+        celery_always_eager = config["app:main"].getboolean(Config.EAGER_MODE, False)
     except:
         celery_always_eager = False
 
     if not celery_always_eager:
         try:
-            url = config.get(Config.BROKER_URL, url)
+            url = config["app:main"].get(Config.BROKER_URL, url)
         except:
             pass
     return url

@@ -90,7 +90,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         batch = {UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38', UdlStatsConstants.TENANT: 'tomcat', UdlStatsConstants.SCHEMA_NAME: None}
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([func.count(fact_asmt_outcome_table.c.status).label('cnt')], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([101306, 101304, 101302]))
+        query = select([func.count(fact_asmt_outcome_table.c.status).label('cnt')], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([101306, 101304, 91011691]))
         query_c = query.where(fact_asmt_outcome_table.c.status == 'C')
         query_d = query.where(fact_asmt_outcome_table.c.status == 'D')
         rset = prod_conn.execute(query_c)

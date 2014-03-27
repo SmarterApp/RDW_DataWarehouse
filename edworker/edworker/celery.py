@@ -30,6 +30,11 @@ CRON = 'cron'
 TIMEDELTA = 'timedelta'
 
 
+def setup_celery_for_caller(celery, settings, prefix='celery'):
+    celery_config = get_config(settings, prefix)
+    celery.config_from_object(celery_config)
+
+
 def setup_celery(celery, settings, prefix='celery'):
     '''
     Setup celery based on parameters defined in setting (ini file)

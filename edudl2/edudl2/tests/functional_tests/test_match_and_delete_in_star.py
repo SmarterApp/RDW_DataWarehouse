@@ -8,6 +8,7 @@ from unittest import skip
 from edudl2.database.udl2_connector import get_udl_connection,\
     get_target_connection
 from sqlalchemy.sql.functions import count
+import unittest
 
 
 @unittest.skip("test failed at jenkins, under investigation")

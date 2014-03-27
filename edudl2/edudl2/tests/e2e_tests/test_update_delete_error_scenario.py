@@ -114,6 +114,16 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             expected_result = [('DELETE_RECORD_NOT_FOUND',)]
             self.assertEquals(error_result, expected_result, "Error has not been logged into ERR_LIST table")
 
+    #validate that error has been logged into err_list table when we try to delete same record twice in same udl batch.
+    def validate_err_table(self, guid_batch_id):
+        with get_udl_connection() as connector:
+            error_table = connector.get_table('ERR_LIST')
+            error_record = select([error_table.c.err_source_text]).where(error_table.c.guid_batch == guid_batch_id)
+            error_result = connector.execute(error_record).fetchall()
+            print(error_result)
+            #expected_result = [('DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE',)]
+            #self.assertEquals(error_result, expected_result, "Error has not been logged for deleting the same data twice into ERR_LIST table")
+
     #Validate that error has been logged into udl_stat table
     def validate_udl_stats(self, guid_batch_id):
         with StatsDBConnection() as conn:
@@ -136,7 +146,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         self.guid_batch_id = str(uuid4())
         self.archived_file = os.path.join(self.data_dir, 'test_del_twice_same_batch.tar.gz.gpg')
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
-        self.validate_err_list_table(self.guid_batch_id)
+        self.validate_err_table(self.guid_batch_id)
         self.validate_udl_stats(self.guid_batch_id)
 
 if __name__ == "__main__":

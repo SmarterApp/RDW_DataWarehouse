@@ -16,7 +16,7 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from kombu import Connection
 from argparse import ArgumentParser
 from edmigrate.utils.utils import get_broker_url
-from edmigrate.edmigrate_celery import setup_celery
+from edmigrate.edmigrate_celery import setup_celery_for_caller
 import logging
 import logging.config
 from edmigrate.utils.consumer import ConsumerThread
@@ -72,8 +72,7 @@ def migrate_task(settings):
 
 def run_with_conductor(daemon_mode, settings):
     logger.debug('edmigrate main program has started')
-
-    setup_celery(settings)
+    setup_celery_for_caller(settings)
     url = get_broker_url()
     connect = Connection(url)
     logger.debug('connection: ' + url)

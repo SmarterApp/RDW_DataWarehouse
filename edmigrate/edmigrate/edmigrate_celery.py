@@ -1,6 +1,7 @@
 __author__ = 'sravi'
 from edcore.database.stats_connector import StatsDBConnection
-from edworker.celery import setup_celery as setup, configure_celeryd, get_config_file
+from edworker.celery import setup_celery as setup_for_worker, configure_celeryd, get_config_file,\
+    setup_celery_for_caller as worker_setup_celery_for_caller
 from edmigrate.settings.config import setup_settings
 import logging
 import logging.config
@@ -13,6 +14,11 @@ logger = logging.getLogger(Constants.WORKER_NAME)
 PREFIX = 'migrate.celery'
 
 
+def setup_celery_for_caller(settings, prefix=PREFIX):
+    worker_setup_celery_for_caller(celery, settings, prefix)
+    setup_settings(settings)
+
+
 def setup_celery(settings, prefix=PREFIX):
     '''
     Setup celery based on parameters defined in setting (ini file).
@@ -21,7 +27,7 @@ def setup_celery(settings, prefix=PREFIX):
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
-    setup(celery, settings, prefix)
+    setup_for_worker(celery, settings, prefix)
     setup_settings(settings)
 
 

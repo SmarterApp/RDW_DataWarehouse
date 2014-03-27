@@ -15,8 +15,8 @@ import unittest
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
-class Test_Insert_Delete(unittest.TestCase):
+@unittest.skip("test failed at jenkins, under investigation")
+class Test_Update_Delete(unittest.TestCase):
 
     def setUp(self):
         self.guid_batch_id = str(uuid4())

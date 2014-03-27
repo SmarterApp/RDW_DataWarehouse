@@ -590,6 +590,13 @@ test:
       type: memory
       public.data.expire: 10
       public.shortlived.expire: 10
+    # Celery config
+    services.celery:
+      celery_always_eager: true
+    extract.celery:
+      celery_always_eager: true
+    migrate.celery:
+      celery_always_eager: true
     edware:
       db:
         cat:

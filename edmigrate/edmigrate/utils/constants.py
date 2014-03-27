@@ -76,7 +76,6 @@ class Constants():
 
     SYSLOG_NAME = 'edmigrate_syslog'
 
-    BROKER_URL = 'migrate.celery.BROKER_URL'
     REPMGR_REPLICATION_LAG_TOLERANCE = 'migrate.replication_monitor.replication_lag_tolerance'
     REPMGR_APPLY_LAG_TOLERANCE = 'migrate.replication_monitor.apply_lag_tolerance'
     REPMGR_TIME_LAG_TOLERANCE = 'migrate.replication_monitor.time_lag_tolerance'

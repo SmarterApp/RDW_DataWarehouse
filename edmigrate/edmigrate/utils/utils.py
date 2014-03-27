@@ -3,15 +3,37 @@ Created on Mar 17, 2014
 
 @author: tosako
 '''
-from edmigrate.settings.config import get_setting, Config
+from edmigrate.settings.config import Config, setup_settings, get_setting
+from edworker.celery import get_config_file
+import configparser
 
 
-def get_broker_url():
+def read_ini(file):
+    config = configparser.ConfigParser()
+    config.read(file)
+    return config['app:main']
+
+
+def get_broker_url(config=None):
+    if config is None:
+        config_file = get_config_file()
+        if config_file is None:
+            config = configparser.ConfigParser()
+        else:
+            config = read_ini(config_file)
+
     url = "memory://"
 
-    celery_always_eager = get_setting(Config.EAGER_MODE, False)
+    try:
+        celery_always_eager = config.getboolean(Config.EAGER_MODE, False)
+    except:
+        celery_always_eager = False
+
     if not celery_always_eager:
-        url = get_setting(Config.BROKER_URL, url)
+        try:
+            url = config.get(Config.BROKER_URL, url)
+        except:
+            pass
     return url
 
 

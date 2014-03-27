@@ -5,7 +5,6 @@ Created on Mar 13, 2014
 
 @author: dip
 '''
-import configparser
 from edmigrate.utils.migrate import start_migrate_daily_delta
 import os
 from edcore.database import initialize_db
@@ -15,7 +14,7 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from kombu import Connection
 from argparse import ArgumentParser
-from edmigrate.utils.utils import get_broker_url
+from edmigrate.utils.utils import get_broker_url, read_ini
 from edmigrate.edmigrate_celery import celery
 import logging
 import logging.config
@@ -51,12 +50,6 @@ def get_ini_file():
     return ini_file
 
 
-def read_ini(file):
-    config = configparser.ConfigParser()
-    config.read(file)
-    return config['app:main']
-
-
 def run_cron_migrate(settings):
     run_cron_job(settings, 'migrate.conductor.', migrate_task)
 
@@ -72,7 +65,7 @@ def migrate_task(settings):
 
 def run_with_conductor(daemon_mode, settings):
     logger.debug('edmigrate main program has started')
-    url = settings.get(Constants.BROKER_URL)
+    url = get_broker_url()
     celery.conf.update(BROKER_URL=url)
     connect = Connection(url)
     logger.debug('connection: ' + url)

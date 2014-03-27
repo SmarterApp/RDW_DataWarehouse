@@ -4,8 +4,9 @@ Created on Mar 18, 2014
 @author: dip
 '''
 import unittest
-from edmigrate.settings.config import setup_settings
+from edmigrate.settings.config import setup_settings, Config
 from edmigrate.utils.utils import get_broker_url
+import configparser
 
 
 class TestUtils(unittest.TestCase):
@@ -26,9 +27,9 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(get_broker_url(), "memory://")
 
     def test_get_broker_enpty_settings_with_broker(self):
-        settings = {'migrate.celery.broker_url': 'mybrokerURL'}
-        setup_settings(settings)
-        self.assertEqual(get_broker_url(), settings['migrate.celery.broker_url'])
+        config = configparser.ConfigParser()
+        config['app:main'] = {Config.BROKER_URL: 'mybrokerURL'}
+        self.assertEqual(get_broker_url(config), 'mybrokerURL')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

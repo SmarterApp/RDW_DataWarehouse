@@ -1,7 +1,7 @@
 __author__ = 'npandey'
 
 
-class AttributeConstants():
+class AttributeFieldConstants():
 
     STATE_NAME = 'state_name'
     DISTRICT_NAME = 'district_name'
@@ -9,3 +9,9 @@ class AttributeConstants():
     STATE_CODE = 'state_code'
     DISTRICT_GUID = 'district_guid'
     SCHOOL_GUID = 'school_guid'
+    GENDER = 'gender'
+
+
+class AttributeValueConstants():
+    MALE = 'male'
+    FEMALE = 'female'

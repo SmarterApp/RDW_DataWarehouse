@@ -5,15 +5,15 @@ Test Student Registration School Data Processor
 
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
 import unittest
-from edextract.student_reg_extract_processors.attribute_constants import AttributeConstants
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants
 from unittest.mock import MagicMock
 
 
 class TestSchoolDataProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.data = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.DISTRICT_NAME: 'Gilfford County',
-                     AttributeConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
+        self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
+                     AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
         self.category_trackers = []
 
         self.school_data_processor = SchoolDataProcessor(self.category_trackers)

@@ -22,7 +22,7 @@ class TestReportDataGenerator(unittest.TestCase):
             (EdOrgNameKey('New Jersey', 'Central Regional', 'Springfield Junior High'), 'school2'),
             (EdOrgNameKey('New Jersey', 'Capital Regional', ''), 'district2'),
             (EdOrgNameKey('New Jersey', 'Capital Regional', 'Capital Charter School'), 'school3'),
-            (EdOrgNameKey('New Jersey', 'Capital Regional', 'Capital School Of Interpretive Dance'), 'school3')
+            (EdOrgNameKey('New Jersey', 'Capital Regional', 'Capital School Of Interpretive Dance'), 'school4')
         ])
         total_tracker = TotalTracker()
         trackers = [total_tracker]
@@ -36,19 +36,19 @@ class TestReportDataGenerator(unittest.TestCase):
             'school4': {2014: 64, 2015: 46}
         }
         expected_data = [
-            ['New Jersey', 'ALL', 'ALL', 'Total', 'Total', '444', '100.0', '555', '100.0', '111', '25.0', '0.0'],
-            ['New Jersey', 'Central Regional', 'ALL', 'Total', 'Total', '123', '100.0', '90', '100.0', '-33', '-26.83', '0.0'],
-            ['New Jersey', 'Central Regional', 'Springfield Elementary', 'Total', 'Total', '37', '100.0', '73', '100.0', '36', '97.30', '0.0'],
-            ['New Jersey', 'Central Regional', 'Springfield Junior High', 'Total', 'Total', '', '', '8', '100.0', '', '', ''],
-            ['New Jersey', 'Capital Regional', 'ALL', 'Total', 'Total', '20', '100.0', '20', '100.0', '0', '0.0', '0.0'],
-            ['New Jersey', 'Capital Regional', 'Capital Charter School', 'Total', 'Total', '8', '100.0', '', '', '', '', ''],
-            ['New Jersey', 'Capital Regional', 'Capital School Of Interpretive Dance', 'Total', 'Total', '64', '100.0', '46', '100.0', '-18', '-28.13', '0.0']
+            ['New Jersey', 'ALL', 'ALL', 'Total', 'Total', '444', '100', '555', '100', '111', '25', '0'],
+            ['New Jersey', 'Central Regional', 'ALL', 'Total', 'Total', '123', '100', '90', '100', '-33', '-26.83', '0'],
+            ['New Jersey', 'Central Regional', 'Springfield Elementary', 'Total', 'Total', '37', '100', '73', '100', '36', '97.3', '0'],
+            ['New Jersey', 'Central Regional', 'Springfield Junior High', 'Total', 'Total', '', '', '8', '100', '', '', ''],
+            ['New Jersey', 'Capital Regional', 'ALL', 'Total', 'Total', '20', '100', '20', '100', '0', '0', '0'],
+            ['New Jersey', 'Capital Regional', 'Capital Charter School', 'Total', 'Total', '8', '100', '', '', '', '', ''],
+            ['New Jersey', 'Capital Regional', 'Capital School Of Interpretive Dance', 'Total', 'Total', '64', '100', '46', '100', '-18', '-28.12', '0']
         ]
 
         data = get_tracker_results(report_map, total_tracker, trackers, 2015)
 
         index = 0
         for row in data:
-            print('row[{index}] = {row}'.format(index=index, row=str(row)))
-            #self.assertEquals(expected_data[index], row)
+            self.assertEquals(expected_data[index], row)
             index += 1
+        self.assertEquals(7, index)

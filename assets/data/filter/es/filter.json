@@ -1,158 +1,158 @@
 {
-    "not_stated_message": "{{percentage}}% reported \"not stated\"",
-    "grades" : {
-        "display" : "Grades",
-        "tag" : "Grades",
-        "name" : "grade",
-        "options" : [
-            {
-                "label" : "Grade 3",
-                "value" : "3"
-            },
-            {
-                "label" : "Grade 4",
-                "value" : "4"
-            },
-            {
-                "label" : "Grade 5",
-                "value" : "5"
-            },
-            {
-                "label" : "Grade 6",
-                "value" : "6"
-            },
-            {
-                "label" : "Grade 7",
-                "value" : "7"
-            },
-            {
-                "label" : "Grade 8",
-                "value" : "8"
-            },
-            {
-                "label" : "Grade 11",
-                "value" : "11"
-            }
-        ]
-    },
-    "filters" : [
-        {
-            "display" : "Limited English Proficient (LEP)*",
-            "tag" : "LEP",
-            "name" : "dmgPrgLep",
-            "comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",
-            "options" : [
+	"not_stated_message": "{{percentage}}% reported \"no se especifica\"",
+	"grades" : {
+		"display" : "Grados",
+		"tag" : "Grados",
+		"name" : "grade",
+		"options" : [
+			{
+				"label" : "Grado 3",
+				"value" : "3"
+			},
+			{
+				"label" : "Grado 4",
+				"value" : "4"
+			},
+			{
+				"label" : "Grado 5",
+				"value" : "5"
+			},
+			{
+				"label" : "Grado 6",
+				"value" : "6"
+			},
+			{
+				"label" : "Grado 7",
+				"value" : "7"
+			},
+			{
+				"label" : "Grado 8",
+				"value" : "8"
+			},
+			{
+				"label" : "Grado 11",
+				"value" : "11"
+			}
+		]
+	},
+	"filters" : [
+		{
+			"display" : "Dominio limitado del inglés (LEP)*",
+			"tag" : "LEP",
+			"name" : "dmgPrgLep",
+			"comment" : "*Esta categoría incluye a los aprendices del idioma inglés (<em>English Language Learners</em>, ELL) si su estado identifica a estudiantes como ELL",
+			"options" : [
 
-                {
-                    "label": "Yes",
-                      "value": "Y"
-                },
-                {
-                    "label": "No",
-                      "value": "N"
-                },
-                {
-                    "label": "Not Stated",
-                      "value": "NS"
-                }
-            ]
-        },
+				{
+					"label": "Sí",
+				  	"value": "S"
+				},
+				{
+					"label": "No",
+				  	"value": "N"
+				},
+				{
+					"label": "No se especifica",
+				  	"value": "NE"
+				}
+			]
+		},
+		{
+			"display" : "Raza/Grupo étnico",
+			"tag" : "Raza/Grupo étnico",
+			"name" : "ethnicity",
+			"comment" : "*Ni hispano ni latino",
+			"options" : [
+				{
+					"label": "Hispano/Latino de cualquier raza ",
+				  	"value": "3"
+				},
+				{
+					"label": "Indígena norteamericano o nativo de Alaska *",
+				  	"value": "4"
+				},
+				{
+					"label": "Asiático*",
+				  	"value": "2"
+				},
+				{
+					"label": "Negro o afroamericano*",
+				  	"value": "1"
+				},
+				{
+					"label": "Nativo de Hawái o de las Islas del Pacífico *",
+				  	"value": "5"
+				},
+				{
+					"label": "Blanco*",
+				  	"value": "6"
+				},
+				{
+					"label": "Dos o más razas*",
+				  	"value": "7"
+				},
+				{
+					"label": "No se especifica",
+				  	"value": "0"
+				}
+			]
+		},
+		{
+			"display" : "IEP",
+			"tag" : "IEP",
+			"name" : "dmgPrgIep",
+			"comment": "*La categoría IEP no incluye a los estudiantes con un GIEP (p. ej., estudiantes dotados)",
+			"options" : [
+				{
+					"label": "Sí",
+				  	"value": "Y"
+				},
+				{
+					"label": "No",
+				  	"value": "N"
+				},
+				{
+					"label": "No se especifica",
+				  	"value": "NS"
+				}
+			]
+		},
         {
-            "display" : "Race/Ethnicity",
-            "tag" : "Race/Ethnicity",
-            "name" : "ethnicity",
-            "comment" : "*Not Hispanic or Latino",
-            "options" : [
-                {
-                    "label": "Hispanic/Latino of any race",
-                      "value": "3"
-                },
-                {
-                    "label": "American Indian or Alaska Native*",
-                      "value": "4"
-                },
-                {
-                    "label": "Asian*",
-                      "value": "2"
-                },
-                {
-                    "label": "Black or African American*",
-                      "value": "1"
-                },
-                {
-                    "label": "Native Hawaiian or Pacific Islander*",
-                      "value": "5"
-                },
-                {
-                    "label": "White*",
-                      "value": "6"
-                },
-                {
-                    "label": "Two or more races*",
-                      "value": "7"
-                },
-                {
-                    "label": "Not Stated",
-                      "value": "0"
-                }
-            ]
-        },
-        {
-            "display" : "IEP",
-            "tag" : "IEP",
-            "name" : "dmgPrgIep",
-            "comment": "*IEP categorization does not include students with a GIEP (i.e., 'gifted' students)",
-            "options" : [
-                {
-                    "label": "Yes",
-                      "value": "Y"
-                },
-                {
-                    "label": "No",
-                      "value": "N"
-                },
-                {
-                    "label": "Not Stated",
-                      "value": "NS"
-                }
-            ]
-        },
-        {
-            "display" : "Gender",
-            "tag" : "Gender",
+            "display" : "Sexo",
+            "tag" : "Sexo",
             "name" : "gender",
             "options" : [
                 {
-                    "label": "Male",
+                    "label": "Masculino",
                     "value": "male"
                 },
                 {
-                    "label": "Female",
+                    "label": "Femenino",
                     "value": "female"
                 },
                 {
-                    "label": "Not Stated",
+                    "label": "No se especifica",
                     "value": "not_stated"
                 }
             ]
         },
-        {
-            "display" : "504",
-            "tag" : "504",
-            "name" : "dmgPrg504",
-            "options" : [
-                {
-                    "label" : "Yes",
-                    "value" : "Y"
-                },{
-                    "label" : "No",
-                    "value" : "N"
-                },
-                {
-                    "label": "Not Stated",
-                      "value": "NS"
-                }
-            ]
-        }
-    ]
+		{
+			"display" : "504",
+			"tag" : "504",
+			"name" : "dmgPrg504",
+			"options" : [
+				{
+					"label" : "Sí",
+					"value" : "Y"
+				},{
+					"label" : "No",
+					"value" : "N"
+				},
+				{
+					"label": "No se especifica",
+				  	"value": "NS"
+				}
+			]
+		}
+	]
 }

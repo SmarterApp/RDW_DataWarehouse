@@ -10,7 +10,7 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
-def generate_isr_report_path_by_student_guid(state_code, pdf_report_base_dir='/', student_guid=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=False, lang='en', effective_date=None):
+def generate_isr_report_path_by_student_guid(state_code, effective_date, pdf_report_base_dir='/', student_guid=None, asmt_type=AssessmentType.SUMMATIVE, grayScale=False, lang='en'):
     '''
     Get Individual Student Report absolute path by student_guid.
     If the directory path does not exist, then create it.

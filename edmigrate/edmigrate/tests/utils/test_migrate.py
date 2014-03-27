@@ -10,11 +10,10 @@ from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sq
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edcore.database.utils.constants import UdlStatsConstants
-__author__ = 'sravi'
-
-import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name as get_unittest_prod_tenant_name
+
+__author__ = 'sravi'
 
 
 class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Unittest_with_stats_sqlite):
@@ -63,7 +62,6 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         self.assertEqual(0, row['asmt_outcome_rec_ids'])
         rset.close()
 
-
     def test_migrate_fact_asmt_outcome_record_already_deleted1(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
@@ -96,13 +94,13 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         batch = {UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38', UdlStatsConstants.TENANT: 'tomcat', UdlStatsConstants.SCHEMA_NAME: None}
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([101306, 101304, 101302]))
+        query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([101306, 101304, 91011691]))
         query_c = query.where(fact_asmt_outcome_table.c.rec_status == 'C')
         query_d = query.where(fact_asmt_outcome_table.c.rec_status == 'D')
         rset = prod_conn.execute(query_c)
         rows = rset.fetchall()
         row_cnt = len(rows)
-        self.assertEqual(2, row_cnt)
+        self.assertEqual(3, row_cnt)
         rset.close()
         rset = prod_conn.execute(query_d)
         rows = rset.fetchall()
@@ -114,7 +112,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         rset = prod_conn.execute(query_c)
         rows = rset.fetchall()
         row_cnt = len(rows)
-        self.assertEqual(2, row_cnt)
+        self.assertEqual(3, row_cnt)
         rset.close()
         rset = prod_conn.execute(query_d)
         rows = rset.fetchall()

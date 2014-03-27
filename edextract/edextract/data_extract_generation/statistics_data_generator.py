@@ -17,32 +17,69 @@ def generate_data_row(current_year_count, previous_year_count, current_year_tota
     change_in_count = _subtract(current_year_count, previous_year_count)
     percent_difference_of_count = _percentage(change_in_count, previous_year_count)
 
-    change_in_percentage_of_total = percent_of_current_year_total - percent_of_prev_year_total \
-        if percent_of_current_year_total is not None and percent_of_prev_year_total is not None else None
+    change_in_percentage_of_total = _subtract(percent_of_current_year_total, percent_of_prev_year_total)
 
-    return [previous_year_count, _format_percentage(percent_of_prev_year_total),
-            current_year_count, _format_percentage(percent_of_current_year_total),
-            change_in_count, _format_percentage(percent_difference_of_count),
-            _format_percentage(change_in_percentage_of_total)]
+    return [_format_intval(previous_year_count), _format_floatval(percent_of_prev_year_total),
+            _format_intval(current_year_count), _format_floatval(percent_of_current_year_total),
+            _format_intval(change_in_count), _format_floatval(percent_difference_of_count),
+            _format_floatval(change_in_percentage_of_total)]
 
 
 def _percentage(count, total):
-    if total:
+    """
+    Safe percentage calculating function.
+
+    @param count: Count for some category for the year
+    @param total: Total for the year
+
+    @return: Adjusted percentage of count to total (int or None)
+    """
+
+    if count is not None and total:
         return (count / total) * 100
     else:
         return None
 
 
-def _subtract(int1, int2):
-    if int1 is not None and int2 is not None:
-        return int1 - int2
+def _subtract(subtractor, subtractee):
+    """
+    Safe subtraction calculating function.
+
+    @param subtractor: Number from which to subtract subtractee
+    @param subtractee: Number which to subtract from subtractor
+
+    @return: Adjusted subtraction of subtractee from subtractor (int or None)
+    """
+
+    if subtractor is not None and subtractee is not None:
+        return subtractor - subtractee
     else:
         return None
 
 
-def _format_percentage(percent):
-    formatted = percent
-    if percent is not None:
-        formatted = str(round(percent, 2)).rstrip('0').rstrip('.')
+def _format_floatval(floatval):
+    """
+    Convert floating point value to formatted string for report.
 
-    return formatted
+    @param floatval: Floating point value
+
+    @return: Formatted string representation of floating point value
+    """
+    if floatval is not None:
+        return str(round(floatval, 2)).rstrip('0').rstrip('.')
+    else:
+        return ''
+
+
+def _format_intval(intval):
+    """
+    Convert integer value to formatted string for report.
+
+    @param intval: Integer value
+
+    @return: Formatted string representation of integer value
+    """
+    if intval is not None:
+        return str(intval)
+    else:
+        return ''

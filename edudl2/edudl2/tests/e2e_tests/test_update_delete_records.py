@@ -22,7 +22,7 @@ class Test_Insert_Delete(unittest.TestCase):
         self.guid_batch_id = str(uuid4())
         self.tenant_dir = '/opt/edware/test_tenant/test_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
-        self.archived_file = os.path.join(self.data_dir, 'test_data_update_delete_record.tar.gz.gpg')
+        self.archived_file = os.path.join(self.data_dir, 'test_update_delete_record.tar.gz.gpg')
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):

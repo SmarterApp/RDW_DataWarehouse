@@ -10,7 +10,8 @@ from edextract.student_reg_extract_processors.attribute_constants import Attribu
 
 class SchoolDataProcessor(EdOrgDataProcessor):
 
-    def __init__(self, category_trackers, ed_org_hierarchy):
+    def __init__(self, category_trackers):
+        ed_org_hierarchy = {}
         super().__init__(category_trackers, ed_org_hierarchy)
 
     def process_data(self, data_row):

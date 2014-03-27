@@ -23,7 +23,7 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
             where(fact_asmt_outcome.c.state_code == state_code).\
             where(and_(fact_asmt_outcome.c.school_guid == school_guid)).\
             where(and_(fact_asmt_outcome.c.district_guid == district_guid)).\
-            where(and_(fact_asmt_outcome.c.status == 'C')).\
+            where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT)).\
             group_by(dim_asmt.c.effective_date, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome.c.asmt_grade,).\
             order_by(fact_asmt_outcome.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
         if asmt_grade:

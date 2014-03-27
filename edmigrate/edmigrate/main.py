@@ -81,12 +81,12 @@ def run_with_conductor(daemon_mode, settings):
     connect = Connection(url)
     logger.debug('connection: ' + url)
     consumerThread = ConsumerThread(connect)
-    replicationAdminMonitor = ReplicationAdminMonitor(settings)
     try:
         consumerThread.start()
-        replicationAdminMonitor.start()
         if daemon_mode:
+            replicationAdminMonitor = ReplicationAdminMonitor(settings)
             run_cron_migrate(settings)
+            replicationAdminMonitor.start()
             consumerThread.join()
         else:
             migrate_task(settings)

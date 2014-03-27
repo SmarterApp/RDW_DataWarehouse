@@ -3,9 +3,8 @@ Created on Jun 19, 2013
 
 @author: tosako
 '''
-from sqlalchemy.schema import MetaData, Table, Column
+from sqlalchemy.schema import MetaData, Table, Column, Index
 from sqlalchemy.types import String, DateTime, BigInteger, Text
-import datetime
 
 
 def generate_stats_metadata(schema_name=None, bind=None):
@@ -23,6 +22,7 @@ def generate_stats_metadata(schema_name=None, bind=None):
                       Column('last_pdf_task_requested', DateTime, nullable=True),
                       Column('last_pre_cached', DateTime, nullable=True)
                       )
+    Index('udl_stats_load_status_type_idx', udl_stats.c.load_status, udl_stats.c.load_type, unique=False)
 
     extract_stats = Table('extract_stats', metadata,
                           Column('request_guid', String(50), nullable=False),
@@ -32,5 +32,4 @@ def generate_stats_metadata(schema_name=None, bind=None):
                           Column('celery_task_id', String(50), nullable=True),
                           Column('info', Text, nullable=True)
                           )
-
     return metadata

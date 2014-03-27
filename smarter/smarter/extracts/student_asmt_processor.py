@@ -109,7 +109,7 @@ def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_y
             .where(and_(fact_asmt_outcome.c.state_code == state_code))\
             .where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))\
             .where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))\
-            .where(and_(fact_asmt_outcome.c.status == 'C'))\
+            .where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))\
             .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome.c.asmt_grade)
 
         if district_guid is not None:
@@ -208,10 +208,10 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
     if asmt_metadata:
         task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
-        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.ASMT_JSON
+        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_JSON
     else:
         task[TaskConstants.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
-        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.ASMT_CSV
+        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_CSV
     return task
 
 

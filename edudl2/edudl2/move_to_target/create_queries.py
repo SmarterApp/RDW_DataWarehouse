@@ -1,65 +1,8 @@
 import re
 from edudl2.udl2 import message_keys as mk
-from sqlalchemy.sql.expression import text, bindparam
-from edcore.utils.utils import compile_query_to_sql_text
-
-
-def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
-    '''
-    Create query to find distict asmt_guid for a given batch in source table
-    @schema_name:
-    @table_name:
-    @column_name:
-    @guid_batch
-    '''
-    query = text("SELECT DISTINCT {column_name} "
-                 "FROM {schema_and_table} "
-                 "WHERE guid_batch=:guid_batch".format(column_name=column_name,
-                                                       schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                 table_name)),
-                 bindparams=[bindparam('guid_batch', guid_batch)])
-    return query
-
-
-def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target,
-                                      guid_column_value, guid_batch):
-    '''
-    Create query to find distict asmt_rec_id for a given batch in source table
-
-    '''
-    query = text("SELECT {rec_id_column_name} "
-                 "FROM {source_schema_and_table} "
-                 "WHERE {guid_column_name_in_target}=:guid_column_value_got "
-                 "AND batch_guid=:guid_batch".format(rec_id_column_name=rec_id_column_name,
-                                                     source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                      target_table_name),
-                                                     guid_column_name_in_target=guid_column_name_in_target),
-                 bindparams=[bindparam('guid_column_value_got', guid_column_value), bindparam('guid_batch', guid_batch)])
-    return query
-
-
-def create_select_columns_in_table_query(schema_name, table_name, column_names, criteria=None):
-    '''
-    Create a query to select specified columns in a table, with optional select criteria.
-
-    @schema_name: Name of schema in which database resides
-    @table_name: Name of table from which to select columns
-    @column_names: List of columns to include in select
-    @criteria: (optional) Query select criteria
-            This is a dictionary of pairs of field_name : field_value
-
-    @return Select query
-    '''
-    params = []
-    query = "SELECT DISTINCT {columns} FROM {schema_and_table}".format(columns=", ".join(column_names),
-                                                                       schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                                 table_name))
-    if (criteria):
-        query += (" WHERE " + " AND ".join(["{key} = :{key}".format(key=key) for key in sorted(criteria.keys())]))
-        params = [bindparam(key, criteria[key]) for key in sorted(criteria.keys())]
-
-    compile_query_to_sql_text(text(query, bindparams=params))
-    return text(query, bindparams=params)
+from sqlalchemy.sql.expression import text, bindparam, select, and_
+from edudl2.database.udl2_connector import get_udl_connection,\
+    get_target_connection, get_prod_connection
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -202,7 +145,6 @@ def create_delete_query(schema_name, table_name, criteria=None):
 
     @return Delete query
     '''
-
     query = "DELETE FROM {schema_and_table} ".format(schema_and_table=combine_schema_and_table(schema_name, table_name))
     params = []
     if (criteria):
@@ -256,6 +198,7 @@ def create_information_query(target_table):
     '''
     Main function to crate query to get column types in a table. 'information_schema.columns' is used.
     '''
+    # TODO: Investigate what this is used for
     query = text("SELECT column_name, data_type, character_maximum_length "
                  "FROM information_schema.columns "
                  "WHERE table_name = :target_table",
@@ -275,11 +218,12 @@ def get_dim_table_mapping_query(schema_name, table_name, phase_number):
     '''
     Function to get target table and source table mapping in a specific udl phase
     '''
-    query = text("SELECT distinct target_table, source_table "
-                 "FROM {source_schema_and_table} "
-                 "WHERE phase = :phase ".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name)),
-                 bindparams=[bindparam('phase', phase_number)])
-    return query
+    with get_udl_connection() as conn:
+        table = conn.get_table(table_name)
+        query = select([table.c.target_table,
+                        table.c.source_table],
+                       from_obj=table).where(table.c.phase == phase_number).group_by(table.c.target_table, table.c.source_table)
+        return query
 
 
 def get_column_mapping_query(schema_name, ref_table, target_table, source_table=None):
@@ -293,79 +237,66 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
 
     @return Mapping query
     '''
-    params = [bindparam('target_table', target_table)]
-    if source_table:
-        where_statement = " WHERE target_table= :target_table and source_table= :source_table"
-        params.append(bindparam('source_table', source_table))
-    else:
-        where_statement = " WHERE target_table= :target_table"
-
-    query = text("SELECT target_column, source_column "
-                 "FROM {source_schema_and_ref_table} "
-                 "{where_statement}".format(source_schema_and_ref_table=combine_schema_and_table(schema_name, ref_table),
-                                            where_statement=where_statement),
-                 bindparams=params)
+    with get_udl_connection() as conn:
+        table = conn.get_table(ref_table)
+        query = select([table.c.target_column,
+                        table.c.source_column],
+                       from_obj=table)
+        query = query.where(table.c.target_table == target_table)
+        if source_table:
+            query = query.where(and_(table.c.source_table == source_table))
     return query
 
 
-def find_deleted_fact_asmt_outcome_rows(schema_name, table_name, batch_guid, matching_conf):
+def find_deleted_fact_asmt_outcome_rows(tenant, schema_name, table_name, batch_guid, matching_conf):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    columns = ", ".join(matching_conf['columns'])
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in matching_conf['condition']])
-    params = [bindparam('batch_guid', batch_guid)]
-    params.extend([bindparam(c, matching_conf[c]) for c in matching_conf['condition']])
-    query = text("SELECT {columns} "
-                 "FROM {source_schema_and_table} "
-                 "WHERE batch_guid = :batch_guid "
-                 "AND {condition}".format(columns=columns,
-                                          source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                          condition=condition_clause
-                                          ),
-                 bindparams=params)
+    with get_target_connection(tenant, schema_name) as conn:
+        fact_asmt = conn.get_table(table_name)
+        columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
+        criterias = [fact_asmt.c[criteria] == matching_conf[criteria] for criteria in matching_conf['condition']]
+        query = select(columns, from_obj=fact_asmt).where(and_(fact_asmt.c.batch_guid == batch_guid))
+        for criteria in criterias:
+            query = query.where(and_(criteria))
     return query
 
 
-def match_delete_fact_asmt_outcome_row_in_prod(schema_name, table_name, matching_conf, matched_preprod_values):
+def match_delete_fact_asmt_outcome_row_in_prod(tenant_name, schema_name, table_name, matching_conf, matched_preprod_values):
     '''
     create a query to find all delete/updated record in current batch, get the rec_id back
     '''
     matched_prod_values = matched_preprod_values.copy()
     matched_prod_values['rec_status'] = matching_conf['rec_status']
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matching_conf['condition'])])
-    params = [bindparam(c, matched_prod_values[c]) for c in sorted(matching_conf['condition'])]
-    query = text("SELECT {columns} "
-                 "FROM {source_schema_and_table} "
-                 "WHERE {condition_clause}".format(source_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                    table_name),
-                                                   columns=", ".join(matching_conf['columns']),
-                                                   condition_clause=condition_clause),
-                 bindparams=params)
+    with get_prod_connection(tenant_name) as conn:
+        fact_asmt = conn.get_table(table_name)
+        columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
+        criterias = [fact_asmt.c[criteria] == matched_prod_values[criteria] for criteria in matching_conf['condition']]
+        query = select(columns, from_obj=fact_asmt)
+        for criteria in criterias:
+            query = query.where(and_(criteria))
     return query
 
 
-def update_matched_fact_asmt_outcome_row(schema_name, table_name, batch_guid, matching_conf,
+def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, batch_guid, matching_conf,
                                          matched_prod_values):
     '''
     create a query to find all delete/updated record in current batch
     '''
-    set_clause = ", ".join(["{k} = :{v}".format(k=kc, v=kv) for kc, kv in sorted(matching_conf['columns'].items())])
+    values = {}
+    matched_prod_values['status'] = matching_conf['new_status']
+
     matched_preprod_values = matched_prod_values.copy()
     matched_preprod_values['rec_status'] = matching_conf['rec_status']
     del matched_preprod_values['asmnt_outcome_rec_id']
-    condition_clause = " AND ".join(["{c} = :{c}".format(c=c) for c in sorted(matched_preprod_values.keys())])
-    params = [bindparam(c, matched_preprod_values[c]) for c in matched_preprod_values.keys()]
-    matched_prod_values['new_status'] = matching_conf['new_status']
-    params.extend([bindparam(v, matched_prod_values[v]) for v in matching_conf['columns'].values()])
-    params.append(bindparam('batch_guid', batch_guid))
-    query = text("UPDATE {target_schema_and_table} "
-                 "SET {set_clause} "
-                 "WHERE batch_guid = :batch_guid "
-                 "AND {condition_clause}".format(condition_clause=condition_clause,
-                                                 set_clause=set_clause,
-                                                 target_schema_and_table=combine_schema_and_table(schema_name,
-                                                                                                  table_name)),
 
-                 bindparams=params)
+    for k in matching_conf['columns'].keys():
+        values[k] = matched_prod_values[k]
+    with get_target_connection(tenant_name, schema_name) as conn:
+        fact_asmt = conn.get_table('fact_asmt_outcome')
+        criterias = [fact_asmt.c[k] == v for k, v in matched_preprod_values.items()]
+        query = fact_asmt.update().values(values).where(fact_asmt.c.batch_guid == batch_guid)
+        for criteria in criterias:
+            query = query.where(and_(criteria))
+
     return query

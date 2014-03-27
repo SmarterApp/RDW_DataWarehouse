@@ -9,7 +9,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.utils.cleanup import drop_schema, schema_exists
+from edcore.database.utils.utils import drop_schema
 from edschema.metadata.util import get_natural_key_columns
 
 __author__ = 'sravi'
@@ -278,9 +278,7 @@ def cleanup_batch(batch):
     logger.info('Cleaning up batch: ' + batch_guid + ',for tenant: ' + tenant)
     with EdMigrateSourceConnection(tenant) as source_connector:
         try:
-            # drop schema if exists
-            if schema_exists(source_connector, schema_name):
-                drop_schema(source_connector, schema_name)
+            drop_schema(source_connector, schema_name)
             logger.info('Master: Cleanup successful for batch: ' + batch_guid)
             rtn = True
         except Exception as e:

@@ -10,7 +10,8 @@ define [
   "edwarePreferences"
   "edwarePrint"
   "edwarePopover"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover) ->
+  "edwareConstants"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants) ->
 
   class ReportActionBar
 
@@ -23,7 +24,7 @@ define [
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
-      @asmtDropdown ?= @createAsmtDropdown() if @config.asmtTypes
+      @asmtDropdown = @createAsmtDropdown() if @config.asmtTypes
       @printer ?= @createPrint()
 
     createPrint: () ->
@@ -39,7 +40,11 @@ define [
     # Create assessment type dropdown
     createAsmtDropdown: () ->
       self = this
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, (asmtType) ->
+      if @config.reportName is Constants.REPORT_NAME.ISR
+        preference = edwarePreferences.getAsmtForISR
+      else
+        preference = edwarePreferences.getAsmtPreference
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, preference, (asmtType) ->
         self.updateDisclaimer()
         self.reloadCallback asmtType
       @createDisclaimer()
@@ -60,7 +65,7 @@ define [
       legendInfo = @config.legendInfo
       colorsData = @config.colorsData
       # merge default color data into sample intervals data
-      sampleColor = colorsData.subject1 || colorsData.subject2        
+      sampleColor = colorsData.subject1 || colorsData.subject2
       for color, i in sampleColor.colors || @config.colors
         legendInfo.sample_intervals.intervals[i].color = color
       legendInfo.sample_intervals

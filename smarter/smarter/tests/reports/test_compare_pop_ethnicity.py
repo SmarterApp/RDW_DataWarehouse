@@ -54,7 +54,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_HISPANIC]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
 
     def test_comparing_populations_ethnicity_blk(self):
         testParam = {}
@@ -124,9 +124,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_MULTI]
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
+        self.assertEqual(len(results['records']), 0)
 
     def test_comparing_populations_ethnicity_not_stated(self):
         testParam = {}
@@ -136,7 +134,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_NOT_STATED]
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 1)
+        self.assertEqual(len(results['records']), 2)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
@@ -167,9 +165,9 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
                                                 filters.FILTERS_ETHNICITY_WHITE,
                                                 filters.FILTERS_ETHNICITY_MULTI]
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 11)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 11)
+        self.assertEqual(len(results['records']), 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 3)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 3)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

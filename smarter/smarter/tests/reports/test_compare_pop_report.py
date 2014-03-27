@@ -65,19 +65,19 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
         # check grade-level results
         records = results[Constants.RECORDS]
-        self.assertEqual(1, len(records), "1 grade in the list")
+        self.assertEqual(2, len(records), "2 grades in the list")
         self.assertEqual('3', records[0][Constants.ID])
         self.assertEqual('3', records[0][Constants.NAME])
         asmt_results = records[0][Constants.RESULTS]
         self.assertEqual(2, len(asmt_results))
         subject1 = asmt_results[Constants.SUBJECT1]
-        self.assertEqual(35, subject1[Constants.TOTAL])
+        self.assertEqual(21, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(4, intervals[0][Constants.COUNT])
+        self.assertEqual(10, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(2, intervals[0][Constants.COUNT])
 
         # check summary results
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
@@ -88,8 +88,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(4, intervals[0][Constants.COUNT])
+        self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(5, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -137,8 +137,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
                 intervals = subject1[Constants.INTERVALS]
                 self.assertEqual(4, len(intervals))
                 self.assertEqual(1, intervals[0][Constants.LEVEL])
-                self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
-                self.assertEqual(4, intervals[0][Constants.COUNT])
+                self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
+                self.assertEqual(5, intervals[0][Constants.COUNT])
                 break
         self.assertTrue(found_school, 'Did not find school in list')
 
@@ -146,13 +146,13 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(56, subject1[Constants.TOTAL])
+        self.assertEqual(51, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(8, intervals[0][Constants.COUNT])
+        self.assertEqual(18, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(9, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -183,7 +183,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
         # check district-level results
         records = results[Constants.RECORDS]
-        self.assertEqual(4, len(records), "4 districts in the list")
+        self.assertEqual(5, len(records), "4 districts in the list")
         found_district = False
         for record in records:
             if record[Constants.ID] == '228':
@@ -192,13 +192,13 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
                 asmt_results = record[Constants.RESULTS]
                 self.assertEqual(2, len(asmt_results))
                 subject1 = asmt_results[Constants.SUBJECT1]
-                self.assertEqual(56, subject1[Constants.TOTAL])
+                self.assertEqual(51, subject1[Constants.TOTAL])
                 self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
                 intervals = subject1[Constants.INTERVALS]
                 self.assertEqual(4, len(intervals))
                 self.assertEqual(1, intervals[0][Constants.LEVEL])
-                self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
-                self.assertEqual(8, intervals[0][Constants.COUNT])
+                self.assertEqual(18, intervals[0][Constants.PERCENTAGE])
+                self.assertEqual(9, intervals[0][Constants.COUNT])
                 break
         self.assertTrue(found_district, 'Did not find district in list')
 
@@ -206,13 +206,13 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(79, subject1[Constants.TOTAL])
+        self.assertEqual(92, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
         self.assertEqual(13, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(10, intervals[0][Constants.COUNT])
+        self.assertEqual(12, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -259,9 +259,9 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2015
         testParam[filters.FILTERS_PROGRAM_504] = ['N']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 2)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 160)
-        self.assertEqual(results['records'][1]['results']['subject2']['total'], 139)
+        self.assertEqual(len(results['records']), 4)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 98)
+        self.assertEqual(results['records'][1]['results']['subject2']['total'], 83)
 
     def test_state_view_with_504_not_stated(self):
         testParam = {}
@@ -277,9 +277,9 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_PROGRAM_IEP] = ['Y']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 2)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 6)
-        self.assertEqual(results['records'][1]['results']['subject2']['total'], 22)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 4)
+        self.assertEqual(results['records'][1]['results']['subject2']['total'], -1)
 
     def test_state_view_with_iep_yes_504_no(self):
         testParam = {}
@@ -288,9 +288,9 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[filters.FILTERS_PROGRAM_IEP] = ['Y']
         testParam[filters.FILTERS_PROGRAM_504] = ['N']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 2)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 21)
-        self.assertEqual(results['records'][1]['results']['subject2']['total'], 20)
+        self.assertEqual(len(results['records']), 4)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 11)
+        self.assertEqual(results['records'][1]['results']['subject2']['total'], -1)
 
     def test_filters_with_no_results(self):
         testParam = {}
@@ -308,7 +308,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_GRADE] = ['3']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 0)
         self.assertEqual(len(results['records']), 1)
 
     def test_view_with_multi_grades(self):
@@ -318,8 +318,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_GRADE] = ['3', '6', '7', '11']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
-        self.assertEqual(results['records'][2]['results']['subject1']['total'], 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 8)
+        self.assertEqual(results['records'][2]['results']['subject1']['total'], 0)
         self.assertEqual(len(results['records']), 3)
 
     def test_view_with_lep_yes(self):
@@ -377,9 +377,9 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_MALE]
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 8)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 8)
+        self.assertEqual(len(results['records']), 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 5)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][1]['results']['subject2']['total'], 0)
 
@@ -399,12 +399,12 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[Constants.ASMTTYPE] = AssessmentType.SUMMATIVE
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['not_stated']['total'], 47)
-        self.assertEqual(results['not_stated']['dmgPrg504'], 3)
-        self.assertEqual(results['not_stated']['dmgPrgIep'], 3)
+        self.assertEqual(results['not_stated']['total'], 56)
+        self.assertEqual(results['not_stated']['dmgPrg504'], 5)
+        self.assertEqual(results['not_stated']['dmgPrgIep'], 5)
         self.assertEqual(results['not_stated']['dmgPrgLep'], 1)
         self.assertEqual(results['not_stated']['ethnicity'], 1)
-        self.assertEqual(results['not_stated']['gender'], 1)
+        self.assertEqual(results['not_stated']['gender'], 2)
 
     def test_filter_with_unfiltered_results(self):
         testParam = {}
@@ -413,13 +413,13 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_MALE]
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][0]['results']['subject1']['unfilteredTotal'], 18)
-        self.assertEqual(results['records'][0]['results']['subject2']['unfilteredTotal'], 17)
+        self.assertEqual(len(results['records']), 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['unfilteredTotal'], 10)
+        self.assertEqual(results['records'][0]['results']['subject2']['unfilteredTotal'], 9)
         self.assertEqual(results['records'][1]['results']['subject1']['unfilteredTotal'], 3)
-        self.assertEqual(results['records'][1]['results']['subject2']['unfilteredTotal'], 3)
-        self.assertEqual(results['summary'][0]['results']['subject1']['unfilteredTotal'], 23)
-        self.assertEqual(results['summary'][0]['results']['subject2']['unfilteredTotal'], 24)
+        self.assertEqual(results['records'][1]['results']['subject2']['unfilteredTotal'], -1)
+        self.assertEqual(results['summary'][0]['results']['subject1']['unfilteredTotal'], 15)
+        self.assertEqual(results['summary'][0]['results']['subject2']['unfilteredTotal'], 14)
 
     def test_get_merged_report_records(self):
         summative = {'records': [{'id': 'a', 'name': 'a', 'type': 'sum',

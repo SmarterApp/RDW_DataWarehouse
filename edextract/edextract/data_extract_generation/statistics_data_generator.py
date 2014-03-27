@@ -19,9 +19,10 @@ def generate_data_row(current_year_count, previous_year_count, current_year_tota
 
     change_in_percentage_of_total = _subtract(percent_of_current_year_total, percent_of_prev_year_total)
 
-    return [previous_year_count, percent_of_prev_year_total,
-            current_year_count, percent_of_current_year_total,
-            change_in_count, percent_difference_of_count, change_in_percentage_of_total]
+    return [previous_year_count, _format_percentage(percent_of_prev_year_total),
+            current_year_count, _format_percentage(percent_of_current_year_total),
+            change_in_count, _format_percentage(percent_difference_of_count),
+            _format_percentage(change_in_percentage_of_total)]
 
 
 def _percentage(count, total):
@@ -54,3 +55,11 @@ def _subtract(subtractor, subtractee):
         return subtractor - subtractee
     else:
         return None
+
+
+def _format_percentage(percent):
+    formatted = percent
+    if percent is not None:
+        formatted = str(round(percent, 2)).rstrip('0').rstrip('.')
+
+    return formatted

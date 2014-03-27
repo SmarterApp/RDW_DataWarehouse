@@ -25,14 +25,13 @@ define [
       @data
 
     processAccommodations: () ->
-      for asmtType, assessments  of @data.items
-        for asmt in assessments
-          sections = @buildAccommodations asmt.accommodations
-          if sections.length > 0
-            asmt.accommodations = {"sections": sections}
-          else
-            # do not display accommodation at all if none is available
-            asmt.accommodations = undefined
+      for asmt in this.data.all_results
+        sections = @buildAccommodations asmt.accommodations
+        if sections.length > 0
+          asmt.accommodations = {"sections": sections}
+        else
+          # do not display accommodation at all if none is available
+          asmt.accommodations = undefined
 
     buildAccommodations: (accommodations) ->
       # mapping accommodation code and column name to meaningful description text
@@ -48,56 +47,60 @@ define [
 
     processData: () ->
       # TODO: below code should be made prettier someday
-      for asmtType, assessments  of @data.items
-        for assessment, idx in assessments
-          for cut_point_interval, i in assessment.cut_point_intervals
-            if @isGrayscale
-              assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.grayColors[i])
-            else if not cut_point_interval.bg_color
-              # if cut points don't have background colors, then it will use default background colors
-              assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.colors[i])
+      for assessment, idx in @data.all_results
+        for cut_point_interval, i in assessment.cut_point_intervals
+          if @isGrayscale
+            assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.grayColors[i])
+          else if not cut_point_interval.bg_color
+            # if cut points don't have background colors, then it will use default background colors
+            assessment.cut_point_intervals[i] = $.extend(cut_point_interval, @configData.colors[i])
 
-          # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
-          # ex. assessmentSection0, assessmentSection1
-          assessment.count = idx
+        # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
+        # ex. assessmentSection0, assessmentSection1
+        assessment.count = idx
 
-          # set role-based content
-          assessment.content = @configData.content
+        # set role-based content
+        assessment.content = @configData.content
 
-          # Select cutpoint color and background color properties for the overall score info section
-          performance_level = assessment.cut_point_intervals[assessment.asmt_perf_lvl-1]
+        # Select cutpoint color and background color properties for the overall score info section
+        performance_level = assessment.cut_point_intervals[assessment.asmt_perf_lvl-1]
 
-          # Apply text color and background color for overall score summary info section
-          assessment.score_color = performance_level.bg_color
-          assessment.score_text_color = performance_level.text_color
-          assessment.score_bg_color = performance_level.bg_color
-          assessment.score_name = performance_level.name
+        # Apply text color and background color for overall score summary info section
+        assessment.score_color = performance_level.bg_color
+        assessment.score_text_color = performance_level.text_color
+        assessment.score_bg_color = performance_level.bg_color
+        assessment.score_name = performance_level.name
 
-          # set level-based overall ald content
-          overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject], assessment)
-          overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
-          assessment.overall_ald = overallALD
+        # set level-based overall ald content
+        overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject], assessment)
+        overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
+        assessment.overall_ald = overallALD
 
-          # set psychometric_implications content
-          psychometricContent = Mustache.render(this.configData.psychometric_implications[asmtType][assessment.asmt_subject], assessment)
+        # set psychometric_implications content
+        psychometricContent = Mustache.render(this.configData.psychometric_implications[assessment.asmt_type][assessment.asmt_subject], assessment)
 
-          # if the content is more than character limits then truncate the string and add ellipsis (...)
-          psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
-          assessment.psychometric_implications = psychometricContent
+        # if the content is more than character limits then truncate the string and add ellipsis (...)
+        psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
+        assessment.psychometric_implications = psychometricContent
 
-          # set policy content
-          grade = @configData.policy_content[assessment.grade]
-          if grade
-            if assessment.grade is "11"
-              assessment.policy_content = grade[assessment.asmt_subject]
-            else if assessment.grade is "8"
-              assessment.policy_content = grade[assessment.asmt_subject][assessment.asmt_perf_lvl]
+        # set policy content
+        grade = @configData.policy_content[assessment.grade]
+        if grade
+          if assessment.grade is "11"
+            assessment.policy_content = grade[assessment.asmt_subject]
+          else if assessment.grade is "8"
+            assessment.policy_content = grade[assessment.asmt_subject][assessment.asmt_perf_lvl]
 
-          for claim in assessment.claims
-            claim.subject = assessment.asmt_subject.toUpperCase()
-            claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
-            # length info is used for bootstrap to determine how many columns for a claim
-            claim.length = 12 / assessment.claims.length
+        for claim in assessment.claims
+          claim.subject = assessment.asmt_subject.toUpperCase()
+          claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
+          # length info is used for bootstrap to determine how many columns for a claim
+          claim.length = 12 / assessment.claims.length
+
+        key = assessment.effective_date + assessment.asmt_type
+        @data[key] ?= []
+        @data[key].push assessment
+
 
   class EdwareISR
 
@@ -136,14 +139,6 @@ define [
         asmt = edwarePreferences.getAsmtPreference()
         asmt?.asmtGuid
 
-    getCurrentAsmtType: () ->
-      if @isPdf
-        currentAsmtType = @params['asmtType']
-      else
-        asmt = edwarePreferences.getAsmtPreference()
-        currentAsmtType = asmt?.asmtType
-      currentAsmtType || Constants.ASMT_TYPE.SUMMATIVE
-
     fetchData: () ->
       # Get individual student report data from the server
       self = this
@@ -176,18 +171,27 @@ define [
         subjects: @data.current
 
     renderReportActionBar: () ->
-      currentAsmtType = @getCurrentAsmtType()
-      @configData.subject = @createSampleInterval this.data.items[currentAsmtType][0], this.legendInfo.sample_intervals
+      @configData.subject = @createSampleInterval this.data.current[0], this.legendInfo.sample_intervals
       @configData.reportName = Constants.REPORT_NAME.ISR
       @configData.asmtTypes = @getAsmtTypes()
       self = this
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, () ->
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->
+        # save assessment type
+        edwarePreferences.saveAsmtForISR(asmt)
         self.render()
         self.renderReportInfo()
 
+    getCacheKey: ()->
+      if @isPdf
+        asmtType = @params['asmtType'] || Constants.ASMT_TYPE.SUMMATIVE
+        return @params['effectiveDate'] + asmtType
+      else
+        asmt = edwarePreferences.getAsmtForISR()
+        return asmt['effectiveDate'] + asmt['asmtType']
+
     render: () ->
-      asmtType = @getCurrentAsmtType()
-      this.data.current = this.data.items[asmtType]
+      key = @getCacheKey()
+      @data.current = @data[key]
       # use mustache template to display the json data
       output = Mustache.to_html indivStudentReportTemplate, @data
       $("#individualStudentContent").html output
@@ -196,8 +200,8 @@ define [
 
       # Generate Confidence Level bar for each assessment
       i = 0
-      for item, i in @data.items[asmtType]
-        barContainer = "#assessmentSection" + i + " .confidenceLevel"
+      for item, i in @data.current
+        barContainer = "#assessmentSection" + item.count + " .confidenceLevel"
         edwareConfidenceLevelBar.create item, 640, barContainer
 
         # Set the layout for practical implications and policy content section on print version
@@ -257,9 +261,9 @@ define [
       for idx, asmt of @data.asmt_administration
         asmt.asmt_type = Constants.ASMT_TYPE[asmt.asmt_type]
         asmt.asmt_subject = @subjectsData[asmt.asmt_subject]
-        asmt.display = "{{asmtYear}} · {{asmtGrade}} · {{asmtType}}"
-        asmt.asmt_year = asmt.asmt_year
-        asmt.asmt_grade = @grade.name
+        asmt.display = "{{effectiveDateText}} · {{asmtGrade}} · {{asmtType}}"
+        asmt.effective_date = asmt.effective_date
+        asmt.asmt_grade = "Grade #{asmt.asmt_grade}"
         asmt.hasAsmtSubject = false
         asmtTypes.push asmt
       asmtTypes

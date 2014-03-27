@@ -5,9 +5,7 @@ import datetime
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
-from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query,\
-    find_deleted_fact_asmt_outcome_rows,\
-    match_delete_fact_asmt_outcome_row_in_prod, update_matched_fact_asmt_outcome_row
+from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
 from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
@@ -131,52 +129,6 @@ class TestMoveToTarget(Unittest_with_sqlite):
                          ", 'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), * FROM (SELECT table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE " +
                          "FROM \"source_schema\".\"table_A\" table_a INNER JOIN \"source_schema\".\"table_B\" table_b ON table_b.guid_batch = table_a.guid_batch "
                          "WHERE op = ''D'' AND table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
-
-    def test_update_matched_fact_asmt_outcome_row(self):
-        match_conf = get_move_to_target_conf()['handle_deletions']
-        query = update_matched_fact_asmt_outcome_row('edware',
-                                                     match_conf['target_table'],
-                                                     'batch_guid_1',
-                                                     match_conf['update_matched_fact_asmt_outcome_row'],
-                                                     {'asmnt_outcome_rec_id': 2,
-                                                      'asmt_guid': 'asmnt_guid_1',
-                                                      'student_guid': 'student_guid_1',
-                                                      'date_taken': '20140101',
-                                                      'status': 'C'})
-        query = compile_query_to_sql_text(query)
-        logger.info(query)
-        self.assertEqual(query, "UPDATE \"edware\".\"fact_asmt_outcome\" "
-                                "SET asmnt_outcome_rec_id = 2, status = 'D' "
-                                "WHERE batch_guid = 'batch_guid_1' AND asmt_guid = 'asmnt_guid_1' "
-                                "AND date_taken = '20140101' AND status = 'W' AND student_guid = 'student_guid_1'")
-
-    def test_match_delete_fact_asmt_outcome_row_in_prod(self):
-        match_conf = get_move_to_target_conf()['handle_deletions']
-        query = match_delete_fact_asmt_outcome_row_in_prod('edware',
-                                                           match_conf['prod_table'],
-                                                           match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
-                                                           {'asmt_guid': 'asmt_guid_1',
-                                                            'student_guid': 'student_guid_1',
-                                                            'date_taken': '20140101',
-                                                            'status': 'W'})
-        query = compile_query_to_sql_text(query)
-        logger.info(query)
-        self.assertEqual(query, "SELECT asmnt_outcome_rec_id, student_guid, asmt_guid, date_taken "
-                                "FROM \"edware\".\"fact_asmt_outcome\" "
-                                "WHERE asmt_guid = 'asmt_guid_1' AND date_taken = '20140101' "
-                                "AND status = 'C' AND student_guid = 'student_guid_1'")
-
-    def test_find_deleted_fact_asmt_outcome_rows(self):
-        match_conf = get_move_to_target_conf()['handle_deletions']
-        query = find_deleted_fact_asmt_outcome_rows('edware',
-                                                    match_conf['target_table'],
-                                                    'batch_guid_1',
-                                                    match_conf['find_deleted_fact_asmt_outcome_rows'])
-        query = compile_query_to_sql_text(query)
-        logger.info(query)
-        self.assertEqual(query,
-                         "SELECT asmnt_outcome_rec_id, student_guid, asmt_guid, date_taken, status FROM \"edware\".\"fact_asmt_outcome\" WHERE "
-                         "batch_guid = 'batch_guid_1' AND status = 'W'")
 
     def test_handle_record_upsert_find_all(self):
         match_conf = get_move_to_target_conf()['handle_record_upsert'][0]

@@ -14,7 +14,7 @@ class EdOrgDataProcessor(metaclass=ABCMeta):
         self.ed_org_hierarchy = ed_org_hierarchy
 
     def _add_to_edorg_hierarchy(self, guid, state_name, district_name='', school_name=''):
-        self.ed_org_hierarchy[EdOrgNameKey(state_name, district_name, school_name)] = guid
+        self.ed_org_hierarchy[EdOrgNameKey(state_name=state_name, district_name=district_name, school_name=school_name)] = guid
 
     def _call_trackers(self, guid, data_row):
         for tracker in self.category_trackers:

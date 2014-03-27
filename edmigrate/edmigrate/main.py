@@ -33,6 +33,7 @@ pidfile = None
 
 
 def signal_handler(signal, frame):
+    logger.info('Received kill[' + str(signal) + ']')
     os.unlink(pidfile)
     os._exit(0)
 

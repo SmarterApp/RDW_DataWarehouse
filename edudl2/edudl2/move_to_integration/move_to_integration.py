@@ -4,7 +4,8 @@ from edudl2.udl2 import message_keys as mk
 import logging
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.fileloader.prepare_queries import get_column_mapping_query
-from sqlalchemy.sql.expression import text, bindparam
+from sqlalchemy.sql.expression import text, bindparam, select, and_
+from sqlalchemy.orm import aliased
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ def move_data_from_staging_to_integration(conf):
         # get the column mapping from ref table
         target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, conf[mk.REF_TABLE], conf[mk.SOURCE_DB_TABLE],
                                                                                            conf[mk.TARGET_DB_TABLE], conf[mk.SOURCE_DB_SCHEMA])
-        sql_query = create_migration_query(conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_SCHEMA],
+        sql_query = create_migration_query(conn, conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_SCHEMA],
                                            conf[mk.TARGET_DB_TABLE], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', conf[mk.GUID_BATCH],
                                            target_columns, source_columns_with_tran_rule)
         logger.debug(sql_query)
@@ -78,8 +79,8 @@ def get_varchar_column_name_and_length(conn, integration_table):
     return column_name_length_dict
 
 
-def create_migration_query(source_schema, source_table, target_schema, target_table,
-                           error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule):
+def create_migration_query(conn, source_schema, source_table, target_schema, target_table,
+                           error_schema, error_table_name, guid_batch, target_columns, source_columns_with_tran_rule):
     '''
     Create migration script in SQL text template. It will be a tech debt to migrate it to SQLAlchemy
     equivalent. Also the code may require updates after metadata definition are finalized
@@ -111,13 +112,30 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
                                    source_schema=source_schema,
                                    source_table=source_table,
                                    error_schema=error_schema,
-                                   error_table=error_table),
+                                   error_table=error_table_name),
                bindparams=[bindparam('guid_batch', guid_batch)])
 
+    #print(sql)
+    #print(target_columns_expand)
+    #print(target_columns)
+    #print(source_columns_expand)
+
+    integration_table = conn.get_table(target_table)
+    staging_table = conn.get_table(source_table)
+    target_columns_to_pick = [column for column in target_columns]
+    #print('target_columns_to_pick', target_columns_to_pick)
+    source_columns_with_translation_rules = [source_column for source_column in source_columns_with_tran_rule]
+    error_table = conn.get_table(error_table_name)
+
+    staging_table_alias = aliased(staging_table, name='A')
+    error_table_alias = aliased(error_table, name='B')
+    select_query = select(source_columns_with_translation_rules,
+                          from_obj=staging_table_alias).select_from(staging_table_alias.outerjoin(error_table_alias, error_table_alias.c.record_sid == staging_table_alias.c.record_sid)).\
+        where(and_(staging_table_alias.c.guid_batch == guid_batch,
+                   error_table_alias.c.record_sid == None))
+    #print(str(select_query))
+    query = integration_table.insert(inline=True).from_select(target_columns_to_pick, select_query)
+    print(str(query))
+    #print(str(sql))
+
     return sql
-
-
-if __name__ == '__main__':
-    start_time = datetime.datetime.now()
-    # place holder for execute the code as shell script
-    end_time = datetime.datetime.now()

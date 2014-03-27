@@ -64,8 +64,8 @@ PDF_PARAMS = {
         },
         Constants.EFFECTIVEDATE: {
             "type": "integer",
-            "required": False,
-            "pattern": "^[1-9][0-9]{5}$"
+            "required": True,
+            "pattern": "^[1-9]{8}$"
         }
     }
 }
@@ -132,15 +132,12 @@ def get_pdf_content(params):
     student_guid = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
-    effective_date = params.get(Constants.EFFECTIVEDATE)
+    effective_date = str(params.get(Constants.EFFECTIVEDATE))
     if student_guid is None:
         raise InvalidParameterError('Required parameter is missing')
 
     if not has_context_for_pdf_request(state_code, student_guid):
         raise ForbiddenError('Access Denied')
-
-    if not effective_date:
-        raise InvalidParameterError("Effective date is missing")
 
     asmt_type = asmt_type.upper()
     if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]:
@@ -161,7 +158,7 @@ def get_pdf_content(params):
 
     # get isr file path name
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    file_name = generate_isr_report_path_by_student_guid(state_code, pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=asmt_type, grayScale=is_grayscale, lang=lang, effective_date=effective_date)
+    file_name = generate_isr_report_path_by_student_guid(state_code, effective_date, pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()

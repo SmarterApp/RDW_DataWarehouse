@@ -1,3 +1,5 @@
+from edextract.trackers.gender_tracker import FemaleTracker, MaleTracker
+
 __author__ = 'tshewchuk'
 
 """
@@ -111,7 +113,7 @@ def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
 
     hierarchy_map = {}
     total_tracker = TotalTracker()
-    trackers = [total_tracker]
+    trackers = [total_tracker, MaleTracker(), FemaleTracker()]
 
     _process_db_data_for_sr_stat(db_rows, hierarchy_map, trackers)
 

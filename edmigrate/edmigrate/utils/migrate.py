@@ -10,11 +10,9 @@ from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.utils import drop_schema
 
 __author__ = 'sravi'
-# This is a hack needed for now for migration.
-# These tables will be dropped in future
-# CR, remove this line after dim_section is removed from database
 TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
 logger = logging.getLogger('edmigrate')
+admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
 def get_batches_to_migrate(tenant=None):
@@ -285,11 +283,16 @@ def start_migrate_daily_delta(tenant=None):
     batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     if batches_to_migrate:
         for batch in batches_to_migrate:
-            batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
-            logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
+            batch_guid = batch[UdlStatsConstants.BATCH_GUID]
+            batch[UdlStatsConstants.SCHEMA_NAME] = batch_guid
+            logger.debug('processing batch_guid: ' + batch_guid)
             if migrate_batch(batch=batch):
                 migrate_ok_count += 1
-            # cleanup_batch(batch=batch)
+                admin_logger.info('Migrating batch[' + batch_guid + '] is processed')
+            else:
+                admin_logger.info('Migrating batch[' + batch_guid + '] failed')
+            cleanup_batch(batch=batch)
     else:
-        logger.debug('no batch found to migrate')
+        logger.debug('no batch found for migration')
+        admin_logger.info('no batch found for migration')
     return migrate_ok_count, len(batches_to_migrate)

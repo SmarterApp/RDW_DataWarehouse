@@ -14,6 +14,7 @@ import time
 
 
 logger = logging.getLogger('edmigrate')
+admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
 class ReplicationAdminMonitor(threading.Thread):
@@ -44,5 +45,6 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
                     if not replication_ok:
                         standby_node = status_record[Constants.REPL_STANDBY_NODE]
                         logger.error('Node ID[' + str(standby_node) + '] is out of sync.')
+                        admin_logger.error('Replication monitor: Node ID[' + str(standby_node) + '] is out of sync.')
             logger.debug('replication admin monitor finishes')
         time.sleep(interval_check)

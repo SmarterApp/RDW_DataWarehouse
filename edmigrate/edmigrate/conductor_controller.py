@@ -11,6 +11,7 @@ from edmigrate.utils.migrate import get_batches_to_migrate
 
 
 logger = logging.getLogger('edmigrate')
+admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
 def process(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
@@ -32,8 +33,10 @@ def process(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_to
                     regular_process(conductor)
             else:
                 logger.info('No player was detected')
+                admin_logger.info('No player was detected by the conductor')
     else:
         logger.debug('no batch to process')
+        admin_logger.info('no batch found to process')
 
 
 def regular_process(conductor):
@@ -84,6 +87,7 @@ def regular_process(conductor):
         conductor.send_reset_players()
         logger.error('regular_process: error')
         logger.error(e)
+        admin_logger.error('Error detected by the conductor during migration')
     finally:
         logger.debug('End of regular migration process')
 
@@ -96,4 +100,6 @@ def single_player_process(conductor):
     except Exception as e:
         logger.error('Detected error')
         logger.error(e)
-    logger.debug('End of single player migration process')
+        admin_logger.error('Error detected by the conductor during migration')
+    finally:
+        logger.debug('End of single player migration process')

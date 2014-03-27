@@ -41,7 +41,6 @@ def signal_handler(signal, frame):
 
 @atexit.register
 def delete_queue_exchange():
-    conductor.exchange.delete()
     conductor.queue.delete()
 
 
@@ -97,6 +96,7 @@ def run_with_conductor(daemon_mode, settings):
     except Exception as e:
         logger.error(e)
         os._exit(1)
+    logger.debug('exiting edmigrate main program')
 
 
 def create_daemon(_pidfile):

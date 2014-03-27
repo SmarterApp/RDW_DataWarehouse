@@ -183,6 +183,7 @@ common:
           check_interval: 1800
       conductor:
         find_player.timeout: 5
+        enable: True
         schedule:
           cron:
             day: '*/1'
@@ -335,7 +336,6 @@ qa:
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
-      master.hostname: 'dbpgdw0.qa.dum.edwdc.net'
     migrate.celery:
       BROKER_URL:amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     auth:

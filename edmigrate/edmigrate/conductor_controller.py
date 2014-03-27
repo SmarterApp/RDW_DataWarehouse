@@ -14,6 +14,7 @@ logger = logging.getLogger('edmigrate')
 
 
 def process(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
+    logger.debug('conductor process started')
     batch = get_batches_to_migrate()
     if batch:
         with Conductor(replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance, monitor_timeout=monitor_timeout) as conductor:

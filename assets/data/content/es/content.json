@@ -1,0 +1,77 @@
+{
+	"content": {
+		"psychometric_implications": "Implicaciones sicométricas",
+		"policy_content": "Contenido de las políticas",
+		"admin_details": "Detalles de la administración de la prueba",
+		"overall_ald": "Descriptor del nivel de desempeño",
+		"claim_1_ald": "Descriptor del nivel de desempeño",
+		"claim_2_ald": "Descriptor del nivel de desempeño",
+		"claim_3_ald": "Descriptor del nivel de desempeño"
+	},
+
+	"overall_ald": {
+		"Math": "Resumen de la puntuación preliminar: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} y habilidad para aplicar</strong> el conocimiento y las destrezas matemáticas necesarias para el éxito en la universidad y carrera profesional, como se especifica en los Estándares Estatales Esenciales Comunes.",
+		"ELA": "Resumen de la puntuación preliminar: Un estudiante en el nivel {{asmt_perf_lvl}} demuestra <strong>{{score_name}} y habilidad para aplicar</strong> el conocimiento de las artes del lenguaje y las destrezas de la lectoescritura necesarias para el éxito en la universidad y carrera profesional, como se especifica en los Estándares Estatales Esenciales Comunes."
+	},
+
+	"psychometric_implications": {
+	   "Summative": {
+		"Math": "La escala, las unidades y los puntos de ejecución mínima son ilustrativos y se espera que cambien. Los resúmenes de las puntuaciones se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que has demostrado que puedes hacer.",
+		"ELA": "La escala, las unidades y los puntos de ejecución mínima son ilustrativos y se espera que cambien. Los resúmenes de las puntuaciones se revisarán en el verano del 2014 y se adaptarán por grado y materia en términos de conocimiento, destrezas y procesos que has demostrado que puedes hacer."
+	   },
+	   "Interim Comprehensive": {
+	    "Math" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu elit vitae odio gravida venenatis ac eget est. In nec viverra ipsum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis at rhoncus ante, a vehicula ligula. Nulla tempor lacinia ipsum at vulputate. Vivamus blandit lacus purus, ac dignissim mi blandit eget. Nam a ornare urna",
+	    "ELA": "Phasellus sollicitudin diam metus, sed laoreet orci cursus non. Phasellus gravida ligula neque, iaculis aliquam dui facilisis quis. Phasellus odio mauris, tristique ac ullamcorper fringilla, bibendum vitae nisi. Pellentesque magna erat, sollicitudin nec"
+	   }
+	},
+
+	"policy_content": {
+		"11": {
+			"Math": "Los estudiantes de los grados 8 al 12 verán información de la política del consorcio común para la educación superior y un enlace para los recursos del estado que el mismo estado puede modificar: <a href='#'>http://stateresources.link</a>",
+			"ELA": " Los estudiantes de los grados 8 al 12 verán información de la política del consorcio común para la educación superior y un enlace para los recursos del estado que el mismo estado puede modificar: <a href='#'>http://stateresources.link</a>"
+		},
+		"8": {
+			"Math": {
+				"1": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones para los requisitos de las materias de la universidad.",
+				"2": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones para los requisitos de las materias de la universidad.",
+				"3": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones para los requisitos de las materias de la universidad.",
+				"4": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones para los requisitos de las materias de la universidad."
+			},
+			"ELA": {
+				"1": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones de los requisitos de las materias de la universidad.",
+				"2": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones de los requisitos de las materias de la universidad.",
+				"3": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones de los requisitos de las materias de la universidad.",
+				"4": "Smarter Balanced y tu estado proporcionarán contenido oficial relacionado a las políticas (próximamente) para ayudar a interpretar tu puntuación en términos del contenido de preparación para la universidad y las implicaciones de los requisitos de las materias de la universidad."
+			}
+		}
+	},
+
+	"claims": {
+		"Math": {
+			"description": {
+				"1": "Los estudiantes pueden explicar y aplicar conceptos matemáticos y realizar procedimientos matemáticos con precisión y dominio.",
+				"2": "Los estudiantes pueden resolver un rango de problemas complejos bien planteados en matemáticas puras y aplicadas, usando productivamente el conocimiento y las estrategias de resolución de problemas. Los estudiantes pueden analizar escenarios complejos de la vida real y pueden construir y usar modelos matemáticos para interpretar y resolver problemas.",
+				"3": "Los estudiantes pueden construir con claridad y precisión argumentos viables para apoyar su propio razonamiento y para criticar el razonamiento de otros."
+			},
+			"scoreTooltip": {
+				"1": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas.",
+				"2": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas.",
+				"3": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas."
+			}
+		},
+		"ELA": {
+			"description": {
+				"1": "Los estudiantes pueden leer con atención y de manera analítica para comprender un rango de textos literarios e informativos de complejidad ascendente.",
+				"2": "Los estudiantes pueden producir escritos efectivos y bien fundamentados para un rango de propósitos y audiencias.",
+				"3": "Los estudiantes pueden emplear destrezas efectivas para hablar y escuchar para un rango de propósitos y audiencias.",
+				"4": "Los estudiantes pueden participar en estudios y búsquedas para investigar temas y para analizar, integrar y presentar información."
+			},
+			"scoreTooltip": {
+				"1": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas.",
+				"2": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas.",
+				"3": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas.",
+				"4": "Las puntuaciones de las aseveraciones están en la misma escala que la puntuación general, pero no se ajustan a los Niveles de desempeño de la misma manera que las puntuaciones generales. Las puntuaciones de las aseveraciones se entienden mejor en relación con la puntuación general y comparadas entre sí como una característica de las fortalezas relativas."
+			}
+		}
+	}
+}

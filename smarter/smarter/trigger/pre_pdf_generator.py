@@ -50,6 +50,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         query = select([distinct(fact_asmt_outcome.c.student_guid).label(Constants.STUDENT_GUID),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
+                        dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
                         fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
                         fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),
                         fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
@@ -88,9 +89,10 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
                 school_guid = result.get(Constants.SCHOOL_GUID)
                 asmt_grade = result.get(Constants.ASMT_GRADE)
                 student_guid = result.get(Constants.STUDENT_GUID)
-                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid)
+                effective_date = result.get(Constants.EFFECTIVE_DATE)
+                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid, effective_date=effective_date)
                 logger.debug('pre-pdf for [%s]', file_name)
-                pdf_trigger.send_pdf_request(student_guid, state_code, file_name)
+                pdf_trigger.send_pdf_request(student_guid, state_code, effective_date, file_name)
             except Exception as e:
                 triggered = False
                 logger.warning('Pdf generation failed for %s', student_guid)

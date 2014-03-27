@@ -11,19 +11,23 @@ from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 from time import sleep
+from uuid import uuid4
+from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
 class ValidateTableData(unittest.TestCase):
     def setUp(self):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ftest_test_tenant/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         self.connector = get_udl_connection()
+        self.guid_batch_id = str(uuid4())
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
         self.connector.close_connection()
+        drop_target_schema(self.guid_batch_id)
 
     def empty_batch_table(self, connector):
         batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
@@ -39,7 +43,7 @@ class ValidateTableData(unittest.TestCase):
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        command = "python {driver_path} -a {file_name}".format(driver_path=driver_path, file_name=arch_file)
+        command = "python {driver_path} -a {file_name} -g {guid}".format(driver_path=driver_path, file_name=arch_file, guid=self.guid_batch_id)
         print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.connector)
@@ -60,7 +64,7 @@ class ValidateTableData(unittest.TestCase):
         query = select([batch_table])
         result = connector.execute(query).fetchall()
         number_of_row = len(result)
-        self.assertEqual(number_of_row, 27)
+        self.assertEqual(number_of_row, 28)
 
         output = select([batch_table.c.udl_phase_step_status]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
         output_data = connector.execute(output).fetchall()

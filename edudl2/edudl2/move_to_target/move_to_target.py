@@ -9,18 +9,16 @@ from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegr
 from config.ref_table_data import op_table_conf
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_column_and_type_mapping
-from edudl2.move_to_target.create_queries import (select_distinct_asmt_guid_query, select_distinct_asmt_rec_id_query,
-                                                  enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
-                                                  create_select_columns_in_table_query,
+from edudl2.move_to_target.create_queries import (enable_trigger_query, create_insert_query, update_foreign_rec_id_query,
                                                   create_delete_query, create_sr_table_select_insert_query,
                                                   update_matched_fact_asmt_outcome_row, find_deleted_fact_asmt_outcome_rows,
                                                   match_delete_fact_asmt_outcome_row_in_prod)
 from edudl2.database.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
-from edcore.utils.cleanup import drop_schema, create_schema, schema_exists
 from edschema.metadata_generator import generate_ed_metadata
-from sqlalchemy.sql.expression import text
+from sqlalchemy.sql.expression import text, select, and_
+from edcore.database.utils.utils import create_schema
 
 DBDRIVER = "postgresql"
 FAKE_REC_ID = -1
@@ -33,8 +31,6 @@ def create_target_schema_for_batch(conf):
     """
     with get_target_connection(conf[mk.TENANT_NAME]) as conn:
         schema_name = conf[mk.TARGET_DB_SCHEMA]
-        if schema_exists(conn, schema_name):
-            drop_schema(conn, schema_name)
         create_schema(conn, generate_ed_metadata, schema_name)
         conn.set_metadata_by_reflect(schema_name)
         drop_foreign_keys_on_fact_asmt_outcome(conn, schema_name)
@@ -65,10 +61,10 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     4. Update foreign key student_rec_id by comparing student_guid, batch_guid
     5. Enable trigger of table fact_asmt_outcome
     '''
-    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET]['asmt_rec_id']
     # get asmt_rec_id, which is one foreign key in fact table
-    asmt_rec_id, asmt_rec_id_column_name = get_asmt_rec_id(conf, asmt_rec_id_info['guid_column_name'], asmt_rec_id_info['guid_column_in_source'],
-                                                           asmt_rec_id_info['rec_id'], asmt_rec_id_info['target_table'], asmt_rec_id_info['source_table'])
+    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET]['asmt_rec_id']
+    asmt_rec_id_column_name = asmt_rec_id_info['rec_id']
+    asmt_rec_id = get_asmt_rec_id(conf[mk.GUID_BATCH], conf[mk.TENANT_NAME], asmt_rec_id_info)
 
     # get section_rec_id, which is one foreign key in fact table. We set to a fake value
     section_rec_id_info = conf[mk.MOVE_TO_TARGET]['section_rec_id_info']
@@ -125,54 +121,39 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     return affected_rows_first[1]
 
 
-def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source, rec_id_column_name,
-                    target_table_name, source_table_name):
+def get_asmt_rec_id(guid_batch, tenant_name, asmt_rec_id_info):
     '''
-    Main function to get asmt_rec_id in dim_asmt table
+    Returns asmt_rec_id from dim_asmt table
     Steps:
-    1. Get guid_amst from integration table INT_SBAC_ASMT
+    1. Get guid_asmt from integration table INT_SBAC_ASMT
     2. Select asmt_rec_id from dim_asmt by the same guid_amst got from 1. It should have 1 value
     '''
+    source_table_name = asmt_rec_id_info['source_table']
+    guid_column_name_in_source = asmt_rec_id_info['guid_column_in_source']
+    target_table_name = asmt_rec_id_info['target_table']
+    guid_column_name_in_target = asmt_rec_id_info['guid_column_name']
+    rec_id_column_name = asmt_rec_id_info['rec_id']
+
     # connect to integration table, to get the value of guid_asmt
-    with get_udl_connection() as conn_to_source_db:
-        query_to_get_guid = select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA],
-                                                            source_table_name,
-                                                            guid_column_name_in_source, conf[mk.GUID_BATCH])
-        guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid,
-                                                        guid_column_name_in_source)
+    with get_udl_connection() as udl_conn:
+        int_table = udl_conn.get_table(source_table_name)
+        query = select([int_table.c[guid_column_name_in_source]], from_obj=int_table, limit=1)
+        query = query.where(int_table.c['guid_batch'] == guid_batch)
+        results = udl_conn.get_result(query)
+        if results:
+            guid_column_value = results[0][guid_column_name_in_source]
 
     # connect to target table, to get the value of asmt_rec_id
-    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn_to_target_db:
-        query_to_get_rec_id = select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA],
-                                                                target_table_name,
-                                                                rec_id_column_name,
-                                                                guid_column_name_in_target,
-                                                                guid_column_value,
-                                                                conf[mk.GUID_BATCH])
-        asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
+    with get_target_connection(tenant_name, guid_batch) as target_conn:
+        dim_asmt = target_conn.get_table(target_table_name)
+        query = select([dim_asmt.c[rec_id_column_name]], from_obj=dim_asmt, limit=1)
+        query = query.where(dim_asmt.c[guid_column_name_in_target] == guid_column_value)
+        query = query.where(and_(dim_asmt.c['batch_guid'] == guid_batch))
+        results = target_conn.get_result(query)
+        if results:
+            asmt_rec_id = results[0][rec_id_column_name]
 
-    return asmt_rec_id, rec_id_column_name
-
-
-def execute_query_get_one_value(conn, query, column_name):
-    '''
-    This is the function to execute one query, and return one correct value returned by the query
-    '''
-    one_value_result = []
-    try:
-        result = conn.execute(query)
-        for row in result:
-            one_value_result.append(row[0])
-    except Exception as exception:
-        logger.exception(exception)
-    if len(one_value_result) != 1:
-        # raise Exception('Rec id of %s has more/less than 1 record for batch %s' % (column_name, guid_batch))
-        logger.info('Rec id of %s has more/less than 1 record, length is %d ' % (column_name, len(one_value_result)))
-        if len(one_value_result) > 1:
-            one_value_result = str(one_value_result[0])
-        else:
-            one_value_result = ['-1']
-    return one_value_result[0]
+    return asmt_rec_id
 
 
 def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
@@ -256,7 +237,8 @@ def match_deleted_records(conf, match_conf):
     matched_results = []
     logger.info('in match_deleted_records')
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as target_conn:
-        query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
+        query = find_deleted_fact_asmt_outcome_rows(conf[mk.TENANT_NAME],
+                                                    conf[mk.TARGET_DB_SCHEMA],
                                                     match_conf['target_table'],
                                                     conf[mk.GUID_BATCH],
                                                     match_conf['find_deleted_fact_asmt_outcome_rows'])
@@ -266,7 +248,9 @@ def match_deleted_records(conf, match_conf):
                                                    'matched_deleted_records')
     with get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
         for candidate in candidates.fetchall():
-            query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.PROD_DB_SCHEMA],
+            # TODO: get query and execute in one
+            query = match_delete_fact_asmt_outcome_row_in_prod(conf[mk.TENANT_NAME],
+                                                               conf[mk.PROD_DB_SCHEMA],
                                                                match_conf['prod_table'],
                                                                match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
                                                                dict(zip(match_conf['find_deleted_fact_asmt_outcome_rows']['columns'],
@@ -315,7 +299,9 @@ def check_mismatched_deletions(conf, match_conf):
     '''
     logger.info('check_mismatched_deletions')
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
-        query = find_deleted_fact_asmt_outcome_rows(conf[mk.TARGET_DB_SCHEMA],
+        # TODO:  query and execute in one
+        query = find_deleted_fact_asmt_outcome_rows(conf[mk.TENANT_NAME],
+                                                    conf[mk.TARGET_DB_SCHEMA],
                                                     match_conf['target_table'],
                                                     conf[mk.GUID_BATCH],
                                                     match_conf['find_deleted_fact_asmt_outcome_rows'])
@@ -344,7 +330,8 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
     logger.info('update_deleted_record_rec_id')
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
         for matched_value in matched_values:
-            query = update_matched_fact_asmt_outcome_row(conf[mk.TARGET_DB_SCHEMA],
+            query = update_matched_fact_asmt_outcome_row(conf[mk.TENANT_NAME],
+                                                         conf[mk.TARGET_DB_SCHEMA],
                                                          match_conf['target_table'],
                                                          conf[mk.GUID_BATCH],
                                                          match_conf['update_matched_fact_asmt_outcome_row'],
@@ -378,14 +365,12 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
 
     @return: Number of inserted rows
     '''
-
     with get_udl_connection() as conn_to_source_db:
 
         column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,
                                                               target_table, source_tables)
 
-        delete_criteria = get_current_stu_reg_delete_criteria(conn_to_source_db, conf[mk.GUID_BATCH],
-                                                              conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE])
+        delete_criteria = get_current_stu_reg_delete_criteria(conf[mk.GUID_BATCH], conf[mk.SOURCE_DB_TABLE])
 
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn_to_target_db:
         # Cleanup any existing records with matching registration system id and academic year.
@@ -405,7 +390,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
     return affected_rows
 
 
-def get_current_stu_reg_delete_criteria(conn, batch_guid, source_db_schema, source_table):
+def get_current_stu_reg_delete_criteria(batch_guid, source_table):
     '''
     Get the delete criteria for current stident registration job
 
@@ -416,12 +401,10 @@ def get_current_stu_reg_delete_criteria(conn, batch_guid, source_db_schema, sour
 
     @return: Criteria for deletion from target table for current batch job
     '''
-
-    select_columns = ['test_reg_id', 'academic_year']
-    criteria = {'guid_batch': batch_guid}
-    query = create_select_columns_in_table_query(source_db_schema, source_table, select_columns, criteria)
-
-    result = execute_udl_query_with_result(conn, query, 'Bad Query')
-    reg_system_id, academic_year = result.fetchone()
-
-    return {'reg_system_id': reg_system_id, 'academic_year': str(academic_year)}
+    with get_udl_connection() as conn:
+        int_metadata_table = conn.get_table(source_table)
+        query = select([int_metadata_table.c.test_reg_id,
+                        int_metadata_table.c.academic_year],
+                       from_obj=int_metadata_table).where(int_metadata_table.c.guid_batch == batch_guid)
+        result = conn.get_result(query)
+        return {'reg_system_id': result[0]['test_reg_id'], 'academic_year': str(result[0]['academic_year'])}

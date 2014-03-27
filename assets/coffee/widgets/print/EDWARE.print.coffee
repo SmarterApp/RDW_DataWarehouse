@@ -25,13 +25,14 @@ define [
     print: () ->
       @hide()
       option = $('input[name=print]:checked', @container).val()
-      asmtType = edwarePreferences.getAsmtPreference().asmtType
+      asmtType = edwarePreferences.getAsmtType()
       url = document.URL.replace("indivStudentReport","print")
       url = url.replace("#","")
       url += '&pdf=true'
       url += "&grayscale=true" if option is "grayscale"
       url += "&asmtType=" + encodeURI(asmtType) if asmtType
       url += "&lang=" + edwarePreferences.getSelectedLanguage()
+      url += "&effectiveDate=" + edwarePreferences.getEffectiveDate()
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
 
     show: () ->

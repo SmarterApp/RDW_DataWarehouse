@@ -62,18 +62,19 @@ class TestPdfGenerator(unittest.TestCase):
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
-        results = self.pdf_generator.send_pdf_request('student-guid', 'ny', pdf_file)
+        results = self.pdf_generator.send_pdf_request('student-guid', 'ny', '20120201', pdf_file)
         self.assertIsNotNone(results.task_id)
         self.assertEqual(results.status, 'SUCCESS')
 
     def test_build_url(self):
         student_guid = '2343'
         report = 'ISR.html'
-        results = self.pdf_generator.build_url(student_guid, 'ny', report)
+        effective_date = '20120201'
+        results = self.pdf_generator.build_url(student_guid, 'ny', effective_date, report)
         url = urlparse(results)
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + '/' + report)
         query_param = parse_qs(url.query)
-        self.assertEqual(len(query_param.keys()), 3)
+        self.assertEqual(len(query_param.keys()), 4)
         self.assertEqual(query_param['studentGuid'][0], student_guid)
         self.assertEqual(query_param['pdf'][0], 'true')
 
@@ -83,11 +84,12 @@ class TestPdfGenerator(unittest.TestCase):
         self.pdf_generator = PDFGenerator(self.settings, 'myTenant')
         student_guid = '2343'
         report = 'ISR.html'
-        results = self.pdf_generator.build_url(student_guid, 'ny', report)
+        effective_date = '20120201'
+        results = self.pdf_generator.build_url(student_guid, 'ny', effective_date, report)
         url = urlparse(results)
         self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + report)
         query_param = parse_qs(url.query)
-        self.assertEqual(len(query_param.keys()), 3)
+        self.assertEqual(len(query_param.keys()), 4)
         self.assertEqual(query_param['studentGuid'][0], student_guid)
         self.assertEqual(query_param['pdf'][0], 'true')
         self.assertEqual(query_param['stateCode'][0], 'ny')

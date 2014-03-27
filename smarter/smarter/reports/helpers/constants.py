@@ -18,6 +18,7 @@ class Constants():
     constants for reports
     '''
 
+    EFFECTIVEDATE = 'effectiveDate'
     SL = 'sl'
     PDF = 'pdf'
     LANG = 'lang'
@@ -46,6 +47,7 @@ class Constants():
     SCHOOL_GUID = 'school_guid'
     SECTION_GUID = 'section_guid'
     STUDENT_GUID = 'student_guid'
+    EFFECTIVE_DATE = 'effective_date'
     GUID = 'guid'
     PERCENTAGE = 'percentage'
     COUNT = 'count'

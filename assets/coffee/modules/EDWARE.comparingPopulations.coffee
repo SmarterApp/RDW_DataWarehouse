@@ -241,7 +241,7 @@ define [
             container: '#content'
             trigger: 'hover'
             content: ->
-              $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
+              $(this).find(".progressBar_tooltip").html() # template location: widgets/populationBar/template.html
 
     # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->

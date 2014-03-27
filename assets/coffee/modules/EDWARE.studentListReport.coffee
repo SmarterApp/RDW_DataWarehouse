@@ -23,5 +23,7 @@ require [
     asmtYear = edwarePreferences.getAsmtYearPreference()
     params['asmtYear'] = asmtYear if asmtYear
     asmt = edwarePreferences.getAsmtPreference()
+    # save preference for ISR
+    edwarePreferences.saveAsmtForISR(asmt)
     params.asmtType = asmt?.asmtType
     params

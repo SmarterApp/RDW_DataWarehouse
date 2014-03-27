@@ -1,0 +1,12 @@
+{
+    "reportInfo": "<h4>Propósito:</h4><p>Este reporte compara grandes grupos de estudiantes a través de límites organizacionales.<br><br>Las barras de proporción del Nivel de desempeño proveen una perspectiva estandarizada para ver los resultados de las evaluaciones en un formato común que describe el desempeño general de cada grupo.</p><br><h4>Usos:</h4><ul><li>Use esta vista para comparar resúmenes de desempeño de un grupo grande (p. ej., distritos, escuelas y grados).</li><li>Tenga en mente que el número de estudiantes evaluados es una parte importante de cualquier análisis.</li></ul><br><h4>Características:</h4><ul><li>Las barras de proporción del Nivel de desempeño se pueden alinear de manera común o se pueden centrar en el punto de ejecución mínima del Nivel 3.</li><li>Seleccione grupos específicos para orientar su análisis.</li><li>Ordene los grupos por cualquier columna:<ul><li>Nombre</li><li>Proporción de estudiantes en el Nivel 3 o superior</li><li>Número de estudiantes evaluados</li></ul></li><li>Filtrar grupos por atributos de los estudiantes:<ul><li>Grado o múltiples grados </li><li>Género, raza o etnicidad </li><li>Dominio limitado del inglés (DLI)</li><li>Estatus de desventaja </li><li>Discapacidad (504/IEP)</li></ul></li></ul><br/>",
+    "legendInfo": {
+        "indicator": "8,345",
+        "desc1": "Porcentaje de la población",
+        "desc2": "Total de estudiantes",
+        "desc3": "El ancho de un segmento de color es proporcional al número de estudiantes en ese segmento.",
+        "notes": ["Haga clic o pase el indicador del ratón sobre la barra para desglosar las cifras de la población", "Los porcentajes están redondeados al número entero más cercano. Por lo tanto, los porcentajes menores podrían aparecer reportados como '0'."]
+    },
+    "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
+    "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)"
+}

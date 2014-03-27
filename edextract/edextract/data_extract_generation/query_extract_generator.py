@@ -13,6 +13,9 @@ from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def generate_csv(tenant, output_file, task_info, extract_args):
@@ -66,7 +69,15 @@ def _generate_csv_data(results):
 
     @return: CSV extract header and data
     """
-    first = next(results)
+    header = []
+    data = []
+
+    try:
+        first = next(results)
+    except StopIteration as ex:
+        logger.error(str(ex))
+        return header, data
+
     header = list(first.keys())
     data = _gen_to_val_list(chain([first], results))
 

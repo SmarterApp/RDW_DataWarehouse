@@ -14,9 +14,10 @@ from sqlalchemy.sql.expression import select
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore_sqlite, UnittestEdcoreDBConnection,
                                                             get_unittest_tenant_name)
-from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
+from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json, _generate_csv_data
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
+from unittest.mock import MagicMock
 
 
 class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -69,3 +70,15 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
         with open(output) as out:
             data = json.load(out)
         self.assertEqual(data['asmt_guid'], '22')
+
+    def test_generate_csv_data_no_result(self):
+        #Results are empty
+        results = self.dummy_empty_iterator()
+
+        header, data = _generate_csv_data(results)
+        self.assertEqual(len(header), 0)
+        self.assertEqual(len(data), 0)
+
+    def dummy_empty_iterator(self):
+        for ctr in range(0, 0):
+            yield ctr

@@ -15,19 +15,26 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.tracker.track = MagicMock(return_value=None)
 
         self.category_tracker = [self.tracker]
-        self.ed_rg_heirarchy_map = {}
 
         EdOrgDataProcessor.__abstractmethods__ = set()  # Make this class instantiable for these tests only.
-        self.data_processor = EdOrgDataProcessor(self.category_tracker, self.ed_rg_heirarchy_map)
+        self.data_processor = EdOrgDataProcessor(self.category_tracker, {})
 
         self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC'}
 
-    def test_add_to_ed_org_heirarchy(self):
+    def test_call_tracker(self):
+        self.data_processor._call_trackers('123', self.data)
+        self.tracker.track.assert_called_with('123', self.data)
+        self.data_processor._call_trackers('456', self.data)
+        self.tracker.track.assert_called_with('456', self.data)
+        self.data_processor._call_trackers('789', self.data)
+        self.tracker.track.assert_called_with('789', self.data)
+
+    def test_add_to_and_get_ed_org_hierarchy(self):
         self.data_processor._add_to_edorg_hierarchy('123', 'NC')
         self.data_processor._add_to_edorg_hierarchy('456', 'NC', 'Gilfford')
         self.data_processor._add_to_edorg_hierarchy('789', 'NC', 'Gilfford', 'Daybreak School')
 
-    def test_call_tracker(self):
-        self.data_processor._call_trackers('123', self.data)
-
-        self.tracker.track.assert_called_with('123', self.data)
+        self.assertEquals(3, len(self.data_processor.get_ed_org_hierarchy()))
+        self.assertEquals('123', self.data_processor.get_ed_org_hierarchy()[('NC', '', '')])
+        self.assertEquals('456', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', '')])
+        self.assertEquals('789', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', 'Daybreak School')])

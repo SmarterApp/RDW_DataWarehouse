@@ -8,16 +8,17 @@ This module contains methods to obtain data for the different Student Registrati
 
 from collections import OrderedDict
 
+from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
+from edextract.trackers.total_tracker import TotalTracker
+from edextract.data_extract_generation.row_data_processor import process_row_data
+from edextract.data_extract_generation.report_data_generator import get_tracker_results
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
 from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
-from edextract.trackers.total_tracker import TotalTracker
-from edextract.data_extract_generation.statistics_data_generator import generate_data_row
-from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):
@@ -111,83 +112,15 @@ def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
     @return: List of rows to be included in the CSV report.
     """
 
-    hierarchy_map = {}
     total_tracker = TotalTracker()
     trackers = [total_tracker, MaleTracker(), FemaleTracker()]
 
-    _process_db_data_for_sr_stat(db_rows, hierarchy_map, trackers)
+    data_processors = [StateDataProcessor(trackers), DistrictDataProcessor(trackers), SchoolDataProcessor(trackers)]
 
-    report_map = OrderedDict(sorted(hierarchy_map.items()))
+    process_row_data(db_rows, data_processors)
 
-    return _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academic_year)
+    report_map = OrderedDict()
+    for data_processor in data_processors:
+        report_map.update(sorted(data_processor.get_ed_org_hierarchy().items()))
 
-
-def _process_db_data_for_sr_stat(db_rows, hierarchy_map, trackers):
-    """
-    Iterate through the database results, creating the student registration statistics report data.
-
-    @param: db_rows: Iterable containing all pertinent database rows
-    @param hierarchy_map: Hierarchical map of basic report format
-    @param trackers: List of trackers containing needed data to fill the report
-
-    @return: List of rows to be included in the CSV report.
-    """
-
-    data_processors = [StateDataProcessor(trackers, hierarchy_map), DistrictDataProcessor(trackers, hierarchy_map),
-                       SchoolDataProcessor(trackers, hierarchy_map)]
-
-    for db_row in db_rows:
-        for processor in data_processors:
-            processor.process_data(db_row)
-
-
-def _get_tracker_results_for_sr_stat(report_map, total_tracker, trackers, academic_year):
-    """
-    Use the report map to transform the tracker data into the report data format.
-
-    @param report_map: Hierarchical map of basic report format
-    @param total_tracker: Totals tracker, from which to obtain the EdOrg totals, for percentage calculations
-    @param trackers: List of trackers containing needed data to fill the report
-    @param: academic_year: Academic year of the report
-
-    @return: Report data, as a list of lists
-    """
-
-    # First, get all the edorg totals.
-    previous_year = academic_year - 1
-    edorg_totals = {}
-    for _, val in report_map.items():
-        edorg_totals[val] = {previous_year: total_tracker.get_map_entry(val).get(previous_year, None),
-                             academic_year: total_tracker.get_map_entry(val).get(academic_year, None)}
-
-    data = []
-    for key, val in report_map.items():
-        previous_year_total = edorg_totals[val][previous_year]
-        current_year_total = edorg_totals[val][academic_year]
-        for tracker in trackers:
-            state_name = key.state_name
-            district_name = key.district_name if key.district_name else 'ALL'
-            school_name = key.school_name if key.school_name else 'ALL'
-            category, value = tracker.get_category_and_value()
-            row = [state_name, district_name, school_name, category, value]
-
-            entry_data = tracker.get_map_entry(val)
-            if entry_data:
-                previous_year_count = get_year_count(entry_data.get(previous_year, 0), previous_year_total)
-                current_year_count = get_year_count(entry_data.get(academic_year, 0), current_year_total)
-                row += generate_data_row(current_year_count, previous_year_count, current_year_total, previous_year_total)
-                data.append(row)
-
-    return data
-
-
-def get_year_count(count, total):
-    """
-    Determine the year count for an edorg's category, based on the edorg"s year total.
-
-    @param count: EdOrg's count for some category for the year
-    @param total: EdOrg's total for the year
-
-    @return: Adjusted year count for an edorg's category (int or None)
-    """
-    return None if total is None else count
+    return get_tracker_results(report_map, total_tracker, trackers, academic_year)

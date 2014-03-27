@@ -15,19 +15,18 @@ class TestSchoolDataProcessor(unittest.TestCase):
         self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
                      AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
         self.category_trackers = []
-        self.ed_rg_hierarchy_map = {}
 
-        self.state_data_processor = SchoolDataProcessor(self.category_trackers, self.ed_rg_hierarchy_map)
+        self.school_data_processor = SchoolDataProcessor(self.category_trackers)
 
     def test_ed_org_map_updates(self):
-        self.state_data_processor.process_data(self.data)
-        self.assertEquals(len(self.ed_rg_hierarchy_map), 1)
-        self.assertDictEqual(self.ed_rg_hierarchy_map, {('North Carolina', 'Gilfford County',
-                                                         'Daybreak Junior High'): '5f706ksg80hhxs'})
+        self.school_data_processor.process_data(self.data)
+        self.assertEquals(len(self.school_data_processor.get_ed_org_hierarchy()), 1)
+        self.assertDictEqual(self.school_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Gilfford County',
+                                                                                  'Daybreak Junior High'): '5f706ksg80hhxs'})
 
     def test_call_to_tracker(self):
-        self.state_data_processor._call_trackers = MagicMock(return_value=None)
+        self.school_data_processor._call_trackers = MagicMock(return_value=None)
 
-        self.state_data_processor.process_data(self.data)
+        self.school_data_processor.process_data(self.data)
 
-        self.state_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.data)
+        self.school_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.data)

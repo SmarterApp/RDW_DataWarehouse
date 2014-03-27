@@ -90,6 +90,7 @@ def run_with_conductor(daemon_mode, settings):
             consumerThread.join()
         else:
             migrate_task(settings)
+            exit._(0)
     except KeyboardInterrupt:
         logger.debug('terminated by a user')
         os._exit(0)

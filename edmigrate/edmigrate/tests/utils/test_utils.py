@@ -12,19 +12,19 @@ import configparser
 class TestUtils(unittest.TestCase):
 
     def test_get_broker_url_eager(self):
-        settings = {'migrate.celery.celery_always_eager': True}
-        setup_settings(settings)
-        self.assertEqual(get_broker_url(), "memory://")
+        config = configparser.ConfigParser()
+        config['app:main'] = {'migrate.celery.celery_always_eager': True}
+        self.assertEqual(get_broker_url(config['app:main']), "memory://")
 
     def test_get_broker_url_eager_is_false_without_broker(self):
-        settings = {'migrate.celery.celery_always_eager': False}
-        setup_settings(settings)
-        self.assertEqual(get_broker_url(), "memory://")
+        config = configparser.ConfigParser()
+        config['app:main'] = {'migrate.celery.celery_always_eager': False}
+        self.assertEqual(get_broker_url(config['app:main']), "memory://")
 
     def test_get_broker_enpty_settings(self):
-        settings = {}
-        setup_settings(settings)
-        self.assertEqual(get_broker_url(), "memory://")
+        config = configparser.ConfigParser()
+        config['app:main'] = {}
+        self.assertEqual(get_broker_url(config['app:main']), "memory://")
 
     def test_get_broker_enpty_settings_with_broker(self):
         config = configparser.ConfigParser()

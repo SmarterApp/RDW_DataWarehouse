@@ -20,6 +20,9 @@ class EdOrgDataProcessor(metaclass=ABCMeta):
         for tracker in self.category_trackers:
             tracker.track(guid, data_row)
 
+    def get_ed_org_hierarchy(self):
+        return self.ed_org_hierarchy
+
     @abstractmethod
     def process_data(self, data_row):
         return

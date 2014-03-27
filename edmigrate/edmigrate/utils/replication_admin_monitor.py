@@ -17,12 +17,12 @@ logger = logging.getLogger('edmigrate')
 
 
 class ReplicationAdminMonitor(threading.Thread):
-    def __init__(self, settings):
+    def __init__(self, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, interval_check=1800):
         threading.Thread.__init__(self)
-        self.__replication_lag_tolerance = settings.get(Constants.REPMGR_ADMIN_REPLICATION_LAG_TOLERANCE, 100)
-        self.__apply_lag_tolerance = settings.get(Constants.REPMGR_ADMIN_APPLY_LAG_TOLERANCE, 100)
-        self.__time_lag_tolerance = settings.get(Constants.REPMGR_ADMIN_TIME_LAG_TOLERANCE, 60)
-        self.__interval_check = settings.get(Constants.REPMGR_ADMIN_CHECK_INTERVAL, 1800)
+        self.__replication_lag_tolerance = replication_lag_tolerance
+        self.__apply_lag_tolerance = apply_lag_tolerance
+        self.__time_lag_tolerance = time_lag_tolerance
+        self.__interval_check = interval_check
 
     def run(self):
         replication_admin_monitor(replication_lag_tolerance=self.__replication_lag_tolerance, apply_lag_tolerance=self.__apply_lag_tolerance, time_lag_tolerance=self.__time_lag_tolerance, interval_check=self.__interval_check)

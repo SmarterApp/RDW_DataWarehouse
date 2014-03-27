@@ -174,11 +174,12 @@ common:
       replication_monitor:
         replication_lag_tolerance: 100
         apply_lag_tolerance: 100
-        time_lag_tolerance: 60
+        time_lag_tolerance: 100
+        monitor_timeout: 28800
         admin:
           replication_lag_tolerance: 100
           apply_lag_tolerance: 100
-          time_lag_tolerance: 60
+          time_lag_tolerance: 100
           check_interval: 1800
       conductor:
         find_player.timeout: 5

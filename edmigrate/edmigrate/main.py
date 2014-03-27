@@ -62,8 +62,12 @@ def run_cron_migrate(settings):
 
 
 def migrate_task(settings):
-    find_player_timeout = settings.get(Constants.CONDUCTOR_FIND_PLAYERS_TIMEOUT, 5)
-    conductor_controller.process(find_player_timeout)
+    find_player_timeout = settings.getint(Constants.CONDUCTOR_FIND_PLAYERS_TIMEOUT, 5)
+    replication_lag_tolerance = settings.getint(Constants.REPMGR_REPLICATION_LAG_TOLERANCE, 100)
+    apply_lag_tolerance = settings.getint(Constants.REPMGR_APPLY_LAG_TOLERANCE, 100)
+    time_lag_tolerance = settings.getint(Constants.REPMGR_TIME_LAG_TOLERANCE, 100)
+    monitor_timeout = settings.getint(Constants.REPMGR_MONITOR_TIME, 28800)
+    conductor_controller.process(player_find_wait=find_player_timeout, replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance, monitor_timeout=monitor_timeout)
 
 
 def run_with_conductor(daemon_mode, settings):
@@ -77,7 +81,11 @@ def run_with_conductor(daemon_mode, settings):
     try:
         consumerThread.start()
         if daemon_mode:
-            replicationAdminMonitor = ReplicationAdminMonitor(settings)
+            replication_lag_tolerance = settings.getint(Constants.REPMGR_ADMIN_REPLICATION_LAG_TOLERANCE, 100)
+            apply_lag_tolerance = settings.getint(Constants.REPMGR_ADMIN_APPLY_LAG_TOLERANCE, 100)
+            time_lag_tolerance = settings.getint(Constants.REPMGR_ADMIN_TIME_LAG_TOLERANCE, 100)
+            interval_check = settings.getint(Constants.REPMGR_ADMIN_CHECK_INTERVAL, 1800)
+            replicationAdminMonitor = ReplicationAdminMonitor(replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance, interval_check=interval_check)
             run_cron_migrate(settings)
             replicationAdminMonitor.start()
             consumerThread.join()

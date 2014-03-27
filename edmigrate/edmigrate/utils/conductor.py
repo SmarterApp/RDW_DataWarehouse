@@ -20,8 +20,12 @@ logger = logging.getLogger('edmigrate')
 class Conductor:
     __lock = threading.Lock()
 
-    def __init__(self, locktimeout=60):
+    def __init__(self, locktimeout=60, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
         self.__player_trakcer = None
+        self.__replication_lag_tolerance = replication_lag_tolerance
+        self.__apply_lag_tolerance = apply_lag_tolerance
+        self.__time_lag_tolerance = time_lag_tolerance
+        self.__monitor_timeout = monitor_timeout
         if not self.__lock.acquire(timeout=locktimeout):
             raise ConductorTimeoutException()
         self.__player_trakcer = PlayerTracker()
@@ -106,7 +110,7 @@ class Conductor:
 
     def monitor_replication_status(self, player_group=None):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)
-        replication_monitor(group_ids)
+        replication_monitor(group_ids, replication_lag_tolerance=self.__replication_lag_tolerance, apply_lag_tolerance=self.__apply_lag_tolerance, time_lag_tolerance=self.__time_lag_tolerance, timeout=self.__monitor_timeout)
 
     def __wait_for_status(self, player_group, timeout, func):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)

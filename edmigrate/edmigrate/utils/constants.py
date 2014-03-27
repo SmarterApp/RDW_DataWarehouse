@@ -79,6 +79,7 @@ class Constants():
     REPMGR_REPLICATION_LAG_TOLERANCE = 'migrate.replication_monitor.replication_lag_tolerance'
     REPMGR_APPLY_LAG_TOLERANCE = 'migrate.replication_monitor.apply_lag_tolerance'
     REPMGR_TIME_LAG_TOLERANCE = 'migrate.replication_monitor.time_lag_tolerance'
+    REPMGR_MONITOR_TIME = 'migrate.replication_monitor.monitor_timeout'
     REPMGR_ADMIN_REPLICATION_LAG_TOLERANCE = 'migrate.replication_monitor.admin.replication_lag_tolerance'
     REPMGR_ADMIN_APPLY_LAG_TOLERANCE = 'migrate.replication_monitor.admin.apply_lag_tolerance'
     REPMGR_ADMIN_TIME_LAG_TOLERANCE = 'migrate.replication_monitor.admin.time_lag_tolerance'

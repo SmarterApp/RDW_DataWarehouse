@@ -75,20 +75,19 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC'}
+        self.__request.json_body = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160401}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
-    @unittest.skip("Skipping till tests are fixed")
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': studentGuid, 'stateCode': 'NC'}
+        self.__request.json_body = {'studentGuid': studentGuid, 'stateCode': 'NC', 'effectiveDate': 20160401}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -108,20 +107,20 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_pdf_service_no_context(self):
         self.__request.method
-        self.__request.GET = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC'}
+        self.__request.GET = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160401}
         self.__request.matchdict['report'] = 'indivStudentReport.html'
 
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, None, self.__request)
 
-    @unittest.skip("Skipping till tests are fixed")
     def test_get_pdf_valid_params(self):
         studentGuid = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
         self.__request.GET['studentGuid'] = studentGuid
         self.__request.GET['stateCode'] = 'NC'
+        self.__request.GET['effectiveDate'] = 20160401
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -132,18 +131,18 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(response.body)
         self.assertEqual(response.content_type, 'application/pdf')
 
-    @unittest.skip("Skipping till tests are fixed")
     def test_send_pdf_request(self):
-        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        studentGuid = "a016a4c1-5aca-4146-a85b-ed1172a01a4d"
         params = {}
         params['studentGuid'] = studentGuid
         params['stateCode'] = 'NC'
+        params['effectiveDate'] = 20160401
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -152,12 +151,12 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(response.content_type, 'application/pdf')
         self.assertIsInstance(response.body, bytes)
 
-    @unittest.skip("Skipping till tests are fixed")
     def test_send_pdf_request_with_pdf_generation_fail(self):
         params = {}
         # Important, this pdf must not exist in directory
         params['studentGuid'] = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
         params['stateCode'] = 'NC'
+        params['effectiveDate'] = 20160401
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
@@ -186,7 +185,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         has_context = has_context_for_pdf_request('NC', student_guid)
         self.assertFalse(has_context)
 
-    @unittest.skip("Skipping till tests are fixed")
     def test_send_pdf_request_with_always_generate_flag(self):
         self.__config.registry.settings['pdf.always_generate'] = 'True'
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
@@ -194,11 +192,12 @@ class TestServices(Unittest_with_edcore_sqlite):
         params['studentGuid'] = studentGuid
         params['stateCode'] = 'NC'
         params['dummy'] = 'dummy'
+        params['effectiveDate'] = 20160401
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
         # prepare empty file to mimic a pdf was generated
-        pdf_file = generate_isr_report_path_by_student_guid('NC', pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')

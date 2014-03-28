@@ -189,7 +189,7 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'rec_status', 'val': 'C'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
-                    'name': '<YEAR>_METADATA_ASMT_ID_<GUID>.json',
+                    'name': 'METADATA_ASMT_ID_<GUID>.json',
                     'layout': {
                         'content': 'assessment',
                         'identification': {
@@ -266,7 +266,7 @@ ASMT_JSON_FORMAT = {'format': 'json',
                     }}
 
 LZ_REALDATA_FORMAT = {'format': 'csv',
-                      'name': '<YEAR>_REALDATA_RECORDS.csv',
+                      'name': 'REALDATA_ASMT_ID_<GUID>.csv',
                       'columns': [{'name': 'guid_asmt', 'val': 'assessment.guid'},
                                   {'name': 'guid_asmt_location', 'val': 'school.guid'},
                                   {'name': 'name_asmt_location', 'val': 'school.name'},

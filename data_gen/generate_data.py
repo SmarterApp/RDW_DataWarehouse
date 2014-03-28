@@ -95,11 +95,9 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
 
 
-def prepare_output_files(years):
+def prepare_output_files():
     """
-    Prepare the output files before the data generation run begins creating data.
-
-    @param years: The years for which data will be generated
+    Prepare the star-schema output files before the data generation run begins creating data.
     """
     # Prepare star-schema output files
     csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
@@ -112,11 +110,6 @@ def prepare_output_files(years):
                                 sbac_out_config.DIM_SECTION_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
-
-    # Prepare the landing zone files
-    for year in years:
-        name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(year))
-        csv_writer.prepare_csv_file(name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
 
 
 def build_registration_systems(years, id_gen):
@@ -175,16 +168,19 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     @returns: New assessment object
     """
     asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen)
-    file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', asmt.guid)
+    file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid)
     json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
                                      root_path=OUT_PATH_ROOT)
+    file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid)
+    csv_writer.prepare_csv_file(file_name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     file_name = sbac_out_config.DIM_ASMT_FORMAT['name']
     csv_writer.write_records_to_file(file_name, sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt],
                                      tbl_name='dim_asmt', root_path=OUT_PATH_ROOT)
+
     return asmt
 
 
-def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen,
+def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, assessment_results,
                                      skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                      retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                      delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -200,6 +196,7 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen,
     @param section: The section this assessment relates to
     @param inst_hier: The institution hierarchy this assessment relates to
     @param id_gen: ID generator
+    @param assessment_results: Dictionary of assessment results to update
     @param skip_rate: The rate (chance) that this student skips the assessment
     @param retake_rate: The rate (chance) that this student will re-take the assessment
     @param delete_rate: The rate (chance) that this student's result will be deleted
@@ -208,37 +205,38 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen,
     """
     # Make sure they are taking the assessment
     if random.random() < skip_rate:
-        return []
+        return
+
+    # Make sure the assessment is known in the results
+    if asmt.guid not in assessment_results:
+        assessment_results[asmt.guid] = []
 
     # Create the original outcome object
     ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
+    assessment_results[asmt.guid].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
+        assessment_results[asmt.guid].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
-        return [ao, ao2]
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
+        assessment_results[asmt.guid].append(ao2)
 
         # See if the updated record should be deleted
         if random.random() < delete_rate:
             ao2.result_status = sbac_in_config.ASMT_STATUS_DELETED
-
-        # Return
-        return [ao, ao2]
     elif random.random() < delete_rate:
         # Set the original outcome object to deleted
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
-    return [ao]
 
-
-def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, id_gen,
+def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, id_gen, assessment_results,
                                       skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                       retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                       delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -255,28 +253,22 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     @param section: The section these assessments relate to
     @param inst_hier: The institution hierarchy these assessments relate to
     @param id_gen: ID generator
+    @param assessment_results: Dictionary of assessment results to update
     @param skip_rate: The rate (chance) that this student skips an assessment
     @param retake_rate: The rate (chance) that this student will re-take an assessment
     @param delete_rate: The rate (chance) that this student's result will be deleted
     @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
-    @returns: Array of outcomes
     """
-    # Have array for return
-    outcomes = []
-
     # Create the summative assessment outcome
-    outcomes.extend(create_assessment_outcome_object(student, asmt_summ, section, inst_hier, id_gen, skip_rate,
-                                                     retake_rate, delete_rate, update_rate))
+    create_assessment_outcome_object(student, asmt_summ, section, inst_hier, id_gen, assessment_results, skip_rate,
+                                     retake_rate, delete_rate, update_rate)
 
     # Generate interim assessment results (list will be empty if school does not perform
     # interim assessments)
     for asmt in interim_asmts:
         # Create the interim assessment outcome
-        outcomes.extend(create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, skip_rate,
-                                                         retake_rate, delete_rate, update_rate))
-
-    # Return the outcomes
-    return outcomes
+        create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, assessment_results, skip_rate,
+                                         retake_rate, delete_rate, update_rate)
 
 
 def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments,
@@ -352,7 +344,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         # With the students moved around, we will re-populate empty grades and create sections and assessments with
         # outcomes for the students
-        assessment_results = []
+        assessment_results = {}
         sr_students = []
         dim_students = []
         for school, grades in schools_with_grades.items():
@@ -390,9 +382,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
                         for student in grade_students:
                             # Create the outcome(s)
-                            assessment_results.extend(create_assessment_outcome_objects(student, asmt_summ,
-                                                                                        interim_asmts, section,
-                                                                                        inst_hier, id_gen, skip_rate))
+                            create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
+                                                              id_gen, assessment_results, skip_rate)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -418,10 +409,11 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
         csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students, entity_filter=('held_back', False),
                                          tbl_name='dim_student', root_path=OUT_PATH_ROOT)
         if asmt_year in ASMT_YEARS:
-            csv_writer.write_records_to_file(lz_asmt_out_name, lz_asmt_out_cols, assessment_results,
-                                             root_path=OUT_PATH_ROOT)
-            csv_writer.write_records_to_file(fao_out_name, fao_out_cols, assessment_results,
-                                             tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
+            for guid, rslts in assessment_results.items():
+                csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
+                                                 lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
+                                                 root_path=OUT_PATH_ROOT)
 
     # Some explicit garbage collection
     del hierarchies
@@ -529,7 +521,7 @@ if __name__ == '__main__':
     connect('datagen')
 
     # Prepare the output files
-    prepare_output_files(YEARS)
+    prepare_output_files()
 
     # Create the registration systems
     REGISTRATION_SYSTEM_GUIDS = build_registration_systems(YEARS, idg)

@@ -180,7 +180,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         with get_udl_connection() as conn:
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
-                                                                                               'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG',
-                                                                                               self.udl2_conf['udl2_db']['db_schema'])
+                                                                                               'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG')
             self.assertEqual(expected_target_columns, target_columns)
             self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)

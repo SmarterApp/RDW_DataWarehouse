@@ -43,6 +43,22 @@ class Player(metaclass=Singleton):
         self.set_hostname(socket.gethostname())
         self.set_node_id_from_hostname()
 
+    @classmethod
+    def cleanup(cls):
+        cls._instances = {}
+
+    def _hostname(self):
+        if self.hostname is None:
+            return ""
+        else:
+            return str(self.hostname)
+
+    def _node_id(self):
+        if self.node_id is None:
+            return ""
+        else:
+            return str(self.node_id)
+
     def __enter__(self):
         return self
 
@@ -54,18 +70,36 @@ class Player(metaclass=Singleton):
             if nodes is None:
                 if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
                     self.COMMAND_HANDLERS[command]()
+                    self.logger.info("{name}: executed {command}".format(command=command, name=self.__class__.__name__))
+                    self.admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} successfully".
+                                           format(name=self.__class__.__name__, hostname=self._hostname(),
+                                                  node_id=self._node_id(), command=command))
                 else:
                     self.logger.warning("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
+                    self.admin_logger.warning("{name} at {hostname} with node id {node_id} failed to execute {command} due to no nodes specified".
+                                              format(name=self.__class__.__name__, hostname=self._hostname(),
+                                                     node_id=self._node_id(), command=command))
             else:
                 if self.node_id in nodes:
                     self.COMMAND_HANDLERS[command]()
+                    self.logger.info("{name}: {node_id} executed {command}".
+                                     format(command=command, name=self.__class__.__name__, node_id=self._node_id()))
+                    self.admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} {nodes} successfully".
+                                           format(name=self.__class__.__name__, hostname=self._hostname(),
+                                                  node_id=self._node_id(), command=command, nodes=str(nodes)))
                 else:
                     # ignore the command
-                    self.logger.warning("{name}: {command} is ignored because {node} is not in {nodes}"
+                    self.logger.warning("{name}: {command} is ignored because {node_id} is not in {nodes}"
                                         .format(command=command, name=self.__class__.__name__,
-                                                node=self.node_id, nodes=str(nodes)))
+                                                node_id=self._node_id(), nodes=str(nodes)))
+                    self.admin_logger.warning("{name} at {hostname} with node id {node_id} ignored {command} {nodes}".
+                                              format(name=self.__class__.__name__, hostname=self._hostname(),
+                                                     node_id=self._node_id(), command=command, nodes=str(nodes)))
         else:
             self.logger.warning("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
+            self.admin_logger.warning("{name} at {hostname} with node id {node_id} did not process {command} {nodes} due to command is not implemented".
+                                      format(name=self.__class__.__name__, hostname=self._hostname(),
+                                             node_id=self._node_id(), command=command, nodes=str(nodes)))
 
     def set_hostname(self, hostname):
         '''
@@ -116,6 +150,9 @@ class Player(metaclass=Singleton):
         except subprocess.CalledProcessError:
             self.logger.error("{name}: Problem to use iptables. Please check with administrator".
                               format(name=self.__class__.__name__,))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} couldn't use iptables command. Please check edmigrate's privilege.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id()))
             output = ''
         return self.search_blocked_hostname(output, hostname)
 
@@ -181,9 +218,17 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
+            self.logger.info("{name}: Unblock pgpool ( {pgpool} )".
+                             format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.info("{name} at {hostname} with node id {node_id} unblocked pgpool machine ( {pgpool}).".
+                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                          node_id=self._node_id(), pgpool=pgpool))
         else:
-            self.logger.warning("{name}: Failed to unblock pgpool( {pgpool} )".
+            self.logger.warning("{name}: Failed to unblock pgpool ( {pgpool} )".
                                 format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine ( {pgpool} ). Please check the {hostname}.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), pgpool=pgpool))
 
     def disconnect_pgpool(self):
         '''
@@ -197,9 +242,17 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
+            self.logger.info("{name}: Block pgpool ( {pgpool} )".
+                             format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.info("{name} at {hostname} with node id {node_id} blocked pgpool machine ( {pgpool}).".
+                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                          node_id=self._node_id(), pgpool=pgpool))
         else:
-            self.logger.warning("{name}: Failed to block pgpool( {pgpool} )".
+            self.logger.warning("{name}: Failed to block pgpool ( {pgpool} )".
                                 format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to block pgpool machine ( {pgpool} ). Please check the {hostname}.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), pgpool=pgpool))
 
     def connect_master(self):
         '''
@@ -214,9 +267,17 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
+            self.logger.info("{name}: Unblock master database ( {master} )".
+                             format(name=self.__class__.__name__, master=master))
+            self.admin_logger.info("{name} at {hostname} with node id {node_id} unblocked master database ( {master}).".
+                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                          node_id=self._node_id(), master=master))
         else:
-            self.logger.warning("{name}: Failed to unblock master( {master} )".
+            self.logger.warning("{name}: Failed to unblock master ( {master} )".
                                 format(name=self.__class__.__name__, master=master))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ). Please check the {hostname}.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), master=master))
 
     def disconnect_master(self):
         '''
@@ -230,9 +291,17 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
+            self.logger.info("{name}: Block master database ( {master} )".
+                             format(name=self.__class__.__name__, master=master))
+            self.admin_logger.info("{name} at {hostname} with node id {node_id} blocked master database ( {master}).".
+                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                          node_id=self._node_id(), master=master))
         else:
             self.logger.warning("{name}: Failed to block master( {master} )".
                                 format(name=self.__class__.__name__, master=master))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to block master database ( {master} ). Please check the {hostname}.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), master=master))
 
     def reset_players(self):
         '''
@@ -248,15 +317,29 @@ class Player(metaclass=Singleton):
         if status_1 and status_2:
             reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
                                                              self.exchange, self.routing_key)
+            self.logger.info("{name}: Reset iptables configurations for pgpool ( {pgpool} ) and master ( {master})".
+                             format(name=self.__class__.__name__, pgpool=pgpool, master=master))
+            self.admin_logger.info("{name} at {hostname} with node id {node_id} unblocked master database ( {master}) and pgpool machine {pgpool}.".
+                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                          node_id=self._node_id(), master=master, pgpool=pgpool))
         elif status_1 and not status_2:
             self.logger.error("{name}: Failed to reset iptables for pgpool ( {pgpool} )".
                               format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine {pgpool}. Please check {hostname}.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), pgpool=pgpool))
         elif not status_1 and status_2:
             self.logger.error("{name}: Failed to reset iptables for master( {master} )".
                               format(name=self.__class__.__name__, master=master))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master}). Please check {hostname}.".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), master=master))
         else:
             self.logger.error("{name}: Failed to reset iptable for master( {master} ) and pgpool ( {pgpool} )".
                               format(name=self.__class__.__name__, master=master, pgpool=pgpool))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master}) and pgpool machine {pgpool}. Please check {hostname}".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id(), master=master, pgpool=pgpool))
 
     def register_player(self):
         '''
@@ -265,10 +348,18 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Register {name} to conductor".format(name=self.__class__.__name__))
         if self.node_id is not None:
             reply_to_conductor.register_player(self.node_id, self.connection, self.exchange, self.routing_key)
+            self.logger.info("{name}: Register {hostname} as node_id ({node_id})".
+                             format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+            self.admin_logger.info("{name} at {hostname} with node id {node_id} registered to conductor.".
+                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                          node_id=self._node_id()))
         else:
             # log errors
             self.logger.error("{name}: {hostname} has no node_id".
                               format(name=self.__class__.__name__, hostname=self.hostname))
+            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to register to conductor. Please check {hostname}".
+                                       format(name=self.__class__.__name__, hostname=self._hostname(),
+                                              node_id=self._node_id()))
 
 
 @celery.task(name=Constants.PLAYER_TASK, ignore_result=True)

@@ -17,6 +17,11 @@ class AttributeFieldConstants():
     PACIFIC = 'dmg_eth_pcf'
     WHITE = 'dmg_eth_wht'
     MULTI_RACE = 'dmg_multi_race'
+    IDEA_INDICATOR = 'dmg_prg_iep'
+    LEP_STATUS = 'dmg_prg_lep'
+    SECTION_504_STATUS = 'dmg_prg_504'
+    ECON_DISADV_STATUS = 'dmg_sts_ecd'
+    MIGRANT_STATUS = 'dmg_sts_mig'
 
 
 class AttributeValueConstants():

@@ -9,10 +9,10 @@ from collections import OrderedDict
 
 from edextract.trackers.total_tracker import TotalTracker
 from edextract.student_reg_extract_processors.ed_org_data_processor import EdOrgNameKey
-from edextract.data_extract_generation.report_data_generator import get_tracker_results
+from edextract.trackers.tracker_results_helper import get_tracker_results
 
 
-class TestReportDataGenerator(unittest.TestCase):
+class TestTrackerResultsHelper(unittest.TestCase):
 
     def test_get_tracker_results(self):
         report_map = OrderedDict([

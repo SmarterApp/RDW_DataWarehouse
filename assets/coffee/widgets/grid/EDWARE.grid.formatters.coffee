@@ -6,7 +6,8 @@ define [
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'
   'text!edwareFormatterTemplate'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate) ->
+  'edwarePreferences'
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate, edwarePreferences) ->
 
   getTemplate = (name) ->
     $(edwareFormatterTemplate).find('div#' + name).html()
@@ -146,6 +147,7 @@ define [
 
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[subject_type]
+    subject = filter_subject(subject)
     score_ALD = getScoreALD(subject)
     student_name = getStudentName()
     asmt_perf_lvl = getAsmtPerfLvl(subject)
@@ -169,6 +171,14 @@ define [
     perfBar
 
 
+  filter_subject = (subject) ->
+    # check if showing current subject
+    return subject if not subject
+    effectiveDate = parseInt(subject.effective_date)
+    savedEffectiveDate = edwarePreferences.getAsmtPreference().effectiveDate
+    subject = undefined if effectiveDate isnt savedEffectiveDate
+    return subject
+
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
@@ -176,7 +186,7 @@ define [
     # display empty message
     return '' if not subject
     subject = processSubject options, rowObject
-    
+
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject
       labels: options.colModel.labels

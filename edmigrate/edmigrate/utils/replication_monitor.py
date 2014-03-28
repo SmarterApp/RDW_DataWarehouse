@@ -16,6 +16,10 @@ from edmigrate.exceptions import NoReplicationToMonitorException, \
 logger = logging.getLogger('edmigrate')
 
 
+def replication_administrative_monitor():
+    pass
+
+
 def replication_monitor(node_ids, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=60, timeout=28800):
     '''
     monitor replication by specified ids.

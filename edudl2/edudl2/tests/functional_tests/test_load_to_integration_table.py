@@ -12,7 +12,6 @@ from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from uuid import uuid4
-import unittest
 
 
 class FuncTestLoadToIntegrationTable(UDLTestHelper):
@@ -102,7 +101,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         self.load_file_to_stage('test_file_realdata.csv', 'test_file_headers.csv', 'assessment', 'STG_SBAC_ASMT_OUTCOME', '00000000-0000-0000-0000-000000000000')
         move_data_from_staging_to_integration(conf)
         postloading_total = self.postloading_count()
-        print(postloading_total)
         self.assertEqual(30, postloading_total)
 
         int_asmt_avgs = self.get_integration_asmt_score_avgs()
@@ -117,7 +115,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         self.assertIsNotNone(derived_count)
         self.assertEqual(stg_demo_dict, int_demo_dict)
 
-    @unittest.skip("temp")
+
     def test_load_stage_to_int_student_registration(self):
         guid_batch = str(uuid4())
         load_type = self.udl2_conf['load_type']['student_registration']
@@ -128,7 +126,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                 load_type, self.udl2_conf['udl2_db']['staging_tables'][load_type], guid_batch)
         move_data_from_staging_to_integration(conf)
         postloading_total = self.postloading_count(self.udl2_conf['udl2_db']['csv_integration_tables'][load_type])
-        print(postloading_total)
         self.assertEqual(10, postloading_total)
 
     def test_derive_eth_function(self):
@@ -166,20 +163,20 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                    'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig',
                                    'dmg_multi_race', 'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date',
                                    'lep_exit_date', 't3_program_type', 'prim_disability_type', 'created_date']
-        expected_source_columns_with_tran_rule = ['A.guid_batch', 'substr(A.name_state, 1, 50)', 'substr(A.code_state, 1, 2)',
-                                                  'substr(A.guid_district, 1, 30)', 'substr(A.name_district, 1, 60)', 'substr(A.guid_school, 1, 30)',
-                                                  'substr(A.name_school, 1, 60)', 'substr(A.guid_student, 1, 30)',
-                                                  'substr(A.external_ssid_student, 1, 50)', 'substr(A.name_student_first, 1, 35)',
-                                                  'substr(A.name_student_middle, 1, 35)', 'substr(A.name_student_last, 1, 35)',
-                                                  'substr(A.gender_student, 1, 6)', 'substr(A.dob_student, 1, 10)', 'substr(A.grade_enrolled, 1, 2)',
-                                                  'cast(A.dmg_eth_hsp as bool)', 'cast(A.dmg_eth_ami as bool)', 'cast(A.dmg_eth_asn as bool)',
-                                                  'cast(A.dmg_eth_blk as bool)', 'cast(A.dmg_eth_pcf as bool)', 'cast(A.dmg_eth_wht as bool)',
-                                                  'cast(A.dmg_prg_iep as bool)', 'cast(A.dmg_prg_lep as bool)', 'cast(A.dmg_prg_504 as bool)',
-                                                  'cast(A.dmg_sts_ecd as bool)', 'cast(A.dmg_sts_mig as bool)', 'cast(A.dmg_multi_race as bool)',
-                                                  'substr(A.code_confirm, 1, 35)', 'substr(A.code_language, 1, 3)', 'substr(A.eng_prof_lvl, 1, 20)',
-                                                  'substr(A.us_school_entry_date, 1, 10)', 'substr(A.lep_entry_date, 1, 10)',
-                                                  'substr(A.lep_exit_date, 1, 10)', 'substr(A.t3_program_type, 1, 27)',
-                                                  'substr(A.prim_disability_type, 1, 3)', 'A.created_date']
+        expected_source_columns_with_tran_rule = ['"A".guid_batch', 'substr("A".name_state, 1, 50)', 'substr("A".code_state, 1, 2)',
+                                                  'substr("A".guid_district, 1, 30)', 'substr("A".name_district, 1, 60)', 'substr("A".guid_school, 1, 30)',
+                                                  'substr("A".name_school, 1, 60)', 'substr("A".guid_student, 1, 30)',
+                                                  'substr("A".external_ssid_student, 1, 50)', 'substr("A".name_student_first, 1, 35)',
+                                                  'substr("A".name_student_middle, 1, 35)', 'substr("A".name_student_last, 1, 35)',
+                                                  'substr("A".gender_student, 1, 6)', 'substr("A".dob_student, 1, 10)', 'substr("A".grade_enrolled, 1, 2)',
+                                                  'cast("A".dmg_eth_hsp as bool)', 'cast("A".dmg_eth_ami as bool)', 'cast("A".dmg_eth_asn as bool)',
+                                                  'cast("A".dmg_eth_blk as bool)', 'cast("A".dmg_eth_pcf as bool)', 'cast("A".dmg_eth_wht as bool)',
+                                                  'cast("A".dmg_prg_iep as bool)', 'cast("A".dmg_prg_lep as bool)', 'cast("A".dmg_prg_504 as bool)',
+                                                  'cast("A".dmg_sts_ecd as bool)', 'cast("A".dmg_sts_mig as bool)', 'cast("A".dmg_multi_race as bool)',
+                                                  'substr("A".code_confirm, 1, 35)', 'substr("A".code_language, 1, 3)', 'substr("A".eng_prof_lvl, 1, 20)',
+                                                  'substr("A".us_school_entry_date, 1, 10)', 'substr("A".lep_entry_date, 1, 10)',
+                                                  'substr("A".lep_exit_date, 1, 10)', 'substr("A".t3_program_type, 1, 27)',
+                                                  'substr("A".prim_disability_type, 1, 3)', '"A".created_date']
         with get_udl_connection() as conn:
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],

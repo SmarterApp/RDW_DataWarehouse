@@ -29,7 +29,7 @@ def move_data_from_staging_to_integration(conf):
     return query_result[0]
 
 
-def get_column_mapping_from_stg_to_int(conn, ref_table, staging_table, integration_table, schema_name):
+def get_column_mapping_from_stg_to_int(conn, ref_table_name, staging_table, integration_table_name, schema_name):
     '''
     Getting column mapping, which maps the columns in staging table, and columns in integration table
     The mapping is defined in the given ref_table
@@ -37,21 +37,30 @@ def get_column_mapping_from_stg_to_int(conn, ref_table, staging_table, integrati
              source_columns_with_tran_rule - list of source columns with the corresponding transformation rules
     '''
     # get the column length of all target columns. Returns a dictionary, the key is the column name in target/integration table, and the value is the column length
-    column_name_length_dict = get_varchar_column_name_and_length(conn, integration_table)
-    # get column mapping from ref table, returns a list of tuple. The tuple has 3 items(source_column, target_column, stored_proc_exp)
-    column_mapping_query = get_column_mapping_query(schema_name, ref_table, staging_table)
-    column_mapping = execute_udl_query_with_result(conn, column_mapping_query,
-                                                   'Exception in getting column mapping between csv_table and staging table -- ',
-                                                   'file_loader', 'get_fields_map')
-
-    target_columns = []
-    source_columns_with_tran_rule = []
+    column_name_length_dict = get_varchar_column_name_and_length(conn, integration_table_name)
+    # get column mapping from ref table
+    ref_table = conn.get_table(ref_table_name)
+    column_mapping_query = select([ref_table.c.source_column,
+                                   ref_table.c.target_column,
+                                   ref_table.c.stored_proc_name],
+                                  from_obj=ref_table).where(ref_table.c.source_table == staging_table)
+    column_mapping = conn.execute(column_mapping_query)
+    integration_table = conn.get_table(integration_table_name)
+    target_column_ordered = [column.name for column in integration_table.c]
+    column_mapping_dict = {}
     if column_mapping:
         for mapping in column_mapping:
+            target_column_name = mapping[1]
+            column_mapping_dict[target_column_name] = mapping
+    target_columns = []
+    source_columns_with_tran_rule = []
+    for column in target_column_ordered:
+        if column in column_mapping_dict.keys():
+            mapping = column_mapping_dict[column]
             source_column = mapping[0]
             target_column = mapping[1]
             stored_proc_exp = mapping[2]
-            source_column_with_query_prefix = ', '.join(['A.' + sub_srouce_column.strip() for sub_srouce_column in source_column.split(',')])
+            source_column_with_query_prefix = ', '.join(['"A".' + sub_srouce_column.strip() for sub_srouce_column in source_column.split(',')])
 
             # if this target column has the length information we got before
             if stored_proc_exp is not None:
@@ -94,48 +103,18 @@ def create_migration_query(conn, source_schema, source_table, target_schema, tar
     @param mapping: mapping between columns in staging table, target table and rules for type conversion
     @param guid_batch: batch id for specific type.
     '''
-    target_columns_expand = ", ".join(target_columns)
-    source_columns_expand = ", ".join(source_columns_with_tran_rule)
-
-    sql_template = """
-    INSERT INTO "{target_schema}"."{target_table}"
-         ({target_columns})
-    SELECT {source_columns}
-        FROM "{source_schema}"."{source_table}" AS A LEFT JOIN
-        "{error_schema}"."{error_table}" AS B ON (A.record_sid = B.record_sid )
-        WHERE B.record_sid IS NULL AND A.guid_batch = :guid_batch
-    """
-    sql = text(sql_template.format(target_schema=target_schema,
-                                   target_table=target_table,
-                                   target_columns=target_columns_expand,
-                                   source_columns=source_columns_expand,
-                                   source_schema=source_schema,
-                                   source_table=source_table,
-                                   error_schema=error_schema,
-                                   error_table=error_table_name),
-               bindparams=[bindparam('guid_batch', guid_batch)])
-
-    #print(sql)
-    #print(target_columns_expand)
-    #print(target_columns)
-    #print(source_columns_expand)
-
     integration_table = conn.get_table(target_table)
     staging_table = conn.get_table(source_table)
-    target_columns_to_pick = [column for column in target_columns]
-    #print('target_columns_to_pick', target_columns_to_pick)
-    source_columns_with_translation_rules = [source_column for source_column in source_columns_with_tran_rule]
     error_table = conn.get_table(error_table_name)
+    staging_table_alias = aliased(staging_table, name='A')
+    error_table_alias = aliased(error_table, name='B')
 
-    #staging_table_alias = aliased(staging_table, name='A')
-    #error_table_alias = aliased(error_table, name='B')
-    select_query = select(source_columns_with_translation_rules,
-                          from_obj=staging_table).select_from(staging_table.outerjoin(error_table, error_table.c.record_sid == staging_table.c.record_sid)).\
-        where(and_(staging_table.c.guid_batch == guid_batch,
-                   error_table.c.record_sid == None))
-    #print(str(select_query))
-    query = integration_table.insert(inline=True).from_select(target_columns_to_pick, select_query)
-    print(str(query))
-    #print(str(sql))
-
-    return sql
+    select_query = select(source_columns_with_tran_rule,
+                          from_obj=[staging_table_alias
+                                    .outerjoin(error_table_alias,
+                                               and_(error_table_alias.c.record_sid == staging_table_alias.c.record_sid))])
+    select_query = select_query.where(and_(staging_table_alias.c.guid_batch == guid_batch,
+                                           error_table_alias.c.record_sid == None))
+    query = integration_table.insert(inline=True).from_select(target_columns, select_query)
+    #print(str(query))
+    return query

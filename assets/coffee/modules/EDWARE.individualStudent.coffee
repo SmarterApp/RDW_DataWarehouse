@@ -187,7 +187,12 @@ define [
         return @params['effectiveDate'] + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()
-        return asmt['effectiveDate'] + asmt['asmtType']
+        if asmt
+          return asmt['effectiveDate'] + asmt['asmtType']
+        else
+          asmt = @data.asmt_administration[0]
+          asmtType = Constants.ASMT_TYPE[asmt['asmt_type']]
+          return asmt['effective_date'] + asmtType
 
     render: () ->
       key = @getCacheKey()

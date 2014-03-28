@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         playertracker1 = PlayerTracker()
-        playertracker1.reset()
+        playertracker1.clear()
         playertracker1.set_accept_player(True)
         playertracker1.add_player(123)
         playertracker1.set_accept_player(False)
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
 
     def test_set_pgpool_connected(self):
         playertracker1 = PlayerTracker()
-        self.assertTrue(playertracker1.is_pgpool_connected(123))
+        self.assertFalse(playertracker1.is_pgpool_connected(123))
         self.assertFalse(playertracker1.is_pgpool_disconnected(123))
         playertracker1.set_pgpool_disconnected(123)
         self.assertFalse(playertracker1.is_pgpool_connected(123))
@@ -60,7 +60,7 @@ class Test(unittest.TestCase):
 
     def test_set_master_connected(self):
         playertracker1 = PlayerTracker()
-        self.assertTrue(playertracker1.is_replication_started(123))
+        self.assertFalse(playertracker1.is_replication_started(123))
         self.assertFalse(playertracker1.is_replication_stopped(123))
         playertracker1.set_replication_stopped(123)
         self.assertFalse(playertracker1.is_replication_started(123))
@@ -105,7 +105,7 @@ class Test(unittest.TestCase):
         playertracker2 = PlayerTracker()
         ids = playertracker1.get_player_ids()
         self.assertEqual(1, len(ids))
-        playertracker1.reset()
+        playertracker1.clear()
         ids = playertracker1.get_player_ids()
         self.assertEqual(0, len(ids))
         ids = playertracker2.get_player_ids()
@@ -130,7 +130,7 @@ class Test(unittest.TestCase):
 
     def test_set_accept_player(self):
         playertracker1 = PlayerTracker()
-        playertracker1.reset()
+        playertracker1.clear()
         ids = playertracker1.get_player_ids()
         self.assertEqual(0, len(ids))
         playertracker1.set_accept_player(True)
@@ -150,6 +150,13 @@ class Test(unittest.TestCase):
         self.assertTrue(playertracker1.is_migration_in_process())
         del conductor
         self.assertFalse(playertracker1.is_migration_in_process())
+
+    def test_set_timeout(self):
+        playertracker1 = PlayerTracker()
+        playertracker1.set_timeout(1)
+        self.assertEqual(1, playertracker1.get_timeout())
+        playertracker1.set_timeout(2)
+        self.assertEqual(2, playertracker1.get_timeout())
 
 
 if __name__ == "__main__":

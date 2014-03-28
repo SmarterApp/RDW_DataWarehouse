@@ -51,8 +51,10 @@ class Constants():
     PLAYER_REPLICATION_STATUS = 'replication_status'
     PLAYER_CONNECTION_STATUS_DISCONNECTED = 0
     PLAYER_CONNECTION_STATUS_CONNECTED = 1
+    PLAYER_CONNECTION_STATUS_UNKNOWN = 2
     PLAYER_REPLICATION_STATUS_STOPPED = 0
     PLAYER_REPLICATION_STATUS_STARTED = 1
+    PLAYER_REPLICATION_STATUS_UNKNOWN = 2
     REPLICATION_STATUS_PAUSE = 't'
     REPLICATION_STATUS_ACTIVE = 'f'
     REPLICATION_STATUS_UNSURE = 'n'
@@ -61,6 +63,9 @@ class Constants():
     CONDUCTOR_EXCHANGE = 'edmigrate_conductor'
     CONDUCTOR_QUEUE = 'edmigrate_conductor'
     CONDUCTOR_ROUTING_KEY = 'edmigrate.conductor'
+    BROADCAST_EXCHANGE = 'edmigrate_players'
+    BROADCAST_QUEUE = 'edmigrate_players'
+    BROADCAST_ROUTING_KEY = 'edmigrate_players'
 
     IPTABLES_SUDO = '/usr/bin/sudo'
     IPTABLES_CHAIN = 'PGSQL'
@@ -72,4 +77,14 @@ class Constants():
     IPTABLES_TARGET = 'REJECT'
     IPTABLES_SOURCE = '-s'
 
-    SYSLOG_ADDRESS = ('/var/run/syslog',)
+    EDMIGRATE_ADMIN_LOGGER = 'edmigrate_admin'
+
+    REPMGR_REPLICATION_LAG_TOLERANCE = 'migrate.replication_monitor.replication_lag_tolerance'
+    REPMGR_APPLY_LAG_TOLERANCE = 'migrate.replication_monitor.apply_lag_tolerance'
+    REPMGR_TIME_LAG_TOLERANCE = 'migrate.replication_monitor.time_lag_tolerance'
+    REPMGR_MONITOR_TIME = 'migrate.replication_monitor.monitor_timeout'
+    REPMGR_ADMIN_REPLICATION_LAG_TOLERANCE = 'migrate.replication_monitor.admin.replication_lag_tolerance'
+    REPMGR_ADMIN_APPLY_LAG_TOLERANCE = 'migrate.replication_monitor.admin.apply_lag_tolerance'
+    REPMGR_ADMIN_TIME_LAG_TOLERANCE = 'migrate.replication_monitor.admin.time_lag_tolerance'
+    REPMGR_ADMIN_CHECK_INTERVAL = 'migrate.replication_monitor.admin.check_interval'
+    CONDUCTOR_FIND_PLAYERS_TIMEOUT = ''

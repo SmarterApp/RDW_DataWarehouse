@@ -5,7 +5,7 @@ Created on Mar 13, 2014
 
 @author: dip
 '''
-from edmigrate.main import main, read_ini, get_ini_file
+from edmigrate.main import migrate_only, read_ini, get_ini_file
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from sqlalchemy.sql.functions import count
 from sqlalchemy.sql.expression import select, and_
@@ -25,7 +25,8 @@ def start_migrate(tenant='cat'):
     Migrate from pre-prod to prod
     '''
     ini_file = get_ini_file()
-    main(ini_file, tenant, run_migrate_only=True)
+    settings = read_ini(ini_file)
+    migrate_only(settings, tenant)
 
 
 # def get_config():

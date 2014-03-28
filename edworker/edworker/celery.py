@@ -84,9 +84,11 @@ def create_queue(queue):
     routing_key = queue[CELERY_QUEUE_ROUTING_KEY]
     durable = queue[CELERY_QUEUES_DURABLE] if CELERY_QUEUES_DURABLE in queue else True
     if exchange_type == 'fanout':
-        return Broadcast(name, durable=durable)
+        return Broadcast(name, exchnage=Exchange(type=exchange_type, routing_key=routing_key),
+                         durable=durable, routing_key=routing_key, auto_delete=True)
     else:
-        return Queue(name, exchange=Exchange(type=exchange_type), durable=durable, routing_key=routing_key)
+        return Queue(name, exchange=Exchange(type=exchange_type),
+                     durable=durable, routing_key=routing_key)
 
 
 def configure_celeryd(name, prefix='celery'):

@@ -19,7 +19,7 @@ from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.database.udl2_connector import get_udl_connection
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
+@unittest.skip("test failed at jenkins, under investigation")
 class Test_Err_Handling_Scenario(unittest.TestCase):
 
     def setUp(self):

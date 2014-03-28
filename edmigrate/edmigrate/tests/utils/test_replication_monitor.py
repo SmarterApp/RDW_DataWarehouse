@@ -22,9 +22,6 @@ class Test(Unittest_with_repmgr_sqlite):
         self.assertRaises(NoReplicationToMonitorException, replication_monitor, [100, 101, 102])
         self.assertRaises(NoReplicationToMonitorException, replication_monitor, [103])
 
-    def test_replication_monitor_one_id_missing(self):
-        self.assertRaises(ReplicationToMonitorOrphanNodeException, replication_monitor, [2, 3, 100])
-
     def test_replication_monitor_timeout(self):
         timeout = 5
         start_time = time.time()

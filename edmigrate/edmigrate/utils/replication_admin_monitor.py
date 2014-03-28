@@ -47,4 +47,6 @@ def replication_admin_monitor(replication_lag_tolerance=100, apply_lag_tolerance
                         logger.error('Node ID[' + str(standby_node) + '] is out of sync.')
                         admin_logger.error('Replication monitor: Node ID[' + str(standby_node) + '] is out of sync.')
             logger.debug('replication admin monitor finishes')
+        if interval_check < 0:
+            break
         time.sleep(interval_check)

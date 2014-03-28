@@ -29,7 +29,7 @@ class Conductor:
         if not self.__lock.acquire(timeout=locktimeout):
             raise ConductorTimeoutException()
         self.__player_trakcer = PlayerTracker()
-        self.__player_trakcer.reset()
+        self.__player_trakcer.clear()
         self.__player_trakcer.set_migration_in_process(True)
         self.__broadcast_queue = Constants.BROADCAST_EXCHANGE
 
@@ -49,9 +49,12 @@ class Conductor:
             self.__lock.release()
 
     def send_reset_players(self):
-        self.__player_trakcer.reset()
-        player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
-        self.__log(Constants.COMMAND_RESET_PLAYERS, None, None)
+        group_ids = self.__player_trakcer.get_player_ids()
+        if group_ids:
+            player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
+            self.__log(Constants.COMMAND_RESET_PLAYERS, None, group_ids)
+        else:
+            logger.debug('Command[' + Constants.COMMAND_RESET_PLAYERS + '] was not sent because there is no registered players')
 
     def accept_players(self):
         self.__player_trakcer.set_accept_player(True)

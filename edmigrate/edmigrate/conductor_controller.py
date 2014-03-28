@@ -19,11 +19,11 @@ def process(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_to
     batch = get_batches_to_migrate()
     if batch:
         with Conductor(replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance, monitor_timeout=monitor_timeout) as conductor:
-            conductor.send_reset_players()
             conductor.accept_players()
             conductor.find_players()
             time.sleep(player_find_time_wait)
             conductor.reject_players()
+            conductor.send_reset_players()
             players_ids = conductor.get_player_ids()
             if players_ids:
                 number_of_players = len(players_ids)

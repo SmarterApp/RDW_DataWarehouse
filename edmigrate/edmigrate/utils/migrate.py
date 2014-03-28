@@ -238,8 +238,8 @@ def migrate_batch(batch):
             logger.info('Master: Migration successful for batch: ' + batch_guid)
             rtn = True
         except Exception as e:
-            logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
-            logger.info(e)
+            logger.error('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
+            logger.error(e)
             #logger.exception('exception detail')
             trans.rollback()
             try:

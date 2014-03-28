@@ -13,6 +13,10 @@ import datetime
 logger = logging.getLogger(__name__)
 
 
+__true_values = set(['true', 't', '1'])
+__false_values = set(['false', 'f', '0'])
+
+
 class DataException(Exception):
     '''
     Exception for Data Related problems
@@ -48,9 +52,9 @@ def __cast_data_type(column, value):
         try:
             # need to explicitly convert booleans because they are read from file as strings
             if isinstance(column.type, Boolean):
-                if value.lower() == 'true' or value == '1':
+                if value.lower() in __true_values:
                     value = True
-                elif value.lower() == 'false' or value == '0':
+                elif value.lower() in __false_values:
                     value = False
 
             if column.type.python_type is datetime.datetime:

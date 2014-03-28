@@ -1,7 +1,8 @@
 from sqlalchemy import or_
 from edcore.database.edcore_connector import EdCoreDBConnection
-from edextract.data_extract_generation.constants import TableName
 from smarter.security.context import select_with_context
+from smarter.reports.helpers.constants import Constants
+
 
 __author__ = 'ablum'
 
@@ -9,7 +10,7 @@ __author__ = 'ablum'
 def get_query(academic_year, state_code):
 
     with EdCoreDBConnection(state_code=state_code) as connection:
-        student_reg = connection.get_table(TableName.STUDENT_REG)
+        student_reg = connection.get_table(Constants.STUDENT_REG)
         query = select_with_context([student_reg.c.state_code, student_reg.c.state_name, student_reg.c.district_guid, student_reg.c.district_name,
                                      student_reg.c.school_guid, student_reg.c.school_name, student_reg.c.gender, student_reg.c.enrl_grade,
                                      student_reg.c.dmg_eth_hsp, student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn, student_reg.c.dmg_eth_blk,
@@ -36,6 +37,6 @@ def get_headers(academic_year):
               'Percent Difference in Count',
               'Change in Percent of Total',
               'AY{this_year} Matched IDs to AY{last_year} Count'.format(last_year=last_year, this_year=this_year),
-              'AY{this_year} Matched IDs Percent of AY{last_year} count'.format(last_year=last_year, this_year=this_year))
+              'AY{this_year} Matched IDs Percent of AY{last_year} Count'.format(last_year=last_year, this_year=this_year))
 
     return header

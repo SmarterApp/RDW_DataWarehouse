@@ -1,5 +1,5 @@
 '''
-Created on Mar 21, 2014ß
+Created on Mar 21, 2014
 
 @author: ejen
 '''

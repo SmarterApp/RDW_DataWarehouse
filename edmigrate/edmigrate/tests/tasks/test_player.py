@@ -107,9 +107,33 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
             repl_nodes = conn.get_table(Constants.REPL_NODES)
             conn.execute(repl_nodes.delete())
         # since Player is a singleton object. we need to destroy it
-        Player._instances = {}
+        Player.cleanup()
         # turn off mocket when test is over
         Mocket.disable()
+
+    def test_cleanup(self):
+        logger = MockLogger()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEquals(len(Player._instances.items()), 1)
+        Player.cleanup()
+        self.assertEqual(len(Player._instances.items()), 0)
+
+    def test__node_id(self):
+        logger = MockLogger()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEqual("1", player._node_id())
+        Mocket.disable()
+        Player.cleanup()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEqual("", player._node_id())
+
+    def test__hostname(self):
+        logger = MockLogger()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEqual("localhost", player._hostname())
+        player.set_hostname("")
+        player.set_node_id_from_hostname()
+        self.assertEqual("", player._hostname())
 
     def test_set_node_id_from_hostname(self):
         logger = MockLogger()

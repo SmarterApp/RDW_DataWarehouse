@@ -54,18 +54,26 @@ class Player(metaclass=Singleton):
             if nodes is None:
                 if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
                     self.COMMAND_HANDLERS[command]()
+                    self.logger.info("{name}: executed {command}".format(command=command, name=self.__class__.__name__))
+                    self.admin_logger.info("")
                 else:
                     self.logger.warning("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
+                    self.admin_logger.warning("")
             else:
                 if self.node_id in nodes:
                     self.COMMAND_HANDLERS[command]()
+                    self.logger.info("{name}: {node_id} executed {command}".
+                                     format(command=command, name=self.__class__.__name__, node_id=self.node_id))
+                    self.admin_logger.info("")
                 else:
                     # ignore the command
                     self.logger.warning("{name}: {command} is ignored because {node} is not in {nodes}"
                                         .format(command=command, name=self.__class__.__name__,
                                                 node=self.node_id, nodes=str(nodes)))
+                    self.admin_logger.warning("")
         else:
             self.logger.warning("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
+            self.admin_logger.warning("")
 
     def set_hostname(self, hostname):
         '''
@@ -116,6 +124,7 @@ class Player(metaclass=Singleton):
         except subprocess.CalledProcessError:
             self.logger.error("{name}: Problem to use iptables. Please check with administrator".
                               format(name=self.__class__.__name__,))
+            self.admin_logger.critical("")
             output = ''
         return self.search_blocked_hostname(output, hostname)
 
@@ -181,9 +190,13 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
+            self.logger.info("{name}: Unblock pgpool ( {pgpool} )".
+                             format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.info("")
         else:
-            self.logger.warning("{name}: Failed to unblock pgpool( {pgpool} )".
+            self.logger.warning("{name}: Failed to unblock pgpool ( {pgpool} )".
                                 format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.critical("")
 
     def disconnect_pgpool(self):
         '''
@@ -197,9 +210,13 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
+            self.logger.info("{name}: Block pgpool ( {pgpool} )".
+                             format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.info("")
         else:
-            self.logger.warning("{name}: Failed to block pgpool( {pgpool} )".
+            self.logger.warning("{name}: Failed to block pgpool ( {pgpool} )".
                                 format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.critical("")
 
     def connect_master(self):
         '''
@@ -214,9 +231,13 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
+            self.logger.info("{name}: Unblock master database ( {master} )".
+                             format(name=self.__class__.__name__, master=master))
+            self.admin_logger.info("")
         else:
-            self.logger.warning("{name}: Failed to unblock master( {master} )".
+            self.logger.warning("{name}: Failed to unblock master ( {master} )".
                                 format(name=self.__class__.__name__, master=master))
+            self.admin_logger.critical("")
 
     def disconnect_master(self):
         '''
@@ -230,9 +251,13 @@ class Player(metaclass=Singleton):
         if status:
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
+            self.logger.info("{name}: Block master database ( {master} )".
+                             format(name=self.__class__.__name__, master=master))
+            self.admin_logger.info("")
         else:
             self.logger.warning("{name}: Failed to block master( {master} )".
                                 format(name=self.__class__.__name__, master=master))
+            self.admin_logger.critical("")
 
     def reset_players(self):
         '''
@@ -248,15 +273,21 @@ class Player(metaclass=Singleton):
         if status_1 and status_2:
             reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
                                                              self.exchange, self.routing_key)
+            self.logger.info("{name}: Reset iptables configurations for pgpool ( {pgpool} ) and master ( {master})".
+                             format(name=self.__class__.__name__, pgpool=pgpool, master=master))
+            self.admin_logger.info("")
         elif status_1 and not status_2:
             self.logger.error("{name}: Failed to reset iptables for pgpool ( {pgpool} )".
                               format(name=self.__class__.__name__, pgpool=pgpool))
+            self.admin_logger.critical("")
         elif not status_1 and status_2:
             self.logger.error("{name}: Failed to reset iptables for master( {master} )".
                               format(name=self.__class__.__name__, master=master))
+            self.admin_logger.critical("")
         else:
             self.logger.error("{name}: Failed to reset iptable for master( {master} ) and pgpool ( {pgpool} )".
                               format(name=self.__class__.__name__, master=master, pgpool=pgpool))
+            self.admin_logger.critical("")
 
     def register_player(self):
         '''
@@ -265,10 +296,14 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Register {name} to conductor".format(name=self.__class__.__name__))
         if self.node_id is not None:
             reply_to_conductor.register_player(self.node_id, self.connection, self.exchange, self.routing_key)
+            self.logger.info("{name}: Register {hostname} as node_id ({node_id})".
+                             format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+            self.admin_logger.info("")
         else:
             # log errors
             self.logger.error("{name}: {hostname} has no node_id".
                               format(name=self.__class__.__name__, hostname=self.hostname))
+            self.admin_logger.critical("")
 
 
 @celery.task(name=Constants.PLAYER_TASK, ignore_result=True)

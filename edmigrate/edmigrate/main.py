@@ -133,6 +133,18 @@ def initialize_dbs(run_migrate_only, settings):
         initialize_db(RepMgrDBConnection, settings)
 
 
+def migrate_only(settings, tenant=None):
+    initialize_dbs(True, settings)
+    start_migrate_daily_delta(tenant)
+
+
+def process(settings, tenant, daemon_mode, pid_file):
+    initialize_dbs(False, settings)
+    if daemon_mode:
+        create_daemon(pid_file)
+    run_with_conductor(daemon_mode, settings)
+
+
 def main():
     parser = ArgumentParser(description='EdMigrate entry point')
     parser.add_argument('--migrateOnly', action='store_true', dest='migrate_only', default=False, help="migrate only mode")
@@ -154,12 +166,12 @@ def main():
 
     daemon_mode = args.daemon
     tenant = args.tenant
+    pid_file = args.pidfile
     if run_migrate_only:
-        start_migrate_daily_delta(tenant)
-        os._exit(0)
-    elif daemon_mode:
-        create_daemon(args.pidfile)
-    run_with_conductor(daemon_mode, settings)
+        migrate_only(settings, tenant)
+    else:
+        process(settings, tenant, daemon_mode, pid_file)
+
 
 if __name__ == '__main__':
     main()

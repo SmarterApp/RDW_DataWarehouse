@@ -17,7 +17,7 @@ class TestRaceTracker(unittest.TestCase):
         self.mul_tracker = MultiRace()
 
         self.race_trackers = [self.hispanic_tracker, self.ami_tracker, self.asn_tracker, self.afm_tracker, self.pac_tracker,
-                         self.wht_tracker, self.mul_tracker]
+                              self.wht_tracker, self.mul_tracker]
 
         self.hsp_db_rows = [
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,

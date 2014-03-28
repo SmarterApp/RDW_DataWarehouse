@@ -8,7 +8,7 @@ from smarter.reports.helpers.filters import NOT_STATED, \
     apply_filter_to_query, FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, \
     FILTERS_PROGRAM_LEP, FILTERS_ETHNICITY, \
     FILTERS_ETHNICITY_NOT_STATED, FILTERS_GENDER_NOT_STATED, FILTERS_GENDER
-from sqlalchemy.sql.expression import and_, true, select
+from sqlalchemy.sql.expression import and_, select
 from smarter.reports.helpers import filters
 from sqlalchemy.sql.functions import count
 from edapi.cache import cache_region

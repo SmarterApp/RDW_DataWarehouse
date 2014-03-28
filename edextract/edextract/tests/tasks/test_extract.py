@@ -51,7 +51,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
         self.statistics_headers = ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
                                    'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                   'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 count']
+                                   'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 Count']
         self.completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
                                    'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
                                    'Count of Students Assessed', 'Percent of Students Assessed']
@@ -217,7 +217,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(len(csv_data), 46)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2015 Count', 'AY2015 Percent of Total',
                                        'AY2016 Count', 'AY2016 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                       'Change in Percent of Total', 'AY2016 Matched IDs to AY2015 Count', 'AY2016 Matched IDs Percent of AY2015 count'])
+                                       'Change in Percent of Total', 'AY2016 Matched IDs to AY2015 Count', 'AY2016 Matched IDs Percent of AY2015 Count'])
 
     def test_generate_sr_completion_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')
@@ -388,7 +388,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                               'AY{current_year} Percent of Total'.format(current_year=current_year), 'Change in Count',
                               'Percent Difference in Count', 'Change in Percent of Total',
                               'AY{current_year} Matched IDs to AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year),
-                              'AY{current_year} Matched IDs Percent of AY{previous_year} count'.format(current_year=current_year, previous_year=previous_year)]
+                              'AY{current_year} Matched IDs Percent of AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year)]
 
         return statistics_headers
 

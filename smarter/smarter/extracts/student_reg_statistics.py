@@ -37,6 +37,6 @@ def get_headers(academic_year):
               'Percent Difference in Count',
               'Change in Percent of Total',
               'AY{this_year} Matched IDs to AY{last_year} Count'.format(last_year=last_year, this_year=this_year),
-              'AY{this_year} Matched IDs Percent of AY{last_year} count'.format(last_year=last_year, this_year=this_year))
+              'AY{this_year} Matched IDs Percent of AY{last_year} Count'.format(last_year=last_year, this_year=this_year))
 
     return header

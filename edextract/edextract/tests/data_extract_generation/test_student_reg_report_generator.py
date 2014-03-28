@@ -51,7 +51,7 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         self.assertEqual(len(csv_data), 19)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2013 Count', 'AY2013 Percent of Total',
                                        'AY2014 Count', 'AY2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                       'Change in Percent of Total', 'AY2014 Matched IDs to AY2013 Count', 'AY2014 Matched IDs Percent of AY2013 count'])
+                                       'Change in Percent of Total', 'AY2014 Matched IDs to AY2013 Count', 'AY2014 Matched IDs Percent of AY2013 Count'])
 
         self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '', '', '5', '100', '', '', ''])
         self.assertEqual(csv_data[2], ['Example State', 'ALL', 'ALL', 'Sex', 'Male', '', '', '2', '40', '', '', ''])
@@ -70,7 +70,7 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         self.assertEqual(len(csv_data), 19)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
                                        'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                       'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 count'])
+                                       'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 Count'])
         self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '5', '100', '5', '100', '0', '0', '0'])
         self.assertEqual(csv_data[2], ['Example State', 'ALL', 'ALL', 'Sex', 'Male', '2', '40', '2', '40', '0', '0', '0'])
         self.assertEqual(csv_data[3], ['Example State', 'ALL', 'ALL', 'Sex', 'Female', '3', '60', '3', '60', '0', '0', '0'])
@@ -117,6 +117,6 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
                               'AY{current_year} Percent of Total'.format(current_year=current_year), 'Change in Count',
                               'Percent Difference in Count', 'Change in Percent of Total',
                               'AY{current_year} Matched IDs to AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year),
-                              'AY{current_year} Matched IDs Percent of AY{previous_year} count'.format(current_year=current_year, previous_year=previous_year)]
+                              'AY{current_year} Matched IDs Percent of AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year)]
 
         return statistics_headers

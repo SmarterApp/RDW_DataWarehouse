@@ -1,5 +1,3 @@
-from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants, AttributeValueConstants
-
 __author__ = 'ablum'
 
 """
@@ -9,6 +7,7 @@ which tracks visitor totals.
 
 from edextract.trackers.category_tracker import CategoryTracker
 from edextract.student_reg_extract_processors.category_constants import CategoryNameConstants, CategoryValueConstants
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants, AttributeValueConstants
 
 
 class MaleTracker(CategoryTracker):

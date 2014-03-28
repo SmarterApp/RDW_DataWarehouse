@@ -18,6 +18,8 @@ from edextract.student_reg_extract_processors.state_data_processor import StateD
 from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
 from edextract.trackers.gender_tracker import FemaleTracker, MaleTracker
+from edextract.trackers.race_tracker import HispanicLatinoTracker, AmericanIndianTracker, AsianTracker, \
+    AfricanAmericanTracker, PacificIslanderTracker, WhiteTracker, MultiRaceTracker
 from edextract.trackers.program_tracker import (IDEAIndicatorTracker, LEPStatusTracker, Sec504StatusTracker,
                                                 EconDisadvStatusTracker, MigrantStatusTracker)
 
@@ -114,8 +116,8 @@ def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
     """
 
     total_tracker = TotalTracker()
-    trackers = [total_tracker, MaleTracker(), FemaleTracker()]
-                #HispanicLatino(), AmericanIndian(), Asian(), AfricanAmerican(), PacificIslander(), White(), MultiRace(),
+    trackers = [total_tracker, MaleTracker(), FemaleTracker(), HispanicLatinoTracker(), AmericanIndianTracker(),
+                AsianTracker(), AfricanAmericanTracker(), PacificIslanderTracker(), WhiteTracker(), MultiRaceTracker()]
                 #IDEAIndicatorTracker(), LEPStatusTracker(), Sec504StatusTracker(), EconDisadvStatusTracker(), MigrantStatusTracker()]
 
     data_processors = [StateDataProcessor(trackers), DistrictDataProcessor(trackers), SchoolDataProcessor(trackers)]

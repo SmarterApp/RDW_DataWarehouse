@@ -1,92 +1,63 @@
 __author__ = 'npandey'
 
 import unittest
-from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants, AttributeValueConstants
-from edextract.trackers.race_tracker import HispanicLatino, AmericanIndian, Asian, AfricanAmerican, PacificIslander, \
-    White, MultiRace
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants
+from edextract.trackers.race_tracker import HispanicLatinoTracker, AmericanIndianTracker, AsianTracker, \
+    AfricanAmericanTracker, PacificIslanderTracker, WhiteTracker, MultiRaceTracker
 
 
 class TestRaceTracker(unittest.TestCase):
     def setUp(self):
-        self.hispanic_tracker = HispanicLatino()
-        self.ami_tracker = AmericanIndian()
-        self.asn_tracker = Asian()
-        self.afm_tracker = AfricanAmerican()
-        self.pac_tracker = PacificIslander()
-        self.wht_tracker = White()
-        self.mul_tracker = MultiRace()
+        self.hispanic_tracker = HispanicLatinoTracker()
+        self.ami_tracker = AmericanIndianTracker()
+        self.asn_tracker = AsianTracker()
+        self.afm_tracker = AfricanAmericanTracker()
+        self.pac_tracker = PacificIslanderTracker()
+        self.wht_tracker = WhiteTracker()
+        self.mul_tracker = MultiRaceTracker()
 
         self.race_trackers = [self.hispanic_tracker, self.ami_tracker, self.asn_tracker, self.afm_tracker, self.pac_tracker,
                               self.wht_tracker, self.mul_tracker]
 
         self.hsp_db_rows = [
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
-             AttributeFieldConstants.HISPANIC_ETH: True},
+             'dmg_eth_hsp': True},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
-             AttributeFieldConstants.HISPANIC_ETH: True},
+             'dmg_eth_hsp': True},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013,
-             AttributeFieldConstants.HISPANIC_ETH: False},
+             'dmg_eth_hsp': False},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014,
-             AttributeFieldConstants.HISPANIC_ETH: True},
+             'dmg_eth_hsp': True},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
-             AttributeFieldConstants.HISPANIC_ETH: False},
+             'dmg_eth_hsp': False},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
-             AttributeFieldConstants.HISPANIC_ETH: False},
+             'dmg_eth_hsp': False},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013,
-             AttributeFieldConstants.HISPANIC_ETH: False},
+             'dmg_eth_hsp': False},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014,
-             AttributeFieldConstants.HISPANIC_ETH: True}
+             'dmg_eth_hsp': True}
         ]
 
         self.race_db_rows = [
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
-             AttributeFieldConstants.HISPANIC_ETH: True,
-             AttributeFieldConstants.AMERICAN_INDIAN: True,
-             AttributeFieldConstants.ASIAN: True,
-             AttributeFieldConstants.AFRICAN_AMERICAN: True,
-             AttributeFieldConstants.PACIFIC: True,
-             AttributeFieldConstants.WHITE: True,
-             AttributeFieldConstants.MULTI_RACE: True},
+             'dmg_eth_hsp': True,
+             'dmg_eth_ami': True,
+             'dmg_eth_asn': True,
+             'dmg_eth_blk': True,
+             'dmg_eth_pcf': True,
+             'dmg_eth_wht': True,
+             'dmg_multi_race': True},
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014,
-             AttributeFieldConstants.HISPANIC_ETH: False,
-             AttributeFieldConstants.AMERICAN_INDIAN: True,
-             AttributeFieldConstants.ASIAN: False,
-             AttributeFieldConstants.AFRICAN_AMERICAN: True,
-             AttributeFieldConstants.PACIFIC: True,
-             AttributeFieldConstants.WHITE: False,
-             AttributeFieldConstants.MULTI_RACE: False}
+             'dmg_eth_hsp': False,
+             'dmg_eth_ami': True,
+             'dmg_eth_asn': False,
+             'dmg_eth_blk': True,
+             'dmg_eth_pcf': True,
+             'dmg_eth_wht': False,
+             'dmg_multi_race': False}
         ]
 
-    def test_validate_category_names(self):
-        category, value = self.hispanic_tracker.get_category_and_value()
-        self.assertEquals('Ethnicity', category)
-        self.assertEquals('HispanicOrLatinoEthnicity', value)
-
-        category, value = self.ami_tracker.get_category_and_value()
-        self.assertEquals('Race', category)
-        self.assertEquals('AmericanIndianOrAlaskaNative', value)
-
-        category, value = self.asn_tracker.get_category_and_value()
-        self.assertEquals('Race', category)
-        self.assertEquals('Asian', value)
-
-        category, value = self.afm_tracker.get_category_and_value()
-        self.assertEquals('Race', category)
-        self.assertEquals('BlackOrAfricanAmerican', value)
-
-        category, value = self.pac_tracker.get_category_and_value()
-        self.assertEquals('Race', category)
-        self.assertEquals('NativeHawaiianOrOtherPacificIslander', value)
-
-        category, value = self.wht_tracker.get_category_and_value()
-        self.assertEquals('Race', category)
-        self.assertEquals('White', value)
-
-        category, value = self.mul_tracker.get_category_and_value()
-        self.assertEquals('Race', category)
-        self.assertEquals('DemographicRaceTwoOrMoreRaces', value)
-
-    def test_hisp_eth_count(self):
+    def test_tracker_map_counts(self):
         for row in self.hsp_db_rows:
             self.hispanic_tracker.track(row['state_code'], row)
             self.hispanic_tracker.track(row['district_guid'], row)

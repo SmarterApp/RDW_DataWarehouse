@@ -284,7 +284,7 @@ def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, b
     create a query to find all delete/updated record in current batch
     '''
     values = {}
-    matched_prod_values['status'] = matching_conf['new_status']
+    matched_prod_values['rec_status'] = matching_conf['new_status']
 
     matched_preprod_values = matched_prod_values.copy()
     matched_preprod_values['rec_status'] = matching_conf['rec_status']

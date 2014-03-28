@@ -120,6 +120,7 @@ def get_list_of_students_report(params):
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
         assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
+        assessment['effective_date'] = result['effective_date']
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
 
         assessments[subjects_map[result['asmt_subject']]] = assessment
@@ -179,6 +180,7 @@ def get_list_of_students(params):
                                     fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                                     fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                     dim_asmt.c.asmt_subject.label('asmt_subject'),
+                                    dim_asmt.c.effective_date.label('effective_date'),
                                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                                     fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
                                     fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),

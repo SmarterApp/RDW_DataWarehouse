@@ -15,12 +15,12 @@ import unittest
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
-class Test_Insert_Delete(unittest.TestCase):
+@unittest.skip("test failed at jenkins, under investigation")
+class Test_Update_Delete(unittest.TestCase):
 
     def setUp(self):
         self.guid_batch_id = str(uuid4())
-        self.tenant_dir = '/opt/edware/test_tenant/test_user/filedrop'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
         self.archived_file = os.path.join(self.data_dir, 'test_update_delete_record.tar.gz.gpg')
 

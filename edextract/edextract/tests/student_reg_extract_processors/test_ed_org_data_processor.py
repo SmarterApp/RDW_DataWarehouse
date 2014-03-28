@@ -4,7 +4,7 @@ __author__ = 'npandey'
 import unittest
 from unittest.mock import MagicMock
 from edextract.student_reg_extract_processors.ed_org_data_processor import EdOrgDataProcessor
-from edextract.student_reg_extract_processors.attribute_constants import AttributeConstants
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants
 from edextract.trackers.total_tracker import TotalTracker
 
 
@@ -19,7 +19,7 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         EdOrgDataProcessor.__abstractmethods__ = set()  # Make this class instantiable for these tests only.
         self.data_processor = EdOrgDataProcessor(self.category_tracker, {})
 
-        self.data = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC'}
+        self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC'}
 
     def test_call_tracker(self):
         self.data_processor._call_trackers('123', self.data)

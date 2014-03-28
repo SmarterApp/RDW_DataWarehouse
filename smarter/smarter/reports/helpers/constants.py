@@ -64,6 +64,7 @@ class Constants():
     HASINTERIM = 'hasInterim'
     ROWID = 'rowId'
     RESULTS = 'results'
+    STUDENT_REG = 'student_reg'
     DIM_INST_HIER = 'dim_inst_hier'
     DIM_ASMT = 'dim_asmt'
     DIM_STAFF = 'dim_staff'

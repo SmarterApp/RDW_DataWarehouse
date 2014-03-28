@@ -68,7 +68,7 @@ class ValidateMultiFiles(unittest.TestCase):
             query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
             timer = 0
             result = connector.execute(query).fetchall()
-            while timer < max_wait and len(result) < len(self.files):
+            while timer < max_wait and len(result) <= len(self.files):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()

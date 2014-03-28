@@ -7,15 +7,15 @@ Test Student Registration District Data Processor
 """
 
 import unittest
-from edextract.student_reg_extract_processors.attribute_constants import AttributeConstants
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants
 from unittest.mock import MagicMock
 
 
 class TestDistrictDataProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.results = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC',
-                        AttributeConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeConstants.DISTRICT_NAME: 'Guilford County'}
+        self.results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
+                        AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County'}
         self.category_trackers = []
 
         self.district_data_processor = DistrictDataProcessor(self.category_trackers)

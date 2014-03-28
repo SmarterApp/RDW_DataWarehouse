@@ -9,7 +9,7 @@ from smarter.reports.compare_pop_report import get_comparing_populations_report,
     CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route,\
     set_default_min_cell_size, get_merged_report_records, reset_subject_intervals
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
@@ -260,8 +260,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[filters.FILTERS_PROGRAM_504] = ['N']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 4)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 98)
-        self.assertEqual(results['records'][1]['results']['subject2']['total'], 83)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 97)
+        self.assertEqual(results['records'][1]['results']['subject2']['total'], 66)
 
     def test_state_view_with_504_not_stated(self):
         testParam = {}

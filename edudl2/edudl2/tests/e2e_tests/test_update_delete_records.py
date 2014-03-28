@@ -79,19 +79,19 @@ class Test_Insert_Delete(unittest.TestCase):
         with get_target_connection() as ed_connector:
             ed_connector.set_metadata_by_reflect(schema_name)
             fact_table = ed_connector.get_table('fact_asmt_outcome')
-            delete_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
+            delete_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
             expected_status_val_D = [('D',)]
             #verify delete record
             self.assertEquals(delete_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
             #Verify Update record
-            update_output_data = select([fact_table.c.status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
+            update_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
             update_output_table = ed_connector.execute(update_output_data).fetchall()
             self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
             self.assertIn(('I',), update_output_table, "Insert status I is not found in the Update record")
 
             # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.status == 'I'))
+            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.rec_status == 'I'))
             new_asmt_score = ed_connector.execute(update_asmt_score).fetchall()
             print('Updated asmt_score after update is:', new_asmt_score)
             expected_asmt_score = [(1500,)]

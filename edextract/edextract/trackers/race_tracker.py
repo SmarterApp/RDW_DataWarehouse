@@ -9,7 +9,7 @@ from edextract.student_reg_extract_processors.category_constants import Category
 from edextract.trackers.category_tracker import CategoryTracker
 
 
-class HispanicLatino(CategoryTracker):
+class HispanicLatinoTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.ETHNICITY, CategoryValueConstants.HISPANIC_ETH)
@@ -18,7 +18,7 @@ class HispanicLatino(CategoryTracker):
         return row[AttributeFieldConstants.HISPANIC_ETH]
 
 
-class AmericanIndian(CategoryTracker):
+class AmericanIndianTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.RACE, CategoryValueConstants.AMERICAN_INDIAN)
@@ -27,7 +27,7 @@ class AmericanIndian(CategoryTracker):
         return row[AttributeFieldConstants.AMERICAN_INDIAN]
 
 
-class Asian(CategoryTracker):
+class AsianTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.RACE, CategoryValueConstants.ASIAN)
@@ -36,7 +36,7 @@ class Asian(CategoryTracker):
         return row[AttributeFieldConstants.ASIAN]
 
 
-class AfricanAmerican(CategoryTracker):
+class AfricanAmericanTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.RACE, CategoryValueConstants.AFRICAN_AMERICAN)
@@ -45,7 +45,7 @@ class AfricanAmerican(CategoryTracker):
         return row[AttributeFieldConstants.AFRICAN_AMERICAN]
 
 
-class PacificIslander(CategoryTracker):
+class PacificIslanderTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.RACE, CategoryValueConstants.PACIFIC)
@@ -54,7 +54,7 @@ class PacificIslander(CategoryTracker):
         return row[AttributeFieldConstants.PACIFIC]
 
 
-class White(CategoryTracker):
+class WhiteTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.RACE, CategoryValueConstants.WHITE)
@@ -63,7 +63,7 @@ class White(CategoryTracker):
         return row[AttributeFieldConstants.WHITE]
 
 
-class MultiRace(CategoryTracker):
+class MultiRaceTracker(CategoryTracker):
 
     def __init__(self):
         super().__init__(CategoryNameConstants.RACE, CategoryValueConstants.MULTI_RACE)

@@ -37,7 +37,7 @@ fi
 CELERYD_LOG_LEVEL=${CELERYD_LOG_LEVEL:-${CELERYD_LOGLEVEL:-$DEFAULT_LOG_LEVEL}}
 CELERYD_MULTI=${CELERYD_MULTI:-"celeryd-multi"}
 CELERYD=${CELERYD:-$DEFAULT_CELERYD}
-CELERYD_NODES=${CELERYD_NODES:-$DEFAULT_NODES}
+CELERYD_NODES=${${CELERYD_NODES:-$DEFAULT_NODES} -c 1}
 
 export CELERY_LOADER
 
@@ -194,7 +194,6 @@ case "$1" in
     start)
         check_dev_null
         check_paths
-        setup_queues
         start_workers
     ;;
 
@@ -215,7 +214,6 @@ case "$1" in
     restart)
         check_dev_null
         check_paths
-        setup_queues
         restart_workers
     ;;
     try-restart)

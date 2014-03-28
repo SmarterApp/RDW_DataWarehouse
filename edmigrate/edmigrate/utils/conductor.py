@@ -11,31 +11,50 @@ from edmigrate.utils.replication_monitor import replication_monitor
 import time
 from edmigrate.exceptions import ConductorTimeoutException
 import logging
-from edmigrate.settings.config import Config, get_setting
+import threading
 
 
 logger = logging.getLogger('edmigrate')
 
 
 class Conductor:
-    def __init__(self):
+    __lock = threading.Lock()
+
+    def __init__(self, locktimeout=60, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
+        self.__player_trakcer = None
+        self.__replication_lag_tolerance = replication_lag_tolerance
+        self.__apply_lag_tolerance = apply_lag_tolerance
+        self.__time_lag_tolerance = time_lag_tolerance
+        self.__monitor_timeout = monitor_timeout
+        if not self.__lock.acquire(timeout=locktimeout):
+            raise ConductorTimeoutException()
         self.__player_trakcer = PlayerTracker()
+        self.__player_trakcer.clear()
         self.__player_trakcer.set_migration_in_process(True)
-        self.__broadcast_queue = get_setting(Config.BROADCAST_QUEUE)
+        self.__broadcast_queue = Constants.BROADCAST_EXCHANGE
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, value, tb):
-        return self.__player_trakcer.set_migration_in_process(False)
+        if self.__player_trakcer:
+            self.__player_trakcer.set_migration_in_process(False)
+        if self.__lock.locked():
+            self.__lock.release()
 
     def __del__(self):
-        self.__player_trakcer.set_migration_in_process(False)
+        if self.__player_trakcer:
+            self.__player_trakcer.set_migration_in_process(False)
+        if self.__lock.locked():
+            self.__lock.release()
 
     def send_reset_players(self):
-        self.__player_trakcer.reset()
-        player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, None), exchange=self.__broadcast_queue)  # @UndefinedVariable
-        self.__log(Constants.COMMAND_RESET_PLAYERS, None, None)
+        group_ids = self.__player_trakcer.get_player_ids()
+        if group_ids:
+            player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
+            self.__log(Constants.COMMAND_RESET_PLAYERS, None, group_ids)
+        else:
+            logger.debug('Command[' + Constants.COMMAND_RESET_PLAYERS + '] was not sent because there is no registered players')
 
     def accept_players(self):
         self.__player_trakcer.set_accept_player(True)
@@ -78,7 +97,7 @@ class Conductor:
         self.__log(Constants.COMMAND_START_REPLICATION, player_group, group_ids)
 
     def migrate(self):
-        start_migrate_daily_delta()
+        return start_migrate_daily_delta()
 
     def wait_PGPool_disconnected(self, player_group=None, timeout=30):
         self.__wait_for_status(player_group, timeout, self.__player_trakcer.is_pgpool_disconnected)
@@ -94,7 +113,7 @@ class Conductor:
 
     def monitor_replication_status(self, player_group=None):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)
-        replication_monitor(group_ids)
+        replication_monitor(group_ids, replication_lag_tolerance=self.__replication_lag_tolerance, apply_lag_tolerance=self.__apply_lag_tolerance, time_lag_tolerance=self.__time_lag_tolerance, timeout=self.__monitor_timeout)
 
     def __wait_for_status(self, player_group, timeout, func):
         group_ids = self.__player_trakcer.get_player_ids(player_group=player_group)

@@ -1,8 +1,5 @@
 __author__ = 'sravi'
 from edmigrate.utils.constants import Constants
-import ast
-import logging
-from logging.handlers import SysLogHandler
 
 
 class Config():
@@ -22,7 +19,6 @@ class Config():
     DEFAULT_ROUTUNG_QUEUE = 'migrate.celery.CELERY_DEFAULT_ROUTING_QUEUE'
     BROKER_URL = 'migrate.celery.BROKER_URL'
     EAGER_MODE = 'migrate.celery.celery_always_eager'
-    SYSLOG_ADDRESS = 'migrate.syslog.address'
 
 
 # list of configurations that are specific to edmigrate
@@ -41,8 +37,7 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.MASTER_HOSTNAME, str, Constants.LOCALHOST),
                   (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
                   (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
-                  (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO),
-                  (Config.SYSLOG_ADDRESS, str, Constants.SYSLOG_ADDRESS)]
+                  (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO)]
 
 
 # Keeps track of configuration related to edmigrate that is read off from ini
@@ -70,22 +65,3 @@ def get_setting(key, default_value=None):
     :params string key:  lookup key
     '''
     return settings.get(key.lower(), default_value)
-
-
-def setup_syslog(settings):
-    logger = logging.getLogger(Constants.WORKER_NAME)
-    syslog_address = get_setting(Config.SYSLOG_ADDRESS, Constants.SYSLOG_ADDRESS)
-    # parse the address settings
-    if type(syslog_address) == str:
-        syslog_address = ast.literal_eval(syslog_address)
-    # fails when syslog_address is not as tuple. log error to user
-    if type(syslog_address) not in [str, tuple]:
-        logger.error("{name} can't set up syslogger due to configuration error in format ".format(name=Constants.WORKER_NAME))
-    # the input is not in right format
-    if type(syslog_address) == tuple and len(syslog_address) not in [1, 2]:
-        logger.error("{name} can't set up syslogger due to configuration errors in wrong tuple.".format(name=Constants.WORKER_NAME))
-
-    logger = logging.getLogger(Constants.WORKER_NAME)
-    syslog_handler = SysLogHandler(address=syslog_address)
-    syslog_handler.setLevel(logging.ERROR)
-    logger.addHandler(syslog_handler)

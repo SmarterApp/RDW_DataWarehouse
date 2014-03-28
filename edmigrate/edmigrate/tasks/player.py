@@ -1,5 +1,5 @@
 '''
-Created on Mar 21, 2014ß
+Created on Mar 21, 2014
 
 @author: ejen
 '''
@@ -16,16 +16,17 @@ from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
-from celery.app.control import Control
 
 
 class Player(metaclass=Singleton):
 
     def __init__(self, logger=logging.getLogger(Constants.WORKER_NAME),
+                 admin_logger=logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER),
                  connection=Connection(get_broker_url()),
                  exchange=conductor.exchange,
                  routing_key=Constants.CONDUCTOR_ROUTING_KEY):
         self.logger = logger
+        self.admin_logger = admin_logger
         self.connection = connection
         self.exchange = exchange
         self.routing_key = routing_key

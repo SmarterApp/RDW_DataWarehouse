@@ -1,8 +1,9 @@
 __author__ = 'sravi'
 from edcore.database.stats_connector import StatsDBConnection
-from edworker.celery import setup_celery as setup, configure_celeryd, get_config_file
-from edmigrate.settings.config import setup_settings, setup_syslog
+from edworker.celery import setup_celery as setup_for_worker, configure_celeryd, get_config_file
+from edmigrate.settings.config import setup_settings
 import logging
+import logging.config
 from edcore.database import initialize_db
 from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.utils.constants import Constants
@@ -20,9 +21,8 @@ def setup_celery(settings, prefix=PREFIX):
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
-    setup(celery, settings, prefix)
+    setup_for_worker(celery, settings, prefix)
     setup_settings(settings)
-    setup_syslog(settings)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
@@ -34,4 +34,4 @@ if prod_config:
     initialize_db(RepMgrDBConnection, conf)
     initialize_db(StatsDBConnection, conf)
     setup_settings(conf)
-    setup_syslog(conf)
+    logging.config.fileConfig(prod_config)

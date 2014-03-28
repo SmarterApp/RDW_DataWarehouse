@@ -10,11 +10,9 @@ from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.utils import drop_schema
 
 __author__ = 'sravi'
-# This is a hack needed for now for migration.
-# These tables will be dropped in future
-# CR, remove this line after dim_section is removed from database
 TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
 logger = logging.getLogger('edmigrate')
+admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
 def get_batches_to_migrate(tenant=None):
@@ -114,6 +112,9 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
 
     :returns number of record updated
     """
+    if schema_name:
+        logger.debug('migrating schema[' + schema_name + ']')
+    logger.debug('migrating table[' + table_name + ']')
     delete_count = 0
     source_connector.set_metadata_by_reflect(schema_name)
     source_table = source_connector.get_table(table_name)
@@ -237,9 +238,9 @@ def migrate_batch(batch):
             logger.info('Master: Migration successful for batch: ' + batch_guid)
             rtn = True
         except Exception as e:
-            logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
-            logger.info(e)
-            logger.exception('migrate rollback because')
+            logger.error('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
+            logger.error(e)
+            #logger.exception('exception detail')
             trans.rollback()
             try:
                 report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
@@ -278,15 +279,20 @@ def start_migrate_daily_delta(tenant=None):
 
     :returns Nothing
     """
-    all_migrate_ok = True
+    migrate_ok_count = 0
     batches_to_migrate = get_batches_to_migrate(tenant=tenant)
     if batches_to_migrate:
         for batch in batches_to_migrate:
-            batch[UdlStatsConstants.SCHEMA_NAME] = batch[UdlStatsConstants.BATCH_GUID]
-            logger.debug('processing batch_guid: ' + batch[UdlStatsConstants.BATCH_GUID])
-            if not migrate_batch(batch=batch):
-                all_migrate_ok = False
-            # cleanup_batch(batch=batch)
+            batch_guid = batch[UdlStatsConstants.BATCH_GUID]
+            batch[UdlStatsConstants.SCHEMA_NAME] = batch_guid
+            logger.debug('processing batch_guid: ' + batch_guid)
+            if migrate_batch(batch=batch):
+                migrate_ok_count += 1
+                admin_logger.info('Migrating batch[' + batch_guid + '] is processed')
+            else:
+                admin_logger.info('Migrating batch[' + batch_guid + '] failed')
+            cleanup_batch(batch=batch)
     else:
-        logger.debug('no batch found to migrate')
-    return all_migrate_ok
+        logger.debug('no batch found for migration')
+        admin_logger.info('no batch found for migration')
+    return migrate_ok_count, len(batches_to_migrate)

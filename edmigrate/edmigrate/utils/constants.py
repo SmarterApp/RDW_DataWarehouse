@@ -25,7 +25,7 @@ class Constants():
     WHERE_TAKEN_NAME = 'where_taken_name'
     STATUS = 'rec_status'
     TO_DATE = 'to_date'
-    STATUS_CREATED = 'C'
+    STATUS_CURRENT = 'C'
     STATUS_DELETED = 'D'
 
     PLAYER_TASK = 'edmigrate.tasks.player'

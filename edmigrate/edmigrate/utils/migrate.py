@@ -132,7 +132,7 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     # for Insert
     insert_query = select([source_table]).where(source_table.c.batch_guid == batch_guid)
     if has_status:
-        insert_query = insert_query.where(and_(source_table.c.rec_status == Constants.STATUS_CREATED))
+        insert_query = insert_query.where(and_(source_table.c.rec_status == Constants.STATUS_CURRENT))
     insert_count = _process_batch(source_connector, dest_connector, preprod_to_prod_insert_records, insert_query, table_name,
                                   primary_key, batch_size)
     return delete_count, insert_count
@@ -174,7 +174,7 @@ def preprod_to_prod_delete_records(source_connector, dest_connector, table_name,
     dest_table = dest_connector.get_table(table_name)
     dest_primary_key_field = dest_table.columns[primary_key_field_name]
     # set status to D if the status is C for all records in the batch
-    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.rec_status == Constants.STATUS_CREATED)).values(rec_status=Constants.STATUS_DELETED)
+    update_query = dest_table.update(and_(dest_primary_key_field.in_(primary_keys), dest_table.c.rec_status == Constants.STATUS_CURRENT)).values(rec_status=Constants.STATUS_DELETED)
     # if number of updated records doesn't match, that means one of the records was changed from C to D by another batch
     if dest_connector.execute(update_query).rowcount != batch_size:
         raise EdMigrateRecordAlreadyDeletedException

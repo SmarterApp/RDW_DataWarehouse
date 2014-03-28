@@ -128,10 +128,11 @@ def test_create_assessment_outcome_object_skipped():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, skip_rate=1,
-                                                              retake_rate=0, delete_rate=0, update_rate=0)
+    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=1,
+                                                   retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
     assert len(outcomes) == 0
@@ -147,15 +148,16 @@ def test_create_assessment_outcome_object_one_active_result():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, skip_rate=0,
-                                                              retake_rate=0, delete_rate=0, update_rate=0)
+    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+                                                   retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
     assert len(outcomes) == 1
-    assert outcomes[0].result_status == 'C'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt.guid][0].result_status == 'C'
+    assert outcomes[asmt.guid][0].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_object_retake_results():
@@ -168,17 +170,18 @@ def test_create_assessment_outcome_object_retake_results():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, skip_rate=0,
-                                                              retake_rate=1, delete_rate=0, update_rate=0)
+    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+                                                   retake_rate=1, delete_rate=0, update_rate=0)
 
     # Tests
-    assert len(outcomes) == 2
-    assert outcomes[0].result_status == 'I'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 20)
+    assert len(outcomes) == 1
+    assert outcomes[asmt.guid][0].result_status == 'I'
+    assert outcomes[asmt.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt.guid][1].result_status == 'C'
+    assert outcomes[asmt.guid][1].date_taken == datetime.date(2015, 5, 20)
 
 
 def test_create_assessment_outcome_object_one_deleted_result():
@@ -191,15 +194,16 @@ def test_create_assessment_outcome_object_one_deleted_result():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, skip_rate=0,
-                                                              retake_rate=0, delete_rate=1, update_rate=0)
+    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+                                                   retake_rate=0, delete_rate=1, update_rate=0)
 
     # Tests
     assert len(outcomes) == 1
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt.guid][0].result_status == 'D'
+    assert outcomes[asmt.guid][0].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_object_update_no_second_delete_results():
@@ -212,17 +216,18 @@ def test_create_assessment_outcome_object_update_no_second_delete_results():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, skip_rate=0,
-                                                              retake_rate=0, delete_rate=0, update_rate=1)
+    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+                                                   retake_rate=0, delete_rate=0, update_rate=1)
 
     # Tests
-    assert len(outcomes) == 2
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 15)
+    assert len(outcomes) == 1
+    assert outcomes[asmt.guid][0].result_status == 'D'
+    assert outcomes[asmt.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt.guid][1].result_status == 'C'
+    assert outcomes[asmt.guid][1].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_object_update_second_delete_results():
@@ -235,17 +240,18 @@ def test_create_assessment_outcome_object_update_second_delete_results():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, skip_rate=0,
-                                                              retake_rate=0, delete_rate=1, update_rate=1)
+    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+                                                   retake_rate=0, delete_rate=1, update_rate=1)
 
     # Tests
-    assert len(outcomes) == 2
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].result_status == 'D'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 15)
+    assert len(outcomes) == 1
+    assert outcomes[asmt.guid][0].result_status == 'D'
+    assert outcomes[asmt.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt.guid][1].result_status == 'D'
+    assert outcomes[asmt.guid][1].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_objects_no_interims_skipped():
@@ -258,10 +264,11 @@ def test_create_assessment_outcome_objects_no_interims_skipped():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN,
-                                                               skip_rate=1, retake_rate=0, delete_rate=0, update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+                                                    skip_rate=1, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
     assert len(outcomes) == 0
@@ -277,15 +284,16 @@ def test_create_assessment_outcome_objects_no_interims_one_active_result():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN,
-                                                               skip_rate=0, retake_rate=0, delete_rate=0, update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+                                                    skip_rate=0, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
     assert len(outcomes) == 1
-    assert outcomes[0].result_status == 'C'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][0].result_status == 'C'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_objects_no_interims_retake_results():
@@ -298,17 +306,18 @@ def test_create_assessment_outcome_objects_no_interims_retake_results():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN,
-                                                               skip_rate=0, retake_rate=1, delete_rate=0, update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+                                                    skip_rate=0, retake_rate=1, delete_rate=0, update_rate=0)
 
     # Tests
-    assert len(outcomes) == 2
-    assert outcomes[0].result_status == 'I'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 20)
+    assert len(outcomes) == 1
+    assert outcomes[asmt_summ.guid][0].result_status == 'I'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][1].result_status == 'C'
+    assert outcomes[asmt_summ.guid][1].date_taken == datetime.date(2015, 5, 20)
 
 
 def test_create_assessment_outcome_objects_no_interim_one_deleted_result():
@@ -321,15 +330,16 @@ def test_create_assessment_outcome_objects_no_interim_one_deleted_result():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN,
-                                                               skip_rate=0, retake_rate=0, delete_rate=1, update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+                                                    skip_rate=0, retake_rate=0, delete_rate=1, update_rate=0)
 
     # Tests
     assert len(outcomes) == 1
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][0].result_status == 'D'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_objects_no_interim_update_no_second_delete_results():
@@ -342,17 +352,18 @@ def test_create_assessment_outcome_objects_no_interim_update_no_second_delete_re
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN,
-                                                               skip_rate=0, retake_rate=0, delete_rate=0, update_rate=1)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+                                                    skip_rate=0, retake_rate=0, delete_rate=0, update_rate=1)
 
     # Tests
-    assert len(outcomes) == 2
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 15)
+    assert len(outcomes) == 1
+    assert outcomes[asmt_summ.guid][0].result_status == 'D'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][1].result_status == 'C'
+    assert outcomes[asmt_summ.guid][1].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_objects_no_interim_update_second_delete_results():
@@ -365,17 +376,18 @@ def test_create_assessment_outcome_objects_no_interim_update_second_delete_resul
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN,
-                                                               skip_rate=0, retake_rate=0, delete_rate=1, update_rate=1)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+                                                    skip_rate=0, retake_rate=0, delete_rate=1, update_rate=1)
 
     # Tests
-    assert len(outcomes) == 2
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].result_status == 'D'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 15)
+    assert len(outcomes) == 1
+    assert outcomes[asmt_summ.guid][0].result_status == 'D'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][1].result_status == 'D'
+    assert outcomes[asmt_summ.guid][1].date_taken == datetime.date(2015, 5, 15)
 
 
 def test_create_assessment_outcome_objects_interims_skipped():
@@ -391,11 +403,11 @@ def test_create_assessment_outcome_objects_interims_skipped():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                               ID_GEN, skip_rate=1, retake_rate=0, delete_rate=0,
-                                                               update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+                                                    outcomes, skip_rate=1, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
     assert len(outcomes) == 0
@@ -414,26 +426,26 @@ def test_create_assessment_outcome_objects_interims_one_active_result():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                               ID_GEN, skip_rate=0, retake_rate=0, delete_rate=0,
-                                                               update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+                                                    outcomes, skip_rate=0, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
     assert len(outcomes) == 4
-    assert outcomes[0].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[0].result_status == 'C'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[2].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[2].result_status == 'C'
-    assert outcomes[2].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[3].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[3].result_status == 'C'
-    assert outcomes[3].date_taken == datetime.date(2015, 3, 15)
+    assert outcomes[asmt_summ.guid][0].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][0].result_status == 'C'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[interim_asmts[0].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][0].result_status == 'C'
+    assert outcomes[interim_asmts[0].guid][0].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[1].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][0].result_status == 'C'
+    assert outcomes[interim_asmts[1].guid][0].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[2].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][0].result_status == 'C'
+    assert outcomes[interim_asmts[2].guid][0].date_taken == datetime.date(2015, 3, 15)
 
 
 def test_create_assessment_outcome_objects_interims_retake_results():
@@ -449,38 +461,38 @@ def test_create_assessment_outcome_objects_interims_retake_results():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                               ID_GEN, skip_rate=0, retake_rate=1, delete_rate=0,
-                                                               update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+                                                    outcomes, skip_rate=0, retake_rate=1, delete_rate=0, update_rate=0)
 
     # Tests
-    assert len(outcomes) == 8
-    assert outcomes[0].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[0].result_status == 'I'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 20)
-    assert outcomes[2].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[2].result_status == 'I'
-    assert outcomes[2].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[3].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[3].result_status == 'C'
-    assert outcomes[3].date_taken == datetime.date(2014, 9, 20)
-    assert outcomes[4].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[4].result_status == 'I'
-    assert outcomes[4].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[5].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[5].result_status == 'C'
-    assert outcomes[5].date_taken == datetime.date(2014, 12, 20)
-    assert outcomes[6].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[6].result_status == 'I'
-    assert outcomes[6].date_taken == datetime.date(2015, 3, 15)
-    assert outcomes[7].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[7].result_status == 'C'
-    assert outcomes[7].date_taken == datetime.date(2015, 3, 20)
+    assert len(outcomes) == 4
+    assert outcomes[asmt_summ.guid][0].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][0].result_status == 'I'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][1].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][1].result_status == 'C'
+    assert outcomes[asmt_summ.guid][1].date_taken == datetime.date(2015, 5, 20)
+    assert outcomes[interim_asmts[0].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][0].result_status == 'I'
+    assert outcomes[interim_asmts[0].guid][0].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[0].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][1].result_status == 'C'
+    assert outcomes[interim_asmts[0].guid][1].date_taken == datetime.date(2014, 9, 20)
+    assert outcomes[interim_asmts[1].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][0].result_status == 'I'
+    assert outcomes[interim_asmts[1].guid][0].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[1].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][1].result_status == 'C'
+    assert outcomes[interim_asmts[1].guid][1].date_taken == datetime.date(2014, 12, 20)
+    assert outcomes[interim_asmts[2].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][0].result_status == 'I'
+    assert outcomes[interim_asmts[2].guid][0].date_taken == datetime.date(2015, 3, 15)
+    assert outcomes[interim_asmts[2].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][1].result_status == 'C'
+    assert outcomes[interim_asmts[2].guid][1].date_taken == datetime.date(2015, 3, 20)
 
 
 def test_create_assessment_outcome_objects_interim_one_deleted_result():
@@ -496,26 +508,26 @@ def test_create_assessment_outcome_objects_interim_one_deleted_result():
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                               ID_GEN, skip_rate=0, retake_rate=0, delete_rate=1,
-                                                               update_rate=0)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+                                                    outcomes, skip_rate=0, retake_rate=0, delete_rate=1, update_rate=0)
 
     # Tests
     assert len(outcomes) == 4
-    assert outcomes[0].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[1].result_status == 'D'
-    assert outcomes[1].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[2].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[2].result_status == 'D'
-    assert outcomes[2].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[3].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[3].result_status == 'D'
-    assert outcomes[3].date_taken == datetime.date(2015, 3, 15)
+    assert outcomes[asmt_summ.guid][0].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][0].result_status == 'D'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[interim_asmts[0].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[0].guid][0].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[1].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[1].guid][0].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[2].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[2].guid][0].date_taken == datetime.date(2015, 3, 15)
 
 
 def test_create_assessment_outcome_objects_interim_update_no_second_delete_results():
@@ -531,38 +543,38 @@ def test_create_assessment_outcome_objects_interim_update_no_second_delete_resul
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                               ID_GEN, skip_rate=0, retake_rate=0, delete_rate=0,
-                                                               update_rate=1)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+                                                    outcomes, skip_rate=0, retake_rate=0, delete_rate=0, update_rate=1)
 
     # Tests
-    assert len(outcomes) == 8
-    assert outcomes[0].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[1].result_status == 'C'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[2].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[2].result_status == 'D'
-    assert outcomes[2].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[3].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[3].result_status == 'C'
-    assert outcomes[3].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[4].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[4].result_status == 'D'
-    assert outcomes[4].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[5].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[5].result_status == 'C'
-    assert outcomes[5].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[6].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[6].result_status == 'D'
-    assert outcomes[6].date_taken == datetime.date(2015, 3, 15)
-    assert outcomes[7].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[7].result_status == 'C'
-    assert outcomes[7].date_taken == datetime.date(2015, 3, 15)
+    assert len(outcomes) == 4
+    assert outcomes[asmt_summ.guid][0].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][0].result_status == 'D'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][1].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][1].result_status == 'C'
+    assert outcomes[asmt_summ.guid][1].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[interim_asmts[0].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[0].guid][0].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[0].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][1].result_status == 'C'
+    assert outcomes[interim_asmts[0].guid][1].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[1].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[1].guid][0].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[1].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][1].result_status == 'C'
+    assert outcomes[interim_asmts[1].guid][1].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[2].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[2].guid][0].date_taken == datetime.date(2015, 3, 15)
+    assert outcomes[interim_asmts[2].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][1].result_status == 'C'
+    assert outcomes[interim_asmts[2].guid][1].date_taken == datetime.date(2015, 3, 15)
 
 
 def test_create_assessment_outcome_objects_interim_update_second_delete_results():
@@ -578,35 +590,35 @@ def test_create_assessment_outcome_objects_interim_update_second_delete_results(
     section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
 
     # Create outcomes
-    outcomes = generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                               ID_GEN, skip_rate=0, retake_rate=0, delete_rate=1,
-                                                               update_rate=1)
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+                                                    outcomes, skip_rate=0, retake_rate=0, delete_rate=1, update_rate=1)
 
     # Tests
-    assert len(outcomes) == 8
-    assert outcomes[0].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[0].result_status == 'D'
-    assert outcomes[0].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[1].assessment.asmt_type == 'SUMMATIVE'
-    assert outcomes[1].result_status == 'D'
-    assert outcomes[1].date_taken == datetime.date(2015, 5, 15)
-    assert outcomes[2].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[2].result_status == 'D'
-    assert outcomes[2].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[3].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[3].result_status == 'D'
-    assert outcomes[3].date_taken == datetime.date(2014, 9, 15)
-    assert outcomes[4].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[4].result_status == 'D'
-    assert outcomes[4].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[5].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[5].result_status == 'D'
-    assert outcomes[5].date_taken == datetime.date(2014, 12, 15)
-    assert outcomes[6].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[6].result_status == 'D'
-    assert outcomes[6].date_taken == datetime.date(2015, 3, 15)
-    assert outcomes[7].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
-    assert outcomes[7].result_status == 'D'
-    assert outcomes[7].date_taken == datetime.date(2015, 3, 15)
+    assert len(outcomes) == 4
+    assert outcomes[asmt_summ.guid][0].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][0].result_status == 'D'
+    assert outcomes[asmt_summ.guid][0].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[asmt_summ.guid][1].assessment.asmt_type == 'SUMMATIVE'
+    assert outcomes[asmt_summ.guid][1].result_status == 'D'
+    assert outcomes[asmt_summ.guid][1].date_taken == datetime.date(2015, 5, 15)
+    assert outcomes[interim_asmts[0].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[0].guid][0].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[0].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[0].guid][1].result_status == 'D'
+    assert outcomes[interim_asmts[0].guid][1].date_taken == datetime.date(2014, 9, 15)
+    assert outcomes[interim_asmts[1].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[1].guid][0].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[1].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[1].guid][1].result_status == 'D'
+    assert outcomes[interim_asmts[1].guid][1].date_taken == datetime.date(2014, 12, 15)
+    assert outcomes[interim_asmts[2].guid][0].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][0].result_status == 'D'
+    assert outcomes[interim_asmts[2].guid][0].date_taken == datetime.date(2015, 3, 15)
+    assert outcomes[interim_asmts[2].guid][1].assessment.asmt_type == 'INTERIM COMPREHENSIVE'
+    assert outcomes[interim_asmts[2].guid][1].result_status == 'D'
+    assert outcomes[interim_asmts[2].guid][1].date_taken == datetime.date(2015, 3, 15)

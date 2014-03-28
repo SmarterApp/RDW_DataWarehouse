@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = ['psycopg2',
-            'SQLAlchemy',
+            'SQLAlchemy==0.8.3',
             'py-postgresql',
             'mock',
             'zope.component >= 4.0.2',

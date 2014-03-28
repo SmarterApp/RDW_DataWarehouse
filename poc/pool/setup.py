@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 requires = [
     'pyramid',
-    'SQLAlchemy']
+    'SQLAlchemy==0.8.3']
 
 
 setup(name='pool',

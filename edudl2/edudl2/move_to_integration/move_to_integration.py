@@ -127,12 +127,12 @@ def create_migration_query(conn, source_schema, source_table, target_schema, tar
     source_columns_with_translation_rules = [source_column for source_column in source_columns_with_tran_rule]
     error_table = conn.get_table(error_table_name)
 
-    staging_table_alias = aliased(staging_table, name='A')
-    error_table_alias = aliased(error_table, name='B')
+    #staging_table_alias = aliased(staging_table, name='A')
+    #error_table_alias = aliased(error_table, name='B')
     select_query = select(source_columns_with_translation_rules,
-                          from_obj=staging_table_alias).select_from(staging_table_alias.outerjoin(error_table_alias, error_table_alias.c.record_sid == staging_table_alias.c.record_sid)).\
-        where(and_(staging_table_alias.c.guid_batch == guid_batch,
-                   error_table_alias.c.record_sid == None))
+                          from_obj=staging_table).select_from(staging_table.outerjoin(error_table, error_table.c.record_sid == staging_table.c.record_sid)).\
+        where(and_(staging_table.c.guid_batch == guid_batch,
+                   error_table.c.record_sid == None))
     #print(str(select_query))
     query = integration_table.insert(inline=True).from_select(target_columns_to_pick, select_query)
     print(str(query))

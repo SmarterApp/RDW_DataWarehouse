@@ -1,11 +1,11 @@
 import unittest
-from edextract.data_extract_generation.statistics_data_generator import (_percentage, generate_data_row, _format_floatval,
-                                                                         _format_intval)
+from edextract.data_extract_generation.statistics_generator import (_percentage, generate_data_row, _format_floatval,
+                                                                    _format_intval)
 
 __author__ = 'ablum'
 
 
-class TestStatisticsDataGenerator(unittest.TestCase):
+class TestStatisticsGenerator(unittest.TestCase):
     def setUp(self):
         pass
 

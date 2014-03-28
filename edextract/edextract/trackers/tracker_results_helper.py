@@ -4,7 +4,7 @@ __author__ = 'tshewchuk'
 This module contain functions to compile report data from trackers into a generator.
 """
 
-from edextract.data_extract_generation.statistics_data_generator import generate_data_row
+from edextract.data_extract_generation.statistics_generator import generate_data_row
 from itertools import chain
 
 

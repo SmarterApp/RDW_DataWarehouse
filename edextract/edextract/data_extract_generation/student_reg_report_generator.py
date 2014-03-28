@@ -1,5 +1,3 @@
-from edextract.trackers.gender_tracker import FemaleTracker, MaleTracker
-
 __author__ = 'tshewchuk'
 
 """
@@ -14,11 +12,12 @@ from edextract.tasks.constants import Constants as TaskConstants
 from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.trackers.total_tracker import TotalTracker
-from edextract.data_extract_generation.row_data_processor import process_row_data
-from edextract.data_extract_generation.report_data_generator import get_tracker_results
+from edextract.student_reg_extract_processors.row_data_processor import process_row_data
+from edextract.trackers.tracker_results_helper import get_tracker_results
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
 from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
 from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
+from edextract.trackers.gender_tracker import FemaleTracker, MaleTracker
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):
@@ -114,6 +113,7 @@ def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
 
     total_tracker = TotalTracker()
     trackers = [total_tracker, MaleTracker(), FemaleTracker()]
+    #, HispanicLatino(), AmericanIndian(), Asian(), AfricanAmerican(), PacificIslander(), White(), MultiRace()]
 
     data_processors = [StateDataProcessor(trackers), DistrictDataProcessor(trackers), SchoolDataProcessor(trackers)]
 

@@ -8,12 +8,13 @@ which tracks visitor totals.
 """
 
 from edextract.trackers.category_tracker import CategoryTracker
+from edextract.student_reg_extract_processors.category_constants import CategoryNameConstants, CategoryValueConstants
 
 
 class MaleTracker(CategoryTracker):
 
     def __init__(self):
-        super().__init__('Sex', 'Male')
+        super().__init__(CategoryNameConstants.GENDER, CategoryValueConstants.MALE)
 
     def should_increment(self, row):
 
@@ -23,7 +24,7 @@ class MaleTracker(CategoryTracker):
 class FemaleTracker(CategoryTracker):
 
     def __init__(self):
-        super().__init__('Sex', 'Female')
+        super().__init__(CategoryNameConstants.GENDER, CategoryValueConstants.FEMALE)
 
     def should_increment(self, row):
 

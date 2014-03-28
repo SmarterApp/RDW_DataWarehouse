@@ -48,9 +48,9 @@ def __cast_data_type(column, value):
         try:
             # need to explicitly convert booleans because they are read from file as strings
             if isinstance(column.type, Boolean):
-                if value.lower() == 'true' or value == '1':
+                if value.lower() == 'true' or value.lower() == 't' or value == '1':
                     value = True
-                elif value.lower() == 'false' or value == '0':
+                elif value.lower() == 'false' or value.lower() == 'f'or value == '0':
                     value = False
 
             if column.type.python_type is datetime.datetime:

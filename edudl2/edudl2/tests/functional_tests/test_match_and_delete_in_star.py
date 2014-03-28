@@ -126,14 +126,11 @@ class MatchAndDeleteFTest(UDLTestHelper):
         self.load_int_to_star()
         self.assertEqual(4, self.count_rows())
         MatchAndDeleteFTest.matched_prod_values = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        print(len(MatchAndDeleteFTest.matched_prod_values))
-        # This is coming to 5 because for student_guid = 61ec47de-e8b5-4e78-9beb-677c44dd9b50, asmt_guid =8117f196-bf78-4190-a1d0-e7ab004d1e09,
-        # date_taken = 20150406 there is 3 duplicate recods in prod.
+        # This is coming to 5 because for student_guid = 61ec47de-e8b5-4e78-9beb-677c44dd9b50, asmt_guid =8117f196-bf78-4190-a1d0-e7ab004d1e09,date_taken = 20150406 there is 3 duplicate recods in prod.
         self.assertEqual(5, len(MatchAndDeleteFTest.matched_prod_values))
 
     def test_02_match_deleted_records(self):
-        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf,
-                                                        MatchAndDeleteFTest.matched_prod_values)
+        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, MatchAndDeleteFTest.matched_prod_values)
         self.assertEqual(1, self.count_rows('W'))
         self.assertEqual(3, self.count_rows('D'))
 

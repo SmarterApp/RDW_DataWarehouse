@@ -1,5 +1,4 @@
 import unittest
-from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants, AttributeValueConstants
 from edextract.trackers.gender_tracker import MaleTracker, FemaleTracker
 
 __author__ = 'ablum'
@@ -11,21 +10,21 @@ class TestGenderTracker(unittest.TestCase):
         self.male_tracker = MaleTracker()
         self.female_tracker = FemaleTracker()
         self.valid_db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, AttributeFieldConstants.GENDER: AttributeValueConstants.MALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, AttributeFieldConstants.GENDER: AttributeValueConstants.MALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013, AttributeFieldConstants.GENDER: AttributeValueConstants.MALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014, AttributeFieldConstants.GENDER: AttributeValueConstants.MALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, AttributeFieldConstants.GENDER: AttributeValueConstants.FEMALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, AttributeFieldConstants.GENDER: AttributeValueConstants.FEMALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013, AttributeFieldConstants.GENDER: AttributeValueConstants.FEMALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014, AttributeFieldConstants.GENDER: AttributeValueConstants.FEMALE},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'gender': 'male'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'gender': 'male'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013, 'gender': 'male'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014, 'gender': 'male'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'gender': 'female'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'gender': 'female'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2013, 'gender': 'female'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school2', 'academic_year': 2014, 'gender': 'female'},
 
         ]
 
         self.invalid_db_rows = [
-            {'state_code': 'NJ', 'district_guid': 'male_only_dis', 'school_guid': 'male_only_school', 'academic_year': 2014, AttributeFieldConstants.GENDER: AttributeValueConstants.MALE},
-            {'state_code': 'NJ', 'district_guid': 'female_only_dis', 'school_guid': 'female_only_school', 'academic_year': 2014, AttributeFieldConstants.GENDER: AttributeValueConstants.FEMALE},
-            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'BAD_VALUE_SCHOOL', 'academic_year': 2014, AttributeFieldConstants.GENDER: 'BAD_VALUE'},
+            {'state_code': 'NJ', 'district_guid': 'male_only_dis', 'school_guid': 'male_only_school', 'academic_year': 2014, 'gender': 'male'},
+            {'state_code': 'NJ', 'district_guid': 'female_only_dis', 'school_guid': 'female_only_school', 'academic_year': 2014, 'gender': 'female'},
+            {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'BAD_VALUE_SCHOOL', 'academic_year': 2014, 'gender': 'BAD_VALUE'},
         ]
 
     def track_rows(self, track_function, rows):

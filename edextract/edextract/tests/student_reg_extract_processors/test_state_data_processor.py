@@ -5,14 +5,14 @@ Test Student Registration State Data Processor
 
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
 import unittest
-from edextract.student_reg_extract_processors.attribute_constants import AttributeConstants
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants
 from unittest.mock import MagicMock
 
 
 class TestStateDataProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.results = {AttributeConstants.STATE_NAME: 'North Carolina', AttributeConstants.STATE_CODE: 'NC'}
+        self.results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC'}
         self.category_trackers = []
 
         self.state_data_processor = StateDataProcessor(self.category_trackers)

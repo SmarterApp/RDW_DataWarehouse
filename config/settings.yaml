@@ -626,6 +626,13 @@ test:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
+    # Celery config
+    services.celery:
+      celery_always_eager: true
+    extract.celery:
+      celery_always_eager: true
+    migrate.celery:
+      celery_always_eager: true
 
 integration:
   '[app:main]':

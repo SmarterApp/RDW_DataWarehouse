@@ -71,7 +71,6 @@ class ValidateTableData(unittest.TestCase):
         tuple_str = [('SUCCESS',)]
         self.assertEqual(tuple_str, output_data)
 
-    @unittest.skip("in debugging")
     def test_benchmarking_data(self):
         self.empty_batch_table(self.connector)
         self.run_udl_pipeline()

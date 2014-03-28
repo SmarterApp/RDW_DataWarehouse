@@ -91,30 +91,28 @@ def get_varchar_column_name_and_length(conn, integration_table):
     return column_name_length_dict
 
 
-def create_migration_query(conn, source_table, target_table, error_table_name,
+def create_migration_query(conn, source_table_name, target_table_name, error_table_name,
                            guid_batch, target_columns, source_columns_with_tran_rule):
     '''
     Create migration script in SQL text template. It will be a tech debt to migrate it to SQLAlchemy
     equivalent. Also the code may require updates after metadata definition are finalized
 
-    @param source_table: table name for staging data that are cleaned
-    @param target_table: table name for integration table that holds only correct results
+    @param source_table_name: table name for staging data that are cleaned
+    @param target_table_name: table name for integration table that holds only correct results
     @param error_table_name: table name for error tables
     @param guid_batch: batch id for specific type
     @param target_columns: target table columns
     @param source_columns_with_tran_rule: source table columns with translation rules added
     '''
-    integration_table = conn.get_table(target_table)
-    staging_table = conn.get_table(source_table)
-    error_table = conn.get_table(error_table_name)
-    staging_table_alias = aliased(staging_table, name='A')
-    error_table_alias = aliased(error_table, name='B')
+    integration_table = conn.get_table(target_table_name)
+    staging_table = aliased(conn.get_table(source_table_name), name='A')
+    error_table = aliased(conn.get_table(error_table_name), name='B')
 
     select_query = select(source_columns_with_tran_rule,
-                          from_obj=[staging_table_alias
-                                    .outerjoin(error_table_alias,
-                                               and_(error_table_alias.c.record_sid == staging_table_alias.c.record_sid))])
-    select_query = select_query.where(and_(staging_table_alias.c.guid_batch == guid_batch,
-                                           error_table_alias.c.record_sid == None))
+                          from_obj=[staging_table
+                                    .outerjoin(error_table,
+                                               and_(error_table.c.record_sid == staging_table.c.record_sid))])
+    select_query = select_query.where(and_(staging_table.c.guid_batch == guid_batch,
+                                           error_table.c.record_sid == None))
     query = integration_table.insert(inline=True).from_select(target_columns, select_query)
     return query

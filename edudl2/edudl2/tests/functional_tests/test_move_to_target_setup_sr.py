@@ -141,7 +141,6 @@ class FTestMoveToTarget(unittest.TestCase):
 
     def get_counts(self):
         new_conn = self.target_engine.connect()
-        print('*****')
         fact_select = select([func.count()]).select_from(self.target_fact)
         asmt_selct = select([func.count()]).select_from(self.target_dim_asmt)
         inst_select = select([func.count()]).select_from(self.target_dim_inst)

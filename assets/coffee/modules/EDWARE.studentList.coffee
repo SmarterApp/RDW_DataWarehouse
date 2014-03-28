@@ -20,21 +20,19 @@ define [
 
   class StudentModel
 
-    constructor: () ->
+    constructor: (@effectiveDate, @dataSet) ->
 
-    init: (row, assessment, dataSet) ->
-      # Format student name
-      row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
-      # This is for links in drill down
-      row['params'] = {
-        "studentGuid": row['student_guid'],
-        "stateCode": row['state_code'],
-      }
+    init: (row, assessment) ->
+      @appendColors assessment
+      row = @appendExtraInfo row
+      row
+
+    appendColors: (assessment) ->
       for key, value of assessment
-        cutpoint = dataSet.cutPointsData[key]
+        cutpoint = @dataSet.cutPointsData[key]
         $.extend value, cutpoint
         # display asssessment type in the tooltip title
-        subjectType = dataSet.subjectsData[key]
+        subjectType = @dataSet.subjectsData[key]
         value.asmt_type = subjectType
         # set default colors for out of range asmt_perf_lvl
         if value.asmt_perf_lvl > value.cut_point_intervals.length
@@ -43,20 +41,26 @@ define [
         else
           value.score_bg_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].bg_color
           value.score_text_color = value.cut_point_intervals[value.asmt_perf_lvl - 1].text_color
-      row
 
+    appendExtraInfo: (row) ->
+      # Format student name
+      row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
+      # This is for links in drill down
+      row['params'] = {
+        "studentGuid": row['student_guid'],
+        "stateCode": row['state_code'],
+      }
+      row
 
   class StudentDataSet
 
     constructor: (@config) ->
-      @cache = {}
       @asmtTypes = config.students.customViews.asmtTypes
 
     build: (@data) ->
+      @cache = {}
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
-      #TODO change this dummy guid to actual key for caching assessments
-      @asmtGuid = 'dummyGuid'
       @subjectsData = data.subjects
       @cutPointsData = @createCutPoints()
       @columnData = @createColumns()
@@ -84,32 +88,35 @@ define [
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: () ->
-      asmtCache = {}
       for asmt in @asmtTypes
         asmtType = asmt['name']
-        asmtCache[asmtType] ?= {}
         for assessments in @assessmentsData
           assessment = assessments[asmtType]
           continue if not assessment
-          row = StudentModel::init assessments, assessment, this
-          asmtCache[asmtType][@allSubjects] ?= []
-          asmtCache[asmtType][@allSubjects].push row
 
-          for key of assessment
+          for key, value of assessment
+            continue if not value
+            effectiveDate = value.effective_date
+            row = new StudentModel(effectiveDate, this).init assessments, assessment
+            @cache[effectiveDate] ?= {}
+            @cache[effectiveDate][asmtType] ?= {}
             subjectType = @subjectsData[key]
-            asmtCache[asmtType][subjectType] ?= []
-            asmtCache[asmtType][subjectType].push row
-      @cache[@asmtGuid] = asmtCache
+            @cache[effectiveDate][asmtType][subjectType] ?= []
+            @cache[effectiveDate][asmtType][subjectType].push row
+            @cache[effectiveDate][asmtType][@allSubjects] ?= []
+            allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
+            allsubjects.push row  if row not in allsubjects
 
     getAsmtData: (viewName)->
       # Saved asmtType and viewName
       asmt = edwarePreferences.getAsmtPreference()
-      asmtGuid = @asmtGuid
-      if not @cache[asmtGuid]
+      #TODO asmtGuid = @asmtGuid
+      # if not @cache[asmtGuid]
         #reload from server
-        window.location.reload()
+        # window.location.reload()
+      effectiveDate = asmt.effectiveDate
       asmtType = asmt.asmtType
-      data = @cache[asmtGuid][asmtType]?[viewName]
+      data = @cache[effectiveDate]?[asmtType]?[viewName]
       if data
         for item in data
           item.assessments = item[asmtType]

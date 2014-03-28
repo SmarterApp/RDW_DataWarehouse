@@ -14,5 +14,4 @@ class TotalTracker(CategoryTracker):
         super().__init__(CategoryNameConstants.TOTAL, CategoryValueConstants.TOTAL)
 
     def should_increment(self, row):
-
         return True

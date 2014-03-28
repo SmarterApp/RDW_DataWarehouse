@@ -7,6 +7,7 @@ class CategoryNameConstants():
     GENDER = 'Sex'
     ETHNICITY = 'Ethnicity'
     RACE = 'Race'
+    PROGRAM = 'Program'
 
 
 class CategoryValueConstants():
@@ -21,3 +22,8 @@ class CategoryValueConstants():
     PACIFIC = 'NativeHawaiianOrOtherPacificIslander'
     WHITE = 'White'
     MULTI_RACE = 'DemographicRaceTwoOrMoreRaces'
+    IDEA_INDICATOR = 'IDEAIndicator'
+    LEP_STATUS = 'LEPStatus'
+    SECTION_504_STATUS = '504Status'
+    ECON_DISADV_STATUS = 'EconomicDisadvantageStatus'
+    MIGRANT_STATUS = 'MigrantStatus'

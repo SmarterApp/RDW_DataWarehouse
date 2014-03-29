@@ -136,6 +136,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     # Set other specifics
     sao.rec_id = id_gen.get_rec_id('assessment_outcome')
     sao.inst_hierarchy = inst_hier
+    sao.section = section
 
     # Create the date taken
     year_adj = 1

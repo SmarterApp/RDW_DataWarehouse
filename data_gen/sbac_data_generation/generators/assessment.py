@@ -104,7 +104,8 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
 
     # Save and return the object
     if save_to_mongo:
-        sa.save()
+        #sa.save()
+        pass
 
     return sa
 
@@ -234,7 +235,8 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     
     # Save and return the object
     if save_to_mongo:
-        sao.save()
+        #sao.save()
+        pass
 
     return sao
 

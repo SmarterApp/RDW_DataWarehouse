@@ -19,6 +19,7 @@ import random
 from mongoengine import connect
 from pymongo import Connection
 
+import data_generation.config.enrollment as enroll_config
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
 import data_generation.util.hiearchy as hier_util
@@ -59,6 +60,7 @@ pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california
 for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
     if grade in pop_config.DEMOGRAPHICS['typical1']:
         pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
+enroll_config.TEACHERS_PER_SECTION = 0
 
 # Register output filters
 csv_writer.register_filters(SBAC_FILTERS)
@@ -167,7 +169,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     @param id_gen: ID generator
     @returns: New assessment object
     """
-    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen)
+    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen, save_to_mongo=False)
     file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid)
     json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
                                      root_path=OUT_PATH_ROOT)
@@ -353,7 +355,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
             for grade, grade_students in grades.items():
                 # Potentially re-populate the student population
-                sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, asmt_year)
+                sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, state, asmt_year)
                 student_count += len(grade_students)
 
                 # Create assessment results for this year if requested
@@ -365,8 +367,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
                         # Create a class and a section for this grade and subject
                         clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
-                        section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, asmt_year,
-                                                              False)
+                        section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, state,
+                                                              asmt_year, save_to_mongo=False)
                         csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
                                                          tbl_name='dim_section', root_path=OUT_PATH_ROOT)
 
@@ -501,9 +503,9 @@ if __name__ == '__main__':
         os.makedirs(OUT_PATH_ROOT)
 
     # Connect to MongoDB and drop an existing datagen database
-    c = Connection()
-    if 'datagen' in c.database_names():
-        c.drop_database('datagen')
+    #c = Connection()
+    #if 'datagen' in c.database_names():
+    #    c.drop_database('datagen')
 
     # Clean output directory
     for file in os.listdir(OUT_PATH_ROOT):
@@ -518,7 +520,7 @@ if __name__ == '__main__':
     idg = IDGen()
 
     # Connect to MongoDB, datagen database
-    connect('datagen')
+    #connect('datagen')
 
     # Prepare the output files
     prepare_output_files()

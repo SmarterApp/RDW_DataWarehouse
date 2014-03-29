@@ -77,7 +77,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
 
         @returns: Dictionary of root objects
         """
-        return {'state': self.student.school.district.state,
+        return {'state': self.inst_hierarchy.state,
                 'district': self.student.school.district,
                 'school': self.student.school,
                 'student': self.student,

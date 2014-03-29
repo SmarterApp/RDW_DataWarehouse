@@ -131,7 +131,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     claim_cut_points = [assessment.claim_cut_point_1, assessment.claim_cut_point_2]
 
     # Run the General generator
-    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, section, SBACAssessmentOutcome)
+    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, SBACAssessmentOutcome)
 
     # Set other specifics
     sao.rec_id = id_gen.get_rec_id('assessment_outcome')

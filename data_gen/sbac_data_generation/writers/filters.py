@@ -7,6 +7,8 @@ Create output filters for data values that are specific to the SBAC project.
 
 import random
 
+import sbac_data_generation.config.cfg as sbac_config
+
 
 def filter_yesno(val):
     """
@@ -38,8 +40,19 @@ def filter_always_true(val):
     return True
 
 
+def filter_only_delete(val):
+    """
+    Only return a value if the value is the Delete status flag.
+
+    @param val: The value to filter
+    @return D or None
+    """
+    return sbac_config.ASMT_STATUS_DELETED if val == sbac_config.ASMT_STATUS_DELETED else None
+
+
 SBAC_FILTERS = {
     'yesno': filter_yesno,
     'yesnoblank': filter_yesnoblank,
-    'always_true': filter_always_true
+    'always_true': filter_always_true,
+    'only_delete': filter_only_delete
 }

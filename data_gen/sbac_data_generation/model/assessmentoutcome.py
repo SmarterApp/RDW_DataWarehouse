@@ -13,6 +13,7 @@ import sbac_data_generation.config.cfg as sbac_config
 
 from data_generation.model.assessmentoutcome import AssessmentOutcome
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
+from sbac_data_generation.model.section import SBACSection
 
 
 class SBACAssessmentOutcome(AssessmentOutcome):
@@ -21,6 +22,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     """
     rec_id = IntField(required=True)
     inst_hierarchy = ReferenceField(InstitutionHierarchy, required=True)
+    section = ReferenceField(SBACSection, required=True)
     result_status = StringField(required=True, default=sbac_config.ASMT_STATUS_ACTIVE)
     overall_score = IntField(required=True, min_value=sbac_config.ASMT_SCORE_MIN,
                              max_value=sbac_config.ASMT_SCORE_MAX)
@@ -77,7 +79,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
 
         @returns: Dictionary of root objects
         """
-        return {'state': self.student.school.district.state,
+        return {'state': self.inst_hierarchy.state,
                 'district': self.student.school.district,
                 'school': self.student.school,
                 'student': self.student,

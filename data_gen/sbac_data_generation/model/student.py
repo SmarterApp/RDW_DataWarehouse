@@ -9,6 +9,7 @@ from mongoengine import BooleanField, DateTimeField, IntField, ReferenceField, S
 
 from data_generation.model.student import Student
 from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.state import SBACState
 
 
 class SBACStudent(Student):
@@ -16,6 +17,7 @@ class SBACStudent(Student):
     The SBAC-specific student class.
     """
     rec_id = IntField(required=True)
+    state = ReferenceField(SBACState, required=True)
     district = ReferenceField(SBACDistrict, required=True)
     guid_sr = StringField(required=True, max_length=30)
     external_ssid = StringField(required=True, max_length=40)
@@ -30,3 +32,13 @@ class SBACStudent(Student):
     prg_lep_exit_date = DateTimeField(required=False)
     prg_primary_disability = StringField(required=False, max_length=30)
     derived_demographic = IntField(required=False)
+
+    def get_object_set(self):
+        """Get the set of objects that this exposes to a CSV or JSON writer.
+
+        :returns: Dictionary of root objects
+        """
+        return {'state': self.state,
+                'district': self.district,
+                'school': self.school,
+                'student': self}

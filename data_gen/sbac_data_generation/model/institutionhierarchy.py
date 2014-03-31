@@ -17,7 +17,7 @@ class InstitutionHierarchy(Document):
     Model an institution hierarchy.
     """
     rec_id = IntField(required=True)
-    guid = StringField(required=True)
+    guid = StringField(required=True, primary_key=True)
     state = ReferenceField(SBACState, required=True)
     district = ReferenceField(SBACDistrict, required=True)
     school = ReferenceField(SBACSchool, required=True)

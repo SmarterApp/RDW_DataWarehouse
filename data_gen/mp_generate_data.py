@@ -76,19 +76,21 @@ def generate_state_district_hierarchy(id_gen):
             for _ in range(dist_type_count):
                 # Create the district
                 district = sbac_hier_gen.generate_district(district_type, state, id_gen)
+                district.state = state
                 print('  Created District: %s (%s District)' % (district.name, district.type_str))
-                district_tuples.append((district, assessments, asmt_skip_rates_by_subject))
+                district_tuples.append((state, district, assessments, asmt_skip_rates_by_subject))
                 DISTRICT_TOTAL_COUNT += 1
 
     # Return the districts
     return district_tuples
 
 
-def district_pool_worker(district, assessments, skip_rates, id_lock, id_mdict):
+def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_mdict):
     """
     Process a single district. This is basically a wrapper for generate_data.generate_district_date that is designed to
     be called through a multiprocessor.Pool construct.
 
+    @param state: The state the district belongs to
     @param district: The district to generate data for
     @param assessments: The assessments to potentially generate
     @param skip_rates: Rates (changes) to skip assessments
@@ -102,8 +104,9 @@ def district_pool_worker(district, assessments, skip_rates, id_lock, id_mdict):
 
     # Start the processing
     dist_tstart = datetime.datetime.now()
+    count = 0
     try:
-        count = generate_data.generate_district_data(district.state, district,
+        count = generate_data.generate_district_data(state, district,
                                                      random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS),
                                                      assessments, skip_rates, id_gen)
     except Exception as ex:
@@ -155,9 +158,9 @@ if __name__ == '__main__':
         os.makedirs(generate_data.OUT_PATH_ROOT)
 
     # Connect to MongoDB and drop an existing datagen database
-    c = Connection()
-    if 'datagen' in c.database_names():
-        c.drop_database('datagen')
+    #c = Connection()
+    #if 'datagen' in c.database_names():
+    #    c.drop_database('datagen')
 
     # Clean output directory
     for file in os.listdir(generate_data.OUT_PATH_ROOT):
@@ -175,10 +178,10 @@ if __name__ == '__main__':
     idg = IDGen(lock, mdict)
 
     # Connect to MongoDB, datagen database
-    connect('datagen')
+    #connect('datagen')
 
     # Prepare the output files
-    generate_data.prepare_output_files(generate_data.YEARS)
+    generate_data.prepare_output_files()
 
     # Create the registration systems
     generate_data.REGISTRATION_SYSTEM_GUIDS = generate_data.build_registration_systems(generate_data.YEARS, idg)
@@ -191,7 +194,8 @@ if __name__ == '__main__':
     print('Processing of districts beginning now')
     pool = multiprocessing.Pool(processes=int(args.process_count))
     for tpl in districts:
-        pool.apply_async(district_pool_worker, args=(tpl[0], tpl[1], tpl[2], lock, mdict), callback=pool_callback)
+        pool.apply_async(district_pool_worker, args=(tpl[0], tpl[1], tpl[2], tpl[3], lock, mdict),
+                         callback=pool_callback)
     pool.close()
     pool.join()
 

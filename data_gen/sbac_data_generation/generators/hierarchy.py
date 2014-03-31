@@ -36,7 +36,8 @@ def generate_state(state_type, name, code, id_gen, save_to_mongo=True):
 
     # Save the state
     if save_to_mongo:
-        s.save()
+        #s.save()
+        pass
 
     return s
 
@@ -59,7 +60,8 @@ def generate_district(district_type, state: SBACState, id_gen, save_to_mongo=Tru
 
     # Save the district
     if save_to_mongo:
-        d.save()
+        #d.save()
+        pass
 
     return d
 
@@ -88,7 +90,8 @@ def generate_school(school_type, district: SBACDistrict, id_gen, interim_asmt_ra
 
     # Save the school
     if save_to_mongo:
-        s.save()
+        #s.save()
+        pass
 
     return s
 
@@ -113,7 +116,8 @@ def generate_registration_system(year, extract_date, id_gen, save_to_mongo=True)
 
     # Save the registration system
     if save_to_mongo:
-        ars.save()
+        #ars.save()
+        pass
 
     return ars
 
@@ -142,7 +146,8 @@ def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, sch
 
     # Save and return the object
     if save_to_mongo:
-        ih.save()
+        #ih.save()
+        pass
 
     return ih
 

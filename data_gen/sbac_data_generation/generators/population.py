@@ -15,7 +15,7 @@ from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_student(school: SBACSchool, grade, id_gen, acad_year=datetime.datetime.now().year,
+def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetime.datetime.now().year,
                      save_to_mongo=True):
     """
     Generate a student.
@@ -23,6 +23,7 @@ def generate_student(school: SBACSchool, grade, id_gen, acad_year=datetime.datet
     @param school: The school the student belongs to
     @param grade: The grade the student belongs to
     @param id_gen: ID generator
+    @param state: The state this student falls within
     @param acad_year: The current academic year this student is being created for (optional, defaults to your machine
                       clock's current year)
     @param save_to_mongo: If the new student should be saved to Mongo
@@ -35,6 +36,7 @@ def generate_student(school: SBACSchool, grade, id_gen, acad_year=datetime.datet
     demo_config = school.demo_config[str(grade)]
 
     # Set other specifics
+    s.state = state
     s.district = school.district
     s.rec_id = id_gen.get_rec_id('student')
     s.guid_sr = id_gen.get_sr_uuid()
@@ -55,7 +57,8 @@ def generate_student(school: SBACSchool, grade, id_gen, acad_year=datetime.datet
 
     # Save and return object
     if save_to_mongo:
-        s.save()
+        #s.save()
+        pass
 
     return s
 
@@ -87,7 +90,7 @@ def advance_student(student: SBACStudent, schools_by_grade, hold_back_rate=sbac_
     return True
 
 
-def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen,
+def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, state,
                             acad_year=datetime.datetime.now().year,
                             additional_student_choice=sbac_in_config.REPOPULATE_ADDITIONAL_STUDENTS,
                             save_to_mongo=True):
@@ -98,6 +101,7 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen,
     @param grade: The grade in the school to potentially re-populate
     @param grade_students: The students currently in the grade for this school
     @param id_gen: ID generator
+    @parma state: The state these potential new students will fall within
     @param acad_year: The current academic year that the repopulation is occurring within (optional, defaults to your
                       machine clock's current year)
     @param additional_student_choice: Array of values for additional students to create in the grade
@@ -108,13 +112,13 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen,
         student_count = int(random.triangular(school.student_count_min, school.student_count_max,
                                               school.student_count_avg))
         for _ in range(student_count):
-            s = generate_student(school, grade, id_gen, acad_year, save_to_mongo=save_to_mongo)
+            s = generate_student(school, grade, id_gen, state, acad_year, save_to_mongo=save_to_mongo)
             grade_students.append(s)
     else:
         # The grade is populated, but see if we should add a few new students
         # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
         for _ in range(random.choice(additional_student_choice)):
-            s = generate_student(school, grade, id_gen, acad_year, save_to_mongo=save_to_mongo)
+            s = generate_student(school, grade, id_gen, state, acad_year, save_to_mongo=save_to_mongo)
             grade_students.append(s)
 
 

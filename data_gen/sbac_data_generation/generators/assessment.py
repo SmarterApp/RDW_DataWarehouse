@@ -104,7 +104,8 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
 
     # Save and return the object
     if save_to_mongo:
-        sa.save()
+        #sa.save()
+        pass
 
     return sa
 
@@ -130,11 +131,12 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     claim_cut_points = [assessment.claim_cut_point_1, assessment.claim_cut_point_2]
 
     # Run the General generator
-    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, section, SBACAssessmentOutcome)
+    sao = gen_asmt_generator.generate_assessment_outcome(student, assessment, SBACAssessmentOutcome)
 
     # Set other specifics
     sao.rec_id = id_gen.get_rec_id('assessment_outcome')
     sao.inst_hierarchy = inst_hier
+    sao.section = section
 
     # Create the date taken
     year_adj = 1
@@ -234,7 +236,8 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     
     # Save and return the object
     if save_to_mongo:
-        sao.save()
+        #sao.save()
+        pass
 
     return sao
 

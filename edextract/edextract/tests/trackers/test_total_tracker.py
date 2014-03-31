@@ -14,12 +14,6 @@ class TestTotalTracker(unittest.TestCase):
     def setUp(self):
         self.total_tracker = TotalTracker()
 
-    def test_get_category_and_value(self):
-        category, value = self.total_tracker.get_category_and_value()
-
-        self.assertEquals('Total', category)
-        self.assertEquals('Total', value)
-
     def test_track(self):
         db_rows = [
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013},

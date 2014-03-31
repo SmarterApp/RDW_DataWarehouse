@@ -20,28 +20,6 @@ class TestProgramTrackers(unittest.TestCase):
         self.econ_tracker = EconDisadvStatusTracker()
         self.migr_tracker = MigrantStatusTracker()
 
-    def test_get_category_and_value(self):
-
-        category, value = self.idea_tracker.get_category_and_value()
-        self.assertEquals('Program', category)
-        self.assertEquals('IDEAIndicator', value)
-
-        category, value = self.lep_tracker.get_category_and_value()
-        self.assertEquals('Program', category)
-        self.assertEquals('LEPStatus', value)
-
-        category, value = self.s504_tracker.get_category_and_value()
-        self.assertEquals('Program', category)
-        self.assertEquals('504Status', value)
-
-        category, value = self.econ_tracker.get_category_and_value()
-        self.assertEquals('Program', category)
-        self.assertEquals('EconomicDisadvantageStatus', value)
-
-        category, value = self.migr_tracker.get_category_and_value()
-        self.assertEquals('Program', category)
-        self.assertEquals('MigrantStatus', value)
-
     def test_track(self):
         db_rows = [
             {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,

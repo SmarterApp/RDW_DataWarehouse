@@ -3,11 +3,11 @@
 set -e # Exit on errors
 
 function check_vars {
-	if [ -z "$WORKSPACE"]; then
+	if [ -z "$WORKSPACE" ]; then
 		echo "\$WORKSPACE is not defined"
 		exit 2
 	fi
-	if [ ! -d "$WORKSPACE"]; then
+	if [ ! -d "$WORKSPACE" ]; then
 		echo "WORKSPACE: '$WORKSPACE' not found"
 		exit 2
 	fi
@@ -43,18 +43,8 @@ function setup_virtualenv {
     # This will change your $PATH to point to the virtualenv bin/ directory,
     
     source ${VIRTUALENV_DIR}/bin/activate
-    for var in "${INSTALL_PKGS[@]}" 
-    do
-        cd "$WORKSPACE/$var"
-        pwd
-        if [ -f setup-developer.py ];  then
-           echo "running setup-developer.py"
-           python setup-developer.py develop
-        else 
-           echo "running setup.py"
-           python setup.py install 
-        fi
-    done
+    cd "$WORKSPACE"
+    python setup.py install
  
     echo "Finished setting up virtualenv"
 
@@ -98,8 +88,8 @@ function check_pep8 {
 function run_unit_tests {
     echo "Running unit tests"
 
-    cd "$WORKSPACE/$1"
-    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
+    cd "$WORKSPACE"
+    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml unit_tests/*
 
     if [ -f coverage.xml ]; then
        # move coverage results
@@ -110,7 +100,7 @@ function run_unit_tests {
 function run_func_tests {
     echo "Running Functional Tests"
 
-    cd "$WORKSPACE/$1"
+    cd "$WORKSPACE"
 
     python src/generate_data.py --config configs.dg_types_test
     nosetests functional_tests/fTest*.py
@@ -222,7 +212,7 @@ function main {
         setup_virtualenv $@
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
-            run_unit_tests $MAIN_PKG
+            run_unit_tests
         fi
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG
@@ -236,7 +226,7 @@ function main {
           set_vars
           setup_virtualenv $@
           setup_unit_test_dependencies
-          run_func_tests $MAIN_PKG
+          run_func_tests
     fi
 }
 

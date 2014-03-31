@@ -118,7 +118,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
             fact = conn.get_table('fact_asmt_outcome')
             query = select([count(fact.c.asmnt_outcome_rec_id).label('count')], from_obj=fact)
             if status:
-                query = query.where(fact.c.status == status)
+                query = query.where(fact.c.rec_status == status)
             result = conn.get_result(query)
             return int(result[0]['count'])
 

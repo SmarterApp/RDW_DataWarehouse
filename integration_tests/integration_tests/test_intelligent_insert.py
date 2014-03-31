@@ -32,6 +32,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_int_insert.tar.gz.gpg')
+        self.error_validation()
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -117,14 +118,16 @@ class Test_Intelligent_Insert(unittest.TestCase):
 
     def test_validation(self):
         self.empty_batch_table()
-        self.empty_stats_table()
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)
         self.validate_prepod_dim_tables(schema_name=self.guid_batch_id)
+        self.migrate_data()
+        self.validate_udl_stats()
+        self.validate_prod_after_sec_migration(self.guid_batch_id)
 
     # This method will call first, it will run the UDL and migrate data to production
-    def test_error_validation(self):
+    def error_validation(self):
         # truncate batch_table and udl_stats table
         self.empty_batch_table()
         self.empty_stats_table()
@@ -132,8 +135,8 @@ class Test_Intelligent_Insert(unittest.TestCase):
         self.run_udl_pipeline(self.guid_batch_id)
         self.validate_edware_database(schema_name=self.guid_batch_id)
         self.migrate_data()
-        self.validate_udl_stats()
         self.validate_prod(self.guid_batch_id)
+        self.guid = self.guid_batch_id
 
     # Validate udl_stats table under edware_stats DB for successful migration
     def validate_udl_stats(self):
@@ -141,7 +144,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
             table = conn.get_table('udl_stats')
             query = select([table.c.load_status])
             result = conn.execute(query).fetchall()
-            expected_result = [('migrate.ingested',)]
+            expected_result = [('migrate.ingested',), ('migrate.ingested',)]
             self.assertEquals(result, expected_result)
 
     # Trigger migration
@@ -161,6 +164,19 @@ class Test_Intelligent_Insert(unittest.TestCase):
             expected_no_rows = 2
             print(result)
             self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
+
+    def validate_prod_after_sec_migration(self, guid_batch_id):
+        with get_prod_connection() as conn:
+            fact_table = conn.get_table('fact_asmt_outcome')
+            query = select([fact_table.c.rec_status]).where(fact_table.c.batch_guid == guid_batch_id)
+            result = conn.execute(query).fetchall()
+            expected_status = [('C',), ('C',)]
+            # for new record , status change to C
+            self.assertEqual(result, expected_status , "ERROR:Stats has not been change for newly added records")
+            new_query = select([fact_table.c.rec_status]).where(fact_table.c.batch_guid == self.guid)
+            new_result = conn.execute(new_query).fetchall()
+            expected_old_status = [('I',), ('I',)]
+            self.assertEqual(new_result, expected_old_status, "ERROR:Status for old record has not been changed")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

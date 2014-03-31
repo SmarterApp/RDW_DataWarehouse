@@ -32,6 +32,7 @@ def drop_staging_tables_query(csv_schema, csv_table):
 def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
                                         staging_table, csv_schema, csv_table, seq_name, transformation_rules):
     column_names_with_proc = apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules)
+    # TODO: This needs to be changed to SQLAlchemy query
     insert_sql = ['INSERT INTO "{staging_schema}"."{staging_table}"(',
                   ', '.join(stg_asmt_outcome_columns),
                   ') SELECT ',
@@ -77,6 +78,7 @@ def apply_transformation_rules(apply_rules, csv_table_columns, transformation_ru
 
 
 def get_column_mapping_query(staging_schema, ref_table, source_table):
+    # TODO: This needs to be changed to SQLAlchemy query
     return 'SELECT source_column, target_column, stored_proc_name FROM "{staging_schema}"."{ref_table}" WHERE source_table=\'{source_table}\''.format(staging_schema=staging_schema,
                                                                                                                                                       ref_table=ref_table,
                                                                                                                                                       source_table=source_table)

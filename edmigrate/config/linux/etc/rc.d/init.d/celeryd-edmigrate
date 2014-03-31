@@ -37,7 +37,7 @@ fi
 CELERYD_LOG_LEVEL=${CELERYD_LOG_LEVEL:-${CELERYD_LOGLEVEL:-$DEFAULT_LOG_LEVEL}}
 CELERYD_MULTI=${CELERYD_MULTI:-"celeryd-multi"}
 CELERYD=${CELERYD:-$DEFAULT_CELERYD}
-CELERYD_NODES=${${CELERYD_NODES:-$DEFAULT_NODES} -c 1}
+CELERYD_NODES=${CELERYD_NODES:-$DEFAULT_NODES}
 
 export CELERY_LOADER
 
@@ -131,7 +131,7 @@ start_workers () {
                          --pidfile="$CELERYD_PID_FILE"      \
                          --logfile="$CELERYD_LOG_FILE"      \
                          --loglevel="$CELERYD_LOG_LEVEL"    \
-                         --cmd="$CELERYD"                   \
+                         --cmd="$CELERYD -c 1"                   \
                          ${CELERYD_OPTS}
     sleep $SLEEP_SECONDS
 }
@@ -142,7 +142,7 @@ restart_workers () {
                            --pidfile="$CELERYD_PID_FILE"    \
                            --logfile="$CELERYD_LOG_FILE"    \
                            --loglevel="$CELERYD_LOG_LEVEL"  \
-                           --cmd="$CELERYD"                 \
+                           --cmd="$CELERYD -c 1"                 \
                            ${CELERYD_OPTS}
     sleep $SLEEP_SECONDS
 }

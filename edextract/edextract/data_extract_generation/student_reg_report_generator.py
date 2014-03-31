@@ -22,6 +22,9 @@ from edextract.trackers.race_tracker import HispanicLatinoTracker, AmericanIndia
     AfricanAmericanTracker, PacificIslanderTracker, WhiteTracker, MultiRaceTracker
 from edextract.trackers.program_tracker import (IDEAIndicatorTracker, LEPStatusTracker, Sec504StatusTracker,
                                                 EconDisadvStatusTracker, MigrantStatusTracker)
+from edextract.trackers.grade_tracker import (GradeKTracker, Grade1Tracker, Grade2Tracker, Grade3Tracker, Grade4Tracker,
+                                              Grade5Tracker, Grade6Tracker, Grade7Tracker, Grade8Tracker, Grade9Tracker,
+                                              Grade10Tracker, Grade11Tracker, Grade12Tracker)
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):
@@ -118,7 +121,10 @@ def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
     total_tracker = TotalTracker()
     trackers = [total_tracker, MaleTracker(), FemaleTracker(), HispanicLatinoTracker(), AmericanIndianTracker(),
                 AsianTracker(), AfricanAmericanTracker(), PacificIslanderTracker(), WhiteTracker(), MultiRaceTracker(),
-                IDEAIndicatorTracker(), LEPStatusTracker(), Sec504StatusTracker(), EconDisadvStatusTracker(), MigrantStatusTracker()]
+                IDEAIndicatorTracker(), LEPStatusTracker(), Sec504StatusTracker(), EconDisadvStatusTracker(),
+                MigrantStatusTracker(), GradeKTracker(), Grade1Tracker(), Grade2Tracker(), Grade3Tracker(),
+                Grade4Tracker(), Grade5Tracker(), Grade6Tracker(), Grade7Tracker(), Grade8Tracker(), Grade9Tracker(),
+                Grade10Tracker(), Grade11Tracker(), Grade12Tracker()]
 
     data_processors = [StateDataProcessor(trackers), DistrictDataProcessor(trackers), SchoolDataProcessor(trackers)]
 

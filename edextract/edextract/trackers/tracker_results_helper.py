@@ -5,7 +5,6 @@ This module contain functions to compile report data from trackers into a genera
 """
 
 from edextract.data_extract_generation.statistics_generator import generate_data_row
-from itertools import chain
 
 
 def get_tracker_results(report_map, total_tracker, trackers, current_year):
@@ -22,7 +21,6 @@ def get_tracker_results(report_map, total_tracker, trackers, current_year):
 
     # First, get all the edorg totals.
     previous_year = current_year - 1
-    data = ()
     for key, val in report_map.items():
         total_entry_data = total_tracker.get_map_entry(val)
         previous_year_total = total_entry_data.get(previous_year, None)
@@ -40,9 +38,7 @@ def get_tracker_results(report_map, total_tracker, trackers, current_year):
                 current_year_count = _get_year_count(entry_data.get(current_year, 0), current_year_total)
                 row = [state_name, district_name, school_name, category, value] + \
                     generate_data_row(current_year_count, previous_year_count, current_year_total, previous_year_total)
-                data = chain(data, [row])
-
-    return data
+                yield row
 
 
 def _get_map_entry(entry_data, current_year, previous_year):

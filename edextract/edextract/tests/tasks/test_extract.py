@@ -214,7 +214,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 226)
+        #Data has 15 edOrgs
+        self.assertEqual(len(csv_data), 421)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2015 Count', 'AY2015 Percent of Total',
                                        'AY2016 Count', 'AY2016 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2016 Matched IDs to AY2015 Count', 'AY2016 Matched IDs Percent of AY2015 Count'])

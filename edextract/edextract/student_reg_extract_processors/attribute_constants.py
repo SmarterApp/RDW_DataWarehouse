@@ -22,8 +22,22 @@ class AttributeFieldConstants():
     SECTION_504_STATUS = 'dmg_prg_504'
     ECON_DISADV_STATUS = 'dmg_sts_ecd'
     MIGRANT_STATUS = 'dmg_sts_mig'
+    GRADE = 'enrl_grade'
 
 
 class AttributeValueConstants():
     MALE = 'male'
     FEMALE = 'female'
+    GRADEK = 'KG'
+    GRADE1 = '01'
+    GRADE2 = '02'
+    GRADE3 = '03'
+    GRADE4 = '04'
+    GRADE5 = '05'
+    GRADE6 = '06'
+    GRADE7 = '07'
+    GRADE8 = '08'
+    GRADE9 = '09'
+    GRADE10 = '10'
+    GRADE11 = '11'
+    GRADE12 = '12'

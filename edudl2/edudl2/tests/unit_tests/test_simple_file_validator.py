@@ -22,7 +22,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         validator = simple_file_validator.SimpleFileValidator('assessment')
         results = validator.execute(self.data_dir,
                                     'test_data_latest/'
-                                    'realdata_asmt_id_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
+                                    'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
         self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_passes_for_valid_student_reg_csv(self):

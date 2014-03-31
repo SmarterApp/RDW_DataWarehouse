@@ -108,14 +108,14 @@ class TestUDLReportingIntegration(unittest.TestCase):
             self.assertEqual(number_of_row, 0)
 
             #Delete all table data from edware schema
-            table_list = ed_connector.get_metadata().sorted_tables
-            table_list.reverse()
-            for table in table_list:
-                all_table = ed_connector.execute(table.delete())
-                query1 = select([table])
-                result2 = ed_connector.execute(query1).fetchall()
-                number_of_row = len(result2)
-                self.assertEqual(number_of_row, 0)
+            #table_list = ed_connector.get_metadata().sorted_tables
+            #table_list.reverse()
+            #for table in table_list:
+            #    all_table = ed_connector.execute(table.delete())
+            #    query1 = select([table])
+            #    result2 = ed_connector.execute(query1).fetchall()
+            #    number_of_row = len(result2)
+            #    self.assertEqual(number_of_row, 0)
 
     def run_udl_pipeline(self):
         '''

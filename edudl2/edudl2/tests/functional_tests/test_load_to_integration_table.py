@@ -85,6 +85,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
 
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+            mk.ERR_LIST_TABLE: self.udl2_conf['udl2_db']['err_list_table']
 
         }
         return conf

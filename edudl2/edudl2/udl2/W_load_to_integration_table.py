@@ -61,7 +61,7 @@ def generate_conf(guid_batch, load_type):
             mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
             mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-            mk.ERR_LIST_TABLE: udl2_conf['udl2_db']['error_list_table'],
+            mk.ERR_LIST_TABLE: udl2_conf['udl2_db']['err_list_table'],
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]
             }
     return conf

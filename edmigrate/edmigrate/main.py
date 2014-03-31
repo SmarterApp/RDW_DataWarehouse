@@ -24,7 +24,7 @@ import signal
 from edmigrate.utils.replication_admin_monitor import ReplicationAdminMonitor
 from edcore.utils.utils import run_cron_job
 from edmigrate.utils.constants import Constants
-from edmigrate.conductor_controller import process
+from edmigrate.conductor_controller import process_conductor
 
 
 logger = logging.getLogger('edmigrate')
@@ -60,7 +60,7 @@ def migrate_task(settings):
     apply_lag_tolerance = settings.getint(Constants.REPMGR_APPLY_LAG_TOLERANCE, 100)
     time_lag_tolerance = settings.getint(Constants.REPMGR_TIME_LAG_TOLERANCE, 100)
     monitor_timeout = settings.getint(Constants.REPMGR_MONITOR_TIME, 28800)
-    process(player_find_time_wait=find_player_timeout, replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance, monitor_timeout=monitor_timeout)
+    process_conductor(player_find_time_wait=find_player_timeout, replication_lag_tolerance=replication_lag_tolerance, apply_lag_tolerance=apply_lag_tolerance, time_lag_tolerance=time_lag_tolerance, monitor_timeout=monitor_timeout)
 
 
 def run_with_conductor(daemon_mode, settings):

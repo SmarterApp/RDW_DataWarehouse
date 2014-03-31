@@ -14,7 +14,7 @@ logger = logging.getLogger('edmigrate')
 admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
-def process(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
+def process_conductor(player_find_time_wait=5, replication_lag_tolerance=100, apply_lag_tolerance=100, time_lag_tolerance=100, monitor_timeout=28800):
     logger.debug('conductor process started')
     batch = get_batches_to_migrate()
     if batch:

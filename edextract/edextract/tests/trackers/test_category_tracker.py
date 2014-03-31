@@ -11,65 +11,55 @@ from edextract.trackers.category_tracker import CategoryTracker
 
 class TestCategoryTracker(unittest.TestCase):
 
-    def setUp(self):
-        CategoryTracker.__abstractmethods__ = set()  # Make this class instantiable for these tests only.
-        self.category_tracker = CategoryTracker('Category', 'Value')
-        self.category_tracker_test_impl = CategoryTrackerTestImpl()
-
     def test_get_category_and_value(self):
-        category, value = self.category_tracker.get_category_and_value()
+        ct = DummyCategoryTracker()
+        category, value = ct.get_category_and_value()
 
         self.assertEquals('Category', category)
         self.assertEquals('Value', value)
 
-    def test_track_should_not_increment(self):
-        row = {'should_imcrement': False, 'academic_year': 2014}
-        self.category_tracker_test_impl._map = {}
+    def test_should_not_track(self):
+        ct = DummyCategoryTracker(False)
 
-        self.category_tracker_test_impl.track('guid1', row)
+        self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-        self.assertEquals(self.category_tracker_test_impl._map, {})
+        ct.track('guid1', {})
 
-    def test_track_empty_map(self):
-        row = {'should_imcrement': True, 'academic_year': 2014}
-        self.category_tracker_test_impl._map = {}
+        self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-        self.category_tracker_test_impl.track('guid1', row)
+    def test_positive_track(self):
+        ct = DummyCategoryTracker()
 
-        self.assertEquals(self.category_tracker_test_impl._map, {'guid1': {2014: 1}})
+        self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-    def test_track_map_with_other_guid(self):
-        row = {'should_imcrement': True, 'academic_year': 2014}
-        self.category_tracker_test_impl._map = {'guid0': {2014: 1}}
+        ct.track('guid1', {'academic_year': 2014})
 
-        self.category_tracker_test_impl.track('guid1', row)
+        self.assertIsNotNone(ct.get_map_entry('guid1'), 'Tracker does not have expected entry')
+        self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(1, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
 
-        self.assertEquals(self.category_tracker_test_impl._map, {'guid0': {2014: 1}, 'guid1': {2014: 1}})
+        ct.track('guid1', {'academic_year': 2014})
+        self.assertEqual(2, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
 
-    def test_track_map_with_guid_with_other_year(self):
-        row = {'should_imcrement': True, 'academic_year': 2014}
-        self.category_tracker_test_impl._map = {'guid1': {2013: 10}}
+        ct.track('guid1', {'academic_year': 2015})
+        self.assertEqual(2, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(2, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
+        self.assertEqual(1, ct.get_map_entry('guid1')[2015], 'Tracker does not have expected entry')
 
-        self.category_tracker_test_impl.track('guid1', row)
+        self.assertIsNone(ct.get_map_entry('guid2'), 'Tracker returned unexpected entry')
 
-        self.assertEquals(self.category_tracker_test_impl._map, {'guid1': {2013: 10, 2014: 1}})
-
-    def test_track_map_with_guid_with_year(self):
-        row = {'should_imcrement': True, 'academic_year': 2014}
-        self.category_tracker_test_impl._map = {'guid1': {2013: 10, 2014: 10}}
-
-        self.category_tracker_test_impl.track('guid1', row)
-
-        self.assertEquals(self.category_tracker_test_impl._map, {'guid1': {2013: 10, 2014: 11}})
-
-    def test_get_map_entry_no_entry(self):
-        self.assertIsNone(self.category_tracker.get_map_entry('non-guid'))
+        ct.track('guid2', {'academic_year': 2016})
+        self.assertEqual(1, len(ct.get_map_entry('guid2')), 'Tracker returned unexpected entry')
+        self.assertEqual(1, ct.get_map_entry('guid2')[2016], 'Tracker does not have expected entry')
+        self.assertEqual(2, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(2, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
 
 
-class CategoryTrackerTestImpl(CategoryTracker):
+class DummyCategoryTracker(CategoryTracker):
 
-    def __init__(self):
+    def __init__(self, should_increment_fl=True):
         super().__init__('Category', 'Value')
+        self.should_increment_fl = should_increment_fl
 
     def should_increment(self, row):
-        return row['should_imcrement']
+        return self.should_increment_fl

@@ -20,7 +20,7 @@ def move_data_from_staging_to_integration(conf):
         target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, conf[mk.REF_TABLE], conf[mk.SOURCE_DB_TABLE],
                                                                                            conf[mk.TARGET_DB_TABLE], conf[mk.SOURCE_DB_SCHEMA])
         sql_query = create_migration_query(conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_SCHEMA],
-                                           conf[mk.TARGET_DB_TABLE], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', conf[mk.GUID_BATCH],
+                                           conf[mk.TARGET_DB_TABLE], conf[mk.ERROR_DB_SCHEMA], 'err_list', conf[mk.GUID_BATCH],
                                            target_columns, source_columns_with_tran_rule)
         logger.debug(sql_query)
         except_msg = "problem when load data from staging table to integration table"

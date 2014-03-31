@@ -12,7 +12,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
 
     metadata = MetaData(schema=schema_name, bind=bind)
 
-    stg_mock_load = Table('STG_MOCK_LOAD', metadata,
+    stg_mock_load = Table('stg_mock_load', metadata,
                           Column('record_sid', BigInteger, primary_key=True),
                           Column('guid_batch', String(256), nullable=False),
                           Column('substr_test', String(256), nullable=False),
@@ -26,7 +26,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('number_test', String(256), nullable=False),
                           )
 
-    udl_batch = Table('UDL_BATCH', metadata,
+    udl_batch = Table('udl_batch', metadata,
                       Column('batch_sid', BigInteger, primary_key=True),
                       Column('guid_batch', String(256), nullable=False),
                       Column('tenant', String(256), nullable=False, server_default=''),
@@ -54,7 +54,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                       Column('mod_date', TIMESTAMP, nullable=False, server_default=text('NOW()')),
                       )
 
-    stg_sbac_stu_reg = Table('STG_SBAC_STU_REG', metadata,
+    stg_sbac_stu_reg = Table('stg_sbac_stu_reg', metadata,
                              Column('record_sid', BigInteger, primary_key=True),
                              Column('guid_batch', String(256), nullable=False),
                              Column('src_file_rec_num', BigInteger, nullable=True),
@@ -96,7 +96,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              )
     Index('STG_SBAC_STU_REG_guid_batchx', stg_sbac_stu_reg.c.guid_batch, unique=False)
 
-    stg_sbac_asmt_outcome = Table('STG_SBAC_ASMT_OUTCOME', metadata,
+    stg_sbac_asmt_outcome = Table('stg_sbac_asmt_outcome', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
                                   Column('op', String(1), nullable=True, server_default='C'),
                                   Column('guid_batch', String(256), nullable=False),
@@ -176,7 +176,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_streamline_mode', String(256), nullable=False),
                                   )
 
-    err_list = Table('ERR_LIST', metadata,
+    err_list = Table('err_list', metadata,
                      Column('record_sid', BigInteger, primary_key=True, nullable=False),
                      Column('guid_batch', String(256), primary_key=True, nullable=False),
                      Column('err_code', BigInteger, nullable=True),
@@ -187,7 +187,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                      Column('err_input', Text, nullable=False, server_default='')
                      )
 
-    int_sbac_asmt = Table('INT_SBAC_ASMT', metadata,
+    int_sbac_asmt = Table('int_sbac_asmt', metadata,
                           Column('record_sid', BigInteger, primary_key=True),
                           Column('guid_batch', String(256), nullable=False),
                           Column('guid_asmt', String(50), nullable=False),
@@ -230,7 +230,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                           )
 
-    int_sbac_asmt_outcome = Table('INT_SBAC_ASMT_OUTCOME', metadata,
+    int_sbac_asmt_outcome = Table('int_sbac_asmt_outcome', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
                                   Column('op', String(1), server_default='C', nullable=False),
                                   Column('guid_batch', String(256), nullable=False),
@@ -313,7 +313,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
                                   )
 
-    int_sbac_stu_reg = Table('INT_SBAC_STU_REG', metadata,
+    int_sbac_stu_reg = Table('int_sbac_stu_reg', metadata,
                              Column('record_sid', BigInteger, primary_key=True),
                              Column('guid_batch', String(36), nullable=False),
                              Column('name_state', String(50), nullable=False),
@@ -354,7 +354,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              )
     Index('INT_SBAC_STU_REG_guid_batchx', int_sbac_stu_reg.c.guid_batch, unique=False)
 
-    int_sbac_stu_reg_meta = Table('INT_SBAC_STU_REG_META', metadata,
+    int_sbac_stu_reg_meta = Table('int_sbac_stu_reg_meta', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
                                   Column('guid_batch', String(36), nullable=False),
                                   Column('guid_registration', String(50), nullable=False),
@@ -364,7 +364,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                                   )
 
-    ref_column_mapping = Table('REF_COLUMN_MAPPING', metadata,
+    ref_column_mapping = Table('ref_column_mapping', metadata,
                                Column('column_map_key', BigInteger, primary_key=True),
                                Column('phase', SmallInteger, nullable=True),
                                Column('source_table', String(50), nullable=False),
@@ -377,7 +377,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                Column('created_date', TIMESTAMP(timezone=True), server_default=text('NOW()'), nullable=False),
                                )
 
-    sr_ref_column_mapping = Table('SR_REF_COLUMN_MAPPING', metadata,
+    sr_ref_column_mapping = Table('sr_ref_column_mapping', metadata,
                                   Column('column_map_key', BigInteger, primary_key=True),
                                   Column('phase', SmallInteger, nullable=True),
                                   Column('source_table', String(50), nullable=False),
@@ -390,7 +390,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                                   )
 
-    master_metadata = Table('MASTER_METADATA', metadata,
+    master_metadata = Table('master_metadata', metadata,
                             Column('metadata_sid', BigInteger, primary_key=True),
                             Column('tenant_code', String(10), nullable=False),
                             Column('tenant_name', String(255), nullable=True),

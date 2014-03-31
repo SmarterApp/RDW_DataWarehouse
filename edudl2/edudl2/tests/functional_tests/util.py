@@ -42,7 +42,7 @@ class UDLTestHelper(unittest.TestCase):
 
     @classmethod
     def truncate_udl_tables(self):
-        tables = ['INT_SBAC_ASMT', 'INT_SBAC_ASMT_OUTCOME', 'STG_SBAC_ASMT_OUTCOME', 'ERR_LIST']
+        tables = ['int_sbac_asmt', 'int_sbac_asmt_outcome', 'stg_sbac_asmt_outcome', 'err_list']
         with get_udl_connection() as conn:
             for t in tables:
                 table = conn.get_table(t)
@@ -60,7 +60,7 @@ class UDLTestHelper(unittest.TestCase):
 
     def get_staging_asmt_score_avgs(self):
         with get_udl_connection() as conn:
-            stg_outcome = conn.get_table('STG_SBAC_ASMT_OUTCOME')
+            stg_outcome = conn.get_table('stg_sbac_asmt_outcome')
             query = select([func.avg(cast(stg_outcome.c.score_asmt, Integer)),
                             func.avg(cast(stg_outcome.c.score_asmt_min, Integer)),
                             func.avg(cast(stg_outcome.c.score_asmt_max, Integer)),
@@ -84,7 +84,7 @@ class UDLTestHelper(unittest.TestCase):
 
     def get_integration_asmt_score_avgs(self):
         with get_udl_connection() as conn:
-            int_outcome = conn.get_table('INT_SBAC_ASMT_OUTCOME')
+            int_outcome = conn.get_table('int_sbac_asmt_outcome')
             query = select([func.avg(int_outcome.c.score_asmt),
                             func.avg(int_outcome.c.score_asmt_min),
                             func.avg(int_outcome.c.score_asmt_max),
@@ -134,7 +134,7 @@ class UDLTestHelper(unittest.TestCase):
         demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
         results_dict = {}
         with get_udl_connection() as conn:
-            stg_outcome = conn.get_table('STG_SBAC_ASMT_OUTCOME')
+            stg_outcome = conn.get_table('stg_sbac_asmt_outcome')
             for entry in demographics:
                 query = select([func.count(stg_outcome.c[entry])], from_obj=stg_outcome).where(stg_outcome.c[entry].in_(['Y', 'y', 'yes']))
                 result = conn.execute(query)
@@ -149,7 +149,7 @@ class UDLTestHelper(unittest.TestCase):
         demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
         results_dict = {}
         with get_udl_connection() as conn:
-            int_outcome = conn.get_table('INT_SBAC_ASMT_OUTCOME')
+            int_outcome = conn.get_table('int_sbac_asmt_outcome')
             for entry in demographics:
                 query = select([func.count(int_outcome.c[entry])], from_obj=int_outcome).where(int_outcome.c[entry] == true())
                 result = conn.execute(query)

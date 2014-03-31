@@ -25,7 +25,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     def setUp(self):
         self.tenant_dir = '/opt/edware/zones/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
-        self.err_list = 'ERR_LIST'
+        self.err_list = 'err_list'
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -44,7 +44,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             print(number_of_row)
 
         #Delete all data from err_list
-            err_list_table = connector.get_table('ERR_LIST')
+            err_list_table = connector.get_table('err_list')
             delete_data = connector.execute(err_list_table.delete())
             query_table = select([err_list_table])
             query_result = connector.execute(query_table).fetchall()
@@ -98,7 +98,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     #Validate that error has been logged into err_list table for udl failure with datafile containing record not found in prod
     def validate_err_list(self, guid_batch_id):
         with get_udl_connection() as connector:
-            error_table = connector.get_table('ERR_LIST')
+            error_table = connector.get_table('err_list')
             error_record = select([error_table.c.err_code_text]).where(error_table.c.guid_batch == guid_batch_id)
             error_result = connector.execute(error_record).fetchall()
             expected_result = [('DELETE_RECORD_NOT_FOUND',)]
@@ -107,7 +107,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     #Validate that error has been logged into err_list table for udl_failure with file having same delete record twice in same file
     def validate_err_list_table(self, guid_batch_id):
         with get_udl_connection() as connector:
-            error_table = connector.get_table('ERR_LIST')
+            error_table = connector.get_table('err_list')
             error_record = select([error_table.c.err_code_text]).where(error_table.c.guid_batch == guid_batch_id)
             error_result = connector.execute(error_record).fetchall()
             print(error_result)
@@ -117,7 +117,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     #validate that error has been logged into err_list table when we try to delete same record twice in same udl batch.
     def validate_err_table(self, guid_batch_id):
         with get_udl_connection() as connector:
-            error_table = connector.get_table('ERR_LIST')
+            error_table = connector.get_table('err_list')
             error_record = select([error_table.c.err_source_text]).where(error_table.c.guid_batch == guid_batch_id)
             error_result = connector.execute(error_record).fetchall()
             print(error_result)

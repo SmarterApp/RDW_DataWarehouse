@@ -148,13 +148,13 @@ class FileLoaderFTest(unittest.TestCase):
 
     def load_config(self, type):
         if type == 'assessment':
-            self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_ASMT_OUTCOME'
+            self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_asmt_outcome'
             self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
             self.conf[mk.CSV_TABLE] = self.assessment_csv_table
             self.conf[mk.FILE_TO_LOAD] = self.assessment_csv_file
             self.conf[mk.HEADERS] = self.assessment_header_file
         elif type == 'studentregistration':
-            self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_STU_REG'
+            self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_stu_reg'
             self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
             self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
             self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file

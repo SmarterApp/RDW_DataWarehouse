@@ -49,7 +49,7 @@ class FTestMoveToTarget(unittest.TestCase):
             self.target_connection.execute(CreateSchema(self.tenant_info['target_schema_name']))
         except ProgrammingError as e:
             # if exception raised because table already exists, remove table and try again
-            if 'schema "ftest_test_schema" already exists' in str(e):
+            if 'schema "%s" already exists' % BATCH_GUID in str(e):
                 self.target_connection.execute(DropSchema(self.tenant_info['target_schema_name'], cascade=True))
                 self.target_connection.execute(CreateSchema(self.tenant_info['target_schema_name']))
             else:
@@ -90,9 +90,9 @@ class FTestMoveToTarget(unittest.TestCase):
 
     def get_table_objects(self):
         self.int_asmt_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
-                                                       'INT_SBAC_ASMT')
+                                                       'int_sbac_asmt')
         self.int_asmt_outcome_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
-                                                               'INT_SBAC_ASMT_OUTCOME')
+                                                               'int_sbac_asmt_outcome')
         self.target_dim_inst = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
                                                         'dim_inst_hier')
         self.target_fact = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
@@ -102,9 +102,9 @@ class FTestMoveToTarget(unittest.TestCase):
         self.target_dim_asmt = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
                                                         'dim_asmt')
         self.int_sr_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
-                                                     'INT_SBAC_STU_REG')
+                                                     'int_sbac_stu_reg')
         self.int_sr_meta_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
-                                                          'INT_SBAC_STU_REG_META')
+                                                          'int_sbac_stu_reg_meta')
         self.target_sr_table = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
                                                         'student_reg')
 

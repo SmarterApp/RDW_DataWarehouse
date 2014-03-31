@@ -106,44 +106,44 @@ class TestUdl2Database(UDLTestHelper):
         return self._compare_table_keys(db_table, ddl_table)
 
     def test_STG_SBAC_ASMT_OUTCOME(self):
-        table_name = 'STG_SBAC_ASMT_OUTCOME'
+        table_name = 'stg_sbac_asmt_outcome'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_STG_SBAC_STU_REG(self):
-        table_name = 'STG_SBAC_STU_REG'
+        table_name = 'stg_sbac_stu_reg'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_INT_SBAC_ASMT(self):
-        table_name = 'INT_SBAC_ASMT'
+        table_name = 'int_sbac_asmt'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_INT_SBAC_ASMT_OUTCOME(self):
-        table_name = 'INT_SBAC_ASMT_OUTCOME'
+        table_name = 'int_sbac_asmt_outcome'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_INT_SBAC_STU_REG(self):
-        table_name = 'INT_SBAC_STU_REG'
+        table_name = 'int_sbac_stu_reg'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_INT_SBAC_STU_REG_META(self):
-        table_name = 'INT_SBAC_STU_REG_META'
+        table_name = 'int_sbac_stu_reg_meta'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_ERR_LIST(self):
-        table_name = 'ERR_LIST'
+        table_name = 'err_list'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_UDL_BATCH(self):
-        table_name = 'UDL_BATCH'
+        table_name = 'udl_batch'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
     def test_REF_COLUMN_MAPPING(self):
-        table_name = 'REF_COLUMN_MAPPING'
+        table_name = 'ref_column_mapping'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
         self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 
     def test_SR_REF_COLUMN_MAPPING(self):
-        table_name = 'SR_REF_COLUMN_MAPPING'
+        table_name = 'sr_ref_column_mapping'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
         self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 

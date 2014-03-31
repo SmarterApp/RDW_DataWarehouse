@@ -220,10 +220,10 @@ if __name__ == '__main__':
             mk.CSV_TABLE: extract_file_name(args.source_csv),
             mk.FDW_SERVER: 'udl2_fdw_server',
             mk.TARGET_DB_SCHEMA: 'udl2',
-            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.TARGET_DB_TABLE: 'stg_sbac_asmt_outcome',
             mk.APPLY_RULES: True,
-            mk.REF_TABLE: 'REF_COLUMN_MAPPING',
-            mk.CSV_LZ_TABLE: 'LZ_CSV',
+            mk.REF_TABLE: 'ref_column_mapping',
+            mk.CSV_LZ_TABLE: 'lz_csv',
             mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000'
             }
     start_time = datetime.datetime.now()

@@ -189,7 +189,7 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'rec_status', 'val': 'C'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
-                    'name': '<YEAR>_METADATA_ASMT_ID_<GUID>.json',
+                    'name': 'METADATA_ASMT_ID_<GUID>.json',
                     'layout': {
                         'content': 'assessment',
                         'identification': {
@@ -266,7 +266,7 @@ ASMT_JSON_FORMAT = {'format': 'json',
                     }}
 
 LZ_REALDATA_FORMAT = {'format': 'csv',
-                      'name': '<YEAR>_REALDATA_RECORDS.csv',
+                      'name': 'REALDATA_ASMT_ID_<GUID>.csv',
                       'columns': [{'name': 'guid_asmt', 'val': 'assessment.guid'},
                                   {'name': 'guid_asmt_location', 'val': 'school.guid'},
                                   {'name': 'name_asmt_location', 'val': 'school.name'},
@@ -283,9 +283,9 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                   {'name': 'name_student_first', 'val': 'student.first_name'},
                                   {'name': 'name_student_middle', 'val': 'student.middle_name'},
                                   {'name': 'name_student_last', 'val': 'student.last_name'},
-                                  {'name': 'address_student_line_1', 'val': 'student.address_line_1'},
-                                  {'name': 'address_student_line_2', 'val': 'student.address_line_2'},
-                                  {'name': 'address-student_city', 'val': 'student.address_city'},
+                                  {'name': 'address_student_line1', 'val': 'student.address_line_1'},
+                                  {'name': 'address_student_line2', 'val': 'student.address_line_2'},
+                                  {'name': 'address_student_city', 'val': 'student.address_city'},
                                   {'name': 'address_student_zip', 'val': 'student.address_zip'},
                                   {'name': 'gender_student', 'val': 'student.gender'},
                                   {'name': 'email_student', 'val': 'student.email'},
@@ -348,7 +348,8 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                   {'name': 'acc_scribe_nonembed', 'val': 'assessment_outcome.acc_scribe_nonembed'},
                                   {'name': 'acc_speech_to_text_nonembed',
                                    'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
-                                  {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'}]}
+                                  {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'},
+                                  {'name': 'op', 'val': 'assessment_outcome.rec_status', 'filter': 'only_delete'}]}
 
 SR_FORMAT = {'format': 'csv',
              'name': '<YEAR>_sr_<GUID>.csv',

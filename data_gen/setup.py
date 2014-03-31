@@ -4,12 +4,9 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
-requires = ['FixtureDataGeneration-Core == 0.2',
-            'pymongo',
-            'mongoengine']
+requires = ['FixtureDataGeneration-Core == 0.2.1']
 
 tests_require = requires + ['nose',
-                            'nose-mongoengine',
                             'pep8',
                             'coverage']
 

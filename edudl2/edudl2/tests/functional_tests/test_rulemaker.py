@@ -56,11 +56,9 @@ class RuleGeneratorFTest(unittest.TestCase):
         for rule in self.rule_list:
             rule_def = self.rule_conf[rule[0]]
             if 'lookup' in rule_def.keys():
-                print('FOUND A RULE WITHLOOKUP')
                 with get_udl_connection() as conn:
                     for lookup_val in rule_def['lookup'].keys():
                         for possible_val in rule_def['lookup'][lookup_val]:
-                            print("SELECT %s('%s')" % (rule[1], possible_val))
                             if possible_val is None:
                                 result = conn.execute("SELECT %s(NULL)" % (rule[1]))
                             else:

@@ -6,7 +6,7 @@ Created on Jan 24, 2013
 from setuptools import setup, find_packages
 
 requires = [
-    'SQLAlchemy==0.8.2',
+    'SQLAlchemy==0.8.3',
     "billiard==2.7.3.32",
     "celery==3.0.23",
     "anyjson==0.3.3",

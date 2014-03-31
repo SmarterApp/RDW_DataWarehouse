@@ -48,14 +48,12 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 61)
+        #Data has 1 state, 2 districts and 3 schools
+        self.assertEqual(len(csv_data), 169)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2013 Count', 'AY2013 Percent of Total',
                                        'AY2014 Count', 'AY2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2014 Matched IDs to AY2013 Count', 'AY2014 Matched IDs Percent of AY2013 Count'])
-
         self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '', '', '5', '100', '', '', ''])
-        self.assertEqual(csv_data[2], ['Example State', 'ALL', 'ALL', 'Sex', 'Male', '', '', '2', '40', '', '', ''])
-        self.assertEqual(csv_data[3], ['Example State', 'ALL', 'ALL', 'Sex', 'Female', '', '', '3', '60', '', '', ''])
 
     def test_generate_statistics_report_two_years_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat_2_yr.csv')
@@ -67,13 +65,12 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 61)
+        #Data has 1 state, 2 districts and 3 schools
+        self.assertEqual(len(csv_data), 169)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
                                        'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 Count'])
         self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '5', '100', '5', '100', '0', '0', '0'])
-        self.assertEqual(csv_data[2], ['Example State', 'ALL', 'ALL', 'Sex', 'Male', '2', '40', '2', '40', '0', '0', '0'])
-        self.assertEqual(csv_data[3], ['Example State', 'ALL', 'ALL', 'Sex', 'Female', '3', '60', '3', '60', '0', '0', '0'])
 
     def test_generate_completion_report_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')

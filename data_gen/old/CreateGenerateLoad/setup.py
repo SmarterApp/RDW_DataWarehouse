@@ -8,7 +8,7 @@ from setuptools import setup
 
 
 requires = ['psycopg2',
-            'SQLAlchemy',
+            'SQLAlchemy==0.8.3',
             'py-postgresql',
             'mock',
             'zope.component >= 4.0.2',

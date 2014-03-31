@@ -78,28 +78,28 @@ common:
     udl2_db:
       fdw_server: udl2_fdw_server
       ref_tables:
-          assessment: REF_COLUMN_MAPPING
-          studentregistration: SR_REF_COLUMN_MAPPING
+          assessment: ref_column_mapping
+          studentregistration: sr_ref_column_mapping
       staging_tables:
-          assessment: STG_SBAC_ASMT_OUTCOME
-          studentregistration: STG_SBAC_STU_REG
+          assessment: stg_sbac_asmt_outcome
+          studentregistration: stg_sbac_stu_reg
       json_integration_tables:
-          assessment: INT_SBAC_ASMT
-          studentregistration: INT_SBAC_STU_REG_META
+          assessment: int_sbac_asmt
+          studentregistration: int_sbac_stu_reg_meta
       csv_integration_tables:
-          assessment: INT_SBAC_ASMT_OUTCOME
-          studentregistration: INT_SBAC_STU_REG
-      batch_table: UDL_BATCH
+          assessment: int_sbac_asmt_outcome
+          studentregistration: int_sbac_stu_reg
+      batch_table: udl_batch
       db_name: udl2
       db_database: udl2
       db_schema: udl2
       db_user: udl2
       db_pass: udl2abc1234
       db_driver: postgresql
-      json_lz_table: LZ_JSON
-      csv_lz_table: LZ_CSV
-      err_list_table: ERR_LIST
-      master_metadata_table: MASTER_METADATA
+      json_lz_table: lz_json
+      csv_lz_table: lz_csv
+      err_list_table: err_list
+      master_metadata_table: master_metadata
       # sqlalchemy specific
       echo: False
       max_overflow: 10
@@ -229,10 +229,10 @@ development:
         db_user: udl2
         db_pass: udl2abc1234
         db_driver: postgresql
-        json_lz_table: LZ_JSON
-        csv_lz_table: LZ_CSV
-        err_list_table: ERR_LIST
-        master_metadata_table: MASTER_METADATA
+        json_lz_table: lz_json
+        csv_lz_table: lz_csv
+        err_list_table: err_list
+        master_metadata_table: master_metadata
     target_db:
         db_schema: edware
         db_name: edware
@@ -299,7 +299,7 @@ jenksins_dev:
         datafiles: $WORKSPACE/opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: $WORKSPACE/opt/edware/zones/tests/                 # this is for running unit tests.
     udl2_db:
-        batch_table: UDL_BATCH
+        batch_table: udl_batch
         db_host: localhost
         db_port: 5432
     target_db:

@@ -48,14 +48,14 @@ class UDLExceptionTest(UDLTestHelper):
 
     def get_err_list(self):
         conn = get_udl_connection()
-        err_list_table = conn.get_table('ERR_LIST')
+        err_list_table = conn.get_table('err_list')
         query = select([err_list_table]).where(err_list_table.c['guid_batch'].__eq__(self.guid_batch))
         result = conn.execute(query)
         return result
 
     def get_udl_batch(self):
         conn = get_udl_connection()
-        batch_table = conn.get_table('UDL_BATCH')
+        batch_table = conn.get_table('udl_batch')
         query = select([batch_table]).where(batch_table.c['guid_batch'].__eq__(self.guid_batch))
         result = conn.execute(query)
         return result

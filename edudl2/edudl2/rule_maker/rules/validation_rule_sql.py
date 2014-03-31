@@ -1,6 +1,6 @@
 # check null -- column
 NULL_ALL_SQL = """
-INSERT INTO "{schema}"."ERR_LIST" (record_sid,
+INSERT INTO "{schema}"."err_list" (record_sid,
                                    guid_batch,
                                    err_code,
                                    err_source,
@@ -19,7 +19,7 @@ INSERT INTO "{schema}"."ERR_LIST" (record_sid,
 
 # check null -- row
 NULL_SQL = """
-INSERT INTO "{schema}"."ERR_LIST" (record_sid,
+INSERT INTO "{schema}"."err_list" (record_sid,
                                    guid_batch,
                                    err_code,
                                    err_source,
@@ -37,7 +37,7 @@ INSERT INTO "{schema}"."ERR_LIST" (record_sid,
 
 # check unique record -- row
 UNIQUE_SQL = """
-INSERT INTO "{schema}"."ERR_LIST" (record_sid,
+INSERT INTO "{schema}"."err_list" (record_sid,
                                    guid_batch,
                                    err_code,
                                    err_source,
@@ -62,7 +62,7 @@ INSERT INTO "{schema}"."ERR_LIST" (record_sid,
 # check date format sql
 DATE_FORMAT_SQL = """
 --This function needs another proc function is_valid_date_year_format defined in pkg_utils
-INSERT INTO "{schema}"."ERR_LIST" (record_sid,
+INSERT INTO "{schema}"."err_list" (record_sid,
                                    guid_batch,
                                    err_code,
                                    err_source,

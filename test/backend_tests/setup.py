@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 install_requires = [
     'nose >= 1.2.1',  # functional testing framework
-    'SQLAlchemy',
+    'SQLAlchemy==0.8.3',
     'edschema'
 ]
 

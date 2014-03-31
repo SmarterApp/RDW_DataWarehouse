@@ -141,20 +141,18 @@ class FileLoaderFTest(unittest.TestCase):
             self.conn.execute(query)
             trans.commit()
         except Exception as e:
-            print('Exception -- ', e)
             trans.rollback()
         self.conn.close()
-        print("Tear Down successful for batch", self.conf['guid_batch'])
 
     def load_config(self, type):
         if type == 'assessment':
-            self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_ASMT_OUTCOME'
+            self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_asmt_outcome'
             self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
             self.conf[mk.CSV_TABLE] = self.assessment_csv_table
             self.conf[mk.FILE_TO_LOAD] = self.assessment_csv_file
             self.conf[mk.HEADERS] = self.assessment_header_file
         elif type == 'studentregistration':
-            self.conf[mk.TARGET_DB_TABLE] = 'STG_SBAC_STU_REG'
+            self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_stu_reg'
             self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
             self.conf[mk.CSV_TABLE] = self.stu_reg_csv_table
             self.conf[mk.FILE_TO_LOAD] = self.stu_reg_csv_file
@@ -215,8 +213,6 @@ class FileLoaderFTest(unittest.TestCase):
                     self.assertEqual(change_empty_vals_to_none(res_row[ci]),
                                      change_empty_vals_to_none(expect_row[results.keys()[ci]]),
                                      'Values are not the same for column %s' % results.keys()[ci])
-                else:
-                    print('Column: %s, is not in csv file no comparison was done' % results.keys()[ci])
 
 
 def get_clean_rows_from_file(filename):
@@ -236,7 +232,6 @@ def generate_non_exsisting_guid_batch(conf, conn):
         result = conn.execute(query)
         trans.commit()
     except Exception as e:
-        print('Exception -- ', e)
         trans.rollback()
     exsisting_guid_batchs = [row[0] for row in result]
     if len(exsisting_guid_batchs) == 0:
@@ -261,7 +256,6 @@ def get_row_number_in_table(conf, conn):
         result = conn.execute(query)
         trans.commit()
     except Exception as e:
-        print('Exception -- ', e)
         trans.rollback()
     for row in result:
         row_total = row[0]
@@ -276,7 +270,6 @@ def get_rows_in_table(conf, conn, columns):
         result = conn.execute(query)
         trans.commit()
     except Exception as e:
-        print('Exception -- ', e)
         trans.rollback()
     return list(result)
 

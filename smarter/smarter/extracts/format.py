@@ -29,8 +29,8 @@ def setup_input_file_format():
         phases[current_phase].append(dict(zip(ref_table['column_definitions'], row)))
 
     # We need to process csv and json separately
-    csv_mapping = process_input_file_format(phases, 'LZ_CSV')
-    json_mapping = process_input_file_format(phases, 'LZ_JSON')
+    csv_mapping = process_input_file_format(phases, 'lz_csv')
+    json_mapping = process_input_file_format(phases, 'lz_json')
 
     global csv_column_mapping
     global json_column_mapping

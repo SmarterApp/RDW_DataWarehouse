@@ -26,21 +26,33 @@ exchange = Exchange(Constants.CONDUCTOR_EXCHANGE)
 class MockLogger(object):
 
     def __init__(self):
-        self.out = []
-        self.err = []
-        self.warns = []
+        self.debug_log = []
+        self.error_log = []
+        self.warn_log = []
+        self.critical_log = []
+        self.info_log = []
+
+    def debug(self, msg):
+        self.debug_log.append(msg)
 
     def info(self, msg):
-        self.out.append(msg)
+        self.info_log.append(msg)
 
     def error(self, msg):
-        self.err.append(msg)
+        self.error_log.append(msg)
 
     def warning(self, msg):
-        self.warns.append(msg)
+        self.warn_log.append(msg)
+
+    def critical(self, msg):
+        self.critical_log.append(msg)
 
     def __repr__(self):
-        return "stdout: " + str(self.out) + " stderr: " + str(self.err) + " warn: " + str(self.warns)
+        return "debug: " + str(self.debug_log) + \
+               " info: " + str(self.info_log) + \
+               " warning: " + str(self.warn_log) + \
+               " error: " + str(self.error_log) + \
+               " critical: " + str(self.critical_log)
 
 
 class PlayerTaskTest(Unittest_with_repmgr_sqlite):
@@ -80,11 +92,11 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
             'ACCEPT     all  --  anywhere             anywhere            \n'
         self.block_master_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
-            'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'REJECT     all  --  anywhere  edwdbsrv1.poc.dum.edwdc.net            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
         self.block_both_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
-            'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'REJECT     all  --  anywhere   edwdbsrv1.poc.dum.edwdc.net          reject-with icmp-port-unreachable \n'\
             'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
         # turn on mocket
@@ -95,9 +107,33 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
             repl_nodes = conn.get_table(Constants.REPL_NODES)
             conn.execute(repl_nodes.delete())
         # since Player is a singleton object. we need to destroy it
-        Player._instances = {}
+        Player.cleanup()
         # turn off mocket when test is over
         Mocket.disable()
+
+    def test_cleanup(self):
+        logger = MockLogger()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEquals(len(Player._instances.items()), 1)
+        Player.cleanup()
+        self.assertEqual(len(Player._instances.items()), 0)
+
+    def test__node_id(self):
+        logger = MockLogger()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEqual("1", player._node_id())
+        Mocket.disable()
+        Player.cleanup()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEqual("", player._node_id())
+
+    def test__hostname(self):
+        logger = MockLogger()
+        player = Player(logger, self.connection, self.exchange, self.routing_key)
+        self.assertEqual("localhost", player._hostname())
+        player.set_hostname("")
+        player.set_node_id_from_hostname()
+        self.assertEqual("", player._hostname())
 
     def test_set_node_id_from_hostname(self):
         logger = MockLogger()
@@ -195,7 +231,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         MockConductor.return_value = lambda: None
         player.register_player()
-        self.assertEqual(len(logger.err), 0)
+        self.assertEqual(len(logger.error_log), 0)
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -212,7 +248,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         MockConductor.return_value = lambda: None
         player.register_player()
-        self.assertEqual(len(player.logger.err), 1)
+        self.assertEqual(len(player.logger.error_log), 1)
         self.assertFalse(MockConductor.called)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -231,7 +267,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.reset_players()
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
-        self.assertEqual(0, len(player.logger.err))
+        self.assertEqual(0, len(player.logger.error_log))
         Mocket.disable()
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -252,7 +288,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.reset_players()
         Mocket.disable()
         self.assertFalse(MockConductor.called)
-        self.assertEqual(1, len(player.logger.err))
+        self.assertEqual(1, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -272,7 +308,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.reset_players()
         Mocket.disable()
         self.assertFalse(MockConductor.called)
-        self.assertEqual(1, len(player.logger.err))
+        self.assertEqual(1, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -292,7 +328,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.reset_players()
         Mocket.disable()
         self.assertFalse(MockConductor.called)
-        self.assertEqual(1, len(player.logger.err))
+        self.assertEqual(1, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -310,7 +346,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.connect_pgpool()
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
-        self.assertEqual(0, len(player.logger.err))
+        self.assertEqual(0, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -327,8 +363,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_pgpool()
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
         self.assertFalse(MockConductor.called)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -346,7 +382,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_pgpool()
-        self.assertEqual(0, len(player.logger.err))
+        self.assertEqual(0, len(player.logger.error_log))
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -364,8 +400,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_pgpool()
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
         self.assertFalse(MockConductor.called)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -383,7 +419,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_master()
-        self.assertEqual(0, len(player.logger.err))
+        self.assertEqual(0, len(player.logger.error_log))
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -401,8 +437,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.connect_master()
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
         self.assertFalse(MockConductor.called)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -420,7 +456,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_master()
-        self.assertEqual(0, len(player.logger.err))
+        self.assertEqual(0, len(player.logger.error_log))
         MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -438,8 +474,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.disconnect_master()
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
         self.assertFalse(MockConductor.called)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -458,7 +494,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.check_iptable_has_blocked_machine(self.hostname)
         MockSubprocess.assert_called_once_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
                                                 Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
-        self.assertEqual(1, len(player.logger.err))
+        self.assertEqual(1, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -473,12 +509,12 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
-        player.remove_iptable_rules(self.pgpool, Constants.REPLICATION_MAX_RETRIES)
+        player.remove_iptable_rules(self.pgpool, Constants.IPTABLES_DEST, Constants.REPLICATION_MAX_RETRIES)
         MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
                                            Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
-        self.assertEqual(1, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(1, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -493,11 +529,11 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
                                            Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
-        self.assertEqual(2, len(player.logger.err))
+        self.assertEqual(2, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -513,7 +549,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_START_REPLICATION, [self.node_id])
         MockConductor.assert_called_once_with(self.node_id, self.connection, self.exchange, self.routing_key)
 
@@ -531,11 +567,11 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_START_REPLICATION, [])
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -551,11 +587,11 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_START_REPLICATION, None)
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -571,7 +607,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_STOP_REPLICATION, [self.node_id])
         MockConductor.assert_called_once_with(self.node_id, self.connection, self.exchange, self.routing_key)
 
@@ -591,8 +627,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_STOP_REPLICATION, [])
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -610,8 +646,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_STOP_REPLICATION, None)
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -646,8 +682,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_DISCONNECT_PGPOOL, [])
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -665,8 +701,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_DISCONNECT_PGPOOL, None)
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -701,8 +737,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_CONNECT_PGPOOL, [])
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -720,8 +756,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_CONNECT_PGPOOL, None)
         self.assertFalse(MockConductor.called)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -807,7 +843,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_RESET_PLAYERS, None)
         self.assertFalse(MockConductor.called)
-        self.assertEqual(1, len(player.logger.err))
+        self.assertEqual(1, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -825,7 +861,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_node_id_from_hostname()
         player.run_command(Constants.COMMAND_RESET_PLAYERS, [self.node_id])
         self.assertFalse(MockConductor.called)
-        self.assertEqual(1, len(player.logger.err))
+        self.assertEqual(1, len(player.logger.error_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -840,8 +876,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command('Fake Command', None)
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
@@ -856,5 +892,5 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
         player.run_command('Fake Command', [self.node_id])
-        self.assertEqual(0, len(player.logger.err))
-        self.assertEqual(1, len(player.logger.warns))
+        self.assertEqual(0, len(player.logger.error_log))
+        self.assertEqual(1, len(player.logger.warn_log))

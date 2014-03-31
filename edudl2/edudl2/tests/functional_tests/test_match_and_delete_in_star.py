@@ -56,7 +56,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
         return (columns, values, params)
 
     def load_int_sbac_asmt(self):
-        table = 'INT_SBAC_ASMT'
+        table = 'int_sbac_asmt'
         with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_DELETE.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
@@ -73,7 +73,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
                 conn.execute(insert_query)
 
     def load_int_sbac_asmt_outcome(self):
-        table = 'INT_SBAC_ASMT_OUTCOME'
+        table = 'int_sbac_asmt_outcome'
         with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_OUTCOME_DELETE.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
@@ -145,7 +145,6 @@ class MatchAndDeleteFTest(UDLTestHelper):
             fact = conn.get_table('fact_asmt_outcome')
             query = select([count(fact.c.asmnt_outcome_rec_id)], from_obj=fact)
             result = self.target_conn.execute(query)
-            print(result.fetchall()[0][0])
             # now add one more row on the fact_asmt_outcome, this should trigger exception
             # add code that insert one more row
             self.assertRaises(DeleteRecordNotFound, move_to_target.check_mismatched_deletions(self.conf, self.match_conf))

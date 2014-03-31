@@ -43,3 +43,19 @@ def test_filter_always_true_false():
 
 def test_filter_always_true_none():
     assert sbac_filters.filter_always_true(None)
+
+
+def test_filter_only_delete_create():
+    assert sbac_filters.filter_only_delete('C') is None
+
+
+def test_filter_only_delete_inactive():
+    assert sbac_filters.filter_only_delete('I') is None
+
+
+def test_filter_only_delete_delete():
+    assert sbac_filters.filter_only_delete('D') == 'D'
+
+
+def test_filter_only_delete_none():
+    assert sbac_filters.filter_only_delete(None) is None

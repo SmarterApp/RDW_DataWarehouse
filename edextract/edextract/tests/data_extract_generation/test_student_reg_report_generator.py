@@ -48,7 +48,8 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 91)
+        #Data has 1 state, 2 districts and 3 schools
+        self.assertEqual(len(csv_data), 169)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2013 Count', 'AY2013 Percent of Total',
                                        'AY2014 Count', 'AY2014 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2014 Matched IDs to AY2013 Count', 'AY2014 Matched IDs Percent of AY2013 Count'])
@@ -64,7 +65,8 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 91)
+        #Data has 1 state, 2 districts and 3 schools
+        self.assertEqual(len(csv_data), 169)
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
                                        'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 Count'])

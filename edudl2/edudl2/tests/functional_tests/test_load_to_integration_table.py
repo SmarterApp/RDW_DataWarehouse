@@ -45,7 +45,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         }
         load_file(conf)
 
-    def postloading_count(self, table='INT_SBAC_ASMT_OUTCOME'):
+    def postloading_count(self, table='int_sbac_asmt_outcome'):
         sql_template = """
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
             WHERE guid_batch = '{guid_batch}'
@@ -98,7 +98,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         '''
         conf = self.generate_conf_for_moving_from_stg_to_int('00000000-0000-0000-0000-000000000000', 'assessment')
         self.udl2_conf['guid_batch'] = '00000000-0000-0000-0000-000000000000'
-        self.load_file_to_stage('test_file_realdata.csv', 'test_file_headers.csv', 'assessment', 'STG_SBAC_ASMT_OUTCOME', '00000000-0000-0000-0000-000000000000')
+        self.load_file_to_stage('test_file_realdata.csv', 'test_file_headers.csv', 'assessment', 'stg_sbac_asmt_outcome', '00000000-0000-0000-0000-000000000000')
         move_data_from_staging_to_integration(conf)
         postloading_total = self.postloading_count()
         self.assertEqual(30, postloading_total)
@@ -180,6 +180,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         with get_udl_connection() as conn:
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
                                                                                                self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
-                                                                                               'STG_SBAC_STU_REG', 'INT_SBAC_STU_REG')
+                                                                                               'stg_sbac_stu_reg', 'int_sbac_stu_reg')
             self.assertEqual(expected_target_columns, target_columns)
             self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)

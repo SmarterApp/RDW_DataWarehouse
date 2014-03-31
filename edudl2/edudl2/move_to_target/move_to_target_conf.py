@@ -12,7 +12,7 @@ def get_move_to_target_conf():
         'asmt_rec_id': {
             'rec_id': 'asmt_rec_id',
             'target_table': 'dim_asmt',
-            'source_table': 'INT_SBAC_ASMT',
+            'source_table': 'int_sbac_asmt',
             'guid_column_name': 'asmt_guid',
             'guid_column_in_source': 'guid_asmt'
         },

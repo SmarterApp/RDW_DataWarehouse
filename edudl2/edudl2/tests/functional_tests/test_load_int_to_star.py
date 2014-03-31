@@ -44,7 +44,7 @@ class IntToStarFTest(UDLTestHelper):
         return (columns, values, params)
 
     def load_int_sbac_asmt(self):
-        table = 'INT_SBAC_ASMT'
+        table = 'int_sbac_asmt'
         with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)
@@ -61,7 +61,7 @@ class IntToStarFTest(UDLTestHelper):
                 conn.execute(insert_query)
 
     def load_int_sbac_asmt_outcome(self):
-        table = 'INT_SBAC_ASMT_OUTCOME'
+        table = 'int_sbac_asmt_outcome'
         with open(os.path.join(self.data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')) as f, get_udl_connection() as conn:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
             header = next(cf)

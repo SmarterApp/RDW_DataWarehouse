@@ -40,7 +40,7 @@ class DeleteRecordNotFound(UDLException):
                                    "date_taken:{date_taken}".format(student_guid=row['student_guid'],
                                                                     asmt_guid=row['asmt_guid'],
                                                                     date_taken=row['date_taken'])}
-            insert_to_table(get_udl_connection, 'ERR_LIST', values)
+            insert_to_table(get_udl_connection, 'err_list', values)
 
 
 class UDLDataIntegrityError(UDLException):
@@ -103,4 +103,4 @@ class UDLDataIntegrityError(UDLException):
             'err_code_text': ErrorCode.getText(ErrorCode.DATA_INTEGRITY_ERROR),
             'err_input': err_input
         }
-        insert_to_table(get_udl_connection, 'ERR_LIST', values)
+        insert_to_table(get_udl_connection, 'err_list', values)

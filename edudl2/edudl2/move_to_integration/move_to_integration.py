@@ -21,9 +21,9 @@ def move_data_from_staging_to_integration(conf):
                                                                                            conf[mk.REF_TABLE],
                                                                                            conf[mk.SOURCE_DB_TABLE],
                                                                                            conf[mk.TARGET_DB_TABLE])
-        sql_query = create_migration_query(conn, conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_TABLE], 'ERR_LIST',
-                                           conf[mk.GUID_BATCH], target_columns, source_columns_with_tran_rule)
-        logger.debug(sql_query)
+        sql_query = create_migration_query(conn, conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_TABLE],
+                                           conf[mk.ERR_LIST_TABLE], conf[mk.GUID_BATCH], target_columns,
+                                           source_columns_with_tran_rule)
         except_msg = "problem when load data from staging table to integration table"
         query_result = execute_udl_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
     return query_result[0]

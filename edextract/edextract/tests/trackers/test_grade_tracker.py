@@ -2,8 +2,8 @@ __author__ = 'npandey'
 
 import unittest
 from edextract.trackers.grade_tracker import (GradeKTracker, Grade1Tracker, Grade2Tracker, Grade3Tracker, Grade4Tracker,
-    Grade5Tracker, Grade6Tracker, Grade7Tracker, Grade8Tracker, Grade9Tracker, Grade10Tracker, Grade11Tracker,
-    Grade12Tracker)
+                                              Grade5Tracker, Grade6Tracker, Grade7Tracker, Grade8Tracker, Grade9Tracker,
+                                              Grade10Tracker, Grade11Tracker, Grade12Tracker)
 
 
 class TestGradeTrackers(unittest.TestCase):
@@ -100,4 +100,3 @@ class TestGradeTrackers(unittest.TestCase):
         self.assertTrue(self.gradek.should_increment(row1))
         self.assertTrue(self.gradek.should_increment(row2))
         self.assertTrue(self.gradek.should_increment(row3))
-

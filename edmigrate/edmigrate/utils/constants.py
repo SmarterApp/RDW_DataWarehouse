@@ -75,6 +75,7 @@ class Constants():
     IPTABLES_JUMP = '-j'
     IPTABLES_TARGET = 'REJECT'
     IPTABLES_SOURCE = '-s'
+    IPTABLES_DEST = '-d'
 
     EDMIGRATE_ADMIN_LOGGER = 'edmigrate_admin'
 

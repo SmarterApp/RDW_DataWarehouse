@@ -156,7 +156,7 @@ class Player(metaclass=Singleton):
             output = ''
         return self.search_blocked_hostname(output, hostname)
 
-    def remove_iptable_rules(self, hostname, max_retries):
+    def remove_iptable_rules(self, hostname, mode, max_retries):
         '''
         remove machine from iptables block list
         @param hostname: hostname to be blocked
@@ -171,13 +171,13 @@ class Player(metaclass=Singleton):
         iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
             output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
-                                              Constants.IPTABLES_SOURCE, hostname,
+                                              mode, hostname,
                                               Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                              universal_newlines=True)
             while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
                 sleep(Constants.REPLICATION_CHECK_INTERVAL)
                 output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
-                                                  Constants.IPTABLES_SOURCE, hostname,
+                                                  mode, hostname,
                                                   Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                                  universal_newlines=True)
                 max_retries -= 1
@@ -186,7 +186,7 @@ class Player(metaclass=Singleton):
                                 format(name=self.__class__.__name__, hostname=hostname))
         return not self.check_iptable_has_blocked_machine(hostname)
 
-    def add_iptable_rules(self, hostname):
+    def add_iptable_rules(self, hostname, mode):
         '''
         add machine into iptable block chain
         @param hostname: hostname for the machine
@@ -196,7 +196,7 @@ class Player(metaclass=Singleton):
         iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
         try:
             subprocess.check_output([sudo, iptables, Constants.IPTABLES_INSERT, chain,
-                                     Constants.IPTABLES_SOURCE, hostname,
+                                     mode, hostname,
                                      Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
                                     universal_newlines=True)
             sleep(Constants.REPLICATION_CHECK_INTERVAL)
@@ -214,7 +214,7 @@ class Player(metaclass=Singleton):
                          format(name=self.__class__.__name__, pgpool=pgpool))
         # perform multiple times disable in case it was blocked multiple times in iptables
         max_retries = Constants.REPLICATION_MAX_RETRIES
-        status = self.remove_iptable_rules(pgpool, max_retries)
+        status = self.remove_iptable_rules(pgpool, Constants.IPTABLES_SOURCE, max_retries)
         if status:
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
@@ -238,7 +238,7 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Blocking pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, pgpool=pgpool))
         # only add rules when there is no rule in iptables
-        status = self.add_iptable_rules(pgpool)
+        status = self.add_iptable_rules(pgpool, Constants.IPTABLES_SOURCE)
         if status:
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
@@ -263,7 +263,7 @@ class Player(metaclass=Singleton):
                          format(name=self.__class__.__name__, master=master))
         # perform multiple times disable in case it was blocked multiple times in iptables
         max_retries = Constants.REPLICATION_MAX_RETRIES
-        status = self.remove_iptable_rules(master, max_retries)
+        status = self.remove_iptable_rules(master, Constants.IPTABLES_DEST, max_retries)
         if status:
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
@@ -287,7 +287,7 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Blocking master( {master} )".
                          format(name=self.__class__.__name__, master=master))
         # only add rules when there is no rule in iptables
-        status = self.add_iptable_rules(master)
+        status = self.add_iptable_rules(master, Constants.IPTABLES_DEST)
         if status:
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
@@ -312,8 +312,8 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Reset iptables rules for master ( {master} ) and pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, master=master, pgpool=pgpool))
         max_retries = Constants.REPLICATION_MAX_RETRIES
-        status_1 = self.remove_iptable_rules(pgpool, max_retries)
-        status_2 = self.remove_iptable_rules(master, max_retries)
+        status_1 = self.remove_iptable_rules(pgpool, Constants.IPTABLES_SOURCE, max_retries)
+        status_2 = self.remove_iptable_rules(master, Constants.IPTABLES_DEST, max_retries)
         if status_1 and status_2:
             reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
                                                              self.exchange, self.routing_key)

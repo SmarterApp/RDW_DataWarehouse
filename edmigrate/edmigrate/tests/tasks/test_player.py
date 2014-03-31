@@ -92,11 +92,11 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
             'ACCEPT     all  --  anywhere             anywhere            \n'
         self.block_master_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
-            'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'REJECT     all  --  anywhere  edwdbsrv1.poc.dum.edwdc.net            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
         self.block_both_once_output = 'Chain PGSQL (1 references)\n'\
             'target     prot opt source               destination         \n'\
-            'REJECT     all  --  edwdbsrv1.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
+            'REJECT     all  --  anywhere   edwdbsrv1.poc.dum.edwdc.net          reject-with icmp-port-unreachable \n'\
             'REJECT     all  --  edwdbsrv4.poc.dum.edwdc.net  anywhere            reject-with icmp-port-unreachable \n'\
             'ACCEPT     all  --  anywhere             anywhere            \n'
         # turn on mocket
@@ -509,7 +509,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
-        player.remove_iptable_rules(self.pgpool, Constants.REPLICATION_MAX_RETRIES)
+        player.remove_iptable_rules(self.pgpool, Constants.IPTABLES_DEST, Constants.REPLICATION_MAX_RETRIES)
         MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
                                            Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
@@ -529,7 +529,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         MockSubprocess.assert_called_with([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
                                            Constants.IPTABLES_LIST, Constants.IPTABLES_CHAIN], universal_newlines=True)
         self.assertEqual(2, MockSubprocess.call_count)
@@ -549,7 +549,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_START_REPLICATION, [self.node_id])
         MockConductor.assert_called_once_with(self.node_id, self.connection, self.exchange, self.routing_key)
 
@@ -567,7 +567,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_START_REPLICATION, [])
         self.assertFalse(MockConductor.called)
         self.assertEqual(0, len(player.logger.error_log))
@@ -587,7 +587,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_START_REPLICATION, None)
         self.assertFalse(MockConductor.called)
         self.assertEqual(0, len(player.logger.error_log))
@@ -607,7 +607,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
-        player.add_iptable_rules(self.pgpool)
+        player.add_iptable_rules(self.pgpool, Constants.IPTABLES_SOURCE)
         player.run_command(Constants.COMMAND_STOP_REPLICATION, [self.node_id])
         MockConductor.assert_called_once_with(self.node_id, self.connection, self.exchange, self.routing_key)
 

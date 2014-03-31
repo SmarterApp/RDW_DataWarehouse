@@ -172,7 +172,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
             result = conn.execute(query).fetchall()
             expected_status = [('C',), ('C',)]
             # for new record , status change to C
-            self.assertEqual(result, expected_status , "ERROR:Stats has not been change for newly added records")
+            self.assertEqual(result, expected_status, "ERROR:Stats has not been change for newly added records")
             new_query = select([fact_table.c.rec_status]).where(fact_table.c.batch_guid == self.guid)
             new_result = conn.execute(new_query).fetchall()
             expected_old_status = [('I',), ('I',)]

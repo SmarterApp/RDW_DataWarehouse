@@ -1,7 +1,7 @@
 '''
 Created on Mar 7, 2014
 @author: bpatel
-This test will validate that if we try to delete same record in two different baches than one migrate batch will successful and second one will be failed.
+Description: Deleting the same record in two different batches will lead to a successful first migration batch and failed second migration batch.
 '''
 from sqlalchemy.schema import DropSchema
 import unittest
@@ -30,21 +30,34 @@ class Test_Error_In_Migration(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
 
-    def tearDown(self):
-        if os.path.exists(self.tenant_dir):
-            shutil.rmtree(self.tenant_dir)
-        #TODO validate that pre prod schema has been deleted.
+    def test_error_validation(self):
+        '''
+        This is the first test : Empty udl_batch table, empty udl_stats table, run UDL with an unique batch guid
+        '''
+        self.empty_udl_batch_table()
+        self.empty_stat_table()
+        self.run_validate_udl()
 
-    def empty_table(self):
-        #Delete all data from UDL batch_table
+    # This test method will call secondly: This will empty batch table, run pipeline and validate udl and prepod schema
+    # trigger migration and validate prod.Migration will migrate data of two udl batches.
+    def test_validation(self):
+        self.empty_udl_batch_table()
+        self.run_validate_udl()
+        self.migrate_data()
+        self.validate_udl_stats()
+        self.validate_prod()
+
+    def empty_udl_batch_table(self):
+        '''
+        Deletes entire data from UDL batch_table
+        '''
         with get_udl_connection() as connector:
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
             result = connector.execute(batch_table.delete())
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
-            number_of_row = len(result1)
-            self.assertEqual(number_of_row, 0)
-            print(number_of_row)
+            self.assertEqual(len(result1), 0)
+            print("udl_batch table is empty. ", len(result1), "rows found")
 
     #Delete all data from udl_stats table in edware_stats
     def empty_stat_table(self):
@@ -100,21 +113,6 @@ class Test_Error_In_Migration(unittest.TestCase):
             expected_status_val_D = [('D',)]
             self.assertEquals(prod_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
 
-    # This test method will call secondly: This will empty batch table, run pipeline and validate udl and prepod schema
-    # trigger migration and validate prod.Migration will migrate data of two udl batches.
-    def test_validation(self):
-        self.empty_table()
-        self.run_validate_udl()
-        self.migrate_data()
-        self.validate_udl_stats()
-        self.validate_prod()
-
-    # This Test will run first : Empty udl batch table, empty udl_stats table, run udl with unique batch guid
-    def test_error_validation(self):
-        self.empty_table()
-        self.empty_stat_table()
-        self.run_validate_udl()
-
     def run_validate_udl(self):
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
@@ -158,6 +156,10 @@ class Test_Error_In_Migration(unittest.TestCase):
             expected_no_rows = 1
             self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
 
+    def tearDown(self):
+        if os.path.exists(self.tenant_dir):
+            shutil.rmtree(self.tenant_dir)
+        #TODO validate that pre prod schema has been deleted
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

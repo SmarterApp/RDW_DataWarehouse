@@ -5,7 +5,7 @@ Created on Mar 28, 2014
 '''
 import unittest
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, copy_file_to_tmp, run_udl_pipeline, \
-check_job_completion, migrate_data, validate_edware_stats_table_before_mig, validate_edware_stats_table_after_mig
+    check_job_completion, migrate_data, validate_edware_stats_table_before_mig, validate_edware_stats_table_after_mig
 import os
 import shutil
 from uuid import uuid4

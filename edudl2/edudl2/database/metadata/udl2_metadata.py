@@ -19,7 +19,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('number_test', String(256), nullable=False),
                           )
 
-    int_mock_load = Table('INT_MOCK_LOAD', metadata,
+    int_mock_load = Table('int_mock_load', metadata,
                           Column('record_sid', BigInteger, primary_key=True),
                           Column('guid_batch', String(256), nullable=False),
                           Column('substr_test', String(256), nullable=False),

@@ -113,6 +113,6 @@ def create_migration_query(conn, source_table_name, target_table_name, error_tab
                                     .outerjoin(error_table,
                                                and_(error_table.c.record_sid == staging_table.c.record_sid))])
     select_query = select_query.where(and_(staging_table.c.guid_batch == guid_batch,
-                                           error_table.c.record_sid == None))
+                                           error_table.c.record_sid.is_(None)))
     query = integration_table.insert(inline=True).from_select(target_columns, select_query)
     return query

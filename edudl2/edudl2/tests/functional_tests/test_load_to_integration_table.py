@@ -116,7 +116,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         self.assertIsNotNone(derived_count)
         self.assertEqual(stg_demo_dict, int_demo_dict)
 
-
     def test_load_stage_to_int_student_registration(self):
         guid_batch = str(uuid4())
         load_type = self.udl2_conf['load_type']['student_registration']

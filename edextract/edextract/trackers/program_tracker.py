@@ -42,7 +42,6 @@ class EconDisadvStatusTracker(CategoryTracker):
         super().__init__(CategoryNameConstants.PROGRAM, CategoryValueConstants.ECON_DISADV_STATUS)
 
     def should_increment(self, row):
-        num = row[AttributeFieldConstants.ECON_DISADV_STATUS]
         return bool(row[AttributeFieldConstants.ECON_DISADV_STATUS])
 
 

@@ -23,8 +23,8 @@ from edextract.trackers.race_tracker import HispanicLatinoTracker, AmericanIndia
 from edextract.trackers.program_tracker import (IDEAIndicatorTracker, LEPStatusTracker, Sec504StatusTracker,
                                                 EconDisadvStatusTracker, MigrantStatusTracker)
 from edextract.trackers.grade_tracker import (GradeKTracker, Grade1Tracker, Grade2Tracker, Grade3Tracker, Grade4Tracker,
-    Grade5Tracker, Grade6Tracker, Grade7Tracker, Grade8Tracker, Grade9Tracker, Grade10Tracker, Grade11Tracker,
-    Grade12Tracker)
+                                              Grade5Tracker, Grade6Tracker, Grade7Tracker, Grade8Tracker, Grade9Tracker,
+                                              Grade10Tracker, Grade11Tracker, Grade12Tracker)
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):

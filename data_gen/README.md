@@ -54,12 +54,12 @@ will probably not be picked up.
 
 ###Install Development Dependencies
 
-You will need `nose` and `nose-mongoengine` to run the test suites. Along with those, we are using
+You will need `nose` to run the test suites. Along with those, we are using
 [`coverage`](http://nedbatchelder.com/code/coverage/) for a unit testing code coverage report and
 [`pep8`](http://pep8.readthedocs.org/en/latest/) as a style checker. If you have a virtual environment, run this within
 it:
 
-    pip install nose nose-mongoengine coverage pep8
+    pip install nose coverage pep8
 
 ##Usage
 
@@ -82,10 +82,9 @@ districts simultaneously) so start as many processes as the hardware can handle.
 ##Unit Tests
 
 Within the project is a suite of unit tests that cover a large percentage of the codebase. We are using `nose` for the
-unit tests and [`nose-mongoengine`](https://github.com/mbanton/nose-mongoengine) to mock a MongoDB for unit testing
-purposes. To run the unit tests, start from the root of the project and call:
+unit tests. To run the unit tests, start from the root of the project and call:
 
-    nosetests --mongoengine --mongoengine-clear-after-module unit_tests/*
+    nosetests unit_tests/*
 
 As you develop new functionality, make sure to write accompanying unit tests so as maintain good code coverage and the
 confidence that comes with it.

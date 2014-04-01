@@ -541,7 +541,7 @@ development:
           schema_name: edware_sds_1_15_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         fish:
-          schema_name: edware_sds_1_13_fish
+          schema_name: edware_sds_1_15_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
       db:
@@ -602,7 +602,7 @@ test:
           schema_name: edware_sds_1_15_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
-          schema_name: edware_sds_1_13_fish
+          schema_name: edware_sds_1_15_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:
@@ -747,7 +747,7 @@ jenkins_dev:
           schema_name: edware_sds_1_15_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
-          schema_name: edware_sds_1_13_fish
+          schema_name: edware_sds_1_15_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:

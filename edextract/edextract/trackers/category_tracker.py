@@ -10,27 +10,22 @@ from abc import ABCMeta, abstractmethod
 class CategoryTracker(metaclass=ABCMeta):
 
     def __init__(self, category, value):
-        self._map = {}
+        self._data_counter = DataCounter()
         self._category = category
         self._value = value
 
-    def track(self, guid, row):
+    def track(self, guid, row, matched=False):
         """
         Increment total of rows based on the year this row contains for the given guid.
 
         @param guid: GUID of edorg for which to increment the total for the row's year.
         @param row: Current DB table row to be counted
+
         """
 
         if self.should_increment(row):
-            year = row['academic_year']
-            if guid in self._map.keys():
-                if year in self._map[guid]:
-                    self._map[guid][year] += 1
-                else:
-                    self._map[guid][year] = 1
-            else:
-                self._map[guid] = {year: 1}
+            key = DataCounter.MATCHED_KEY if matched else row['academic_year']
+            self._data_counter.increment(guid, key)
 
     def get_map_entry(self, guid):
         """
@@ -44,7 +39,7 @@ class CategoryTracker(metaclass=ABCMeta):
         @return: Map entry containing the totals by year for the edorg specified by the guid
         """
 
-        return self._map.get(guid, None)
+        return self._data_counter.map.get(guid, None)
 
     def get_category_and_value(self):
         """
@@ -65,3 +60,19 @@ class CategoryTracker(metaclass=ABCMeta):
         @return: Whether or not to increment the concrete class's totals map
         """
         return
+
+
+class DataCounter():
+    MATCHED_KEY = 'MATCHED'
+
+    def __init__(self):
+        self.map = {}
+
+    def increment(self, guid, key):
+        if guid in self.map.keys():
+            if key in self.map[guid]:
+                self.map[guid][key] += 1
+            else:
+                self.map[guid][key] = 1
+        else:
+            self.map[guid] = {key: 1}

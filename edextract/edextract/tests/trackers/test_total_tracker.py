@@ -32,7 +32,7 @@ class TestTotalTracker(unittest.TestCase):
             self.total_tracker.track(district_guid, row)
             self.total_tracker.track(school_guid, row)
 
-        sorted_keys = sorted(self.total_tracker._map.keys())
+        sorted_keys = sorted(self.total_tracker._data_counter.map.keys())
         self.assertEquals(['NJ', 'district1', 'district2', 'school1', 'school2', 'school3', 'school4', 'school5'], sorted_keys)
 
         self.assertEquals(2, len(self.total_tracker.get_map_entry('NJ')))

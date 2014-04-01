@@ -26,7 +26,7 @@ class TestTrackerResultsHelper(unittest.TestCase):
         ])
         total_tracker = TotalTracker()
         trackers = [total_tracker]
-        total_tracker._map = {
+        total_tracker._data_counter.map = {
             'NJ': {2014: 444, 2015: 555},
             'district1': {2014: 123, 2015: 90},
             'district2': {2014: 20, 2015: 20},

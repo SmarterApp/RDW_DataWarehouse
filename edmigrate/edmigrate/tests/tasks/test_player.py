@@ -42,7 +42,6 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         # turn off mocket when test is over
         Mocket.disable()
 
-
     def test__node_id(self):
         player = Player(self.connection, self.exchange, self.routing_key)
         self.assertEqual(3, player.node_id)
@@ -158,6 +157,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_succeed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
@@ -174,6 +174,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_connect_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
@@ -268,6 +269,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
     def test_disconnect_master_failed(self, MockConductor, MockBlockOutput, MockModifyRule):
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = False
         MockModifyRule.return_value = None
         MockBlockOutput.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
@@ -349,7 +351,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.object(edmigrate.utils.iptables.IptablesController, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
-    def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockBlockInput, MockModifyRule):
+    def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockBlockInput,
+                                                              MockModifyRule, MockCheckRule):
         MockBlockInput.return_value = True
         MockModifyRule.return_value = None
         MockConductor.return_value = lambda: None
@@ -433,7 +436,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_output")
     @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_run_command_reset_players(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule):
+    def test_run_command_reset_players(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule,
+                                       MockCheckRule):
         MockModifyRule.return_value = None
         MockBlockInput.return_value = True
         MockBlockOutput.return_value = True
@@ -448,7 +452,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_output")
     @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_run_command_reset_players_with_node_id(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule):
+    def test_run_command_reset_players_with_node_id(self, MockConductor, MockBlockInput, MockBlockOutput,
+                                                    MockModifyRule, MockCheckRule):
         MockModifyRule.return_value = None
         MockBlockInput.return_value = True
         MockBlockOutput.return_value = True

@@ -32,17 +32,41 @@ class IptablesController(metaclass=Singleton):
             # we just skip. we use the connection checking to verify rule changes are effective or not
             raise IptablesCommandError('iptables failed by mode[' + mode + '] chain[' + chain + ']')
 
+    def _check_rules(self, chain):
+        rule_exists = False
+        try:
+            output = subprocess.check_output([Constants.IPTABLES_SUDO, Constants.IPTABLES_SAVE_COMMAND],
+                                             universal_newlines=True)
+            for line in output.split('\n'):
+                line = line.strip()
+                if line == " ".join([Constants.IPTABLES_APPEND, chain, Constants.IPTABLES_JUMP, self._target]) or \
+                   line == " ".join([Constants.IPTABLES_INSERT, chain, Constants.IPTABLES_JUMP, self._target]):
+                    rule_exists = True
+                    break
+        except subprocess.CalledProcessError as e:
+            # we can't do anything except let rule_exists to be True so no action will be taken
+            pass
+        return rule_exists
+
     def block_pgsql_INPUT(self):
-        self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
+        check = self._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        if not check:
+            self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
 
     def block_pgsql_OUTPUT(self):
-        self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_OUTPUT_CHAIN)
+        check = self._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        if not check:
+            self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_OUTPUT_CHAIN)
 
     def unblock_pgsql_INPUT(self):
-        self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_INPUT_CHAIN)
+        check = self._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        if check:
+            self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_INPUT_CHAIN)
 
     def unblock_pgsql_OUTPUT(self):
-        self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_OUTPUT_CHAIN)
+        check = self._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        if check:
+            self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_OUTPUT_CHAIN)
 
 
 class IptablesChecker(metaclass=Singleton):

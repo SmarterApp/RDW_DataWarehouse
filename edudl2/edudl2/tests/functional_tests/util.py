@@ -15,11 +15,7 @@ class UDLTestHelper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        try:
-            config_path = dict(os.environ)['UDL2_CONF']
-        except Exception:
-            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-
+        config_path = dict(os.environ).get('UDL2_CONF', UDL2_DEFAULT_CONFIG_PATH_FILE)
         conf_tup = read_ini_file(config_path)
         cls.udl2_conf = conf_tup[0]
         initialize_db_udl(cls.udl2_conf)

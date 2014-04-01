@@ -26,7 +26,7 @@ define [
       for element, i in @contextData['items']
         staticElement = @configs['items'][i]
         if staticElement.type isnt element.type
-          # make sure the type matches with the type from json file          
+          # make sure the type matches with the type from json file
           continue
         # sets the url link and returns the current query parameters
         currentParams = @setUrlLink currentParams, element, staticElement
@@ -84,7 +84,7 @@ define [
   #
   $.fn.breadcrumbs = (contextData, configs, displayHome) ->
     new EdwareBreadcrumbs(this, contextData, configs, displayHome)
-    
+
   #
   #    * Creates breadcrumbs widget
   #    * @param containerId - The container id for breadcrumbs

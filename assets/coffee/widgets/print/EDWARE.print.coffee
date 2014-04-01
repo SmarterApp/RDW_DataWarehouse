@@ -4,7 +4,8 @@ define [
   "mustache"
   "text!PrintTemplate"
   "edwarePreferences"
-], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences) ->
+  "edwareUtil"
+], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences, edwareUtil) ->
 
   class PrintModal
 
@@ -26,8 +27,10 @@ define [
       @hide()
       option = $('input[name=print]:checked', @container).val()
       asmtType = edwarePreferences.getAsmtType()
-      url = document.URL.replace("indivStudentReport","print")
-      url = url.replace("#","")
+      params = edwareUtil.getUrlParams()
+      url = edwareUtil.getBaseURL() + "/assets/html/print.html?"
+      url += 'studentGuid=' + params['studentGuid']
+      url += '&stateCode=' + params['stateCode']
       url += '&pdf=true'
       url += "&grayscale=true" if option is "grayscale"
       url += "&asmtType=" + encodeURI(asmtType) if asmtType

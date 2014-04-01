@@ -156,17 +156,20 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, '_check_rules')
     @patch.object(edmigrate.utils.iptables.Iptables, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.Iptables, 'check_block_output')
     @patch.object(edmigrate.utils.iptables.Iptables, 'check_block_input')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_reset_players_succeed(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule):
+    def test_reset_players_succeed(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule,
+                                   MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockBlockInput.return_value = True
         MockBlockOutput.return_value = True
+        MockCheckRule.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
@@ -179,15 +182,18 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, '_check_rules')
     @patch.object(edmigrate.utils.iptables.Iptables, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.Iptables, 'check_block_input')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_reset_players_with_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
+    def test_reset_players_with_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule,
+                                              MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockCheckBlockInput.return_value = False
         MockModifyRule.return_value = None
+        MockCheckRule.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         Mocket.enable()
         player.set_hostname(socket.gethostname())
@@ -201,15 +207,18 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, '_check_rules')
     @patch.object(edmigrate.utils.iptables.Iptables, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.Iptables, 'check_block_output')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_reset_players_with_master_failed(self, MockConductor, MockCheckBlockOutput, MockModifyRule):
+    def test_reset_players_with_master_failed(self, MockConductor, MockCheckBlockOutput, MockModifyRule,
+                                              MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckBlockOutput.return_value = False
+        MockCheckRule.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         Mocket.enable()
         player.set_hostname(socket.gethostname())
@@ -223,18 +232,20 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, '_check_rules')
     @patch.object(edmigrate.utils.iptables.Iptables, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.Iptables, 'check_block_output')
     @patch.object(edmigrate.utils.iptables.Iptables, 'check_block_input')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_both_failed(self, MockConductor, MockCheckBlockInput,
-                                            MockCheckBlockOutput, MockModifyRule):
+                                            MockCheckBlockOutput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = False
         MockCheckBlockOutput.return_value = False
+        MockCheckRule.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         Mocket.enable()
         player.set_hostname(socket.gethostname())
@@ -248,13 +259,15 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
-    def test_connect_pgpool_succeed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
+    def test_connect_pgpool_succeed(self, MockConductor, MockCheckBlockInput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
@@ -268,13 +281,15 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
-    def test_connect_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
+    def test_connect_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = False
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
@@ -289,15 +304,18 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
-    def test_disconnect_pgpool_succeed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
+    def test_disconnect_pgpool_succeed(self, MockConductor, MockCheckBlockInput, MockModifyRule,
+                                       MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = False
+        MockCheckRule.return_value = False
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
@@ -309,15 +327,18 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_disconnected')
-    def test_disconnect_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule):
+    def test_disconnect_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule,
+                                      ModifyCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckBlockInput.return_value = True
+        ModifyCheckRule.return_value = False
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
         player.set_hostname(socket.gethostname())
         player.set_node_id_from_hostname()
@@ -330,12 +351,14 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
-    def test_connect_master_succeed(self, MockConductor, MockBlockOutput, MockModifyRule):
+    def test_connect_master_succeed(self, MockConductor, MockBlockOutput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
+        MockCheckRule.return_value = True
         MockModifyRule.return_value = None
         MockBlockOutput.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
@@ -349,12 +372,14 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_connected')
-    def test_connect_master_failed(self, MockConductor, MockBlockOutput, MockModifyRule):
+    def test_connect_master_failed(self, MockConductor, MockBlockOutput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
+        MockCheckRule.return_value = True
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockBlockOutput.return_value = False
@@ -370,12 +395,14 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
-    def test_disconnect_master_succeed(self, MockConductor, MockBlockOutput, MockModifyRule):
+    def test_disconnect_master_succeed(self, MockConductor, MockBlockOutput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
+        MockCheckRule.return_value = False
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockBlockOutput.return_value = False
@@ -390,13 +417,15 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_output")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_master_disconnected')
-    def test_disconnect_master_failed(self, MockConductor, MockBlockOutput, MockModifyRule):
+    def test_disconnect_master_failed(self, MockConductor, MockBlockOutput, MockModifyRule, MockCheckRule):
         logger = MockLogger()
         sys_logger = MockLogger()
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = False
         MockModifyRule.return_value = None
         MockBlockOutput.return_value = True
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
@@ -495,13 +524,16 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
-    def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockBlockInput, MockModifyRule):
+    def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockBlockInput,
+                                                              MockModifyRule, MockCheckRule):
         MockBlockInput.return_value = True
         MockModifyRule.return_value = None
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         logger = MockLogger()
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
@@ -598,15 +630,18 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_output")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_run_command_reset_players(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule):
+    def test_run_command_reset_players(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule,
+                                       MockCheckRule):
         MockModifyRule.return_value = None
         MockBlockInput.return_value = True
         MockBlockOutput.return_value = True
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         logger = MockLogger()
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)
@@ -619,15 +654,18 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                 values={Config.MASTER_HOSTNAME: 'edwdbsrv1.poc.dum.edwdc.net',
                         Config.PGPOOL_HOSTNAME: 'edwdbsrv4.poc.dum.edwdc.net',
                         Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch.object(edmigrate.utils.iptables.Iptables, "_check_rules")
     @patch.object(edmigrate.utils.iptables.Iptables, "_modify_rule")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_output")
     @patch.object(edmigrate.utils.iptables.Iptables, "check_block_input")
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
-    def test_run_command_reset_players_with_node_id(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule):
+    def test_run_command_reset_players_with_node_id(self, MockConductor, MockBlockInput, MockBlockOutput,
+                                                    MockModifyRule, MockCheckRule):
         MockModifyRule.return_value = None
         MockBlockInput.return_value = True
         MockBlockOutput.return_value = True
         MockConductor.return_value = lambda: None
+        MockCheckRule.return_value = True
         logger = MockLogger()
         sys_logger = MockLogger()
         player = Player(logger, sys_logger, self.connection, self.exchange, self.routing_key)

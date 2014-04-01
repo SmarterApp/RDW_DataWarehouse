@@ -10,18 +10,16 @@ from edmigrate.utils.constants import Constants
 from edmigrate.exceptions import IptablesCommandError
 
 
-class Iptables(metaclass=Singleton):
+class IptablesController(metaclass=Singleton):
 
-    def __init__(self, input_port=5432, output_port=5432, target=Constants.IPTABLES_TARGET):
-        self._input_port = input_port
-        self._output_port = output_port
-        self._localhost = '127.0.0.1'
-        self._timeout = 1
+    def __init__(self, target=Constants.IPTABLES_CHAIN):
         self._target = target
 
-    @classmethod
-    def cleanup(cls):
-        Iptables._instances = {}
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, value, tb):
+        pass
 
     def _modify_rule(self, mode, chain):
         try:
@@ -30,9 +28,9 @@ class Iptables(metaclass=Singleton):
                                      mode, chain,
                                      Constants.IPTABLES_JUMP, self._target],
                                     universal_newlines=True)
-        except subprocess.CalledProcessError as e:
+        except Exception:
             # we just skip. we use the connection checking to verify rule changes are effective or not
-            pass
+            raise IptablesCommandError('iptables failed by mode[' + mode + '] chain[' + chain + ']')
 
     def block_pgsql_INPUT(self):
         self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
@@ -46,6 +44,8 @@ class Iptables(metaclass=Singleton):
     def unblock_pgsql_OUTPUT(self):
         self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_OUTPUT_CHAIN)
 
+
+class IptablesChecker(metaclass=Singleton):
     def _check_block(self, host, port):
         connected = True
         s = None
@@ -58,8 +58,8 @@ class Iptables(metaclass=Singleton):
                 s.close()
         return connected
 
-    def check_block_output(self, host):
-        return self._check_block(host, self._output_port)
+    def check_block_output(self, host, port=5432):
+        return self._check_block(host, port)
 
-    def check_block_input(self, host):
-        return self._check_block(host, self._input_port)
+    def check_block_input(self, host, port=5432):
+        return not self._check_block(host, port)

@@ -10,8 +10,6 @@ class Config():
     TIMEOUT = 'migrate.timeout'
     BROADCAST_QUEUE = 'migrate.broadcast.queue'
     LAG_TOLERENCE_IN_BYTES = 'migrate.lag_tolerence_in_bytes'
-    PGPOOL_HOSTNAME = 'migrate.pgpool.hostname'
-    MASTER_HOSTNAME = 'migrate.master.hostname'
     IPTABLES_CHAIN = 'migrate.iptables.chain'
     IPTABLES_SUDO = 'migrate.iptables.sudo'
     IPTABLES_COMMAND = 'migrate.iptables.command'

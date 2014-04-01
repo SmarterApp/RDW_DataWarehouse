@@ -20,7 +20,7 @@ from sqlalchemy.sql.expression import and_, select
 
 FACT_TABLE = 'fact_asmt_outcome'
 file_to_path = ''
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
 FILE_DICT = {}
 
 

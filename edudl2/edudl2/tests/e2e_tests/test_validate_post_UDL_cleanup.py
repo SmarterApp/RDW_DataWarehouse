@@ -16,8 +16,8 @@ from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.celery import udl2_conf
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
-path = '/opt/edware/zones/landing/work/test_tenant'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
+path = '/opt/edware/zones/landing/work/test_tenant/landing/'
 FACT_TABLE = 'fact_asmt_outcome'
 
 
@@ -45,7 +45,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
             print('UDL validation is successful')
             query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.guid_batch == self.batch_id))
             output_result = connector.execute(query).fetchall()
-            print(output_result)
             tuple_str = [('SUCCESS',)]
             self.assertEquals(output_result, tuple_str)
 
@@ -56,7 +55,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
             edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.batch_id)
             output_data = ed_connector.execute(output).fetchall()
-            print(edware_table.c.batch_guid)
             row_count = len(output_data)
             self.assertGreater(row_count, 1, "Data is loaded to star shema")
             truple_str = (self.batch_id, )

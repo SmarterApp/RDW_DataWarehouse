@@ -23,7 +23,7 @@ from edudl2.database.udl2_connector import get_udl_connection
 class Test_Err_Handling_Scenario(unittest.TestCase):
 
     def setUp(self):
-        self.tenant_dir = '/opt/edware/zones/arrivals/cat/cat_user/filedrop'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop/'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
         self.err_list = 'err_list'
 

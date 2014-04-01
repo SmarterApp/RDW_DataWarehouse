@@ -16,7 +16,7 @@ from sqlalchemy.sql.expression import and_
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 path = '/opt/edware/zones/landing/work/test_tenant'
 FACT_TABLE = 'fact_asmt_outcome'

@@ -15,7 +15,7 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):

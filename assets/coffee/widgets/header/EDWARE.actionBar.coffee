@@ -24,7 +24,7 @@ define [
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
-      @asmtDropdown = @createAsmtDropdown() if @config.asmtTypes
+      @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
 
     createPrint: () ->
@@ -39,6 +39,9 @@ define [
 
     # Create assessment type dropdown
     createAsmtDropdown: () ->
+      if @config.asmtTypes.length is 0
+        $('.asmtTypeItem').remove()
+        return
       self = this
       if @config.reportName is Constants.REPORT_NAME.ISR
         preference = edwarePreferences.getAsmtForISR

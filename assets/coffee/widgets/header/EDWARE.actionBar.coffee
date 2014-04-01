@@ -39,7 +39,7 @@ define [
 
     # Create assessment type dropdown
     createAsmtDropdown: () ->
-      if @config.asmtTypes.length is 0
+      if not @config.asmtTypes || @config.asmtTypes.length is 0
         $('.asmtTypeItem').remove()
         return
       self = this

@@ -99,7 +99,7 @@ define [
 
         key = assessment.effective_date + assessment.asmt_type
         @data[key] ?= []
-        @data[key].push assessment
+        @data[key].push assessment if @data[key].length < 2
 
 
   class EdwareISR

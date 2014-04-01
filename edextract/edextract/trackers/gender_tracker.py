@@ -15,9 +15,12 @@ class MaleTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.GENDER, CategoryValueConstants.MALE)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
 
         return row[AttributeFieldConstants.GENDER] == AttributeValueConstants.MALE
+
+    def should_increment_matched_ids(self, row):
+        return
 
 
 class FemaleTracker(CategoryTracker):
@@ -25,6 +28,9 @@ class FemaleTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.GENDER, CategoryValueConstants.FEMALE)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
 
         return row[AttributeFieldConstants.GENDER] == AttributeValueConstants.FEMALE
+
+    def should_increment_matched_ids(self, row):
+        return

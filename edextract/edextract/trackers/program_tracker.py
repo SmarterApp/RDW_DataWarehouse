@@ -14,8 +14,11 @@ class IDEAIndicatorTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.PROGRAM, CategoryValueConstants.IDEA_INDICATOR)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
         return bool(row[AttributeFieldConstants.IDEA_INDICATOR])
+
+    def should_increment_matched_ids(self, row):
+        return
 
 
 class LEPStatusTracker(CategoryTracker):
@@ -23,8 +26,11 @@ class LEPStatusTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.PROGRAM, CategoryValueConstants.LEP_STATUS)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
         return bool(row[AttributeFieldConstants.LEP_STATUS])
+
+    def should_increment_matched_ids(self, row):
+        return
 
 
 class Sec504StatusTracker(CategoryTracker):
@@ -32,8 +38,11 @@ class Sec504StatusTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.PROGRAM, CategoryValueConstants.SECTION_504_STATUS)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
         return bool(row[AttributeFieldConstants.SECTION_504_STATUS])
+
+    def should_increment_matched_ids(self, row):
+        return
 
 
 class EconDisadvStatusTracker(CategoryTracker):
@@ -41,8 +50,11 @@ class EconDisadvStatusTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.PROGRAM, CategoryValueConstants.ECON_DISADV_STATUS)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
         return bool(row[AttributeFieldConstants.ECON_DISADV_STATUS])
+
+    def should_increment_matched_ids(self, row):
+        return
 
 
 class MigrantStatusTracker(CategoryTracker):
@@ -50,5 +62,8 @@ class MigrantStatusTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.PROGRAM, CategoryValueConstants.MIGRANT_STATUS)
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
         return bool(row[AttributeFieldConstants.MIGRANT_STATUS])
+
+    def should_increment_matched_ids(self, row):
+        return

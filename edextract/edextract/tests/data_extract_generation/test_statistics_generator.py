@@ -45,21 +45,22 @@ class TestStatisticsGenerator(unittest.TestCase):
     def test__format_intval_none(self):
         self.assertEquals(_format_intval(None), '')
 
-    def test_generate_data_row(self):
-        current_year_count = 100
-        previous_year_count = 90
-        current_year_total = 200
-        previous_year_total = 180
+    def test_generate_data_row_all_nums_gt_zero(self):
+        result = generate_data_row(100, 90, 200, 180, 75)
 
-        result = generate_data_row(current_year_count, previous_year_count,
-                                   current_year_total, previous_year_total)
+        self.assertEqual(['90', '50', '100', '50', '10', '11.11', '0', '75', '83.33'], result)
 
-        self.assertEquals(len(result), 7)
+    def test_generate_data_row_prev_count_zero(self):
+        result = generate_data_row(100, 0, 200, 180, 0)
 
-        self.assertEquals(result[0], '90')
-        self.assertEquals(result[1], '50')
-        self.assertEquals(result[2], '100')
-        self.assertEquals(result[3], '50')
-        self.assertEquals(result[4], '10')
-        self.assertEquals(result[5], '11.11')
-        self.assertEquals(result[6], '0')
+        self.assertEqual(['0', '0', '100', '50', '100', '', '50', '0', ''], result)
+
+    def test_generate_data_row_prev_total_zero(self):
+        result = generate_data_row(100, 0, 200, 0, 0)
+
+        self.assertEqual(['0', '', '100', '50', '100', '', '', '0', ''], result)
+
+    def test_generate_data_row_prev_total_none(self):
+        result = generate_data_row(100, None, 200, None, None)
+
+        self.assertEqual(['', '', '100', '50', '', '', '', '', ''], result)

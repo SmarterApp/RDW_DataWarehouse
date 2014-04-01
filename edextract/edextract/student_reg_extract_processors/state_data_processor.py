@@ -10,6 +10,9 @@ class StateDataProcessor(EdOrgDataProcessor):
         ed_org_hierarchy = {}
         super().__init__(category_trackers, ed_org_hierarchy)
 
-    def process_data(self, data_row):
-        self._call_trackers(data_row[AttributeFieldConstants.STATE_CODE], data_row)
+    def process_yearly_data(self, data_row):
+        self._call_yearly_trackers(data_row[AttributeFieldConstants.STATE_CODE], data_row)
         self._add_to_edorg_hierarchy(data_row[AttributeFieldConstants.STATE_CODE], data_row[AttributeFieldConstants.STATE_NAME])
+
+    def process_matched_ids_data(self, data_row):
+        return

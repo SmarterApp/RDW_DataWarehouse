@@ -1,7 +1,7 @@
 __author__ = 'ablum'
 
 
-def generate_data_row(current_year_count, previous_year_count, current_year_total, previous_year_total):
+def generate_data_row(current_year_count, previous_year_count, current_year_total, previous_year_total, matched_id_count):
     '''
     Generates a data row with statistics
     @param current_year_count: The count of a certain demographic for the current year
@@ -13,6 +13,7 @@ def generate_data_row(current_year_count, previous_year_count, current_year_tota
 
     percent_of_prev_year_total = _percentage(previous_year_count, previous_year_total)
     percent_of_current_year_total = _percentage(current_year_count, current_year_total)
+    percent_of_matched_ids = _percentage(matched_id_count, previous_year_count)
 
     change_in_count = _subtract(current_year_count, previous_year_count)
     percent_difference_of_count = _percentage(change_in_count, previous_year_count)
@@ -22,7 +23,7 @@ def generate_data_row(current_year_count, previous_year_count, current_year_tota
     return [_format_intval(previous_year_count), _format_floatval(percent_of_prev_year_total),
             _format_intval(current_year_count), _format_floatval(percent_of_current_year_total),
             _format_intval(change_in_count), _format_floatval(percent_difference_of_count),
-            _format_floatval(change_in_percentage_of_total)]
+            _format_floatval(change_in_percentage_of_total), _format_intval(matched_id_count), _format_floatval(percent_of_matched_ids)]
 
 
 def _percentage(count, total):

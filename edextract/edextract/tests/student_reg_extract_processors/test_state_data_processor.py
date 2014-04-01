@@ -18,13 +18,13 @@ class TestStateDataProcessor(unittest.TestCase):
         self.state_data_processor = StateDataProcessor(self.category_trackers)
 
     def test_ed_org_map_updates(self):
-        self.state_data_processor.process_data(self.results)
+        self.state_data_processor.process_yearly_data(self.results)
         self.assertEquals(len(self.state_data_processor.get_ed_org_hierarchy()), 1)
         self.assertDictEqual(self.state_data_processor.get_ed_org_hierarchy(), {('North Carolina', '', ''): 'NC'})
 
     def test_call_to_tracker(self):
-        self.state_data_processor._call_trackers = MagicMock(return_value=None)
+        self.state_data_processor._call_yearly_trackers = MagicMock(return_value=None)
 
-        self.state_data_processor.process_data(self.results)
+        self.state_data_processor.process_yearly_data(self.results)
 
-        self.state_data_processor._call_trackers.assert_called_with('NC', self.results)
+        self.state_data_processor._call_yearly_trackers.assert_called_with('NC', self.results)

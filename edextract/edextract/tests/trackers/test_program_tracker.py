@@ -33,11 +33,11 @@ class TestProgramTrackers(unittest.TestCase):
         ]
         for row in db_rows:
             school_guid = row['school_guid']
-            self.idea_tracker.track(school_guid, row)
-            self.lep_tracker.track(school_guid, row)
-            self.s504_tracker.track(school_guid, row)
-            self.econ_tracker.track(school_guid, row)
-            self.migr_tracker.track(school_guid, row)
+            self.idea_tracker.track_yearly_count(school_guid, row)
+            self.lep_tracker.track_yearly_count(school_guid, row)
+            self.s504_tracker.track_yearly_count(school_guid, row)
+            self.econ_tracker.track_yearly_count(school_guid, row)
+            self.migr_tracker.track_yearly_count(school_guid, row)
 
         self.assertEquals(2, len(self.idea_tracker.get_map_entry('school1')))
         self.assertEquals(2, len(self.idea_tracker.get_map_entry('school2')))
@@ -68,12 +68,12 @@ class TestProgramTrackers(unittest.TestCase):
     def test_track_blanks(self):
         db_row = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013,
                   'dmg_prg_504': None, 'dmg_sts_mig': None}
-        self.s504_tracker.track('NJ', db_row)
-        self.migr_tracker.track('NJ', db_row)
-        self.s504_tracker.track('district1', db_row)
-        self.migr_tracker.track('district1', db_row)
-        self.s504_tracker.track('school1', db_row)
-        self.migr_tracker.track('school1', db_row)
+        self.s504_tracker.track_yearly_count('NJ', db_row)
+        self.migr_tracker.track_yearly_count('NJ', db_row)
+        self.s504_tracker.track_yearly_count('district1', db_row)
+        self.migr_tracker.track_yearly_count('district1', db_row)
+        self.s504_tracker.track_yearly_count('school1', db_row)
+        self.migr_tracker.track_yearly_count('school1', db_row)
 
         self.assertEquals(None, self.s504_tracker.get_map_entry('NJ'))
         self.assertEquals(None, self.migr_tracker.get_map_entry('NJ'))
@@ -87,15 +87,15 @@ class TestProgramTrackers(unittest.TestCase):
         row2 = {'dmg_prg_iep': False, 'dmg_prg_lep': True, 'dmg_prg_504': False, 'dmg_sts_ecd': True, 'dmg_sts_mig': False}
         row3 = {'dmg_prg_504': None, 'dmg_sts_mig': None}
 
-        self.assertTrue(self.idea_tracker.should_increment(row1))
-        self.assertFalse(self.idea_tracker.should_increment(row2))
-        self.assertFalse(self.lep_tracker.should_increment(row1))
-        self.assertTrue(self.lep_tracker.should_increment(row2))
-        self.assertTrue(self.s504_tracker.should_increment(row1))
-        self.assertFalse(self.s504_tracker.should_increment(row2))
-        self.assertFalse(self.econ_tracker.should_increment(row1))
-        self.assertTrue(self.econ_tracker.should_increment(row2))
-        self.assertTrue(self.migr_tracker.should_increment(row1))
-        self.assertFalse(self.migr_tracker.should_increment(row2))
-        self.assertFalse(self.s504_tracker.should_increment(row3))
-        self.assertFalse(self.migr_tracker.should_increment(row3))
+        self.assertTrue(self.idea_tracker.should_increment_year(row1))
+        self.assertFalse(self.idea_tracker.should_increment_year(row2))
+        self.assertFalse(self.lep_tracker.should_increment_year(row1))
+        self.assertTrue(self.lep_tracker.should_increment_year(row2))
+        self.assertTrue(self.s504_tracker.should_increment_year(row1))
+        self.assertFalse(self.s504_tracker.should_increment_year(row2))
+        self.assertFalse(self.econ_tracker.should_increment_year(row1))
+        self.assertTrue(self.econ_tracker.should_increment_year(row2))
+        self.assertTrue(self.migr_tracker.should_increment_year(row1))
+        self.assertFalse(self.migr_tracker.should_increment_year(row2))
+        self.assertFalse(self.s504_tracker.should_increment_year(row3))
+        self.assertFalse(self.migr_tracker.should_increment_year(row3))

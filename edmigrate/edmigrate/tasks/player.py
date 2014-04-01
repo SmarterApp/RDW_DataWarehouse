@@ -134,7 +134,8 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Resuming pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, pgpool=pgpool))
         self.iptables.unblock_pgsql_INPUT()
-        status = self.iptables.check_block_input('localhost')
+        # localhost is not block by iptables, so we need to use the hostname to
+        status = self.iptables.check_block_input(self._hostname())
         if status:
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
@@ -158,7 +159,8 @@ class Player(metaclass=Singleton):
         self.logger.info("{name}: Blocking pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, pgpool=pgpool))
         self.iptables.block_pgsql_INPUT()
-        status = not self.iptables.check_block_input('localhost')
+        # localhost is not block by iptables, so we need to use the hostname to
+        status = not self.iptables.check_block_input(self._hostname())
         if status:
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
@@ -232,7 +234,8 @@ class Player(metaclass=Singleton):
                          format(name=self.__class__.__name__, master=master, pgpool=pgpool))
         self.iptables.unblock_pgsql_INPUT()
         self.iptables.unblock_pgsql_OUTPUT()
-        status_1 = self.iptables.check_block_input('localhost')
+        # localhost is not block by iptables, so we need to use the hostname to
+        status_1 = self.iptables.check_block_input(self._hostname())
         status_2 = self.iptables.check_block_output(master)
         if status_1 and status_2:
             reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,

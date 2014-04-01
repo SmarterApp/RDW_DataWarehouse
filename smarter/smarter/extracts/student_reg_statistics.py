@@ -24,8 +24,9 @@ def get_academic_year_query(academic_year, state_code):
 
 def get_match_id_query(academic_year, state_code):
     with EdCoreDBConnection(state_code=state_code) as connection:
-        current_sr = connection.get_table(Constants.STUDENT_REG)
-        prev_sr = connection.get_table(Constants.STUDENT_REG)
+        student_reg = connection.get_table(Constants.STUDENT_REG)
+        current_sr = student_reg.alias()
+        prev_sr = student_reg.alias()
 
         match_id_query = select_with_context([current_sr.c.state_code, prev_sr.c.state_code.label('prev_state_code'), current_sr.c.state_name, current_sr.c.district_guid,
                                               prev_sr.c.district_guid.label('prev_district_guid'), current_sr.c.district_name, current_sr.c.school_guid,

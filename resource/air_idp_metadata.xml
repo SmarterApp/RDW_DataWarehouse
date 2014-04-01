@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<EntityDescriptor entityID="http://sso-dev.opentestsystem.org:8080/auth" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+<EntityDescriptor entityID="http://drcamp-dev.opentestsystem.org:8080/auth" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
     <IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
@@ -20,26 +20,20 @@ cGy/F2Zuj8XJJpuQRSE6PtQqBuDEHjjmOQJ0rV/r8mO1ZCtHRhpZ5zYRjhRC9eCbjx9VrFax0JDC
                 </ds:X509Data>
             </ds:KeyInfo>
         </KeyDescriptor>
-        <ArtifactResolutionService index="0" isDefault="true" Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://sso-dev.opentestsystem.org:8080/auth/ArtifactResolver/metaAlias/sbac/idp"/>
-        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://sso-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp" ResponseLocation="http://sso-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp"/>
-        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://sso-dev.opentestsystem.org:8080/auth/IDPSloPOST/metaAlias/sbac/idp" ResponseLocation="http://sso-dev.opentestsystem.org:8080/auth/IDPSloPOST/metaAlias/sbac/idp"/>
-        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://sso-dev.opentestsystem.org:8080/auth/IDPSloSoap/metaAlias/sbac/idp"/>
-        <ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://sso-dev.opentestsystem.org:8080/auth/IDPMniRedirect/metaAlias/sbac/idp" ResponseLocation="http://sso-dev.opentestsystem.org:8080/auth/IDPMniRedirect/metaAlias/sbac/idp"/>
-        <ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://sso-dev.opentestsystem.org:8080/auth/IDPMniPOST/metaAlias/sbac/idp" ResponseLocation="http://sso-dev.opentestsystem.org:8080/auth/IDPMniPOST/metaAlias/sbac/idp"/>
-        <ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://sso-dev.opentestsystem.org:8080/auth/IDPMniSoap/metaAlias/sbac/idp"/>
-        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+        <ArtifactResolutionService index="0" isDefault="true" Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://drcamp-dev.opentestsystem.org:8080/auth/ArtifactResolver/metaAlias/sbac/idp"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://drcamp-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp" ResponseLocation="http://drcamp-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://drcamp-dev.opentestsystem.org:8080/auth/IDPSloPOST/metaAlias/sbac/idp" ResponseLocation="http://drcamp-dev.opentestsystem.org:8080/auth/IDPSloPOST/metaAlias/sbac/idp"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://drcamp-dev.opentestsystem.org:8080/auth/IDPSloSoap/metaAlias/sbac/idp"/>
+        <ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://drcamp-dev.opentestsystem.org:8080/auth/IDPMniRedirect/metaAlias/sbac/idp" ResponseLocation="http://drcamp-dev.opentestsystem.org:8080/auth/IDPMniRedirect/metaAlias/sbac/idp"/>
+        <ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://drcamp-dev.opentestsystem.org:8080/auth/IDPMniPOST/metaAlias/sbac/idp" ResponseLocation="http://drcamp-dev.opentestsystem.org:8080/auth/IDPMniPOST/metaAlias/sbac/idp"/>
+        <ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://drcamp-dev.opentestsystem.org:8080/auth/IDPMniSoap/metaAlias/sbac/idp"/>
         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
-        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</NameIDFormat>
-        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName</NameIDFormat>
-        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos</NameIDFormat>
-        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName</NameIDFormat>
-        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://sso-dev.opentestsystem.org:8080/auth/SSORedirect/metaAlias/sbac/idp"/>
-        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://sso-dev.opentestsystem.org:8080/auth/SSOPOST/metaAlias/sbac/idp"/>
-        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://sso-dev.opentestsystem.org:8080/auth/SSOSoap/metaAlias/sbac/idp"/>
-        <NameIDMappingService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://sso-dev.opentestsystem.org:8080/auth/NIMSoap/metaAlias/sbac/idp"/>
-        <AssertionIDRequestService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://sso-dev.opentestsystem.org:8080/auth/AIDReqSoap/IDPRole/metaAlias/sbac/idp"/>
-        <AssertionIDRequestService Binding="urn:oasis:names:tc:SAML:2.0:bindings:URI" Location="http://sso-dev.opentestsystem.org:8080/auth/AIDReqUri/IDPRole/metaAlias/sbac/idp"/>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://drcamp-dev.opentestsystem.org:8080/auth/SSORedirect/metaAlias/sbac/idp"/>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://drcamp-dev.opentestsystem.org:8080/auth/SSOPOST/metaAlias/sbac/idp"/>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://drcamp-dev.opentestsystem.org:8080/auth/SSOSoap/metaAlias/sbac/idp"/>
+        <NameIDMappingService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://drcamp-dev.opentestsystem.org:8080/auth/NIMSoap/metaAlias/sbac/idp"/>
+        <AssertionIDRequestService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://drcamp-dev.opentestsystem.org:8080/auth/AIDReqSoap/IDPRole/metaAlias/sbac/idp"/>
+        <AssertionIDRequestService Binding="urn:oasis:names:tc:SAML:2.0:bindings:URI" Location="http://drcamp-dev.opentestsystem.org:8080/auth/AIDReqUri/IDPRole/metaAlias/sbac/idp"/>
     </IDPSSODescriptor>
 </EntityDescriptor>
 

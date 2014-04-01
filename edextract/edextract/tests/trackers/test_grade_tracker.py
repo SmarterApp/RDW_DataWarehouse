@@ -27,7 +27,6 @@ class TestGradeTrackers(unittest.TestCase):
 
         self.grade_db_rows = [{'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'KG'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '01'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '02'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '03'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '04'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '05'},
@@ -37,7 +36,6 @@ class TestGradeTrackers(unittest.TestCase):
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '09'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '10'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '11'},
-                              {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '12'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '03'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '07'},
                               {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2014, 'enrl_grade': '09'},
@@ -50,7 +48,7 @@ class TestGradeTrackers(unittest.TestCase):
 
         self.assertEquals(1, len(self.gradek.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade1.get_map_entry('NJ')))
-        self.assertEquals(1, len(self.grade2.get_map_entry('NJ')))
+        self.assertIsNone(self.grade2.get_map_entry('NJ'))
         self.assertEquals(2, len(self.grade3.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade4.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade5.get_map_entry('NJ')))
@@ -60,9 +58,11 @@ class TestGradeTrackers(unittest.TestCase):
         self.assertEquals(2, len(self.grade9.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade10.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade11.get_map_entry('NJ')))
-        self.assertEquals(2, len(self.grade12.get_map_entry('NJ')))
+        self.assertEquals(1, len(self.grade12.get_map_entry('NJ')))
 
         self.assertEquals(1, self.grade1.get_map_entry('NJ')[2013])
+        self.assertEquals(1, self.grade3.get_map_entry('NJ')[2013])
+        self.assertEquals(1, self.grade12.get_map_entry('NJ')[2014])
         self.assertEquals(1, self.grade3.get_map_entry('NJ')[2014])
         self.assertEquals(1, self.grade7.get_map_entry('NJ')[2014])
         self.assertEquals(1, self.grade9.get_map_entry('NJ')[2014])

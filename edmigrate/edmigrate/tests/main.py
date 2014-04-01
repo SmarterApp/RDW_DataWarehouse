@@ -8,7 +8,7 @@ from edmigrate.utils.constants import Constants
 from kombu.connection import Connection
 from kombu.entity import Exchange, Queue
 from edmigrate.tasks.player import player_task
-from edmigrate.edmigrate_celery import setup_celery
+from edmigrate.edmigrate_celery import celery
 
 
 settings = {'migrate.celery.CELERY_IMPORTS': '("edmigrate.tasks.player")',
@@ -39,7 +39,7 @@ def main():
     ids = [args.id] if args.id else args.id
     url = args.url
     settings['migrate.celery.BROKER_URL'] = url
-    setup_celery(settings)
+    celery.conf.update(BROKER_URL=url)
     connection = Connection(url)
     exchange = Exchange(Constants.CONDUCTOR_EXCHANGE, type='direct')
     queue = Queue(Constants.CONDUCTOR_QUEUE, exchange=exchange, routing_key=Constants.CONDUCTOR_ROUTING_KEY, durable=False)

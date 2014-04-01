@@ -28,9 +28,11 @@ class Iptables(metaclass=Singleton):
             subprocess.check_output([Constants.IPTABLES_SUDO, Constants.IPTABLES_COMMAND,
                                      Constants.IPTABLES_TABLE, Constants.IPTABLES_FILTER,
                                      mode, chain,
-                                     Constants.IPTABLES_JUMP, self._target], universal_newlines=True)
-        except subprocess.CalledProcessError:
-            raise IptablesCommandError
+                                     Constants.IPTABLES_JUMP, self._target],
+                                    universal_newlines=True)
+        except subprocess.CalledProcessError as e:
+            # we just skip. we use the connection checking to verify rule changes are effective or not
+            pass
 
     def block_pgsql_INPUT(self):
         self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)

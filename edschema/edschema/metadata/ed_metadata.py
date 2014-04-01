@@ -37,11 +37,11 @@ def generate_ed_metadata(schema_name=None, bind=None):
     instit_hier = Table('dim_inst_hier', metadata,
                         Column('inst_hier_rec_id', BigInteger, primary_key=True),
                         Column('batch_guid', String(50), nullable=True),
-                        Column('state_name', String(32), nullable=False),
+                        Column('state_name', String(32), nullable=False, info={'natural_key': True}),
                         Column('state_code', String(2), nullable=False),
-                        Column('district_guid', String(50), nullable=False),
+                        Column('district_guid', String(50), nullable=False, info={'natural_key': True}),
                         Column('district_name', String(256), nullable=False),
-                        Column('school_guid', String(50), nullable=False),
+                        Column('school_guid', String(50), nullable=False, info={'natural_key': True}),
                         Column('school_name', String(256), nullable=False),
                         Column('school_category', String(20), nullable=False),
                         Column('from_date', String(8), nullable=False),
@@ -50,12 +50,12 @@ def generate_ed_metadata(schema_name=None, bind=None):
                         )
 
     Index('dim_inst_hier_idx', instit_hier.c.inst_hier_rec_id, unique=True)
-    Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_guid, instit_hier.c.school_guid, unique=False, natural_key=True)
+    Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_guid, instit_hier.c.school_guid, unique=False)
 
     sections = Table('dim_section', metadata,
                      Column('section_rec_id', BigInteger, primary_key=True),
                      Column('batch_guid', String(50), nullable=True),
-                     Column('section_guid', String(50), nullable=False),
+                     Column('section_guid', String(50), nullable=False, info={'natural_key': True}),
                      Column('section_name', String(256), nullable=False),
                      Column('grade', String(10), nullable=False),
                      Column('class_name', String(256), nullable=False),
@@ -76,7 +76,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     students = Table('dim_student', metadata,
                      Column('student_rec_id', BigInteger, primary_key=True),
                      Column('batch_guid', String(50), nullable=True),
-                     Column('student_guid', String(50), nullable=False),
+                     Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
                      Column('last_name', String(256), nullable=False),
@@ -98,12 +98,12 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      )
 
     Index('dim_student_pk', students.c.student_rec_id, unique=True)
-    Index('dim_student_idx', students.c.student_guid, unique=False, natural_key=True)
+    Index('dim_student_idx', students.c.student_guid, unique=False)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
                        Column('batch_guid', String(50), nullable=True),
-                       Column('asmt_guid', String(50), nullable=False),
+                       Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
                        Column('asmt_type', String(32), nullable=False),
                        Column('asmt_period', String(32), nullable=False),
                        Column('asmt_period_year', SmallInteger, nullable=False),
@@ -146,7 +146,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        )
 
     Index('dim_asmt_rec_idx', assessment.c.asmt_rec_id, unique=True)
-    Index('dim_asmt_guid_idx', assessment.c.asmt_guid, unique=False, natural_key=True)
+    Index('dim_asmt_guid_idx', assessment.c.asmt_guid, unique=False)
     Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, unique=False)
 
     custom_metadata = Table('custom_metadata', metadata,
@@ -160,9 +160,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
                                Column('batch_guid', String(50), nullable=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
-                               Column('asmt_guid', String(50), nullable=False),
+                               Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
                                Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
-                               Column('student_guid', String(50), nullable=False),
+                               Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
                                Column('external_student_id', String(40), nullable=True),
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),
@@ -237,7 +237,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
     Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.rec_status, unique=False)
     Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.rec_status, unique=False)
-    Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False, natural_key=True)
+    Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False)
     # Filtering related indices
     Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.asmt_grade, unique=False)
     Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_lep, unique=False)

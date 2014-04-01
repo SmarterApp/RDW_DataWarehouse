@@ -14,6 +14,9 @@ class TestSchoolDataProcessor(unittest.TestCase):
     def setUp(self):
         self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
                      AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
+        self.matched_ids_results = {'prev_school_guid': '5f706ksg80hhxs', AttributeFieldConstants.STATE_NAME: 'North Carolina',
+                                    AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
+                                    AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
         self.category_trackers = []
 
         self.school_data_processor = SchoolDataProcessor(self.category_trackers)
@@ -25,8 +28,25 @@ class TestSchoolDataProcessor(unittest.TestCase):
                                                                                   'Daybreak Junior High'): '5f706ksg80hhxs'})
 
     def test_call_to_tracker(self):
-        self.school_data_processor._call_yearly_trackers = MagicMock(return_value=None)
+        self.school_data_processor._call_trackers = MagicMock(return_value=None)
 
         self.school_data_processor.process_yearly_data(self.data)
 
-        self.school_data_processor._call_yearly_trackers.assert_called_with('5f706ksg80hhxs', self.data)
+        self.school_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.data)
+
+    def test_call_to_matched_ids_tracker(self):
+        self.school_data_processor._call_trackers = MagicMock(return_value=None)
+
+        self.school_data_processor.process_matched_ids_data(self.matched_ids_results)
+
+        self.school_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.matched_ids_results, 'matched_ids')
+
+    def test__should_call_trackers(self):
+        same_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '5f706ksg80hhxs'}
+        result = self.school_data_processor._should_call_trackers(same_school)
+        self.assertTrue(result)
+
+    def test__should_not_call_trackers(self):
+        different_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '6g817lsg80hhxs'}
+        result = self.school_data_processor._should_call_trackers(different_school)
+        self.assertFalse(result)

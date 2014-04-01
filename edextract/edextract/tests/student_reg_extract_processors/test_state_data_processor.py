@@ -23,8 +23,15 @@ class TestStateDataProcessor(unittest.TestCase):
         self.assertDictEqual(self.state_data_processor.get_ed_org_hierarchy(), {('North Carolina', '', ''): 'NC'})
 
     def test_call_to_tracker(self):
-        self.state_data_processor._call_yearly_trackers = MagicMock(return_value=None)
+        self.state_data_processor._call_trackers = MagicMock(return_value=None)
 
         self.state_data_processor.process_yearly_data(self.results)
 
-        self.state_data_processor._call_yearly_trackers.assert_called_with('NC', self.results)
+        self.state_data_processor._call_trackers.assert_called_with('NC', self.results)
+
+    def test_call_to_matched_ids_tracker(self):
+        self.state_data_processor._call_trackers = MagicMock(return_value=None)
+
+        self.state_data_processor.process_matched_ids_data(self.results)
+
+        self.state_data_processor._call_trackers.assert_called_with('NC', self.results, 'matched_ids')

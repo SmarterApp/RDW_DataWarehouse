@@ -1,3 +1,5 @@
+from edextract.trackers.category_tracker import DataCounter
+
 __author__ = 'ablum'
 
 from edextract.student_reg_extract_processors.ed_org_data_processor import EdOrgDataProcessor
@@ -10,11 +12,15 @@ class DistrictDataProcessor(EdOrgDataProcessor):
         ed_org_hierarchy = {}
         super().__init__(category_trackers, ed_org_hierarchy)
 
+    def _should_call_trackers(self, data_row):
+        return data_row[AttributeFieldConstants.DISTRICT_GUID] == data_row[AttributeFieldConstants.PREV_DISTRICT_GUID]
+
     def process_yearly_data(self, data_row):
-        self._call_yearly_trackers(data_row[AttributeFieldConstants.DISTRICT_GUID], data_row)
+        self._call_trackers(data_row[AttributeFieldConstants.DISTRICT_GUID], data_row)
         self._add_to_edorg_hierarchy(data_row[AttributeFieldConstants.DISTRICT_GUID],
                                      data_row[AttributeFieldConstants.STATE_NAME],
                                      data_row[AttributeFieldConstants.DISTRICT_NAME])
 
     def process_matched_ids_data(self, data_row):
-        return
+        if self._should_call_trackers(data_row):
+            self._call_trackers(data_row[AttributeFieldConstants.DISTRICT_GUID], data_row, DataCounter.MATCHED_IDS)

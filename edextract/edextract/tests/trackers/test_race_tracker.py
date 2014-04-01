@@ -59,9 +59,9 @@ class TestRaceTracker(unittest.TestCase):
 
     def test_tracker_map_counts(self):
         for row in self.hsp_db_rows:
-            self.hispanic_tracker.track_yearly_count(row['state_code'], row)
-            self.hispanic_tracker.track_yearly_count(row['district_guid'], row)
-            self.hispanic_tracker.track_yearly_count(row['school_guid'], row)
+            self.hispanic_tracker.track(row['state_code'], row)
+            self.hispanic_tracker.track(row['district_guid'], row)
+            self.hispanic_tracker.track(row['school_guid'], row)
 
         self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('NJ')))
         self.assertEquals(2, len(self.hispanic_tracker.get_map_entry('district1')))
@@ -82,9 +82,9 @@ class TestRaceTracker(unittest.TestCase):
     def test_race_trackers(self):
         for tracker in self.race_trackers:
             for row in self.race_db_rows:
-                tracker.track_yearly_count(row['state_code'], row)
-                tracker.track_yearly_count(row['district_guid'], row)
-                tracker.track_yearly_count(row['school_guid'], row)
+                tracker.track(row['state_code'], row)
+                tracker.track(row['district_guid'], row)
+                tracker.track(row['school_guid'], row)
 
         self.validate_two_years_data([self.ami_tracker, self.afm_tracker, self.pac_tracker])
         self.validate_single_year_data([self.hispanic_tracker, self.asn_tracker, self.wht_tracker, self.mul_tracker])

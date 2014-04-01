@@ -11,6 +11,7 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.utils import drop_schema
 from edschema.metadata.util import get_natural_key_columns
+from edschema.metadata.ed_metadata import generate_ed_metadata
 
 __author__ = 'sravi'
 TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
@@ -119,7 +120,7 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
         logger.debug('migrating schema[' + schema_name + ']')
     logger.debug('migrating table[' + table_name + ']')
     delete_count = 0
-    source_connector.set_metadata_by_reflect(schema_name)
+    source_connector.set_metadata_by_generate(schema_name=schema_name, metadata_func=generate_ed_metadata)
     source_table = source_connector.get_table(table_name)
     # TODO: make it possible for composites
     primary_key = source_table.primary_key.columns.keys()[0]

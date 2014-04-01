@@ -49,6 +49,7 @@ define [
       row['params'] = {
         "studentGuid": row['student_guid'],
         "stateCode": row['state_code'],
+        "asmtYear": edwarePreferences.getAsmtYearPreference()
       }
       row
 

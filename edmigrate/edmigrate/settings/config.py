@@ -3,11 +3,6 @@ from edmigrate.utils.constants import Constants
 
 
 class Config():
-    MASTER_SCHEDULER_HOUR = 'migrate.master_scheduler.hour'
-    MASTER_SCHEDULER_MIN = 'migrate.master_scheduler.min'
-    MAX_RETRIES = 'migrate.retries_allowed'
-    RETRY_DELAY = 'migrate.retry_delay'
-    TIMEOUT = 'migrate.timeout'
     BROADCAST_QUEUE = 'migrate.broadcast.queue'
     LAG_TOLERENCE_IN_BYTES = 'migrate.lag_tolerence_in_bytes'
     IPTABLES_CHAIN = 'migrate.iptables.chain'
@@ -20,20 +15,13 @@ class Config():
 
 
 # list of configurations that are specific to edmigrate
-LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
-                  (Config.MASTER_SCHEDULER_MIN, int, 1),
-                  (Config.MAX_RETRIES, int, 10),
-                  (Config.RETRY_DELAY, int, 60),
-                  (Config.TIMEOUT, int, 20),
-                  (Config.BROADCAST_QUEUE, str, None),
+LIST_OF_CONFIG = [(Config.BROADCAST_QUEUE, str, None),
                   (Config.LAG_TOLERENCE_IN_BYTES, int, 10),
-                  (Config.PGPOOL_HOSTNAME, str, None),
                   (Config.DEFAULT_ROUTUNG_KEY, str, Constants.WORKER_NAME),
                   (Config.DEFAULT_ROUTUNG_QUEUE, str, Constants.CONDUCTOR_QUEUE),
                   (Config.BROKER_URL, str, 'memory://'),
                   (Config.EAGER_MODE, bool, False),
-                  (Config.MASTER_HOSTNAME, str, Constants.LOCALHOST),
-                  (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_TARGET),
+                  (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
                   (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
                   (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO)]
 

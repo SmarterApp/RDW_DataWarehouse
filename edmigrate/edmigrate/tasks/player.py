@@ -8,7 +8,6 @@ import logging
 from edmigrate.utils.utils import get_broker_url, get_node_id_from_hostname, \
     get_my_master_by_id
 from edmigrate.utils.constants import Constants
-from edmigrate.settings.config import Config, get_setting
 import edmigrate.utils.reply_to_conductor as reply_to_conductor
 from kombu import Connection
 import socket
@@ -76,7 +75,7 @@ class Player(metaclass=Singleton):
                         admin_logger.warning("{name} at {hostname} with node id {node_id} ignored {command} {nodes}".
                                              format(name=self.__class__.__name__, hostname=self.hostname,
                                                     node_id=self.node_id, command=command, nodes=str(nodes)))
-            except Exception as e:
+            except Exception:
                 logger.error("error during executing {command}".format(command=command))
                 admin_logger.error("error during executing {command}".format(command=command))
         else:
@@ -89,6 +88,7 @@ class Player(metaclass=Singleton):
         '''
         remove iptables rules to enable pgpool access slave database
         '''
+        rtn = False
         with IptablesController() as iptables:
             iptables.unblock_pgsql_INPUT()
             # localhost is not block by iptables, so we need to use the hostname to
@@ -96,6 +96,7 @@ class Player(metaclass=Singleton):
             if status:
                 reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                     self.exchange, self.routing_key)
+                rtn = True
                 logger.debug("Unblock pgpool")
                 admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked pgpool machine ( {pgpool}).".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
@@ -103,11 +104,13 @@ class Player(metaclass=Singleton):
                 logger.error("Failed to unblock pgpool)")
                 admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine ( {pgpool} ).".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+        return rtn
 
     def disconnect_pgpool(self):
         '''
         insert iptables rules to block pgpool to access postgres db
         '''
+        rtn = False
         with IptablesController() as iptables:
             iptables.block_pgsql_INPUT()
             # localhost is not block by iptables, so we need to use the hostname to
@@ -115,6 +118,7 @@ class Player(metaclass=Singleton):
             if status:
                 reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                        self.exchange, self.routing_key)
+                rtn = True
                 logger.debug("Block pgpool")
                 admin_logger.debug("{name} at {hostname} with node id {node_id} blocked pgpool machine.".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
@@ -122,17 +126,20 @@ class Player(metaclass=Singleton):
                 logger.error("Failed to block pgpool")
                 admin_logger.error("{name} at {hostname} with node id {node_id} failed to block pgpool machine.".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+        return rtn
 
     def connect_master(self):
         '''
         remove iptable rules to unblock master from access slave database
         '''
+        rtn = False
         with IptablesController() as iptables:
             iptables.unblock_pgsql_OUTPUT()
             status = IptablesChecker().check_block_output(self.master_hostname)
             if status:
                 reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                     self.exchange, self.routing_key)
+                rtn = True
                 logger.debug("Unblock master database ( {master} )".format(master=self.master_hostname))
                 admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked master database ( {master}).".
                                    format(name=self.__class__.__name__, hostname=self.hostname,
@@ -142,17 +149,20 @@ class Player(metaclass=Singleton):
                 admin_logger.errro("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ).".
                                    format(name=self.__class__.__name__, hostname=self.hostname,
                                           node_id=self.node_id, master=self.master_hostname))
+        return rtn
 
     def disconnect_master(self):
         '''
         insert iptable rules to block master to access slave database
         '''
+        rtn = False
         with IptablesController() as iptables:
             iptables.block_pgsql_OUTPUT()
             status = IptablesChecker().check_block_output(self.master_hostname)
             if status:
                 reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                        self.exchange, self.routing_key)
+                rtn = True
                 logger.debug("Block master database ( {master} )".format(master=self.master_hostname))
                 admin_logger.debug("{name} at {hostname} with node id {node_id} blocked master database ( {master}).".
                                    format(name=self.__class__.__name__, hostname=self._hostname(),
@@ -162,20 +172,22 @@ class Player(metaclass=Singleton):
                 admin_logger.error("{name} at {hostname} with node id {node_id} failed to block master database ( {master} ).".
                                    format(name=self.__class__.__name__, hostname=self._hostname(),
                                           node_id=self._node_id(), master=self.master_hostname))
+        return rtn
 
     def reset_players(self):
         '''
         reset players. so it will not block pgpool and master database
         '''
-        self.connect_pgpool()
-        self.connect_master()
+        return self.connect_pgpool() and self.connect_master()
 
     def register_player(self):
         '''
         register player to conductor
         '''
+        rtn = False
         if self.node_id:
             reply_to_conductor.register_player(self.node_id, self.connection, self.exchange, self.routing_key)
+            rtn = True
             logger.debug("Register as node_id ({node_id})".format(node_id=self.node_id))
             admin_logger.debug("{name} at {hostname} with node id {node_id} registered to conductor.".
                                format(name=self.__class__.__name__, hostname=self.hostname,
@@ -185,6 +197,7 @@ class Player(metaclass=Singleton):
             logger.error("{hostname} has no node_id".format(hostname=self.hostname))
             admin_logger.error("{name} at {hostname} with node id {node_id} failed to register to conductor. Please check {hostname}".
                                format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+        return rtn
 
 
 @celery.task(name=Constants.PLAYER_TASK, ignore_result=True)

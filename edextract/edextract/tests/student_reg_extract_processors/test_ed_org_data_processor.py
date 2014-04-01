@@ -12,7 +12,7 @@ class TestEdOrgDataProcessor(unittest.TestCase):
 
     def setUp(self):
         self.tracker = TotalTracker()
-        self.tracker.track = MagicMock(return_value=None)
+        self.tracker.track_yearly_count = MagicMock(return_value=None)
 
         self.category_tracker = [self.tracker]
 
@@ -22,12 +22,12 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC'}
 
     def test_call_tracker(self):
-        self.data_processor._call_trackers('123', self.data)
-        self.tracker.track.assert_called_with('123', self.data)
-        self.data_processor._call_trackers('456', self.data)
-        self.tracker.track.assert_called_with('456', self.data)
-        self.data_processor._call_trackers('789', self.data)
-        self.tracker.track.assert_called_with('789', self.data)
+        self.data_processor._call_yearly_trackers('123', self.data)
+        self.tracker.track_yearly_count.assert_called_with('123', self.data)
+        self.data_processor._call_yearly_trackers('456', self.data)
+        self.tracker.track_yearly_count.assert_called_with('456', self.data)
+        self.data_processor._call_yearly_trackers('789', self.data)
+        self.tracker.track_yearly_count.assert_called_with('789', self.data)
 
     def test_add_to_and_get_ed_org_hierarchy(self):
         self.data_processor._add_to_edorg_hierarchy('123', 'NC')

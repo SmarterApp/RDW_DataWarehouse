@@ -18,4 +18,4 @@ def process_row_data(rows, data_processors):
 
     for row in rows:
         for processor in data_processors:
-            processor.process_data(row)
+            processor.process_yearly_data(row)

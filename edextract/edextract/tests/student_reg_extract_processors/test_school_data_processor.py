@@ -19,14 +19,14 @@ class TestSchoolDataProcessor(unittest.TestCase):
         self.school_data_processor = SchoolDataProcessor(self.category_trackers)
 
     def test_ed_org_map_updates(self):
-        self.school_data_processor.process_data(self.data)
+        self.school_data_processor.process_yearly_data(self.data)
         self.assertEquals(len(self.school_data_processor.get_ed_org_hierarchy()), 1)
         self.assertDictEqual(self.school_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Gilfford County',
                                                                                   'Daybreak Junior High'): '5f706ksg80hhxs'})
 
     def test_call_to_tracker(self):
-        self.school_data_processor._call_trackers = MagicMock(return_value=None)
+        self.school_data_processor._call_yearly_trackers = MagicMock(return_value=None)
 
-        self.school_data_processor.process_data(self.data)
+        self.school_data_processor.process_yearly_data(self.data)
 
-        self.school_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.data)
+        self.school_data_processor._call_yearly_trackers.assert_called_with('5f706ksg80hhxs', self.data)

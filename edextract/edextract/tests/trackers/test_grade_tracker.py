@@ -44,7 +44,7 @@ class TestGradeTrackers(unittest.TestCase):
     def test_grade_trackers(self):
         for tracker in self.grade_trackers:
             for row in self.grade_db_rows:
-                tracker.track('NJ', row)
+                tracker.track_yearly_count('NJ', row)
 
         self.assertEquals(1, len(self.gradek.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade1.get_map_entry('NJ')))

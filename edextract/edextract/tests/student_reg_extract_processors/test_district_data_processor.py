@@ -21,13 +21,13 @@ class TestDistrictDataProcessor(unittest.TestCase):
         self.district_data_processor = DistrictDataProcessor(self.category_trackers)
 
     def test_ed_org_map_updates(self):
-        self.district_data_processor.process_data(self.results)
+        self.district_data_processor.process_yearly_data(self.results)
         self.assertEquals(len(self.district_data_processor.get_ed_org_hierarchy()), 1)
         self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Guilford County', ''): 'GUILFORD_GUID'})
 
     def test_call_to_tracker(self):
-        self.district_data_processor._call_trackers = MagicMock(return_value=None)
+        self.district_data_processor._call_yearly_trackers = MagicMock(return_value=None)
 
-        self.district_data_processor.process_data(self.results)
+        self.district_data_processor.process_yearly_data(self.results)
 
-        self.district_data_processor._call_trackers.assert_called_with('GUILFORD_GUID', self.results)
+        self.district_data_processor._call_yearly_trackers.assert_called_with('GUILFORD_GUID', self.results)

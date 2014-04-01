@@ -53,7 +53,7 @@ class TestRowDataProcessor(unittest.TestCase):
                 self.expected_call_stack = expected_call_stack
                 self.dp_id = dp_id
 
-            def process_data(self, data):
+            def process_yearly_data(self, data):
                 expected_id, expected_data = self.expected_call_stack.pop()
                 if expected_id != self.dp_id or expected_data != data:
                     raise IndexError()

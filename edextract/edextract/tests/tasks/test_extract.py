@@ -361,7 +361,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         previous_year = str(academic_year - 1)
         academic_year_query = 'SELECT * FROM student_reg WHERE academic_year == {current_year} OR academic_year == {previous_year}'\
             .format(current_year=current_year, previous_year=previous_year)
-        match_query = 'SELECT * FROM student_reg c inner join student_reg p on c.student_guid = p.student_guid WHERE c.academic_year == {current_year} AND p.academic_year == {previous_year}'
+        match_query = 'SELECT * FROM student_reg c inner join student_reg p on c.student_guid = p.student_guid WHERE c.academic_year == {current_year} AND p.academic_year == {previous_year}'\
+            .format(current_year=current_year, previous_year=previous_year)
         headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
             else self.completion_headers
         extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,

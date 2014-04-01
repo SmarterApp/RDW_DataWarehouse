@@ -103,7 +103,7 @@ def _get_sr_stat_tenant_data_for_academic_year(academic_year_db_rows, match_id_d
 
     data_processors = [StateDataProcessor(trackers), DistrictDataProcessor(trackers), SchoolDataProcessor(trackers)]
 
-    process_row_data(academic_year_db_rows, data_processors)
+    process_row_data(academic_year_db_rows, match_id_db_rows, data_processors)
 
     report_map = OrderedDict()
     for data_processor in data_processors:

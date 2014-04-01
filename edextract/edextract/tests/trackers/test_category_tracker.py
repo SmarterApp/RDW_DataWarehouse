@@ -23,7 +23,7 @@ class TestCategoryTracker(unittest.TestCase):
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-        ct.track('guid1', {})
+        ct.track('guid2', {'academic_year': 2015})
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
@@ -61,5 +61,8 @@ class DummyCategoryTracker(CategoryTracker):
         super().__init__('Category', 'Value')
         self.should_increment_fl = should_increment_fl
 
-    def should_increment(self, row):
+    def should_increment_year(self, row):
+        return self.should_increment_fl
+
+    def should_increment_matched_ids(self, row):
         return self.should_increment_fl

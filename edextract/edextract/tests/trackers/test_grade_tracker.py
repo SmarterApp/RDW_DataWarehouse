@@ -73,30 +73,30 @@ class TestGradeTrackers(unittest.TestCase):
         row2 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '03'}
         row3 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '07'}
 
-        self.assertTrue(self.gradek.should_increment(row1))
+        self.assertTrue(self.gradek.should_increment_year(row1))
 
-        self.assertTrue(self.grade3.should_increment(row2))
+        self.assertTrue(self.grade3.should_increment_year(row2))
 
-        self.assertTrue(self.grade7.should_increment(row3))
+        self.assertTrue(self.grade7.should_increment_year(row3))
 
-        self.assertFalse(self.gradek.should_increment(row3))
-        self.assertFalse(self.grade1.should_increment(row3))
-        self.assertFalse(self.grade2.should_increment(row3))
-        self.assertFalse(self.grade3.should_increment(row3))
-        self.assertFalse(self.grade4.should_increment(row3))
-        self.assertFalse(self.grade5.should_increment(row3))
-        self.assertFalse(self.grade6.should_increment(row3))
-        self.assertFalse(self.grade8.should_increment(row3))
-        self.assertFalse(self.grade9.should_increment(row3))
-        self.assertFalse(self.grade10.should_increment(row3))
-        self.assertFalse(self.grade11.should_increment(row3))
-        self.assertFalse(self.grade12.should_increment(row3))
+        self.assertFalse(self.gradek.should_increment_year(row3))
+        self.assertFalse(self.grade1.should_increment_year(row3))
+        self.assertFalse(self.grade2.should_increment_year(row3))
+        self.assertFalse(self.grade3.should_increment_year(row3))
+        self.assertFalse(self.grade4.should_increment_year(row3))
+        self.assertFalse(self.grade5.should_increment_year(row3))
+        self.assertFalse(self.grade6.should_increment_year(row3))
+        self.assertFalse(self.grade8.should_increment_year(row3))
+        self.assertFalse(self.grade9.should_increment_year(row3))
+        self.assertFalse(self.grade10.should_increment_year(row3))
+        self.assertFalse(self.grade11.should_increment_year(row3))
+        self.assertFalse(self.grade12.should_increment_year(row3))
 
     def test_grade_case(self):
         row1 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kg'}
         row2 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'Kg'}
         row3 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kG'}
 
-        self.assertTrue(self.gradek.should_increment(row1))
-        self.assertTrue(self.gradek.should_increment(row2))
-        self.assertTrue(self.gradek.should_increment(row3))
+        self.assertTrue(self.gradek.should_increment_year(row1))
+        self.assertTrue(self.gradek.should_increment_year(row2))
+        self.assertTrue(self.gradek.should_increment_year(row3))

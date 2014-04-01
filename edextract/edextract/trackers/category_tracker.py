@@ -14,7 +14,7 @@ class CategoryTracker(metaclass=ABCMeta):
         self._category = category
         self._value = value
 
-    def track(self, guid, row, matched=False):
+    def track(self, guid, row, key=None):
         """
         Increment total of rows based on the year this row contains for the given guid.
 
@@ -22,9 +22,9 @@ class CategoryTracker(metaclass=ABCMeta):
         @param row: Current DB table row to be counted
 
         """
-
-        if self.should_increment(row):
-            key = DataCounter.MATCHED_KEY if matched else row['academic_year']
+        key = key if key else row['academic_year']
+        should_increment = self.should_increment_matched_ids(row) if key == DataCounter.MATCHED_KEY else self.should_increment_year(row)
+        if should_increment:
             self._data_counter.increment(guid, key)
 
     def get_map_entry(self, guid):
@@ -51,7 +51,18 @@ class CategoryTracker(metaclass=ABCMeta):
         return self._category, self._value
 
     @abstractmethod
-    def should_increment(self, row):
+    def should_increment_year(self, row):
+        """
+        Determine if internal totals map should be updated for a row.
+
+        @param row: Current row to be assessed
+
+        @return: Whether or not to increment the concrete class's totals map
+        """
+        return
+
+    @abstractmethod
+    def should_increment_matched_ids(self, row):
         """
         Determine if internal totals map should be updated for a row.
 

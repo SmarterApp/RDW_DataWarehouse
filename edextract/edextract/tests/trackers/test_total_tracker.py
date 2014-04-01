@@ -64,4 +64,4 @@ class TestTotalTracker(unittest.TestCase):
     def test_should_increment(self):
         row = {}
 
-        self.assertTrue(self.total_tracker.should_increment(row))
+        self.assertTrue(self.total_tracker.should_increment_year(row))

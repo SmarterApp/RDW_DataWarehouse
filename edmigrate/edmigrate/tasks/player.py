@@ -16,6 +16,8 @@ from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
+from edmigrate.utils.iptables import Iptables
+from edmigrate.exceptions import IptablesCommandError
 
 
 class Player(metaclass=Singleton):
@@ -24,7 +26,8 @@ class Player(metaclass=Singleton):
                  admin_logger=logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER),
                  connection=Connection(get_broker_url()),
                  exchange=conductor.exchange,
-                 routing_key=Constants.CONDUCTOR_ROUTING_KEY):
+                 routing_key=Constants.CONDUCTOR_ROUTING_KEY,
+                 iptables=Iptables()):
         self.logger = logger
         self.admin_logger = admin_logger
         self.connection = connection
@@ -32,6 +35,7 @@ class Player(metaclass=Singleton):
         self.routing_key = routing_key
         self.node_id = None
         self.hostname = None
+        self.iptables = iptables
         self.COMMAND_HANDLERS = {
             Constants.COMMAND_REGISTER_PLAYER: self.register_player,
             Constants.COMMAND_START_REPLICATION: self.connect_master,
@@ -122,89 +126,6 @@ class Player(metaclass=Singleton):
                     break
         return self.node_id
 
-    def search_blocked_hostname(self, output, hostname):
-        '''
-        @param output: iptable -L output
-        @param hostname: hostname for the machine that are looked up in iptables chain output
-        '''
-        lines = output.split('\n')
-        found = False
-        for line in lines:
-            if line.find(hostname) >= 0 \
-                    and line.find('reject-with icmp-port-unreachable') >= 0 \
-                    and line.find('REJECT') >= 0:
-                found = True
-                break
-        return found
-
-    def check_iptable_has_blocked_machine(self, hostname):
-        '''
-        Run iptables -L, get the output, and search hostname that is in blocked chain
-        @param hostname: hostname for the blocked machine
-        '''
-        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
-        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
-        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
-        try:
-            output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_LIST, chain], universal_newlines=True)
-        except subprocess.CalledProcessError:
-            self.logger.error("{name}: Problem to use iptables. Please check with administrator".
-                              format(name=self.__class__.__name__,))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} couldn't use iptables command. Please check edmigrate's privilege.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id()))
-            output = ''
-        return self.search_blocked_hostname(output, hostname)
-
-    def remove_iptable_rules(self, hostname, mode, max_retries):
-        '''
-        remove machine from iptables block list
-        @param hostname: hostname to be blocked
-        @param max_retries: maximum time to retry to remove host from iptable block rules
-        '''
-        # the code will try to clean up as many as possible iptables rules that block the host in case multiple
-        # rules are inserted. But in order not fall into infinite loops. we use max_retries in
-        # edmigrate.utils.constants to control maximum number of retries
-        # also, if celery has no privileges to operate iptables, it will trigger exception and return result as false
-        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
-        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
-        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
-        try:
-            output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
-                                              mode, hostname,
-                                              Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
-                                             universal_newlines=True)
-            while output != 'iptables: No chain/target/match by that name.' and max_retries >= 0:
-                sleep(Constants.REPLICATION_CHECK_INTERVAL)
-                output = subprocess.check_output([sudo, iptables, Constants.IPTABLES_DELETE, chain,
-                                                  mode, hostname,
-                                                  Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
-                                                 universal_newlines=True)
-                max_retries -= 1
-        except subprocess.CalledProcessError:
-            self.logger.warning("{name}: Failed to remove rules to reject {hostname}".
-                                format(name=self.__class__.__name__, hostname=hostname))
-        return not self.check_iptable_has_blocked_machine(hostname)
-
-    def add_iptable_rules(self, hostname, mode):
-        '''
-        add machine into iptable block chain
-        @param hostname: hostname for the machine
-        '''
-        chain = get_setting(Config.IPTABLES_CHAIN, Constants.IPTABLES_CHAIN)
-        sudo = get_setting(Constants.IPTABLES_SUDO, Constants.IPTABLES_SUDO)
-        iptables = get_setting(Constants.IPTABLES_COMMAND, Constants.IPTABLES_COMMAND)
-        try:
-            subprocess.check_output([sudo, iptables, Constants.IPTABLES_INSERT, chain,
-                                     mode, hostname,
-                                     Constants.IPTABLES_JUMP, Constants.IPTABLES_TARGET],
-                                    universal_newlines=True)
-            sleep(Constants.REPLICATION_CHECK_INTERVAL)
-        except subprocess.CalledProcessError:
-            self.logger.error("{name}: Failed to add rules to reject {hostname}".
-                              format(name=self.__class__.__name__, hostname=hostname))
-        return self.check_iptable_has_blocked_machine(hostname)
-
     def connect_pgpool(self):
         '''
         remove iptables rules to enable pgpool access slave database
@@ -212,9 +133,8 @@ class Player(metaclass=Singleton):
         pgpool = get_setting(Config.PGPOOL_HOSTNAME)
         self.logger.info("{name}: Resuming pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, pgpool=pgpool))
-        # perform multiple times disable in case it was blocked multiple times in iptables
-        max_retries = Constants.REPLICATION_MAX_RETRIES
-        status = self.remove_iptable_rules(pgpool, Constants.IPTABLES_SOURCE, max_retries)
+        self.iptables.unblock_pgsql_INPUT()
+        status = self.iptables.check_block_input('localhost')
         if status:
             reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
@@ -237,8 +157,8 @@ class Player(metaclass=Singleton):
         pgpool = get_setting(Config.PGPOOL_HOSTNAME)
         self.logger.info("{name}: Blocking pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, pgpool=pgpool))
-        # only add rules when there is no rule in iptables
-        status = self.add_iptable_rules(pgpool, Constants.IPTABLES_SOURCE)
+        self.iptables.block_pgsql_INPUT()
+        status = not self.iptables.check_block_input('localhost')
         if status:
             reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
@@ -261,9 +181,8 @@ class Player(metaclass=Singleton):
         master = get_setting(Config.MASTER_HOSTNAME)
         self.logger.info("{name}: Resuming master( {master} )".
                          format(name=self.__class__.__name__, master=master))
-        # perform multiple times disable in case it was blocked multiple times in iptables
-        max_retries = Constants.REPLICATION_MAX_RETRIES
-        status = self.remove_iptable_rules(master, Constants.IPTABLES_DEST, max_retries)
+        self.iptables.unblock_pgsql_OUTPUT()
+        status = self.iptables.check_block_output(master)
         if status:
             reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                 self.exchange, self.routing_key)
@@ -286,8 +205,8 @@ class Player(metaclass=Singleton):
         master = get_setting(Config.MASTER_HOSTNAME)
         self.logger.info("{name}: Blocking master( {master} )".
                          format(name=self.__class__.__name__, master=master))
-        # only add rules when there is no rule in iptables
-        status = self.add_iptable_rules(master, Constants.IPTABLES_DEST)
+        self.iptables.block_pgsql_OUTPUT()
+        status = not self.iptables.check_block_output(master)
         if status:
             reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                    self.exchange, self.routing_key)
@@ -311,9 +230,10 @@ class Player(metaclass=Singleton):
         pgpool = get_setting(Config.PGPOOL_HOSTNAME)
         self.logger.info("{name}: Reset iptables rules for master ( {master} ) and pgpool ( {pgpool} )".
                          format(name=self.__class__.__name__, master=master, pgpool=pgpool))
-        max_retries = Constants.REPLICATION_MAX_RETRIES
-        status_1 = self.remove_iptable_rules(pgpool, Constants.IPTABLES_SOURCE, max_retries)
-        status_2 = self.remove_iptable_rules(master, Constants.IPTABLES_DEST, max_retries)
+        self.iptables.unblock_pgsql_INPUT()
+        self.iptables.unblock_pgsql_OUTPUT()
+        status_1 = self.iptables.check_block_input('localhost')
+        status_2 = self.iptables.check_block_output(master)
         if status_1 and status_2:
             reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
                                                              self.exchange, self.routing_key)

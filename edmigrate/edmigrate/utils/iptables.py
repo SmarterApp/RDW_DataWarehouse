@@ -40,6 +40,7 @@ class Iptables(metaclass=Singleton):
             output = subprocess.check_output([Constants.IPTABLES_SUDO, Constants.IPTABLES_SAVE_COMMAND],
                                              universal_newlines=True)
             for line in output.split('\n'):
+                line = line.strip()
                 if line == " ".join([Constants.IPTABLES_APPEND, chain, Constants.IPTABLES_JUMP, self._target]) or \
                    line == " ".join([Constants.IPTABLES_INSERT, chain, Constants.IPTABLES_JUMP, self._target]):
                     rule_exists = True

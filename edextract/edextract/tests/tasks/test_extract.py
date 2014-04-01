@@ -205,7 +205,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_generate_sr_statistics_csv_success(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        task = self.construct_extract_args(ExtractionDataType.SR_STATISTICS, 2016, output)
+        task = self.construct_extract_args_sr_stat(ExtractionDataType.SR_STATISTICS, 2016, output)
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
         result.get()
         self.assertTrue(os.path.exists(output))
@@ -219,29 +219,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2015 Count', 'AY2015 Percent of Total',
                                        'AY2016 Count', 'AY2016 Percent of Total', 'Change in Count', 'Percent Difference in Count',
                                        'Change in Percent of Total', 'AY2016 Matched IDs to AY2015 Count', 'AY2016 Matched IDs Percent of AY2015 Count'])
-
-    def test_generate_sr_completion_csv_success(self):
-        output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')
-        task = {
-            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_COMPLETION,
-            TaskConstants.TASK_TASK_ID: 'task_id',
-            TaskConstants.TASK_FILE_NAME: output,
-            TaskConstants.ACADEMIC_YEAR: 2015,
-            TaskConstants.CSV_HEADERS: self.completion_headers,
-            TaskConstants.TASK_QUERY: None
-        }
-        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
-        result.get()
-        self.assertTrue(os.path.exists(output))
-        csv_data = []
-        with open(output) as out:
-            data = csv.reader(out)
-            for row in data:
-                csv_data.append(row)
-        self.assertEqual(len(csv_data), 1)
-        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
-                                       'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
-                                       'Count of Students Assessed', 'Percent of Students Assessed'])
 
     def test_generate_sr_statistics_csv_no_tenant(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
@@ -374,6 +351,25 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                         TaskConstants.ACADEMIC_YEAR: academic_year,
                         TaskConstants.TASK_FILE_NAME: output,
                         TaskConstants.TASK_QUERY: query,
+                        TaskConstants.CSV_HEADERS: headers
+                        }
+
+        return extract_args
+
+    def construct_extract_args_sr_stat(self, extraction_type, academic_year, output):
+        current_year = str(academic_year)
+        previous_year = str(academic_year - 1)
+        academic_year_query = 'SELECT * FROM student_reg WHERE academic_year == {current_year} OR academic_year == {previous_year}'\
+            .format(current_year=current_year, previous_year=previous_year)
+        match_query = 'SELECT * FROM student_reg c inner join student_reg p on c.student_guid = p.student_guid WHERE c.academic_year == {current_year} AND p.academic_year == {previous_year}'
+        headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
+            else self.completion_headers
+        extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,
+                        TaskConstants.TASK_TASK_ID: 'task_id',
+                        TaskConstants.ACADEMIC_YEAR: academic_year,
+                        TaskConstants.TASK_FILE_NAME: output,
+                        TaskConstants.TASK_ACADEMIC_YEAR_QUERY: academic_year_query,
+                        TaskConstants.TASK_MATCH_ID_QUERY: match_query,
                         TaskConstants.CSV_HEADERS: headers
                         }
 

@@ -26,3 +26,5 @@ class Constants():
     STATE_CODE = 'state_code'
     ACADEMIC_YEAR = 'academicYear'
     EXTRACTION_DATA_TYPE = 'extraction_data_type'
+    TASK_ACADEMIC_YEAR_QUERY = 'academic_year_query'
+    TASK_MATCH_ID_QUERY = 'match_id_query'

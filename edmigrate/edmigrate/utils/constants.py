@@ -68,15 +68,19 @@ class Constants():
     BROADCAST_ROUTING_KEY = 'edmigrate_players'
 
     IPTABLES_SUDO = '/usr/bin/sudo'
+    IPTABLES_TARGET = 'EDMIGRATE_PGSQL'
     IPTABLES_CHAIN = 'PGSQL'
     IPTABLES_COMMAND = '/sbin/iptables'
     IPTABLES_LIST = '-L'
     IPTABLES_DELETE = '-D'
     IPTABLES_INSERT = '-I'
     IPTABLES_JUMP = '-j'
-    IPTABLES_TARGET = 'REJECT'
     IPTABLES_SOURCE = '-s'
     IPTABLES_DEST = '-d'
+    IPTABLES_FILTER = 'filter'
+    IPTABLES_TABLE = '-t'
+    IPTABLES_INPUT_CHAIN = 'INPUT'
+    IPTABLES_OUTPUT_CHAIN = 'OUTPUT'
 
     EDMIGRATE_ADMIN_LOGGER = 'edmigrate_admin'
 

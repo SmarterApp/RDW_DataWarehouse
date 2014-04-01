@@ -98,3 +98,8 @@ class ReplicationToMonitorOutOfSyncException(ReplicationMonitorException):
 class ConductorTimeoutException(EdMigrateException):
     def __init__(self, msg='Conductor Timeout Exception'):
         super().__init__(msg)
+
+
+class IptablesCommandError(EdMigrateException):
+    def __init__(self, msg="iptables command execution error"):
+        super().__init__(msg)

@@ -155,7 +155,7 @@ common:
       broadcast.queue: 'edmigrate_players'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
       iptables.mock: False
-      iptables.chain: 'PGSQL'
+      iptables.chain: 'EDMIGRATE_PGSQL'
       iptables.command: '/sbin/iptables'
       iptables.sudo: '/usr/bin/sudo'
       timeout: 5

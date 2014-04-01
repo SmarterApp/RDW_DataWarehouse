@@ -35,7 +35,7 @@ LIST_OF_CONFIG = [(Config.MASTER_SCHEDULER_HOUR, int, 0),
                   (Config.BROKER_URL, str, 'memory://'),
                   (Config.EAGER_MODE, bool, False),
                   (Config.MASTER_HOSTNAME, str, Constants.LOCALHOST),
-                  (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_CHAIN),
+                  (Config.IPTABLES_CHAIN, str, Constants.IPTABLES_TARGET),
                   (Config.IPTABLES_COMMAND, str, Constants.IPTABLES_COMMAND),
                   (Config.IPTABLES_SUDO, str, Constants.IPTABLES_SUDO)]
 

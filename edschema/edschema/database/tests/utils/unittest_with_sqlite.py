@@ -40,7 +40,7 @@ class Unittest_with_sqlite(UT_Base):
     # csv_imported = False
 
     @classmethod
-    def setUpClass(cls, datasource_name='', metadata=None, resources_dir=None, force_foreign_keys=True, use_metadata_from_db=True):
+    def setUpClass(cls, datasource_name='', metadata=None, resources_dir=None, force_foreign_keys=True, use_metadata_from_db=True, import_data=True):
         Unittest_with_sqlite.datasource_name = datasource_name
         # create db engine for sqlite
         create_sqlite(use_metadata_from_db=use_metadata_from_db, echo=False, metadata=metadata, datasource_name=datasource_name, force_foreign_keys=force_foreign_keys)
@@ -50,7 +50,7 @@ class Unittest_with_sqlite(UT_Base):
         if resources_dir is None:
             resources_dir = os.path.abspath(os.path.join(os.path.join(here, '..', 'resources')))
         global csv_imported
-        if not csv_imported.get(datasource_name + '.' + resources_dir, False):
+        if import_data and not csv_imported.get(datasource_name + '.' + resources_dir, False):
             import_csv_dir(resources_dir, datasource_name=Unittest_with_sqlite.datasource_name)
             csv_imported[datasource_name + '.' + resources_dir] = True
 

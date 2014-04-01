@@ -134,7 +134,7 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
     return insert_query
 
 
-def create_delete_query(schema_name, table_name, criteria=None):
+def create_delete_query(tenant, schema_name, table_name, criteria=None):
     '''
     Create a query to delete a db table.
 
@@ -145,14 +145,14 @@ def create_delete_query(schema_name, table_name, criteria=None):
 
     @return Delete query
     '''
-    query = "DELETE FROM {schema_and_table} ".format(schema_and_table=combine_schema_and_table(schema_name, table_name))
-    params = []
-    if (criteria):
-        query += " WHERE {conditions}"
-        query = query.format(conditions=(" AND ".join(["{key} = :{key}".format(key=key) for key in sorted(criteria.keys())])))
-        params = [bindparam(key, criteria[key]) for key in sorted(criteria.keys())]
+    with get_target_connection(tenant, schema_name) as conn:
+        table = conn.get_table(table_name)
+        query = table.delete()
+        if criteria:
+            expr = [k == v for k, v in criteria.items()]
+            query = query.where(and_(*expr))
 
-    return text(query, bindparams=params)
+    return query
 
 
 def enable_trigger_query(schema_name, table_name, is_enable):
@@ -169,29 +169,28 @@ def enable_trigger_query(schema_name, table_name, is_enable):
                                     action=action))
 
 
-def update_foreign_rec_id_query(schema, condition_value, info_map):
+def update_foreign_rec_id_query(tenant, schema, condition_value, info_map):
     '''
-    Main function to crate query to update foreign key [foreign]_rec_id in table fact_asmt_outcome
+    Create query to update foreign key [foreign]_rec_id in table fact_asmt_outcome
     '''
-    condition_clause = " AND ".join(["{fact} = dim_{dim}".format(fact=guid_in_fact, dim=guid_in_dim)
-                                     for guid_in_dim, guid_in_fact in sorted(info_map['guid_column_map'].items())])
-    columns = ", ".join(["{guid_in_dim} AS dim_{guid_in_dim}".format(guid_in_dim=guid_in_dim)
-                         for guid_in_dim in sorted(list(info_map['guid_column_map'].keys()))])
-    query = "UPDATE {schema_and_fact_table} " + \
-            "SET {foreign_in_fact}=dim.dim_{foreign_in_dim} " + \
-            "FROM (SELECT {foreign_in_dim} AS dim_{foreign_in_dim}, " + \
-            "{columns} " + \
-            " FROM {schema_and_dim_table}) dim " + \
-            " WHERE {foreign_in_fact} = :fake_value AND {condition_clause}"
-    query = query.format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
-                         schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),
-                         foreign_in_dim=info_map['rec_id_map'][0],
-                         foreign_in_fact=info_map['rec_id_map'][1],
-                         columns=columns,
-                         condition_clause=condition_clause
-                         )
+    # TODO:  Query simplication
+    with get_target_connection(tenant, schema) as conn:
+        dim_table = conn.get_table(info_map['table_map'][0])
+        fact_table = conn.get_table(info_map['table_map'][1])
 
-    return text(query, bindparams=[bindparam('fake_value', condition_value)])
+        columns = [dim_table.c[info_map['rec_id_map'][0]]]
+        for k, v in sorted(info_map['guid_column_map'].items()):
+            columns.append(dim_table.c[k])
+
+        inner_query = select(columns, from_obj=dim_table).alias('tmp_dim_info')
+        where_clauses = []
+        for k, v in sorted(info_map['guid_column_map'].items()):
+            where_clauses.append(dim_table.c[k] == inner_query.c[v])
+
+        update_query = fact_table.update().values({fact_table.c[info_map['rec_id_map'][1]]: inner_query.c[info_map['rec_id_map'][0]]})
+        update_query = update_query.where(fact_table.c[info_map['rec_id_map'][1]] == condition_value)
+        update_query = update_query.where(and_(*where_clauses))
+        return update_query
 
 
 def create_information_query(target_table):
@@ -248,7 +247,7 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
     return query
 
 
-def find_deleted_fact_asmt_outcome_rows(tenant, schema_name, table_name, batch_guid, matching_conf):
+def get_delete_candidates(tenant, schema_name, table_name, batch_guid, matching_conf):
     '''
     create a query to find all delete/updated record in current batch
     '''
@@ -257,12 +256,11 @@ def find_deleted_fact_asmt_outcome_rows(tenant, schema_name, table_name, batch_g
         columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
         criterias = [fact_asmt.c[criteria] == matching_conf[criteria] for criteria in matching_conf['condition']]
         query = select(columns, from_obj=fact_asmt).where(and_(fact_asmt.c.batch_guid == batch_guid))
-        for criteria in criterias:
-            query = query.where(and_(criteria))
-    return query
+        query = query.where(and_(*criterias))
+        return conn.get_result(query)
 
 
-def match_delete_fact_asmt_outcome_row_in_prod(tenant_name, schema_name, table_name, matching_conf, matched_preprod_values):
+def match_delete_record_against_prod(tenant_name, schema_name, table_name, matching_conf, matched_preprod_values):
     '''
     create a query to find all delete/updated record in current batch, get the rec_id back
     '''
@@ -273,15 +271,26 @@ def match_delete_fact_asmt_outcome_row_in_prod(tenant_name, schema_name, table_n
         columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
         criterias = [fact_asmt.c[criteria] == matched_prod_values[criteria] for criteria in matching_conf['condition']]
         query = select(columns, from_obj=fact_asmt)
-        for criteria in criterias:
-            query = query.where(and_(criteria))
-    return query
+        query = query.where(and_(*criterias))
+        return conn.get_result(query)
 
 
 def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, batch_guid, matching_conf,
                                          matched_prod_values):
     '''
     create a query to find all delete/updated record in current batch
+    UPDATE edware.fact_asmt_outcome
+    SET inst_hier_rec_id=tmp_dim_info.inst_hier_rec_id
+    FROM edware.dim_inst_hier,
+    (SELECT edware.dim_inst_hier.inst_hier_rec_id AS inst_hier_rec_id,
+    edware.dim_inst_hier.district_guid AS district_guid,
+    edware.dim_inst_hier.school_guid AS school_guid,
+    edware.dim_inst_hier.state_code AS state_code
+    FROM edware.dim_inst_hier) AS tmp_dim_info
+    WHERE edware.fact_asmt_outcome.inst_hier_rec_id =  -1
+    AND edware.dim_inst_hier.district_guid = tmp_dim_info.district_guid
+    AND edware.dim_inst_hier.school_guid = tmp_dim_info.school_guid
+    AND edware.dim_inst_hier.state_code = tmp_dim_info.state_code
     '''
     values = {}
     matched_prod_values['rec_status'] = matching_conf['new_status']
@@ -289,14 +298,13 @@ def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, b
     matched_preprod_values = matched_prod_values.copy()
     matched_preprod_values['rec_status'] = matching_conf['rec_status']
     del matched_preprod_values['asmnt_outcome_rec_id']
-
+    # TODO: Query simplication
     for k in matching_conf['columns'].keys():
         values[k] = matched_prod_values[k]
     with get_target_connection(tenant_name, schema_name) as conn:
         fact_asmt = conn.get_table('fact_asmt_outcome')
         criterias = [fact_asmt.c[k] == v for k, v in matched_preprod_values.items()]
         query = fact_asmt.update().values(values).where(fact_asmt.c.batch_guid == batch_guid)
-        for criteria in criterias:
-            query = query.where(and_(criteria))
+        query = query.where(and_(*criterias))
 
     return query

@@ -10,7 +10,7 @@ from sqlalchemy.schema import MetaData
 
 def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     '''
-    DO NOT USE THIS.  Benchmarking needs to be refactored not to connection to database like this
+    DO NOT USE THIS!!!!
     '''
     # TODO:define conf_args content
     db_string = '{db_driver}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'.format(db_driver=db_driver,

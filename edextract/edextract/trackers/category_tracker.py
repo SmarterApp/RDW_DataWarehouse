@@ -6,6 +6,8 @@ This module contains the definition of the CategoryTracker class, the base class
 
 from abc import ABCMeta, abstractmethod
 
+from edextract.student_reg_extract_processors.attribute_constants import AttributeFieldConstants
+
 
 class CategoryTracker(metaclass=ABCMeta):
 
@@ -24,7 +26,7 @@ class CategoryTracker(metaclass=ABCMeta):
         """
 
         if self.should_increment_year(row):
-            key = row['academic_year']
+            key = row[AttributeFieldConstants.ACADEMIC_YEAR]
             self._data_counter.increment(guid, key)
 
     def track_matched_ids(self, guid, row):
@@ -37,7 +39,7 @@ class CategoryTracker(metaclass=ABCMeta):
         """
 
         if self.should_increment_matched_ids(row):
-            key = DataCounter.MATCHED_KEY
+            key = DataCounter.MATCHED_IDS
             self._data_counter.increment(guid, key)
 
     def get_map_entry(self, guid):
@@ -87,7 +89,7 @@ class CategoryTracker(metaclass=ABCMeta):
 
 
 class DataCounter():
-    MATCHED_KEY = 'MATCHED'
+    MATCHED_IDS = 'matched_ids'
 
     def __init__(self):
         self.map = {}

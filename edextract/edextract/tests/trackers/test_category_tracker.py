@@ -59,17 +59,17 @@ class TestCategoryTracker(unittest.TestCase):
 
         ct.track_matched_ids('guid1', {})
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
-        self.assertEqual(1, ct.get_map_entry('guid1')['MATCHED'], 'Tracker does not have expected entry')
+        self.assertEqual(1, ct.get_map_entry('guid1')['matched_ids'], 'Tracker does not have expected entry')
 
         ct.track_matched_ids('guid1', {})
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
-        self.assertEqual(2, ct.get_map_entry('guid1')['MATCHED'], 'Tracker does not have expected entry')
+        self.assertEqual(2, ct.get_map_entry('guid1')['matched_ids'], 'Tracker does not have expected entry')
 
         ct.track_matched_ids('guid2', {})
         self.assertEqual(1, len(ct.get_map_entry('guid2')), 'Tracker returned unexpected entry')
-        self.assertEqual(1, ct.get_map_entry('guid2')['MATCHED'], 'Tracker does not have expected entry')
+        self.assertEqual(1, ct.get_map_entry('guid2')['matched_ids'], 'Tracker does not have expected entry')
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
-        self.assertEqual(2, ct.get_map_entry('guid1')['MATCHED'], 'Tracker does not have expected entry')
+        self.assertEqual(2, ct.get_map_entry('guid1')['matched_ids'], 'Tracker does not have expected entry')
 
     def test_matched_should_not_track(self):
         ct = DummyCategoryTracker(False)

@@ -231,7 +231,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_disconnect_master_succeed(self, MockConductor, MockBlockOutput, MockModifyRule, MockCheckRule):
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
-        MockBlockOutput.return_value = False
+        MockBlockOutput.return_value = True
         MockCheckRule.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.disconnect_master()
@@ -247,7 +247,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockConductor.return_value = lambda: None
         MockCheckRule.return_value = False
         MockModifyRule.return_value = None
-        MockBlockOutput.return_value = True
+        MockBlockOutput.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.disconnect_master()
         self.assertFalse(rtn)

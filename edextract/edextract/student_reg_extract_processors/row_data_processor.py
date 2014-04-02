@@ -5,7 +5,7 @@ This module contain functions to process iterator row data using data processors
 """
 
 
-def process_row_data(rows, data_processors):
+def process_row_data(rows, match_id_rows, data_processors):
     """
     Iterate through the database results, creating the student registration statistics report data.
 
@@ -19,3 +19,7 @@ def process_row_data(rows, data_processors):
     for row in rows:
         for processor in data_processors:
             processor.process_yearly_data(row)
+
+    for row in match_id_rows:
+        for processor in data_processors:
+            processor.process_matched_ids_data(row)

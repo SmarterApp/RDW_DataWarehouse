@@ -74,7 +74,16 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
         previous_year = str(academic_year - 1)
         academic_year_query = 'SELECT * FROM student_reg WHERE academic_year == {current_year} OR academic_year == {previous_year}'\
             .format(current_year=current_year, previous_year=previous_year)
-        match_query = 'SELECT * FROM student_reg c inner join student_reg p on c.student_guid = p.student_guid WHERE c.academic_year == {current_year} AND p.academic_year == {previous_year}'
+        match_query = 'SELECT cr.state_code, p.state_code as prev_state_code , cr.state_name, cr.district_guid, p.district_guid as prev_district_guid ,' \
+                      'cr.district_name, cr.school_guid, p.school_guid as prev_school_guid , cr.school_name, cr.gender, p.gender as prev_gender , ' \
+                      'cr.enrl_grade, p.enrl_grade as prev_enrl_grade , cr.dmg_eth_hsp, p.dmg_eth_hsp as prev_dmg_eth_hsp , cr.dmg_eth_ami, ' \
+                      'p.dmg_eth_ami as prev_dmg_eth_ami , cr.dmg_eth_asn, p.dmg_eth_asn as prev_dmg_eth_asn ,cr.dmg_eth_blk, p.dmg_eth_blk as prev_dmg_eth_blk , ' \
+                      'cr.dmg_eth_pcf, p.dmg_eth_pcf as prev_dmg_eth_pcf ,cr.dmg_eth_wht, p.dmg_eth_wht as prev_dmg_eth_wht , cr.dmg_prg_iep, ' \
+                      'p.dmg_prg_iep as prev_dmg_prg_iep , cr.dmg_prg_lep, p.dmg_prg_lep as prev_dmg_prg_lep ,cr.dmg_prg_504, ' \
+                      'p.dmg_prg_504 as prev_dmg_prg_504 , cr.dmg_sts_ecd, p.dmg_sts_ecd as prev_dmg_sts_ecd , cr.dmg_sts_mig, p.dmg_sts_mig as prev_dmg_sts_mig ,' \
+                      ' cr.dmg_multi_race, p.dmg_multi_race as prev_dmg_multi_race , cr.academic_year ' \
+                      'FROM student_reg cr inner join student_reg p on cr.student_guid = p.student_guid WHERE cr.academic_year == {current_year} AND p.academic_year == {previous_year}'\
+            .format(current_year=current_year, previous_year=previous_year)
         headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
             else self.completion_headers
         extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,

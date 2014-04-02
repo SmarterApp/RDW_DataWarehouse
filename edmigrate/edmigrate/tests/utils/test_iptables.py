@@ -5,7 +5,7 @@ Created on Mar 31, 2014
 '''
 import unittest
 from edmigrate.utils.iptables import IptablesController, IptablesChecker
-from edmigrate.exceptions import IptablesCommandError
+from edmigrate.exceptions import IptablesCommandError, IptablesSaveCommandError
 from unittest.mock import patch, MagicMock
 from edmigrate.utils.constants import Constants
 import socket
@@ -208,6 +208,11 @@ class IptableControllerTest(unittest.TestCase):
     def test_subprocess_exception(self, MockSubprocess):
         MockSubprocess.side_effect = subprocess.CalledProcessError(-1, 'iptables')
         self.assertRaises(IptablesCommandError, self.iptablesController._modify_rule, Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
+
+    @patch('subprocess.check_output')
+    def test_subprocess_exception(self, MockSubprocess):
+        MockSubprocess.side_effect = subprocess.CalledProcessError(-1, 'iptables-save')
+        self.assertRaises(IptablesSaveCommandError, self.iptablesController._check_rules, Constants.IPTABLES_INPUT_CHAIN)
 
     @patch('subprocess.check_output')
     def test_check_rules_INPUT(self, MockSubprocess):

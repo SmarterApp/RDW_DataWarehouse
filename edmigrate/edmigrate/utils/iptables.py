@@ -7,7 +7,7 @@ import subprocess
 import socket
 from edmigrate.utils.utils import Singleton
 from edmigrate.utils.constants import Constants
-from edmigrate.exceptions import IptablesCommandError
+from edmigrate.exceptions import IptablesCommandError, IptablesSaveCommandError
 
 
 class IptablesController(metaclass=Singleton):
@@ -29,7 +29,6 @@ class IptablesController(metaclass=Singleton):
                                      Constants.IPTABLES_JUMP, self._target],
                                     universal_newlines=True)
         except Exception:
-            # we just skip. we use the connection checking to verify rule changes are effective or not
             raise IptablesCommandError('iptables failed by mode[' + mode + '] chain[' + chain + ']')
 
     def _check_rules(self, chain):
@@ -43,9 +42,8 @@ class IptablesController(metaclass=Singleton):
                    line == " ".join([Constants.IPTABLES_INSERT, chain, Constants.IPTABLES_JUMP, self._target]):
                     rule_exists = True
                     break
-        except subprocess.CalledProcessError as e:
-            # we can't do anything except let rule_exists to be True so no action will be taken
-            pass
+        except Exception:
+            raise IptablesSaveCommandError('iptables-save failed by chain[' + chain + ']')
         return rule_exists
 
     def block_pgsql_INPUT(self):

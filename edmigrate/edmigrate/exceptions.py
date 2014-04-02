@@ -103,3 +103,8 @@ class ConductorTimeoutException(EdMigrateException):
 class IptablesCommandError(EdMigrateException):
     def __init__(self, msg="iptables command execution error"):
         super().__init__(msg)
+
+
+class IptablesSaveCommandError(EdMigrateException):
+    def __init__(self, msg="iptables-save command execution error"):
+        super().__init__(msg)

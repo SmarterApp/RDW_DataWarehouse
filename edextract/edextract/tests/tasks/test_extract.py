@@ -4,6 +4,8 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
+import mock
+
 import tempfile
 import os
 import shutil
@@ -24,6 +26,7 @@ from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_encryption, remote_copy,
                                      prepare_path)
+from edextract.exceptions import RemoteCopyError
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -321,7 +324,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])    # @UndefinedVariable
             self.assertRaises(ExtractionError, result.get)
 
-    def test_remote_copy(self):
+    def test_remote_copy_success(self):
         request_id = '1'
         tenant = 'es'
         gatekeeper = 'foo'
@@ -329,8 +332,22 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
-            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
-            self.assertRaises(ExtractionError, result.get)
+            with mock.patch('edextract.tasks.extract.copy') as mock_copy:
+                remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
+                mock_copy.assert_called_with(src_file_name, '128.0.0.2', 'es', 'foo', 'nobody', '/dev/null', timeout=3)
+
+    def test_remote_copy_failure(self):
+        request_id = '1'
+        tenant = 'es'
+        gatekeeper = 'foo'
+        sftp_info = ['128.0.0.2', 'nobody', '/dev/null']
+        with tempfile.TemporaryDirectory() as _dir:
+            src_file_name = os.path.join(_dir, 'src.txt')
+            open(src_file_name, 'w').close()
+            with mock.patch('edextract.tasks.extract.copy') as mock_copy:
+                mock_copy.side_effect = RemoteCopyError()
+                result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
+                self.assertRaises(ExtractionError, result.get)
 
     def test_prepare_path(self):
         tmp_dir = tempfile.mkdtemp()

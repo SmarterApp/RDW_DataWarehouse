@@ -9,7 +9,7 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import func, true
+from sqlalchemy.sql.expression import func
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.logging import audit_event
 import collections

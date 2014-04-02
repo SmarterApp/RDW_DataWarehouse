@@ -4,7 +4,7 @@ Created on Mar 31, 2014
 @author: ejen
 '''
 import unittest
-from edmigrate.utils.iptables import Iptables
+from edmigrate.utils.iptables import IptablesController, IptablesChecker
 from edmigrate.exceptions import IptablesCommandError
 from unittest.mock import patch, MagicMock
 from edmigrate.utils.constants import Constants
@@ -111,60 +111,61 @@ def side_effect_both(*args, **kwargs):
         return None
 
 
-class IptableTest(unittest.TestCase):
+class IptableControllerTest(unittest.TestCase):
 
     def setUp(self):
-        self.iptables = Iptables()
+        self.iptablesController = IptablesController()
+        self.iptablesChcker = IptablesChecker()
 
     def tearDown(self):
-        Iptables.cleanup()
+        IptablesController._instances = {}
 
     @patch('subprocess.check_output')
     def test_block_pgsql_input_1(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_no_rules
-        self.iptables.block_pgsql_INPUT()
+        self.iptablesController.block_pgsql_INPUT()
         self.assertEqual(MockSubprocess.call_count, 2)
 
     @patch('subprocess.check_output')
     def test_block_pgsql_input_2(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_only_input
-        self.iptables.block_pgsql_INPUT()
+        self.iptablesController.block_pgsql_INPUT()
         self.assertEqual(MockSubprocess.call_count, 1)
 
     @patch('subprocess.check_output')
     def test_block_pgsql_output_1(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_no_rules
-        self.iptables.block_pgsql_OUTPUT()
+        self.iptablesController.block_pgsql_OUTPUT()
         self.assertEqual(MockSubprocess.call_count, 2)
 
     @patch('subprocess.check_output')
     def test_block_pgsql_output_2(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_only_output
-        self.iptables.block_pgsql_OUTPUT()
+        self.iptablesController.block_pgsql_OUTPUT()
         self.assertEqual(MockSubprocess.call_count, 1)
 
     @patch('subprocess.check_output')
     def test_unblock_pgsql_input_1(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_only_input
-        self.iptables.unblock_pgsql_INPUT()
+        self.iptablesController.unblock_pgsql_INPUT()
         self.assertEqual(MockSubprocess.call_count, 2)
 
     @patch('subprocess.check_output')
     def test_unblock_pgsql_input_2(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_no_rules
-        self.iptables.unblock_pgsql_INPUT()
+        self.iptablesController.unblock_pgsql_INPUT()
         self.assertEqual(MockSubprocess.call_count, 1)
 
     @patch('subprocess.check_output')
     def test_unblock_pgsql_output_1(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_only_output
-        self.iptables.unblock_pgsql_OUTPUT()
+        self.iptablesController.unblock_pgsql_OUTPUT()
         self.assertEqual(MockSubprocess.call_count, 2)
 
     @patch('subprocess.check_output')
     def test_unblock_pgsql_output_2(self, MockSubprocess):
         MockSubprocess.side_effect = side_effect_no_rules
-        self.iptables.unblock_pgsql_OUTPUT()
+        self.iptablesController.unblock_pgsql_OUTPUT()
         self.assertEqual(MockSubprocess.call_count, 1)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
@@ -173,7 +174,7 @@ class IptableTest(unittest.TestCase):
         MockSocket.side_effect = None
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
-        block_status = self.iptables.check_block_input('localhost')
+        block_status = self.iptablesChcker.check_block_input('localhost')
         self.assertTrue(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
@@ -182,7 +183,7 @@ class IptableTest(unittest.TestCase):
         MockSocket.side_effect = None
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
-        block_status = self.iptables.check_block_output('localhost')
+        block_status = self.iptablesChcker.check_block_output('localhost')
         self.assertTrue(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
@@ -191,7 +192,7 @@ class IptableTest(unittest.TestCase):
         MockSocket.side_effect = ConnectionRefusedError()
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
-        block_status = self.iptables.check_block_input('localhost')
+        block_status = self.iptablesChcker.check_block_input('localhost')
         self.assertFalse(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
@@ -200,43 +201,42 @@ class IptableTest(unittest.TestCase):
         MockSocket.side_effect = ConnectionRefusedError()
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
-        block_status = self.iptables.check_block_output('localhost')
+        block_status = self.iptablesChcker.check_block_output('localhost')
         self.assertFalse(block_status)
 
     @patch('subprocess.check_output')
     def test_subprocess_exception(self, MockSubprocess):
         MockSubprocess.side_effect = subprocess.CalledProcessError(-1, 'iptables')
-        self.iptables._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
-        self.assertTrue(True)
+        self.assertRaises(IptablesCommandError, self.iptablesController._modify_rule, Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
 
     @patch('subprocess.check_output')
     def test_check_rules_INPUT(self, MockSubprocess):
         MockSubprocess.return_value = IPTABLES_SAVE_OUTPUT_INPUT
-        found = self.iptables._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_INPUT_CHAIN)
         self.assertTrue(found)
-        found = self.iptables._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
         self.assertFalse(found)
 
     @patch('subprocess.check_output')
     def test_check_rules_OUTPUT(self, MockSubprocess):
         MockSubprocess.return_value = IPTABLES_SAVE_OUTPUT_OUTPUT
-        found = self.iptables._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_INPUT_CHAIN)
         self.assertFalse(found)
-        found = self.iptables._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
         self.assertTrue(found)
 
     @patch('subprocess.check_output')
     def test_check_rules(self, MockSubprocess):
         MockSubprocess.return_value = IPTABLES_SAVE_OUTPUT_NEITHER
-        found = self.iptables._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_INPUT_CHAIN)
         self.assertFalse(found)
-        found = self.iptables._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
         self.assertFalse(found)
 
     @patch('subprocess.check_output')
     def test_check_rules_both(self, MockSubprocess):
         MockSubprocess.return_value = IPTABLES_SAVE_OUTPUT_BOTH
-        found = self.iptables._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_INPUT_CHAIN)
         self.assertTrue(found)
-        found = self.iptables._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        found = self.iptablesController._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
         self.assertTrue(found)

@@ -64,7 +64,7 @@ class CategoryTracker(metaclass=ABCMeta):
         """
 
         ids_match = True if self._field is None else row[self._field] == row['prev_' + self._field]
-        return self.should_increment_year(row) and ids_match
+        return self._should_increment_year(row) and ids_match
 
     @abstractmethod
     def _should_increment_year(self, row):

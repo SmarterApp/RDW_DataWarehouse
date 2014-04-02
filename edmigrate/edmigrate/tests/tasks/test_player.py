@@ -71,7 +71,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch.object(edmigrate.utils.iptables.IptablesController, "_check_rules")
-    @patch.object(edmigrate.utils.iptables.IptablesChecker, '_modify_rule')
+    @patch.object(edmigrate.utils.iptables.IptablesController, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.IptablesChecker, 'check_block_output')
     @patch.object(edmigrate.utils.iptables.IptablesChecker, 'check_block_input')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
@@ -88,7 +88,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch.object(edmigrate.utils.iptables.IptablesController, "_check_rules")
-    @patch.object(edmigrate.utils.iptables.IptablesChecker, '_modify_rule')
+    @patch.object(edmigrate.utils.iptables.IptablesController, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.IptablesChecker, 'check_block_input')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule, MockCheckRule):
@@ -103,7 +103,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch.object(edmigrate.utils.iptables.IptablesController, "_check_rules")
-    @patch.object(edmigrate.utils.iptables.IptablesChecker, '_modify_rule')
+    @patch.object(edmigrate.utils.iptables.IptablesController, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.IptablesChecker, 'check_block_output')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_master_failed(self, MockConductor, MockCheckBlockOutput, MockModifyRule, MockCheckRule):
@@ -113,12 +113,12 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockCheckBlockOutput.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.reset_players()
-        self.asserFalse(rtn)
+        self.assertFalse(rtn)
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
     @patch.object(edmigrate.utils.iptables.IptablesController, "_check_rules")
-    @patch.object(edmigrate.utils.iptables.IptablesChecker, '_modify_rule')
+    @patch.object(edmigrate.utils.iptables.IptablesController, '_modify_rule')
     @patch.object(edmigrate.utils.iptables.IptablesChecker, 'check_block_output')
     @patch.object(edmigrate.utils.iptables.IptablesChecker, 'check_block_input')
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')

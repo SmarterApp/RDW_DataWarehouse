@@ -3,21 +3,21 @@ Created on Mar 21, 2014
 
 @author: ejen
 '''
-from edmigrate.queues import conductor
 import logging
+from edmigrate.utils.constants import Constants
+
+
+logger = logging.getLogger(Constants.WORKER_NAME)
+admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
+from edmigrate.queues import conductor
 from edmigrate.utils.utils import get_broker_url, get_node_id_from_hostname, \
     get_my_master_by_id
-from edmigrate.utils.constants import Constants
 import edmigrate.utils.reply_to_conductor as reply_to_conductor
 from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
 from edmigrate.utils.iptables import IptablesChecker, IptablesController
-
-
-logger = logging.getLogger(Constants.WORKER_NAME),
-admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 
 
 class Player(metaclass=Singleton):
@@ -47,42 +47,40 @@ class Player(metaclass=Singleton):
         pass
 
     def run_command(self, command, nodes):
+        rtn = False
         if command in self.COMMAND_HANDLERS:
-            try:
-                if nodes is None:
-                    if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
-                        self.COMMAND_HANDLERS[command]()
-                        logger.debug("executed {command}".format(command=command))
-                        admin_logger.debug("{name} at {hostname} with node id {node_id} executed {command} successfully".
-                                           format(name=self.__class__.__name__, hostname=self.hostname,
-                                                  node_id=self.node_id, command=command))
-                    else:
-                        logger.warning("{command} require nodes".format(command=command))
-                        admin_logger.warning("{name} at {hostname} with node id {node_id} failed to execute {command} due to no nodes specified".
-                                             format(name=self.__class__.__name__, hostname=self.hostname,
-                                                    node_id=self.node_id, command=command))
+            if nodes is None:
+                if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
+                    rtn = self.COMMAND_HANDLERS[command]()
+                    logger.debug("executed {command}".format(command=command))
+                    admin_logger.debug("{name} at {hostname} with node id {node_id} executed {command} successfully".
+                                       format(name=self.__class__.__name__, hostname=self.hostname,
+                                              node_id=self.node_id, command=command))
                 else:
-                    if self.node_id in nodes:
-                        self.COMMAND_HANDLERS[command]()
-                        logger.info("{node_id} executed {command}".format(command=command, node_id=self.node_id))
-                        admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} {nodes} successfully".
-                                          format(name=self.__class__.__name__, hostname=self.hostname,
-                                                 node_id=self.node_id, command=command, nodes=str(nodes)))
-                    else:
-                        # ignore the command
-                        logger.warning("{command} is ignored because {node_id} is not in {nodes}".
-                                       format(command=command, node_id=self.node_id, nodes=str(nodes)))
-                        admin_logger.warning("{name} at {hostname} with node id {node_id} ignored {command} {nodes}".
-                                             format(name=self.__class__.__name__, hostname=self.hostname,
-                                                    node_id=self.node_id, command=command, nodes=str(nodes)))
-            except Exception:
-                logger.error("error during executing {command}".format(command=command))
-                admin_logger.error("error during executing {command}".format(command=command))
+                    logger.warning("{command} require nodes".format(command=command))
+                    admin_logger.warning("{name} at {hostname} with node id {node_id} failed to execute {command} due to no nodes specified".
+                                         format(name=self.__class__.__name__, hostname=self.hostname,
+                                                node_id=self.node_id, command=command))
+            else:
+                if self.node_id in nodes:
+                    rtn = self.COMMAND_HANDLERS[command]()
+                    logger.info("{node_id} executed {command}".format(command=command, node_id=self.node_id))
+                    admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} {nodes} successfully".
+                                      format(name=self.__class__.__name__, hostname=self.hostname,
+                                             node_id=self.node_id, command=command, nodes=str(nodes)))
+                else:
+                    # ignore the command
+                    logger.warning("{command} is ignored because {node_id} is not in {nodes}".
+                                   format(command=command, node_id=self.node_id, nodes=str(nodes)))
+                    admin_logger.warning("{name} at {hostname} with node id {node_id} ignored {command} {nodes}".
+                                         format(name=self.__class__.__name__, hostname=self.hostname,
+                                                node_id=self.node_id, command=command, nodes=str(nodes)))
         else:
             logger.warning("{command} is not implemented".format(command=command))
             admin_logger.warning("{name} at {hostname} with node id {node_id} did not process {command} {nodes} due to command is not implemented".
                                  format(name=self.__class__.__name__, hostname=self.hostname,
                                         node_id=self.node_id, command=command, nodes=str(nodes)))
+        return rtn
 
     def connect_pgpool(self):
         '''
@@ -212,4 +210,10 @@ def player_task(command, nodes):
     of node_id. Those tasks are executed if and only if membership is true.
     """
     with Player() as player:
-        player.run_command(command, nodes)
+        try:
+            player.run_command(command, nodes)
+        except Exception as e:
+            logger.error("error during executing {command}".format(command=command))
+            logger.error(e)
+            admin_logger.error("error during executing {command}".format(command=command))
+            admin_logger.error(e)

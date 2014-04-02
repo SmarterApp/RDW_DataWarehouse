@@ -477,7 +477,7 @@
 	    }
 	],
 	"customViews": {
-	    "asmtTypes": [{"name": "Acumulativa", "display": "Acumulativa"}, {"name": "Provisional integral", "display": "Provisional integral"}],
+	    "asmtTypes": [{"name": "Summative", "display": "Acumulativa"}, {"name": "Interim Comprehensive", "display": "Provisional integral"}],
 	    "items": {
 		"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
 		"{{subject1}}": "{{subject1}} {{asmtType}}",

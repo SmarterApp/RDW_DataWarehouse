@@ -10,15 +10,15 @@ NATURAL_KEY_ATTR = 'natural_key'
 
 def get_natural_key(table):
     '''
-    Find first index for the table marked with a custom attribute 'natural_key'
+    Find the natural keys for the table by looking at all columns in the table with info attribute 'natural_key'
     '''
-    natural_key = [index for index in table.indexes if NATURAL_KEY_ATTR in index.kwargs.keys() and index.kwargs[NATURAL_KEY_ATTR]]
-    return natural_key[0] if len(natural_key) > 0 else None
+    natural_key = [column for column in table.columns if 'natural_key' in column.info.keys()]
+    return natural_key if len(natural_key) > 0 else None
 
 
 def get_natural_key_columns(table):
     '''
-    Find columns for the first index for the table marked with a custom attribute 'natural_key'
+    Find columns for the table marked with a info attribute 'natural_key'
     '''
     natural_key = get_natural_key(table)
-    return None if natural_key is None else natural_key.columns.keys()
+    return None if natural_key is None else [c.name for c in natural_key]

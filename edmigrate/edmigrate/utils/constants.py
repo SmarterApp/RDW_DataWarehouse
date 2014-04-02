@@ -27,6 +27,9 @@ class Constants():
     TO_DATE = 'to_date'
     STATUS_CURRENT = 'C'
     STATUS_DELETED = 'D'
+    TARGET_SCHEMA = 'target_schema'
+    DEACTIVATE = 'deactivate'
+    SCHEMA_NAME = 'schema_name'
 
     PLAYER_TASK = 'edmigrate.tasks.player'
     COMMAND_REGISTER_PLAYER = 'FIND_PLAYER'

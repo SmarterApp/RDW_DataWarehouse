@@ -11,6 +11,8 @@ from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.utils import drop_schema
 from edschema.metadata.util import get_natural_key_columns
+from edschema.metadata.ed_metadata import generate_ed_metadata
+from edmigrate.edmigrate_celery import conf
 
 __author__ = 'sravi'
 TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
@@ -103,7 +105,7 @@ def yield_rows(connector, query, batch_size):
         rows = result.fetchmany(batch_size)
 
 
-def migrate_table(batch_guid, schema_name, source_connector, dest_connector, table_name, batch_size=100):
+def migrate_table(batch_guid, schema_name, source_connector, dest_connector, table_name, deactivate, batch_size=100):
     """Load prod fact table with delta from pre-prod
 
     :param batch_guid: Batch Guid of the batch under migration
@@ -119,7 +121,6 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
         logger.debug('migrating schema[' + schema_name + ']')
     logger.debug('migrating table[' + table_name + ']')
     delete_count = 0
-    source_connector.set_metadata_by_reflect(schema_name)
     source_table = source_connector.get_table(table_name)
     # TODO: make it possible for composites
     primary_key = source_table.primary_key.columns.keys()[0]
@@ -128,18 +129,19 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     if has_status:
         delete_query = select([primary_key]).where(and_(source_table.c.batch_guid == batch_guid, source_table.c.rec_status == Constants.STATUS_DELETED))
         delete_count = _process_batch(source_connector, dest_connector, preprod_to_prod_delete_records, delete_query, table_name,
-                                      primary_key, batch_size)
+                                      primary_key, deactivate, batch_size)
 
     # for Insert
     insert_query = select([source_table]).where(source_table.c.batch_guid == batch_guid)
     if has_status:
         insert_query = insert_query.where(and_(source_table.c.rec_status == Constants.STATUS_CURRENT))
     insert_count = _process_batch(source_connector, dest_connector, preprod_to_prod_insert_records, insert_query, table_name,
-                                  primary_key, batch_size)
+                                  primary_key, deactivate, batch_size)
     return delete_count, insert_count
 
 
-def _process_batch(source_connector, dest_connector, handler, query, table_name, primary_key_field_name, batch_size=100):
+def _process_batch(source_connector, dest_connector, handler, query, table_name,
+                   primary_key_field_name, deactivate, batch_size=100):
     '''Process each batch for the given handler and query
     :param source_connector: Source connection
     :param dest_connector: Destination connection
@@ -155,11 +157,13 @@ def _process_batch(source_connector, dest_connector, handler, query, table_name,
     total_count = 0
     # for rows in a scrollable cursor, preserve primary key
     for rows in proxy_rows:
-        total_count += handler(source_connector, dest_connector, table_name, primary_key_field_name, rows)
+        total_count += handler(source_connector, dest_connector,
+                               table_name, primary_key_field_name, rows, deactivate)
     return total_count
 
 
-def preprod_to_prod_delete_records(source_connector, dest_connector, table_name, primary_key_field_name, batch):
+def preprod_to_prod_delete_records(source_connector, dest_connector,
+                                   table_name, primary_key_field_name, batch, deactivate):
     '''Process deletes for the batch
     :param source_connector: Source connection
     :param dest_connector: Destination connection
@@ -193,11 +197,14 @@ def deactivate_old_records(dest_connector, dest_table, natural_keys, batch):
     key_values = [[row[key] for key in natural_keys] for row in batch]
 
     # update prod rec_status to inactive for records matching with the natural keys of the records in the current batch
-    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C', tuple_(*key_columns).in_(key_values))).values(rec_status='I', to_date=time.strftime("%Y%m%d"))
+    update_query = dest_table.update(and_(dest_table.c.rec_status == 'C',
+                                          tuple_(*key_columns).in_(key_values))).values(rec_status='I',
+                                                                                        to_date=time.strftime("%Y%m%d"))
     dest_connector.execute(update_query)
 
 
-def preprod_to_prod_insert_records(source_connector, dest_connector, table_name, primary_key_field_name, batch):
+def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
+                                   primary_key_field_name, batch, deactivate):
     '''Process inserts for the batch
     :param source_connector: Source connection
     :param dest_connector: Destination connection
@@ -209,7 +216,9 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     '''
     dest_table = dest_connector.get_table(table_name)
     natural_keys = get_natural_key_columns(dest_table)
-    if natural_keys is not None:
+    # the deactivate flag is needed to avoid the record deactivation query path in unit tests
+    # this part is tested as part of function tests
+    if deactivate and natural_keys is not None:
         deactivate_old_records(dest_connector, dest_table, natural_keys, batch)
     # insert the new records to prod with rec_status as current
     insert_query = dest_table.insert()
@@ -220,7 +229,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     return batch_size
 
 
-def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables):
+def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables, deactivate):
     """Migrate all tables for the given batch from source to destination
 
     :param batch_guid: Batch Guid of the batch under migration
@@ -233,7 +242,7 @@ def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector
     """
     logger.info('Migrating all tables for batch: ' + batch_guid)
     for table in tables:
-        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table)
+        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table, deactivate)
 
 
 def migrate_batch(batch):
@@ -247,6 +256,8 @@ def migrate_batch(batch):
     batch_guid = batch[UdlStatsConstants.BATCH_GUID]
     tenant = batch[UdlStatsConstants.TENANT]
     schema_name = batch[UdlStatsConstants.SCHEMA_NAME]
+    # this flag will be set to false from unit test, if this is not set its always True
+    deactivate = batch[Constants.DEACTIVATE] if Constants.DEACTIVATE in batch else True
     logger.info('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
 
     with EdMigrateDestConnection(tenant) as dest_connector, \
@@ -254,10 +265,16 @@ def migrate_batch(batch):
         try:
             # start transaction for this batch
             trans = dest_connector.get_transaction()
+            target_schema_key = dest_connector.get_db_config_prefix(tenant) + Constants.SCHEMA_NAME
+            # override target schema needed for unit tests
+            target_schema_name = batch[Constants.TARGET_SCHEMA] if Constants.TARGET_SCHEMA in batch else conf[target_schema_key]
+            source_connector.set_metadata_by_generate(schema_name=schema_name, metadata_func=generate_ed_metadata)
+            dest_connector.set_metadata_by_generate(schema_name=target_schema_name, metadata_func=generate_ed_metadata)
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
             tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, batch_guid)
             # migrate all tables
-            migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables_to_migrate)
+            migrate_all_tables(batch_guid, schema_name, source_connector,
+                               dest_connector, tables_to_migrate, deactivate=deactivate)
             # report udl stats with the new batch migrated
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
             # commit transaction
@@ -267,6 +284,7 @@ def migrate_batch(batch):
         except Exception as e:
             logger.info('Exception happened while migrating batch: ' + batch_guid + ' - Rollback initiated')
             logger.info(e)
+            print(e)
             logger.exception('migrate rollback')
             trans.rollback()
             try:

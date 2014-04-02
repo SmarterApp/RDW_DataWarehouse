@@ -60,8 +60,3 @@ class TestTotalTracker(unittest.TestCase):
         self.assertEquals(1, self.total_tracker.get_map_entry('school4')[2014])
         self.assertNotIn(2013, self.total_tracker.get_map_entry('school5'))
         self.assertEquals(1, self.total_tracker.get_map_entry('school5')[2014])
-
-    def test_should_increment(self):
-        row = {}
-
-        self.assertTrue(self.total_tracker.should_increment_year(row))

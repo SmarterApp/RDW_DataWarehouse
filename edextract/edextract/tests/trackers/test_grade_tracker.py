@@ -68,35 +68,13 @@ class TestGradeTrackers(unittest.TestCase):
         self.assertEquals(1, self.grade9.get_map_entry('NJ')[2014])
         self.assertEquals(1, self.grade5.get_map_entry('NJ')[2013])
 
-    def test_should_increment(self):
-        row1 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'KG'}
-        row2 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '03'}
-        row3 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': '07'}
-
-        self.assertTrue(self.gradek.should_increment_year(row1))
-
-        self.assertTrue(self.grade3.should_increment_year(row2))
-
-        self.assertTrue(self.grade7.should_increment_year(row3))
-
-        self.assertFalse(self.gradek.should_increment_year(row3))
-        self.assertFalse(self.grade1.should_increment_year(row3))
-        self.assertFalse(self.grade2.should_increment_year(row3))
-        self.assertFalse(self.grade3.should_increment_year(row3))
-        self.assertFalse(self.grade4.should_increment_year(row3))
-        self.assertFalse(self.grade5.should_increment_year(row3))
-        self.assertFalse(self.grade6.should_increment_year(row3))
-        self.assertFalse(self.grade8.should_increment_year(row3))
-        self.assertFalse(self.grade9.should_increment_year(row3))
-        self.assertFalse(self.grade10.should_increment_year(row3))
-        self.assertFalse(self.grade11.should_increment_year(row3))
-        self.assertFalse(self.grade12.should_increment_year(row3))
-
     def test_grade_case(self):
         row1 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kg'}
         row2 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'Kg'}
         row3 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kG'}
+        self.gradek.track('school1', row1)
+        self.gradek.track('school1', row2)
+        self.gradek.track('school1', row3)
 
-        self.assertTrue(self.gradek.should_increment_year(row1))
-        self.assertTrue(self.gradek.should_increment_year(row2))
-        self.assertTrue(self.gradek.should_increment_year(row3))
+        self.assertEquals(1, len(self.gradek.get_map_entry('school1')))
+        self.assertEquals(3, self.gradek.get_map_entry('school1')[2013])

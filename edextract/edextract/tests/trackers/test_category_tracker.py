@@ -87,8 +87,8 @@ class DummyCategoryTracker(CategoryTracker):
         super().__init__('Category', 'Value')
         self.should_increment_fl = should_increment_fl
 
-    def should_increment_year(self, row):
+    def _should_increment_year(self, row):
         return self.should_increment_fl
 
-    def should_increment_matched_ids(self, row):
+    def _should_increment_matched_ids(self, row):
         return self.should_increment_fl

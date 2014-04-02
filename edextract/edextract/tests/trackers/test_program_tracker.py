@@ -81,21 +81,3 @@ class TestProgramTrackers(unittest.TestCase):
         self.assertEquals(None, self.migr_tracker.get_map_entry('district1'))
         self.assertEquals(None, self.s504_tracker.get_map_entry('school1'))
         self.assertEquals(None, self.migr_tracker.get_map_entry('school1'))
-
-    def test_should_increment(self):
-        row1 = {'dmg_prg_iep': True, 'dmg_prg_lep': False, 'dmg_prg_504': True, 'dmg_sts_ecd': False, 'dmg_sts_mig': True}
-        row2 = {'dmg_prg_iep': False, 'dmg_prg_lep': True, 'dmg_prg_504': False, 'dmg_sts_ecd': True, 'dmg_sts_mig': False}
-        row3 = {'dmg_prg_504': None, 'dmg_sts_mig': None}
-
-        self.assertTrue(self.idea_tracker.should_increment_year(row1))
-        self.assertFalse(self.idea_tracker.should_increment_year(row2))
-        self.assertFalse(self.lep_tracker.should_increment_year(row1))
-        self.assertTrue(self.lep_tracker.should_increment_year(row2))
-        self.assertTrue(self.s504_tracker.should_increment_year(row1))
-        self.assertFalse(self.s504_tracker.should_increment_year(row2))
-        self.assertFalse(self.econ_tracker.should_increment_year(row1))
-        self.assertTrue(self.econ_tracker.should_increment_year(row2))
-        self.assertTrue(self.migr_tracker.should_increment_year(row1))
-        self.assertFalse(self.migr_tracker.should_increment_year(row2))
-        self.assertFalse(self.s504_tracker.should_increment_year(row3))
-        self.assertFalse(self.migr_tracker.should_increment_year(row3))

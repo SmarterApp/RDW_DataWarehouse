@@ -11,10 +11,11 @@ from edextract.student_reg_extract_processors.attribute_constants import Attribu
 
 class CategoryTracker(metaclass=ABCMeta):
 
-    def __init__(self, category, value):
+    def __init__(self, category, value, field=None):
         self._data_counter = DataCounter()
         self._category = category
         self._value = value
+        self._field = field
 
     def track(self, guid, row, key=None):
         """
@@ -25,7 +26,8 @@ class CategoryTracker(metaclass=ABCMeta):
 
         """
         key = key if key else row[AttributeFieldConstants.ACADEMIC_YEAR]
-        should_increment = self.should_increment_matched_ids(row) if key == DataCounter.MATCHED_IDS else self.should_increment_year(row)
+        should_increment = self._should_increment_matched_ids(row) if key == DataCounter.MATCHED_IDS \
+            else self._should_increment_year(row)
         if should_increment:
             self._data_counter.increment(guid, key)
 
@@ -52,8 +54,7 @@ class CategoryTracker(metaclass=ABCMeta):
 
         return self._category, self._value
 
-    @abstractmethod
-    def should_increment_year(self, row):
+    def _should_increment_matched_ids(self, row):
         """
         Determine if internal totals map should be updated for a row.
 
@@ -61,10 +62,12 @@ class CategoryTracker(metaclass=ABCMeta):
 
         @return: Whether or not to increment the concrete class's totals map
         """
-        return
+
+        ids_match = True if self._field is None else row[self._field] == row['prev_' + self._field]
+        return self.should_increment_year(row) and ids_match
 
     @abstractmethod
-    def should_increment_matched_ids(self, row):
+    def _should_increment_year(self, row):
         """
         Determine if internal totals map should be updated for a row.
 

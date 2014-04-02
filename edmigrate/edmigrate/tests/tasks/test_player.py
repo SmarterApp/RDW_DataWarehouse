@@ -80,8 +80,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_reset_players_succeed(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule, MockCheckRule):
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
-        MockBlockInput.return_value = True
-        MockBlockOutput.return_value = True
+        MockBlockInput.return_value = False
+        MockBlockOutput.return_value = False
         MockCheckRule.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.reset_players()
@@ -95,7 +95,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_reset_players')
     def test_reset_players_with_pgpool_failed(self, MockConductor, MockCheckBlockInput, MockModifyRule, MockCheckRule):
         MockConductor.return_value = lambda: None
-        MockCheckBlockInput.return_value = False
+        MockCheckBlockInput.return_value = True
         MockCheckRule.return_value = True
         MockModifyRule.return_value = None
         player = Player(self.connection, self.exchange, self.routing_key)
@@ -112,7 +112,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckRule.return_value = True
-        MockCheckBlockOutput.return_value = False
+        MockCheckBlockOutput.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.reset_players()
         self.assertFalse(rtn)
@@ -128,8 +128,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
                                             MockCheckBlockOutput, MockModifyRule, MockCheckRule):
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
-        MockCheckBlockInput.return_value = False
-        MockCheckBlockOutput.return_value = False
+        MockCheckBlockInput.return_value = True
+        MockCheckBlockOutput.return_value = True
         MockCheckRule.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.reset_players()
@@ -145,7 +145,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockConductor.return_value = lambda: None
         MockCheckRule.return_value = True
         MockModifyRule.return_value = None
-        MockCheckBlockInput.return_value = True
+        MockCheckBlockInput.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.connect_pgpool()
         self.assertTrue(rtn)
@@ -160,7 +160,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockConductor.return_value = lambda: None
         MockCheckRule.return_value = True
         MockModifyRule.return_value = None
-        MockCheckBlockInput.return_value = False
+        MockCheckBlockInput.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.connect_pgpool()
         self.assertFalse(rtn)
@@ -204,7 +204,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_connect_master_succeed(self, MockConductor, MockBlockOutput, MockModifyRule, MockCheckRule):
         MockModifyRule.return_value = None
         MockCheckRule.return_value = True
-        MockBlockOutput.return_value = True
+        MockBlockOutput.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.connect_master()
         self.assertTrue(rtn)
@@ -219,7 +219,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckRule.return_value = True
-        MockBlockOutput.return_value = False
+        MockBlockOutput.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.connect_master()
         self.assertFalse(rtn)
@@ -325,7 +325,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.acknowledgement_pgpool_connected')
     def test_run_command_connect_pgpool_with_node_id_in_nodes(self, MockConductor, MockBlockInput,
                                                               MockModifyRule, MockCheckRule):
-        MockBlockInput.return_value = True
+        MockBlockInput.return_value = False
         MockModifyRule.return_value = None
         MockCheckRule.return_value = True
         MockConductor.return_value = lambda: None
@@ -410,8 +410,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_run_command_reset_players(self, MockConductor, MockBlockInput, MockBlockOutput, MockModifyRule,
                                        MockCheckRule):
         MockModifyRule.return_value = None
-        MockBlockInput.return_value = True
-        MockBlockOutput.return_value = True
+        MockBlockInput.return_value = False
+        MockBlockOutput.return_value = False
         MockCheckRule.return_value = True
         MockConductor.return_value = lambda: None
         player = Player(self.connection, self.exchange, self.routing_key)
@@ -428,8 +428,8 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     def test_run_command_reset_players_with_node_id(self, MockConductor, MockBlockInput, MockBlockOutput,
                                                     MockModifyRule, MockCheckRule):
         MockModifyRule.return_value = None
-        MockBlockInput.return_value = True
-        MockBlockOutput.return_value = True
+        MockBlockInput.return_value = False
+        MockBlockOutput.return_value = False
         MockCheckRule.return_value = True
         MockConductor.return_value = lambda: None
         player = Player(self.connection, self.exchange, self.routing_key)

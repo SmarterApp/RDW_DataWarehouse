@@ -175,7 +175,7 @@ class IptableControllerTest(unittest.TestCase):
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
         block_status = self.iptablesChcker.check_block_input('localhost')
-        self.assertTrue(block_status)
+        self.assertFalse(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
     @patch('socket.create_connection')
@@ -184,7 +184,7 @@ class IptableControllerTest(unittest.TestCase):
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
         block_status = self.iptablesChcker.check_block_output('remote')
-        self.assertTrue(block_status)
+        self.assertFalse(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
     @patch('socket.create_connection')
@@ -193,7 +193,7 @@ class IptableControllerTest(unittest.TestCase):
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
         block_status = self.iptablesChcker.check_block_input('localhost')
-        self.assertFalse(block_status)
+        self.assertTrue(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
     @patch('socket.create_connection')
@@ -202,7 +202,7 @@ class IptableControllerTest(unittest.TestCase):
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
         block_status = self.iptablesChcker.check_block_output('remote')
-        self.assertFalse(block_status)
+        self.assertTrue(block_status)
 
     @patch('subprocess.check_output')
     def test_subprocess_exception(self, MockSubprocess):

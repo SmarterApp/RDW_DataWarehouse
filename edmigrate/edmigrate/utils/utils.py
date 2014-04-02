@@ -10,6 +10,7 @@ from edmigrate.database.repmgr_connector import RepMgrDBConnection
 from edmigrate.utils.constants import Constants
 from sqlalchemy.sql.expression import select
 import re
+from edmigrate.exceptions import NoMasterFoundException, NoNodeIDFoundException
 
 
 def read_ini(file):
@@ -58,6 +59,8 @@ def get_my_master_by_id(my_node_id):
             m = re.match('^host=(\S+)\s+', conninfo)
             if m:
                 master_hostname = m.group(1)
+    if not master_hostname:
+        raise NoMasterFoundException()
     return master_hostname
 
 
@@ -75,6 +78,8 @@ def get_node_id_from_hostname(hostname):
         if results:
             result = results[0]
             node_id = result['id']
+    if not node_id:
+        raise NoNodeIDFoundException()
     return node_id
 
 

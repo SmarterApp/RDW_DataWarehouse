@@ -47,23 +47,23 @@ class IptablesController(metaclass=Singleton):
         return rule_exists
 
     def block_pgsql_INPUT(self):
-        check = self._check_rules(Constants.IPTABLES_INPUT_CHAIN)
-        if not check:
+        rule_exists = self._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        if not rule_exists:
             self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_INPUT_CHAIN)
 
     def block_pgsql_OUTPUT(self):
-        check = self._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
-        if not check:
+        rule_exists = self._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        if not rule_exists:
             self._modify_rule(Constants.IPTABLES_INSERT, Constants.IPTABLES_OUTPUT_CHAIN)
 
     def unblock_pgsql_INPUT(self):
-        check = self._check_rules(Constants.IPTABLES_INPUT_CHAIN)
-        if check:
+        rule_exists = self._check_rules(Constants.IPTABLES_INPUT_CHAIN)
+        if rule_exists:
             self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_INPUT_CHAIN)
 
     def unblock_pgsql_OUTPUT(self):
-        check = self._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
-        if check:
+        rule_exists = self._check_rules(Constants.IPTABLES_OUTPUT_CHAIN)
+        if rule_exists:
             self._modify_rule(Constants.IPTABLES_DELETE, Constants.IPTABLES_OUTPUT_CHAIN)
 
 

@@ -90,17 +90,17 @@ class Player(metaclass=Singleton):
         with IptablesController() as iptables:
             iptables.unblock_pgsql_INPUT()
             # localhost is not block by iptables, so we need to use the hostname to
-            status = IptablesChecker().check_block_input(self.hostname)
-            if status:
+            blocked = IptablesChecker().check_block_input(self.hostname)
+            if blocked:
+                logger.error("Failed to unblock pgpool)")
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine.".
+                                   format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+            else:
                 reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
                                                                     self.exchange, self.routing_key)
                 rtn = True
                 logger.debug("Unblock pgpool")
                 admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked pgpool machine.".
-                                   format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
-            else:
-                logger.error("Failed to unblock pgpool)")
-                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine.".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
         return rtn
 
@@ -112,8 +112,8 @@ class Player(metaclass=Singleton):
         with IptablesController() as iptables:
             iptables.block_pgsql_INPUT()
             # localhost is not block by iptables, so we need to use the hostname to
-            status = IptablesChecker().check_block_input(self.hostname)
-            if status:
+            blocked = IptablesChecker().check_block_input(self.hostname)
+            if blocked:
                 reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
                                                                        self.exchange, self.routing_key)
                 rtn = True
@@ -133,18 +133,18 @@ class Player(metaclass=Singleton):
         rtn = False
         with IptablesController() as iptables:
             iptables.unblock_pgsql_OUTPUT()
-            status = IptablesChecker().check_block_output(self.master_hostname)
-            if status:
+            blocked = IptablesChecker().check_block_output(self.master_hostname)
+            if blocked:
+                logger.error("Failed to unblock master ( {master} )".format(master=self.master_hostname))
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ).".
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
+                                          node_id=self.node_id, master=self.master_hostname))
+            else:
                 reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
                                                                     self.exchange, self.routing_key)
                 rtn = True
                 logger.debug("Unblock master database ( {master} )".format(master=self.master_hostname))
                 admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked master database ( {master}).".
-                                   format(name=self.__class__.__name__, hostname=self.hostname,
-                                          node_id=self.node_id, master=self.master_hostname))
-            else:
-                logger.error("Failed to unblock master ( {master} )".format(master=self.master_hostname))
-                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ).".
                                    format(name=self.__class__.__name__, hostname=self.hostname,
                                           node_id=self.node_id, master=self.master_hostname))
         return rtn
@@ -156,8 +156,8 @@ class Player(metaclass=Singleton):
         rtn = False
         with IptablesController() as iptables:
             iptables.block_pgsql_OUTPUT()
-            status = IptablesChecker().check_block_output(self.master_hostname)
-            if status:
+            blocked = IptablesChecker().check_block_output(self.master_hostname)
+            if blocked:
                 reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
                                                                        self.exchange, self.routing_key)
                 rtn = True

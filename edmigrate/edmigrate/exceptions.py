@@ -118,4 +118,3 @@ class NoMasterFoundException(EdMigrateException):
 class NoNodeIDFoundException(EdMigrateException):
     def __init__(self, msg="No id found from repl_nodes"):
         super().__init__(msg)
-

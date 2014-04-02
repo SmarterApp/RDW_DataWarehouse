@@ -69,16 +69,16 @@ class IptablesController(metaclass=Singleton):
 
 class IptablesChecker(metaclass=Singleton):
     def _check_block(self, host, port):
-        connected = True
+        blocked = False
         s = None
         try:
             s = socket.create_connection((host, port), 1)
         except ConnectionRefusedError:
-            connected = False
+            blocked = True
         finally:
             if s is not None:
                 s.close()
-        return connected
+        return blocked
 
     def check_block_output(self, host, port=5432):
         return self._check_block(host, port)

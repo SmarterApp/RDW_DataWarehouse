@@ -82,7 +82,7 @@ class Player(metaclass=Singleton):
                                         node_id=self.node_id, command=command, nodes=str(nodes)))
         return rtn
 
-    def connect_pgpool(self):
+    def connect_pgpool(self, reply_to_master=True):
         '''
         remove iptables rules to enable pgpool access slave database
         '''
@@ -96,8 +96,9 @@ class Player(metaclass=Singleton):
                 admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine.".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
             else:
-                reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
-                                                                    self.exchange, self.routing_key)
+                if reply_to_master:
+                    reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
+                                                                        self.exchange, self.routing_key)
                 rtn = True
                 logger.debug("Unblock pgpool")
                 admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked pgpool machine.".
@@ -126,7 +127,7 @@ class Player(metaclass=Singleton):
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
         return rtn
 
-    def connect_master(self):
+    def connect_master(self, reply_to_master=True):
         '''
         remove iptable rules to unblock master from access slave database
         '''
@@ -140,8 +141,9 @@ class Player(metaclass=Singleton):
                                    format(name=self.__class__.__name__, hostname=self.hostname,
                                           node_id=self.node_id, master=self.master_hostname))
             else:
-                reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
-                                                                    self.exchange, self.routing_key)
+                if reply_to_master:
+                    reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
+                                                                        self.exchange, self.routing_key)
                 rtn = True
                 logger.debug("Unblock master database ( {master} )".format(master=self.master_hostname))
                 admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked master database ( {master}).".
@@ -176,9 +178,13 @@ class Player(metaclass=Singleton):
         '''
         reset players. so it will not block pgpool and master database
         '''
-        status1 = self.connect_master()
-        status2 = self.connect_pgpool()
-        return status1 and status2
+        rtn = False
+        status1 = self.connect_master(reply_to_master=False)
+        status2 = self.connect_pgpool(reply_to_master=False)
+        if status1 and status2:
+            reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection, self.exchange, self.routing_key)
+            rtn = True
+        return rtn
 
     def register_player(self):
         '''

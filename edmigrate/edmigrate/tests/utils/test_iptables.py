@@ -183,7 +183,7 @@ class IptableControllerTest(unittest.TestCase):
         MockSocket.side_effect = None
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
-        block_status = self.iptablesChcker.check_block_output('localhost')
+        block_status = self.iptablesChcker.check_block_output('remote')
         self.assertTrue(block_status)
 
     @patch.object(mocket.mocket.MocketSocket, 'close')
@@ -201,7 +201,7 @@ class IptableControllerTest(unittest.TestCase):
         MockSocket.side_effect = ConnectionRefusedError()
         MockSocket.return_value = mocket.mocket.MocketSocket(socket.AF_INET, socket.SOCK_STREAM)
         MockMethod.return_value = lambda: None
-        block_status = self.iptablesChcker.check_block_output('localhost')
+        block_status = self.iptablesChcker.check_block_output('remote')
         self.assertFalse(block_status)
 
     @patch('subprocess.check_output')

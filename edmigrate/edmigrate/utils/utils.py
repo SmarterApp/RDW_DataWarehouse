@@ -43,6 +43,7 @@ def get_broker_url(config=None):
 
 
 def get_my_master_by_id(my_node_id):
+    master_hostname = None
     with RepMgrDBConnection() as conn:
         repl_nodes = conn.get_table(Constants.REPL_NODES)
         repl_status = conn.get_table(Constants.REPL_STATUS)
@@ -64,6 +65,7 @@ def get_node_id_from_hostname(hostname):
     '''
     look up repl_nodes for node_id of the host.
     '''
+    node_id = None
     with RepMgrDBConnection() as conn:
         repl_nodes = conn.get_table(Constants.REPL_NODES)
         query = select([repl_nodes.c.id.label('id')],

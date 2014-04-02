@@ -176,7 +176,9 @@ class Player(metaclass=Singleton):
         '''
         reset players. so it will not block pgpool and master database
         '''
-        return self.connect_pgpool() and self.connect_master()
+        status1 = self.connect_master()
+        status2 = self.connect_pgpool()
+        return status1 and status2
 
     def register_player(self):
         '''

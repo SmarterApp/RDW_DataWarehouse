@@ -328,7 +328,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockCheckRule.return_value = True
         MockConductor.return_value = lambda: None
         player = Player(self.connection, self.exchange, self.routing_key)
-        rtn = player.run_command(Constants.COMMAND_CONNECT_PGPOOL, [self.node_id])
+        rtn = player.run_command(Constants.COMMAND_CONNECT_PGPOOL, [3])
         self.assertTrue(rtn)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -431,7 +431,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockCheckRule.return_value = True
         MockConductor.return_value = lambda: None
         player = Player(self.connection, self.exchange, self.routing_key)
-        rtn = player.run_command(Constants.COMMAND_RESET_PLAYERS, [self.node_id])
+        rtn = player.run_command(Constants.COMMAND_RESET_PLAYERS, [3])
         self.assertTrue(rtn)
 
     @patch.dict(edmigrate.settings.config.settings,

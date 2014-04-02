@@ -13,6 +13,8 @@ from edmigrate.utils.constants import Constants
 from kombu import Connection
 from kombu.entity import Exchange
 from edmigrate.utils.utils import get_broker_url
+from edmigrate.exceptions import IptablesSaveCommandError, IptablesCommandError
+import subprocess
 import socket
 
 
@@ -463,3 +465,33 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.run_command('Fake Command', [3])
         self.assertFalse(rtn)
+
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch('subprocess.check_output')
+    @patch.object(edmigrate.utils.iptables.IptablesController, "_check_rules")
+    @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_output")
+    @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_input")
+    def test_iptables_command_exception(self, MockBlockInput, MockBlockOutput, MockCheckRule,
+                                        MockSubprocess):
+        MockBlockInput.return_value = True
+        MockBlockOutput.return_value = False
+        MockCheckRule.return_value = True
+        MockSubprocess.side_effect = subprocess.CalledProcessError(-1, 'iptables')
+        player = Player(self.connection, self.exchange, self.routing_key)
+        self.assertRaises(IptablesCommandError, player.run_command, Constants.COMMAND_CONNECT_PGPOOL, [3])
+
+    @patch.dict(edmigrate.settings.config.settings,
+                values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
+    @patch('subprocess.check_output')
+    @patch.object(edmigrate.utils.iptables.IptablesController, "_check_rules")
+    @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_output")
+    @patch.object(edmigrate.utils.iptables.IptablesChecker, "check_block_input")
+    def test_iptables_save_command_exception(self, MockBlockInput, MockBlockOutput, MockCheckRule,
+                                             MockSubprocess):
+        MockBlockInput.return_value = True
+        MockBlockOutput.return_value = False
+        MockCheckRule.return_value = True
+        MockSubprocess.side_effect = subprocess.CalledProcessError(-1, 'iptables-save')
+        player = Player(self.connection, self.exchange, self.routing_key)
+        self.assertRaises(IptablesCommandError, player.run_command, Constants.COMMAND_CONNECT_PGPOOL, [3])

@@ -163,7 +163,7 @@ class Player(metaclass=Singleton):
                 rtn = True
                 logger.debug("Block master database ( {master} )".format(master=self.master_hostname))
                 admin_logger.debug("{name} at {hostname} with node id {node_id} blocked master database ( {master}).".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
                                           node_id=self._node_id(), master=self.master_hostname))
             else:
                 logger.error("{name}: Failed to block master( {master} )".format(master=self.master_hostname))

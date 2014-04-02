@@ -55,11 +55,9 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
     @patch('edmigrate.utils.reply_to_conductor.register_player')
     def test_register_player_with_node_id(self, MockConductor):
         player = Player(self.connection, self.exchange, self.routing_key)
-        player.set_hostname(socket.gethostname())
-        player.set_node_id_from_hostname()
         MockConductor.return_value = lambda: None
-        player.register_player()
-        MockConductor.assert_called_once_with(player.node_id, self.connection, self.exchange, self.routing_key)
+        rtn = player.register_player()
+        self.assertTrue(rtn)
 
     @patch.dict(edmigrate.settings.config.settings,
                 values={Config.IPTABLES_CHAIN: Constants.IPTABLES_CHAIN})
@@ -354,7 +352,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockBlockOutput.return_value = False
         MockConductor.return_value = lambda: None
         player = Player(self.connection, self.exchange, self.routing_key)
-        rtn = player.run_command(Constants.COMMAND_REGISTER_PLAYER, [self.node_id])
+        rtn = player.run_command(Constants.COMMAND_REGISTER_PLAYER, [3])
         self.assertTrue(rtn)
 
     @patch.dict(edmigrate.settings.config.settings,
@@ -412,5 +410,5 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockBlockInput.return_value = False
         MockBlockOutput.return_value = False
         player = Player(self.connection, self.exchange, self.routing_key)
-        rtn = player.run_command('Fake Command', [self.node_id])
+        rtn = player.run_command('Fake Command', [3])
         self.assertFalse(rtn)

@@ -185,6 +185,11 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                        "required": False,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                    },
+                   Constants.ASMTYEAR: {
+                       "type": "integer",
+                       "required": False,
+                       "pattern": "^[1-9][0-9]{3}$"
+                   }
                })
 @user_info
 @audit_event()
@@ -195,21 +200,23 @@ def get_student_report(params):
     student_guid = params[Constants.STUDENTGUID]
     state_code = params[Constants.STATECODE]
     assessment_guid = params.get(Constants.ASSESSMENTGUID)
+    academic_year = params.get(Constants.ASMTYEAR)
 
     with EdCoreDBConnection(state_code=state_code) as connection:
         query = __prepare_query(connection, state_code, student_guid, assessment_guid)
         result = connection.get_result(query)
-        if result:
-            first_student = result[0]
-            state_code = first_student[Constants.STATE_CODE]
-            district_guid = first_student[Constants.DISTRICT_GUID]
-            school_guid = first_student[Constants.SCHOOL_GUID]
-            asmt_grade = first_student['asmt_grade']
-            student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-            context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
-            student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, None, [student_guid])
-        else:
+        if not result:
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
+
+        records = [record for record in result if record['asmt_period_year'] == academic_year]
+        first_student = records[0] if len(records) > 0 else result[0]
+        state_code = first_student[Constants.STATE_CODE]
+        district_guid = first_student[Constants.DISTRICT_GUID]
+        school_guid = first_student[Constants.SCHOOL_GUID]
+        asmt_grade = first_student['asmt_grade']
+        student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
+        context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
+        student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, None, [student_guid])
 
         # color metadata
         custom_metadata_map = get_custom_metadata(result[0].get(Constants.STATE_CODE), None)

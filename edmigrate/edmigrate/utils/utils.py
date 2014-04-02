@@ -6,6 +6,11 @@ Created on Mar 17, 2014
 from edmigrate.settings.config import Config, setup_settings, get_setting
 from edworker.celery import get_config_file
 import configparser
+from edmigrate.database.repmgr_connector import RepMgrDBConnection
+from edmigrate.utils.constants import Constants
+from sqlalchemy.sql.expression import select
+import re
+from edmigrate.exceptions import NoMasterFoundException, NoNodeIDFoundException
 
 
 def read_ini(file):
@@ -36,6 +41,46 @@ def get_broker_url(config=None):
         except:
             pass
     return url
+
+
+def get_my_master_by_id(my_node_id):
+    master_hostname = None
+    with RepMgrDBConnection() as conn:
+        repl_nodes = conn.get_table(Constants.REPL_NODES)
+        repl_status = conn.get_table(Constants.REPL_STATUS)
+        query = select([repl_nodes.c.conninfo.label('conninfo')],
+                       from_obj=[repl_nodes
+                                 .join(repl_status, repl_status.c.primary_node == repl_nodes.c.id)])\
+            .where(repl_status.c.standby_node == my_node_id)
+        results = conn.get_result(query)
+        if results:
+            result = results[0]
+            conninfo = result['conninfo']
+            m = re.match('^host=(\S+)\s+', conninfo)
+            if m:
+                master_hostname = m.group(1)
+    if not master_hostname:
+        raise NoMasterFoundException()
+    return master_hostname
+
+
+def get_node_id_from_hostname(hostname):
+    '''
+    look up repl_nodes for node_id of the host.
+    '''
+    node_id = None
+    with RepMgrDBConnection() as conn:
+        repl_nodes = conn.get_table(Constants.REPL_NODES)
+        query = select([repl_nodes.c.id.label('id')],
+                       repl_nodes.c.conninfo.like("host=" + hostname + " %"),
+                       from_obj=[repl_nodes])
+        results = conn.get_result(query)
+        if results:
+            result = results[0]
+            node_id = result['id']
+    if not node_id:
+        raise NoNodeIDFoundException()
+    return node_id
 
 
 class Singleton(type):

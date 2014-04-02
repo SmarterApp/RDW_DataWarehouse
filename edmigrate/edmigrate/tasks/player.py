@@ -3,39 +3,31 @@ Created on Mar 21, 2014
 
 @author: ejen
 '''
-from edmigrate.queues import conductor
 import logging
-from edmigrate.utils.utils import get_broker_url
 from edmigrate.utils.constants import Constants
-from edmigrate.database.repmgr_connector import RepMgrDBConnection
-import subprocess
-from edmigrate.settings.config import Config, get_setting
+
+
+logger = logging.getLogger(Constants.WORKER_NAME)
+admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
+from edmigrate.queues import conductor
+from edmigrate.utils.utils import get_broker_url, get_node_id_from_hostname, \
+    get_my_master_by_id
 import edmigrate.utils.reply_to_conductor as reply_to_conductor
-from time import sleep
 from kombu import Connection
 import socket
 from edmigrate.edmigrate_celery import celery
 from edmigrate.utils.utils import Singleton
-from edmigrate.utils.iptables import Iptables
-from edmigrate.exceptions import IptablesCommandError
+from edmigrate.utils.iptables import IptablesChecker, IptablesController
 
 
 class Player(metaclass=Singleton):
-
-    def __init__(self, logger=logging.getLogger(Constants.WORKER_NAME),
-                 admin_logger=logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER),
+    def __init__(self,
                  connection=Connection(get_broker_url()),
                  exchange=conductor.exchange,
-                 routing_key=Constants.CONDUCTOR_ROUTING_KEY,
-                 iptables=Iptables()):
-        self.logger = logger
-        self.admin_logger = admin_logger
+                 routing_key=Constants.CONDUCTOR_ROUTING_KEY):
         self.connection = connection
         self.exchange = exchange
         self.routing_key = routing_key
-        self.node_id = None
-        self.hostname = None
-        self.iptables = iptables
         self.COMMAND_HANDLERS = {
             Constants.COMMAND_REGISTER_PLAYER: self.register_player,
             Constants.COMMAND_START_REPLICATION: self.connect_master,
@@ -44,24 +36,9 @@ class Player(metaclass=Singleton):
             Constants.COMMAND_DISCONNECT_PGPOOL: self.disconnect_pgpool,
             Constants.COMMAND_RESET_PLAYERS: self.reset_players
         }
-        self.set_hostname(socket.gethostname())
-        self.set_node_id_from_hostname()
-
-    @classmethod
-    def cleanup(cls):
-        cls._instances = {}
-
-    def _hostname(self):
-        if self.hostname is None:
-            return ""
-        else:
-            return str(self.hostname)
-
-    def _node_id(self):
-        if self.node_id is None:
-            return ""
-        else:
-            return str(self.node_id)
+        self.hostname = socket.gethostname()
+        self.node_id = get_node_id_from_hostname(self.hostname)
+        self.master_hostname = get_my_master_by_id(self.node_id)
 
     def __enter__(self):
         return self
@@ -70,216 +47,163 @@ class Player(metaclass=Singleton):
         pass
 
     def run_command(self, command, nodes):
+        rtn = False
         if command in self.COMMAND_HANDLERS:
             if nodes is None:
                 if command in [Constants.COMMAND_REGISTER_PLAYER, Constants.COMMAND_RESET_PLAYERS]:
-                    self.COMMAND_HANDLERS[command]()
-                    self.logger.info("{name}: executed {command}".format(command=command, name=self.__class__.__name__))
-                    self.admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} successfully".
-                                           format(name=self.__class__.__name__, hostname=self._hostname(),
-                                                  node_id=self._node_id(), command=command))
+                    rtn = self.COMMAND_HANDLERS[command]()
+                    logger.debug("executed {command}".format(command=command))
+                    admin_logger.debug("{name} at {hostname} with node id {node_id} executed {command} successfully".
+                                       format(name=self.__class__.__name__, hostname=self.hostname,
+                                              node_id=self.node_id, command=command))
                 else:
-                    self.logger.warning("{name}: {command} require nodes".format(command=command, name=self.__class__.__name__))
-                    self.admin_logger.warning("{name} at {hostname} with node id {node_id} failed to execute {command} due to no nodes specified".
-                                              format(name=self.__class__.__name__, hostname=self._hostname(),
-                                                     node_id=self._node_id(), command=command))
+                    logger.warning("{command} require nodes".format(command=command))
+                    admin_logger.warning("{name} at {hostname} with node id {node_id} failed to execute {command} due to no nodes specified".
+                                         format(name=self.__class__.__name__, hostname=self.hostname,
+                                                node_id=self.node_id, command=command))
             else:
                 if self.node_id in nodes:
-                    self.COMMAND_HANDLERS[command]()
-                    self.logger.info("{name}: {node_id} executed {command}".
-                                     format(command=command, name=self.__class__.__name__, node_id=self._node_id()))
-                    self.admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} {nodes} successfully".
-                                           format(name=self.__class__.__name__, hostname=self._hostname(),
-                                                  node_id=self._node_id(), command=command, nodes=str(nodes)))
+                    rtn = self.COMMAND_HANDLERS[command]()
+                    logger.info("{node_id} executed {command}".format(command=command, node_id=self.node_id))
+                    admin_logger.info("{name} at {hostname} with node id {node_id} executed {command} {nodes} successfully".
+                                      format(name=self.__class__.__name__, hostname=self.hostname,
+                                             node_id=self.node_id, command=command, nodes=str(nodes)))
                 else:
                     # ignore the command
-                    self.logger.warning("{name}: {command} is ignored because {node_id} is not in {nodes}"
-                                        .format(command=command, name=self.__class__.__name__,
-                                                node_id=self._node_id(), nodes=str(nodes)))
-                    self.admin_logger.warning("{name} at {hostname} with node id {node_id} ignored {command} {nodes}".
-                                              format(name=self.__class__.__name__, hostname=self._hostname(),
-                                                     node_id=self._node_id(), command=command, nodes=str(nodes)))
+                    logger.warning("{command} is ignored because {node_id} is not in {nodes}".
+                                   format(command=command, node_id=self.node_id, nodes=str(nodes)))
+                    admin_logger.warning("{name} at {hostname} with node id {node_id} ignored {command} {nodes}".
+                                         format(name=self.__class__.__name__, hostname=self.hostname,
+                                                node_id=self.node_id, command=command, nodes=str(nodes)))
         else:
-            self.logger.warning("{command} is not implemented by {name}".format(command=command, name=self.__class__.__name__))
-            self.admin_logger.warning("{name} at {hostname} with node id {node_id} did not process {command} {nodes} due to command is not implemented".
-                                      format(name=self.__class__.__name__, hostname=self._hostname(),
-                                             node_id=self._node_id(), command=command, nodes=str(nodes)))
+            logger.warning("{command} is not implemented".format(command=command))
+            admin_logger.warning("{name} at {hostname} with node id {node_id} did not process {command} {nodes} due to command is not implemented".
+                                 format(name=self.__class__.__name__, hostname=self.hostname,
+                                        node_id=self.node_id, command=command, nodes=str(nodes)))
+        return rtn
 
-    def set_hostname(self, hostname):
-        '''
-        get hostname for the current node
-        '''
-        self.hostname = hostname
-
-    def set_node_id_from_hostname(self):
-        '''
-        look up repl_nodes for node_id of the host.
-        '''
-        self.node_id = None
-        with RepMgrDBConnection() as conn:
-            repl_nodes = conn.get_table(Constants.REPL_NODES)
-            results = conn.execute(repl_nodes.select())
-            nodes = results.fetchall()
-            for node in nodes:
-                if node[Constants.REPL_NODE_CONN_INFO].find("host={hostname}".format(hostname=self.hostname)) >= 0:
-                    self.node_id = node[Constants.ID]
-                    break
-        return self.node_id
-
-    def connect_pgpool(self):
+    def connect_pgpool(self, reply_to_master=True):
         '''
         remove iptables rules to enable pgpool access slave database
         '''
-        pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-        self.logger.info("{name}: Resuming pgpool ( {pgpool} )".
-                         format(name=self.__class__.__name__, pgpool=pgpool))
-        self.iptables.unblock_pgsql_INPUT()
-        status = self.iptables.check_block_input('localhost')
-        if status:
-            reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
-                                                                self.exchange, self.routing_key)
-            self.logger.info("{name}: Unblock pgpool ( {pgpool} )".
-                             format(name=self.__class__.__name__, pgpool=pgpool))
-            self.admin_logger.info("{name} at {hostname} with node id {node_id} unblocked pgpool machine ( {pgpool}).".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id(), pgpool=pgpool))
-        else:
-            self.logger.warning("{name}: Failed to unblock pgpool ( {pgpool} )".
-                                format(name=self.__class__.__name__, pgpool=pgpool))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine ( {pgpool} ). Please check the {hostname}.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), pgpool=pgpool))
+        rtn = False
+        with IptablesController() as iptables:
+            iptables.unblock_pgsql_INPUT()
+            # localhost is not block by iptables, so we need to use the hostname to
+            blocked = IptablesChecker().check_block_input(self.hostname)
+            if blocked:
+                logger.error("Failed to unblock pgpool)")
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine.".
+                                   format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+            else:
+                if reply_to_master:
+                    reply_to_conductor.acknowledgement_pgpool_connected(self.node_id, self.connection,
+                                                                        self.exchange, self.routing_key)
+                rtn = True
+                logger.debug("Unblock pgpool")
+                admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked pgpool machine.".
+                                   format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+        return rtn
 
     def disconnect_pgpool(self):
         '''
         insert iptables rules to block pgpool to access postgres db
         '''
-        pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-        self.logger.info("{name}: Blocking pgpool ( {pgpool} )".
-                         format(name=self.__class__.__name__, pgpool=pgpool))
-        self.iptables.block_pgsql_INPUT()
-        status = not self.iptables.check_block_input('localhost')
-        if status:
-            reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
-                                                                   self.exchange, self.routing_key)
-            self.logger.info("{name}: Block pgpool ( {pgpool} )".
-                             format(name=self.__class__.__name__, pgpool=pgpool))
-            self.admin_logger.info("{name} at {hostname} with node id {node_id} blocked pgpool machine ( {pgpool}).".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id(), pgpool=pgpool))
-        else:
-            self.logger.warning("{name}: Failed to block pgpool ( {pgpool} )".
-                                format(name=self.__class__.__name__, pgpool=pgpool))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to block pgpool machine ( {pgpool} ). Please check the {hostname}.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), pgpool=pgpool))
+        rtn = False
+        with IptablesController() as iptables:
+            iptables.block_pgsql_INPUT()
+            # localhost is not block by iptables, so we need to use the hostname to
+            blocked = IptablesChecker().check_block_input(self.hostname)
+            if blocked:
+                reply_to_conductor.acknowledgement_pgpool_disconnected(self.node_id, self.connection,
+                                                                       self.exchange, self.routing_key)
+                rtn = True
+                logger.debug("Block pgpool")
+                admin_logger.debug("{name} at {hostname} with node id {node_id} blocked pgpool machine.".
+                                   format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+            else:
+                logger.error("Failed to block pgpool")
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to block pgpool machine.".
+                                   format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+        return rtn
 
-    def connect_master(self):
+    def connect_master(self, reply_to_master=True):
         '''
         remove iptable rules to unblock master from access slave database
         '''
-        master = get_setting(Config.MASTER_HOSTNAME)
-        self.logger.info("{name}: Resuming master( {master} )".
-                         format(name=self.__class__.__name__, master=master))
-        self.iptables.unblock_pgsql_OUTPUT()
-        status = self.iptables.check_block_output(master)
-        if status:
-            reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
-                                                                self.exchange, self.routing_key)
-            self.logger.info("{name}: Unblock master database ( {master} )".
-                             format(name=self.__class__.__name__, master=master))
-            self.admin_logger.info("{name} at {hostname} with node id {node_id} unblocked master database ( {master}).".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id(), master=master))
-        else:
-            self.logger.warning("{name}: Failed to unblock master ( {master} )".
-                                format(name=self.__class__.__name__, master=master))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ). Please check the {hostname}.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), master=master))
+        rtn = False
+        with IptablesController() as iptables:
+            iptables.unblock_pgsql_OUTPUT()
+            blocked = IptablesChecker().check_block_output(self.master_hostname)
+            if blocked:
+                logger.error("Failed to unblock master ( {master} )".format(master=self.master_hostname))
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ).".
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
+                                          node_id=self.node_id, master=self.master_hostname))
+            else:
+                if reply_to_master:
+                    reply_to_conductor.acknowledgement_master_connected(self.node_id, self.connection,
+                                                                        self.exchange, self.routing_key)
+                rtn = True
+                logger.debug("Unblock master database ( {master} )".format(master=self.master_hostname))
+                admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked master database ( {master}).".
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
+                                          node_id=self.node_id, master=self.master_hostname))
+        return rtn
 
     def disconnect_master(self):
         '''
         insert iptable rules to block master to access slave database
         '''
-        master = get_setting(Config.MASTER_HOSTNAME)
-        self.logger.info("{name}: Blocking master( {master} )".
-                         format(name=self.__class__.__name__, master=master))
-        self.iptables.block_pgsql_OUTPUT()
-        status = not self.iptables.check_block_output(master)
-        if status:
-            reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
-                                                                   self.exchange, self.routing_key)
-            self.logger.info("{name}: Block master database ( {master} )".
-                             format(name=self.__class__.__name__, master=master))
-            self.admin_logger.info("{name} at {hostname} with node id {node_id} blocked master database ( {master}).".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id(), master=master))
-        else:
-            self.logger.warning("{name}: Failed to block master( {master} )".
-                                format(name=self.__class__.__name__, master=master))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to block master database ( {master} ). Please check the {hostname}.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), master=master))
+        rtn = False
+        with IptablesController() as iptables:
+            iptables.block_pgsql_OUTPUT()
+            blocked = IptablesChecker().check_block_output(self.master_hostname)
+            if blocked:
+                reply_to_conductor.acknowledgement_master_disconnected(self.node_id, self.connection,
+                                                                       self.exchange, self.routing_key)
+                rtn = True
+                logger.debug("Block master database ( {master} )".format(master=self.master_hostname))
+                admin_logger.debug("{name} at {hostname} with node id {node_id} blocked master database ( {master}).".
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
+                                          node_id=self.node_id, master=self.master_hostname))
+            else:
+                logger.error("Failed to block master( {master} )".format(master=self.master_hostname))
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to block master database ( {master} ).".
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
+                                          node_id=self.node_id, master=self.master_hostname))
+        return rtn
 
     def reset_players(self):
         '''
         reset players. so it will not block pgpool and master database
         '''
-        master = get_setting(Config.MASTER_HOSTNAME)
-        pgpool = get_setting(Config.PGPOOL_HOSTNAME)
-        self.logger.info("{name}: Reset iptables rules for master ( {master} ) and pgpool ( {pgpool} )".
-                         format(name=self.__class__.__name__, master=master, pgpool=pgpool))
-        self.iptables.unblock_pgsql_INPUT()
-        self.iptables.unblock_pgsql_OUTPUT()
-        status_1 = self.iptables.check_block_input('localhost')
-        status_2 = self.iptables.check_block_output(master)
-        if status_1 and status_2:
-            reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection,
-                                                             self.exchange, self.routing_key)
-            self.logger.info("{name}: Reset iptables configurations for pgpool ( {pgpool} ) and master ( {master})".
-                             format(name=self.__class__.__name__, pgpool=pgpool, master=master))
-            self.admin_logger.info("{name} at {hostname} with node id {node_id} unblocked master database ( {master}) and pgpool machine {pgpool}.".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id(), master=master, pgpool=pgpool))
-        elif status_1 and not status_2:
-            self.logger.error("{name}: Failed to reset iptables for pgpool ( {pgpool} )".
-                              format(name=self.__class__.__name__, pgpool=pgpool))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine {pgpool}. Please check {hostname}.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), pgpool=pgpool))
-        elif not status_1 and status_2:
-            self.logger.error("{name}: Failed to reset iptables for master( {master} )".
-                              format(name=self.__class__.__name__, master=master))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master}). Please check {hostname}.".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), master=master))
-        else:
-            self.logger.error("{name}: Failed to reset iptable for master( {master} ) and pgpool ( {pgpool} )".
-                              format(name=self.__class__.__name__, master=master, pgpool=pgpool))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master}) and pgpool machine {pgpool}. Please check {hostname}".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id(), master=master, pgpool=pgpool))
+        rtn = False
+        status1 = self.connect_master(reply_to_master=False)
+        status2 = self.connect_pgpool(reply_to_master=False)
+        if status1 and status2:
+            reply_to_conductor.acknowledgement_reset_players(self.node_id, self.connection, self.exchange, self.routing_key)
+            rtn = True
+        return rtn
 
     def register_player(self):
         '''
         register player to conductor
         '''
-        self.logger.info("{name}: Register {name} to conductor".format(name=self.__class__.__name__))
-        if self.node_id is not None:
+        rtn = False
+        if self.node_id:
             reply_to_conductor.register_player(self.node_id, self.connection, self.exchange, self.routing_key)
-            self.logger.info("{name}: Register {hostname} as node_id ({node_id})".
-                             format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
-            self.admin_logger.info("{name} at {hostname} with node id {node_id} registered to conductor.".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id()))
+            rtn = True
+            logger.debug("Register as node_id ({node_id})".format(node_id=self.node_id))
+            admin_logger.debug("{name} at {hostname} with node id {node_id} registered to conductor.".
+                               format(name=self.__class__.__name__, hostname=self.hostname,
+                                      node_id=self.node_id))
         else:
             # log errors
-            self.logger.error("{name}: {hostname} has no node_id".
-                              format(name=self.__class__.__name__, hostname=self.hostname))
-            self.admin_logger.critical("{name} at {hostname} with node id {node_id} failed to register to conductor. Please check {hostname}".
-                                       format(name=self.__class__.__name__, hostname=self._hostname(),
-                                              node_id=self._node_id()))
+            logger.error("{hostname} has no node_id".format(hostname=self.hostname))
+            admin_logger.error("{name} at {hostname} with node id {node_id} failed to register to conductor. Please check {hostname}".
+                               format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
+        return rtn
 
 
 @celery.task(name=Constants.PLAYER_TASK, ignore_result=True)
@@ -294,4 +218,10 @@ def player_task(command, nodes):
     of node_id. Those tasks are executed if and only if membership is true.
     """
     with Player() as player:
-        player.run_command(command, nodes)
+        try:
+            player.run_command(command, nodes)
+        except Exception as e:
+            logger.error("error during executing {command}".format(command=command))
+            logger.error(e)
+            admin_logger.error("error during executing {command}".format(command=command))
+            admin_logger.error(e)

@@ -24,15 +24,13 @@ class SbacIdentityParser(IdentityParser):
         '''
         Returns a list of role/relationship
         '''
-        memberOf = attributes.get('memberOf')
-        tenancy_chain = []
-        if memberOf:
-            tenancy_chain = memberOf[0].split('|')
+        memberOf = attributes.get('memberOf', [])
+        relations = []
+        for chain in memberOf:
+            tenancy_chain = chain.split('|')
             # remove first and last items as they're always blank strings
             tenancy_chain.pop(0)
             tenancy_chain.pop()
-        relations = []
-        for i in range(0, len(tenancy_chain), SbacIdentityParser.CHAIN_ITEMS_COUNT):
-            relations.append(RoleRelation(tenancy_chain[SbacIdentityParser.ROLE_INDEX + i], tenancy_chain[SbacIdentityParser.TENANT_INDEX + i], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX + i],
-                             tenancy_chain[SbacIdentityParser.DISTRICT_GUID_INDEX + i], tenancy_chain[SbacIdentityParser.SCHOOL_GUID_INDEX + i]))
+            relations.append(RoleRelation(tenancy_chain[SbacIdentityParser.ROLE_INDEX], tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
+                             tenancy_chain[SbacIdentityParser.DISTRICT_GUID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_GUID_INDEX]))
         return relations

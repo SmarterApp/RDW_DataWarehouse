@@ -3,12 +3,10 @@ Created on Mar 13, 2014
 
 @author: tosako
 '''
+import logging
+logger = logging.getLogger('edmigrate')
 from edmigrate.utils.constants import Constants
 from kombu import Producer
-import logging
-
-
-logger = logging.getLogger('edmigrate')
 
 
 def register_player(node_id, connection, exchange, routing_key):

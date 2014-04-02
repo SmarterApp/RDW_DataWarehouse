@@ -103,3 +103,18 @@ class ConductorTimeoutException(EdMigrateException):
 class IptablesCommandError(EdMigrateException):
     def __init__(self, msg="iptables command execution error"):
         super().__init__(msg)
+
+
+class IptablesSaveCommandError(EdMigrateException):
+    def __init__(self, msg="iptables-save command execution error"):
+        super().__init__(msg)
+
+
+class NoMasterFoundException(EdMigrateException):
+    def __init__(self, msg="No master found from repl_nodes"):
+        super().__init__(msg)
+
+
+class NoNodeIDFoundException(EdMigrateException):
+    def __init__(self, msg="No id found from repl_nodes"):
+        super().__init__(msg)

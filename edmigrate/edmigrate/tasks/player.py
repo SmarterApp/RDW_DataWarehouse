@@ -96,11 +96,11 @@ class Player(metaclass=Singleton):
                                                                     self.exchange, self.routing_key)
                 rtn = True
                 logger.debug("Unblock pgpool")
-                admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked pgpool machine ( {pgpool}).".
+                admin_logger.debug("{name} at {hostname} with node id {node_id} unblocked pgpool machine.".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
             else:
                 logger.error("Failed to unblock pgpool)")
-                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine ( {pgpool} ).".
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock pgpool machine.".
                                    format(name=self.__class__.__name__, hostname=self.hostname, node_id=self.node_id))
         return rtn
 
@@ -144,7 +144,7 @@ class Player(metaclass=Singleton):
                                           node_id=self.node_id, master=self.master_hostname))
             else:
                 logger.error("Failed to unblock master ( {master} )".format(master=self.master_hostname))
-                admin_logger.errro("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ).".
+                admin_logger.error("{name} at {hostname} with node id {node_id} failed to unblock master database ( {master} ).".
                                    format(name=self.__class__.__name__, hostname=self.hostname,
                                           node_id=self.node_id, master=self.master_hostname))
         return rtn
@@ -164,12 +164,12 @@ class Player(metaclass=Singleton):
                 logger.debug("Block master database ( {master} )".format(master=self.master_hostname))
                 admin_logger.debug("{name} at {hostname} with node id {node_id} blocked master database ( {master}).".
                                    format(name=self.__class__.__name__, hostname=self.hostname,
-                                          node_id=self._node_id(), master=self.master_hostname))
+                                          node_id=self.node_id, master=self.master_hostname))
             else:
-                logger.error("{name}: Failed to block master( {master} )".format(master=self.master_hostname))
+                logger.error("Failed to block master( {master} )".format(master=self.master_hostname))
                 admin_logger.error("{name} at {hostname} with node id {node_id} failed to block master database ( {master} ).".
-                                   format(name=self.__class__.__name__, hostname=self._hostname(),
-                                          node_id=self._node_id(), master=self.master_hostname))
+                                   format(name=self.__class__.__name__, hostname=self.hostname,
+                                          node_id=self.node_id, master=self.master_hostname))
         return rtn
 
     def reset_players(self):

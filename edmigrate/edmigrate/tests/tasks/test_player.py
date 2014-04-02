@@ -173,7 +173,7 @@ class PlayerTaskTest(Unittest_with_repmgr_sqlite):
         MockConductor.return_value = lambda: None
         MockModifyRule.return_value = None
         MockCheckRule.return_value = False
-        MockCheckBlockInput.return_value = False
+        MockCheckBlockInput.return_value = True
         player = Player(self.connection, self.exchange, self.routing_key)
         rtn = player.disconnect_pgpool()
         self.assertTrue(rtn)

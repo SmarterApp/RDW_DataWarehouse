@@ -86,4 +86,4 @@ class IptablesChecker(metaclass=Singleton):
         return self._check_block(host, port)
 
     def check_block_input(self, host, port=5432):
-        return not self._check_block(host, port)
+        return self._check_block(host, port)

@@ -77,6 +77,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('student_rec_id', BigInteger, primary_key=True),
                      Column('batch_guid', String(50), nullable=True),
                      Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
+                     #Column('external_student_id', String(40), nullable=True),  # TODO: Add this field
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
                      Column('last_name', String(256), nullable=False),
@@ -88,7 +89,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('email', String(256), nullable=True),
                      Column('dob', String(8), nullable=False),
                      Column('section_guid', String(50), nullable=False),
-                     Column('grade', String(10), nullable=False),
+                     Column('grade', String(10), nullable=False),  # TODO: Delete this field
                      Column('state_code', String(2), nullable=False),
                      Column('district_guid', String(50), nullable=False),
                      Column('school_guid', String(50), nullable=False),
@@ -189,7 +190,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),
                                Column('school_guid', String(50), nullable=False),
-                               Column('section_guid', String(50), nullable=False),
+                               Column('section_guid', String(50), nullable=False),  # TODO: Delete this field
                                Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
                                Column('section_rec_id', BigInteger, nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided

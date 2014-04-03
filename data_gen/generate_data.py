@@ -16,15 +16,12 @@ import datetime
 import os
 import random
 
-from mongoengine import connect
-from pymongo import Connection
-
 import data_generation.config.enrollment as enroll_config
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
 import data_generation.util.hiearchy as hier_util
-import data_generation.writers.csv as csv_writer
-import data_generation.writers.json as json_writer
+import data_generation.writers.writecsv as csv_writer
+import data_generation.writers.writejson as json_writer
 import sbac_data_generation.config.cfg as sbac_in_config
 import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
@@ -502,11 +499,6 @@ if __name__ == '__main__':
     if not os.path.exists(OUT_PATH_ROOT):
         os.makedirs(OUT_PATH_ROOT)
 
-    # Connect to MongoDB and drop an existing datagen database
-    #c = Connection()
-    #if 'datagen' in c.database_names():
-    #    c.drop_database('datagen')
-
     # Clean output directory
     for file in os.listdir(OUT_PATH_ROOT):
         file_path = os.path.join(OUT_PATH_ROOT, file)
@@ -518,9 +510,6 @@ if __name__ == '__main__':
 
     # Create the ID generator
     idg = IDGen()
-
-    # Connect to MongoDB, datagen database
-    #connect('datagen')
 
     # Prepare the output files
     prepare_output_files()

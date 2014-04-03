@@ -20,9 +20,6 @@ import os
 import random
 import traceback
 
-from mongoengine import connect
-from pymongo import Connection
-
 import generate_data as generate_data
 import sbac_data_generation.config.cfg as sbac_in_config
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
@@ -157,11 +154,6 @@ if __name__ == '__main__':
     if not os.path.exists(generate_data.OUT_PATH_ROOT):
         os.makedirs(generate_data.OUT_PATH_ROOT)
 
-    # Connect to MongoDB and drop an existing datagen database
-    #c = Connection()
-    #if 'datagen' in c.database_names():
-    #    c.drop_database('datagen')
-
     # Clean output directory
     for file in os.listdir(generate_data.OUT_PATH_ROOT):
         file_path = os.path.join(generate_data.OUT_PATH_ROOT, file)
@@ -176,9 +168,6 @@ if __name__ == '__main__':
     lock = manager.Lock()
     mdict = manager.dict()
     idg = IDGen(lock, mdict)
-
-    # Connect to MongoDB, datagen database
-    #connect('datagen')
 
     # Prepare the output files
     generate_data.prepare_output_files()

@@ -1,5 +1,3 @@
-from mock import MagicMock, call
-
 __author__ = 'tshewchuk'
 
 """
@@ -7,6 +5,7 @@ This module contains unit tests for the functions in the row_data_processor modu
 """
 
 import unittest
+from unittest.mock import MagicMock, call
 
 from edextract.student_reg_extract_processors.row_data_processor import RowDataProcessor
 

@@ -34,10 +34,13 @@ class TestUDLReportingIntegration(unittest.TestCase):
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
+        self.sr_tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_2/filedrop'
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome'
+        self.sr_table = 'student_reg'
         self.here = os.path.dirname(__file__)
         self.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
+        self.sr_data_dir = os.path.join(self.here, "data", "udl_to_sr_reporting_e2e_integration")
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
@@ -77,17 +80,36 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.validate_UDL_database(self.expected_unique_batch_guids)
         print("Completed validate_UDL_database")
         self.migrate_data()
+        self.validate_migration('cat', (self.fact_table, self.expected_rows),
+                                (self.dim_table, self.expected_unique_batch_guids))
 
-    def migrate_data(self):
+    @unittest.skip('In development')
+    def test_validation_student_registration(self):
+        print('Running UDL Integration tests for student registration data')
+        self.empty_table()
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
+        self.validate_UDL_database(1)
+        self.migrate_data()
+        self.validate_migration('cat', (self.sr_table, 10))
+
+    def migrate_data(self, tenant='cat'):
         print("Migration starting:")
-        start_migrate()
-        tenant = 'cat'
+        start_migrate(tenant)
         results = get_stats_table_has_migrated_ingested_status(tenant)
         for result in results:
             self.assertEqual(result['load_status'], 'migrate.ingested')
         print("Migration finished")
-        self.assertEqual(get_prod_table_count(tenant, 'fact_asmt_outcome'), 957)
-        self.assertEqual(get_prod_table_count(tenant, 'dim_asmt'), 30)
+
+    def validate_migration(self, tenant, *args):
+        """
+        Validates that the migration was successful by checking the prod tables
+        param tenant: the tenant to check (string)
+        param args: list of tuples
+        First argument in any tuple is the table to check (string)
+        Second argument in any tuple is the expected row count of the table (integer)
+        """
+        for arg in args:
+            self.assertEqual(get_prod_table_count(tenant, arg[0]), arg[1])
 
     def empty_table(self):
         '''
@@ -137,6 +159,22 @@ class TestUDLReportingIntegration(unittest.TestCase):
         subprocess.call(command, shell=True)
         # Validate the job status
         #self.check_job_completion(self.connector)
+
+    def run_udl_pipeline_on_single_file(self, file_path):
+        """
+        Run pipeline with given file
+        """
+        print("Entered run_udl_pipeline")
+        self.conf = udl2_conf
+        # copy and set file path to tenant directory that includes the gpg file
+        arch_file = self.copy_file_to_sr_tenant_dir(file_path)
+        here = os.path.dirname(__file__)
+        driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
+        # Set the command to run UDL pipeline
+        command = "python {driver_path} -a {file_path}".format(driver_path=driver_path, file_path=arch_file)
+        print(command)
+        # Run the UDL pipeline using the command
+        subprocess.call(command, shell=True)
 
     def validate_UDL_database(self, expected_unique_batch_guids, max_wait=400):
         '''
@@ -192,6 +230,21 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # Copy all the files from tests/data directory to tenant directory
         for file in all_files:
             files = shutil.copy2(file, self.tenant_dir)
+
+    def copy_file_to_sr_tenant_dir(self, file_path):
+        '''
+        Copies the gpg files from  edudl2/tests/data/udl_to_sr_reporting_e2e_integration to the tenant directory
+        :param file_path: file path containing gpg file
+        :type file_path: string
+        '''
+        # Create a tenant directory if does not exist already
+        if os.path.exists(self.sr_tenant_dir):
+            print("Tenant directory already exists")
+        else:
+            os.makedirs(self.sr_tenant_dir)
+            print(self.sr_tenant_dir)
+        # Copy all the files from tests/data directory to tenant directory
+        return shutil.copy2(file_path, self.sr_tenant_dir)
 
     def check_job_completion(self, connector, max_wait=600):
         '''

@@ -602,7 +602,7 @@ test:
           schema_name: edware_sds_1_16_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
-          schema_name: edware_sds_1_16fish
+          schema_name: edware_sds_1_16_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:

@@ -13,10 +13,11 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 
 class Unittest_with_edcore_sqlite(Unittest_with_sqlite):
     @classmethod
-    def setUpClass(cls, datasource_name=None, metadata=None, resources_dir=None):
+    def setUpClass(cls, datasource_name=None, metadata=None, resources_dir=None, use_metadata_from_db=True):
         if datasource_name is None:
             datasource_name = EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name())
-        super().setUpClass(datasource_name=datasource_name, metadata=metadata, resources_dir=resources_dir)
+        super().setUpClass(datasource_name=datasource_name, metadata=metadata,
+                           resources_dir=resources_dir, use_metadata_from_db=use_metadata_from_db)
 
     @classmethod
     def tearDownClass(cls):

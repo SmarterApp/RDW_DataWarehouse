@@ -214,7 +214,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     :returns number of record updated
     '''
     dest_table = dest_connector.get_table(table_name)
-    natural_keys = get_natural_key_columns(source_connector.get_table(table_name))
+    natural_keys = get_natural_key_columns(dest_table)
     # the deactivate flag is needed to avoid the record deactivation query path in unit tests
     # this part is tested as part of function tests
     if deactivate and natural_keys is not None:

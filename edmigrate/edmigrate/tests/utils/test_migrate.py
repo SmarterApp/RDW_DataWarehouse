@@ -27,7 +27,8 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
 
     @classmethod
     def setUpClass(cls):
-        Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestMigrate.test_tenant))
+        Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestMigrate.test_tenant),
+                                               use_metadata_from_db=False)
         Unittest_with_preprod_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 
@@ -36,10 +37,8 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
 
     def test_migrate_getting_natural_key(self):
         with EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name()) as prod_conn:
-            prod_conn.set_metadata_by_generate(schema_name='test123', metadata_func=generate_ed_metadata)
-            tables_expected_from_schema = ['test123.custom_metadata', 'test123.dim_inst_hier', 'test123.student_reg',
-                                           'test123.fact_asmt_outcome', 'test123.dim_section', 'test123.dim_asmt',
-                                           'test123.dim_student']
+            tables_expected_from_schema = ['custom_metadata', 'dim_inst_hier', 'student_reg',
+                                           'fact_asmt_outcome', 'dim_section', 'dim_asmt', 'dim_student']
             self.assertEquals(set(prod_conn.get_metadata().tables.keys()), set(tables_expected_from_schema))
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student')), ['student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_asmt')), ['asmt_guid'])

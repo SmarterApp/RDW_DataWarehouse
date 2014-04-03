@@ -10,7 +10,7 @@ import json
 from edextract.utils.csv_writer import write_csv
 from edextract.utils.json_formatter import format_json
 from edextract.status.constants import Constants
-from edextract.tasks.constants import Constants as TaskConstants
+from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 import logging
@@ -28,7 +28,7 @@ def generate_csv(tenant, output_file, task_info, extract_args):
     @param extract_args: Arguments specific to generate_csv
     """
 
-    query = extract_args[TaskConstants.TASK_QUERY]
+    query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     with EdCoreDBConnection(tenant=tenant) as connection:
         results = connection.get_streaming_result(query)  # this result is a generator
         header, data = _generate_csv_data(results)
@@ -46,7 +46,7 @@ def generate_json(tenant, output_file, task_info, extract_args):
     @param extract_args: Arguments specific to generate_json
     """
 
-    query = extract_args[TaskConstants.TASK_QUERY]
+    query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
 
     with EdCoreDBConnection(tenant=tenant) as connection, open(output_file, 'w') as json_file:
         results = connection.get_result(query)

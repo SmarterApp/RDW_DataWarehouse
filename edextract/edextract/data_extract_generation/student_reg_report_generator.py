@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.constants import Constants
-from edextract.tasks.constants import Constants as TaskConstants
+from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.student_reg_extract_processors.row_data_processor import RowDataProcessor
@@ -40,8 +40,8 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     """
 
     academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
-    academic_year_query = extract_args[TaskConstants.TASK_ACADEMIC_YEAR_QUERY]
-    match_id_query = extract_args[TaskConstants.TASK_MATCH_ID_QUERY]
+    academic_year_query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
+    match_id_query = extract_args[TaskConstants.TASK_QUERIES][QueryType.MATCH_ID_QUERY]
 
     headers = extract_args[TaskConstants.CSV_HEADERS]
 

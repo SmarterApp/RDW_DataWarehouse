@@ -13,7 +13,7 @@ from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sq
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report
 from edextract.status.constants import Constants
-from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 
 
 class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -85,13 +85,12 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
                       'FROM student_reg cr inner join student_reg p on cr.student_guid = p.student_guid WHERE cr.academic_year == {current_year} AND p.academic_year == {previous_year}'\
             .format(current_year=current_year, previous_year=previous_year)
         headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
-            else self.completion_headers
+            else self.completion_headers()
         extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,
                         TaskConstants.TASK_TASK_ID: 'task_id',
                         TaskConstants.ACADEMIC_YEAR: academic_year,
                         TaskConstants.TASK_FILE_NAME: output,
-                        TaskConstants.TASK_ACADEMIC_YEAR_QUERY: academic_year_query,
-                        TaskConstants.TASK_MATCH_ID_QUERY: match_query,
+                        TaskConstants.TASK_QUERIES: {QueryType.QUERY: academic_year_query, QueryType.MATCH_ID_QUERY: match_query},
                         TaskConstants.CSV_HEADERS: headers
                         }
 
@@ -110,3 +109,10 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
                               'AY{current_year} Matched IDs Percent of AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year)]
 
         return statistics_headers
+
+    def completion_headers(self):
+        completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
+                              'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
+                              'Count of Students Assessed', 'Percent of Students Assessed']
+
+        return completion_headers

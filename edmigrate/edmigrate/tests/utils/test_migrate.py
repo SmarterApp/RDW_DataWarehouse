@@ -100,7 +100,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     def test_migrate_batch(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
-                 UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False, Constants.TARGET_SCHEMA: None}
+                 UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False}
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
 

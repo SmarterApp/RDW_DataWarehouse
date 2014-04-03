@@ -12,7 +12,6 @@ from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.utils import drop_schema
 from edschema.metadata.util import get_natural_key_columns
 from edschema.metadata.ed_metadata import generate_ed_metadata
-from edmigrate.edmigrate_celery import conf
 
 __author__ = 'sravi'
 TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
@@ -215,7 +214,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     :returns number of record updated
     '''
     dest_table = dest_connector.get_table(table_name)
-    natural_keys = get_natural_key_columns(dest_table)
+    natural_keys = get_natural_key_columns(source_connector.get_table(table_name))
     # the deactivate flag is needed to avoid the record deactivation query path in unit tests
     # this part is tested as part of function tests
     if deactivate and natural_keys is not None:
@@ -265,11 +264,7 @@ def migrate_batch(batch):
         try:
             # start transaction for this batch
             trans = dest_connector.get_transaction()
-            target_schema_key = dest_connector.get_db_config_prefix(tenant) + Constants.SCHEMA_NAME
-            # override target schema needed for unit tests
-            target_schema_name = batch[Constants.TARGET_SCHEMA] if Constants.TARGET_SCHEMA in batch else conf[target_schema_key]
             source_connector.set_metadata_by_generate(schema_name=schema_name, metadata_func=generate_ed_metadata)
-            dest_connector.set_metadata_by_generate(schema_name=target_schema_name, metadata_func=generate_ed_metadata)
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
             tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, batch_guid)
             # migrate all tables

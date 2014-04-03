@@ -11,10 +11,6 @@ import types
 
 class TestEdMetadata(Unittest_with_sqlite):
 
-    def test_number_of_tables(self):
-        # check number of tables
-        self.assertEqual(7, len(self.get_Metadata().tables), "Number of table does not match")
-
     # Test dim_district data
     def test_dim_inst_hier_type(self):
         self.assertTrue('dim_inst_hier' in self.get_Metadata().tables, "missing dim_inst_hier")

@@ -28,11 +28,11 @@ class TestTotalTracker(unittest.TestCase):
             state_guid = row['state_code']
             district_guid = row['district_guid']
             school_guid = row['school_guid']
-            self.total_tracker.track(state_guid, row)
-            self.total_tracker.track(district_guid, row)
-            self.total_tracker.track(school_guid, row)
+            self.total_tracker.track_academic_year(state_guid, row)
+            self.total_tracker.track_academic_year(district_guid, row)
+            self.total_tracker.track_academic_year(school_guid, row)
 
-        sorted_keys = sorted(self.total_tracker._map.keys())
+        sorted_keys = sorted(self.total_tracker._data_counter.map.keys())
         self.assertEquals(['NJ', 'district1', 'district2', 'school1', 'school2', 'school3', 'school4', 'school5'], sorted_keys)
 
         self.assertEquals(2, len(self.total_tracker.get_map_entry('NJ')))
@@ -60,8 +60,3 @@ class TestTotalTracker(unittest.TestCase):
         self.assertEquals(1, self.total_tracker.get_map_entry('school4')[2014])
         self.assertNotIn(2013, self.total_tracker.get_map_entry('school5'))
         self.assertEquals(1, self.total_tracker.get_map_entry('school5')[2014])
-
-    def test_should_increment(self):
-        row = {}
-
-        self.assertTrue(self.total_tracker.should_increment(row))

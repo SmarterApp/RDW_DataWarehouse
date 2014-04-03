@@ -3,12 +3,15 @@ __author__ = 'npandey'
 
 class AttributeFieldConstants():
 
+    ACADEMIC_YEAR = 'academic_year'
     STATE_NAME = 'state_name'
     DISTRICT_NAME = 'district_name'
     SCHOOL_NAME = 'school_name'
     STATE_CODE = 'state_code'
     DISTRICT_GUID = 'district_guid'
+    PREV_DISTRICT_GUID = 'prev_district_guid'
     SCHOOL_GUID = 'school_guid'
+    PREV_SCHOOL_GUID = 'prev_school_guid'
     GENDER = 'gender'
     HISPANIC_ETH = 'dmg_eth_hsp'
     AMERICAN_INDIAN = 'dmg_eth_ami'

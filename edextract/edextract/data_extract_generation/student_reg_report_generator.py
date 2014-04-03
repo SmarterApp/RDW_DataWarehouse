@@ -8,23 +8,11 @@ from collections import OrderedDict
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.constants import Constants
-from edextract.tasks.constants import Constants as TaskConstants
+from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
-from edextract.trackers.total_tracker import TotalTracker
-from edextract.student_reg_extract_processors.row_data_processor import process_row_data
+from edextract.student_reg_extract_processors.row_data_processor import RowDataProcessor
 from edextract.trackers.tracker_results_helper import get_tracker_results
-from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
-from edextract.student_reg_extract_processors.district_data_processor import DistrictDataProcessor
-from edextract.student_reg_extract_processors.school_data_processor import SchoolDataProcessor
-from edextract.trackers.gender_tracker import FemaleTracker, MaleTracker
-from edextract.trackers.race_tracker import HispanicLatinoTracker, AmericanIndianTracker, AsianTracker, \
-    AfricanAmericanTracker, PacificIslanderTracker, WhiteTracker, MultiRaceTracker
-from edextract.trackers.program_tracker import (IDEAIndicatorTracker, LEPStatusTracker, Sec504StatusTracker,
-                                                EconDisadvStatusTracker, MigrantStatusTracker)
-from edextract.trackers.grade_tracker import (GradeKTracker, Grade1Tracker, Grade2Tracker, Grade3Tracker, Grade4Tracker,
-                                              Grade5Tracker, Grade6Tracker, Grade7Tracker, Grade8Tracker, Grade9Tracker,
-                                              Grade10Tracker, Grade11Tracker, Grade12Tracker)
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):
@@ -40,19 +28,6 @@ def generate_statistics_report(tenant, output_file, task_info, extract_args):
     _generate_report(tenant, output_file, task_info, extract_args, _generate_statistics_report_data)
 
 
-def generate_completion_report(tenant, output_file, task_info, extract_args):
-    """
-    Run generate_report with the arguments, directing it to call generate_completion_report_data.
-
-    @param tenant: Requestor's tenant ID
-    @param output_file: File pathname of extract file
-    @param task_info: Task information for recording stats
-    @param extract_args: Arguments specific to generate_completion_report_data
-    """
-
-    _generate_report(tenant, output_file, task_info, extract_args, _generate_completion_report_data)
-
-
 def _generate_report(tenant, output_file, task_info, extract_args, data_extract_func):
     """
     Generate the student registration statistics report CSV file.
@@ -65,17 +40,18 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     """
 
     academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
-    query = extract_args[TaskConstants.TASK_QUERY]
+    academic_year_query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
+    match_id_query = extract_args[TaskConstants.TASK_QUERIES][QueryType.MATCH_ID_QUERY]
 
     headers = extract_args[TaskConstants.CSV_HEADERS]
 
-    data = data_extract_func(tenant, academic_year, query)
+    data = data_extract_func(tenant, academic_year, academic_year_query, match_id_query)
     write_csv(output_file, headers, data)
 
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def _generate_statistics_report_data(tenant, academic_year, query):
+def _generate_statistics_report_data(tenant, academic_year, academic_year_query, match_id_query):
     """
     Get all the tenant's student registration data for the academic year.
 
@@ -86,29 +62,19 @@ def _generate_statistics_report_data(tenant, academic_year, query):
     @return: List of rows to be included in the CSV report.
     """
 
+    row_data_processor = RowDataProcessor()
+
     with EdCoreDBConnection(tenant=tenant) as connection:
-        results = connection.get_streaming_result(query)  # This result is a generator
+        academic_year_results = connection.get_streaming_result(academic_year_query)  # This result is a generator
+        row_data_processor.process_yearly_row_data(academic_year_results)
 
-        data = _get_sr_stat_tenant_data_for_academic_year(results, academic_year)
+        match_id_results = connection.get_streaming_result(match_id_query)
+        row_data_processor.process_matched_ids_row_data(match_id_results)
 
-    return data
-
-
-def _generate_completion_report_data(tenant, academic_year, query):
-    """
-    This method generates the data for the student registration completion report.
-
-    @param tenant: Requestor's tenant ID
-    @param academic_year: Academic year of report
-    @param query: DB query to extract rows
-
-    @return: Report data
-    """
-
-    return []
+    return _get_sr_stat_tenant_data_for_academic_year(row_data_processor, academic_year)
 
 
-def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
+def _get_sr_stat_tenant_data_for_academic_year(row_data_processor, academic_year):
     """
     Get all the tenant's student registration data for the academic year.
 
@@ -118,20 +84,8 @@ def _get_sr_stat_tenant_data_for_academic_year(db_rows, academic_year):
     @return: List of rows to be included in the CSV report.
     """
 
-    total_tracker = TotalTracker()
-    trackers = [total_tracker, MaleTracker(), FemaleTracker(), HispanicLatinoTracker(), AmericanIndianTracker(),
-                AsianTracker(), AfricanAmericanTracker(), PacificIslanderTracker(), WhiteTracker(), MultiRaceTracker(),
-                IDEAIndicatorTracker(), LEPStatusTracker(), Sec504StatusTracker(), EconDisadvStatusTracker(),
-                MigrantStatusTracker(), GradeKTracker(), Grade1Tracker(), Grade2Tracker(), Grade3Tracker(),
-                Grade4Tracker(), Grade5Tracker(), Grade6Tracker(), Grade7Tracker(), Grade8Tracker(), Grade9Tracker(),
-                Grade10Tracker(), Grade11Tracker(), Grade12Tracker()]
-
-    data_processors = [StateDataProcessor(trackers), DistrictDataProcessor(trackers), SchoolDataProcessor(trackers)]
-
-    process_row_data(db_rows, data_processors)
-
     report_map = OrderedDict()
-    for data_processor in data_processors:
+    for data_processor in row_data_processor.data_processors:
         report_map.update(sorted(data_processor.get_ed_org_hierarchy().items()))
 
-    return get_tracker_results(report_map, total_tracker, trackers, academic_year)
+    return get_tracker_results(report_map, row_data_processor.total_tracker, row_data_processor.trackers, academic_year)

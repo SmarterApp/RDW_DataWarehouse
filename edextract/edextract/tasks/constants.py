@@ -17,7 +17,7 @@ class Constants():
     TASK_TASK_ID = 'task_id'
     CELERY_TASK_ID = 'celery_task_id'
     TASK_FILE_NAME = 'file_name'
-    TASK_QUERY = 'query'
+    TASK_QUERIES = 'task_queries'
     CSV_HEADERS = 'csv_headers'
     DEFAULT_QUEUE_NAME = 'extract'
     SYNC_QUEUE_NAME = 'extract_sync'
@@ -26,3 +26,8 @@ class Constants():
     STATE_CODE = 'state_code'
     ACADEMIC_YEAR = 'academicYear'
     EXTRACTION_DATA_TYPE = 'extraction_data_type'
+
+
+class QueryType():
+    QUERY = 'query'
+    MATCH_ID_QUERY = 'match_id_query'

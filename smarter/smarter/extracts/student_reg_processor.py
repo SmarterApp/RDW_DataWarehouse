@@ -12,12 +12,12 @@ from datetime import datetime
 from pyramid.threadlocal import get_current_registry
 
 from smarter.extracts.constants import Constants as Extract, ExtractType, ReportType
-from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
 from edextract.tasks.extract import start_extract
 from edextract.status.status import create_new_entry
 from smarter.extracts import processor
-from smarter.extracts.student_reg_statistics import get_headers, get_query
+from smarter.extracts.student_reg_statistics import get_headers, get_academic_year_query, get_match_id_query
 
 
 log = logging.getLogger('smarter')
@@ -65,12 +65,14 @@ def process_async_extraction_request(params):
 
 
 def _create_task_info(request_id, user, tenant, extract_params):
-    query = get_query(extract_params[TaskConstants.ACADEMIC_YEAR], extract_params[TaskConstants.STATE_CODE])
+    academic_year_query = get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR], extract_params[TaskConstants.STATE_CODE])
+    match_id_query = get_match_id_query(extract_params[TaskConstants.ACADEMIC_YEAR], extract_params[TaskConstants.STATE_CODE])
 
     task_info = {TaskConstants.TASK_TASK_ID: create_new_entry(user, request_id, extract_params),
                  TaskConstants.TASK_FILE_NAME: _get_extract_file_path(request_id, tenant, extract_params),
                  TaskConstants.CSV_HEADERS: get_headers(extract_params.get(TaskConstants.ACADEMIC_YEAR)),
-                 TaskConstants.TASK_QUERY: compile_query_to_sql_text(query)}
+                 TaskConstants.TASK_QUERIES: {QueryType.QUERY: compile_query_to_sql_text(academic_year_query),
+                                              QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}}
     task_info.update(extract_params)
 
     return task_info

@@ -29,6 +29,14 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.data_processor._call_trackers('789', self.data)
         self.tracker.track.assert_called_with('789', self.data, None)
 
+    def test_call_matched_trackers(self):
+        self.data_processor._call_trackers('123', self.data, 'matched_ids')
+        self.tracker.track.assert_called_with('123', self.data, 'matched_ids')
+        self.data_processor._call_trackers('456', self.data, 'matched_ids')
+        self.tracker.track.assert_called_with('456', self.data, 'matched_ids')
+        self.data_processor._call_trackers('789', self.data, 'matched_ids')
+        self.tracker.track.assert_called_with('789', self.data, 'matched_ids')
+
     def test_add_to_and_get_ed_org_hierarchy(self):
         self.data_processor._add_to_edorg_hierarchy('123', 'NC')
         self.data_processor._add_to_edorg_hierarchy('456', 'NC', 'Gilfford')

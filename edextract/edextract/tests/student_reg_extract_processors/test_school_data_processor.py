@@ -43,10 +43,10 @@ class TestSchoolDataProcessor(unittest.TestCase):
 
     def test__should_call_trackers(self):
         same_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '5f706ksg80hhxs'}
-        result = self.school_data_processor._should_call_trackers(same_school)
+        result = self.school_data_processor._is_matched_school(same_school)
         self.assertTrue(result)
 
     def test__should_not_call_trackers(self):
         different_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '6g817lsg80hhxs'}
-        result = self.school_data_processor._should_call_trackers(different_school)
+        result = self.school_data_processor._is_matched_school(different_school)
         self.assertFalse(result)

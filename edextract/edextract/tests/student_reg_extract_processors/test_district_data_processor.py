@@ -46,10 +46,10 @@ class TestDistrictDataProcessor(unittest.TestCase):
 
     def test__should_call_trackers(self):
         same_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'GUILFORD_GUID'}
-        result = self.district_data_processor._should_call_trackers(same_districts)
+        result = self.district_data_processor._is_matched_district(same_districts)
         self.assertTrue(result)
 
     def test__should_not_call_trackers(self):
         different_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'NOTGUILFORDGUID'}
-        result = self.district_data_processor._should_call_trackers(different_districts)
+        result = self.district_data_processor._is_matched_district(different_districts)
         self.assertFalse(result)

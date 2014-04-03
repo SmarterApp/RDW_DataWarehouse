@@ -6,7 +6,7 @@ from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 
-log = logging.getLogger('pre_etl')
+logger = logging.getLogger('pre_etl')
 
 
 def pre_etl_job(udl2_conf, load_type='Unknown', batch_guid_forced=None):

@@ -91,17 +91,6 @@ class Test(unittest.TestCase):
         self.assertTrue(player_tracker.is_pgpool_connected(112))
         self.assertFalse(player_tracker.is_pgpool_connected(115))
 
-    def test_ACK_COMMAND_RESET_PLAYERS(self):
-        reply_to_conductor.register_player(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.register_player(115, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        reply_to_conductor.acknowledgement_reset_players(112, self.__connection, conductor.exchange, Constants.CONDUCTOR_ROUTING_KEY)
-        time.sleep(2)
-        player_tracker = PlayerTracker()
-        self.assertTrue(player_tracker.is_pgpool_connected(112))
-        self.assertFalse(player_tracker.is_pgpool_connected(115))
-        self.assertTrue(player_tracker.is_replication_started(112))
-        self.assertFalse(player_tracker.is_replication_started(115))
-
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.test_ACK_COMMAND_FIND_PLAYER']

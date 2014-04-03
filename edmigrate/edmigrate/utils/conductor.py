@@ -53,6 +53,8 @@ class Conductor:
         if group_ids:
             player_task.apply_async((Constants.COMMAND_RESET_PLAYERS, group_ids), exchange=self.__broadcast_queue)  # @UndefinedVariable
             self.__log(Constants.COMMAND_RESET_PLAYERS, None, group_ids)
+            for my_id in group_ids:
+                self.__player_trakcer.reset_player(my_id)
         else:
             logger.debug('Command[' + Constants.COMMAND_RESET_PLAYERS + '] was not sent because there is no registered players')
 

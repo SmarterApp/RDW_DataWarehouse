@@ -16,8 +16,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore
                                                             get_unittest_tenant_name)
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json, _generate_csv_data
 from edextract.status.constants import Constants
-from edextract.tasks.constants import Constants as TaskConstants
-from unittest.mock import MagicMock
+from edextract.tasks.constants import Constants as TaskConstants, QueryType
 
 
 class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -43,7 +42,7 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {TaskConstants.TASK_QUERY: query}
+        extract_args = {TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}}
         generate_csv(self._tenant, output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         csv_data = []
@@ -64,7 +63,7 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
                      Constants.REQUEST_GUID: '03'}
-        extract_args = {TaskConstants.TASK_QUERY: query}
+        extract_args = {TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}}
         generate_json(self._tenant, output, task_info, extract_args)
         self.assertTrue(os.path.exists(output))
         with open(output) as out:

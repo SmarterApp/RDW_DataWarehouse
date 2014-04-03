@@ -27,7 +27,7 @@ class CategoryTracker(metaclass=ABCMeta):
         """
         key = key if key else row[AttributeFieldConstants.ACADEMIC_YEAR]
         should_increment = self._should_increment_matched_ids(row) if key == DataCounter.MATCHED_IDS \
-            else self._should_increment_year(row)
+            else self._should_increment(row)
         if should_increment:
             self._data_counter.increment(guid, key)
 
@@ -64,10 +64,10 @@ class CategoryTracker(metaclass=ABCMeta):
         """
 
         ids_match = True if self._field is None else row[self._field] == row['prev_' + self._field]
-        return self._should_increment_year(row) and ids_match
+        return ids_match and self._should_increment(row)
 
     @abstractmethod
-    def _should_increment_year(self, row):
+    def _should_increment(self, row):
         """
         Determine if internal totals map should be updated for a row.
 

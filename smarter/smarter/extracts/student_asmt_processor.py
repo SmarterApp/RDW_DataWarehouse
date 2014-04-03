@@ -14,7 +14,7 @@ import copy
 from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
-from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 
 __author__ = 'ablum'
 
@@ -205,7 +205,7 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
     '''
     task = {}
     task[TaskConstants.TASK_TASK_ID] = create_new_entry(user, request_id, params)
-    task[TaskConstants.TASK_QUERY] = compile_query_to_sql_text(query)
+    task[TaskConstants.TASK_QUERIES] = {QueryType.QUERY: compile_query_to_sql_text(query)}
     if asmt_metadata:
         task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
         task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_JSON

@@ -13,5 +13,5 @@ class TotalTracker(CategoryTracker):
     def __init__(self):
         super().__init__(CategoryNameConstants.TOTAL, CategoryValueConstants.TOTAL)
 
-    def _should_increment_year(self, row):
+    def _should_increment(self, row):
         return True

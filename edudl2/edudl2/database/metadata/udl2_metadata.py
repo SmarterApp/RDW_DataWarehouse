@@ -94,7 +94,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('prim_disability_type', String(256), nullable=True),
                              Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                              )
-    Index('STG_SBAC_STU_REG_guid_batchx', stg_sbac_stu_reg.c.guid_batch, unique=False)
+    Index('stg_sbac_stu_reg_guid_batchx', stg_sbac_stu_reg.c.guid_batch, unique=False)
 
     stg_sbac_asmt_outcome = Table('stg_sbac_asmt_outcome', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
@@ -352,7 +352,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('prim_disability_type', String(3), nullable=True,),
                              Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                              )
-    Index('INT_SBAC_STU_REG_guid_batchx', int_sbac_stu_reg.c.guid_batch, unique=False)
+    Index('int_sbac_stu_reg_guid_batchx', int_sbac_stu_reg.c.guid_batch, unique=False)
 
     int_sbac_stu_reg_meta = Table('int_sbac_stu_reg_meta', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),

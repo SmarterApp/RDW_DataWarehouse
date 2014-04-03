@@ -26,7 +26,7 @@ from sqlalchemy.types import Text
 __all__ = []
 __version__ = 0.1
 __date__ = '2013-02-02'
-__updated__ = '2013-02-02'
+__updated__ = '2014-04-03'
 
 
 def generate_ed_metadata(schema_name=None, bind=None):
@@ -99,6 +99,28 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     Index('dim_student_pk', students.c.student_rec_id, unique=True)
     Index('dim_student_idx', students.c.student_guid, unique=False)
+
+    student_demographics = Table('dim_student_demographics', metadata,
+                                 Column('student_demographic_rec_id', BigInteger, primary_key=True),
+                                 Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
+                                 Column('dmg_eth_hsp', Boolean, nullable=True),
+                                 Column('dmg_eth_ami', Boolean, nullable=True),
+                                 Column('dmg_eth_asn', Boolean, nullable=True),
+                                 Column('dmg_eth_blk', Boolean, nullable=True),
+                                 Column('dmg_eth_pcf', Boolean, nullable=True),
+                                 Column('dmg_eth_wht', Boolean, nullable=True),
+                                 Column('dmg_prg_iep', Boolean, nullable=True),
+                                 Column('dmg_prg_lep', Boolean, nullable=True),
+                                 Column('dmg_prg_504', Boolean, nullable=True),
+                                 Column('dmg_prg_tt1', Boolean, nullable=True),
+                                 Column('dmg_eth_derived', SmallInteger, nullable=True),
+                                 Column('rec_status', String(2), nullable=False),
+                                 Column('from_date', String(8), nullable=False),
+                                 Column('to_date', String(8), nullable=True),
+                                 Column('batch_guid', String(50), nullable=True),
+                                 )
+
+    Index('dim_student_demographics_idx', student_demographics.c.student_guid, unique=False)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
@@ -245,6 +267,63 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_tt1', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_tt1, unique=False)
     Index('fact_asmt_outcome_iep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_iep, unique=False)
     Index('fact_asmt_outcome_gender', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.gender, unique=False)
+
+    assessment_outcome_primary = Table('fact_asmt_outcome_primary', metadata,
+                                       Column('asmnt_outcome_primary_rec_id', BigInteger, primary_key=True),
+                                       Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
+                                       Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
+                                       Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
+                                       Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
+                                       Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
+                                       Column('where_taken_id', String(50), nullable=True),  # external id if provided
+                                       Column('where_taken_name', String(256)),
+                                       Column('asmt_grade', String(10), nullable=False),
+                                       Column('enrl_grade', String(10), nullable=False),
+                                       Column('date_taken', String(8), nullable=False),
+                                       Column('date_taken_day', SmallInteger, nullable=False),
+                                       Column('date_taken_month', SmallInteger, nullable=False),
+                                       Column('date_taken_year', SmallInteger, nullable=False),
+                                       Column('asmt_score', SmallInteger, nullable=False),
+                                       Column('asmt_score_range_min', SmallInteger, nullable=False),
+                                       Column('asmt_score_range_max', SmallInteger, nullable=False),
+                                       Column('asmt_perf_lvl', SmallInteger, nullable=False),
+                                       Column('asmt_claim_1_score', SmallInteger, nullable=True),
+                                       Column('asmt_claim_1_score_range_min', SmallInteger, nullable=True),
+                                       Column('asmt_claim_1_score_range_max', SmallInteger, nullable=True),
+                                       Column('asmt_claim_1_perf_lvl', SmallInteger, nullable=True),
+                                       Column('asmt_claim_2_score', SmallInteger, nullable=True),
+                                       Column('asmt_claim_2_score_range_min', SmallInteger, nullable=True),
+                                       Column('asmt_claim_2_score_range_max', SmallInteger, nullable=True),
+                                       Column('asmt_claim_2_perf_lvl', SmallInteger, nullable=True),
+                                       Column('asmt_claim_3_score', SmallInteger, nullable=True),
+                                       Column('asmt_claim_3_score_range_min', SmallInteger, nullable=True),
+                                       Column('asmt_claim_3_score_range_max', SmallInteger, nullable=True),
+                                       Column('asmt_claim_3_perf_lvl', SmallInteger, nullable=True),
+                                       Column('asmt_claim_4_score', SmallInteger, nullable=True),
+                                       Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
+                                       Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
+                                       Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
+                                       Column('acc_asl_video_embed', SmallInteger, nullable=False),
+                                       Column('acc_asl_human_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_braile_embed', SmallInteger, nullable=False),
+                                       Column('acc_closed_captioning_embed', SmallInteger, nullable=False),
+                                       Column('acc_text_to_speech_embed', SmallInteger, nullable=False),
+                                       Column('acc_abacus_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_alternate_response_options_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_calculator_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_multiplication_table_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_print_on_demand_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_read_aloud_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_scribe_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
+                                       Column('acc_streamline_mode', SmallInteger, nullable=False),
+                                       Column('rec_status', String(2), nullable=False),
+                                       Column('from_date', String(8), nullable=False),
+                                       Column('to_date', String(8), nullable=True),
+                                       Column('batch_guid', String(50), nullable=True),
+                                       )
+
+    Index('fact_asmt_outcome_primary_student_idx', assessment_outcome_primary.c.student_guid, assessment_outcome_primary.c.asmt_guid, unique=False)
 
     student_registration = Table('student_reg', metadata,
                                  Column('student_reg_rec_id', BigInteger, primary_key=True),

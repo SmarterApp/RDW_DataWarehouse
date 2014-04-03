@@ -39,8 +39,7 @@ class Consumer(ConsumerMixin):
             Constants.ACK_COMMAND_START_REPLICATION: self.__player_tracker.set_replication_started,
             Constants.ACK_COMMAND_CONNECT_PGPOOL: self.__player_tracker.set_pgpool_connected,
             Constants.ACK_COMMAND_STOP_REPLICATION: self.__player_tracker.set_replication_stopped,
-            Constants.ACK_COMMAND_DISCONNECT_PGPOOL: self.__player_tracker.set_pgpool_disconnected,
-            Constants.ACK_COMMAND_RESET_PLAYERS: self.__player_tracker.reset_player
+            Constants.ACK_COMMAND_DISCONNECT_PGPOOL: self.__player_tracker.set_pgpool_disconnected
         }
 
     def get_consumers(self, Consumer, channel):

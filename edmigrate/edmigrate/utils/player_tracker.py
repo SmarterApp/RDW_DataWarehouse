@@ -8,8 +8,12 @@ from edmigrate.utils.constants import Constants
 from edmigrate.utils.utils import Singleton
 import time
 from edmigrate.exceptions import PlayerAlreadyRegisteredException, \
-    PlayerNotRegisteredException, PlayerStatusTimedoutException,\
+    PlayerNotRegisteredException, PlayerStatusTimedoutException, \
     PlayerStatusLockingTimedoutException, PlayerDelayedRegistrationException
+import logging
+
+
+logger = logging.getLogger('edmigrate')
 
 
 class PlayerTracker(metaclass=Singleton):
@@ -255,6 +259,7 @@ class PlayerTracker(metaclass=Singleton):
                 if not node:
                     raise PlayerNotRegisteredException(node_id)
                 node[name] = status
+                logger.debug('set node_id[' + str(node_id) + '] name[' + name + '] status[' + str(status) + ']')
             else:
                 raise PlayerStatusLockingTimedoutException()
         finally:

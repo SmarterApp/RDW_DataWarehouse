@@ -31,18 +31,18 @@ class TestDistrictDataProcessor(unittest.TestCase):
         self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Guilford County', ''): 'GUILFORD_GUID'})
 
     def test_call_to_tracker(self):
-        self.district_data_processor._call_trackers = MagicMock(return_value=None)
+        self.district_data_processor._call_academic_year_trackers = MagicMock(return_value=None)
 
         self.district_data_processor.process_yearly_data(self.results)
 
-        self.district_data_processor._call_trackers.assert_called_with('GUILFORD_GUID', self.results)
+        self.district_data_processor._call_academic_year_trackers.assert_called_with('GUILFORD_GUID', self.results)
 
     def test_call_to_matched_ids_tracker(self):
-        self.district_data_processor._call_trackers = MagicMock(return_value=None)
+        self.district_data_processor._call_matched_ids_trackers = MagicMock(return_value=None)
 
         self.district_data_processor.process_matched_ids_data(self.matched_ids_results)
 
-        self.district_data_processor._call_trackers.assert_called_with('GUILFORD_GUID', self.matched_ids_results, 'matched_ids')
+        self.district_data_processor._call_matched_ids_trackers.assert_called_with('GUILFORD_GUID', self.matched_ids_results)
 
     def test__should_call_trackers(self):
         same_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'GUILFORD_GUID'}

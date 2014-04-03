@@ -44,7 +44,7 @@ class TestGradeTrackers(unittest.TestCase):
     def test_grade_trackers(self):
         for tracker in self.grade_trackers:
             for row in self.grade_db_rows:
-                tracker.track('NJ', row)
+                tracker.track_academic_year('NJ', row)
 
         self.assertEquals(1, len(self.gradek.get_map_entry('NJ')))
         self.assertEquals(1, len(self.grade1.get_map_entry('NJ')))
@@ -72,9 +72,9 @@ class TestGradeTrackers(unittest.TestCase):
         row1 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kg'}
         row2 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'Kg'}
         row3 = {'state_code': 'NJ', 'district_guid': 'district1', 'school_guid': 'school1', 'academic_year': 2013, 'enrl_grade': 'kG'}
-        self.gradek.track('school1', row1)
-        self.gradek.track('school1', row2)
-        self.gradek.track('school1', row3)
+        self.gradek.track_academic_year('school1', row1)
+        self.gradek.track_academic_year('school1', row2)
+        self.gradek.track_academic_year('school1', row3)
 
         self.assertEquals(1, len(self.gradek.get_map_entry('school1')))
         self.assertEquals(3, self.gradek.get_map_entry('school1')[2013])

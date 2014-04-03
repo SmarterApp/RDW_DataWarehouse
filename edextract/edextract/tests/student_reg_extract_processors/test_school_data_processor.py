@@ -28,18 +28,18 @@ class TestSchoolDataProcessor(unittest.TestCase):
                                                                                   'Daybreak Junior High'): '5f706ksg80hhxs'})
 
     def test_call_to_tracker(self):
-        self.school_data_processor._call_trackers = MagicMock(return_value=None)
+        self.school_data_processor._call_academic_year_trackers = MagicMock(return_value=None)
 
         self.school_data_processor.process_yearly_data(self.data)
 
-        self.school_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.data)
+        self.school_data_processor._call_academic_year_trackers.assert_called_with('5f706ksg80hhxs', self.data)
 
     def test_call_to_matched_ids_tracker(self):
-        self.school_data_processor._call_trackers = MagicMock(return_value=None)
+        self.school_data_processor._call_matched_ids_trackers = MagicMock(return_value=None)
 
         self.school_data_processor.process_matched_ids_data(self.matched_ids_results)
 
-        self.school_data_processor._call_trackers.assert_called_with('5f706ksg80hhxs', self.matched_ids_results, 'matched_ids')
+        self.school_data_processor._call_matched_ids_trackers.assert_called_with('5f706ksg80hhxs', self.matched_ids_results)
 
     def test__should_call_trackers(self):
         same_school = {AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs', 'prev_school_guid': '5f706ksg80hhxs'}

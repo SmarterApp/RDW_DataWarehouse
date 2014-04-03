@@ -59,28 +59,28 @@ class TestGenderTracker(unittest.TestCase):
         self.assertEquals(None, tracker.get_map_entry(guid))
 
     def test_male_tracker(self):
-        self.track_rows(self.male_tracker.track, self.valid_db_rows)
+        self.track_rows(self.male_tracker.track_academic_year, self.valid_db_rows)
 
         self.validate_state_rows(self.male_tracker)
         self.validate_district_rows(self.male_tracker)
         self.validate_school_rows(self.male_tracker)
 
     def test_male_tracker_invalid_rows(self):
-        self.track_rows(self.male_tracker.track, self.invalid_db_rows)
+        self.track_rows(self.male_tracker.track_academic_year, self.invalid_db_rows)
 
         self.validate_no_rows(self.male_tracker, 'female_only_school')
         self.validate_no_rows(self.male_tracker, 'female_only_district')
         self.validate_no_rows(self.male_tracker, 'BAD_VALUE_SCHOOL')
 
     def test_female_tracker(self):
-        self.track_rows(self.female_tracker.track, self.valid_db_rows)
+        self.track_rows(self.female_tracker.track_academic_year, self.valid_db_rows)
 
         self.validate_state_rows(self.female_tracker)
         self.validate_district_rows(self.female_tracker)
         self.validate_school_rows(self.female_tracker)
 
     def test_female_tracker_invalid_rows(self):
-        self.track_rows(self.female_tracker.track, self.invalid_db_rows)
+        self.track_rows(self.female_tracker.track_academic_year, self.invalid_db_rows)
 
         self.validate_no_rows(self.female_tracker, 'male_only_school')
         self.validate_no_rows(self.female_tracker, 'male_only_district')

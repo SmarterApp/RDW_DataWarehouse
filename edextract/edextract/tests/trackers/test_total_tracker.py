@@ -28,9 +28,9 @@ class TestTotalTracker(unittest.TestCase):
             state_guid = row['state_code']
             district_guid = row['district_guid']
             school_guid = row['school_guid']
-            self.total_tracker.track(state_guid, row)
-            self.total_tracker.track(district_guid, row)
-            self.total_tracker.track(school_guid, row)
+            self.total_tracker.track_academic_year(state_guid, row)
+            self.total_tracker.track_academic_year(district_guid, row)
+            self.total_tracker.track_academic_year(school_guid, row)
 
         sorted_keys = sorted(self.total_tracker._data_counter.map.keys())
         self.assertEquals(['NJ', 'district1', 'district2', 'school1', 'school2', 'school3', 'school4', 'school5'], sorted_keys)

@@ -23,7 +23,7 @@ class TestCategoryTracker(unittest.TestCase):
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-        ct.track('guid2', {'academic_year': 2015})
+        ct.track_academic_year('guid2', {'academic_year': 2015})
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
@@ -32,23 +32,23 @@ class TestCategoryTracker(unittest.TestCase):
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-        ct.track('guid1', {'academic_year': 2014})
+        ct.track_academic_year('guid1', {'academic_year': 2014})
 
         self.assertIsNotNone(ct.get_map_entry('guid1'), 'Tracker does not have expected entry')
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
         self.assertEqual(1, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
 
-        ct.track('guid1', {'academic_year': 2014})
+        ct.track_academic_year('guid1', {'academic_year': 2014})
         self.assertEqual(2, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
 
-        ct.track('guid1', {'academic_year': 2015})
+        ct.track_academic_year('guid1', {'academic_year': 2015})
         self.assertEqual(2, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
         self.assertEqual(2, ct.get_map_entry('guid1')[2014], 'Tracker does not have expected entry')
         self.assertEqual(1, ct.get_map_entry('guid1')[2015], 'Tracker does not have expected entry')
 
         self.assertIsNone(ct.get_map_entry('guid2'), 'Tracker returned unexpected entry')
 
-        ct.track('guid2', {'academic_year': 2016})
+        ct.track_academic_year('guid2', {'academic_year': 2016})
         self.assertEqual(1, len(ct.get_map_entry('guid2')), 'Tracker returned unexpected entry')
         self.assertEqual(1, ct.get_map_entry('guid2')[2016], 'Tracker does not have expected entry')
         self.assertEqual(2, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
@@ -57,15 +57,15 @@ class TestCategoryTracker(unittest.TestCase):
     def test_positive_matched_track(self):
         ct = DummyCategoryTracker()
 
-        ct.track('guid1', {}, 'matched_ids')
+        ct.track_matched_ids('guid1', {})
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
         self.assertEqual(1, ct.get_map_entry('guid1')['matched_ids'], 'Tracker does not have expected entry')
 
-        ct.track('guid1', {}, 'matched_ids')
+        ct.track_matched_ids('guid1', {})
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
         self.assertEqual(2, ct.get_map_entry('guid1')['matched_ids'], 'Tracker does not have expected entry')
 
-        ct.track('guid2', {}, 'matched_ids')
+        ct.track_matched_ids('guid2', {})
         self.assertEqual(1, len(ct.get_map_entry('guid2')), 'Tracker returned unexpected entry')
         self.assertEqual(1, ct.get_map_entry('guid2')['matched_ids'], 'Tracker does not have expected entry')
         self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
@@ -76,7 +76,7 @@ class TestCategoryTracker(unittest.TestCase):
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
-        ct.track('guid1', {}, 'matched_ids')
+        ct.track_matched_ids('guid1', {})
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 

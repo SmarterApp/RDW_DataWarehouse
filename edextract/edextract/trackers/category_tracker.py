@@ -17,7 +17,7 @@ class CategoryTracker(metaclass=ABCMeta):
         self._value = value
         self._field = field
 
-    def track(self, guid, row, key=None):
+    def track_academic_year(self, guid, row):
         """
         Increment total of rows based on the year this row contains for the given guid.
 
@@ -25,10 +25,21 @@ class CategoryTracker(metaclass=ABCMeta):
         @param row: Current DB table row to be counted
 
         """
-        key = key if key else row[AttributeFieldConstants.ACADEMIC_YEAR]
-        should_increment = self._should_increment_matched_ids(row) if key == DataCounter.MATCHED_IDS \
-            else self._should_increment(row)
+        if self._should_increment(row):
+            key = row[AttributeFieldConstants.ACADEMIC_YEAR]
+            self._data_counter.increment(guid, key)
+
+    def track_matched_ids(self, guid, row):
+        """
+        Increment total of rows based on the year this row contains for the given guid.
+
+        @param guid: GUID of edorg for which to increment the total for the row's year.
+        @param row: Current DB table row to be counted
+
+        """
+        should_increment = self._should_increment_matched_ids(row)
         if should_increment:
+            key = DataCounter.MATCHED_IDS
             self._data_counter.increment(guid, key)
 
     def get_map_entry(self, guid):

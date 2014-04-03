@@ -12,7 +12,8 @@ class TestEdOrgDataProcessor(unittest.TestCase):
 
     def setUp(self):
         self.tracker = TotalTracker()
-        self.tracker.track = MagicMock(return_value=None)
+        self.tracker.track_academic_year = MagicMock(return_value=None)
+        self.tracker.track_matched_ids = MagicMock(return_value=None)
 
         self.category_tracker = [self.tracker]
 
@@ -22,20 +23,20 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC'}
 
     def test_call_tracker(self):
-        self.data_processor._call_trackers('123', self.data)
-        self.tracker.track.assert_called_with('123', self.data, None)
-        self.data_processor._call_trackers('456', self.data)
-        self.tracker.track.assert_called_with('456', self.data, None)
-        self.data_processor._call_trackers('789', self.data)
-        self.tracker.track.assert_called_with('789', self.data, None)
+        self.data_processor._call_academic_year_trackers('123', self.data)
+        self.tracker.track_academic_year.assert_called_with('123', self.data)
+        self.data_processor._call_academic_year_trackers('456', self.data)
+        self.tracker.track_academic_year.assert_called_with('456', self.data)
+        self.data_processor._call_academic_year_trackers('789', self.data)
+        self.tracker.track_academic_year.assert_called_with('789', self.data)
 
     def test_call_matched_trackers(self):
-        self.data_processor._call_trackers('123', self.data, 'matched_ids')
-        self.tracker.track.assert_called_with('123', self.data, 'matched_ids')
-        self.data_processor._call_trackers('456', self.data, 'matched_ids')
-        self.tracker.track.assert_called_with('456', self.data, 'matched_ids')
-        self.data_processor._call_trackers('789', self.data, 'matched_ids')
-        self.tracker.track.assert_called_with('789', self.data, 'matched_ids')
+        self.data_processor._call_matched_ids_trackers('123', self.data)
+        self.tracker.track_matched_ids.assert_called_with('123', self.data)
+        self.data_processor._call_matched_ids_trackers('456', self.data)
+        self.tracker.track_matched_ids.assert_called_with('456', self.data)
+        self.data_processor._call_matched_ids_trackers('789', self.data)
+        self.tracker.track_matched_ids.assert_called_with('789', self.data)
 
     def test_add_to_and_get_ed_org_hierarchy(self):
         self.data_processor._add_to_edorg_hierarchy('123', 'NC')

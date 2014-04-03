@@ -337,7 +337,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                 remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
                 mock_copy.assert_called_with(src_file_name, '128.0.0.2', 'es', 'foo', 'nobody', '/dev/null', timeout=3)
 
-    @unittest.skip('Failing locally')
     def test_remote_copy_failure(self):
         request_id = '1'
         tenant = 'es'
@@ -346,10 +345,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
-            with mock.patch('edextract.tasks.extract.copy') as mock_copy:
-                mock_copy.side_effect = RemoteCopyError()
-                result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
-                self.assertRaises(ExtractionError, result.get)
+            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
+            self.assertRaises(ExtractionError, result.get)
 
     def test_prepare_path(self):
         tmp_dir = tempfile.mkdtemp()

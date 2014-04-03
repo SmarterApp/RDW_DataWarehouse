@@ -158,7 +158,7 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeou
             raise ExtractionError(str(e))
         except ExtractionError as exc:
             # this could be caused by network hiccup
-            raise remote_copy.retry(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], exc=exc)
+            raise remote_copy.retry(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': timeout}, exc=exc)
     except Exception as e:
         raise ExtractionError(str(e))
 

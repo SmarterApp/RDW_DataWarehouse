@@ -37,12 +37,13 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
 
     def test_migrate_getting_natural_key(self):
         with EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name()) as prod_conn:
-            tables_expected_from_schema = ['custom_metadata', 'dim_inst_hier', 'student_reg',
-                                           'fact_asmt_outcome', 'dim_section', 'dim_asmt', 'dim_student']
-            self.assertEquals(set(prod_conn.get_metadata().tables.keys()), set(tables_expected_from_schema))
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student')), ['student_guid'])
+            self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student_demographics')),
+                              ['student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_asmt')), ['asmt_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome')),
+                              ['asmt_guid', 'student_guid'])
+            self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_primary')),
                               ['asmt_guid', 'student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_inst_hier')),
                               ['state_name', 'district_guid', 'school_guid'])

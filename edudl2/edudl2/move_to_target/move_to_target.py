@@ -250,9 +250,15 @@ def match_deleted_records(conf, match_conf):
     return matched_results
 
 
-def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
+def handle_duplicates_in_dimensions(tenant_name, guid_batch, match_conf):
     '''
-    Updates or deletes records that have already existed in production database.
+    Handle duplicate records in dimensions by marking them as deleted
+
+    Steps:
+    1. Soft delete records (Mark rec_status as 'S') in pre-prod dimensions that are already existing in production database
+       The match is done based on natural_key columns of the table and some other key columns listed
+    2. Update the rec_id of the record marked for delete with the id of the matching record found in prod. This is needed for
+       step which updates foreign keys in fact asmt outcome
 
     :param tenant_name: tenant name, to get target database connection
     :param guid_batch:  batch buid
@@ -268,10 +274,8 @@ def update_or_delete_duplicate_record(tenant_name, guid_batch, match_conf):
             matched = prod_db_helper.find_by_natural_key(record)
             if not matched:
                 continue
-            # update dependant database tables record
-            target_db_helper.update_dependant(record, matched)
-            # remove existing record from target db to avoid duplication
-            target_db_helper.delete_by_guid(record)
+            # soft delete the record and set its pk as the pk of the matched record
+            target_db_helper.soft_delete_and_update(record, matched)
             affected_rows += 1
     return affected_rows
 

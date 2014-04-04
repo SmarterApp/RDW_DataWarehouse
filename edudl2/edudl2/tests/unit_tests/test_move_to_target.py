@@ -12,6 +12,7 @@ from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 from edudl2.move_to_target.move_to_target_setup import Column
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 import logging
+from sqlalchemy import select, and_
 from edudl2.tests.unit_tests.unittest_with_udl2_sqlite import Unittest_with_udl2_sqlite,\
     UnittestUDLTargetDBConnection, get_unittest_schema_name,\
     get_unittest_tenant_name
@@ -135,7 +136,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             all_records = helper.find_all()
             self.assertIsNotNone(all_records, "Find all should return some value")
             actual_rows = all_records.fetchall()
-            self.assertEqual(len(actual_rows), 893, "Find all should return all records")
+            self.assertEqual(len(actual_rows), 894, "Find all should return all records")
 
     def test_handle_record_upsert_find_by_natural_key(self):
         match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
@@ -172,27 +173,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             m3 = helper.find_by_natural_key(example_record)
             self.assertIsNone(m3, "Find_by_natural_key should return None if not match found")
 
-    def test_handle_record_upsert_update_dependant(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
-        guid_batch = None
-        old_record = {
-            'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
-            'student_rec_id': '348',
-            'batch_guid': None
-        }
-        new_record = {
-            'student_guid': 'c72e98d5-ddb6-4cde-90d2-cdb215e67e84',
-            'student_rec_id': '350',
-            'batch_guid': None
-        }
-        with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
-            helper.update_dependant(old_record, new_record)
-            all_records = helper.find_all()
-            for record in all_records:
-                self.assertNotEqual(record['student_rec_id'], old_record['student_rec_id'])
-
-    def test_handle_record_upsert_delete_by_guid(self):
+    def test_handle_record_soft_delete(self):
         match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
         guid_batch = None
         old_record = {
@@ -201,18 +182,17 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'batch_guid': None
         }
         new_record = {
-            'student_guid': '72d8248d-0e8f-404b-8763-a5b7bcdaf535',
-            'student_rec_id': '353',
+            'student_guid': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
+            'student_rec_id': '3155',
             'batch_guid': None
         }
         with UnittestUDLTargetDBConnection() as conn:
             helper = HandleUpsertHelper(conn, guid_batch, match_conf)
-            # update in dependant table to by pass constraints
-            helper.update_dependant(old_record, new_record)
-            helper.delete_by_guid(old_record)
-            all_records = helper.find_all()
-            for record in all_records:
-                self.assertNotEqual(record['student_guid'], old_record['student_guid'])
+            helper.soft_delete_and_update(old_record, new_record)
+            table = conn.get_table(match_conf['table_name'])
+            query = select([table.c.student_rec_id], from_obj=[table]).where(and_(table.c.batch_guid == guid_batch, table.c.student_rec_id == '3155'))
+            record_updated = conn.execute(query)
+            self.assertNotEqual(record_updated.rowcount, 1)
 
 
 def generate_conf(guid_batch, udl2_conf):

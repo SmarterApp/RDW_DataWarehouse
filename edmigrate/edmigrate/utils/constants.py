@@ -30,6 +30,7 @@ class Constants():
     TARGET_SCHEMA = 'target_schema'
     DEACTIVATE = 'deactivate'
     SCHEMA_NAME = 'schema_name'
+    STUDENT_REG = 'student_reg'
 
     PLAYER_TASK = 'edmigrate.tasks.player'
     COMMAND_REGISTER_PLAYER = 'FIND_PLAYER'

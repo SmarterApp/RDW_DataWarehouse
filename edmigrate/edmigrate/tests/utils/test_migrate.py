@@ -9,7 +9,7 @@ from edmigrate.utils.constants import Constants
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
-from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name as get_unittest_prod_tenant_name
 from edschema.metadata.util import get_natural_key_columns
@@ -93,6 +93,26 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         self.assertRaises(EdMigrateRecordAlreadyDeletedException, migrate_table, batch_guid, None,
                           preprod_conn, prod_conn, 'fact_asmt_outcome', False, batch_size=1)
 
+    def test_migrate_student_reg(self):
+        preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
+        prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
+        batch_guid = "0aa942b9-75cf-4055-a67a-8b9ab53a9dfc"
+        student_reg_table = prod_conn.get_table(Constants.STUDENT_REG)
+        query = select([func.count().label('student_reg_rec_ids')], student_reg_table.c.student_reg_rec_id.in_([5541, 5544, 5547]))
+
+        rset = prod_conn.execute(query)
+        row = rset.fetchone()
+        self.assertEqual(3, row['student_reg_rec_ids'])
+        rset.close()
+        delete_count, insert_count = migrate_table(batch_guid, None, preprod_conn, prod_conn, 'student_reg', False)
+        self.assertEqual(0, delete_count)
+        self.assertEqual(3, insert_count)
+
+        rset = prod_conn.execute(query)
+        row = rset.fetchone()
+        self.assertEqual(0, row['student_reg_rec_ids'])
+        rset.close()
+
     def test_get_batches_to_migrate_with_specified_tenant(self):
         batches_to_migrate = get_batches_to_migrate('test')
         self.assertEqual(4, len(batches_to_migrate))
@@ -100,7 +120,8 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     def test_migrate_batch(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
-                 UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False}
+                 UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
+                 UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT}
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
 
@@ -114,7 +135,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     def test_migrate_batch_with_roll_back(self):
         batch = {UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38',
                  UdlStatsConstants.TENANT: 'tomcat', UdlStatsConstants.SCHEMA_NAME: None,
-                 Constants.DEACTIVATE: False}
+                 Constants.DEACTIVATE: False, UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT}
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([101306, 101304, 91011691]))

@@ -2,13 +2,13 @@ import logging
 import time
 from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException, EdMigrateRecordInsertionException
-from sqlalchemy.sql.expression import select, and_, tuple_
+from sqlalchemy.sql.expression import select, and_, tuple_, or_
 from sqlalchemy import Table, Column, Index
 from edmigrate.utils.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
 from edmigrate.database.migrate_source_connector import EdMigrateSourceConnection
 from edmigrate.database.migrate_dest_connector import EdMigrateDestConnection
-from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.utils import drop_schema
 from edschema.metadata.util import get_natural_key_columns
 from edschema.metadata.ed_metadata import generate_ed_metadata
@@ -48,11 +48,14 @@ def get_batches_to_migrate(tenant=None):
                     udl_status_table.c.tenant,
                     udl_status_table.c.state_code,
                     udl_status_table.c.record_loaded_count,
+                    udl_status_table.c.load_type,
                     udl_status_table.c.load_status,
                     udl_status_table.c.load_start,
                     udl_status_table.c.load_end],
                    from_obj=[udl_status_table]).\
-            where(and_(udl_status_table.c.load_type == UdlStatsConstants.LOAD_TYPE_ASSESSMENT, udl_status_table.c.load_status == UdlStatsConstants.UDL_STATUS_INGESTED)).\
+            where(and_(or_(udl_status_table.c.load_type == LoadType.ASSESSMENT,
+                           udl_status_table.c.load_type == LoadType.STUDENT_REGISTRATION),
+                       udl_status_table.c.load_status == UdlStatsConstants.UDL_STATUS_INGESTED)).\
             order_by(udl_status_table.c.file_arrived)
         if tenant:
             query = query.where(and_(udl_status_table.c.tenant == tenant))
@@ -78,15 +81,17 @@ def report_udl_stats_batch_status(batch_guid, migrate_load_status):
     return rowcount
 
 
-def get_ordered_tables_to_migrate(connector, batch_guid):
-    """This function returns an ordered list of tables to be migrated based on schema metadata
+def get_ordered_tables_to_migrate(connector, load_type):
+    """This function returns an ordered list of tables to be migrated based on schema metadata.
 
     :param connector: The connection to the database
-    :returns : A list of table names ordered by dependencies
-             [dim_section, dim_student, fact_asmt_outcome]
+    @param load_type: The load type for the current table
+
+    @return: A list of table names ordered by dependencies
+             e.g., [dim_section, dim_student, fact_asmt_outcome]
     """
-    return [table.name for table in connector.get_metadata().sorted_tables
-            if table.name not in TABLES_NOT_CONNECTED_WITH_BATCH and (table.name.startswith('dim_') or table.name.startswith('fact_'))]
+
+    return [table.name for table in connector.get_metadata().sorted_tables if _include_table(table.name, load_type)]
 
 
 def yield_rows(connector, query, batch_size):
@@ -255,6 +260,7 @@ def migrate_batch(batch):
     batch_guid = batch[UdlStatsConstants.BATCH_GUID]
     tenant = batch[UdlStatsConstants.TENANT]
     schema_name = batch[UdlStatsConstants.SCHEMA_NAME]
+    load_type = batch[UdlStatsConstants.LOAD_TYPE]
     # this flag will be set to false from unit test, if this is not set its always True
     deactivate = batch[Constants.DEACTIVATE] if Constants.DEACTIVATE in batch else True
     logger.info('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
@@ -266,7 +272,7 @@ def migrate_batch(batch):
             trans = dest_connector.get_transaction()
             source_connector.set_metadata_by_generate(schema_name=schema_name, metadata_func=generate_ed_metadata)
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
-            tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, batch_guid)
+            tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, load_type)
             # migrate all tables
             migrate_all_tables(batch_guid, schema_name, source_connector,
                                dest_connector, tables_to_migrate, deactivate=deactivate)
@@ -336,3 +342,21 @@ def start_migrate_daily_delta(tenant=None):
         logger.debug('no batch found for migration')
         admin_logger.info('no batch found for migration')
     return migrate_ok_count, len(batches_to_migrate)
+
+
+def _include_table(table_name, load_type):
+    """
+    Determine if table name should be included in tables to migrate.
+
+    @param table_name: Name of table candidate
+    @param load_type: Load type of table candidate
+
+    @return: Whether or not table name should be included in migration.
+    """
+
+    table_select_criteria = {
+        LoadType.ASSESSMENT: table_name.startswith('dim_') or table_name.startswith('fact_'),
+        LoadType.STUDENT_REGISTRATION: table_name == Constants.STUDENT_REG
+    }
+
+    return table_name not in TABLES_NOT_CONNECTED_WITH_BATCH and table_select_criteria.get(load_type, False)

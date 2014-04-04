@@ -30,5 +30,8 @@ class UdlStatsConstants():
     MIGRATE_IN_PROCESS = 'migrate.in_process'
     MIGRATE_INGESTED = 'migrate.ingested'
     MIGRATE_FAILED = 'migrate.failed'
-    #load_type
-    LOAD_TYPE_ASSESSMENT = 'assessment'
+
+
+class LoadType():
+    ASSESSMENT = 'assessment'
+    STUDENT_REGISTRATION = 'studentregistration'

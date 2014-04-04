@@ -22,6 +22,7 @@ import data_generation.config.population as pop_config
 import data_generation.util.hiearchy as hier_util
 import data_generation.writers.writecsv as csv_writer
 import data_generation.writers.writejson as json_writer
+import data_generation.writers.writepostgres as postgres_writer
 import sbac_data_generation.config.cfg as sbac_in_config
 import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
@@ -37,6 +38,7 @@ from sbac_data_generation.util.id_gen import IDGen
 from sbac_data_generation.writers.filters import SBAC_FILTERS
 
 OUT_PATH_ROOT = 'out'
+DB_CONN = None
 
 # See assign_team_configuration_options for these values
 STATES = []
@@ -92,6 +94,19 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         ASMT_YEARS = [2015, 2016, 2017]  # The years to generate summative assessments for
         INTERIM_ASMT_PERIODS = ['Fall', 'Winter', 'Spring']  # The periods for interim assessments
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
+
+
+def connect_to_postgres(host, port, dbname, user, password):
+    """
+    Open a connection to PostgreSQL.
+
+    @param host: Postgres server host
+    @param port: Postgres server port
+    @param dbname: Name of database to connect to
+    @param user: Postgres server user
+    @param password: Postgres server password
+    """
+    return postgres_writer.create_dbcon(host, port, dbname, user, password)
 
 
 def prepare_output_files():
@@ -175,6 +190,8 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     file_name = sbac_out_config.DIM_ASMT_FORMAT['name']
     csv_writer.write_records_to_file(file_name, sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt],
                                      tbl_name='dim_asmt', root_path=OUT_PATH_ROOT)
+    postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.dim_asmt', sbac_out_config.DIM_ASMT_FORMAT['columns'],
+                                           [asmt])
 
     return asmt
 
@@ -320,6 +337,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     csv_writer.write_records_to_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
                                      sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies,
                                      tbl_name='dim_hier', root_path=OUT_PATH_ROOT)
+    postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.dim_inst_hier',
+                                           sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies)
 
     # Sort the schools
     schools_by_grade = sbac_hier_gen.sort_schools_by_grade(schools)
@@ -407,12 +426,16 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
         csv_writer.write_records_to_file(sr_out_name, sr_out_cols, sr_students, root_path=OUT_PATH_ROOT)
         csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students, entity_filter=('held_back', False),
                                          tbl_name='dim_student', root_path=OUT_PATH_ROOT)
+        postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.dim_student', dstu_out_cols, dim_students,
+                                               entity_filter=('held_back', False))
         if asmt_year in ASMT_YEARS:
             for guid, rslts in assessment_results.items():
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
                                                  lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
                 csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
                                                  root_path=OUT_PATH_ROOT)
+                postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.fact_asmt_outcome', fao_out_cols,
+                                                       rslts)
 
     # Some explicit garbage collection
     del hierarchies
@@ -507,6 +530,9 @@ if __name__ == '__main__':
                 os.unlink(file_path)
         except:
             pass
+
+    # Connect to Postgres
+    DB_CONN = connect_to_postgres('localhost', 5432, 'edware', 'edware', 'edware2013')
 
     # Create the ID generator
     idg = IDGen()

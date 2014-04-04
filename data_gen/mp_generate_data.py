@@ -163,6 +163,9 @@ if __name__ == '__main__':
         except:
             pass
 
+    # Connect to Postgres
+    generate_data.DB_CONN = generate_data.connect_to_postgres('localhost', 5432, 'edware', 'edware', 'edware2013')
+
     # Create the ID generator
     manager = multiprocessing.Manager()
     lock = manager.Lock()

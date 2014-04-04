@@ -31,6 +31,11 @@ class TestUDLReportingIntegration(unittest.TestCase):
 #         '''
 #         setUpMigrationConnection()
 
+    @classmethod
+    def setUpClass(cls):
+        print("Emptying out prod tables")
+        cls.delete_prod_tables(cls)
+
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
@@ -44,7 +49,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
-        self.delete_prod_tables()
         self.empty_stat_table()
 
     def tearDown(self):

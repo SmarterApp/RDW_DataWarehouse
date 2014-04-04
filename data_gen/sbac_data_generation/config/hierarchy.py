@@ -196,6 +196,13 @@ STATE_TYPES = {'california': {'district_types_and_counts': {'Big LA': 1, 'Big Av
                                                             'Small Very Good': 70},
                              'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                              'demographics': 'california'},
+               'typical_1': {'district_types_and_counts': {'Big Average': 1, 'Big Poor': 1, 'Big Good': 1,
+                                                           'Medium Average': 2, 'Medium Poor': 1, 'Medium Good': 1,
+                                                           'Medium Very Poor': 1, 'Medium Very Good': 1,
+                                                           'Small Average': 10, 'Small Poor': 5, 'Small Good': 5,
+                                                           'Small Very Poor': 5, 'Small Very Good': 5},
+                             'subject_skip_percentages': {'Math': .04, 'ELA': .03},
+                             'demographics': 'california'},
                'devel': {'district_types_and_counts': {'Small Average': 4},
                          'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                          'demographics': 'california'}

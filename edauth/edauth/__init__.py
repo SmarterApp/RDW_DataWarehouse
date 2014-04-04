@@ -53,11 +53,6 @@ def includeme(config):
 
     component.provideUtility(SessionBackend(settings), ISessionBackend)
 
-    # Task Schedule
-    # Disable for now as we are using beaker ext:database
-    #run_cron_cleanup(settings)
-
-    # TODO: possible to put this inside SAML2 incase one day we don't want to use it
     # TODO: clean up and derive from ini?
     config.add_route('login', '/login')
     config.add_route('login_callback', '/login_callback')

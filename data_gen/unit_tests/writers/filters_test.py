@@ -59,3 +59,29 @@ def test_filter_only_delete_delete():
 
 def test_filter_only_delete_none():
     assert sbac_filters.filter_only_delete(None) is None
+
+
+def test_filter_twenty_characters_none():
+    assert sbac_filters.filter_twenty_characters(None) is None
+
+
+def test_filter_twenty_characters_short():
+    val = 'abc'
+    filtered = sbac_filters.filter_twenty_characters(val)
+    assert len(filtered) == 3
+    assert val == filtered
+
+
+def test_filter_twenty_characters_twenty():
+    val = 'abcdefjdiadndifiejad'
+    filtered = sbac_filters.filter_twenty_characters(val)
+    assert len(filtered) == 20
+    assert val == filtered
+
+
+def test_filter_twenty_characters_long():
+    val = 'abcdefjdiadndifiejaddfed'
+    expect_filtered = 'abcdefjdiadndifiejad'
+    filtered = sbac_filters.filter_twenty_characters(val)
+    assert len(filtered) == 20
+    assert filtered == expect_filtered

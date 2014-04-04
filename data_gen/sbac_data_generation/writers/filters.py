@@ -45,14 +45,27 @@ def filter_only_delete(val):
     Only return a value if the value is the Delete status flag.
 
     @param val: The value to filter
-    @return D or None
+    @returns: D or None
     """
     return sbac_config.ASMT_STATUS_DELETED if val == sbac_config.ASMT_STATUS_DELETED else None
+
+
+def filter_twenty_characters(val):
+    """
+    Reduce a string value to a maximum of 20 characters.
+
+    @param val: The value to filter
+    @returns: The value trimmed to 20 characters
+    """
+    if val is None:
+        return None
+    return val[0:20] if len(val) > 20 else val
 
 
 SBAC_FILTERS = {
     'yesno': filter_yesno,
     'yesnoblank': filter_yesnoblank,
     'always_true': filter_always_true,
-    'only_delete': filter_only_delete
+    'only_delete': filter_only_delete,
+    'trim_to_20': filter_twenty_characters
 }

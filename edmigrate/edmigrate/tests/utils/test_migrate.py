@@ -13,7 +13,6 @@ from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name as get_unittest_prod_tenant_name
 from edschema.metadata.util import get_natural_key_columns
-from edschema.metadata.ed_metadata import generate_ed_metadata
 
 __author__ = 'sravi'
 

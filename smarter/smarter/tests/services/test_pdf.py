@@ -7,10 +7,10 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPNotFound, EdApiHTTPInternalServerError
+    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 from edapi.tests.test_views import DummyValueError
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 import services
 from pyramid.response import Response
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \

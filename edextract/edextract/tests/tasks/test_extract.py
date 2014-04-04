@@ -4,7 +4,7 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
-import mock
+from unittest import mock
 
 import tempfile
 import os

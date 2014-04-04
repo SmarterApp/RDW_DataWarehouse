@@ -12,20 +12,19 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
-from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query, \
-    has_filters, FILTERS_CONFIG
+    FILTERS_CONFIG
 from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
-from sqlalchemy.sql.expression import true
 from smarter.reports.student_administration import get_student_list_asmt_administration,\
     get_academic_years, get_default_academic_year
+from smarter.security.tenant import validate_user_tenant
 
 REPORT_NAME = "list_of_students"
 
@@ -70,6 +69,7 @@ REPORT_PARAMS = merge_dict({
 @report_config(
     name=REPORT_NAME,
     params=REPORT_PARAMS)
+@validate_user_tenant
 @user_info
 @audit_event()
 def get_list_of_students_report(params):

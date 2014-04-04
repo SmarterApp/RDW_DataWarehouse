@@ -18,6 +18,7 @@ from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_student_list_asmt_administration
+from smarter.security.tenant import validate_user_tenant
 
 REPORT_NAME = 'individual_student_report'
 
@@ -191,6 +192,7 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                        "pattern": "^[1-9][0-9]{3}$"
                    }
                })
+@validate_user_tenant
 @user_info
 @audit_event()
 def get_student_report(params):

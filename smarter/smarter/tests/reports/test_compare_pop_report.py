@@ -21,6 +21,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
+from pyramid.httpexceptions import HTTPForbidden
 
 
 class TestComparingPopulations(Unittest_with_edcore_sqlite):
@@ -230,8 +231,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 
     def test_invalid_params(self):
         params = {Constants.STATECODE: 'AA'}
-        actual = get_comparing_populations_report(params)['records']
-        self.assertListEqual([], actual, "Should return no results")
+        results = get_comparing_populations_report(params)
+        self.assertIsInstance(results, HTTPForbidden)
 
     def test_cache_route_without_filters(self):
         cpop = ComparingPopReport()

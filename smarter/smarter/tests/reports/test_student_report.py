@@ -17,6 +17,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 from edauth.security.user import RoleRelation
 import edauth
+from pyramid.httpexceptions import HTTPForbidden
 
 
 class TestStudentReport(Unittest_with_edcore_sqlite):
@@ -42,6 +43,11 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
     def tearDown(self):
         # reset the registry
         testing.tearDown()
+
+    def test_invalid_params(self):
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20, 'stateCode': 'AA'}
+        results = get_student_report(params)
+        self.assertIsInstance(results, HTTPForbidden)
 
     def test_student_report(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20, 'stateCode': 'NC'}

@@ -25,6 +25,7 @@ from edcore.utils.utils import merge_dict
 from copy import deepcopy
 from collections import OrderedDict, namedtuple
 from smarter.reports.student_administration import get_academic_years, get_default_academic_year
+from smarter.security.tenant import validate_user_tenant
 
 
 REPORT_NAME = "comparing_populations"
@@ -57,6 +58,7 @@ DEFAULT_MIN_CELL_SIZE = 0
             "pattern": "^[1-9][0-9]{3}$"
         }
     }, FILTERS_CONFIG))
+@validate_user_tenant
 @user_info
 @audit_event()
 def get_comparing_populations_report(params):

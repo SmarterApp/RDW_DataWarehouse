@@ -5,7 +5,6 @@ Created on Feb 4, 2013
 '''
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
-from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
@@ -16,6 +15,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
+from pyramid.httpexceptions import HTTPForbidden
 
 
 class TestLOS(Unittest_with_edcore_sqlite):
@@ -42,6 +42,16 @@ class TestLOS(Unittest_with_edcore_sqlite):
     def tearDown(self):
         # reset the registry
         testing.tearDown()
+
+    def test_invalid_params(self):
+        testParam = {}
+        testParam['districtGuid'] = '228'
+        testParam['schoolGuid'] = '242'
+        testParam['asmtGrade'] = '3'
+        testParam['stateCode'] = 'AA'
+        testParam['asmtSubject'] = ['ELA', 'Math']
+        results = get_list_of_students_report(testParam)
+        self.assertIsInstance(results, HTTPForbidden)
 
     def test_assessments(self):
         testParam = {}

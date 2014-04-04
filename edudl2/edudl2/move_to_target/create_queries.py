@@ -1,8 +1,9 @@
 import re
 from edudl2.udl2 import message_keys as mk
 from sqlalchemy.sql.expression import text, bindparam, select, and_
-from edudl2.database.udl2_connector import get_udl_connection,\
+from edudl2.database.udl2_connector import get_udl_connection, \
     get_target_connection, get_prod_connection
+from psycopg2.extensions import QuotedString
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -22,27 +23,28 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     if op is None:
         query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
                 "SELECT * FROM " + \
-                "dblink('host={host} port={port} dbname={db_name} user={db_user} password={db_password}', " +\
+                "dblink({dblink_url}, " + \
                 "'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + \
                 "{quoted_source_columns} " + \
-                "FROM {source_schema_and_table} " +\
+                "FROM {source_schema_and_table} " + \
                 "WHERE guid_batch=':guid_batch') as y') AS t({record_mapping});"
         params = [bindparam('guid_batch', conf[mk.GUID_BATCH])]
     else:
-        query = "INSERT INTO {target_schema_and_table} ({target_columns}) " +\
+        query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
                 "SELECT * FROM " + \
-                "dblink('host={host} port={port} dbname={db_name} user={db_user} password={db_password}', " +\
+                "dblink({dblink_url}, " + \
                 "'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + \
                 "{quoted_source_columns} " + \
                 "FROM {source_schema_and_table} " + \
                 "WHERE op = ':op' AND guid_batch=':guid_batch') as y') AS t({record_mapping});"
         params = [bindparam('guid_batch', conf[mk.GUID_BATCH]), bindparam('op', op)]
-    query = query.format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
-                         host=conf[mk.SOURCE_DB_HOST],
-                         port=conf[mk.SOURCE_DB_PORT],
-                         db_name=conf[mk.SOURCE_DB_NAME],
-                         db_user=conf[mk.SOURCE_DB_USER],
-                         db_password=conf[mk.SOURCE_DB_PASSWORD],
+    query = query.format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
+                                                                          target_table),
+                         dblink_url=dblink_url_composer(host=conf[mk.SOURCE_DB_HOST],
+                                                        port=conf[mk.SOURCE_DB_PORT],
+                                                        db_name=conf[mk.SOURCE_DB_NAME],
+                                                        db_user=conf[mk.SOURCE_DB_USER],
+                                                        db_password=conf[mk.SOURCE_DB_PASSWORD]),
                          seq_expression=seq_expression,
                          distinct_expression=distinct_expression,
                          source_schema_and_table=combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table),
@@ -123,12 +125,15 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
 
     insert_query = ["INSERT INTO {target_schema_and_table}(" + ",".join(target_keys),
                     ") SELECT * FROM ",
-                    "dblink(\'host={host} port={port} dbname={db_name} user={db_user} password={db_password}\', ",
+                    "dblink({dblink_url}, ",
                     "\'SELECT {seq_expression}, * FROM (SELECT " + ",".join(source_keys),
                     " FROM " + ' '.join(source_key_assignments) + " {where_statement} AS t(" + ",".join(types) + ");"]
     insert_query = "".join(insert_query).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
-                                                host=conf[mk.SOURCE_DB_HOST], port=conf[mk.SOURCE_DB_PORT], db_name=conf[mk.SOURCE_DB_NAME],
-                                                db_user=conf[mk.SOURCE_DB_USER], db_password=conf[mk.SOURCE_DB_PASSWORD],
+                                                dblink_url=dblink_url_composer(host=conf[mk.SOURCE_DB_HOST],
+                                                                               port=conf[mk.SOURCE_DB_PORT],
+                                                                               db_name=conf[mk.SOURCE_DB_NAME],
+                                                                               db_user=conf[mk.SOURCE_DB_USER],
+                                                                               db_password=conf[mk.SOURCE_DB_PASSWORD]),
                                                 seq_expression=seq_expression, where_statement=where_statement)
 
     return insert_query
@@ -210,7 +215,7 @@ def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
     '''
-    return '"{schema}"."{table}"'.format(schema=schema_name, table=table_name)
+    return "{schema}.{table}".format(schema=QuotedString(schema_name), table=QuotedString(table_name))
 
 
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):
@@ -308,3 +313,8 @@ def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, b
         query = query.where(and_(*criterias))
 
     return query
+
+
+def dblink_url_composer(host, port, db_name, db_user, db_password):
+    return QuotedString('host={host} port={port} dbname={db_name} user={db_user} password={db_password}'
+                        .format(host=host, port=port, db_name=db_name, db_user=db_user, db_password=db_password))

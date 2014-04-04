@@ -417,6 +417,9 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         if WRITE_STAR:
                             csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
                                                              tbl_name='dim_section', root_path=OUT_PATH_ROOT)
+                        if WRITE_PG:
+                            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_section', dsec_out_cols,
+                                                                   [section])
 
                         # Grab the summative assessment object
                         asmt_summ = assessments[str(asmt_year) + 'summative' + str(grade) + subject]

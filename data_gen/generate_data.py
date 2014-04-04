@@ -6,6 +6,13 @@ Command line arguments:
   --state_name STATE_NAME: Name of state to generate data for (defaults to 'North Carolina')
   --state_code STATE_CODE: Code of state to generate data for (defaults to 'NC')
   --state_type STATE_TYPE_NAME: Name of state type to generate data for (expects devel, typical_1, california)
+  --pg_out: Output data to a PostgreSQL database
+  --star_out: Output data to star schema CSV
+  --lz_out: Output data to landing zone CSV and JSON
+
+  If using PostgreSQL output:
+    --host: Host for PostgreSQL server
+    --schema: Schema for PostgreSQL database
 
 @author: nestep
 @date: March 17, 2014
@@ -16,15 +23,13 @@ import datetime
 import os
 import random
 
-from mongoengine import connect
-from pymongo import Connection
-
 import data_generation.config.enrollment as enroll_config
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
 import data_generation.util.hiearchy as hier_util
-import data_generation.writers.csv as csv_writer
-import data_generation.writers.json as json_writer
+import data_generation.writers.writecsv as csv_writer
+import data_generation.writers.writejson as json_writer
+import data_generation.writers.writepostgres as postgres_writer
 import sbac_data_generation.config.cfg as sbac_in_config
 import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
@@ -40,6 +45,12 @@ from sbac_data_generation.util.id_gen import IDGen
 from sbac_data_generation.writers.filters import SBAC_FILTERS
 
 OUT_PATH_ROOT = 'out'
+DB_CONN = None
+DB_SCHEMA = None
+
+WRITE_STAR = False
+WRITE_LZ = False
+WRITE_PG = False
 
 # See assign_team_configuration_options for these values
 STATES = []
@@ -97,10 +108,27 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
 
 
+def connect_to_postgres(host, port, dbname, user, password):
+    """
+    Open a connection to PostgreSQL.
+
+    @param host: Postgres server host
+    @param port: Postgres server port
+    @param dbname: Name of database to connect to
+    @param user: Postgres server user
+    @param password: Postgres server password
+    """
+    return postgres_writer.create_dbcon(host, port, dbname, user, password)
+
+
 def prepare_output_files():
     """
     Prepare the star-schema output files before the data generation run begins creating data.
     """
+    # Do not create files if we are not writing to star schema
+    if not WRITE_STAR:
+        return
+
     # Prepare star-schema output files
     csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
@@ -145,14 +173,16 @@ def build_registration_systems(years, id_gen):
             rs.academic_year = year
             rs.extract_date = str(year - 1) + '-02-27'
 
-            # Create the JSON file
-            file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
-            file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
-            json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
+            # Write landing zone files if requested
+            if WRITE_LZ:
+                # Create the JSON file
+                file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
+                file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+                json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
 
-            # Prepare the SR CSV file
-            file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
-            csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
+                # Prepare the SR CSV file
+                file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+                csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
 
     # Return the generated GUIDs
     return guids
@@ -169,16 +199,27 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     @param id_gen: ID generator
     @returns: New assessment object
     """
+    # Create assessment
     asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen, save_to_mongo=False)
-    file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid)
-    json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
-                                     root_path=OUT_PATH_ROOT)
-    file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid)
-    csv_writer.prepare_csv_file(file_name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    file_name = sbac_out_config.DIM_ASMT_FORMAT['name']
-    csv_writer.write_records_to_file(file_name, sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt],
-                                     tbl_name='dim_asmt', root_path=OUT_PATH_ROOT)
 
+    # Output to requested mediums
+    if WRITE_LZ:
+        file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid)
+        json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
+                                         root_path=OUT_PATH_ROOT)
+        file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid)
+        csv_writer.prepare_csv_file(file_name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+
+    if WRITE_STAR:
+        file_name = sbac_out_config.DIM_ASMT_FORMAT['name']
+        csv_writer.write_records_to_file(file_name, sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt],
+                                         tbl_name='dim_asmt', root_path=OUT_PATH_ROOT)
+
+    if WRITE_PG:
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_asmt',
+                                               sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt])
+
+    # Return the object
     return asmt
 
 
@@ -320,9 +361,13 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             schools.append(school)
 
     # Write out hierarchies for this district
-    csv_writer.write_records_to_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
-                                     sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies,
-                                     tbl_name='dim_hier', root_path=OUT_PATH_ROOT)
+    if WRITE_STAR:
+        csv_writer.write_records_to_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
+                                         sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies,
+                                         tbl_name='dim_hier', root_path=OUT_PATH_ROOT)
+    if WRITE_PG:
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_inst_hier',
+                                               sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies)
 
     # Sort the schools
     schools_by_grade = sbac_hier_gen.sort_schools_by_grade(schools)
@@ -369,8 +414,12 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
                         section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, state,
                                                               asmt_year, save_to_mongo=False)
-                        csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
-                                                         tbl_name='dim_section', root_path=OUT_PATH_ROOT)
+                        if WRITE_STAR:
+                            csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
+                                                             tbl_name='dim_section', root_path=OUT_PATH_ROOT)
+                        if WRITE_PG:
+                            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_section', dsec_out_cols,
+                                                                   [section])
 
                         # Grab the summative assessment object
                         asmt_summ = assessments[str(asmt_year) + 'summative' + str(grade) + subject]
@@ -407,15 +456,26 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                             dim_students.append(student)
 
         # Write data out to CSV
-        csv_writer.write_records_to_file(sr_out_name, sr_out_cols, sr_students, root_path=OUT_PATH_ROOT)
-        csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students, entity_filter=('held_back', False),
-                                         tbl_name='dim_student', root_path=OUT_PATH_ROOT)
+        if WRITE_LZ:
+            csv_writer.write_records_to_file(sr_out_name, sr_out_cols, sr_students, root_path=OUT_PATH_ROOT)
+        if WRITE_STAR:
+            csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
+                                             entity_filter=('held_back', False), tbl_name='dim_student',
+                                             root_path=OUT_PATH_ROOT)
+        if WRITE_PG:
+            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
+                                                   entity_filter=('held_back', False))
         if asmt_year in ASMT_YEARS:
             for guid, rslts in assessment_results.items():
-                csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
-                                                 lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
-                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
-                                                 root_path=OUT_PATH_ROOT)
+                if WRITE_LZ:
+                    csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
+                                                     lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
+                if WRITE_STAR:
+                    csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
+                                                     root_path=OUT_PATH_ROOT)
+                if WRITE_PG:
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                                                           rslts)
 
     # Some explicit garbage collection
     del hierarchies
@@ -490,10 +550,33 @@ if __name__ == '__main__':
     parser.add_argument('-st', '--state_type', dest='state_type', action='store', default='devel',
                         help='Specify the type of state to generate data for (devel (default), typical_1, california)',
                         required=False)
+    parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
+                        help='The host for the PostgreSQL server to write data to')
+    parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
+                        help='The schema for the PostgreSQL database to write data to')
+    parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
+                        help='Output data to PostgreSQL database', required=False)
+    parser.add_argument('-so', '--star_out', dest='star_out', action='store_true',
+                        help='Output data to star schema CSV', required=False)
+    parser.add_argument('-lo', '--lz_out', dest='lz_out', action='store_true',
+                        help='Output data to landing zone CSV and JSON', required=False)
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
     assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
+
+    # Save output flags
+    WRITE_PG = args.pg_out
+    WRITE_STAR = args.star_out
+    WRITE_LZ = args.lz_out
+
+    # Validate at least one form of output
+    if not WRITE_PG and not WRITE_STAR and not WRITE_LZ:
+        print('Please specify at least one output format')
+        print('  --pg_out    Output to PostgreSQL')
+        print('  --star_out  Output star schema CSV')
+        print('  --lz_out    Output landing zone CSV and JSON')
+        exit()
 
     # Record current (start) time
     tstart = datetime.datetime.now()
@@ -501,11 +584,6 @@ if __name__ == '__main__':
     # Verify output directory exists
     if not os.path.exists(OUT_PATH_ROOT):
         os.makedirs(OUT_PATH_ROOT)
-
-    # Connect to MongoDB and drop an existing datagen database
-    #c = Connection()
-    #if 'datagen' in c.database_names():
-    #    c.drop_database('datagen')
 
     # Clean output directory
     for file in os.listdir(OUT_PATH_ROOT):
@@ -516,11 +594,13 @@ if __name__ == '__main__':
         except:
             pass
 
+    # Connect to Postgres
+    if WRITE_PG:
+        DB_CONN = connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', 'edware2013')
+        DB_SCHEMA = args.pg_schema
+
     # Create the ID generator
     idg = IDGen()
-
-    # Connect to MongoDB, datagen database
-    #connect('datagen')
 
     # Prepare the output files
     prepare_output_files()

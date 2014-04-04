@@ -8,6 +8,13 @@ Command line arguments:
   --state_code STATE_CODE: Code of state to generate data for (defaults to 'NC')
   --state_type STATE_TYPE_NAME: Name of state type to generate data for (expects devel, typical_1, california)
   --process_count: The number of processes to use to generate data (defaults to 2)
+  --pg_out: Output data to a PostgreSQL database
+  --star_out: Output data to star schema CSV
+  --lz_out: Output data to landing zone CSV and JSON
+
+  If using PostgreSQL output:
+    --host: Host for PostgreSQL server
+    --schema: Schema for PostgreSQL database
 
 @author: nestep
 @date: March 22, 2014
@@ -19,9 +26,6 @@ import multiprocessing
 import os
 import random
 import traceback
-
-from mongoengine import connect
-from pymongo import Connection
 
 import generate_data as generate_data
 import sbac_data_generation.config.cfg as sbac_in_config
@@ -145,10 +149,33 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
                         help='Specific the number of sub-processes to spawn (default=2)', required=False)
+    parser.add_argument('-h', '--host', dest='pg_host', action='store', default='localhost',
+                        help='The host for the PostgreSQL server to write data to')
+    parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
+                        help='The schema for the PostgreSQL database to write data to')
+    parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
+                        help='Output data to PostgreSQL database', required=False)
+    parser.add_argument('-so', '--star_out', dest='star_out', action='store_true',
+                        help='Output data to star schema CSV', required=False)
+    parser.add_argument('-lo', '--lz_out', dest='lz_out', action='store_true',
+                        help='Output data to landing zone CSV and JSON', required=False)
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
     generate_data.assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
+
+    # Save output flags
+    generate_data.WRITE_PG = args.pg_out
+    generate_data.WRITE_STAR = args.star_out
+    generate_data.WRITE_LZ = args.lz_out
+
+    # Validate at least one form of output
+    if not generate_data.WRITE_PG and not generate_data.WRITE_STAR and not generate_data.WRITE_LZ:
+        print('Please specify at least one output format')
+        print('  --pg_out    Output to PostgreSQL')
+        print('  --star_out  Output star schema CSV')
+        print('  --lz_out    Output landing zone CSV and JSON')
+        exit()
 
     # Record current (start) time
     tstart = datetime.datetime.now()
@@ -156,11 +183,6 @@ if __name__ == '__main__':
     # Verify output directory exists
     if not os.path.exists(generate_data.OUT_PATH_ROOT):
         os.makedirs(generate_data.OUT_PATH_ROOT)
-
-    # Connect to MongoDB and drop an existing datagen database
-    #c = Connection()
-    #if 'datagen' in c.database_names():
-    #    c.drop_database('datagen')
 
     # Clean output directory
     for file in os.listdir(generate_data.OUT_PATH_ROOT):
@@ -171,14 +193,16 @@ if __name__ == '__main__':
         except:
             pass
 
+    # Connect to Postgres
+    if generate_data.WRITE_PG:
+        generate_data.DB_CONN = generate_data.connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', 'edware2013')
+        generate_data.DB_SCHEMA = args.pg_schema
+
     # Create the ID generator
     manager = multiprocessing.Manager()
     lock = manager.Lock()
     mdict = manager.dict()
     idg = IDGen(lock, mdict)
-
-    # Connect to MongoDB, datagen database
-    #connect('datagen')
 
     # Prepare the output files
     generate_data.prepare_output_files()

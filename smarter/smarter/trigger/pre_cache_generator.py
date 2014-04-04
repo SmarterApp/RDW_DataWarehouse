@@ -11,7 +11,7 @@ import json
 import os
 from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
-from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.utils.utils import run_cron_job
 
 
@@ -33,7 +33,7 @@ def prepare_ed_stats():
                        from_obj=[udl_stats]).\
             where(and_(udl_stats.c.load_status == UdlStatsConstants.MIGRATE_INGESTED,
                        udl_stats.c.last_pre_cached == null(),
-                       udl_stats.c.load_type == UdlStatsConstants.LOAD_TYPE_ASSESSMENT))
+                       udl_stats.c.load_type == LoadType.ASSESSMENT))
         return connector.get_result(query)
 
 

@@ -37,8 +37,7 @@ class CategoryTracker(metaclass=ABCMeta):
         @param row: Current DB table row to be counted
 
         """
-        should_increment = self._should_increment_matched_ids(row)
-        if should_increment:
+        if self._should_increment_matched_ids(row):
             key = DataCounter.MATCHED_IDS
             self._data_counter.increment(guid, key)
 

@@ -149,7 +149,7 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
                         help='Specific the number of sub-processes to spawn (default=2)', required=False)
-    parser.add_argument('-h', '--host', dest='pg_host', action='store', default='localhost',
+    parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
                         help='The schema for the PostgreSQL database to write data to')

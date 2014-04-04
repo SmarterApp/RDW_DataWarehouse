@@ -75,6 +75,7 @@ enroll_config.TEACHERS_PER_SECTION = 0
 
 # Register output filters
 csv_writer.register_filters(SBAC_FILTERS)
+postgres_writer.register_filters(SBAC_FILTERS)
 
 
 def assign_team_configuration_options(team, state_name, state_code, state_type):

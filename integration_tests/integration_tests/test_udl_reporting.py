@@ -87,7 +87,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.validate_migration('cat', (self.fact_table, self.expected_rows),
                                 (self.dim_table, self.expected_unique_batch_guids))
 
-    @unittest.skip('In development')
     def test_validation_student_registration(self):
         print('Running UDL Integration tests for student registration data')
         self.empty_table()

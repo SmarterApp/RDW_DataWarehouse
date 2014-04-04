@@ -96,27 +96,35 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "0aa942b9-75cf-4055-a67a-8b9ab53a9dfc"
-        student_reg_table = prod_conn.get_table(Constants.STUDENT_REG)
-        query = select([func.count().label('student_reg_rec_ids')], student_reg_table.c.student_reg_rec_id.in_([5541, 5544, 5547]))
+        student_reg_table = preprod_conn.get_table(Constants.STUDENT_REG)
+        get_query = select([student_reg_table.c.student_reg_rec_id])
+        count_query = select([func.count().label('student_reg_rec_ids')], student_reg_table.c.student_reg_rec_id.in_(range(15541, 15551)))
 
-        rset = prod_conn.execute(query)
-        row = rset.fetchone()
-        self.assertEqual(3, row['student_reg_rec_ids'])
+        rset = preprod_conn.execute(get_query)
+        row = rset.fetchall()
+        self.assertEqual(10, len(row))
+        self.assertEqual([(15541,), (15542,), (15543,), (15544,), (15545,), (15546,), (15547,), (15548,), (15549,), (15550,)], row)
         rset.close()
-        delete_count, insert_count = migrate_table(batch_guid, None, preprod_conn, prod_conn, 'student_reg', False)
-        self.assertEqual(0, delete_count)
-        self.assertEqual(3, insert_count)
 
-        rset = prod_conn.execute(query)
+        rset = prod_conn.execute(count_query)
         row = rset.fetchone()
         self.assertEqual(0, row['student_reg_rec_ids'])
+        rset.close()
+
+        delete_count, insert_count = migrate_table(batch_guid, None, preprod_conn, prod_conn, 'student_reg', False)
+        self.assertEqual(0, delete_count)
+        self.assertEqual(10, insert_count)
+
+        rset = prod_conn.execute(count_query)
+        row = rset.fetchone()
+        self.assertEqual(10, row['student_reg_rec_ids'])
         rset.close()
 
     def test_get_batches_to_migrate_with_specified_tenant(self):
         batches_to_migrate = get_batches_to_migrate('test')
         self.assertEqual(4, len(batches_to_migrate))
 
-    def test_migrate_batch(self):
+    def test_migrate_batch_asmt(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
@@ -124,8 +132,23 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
 
-    def test_cleanup_batch(self):
+    def test_migrate_batch_stureg(self):
+        batch_guid = '2bb942b9-75cf-4055-a67a-8b9ab53a9dfc'
+        batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
+                 UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
+                 UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION}
+        rtn = migrate_batch(batch)
+        self.assertTrue(rtn)
+
+    def test_cleanup_batch_asmt(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
+        batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
+                 UdlStatsConstants.SCHEMA_NAME: batch_guid, Constants.DEACTIVATE: False}
+        rtn = cleanup_batch(batch)
+        self.assertFalse(rtn)
+
+    def test_cleanup_batch_stureg(self):
+        batch_guid = '2bb942b9-75cf-4055-a67a-8b9ab53a9dfc'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
                  UdlStatsConstants.SCHEMA_NAME: batch_guid, Constants.DEACTIVATE: False}
         rtn = cleanup_batch(batch)

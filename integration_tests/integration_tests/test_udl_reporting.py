@@ -38,7 +38,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
 
     def setUp(self):
         print("Running setup in test_udl_reporting.py")
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_1/filedrop'
         self.sr_tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_2/filedrop'
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome'

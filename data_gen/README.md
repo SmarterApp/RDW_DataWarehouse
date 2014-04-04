@@ -78,6 +78,10 @@ For either script, the following arguments apply:
 * `--star_out`: Output data to star schema CSV
 * `--lz_out`: Output data to landing zone CSV and JSON
 
+If using PostgreSQL output:
+* `--host`: Host for PostgreSQL server
+* `--schema`: Schema for PostgreSQL database
+
 The multi-processed script also takes a flag `--process_count`, which is the number of processes to have running
 simultaneously. Every process will work on one district at a time (e.g. four processes will be working on four
 districts simultaneously) so start as many processes as the hardware can handle. The default is 2.

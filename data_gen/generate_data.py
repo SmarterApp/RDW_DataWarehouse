@@ -10,6 +10,10 @@ Command line arguments:
   --star_out: Output data to star schema CSV
   --lz_out: Output data to landing zone CSV and JSON
 
+  If using PostgreSQL output:
+    --host: Host for PostgreSQL server
+    --schema: Schema for PostgreSQL database
+
 @author: nestep
 @date: March 17, 2014
 """
@@ -42,6 +46,7 @@ from sbac_data_generation.writers.filters import SBAC_FILTERS
 
 OUT_PATH_ROOT = 'out'
 DB_CONN = None
+DB_SCHEMA = None
 
 WRITE_STAR = False
 WRITE_LZ = False
@@ -211,7 +216,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
                                          tbl_name='dim_asmt', root_path=OUT_PATH_ROOT)
 
     if WRITE_PG:
-        postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.dim_asmt',
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_asmt',
                                                sbac_out_config.DIM_ASMT_FORMAT['columns'], [asmt])
 
     # Return the object
@@ -361,7 +366,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                                          sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies,
                                          tbl_name='dim_hier', root_path=OUT_PATH_ROOT)
     if WRITE_PG:
-        postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.dim_inst_hier',
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_inst_hier',
                                                sbac_out_config.DIM_INST_HIER_FORMAT['columns'], hierarchies)
 
     # Sort the schools
@@ -455,7 +460,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                                              entity_filter=('held_back', False), tbl_name='dim_student',
                                              root_path=OUT_PATH_ROOT)
         if WRITE_PG:
-            postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.dim_student', dstu_out_cols, dim_students,
+            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
                                                    entity_filter=('held_back', False))
         if asmt_year in ASMT_YEARS:
             for guid, rslts in assessment_results.items():
@@ -466,7 +471,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                     csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
                                                      root_path=OUT_PATH_ROOT)
                 if WRITE_PG:
-                    postgres_writer.write_records_to_table(DB_CONN, 'dg_pg_test.fact_asmt_outcome', fao_out_cols, rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                                                           rslts)
 
     # Some explicit garbage collection
     del hierarchies
@@ -541,6 +547,10 @@ if __name__ == '__main__':
     parser.add_argument('-st', '--state_type', dest='state_type', action='store', default='devel',
                         help='Specify the type of state to generate data for (devel (default), typical_1, california)',
                         required=False)
+    parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
+                        help='The host for the PostgreSQL server to write data to')
+    parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
+                        help='The schema for the PostgreSQL database to write data to')
     parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
                         help='Output data to PostgreSQL database', required=False)
     parser.add_argument('-so', '--star_out', dest='star_out', action='store_true',
@@ -582,7 +592,9 @@ if __name__ == '__main__':
             pass
 
     # Connect to Postgres
-    DB_CONN = connect_to_postgres('localhost', 5432, 'edware', 'edware', 'edware2013')
+    if WRITE_PG:
+        DB_CONN = connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', 'edware2013')
+        DB_SCHEMA = args.pg_schema
 
     # Create the ID generator
     idg = IDGen()

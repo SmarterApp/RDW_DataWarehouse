@@ -12,6 +12,10 @@ Command line arguments:
   --star_out: Output data to star schema CSV
   --lz_out: Output data to landing zone CSV and JSON
 
+  If using PostgreSQL output:
+    --host: Host for PostgreSQL server
+    --schema: Schema for PostgreSQL database
+
 @author: nestep
 @date: March 22, 2014
 """
@@ -145,6 +149,10 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
                         help='Specific the number of sub-processes to spawn (default=2)', required=False)
+    parser.add_argument('-h', '--host', dest='pg_host', action='store', default='localhost',
+                        help='The host for the PostgreSQL server to write data to')
+    parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
+                        help='The schema for the PostgreSQL database to write data to')
     parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
                         help='Output data to PostgreSQL database', required=False)
     parser.add_argument('-so', '--star_out', dest='star_out', action='store_true',
@@ -186,7 +194,9 @@ if __name__ == '__main__':
             pass
 
     # Connect to Postgres
-    generate_data.DB_CONN = generate_data.connect_to_postgres('localhost', 5432, 'edware', 'edware', 'edware2013')
+    if generate_data.WRITE_PG:
+        generate_data.DB_CONN = generate_data.connect_to_postgres(args.pg_host, 5432, 'edware', 'edware', 'edware2013')
+        generate_data.DB_SCHEMA = args.pg_schema
 
     # Create the ID generator
     manager = multiprocessing.Manager()

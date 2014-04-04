@@ -22,3 +22,11 @@ def get_natural_key_columns(table):
     '''
     natural_key = get_natural_key(table)
     return None if natural_key is None else [c.name for c in natural_key]
+
+
+def get_foreign_key_reference_columns(table):
+    '''
+    Find columns for the table that reference other tables
+    '''
+    columns = [column for column in table.columns if column.foreign_keys != set()]
+    return columns if len(columns) > 0 else None

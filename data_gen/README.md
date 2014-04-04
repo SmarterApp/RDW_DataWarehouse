@@ -74,6 +74,9 @@ For either script, the following arguments apply:
 * `--state_code STATE_CODE`: Specify the code of the state that gets generated (defaults to `NC`)
 * `--state_type STATE_TYPE`: Specify the hierarchy type for the state to generate (expects `devel`, `typical_1`, or
 `california`)
+* `--pg_out`: Output data to a PostgreSQL database
+* `--star_out`: Output data to star schema CSV
+* `--lz_out`: Output data to landing zone CSV and JSON
 
 The multi-processed script also takes a flag `--process_count`, which is the number of processes to have running
 simultaneously. Every process will work on one district at a time (e.g. four processes will be working on four

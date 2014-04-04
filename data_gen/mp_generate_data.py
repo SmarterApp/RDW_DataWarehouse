@@ -8,6 +8,9 @@ Command line arguments:
   --state_code STATE_CODE: Code of state to generate data for (defaults to 'NC')
   --state_type STATE_TYPE_NAME: Name of state type to generate data for (expects devel, typical_1, california)
   --process_count: The number of processes to use to generate data (defaults to 2)
+  --pg_out: Output data to a PostgreSQL database
+  --star_out: Output data to star schema CSV
+  --lz_out: Output data to landing zone CSV and JSON
 
 @author: nestep
 @date: March 22, 2014
@@ -142,10 +145,29 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
                         help='Specific the number of sub-processes to spawn (default=2)', required=False)
+    parser.add_argument('-po', '--pg_out', dest='pg_out', action='store_true',
+                        help='Output data to PostgreSQL database', required=False)
+    parser.add_argument('-so', '--star_out', dest='star_out', action='store_true',
+                        help='Output data to star schema CSV', required=False)
+    parser.add_argument('-lo', '--lz_out', dest='lz_out', action='store_true',
+                        help='Output data to landing zone CSV and JSON', required=False)
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
     generate_data.assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
+
+    # Save output flags
+    generate_data.WRITE_PG = args.pg_out
+    generate_data.WRITE_STAR = args.star_out
+    generate_data.WRITE_LZ = args.lz_out
+
+    # Validate at least one form of output
+    if not generate_data.WRITE_PG and not generate_data.WRITE_STAR and not generate_data.WRITE_LZ:
+        print('Please specify at least one output format')
+        print('  --pg_out    Output to PostgreSQL')
+        print('  --star_out  Output star schema CSV')
+        print('  --lz_out    Output landing zone CSV and JSON')
+        exit()
 
     # Record current (start) time
     tstart = datetime.datetime.now()

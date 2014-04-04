@@ -108,13 +108,17 @@ class Test_Intelligent_Insert(unittest.TestCase):
         with get_target_connection() as connection:
             connection.set_metadata_by_reflect(schema_name)
             dim_inst_hier = connection.get_table('dim_inst_hier')
-            dim_section = connection.get_table('dim_section')
             dim_student = connection.get_table('dim_student')
-            tables = [dim_inst_hier, dim_section, dim_student]
-            for table in tables:
-                query = select([table])
-                result = connection.execute(query).fetchall()
-                self.assertEqual(len(result), 0, "Duplicate record inserted into dim tables")
+            query = select([dim_student])
+            result = connection.execute(query).fetchall()
+            self.assertEqual(len(result), 2, "expected 2 student records")
+            for row in result:
+                self.assertEqual(row['rec_status'], 'S', "Expected the student record to be soft deleted")
+            query = select([dim_inst_hier])
+            result = connection.execute(query).fetchall()
+            self.assertEqual(len(result), 1, "expected 1 inst_heir record")
+            for row in result:
+                self.assertEqual(row['rec_status'], 'S', "Expected the inst heir record to be soft deleted")
 
     def test_validation(self):
         self.empty_batch_table()

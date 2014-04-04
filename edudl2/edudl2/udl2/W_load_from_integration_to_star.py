@@ -11,7 +11,7 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
     explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions,\
-    update_or_delete_duplicate_record, create_target_schema_for_batch
+    handle_duplicates_in_dimensions, create_target_schema_for_batch
 
 logger = get_task_logger(__name__)
 
@@ -181,7 +181,7 @@ def handle_record_upsert(msg):
     configs = get_move_to_target_conf()['handle_record_upsert']
     affected_rows = 0
     for match_conf in configs:
-        num_of_rows = update_or_delete_duplicate_record(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)
+        num_of_rows = handle_duplicates_in_dimensions(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)
         affected_rows += num_of_rows
     finish_time = datetime.datetime.now()
 

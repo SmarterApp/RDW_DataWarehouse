@@ -81,25 +81,19 @@ class HandleUpsertHelper():
             conditions.append(self._table.c[col_name] == record[col_name])
         return and_(*conditions)
 
-    def delete_by_guid(self, record):
-        '''
-        Deletes record in database by guid.
-        '''
-        if not record:
-            return None
-        guid_clause = self._get_guid(record)
-        query = delete(self._table).where(guid_clause).where(self._batch_clause)
-        self._conn.execute(query)
+    def soft_delete_and_update(self, record, matched):
+        """Soft delete the record from pre-prod
 
-    def update_dependant(self, old_record, new_record):
-        '''
-        Updates foreign keys in dependant table with the new ones.
-        '''
-        columns = self._dependant_table.c
-        # construct where clause with old values
-        conditions = (columns[col] == old_record[col] for col in self._update_col_names)
-        # construct set clause with values from new records
-        values = {columns[col]: new_record[col] for col in self._update_col_names}
-        query = update(self._dependant_table).values(values).where(and_(*conditions)).\
-            where(self._dependant_table.c[BATCH_GUID] == old_record[BATCH_GUID])
+        Soft deletes the record by
+        1. marking the rec_status flag to "S"
+        2. updates the primary key of the record with the pk of the matched record
+
+        :param record: record to be soft deleted
+        :param matched: matching record found in prod
+        """
+        columns = self._table.c
+        values = {columns[pk_column]: matched[pk_column] for pk_column in self._table.primary_key.columns.keys()}
+        values[columns['rec_status']] = 'S'
+        guid_clause = self._get_guid(record)
+        query = update(self._table).values(values).where(guid_clause).where(self._batch_clause)
         self._conn.execute(query)

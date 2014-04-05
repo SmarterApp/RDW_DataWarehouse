@@ -619,6 +619,10 @@ if __name__ == '__main__':
         # Process the state
         generate_state_data(state, idg)
 
+    # Close the open DB connection
+    if WRITE_PG:
+        DB_CONN.close()
+
     # Record now current (end) time
     tend = datetime.datetime.now()
 

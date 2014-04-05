@@ -89,7 +89,7 @@ def generate_state_district_hierarchy(id_gen):
     return district_tuples
 
 
-def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_mdict):
+def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_mdict, pg_host, pg_schema):
     """
     Process a single district. This is basically a wrapper for generate_data.generate_district_date that is designed to
     be called through a multiprocessor.Pool construct.
@@ -100,11 +100,18 @@ def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_m
     @param skip_rates: Rates (changes) to skip assessments
     @param id_lock: Monitored lock for ID generator
     @param id_mdict: Monitored dictionary for ID generator
+    @param pg_host: PostgreSQL hostname
+    @param pg_schema: PostgreSQL schema
     """
     id_gen = IDGen(id_lock, id_mdict)
 
     # Note that we are processing
     print('Starting to generate data for district %s (%s District)' % (district.name, district.type_str))
+
+    # Connect to Postgres
+    if generate_data.WRITE_PG:
+        generate_data.DB_CONN = generate_data.connect_to_postgres(pg_host, 5432, 'edware', 'edware', 'edware2013')
+        generate_data.DB_SCHEMA = pg_schema
 
     # Start the processing
     dist_tstart = datetime.datetime.now()
@@ -116,6 +123,12 @@ def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_m
     except Exception as ex:
         print('%s' % ex)
         traceback.print_exc()
+
+    # Close the open DB connection
+    if generate_data.WRITE_PG:
+        generate_data.DB_CONN.close()
+
+    # Get the run time and report back
     dist_tend = datetime.datetime.now()
     return district.name, count, (dist_tend - dist_tstart)
 
@@ -213,13 +226,17 @@ if __name__ == '__main__':
     # Build the states and districts
     districts = generate_state_district_hierarchy(idg)
 
+    # Close the open DB connection
+    if generate_data.WRITE_PG:
+        generate_data.DB_CONN.close()
+
     # Go
     print()
     print('Processing of districts beginning now')
     pool = multiprocessing.Pool(processes=int(args.process_count))
     for tpl in districts:
-        pool.apply_async(district_pool_worker, args=(tpl[0], tpl[1], tpl[2], tpl[3], lock, mdict),
-                         callback=pool_callback)
+        pool.apply_async(district_pool_worker, args=(tpl[0], tpl[1], tpl[2], tpl[3], lock, mdict, args.pg_host,
+                                                     args.pg_schema), callback=pool_callback)
     pool.close()
     pool.join()
 

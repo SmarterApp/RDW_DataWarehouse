@@ -133,8 +133,12 @@ def prepare_output_files():
     # Prepare star-schema output files
     csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_PRI_FORMAT['name'], sbac_out_config.FAO_PRI_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
                                 sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name'],
+                                sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
                                 sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_SECTION_FORMAT['name'],
@@ -332,8 +336,12 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
+    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
+    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
     dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
     dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
+    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
+    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
     dsec_out_name = sbac_out_config.DIM_SECTION_FORMAT['name']
     dsec_out_cols = sbac_out_config.DIM_SECTION_FORMAT['columns']
 
@@ -463,9 +471,14 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
                                              entity_filter=('held_back', False), tbl_name='dim_student',
                                              root_path=OUT_PATH_ROOT)
+            csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
+                                             entity_filter=('held_back', False), tbl_name='dim_student',
+                                             root_path=OUT_PATH_ROOT)
         if WRITE_PG:
             postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
                                                    entity_filter=('held_back', False))
+            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
+                                                   dim_students, entity_filter=('held_back', False))
         if asmt_year in ASMT_YEARS:
             for guid, rslts in assessment_results.items():
                 if WRITE_LZ:
@@ -474,9 +487,13 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                 if WRITE_STAR:
                     csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
                                                      root_path=OUT_PATH_ROOT)
+                    csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
+                                                     tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
                 if WRITE_PG:
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
                                                            rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
+                                                           fao_pri_out_cols, rslts)
 
     # Some explicit garbage collection
     del hierarchies

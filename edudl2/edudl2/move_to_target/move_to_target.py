@@ -221,9 +221,7 @@ def calculate_spend_time_as_second(start_time, finish_time):
     '''
     Main function to calculate period distance as seconds
     '''
-    spend_time = finish_time - start_time
-    time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
-    return time_as_seconds
+    return (finish_time - start_time).total_seconds()
 
 
 def match_deleted_records(conf, match_conf):

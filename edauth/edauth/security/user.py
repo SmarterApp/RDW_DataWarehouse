@@ -42,24 +42,31 @@ class UserContext(object):
         Instantiates user context from RoleRelation array. We do not preserve inter-relationships between institutions
         '''
         self.__tenant_context_map = {row.tenant: {} for row in role_inst_rel_list}
+        self.__role_list = role_inst_rel_list
         for row in role_inst_rel_list:
             tenant = self.__tenant_context_map.get(row.tenant)
             role = tenant.get(row.role)
-            role = {'sc': set(), 'dg': set(), 'sg': set()} if role is None else role
-            role.get('sc').add(row.state_code)
-            role.get('dg').add(row.district_guid)
-            role.get('sg').add(row.school_guid)
+            role = {'state_code': set(), 'district_guid': set(), 'school_guid': set()} if role is None else role
+            if row.school_guid:
+                role.get('school_guid').add(row.school_guid)
+            elif row.district_guid:
+                role.get('district_guid').add(row.district_guid)
+            elif row.state_code:
+                role.get('state_code').add(row.school_guid)
             tenant[row.role] = role
             self.__tenant_context_map[row.tenant] = tenant
 
     def get_states(self, tenant, role):
-        return self.__tenant_context_map[tenant][role]['sc']
+        return self.__tenant_context_map[tenant][role]['state_code']
 
     def get_districts(self, tenant, role):
-        return self.__tenant_context_map[tenant][role]['dg']
+        return self.__tenant_context_map[tenant][role]['district_guid']
 
     def get_schools(self, tenant, role):
-        return self.__tenant_context_map[tenant][role]['sg']
+        return self.__tenant_context_map[tenant][role]['school_guid']
+
+    def get_role_context(self, tenant, role):
+        return self.__tenant_context_map[tenant][role] if tenant in self.__tenant_context_map and role in self.__tenant_context_map[tenant] else {}
 
     def __json__(self, request):
         '''
@@ -145,25 +152,23 @@ class User(object):
 
     def set_context(self, role_inst_rel_list_all):
         # For now set the roles and tenant like this to make everything continue to work
-        roles = []
-        tenants = []
-        state_codes = []
+        roles = set()
+        tenants = set()
+        state_codes = set()
         role_inst_rel_list = [rel_chain for rel_chain in role_inst_rel_list_all if not Roles.has_undefined_roles([rel_chain.role])]
-        for c in role_inst_rel_list:
-            roles.append(c.role)
-            tenants.append(c.tenant)
-            state_codes.append(c.state_code)
-        # We need to make sure that there are we know about all the roles
-        if Roles.has_undefined_roles(roles):
-            roles.append(Roles.get_invalid_role())
+        for rel_chain in role_inst_rel_list:
+            roles.add(rel_chain.role)
+            tenants.add(rel_chain.tenant)
+            state_codes.add(rel_chain.state_code)
+        # If there is no roles, set it to an invalid one so user can logout
+        if not role_inst_rel_list:
+            roles.add(Roles.get_invalid_role())
         self.__context = UserContext(role_inst_rel_list)
-
-        self.__info[UserConstants.ROLES] = roles
-        self.__info[UserConstants.TENANT] = tenants
-        self.__info[UserConstants.STATECODE] = state_codes
+        self.__info[UserConstants.ROLES] = list(roles)
+        self.__info[UserConstants.TENANT] = list(tenants)
+        self.__info[UserConstants.STATECODE] = list(state_codes)
         # Check whether 'home' is enabled
-        has_home = Roles.has_display_home_permission(roles)
-        self.__info[UserConstants.DISPLAYHOME] = has_home
+        self.__info[UserConstants.DISPLAYHOME] = Roles.has_display_home_permission(roles)
 
     def set_guid(self, guid):
         '''

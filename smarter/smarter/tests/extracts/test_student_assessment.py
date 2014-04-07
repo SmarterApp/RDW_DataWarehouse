@@ -17,6 +17,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 from edauth.security.user import RoleRelation
 import edauth
+from smarter.security.constants import RolesConstants
 
 
 class TestStudentAssessment(Unittest_with_edcore_sqlite):
@@ -28,13 +29,12 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         reg.settings = {}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
-
-        self.__config.testing_securitypolicy(dummy_session)
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", "228", "242")])
+        self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def tearDown(self):
         self.__request = None

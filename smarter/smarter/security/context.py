@@ -3,16 +3,18 @@ Created on May 7, 2013
 
 @author: dip
 '''
-from sqlalchemy.sql.expression import Select, or_
+from sqlalchemy.sql.expression import Select, or_, and_
 from pyramid.security import authenticated_userid
 import pyramid
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.security.tenant import get_tenant_by_state_code
+from pyramid.httpexceptions import HTTPForbidden
+from smarter.security.constants import RolesConstants
 
 
-def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
+def select_with_context(columns=None, whereclause=None, from_obj=[], permission=RolesConstants.PII, **kwargs):
     '''
     Returns a SELECT clause statement with context security attached in the WHERE clause
 
@@ -28,19 +30,15 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         # Build query
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 
-        # Look up each role for its context security object
-        clauses = []
-        for role in user.get_roles():
-            context = __get_context_instance(role, connector)
-
-            # Get context security expression to attach to where clause
-            clause = context.get_context(get_tenant_by_state_code(state_code), user)
-            if clause is not None:
-                clauses.append(clause)
+        if permission not in user.get_roles():
+            raise HTTPForbidden()
+        context = __get_context_instance(permission, connector)
+        # Get context security expression to attach to where clause
+        clauses = context.get_context(get_tenant_by_state_code(state_code), user)
 
         # Set the where clauses with OR
         if clauses:
-            query = query.where(or_(*clauses))
+            query = query.where(and_(or_(*clauses)))
 
     return query
 
@@ -86,4 +84,4 @@ def __get_context_instance(role, connector):
     # Get the context object
     context_obj = ContextRoleMap.get_context(role)
     # Instantiate it
-    return context_obj(connector)
+    return context_obj(connector, role)

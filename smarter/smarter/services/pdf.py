@@ -19,7 +19,6 @@ from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_p
 from smarter.reports.helpers.constants import AssessmentType, Constants
 import services.celery
 from edapi.decorators import validate_params
-import sys
 from edcore.utils.utils import to_bool
 
 

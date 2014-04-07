@@ -2,7 +2,7 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
-    UnittestEdcoreDBConnection
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extracts.student_asmt_processor import process_async_extraction_request, \
     get_extract_file_path, process_sync_extract_request, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
@@ -24,6 +24,8 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
+from smarter.security.constants import RolesConstants
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 __author__ = 'ablum'
@@ -53,11 +55,11 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
         self.__config.testing_securitypolicy(dummy_session.get_user())
-        set_tenant_map({'tomcat': 'NC'})
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
 
     def tearDown(self):
         # reset the registry

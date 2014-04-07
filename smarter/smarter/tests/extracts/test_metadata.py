@@ -7,7 +7,7 @@ import unittest
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 from pyramid.testing import DummyRequest
 from pyramid.registry import Registry
 from pyramid import testing
@@ -15,6 +15,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
 from pyramid.security import Allow
 import edauth
+from smarter.security.constants import RolesConstants
 
 
 class TestMetadata(Unittest_with_edcore_sqlite):
@@ -32,11 +33,11 @@ class TestMetadata(Unittest_with_edcore_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", "228", "242")])
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

@@ -8,7 +8,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from sqlalchemy.sql.expression import select
 from smarter.reports.helpers.constants import Constants
-from smarter.security.roles.teacher import Teacher
+from smarter.security.roles.pii import PII
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
@@ -16,17 +16,18 @@ from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid.security import Allow
 import edauth
+from smarter.security.constants import RolesConstants
 
 
 class TestTeacherContextSecurity(Unittest_with_edcore_sqlite):
 
     def setUp(self):
-        defined_roles = [(Allow, 'TEACHER', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         self.tenant = get_unittest_tenant_name()
         set_tenant_map({self.tenant: "NC"})
-        dummy_session = create_test_session(['TEACHER'])
-        dummy_session.set_user_context([RoleRelation("TEACHER", get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), "NC", "228", "242")])
         self.user = dummy_session.get_user()
         self.__request = DummyRequest()
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
@@ -34,47 +35,47 @@ class TestTeacherContextSecurity(Unittest_with_edcore_sqlite):
 
     def test_append_teacher_context(self):
         with UnittestEdcoreDBConnection() as connection:
-            teacher = Teacher(connection)
+            pii = PII(connection, RolesConstants.PII)
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.section_guid],
                            from_obj=([fact_asmt_outcome]))
-            clause = teacher.get_context(self.tenant, self.user)
+            clause = pii.get_context(self.tenant, self.user)
 
-            results = connection.get_result(query.where(clause))
+            results = connection.get_result(query.where(*clause))
             self.assertTrue(len(results) > 0)
             for result in results:
                 self.assertEqual(result[Constants.SECTION_GUID], '345')
 
     def test_check_context_with_context(self):
         with UnittestEdcoreDBConnection() as connection:
-            teacher = Teacher(connection)
+            pii = PII(connection, RolesConstants.PII)
             student_guids = ['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
 
-            context = teacher.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_guids)
             self.assertTrue(context)
 
     def test_check_context_with_no_context(self):
         with UnittestEdcoreDBConnection() as connection:
-            teacher = Teacher(connection)
+            pii = PII(connection, RolesConstants.PII)
             student_guids = ['dd']
 
-            context = teacher.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_guids)
             self.assertFalse(context)
 
     def test_check_context_with_no_context_to_all_guids(self):
         with UnittestEdcoreDBConnection() as connection:
-            teacher = Teacher(connection)
+            pii = PII(connection, RolesConstants.PII)
             student_guids = ['dd', 'e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
 
-            context = teacher.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_guids)
             self.assertFalse(context)
 
     def test_check_context_with_empty_context(self):
         with UnittestEdcoreDBConnection() as connection:
-            teacher = Teacher(connection)
+            pii = PII(connection, RolesConstants.PII)
             student_guids = []
 
-            context = teacher.check_context(self.tenant, self.user, student_guids)
+            context = pii.check_context(self.tenant, self.user, student_guids)
             self.assertTrue(context)
 
 if __name__ == "__main__":

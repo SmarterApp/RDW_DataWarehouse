@@ -10,14 +10,13 @@ from pyramid import testing
 from pyramid.testing import DummyRequest
 from smarter.security.context import check_context, select_with_context
 # Import the roles below so test can run as a standalone
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
-from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
 from smarter.reports.helpers.constants import Constants
-from edapi.exceptions import ForbiddenError
+from smarter.security.constants import RolesConstants
 
 
 class TestContext(Unittest_with_edcore_sqlite):
@@ -28,10 +27,9 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
         set_tenant_map({self.__tenant_name: "NC"})
-        defined_roles = [(Allow, 'TEACHER', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
-        dummy_session = create_test_session(['TEACHER'])
-        dummy_session.set_user_context([RoleRelation("TEACHER", get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session = create_test_session([RolesConstants.PII])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
@@ -50,11 +48,10 @@ class TestContext(Unittest_with_edcore_sqlite):
     def test_select_with_context_as_teacher(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.section_guid],
-                                        from_obj=([fact_asmt_outcome]), state_code='NC')
+            query = select_with_context([fact_asmt_outcome.c.state_code],
+                                        from_obj=([fact_asmt_outcome]), limit=1, state_code='NC')
             results = connection.get_result(query)
-            for result in results:
-                self.assertEquals(result[Constants.SECTION_GUID], '345')
+            self.assertEqual(len(results), 1)
 
 #    def test_select_with_context_as_school_admin_one(self):
 #        uid = "951"

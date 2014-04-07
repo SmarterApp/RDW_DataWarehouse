@@ -5,7 +5,7 @@ Created on Mar 8, 2013
 '''
 import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
@@ -14,7 +14,9 @@ from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
-from edauth.security.user import RoleRelation
+from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.security.constants import RolesConstants
+from edcore.security.tenant import set_tenant_map
 
 
 class TestContext(Unittest_with_edcore_sqlite):
@@ -28,12 +30,12 @@ class TestContext(Unittest_with_edcore_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
-        self.__config.testing_securitypolicy(dummy_session)
+        dummy_session = create_test_session([RolesConstants.PII])
+        self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def tearDown(self):
         # reset the registry

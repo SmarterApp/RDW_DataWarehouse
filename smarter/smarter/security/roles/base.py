@@ -12,8 +12,9 @@ class BaseRole(object):
     '''
     Base Class Role
     '''
-    def __init__(self, connector):
+    def __init__(self, connector, name):
         self.connector = connector
+        self.name = name
 
     def get_context(self, tenant, user):
         pass

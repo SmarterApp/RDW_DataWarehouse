@@ -13,7 +13,6 @@ from sqlalchemy.sql.expression import func
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.logging import audit_event
 import collections
-from smarter.security.context import select_with_context
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
 from edapi.cache import cache_region
@@ -26,6 +25,7 @@ from copy import deepcopy
 from collections import OrderedDict, namedtuple
 from smarter.reports.student_administration import get_academic_years, get_default_academic_year
 from smarter.security.tenant import validate_user_tenant
+from smarter.security.constants import RolesConstants
 
 
 REPORT_NAME = "comparing_populations"
@@ -485,7 +485,7 @@ class QueryHelper():
                    .order_by(self._dim_inst_hier.c.school_name)
 
     def get_query_for_school_view(self):
-        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)], state_code=self._state_code)\
+        return self.build_query(select, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
                    .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))\
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .order_by(self._fact_asmt_outcome.c.asmt_grade)

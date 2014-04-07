@@ -7,9 +7,10 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 from pyramid.registry import Registry
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from pyramid.response import Response
@@ -26,8 +27,8 @@ import tempfile
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
-from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
+from smarter.security.constants import RolesConstants
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -51,13 +52,12 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
 
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
-
-        self.__config.testing_securitypolicy(dummy_session)
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        self.__config.testing_securitypolicy(dummy_session.get_user())
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)

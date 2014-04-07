@@ -24,13 +24,14 @@ from services.tasks.pdf import prepare_path
 #from services.celeryconfig import get_config
 import shutil
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 from services.tests.tasks.test_pdf import get_cmd
 from pyramid.security import Allow
 import edauth
-from edauth.security.user import RoleRelation
-from edauth.security.session import Session
 from edcore.security.tenant import set_tenant_map
+from smarter.security.constants import RolesConstants
+from edauth.tests.test_helper.create_session import create_test_session
+from edauth.security.user import RoleRelation
 
 
 class TestServices(Unittest_with_edcore_sqlite):
@@ -40,8 +41,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
         # Set up defined roles
-        defined_roles = [(Allow, 'TEACHER', ('view', 'logout'))]
-        edauth.set_roles(defined_roles)
         self.__tenant_name = get_unittest_tenant_name()
         set_tenant_map({self.__tenant_name: "NC"})
         self.__temp_dir = tempfile.mkdtemp()
@@ -49,10 +48,11 @@ class TestServices(Unittest_with_edcore_sqlite):
         reg.settings['pdf.report_base_dir'] = self.__temp_dir
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 
-        dummy_session = Session()
-        dummy_session.set_user_context([RoleRelation("TEACHER", self.__tenant_name, "NC", "228", "242")])
-        dummy_session.set_uid('a5ddfe12-740d-4487-9179-de70f6ac33be')
-        # For context security, we save the user object, not the session
+        defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout'))]
+        edauth.set_roles(defined_roles)
+        # Set up context security
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.__tenant_name, 'NC', '228', '242')])
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
         # celery settings for UT

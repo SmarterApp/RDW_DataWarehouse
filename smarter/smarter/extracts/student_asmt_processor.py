@@ -15,6 +15,7 @@ from smarter.security.context import select_with_context
 from sqlalchemy.sql.expression import and_
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
+from smarter.security.constants import RolesConstants
 
 __author__ = 'ablum'
 
@@ -105,7 +106,7 @@ def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_y
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
                                      fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
                                     from_obj=[dim_asmt
-                                              .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], state_code=state_code)\
+                                              .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.SAR_EXTRACTS, state_code=state_code)\
             .where(and_(fact_asmt_outcome.c.state_code == state_code))\
             .where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))\
             .where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))\

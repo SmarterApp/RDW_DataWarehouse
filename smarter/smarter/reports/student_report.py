@@ -19,6 +19,7 @@ from smarter.reports.helpers.metadata import get_custom_metadata, \
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_student_list_asmt_administration
 from smarter.security.tenant import validate_user_tenant
+from smarter.security.constants import RolesConstants
 
 REPORT_NAME = 'individual_student_report'
 
@@ -109,7 +110,7 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.acc_streamline_mode.label('acc_streamline_mode')],
                                 from_obj=[fact_asmt_outcome
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
-                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.rec_status == Constants.CURRENT))], state_code=state_code)
+                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.rec_status == Constants.CURRENT))], permission=RolesConstants.PII, state_code=state_code)
     query = query.where(and_(fact_asmt_outcome.c.student_guid == student_guid, fact_asmt_outcome.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)

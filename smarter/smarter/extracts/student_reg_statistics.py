@@ -2,6 +2,7 @@ from sqlalchemy import or_, and_
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.constants import Constants
+from smarter.security.constants import RolesConstants
 
 
 __author__ = 'ablum'
@@ -17,8 +18,8 @@ def get_academic_year_query(academic_year, state_code):
                                                    student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep, student_reg.c.dmg_prg_lep,
                                                    student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd, student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race,
                                                    student_reg.c.academic_year],
-                                                  from_obj=[student_reg], state_code=state_code).where(or_(student_reg.c.academic_year == academic_year,
-                                                                                                       student_reg.c.academic_year == academic_year - 1))
+                                                  from_obj=[student_reg], permission=RolesConstants.SRS_EXTRACTS, state_code=state_code).where(or_(student_reg.c.academic_year == academic_year,
+                                                                                                                                                   student_reg.c.academic_year == academic_year - 1))
     return academic_year_query
 
 
@@ -40,7 +41,7 @@ def get_match_id_query(academic_year, state_code):
                                               prev_sr.c.dmg_sts_ecd.label('prev_dmg_sts_ecd'), current_sr.c.dmg_sts_mig,
                                               prev_sr.c.dmg_sts_mig.label('prev_dmg_sts_mig'), current_sr.c.dmg_multi_race, prev_sr.c.dmg_multi_race.label('prev_dmg_multi_race'), current_sr.c.academic_year],
                                              from_obj=[current_sr.join(prev_sr, and_(current_sr.c.student_guid == prev_sr.c.student_guid))],
-                                             state_code=state_code).where(and_(current_sr.c.academic_year == academic_year, prev_sr.c.academic_year == academic_year - 1))
+                                             permission=RolesConstants.SRS_EXTRACTS, state_code=state_code).where(and_(current_sr.c.academic_year == academic_year, prev_sr.c.academic_year == academic_year - 1))
     return match_id_query
 
 

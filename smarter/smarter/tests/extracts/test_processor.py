@@ -6,7 +6,7 @@ Created on Nov 5, 2013
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
-    Unittest_with_edcore_sqlite
+    Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from smarter.extracts.processor import get_extract_work_zone_path, \
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
     get_pickup_zone_info, get_extract_request_user_info, _get_extract_work_zone_base_dir
@@ -20,6 +20,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
+from smarter.security.constants import RolesConstants
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -44,11 +45,11 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
         self.__config.testing_securitypolicy(dummy_session.get_user())
-        set_tenant_map({'tomcat': 'NC'})
 
     def tearDown(self):
         # reset the registry

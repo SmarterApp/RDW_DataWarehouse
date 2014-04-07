@@ -32,7 +32,6 @@ class Stats:
         return self._values[item]
 
 
-
 class DemographicLevels(dict):
     """ an individual demographic """
     def __init__(self, values: dict=None, **stats: {str: Stats}):

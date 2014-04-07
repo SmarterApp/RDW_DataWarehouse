@@ -8,7 +8,7 @@ __author__ = 'ablum'
 
 class TestAllDone(unittest.TestCase):
 
-    def test__create_stats_row(self):
+    def test__create_sr_stats_row(self):
         msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'studentregistration'}
         endtime = '1111111'
         status = mk.SUCCESS
@@ -20,8 +20,8 @@ class TestAllDone(unittest.TestCase):
         self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_INGESTED)
 
-    def test__create_failed_stats_row(self):
-        msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'studentregistration'}
+    def test__create_sr_failed_stats_row(self):
+        msg = {mk.LOAD_TYPE: 'studentregistration'}
         endtime = '1111111'
         status = mk.FAILURE
 
@@ -29,6 +29,18 @@ class TestAllDone(unittest.TestCase):
 
         self.assertTrue('batch_operation' not in results)
         self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
-        self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
+        self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 0)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_FAILED)
+
+    def test__create_asmt_stats_row(self):
+        msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'assessment'}
+        endtime = '1111111'
+        status = mk.SUCCESS
+
+        results = _create_stats_row(msg, endtime, status)
+
+        self.assertTrue('batch_operation' not in results)
+        self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
+        self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
+        self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_INGESTED)
 

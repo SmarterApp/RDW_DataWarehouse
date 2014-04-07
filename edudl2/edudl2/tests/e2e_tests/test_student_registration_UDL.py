@@ -1,3 +1,5 @@
+from edcore.database.stats_connector import StatsDBConnection
+from edcore.database.utils.constants import UdlStatsConstants
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 __author__ = 'smuhit'
 
@@ -108,6 +110,20 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             for row in result:
                 status = row['udl_phase_step_status']
                 self.assertEqual(status, mk.SUCCESS, 'UDL process did not complete successfully')
+
+    #Validate the UDL process completed successfully
+    def validate_stats_update(self, status):
+        with StatsDBConnection() as conn:
+            stats_table = conn.get_table('udl_stats')
+            query = select([stats_table.c.batch_operation, stats_table.c.load_status]).where(stats_table.c.batch_guid == self.batch_id)
+            result = conn.execute(query).fetchall()
+            self.assertNotEqual(result, [])
+            for row in result:
+                operation = row['batch_operation']
+                self.assertEqual(operation, 's')
+
+                status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
+                self.assertEqual(row['load_status'], status)
 
     #Validate that the load type received is student registration
     def validate_load_type(self):
@@ -256,6 +272,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_student_data('original_data')
         self.validate_total_number_in_target('original_data')
         self.validate_notification(mk.SUCCESS, [], 0)
+        self.validate_stats_update(mk.SUCCESS)
 
         # Run and verify second run of student registration data (different test registration than previous run)
         # Should retry notification twice, then succeed

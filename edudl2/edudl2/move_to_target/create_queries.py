@@ -4,6 +4,7 @@ from sqlalchemy.sql.expression import text, bindparam, select, and_
 from edudl2.database.udl2_connector import get_udl_connection, \
     get_target_connection, get_prod_connection
 from psycopg2.extensions import QuotedString
+from edudl2.udl2_util.database_util import create_filtered_sql_string
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -215,8 +216,7 @@ def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
     '''
-    #return "{schema}.{table}".format(schema=QuotedString(schema_name), table=QuotedString(table_name))
-    return '"{schema}"."{table}"'.format(schema=schema_name, table=table_name)
+    return create_filtered_sql_string('"{schema}"."{table}"', schema=schema_name, table=table_name)
 
 
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):

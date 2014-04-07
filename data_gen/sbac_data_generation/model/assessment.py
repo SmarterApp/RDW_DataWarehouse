@@ -7,6 +7,7 @@ Model an assessment for the SBAC assessment.
 
 from mongoengine import DateTimeField, FloatField, IntField, StringField
 
+import data_generation.writers.filters as write_filters
 import sbac_data_generation.config.cfg as sbac_config
 
 from data_generation.model.assessment import Assessment
@@ -57,3 +58,14 @@ class SBACAssessment(Assessment):
     from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
     to_date = DateTimeField(required=False)
     effective_date = DateTimeField(required=False)
+
+    def get_object_set(self):
+        """Get the set of objects that this exposes to a CSV or JSON writer.
+
+        Root objects made available:
+          - assessment
+
+        :returns: Dictionary of root objects
+        """
+        return {'assessment': self,
+                'assessment_effective': {'date': write_filters.filter_date_Ymd(self.effective_date)}}

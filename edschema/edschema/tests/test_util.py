@@ -138,7 +138,15 @@ class TestMetadataUtil(unittest.TestCase):
 
     def test_get_matcher_key_columns(self):
         '''
-        test getting primary key columns
+        test getting matcher key columns
         '''
         expected_columns = set(self.__test_table.columns) - set(self.__pkcol + self.__mkcol)
         self.assertEquals(expected_columns, set(get_matcher_key_columns(self.__test_table)))
+
+    def test_get_matcher_key_column_names(self):
+        '''
+        test gettting matcher key column names
+        '''
+        expected_columns = set(self.__test_table.columns) - set(self.__pkcol + self.__mkcol)
+        expected_column_names = [c.name for c in expected_columns]
+        self.assertEquals(expected_column_names, get_matcher_key_column_names(self.__test_table))

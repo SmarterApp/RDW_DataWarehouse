@@ -19,7 +19,7 @@ import edauth
 from smarter.security.constants import RolesConstants
 
 
-class TestTeacherContextSecurity(Unittest_with_edcore_sqlite):
+class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout'))]
@@ -33,18 +33,18 @@ class TestTeacherContextSecurity(Unittest_with_edcore_sqlite):
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         self.__config.testing_securitypolicy(self.user)
 
-    def test_append_teacher_context(self):
+    def test_append_pii_context(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.section_guid],
+            query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
             self.assertTrue(len(results) > 0)
             for result in results:
-                self.assertEqual(result[Constants.SECTION_GUID], '345')
+                self.assertEqual(result[Constants.SCHOOL_GUID], '242')
 
     def test_check_context_with_context(self):
         with UnittestEdcoreDBConnection() as connection:

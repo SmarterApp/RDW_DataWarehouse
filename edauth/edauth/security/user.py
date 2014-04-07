@@ -52,7 +52,7 @@ class UserContext(object):
             elif row.district_guid:
                 role.get('district_guid').add(row.district_guid)
             elif row.state_code:
-                role.get('state_code').add(row.school_guid)
+                role.get('state_code').add(row.state_code)
             tenant[row.role] = role
             self.__tenant_context_map[row.tenant] = tenant
 

@@ -26,7 +26,7 @@ class SRSExtracts(BaseRole):
         context = user.get_context().get_states(tenant, self.name)
         expr = []
         if context:
-            expr = fact_asmt_outcome.c.state_code.in_(context)
+            expr.append(fact_asmt_outcome.c.state_code.in_(context))
         return expr
 
     def check_context(self, tenant, user, student_guids):

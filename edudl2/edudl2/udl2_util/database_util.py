@@ -6,6 +6,7 @@ Created on May 22, 2013
 from sqlalchemy.sql.expression import text
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import MetaData
+import re
 
 
 def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
@@ -145,13 +146,14 @@ def validate_db_objects(*db_objects):
         if not valid_name(name):
             raise Exception("Database object name %s contains invalid characters", name)
 
-INVALID_CHARACTERS = ';\\'
-
 
 def valid_name(name):
+    '''
+    Check if name is a valid database object name. A valid name should
+    only contains underscore, hyphen, alphabetic letters and
+    numbers. Return True if input name is valid, return False
+    otherwise.
+    '''
     if type(name) is not str:
         return True
-    for c in INVALID_CHARACTERS:
-        if c in name:
-            return False
-    return True
+    return re.sub('[_-]', '', name).isalnum()

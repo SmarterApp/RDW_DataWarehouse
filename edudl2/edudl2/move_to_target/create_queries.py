@@ -215,7 +215,8 @@ def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
     '''
-    return "{schema}.{table}".format(schema=QuotedString(schema_name), table=QuotedString(table_name))
+    #return "{schema}.{table}".format(schema=QuotedString(schema_name), table=QuotedString(table_name))
+    return '"{schema}"."{table}"'.format(schema=schema_name, table=table_name)
 
 
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):

@@ -157,7 +157,7 @@ def _create_filtered_string(query, allow_special_chars, **kwargs):
     for value in kwargs.values():
         if type(value) is str:
             if not re.sub('[' + allow_special_chars + ']', '', value).isalnum():
-                raise UDL2SQLFilteredSQLStringException('Name contained invalid characters')
+                raise UDL2SQLFilteredSQLStringException('Name contained invalid characters[' + value + ']')
         elif type(value) is int:
             pass
         else:

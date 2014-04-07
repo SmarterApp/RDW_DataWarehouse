@@ -45,7 +45,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_primary')),
                               ['asmt_guid', 'student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_inst_hier')),
-                              ['state_name', 'district_guid', 'school_guid'])
+                              ['state_code', 'district_guid', 'school_guid'])
 
     def test_migrate_fact_asmt_outcome(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())

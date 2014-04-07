@@ -31,6 +31,10 @@ class TestMetadataUtil(unittest.TestCase):
         Index('dim_inst_hier_idx', test_table.c.inst_hier_rec_id, unique=True)
         Index('dim_inst_hier_codex', test_table.c.state_code, test_table.c.district_guid,
               test_table.c.school_guid, unique=False)
+        Table('fact_asmt_outocme', self.__metadata,
+              Column('fact_asmt_outcome_rec_id', BigInteger, primary_key=True),
+              MetaColumn('batch_guid', String(50), nullable=True))
+
         self.__test_table = test_table
         self.__nkcol = [test_table.c.state_name, test_table.c.district_guid, test_table.c.school_guid]
         self.__mkcol = [test_table.c.batch_guid, test_table.c.from_date, test_table.c.to_date, test_table.c.rec_status]
@@ -63,7 +67,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting natural key columns if not defined
         '''
-        test_table_none = Table('dim_student', self.__metadata,
+        test_table_none = Table('test_table', self.__metadata,
                                 Column('student_rec_id', BigInteger, primary_key=True),
                                 Column('batch_guid', String(50), nullable=True))
         self.assertTrue(get_natural_key_columns(test_table_none) is None)
@@ -72,7 +76,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting foreign key columns if none defined
         '''
-        test_table_none = Table('dim_student', self.__metadata,
+        test_table_none = Table('test_table', self.__metadata,
                                 Column('student_rec_id', BigInteger, primary_key=True),
                                 Column('batch_guid', String(50), nullable=True))
         self.assertTrue(get_foreign_key_reference_columns(test_table_none) is None)
@@ -81,7 +85,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting foreign key columns if one defined
         '''
-        test_table_one = Table('dim_student', self.__metadata,
+        test_table_one = Table('test_table', self.__metadata,
                                Column('student_rec_id', BigInteger, primary_key=True),
                                Column('enroll_inst_hier_rec_id', BigInteger,
                                       ForeignKey(self.__test_table.c.inst_hier_rec_id), nullable=False),
@@ -94,7 +98,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting foreign key columns if two defined
         '''
-        test_table_one = Table('dim_student', self.__metadata,
+        test_table_one = Table('test_table', self.__metadata,
                                Column('student_rec_id', BigInteger, primary_key=True),
                                Column('enroll_inst_hier_rec_id', BigInteger,
                                       ForeignKey(self.__test_table.c.inst_hier_rec_id), nullable=False),
@@ -116,7 +120,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting meta key columns if none defined
         '''
-        test_table_none = Table('dim_student', self.__metadata,
+        test_table_none = Table('test_table', self.__metadata,
                                 Column('student_rec_id', BigInteger, primary_key=True),
                                 Column('batch_guid', String(50), nullable=True))
         self.assertTrue(get_meta_columns(test_table_none) is None)
@@ -131,7 +135,7 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test getting primary key columns if none defined
         '''
-        test_table_none = Table('dim_student', self.__metadata,
+        test_table_none = Table('test_table', self.__metadata,
                                 Column('student_rec_id', BigInteger),
                                 Column('batch_guid', String(50), nullable=True))
         self.assertTrue(get_primary_key_columns(test_table_none) is None)
@@ -145,8 +149,15 @@ class TestMetadataUtil(unittest.TestCase):
 
     def test_get_matcher_key_column_names(self):
         '''
-        test gettting matcher key column names
+        test getting matcher key column names
         '''
         expected_columns = set(self.__test_table.columns) - set(self.__pkcol + self.__mkcol)
         expected_column_names = [c.name for c in expected_columns]
         self.assertEquals(expected_column_names, get_matcher_key_column_names(self.__test_table))
+
+    def test_get_tables_starting_with(self):
+        '''
+        test getting tables from metadata data using prefix of table name
+        '''
+        expected_tables = ['dim_inst_hier']
+        self.assertEquals(expected_tables, get_tables_starting_with(self.__metadata, 'dim_'))

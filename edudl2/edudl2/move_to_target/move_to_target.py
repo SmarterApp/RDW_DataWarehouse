@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
+from edschema.metadata.util import get_tables_starting_with
 from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.exceptions.errorcodes import ErrorSource
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
@@ -250,7 +251,7 @@ def match_deleted_records(conf, match_conf):
     return matched_results
 
 
-def handle_duplicates_in_dimensions(tenant_name, guid_batch, match_conf):
+def handle_duplicates_in_dimensions(tenant_name, guid_batch):
     '''
     Handle duplicate records in dimensions by marking them as deleted
 
@@ -262,21 +263,21 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch, match_conf):
 
     :param tenant_name: tenant name, to get target database connection
     :param guid_batch:  batch buid
-    :param match_conf:  configurations for move_to_target to match tables for
-                        foreign key rec ids for dim_asmt, dim_student, and dim_inst_hier.
-                        See move_to_target_conf.py
     '''
     affected_rows = 0
     with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
-        target_db_helper = HandleUpsertHelper(target_conn, guid_batch, match_conf)
-        prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, match_conf)
-        for record in target_db_helper.find_all():
-            matched = prod_db_helper.find_by_natural_key(record)
-            if not matched:
-                continue
-            # soft delete the record and set its pk as the pk of the matched record
-            target_db_helper.soft_delete_and_update(record, matched)
-            affected_rows += 1
+
+        tables = get_tables_starting_with(target_conn.get_metadata(), 'dim_')
+        for table_name in tables:
+            target_db_helper = HandleUpsertHelper(target_conn, guid_batch, table_name)
+            prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, table_name)
+            for record in target_db_helper.find_all():
+                matched = prod_db_helper.find_by_natural_key(record)
+                if not matched:
+                    continue
+                # soft delete the record and set its pk as the pk of the matched record
+                target_db_helper.soft_delete_and_update(record, matched)
+                affected_rows += 1
     return affected_rows
 
 

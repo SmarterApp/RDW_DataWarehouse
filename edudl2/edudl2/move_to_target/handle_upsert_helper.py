@@ -1,9 +1,6 @@
 from sqlalchemy import select, delete, update, and_
-
-# Column names constants. Below columns are specific to Edware, and
-# are unlikely to change in future.
-BATCH_GUID = 'batch_guid'
-REC_STATUS = 'rec_status'
+from edschema.metadata.util import get_matcher_key_column_names, get_natural_key_columns
+from edcore.database.utils.constants import Constants
 
 
 class _Matcher():
@@ -35,16 +32,12 @@ class HandleUpsertHelper():
     configuration file.
     '''
 
-    def __init__(self, connector, batch_guid, conf):
+    def __init__(self, connector, batch_guid, table_name):
         self._conn = connector
-        self._table_name = conf['table_name']
-        self._dependant_table_conf = conf['dependant_table']
-        self._guid_col_names = conf['guid_columns']
-        self._matcher = _Matcher(conf['key_columns'])
-        self._update_col_names = self._dependant_table_conf['columns']
-        self._table = connector.get_table(self._table_name)
-        self._dependant_table = connector.get_table(self._dependant_table_conf['name'])
-        self._batch_clause = (self._table.c[BATCH_GUID] == batch_guid)
+        self._table = connector.get_table(table_name)
+        self._natural_key_column_names = get_natural_key_columns(self._table)
+        self._matcher = _Matcher(get_matcher_key_column_names(self._table))
+        self._batch_clause = (self._table.c[Constants.BATCH_GUID] == batch_guid)
 
     def find_all(self):
         '''
@@ -62,7 +55,7 @@ class HandleUpsertHelper():
         if not record:
             return None
         guid_clause = self._get_guid(record)
-        query = select([self._table]).where(guid_clause).where(self._table.c[REC_STATUS].__eq__('C'))
+        query = select([self._table]).where(guid_clause).where(self._table.c[Constants.REC_STATUS].__eq__(Constants.STATUS_CURRENT))
         results = self._conn.execute(query)
         for result in results:
             if self._matcher.match(record, result):
@@ -77,7 +70,7 @@ class HandleUpsertHelper():
         indicates a unique record in database.
         '''
         conditions = []
-        for col_name in self._guid_col_names:
+        for col_name in self._natural_key_column_names:
             conditions.append(self._table.c[col_name] == record[col_name])
         return and_(*conditions)
 
@@ -93,7 +86,7 @@ class HandleUpsertHelper():
         """
         columns = self._table.c
         values = {columns[pk_column]: matched[pk_column] for pk_column in self._table.primary_key.columns.keys()}
-        values[columns['rec_status']] = 'S'
+        values[columns['rec_status']] = Constants.STATUS_SHADOW
         guid_clause = self._get_guid(record)
         query = update(self._table).values(values).where(guid_clause).where(self._batch_clause)
         self._conn.execute(query)

@@ -82,3 +82,13 @@ def get_matcher_key_column_names(table):
     '''
     matcher_columns = get_matcher_key_columns(table)
     return None if matcher_columns is None else [c.name for c in matcher_columns]
+
+
+def get_tables_starting_with(metadata, starts_with):
+    '''
+    Returns list of dim tables based on metadata
+
+    :param metadata: SQLAlchemy metadata object
+    :param starts_with: Table name starts with this prefix
+    '''
+    return [table.name for table in metadata.sorted_tables if table.name.startswith(starts_with)]

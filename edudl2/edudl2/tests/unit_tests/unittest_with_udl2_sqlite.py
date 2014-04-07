@@ -12,10 +12,13 @@ from edschema.metadata.ed_metadata import generate_ed_metadata
 class Unittest_with_udl2_sqlite(Unittest_with_sqlite):
     @classmethod
     def setUpClass(cls, force_foreign_keys=True):
-        super().setUpClass(datasource_name=TARGET_NAMESPACE + '.' + get_unittest_tenant_name(), metadata=generate_ed_metadata(), resources_dir=None, force_foreign_keys=force_foreign_keys)
-        super().setUpClass(datasource_name=PRODUCTION_NAMESPACE + '.' + get_unittest_tenant_name(), metadata=generate_ed_metadata(), resources_dir=None, force_foreign_keys=force_foreign_keys)
+        super().setUpClass(datasource_name=TARGET_NAMESPACE + '.' + get_unittest_tenant_name(), metadata=generate_ed_metadata(), use_metadata_from_db=False,
+                           resources_dir=None, force_foreign_keys=force_foreign_keys)
+        super().setUpClass(datasource_name=PRODUCTION_NAMESPACE + '.' + get_unittest_tenant_name(), metadata=generate_ed_metadata(), use_metadata_from_db=False,
+                           resources_dir=None, force_foreign_keys=force_foreign_keys)
         # TODO: for UDL, there's errors in create tables
-        #super().setUpClass(datasource_name=UDL_NAMESPACE + '.' + get_unittest_tenant_name(), metadata=generate_udl2_metadata(), resources_dir=None, force_foreign_keys=force_foreign_keys, import_data=False)
+        #super().setUpClass(datasource_name=UDL_NAMESPACE + '.' + get_unittest_tenant_name(), metadata=generate_udl2_metadata(), resources_dir=None,
+        #                   force_foreign_keys=force_foreign_keys, import_data=False)
 
     @classmethod
     def tearDownClass(cls):

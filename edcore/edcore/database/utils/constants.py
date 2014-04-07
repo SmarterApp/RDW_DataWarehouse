@@ -22,6 +22,7 @@ class UdlStatsConstants():
     LAST_PRE_CACHED = 'last_pre_cached'
     LAST_PDF_TASK_REQUESTED = 'last_pdf_task_requested'
     UDL_STATS = 'udl_stats'
+    BATCH_OPERATION = 'batch_operation'
     # Available Load Status
     UDL_STATUS_RECEIVED = 'udl.received'
     UDL_STATUS_FAILED = 'udl.failed'
@@ -30,6 +31,8 @@ class UdlStatsConstants():
     MIGRATE_IN_PROCESS = 'migrate.in_process'
     MIGRATE_INGESTED = 'migrate.ingested'
     MIGRATE_FAILED = 'migrate.failed'
+    # Available Batch Operations
+    SNAPSHOT = 's'
 
 
 class LoadType():

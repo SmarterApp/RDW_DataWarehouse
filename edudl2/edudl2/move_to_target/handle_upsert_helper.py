@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, update, and_
+from sqlalchemy import select, update, and_
 from edschema.metadata.util import get_matcher_key_column_names, get_natural_key_columns
 from edcore.database.utils.constants import Constants
 
@@ -86,7 +86,7 @@ class HandleUpsertHelper():
         """
         columns = self._table.c
         values = {columns[pk_column]: matched[pk_column] for pk_column in self._table.primary_key.columns.keys()}
-        values[columns['rec_status']] = Constants.STATUS_SHADOW
+        values[columns[Constants.REC_STATUS]] = Constants.STATUS_SHADOW
         guid_clause = self._get_guid(record)
         query = update(self._table).values(values).where(guid_clause).where(self._batch_clause)
         self._conn.execute(query)

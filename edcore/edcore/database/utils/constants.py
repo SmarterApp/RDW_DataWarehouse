@@ -42,3 +42,5 @@ class Constants():
     STATUS_SHADOW = 'D'
     BATCH_GUID = 'batch_guid'
     REC_STATUS = 'rec_status'
+    DIM_TABLES_PREFIX = 'dim_'
+    META_COLUMN = 'MetaColumn'

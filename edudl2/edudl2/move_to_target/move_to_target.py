@@ -16,6 +16,7 @@ from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edschema.metadata_generator import generate_ed_metadata
 from sqlalchemy.sql.expression import text, select, and_
 from edcore.database.utils.utils import create_schema
+from edcore.database.utils.constants import Constants
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
     create_insert_query, update_foreign_rec_id_query,\
     create_sr_table_select_insert_query,\
@@ -267,7 +268,7 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch):
     affected_rows = 0
     with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
 
-        tables = get_tables_starting_with(target_conn.get_metadata(), 'dim_')
+        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.DIM_TABLES_PREFIX)
         for table_name in tables:
             target_db_helper = HandleUpsertHelper(target_conn, guid_batch, table_name)
             prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, table_name)

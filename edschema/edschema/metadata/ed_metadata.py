@@ -30,7 +30,7 @@ __updated__ = '2014-04-03'
 
 
 class MetaColumn(Column):
-    pass
+    col_type = 'MetaColumn'
 
 
 def generate_ed_metadata(schema_name=None, bind=None):
@@ -107,6 +107,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     student_demographics = Table('dim_student_demographics', metadata,
                                  Column('student_demographic_rec_id', BigInteger, primary_key=True),
+                                 MetaColumn('batch_guid', String(50), nullable=True),
                                  Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
                                  Column('dmg_eth_hsp', Boolean, nullable=True),
                                  Column('dmg_eth_ami', Boolean, nullable=True),
@@ -119,10 +120,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('dmg_prg_504', Boolean, nullable=True),
                                  Column('dmg_prg_tt1', Boolean, nullable=True),
                                  Column('dmg_eth_derived', SmallInteger, nullable=True),
-                                 Column('rec_status', String(2), nullable=False),
-                                 Column('from_date', String(8), nullable=False),
-                                 Column('to_date', String(8), nullable=True),
-                                 Column('batch_guid', String(50), nullable=True),
+                                 MetaColumn('from_date', String(8), nullable=False),
+                                 MetaColumn('to_date', String(8), nullable=True),
+                                 MetaColumn('rec_status', String(2), nullable=False)
                                  )
 
     Index('dim_student_demographics_idx', student_demographics.c.student_guid, unique=False)
@@ -185,7 +185,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
-                               Column('batch_guid', String(50), nullable=True),
+                               MetaColumn('batch_guid', String(50), nullable=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
                                Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
@@ -196,7 +196,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('school_guid', String(50), nullable=False),
                                Column('section_guid', String(50), nullable=False),  # TODO: Delete this field
                                Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
-                               Column('section_rec_id', BigInteger, nullable=False),
+                               Column('section_rec_id', BigInteger, nullable=False),  # this column will be dropped soon
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                Column('where_taken_name', String(256)),
                                Column('asmt_grade', String(10), nullable=False),
@@ -225,9 +225,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
                                Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                               Column('rec_status', String(1), nullable=False),
-                               Column('from_date', String(8), nullable=False),
-                               Column('to_date', String(8), nullable=True),
+                               MetaColumn('rec_status', String(1), nullable=False),
+                               MetaColumn('from_date', String(8), nullable=False),
+                               MetaColumn('to_date', String(8), nullable=True),
                                # Add 4 assessment columns
                                Column('asmt_type', String(32), nullable=False),
                                Column('asmt_year', SmallInteger, nullable=False),

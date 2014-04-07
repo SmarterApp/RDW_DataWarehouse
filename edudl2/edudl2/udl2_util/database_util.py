@@ -144,8 +144,11 @@ def create_filtered_sql_string(query, **kwargs):
     create string for SQL statement
     '''
     for value in kwargs.values():
-        if type(value) is not str:
-            raise UDL2SQLFilteredSQLStringException('Name was not string')
-        if not re.sub('[_-]', '', value).isalnum():
-            raise UDL2SQLFilteredSQLStringException('Name contained invalid characters')
+        if type(value) is str:
+            if not re.sub('[_-]', '', value).isalnum():
+                raise UDL2SQLFilteredSQLStringException('Name contained invalid characters')
+        elif type(value) is int:
+            pass
+        else:
+            raise UDL2SQLFilteredSQLStringException('Type of Name was not string or integer')
     return query.format(**kwargs)

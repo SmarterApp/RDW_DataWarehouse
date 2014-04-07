@@ -115,12 +115,13 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def validate_stats_update(self, status):
         with StatsDBConnection() as conn:
             stats_table = conn.get_table('udl_stats')
-            query = select([stats_table.c.batch_operation, stats_table.c.load_status]).where(stats_table.c.batch_guid == self.batch_id)
+            query = select([stats_table.c.batch_operation, stats_table.c.load_status, stats_table.c.snapshot_criteria]).where(stats_table.c.batch_guid == self.batch_id)
             result = conn.execute(query).fetchall()
             self.assertNotEqual(result, [])
             for row in result:
                 operation = row['batch_operation']
                 self.assertEqual(operation, 's')
+                self.assertEquals(row['snapshot_criteria'], '{reg_system_id:800b3654-4406-4a90-9591-be84b67054df,academic_year:2015}')
 
                 status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
                 self.assertEqual(row['load_status'], status)

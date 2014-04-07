@@ -38,8 +38,8 @@ def _create_stats_row(msg, end_time, status):
         stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_INGESTED
         if msg[mk.LOAD_TYPE] == LoadType.STUDENT_REGISTRATION:
             stats[UdlStatsConstants.BATCH_OPERATION] = UdlStatsConstants.SNAPSHOT
-            stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = "{test_reg_field}:{test_reg_value}," \
-                                                         "{academic_year_field}:{academic_year_value}" \
+            stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = "{{{test_reg_field}:{test_reg_value}," \
+                                                         "{academic_year_field}:{academic_year_value}}}" \
                 .format(test_reg_field='reg_system_id', test_reg_value=msg[mk.REG_SYSTEM_ID],
                         academic_year_field='academic_year', academic_year_value=msg[mk.ACADEMIC_YEAR])
     else:

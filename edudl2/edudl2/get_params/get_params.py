@@ -32,6 +32,7 @@ def get_callback_params(json_file_dir, load_type):
 
 
 def get_academic_year_param(json_file_dir, load_type):
+    academic_year = None
     try:
         academic_year = get_value_from_json(json_file_dir, udl2_conf['academic_year_key'][load_type])
 

@@ -10,7 +10,7 @@ tests_require = requires + ['nose',
                             'pep8',
                             'coverage']
 
-private_repositories = ['http://10.168.7.90/archive']
+private_repositories = ['lib']
 
 setuptools.setup(name='FixtureDataGeneration-SBAC',
                  version='0.1',

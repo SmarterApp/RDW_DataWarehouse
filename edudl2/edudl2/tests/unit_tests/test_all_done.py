@@ -9,7 +9,7 @@ __author__ = 'ablum'
 class TestAllDone(unittest.TestCase):
 
     def test__create_sr_stats_row(self):
-        msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'studentregistration'}
+        msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'studentregistration', mk.REG_SYSTEM_ID: '1234', mk.ACADEMIC_YEAR: 2015}
         endtime = '1111111'
         status = mk.SUCCESS
 
@@ -19,6 +19,7 @@ class TestAllDone(unittest.TestCase):
         self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
         self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_INGESTED)
+        self.assertEquals(results[UdlStatsConstants.SNAPSHOT_CRITERIA], "{reg_system_id:1234,academic_year:2015}")
 
     def test__create_sr_failed_stats_row(self):
         msg = {mk.LOAD_TYPE: 'studentregistration'}
@@ -31,6 +32,7 @@ class TestAllDone(unittest.TestCase):
         self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
         self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 0)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_FAILED)
+        self.assertTrue('snapshot_criteria' not in results)
 
     def test__create_asmt_stats_row(self):
         msg = {mk.TOTAL_ROWS_LOADED: 100, mk.LOAD_TYPE: 'assessment'}
@@ -43,3 +45,4 @@ class TestAllDone(unittest.TestCase):
         self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
         self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_INGESTED)
+        self.assertTrue('snapshot_criteria' not in results)

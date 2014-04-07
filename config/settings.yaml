@@ -304,12 +304,12 @@ qa:
     mode: prod
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@v.qa.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
-      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
@@ -338,8 +338,6 @@ qa:
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
-    migrate.celery:
-      BROKER_URL:amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

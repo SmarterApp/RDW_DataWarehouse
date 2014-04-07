@@ -135,3 +135,23 @@ def get_sqlalch_table_object(db_engine, schema_name, table_name):
     metadata = get_schema_metadata(db_engine, schema_name)
     table = metadata.tables[schema_name + '.' + table_name]
     return table
+
+
+def validate_db_objects(*db_objects):
+    '''
+    Check if list of database object names are valid.
+    '''
+    for name in db_objects:
+        if not valid_name(name):
+            raise Exception("Database object name %s contains invalid characters", name)
+
+INVALID_CHARACTERS = ';\\'
+
+
+def valid_name(name):
+    if type(name) is not str:
+        return True
+    for c in INVALID_CHARACTERS:
+        if c in name:
+            return False
+    return True

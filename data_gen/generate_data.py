@@ -168,8 +168,7 @@ def build_registration_systems(years, id_gen):
     start_year = years[0] - 1
     for i in range(NUMBER_REGISTRATION_SYSTEMS):
         # Build the original system
-        rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', id_gen,
-                                                        save_to_mongo=False)
+        rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', id_gen)
         guids.append(rs.guid)
 
         # Update it over every year
@@ -205,7 +204,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     @returns: New assessment object
     """
     # Create assessment
-    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen, save_to_mongo=False)
+    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen)
 
     # Output to requested mediums
     if WRITE_LZ:
@@ -260,20 +259,20 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
         assessment_results[asmt.guid] = []
 
     # Create the original outcome object
-    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
     assessment_results[asmt.guid].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
         assessment_results[asmt.guid].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen, save_to_mongo=False)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
         assessment_results[asmt.guid].append(ao2)
 
         # See if the updated record should be deleted
@@ -422,7 +421,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         # Create a class and a section for this grade and subject
                         clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
                         section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, state,
-                                                              asmt_year, save_to_mongo=False)
+                                                              asmt_year)
                         if WRITE_STAR:
                             csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
                                                              tbl_name='dim_section', root_path=OUT_PATH_ROOT)

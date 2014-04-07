@@ -24,7 +24,7 @@ from sbac_data_generation.util.assessment_stats import adjust_score
 
 
 def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date=None, to_date=None,
-                        claim_definitions=sbac_config.CLAIM_DEFINITIONS, save_to_mongo=True):
+                        claim_definitions=sbac_config.CLAIM_DEFINITIONS):
     """
     Generate an assessment object.
 
@@ -36,7 +36,6 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     @param from_date: Assessment from date
     @param to_date: Assessment to date
     @param claim_definitions: Definitions for claims to generate
-    @param save_to_mongo: If the new assessment object should be saved to Mongo
     @returns: The assessment object
     """
     # Get the claim definitions for this subject
@@ -102,16 +101,11 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     sa.from_date = from_date if from_date is not None else sa.effective_date
     sa.to_date = to_date if to_date is not None else sbac_config.ASMT_TO_DATE
 
-    # Save and return the object
-    if save_to_mongo:
-        #sa.save()
-        pass
-
     return sa
 
 
 def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: SBACSection,
-                                inst_hier: InstitutionHierarchy, id_gen, save_to_mongo=True):
+                                inst_hier: InstitutionHierarchy, id_gen):
     """
     Generate an assessment outcome for a given student.
 
@@ -120,7 +114,6 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     @param section: The section this assessment is related to
     @param inst_hier: The institution hierarchy this student belongs to
     @param id_gen: ID generator
-    @param save_to_mongo: If the outcome should be saved to Mongo
     @returns: The assessment outcome
     """
     # Create cut-point lists
@@ -233,11 +226,6 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.acc_scribe_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_scribe_nonembed'][assessment.subject])
     sao.acc_speech_to_text_nonembed = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_speech_to_text_nonembed'][assessment.subject])
     sao.acc_streamline_mode = _pick_default_accommodation_code(sbac_config.ACCOMODATIONS['acc_streamline_mode'][assessment.subject])
-    
-    # Save and return the object
-    if save_to_mongo:
-        #sao.save()
-        pass
 
     return sao
 

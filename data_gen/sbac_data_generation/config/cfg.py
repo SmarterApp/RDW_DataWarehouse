@@ -95,7 +95,7 @@ ACCOMODATIONS = {'acc_asl_video_embed': {'ELA': 4, 'Math': 4},
                  'acc_scribe_nonembed': {'ELA': 4, 'Math': 0},
                  'acc_speech_to_text_nonembed': {'ELA': 4, 'Math': 0},
                  'acc_streamline_mode': {'ELA': 4, 'Math': 4}
-                }
+                 }
 
 
 DEMOGRAPHICS_BY_GRADE = {

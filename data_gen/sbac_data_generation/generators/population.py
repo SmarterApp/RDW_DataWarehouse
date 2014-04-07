@@ -15,8 +15,7 @@ from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.student import SBACStudent
 
 
-def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetime.datetime.now().year,
-                     save_to_mongo=True):
+def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetime.datetime.now().year):
     """
     Generate a student.
 
@@ -26,7 +25,6 @@ def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetim
     @param state: The state this student falls within
     @param acad_year: The current academic year this student is being created for (optional, defaults to your machine
                       clock's current year)
-    @param save_to_mongo: If the new student should be saved to Mongo
     @return: The student
     """
     # Run the General generator
@@ -54,11 +52,6 @@ def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetim
 
     # Set language items
     _set_lang_items(s, acad_year)
-
-    # Save and return object
-    if save_to_mongo:
-        #s.save()
-        pass
 
     return s
 
@@ -92,8 +85,7 @@ def advance_student(student: SBACStudent, schools_by_grade, hold_back_rate=sbac_
 
 def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, state,
                             acad_year=datetime.datetime.now().year,
-                            additional_student_choice=sbac_in_config.REPOPULATE_ADDITIONAL_STUDENTS,
-                            save_to_mongo=True):
+                            additional_student_choice=sbac_in_config.REPOPULATE_ADDITIONAL_STUDENTS):
     """
     Take a school grade and make sure it has enough students. The list of students is updated in-place.
 
@@ -105,20 +97,19 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
     @param acad_year: The current academic year that the repopulation is occurring within (optional, defaults to your
                       machine clock's current year)
     @param additional_student_choice: Array of values for additional students to create in the grade
-    @param save_to_mongo: If any newly created students should be saved to Mongo
     """
     # Re-populate grades if necessary
     if len(grade_students) < (school.student_count_avg / 20):
         student_count = int(random.triangular(school.student_count_min, school.student_count_max,
                                               school.student_count_avg))
         for _ in range(student_count):
-            s = generate_student(school, grade, id_gen, state, acad_year, save_to_mongo=save_to_mongo)
+            s = generate_student(school, grade, id_gen, state, acad_year)
             grade_students.append(s)
     else:
         # The grade is populated, but see if we should add a few new students
         # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
         for _ in range(random.choice(additional_student_choice)):
-            s = generate_student(school, grade, id_gen, state, acad_year, save_to_mongo=save_to_mongo)
+            s = generate_student(school, grade, id_gen, state, acad_year)
             grade_students.append(s)
 
 

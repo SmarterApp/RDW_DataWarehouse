@@ -488,5 +488,4 @@ REGISTRATION_SYSTEM_FORMAT = {'format': 'json',
                                   'Source': {
                                       'TestRegSysID': 'registration_system.sys_guid',
                                       'TestRegCallbackURL': 'registration_system.callback_url'
-                                  }}
-}
+                                  }}}

@@ -39,7 +39,7 @@ class LoadType():
 
 class Constants():
     STATUS_CURRENT = 'C'
-    STATUS_SHADOW = 'D'
+    STATUS_SHADOW = 'S'
     BATCH_GUID = 'batch_guid'
     REC_STATUS = 'rec_status'
     DIM_TABLES_PREFIX = 'dim_'

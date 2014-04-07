@@ -92,7 +92,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('gender', String(10), nullable=True),
                      Column('email', String(256), nullable=True),
                      Column('dob', String(8), nullable=False),
-                     Column('section_guid', String(50), nullable=False),
+                     # marking this as meta column for now to ignore this in intelligent insert duplicate processing
+                     # this column will be deleted soon anyways
+                     MetaColumn('section_guid', String(50), nullable=False),
                      Column('grade', String(10), nullable=False),  # TODO: Delete this field
                      Column('state_code', String(2), nullable=False),
                      Column('district_guid', String(50), nullable=False),

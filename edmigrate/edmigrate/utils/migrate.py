@@ -54,9 +54,7 @@ def get_batches_to_migrate(tenant=None):
                     udl_status_table.c.load_end,
                     udl_status_table.c.batch_operation],
                    from_obj=[udl_status_table]).\
-            where(and_(or_(udl_status_table.c.load_type == LoadType.ASSESSMENT,
-                           udl_status_table.c.load_type == LoadType.STUDENT_REGISTRATION),
-                       udl_status_table.c.load_status == UdlStatsConstants.UDL_STATUS_INGESTED)).\
+            where(udl_status_table.c.load_status == UdlStatsConstants.UDL_STATUS_INGESTED).\
             order_by(udl_status_table.c.file_arrived)
         if tenant:
             query = query.where(and_(udl_status_table.c.tenant == tenant))

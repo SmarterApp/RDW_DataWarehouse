@@ -45,7 +45,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_primary')),
                               ['asmt_guid', 'student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_inst_hier')),
-                              ['state_name', 'district_guid', 'school_guid'])
+                              ['state_code', 'district_guid', 'school_guid'])
 
     def test_migrate_fact_asmt_outcome(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
@@ -97,13 +97,15 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "0aa942b9-75cf-4055-a67a-8b9ab53a9dfc"
         student_reg_table = preprod_conn.get_table(Constants.STUDENT_REG)
-        get_query = select([student_reg_table.c.student_reg_rec_id])
-        count_query = select([func.count().label('student_reg_rec_ids')], student_reg_table.c.student_reg_rec_id.in_(range(15541, 15551)))
+        get_query = select([student_reg_table.c.student_reg_rec_id]).order_by(student_reg_table.c.student_reg_rec_id)
+        count_query = select([func.count().label('student_reg_rec_ids')],
+                             student_reg_table.c.student_reg_rec_id.in_(range(15541, 15551)))
 
         rset = preprod_conn.execute(get_query)
         row = rset.fetchall()
         self.assertEqual(10, len(row))
-        self.assertEqual([(15541,), (15542,), (15543,), (15544,), (15545,), (15546,), (15547,), (15548,), (15549,), (15550,)], row)
+        self.assertListEqual([(15541,), (15542,), (15543,), (15544,), (15545,), (15546,), (15547,), (15548,), (15549,), (15550,)],
+                             row)
         rset.close()
 
         rset = prod_conn.execute(count_query)

@@ -1,14 +1,18 @@
+from edudl2.udl2_util.database_util import validate_db_objects
 
 
 def create_fdw_extension_query(csv_schema):
+    validate_db_objects(csv_schema)
     return "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA {csv_schema}".format(csv_schema=csv_schema)
 
 
 def create_fdw_server_query(fdw_server):
+    validate_db_objects(fdw_server)
     return "CREATE SERVER {fdw_server} FOREIGN DATA WRAPPER file_fdw".format(fdw_server=fdw_server)
 
 
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
+    validate_db_objects(csv_schema, csv_table, fdw_server)
     # bug, when csv_file name is longer than 63 chars, it causes foreign data wrapper fails to create mapping.
     ddl_parts = ['CREATE FOREIGN TABLE IF NOT EXISTS "{csv_schema}"."{csv_table}" (',
                  ', '.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
@@ -20,17 +24,20 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
 
 
 def drop_ddl_csv_query(csv_schema, csv_table):
+    validate_db_objects(csv_schema, csv_table)
     ddl = 'DROP FOREIGN TABLE IF EXISTS "{csv_schema}"."{csv_table}"'.format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 
 def drop_staging_tables_query(csv_schema, csv_table):
+    validate_db_objects(csv_schema, csv_table)
     ddl = 'DROP TABLE IF EXISTS "{csv_schema}"."{csv_table}"'.format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 
 def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
                                         staging_table, csv_schema, csv_table, seq_name, transformation_rules):
+    validate_db_objects(csv_schema, csv_table, staging_schema, staging_table)
     column_names_with_proc = apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules)
     # TODO: This needs to be changed to SQLAlchemy query
     insert_sql = ['INSERT INTO "{staging_schema}"."{staging_table}"(',
@@ -46,17 +53,20 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, c
 
 
 def set_sequence_query(staging_table, start_seq):
+    validate_db_objects(staging_table, start_seq)
     return "SELECT pg_catalog.setval(pg_get_serial_sequence('{staging_table}', 'src_row_number'), {start_seq}, false)".format(staging_table=staging_table,
                                                                                                                               start_seq=start_seq)
 
 
 def create_sequence_query(staging_schema, seq_name, start_seq):
+    validate_db_objects(staging_schema, seq_name, start_seq)
     return 'CREATE SEQUENCE "{staging_schema}"."{seq_name}" START {start_seq}'.format(staging_schema=staging_schema,
                                                                                       seq_name=seq_name,
                                                                                       start_seq=start_seq)
 
 
 def drop_sequence_query(staging_schema, seq_name):
+    validate_db_objects(staging_schema, seq_name)
     return 'DROP SEQUENCE "{staging_schema}"."{seq_name}"'.format(staging_schema=staging_schema,
                                                                   seq_name=seq_name)
 
@@ -79,6 +89,7 @@ def apply_transformation_rules(apply_rules, csv_table_columns, transformation_ru
 
 def get_column_mapping_query(staging_schema, ref_table, source_table):
     # TODO: This needs to be changed to SQLAlchemy query
+    validate_db_objects(staging_schema, ref_table, source_table)
     return 'SELECT source_column, target_column, stored_proc_name FROM "{staging_schema}"."{ref_table}" WHERE source_table=\'{source_table}\''.format(staging_schema=staging_schema,
                                                                                                                                                       ref_table=ref_table,
                                                                                                                                                       source_table=source_table)

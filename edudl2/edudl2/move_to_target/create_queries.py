@@ -216,7 +216,10 @@ def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
     '''
-    return create_filtered_sql_string('"{schema}"."{table}"', schema=schema_name, table=table_name)
+    if schema_name:
+        return create_filtered_sql_string('"{schema}"."{table}"', schema=schema_name, table=table_name)
+    else:
+        return create_filtered_sql_string('"{table}"', table=table_name)
 
 
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):

@@ -4,7 +4,9 @@ Created on Feb 8, 2013
 @author: tosako
 '''
 import unittest
+from sqlalchemy import String, Column
 from edschema.database.connector import DBConnection
+from edschema.metadata.ed_metadata import MetaColumn
 from edschema.database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import types
 
@@ -57,6 +59,12 @@ class TestEdMetadata(Unittest_with_sqlite):
 
             # Check number of fields in the table
             self.assertEqual(40, len(fact_student_reg.c), "Number of fields in student_registration")
+
+    def test_meta_column_col_type_attr(self):
+        meta_column = MetaColumn('test_meta_column', String(50))
+        self.assertEquals(getattr(meta_column, "col_type", "Column"), "MetaColumn")
+        column = Column('test_column', String(50))
+        self.assertEquals(getattr(column, "col_type", "Column"), "Column")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

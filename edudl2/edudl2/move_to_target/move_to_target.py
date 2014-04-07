@@ -349,17 +349,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
         column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,
                                                               target_table, source_tables)
 
-        delete_criteria = get_current_stu_reg_delete_criteria(conf[mk.GUID_BATCH], conf[mk.SOURCE_DB_TABLE])
-
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn_to_target_db:
-        # Cleanup any existing records with matching registration system id and academic year.
-        # TODO: get query and execute in one
-        delete_query = create_delete_query(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA], target_table, delete_criteria)
-        deleted_rows = execute_udl_queries(conn_to_target_db, [delete_query],
-                                           'Exception -- deleting data from target {target_table}'.format(target_table=target_table),
-                                           'move_to_target', 'move_data_from_int_tables_to_target_table')
-        logger.info('{deleted_rows} deleted from {target_table}'.format(deleted_rows=deleted_rows[0], target_table=target_table))
-
         insert_query = create_sr_table_select_insert_query(conf, target_table, column_and_type_mapping)
         logger.info(insert_query)
         affected_rows = execute_udl_queries(conn_to_target_db, [insert_query],
@@ -368,23 +358,3 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
                                             'move_to_target', 'move_data_from_int_tables_to_target_table')
 
     return affected_rows
-
-
-def get_current_stu_reg_delete_criteria(batch_guid, source_table):
-    '''
-    Get the delete criteria for current stident registration job
-
-    @param conn: Connection to source database
-    @param batch_guid: Batch ID to be used in criteria to select correct table row
-    @param source_db_schema: Names of the source database schema
-    @param source_table: Source table containing the delete criteria information
-
-    @return: Criteria for deletion from target table for current batch job
-    '''
-    with get_udl_connection() as conn:
-        int_metadata_table = conn.get_table(source_table)
-        query = select([int_metadata_table.c.test_reg_id,
-                        int_metadata_table.c.academic_year],
-                       from_obj=int_metadata_table).where(int_metadata_table.c.guid_batch == batch_guid)
-        result = conn.get_result(query)
-        return {'reg_system_id': result[0]['test_reg_id'], 'academic_year': str(result[0]['academic_year'])}

@@ -7,6 +7,7 @@ from sqlalchemy.sql.expression import text
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import MetaData
 import re
+from edudl2.udl2_util.exceptions import UDL2SQLFilteredSQLStringException
 
 
 def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
@@ -138,22 +139,13 @@ def get_sqlalch_table_object(db_engine, schema_name, table_name):
     return table
 
 
-def validate_db_objects(*db_objects):
+def create_filtered_sql_string(query, **kwargs):
     '''
-    Check if list of database object names are valid.
+    create string for SQL statement
     '''
-    for name in db_objects:
-        if not valid_name(name):
-            raise Exception("Database object name %s contains invalid characters", name)
-
-
-def valid_name(name):
-    '''
-    Check if name is a valid database object name. A valid name should
-    only contains underscore, hyphen, alphabetic letters and
-    numbers. Return True if input name is valid, return False
-    otherwise.
-    '''
-    if type(name) is not str:
-        return True
-    return re.sub('[_-]', '', name).isalnum()
+    for value in kwargs.values():
+        if type(value) is not str:
+            raise UDL2SQLFilteredSQLStringException('Name was not string')
+        if not re.sub('[_-]', '', value).isalnum():
+            raise UDL2SQLFilteredSQLStringException('Name contained invalid characters')
+    return query.format(**kwargs)

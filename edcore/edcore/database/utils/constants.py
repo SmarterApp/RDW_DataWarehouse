@@ -23,6 +23,7 @@ class UdlStatsConstants():
     LAST_PDF_TASK_REQUESTED = 'last_pdf_task_requested'
     UDL_STATS = 'udl_stats'
     BATCH_OPERATION = 'batch_operation'
+    SNAPSHOT_CRITERIA = 'snapshot_criteria'
     # Available Load Status
     UDL_STATUS_RECEIVED = 'udl.received'
     UDL_STATUS_FAILED = 'udl.failed'

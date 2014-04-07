@@ -13,7 +13,7 @@ common:
             - edudl2.udl2.W_file_arrived
             - edudl2.udl2.W_file_decrypter
             - edudl2.udl2.W_file_expander
-            - edudl2.udl2.W_get_callback_params
+            - edudl2.udl2.W_get_params
             - edudl2.udl2.W_simple_file_validator
             - edudl2.udl2.W_file_splitter
             - edudl2.udl2.W_parallel_csv_load
@@ -68,6 +68,8 @@ common:
         studentregistration: source.testregsysid
     callback_url_key:
         studentregistration: source.testregcallbackurl
+    academic_year_key:
+        studentregistration: identification.academicyear
     load_type_key: content
     load_type:
         assessment: assessment

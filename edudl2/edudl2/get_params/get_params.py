@@ -29,3 +29,13 @@ def get_callback_params(json_file_dir, load_type):
         logger.error('Loadtype %s is not configured for callback notification' % load_type)
 
     return student_reg_guid, reg_system_id, callback_url
+
+
+def get_academic_year_param(json_file_dir, load_type):
+    try:
+        academic_year = get_value_from_json(json_file_dir, udl2_conf['academic_year_key'][load_type])
+
+    except KeyError:
+        logger.error('Loadtype %s is not configured for academic year' % load_type)
+
+    return academic_year

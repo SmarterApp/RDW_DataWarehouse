@@ -21,4 +21,4 @@ class UDL2SQLFilteredSQLStringException(UDL2Exception):
     SQL query string contains invalid character.
     '''
     def __init__(self, msg='UDL2 Filtered SQL String Exception'):
-        self.__msg = msg
+        super().__init__(msg)

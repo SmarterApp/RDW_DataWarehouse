@@ -52,7 +52,8 @@ def get_batches_to_migrate(tenant=None):
                     udl_status_table.c.load_status,
                     udl_status_table.c.load_start,
                     udl_status_table.c.load_end,
-                    udl_status_table.c.batch_operation],
+                    udl_status_table.c.batch_operation,
+                    udl_status_table.c.snapshot_criteria],
                    from_obj=[udl_status_table]).\
             where(udl_status_table.c.load_status == UdlStatsConstants.UDL_STATUS_INGESTED).\
             order_by(udl_status_table.c.file_arrived)
@@ -108,7 +109,7 @@ def yield_rows(connector, query, batch_size):
         rows = result.fetchmany(batch_size)
 
 
-def migrate_table(batch_guid, schema_name, source_connector, dest_connector, table_name, deactivate, batch_op=None, batch_size=100):
+def migrate_table(batch_guid, schema_name, source_connector, dest_connector, table_name, deactivate, batch_op=None, batch_criteria=None, batch_size=100):
     """Load prod fact table with delta from pre-prod
 
     :param batch_guid: Batch Guid of the batch under migration
@@ -123,24 +124,25 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     if schema_name:
         logger.debug('migrating schema[' + schema_name + ']')
     logger.debug('migrating table[' + table_name + ']')
-    source_table = source_connector.get_table(table_name)
 
     if batch_op:
-        delete_count, insert_count = _migrate_by_batch(batch_guid, batch_size, deactivate, dest_connector, source_connector, source_table, table_name)
+        delete_count, insert_count = _migrate_by_batch(batch_guid, batch_size, deactivate, dest_connector, source_connector, table_name, batch_criteria)
     else:
-        delete_count, insert_count = _migrate_by_row(batch_guid, batch_size, deactivate, dest_connector, source_connector, source_table, table_name)
+        delete_count, insert_count = _migrate_by_row(batch_guid, batch_size, deactivate, dest_connector, source_connector, table_name)
 
     return delete_count, insert_count
 
 
-def _migrate_by_batch(batch_guid, batch_size, deactivate, dest_connector, source_connector, source_table, table_name):
-    delete_count, insert_count = 0
+def _migrate_by_batch(batch_guid, batch_size, deactivate, dest_connector, source_connector, table_name, batch_criteria):
+    delete_count, insert_count = 0, 0
+    source_table = source_connector.get_table(table_name)
 
     return delete_count, insert_count
 
 
-def _migrate_by_row(batch_guid, batch_size, deactivate, dest_connector, source_connector, source_table, table_name):
-    delete_count, insert_count = 0
+def _migrate_by_row(batch_guid, batch_size, deactivate, dest_connector, source_connector, table_name):
+    delete_count, insert_count = 0, 0
+    source_table = source_connector.get_table(table_name)
     primary_key = source_table.primary_key.columns.keys()[0]
     # if there is a status column, it's a candidate for deletes
     has_status = Constants.STATUS in source_table.columns
@@ -250,7 +252,7 @@ def preprod_to_prod_insert_records(source_connector, dest_connector, table_name,
     return batch_size
 
 
-def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables, deactivate, batch_op):
+def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector, tables, deactivate, batch_op, batch_criteria):
     """Migrate all tables for the given batch from source to destination
 
     :param batch_guid: Batch Guid of the batch under migration
@@ -263,7 +265,7 @@ def migrate_all_tables(batch_guid, schema_name, source_connector, dest_connector
     """
     logger.info('Migrating all tables for batch: ' + batch_guid)
     for table in tables:
-        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table, deactivate, batch_op=batch_op)
+        migrate_table(batch_guid, schema_name, source_connector, dest_connector, table, deactivate, batch_op=batch_op, batch_criteria=batch_criteria)
 
 
 def migrate_batch(batch):
@@ -279,6 +281,7 @@ def migrate_batch(batch):
     schema_name = batch[UdlStatsConstants.SCHEMA_NAME]
     load_type = batch[UdlStatsConstants.LOAD_TYPE]
     batch_op = batch[UdlStatsConstants.BATCH_OPERATION]
+    batch_criteria = batch[UdlStatsConstants.SNAPSHOT_CRITERIA]
     # this flag will be set to false from unit test, if this is not set its always True
     deactivate = batch[Constants.DEACTIVATE] if Constants.DEACTIVATE in batch else True
     logger.info('Migrating batch: ' + batch_guid + ',for tenant: ' + tenant)
@@ -293,7 +296,7 @@ def migrate_batch(batch):
             tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, load_type)
             # migrate all tables
             migrate_all_tables(batch_guid, schema_name, source_connector,
-                               dest_connector, tables_to_migrate, deactivate=deactivate, batch_op=batch_op)
+                               dest_connector, tables_to_migrate, deactivate=deactivate, batch_op=batch_op, batch_criteria=batch_criteria)
             # report udl stats with the new batch migrated
             report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
             # commit transaction

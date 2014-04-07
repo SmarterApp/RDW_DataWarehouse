@@ -47,6 +47,7 @@ smarter.egg-info
 # to the csv directory  #
 #########################
 data_gen/cover
+data_gen/nosetests.xml
 data_gen/out*
 data_gen/old/.project
 data_gen/old/DataGeneration/.settings

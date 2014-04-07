@@ -1,4 +1,4 @@
-from edudl2.get_callback_params import get_params
+from edudl2.get_params import get_params
 import tempfile
 __author__ = 'ablum'
 

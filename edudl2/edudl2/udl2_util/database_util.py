@@ -143,9 +143,20 @@ def create_filtered_sql_string(query, **kwargs):
     '''
     create string for SQL statement
     '''
+    return _create_filtered_string(query, '-_', **kwargs)
+
+
+def create_filtered_filename_string(query, **kwargs):
+    return _create_filtered_string(query, '-_.', **kwargs)
+
+
+def _create_filtered_string(query, allow_special_chars, **kwargs):
+    '''
+    create filtered string
+    '''
     for value in kwargs.values():
         if type(value) is str:
-            if not re.sub('[_-]', '', value).isalnum():
+            if not re.sub('[' + allow_special_chars + ']', '', value).isalnum():
                 raise UDL2SQLFilteredSQLStringException('Name contained invalid characters')
         elif type(value) is int:
             pass

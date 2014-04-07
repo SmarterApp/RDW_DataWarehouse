@@ -1,4 +1,5 @@
-from edudl2.udl2_util.database_util import create_filtered_sql_string
+from edudl2.udl2_util.database_util import create_filtered_sql_string, \
+    create_filtered_filename_string
 
 
 def create_fdw_extension_query(csv_schema):
@@ -13,12 +14,13 @@ def create_fdw_server_query(fdw_server):
 
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     # bug, when csv_file name is longer than 63 chars, it causes foreign data wrapper fails to create mapping.
-    ddl_parts = ['CREATE FOREIGN TABLE IF NOT EXISTS "{csv_schema}"."{csv_table}" (',
-                 ', '.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
-                 ") SERVER {fdw_server} ",
-                 "OPTIONS (filename '{csv_file}', format 'csv', header 'false')"]
-    return create_filtered_sql_string("".join(ddl_parts),
-                                      csv_schema=csv_schema, csv_table=csv_table, fdw_server=fdw_server, csv_file=csv_file)
+    ddl_parts1 = ['CREATE FOREIGN TABLE IF NOT EXISTS "{csv_schema}"."{csv_table}" (',
+                  ', '.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
+                  ") SERVER {fdw_server} "]
+    ddl_parts2 = "OPTIONS (filename '{csv_file}', format 'csv', header 'false')"
+    return create_filtered_sql_string("".join(ddl_parts1),
+                                      csv_schema=csv_schema, csv_table=csv_table, fdw_server=fdw_server) + \
+        create_filtered_filename_string(ddl_parts2, csv_file=csv_file)
 
 
 def drop_ddl_csv_query(csv_schema, csv_table):

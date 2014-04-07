@@ -336,6 +336,10 @@ qa:
       db:
         schema_name: edware_sds_1_16
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
+    edware_rep:
+      db:
+        schema_name: repmgr_edware_pg_cluster
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
     auth:

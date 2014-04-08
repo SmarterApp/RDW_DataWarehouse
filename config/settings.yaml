@@ -32,9 +32,6 @@ common:
     # Database
     edware:
       db:
-        cat.state_code: NC
-        dog.state_code: CA
-        fish.state_code: VT
         echo: False
     trigger:
       recache:
@@ -330,6 +327,7 @@ qa:
     edware:
       db:
         cat:
+          state_code: CA
           schema_name: edware_sds_1_16
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
@@ -396,6 +394,7 @@ jenkins_qa:
     edware:
       db:
         cat:
+          state_code: CA
           schema_name: edware_sds_1_16
           url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edware_stats:
@@ -444,6 +443,7 @@ uat:
     edware:
       db:
         es:
+          state_code: CA
           schema_name: edware_uat_1_1
           url: postgresql+psycopg2://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
     edware_stats:
@@ -503,6 +503,7 @@ localOpenAM:
     edware:
       db:
         cat:
+          state_code: NC
           schema_name: edware_sds_1_2
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           echo: False
@@ -537,12 +538,15 @@ development:
         pool_size: 20
         max_overflow: 10
         cat:
+          state_code: NC
           schema_name: edware_sds_1_16
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
+          state_code: CA
           schema_name: edware_sds_1_16_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         fish:
+          state_code: VT
           schema_name: edware_sds_1_16_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
     edware_stats:
@@ -598,12 +602,15 @@ test:
     edware:
       db:
         cat:
+          state_code: NC
           schema_name: edware_sds_1_16
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
+          state_code: CA
           schema_name: edware_sds_1_16_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
+          state_code: VT
           schema_name: edware_sds_1_16_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
@@ -646,12 +653,15 @@ integration:
     edware:
       db:
         cat:
+          state_code: CA
           schema_name: edware
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         dog:
+          state_code: CA
           schema_name: edware
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         fish:
+          state_code: VT
           schema_name: edware
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:
@@ -693,12 +703,15 @@ jenkins_int:
     edware:
       db:
         cat:
+          state_code: NC
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         dog:
+          state_code: CA
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
         fish:
+          state_code: VT
           schema_name: edware_prod
           url: postgresql+psycopg2://edware:edware2013@localhost:5432/edware
     edware_stats:
@@ -743,12 +756,15 @@ jenkins_dev:
     edware:
       db:
         cat:
+          state_code: NC
           schema_name: edware_sds_1_16
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
+          state_code: CA
           schema_name: edware_sds_1_16_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         fish:
+          state_code: VT
           schema_name: edware_sds_1_16_fish
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
@@ -793,9 +809,11 @@ air:
     edware:
       db:
         ca:
+          state_code: NC
           schema_name: edware_sds_1_2
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
+          state_code: CA
           schema_name: edware_sds_1_2_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:

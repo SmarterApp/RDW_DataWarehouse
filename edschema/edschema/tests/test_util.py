@@ -15,34 +15,33 @@ class TestMetadataUtil(unittest.TestCase):
     def setUp(self):
         self.__metadata = MetaData(schema='test_me', bind=False)
         test_dim_table = Table('dim_inst_hier', self.__metadata,
-                           Column('inst_hier_rec_id', BigInteger, primary_key=True),
-                           MetaColumn('batch_guid', String(50), nullable=True),
-                           Column('state_name', String(32), nullable=False, info={'natural_key': True}),
-                           Column('state_code', String(2), nullable=False),
-                           Column('district_guid', String(50), nullable=False, info={'natural_key': True}),
-                           Column('district_name', String(256), nullable=False),
-                           Column('school_guid', String(50), nullable=False, info={'natural_key': True}),
-                           Column('school_name', String(256), nullable=False),
-                           Column('school_category', String(20), nullable=False),
-                           MetaColumn('from_date', String(8), nullable=False),
-                           MetaColumn('to_date', String(8), nullable=True),
-                           MetaColumn('rec_status', String(1), nullable=False)
-                           )
+                               Column('inst_hier_rec_id', BigInteger, primary_key=True),
+                               MetaColumn('batch_guid', String(50), nullable=True),
+                               Column('state_name', String(32), nullable=False, info={'natural_key': True}),
+                               Column('state_code', String(2), nullable=False),
+                               Column('district_guid', String(50), nullable=False, info={'natural_key': True}),
+                               Column('district_name', String(256), nullable=False),
+                               Column('school_guid', String(50), nullable=False, info={'natural_key': True}),
+                               Column('school_name', String(256), nullable=False),
+                               Column('school_category', String(20), nullable=False),
+                               MetaColumn('from_date', String(8), nullable=False),
+                               MetaColumn('to_date', String(8), nullable=True),
+                               MetaColumn('rec_status', String(1), nullable=False))
         Index('dim_inst_hier_idx', test_dim_table.c.inst_hier_rec_id, unique=True)
         Index('dim_inst_hier_codex', test_dim_table.c.state_code, test_dim_table.c.district_guid,
               test_dim_table.c.school_guid, unique=False)
 
         test_fact_table = Table('fact_asmt_outocme', self.__metadata,
-              Column('fact_asmt_outcome_rec_id', BigInteger, primary_key=True),
-              Column('inst_hier_rec_id', BigInteger, ForeignKey(test_dim_table.c.inst_hier_rec_id), nullable=False),
-              Column('asmt_grade', String(10), nullable=False),
-              Column('enrl_grade', String(10), nullable=False),
-              Column('date_taken', String(8), nullable=False),
-              Column('date_taken_day', SmallInteger, nullable=False),
-              Column('date_taken_month', SmallInteger, nullable=False),
-              Column('date_taken_year', SmallInteger, nullable=False),
-              Column('asmt_score', SmallInteger, nullable=False),
-              MetaColumn('batch_guid', String(50), nullable=True))
+                                Column('fact_asmt_outcome_rec_id', BigInteger, primary_key=True),
+                                Column('inst_hier_rec_id', BigInteger, ForeignKey(test_dim_table.c.inst_hier_rec_id), nullable=False),
+                                Column('asmt_grade', String(10), nullable=False),
+                                Column('enrl_grade', String(10), nullable=False),
+                                Column('date_taken', String(8), nullable=False),
+                                Column('date_taken_day', SmallInteger, nullable=False),
+                                Column('date_taken_month', SmallInteger, nullable=False),
+                                Column('date_taken_year', SmallInteger, nullable=False),
+                                Column('asmt_score', SmallInteger, nullable=False),
+                                MetaColumn('batch_guid', String(50), nullable=True))
 
         self.__test_dim_table = test_dim_table
         self.__test_fact_table = test_fact_table
@@ -81,8 +80,8 @@ class TestMetadataUtil(unittest.TestCase):
         test getting natural key columns if not defined
         '''
         test_table = Table('test_table', self.__metadata,
-                                Column('student_rec_id', BigInteger, primary_key=True),
-                                Column('batch_guid', String(50), nullable=True))
+                           Column('student_rec_id', BigInteger, primary_key=True),
+                           Column('batch_guid', String(50), nullable=True))
         self.assertTrue(get_natural_key_columns(test_table) is None)
 
     def test_get_foreign_key_columns_when_none_defined(self):
@@ -90,8 +89,8 @@ class TestMetadataUtil(unittest.TestCase):
         test getting foreign key columns if none defined
         '''
         test_table = Table('test_table', self.__metadata,
-                                Column('student_rec_id', BigInteger, primary_key=True),
-                                Column('batch_guid', String(50), nullable=True))
+                           Column('student_rec_id', BigInteger, primary_key=True),
+                           Column('batch_guid', String(50), nullable=True))
         self.assertTrue(get_foreign_key_reference_columns(test_table) is None)
 
     def test_get_foreign_key_columns_one_defined(self):
@@ -99,10 +98,9 @@ class TestMetadataUtil(unittest.TestCase):
         test getting foreign key columns if one defined
         '''
         test_table = Table('test_table', self.__metadata,
-                               Column('student_rec_id', BigInteger, primary_key=True),
-                               Column('enroll_inst_hier_rec_id', BigInteger,
-                                      ForeignKey(self.__test_dim_table.c.inst_hier_rec_id), nullable=False),
-                               Column('batch_guid', String(50), nullable=True))
+                           Column('student_rec_id', BigInteger, primary_key=True),
+                           Column('enroll_inst_hier_rec_id', BigInteger, ForeignKey(self.__test_dim_table.c.inst_hier_rec_id), nullable=False),
+                           Column('batch_guid', String(50), nullable=True))
         f_cols = get_foreign_key_reference_columns(test_table)
         self.assertTrue(len(f_cols) == 1)
         self.assertEquals(f_cols[0].name, 'enroll_inst_hier_rec_id')
@@ -112,12 +110,10 @@ class TestMetadataUtil(unittest.TestCase):
         test getting foreign key columns if two defined
         '''
         test_table = Table('test_table', self.__metadata,
-                               Column('student_rec_id', BigInteger, primary_key=True),
-                               Column('enroll_inst_hier_rec_id', BigInteger,
-                                      ForeignKey(self.__test_dim_table.c.inst_hier_rec_id), nullable=False),
-                               Column('asmt_inst_hier_rec_id', BigInteger,
-                                      ForeignKey(self.__test_dim_table.c.inst_hier_rec_id), nullable=False),
-                               Column('batch_guid', String(50), nullable=True))
+                           Column('student_rec_id', BigInteger, primary_key=True),
+                           Column('enroll_inst_hier_rec_id', BigInteger, ForeignKey(self.__test_dim_table.c.inst_hier_rec_id), nullable=False),
+                           Column('asmt_inst_hier_rec_id', BigInteger, ForeignKey(self.__test_dim_table.c.inst_hier_rec_id), nullable=False),
+                           Column('batch_guid', String(50), nullable=True))
         f_cols = get_foreign_key_reference_columns(test_table)
         self.assertTrue(len(f_cols) == 2)
         self.assertTrue(f_cols[0].name in ('enroll_inst_hier_rec_id', 'asmt_inst_hier_rec_id'))

@@ -1,5 +1,7 @@
 import logging
 import time
+import json
+
 from edmigrate.exceptions import EdMigrateRecordAlreadyDeletedException, \
     EdMigrateUdl_statException, EdMigrateRecordInsertionException
 from sqlalchemy.sql.expression import select, and_, tuple_
@@ -125,19 +127,18 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
     logger.debug('migrating table[' + table_name + ']')
 
     if batch_op:
-        delete_count, insert_count = _migrate_by_batch(batch_guid, batch_size, deactivate, dest_connector, source_connector,
-                                                       table_name, batch_op, batch_criteria)
+        delete_count, insert_count = _migrate_by_batch(dest_connector, source_connector, table_name, batch_op, batch_criteria)
     else:
         delete_count, insert_count = _migrate_by_row(batch_guid, batch_size, deactivate, dest_connector, source_connector, table_name)
 
     return delete_count, insert_count
 
 
-def _migrate_by_batch(batch_guid, dest_connector, source_connector, table_name, batch_op, batch_criteria):
+def _migrate_by_batch(dest_connector, source_connector, table_name, batch_op, batch_criteria):
     delete_count, insert_count = 0, 0
 
     if batch_op == UdlStatsConstants.SNAPSHOT:
-        delete_count, insert_count = _migrate_snapshot(batch_guid, dest_connector, source_connector, table_name, batch_criteria)
+        delete_count, insert_count = _migrate_snapshot(dest_connector, source_connector, table_name, batch_criteria)
 
     return delete_count, insert_count
 
@@ -385,11 +386,10 @@ def _include_table(table_name, load_type):
     return table_name not in TABLES_NOT_CONNECTED_WITH_BATCH and table_select_criteria.get(load_type, False)
 
 
-def _migrate_snapshot(batch_guid, dest_connector, source_connector, table_name, batch_criteria):
+def _migrate_snapshot(dest_connector, source_connector, table_name, batch_criteria):
     """
     Migrate a table snapshot as part of a migration by batch.
 
-    @param batch_guid: Batch GUID for table to migrate
     @param dest_connector: Destination DB connector
     @param source_connector: Source DB connector
     @param table_name: Name of table to migrate
@@ -399,15 +399,15 @@ def _migrate_snapshot(batch_guid, dest_connector, source_connector, table_name, 
     """
 
     # Delete old rows.
-    source_table = source_connector.get_table(table_name)
-    delete_criteria = ['source_table.c.{col} == {val}'.format(col=k, val=v)
+    dest_table = dest_connector.get_table(table_name)
+    delete_criteria = ['{col}={val}'.format(col=k, val=v.replace('"', "'"))
                        for k, v in (item.split(':') for item in batch_criteria.split(','))]
-    delete_query = source_table.delete().where(and_(delete_criteria))
-    delete_count = source_connector.execute(delete_query).rowcount
+    delete_query = dest_table.delete().where(and_(" AND ".join(delete_criteria)))
+    delete_count = dest_connector.execute(delete_query).rowcount
 
     # Insert new rows.
-    dest_table = dest_connector.get_table(table_name)
-    insert_query = dest_table.insert().select([source_table]).where(source_table.c.batch_guid == batch_guid)
+    source_table = source_connector.get_table(table_name)
+    insert_query = dest_table.insert().from_select([col.key for col in dest_table.columns], source_table.select())
     insert_count = dest_connector.execute(insert_query).rowcount
 
     return delete_count, insert_count

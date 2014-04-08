@@ -142,7 +142,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
                  UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION,
                  UdlStatsConstants.BATCH_OPERATION: 's',
-                 UdlStatsConstants.SNAPSHOT_CRITERIA: None}
+                 UdlStatsConstants.SNAPSHOT_CRITERIA: 'reg_system_id:"015247bd-058c-48cd-bb4d-f6cffe5b40c1",academic_year:2015'}
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
 

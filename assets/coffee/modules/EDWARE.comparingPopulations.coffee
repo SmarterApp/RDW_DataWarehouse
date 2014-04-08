@@ -158,7 +158,12 @@ define [
       }
       # We need to preserve sorting, so, update the column labels and color
       this.updateSortLabels(name, order)
-      contextSecurity.apply @data.user_info, @labels
+      # below two lines are temporary
+      @data.user_info.allow_PII = true
+      @data.user_info.allow_raw_extract = true
+      @data.user_info.allow_assessment_extract = true
+      @data.user_info.allow_registration_extract = true
+      contextSecurity.apply @data.user_info, @config
 
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')

@@ -89,11 +89,22 @@ class TestUDLReportingIntegration(unittest.TestCase):
 
     def test_validation_student_registration(self):
         print('Running UDL Integration tests for student registration data')
+        #Validate Migration of student registration data from pre-prod to prod
         self.empty_table()
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
-        self.validate_UDL_database(1)
+        self.validate_UDL_database(1, max_wait=30)
         self.migrate_data()
         self.validate_migration('cat', (self.sr_table, 10))
+
+        #Validate snapshot aspect of student registration data
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_prior_year_sr_data.tar.gz.gpg'))
+        self.validate_UDL_database(2, max_wait=30)
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_different_test_center_sr_data.tar.gz.gpg'))
+        self.validate_UDL_database(3, max_wait=30)
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_overwrite_sample_sr_data.tar.gz.gpg'))
+        self.validate_UDL_database(4, max_wait=30)
+        self.migrate_data()
+        self.validate_migration('cat', (self.sr_table, 14))
 
     def migrate_data(self, tenant='cat'):
         print("Migration starting:")

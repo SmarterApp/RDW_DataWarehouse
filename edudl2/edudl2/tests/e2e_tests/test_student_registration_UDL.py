@@ -58,23 +58,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                     'year_col': 2015,
                     'reg_sys_id_col': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
                 }
-            },
-            'data_to_overwrite_original_data': {
-                'path': os.path.join(data_dir, 'test_sample_student_reg_3.tar.gz.gpg'),
-                'num_records_in_data_file': 4,
-                'num_records_in_json_file': 1,
-                'test_student': {
-                    'student_guid': '4444-BBBB-BBBB-BBBB',
-                    'state_name_col': 'Dummy State',
-                    'district_name_col': 'Podunk South District',
-                    'school_guid_col': '4444-4444-4444-4444',
-                    'gender_col': 'male',
-                    'dob_col': None,
-                    'eth_hsp_col': False,
-                    'sec504_col': False,
-                    'year_col': 2015,
-                    'reg_sys_id_col': '800b3654-4406-4a90-9591-be84b67054df'
-                }
             }
         }
         self.tenant_dir = TENANT_DIR
@@ -297,17 +280,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_total_number_in_target('data_for_different_test_center_than_original_data')
         self.validate_notification(mk.FAILURE, ['408', '408', '408', '408', '408'], 4)
 
-        # Run and verify third run of student registration data (same academic year and test registration as first run)
-        # Should overwrite all data from the first run, and fail on notification
-        self.batch_id = str(uuid4())
-        self.batches.append(self.batch_id)
-        self.run_udl_pipeline('data_to_overwrite_original_data')
-        self.validate_successful_job_completion()
-        self.validate_stu_reg_target_table('data_to_overwrite_original_data')
-        self.validate_student_data('data_to_overwrite_original_data')
-        self.validate_total_number_in_target('data_to_overwrite_original_data')
-        self.validate_notification(mk.FAILURE, ['401'], 0)
-
     def start_http_post_server(self):
         self.receive_requests = True
         try:
@@ -340,7 +312,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 # This class handles our HTTP POST requests with various responses
 class HTTPPOSTHandler(BaseHTTPRequestHandler):
     response_count = 0
-    response_codes = [201, 408, 408, 201, 408, 408, 408, 408, 408, 401]
+    response_codes = [201, 408, 408, 201, 408, 408, 408, 408, 408]
 
     def __init__(self, request, client_address, server):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)

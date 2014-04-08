@@ -44,10 +44,11 @@ class TestContext(Unittest_with_edcore_sqlite):
     def test_select_with_context_as_pii(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.state_code],
+            query = select_with_context([fact_asmt_outcome.c.school_guid],
                                         from_obj=([fact_asmt_outcome]), limit=1, permission=RolesConstants.PII, state_code='NC')
             results = connection.get_result(query)
             self.assertEqual(len(results), 1)
+            self.assertIn(results[0][Constants.SCHOOL_GUID], ['242', '245'])
 
     def test_select_with_context_or_query(self):
         with UnittestEdcoreDBConnection() as connection:

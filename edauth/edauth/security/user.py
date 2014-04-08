@@ -65,7 +65,7 @@ class UserContext(object):
     def get_schools(self, tenant, role):
         return self.__tenant_context_map[tenant][role]['school_guid']
 
-    def get_role_context(self, tenant, role):
+    def get_all_context(self, tenant, role):
         return self.__tenant_context_map[tenant][role] if tenant in self.__tenant_context_map and role in self.__tenant_context_map[tenant] else {}
 
     def __json__(self, request):

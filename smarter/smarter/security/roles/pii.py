@@ -25,7 +25,7 @@ class PII(BaseRole):
         If Context is an empty list, return none, which will return Forbidden Error
         '''
         fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        context = user.get_context().get_role_context(tenant, self.name)
+        context = user.get_context().get_all_context(tenant, self.name)
         expr = []
         for k, v in context.items():
             if v:

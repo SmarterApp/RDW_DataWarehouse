@@ -26,5 +26,5 @@ class BatchBase(object):
         Creates a cookie for accessing smarter application
         '''
         # get current session cookie and request for pdf
-        roles = ['SUPER_USER']
+        roles = ['SUPER_USER', 'PII']
         (self.cookie_name, self.cookie_value) = create_batch_user_session(self.settings, roles, self.tenant)

@@ -15,7 +15,7 @@ from edauth.security.policy import EdAuthAuthenticationPolicy
 
 class TestPdfSession(unittest.TestCase):
 
-    roles = ['SUPER_USER']
+    roles = ['SUPER_USER', 'PII']
     settings = {'auth.policy.cookie_name': 'edware',
                 'auth.policy.hashalg': 'sha512',
                 'auth.policy.secret': 'edware_secret',

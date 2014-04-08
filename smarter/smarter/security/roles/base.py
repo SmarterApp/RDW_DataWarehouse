@@ -20,7 +20,7 @@ class BaseRole(object):
         pass
 
     def check_context(self, tenant, user, student_guids):
-        pass
+        return False
 
     def get_students(self, tenant, student_guids):
         '''

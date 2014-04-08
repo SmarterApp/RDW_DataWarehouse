@@ -17,7 +17,7 @@ class TestBase(unittest.TestCase):
     def test_check_context(self):
         base = BaseRole('connector', 'base')
         context = base.check_context("tenant", {}, [])
-        self.assertIsNone(context)
+        self.assertFalse(context)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

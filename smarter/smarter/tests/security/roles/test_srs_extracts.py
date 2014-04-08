@@ -9,7 +9,6 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 from sqlalchemy.sql.expression import select
 from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.srs_extracts import SRSExtracts
-from edapi.exceptions import ForbiddenError
 from pyramid.security import Allow
 from smarter.security.constants import RolesConstants
 import edauth
@@ -26,24 +25,56 @@ class TestSRSContextSecurity(Unittest_with_edcore_sqlite):
         defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         self.tenant = get_unittest_tenant_name()
-        set_tenant_map({self.tenant: "NC"})
+        set_tenant_map({self.tenant: 'ES'})
         dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
-        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, 'NC', None, None)])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, None, None, None)])
         self.user = dummy_session.get_user()
         self.__request = DummyRequest()
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         self.__config.testing_securitypolicy(self.user)
 
-    def test_get_srs_context(self):
+    def test_get_srs_context_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.school_guid],
-                           from_obj=([fact_asmt_outcome]))
             srs = SRSExtracts(connection, RolesConstants.SRS_EXTRACTS)
             clause = srs.get_context(self.tenant, self.user)
+            self.assertEqual(len(clause), 0)
 
-            results = connection.get_result(query.where(*clause))
-            self.assertTrue(len(results) > 0)
+    def test_get_srs_context_state_level(self):
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, 'ES', None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            student_reg = connection.get_table(Constants.STUDENT_REG)
+            query = select([student_reg.c.school_guid],
+                           from_obj=([student_reg]))
+            srs = SRSExtracts(connection, RolesConstants.SRS_EXTRACTS)
+            clause = srs.get_context(self.tenant, self.user)
+            self.assertEqual(len(clause), 1)
+            query = query.where(*clause)
+            result = connection.get_result(query)
+            self.assertEqual(len(result), 2581)
+
+    def test_get_srs_context_multi_level(self):
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, 'ES', None, None),
+                                        RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            student_reg = connection.get_table(Constants.STUDENT_REG)
+            query = select([student_reg.c.school_guid],
+                           from_obj=([student_reg]))
+            srs = SRSExtracts(connection, RolesConstants.SRS_EXTRACTS)
+            clause = srs.get_context(self.tenant, self.user)
+            self.assertEqual(len(clause), 1)
+            query = query.where(*clause)
+            result = connection.get_result(query)
+            self.assertEqual(len(result), 2581)
 
     def test_has_srs_context_with_context(self):
         with UnittestEdcoreDBConnection() as connection:

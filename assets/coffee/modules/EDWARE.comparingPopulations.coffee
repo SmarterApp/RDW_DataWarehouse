@@ -18,7 +18,8 @@ define [
   "edwareClientStorage"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar) ->
+  "edwareContextSecurity"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
   POPULATION_BAR_WIDTH = 145
 
@@ -157,6 +158,7 @@ define [
       }
       # We need to preserve sorting, so, update the column labels and color
       this.updateSortLabels(name, order)
+      contextSecurity.apply @data.user_info, @labels
 
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')

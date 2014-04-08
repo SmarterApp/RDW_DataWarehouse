@@ -51,21 +51,10 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
         column_mapping['section_rec_id'] = '1'
         column_types = get_expected_column_types_for_fact_table(target_table)
 
-        expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT],
-                                                                    target_table, column_mapping['asmt_rec_id'],
-                                                                    column_mapping['section_rec_id'], guid_batch,
-                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER],
-                                                                    conf[mk.SOURCE_DB_PASSWORD])
-        expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
-        expected_query_4 = get_expected_update_student_rec_id_query(target_table)
-        expected_query_5 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4, expected_query_5]
-        actual_value = create_queries_for_move_to_fact_table(conf, source_table,
-                                                             target_table, column_mapping,
-                                                             column_types)
-        self.maxDiff = None
-        self.assertEqual(len(expected_value), len(actual_value))
+        queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
+
+        self.assertGreaterEqual(len(queries), 3)  # Drop constraints, insert, add constraints, up to 3 fk queries
+        self.assertLessEqual(len(queries), 6)  # Drop constraints, insert, add constraints, up to 3 fk queries
 
     def test_create_insert_query_for_dim_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'

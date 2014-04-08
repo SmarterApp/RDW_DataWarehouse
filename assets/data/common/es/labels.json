@@ -46,6 +46,7 @@
         "logout": "Cerrar sesión",
         "meaning": "Significado",
         "no_results": "No hay datos disponibles para su búsqueda.",
+        "no_pii": "You do not have permission to view these students.",
         "notes": "Notas",
         "off": "Desactivar",
         "on": "Activar",

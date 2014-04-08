@@ -185,6 +185,20 @@ table td {
     text-overflow: ellipsis;
     white-space: nowrap !important;
 }
+
+ui-widget-content {
+  color: @color-B2;
+
+  a {
+    color : @color-B1; text-decoration: none;
+
+    &.enabled:hover {
+      color: @color-A2;
+    }
+  }
+
+}
+
 .ui-widget-content { color: @color-B2; }
 .ui-widget-content a { color: @color-A2; text-decoration: none; }
 .ui-widget-content a:hover { color: @color-A3; text-decoration: underline;}
@@ -416,6 +430,15 @@ th.ui-th-column div {
 //
 // Popover/Tooltip styles
 //
+.no_pii_msg {
+  min-width: 150px;
+
+  .popover-content {
+    width: 110px;
+    padding: 0px 20px 10px !important;
+    max-height: 80px !important;
+  }
+}
 
 .printFooterPopover {
     left: 60% !important;

@@ -24,6 +24,7 @@ require {
     'Edware.IndividualStudentReport': 'modules/EDWARE.individualStudentReport',
     'Edware.StateMap': 'modules/EDWARE.stateMap',
 
+    edwareContextSecurity: 'modules/EDWARE.contextSecurity',
     edwareUtil: 'modules/EDWARE.util',
     edwareConstants: 'modules/EDWARE.constants',
     edwareDataProxy: 'modules/EDWARE.dataProxy',

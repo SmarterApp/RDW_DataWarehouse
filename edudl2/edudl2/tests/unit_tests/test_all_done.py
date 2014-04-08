@@ -19,7 +19,7 @@ class TestAllDone(unittest.TestCase):
         self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
         self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_INGESTED)
-        self.assertEquals(results[UdlStatsConstants.SNAPSHOT_CRITERIA], "{reg_system_id:1234,academic_year:2015}")
+        self.assertEquals(results[UdlStatsConstants.SNAPSHOT_CRITERIA], "reg_system_id:\"1234\",academic_year:2015")
 
     def test__create_sr_failed_stats_row(self):
         msg = {mk.LOAD_TYPE: 'studentregistration'}

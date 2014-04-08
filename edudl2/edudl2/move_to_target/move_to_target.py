@@ -64,20 +64,6 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     4. Update foreign key student_rec_id by comparing student_guid, batch_guid
     5. Enable trigger of table fact_asmt_outcome
     '''
-    # get asmt_rec_id, which is one foreign key in fact table
-    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET]['asmt_rec_id']
-    asmt_rec_id_column_name = asmt_rec_id_info['rec_id']
-    asmt_rec_id = get_asmt_rec_id(conf[mk.GUID_BATCH], conf[mk.TENANT_NAME], asmt_rec_id_info)
-
-    # get section_rec_id, which is one foreign key in fact table. We set to a fake value
-    section_rec_id_info = conf[mk.MOVE_TO_TARGET]['section_rec_id_info']
-    section_rec_id = section_rec_id_info['value']
-    section_rec_id_column_name = section_rec_id_info['rec_id']
-
-    # update above 2 foreign keys in column mapping
-    column_mapping[asmt_rec_id_column_name] = str(asmt_rec_id)
-    column_mapping[section_rec_id_column_name] = str(section_rec_id)
-
     # get list of queries to be executed
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
@@ -97,7 +83,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
 
         # Record benchmark
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_fact',
+                                        'udl2.W_load_from_integration_to_star.explode_to_facts',
                                         start_time_p1, finish_time_p1,
                                         working_schema=conf[mk.TARGET_DB_SCHEMA],
                                         udl_phase_step='Disable Trigger & Load Data')
@@ -114,7 +100,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
 
         # Record benchmark
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_fact',
+                                        'udl2.W_load_from_integration_to_star.explode_to_facts',
                                         start_time_p2, finish_time_p2,
                                         working_schema=conf[mk.TARGET_DB_SCHEMA],
                                         udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')

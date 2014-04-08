@@ -1,4 +1,4 @@
-from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
+from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_facts
 from celery import chain
 import argparse
 
@@ -16,7 +16,7 @@ def main():
     # First, explode the data into dim tables by celery group
     # Then, explode the data into fact table
     # These two steps are connected by celery chain
-    result_uuid = chain(explode_to_dims.s(batch), explode_to_fact.s())()
+    result_uuid = chain(explode_to_dims.s(batch), explode_to_facts.s())()
     result_value = result_uuid.get()
     print(result_value)
 

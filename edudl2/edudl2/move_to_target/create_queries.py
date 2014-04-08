@@ -18,7 +18,8 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     distinct_expression = 'DISTINCT ' if need_distinct else ''
     seq_expression = list(column_mapping.values())[0].replace("'", "''")
     target_columns = ",".join(list(column_mapping.keys()))
-    quoted_source_columns = ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:])
+    lst = list(column_mapping.values())
+    quoted_source_columns = ",".join(value.replace("'", "''") for value in lst[1:])
     record_mapping = ",".join(list(column_types.values()))
     params = []
     # TODO:if guid_batch is changed to uuid, need to add quotes around it

@@ -71,43 +71,28 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
-        start_time_p1 = datetime.datetime.now()
-        for query in queries[0:2]:
+
+        max_num_rows = 0
+        start_time = datetime.datetime.now()
+        for query in queries:
             logger.info(query)
-        affected_rows_first = execute_udl_queries(conn,
-                                                  queries[0:2],
-                                                  'Exception -- exploding data from integration to fact table part 1',
-                                                  'move_to_target',
-                                                  'explode_data_to_fact_table')
-        finish_time_p1 = datetime.datetime.now()
+            affected_rows = execute_udl_queries(conn, [query], 'Exception -- Query', 'move_to_target',
+                                                'explode_data_to_fact_table')
+
+            if len(affected_rows) >= 2 and max_num_rows < affected_rows[1]:
+                max_num_rows = affected_rows[1]
+
+        finish_time = datetime.datetime.now()
 
         # Record benchmark
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_facts',
-                                        start_time_p1, finish_time_p1,
-                                        working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                        udl_phase_step='Disable Trigger & Load Data')
-        benchmark.record_benchmark()
-
-        # The second part: Update Inst Hier Rec Id FK, Update Student Rec Id FK
-        start_time_p2 = datetime.datetime.now()
-        execute_udl_queries(conn,
-                            queries[2:5],
-                            'Exception -- exploding data from integration to fact table part 2',
-                            'move_to_target',
-                            'explode_data_to_fact_table')
-        finish_time_p2 = datetime.datetime.now()
-
-        # Record benchmark
-        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_facts',
-                                        start_time_p2, finish_time_p2,
-                                        working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                        udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')
+                                        'udl2.W_load_from_integration_to_star.explode_to_facts', start_time,
+                                        finish_time, working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                        udl_phase_step='Populate fact table query')
         benchmark.record_benchmark()
 
     # returns the number of rows that are inserted into fact table. It maps to the second query result
-    return affected_rows_first[1]
+    return max_num_rows
 
 
 def get_asmt_rec_id(guid_batch, tenant_name, asmt_rec_id_info):

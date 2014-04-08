@@ -129,17 +129,17 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
                          "WHERE op = ''D'' AND table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
 
     def test_handle_record_upsert_find_all(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        table_name = 'dim_student'
         guid_batch = None
         with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, table_name)
             all_records = helper.find_all()
             self.assertIsNotNone(all_records, "Find all should return some value")
             actual_rows = all_records.fetchall()
             self.assertEqual(len(actual_rows), 894, "Find all should return all records")
 
     def test_handle_record_upsert_find_by_natural_key(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        table_name = 'dim_student'
         guid_batch = None
         example_record = {
             'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
@@ -157,13 +157,14 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'state_code': 'NC',
             'district_guid': '228',
             'school_guid': '242',
+            'section_guid': '345'
         }
         bad_record = {
             'student_guid': 'not_really_exist'
         }
 
         with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, table_name)
             m1 = helper.find_by_natural_key(example_record)
             self.assertIsNotNone(m1, "Find_by_natural_key should return matched value")
             self.assertEqual(m1['student_guid'], example_record['student_guid'], "Matched records should have the same student guid")
@@ -174,7 +175,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             self.assertIsNone(m3, "Find_by_natural_key should return None if not match found")
 
     def test_handle_record_soft_delete(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        table_name = 'dim_student'
         guid_batch = None
         old_record = {
             'student_guid': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
@@ -187,9 +188,9 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'batch_guid': None
         }
         with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, table_name)
             helper.soft_delete_and_update(old_record, new_record)
-            table = conn.get_table(match_conf['table_name'])
+            table = conn.get_table(table_name)
             query = select([table.c.student_rec_id], from_obj=[table]).where(and_(table.c.batch_guid == guid_batch, table.c.student_rec_id == '3155'))
             record_updated = conn.execute(query)
             self.assertNotEqual(record_updated.rowcount, 1)

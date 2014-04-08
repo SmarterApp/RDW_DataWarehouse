@@ -177,12 +177,7 @@ def handle_record_upsert(msg):
     logger.info('LOAD_FROM_INT_TO_STAR: detect duplications in target tables.')
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
-    # generate config dict
-    configs = get_move_to_target_conf()['handle_record_upsert']
-    affected_rows = 0
-    for match_conf in configs:
-        num_of_rows = handle_duplicates_in_dimensions(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)
-        affected_rows += num_of_rows
+    affected_rows = handle_duplicates_in_dimensions(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH])
     finish_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark

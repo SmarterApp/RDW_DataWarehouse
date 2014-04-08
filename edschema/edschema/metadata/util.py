@@ -45,7 +45,7 @@ def get_meta_columns(table):
 
     :param table: SQLAlchemy table object
     '''
-    columns = [column for column in table.columns if column.__class__.__name__ == META_COLUMN]
+    columns = [column for column in table.columns if getattr(column, "col_type", "Column") == META_COLUMN]
     return columns if len(columns) > 0 else None
 
 
@@ -55,23 +55,23 @@ def get_primary_key_columns(table):
 
     :param table: SQLAlchemy table object
     '''
-    columns = [column for column in table.primary_key]
-    return columns if len(columns) > 0 else None
+    return [column for column in table.primary_key]
 
 
 def get_matcher_key_columns(table):
     '''
     Find columns to match records in the table to detect duplicates
 
-    return All_columns - (meta_columns + pk_columns)
+    returns [all_columns - (meta_columns + pk_columns + fk_columns)]
 
     :param table: SQLAlchemy table object
     '''
     meta = get_meta_columns(table)
-    meta = meta if meta is not None else []
     pk = get_primary_key_columns(table)
-    pk = pk if pk is not None else []
-    return list(set(table.columns) - set(meta + pk))
+    fk = get_foreign_key_reference_columns(table)
+    meta = meta if meta is not None else []
+    fk = fk if fk is not None else []
+    return list(set(table.columns) - set(meta + pk + fk))
 
 
 def get_matcher_key_column_names(table):
@@ -82,3 +82,13 @@ def get_matcher_key_column_names(table):
     '''
     matcher_columns = get_matcher_key_columns(table)
     return None if matcher_columns is None else [c.name for c in matcher_columns]
+
+
+def get_tables_starting_with(metadata, prefix):
+    '''
+    Returns list of tables starting with prefix based on metadata
+
+    :param metadata: SQLAlchemy metadata object
+    :param prefix: prefix string
+    '''
+    return [table.name for table in metadata.sorted_tables if table.name.startswith(prefix)]

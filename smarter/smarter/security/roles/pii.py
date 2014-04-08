@@ -11,6 +11,7 @@ from smarter.security.constants import RolesConstants
 from sqlalchemy.sql.expression import and_, or_
 
 
+# PII and SAR Extracts have the same context
 @ContextRoleMap.register([RolesConstants.PII, RolesConstants.SAR_EXTRACTS])
 class PII(BaseRole):
 

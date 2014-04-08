@@ -22,20 +22,127 @@ from smarter.security.constants import RolesConstants
 class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
 
     def setUp(self):
-        defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.PII, ('view', 'logout')),
+                         (Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         self.tenant = get_unittest_tenant_name()
         set_tenant_map({self.tenant: "NC"})
         dummy_session = create_test_session([RolesConstants.PII])
-        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), "NC", "228", "242"),
+                                        RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", "228", "242")])
         self.user = dummy_session.get_user()
         self.__request = DummyRequest()
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         self.__config.testing_securitypolicy(self.user)
 
-    def test_append_pii_context(self):
+    def test_pii_tenant_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
+            clause = pii.get_context(self.tenant, self.user)
+            self.assertEqual(len(clause), 0)
+
+    def test_pii_state_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), 'NC', None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.PII)
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact_asmt_outcome.c.state_code],
+                           from_obj=([fact_asmt_outcome])).where(fact_asmt_outcome.c.rec_status == 'C')
+            clause = pii.get_context(self.tenant, self.user)
+
+            results = connection.get_result(query.where(*clause))
+            self.assertEqual(len(results), 1211)
+
+    def test_pii_district_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), 'NC', '228', None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.PII)
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact_asmt_outcome.c.state_code],
+                           from_obj=([fact_asmt_outcome]))
+            clause = pii.get_context(self.tenant, self.user)
+
+            results = connection.get_result(query.where(*clause))
+            self.assertEqual(len(results), 394)
+
+    def test_pii_school_level(self):
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.PII)
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact_asmt_outcome.c.school_guid],
+                           from_obj=([fact_asmt_outcome]))
+            clause = pii.get_context(self.tenant, self.user)
+
+            results = connection.get_result(query.where(*clause))
+            self.assertTrue(len(results) > 0)
+            for result in results:
+                self.assertEqual(result[Constants.SCHOOL_GUID], '242')
+
+    def test_sar_extract_tenant_level(self):
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.SAR_EXTRACTS)
+            clause = pii.get_context(self.tenant, self.user)
+            self.assertEqual(len(clause), 0)
+
+    def test_sar_extracts_state_level(self):
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.SAR_EXTRACTS)
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact_asmt_outcome.c.state_code],
+                           from_obj=([fact_asmt_outcome])).where(fact_asmt_outcome.c.rec_status == 'C')
+            clause = pii.get_context(self.tenant, self.user)
+
+            results = connection.get_result(query.where(*clause))
+            self.assertEqual(len(results), 1211)
+
+    def test_sar_extracts_district_level(self):
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), 'NC', '228', None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.SAR_EXTRACTS)
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact_asmt_outcome.c.state_code],
+                           from_obj=([fact_asmt_outcome]))
+            clause = pii.get_context(self.tenant, self.user)
+
+            results = connection.get_result(query.where(*clause))
+            self.assertEqual(len(results), 394)
+
+    def test_sar_extracts_school_level(self):
+        with UnittestEdcoreDBConnection() as connection:
+            pii = PII(connection, RolesConstants.SAR_EXTRACTS)
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))

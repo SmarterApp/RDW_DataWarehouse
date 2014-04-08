@@ -2,6 +2,7 @@ import unittest
 from edcore.database.utils.constants import UdlStatsConstants
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.W_all_done import _create_stats_row
+from json import JSONDecoder
 
 __author__ = 'ablum'
 
@@ -19,7 +20,10 @@ class TestAllDone(unittest.TestCase):
         self.assertEquals(results[UdlStatsConstants.LOAD_END], '1111111')
         self.assertEquals(results[UdlStatsConstants.RECORD_LOADED_COUNT], 100)
         self.assertEquals(results[UdlStatsConstants.LOAD_STATUS], UdlStatsConstants.UDL_STATUS_INGESTED)
-        self.assertEquals(results[UdlStatsConstants.SNAPSHOT_CRITERIA], "reg_system_id:\"1234\",academic_year:2015")
+        snapshot_criteria = JSONDecoder().decode(results[UdlStatsConstants.SNAPSHOT_CRITERIA])
+        self.assertEqual(2, len(snapshot_criteria))
+        self.assertEqual("1234", snapshot_criteria['reg_system_id'])
+        self.assertEqual(2015, snapshot_criteria['academic_year'])
 
     def test__create_sr_failed_stats_row(self):
         msg = {mk.LOAD_TYPE: 'studentregistration'}

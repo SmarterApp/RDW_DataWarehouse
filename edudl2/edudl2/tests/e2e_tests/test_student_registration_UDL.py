@@ -16,6 +16,7 @@ from edudl2.database.udl2_connector import get_udl_connection, get_target_connec
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
+import json
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop/'
 
@@ -104,7 +105,11 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             for row in result:
                 operation = row['batch_operation']
                 self.assertEqual(operation, 's')
-                self.assertEquals(row['snapshot_criteria'], 'reg_system_id:\"800b3654-4406-4a90-9591-be84b67054df\",academic_year:2015')
+
+                snapshot_criteria = json.loads(row['snapshot_criteria'])
+                self.assertEqual(2, len(snapshot_criteria))
+                self.assertEqual("800b3654-4406-4a90-9591-be84b67054df", snapshot_criteria['reg_system_id'])
+                self.assertEqual(2015, snapshot_criteria['academic_year'])
 
                 status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
                 self.assertEqual(row['load_status'], status)

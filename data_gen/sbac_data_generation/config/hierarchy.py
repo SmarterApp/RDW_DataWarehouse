@@ -188,8 +188,8 @@ DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_M
                                                              'Good Elementary School': OTHR_ELEM}}
                   }
 
-STATE_TYPES = {'california': {'district_types_and_counts': {'Big LA': 1, 'Big Average': 130, 'Big Poor': 100,
-                                                            'Big Good': 70, 'Medium Average': 100, 'Medium Poor': 35,
+STATE_TYPES = {'california': {'district_types_and_counts': {'Big Average': 140, 'Big Poor': 110,
+                                                            'Big Good': 80, 'Medium Average': 110, 'Medium Poor': 35,
                                                             'Medium Good': 35, 'Medium Very Poor': 100,
                                                             'Medium Very Good': 100, 'Small Average': 60,
                                                             'Small Poor': 100, 'Small Good': 50, 'Small Very Poor': 160,

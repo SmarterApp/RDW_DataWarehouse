@@ -143,8 +143,28 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                  UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION,
                  UdlStatsConstants.BATCH_OPERATION: 's',
                  UdlStatsConstants.SNAPSHOT_CRITERIA: 'reg_system_id:"015247bd-058c-48cd-bb4d-f6cffe5b40c1",academic_year:2015'}
+
+        preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
+        count_to_source_query = select([func.count()]).select_from(preprod_conn.get_table(Constants.STUDENT_REG))
+        count_to_be_inserted = preprod_conn.execute(count_to_source_query).fetchall()[0][0]
+        self.assertEqual(10, count_to_be_inserted)
+
+        prod_conn = EdMigrateDestConnection(tenant=get_unittest_preprod_tenant_name())
+        student_reg_table = prod_conn.get_table(Constants.STUDENT_REG)
+        count_query = select([func.count()]).select_from(student_reg_table)
+        count_before = prod_conn.execute(count_query).fetchall()[0][0]
+        self.assertEqual(2581, count_before)
+
+        count_snapshot_query = select([func.count()], student_reg_table.c.academic_year == 2015).select_from(student_reg_table)
+        count_to_be_deleted = prod_conn.execute(count_snapshot_query).fetchall()[0][0]
+        self.assertEqual(1217, count_to_be_deleted)
+
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
+
+        expected_count_after = count_before - count_to_be_deleted + count_to_be_inserted
+        count_after = prod_conn.execute(count_query).fetchall()[0][0]
+        self.assertEqual(expected_count_after, count_after)
 
     def test_cleanup_batch_asmt(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'

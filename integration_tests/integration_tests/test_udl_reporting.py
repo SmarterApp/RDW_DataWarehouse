@@ -90,20 +90,51 @@ class TestUDLReportingIntegration(unittest.TestCase):
     def test_validation_student_registration(self):
         print('Running UDL Integration tests for student registration data')
         #Validate Migration of student registration data from pre-prod to prod
+
+        #Empty batch table
         self.empty_table()
+        #----RUN 1----
+        #Run udl on a batch that has 10 rows of data
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 1 batch
         self.validate_UDL_database(1, max_wait=30)
         self.migrate_data()
+        #After migration, prod should have the 10 rows that was just ingested via UDL
         self.validate_migration('cat', (self.sr_table, 10))
 
         #Validate snapshot aspect of student registration data
-        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_prior_year_sr_data.tar.gz.gpg'))
+
+        #----RUN 2----
+        #Run udl with the same data that's already in prod (10 rows)
+        #This should not be migrated since RUN 5 has the same test center and academic year
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 2 batches
         self.validate_UDL_database(2, max_wait=30)
-        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_different_test_center_sr_data.tar.gz.gpg'))
+
+        #----RUN 3----
+        #Run udl on a batch that has 4 rows of data, from a previous academic year than the year in RUN 1
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_prior_year_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 3 batches
         self.validate_UDL_database(3, max_wait=30)
-        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_overwrite_sample_sr_data.tar.gz.gpg'))
+
+        #----RUN 4----
+        #Run udl on a batch that has 3 rows of data, from a different test center than the data in RUN 1
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_different_test_center_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 4 batches
         self.validate_UDL_database(4, max_wait=30)
+
+        #----RUN 5----
+        #Run udl on a batch that has 7 rows of data
+        #From the same test center and academic year as the data in RUN 1
+        #Should overwrite the 10 rows in prod after migration
+        #Should take precedence over the data in RUN 2 since this is the most recent UDL ingestion
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_overwrite_sample_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 5 batches
+        self.validate_UDL_database(5, max_wait=30)
+
         self.migrate_data()
+        #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
+        #The 10 rows that were in the prod table before should be overwritten
         self.validate_migration('cat', (self.sr_table, 14))
 
     def migrate_data(self, tenant='cat'):

@@ -306,7 +306,7 @@ qa:
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@v.qa.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract

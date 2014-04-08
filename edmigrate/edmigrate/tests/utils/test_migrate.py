@@ -93,6 +93,8 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                           preprod_conn, prod_conn, 'fact_asmt_outcome', False, batch_size=1)
 
     def test_migrate_student_reg(self):
+        Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestMigrate.test_tenant),
+                                               use_metadata_from_db=False)
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "0aa942b9-75cf-4055-a67a-8b9ab53a9dfc"

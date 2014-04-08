@@ -12,6 +12,7 @@ from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats
 from edcore.utils.utils import merge_dict
+import json
 
 
 logger = get_task_logger(__name__)
@@ -38,9 +39,10 @@ def _create_stats_row(msg, end_time, status):
         stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_INGESTED
         if msg[mk.LOAD_TYPE] == LoadType.STUDENT_REGISTRATION:
             stats[UdlStatsConstants.BATCH_OPERATION] = UdlStatsConstants.SNAPSHOT
-            stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = '{test_reg_field}:"{test_reg_value}",{academic_year_field}:{academic_year_value}'\
-                .format(test_reg_field='reg_system_id', test_reg_value=msg[mk.REG_SYSTEM_ID],
-                        academic_year_field='academic_year', academic_year_value=msg[mk.ACADEMIC_YEAR])
+            snapshot_criteria = {}
+            snapshot_criteria['reg_system_id'] = msg[mk.REG_SYSTEM_ID]
+            snapshot_criteria['academic_year'] = msg[mk.ACADEMIC_YEAR]
+            stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = json.dumps(snapshot_criteria)
     else:
         stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_FAILED
 

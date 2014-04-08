@@ -48,4 +48,4 @@ def get_academic_year_param(json_file_dir, load_type):
     except KeyError:
         logger.error('Loadtype %s is not configured for academic year' % load_type)
 
-    return academic_year
+    return int(academic_year)

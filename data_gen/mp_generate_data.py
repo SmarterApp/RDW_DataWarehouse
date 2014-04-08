@@ -36,6 +36,7 @@ from sbac_data_generation.util.id_gen import IDGen
 DISTRICT_TOTAL_COUNT = 0
 DISTRICT_COMPLETE_COUNT = 0
 TOTAL_STUDENT_AVERAGE = 0
+TOTAL_STUDENT_UNIQUE = 0
 CALLBACK_LOCK = multiprocessing.Lock()
 
 
@@ -115,34 +116,36 @@ def district_pool_worker(state, district, assessments, skip_rates, id_lock, id_m
 
     # Start the processing
     dist_tstart = datetime.datetime.now()
-    count = 0
+    avg_count = 0
+    unique_count = 0
     try:
-        count = generate_data.generate_district_data(state, district,
-                                                     random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS),
-                                                     assessments, skip_rates, id_gen)
+        reg_sys_guid = random.choice(generate_data.REGISTRATION_SYSTEM_GUIDS)
+        avg_count, unique_count = generate_data.generate_district_data(state, district, reg_sys_guid, assessments,
+                                                                       skip_rates, id_gen)
     except Exception as ex:
         print('%s' % ex)
         traceback.print_exc()
 
     # Close the open DB connection
     if generate_data.WRITE_PG:
+        generate_data.DB_CONN.commit()
         generate_data.DB_CONN.close()
 
     # Get the run time and report back
     dist_tend = datetime.datetime.now()
-    return district.name, count, (dist_tend - dist_tstart)
+    return district.name, avg_count, unique_count, (dist_tend - dist_tstart)
 
 
-def pool_callback(tpl):
-    global DISTRICT_COMPLETE_COUNT, TOTAL_STUDENT_AVERAGE
-    district_name, student_count, run_time = tpl
+def pool_callback(arg_tpl):
+    global DISTRICT_COMPLETE_COUNT, TOTAL_STUDENT_AVERAGE, TOTAL_STUDENT_UNIQUE
+    district_name, student_avg_count, student_unique_count, run_time = arg_tpl
     with CALLBACK_LOCK:
         DISTRICT_COMPLETE_COUNT += 1
-        TOTAL_STUDENT_AVERAGE += student_count
-        print('District %s generated with average of %i students/year in %s (%i of %i)' % (district_name, student_count,
-                                                                                           run_time,
-                                                                                           DISTRICT_COMPLETE_COUNT,
-                                                                                           DISTRICT_TOTAL_COUNT))
+        TOTAL_STUDENT_AVERAGE += student_avg_count
+        TOTAL_STUDENT_UNIQUE += student_unique_count
+        format_tpl = (district_name, student_avg_count, student_unique_count, run_time, DISTRICT_COMPLETE_COUNT,
+                      DISTRICT_TOTAL_COUNT)
+        print('District %s generated with average of %i students/year and %i unique in %s (%i of %i)' % format_tpl)
 
 
 if __name__ == '__main__':
@@ -246,6 +249,7 @@ if __name__ == '__main__':
     # Print statistics
     print()
     print('Average students per year: %i' % TOTAL_STUDENT_AVERAGE)
+    print('Total unique students: %i' % TOTAL_STUDENT_UNIQUE)
     print()
     print('Run began at:  %s' % tstart)
     print('Run ended at:  %s' % tend)

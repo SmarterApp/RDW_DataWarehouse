@@ -381,6 +381,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     schools_by_grade = sbac_hier_gen.sort_schools_by_grade(schools)
 
     # Begin processing the years for data
+    unique_students = {}
     students = {}
     student_count = 0
     for asmt_year in YEARS:
@@ -449,10 +450,11 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                                 sr_students.append(student)
 
                             # Make sure we have the student for the next run
-                            if first_subject:
-                                if student.guid not in students:
-                                    students[student.guid] = student
-                                    dim_students.append(student)
+                            if student.guid not in students:
+                                students[student.guid] = student
+                                dim_students.append(student)
+                            if student.guid not in unique_students:
+                                unique_students[student.guid] = True
 
                         first_subject = False
                 else:
@@ -462,6 +464,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         if student.guid not in students:
                             students[student.guid] = student
                             dim_students.append(student)
+                        if student.guid not in unique_students:
+                            unique_students[student.guid] = True
 
         # Write data out to CSV
         if WRITE_LZ:
@@ -489,20 +493,25 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                     csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
                                                      tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
                 if WRITE_PG:
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
-                                                           rslts)
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
-                                                           fao_pri_out_cols, rslts)
+                    try:
+                        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                                                               rslts)
+                        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
+                                                               fao_pri_out_cols, rslts)
+                    except Exception as e:
+                        print('PostgreSQL EXCEPTION ::: %s' % str(e))
 
     # Some explicit garbage collection
+    unique_student_count = len(unique_students)
     del hierarchies
     del inst_hiers
     del schools
     del schools_by_grade
     del students
+    del unique_students
 
     # Return the average student count
-    return int(student_count // 3)
+    return int(student_count // 3), unique_student_count
 
 
 def generate_state_data(state: SBACState, id_gen):
@@ -533,7 +542,8 @@ def generate_state_data(state: SBACState, id_gen):
                     assessments[asmt_key_intrm] = asmt_intrm
 
     # Build the districts
-    student_count = 0
+    student_avg_count = 0
+    student_unique_count = 0
     for district_type, dist_type_count in state.config['district_types_and_counts'].items():
         for _ in range(dist_type_count):
             # Create the district
@@ -541,15 +551,17 @@ def generate_state_data(state: SBACState, id_gen):
             print('  Creating District: %s (%s District)' % (district.name, district.type_str))
 
             # Generate the district data set
-            count = generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS), assessments,
-                                           asmt_skip_rates_by_subject, id_gen)
+            avg_year, unique = generate_district_data(state, district, random.choice(REGISTRATION_SYSTEM_GUIDS),
+                                                      assessments, asmt_skip_rates_by_subject, id_gen)
 
             # Print completion of district
-            print('    District created with average of %i students/year' % count)
-            student_count += count
+            print('    District created with average of %i students/year and %i total unique' % (avg_year, unique))
+            student_avg_count += avg_year
+            student_unique_count += unique
 
     # Print completion of state
-    print('State %s created with average of  %i students/year' % (state.name, student_count))
+    print('State %s created with average of %i students/year and %i total unique' % (state.name, student_avg_count,
+                                                                                      student_unique_count))
 
 
 if __name__ == '__main__':

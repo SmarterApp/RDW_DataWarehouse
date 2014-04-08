@@ -13,6 +13,7 @@ from edudl2.database.udl2_connector import get_target_connection, get_udl_connec
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edschema.metadata_generator import generate_ed_metadata
+import edschema.metadata.util as edschema_util
 from sqlalchemy.sql.expression import text, select, and_
 from edcore.database.utils.utils import create_schema
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
@@ -164,27 +165,24 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     @return: list of four queries
     '''
     # disable foreign key in fact table
-    disable_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)
+    queries = [enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)]
 
     # create insertion insert_into_fact_table_query
     insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types,
                                                        False)
     logger.info(insert_into_fact_table_query)
+    queries.append(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
-                                                                   conf[mk.MOVE_TO_TARGET]['update_inst_hier_rec_id_fk'])
-
-    # update student query back
-    update_student_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
-                                                                 conf[mk.MOVE_TO_TARGET]['update_student_rec_id_fk'])
+    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as conn:
+        trg_tbl = conn.get_table(target_table)
+        for fk in edschema_util.get_foreign_key_reference_columns(trg_tbl):
+            queries.extend(update_foreign_rec_id_query(fk))
 
     # enable foreign key in fact table
-    enable_back_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
+    queries.append(enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True))
 
-    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query,
-            update_student_rec_id_fk_query,
-            enable_back_trigger_query]
+    return queries
 
 
 def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):

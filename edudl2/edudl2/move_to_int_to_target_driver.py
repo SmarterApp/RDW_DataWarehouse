@@ -3,7 +3,7 @@ from edudl2.udl2.W_load_to_integration_table import task as task_2
 from celery import chain
 import argparse
 from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims,\
-    explode_to_fact
+    explode_to_facts
 
 
 def main():
@@ -20,7 +20,7 @@ def main():
     # 1. load json file into INT_SBAC_ASMT
     # 2. move data from STG_SBAC_ASMT_OUTCOME to INT_SBAC_ASMT_OUTCOME
     # 3. move data from INT_SBAC_ASMT, INT_SBAC_ASMT_OUTCOME to dim and fact tables in star schema
-    result_uuid = chain(task_1.s(batch), task_2.s(), explode_to_dims.s(), explode_to_fact.s())()
+    result_uuid = chain(task_1.s(batch), task_2.s(), explode_to_dims.s(), explode_to_facts.s())()
     result_value = result_uuid.get()
     print(result_value)
 

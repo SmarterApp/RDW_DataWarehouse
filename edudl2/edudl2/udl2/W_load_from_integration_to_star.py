@@ -88,8 +88,8 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     return benchmark.get_result_dict()
 
 
-@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact', base=Udl2BaseTask)
-def explode_to_fact(msg):
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_facts', base=Udl2BaseTask)
+def explode_to_facts(msg):
     '''
     This is the celery task to move data from integration table to fact table.
     In batch, guid_batch is provided.
@@ -103,20 +103,22 @@ def explode_to_fact(msg):
 
     conf = _get_conf(msg)
     # get fact table column mapping
-    fact_table_map, fact_column_map = get_table_and_column_mapping(conf, explode_to_fact.name, 'fact_')
-    fact_table = list(fact_table_map.keys())[0]
-    source_table_for_fact_table = list(fact_table_map.values())[0]
-    fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
+    fact_table_map, fact_column_map = get_table_and_column_mapping(conf, explode_to_facts.name, 'fact_')
 
-    affected_rows = explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
+    affected_rows = 0
+    for fact_table, source_table_for_fact_table in fact_table_map.items():
+        fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
+
+        affected_rows += explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table,
+                                                    fact_column_map[fact_table], fact_column_types)
 
     finish_time = datetime.datetime.now()
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
 
     # Create benchmark object ant record benchmark
     udl_phase_step = 'INT --> FACT TABLE'
-    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], explode_to_fact.name, start_time, finish_time,
-                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(explode_to_fact.request.id),
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], explode_to_facts.name, start_time, finish_time,
+                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(explode_to_facts.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
@@ -177,12 +179,7 @@ def handle_record_upsert(msg):
     logger.info('LOAD_FROM_INT_TO_STAR: detect duplications in target tables.')
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
-    # generate config dict
-    configs = get_move_to_target_conf()['handle_record_upsert']
-    affected_rows = 0
-    for match_conf in configs:
-        num_of_rows = handle_duplicates_in_dimensions(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH], match_conf)
-        affected_rows += num_of_rows
+    affected_rows = handle_duplicates_in_dimensions(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH])
     finish_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark

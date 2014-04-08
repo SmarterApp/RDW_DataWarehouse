@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
+from edschema.metadata.util import get_tables_starting_with
 from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.exceptions.errorcodes import ErrorSource
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
@@ -13,8 +14,10 @@ from edudl2.database.udl2_connector import get_target_connection, get_udl_connec
     get_prod_connection
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edschema.metadata_generator import generate_ed_metadata
+import edschema.metadata.util as edschema_util
 from sqlalchemy.sql.expression import text, select, and_
 from edcore.database.utils.utils import create_schema
+from edcore.database.utils.constants import Constants
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
     create_insert_query, update_foreign_rec_id_query,\
     create_sr_table_select_insert_query,\
@@ -61,20 +64,6 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     4. Update foreign key student_rec_id by comparing student_guid, batch_guid
     5. Enable trigger of table fact_asmt_outcome
     '''
-    # get asmt_rec_id, which is one foreign key in fact table
-    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET]['asmt_rec_id']
-    asmt_rec_id_column_name = asmt_rec_id_info['rec_id']
-    asmt_rec_id = get_asmt_rec_id(conf[mk.GUID_BATCH], conf[mk.TENANT_NAME], asmt_rec_id_info)
-
-    # get section_rec_id, which is one foreign key in fact table. We set to a fake value
-    section_rec_id_info = conf[mk.MOVE_TO_TARGET]['section_rec_id_info']
-    section_rec_id = section_rec_id_info['value']
-    section_rec_id_column_name = section_rec_id_info['rec_id']
-
-    # update above 2 foreign keys in column mapping
-    column_mapping[asmt_rec_id_column_name] = str(asmt_rec_id)
-    column_mapping[section_rec_id_column_name] = str(section_rec_id)
-
     # get list of queries to be executed
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
@@ -82,43 +71,28 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
-        start_time_p1 = datetime.datetime.now()
-        for query in queries[0:2]:
+
+        max_num_rows = 0
+        start_time = datetime.datetime.now()
+        for query in queries:
             logger.info(query)
-        affected_rows_first = execute_udl_queries(conn,
-                                                  queries[0:2],
-                                                  'Exception -- exploding data from integration to fact table part 1',
-                                                  'move_to_target',
-                                                  'explode_data_to_fact_table')
-        finish_time_p1 = datetime.datetime.now()
+            affected_rows = execute_udl_queries(conn, [query], 'Exception -- Query', 'move_to_target',
+                                                'explode_data_to_fact_table')
+
+            if len(affected_rows) >= 2 and max_num_rows < affected_rows[1]:
+                max_num_rows = affected_rows[1]
+
+        finish_time = datetime.datetime.now()
 
         # Record benchmark
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_fact',
-                                        start_time_p1, finish_time_p1,
-                                        working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                        udl_phase_step='Disable Trigger & Load Data')
-        benchmark.record_benchmark()
-
-        # The second part: Update Inst Hier Rec Id FK, Update Student Rec Id FK
-        start_time_p2 = datetime.datetime.now()
-        execute_udl_queries(conn,
-                            queries[2:5],
-                            'Exception -- exploding data from integration to fact table part 2',
-                            'move_to_target',
-                            'explode_data_to_fact_table')
-        finish_time_p2 = datetime.datetime.now()
-
-        # Record benchmark
-        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_fact',
-                                        start_time_p2, finish_time_p2,
-                                        working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                        udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')
+                                        'udl2.W_load_from_integration_to_star.explode_to_facts', start_time,
+                                        finish_time, working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                        udl_phase_step='Populate fact table query')
         benchmark.record_benchmark()
 
     # returns the number of rows that are inserted into fact table. It maps to the second query result
-    return affected_rows_first[1]
+    return max_num_rows
 
 
 def get_asmt_rec_id(guid_batch, tenant_name, asmt_rec_id_info):
@@ -164,27 +138,24 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     @return: list of four queries
     '''
     # disable foreign key in fact table
-    disable_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)
+    queries = [enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)]
 
     # create insertion insert_into_fact_table_query
     insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types,
                                                        False)
     logger.info(insert_into_fact_table_query)
+    queries.append(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
-                                                                   conf[mk.MOVE_TO_TARGET]['update_inst_hier_rec_id_fk'])
-
-    # update student query back
-    update_student_rec_id_fk_query = update_foreign_rec_id_query(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA], FAKE_REC_ID,
-                                                                 conf[mk.MOVE_TO_TARGET]['update_student_rec_id_fk'])
+    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as conn:
+        trg_tbl = conn.get_table(target_table)
+        for fk in edschema_util.get_foreign_key_reference_columns(trg_tbl):
+            queries.extend(update_foreign_rec_id_query(fk))
 
     # enable foreign key in fact table
-    enable_back_trigger_query = enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
+    queries.append(enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True))
 
-    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query,
-            update_student_rec_id_fk_query,
-            enable_back_trigger_query]
+    return queries
 
 
 def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):
@@ -248,7 +219,7 @@ def match_deleted_records(conf, match_conf):
     return matched_results
 
 
-def handle_duplicates_in_dimensions(tenant_name, guid_batch, match_conf):
+def handle_duplicates_in_dimensions(tenant_name, guid_batch):
     '''
     Handle duplicate records in dimensions by marking them as deleted
 
@@ -260,21 +231,21 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch, match_conf):
 
     :param tenant_name: tenant name, to get target database connection
     :param guid_batch:  batch buid
-    :param match_conf:  configurations for move_to_target to match tables for
-                        foreign key rec ids for dim_asmt, dim_student, and dim_inst_hier.
-                        See move_to_target_conf.py
     '''
     affected_rows = 0
     with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
-        target_db_helper = HandleUpsertHelper(target_conn, guid_batch, match_conf)
-        prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, match_conf)
-        for record in target_db_helper.find_all():
-            matched = prod_db_helper.find_by_natural_key(record)
-            if not matched:
-                continue
-            # soft delete the record and set its pk as the pk of the matched record
-            target_db_helper.soft_delete_and_update(record, matched)
-            affected_rows += 1
+
+        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.DIM_TABLES_PREFIX)
+        for table_name in tables:
+            target_db_helper = HandleUpsertHelper(target_conn, guid_batch, table_name)
+            prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, table_name)
+            for record in target_db_helper.find_all():
+                matched = prod_db_helper.find_by_natural_key(record)
+                if not matched:
+                    continue
+                # soft delete the record and set its pk as the pk of the matched record
+                target_db_helper.soft_delete_and_update(record, matched)
+                affected_rows += 1
     return affected_rows
 
 

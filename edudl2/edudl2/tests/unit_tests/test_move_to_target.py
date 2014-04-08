@@ -51,21 +51,10 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
         column_mapping['section_rec_id'] = '1'
         column_types = get_expected_column_types_for_fact_table(target_table)
 
-        expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_query_2 = get_expected_insert_query_for_fact_table(conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT],
-                                                                    target_table, column_mapping['asmt_rec_id'],
-                                                                    column_mapping['section_rec_id'], guid_batch,
-                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER],
-                                                                    conf[mk.SOURCE_DB_PASSWORD])
-        expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
-        expected_query_4 = get_expected_update_student_rec_id_query(target_table)
-        expected_query_5 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
-        expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4, expected_query_5]
-        actual_value = create_queries_for_move_to_fact_table(conf, source_table,
-                                                             target_table, column_mapping,
-                                                             column_types)
-        self.maxDiff = None
-        self.assertEqual(len(expected_value), len(actual_value))
+        queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
+
+        self.assertGreaterEqual(len(queries), 3)  # Drop constraints, insert, add constraints, up to 3 fk queries
+        self.assertLessEqual(len(queries), 6)  # Drop constraints, insert, add constraints, up to 3 fk queries
 
     def test_create_insert_query_for_dim_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'
@@ -129,17 +118,17 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
                          "WHERE op = ''D'' AND table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
 
     def test_handle_record_upsert_find_all(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        table_name = 'dim_student'
         guid_batch = None
         with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, table_name)
             all_records = helper.find_all()
             self.assertIsNotNone(all_records, "Find all should return some value")
             actual_rows = all_records.fetchall()
             self.assertEqual(len(actual_rows), 894, "Find all should return all records")
 
     def test_handle_record_upsert_find_by_natural_key(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        table_name = 'dim_student'
         guid_batch = None
         example_record = {
             'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
@@ -157,13 +146,14 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'state_code': 'NC',
             'district_guid': '228',
             'school_guid': '242',
+            'section_guid': '345'
         }
         bad_record = {
             'student_guid': 'not_really_exist'
         }
 
         with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, table_name)
             m1 = helper.find_by_natural_key(example_record)
             self.assertIsNotNone(m1, "Find_by_natural_key should return matched value")
             self.assertEqual(m1['student_guid'], example_record['student_guid'], "Matched records should have the same student guid")
@@ -174,7 +164,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             self.assertIsNone(m3, "Find_by_natural_key should return None if not match found")
 
     def test_handle_record_soft_delete(self):
-        match_conf = get_move_to_target_conf()['handle_record_upsert'][0]
+        table_name = 'dim_student'
         guid_batch = None
         old_record = {
             'student_guid': 'a3fcc2a7-16ba-4783-ae58-f225377e8e20',
@@ -187,9 +177,9 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'batch_guid': None
         }
         with UnittestUDLTargetDBConnection() as conn:
-            helper = HandleUpsertHelper(conn, guid_batch, match_conf)
+            helper = HandleUpsertHelper(conn, guid_batch, table_name)
             helper.soft_delete_and_update(old_record, new_record)
-            table = conn.get_table(match_conf['table_name'])
+            table = conn.get_table(table_name)
             query = select([table.c.student_rec_id], from_obj=[table]).where(and_(table.c.batch_guid == guid_batch, table.c.student_rec_id == '3155'))
             record_updated = conn.execute(query)
             self.assertNotEqual(record_updated.rowcount, 1)

@@ -177,7 +177,8 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
 
 DIM_STUDENT_DEMO_FORMAT = {'format': 'csv',
                            'name': 'dim_student_demographics.csv',
-                           'columns': [{'name': 'student_demographics_rec_id', 'val': 'student.rec_id'},
+                           'columns': [{'name': 'student_demographic_rec_id', 'val': 'student.rec_id'},
+                                       {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                        {'name': 'student_guid', 'val': 'student.guid'},
                                        {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
                                        {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
@@ -190,10 +191,9 @@ DIM_STUDENT_DEMO_FORMAT = {'format': 'csv',
                                        {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
                                        {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
                                        {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'},
-                                       {'name': 'rec_status', 'val': 'C'},
                                        {'name': 'from_date', 'val': '20130901'},
                                        {'name': 'to_date', 'val': '99991231'},
-                                       {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
+                                       {'name': 'rec_status', 'val': 'C'}]}
 
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',

@@ -5,6 +5,7 @@ from edudl2.database.udl2_connector import get_udl_connection, \
     get_target_connection, get_prod_connection
 from psycopg2.extensions import QuotedString
 from edudl2.udl2_util.database_util import create_filtered_sql_string
+import edschema.metadata.util as edschema_util
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
@@ -17,7 +18,8 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     distinct_expression = 'DISTINCT ' if need_distinct else ''
     seq_expression = list(column_mapping.values())[0].replace("'", "''")
     target_columns = ",".join(list(column_mapping.keys()))
-    quoted_source_columns = ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:])
+    lst = list(column_mapping.values())
+    quoted_source_columns = ",".join(value.replace("'", "''") for value in lst[1:])
     record_mapping = ",".join(list(column_types.values()))
     params = []
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
@@ -175,28 +177,45 @@ def enable_trigger_query(schema_name, table_name, is_enable):
                                     action=action))
 
 
-def update_foreign_rec_id_query(tenant, schema, condition_value, info_map):
+def update_foreign_rec_id_query(fk_constraint):
     '''
-    Create query to update foreign key [foreign]_rec_id in table fact_asmt_outcome
+    Create query to update foreign key in table
+    @param fk_constraint: Foreign key constraint object to build query for
     '''
-    # TODO:  Query simplication
-    with get_target_connection(tenant, schema) as conn:
-        dim_table = conn.get_table(info_map['table_map'][0])
-        fact_table = conn.get_table(info_map['table_map'][1])
+    # Store the target table
+    target = fk_constraint.table
+    target_col_names = [column.name for column in target.columns]
 
-        columns = [dim_table.c[info_map['rec_id_map'][0]]]
-        for k, v in sorted(info_map['guid_column_map'].items()):
-            columns.append(dim_table.c[k])
+    # Process each key
+    queries = []
+    for fk in fk_constraint.foreign_keys:
+        # Get source table
+        source = fk.column.table
 
-        inner_query = select(columns, from_obj=dim_table).alias('tmp_dim_info')
+        # Get natural key from source table
+        source_nk = edschema_util.get_natural_key(source)
+
+        if source_nk is None:
+            continue
+
+        # Validate the existence of each column in the target table
+        for column in source_nk:
+            if column.name not in target_col_names:
+                raise Exception('Missing required natural key column (%s) in target table (%s)' % (column.name,
+                                                                                                   str(target)))
+
+        # Build the query
         where_clauses = []
-        for k, v in sorted(info_map['guid_column_map'].items()):
-            where_clauses.append(dim_table.c[k] == inner_query.c[v])
+        for column in source_nk:
+            where_clauses.append(target.c[column.name] == source.c[column.name])
 
-        update_query = fact_table.update().values({fact_table.c[info_map['rec_id_map'][1]]: inner_query.c[info_map['rec_id_map'][0]]})
-        update_query = update_query.where(fact_table.c[info_map['rec_id_map'][1]] == condition_value)
+        update_query = target.update().values({target.c[fk.parent.name]: source.c[fk.column.name]})
         update_query = update_query.where(and_(*where_clauses))
-        return update_query
+
+        # Put the query into the list
+        queries.append(update_query)
+
+    return queries
 
 
 def create_information_query(target_table):
@@ -216,7 +235,10 @@ def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
     '''
-    return create_filtered_sql_string('"{schema}"."{table}"', schema=schema_name, table=table_name)
+    if schema_name:
+        return create_filtered_sql_string('"{schema}"."{table}"', schema=schema_name, table=table_name)
+    else:
+        return create_filtered_sql_string('"{table}"', table=table_name)
 
 
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):

@@ -2,7 +2,7 @@ import logging
 
 from edmigrate.exceptions import EdMigrateUdl_statException
 from sqlalchemy.sql.expression import select, and_
-from edmigrate.migrate.migrate_by_batch import migrate_by_batch
+from edmigrate.migrate.migrate_by_batch import migrate_snapshot
 from edmigrate.migrate.migrate_by_row import migrate_by_row
 from edmigrate.utils.constants import Constants
 from edcore.database.stats_connector import StatsDBConnection
@@ -199,8 +199,8 @@ def migrate_table(batch_guid, schema_name, source_connector, dest_connector, tab
         logger.debug('migrating schema[' + schema_name + ']')
     logger.debug('migrating table[' + table_name + ']')
 
-    if batch_op:
-        delete_count, insert_count = migrate_by_batch(dest_connector, source_connector, table_name, batch_op, batch_criteria, batch_size)
+    if batch_op and batch_op == UdlStatsConstants.SNAPSHOT:
+        delete_count, insert_count = migrate_snapshot(dest_connector, source_connector, table_name, batch_criteria, batch_size)
     else:
         delete_count, insert_count = migrate_by_row(batch_guid, batch_size, deactivate, dest_connector, source_connector, table_name)
 

@@ -63,7 +63,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         }
         self.tenant_dir = TENANT_DIR
         self.load_type = udl2_conf['load_type']['student_registration']
-        #self.empty_target_table()
         self.receive_requests = True
         self.start_http_post_server()
         self.batches = []
@@ -74,15 +73,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             shutil.rmtree(self.tenant_dir)
         for batch in self.batches:
             drop_target_schema(batch)
-
-    #Empty target table
-    def empty_target_table(self):
-        with get_target_connection() as conn:
-            target_table = conn.get_table(udl2_conf['target_db']['sr_target_table'])
-            conn.execute(target_table.delete())
-            query = select([func.count()]).select_from(target_table)
-            count = conn.execute(query).fetchall()[0][0]
-            self.assertEqual(count, 0, 'Could not empty out target table correctly')
 
     #Validate the UDL process completed successfully
     def validate_successful_job_completion(self):
@@ -133,9 +123,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         with get_target_connection() as conn:
             conn.set_metadata_by_reflect(self.batch_id)
             target_table = conn.get_table(udl2_conf['target_db']['sr_target_table'])
-            query = select([target_table.c.student_guid], target_table.c.batch_guid == self.batch_id)
-            result = conn.execute(query).fetchall()
-            record_count = len(result)
+            query = select([func.count()]).select_from(target_table)
+            record_count = conn.execute(query).fetchall()[0][0]
             print('Number of rows for current job in target table:', record_count)
             self.assertEqual(record_count, self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in target table.')
 
@@ -160,19 +149,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEquals(student_data_tuple[6], student['sec504_col'], 'Section504 status should be false')
             self.assertEquals(student_data_tuple[7], student['year_col'], 'Academic Year did not match')
             self.assertEquals(student_data_tuple[8], student['reg_sys_id_col'], 'Test registration system\'s id did not match')
-
-    #Validate the total number of rows in the target table (The args define what's expected in the target table)
-    def validate_total_number_in_target(self, *args):
-        with get_target_connection() as conn:
-            expected_number = 0
-            for arg in args:
-                expected_number += self.student_reg_files[arg]['num_records_in_data_file']
-            conn.set_metadata_by_reflect(self.batch_id)
-            target_table = conn.get_table(udl2_conf['target_db']['sr_target_table'])
-            query = select([func.count()]).select_from(target_table)
-            count = conn.execute(query).fetchall()[0][0]
-            print('Total number of rows in target table:', count)
-            self.assertEqual(count, expected_number, 'Unexpected number of rows in target table')
 
     # Validate that the notification to the callback url matches the status, with a certain number of retries attempted
     def validate_notification(self, expected_status, expected_error_codes, expected_retries):
@@ -259,7 +235,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_load_type()
         self.validate_stu_reg_target_table('original_data')
         self.validate_student_data('original_data')
-        self.validate_total_number_in_target('original_data')
         self.validate_notification(mk.SUCCESS, [], 0)
         self.validate_stats_update(mk.SUCCESS)
 
@@ -271,7 +246,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_total_number_in_target('data_for_different_test_center_than_original_data')
         self.validate_notification(mk.SUCCESS, ['408', '408'], 2)
 
         # Run and verify second run of student registration data again
@@ -282,7 +256,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.validate_successful_job_completion()
         self.validate_stu_reg_target_table('data_for_different_test_center_than_original_data')
         self.validate_student_data('data_for_different_test_center_than_original_data')
-        self.validate_total_number_in_target('data_for_different_test_center_than_original_data')
         self.validate_notification(mk.FAILURE, ['408', '408', '408', '408', '408'], 4)
 
     def start_http_post_server(self):

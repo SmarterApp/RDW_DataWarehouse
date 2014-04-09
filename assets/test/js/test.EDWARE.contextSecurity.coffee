@@ -5,7 +5,6 @@ define [
 
   test_user =
     "allow_PII": true
-    "allow_raw_extract": true
     "allow_assessment_extract": true
     "allow_registration_extract": true
 
@@ -69,7 +68,7 @@ define [
 
   test "Test raw extract security", ->
     permission = {
-      allow_raw_extract: true
+      allow_assessment_extract: true
     }
     contextSecurity.init permission, config
     contextSecurity.apply()
@@ -77,7 +76,7 @@ define [
     ok visible, "Should display extract option"
 
     permission = {
-      allow_raw_extract: false
+      allow_assessment_extract: false
     }
     contextSecurity.init permission, config
     contextSecurity.apply()

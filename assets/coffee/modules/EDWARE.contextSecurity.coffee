@@ -9,8 +9,7 @@ define [
       no_control: true,
       access_list: []
     },
-    allow_raw_extract: true,
-    allow_assessment_extract: true,
+    allow_assessment_extract: false,
     allow_registration_extract: true,
   }
 
@@ -37,7 +36,7 @@ define [
         content: @no_pii_msg
 
     apply_raw_extract_security: () ->
-      return if @permissions.allow_raw_extract
+      return if @permissions.allow_assessment_extract
       $('li.extract').hide()
 
     apply_bulk_extract_security: () ->

@@ -70,13 +70,13 @@ class UserContext(object):
 
     def get_chain(self, tenant, permission, params):
         if params.get('schoolGuid') and permission in self._map[tenant]:
-            if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'): 
+            if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'):
                 return self._map[tenant][permission]['schoolGuid']
         elif params.get('districtGuid') and permission in self._map[tenant]:
-            if self.validate_hierarchy(tenant, permission, params, 'districtGuid'): 
+            if self.validate_hierarchy(tenant, permission, params, 'districtGuid'):
                 return self._map[tenant][permission]['schoolGuid']
         elif params.get('stateCode') and permission in self._map[tenant]:
-            if self.validate_hierarchy(tenant, permission, params, 'stateCode'):  
+            if self.validate_hierarchy(tenant, permission, params, 'stateCode'):
                 return self._map[tenant][permission]['districtGuid']
         return {'all': False, 'guid': set()}
 
@@ -96,11 +96,11 @@ class UserContext(object):
             tenant[row.role] = role
             self._map[row.tenant] = tenant
         return self._map
-    
+
     def __set_all_permission(self, role, identifier):
         role[identifier]['all'] = True
         role[identifier]['guid'] = set()
-    
+
     def validate_hierarchy(self, tenant, permission, params, identifier):
         hierarchy = ['schoolGuid', 'districtGuid', 'stateCode']
         index = hierarchy.index(identifier)
@@ -108,10 +108,10 @@ class UserContext(object):
         for i in hierarchy[index:]:
             rtn = rtn and self.is_institution_accessible(tenant, permission, params.get(i), i)
         return rtn
-        
+
     def is_institution_accessible(self, tenant, permission, request_guid, identifier):
         return request_guid in self._map[tenant][permission][identifier]['guid'] or self._map[tenant][permission][identifier]['all']
-    
+
     def __json__(self, request):
         '''
         custom json serialization for this object used by pyramid

@@ -3,11 +3,6 @@ define [
   "edwareContextSecurity"
 ], ($, contextSecurity) ->
 
-  test_user =
-    "allow_PII": true
-    "allow_assessment_extract": true
-    "allow_registration_extract": true
-
   no_pii_msg = "No PII available"
 
   extractType = {
@@ -45,8 +40,8 @@ define [
   test "Test no pii", ->
     $anchor = $('a', '#content')
     permission = {
-      PII: {
-        no_control: true,
+      pii: {
+        all: true,
       }
     }
     contextSecurity.init permission, config
@@ -56,8 +51,8 @@ define [
   test "Test no pii tooltip", ->
     $anchor = $('a.disabled', '#content')
     permission = {
-      PII: {
-        no_control: false,
+      pii: {
+        all: false,
       }
     }
     contextSecurity.init permission, config
@@ -68,7 +63,9 @@ define [
 
   test "Test raw extract security", ->
     permission = {
-      allow_assessment_extract: true
+      sar_extracts: {
+        all: true
+      }
     }
     contextSecurity.init permission, config
     contextSecurity.apply()
@@ -76,7 +73,7 @@ define [
     ok visible, "Should display extract option"
 
     permission = {
-      allow_assessment_extract: false
+      sar_extracts: {all: false}
     }
     contextSecurity.init permission, config
     contextSecurity.apply()
@@ -85,8 +82,8 @@ define [
 
   test "Test bulk extract security", ->
     permission = {
-      allow_assessment_extract: false,
-      allow_registration_extract: false
+      sar_extracts: {all: false},
+      srs_extracts: {all: false}
     }
     contextSecurity.init permission, config
     contextSecurity.apply()
@@ -95,8 +92,8 @@ define [
 
   test "Test no registration extract", ->
     permission = {
-      allow_assessment_extract: true,
-      allow_registration_extract: false
+      sar_extracts: {all: true},
+      srs_extracts: {all: false}
     }
     extractType = {
       options: [{
@@ -115,8 +112,8 @@ define [
 
   test "Test no assessment extract", ->
     permission = {
-      allow_assessment_extract: false,
-      allow_registration_extract: true
+      sar_extracts: {all: false},
+      srs_extracts: {all: true}
     }
     extractType = {
       options: [{
@@ -135,17 +132,17 @@ define [
 
   test "Test hasPIIAccess function", ->
     permission = {
-      PII: {
-        no_control: true,
-        access_list: ['229']
+      pii: {
+        all: true,
+        guid: ['229']
       }
     }
     contextSecurity.init permission, config
     ok contextSecurity.hasPIIAccess('123'), "Should have permission when access is off"
     permission = {
-      PII: {
-        no_control: false,
-        access_list: ['229']
+      pii: {
+        all: false,
+        guid: ['229']
       }
     }
     contextSecurity.init permission, config

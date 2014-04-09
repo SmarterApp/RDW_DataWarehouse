@@ -15,9 +15,11 @@ from edudl2.database.udl2_connector import get_target_connection, get_udl_connec
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edschema.metadata_generator import generate_ed_metadata
 import edschema.metadata.util as edschema_util
-from sqlalchemy.sql.expression import text, select, and_
+from sqlalchemy import update
+from sqlalchemy.sql.expression import text, select, and_, tuple_
 from edcore.database.utils.utils import create_schema
 from edcore.database.utils.constants import Constants
+from edschema.metadata.util import get_primary_key_columns, get_natural_key, get_natural_key_columns
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
     create_insert_query, update_foreign_rec_id_query,\
     create_sr_table_select_insert_query,\
@@ -224,58 +226,15 @@ def calculate_spend_time_as_second(start_time, finish_time):
     return (finish_time - start_time).total_seconds()
 
 
-def match_deleted_records(conf, match_conf):
+def handle_updates_and_deletes(conf):
     '''
-    Match production database in fact_asmt_outcome. and get fact_asmt_outcome primary rec id
-    in production tables.
-    return a list of rec_id to delete reocrds
+    Main handler for updates and deletes
     '''
-    matched_results = []
-    logger.info('in match_deleted_records')
-    candidates = get_delete_candidates(conf[mk.TENANT_NAME],
-                                       conf[mk.TARGET_DB_SCHEMA],
-                                       match_conf['target_table'],
-                                       conf[mk.GUID_BATCH],
-                                       match_conf['find_deleted_fact_asmt_outcome_rows'])
-
-    for candidate in candidates:
-        matched = match_delete_record_against_prod(conf[mk.TENANT_NAME],
-                                                   conf[mk.PROD_DB_SCHEMA],
-                                                   match_conf['prod_table'],
-                                                   match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
-                                                   candidate)
-        matched_results.extend(matched)
-    return matched_results
-
-
-def handle_duplicates_in_dimensions(tenant_name, guid_batch):
-    '''
-    Handle duplicate records in dimensions by marking them as deleted
-
-    Steps:
-    1. Soft delete records (Mark rec_status as 'S') in pre-prod dimensions that are already existing in production database
-       The match is done based on natural_key columns of the table and some other key columns listed
-    2. Update the rec_id of the record marked for delete with the id of the matching record found in prod. This is needed for
-       step which updates foreign keys in fact asmt outcome
-
-    :param tenant_name: tenant name, to get target database connection
-    :param guid_batch:  batch buid
-    '''
-    affected_rows = 0
-    with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
-
-        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.DIM_TABLES_PREFIX)
+    #import pdb;pdb.set_trace();
+    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as target_conn, get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
+        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.FACT_TABLES_PREFIX)
         for table_name in tables:
-            target_db_helper = HandleUpsertHelper(target_conn, guid_batch, table_name)
-            prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, table_name)
-            for record in target_db_helper.find_all():
-                matched = prod_db_helper.find_by_natural_key(record)
-                if not matched:
-                    continue
-                # soft delete the record and set its pk as the pk of the matched record
-                target_db_helper.soft_delete_and_update(record, matched)
-                affected_rows += 1
-    return affected_rows
+            process_records_to_be_deleted(conf, target_conn, prod_conn, table_name)
 
 
 def check_mismatched_deletions(conf, match_conf):
@@ -297,6 +256,104 @@ def check_mismatched_deletions(conf, match_conf):
                                    ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
                                    conf[mk.UDL_PHASE_STEP],
                                    conf[mk.WORKING_SCHEMA])
+
+
+def match_deleted_records(conf, table_name, match_conf):
+    '''
+    Match production database in fact_asmt_outcome. and get fact_asmt_outcome primary rec id
+    in production tables.
+    return a list of rec_id to delete records
+    '''
+    matched_results = []
+    logger.info('in match_deleted_records')
+    candidates = get_delete_candidates(conf[mk.TENANT_NAME],
+                                       conf[mk.TARGET_DB_SCHEMA],
+                                       table_name,
+                                       conf[mk.GUID_BATCH],
+                                       match_conf['find_deleted_fact_asmt_outcome_rows'])
+
+    for candidate in candidates:
+        matched = match_delete_record_against_prod(conf[mk.TENANT_NAME],
+                                                   conf[mk.PROD_DB_SCHEMA],
+                                                   table_name,
+                                                   match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
+                                                   candidate)
+        matched_results.extend(matched)
+    return matched_results
+
+
+def get_columns_names_to_pick_for_delete(table):
+    '''
+    returns column names to be picked for handling the delete
+
+    :param table: SQLAlchemy table object
+    '''
+    pk = get_primary_key_columns(table)
+    nk = get_natural_key(table)
+    nk = nk if nk is not None else []
+    return [c.name for c in pk + nk]
+
+
+def yield_records_to_be_deleted(conf, target_conn, table_name, batch_size=100):
+    '''
+    Yield records to  marked as deleted from pre-prod table
+
+    The methods yields records marked for delete('W') from the pre-prod database table
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param batch_size: batch size to yield results
+    '''
+    table = target_conn.get_table(table_name)
+    #import pdb;pdb.set_trace();
+    column_names = get_columns_names_to_pick_for_delete(table)
+    columns_to_select = [table.c[column_name] for column_name in column_names]
+    query = select(columns_to_select, from_obj=table).where(and_(table.c.batch_guid == conf[mk.GUID_BATCH],
+                                                                 table.c.rec_status == 'W'))
+    result = target_conn.execute(query, stream_results=True)
+    rows = result.fetchmany(batch_size)
+    while len(rows) > 0:
+        yield rows
+        rows = result.fetchmany(batch_size)
+
+
+def matched_prod_records(prod_conn, table_name, records_to_be_deleted):
+    table = prod_conn.get_table(table_name)
+    natural_keys = get_natural_key_columns(table)
+    columns_to_select = [table.c[column_name] for column_name in get_columns_names_to_pick_for_delete(table)]
+    key_columns = [table.columns[key] for key in natural_keys]
+    key_values = [[row[key] for key in natural_keys] for row in records_to_be_deleted]
+    query = select(columns_to_select, from_obj=table).where(and_(table.c.rec_status == 'C',
+                                                                 tuple_(*key_columns).in_(key_values)))
+    result = prod_conn.get_result(query)
+    return result
+
+
+def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched):
+    table = target_conn.get_table(table_name)
+    columns = table.c
+    for record in prod_records_matched:
+        values = {columns[pk_column]: record[pk_column] for pk_column in table.primary_key.columns.keys()}
+        values[columns[Constants.REC_STATUS]] = Constants.STATUS_DELETE
+        criteria = [table.c[nk_column] == record[nk_column] for nk_column in get_natural_key_columns(table)]
+        query = update(table).values(values).where(table.c.batch_guid == conf[mk.GUID_BATCH]).where(and_(*criteria))
+        try:
+            target_conn.execute(query)
+        except IntegrityError as ie:
+            e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
+                                      "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA], table=table_name),
+                                      ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
+                                      conf[mk.UDL_PHASE_STEP],
+                                      conf[mk.WORKING_SCHEMA])
+            failure_time = datetime.datetime.now()
+            e.insert_err_list(failure_time)
+
+
+def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):
+    proxy_rows = yield_records_to_be_deleted(conf, target_conn, table_name)
+    for rows in proxy_rows:
+        prod_records_matched = matched_prod_records(prod_conn, table_name, rows)
+        update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched)
 
 
 def update_deleted_record_rec_id(conf, match_conf, matched_values):
@@ -328,6 +385,36 @@ def update_deleted_record_rec_id(conf, match_conf, matched_values):
                                           conf[mk.WORKING_SCHEMA])
                 failure_time = datetime.datetime.now()
                 e.insert_err_list(failure_time)
+
+
+def handle_duplicates_in_dimensions(tenant_name, guid_batch):
+    '''
+    Handle duplicate records in dimensions by marking them as deleted
+
+    Steps:
+    1. Soft delete records (Mark rec_status as 'S') in pre-prod dimensions that are already existing in production database
+       The match is done based on natural_key columns of the table and some other key columns listed
+    2. Update the rec_id of the record marked for delete with the id of the matching record found in prod. This is needed for
+       step which updates foreign keys in fact asmt outcome
+
+    :param tenant_name: tenant name, to get target database connection
+    :param guid_batch:  batch buid
+    '''
+    affected_rows = 0
+    with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
+
+        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.DIM_TABLES_PREFIX)
+        for table_name in tables:
+            target_db_helper = HandleUpsertHelper(target_conn, guid_batch, table_name)
+            prod_db_helper = HandleUpsertHelper(prod_conn, guid_batch, table_name)
+            for record in target_db_helper.find_all():
+                matched = prod_db_helper.find_by_natural_key(record)
+                if not matched:
+                    continue
+                # soft delete the record and set its pk as the pk of the matched record
+                target_db_helper.soft_delete_and_update(record, matched)
+                affected_rows += 1
+    return affected_rows
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):

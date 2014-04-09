@@ -40,7 +40,9 @@ class LoadType():
 class Constants():
     STATUS_CURRENT = 'C'
     STATUS_SHADOW = 'S'
+    STATUS_DELETE = 'D'
     BATCH_GUID = 'batch_guid'
     REC_STATUS = 'rec_status'
     DIM_TABLES_PREFIX = 'dim_'
+    FACT_TABLES_PREFIX = 'fact_'
     META_COLUMN = 'MetaColumn'

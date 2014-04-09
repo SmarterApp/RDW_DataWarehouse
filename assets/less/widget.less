@@ -186,22 +186,27 @@ table td {
     white-space: nowrap !important;
 }
 
-ui-widget-content {
+.ui-widget-content {
   color: @color-B2;
 
   a {
-    color : @color-B1; text-decoration: none;
+    color : @color-A2; text-decoration: none;
 
-    &.enabled:hover {
-      color: @color-A2;
+    &:hover {
+      color: @color-A3;
+      text-decoration: underline;
+    }
+
+    &.disabled {
+      color: @color-B1;
+
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 
 }
-
-.ui-widget-content { color: @color-B2; }
-.ui-widget-content a { color: @color-A2; text-decoration: none; }
-.ui-widget-content a:hover { color: @color-A3; text-decoration: underline;}
 
 .ui-jqgrid .ui-jqgrid-view {
     font-size: 12px;

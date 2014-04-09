@@ -7,7 +7,8 @@ define [
   'edwareLOSConfidenceLevelBar'
   'text!edwareFormatterTemplate'
   'edwarePreferences'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate, edwarePreferences) ->
+  'edwareContextSecurity'
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate, edwarePreferences, contextSecurity) ->
 
   getTemplate = (name) ->
     $(edwareFormatterTemplate).find('div#' + name).html()
@@ -70,8 +71,15 @@ define [
 
     displayValue = getDisplayValue()
     params = buildUrl(rowObject, options)
+
+    buildLink = (options)->
+      if contextSecurity.hasPIIAccess(rowObject.rowId)
+        "<a href='#{options.colModel.formatoptions.linkUrl}?#{params}'>#{displayValue}</a>"
+      else
+        "<a class='disabled' href='#'>#{displayValue}</a>"
+
     # for some reason, link doesn't work well in old version of FF, have to construct manually here
-    link = "<a href='" + options.colModel.formatoptions.linkUrl + "?" + params + "'>" + displayValue + "</a>"
+    link = buildLink(options)
     Mustache.to_html NAME_TEMPLATE, {
       isSticky: options.colModel.stickyCompareEnabled
       rowId: rowObject.rowId

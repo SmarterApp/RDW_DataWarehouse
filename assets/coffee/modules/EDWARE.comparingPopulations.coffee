@@ -92,6 +92,17 @@ define [
           if value is null
             self.data.metadata[subject] = self.defaultColors
 
+        # initialize context security
+        # TODO permission should be passed by backend, remove below code once backend is done
+        data.context.permission = {
+          PII: {
+            no_control: true,
+            access_list: []
+          }
+        }
+        # TODO End
+        contextSecurity.init data.context.permission, self.config
+
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)
         self.renderReportInfo()
@@ -158,12 +169,8 @@ define [
       }
       # We need to preserve sorting, so, update the column labels and color
       this.updateSortLabels(name, order)
-      # below two lines are temporary
-      @data.user_info.allow_PII = true
-      @data.user_info.allow_raw_extract = true
-      @data.user_info.allow_assessment_extract = true
-      @data.user_info.allow_registration_extract = true
-      contextSecurity.apply @data.user_info, @config
+      # apply context security
+      contextSecurity.apply()
 
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')

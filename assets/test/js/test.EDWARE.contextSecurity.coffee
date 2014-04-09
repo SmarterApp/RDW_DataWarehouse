@@ -40,9 +40,8 @@ define [
   test "Test context security module", ->
     ok contextSecurity, "contextSecurity should be a module"
     equal typeof(contextSecurity.apply), "function", "ContextSecurity.apply() should be a function"
-    equal typeof(contextSecurity.apply_pii_security), "function", "ContextSecurity.apply_pii_security() should be a function"
-    equal typeof(contextSecurity.apply_raw_extract_security), "function", "ContextSecurity.apply_raw_extract_security() should be a function"
-    equal typeof(contextSecurity.apply_bulk_extract_security), "function", "apply_bulk_extract_security() should be a function"
+    equal typeof(contextSecurity.init), "function", "ContextSecurity.init() should be a function"
+    equal typeof(contextSecurity.hasPIIAccess), "function", "ContextSecurity.hasPIIAccess() should be a function"
 
   test "Test no pii", ->
     $anchor = $('a', '#content')

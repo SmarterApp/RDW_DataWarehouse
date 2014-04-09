@@ -526,6 +526,10 @@
                 {
                     "display": "Student Registration Statistics",
                     "value": "studentRegistrationStatistics"
+                },
+                {
+                    "display": "Student Registration Completion",
+                    "value": "studentRegistrationCompletion"
                 }
             ]
         },

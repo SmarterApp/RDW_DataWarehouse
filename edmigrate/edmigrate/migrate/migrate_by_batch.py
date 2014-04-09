@@ -40,10 +40,6 @@ def _create_delete_query(batch_criteria, dest_table):
     delete_query = dest_table.delete()
 
     for k, v in snapshot_criteria.items():
-        if isinstance(v, str):
-            delete_criteria = '{col}=\'{val}\''.format(col=k, val=v)
-        else:
-            delete_criteria = '{col}={val}'.format(col=k, val=v)
-        delete_query = delete_query.where(and_(delete_criteria))
+        delete_query = delete_query.where(and_(dest_table.c[k] == v))
 
     return delete_query

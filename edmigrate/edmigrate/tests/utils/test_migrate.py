@@ -144,7 +144,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
                  UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION,
                  UdlStatsConstants.BATCH_OPERATION: 's',
-                 UdlStatsConstants.SNAPSHOT_CRITERIA: '{"reg_system_id": "800b3654-4406-4a90-9591-be84b67054df", "academic_year": 2015}'}
+                 UdlStatsConstants.SNAPSHOT_CRITERIA: '{"reg_system_id": "015247bd-058c-48cd-bb4d-f6cffe5b40c1", "academic_year": 2015}'}
 
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         count_to_source_query = select([func.count()]).select_from(preprod_conn.get_table(Constants.STUDENT_REG))

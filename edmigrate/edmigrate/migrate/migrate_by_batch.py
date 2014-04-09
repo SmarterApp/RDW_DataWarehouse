@@ -1,5 +1,6 @@
 from edmigrate.migrate.migrate_helper import yield_rows
 from sqlalchemy.sql.expression import select, and_
+import json
 
 __author__ = 'ablum'
 
@@ -34,7 +35,15 @@ def migrate_snapshot(dest_connector, source_connector, table_name, batch_criteri
 
 
 def _create_delete_query(batch_criteria, dest_table):
-    delete_criteria = ['{col}={val}'.format(col=k, val=v.replace('"', "'"))
-                       for k, v in (item.split(':') for item in batch_criteria.split(','))]
-    delete_query = dest_table.delete().where(and_(" AND ".join(delete_criteria)))
+    snapshot_criteria = json.loads(batch_criteria)
+
+    delete_query = dest_table.delete()
+
+    for k, v in snapshot_criteria.items():
+        if isinstance(v, str):
+            delete_criteria = '{col}=\'{val}\''.format(col=k, val=v)
+        else:
+            delete_criteria = '{col}={val}'.format(col=k, val=v)
+        delete_query = delete_query.where(and_(delete_criteria))
+
     return delete_query

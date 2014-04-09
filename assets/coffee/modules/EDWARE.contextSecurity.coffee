@@ -73,4 +73,3 @@ define [
   init: init
   apply: apply
   hasPIIAccess: hasPIIAccess
-  ContextSecurity: ContextSecurity

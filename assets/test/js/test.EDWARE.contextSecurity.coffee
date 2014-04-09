@@ -31,7 +31,7 @@ define [
         $("body").append "<div id='container'>
           <div id='header'></div>
           <div id='downloadMenuPopup'><li class='extract'></li><li class='csv'></li></div>
-          <div id='content' class='ui-jqgrid'><a href='test.html'></a></div>
+          <div id='content' class='ui-jqgrid'><a href='test.html'></a><a class='disabled' href='#'></a></div>
         </div>"
 
       teardown: ->
@@ -45,41 +45,60 @@ define [
 
   test "Test no pii", ->
     $anchor = $('a', '#content')
-    test_user.allow_PII = true
-    contextSecurity.apply_pii_security test_user, no_pii_msg
+    permission = {
+      PII: {
+        no_control: true,
+      }
+    }
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     equal $anchor.attr('href'), 'test.html'
-    test_user.allow_PII = false
-    contextSecurity.apply_pii_security test_user, no_pii_msg
-    equal $anchor.attr('href'), '#'
 
   test "Test no pii tooltip", ->
-    $anchor = $('a', '#content')
-    test_user.allow_PII = false
-    contextSecurity.apply_pii_security test_user, no_pii_msg
+    $anchor = $('a.disabled', '#content')
+    permission = {
+      PII: {
+        no_control: false,
+      }
+    }
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     equal $anchor.attr('href'), '#'
     $anchor.click()
     ok $('.no_pii_msg')[0], "Clicking no PII link should display a tooltip popover"
 
   test "Test raw extract security", ->
-    test_user.allow_raw_extract = true
-    contextSecurity.apply_raw_extract_security test_user
+    permission = {
+      allow_raw_extract: true
+    }
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     visible = $('.extract').is(":visible")
     ok visible, "Should display extract option"
-    test_user.allow_raw_extract = false
-    contextSecurity.apply_raw_extract_security test_user
+
+    permission = {
+      allow_raw_extract: false
+    }
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     visible = $('.extract').is(":visible")
     ok not visible, "Shouldn't display extract option"
 
   test "Test bulk extract security", ->
-    test_user.allow_assessment_extract = false
-    test_user.allow_registration_extract = false
-    contextSecurity.apply_bulk_extract_security test_user, extractType
+    permission = {
+      allow_assessment_extract: false,
+      allow_registration_extract: false
+    }
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     visible = $('.csv').is(":visible")
     ok not visible, "Shouldn't display bulk extract option"
 
-  test "Test no assessment extract", ->
-    test_user.allow_assessment_extract = true
-    test_user.allow_registration_extract = false
+  test "Test no registration extract", ->
+    permission = {
+      allow_assessment_extract: true,
+      allow_registration_extract: false
+    }
     extractType = {
       options: [{
         value: "studentAssessment"
@@ -87,14 +106,19 @@ define [
         value: "studentRegistrationStatistics"
       }]
     }
-    contextSecurity.apply_bulk_extract_security test_user, extractType
+    config.CSVOptions.extractType = extractType
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     visible = $('.csv').is(":visible")
     ok visible, "Should display bulk extract option"
+    equal extractType.options.length, 1, "Should only contain assessment"
     equal extractType.options[0].value, "studentAssessment", "Should only contain assessment option"
 
   test "Test no assessment extract", ->
-    test_user.allow_assessment_extract = false
-    test_user.allow_registration_extract = true
+    permission = {
+      allow_assessment_extract: false,
+      allow_registration_extract: true
+    }
     extractType = {
       options: [{
         value: "studentAssessment"
@@ -102,15 +126,29 @@ define [
         value: "studentRegistrationStatistics"
       }]
     }
-    contextSecurity.apply_bulk_extract_security test_user, extractType
+    config.CSVOptions.extractType = extractType
+    contextSecurity.init permission, config
+    contextSecurity.apply()
     visible = $('.csv').is(":visible")
     ok visible, "Should display bulk extract option"
+    equal extractType.options.length, 1, "Should only contain registration"
     equal extractType.options[0].value, "studentRegistrationStatistics", "Should only contain registration option"
 
-  test "Test apply function", ->
-    test_user.allow_PII = false
-    test_user.allow_raw_extract = false
-    contextSecurity.apply test_user, config
-    equal $('a', '#content').attr('href'), '#', 'should disable PII access'
-    visible = $('.extract').is(":visible")
-    ok not visible, "Shouldn't display extract option"
+  test "Test hasPIIAccess function", ->
+    permission = {
+      PII: {
+        no_control: true,
+        access_list: ['229']
+      }
+    }
+    contextSecurity.init permission, config
+    ok contextSecurity.hasPIIAccess('123'), "Should have permission when access is off"
+    permission = {
+      PII: {
+        no_control: false,
+        access_list: ['229']
+      }
+    }
+    contextSecurity.init permission, config
+    ok not contextSecurity.hasPIIAccess('123'), "123 Should have no permission when access is on"
+    ok contextSecurity.hasPIIAccess('229'), "229 Should still have permission when access is on"

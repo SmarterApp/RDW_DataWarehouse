@@ -72,27 +72,35 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
         # execute above four queries in order, 2 parts
         # First part: Disable Trigger & Load Data
 
-        max_num_rows = 0
+        inserted_rows = 0
         start_time = datetime.datetime.now()
         for query in queries:
             logger.info(query)
+            q_start_time = datetime.datetime.now()
             affected_rows = execute_udl_queries(conn, [query], 'Exception -- Query', 'move_to_target',
                                                 'explode_data_to_fact_table')
+            q_finish_time = datetime.datetime.now()
 
-            if len(affected_rows) >= 2 and max_num_rows < affected_rows[1]:
-                max_num_rows = affected_rows[1]
+            if str(query).startswith('INSERT INTO'):
+                # Record the number of inserted rows and record a run-time benchmark for this query
+                inserted_rows = affected_rows[0]
+                benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
+                                                'udl2.W_load_from_integration_to_star.explode_to_facts', q_start_time,
+                                                q_finish_time, working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                                udl_phase_step='Insert to fact query')
+                benchmark.record_benchmark()
 
         finish_time = datetime.datetime.now()
 
-        # Record benchmark
+        # Record benchmark for whole operation
         benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
                                         'udl2.W_load_from_integration_to_star.explode_to_facts', start_time,
                                         finish_time, working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                        udl_phase_step='Populate fact table query')
+                                        udl_phase_step='Populate fact table queries')
         benchmark.record_benchmark()
 
     # returns the number of rows that are inserted into fact table. It maps to the second query result
-    return max_num_rows
+    return inserted_rows
 
 
 def get_asmt_rec_id(guid_batch, tenant_name, asmt_rec_id_info):

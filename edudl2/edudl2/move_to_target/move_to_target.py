@@ -305,7 +305,7 @@ def yield_records_to_be_deleted(conf, target_conn, table_name, batch_size=100):
     :param batch_size: batch size to yield results
     '''
     table = target_conn.get_table(table_name)
-    #import pdb;pdb.set_trace();
+    #import pdb; pdb.set_trace();
     column_names = get_columns_names_to_pick_for_delete(table)
     columns_to_select = [table.c[column_name] for column_name in column_names]
     query = select(columns_to_select, from_obj=table).where(and_(table.c.batch_guid == conf[mk.GUID_BATCH],
@@ -318,6 +318,7 @@ def yield_records_to_be_deleted(conf, target_conn, table_name, batch_size=100):
 
 
 def matched_prod_records(prod_conn, table_name, records_to_be_deleted):
+    #import pdb; pdb.set_trace();
     table = prod_conn.get_table(table_name)
     natural_keys = get_natural_key_columns(table)
     columns_to_select = [table.c[column_name] for column_name in get_columns_names_to_pick_for_delete(table)]
@@ -330,13 +331,16 @@ def matched_prod_records(prod_conn, table_name, records_to_be_deleted):
 
 
 def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched):
+    #import pdb; pdb.set_trace();
     table = target_conn.get_table(table_name)
     columns = table.c
     for record in prod_records_matched:
         values = {columns[pk_column]: record[pk_column] for pk_column in table.primary_key.columns.keys()}
         values[columns[Constants.REC_STATUS]] = Constants.STATUS_DELETE
         criteria = [table.c[nk_column] == record[nk_column] for nk_column in get_natural_key_columns(table)]
-        query = update(table).values(values).where(table.c.batch_guid == conf[mk.GUID_BATCH]).where(and_(*criteria))
+        criteria.append(table.c.batch_guid == conf[mk.GUID_BATCH])
+        criteria.append(table.c.rec_status == 'W')
+        query = update(table).values(values).where(and_(*criteria))
         try:
             target_conn.execute(query)
         except IntegrityError as ie:
@@ -352,6 +356,7 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
 def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):
     proxy_rows = yield_records_to_be_deleted(conf, target_conn, table_name)
     for rows in proxy_rows:
+        #import pdb; pdb.set_trace();
         prod_records_matched = matched_prod_records(prod_conn, table_name, rows)
         update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched)
 

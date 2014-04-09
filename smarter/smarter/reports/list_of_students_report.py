@@ -12,7 +12,8 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
-from smarter.security.context import select_with_context
+from smarter.security.context import select_with_context,\
+    get_current_request_context
 from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from edapi.cache import cache_region
@@ -72,6 +73,7 @@ REPORT_PARAMS = merge_dict({
     params=REPORT_PARAMS)
 @validate_user_tenant
 @user_info
+@get_current_request_context
 @audit_event()
 def get_list_of_students_report(params):
     '''

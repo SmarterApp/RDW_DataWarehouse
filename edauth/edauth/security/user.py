@@ -42,7 +42,6 @@ class UserContext(object):
         Instantiates user context from RoleRelation array. We do not preserve inter-relationships between institutions
         '''
         self.__tenant_context_map = {row.tenant: {} for row in role_inst_rel_list}
-        self.__role_list = role_inst_rel_list
         for row in role_inst_rel_list:
             tenant = self.__tenant_context_map.get(row.tenant)
             role = tenant.get(row.role)
@@ -55,19 +54,64 @@ class UserContext(object):
                 role.get('state_code').add(row.state_code)
             tenant[row.role] = role
             self.__tenant_context_map[row.tenant] = tenant
+        self.build_chain(role_inst_rel_list)
 
     def get_states(self, tenant, role):
-        return self.__tenant_context_map[tenant][role]['state_code']
+        return self.get_all_context(tenant, role).get('state_code', set())
 
     def get_districts(self, tenant, role):
-        return self.__tenant_context_map[tenant][role]['district_guid']
+        return self.get_all_context(tenant, role).get('district_guid', set())
 
     def get_schools(self, tenant, role):
-        return self.__tenant_context_map[tenant][role]['school_guid']
+        return self.get_all_context(tenant, role).get('school_guid', set())
 
     def get_all_context(self, tenant, role):
         return self.__tenant_context_map[tenant][role] if tenant in self.__tenant_context_map and role in self.__tenant_context_map[tenant] else {}
 
+    def get_chain(self, tenant, permission, params):
+        if params.get('schoolGuid') and permission in self._map[tenant]:
+            if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'): 
+                return self._map[tenant][permission]['schoolGuid']
+        elif params.get('districtGuid') and permission in self._map[tenant]:
+            if self.validate_hierarchy(tenant, permission, params, 'districtGuid'): 
+                return self._map[tenant][permission]['schoolGuid']
+        elif params.get('stateCode') and permission in self._map[tenant]:
+            if self.validate_hierarchy(tenant, permission, params, 'stateCode'):  
+                return self._map[tenant][permission]['districtGuid']
+        return {'all': False, 'guid': set()}
+
+    def build_chain(self, role_inst_rel_list):
+        self._map = {row.tenant: {} for row in role_inst_rel_list}
+        for row in role_inst_rel_list:
+            tenant = self._map.get(row.tenant)
+            role = tenant.get(row.role)
+            role = {'stateCode': {'all': False, 'guid': set()}, 'districtGuid': {'all': False, 'guid': set()}, 'schoolGuid': {'all': False, 'guid': set()}} if role is None else role
+            for i in [(row.state_code, 'stateCode'), (row.district_guid, 'districtGuid'), (row.school_guid, 'schoolGuid')]:
+                guid = i[0]
+                key = i[1]
+                if guid and not role[key]['all']:
+                    role[key]['guid'].add(guid)
+                else:
+                    self.__set_all_permission(role, key)
+            tenant[row.role] = role
+            self._map[row.tenant] = tenant
+        return self._map
+    
+    def __set_all_permission(self, role, identifier):
+        role[identifier]['all'] = True
+        role[identifier]['guid'] = set()
+    
+    def validate_hierarchy(self, tenant, permission, params, identifier):
+        hierarchy = ['schoolGuid', 'districtGuid', 'stateCode']
+        index = hierarchy.index(identifier)
+        rtn = True if index >= 0 else False
+        for i in hierarchy[index:]:
+            rtn = rtn and self.is_institution_accessible(tenant, permission, params.get(i), i)
+        return rtn
+        
+    def is_institution_accessible(self, tenant, permission, request_guid, identifier):
+        return request_guid in self._map[tenant][permission][identifier]['guid'] or self._map[tenant][permission][identifier]['all']
+    
     def __json__(self, request):
         '''
         custom json serialization for this object used by pyramid

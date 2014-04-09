@@ -25,7 +25,7 @@ from copy import deepcopy
 from collections import OrderedDict, namedtuple
 from smarter.reports.student_administration import get_academic_years, get_default_academic_year
 from smarter.security.tenant import validate_user_tenant
-from smarter.security.constants import RolesConstants
+from smarter.security.context import get_current_request_context
 
 
 REPORT_NAME = "comparing_populations"
@@ -60,6 +60,7 @@ DEFAULT_MIN_CELL_SIZE = 0
     }, FILTERS_CONFIG))
 @validate_user_tenant
 @user_info
+@get_current_request_context
 @audit_event()
 def get_comparing_populations_report(params):
     '''

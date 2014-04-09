@@ -12,6 +12,9 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.security.tenant import get_tenant_by_state_code
 from pyramid.httpexceptions import HTTPForbidden
 from smarter.security.constants import RolesConstants
+from functools import wraps
+import json
+from edauth.security.utils import SetEncoder
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], permission=RolesConstants.PII, **kwargs):
@@ -58,6 +61,33 @@ def check_context(permission, state_code, student_guids):
         user = __get_user_info()
         context = __get_context_instance(permission, connector)
         return context.check_context(get_tenant_by_state_code(state_code), user, student_guids)
+
+
+def get_current_context(params):
+    # Get user role and guid
+    user = __get_user_info()
+    state_code = params.get('stateCode')
+    tenant = get_tenant_by_state_code(state_code)
+    user_context = user.get_context()
+    # Special case for pii
+    pii = user_context.get_chain(tenant, RolesConstants.PII, params) if params.get(Constants.SCHOOLGUID) else {'all': True}
+    sar_extracts = user_context.get_chain(tenant, RolesConstants.SAR_EXTRACTS, params)
+    srs_extracts = user_context.get_chain(tenant, RolesConstants.SRS_EXTRACTS, params)
+    return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts}
+
+
+def get_current_request_context(origin_func):
+    '''
+    Decorator to return current user context
+    '''
+    @wraps(origin_func)
+    def wrap(*args, **kwds):
+        results = origin_func(*args, **kwds)
+        if results:
+            # TODO: Make sure context and permission exists first
+            results['context']['permissions'] = json.loads(json.dumps(get_current_context(*args), cls=SetEncoder))
+        return results
+    return wrap
 
 
 def __get_user_info():

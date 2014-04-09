@@ -64,6 +64,8 @@ define [
     @security = new ContextSecurity(permissions, config)
 
   hasPIIAccess = (row_id) ->
+    if not @security
+      return true
     @security.hasPIIAccess(row_id)
 
   apply = () ->

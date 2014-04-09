@@ -14,19 +14,19 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     create = edwareBreadcrumbs.create
     ok create isnt `undefined`, "edwareBreadcrumbs.create method should be defined"
     ok typeof create is "function", "edwareBreadcrumbs.create method should be function"
-    
+
     breadcrumb = items : [
       type : "state"
       queryParam : "stateCode"
-      link : "/assets/html/comparingPopulations.html" 
+      link : "/assets/html/comparingPopulations.html"
      ,
       type : "district"
       queryParam : "districtGuid"
-      link : "/assets/html/comparingPopulations.html" 
+      link : "/assets/html/comparingPopulations.html"
      ,
       type : "school"
       queryParam : "schoolGuid"
-      link : "/assets/html/comparingPopulations.html" 
+      link : "/assets/html/comparingPopulations.html"
      ,
       type : "grade"
       queryParam : "asmtGrade"
@@ -35,7 +35,7 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       type : "student"
       queryParam: "student"
     ]
-    
+
     test_data = items: [
       type: "state"
       name: "Washington"
@@ -53,45 +53,11 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       name: "1"
       id: "1"
     ]
-          
+
     deepEqual $("#breadcrumbs")[0].innerHTML.length, 0, "breadcrumbs should be empty before test is running"
     edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
-    setTimeout (->
-      deepEqual $("#breadcrumbs a").length, 1, "1 links should have been created"
-      deepEqual $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
-      start()
-    ), 150
-    
-  test "Test breadcrumb with no links", ->
-    test_data = items: [
-      type: "state"
-      name: "Washington"
-      id: "WA"
-    ]
-    
-    breadcrumb = items : [
-      type : "state"
-      queryParam : "stateCode"
-      link : "/assets/html/comparingPopulations.html" 
-       ,
-        type : "district"
-      queryParam : "districtGuid"
-      link : "/assets/html/comparingPopulations.html" 
-      ,
-        type : "school"
-      queryParam : "schoolGuid"
-      link : "/assets/html/comparingPopulations.html" 
-      ,
-        type : "grade"
-      queryParam : "asmtGrade"
-      link : "/assets/html/studentList.html"
-      ,
-        type : "student"
-      queryParam: "student"
-    ]
-    
-    edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
-    deepEqual $("#breadcrumbs a").length, 1, "1 links should have been created"
+    equal $("#breadcrumbs a").length, 3, "3 links should have been created"
+    equal $("#breadcrumbs a")[0].text, "Redmond District", "wrong text shown"
 
   test "Test format name", ->
     element = { type: 'grade', name: '1'}

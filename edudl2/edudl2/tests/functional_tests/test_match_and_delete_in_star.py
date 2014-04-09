@@ -104,14 +104,15 @@ class MatchAndDeleteFTest(UDLTestHelper):
         table_map, column_map = move_to_target_setup.get_table_and_column_mapping(self.conf,
                                                                                   self.load_to_fact_task_name,
                                                                                   self.fact_table_prefix)
-        column_types = move_to_target_setup.get_table_column_types(self.conf,
-                                                                   list(table_map.keys())[0],
-                                                                   list(column_map['fact_asmt_outcome'].keys()))
-        move_to_target.explode_data_to_fact_table(self.conf,
-                                                  list(table_map.values())[0],
-                                                  list(table_map.keys())[0],
-                                                  column_map['fact_asmt_outcome'],
-                                                  column_types)
+        for fact_table, source_table in table_map.items():
+            column_types = move_to_target_setup.get_table_column_types(self.conf,
+                                                                       fact_table,
+                                                                       list(column_map[fact_table].keys()))
+            move_to_target.explode_data_to_fact_table(self.conf,
+                                                      source_table,
+                                                      fact_table,
+                                                      column_map[fact_table],
+                                                      column_types)
 
     def count_rows(self, status=None):
         with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as conn:

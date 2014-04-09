@@ -88,45 +88,65 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     return benchmark.get_result_dict()
 
 
+#*************implemented via group*************
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_facts', base=Udl2BaseTask)
 def explode_to_facts(msg):
     '''
-    This is the celery task to move data from integration table to fact table.
+    This is the celery task to move data from integration table to fact tables.
     In batch, guid_batch is provided.
     '''
-    logger.info('LOAD_FROM_INT_TO_STAR: Migrating fact_assessment_outcome from Integration to Star.')
     start_time = datetime.datetime.now()
-    guid_batch = msg[mk.GUID_BATCH]
-    phase_number = msg[mk.PHASE]
-    load_type = msg[mk.LOAD_TYPE]
-    tenant_name = msg[mk.TENANT_NAME]
-
     conf = _get_conf(msg)
-    # get fact table column mapping
-    fact_table_map, fact_column_map = get_table_and_column_mapping(conf, explode_to_facts.name, 'fact_')
+    table_map, column_map = get_table_and_column_mapping(conf, explode_to_dims.name, 'fact_')
+    grouped_tasks = create_group_tuple(explode_data_to_fact_table_task,
+                                       [(conf, source_table, fact_table, column_map[fact_table], get_table_column_types(conf, fact_table, list(column_map[fact_table].keys())))
+                                        for fact_table, source_table in table_map.items()])
+    result_uuid = group(*grouped_tasks)()
+    msg['fact_tables'] = result_uuid.get()
 
-    affected_rows = 0
-    for fact_table, source_table_for_fact_table in fact_table_map.items():
-        fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
+    total_affected_rows = 0
+    for fact_table_result in msg['fact_tables']:
+        total_affected_rows += fact_table_result[mk.SIZE_RECORDS]
 
-        affected_rows += explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table,
-                                                    fact_column_map[fact_table], fact_column_types)
-
-    finish_time = datetime.datetime.now()
-    _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
+    end_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark
-    udl_phase_step = 'INT --> FACT TABLE'
-    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], explode_to_facts.name, start_time, finish_time,
-                                    udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(explode_to_facts.request.id),
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], explode_to_facts.name, start_time, end_time,
+                                    size_records=total_affected_rows, task_id=str(explode_to_facts.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file decrypter
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows})
+    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: total_affected_rows})
     return outgoing_msg
+
+
+@celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_fact_table_task", base=Udl2BaseTask)
+def explode_data_to_fact_table_task(conf, source_table, fact_table, column_mapping, column_types):
+    """
+    This is the celery task to move data from one integration table to one fact table.
+    :param conf:
+    :param source_table:
+    :param fact_table:
+    :param column_mapping:
+    :param column_types:
+    :return:
+    """
+    logger.info('LOAD_FROM_INT_TO_STAR: migrating source table <%s> to <%s>' % (source_table, fact_table))
+    start_time = datetime.datetime.now()
+    affected_rows = explode_data_to_fact_table(conf, source_table, fact_table, column_mapping, column_types)
+    finish_time = datetime.datetime.now()
+
+    # Create benchmark object ant record benchmark
+    udl_phase_step = 'INT --> FACT:' + fact_table
+    benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], explode_data_to_fact_table_task.name,
+                                    start_time, finish_time, udl_phase_step=udl_phase_step, size_records=affected_rows,
+                                    task_id=str(explode_data_to_fact_table_task.request.id),
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True)
+    benchmark.record_benchmark()
+    return benchmark.get_result_dict()
 
 
 @celery.task(name='udl2.W_load_from_integration_to_star.handle_deletions', base=Udl2BaseTask)

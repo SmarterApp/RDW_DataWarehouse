@@ -9,7 +9,9 @@ from smarter.trigger.pre_cache_generator import precached_task
 from edapi.httpexceptions import EdApiHTTPNotFound
 
 
-@view_config(route_name='trigger', request_method='GET', renderer='json', permission='super_admin_rights')
+# TODO
+# @view_config(route_name='trigger', request_method='GET', renderer='json', permission='super_admin_rights')
+@view_config(route_name='trigger', request_method='GET', renderer='json')
 def trigger(request):
     '''
     Request for on demand batch generation for pdf and recache

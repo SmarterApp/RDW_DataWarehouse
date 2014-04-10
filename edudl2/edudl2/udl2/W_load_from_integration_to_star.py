@@ -10,8 +10,7 @@ from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapp
     create_group_tuple, get_table_column_types, get_move_to_target_conf
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
-    explode_data_to_fact_table, match_deleted_records, update_deleted_record_rec_id, check_mismatched_deletions,\
-    handle_duplicates_in_dimensions, create_target_schema_for_batch, handle_updates_and_deletes
+    explode_data_to_fact_table, handle_duplicates_in_dimensions, create_target_schema_for_batch, handle_updates_and_deletes
 
 logger = get_task_logger(__name__)
 

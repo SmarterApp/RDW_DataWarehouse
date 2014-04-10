@@ -68,12 +68,12 @@ if __name__ == '__main__':
         # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
         os.environ['PATH'] += os.pathsep + '/usr/local/bin'
         celery.conf.update(CELERY_ALWAYS_EAGER=True)
-        src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
+        src_dir = os.path.join('/opt', 'edware', 'zones', 'data')
         # Find the first tar.gz.gpg file as LZ file
         file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
-        dest = os.path.join(tempfile.mkdtemp(), os.path.basename(file_name))
+        #dest = os.path.join(tempfile.mkdtemp(), os.path.basename(file_name))
+        dest = os.path.join('/opt', 'edware', 'zones', 'landing', 'arrivals', 'ca', 'ca_user1', 'file_drop')
         shutil.copy(file_name, dest)
-        args.archive_file = dest
+        args.archive_file = dest + '/' + os.path.basename(file_name)
 
-    start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced,
-                   tenant_dirs=args.loop_dirs)
+    start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced, tenant_dirs=args.loop_dirs)

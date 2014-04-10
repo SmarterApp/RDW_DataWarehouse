@@ -226,62 +226,6 @@ def calculate_spend_time_as_second(start_time, finish_time):
     return (finish_time - start_time).total_seconds()
 
 
-def handle_updates_and_deletes(conf):
-    '''
-    Main handler for updates and deletes
-    '''
-    #import pdb;pdb.set_trace();
-    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as target_conn, get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
-        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.FACT_TABLES_PREFIX)
-        for table_name in tables:
-            process_records_to_be_deleted(conf, target_conn, prod_conn, table_name)
-
-
-def check_mismatched_deletions(conf, match_conf):
-    '''
-    check if any deleted record is not in target database
-    so we will raise error for this udl batch
-    '''
-    logger.info('check_mismatched_deletions')
-    mismatches = get_delete_candidates(conf[mk.TENANT_NAME],
-                                       conf[mk.TARGET_DB_SCHEMA],
-                                       match_conf['target_table'],
-                                       conf[mk.GUID_BATCH],
-                                       match_conf['find_deleted_fact_asmt_outcome_rows'])
-    if mismatches:
-        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
-                                   mismatches,
-                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                             table=match_conf['prod_table']),
-                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
-                                   conf[mk.UDL_PHASE_STEP],
-                                   conf[mk.WORKING_SCHEMA])
-
-
-def match_deleted_records(conf, table_name, match_conf):
-    '''
-    Match production database in fact_asmt_outcome. and get fact_asmt_outcome primary rec id
-    in production tables.
-    return a list of rec_id to delete records
-    '''
-    matched_results = []
-    logger.info('in match_deleted_records')
-    candidates = get_delete_candidates(conf[mk.TENANT_NAME],
-                                       conf[mk.TARGET_DB_SCHEMA],
-                                       table_name,
-                                       conf[mk.GUID_BATCH],
-                                       match_conf['find_deleted_fact_asmt_outcome_rows'])
-
-    for candidate in candidates:
-        matched = match_delete_record_against_prod(conf[mk.TENANT_NAME],
-                                                   conf[mk.PROD_DB_SCHEMA],
-                                                   table_name,
-                                                   match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
-                                                   candidate)
-        matched_results.extend(matched)
-    return matched_results
-
-
 def get_columns_names_to_pick_for_delete(table):
     '''
     returns column names to be picked for handling the delete
@@ -294,7 +238,17 @@ def get_columns_names_to_pick_for_delete(table):
     return [c.name for c in pk + nk]
 
 
-def yield_records_to_be_deleted(conf, target_conn, table_name, batch_size=100):
+def get_records_marked_for_deletion(conf, target_conn, table_name):
+    table = target_conn.get_table(table_name)
+    column_names = get_columns_names_to_pick_for_delete(table)
+    columns_to_select = [table.c[column_name] for column_name in column_names]
+    query = select(columns_to_select, from_obj=table).where(and_(table.c.batch_guid == conf[mk.GUID_BATCH],
+                                                                 table.c.rec_status == Constants.STATUS_WIP))
+    result = target_conn.get_result(query)
+    return result
+
+
+def yield_records_to_be_deleted(conf, prod_conn, table_name, records_marked_for_deletion, batch_size=100):
     '''
     Yield records to  marked as deleted from pre-prod table
 
@@ -304,34 +258,21 @@ def yield_records_to_be_deleted(conf, target_conn, table_name, batch_size=100):
     :param target_conn: connection object to pre-prod database
     :param batch_size: batch size to yield results
     '''
-    table = target_conn.get_table(table_name)
-    #import pdb; pdb.set_trace();
-    column_names = get_columns_names_to_pick_for_delete(table)
-    columns_to_select = [table.c[column_name] for column_name in column_names]
-    query = select(columns_to_select, from_obj=table).where(and_(table.c.batch_guid == conf[mk.GUID_BATCH],
-                                                                 table.c.rec_status == 'W'))
-    result = target_conn.execute(query, stream_results=True)
+    table = prod_conn.get_table(table_name)
+    natural_keys = get_natural_key_columns(table)
+    columns_to_select = [table.c[column_name] for column_name in get_columns_names_to_pick_for_delete(table)]
+    key_columns = [table.columns[key] for key in natural_keys]
+    key_values = [[row[key] for key in natural_keys] for row in records_marked_for_deletion]
+    query = select(columns_to_select, from_obj=table).where(and_(table.c.rec_status == Constants.STATUS_CURRENT,
+                                                                 tuple_(*key_columns).in_(key_values)))
+    result = prod_conn.execute(query, stream_results=True)
     rows = result.fetchmany(batch_size)
     while len(rows) > 0:
         yield rows
         rows = result.fetchmany(batch_size)
 
 
-def matched_prod_records(prod_conn, table_name, records_to_be_deleted):
-    #import pdb; pdb.set_trace();
-    table = prod_conn.get_table(table_name)
-    natural_keys = get_natural_key_columns(table)
-    columns_to_select = [table.c[column_name] for column_name in get_columns_names_to_pick_for_delete(table)]
-    key_columns = [table.columns[key] for key in natural_keys]
-    key_values = [[row[key] for key in natural_keys] for row in records_to_be_deleted]
-    query = select(columns_to_select, from_obj=table).where(and_(table.c.rec_status == 'C',
-                                                                 tuple_(*key_columns).in_(key_values)))
-    result = prod_conn.get_result(query)
-    return result
-
-
 def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched):
-    #import pdb; pdb.set_trace();
     table = target_conn.get_table(table_name)
     columns = table.c
     for record in prod_records_matched:
@@ -339,7 +280,7 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
         values[columns[Constants.REC_STATUS]] = Constants.STATUS_DELETE
         criteria = [table.c[nk_column] == record[nk_column] for nk_column in get_natural_key_columns(table)]
         criteria.append(table.c.batch_guid == conf[mk.GUID_BATCH])
-        criteria.append(table.c.rec_status == 'W')
+        criteria.append(table.c.rec_status == Constants.STATUS_WIP)
         query = update(table).values(values).where(and_(*criteria))
         try:
             target_conn.execute(query)
@@ -353,43 +294,46 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
             e.insert_err_list(failure_time)
 
 
+def check_mismatched_deletions(conf, target_conn, table_name):
+    '''
+    check if any deleted record is not in target database
+    so we will raise error for this udl batch
+    '''
+    logger.info('check_mismatched_deletions')
+    mismatches = get_records_marked_for_deletion(conf, target_conn, table_name)
+    if mismatches:
+        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
+                                   mismatches,
+                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                             table=table_name),
+                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
+                                   conf[mk.UDL_PHASE_STEP],
+                                   conf[mk.WORKING_SCHEMA])
+
+
 def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):
-    proxy_rows = yield_records_to_be_deleted(conf, target_conn, table_name)
-    for rows in proxy_rows:
-        #import pdb; pdb.set_trace();
-        prod_records_matched = matched_prod_records(prod_conn, table_name, rows)
-        update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched)
+    '''
+    process records to be deleted
+    '''
+    records_marked_for_deletion = get_records_marked_for_deletion(conf, target_conn, table_name)
+    if len(records_marked_for_deletion) > 0:
+        proxy_rows = yield_records_to_be_deleted(conf, prod_conn, table_name, records_marked_for_deletion)
+        for prod_rows in proxy_rows:
+            update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_rows)
+        check_mismatched_deletions(conf, target_conn, table_name)
+    else:
+        logger.info('No records found marked for deletion in {schema_name}.'
+                    '{target_table}'.format(schema_name=conf[mk.GUID_BATCH], target_table=table_name))
 
 
-def update_deleted_record_rec_id(conf, match_conf, matched_values):
+def handle_updates_and_deletes(conf):
     '''
-    update rows in the batch that have a match in prod with correct deletion status for migration.
-    and update the asmnt_outcome_rec_id in pre-prod to prod value so migration can work faster
+    Main handler for updates and deletes
     '''
-    logger.info('update_deleted_record_rec_id')
-    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
-        for matched_value in matched_values:
-            # TODO: execute query in one
-            query = update_matched_fact_asmt_outcome_row(conf[mk.TENANT_NAME],
-                                                         conf[mk.TARGET_DB_SCHEMA],
-                                                         match_conf['target_table'],
-                                                         conf[mk.GUID_BATCH],
-                                                         match_conf['update_matched_fact_asmt_outcome_row'],
-                                                         matched_value)
-            try:
-                execute_udl_queries(conn, [query],
-                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
-                                    'move_to_target',
-                                    'update_deleted_record_rec_id')
-            except IntegrityError as ie:
-                e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
-                                          "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                                    table=match_conf['prod_table']),
-                                          ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
-                                          conf[mk.UDL_PHASE_STEP],
-                                          conf[mk.WORKING_SCHEMA])
-                failure_time = datetime.datetime.now()
-                e.insert_err_list(failure_time)
+    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as target_conn, get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
+        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.FACT_TABLES_PREFIX)
+        for table_name in tables:
+            process_records_to_be_deleted(conf, target_conn, prod_conn, table_name)
 
 
 def handle_duplicates_in_dimensions(tenant_name, guid_batch):

@@ -11,7 +11,7 @@ import csv
 
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
-from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report
+from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 
@@ -69,30 +69,49 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
                                        'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 Count'])
         self.assertEqual(csv_data[1], ['Example State', 'ALL', 'ALL', 'Total', 'Total', '5', '100', '5', '100', '0', '0', '0', '5', '100'])
 
+    def test_generate_completion_report(self):
+        output = os.path.join(self.__tmp_dir, 'stureg_comp.csv')
+        extract_args = self.construct_extract_args(ExtractionDataType.SR_COMPLETION, 2014, output)
+        generate_completion_report(self._tenant, output, self.task_info, extract_args)
+        self.assertTrue(os.path.exists(output))
+        csv_data = []
+        with open(output) as out:
+            data = csv.reader(out)
+            for row in data:
+                csv_data.append(row)
+
+        # Data are empty for now.
+        self.assertEqual(len(csv_data), 1)
+        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'AY2014 Count of Registered Students',
+                                       'AY2014 Count of Students Assessed by Summative Math', 'AY2014 Percent of Registered Students Assessed by Summative Math',
+                                       'AY2014 Count of Students Assessed by Summative ELA', 'AY2014 Percent of Registered Students Assessed by Summative ELA',
+                                       'AY2014 Count of Students Assessed by Interim Comprehensive Math', 'AY2014 Percent of Registered Students Assessed by Interim Comprehensive Math',
+                                       'AY2014 Count of Students Assessed by Interim Comprehensive ELA', 'AY2014 Percent of Registered Students Assessed by Interim Comprehensive ELA'])
+
     def construct_extract_args(self, extraction_type, academic_year, output):
         current_year = str(academic_year)
         previous_year = str(academic_year - 1)
         academic_year_query = 'SELECT * FROM student_reg WHERE academic_year == {current_year} OR academic_year == {previous_year}'\
             .format(current_year=current_year, previous_year=previous_year)
-        match_query = 'SELECT cr.state_code, p.state_code as prev_state_code , cr.state_name, cr.district_guid, p.district_guid as prev_district_guid ,' \
-                      'cr.district_name, cr.school_guid, p.school_guid as prev_school_guid , cr.school_name, cr.gender, p.gender as prev_gender , ' \
-                      'cr.enrl_grade, p.enrl_grade as prev_enrl_grade , cr.dmg_eth_hsp, p.dmg_eth_hsp as prev_dmg_eth_hsp , cr.dmg_eth_ami, ' \
-                      'p.dmg_eth_ami as prev_dmg_eth_ami , cr.dmg_eth_asn, p.dmg_eth_asn as prev_dmg_eth_asn ,cr.dmg_eth_blk, p.dmg_eth_blk as prev_dmg_eth_blk , ' \
-                      'cr.dmg_eth_pcf, p.dmg_eth_pcf as prev_dmg_eth_pcf ,cr.dmg_eth_wht, p.dmg_eth_wht as prev_dmg_eth_wht , cr.dmg_prg_iep, ' \
-                      'p.dmg_prg_iep as prev_dmg_prg_iep , cr.dmg_prg_lep, p.dmg_prg_lep as prev_dmg_prg_lep ,cr.dmg_prg_504, ' \
-                      'p.dmg_prg_504 as prev_dmg_prg_504 , cr.dmg_sts_ecd, p.dmg_sts_ecd as prev_dmg_sts_ecd , cr.dmg_sts_mig, p.dmg_sts_mig as prev_dmg_sts_mig ,' \
-                      ' cr.dmg_multi_race, p.dmg_multi_race as prev_dmg_multi_race , cr.academic_year ' \
-                      'FROM student_reg cr inner join student_reg p on cr.student_guid = p.student_guid WHERE cr.academic_year == {current_year} AND p.academic_year == {previous_year}'\
-            .format(current_year=current_year, previous_year=previous_year)
-        headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
-            else self.completion_headers()
-        extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,
-                        TaskConstants.TASK_TASK_ID: 'task_id',
-                        TaskConstants.ACADEMIC_YEAR: academic_year,
-                        TaskConstants.TASK_FILE_NAME: output,
-                        TaskConstants.TASK_QUERIES: {QueryType.QUERY: academic_year_query, QueryType.MATCH_ID_QUERY: match_query},
-                        TaskConstants.CSV_HEADERS: headers
-                        }
+        if extraction_type == ExtractionDataType.SR_STATISTICS:
+            match_query = 'SELECT cr.state_code, p.state_code as prev_state_code , cr.state_name, cr.district_guid, p.district_guid as prev_district_guid ,' \
+                'cr.district_name, cr.school_guid, p.school_guid as prev_school_guid , cr.school_name, cr.gender, p.gender as prev_gender , ' \
+                'cr.enrl_grade, p.enrl_grade as prev_enrl_grade , cr.dmg_eth_hsp, p.dmg_eth_hsp as prev_dmg_eth_hsp , cr.dmg_eth_ami, ' \
+                'p.dmg_eth_ami as prev_dmg_eth_ami , cr.dmg_eth_asn, p.dmg_eth_asn as prev_dmg_eth_asn ,cr.dmg_eth_blk, p.dmg_eth_blk as prev_dmg_eth_blk , ' \
+                'cr.dmg_eth_pcf, p.dmg_eth_pcf as prev_dmg_eth_pcf ,cr.dmg_eth_wht, p.dmg_eth_wht as prev_dmg_eth_wht , cr.dmg_prg_iep, ' \
+                'p.dmg_prg_iep as prev_dmg_prg_iep , cr.dmg_prg_lep, p.dmg_prg_lep as prev_dmg_prg_lep ,cr.dmg_prg_504, ' \
+                'p.dmg_prg_504 as prev_dmg_prg_504 , cr.dmg_sts_ecd, p.dmg_sts_ecd as prev_dmg_sts_ecd , cr.dmg_sts_mig, p.dmg_sts_mig as prev_dmg_sts_mig ,' \
+                ' cr.dmg_multi_race, p.dmg_multi_race as prev_dmg_multi_race , cr.academic_year ' \
+                'FROM student_reg cr inner join student_reg p on cr.student_guid = p.student_guid WHERE cr.academic_year == {current_year} AND p.academic_year == {previous_year}'\
+                .format(current_year=current_year, previous_year=previous_year)
+            headers = self.construct_statistics_headers(academic_year)
+            queries = {QueryType.QUERY: academic_year_query, QueryType.MATCH_ID_QUERY: match_query}
+        else:
+            headers = self.construct_completion_header(academic_year)
+            queries = {}
+        extract_args = {TaskConstants.ACADEMIC_YEAR: academic_year,
+                        TaskConstants.TASK_QUERIES: queries,
+                        TaskConstants.CSV_HEADERS: headers}
 
         return extract_args
 
@@ -110,9 +129,17 @@ class TestStudentRegReportGenerator(Unittest_with_edcore_sqlite, Unittest_with_s
 
         return statistics_headers
 
-    def completion_headers(self):
-        completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
-                              'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
-                              'Count of Students Assessed', 'Percent of Students Assessed']
+    def construct_completion_header(self, academic_year):
+        current_year = str(academic_year)
+        completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value',
+                              'AY{current_year} Count of Registered Students'.format(current_year=current_year),
+                              'AY{current_year} Count of Students Assessed by Summative Math'.format(current_year=current_year),
+                              'AY{current_year} Percent of Registered Students Assessed by Summative Math'.format(current_year=current_year),
+                              'AY{current_year} Count of Students Assessed by Summative ELA'.format(current_year=current_year),
+                              'AY{current_year} Percent of Registered Students Assessed by Summative ELA'.format(current_year=current_year),
+                              'AY{current_year} Count of Students Assessed by Interim Comprehensive Math'.format(current_year=current_year),
+                              'AY{current_year} Percent of Registered Students Assessed by Interim Comprehensive Math'.format(current_year=current_year),
+                              'AY{current_year} Count of Students Assessed by Interim Comprehensive ELA'.format(current_year=current_year),
+                              'AY{current_year} Percent of Registered Students Assessed by Interim Comprehensive ELA'.format(current_year=current_year)]
 
         return completion_headers

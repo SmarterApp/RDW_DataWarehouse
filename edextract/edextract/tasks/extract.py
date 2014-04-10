@@ -19,13 +19,13 @@ from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import RemoteCopyError, ExtractionError
 from edextract.utils.data_archiver import encrypted_archive_files, archive_files, GPGPublicKeyException
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
-from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report
+from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
 
 
 log = logging.getLogger('edextract')
-MAX_RETRY = get_setting(Config.MAX_RETRIES)
-DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY)
+MAX_RETRY = get_setting(Config.MAX_RETRIES, 1)
+DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
 @celery.task(name='task.extract.start_extract')
@@ -234,6 +234,7 @@ def get_extract_func(extract_type):
         ExtractionDataType.QUERY_CSV: generate_csv,
         ExtractionDataType.QUERY_JSON: generate_json,
         ExtractionDataType.SR_STATISTICS: generate_statistics_report,
+        ExtractionDataType.SR_COMPLETION: generate_completion_report
     }
 
     return extract_funcs[extract_type]

@@ -28,6 +28,19 @@ def generate_statistics_report(tenant, output_file, task_info, extract_args):
     _generate_report(tenant, output_file, task_info, extract_args, _generate_statistics_report_data)
 
 
+def generate_completion_report(tenant, output_file, task_info, extract_args):
+    """
+    Run generate_report with the arguments, directing it to call generate_completion_report_data.
+
+    @param tenant: Requestor's tenant ID
+    @param output_file: File pathname of extract file
+    @param task_info: Task information for recording stats
+    @param extract_args: Arguments specific to generate_completion_report_data
+    """
+
+    _generate_report(tenant, output_file, task_info, extract_args, _generate_completion_report_data)
+
+
 def _generate_report(tenant, output_file, task_info, extract_args, data_extract_func):
     """
     Generate the student registration statistics report CSV file.
@@ -40,27 +53,29 @@ def _generate_report(tenant, output_file, task_info, extract_args, data_extract_
     """
 
     academic_year = extract_args[TaskConstants.ACADEMIC_YEAR]
-    academic_year_query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
-    match_id_query = extract_args[TaskConstants.TASK_QUERIES][QueryType.MATCH_ID_QUERY]
+    queries = extract_args[TaskConstants.TASK_QUERIES]
 
     headers = extract_args[TaskConstants.CSV_HEADERS]
+    data = data_extract_func(tenant, academic_year, queries)
 
-    data = data_extract_func(tenant, academic_year, academic_year_query, match_id_query)
     write_csv(output_file, headers, data)
 
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def _generate_statistics_report_data(tenant, academic_year, academic_year_query, match_id_query):
+def _generate_statistics_report_data(tenant, academic_year, queries):
     """
-    Get all the tenant's student registration data for the academic year.
+    Get all the tenant's student registration statistics data for the academic year.
 
     @param tenant: Requestor's tenant ID
     @param academic_year: Academic year of report
-    @param query: DB query to extract rows
+    @param queries: DB queries to extract rows
 
     @return: List of rows to be included in the CSV report.
     """
+
+    academic_year_query = queries[QueryType.QUERY]
+    match_id_query = queries[QueryType.MATCH_ID_QUERY]
 
     row_data_processor = RowDataProcessor()
 
@@ -72,6 +87,20 @@ def _generate_statistics_report_data(tenant, academic_year, academic_year_query,
         row_data_processor.process_matched_ids_row_data(match_id_results)
 
     return _get_sr_stat_tenant_data_for_academic_year(row_data_processor, academic_year)
+
+
+def _generate_completion_report_data(tenant, academic_year, queries):
+    """
+    Get all the tenant's student registration completion data for the academic year.
+
+    @param tenant: Requestor's tenant ID
+    @param academic_year: Academic year of report
+    @param queries: DB queries to extract rows
+
+    @return: List of rows to be included in the CSV report.
+    """
+
+    return ()
 
 
 def _get_sr_stat_tenant_data_for_academic_year(row_data_processor, academic_year):

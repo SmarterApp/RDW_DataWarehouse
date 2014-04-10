@@ -20,7 +20,7 @@ STUDENT_REGISTRATION_PARAMS = {
             },
             "minItems": 1,
             "uniqueItems": True,
-            "required": False
+            "required": True
         },
         Constants.ACADEMIC_YEAR: {
             "type": "array",
@@ -74,7 +74,7 @@ def post_sr_stat_extract_service(context, request):
 @audit_event()
 def post_sr_comp_extract_service(context, request):
     '''
-    Handles POST request to /services/extract/student_registration_statistic
+    Handles POST request to /services/extract/student_registration_completion
 
     :param context:  Pyramid context object
     :param request:  Pyramid request object

@@ -1,10 +1,3 @@
-from pyramid.security import Allow
-import edauth
-from edauth.security.user import User
-from edcore.security.tenant import set_tenant_map
-from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
-from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
-
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
@@ -17,6 +10,14 @@ from edextract.celery import setup_celery
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
+from smarter.extracts.constants import Constants as Extract
+from pyramid.security import Allow
+import edauth
+from edauth.security.user import User
+from edcore.security.tenant import set_tenant_map
+from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
+from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
+from mock import patch
 
 
 class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -59,18 +60,56 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         Unittest_with_edcore_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 
-    def test__create_task_info(self):
+    @patch('smarter.extracts.student_reg_processor.compile_query_to_sql_text')
+    @patch('smarter.extracts.student_reg_processor.student_reg_statistics.get_headers')
+    @patch('smarter.extracts.student_reg_processor.student_reg_statistics.get_academic_year_query')
+    @patch('smarter.extracts.student_reg_processor.student_reg_statistics.get_match_id_query')
+    def test__create_task_info_statistics(self, util_patch, header_patch, aquery_patch, mquery_patch):
+        dummy_headers = ('H1', 'H2')
+
+        util_patch.return_value = ''
+        header_patch.return_value = dummy_headers
+        aquery_patch.return_value = ''
+        mquery_patch.return_value = ''
+
         extract_params = {TaskConstants.STATE_CODE: "NC",
                           TaskConstants.ACADEMIC_YEAR: 2015,
+                          Extract.REPORT_TYPE: 'studentRegistrationStatistics',
                           TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
 
         user = User()
         results = _create_task_info("request_id", user, 'tenant', extract_params)
-        self.assertEqual(len(results), 7)
+
+        self.assertEqual(len(results), 8)
+        #self.assertEquals(dummy_headers, results[TaskConstants.CSV_HEADERS])
+        self.assertEqual(2, len(results[TaskConstants.TASK_QUERIES]))
+
+    @patch('smarter.extracts.student_reg_processor.compile_query_to_sql_text')
+    @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_headers')
+    @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_query')
+    def test__create_task_info_completion(self, util_patch, header_patch, query_patch):
+        dummy_headers = ('H1', 'H2')
+
+        util_patch.return_value = ''
+        header_patch.return_value = dummy_headers
+        query_patch.return_value = ''
+
+        extract_params = {TaskConstants.STATE_CODE: "NC",
+                          TaskConstants.ACADEMIC_YEAR: 2015,
+                          Extract.REPORT_TYPE: 'studentRegistrationCompletion',
+                          TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_COMPLETION}
+
+        user = User()
+        results = _create_task_info("request_id", user, 'tenant', extract_params)
+
+        self.assertEqual(8, len(results))
+        self.assertEquals(dummy_headers, results[TaskConstants.CSV_HEADERS])
+        self.assertEqual(1, len(results[TaskConstants.TASK_QUERIES]))
 
     def test__get_extract_file_path(self):
         extract_params = {TaskConstants.STATE_CODE: "NC",
                           TaskConstants.ACADEMIC_YEAR: 2015,
+                          Extract.REPORT_TYPE: ['studentRegistrationStatistics'],
                           TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
 
         result = _get_extract_file_path("requestId", "tenant", extract_params)
@@ -79,9 +118,15 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.assertIn('tenant', result)
         self.assertIn('NC', result)
 
-    def test_process_async_extraction_request(self):
+    @patch('smarter.extracts.student_reg_processor._create_task_info')
+    @patch('smarter.extracts.student_reg_processor.start_extract.apply_async')
+    def test_process_async_extraction_request(self, task_info, apply_async):
+        task_info.return_value = None
+        apply_async.return_value = 'Mocked Object Called'
+
         params = {'stateCode': ['NC'],
-                  'academicYear': [2015]}
+                  'academicYear': [2015],
+                  Extract.EXTRACTTYPE: ['studentRegistrationStatistics']}
         response = process_async_extraction_request(params)
         self.assertIn('.zip.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')

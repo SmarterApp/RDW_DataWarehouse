@@ -243,7 +243,10 @@ define [
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
-          params[key].push $(this).attr('value')
+          if key == 'academicYear'
+            params[key].push Number($(this).attr('value'))
+          else
+            params[key].push $(this).attr('value')
       $('tr.rpt_option:not(.disabled) #academicYear', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')

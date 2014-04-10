@@ -12,13 +12,15 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims, get_accommodations
-from smarter.security.context import select_with_context
+from smarter.security.context import select_with_context,\
+    get_current_request_context
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_student_list_asmt_administration
 from smarter.security.tenant import validate_user_tenant
+from smarter.security.constants import RolesConstants
 
 REPORT_NAME = 'individual_student_report'
 
@@ -109,7 +111,7 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.acc_streamline_mode.label('acc_streamline_mode')],
                                 from_obj=[fact_asmt_outcome
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
-                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.rec_status == Constants.CURRENT))], state_code=state_code)
+                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.rec_status == Constants.CURRENT))], permission=RolesConstants.PII, state_code=state_code)
     query = query.where(and_(fact_asmt_outcome.c.student_guid == student_guid, fact_asmt_outcome.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
@@ -194,6 +196,7 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                })
 @validate_user_tenant
 @user_info
+@get_current_request_context
 @audit_event()
 def get_student_report(params):
     '''

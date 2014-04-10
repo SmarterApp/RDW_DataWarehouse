@@ -10,14 +10,14 @@ from smarter.security.roles.base import BaseRole
 class TestBase(unittest.TestCase):
 
     def test_get_context(self):
-        base = BaseRole('connector')
+        base = BaseRole('connector', 'base')
         context = base.get_context("tenant", {})
         self.assertIsNone(context)
 
     def test_check_context(self):
-        base = BaseRole('connector')
+        base = BaseRole('connector', 'base')
         context = base.check_context("tenant", {}, [])
-        self.assertIsNone(context)
+        self.assertFalse(context)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

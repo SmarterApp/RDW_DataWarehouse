@@ -24,7 +24,7 @@ def create_batch_user_session(settings, roles, tenant_name):
     '''
     # session expire time
     session_expire_secs = int(settings.get('batch.user.session.timeout'))
-    session = __create_session(roles=roles, expire_in_secs=session_expire_secs, tenant_name=tenant_name)
+    session = __create_session(roles, session_expire_secs, tenant_name)
     return __create_cookie(settings, session.get_session_id(), session_expire_secs)
 
 
@@ -68,6 +68,7 @@ def __create_session(roles, expire_in_secs, tenant_name):
     # set session rolerelations
     relations = []
     for role in roles:
+        # This creates State Level permission
         relations.append(RoleRelation(role, tenant_name, get_state_code_mapping([tenant_name])[0], None, None))
     session.set_user_context(relations)
     # set user

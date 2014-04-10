@@ -5,12 +5,18 @@ define [
 ], ($, bootstrap, edwarePopover) ->
 
   DEFAULT_PERMISSIONS = {
-    PII: {
-      no_control: true,
-      access_list: []
+    pii: {
+      all: true,
+      guid: []
     },
-    allow_assessment_extract: false,
-    allow_registration_extract: true,
+    sar_extracts: {
+      all: true,
+      guid: []
+    },
+    srs_extracts: {
+      all: true,
+      guid: []
+    }
   }
 
   class ContextSecurity
@@ -26,7 +32,7 @@ define [
       @apply_bulk_extract_security()
 
     apply_pii_security: () ->
-      return if @permissions.PII.no_control
+      return if @permissions.pii.all
       # bind tooltips popover
       $('a.disabled', '.ui-jqgrid').edwarePopover
         class: "no_pii_msg"
@@ -36,12 +42,12 @@ define [
         content: @no_pii_msg
 
     apply_raw_extract_security: () ->
-      return if @permissions.allow_assessment_extract
+      return if @permissions.sar_extracts.all
       $('li.extract').hide()
 
     apply_bulk_extract_security: () ->
-      assessment_access = @permissions.allow_assessment_extract
-      registration_access = @permissions.allow_registration_extract
+      assessment_access = @permissions.sar_extracts.all
+      registration_access = @permissions.srs_extracts.all
       # hide csv extract option if user doesn't have any permission
       if not assessment_access and not registration_access
         $('li.csv').hide()
@@ -57,7 +63,7 @@ define [
       @extractType.options = options
 
     hasPIIAccess: (row_id) ->
-      @permissions.PII.no_control or (row_id in @permissions.PII.access_list)
+      @permissions.pii.all or (row_id in @permissions.pii.guid)
 
 
   init = (permissions, config) ->

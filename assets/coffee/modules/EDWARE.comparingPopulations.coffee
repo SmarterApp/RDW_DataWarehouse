@@ -93,15 +93,7 @@ define [
             self.data.metadata[subject] = self.defaultColors
 
         # initialize context security
-        # TODO permission should be passed by backend, remove below code once backend is done
-        data.context.permission = {
-          PII: {
-            no_control: true,
-            access_list: []
-          }
-        }
-        # TODO End
-        contextSecurity.init data.context.permission, self.config
+        contextSecurity.init data.context.permissions, self.config
 
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)

@@ -7,6 +7,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 from pyramid.registry import Registry
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from smarter.security.constants import RolesConstants
 
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import smarter.extracts.format
@@ -15,7 +16,6 @@ from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
-from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
 from smarter.services.student_reg_extract_service import post_sr_stat_extract_service, post_sr_comp_extract_service
 from mock import patch
@@ -42,13 +42,12 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
 
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
+        self.__config.testing_securitypolicy(dummy_session.get_user())
 
-        self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)

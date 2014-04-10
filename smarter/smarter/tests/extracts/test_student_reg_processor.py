@@ -2,7 +2,8 @@ __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    get_unittest_tenant_name
 from pyramid.registry import Registry
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import tempfile
@@ -10,6 +11,7 @@ from edextract.celery import setup_celery
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
+from smarter.security.constants import RolesConstants
 from smarter.extracts.constants import Constants as Extract
 from pyramid.security import Allow
 import edauth
@@ -44,11 +46,11 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
         self.__config.testing_securitypolicy(dummy_session.get_user())
-        set_tenant_map({'tomcat': 'NC'})
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
 
     def tearDown(self):
         # reset the registry

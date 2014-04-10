@@ -5,7 +5,8 @@ Created on Jan 24, 2014
 '''
 import unittest
 from edcore.security.tenant import get_state_code_mapping, set_tenant_map,\
-    get_state_code_to_tenant_map, get_tenant_map
+    get_state_code_to_tenant_map, get_tenant_map, get_all_tenants,\
+    get_all_state_codes
 import edcore.security.tenant
 
 
@@ -41,6 +42,19 @@ class TestTenant(unittest.TestCase):
         tenant_map = edcore.security.tenant.TENANT_MAP
         self.assertEqual(tenant_map['c'], 'NC')
 
+    def test_get_all_tenants(self):
+        set_tenant_map({'c': 'NC', 'd': 'CC'})
+        tenants = get_all_tenants()
+        self.assertEqual(len(tenants), 2)
+        self.assertIn('c', tenants)
+        self.assertIn('d', tenants)
+
+    def test_get_all_statecodes(self):
+        set_tenant_map({'c': 'NC', 'd': 'CC'})
+        states = get_all_state_codes()
+        self.assertEqual(len(states), 2)
+        self.assertIn('NC', states)
+        self.assertIn('CC', states)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

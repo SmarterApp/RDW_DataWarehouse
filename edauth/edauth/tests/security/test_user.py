@@ -97,11 +97,27 @@ class TestUser(unittest.TestCase):
     def test_user_context(self):
         rel_chain = [RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', '2'),
                      RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', '3'),
-                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_2', 'NY', 'NY', '2', '4')]
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_2', 'NY', 'NY', '2', '4'),
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', None)]
         uc = UserContext(rel_chain)
         self.assertEqual(uc.get_districts('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1'), {'1'}, 'Must be district 1')
         self.assertEqual(uc.get_schools('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1'), {'3', '2'}, 'Must be schools {2, 3}')
         self.assertEqual(uc.get_schools('NY', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_2'), {'4'}, 'Must be school {4}')
+
+    def test_get_all_user_context(self):
+        rel_chain = [RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', None, None, None),
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', '3'),
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_2', 'CA', 'CA', None, None),
+                     RoleRelation('CONSORTIUM_EDUCATION_ADMINISTRATOR_1', 'CA', 'CA', '1', None)]
+        uc = UserContext(rel_chain)
+        all_context = uc.get_all_context('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_2')
+        self.assertEqual(all_context['state_code'], {'CA'})
+        self.assertEqual(all_context['district_guid'], set())
+        self.assertEqual(all_context['school_guid'], set())
+        all_context = uc.get_all_context('CA', 'CONSORTIUM_EDUCATION_ADMINISTRATOR_1')
+        self.assertEqual(all_context['state_code'], set())
+        self.assertEqual(all_context['district_guid'], {'1'})
+        self.assertEqual(all_context['school_guid'], {'3'})
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

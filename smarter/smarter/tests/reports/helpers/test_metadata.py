@@ -5,7 +5,7 @@ Created on Aug 5, 2013
 '''
 import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 from edapi.tests.dummy import DummyRequest
 from pyramid import testing
 from smarter.reports.helpers.metadata import get_custom_metadata,\

@@ -18,7 +18,7 @@ from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata, \
     get_subjects_map
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.reports.student_administration import get_student_list_asmt_administration
+from smarter.reports.student_administration import get_student_report_asmt_administration
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.constants import RolesConstants
 
@@ -221,7 +221,7 @@ def get_student_report(params):
         asmt_grade = first_student['asmt_grade']
         student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
         context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
-        student_list_asmt_administration = get_student_list_asmt_administration(state_code, district_guid, school_guid, None, [student_guid])
+        student_report_asmt_administration = get_student_report_asmt_administration(state_code, student_guid)
 
         # color metadata
         custom_metadata_map = get_custom_metadata(result[0].get(Constants.STATE_CODE), None)
@@ -232,5 +232,5 @@ def get_student_report(params):
 
         result['context'] = context
         result[Constants.SUBJECTS] = {v: k for k, v in subjects_map.items()}
-        result['asmt_administration'] = student_list_asmt_administration
+        result['asmt_administration'] = student_report_asmt_administration
     return result

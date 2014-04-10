@@ -43,12 +43,10 @@ objectClass: person
 cn: Susan Hall
 sn: Hall
 employeeNumber: 5e5ac3f1-df9d-48cd-8f25-b74f18dc1f9c
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|roleId|SUPER_USER|INS
- TITUTION|RIBQufsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|gr
- oupOfStates|229|Daybreak School District|abcd|Daybreak Institutions|942|Day
- break Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Susan
 uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P
@@ -62,9 +60,10 @@ objectClass: person
 cn: Victor Lee
 sn: Lee
 employeeNumber: 4765a55c-452c-4ed3-8018-4931f73b7554
-employeeType: |roleId|TEACHER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc|gr
- oupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District|ab
- cd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Victor
 uid: vlee
 userPassword:: e1NTSEF9ZGo1YW9lM054Tm9QQzVQT2srbDZJa1N6U1FvQTEyUzJnTlU2Qmc9P
@@ -78,9 +77,10 @@ objectClass: person
 cn: Sara Lee
 sn: Lee
 employeeNumber: 8038a3ee-b822-43f3-bb14-c2c1bfc59860
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Sara
 uid: slee
 userPassword:: e1NTSEF9QWJNTStib2FkTmJ0UnZTY2p3dkhPblBJeWdRVHFYS1N1YTd5ckE9P
@@ -94,9 +94,10 @@ objectClass: person
 cn: Jamie Hine
 sn: Hine
 employeeNumber: ca2762c3-050b-4150-a0de-6f03f45d2f50
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Jamie
 uid: jhine
 userPassword:: e1NTSEF9WnhiL0dFTitGWFlXZWJLRm5seE9CcXNvMXErNlZwR2xZaWI1eXc9P
@@ -110,9 +111,10 @@ objectClass: person
 cn: Chris Davis
 sn: Davis
 employeeNumber: 548f2795-206a-4c47-954c-c261546204b6
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Chris
 uid: cdavis
 userPassword:: e1NTSEF9NXc2ZVFSQ0llVzN0R25mRFRJZlZ1VDRCMWNSVkJSWHVtMENuc0E9P
@@ -126,9 +128,10 @@ objectClass: person
 cn: Kelly Tidd
 sn: Tidd
 employeeNumber: f42466ef-21ff-41c6-9a57-00fc758ea2e0
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Kelly
 uid: ktidd
 userPassword:: e1NTSEF9V1FwN0lzdTU5clRUNzg5YUU5WUJNekhJUnFyS1hPdHg5Q2lCZUE9P
@@ -142,9 +145,10 @@ objectClass: person
 cn: Louisa Mui
 sn: Mui
 employeeNumber: 9fc3013a-01e6-40aa-8d5e-798b9b8524c3
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Louisa
 uid: lmui
 userPassword:: e1NTSEF9cTVSWDJGM2FrYXFvYjNVMWhBZFJnTEtHUk5FT0gzdm1sWW9QWEE9P
@@ -158,9 +162,10 @@ objectClass: person
 cn: Hugh Goree
 sn: Goree
 employeeNumber: eaf5cadb-9ebb-484d-9a93-8a7077d89214
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Hugh
 uid: hgoree
 userPassword:: e1NTSEF9eW5NakhCcTBXVUV6dGdzTUFiUHlxNjFNTWpDL0pEdmpYRVliSlE9P
@@ -174,9 +179,10 @@ objectClass: person
 cn: Clare Seabaugh
 sn: Seabaugh
 employeeNumber: cfc872c7-b9d7-4e0b-8632-e1ea643852ee
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Clare
 uid: cseabaugh
 userPassword:: e1NTSEF9QVpUYnhrV2VpSEFJeGJsN3NKR0s1UkwvR3RhZldsSHR4dWdsa1E9P
@@ -190,9 +196,10 @@ objectClass: person
 cn: Katy Bester
 sn: Bester
 employeeNumber: 0e2e5079-2969-4b47-ad8c-06610bbbacd5
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Katy
 uid: kbester
 userPassword:: e1NTSEF9VnN1YlR0RmxLVlM2dFBlM3oyTEluVFk4bjBVbmRqZUtnTjhsMnc9P
@@ -206,9 +213,10 @@ objectClass: person
 cn: Erik Croker
 sn: Croker
 employeeNumber: 8d1df6d9-e05d-41dd-8909-b0289e1bc21a
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Erik
 uid: ecroker
 userPassword:: e1NTSEF9bEZEK1NwcHVleFc5SldRZTdUVHk5V1kwSUh2RU1rbTk4NktZOGc9P
@@ -222,9 +230,10 @@ objectClass: person
 cn: Matt Sollars
 sn: Sollars
 employeeNumber: 9d9c6409-8840-4fa0-ad6d-4b10d41453a5
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||dog|CA|||||||||
+employeeType: ||PII||||||dog|CA|||||||||
+employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
+employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
 givenName: Matt
 uid: msollars
 userPassword:: e1NTSEF9WXg1Wis0VGVzb0VvTjFmNWJ2eU4yMHp1cUFNTWtIUC80TzBnY1E9P
@@ -238,9 +247,10 @@ objectClass: person
 cn: Clayton Croxton
 sn: Croxton
 employeeNumber: 27f4f5d6-3500-42db-873d-084356ce6fe2
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||dog|CA|||||||||
+employeeType: ||PII||||||dog|CA|||||||||
+employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
+employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
 givenName: Clayton
 uid: ccroxton
 userPassword:: e1NTSEF9MUdHMmVrVlgwN3JTUHdJMUpmZ0tDaFRQWHZyTXV6T3lOb24wMEE9P
@@ -254,9 +264,11 @@ objectClass: person
 cn: Amie Stroop
 sn: Stroop
 employeeNumber: 0c5de7a1-d2e1-4940-a26e-e72589967364
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Amie
 uid: astroop
 userPassword:: e1NTSEF9Qm1GUkx5QUVPMDg5MmFwZklZVXRsSmhEZ3dnNmNHWEhZR1BISlE9P
@@ -270,9 +282,11 @@ objectClass: person
 cn: Ted Lazaro
 sn: Lazaro
 employeeNumber: b32b071c-5621-4b52-afbb-c25a1886d754
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Ted
 uid: tlazaro
 userPassword:: e1NTSEF9T2REUE11bVk1ZFQ5YXRQbGZ4Y3VkRW9Ba2g3M2tCR1FraXp0enc9P
@@ -286,9 +300,11 @@ objectClass: person
 cn: Guy Man
 sn: Man
 employeeNumber: ed81c400-8874-4a96-b6fd-3573b3c3000a
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Guy
 uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P
@@ -302,9 +318,11 @@ objectClass: person
 cn: Selena Magnusson
 sn: Magnusson
 employeeNumber: 95a9f7af-c4cc-46f8-9b26-97ba5b314fa9
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Selena
 uid: smagnusson
 userPassword:: e1NTSEF9djNGYkVyS0MvWkt2NWlNUEFtWk96U2NyZGlsSWNJbnQ5Z2wwd1E9P
@@ -318,9 +336,11 @@ objectClass: person
 cn: Jessie Mollica
 sn: Mollica
 employeeNumber: 26e3b1b0-b85f-4fc9-8276-55ea7b272724
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Jessie
 uid: jmollica
 userPassword:: e1NTSEF9QmtGOTdGZjRvRUhuTEw1eExaVnFnVUljWkwydytBVG5pdGY1UEE9P
@@ -334,9 +354,11 @@ objectClass: person
 cn: Liza Bopp
 sn: Bopp
 employeeNumber: 0c7affb9-5a22-459f-8a72-5dd3943f435e
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Liza
 uid: lbopp
 userPassword:: e1NTSEF9U1ZmMTMrZExwcjdOb1VZelFJZFAwSUs5V0ZxcEFibFdVZVpyc1E9P
@@ -350,18 +372,11 @@ objectClass: person
 cn: Clinton Degraw
 sn: Degraw
 employeeNumber: f617275c-f949-4ade-bea8-6b1d6a19a7b9
-employeeType: |roleId|CONSORTIUM_EDUCATION_ADMINISTRATOR_1|INSTITUTION|RIBQu
- fsGai|Smarter Balanced|abc|groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|22
- 9|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central 
- High|
-employeeType: |roleId|CONSORTIUM_EDUCATION_ADMINISTRATOR_1|INSTITUTION|RIBQu
- fsGai|Smarter Balanced|abc|groupOfStates|dog|CA|mKlpctu9Ay|groupOfStates|22
- 9|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central 
- High|
-employeeType: |roleId|CONSORTIUM_EDUCATION_ADMINISTRATOR_1|INSTITUTION|RIBQu
- fsGai|Smarter Balanced|abc|groupOfStates|fish|VT|mKlpctu9Ay|groupOfStates|2
- 29|Daybreak School District|abcd|Daybreak Institutions|942|Daybreak Central
-  High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Clinton
 uid: cdegraw
 userPassword:: e1NTSEF9ZnM4bWh0TkpQZUxjODZFb09TM2ltUFRIcmdDb3NjUmsyZVl3aGc9P
@@ -727,9 +742,11 @@ objectClass: person
 cn: Elnora Seinfeld
 sn: Seinfeld
 employeeNumber: 58d08269-4f03-484a-981c-7c13b3ba11aa
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|cat|NC|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
+employeeType: ||ALLSTATES|||SBAC|||||||||||||
+employeeType: ||PII|||SBAC|||||||||||||
+employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
 givenName: Elnora
 uid: eseinfeld
 userPassword:: e1NTSEF9SDJIWGNXWTluVDM3UmFLTWgzWHQ2ekxNV08wQWxaaGV1Q1dCQmc9P
@@ -743,9 +760,10 @@ objectClass: person
 cn: Mary Smith
 sn: Smith
 employeeNumber: 1c06e4cf-1339-4f75-b0d1-c8b10e6e57fd
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|dog|CA|mKlpctu9Ay|groupOfStates|229|Daybreak School District
- |abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||fish|VT|||||||||
+employeeType: ||PII||||||fish|VT|||||||||
+employeeType: ||SAREXTRACTS||||||fish|VT|||||||||
+employeeType: ||SRSEXTRACTS||||||fish|VT|||||||||
 givenName: Mary
 uid: msmith
 userPassword:: e1NTSEF9SnZUMmNtVFE5TTNZbkRYODVWclZmVUlxZEVPSks2Yk5kWmdjY2c9P
@@ -923,9 +941,10 @@ objectClass: person
 cn: Javier Macey
 sn: Macey
 employeeNumber: 1c06e4cf-1339-4f75-ffff-c8b10e6e57fd
-employeeType: |roleId|SUPER_USER|INSTITUTION|RIBQufsGai|Smarter Balanced|abc
- |groupOfStates|fish|VT|mKlpctu9Ay|groupOfStates|229|Daybreak School Distric
- t|abcd|Daybreak Institutions|942|Daybreak Central High|
+employeeType: ||State_Administrator||||||fish|VT|||||||||
+employeeType: ||PII||||||fish|VT|||||||||
+employeeType: ||SAREXTRACTS||||||fish|VT|||||||||
+employeeType: ||SRSEXTRACTS||||||fish|VT|||||||||
 givenName: Javier
 uid: jmacey
 userPassword:: e1NTSEF9cm9Hcm5RYTB6UkR1MFIxNFlZNWMvZW1Za3A1UzVMZUdoR3ZLK2c9P

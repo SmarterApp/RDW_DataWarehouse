@@ -75,7 +75,7 @@ class UserContext(object):
         if tenant in self.__map and permission in self.__map[tenant]:
             if params.get('schoolGuid'):
                 if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'):
-                    return self.__map[tenant][permission]['schoolGuid']
+                    return {'all': True}
             elif params.get('districtGuid'):
                 if self.validate_hierarchy(tenant, permission, params, 'districtGuid'):
                     return self.__map[tenant][permission]['schoolGuid']

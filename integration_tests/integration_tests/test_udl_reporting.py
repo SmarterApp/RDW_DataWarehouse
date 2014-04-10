@@ -18,6 +18,8 @@ from integration_tests.migrate_helper import start_migrate,\
     get_prod_table_count, get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
 from integration_tests.udl_helper import empty_stats_table
+import time
+from time import sleep
 
 
 class TestUDLReportingIntegration(unittest.TestCase):
@@ -68,6 +70,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         print("Completed validate_UDL_database")
         self.validate_stats_table_before_mig()
         self.migrate_data()
+        time.sleep(5)
         self.validate_migration('cat', (self.fact_table, self.expected_rows),
                                 (self.dim_table, self.expected_unique_batch_guids))
         self.validate_stats_table_after_mig()

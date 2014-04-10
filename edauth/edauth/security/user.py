@@ -5,7 +5,9 @@ Created on Mar 14, 2013
 '''
 from edauth.security.roles import Roles
 import json
-from edauth.security.utils import SetEncoder
+from edauth.security.utils import SetEncoder, remove_none_from_sets
+from copy import deepcopy
+from edcore.security.tenant import get_all_state_codes, get_all_tenants
 
 
 class UserConstants():
@@ -42,7 +44,9 @@ class UserContext(object):
         Instantiates user context from RoleRelation array. We do not preserve inter-relationships between institutions
         '''
         self.__tenant_context_map = {row.tenant: {} for row in role_inst_rel_list}
+        self.__map = deepcopy(self.__tenant_context_map)
         for row in role_inst_rel_list:
+            self.build_chain(row)
             tenant = self.__tenant_context_map.get(row.tenant)
             role = tenant.get(row.role)
             role = {'state_code': set(), 'district_guid': set(), 'school_guid': set()} if role is None else role
@@ -54,48 +58,45 @@ class UserContext(object):
                 role.get('state_code').add(row.state_code)
             tenant[row.role] = role
             self.__tenant_context_map[row.tenant] = tenant
-        self.build_chain(role_inst_rel_list)
 
     def get_states(self, tenant, role):
-        return self.get_all_context(tenant, role).get('state_code', set())
+        return self.get_all_context(tenant, role).get('state_code')
 
     def get_districts(self, tenant, role):
-        return self.get_all_context(tenant, role).get('district_guid', set())
+        return self.get_all_context(tenant, role).get('district_guid')
 
     def get_schools(self, tenant, role):
-        return self.get_all_context(tenant, role).get('school_guid', set())
+        return self.get_all_context(tenant, role).get('school_guid')
 
     def get_all_context(self, tenant, role):
         return self.__tenant_context_map[tenant][role] if tenant in self.__tenant_context_map and role in self.__tenant_context_map[tenant] else {}
 
     def get_chain(self, tenant, permission, params):
-        if params.get('schoolGuid') and permission in self._map[tenant]:
-            if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'):
-                return self._map[tenant][permission]['schoolGuid']
-        elif params.get('districtGuid') and permission in self._map[tenant]:
-            if self.validate_hierarchy(tenant, permission, params, 'districtGuid'):
-                return self._map[tenant][permission]['schoolGuid']
-        elif params.get('stateCode') and permission in self._map[tenant]:
-            if self.validate_hierarchy(tenant, permission, params, 'stateCode'):
-                return self._map[tenant][permission]['districtGuid']
+        if tenant in self.__map and permission in self.__map[tenant]:
+            if params.get('schoolGuid'):
+                if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'):
+                    return self.__map[tenant][permission]['schoolGuid']
+            elif params.get('districtGuid'):
+                if self.validate_hierarchy(tenant, permission, params, 'districtGuid'):
+                    return self.__map[tenant][permission]['schoolGuid']
+            elif params.get('stateCode'):
+                if self.validate_hierarchy(tenant, permission, params, 'stateCode'):
+                    return self.__map[tenant][permission]['districtGuid']
         return {'all': False, 'guid': set()}
 
-    def build_chain(self, role_inst_rel_list):
-        self._map = {row.tenant: {} for row in role_inst_rel_list}
-        for row in role_inst_rel_list:
-            tenant = self._map.get(row.tenant)
-            role = tenant.get(row.role)
-            role = {'stateCode': {'all': False, 'guid': set()}, 'districtGuid': {'all': False, 'guid': set()}, 'schoolGuid': {'all': False, 'guid': set()}} if role is None else role
-            for i in [(row.state_code, 'stateCode'), (row.district_guid, 'districtGuid'), (row.school_guid, 'schoolGuid')]:
-                guid = i[0]
-                key = i[1]
-                if guid and not role[key]['all']:
-                    role[key]['guid'].add(guid)
-                else:
-                    self.__set_all_permission(role, key)
-            tenant[row.role] = role
-            self._map[row.tenant] = tenant
-        return self._map
+    def build_chain(self, row):
+        tenant = self.__map.get(row.tenant)
+        role = tenant.get(row.role)
+        role = {'stateCode': {'all': False, 'guid': set()}, 'districtGuid': {'all': False, 'guid': set()}, 'schoolGuid': {'all': False, 'guid': set()}} if role is None else role
+        for i in [(row.state_code, 'stateCode'), (row.district_guid, 'districtGuid'), (row.school_guid, 'schoolGuid')]:
+            guid = i[0]
+            key = i[1]
+            if guid and not role[key]['all']:
+                role[key]['guid'].add(guid)
+            else:
+                self.__set_all_permission(role, key)
+        tenant[row.role] = role
+        self.__map[row.tenant] = tenant
 
     def __set_all_permission(self, role, identifier):
         role[identifier]['all'] = True
@@ -110,7 +111,7 @@ class UserContext(object):
         return rtn
 
     def is_institution_accessible(self, tenant, permission, request_guid, identifier):
-        return request_guid in self._map[tenant][permission][identifier]['guid'] or self._map[tenant][permission][identifier]['all']
+        return request_guid in self.__map[tenant][permission][identifier]['guid'] or self.__map[tenant][permission][identifier]['all']
 
     def __json__(self, request):
         '''
@@ -200,19 +201,32 @@ class User(object):
         tenants = set()
         state_codes = set()
         role_inst_rel_list = [rel_chain for rel_chain in role_inst_rel_list_all if not Roles.has_undefined_roles([rel_chain.role])]
+        new_rel_list = []
+        # TODO: move this inside usercontext
+        known_tenants = get_all_tenants()
         for rel_chain in role_inst_rel_list:
             roles.add(rel_chain.role)
             tenants.add(rel_chain.tenant)
             state_codes.add(rel_chain.state_code)
+            if rel_chain.tenant is None and rel_chain.state_code is None and rel_chain.district_guid is None and rel_chain.school_guid is None:
+                # General Permission needs to explicitly add tenant / state codes
+                # TODO: check if it's General specific or for all roles.  It actually doesn't matter before
+                if Roles.has_default_permission(rel_chain.role):
+                    state_codes = set(list(state_codes) + get_all_state_codes())
+                    tenants = set(list(tenants) + known_tenants)
+                else:
+                    # We need to create the rolerelation for consortium level for every tenant that we know of
+                    for tenant in known_tenants:
+                        new_rel_list.append(RoleRelation(rel_chain.role, tenant, None, None, None))
         # If there is no roles, set it to an invalid one so user can logout
         if not role_inst_rel_list:
             roles.add(Roles.get_invalid_role())
-        self.__context = UserContext(role_inst_rel_list)
-        self.__info[UserConstants.ROLES] = list(roles)
-        self.__info[UserConstants.TENANT] = list(tenants)
-        self.__info[UserConstants.STATECODE] = list(state_codes)
+        self.__context = UserContext(role_inst_rel_list + new_rel_list)
         # Check whether 'home' is enabled
         self.__info[UserConstants.DISPLAYHOME] = Roles.has_display_home_permission(roles)
+        self.__info[UserConstants.ROLES] = remove_none_from_sets(roles)
+        self.__info[UserConstants.TENANT] = remove_none_from_sets(tenants)
+        self.__info[UserConstants.STATECODE] = remove_none_from_sets(state_codes)
 
     def set_guid(self, guid):
         '''

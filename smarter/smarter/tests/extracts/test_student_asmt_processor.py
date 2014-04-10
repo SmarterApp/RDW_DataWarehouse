@@ -72,8 +72,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         Unittest_with_stats_sqlite.setUpClass()
 
     def test_process_extraction_async_request(self):
-        params = {'stateCode': ['CA'],
-                  'asmtYear': ['2015'],
+        params = {'stateCode': ['NC'],
+                  'asmtYear': ['2018'],
                   'asmtType': ['SUMMATIVE', 'INTERIM COMPREHENSIVE'],
                   'asmtSubject': ['Math', 'ELA'],
                   'extractType': ['studentAssessment']}
@@ -131,11 +131,12 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
 
     def test_process_sync_extraction_request_NotFoundException_with_subject(self):
-        params = {'stateCode': 'CA',
+        params = {'stateCode': 'NC',
                   'districtGuid': '228',
                   'schoolGuid': '242',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': ['ELA'],
+                  'asmtYear': '2018',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         self.assertRaises(NotFoundException, process_sync_extract_request, params)
 

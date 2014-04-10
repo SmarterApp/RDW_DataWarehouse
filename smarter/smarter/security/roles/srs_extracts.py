@@ -20,14 +20,15 @@ class SRSExtracts(BaseRole):
     def get_context(self, tenant, user):
         '''
         Returns a sqlalchemy binary expression representing school_guid that user has context to
-        If Context is an empty list, return none, which will return Forbidden Error
+        If Context is an empty list, return None, which will return Forbidden Error
         '''
         student_reg = self.connector.get_table(Constants.STUDENT_REG)
         context = user.get_context().get_states(tenant, self.name)
-        expr = []
-        if context:
-            expr.append(student_reg.c.state_code.in_(context))
-        return expr
+        # context of none means that user has no access
+        if context is None:
+            return None
+        else:
+            return [student_reg.c.state_code.in_(context)] if context else []
 
     def check_context(self, tenant, user, student_guids):
         '''

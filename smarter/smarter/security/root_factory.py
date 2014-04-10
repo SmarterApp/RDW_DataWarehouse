@@ -13,12 +13,12 @@ class RootFactory(object):
     The root factory returns the traversal root of an application.
     Right now, we're saying that all roles have permission.
     '''
-    __acl__ = [(Allow, RolesConstants.GENERAL, ('view', 'logout')),
+    __acl__ = [(Allow, RolesConstants.GENERAL, ('view', 'logout', 'default')),
                (Allow, RolesConstants.PII, ('view', 'logout')),
                (Allow, RolesConstants.ALL_STATES, ('view', 'logout', 'display_home')),
                (Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout')),
                (Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout')),
-               (Allow, RolesConstants.SUPER_USER, ('super_admin_rights', 'view', 'logout')),
+               (Allow, RolesConstants.SUPER_USER, ('view', 'logout', 'super_admin_rights')),
                # For no role in memberOf in SAML response
                # Ideally, this should be in edauth
                (Allow, RolesConstants.NONE, 'logout')]

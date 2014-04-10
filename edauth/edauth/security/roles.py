@@ -60,3 +60,9 @@ class Roles:
     @staticmethod
     def has_display_home_permission(roles):
         return Roles.has_permission(roles, 'display_home')
+
+    @staticmethod
+    def has_default_permission(roles):
+        if not type(roles) is list:
+            roles = [roles]
+        return Roles.has_permission(roles, 'default')

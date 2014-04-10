@@ -26,6 +26,9 @@ class PII(BaseRole):
         '''
         fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
         context = user.get_context().get_all_context(tenant, self.name)
+        if not context:
+            # context returned is empty, therefore no context
+            return None
         expr = []
         for k, v in context.items():
             if v:

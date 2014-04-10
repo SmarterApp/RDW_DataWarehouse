@@ -64,9 +64,11 @@ def check_context(permission, state_code, student_guids):
 
 
 def get_current_context(params):
-    # Get user role and guid
+    '''
+    Given request parameters, determine if the user has context to the next hierarchy level
+    '''
     user = __get_user_info()
-    state_code = params.get('stateCode')
+    state_code = params.get(Constants.STATECODE)
     tenant = get_tenant_by_state_code(state_code)
     user_context = user.get_context()
     # Special case for pii

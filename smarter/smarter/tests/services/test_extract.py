@@ -71,8 +71,8 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_post_valid_response_tenant_extract(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['CA'],
-                                    'asmtYear': ['2015'],
+        self.__request.json_body = {'stateCode': ['NC'],
+                                    'asmtYear': ['2018'],
                                     'asmtType': ['SUMMATIVE'],
                                     'asmtSubject': ['Math'],
                                     'extractType': ['studentAssessment'],
@@ -105,8 +105,8 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_multi_tasks_tenant_extract(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': ['CA'],
-                                    'asmtYear': ['2015', '2011'],
+        self.__request.json_body = {'stateCode': ['NC'],
+                                    'asmtYear': ['2019', '2011'],
                                     'asmtType': ['SUMMATIVE'],
                                     'asmtSubject': ['Math', 'ELA'],
                                     'extractType': ['studentAssessment'],

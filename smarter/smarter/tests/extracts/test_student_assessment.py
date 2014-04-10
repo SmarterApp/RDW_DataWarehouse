@@ -11,13 +11,14 @@ from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid.registry import Registry
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 from sqlalchemy.sql.expression import select
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 from edauth.security.user import RoleRelation
 import edauth
 from smarter.security.constants import RolesConstants
+from edcore.security.tenant import set_tenant_map
 
 
 class TestStudentAssessment(Unittest_with_edcore_sqlite):
@@ -31,9 +32,10 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.__tenant_name = get_unittest_tenant_name()
         defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
         # Set up context security
         dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
-        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", None, None)])
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def tearDown(self):
@@ -41,8 +43,8 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         testing.tearDown()
 
     def test_get_extract_assessment_query(self):
-        params = {'stateCode': 'CA',
-                  'asmtYear': '2015',
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2019',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
                   'extractType': 'studentAssessment'}
@@ -51,7 +53,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIn('fact_asmt_outcome.asmt_type', str(query._whereclause))
 
     def test_get_extract_assessment_query_limit(self):
-        params = {'stateCode': 'CA',
+        params = {'stateCode': 'NC',
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
@@ -61,7 +63,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIn('541', str(query._limit))
 
     def test_get_extract_assessment_query_compiled(self):
-        params = {'stateCode': 'CA',
+        params = {'stateCode': 'NC',
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',

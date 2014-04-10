@@ -83,8 +83,8 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         results = _create_task_info("request_id", user, 'tenant', extract_params)
 
         self.assertEqual(len(results), 8)
-        #self.assertEquals(dummy_headers, results[TaskConstants.CSV_HEADERS])
         self.assertEqual(2, len(results[TaskConstants.TASK_QUERIES]))
+        self.assertEquals('StudentRegistrationStatisticsReportCSV', results[TaskConstants.EXTRACTION_DATA_TYPE])
 
     @patch('smarter.extracts.student_reg_processor.compile_query_to_sql_text')
     @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_headers')
@@ -107,6 +107,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.assertEqual(8, len(results))
         self.assertEquals(dummy_headers, results[TaskConstants.CSV_HEADERS])
         self.assertEqual(1, len(results[TaskConstants.TASK_QUERIES]))
+        self.assertEquals('StudentRegistrationCompletionReportCSV', results[TaskConstants.EXTRACTION_DATA_TYPE])
 
     def test__get_extract_file_path(self):
         extract_params = {TaskConstants.STATE_CODE: "NC",

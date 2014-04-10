@@ -43,6 +43,7 @@ define [
     createDownloadMenu: (years) ->
       # merge academic years to JSON config
       @config.CSVOptions.asmtYear.options = years if years
+      @config.CSVOptions.academicYear.options = years if years
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
 
     getAcademicYears = (years)->

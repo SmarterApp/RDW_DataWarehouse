@@ -1,5 +1,3 @@
-from smarter.services.student_reg_extract_service import post_sr_extract_service
-
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
@@ -19,6 +17,8 @@ from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
+from smarter.services.student_reg_extract_service import post_sr_stat_extract_service, post_sr_comp_extract_service
+from mock import patch
 
 
 class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -60,15 +60,35 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.__request = None
         testing.tearDown()
 
-    def test_post_sr_extraction_request(self):
-        self.__request.method = 'POST'
-        self.__request.json_body = {'academicYear': [2015], "stateCode": ["NC"]}
-        response = post_sr_extract_service(None, self.__request)
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_post_sr_extraction_request_invalid_params(self):
+    def test_post_sr_stat_extraction_request_invalid_params(self):
         self.__request.method = 'POST'
         self.__request.json_body = {'academic_year': [2015]}
 
-        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_extract_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_stat_extract_service, self.__request)
+
+    def test_post_sr_invalid_type(self):
+        self.__request.method = 'POST'
+        self.__request.json_body = {'extractType': ['studentRegistrationComp'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_comp_extract_service, self.__request)
+
+    @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
+    def test_post_sr_comp_extraction_request(self, test_patch):
+        test_patch.return_value = 'Mocked Method Called'
+
+        self.__request.method = 'POST'
+        self.__request.json_body = {'academicYear': [2015], "stateCode": ["NC"]}
+        response = post_sr_stat_extract_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(str(response.body, encoding='UTF-8'), '"Mocked Method Called"')
+
+    @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
+    def test_post_sr_stat_extraction_request(self, test_patch):
+        test_patch.return_value = 'Mocked Method Called'
+
+        self.__request.method = 'POST'
+        self.__request.json_body = {'academicYear': [2015], "stateCode": ["NC"]}
+        response = post_sr_stat_extract_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(str(response.body, encoding='UTF-8'), '"Mocked Method Called"')

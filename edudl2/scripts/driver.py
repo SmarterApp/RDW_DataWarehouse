@@ -76,4 +76,4 @@ if __name__ == '__main__':
         args.archive_file = dest
 
     start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced,
-                   tenant_dirs=args.loop_dirs)
+                   tenant_dirs=args.loop_dir)

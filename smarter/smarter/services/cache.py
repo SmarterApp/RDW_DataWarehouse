@@ -11,9 +11,7 @@ from pyramid.httpexceptions import HTTPNotFound
 logger = logging.getLogger(__name__)
 
 
-#check which role should have super_admin_rights
-#@view_config(route_name='cache_management', request_method='DELETE', renderer='json', permission='super_admin_rights')
-@view_config(route_name='cache_management', request_method='DELETE', renderer='json')
+@view_config(route_name='cache_management', request_method='DELETE', renderer='json', permission='super_admin_rights')
 def cache_flush(request):
     '''
     service call for flush cache

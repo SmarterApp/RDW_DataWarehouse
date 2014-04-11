@@ -120,6 +120,18 @@ class TestUDLReportingIntegration(unittest.TestCase):
         #Batch table should now have udl success for 5 batches
         self.validate_UDL_database(5, max_wait=30)
 
+        #----RUN 6----
+        #Run udl on assessment data (3 rows, math summative)
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_math_summative_assesment.tar.gz.gpg'))
+        #Batch table should now have udl success for 6 batches
+        self.validate_UDL_database(6, max_wait=30)
+
+        #----RUN 7----
+        #Run udl on assessment data (3 rows, ela summative)
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_ela_summative_assesment.tar.gz.gpg'))
+        #Batch table should now have udl success for 7 batches
+        self.validate_UDL_database(7, max_wait=30)
+
         self.migrate_data()
         #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
         #The 10 rows that were in the prod table before should be overwritten

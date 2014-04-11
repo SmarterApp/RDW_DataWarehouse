@@ -18,7 +18,7 @@ from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter.services.student_reg_extract_service import post_sr_stat_extract_service, post_sr_comp_extract_service
-from mock import patch
+from unittest.mock import patch
 import json
 
 

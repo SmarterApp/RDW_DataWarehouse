@@ -139,4 +139,3 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
             self.assertEqual(response['tasks'][0]['academicYear'], 2015)
 
             apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)
-

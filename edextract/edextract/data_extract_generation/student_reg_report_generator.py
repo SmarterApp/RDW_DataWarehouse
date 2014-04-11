@@ -12,7 +12,8 @@ from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.utils.csv_writer import write_csv
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.student_reg_extract_processors.row_data_processor import RowDataProcessor
-from edextract.trackers.tracker_results_helper import get_tracker_results
+from edextract.data_extract_generation.statistics_generator import get_tracker_results as get_tracker_statistics_results
+from edextract.data_extract_generation.completion_generator import get_tracker_results as get_tracker_completion_results
 
 
 def generate_statistics_report(tenant, output_file, task_info, extract_args):
@@ -100,12 +101,20 @@ def _generate_completion_report_data(tenant, academic_year, queries):
     @return: List of rows to be included in the CSV report.
     """
 
-    return ()
+    academic_year_query = queries[QueryType.QUERY]
+
+    row_data_processor = RowDataProcessor()
+
+    with EdCoreDBConnection(tenant=tenant) as connection:
+        registered_results = connection.get_streaming_result(academic_year_query)  # This result is a generator
+        row_data_processor.process_yearly_row_data(registered_results)
+
+    return _get_sr_comp_tenant_data_for_academic_year(row_data_processor, academic_year)
 
 
 def _get_sr_stat_tenant_data_for_academic_year(row_data_processor, academic_year):
     """
-    Get all the tenant's student registration data for the academic year.
+    Get all the tenant's student registration statistical data for the academic year.
 
     @param: db_rows: Iterable containing all pertinent database rows
     @param academic_year: Academic year of report
@@ -117,4 +126,21 @@ def _get_sr_stat_tenant_data_for_academic_year(row_data_processor, academic_year
     for data_processor in row_data_processor.data_processors:
         report_map.update(sorted(data_processor.get_ed_org_hierarchy().items()))
 
-    return get_tracker_results(report_map, row_data_processor.total_tracker, row_data_processor.trackers, academic_year)
+    return get_tracker_statistics_results(report_map, row_data_processor.total_tracker, row_data_processor.trackers, academic_year)
+
+
+def _get_sr_comp_tenant_data_for_academic_year(row_data_processor, academic_year):
+    """
+    Get all the tenant's student registration completion data for the academic year.
+
+    @param: db_rows: Iterable containing all pertinent database rows
+    @param academic_year: Academic year of report
+
+    @return: List of rows to be included in the CSV report.
+    """
+
+    report_map = OrderedDict()
+    for data_processor in row_data_processor.data_processors:
+        report_map.update(sorted(data_processor.get_ed_org_hierarchy().items()))
+
+    return get_tracker_completion_results(report_map, row_data_processor.trackers, academic_year)

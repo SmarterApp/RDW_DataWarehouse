@@ -17,8 +17,7 @@ def get_academic_year_query(academic_year, state_code):
                                       student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep,
                                       student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd,
                                       student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race, student_reg.c.academic_year],
-                                     from_obj=[student_reg], permission=RolesConstants.SRS_EXTRACTS,
-                                     state_code=state_code).where(student_reg.c.academic_year == academic_year)
+                                     from_obj=[student_reg]).where(student_reg.c.academic_year == academic_year)
 
     return academic_year_query
 

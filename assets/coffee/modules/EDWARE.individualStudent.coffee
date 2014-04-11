@@ -129,6 +129,7 @@ define [
 
     initialize: () ->
       @params = edwareUtil.getUrlParams()
+      edwarePreferences.saveStateCode @params['stateCode']
       @isPdf = @params['pdf']
       @isGrayscale = @params['grayscale']
       @reportInfo = @configData.reportInfo

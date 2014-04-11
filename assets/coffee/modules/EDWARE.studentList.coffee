@@ -12,7 +12,8 @@ define [
   "edwareGridStickyCompare"
   "edwareReportInfoBar"
   "edwareReportActionBar"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar) ->
+  "edwareContextSecurity"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -147,7 +148,6 @@ define [
       @userData = data.user_info
       @academicYears = data.asmt_period_year
       @grade = @contextData['items'][4]
-
       @renderBreadcrumbs(data.context)
       @renderReportInfo()
       @renderReportActionBar()
@@ -155,6 +155,13 @@ define [
 
       @createGrid()
       @bindEvents()
+      @applyContextSecurity()
+
+    applyContextSecurity: ()->
+      # init context security
+      contextSecurity.init @data.context.permissions, @config
+      contextSecurity.apply()
+
 
     bindEvents: ()->
       # Show tooltip for overall score on mouseover

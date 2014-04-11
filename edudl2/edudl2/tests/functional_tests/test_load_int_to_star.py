@@ -23,7 +23,6 @@ class IntToStarFTest(UDLTestHelper):
         self.tenant_code = 'edware'
         self.conf = move_to_target_setup.generate_conf(self.guid_batch, self.phase_number,
                                                        self.load_type, self.tenant_code, target_schema=self.guid_batch)
-        self.match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
         self.load_to_dim_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task"
         self.load_to_fact_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_fact"
         self.dim_table_prefix = 'dim_'
@@ -102,9 +101,10 @@ class IntToStarFTest(UDLTestHelper):
                                                   column_types)
 
         # handle deletion case
-        matched_results = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, matched_results)
-        move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
+        #matched_results = move_to_target.match_deleted_records(self.conf, self.match_conf)
+        #move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, matched_results)
+        #move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
+        move_to_target.handle_updates_and_deletes(self.conf)
 
         # check star schema table counts
         with get_target_connection(self.tenant_code, self.guid_batch) as conn:

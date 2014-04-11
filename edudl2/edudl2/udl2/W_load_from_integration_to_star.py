@@ -142,7 +142,6 @@ def handle_deletions(msg):
     conf = _get_conf(msg)
     conf[mk.UDL_PHASE_STEP] = udl_phase_step
     conf[mk.WORKING_SCHEMA] = msg['dim_tables'][0][mk.WORKING_SCHEMA]
-    #match_conf = get_move_to_target_conf()['handle_deletions']
 
     # handle updates and deletes
     handle_updates_and_deletes(conf)

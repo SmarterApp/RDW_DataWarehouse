@@ -21,10 +21,7 @@ from edcore.database.utils.utils import create_schema
 from edcore.database.utils.constants import Constants
 from edschema.metadata.util import get_primary_key_columns, get_natural_key, get_natural_key_columns
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
-    create_insert_query, update_foreign_rec_id_query,\
-    create_sr_table_select_insert_query,\
-    create_delete_query, update_matched_fact_asmt_outcome_row,\
-    get_delete_candidates, match_delete_record_against_prod
+    create_insert_query, update_foreign_rec_id_query, create_sr_table_select_insert_query, create_delete_query
 
 FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)

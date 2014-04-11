@@ -14,12 +14,22 @@ define [
   $(document).on 'click', '#logout_button', () ->
     shortTermStorage.clear()
 
+  saveStateCode = (code) ->
+    savePreferences {"stateCode": code}
+
+  getStateCode = () ->
+    pref = getPreferences() || {}
+    pref["stateCode"]
+
   saveAsmtYearPreference = (year) ->
-    savePreferences {"asmtYear": year}
+    sc = getStateCode()
+    set = {}
+    set[sc + "asmtYear"] = year
+    savePreferences set
 
   getAsmtYearPreference = () ->
     pref = getPreferences() || {}
-    pref["asmtYear"]
+    pref[pref["stateCode"] + "asmtYear"]
 
   getEffectiveDate = () ->
     pref = getPreferences() || {}
@@ -81,6 +91,8 @@ define [
   getPreferences = (isLongTerm) ->
     JSON.parse(getStorage(isLongTerm).load() || "{}")
 
+  saveStateCode:saveStateCode
+  getStateCode:getStateCode
   saveAsmtPreference:saveAsmtPreference
   getAsmtPreference:getAsmtPreference
   clearAsmtPreference: clearAsmtPreference

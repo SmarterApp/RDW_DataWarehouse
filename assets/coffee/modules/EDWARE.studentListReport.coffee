@@ -20,6 +20,7 @@ require [
       filter.update {}
 
   mergeWithPreference = (params)->
+    edwarePreferences.saveStateCode(params['stateCode'])
     asmtYear = edwarePreferences.getAsmtYearPreference()
     params['asmtYear'] = asmtYear if asmtYear
     asmt = edwarePreferences.getAsmtPreference()

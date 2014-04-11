@@ -26,7 +26,7 @@ class TestFileFinder(unittest.TestCase):
         shutil.rmtree(self.__temp_dir)
 
     def test_find_files_in_directories(self):
-        ordered_files = find_files_in_directories([self.__temp_dir])
+        ordered_files = find_files_in_directories(self.__temp_dir)
         expected_list = [os.path.join(self.__temp_dir, x) for x in self.test_files]
         self.assertEqual(len(ordered_files), len(expected_list))
         for f in ordered_files:
@@ -35,37 +35,37 @@ class TestFileFinder(unittest.TestCase):
     def test_find_files_in_directories_limited_num(self):
         shutil.rmtree(self.__temp_dir)
         self.create_data(1)
-        ordered_files = find_files_in_directories([self.__temp_dir], 1)
+        ordered_files = find_files_in_directories(self.__temp_dir, 1)
         expected_list = [os.path.join(self.__temp_dir, x) for x in self.test_files[:1]]
 
         self.assertListEqual(ordered_files, expected_list)
 
     def test_find_files_in_directories_file_ext_1(self):
-        ordered_files = find_files_in_directories([self.__temp_dir], 1, 'jpg')
+        ordered_files = find_files_in_directories(self.__temp_dir, 1, 'jpg')
         expected_list = [os.path.join(self.__temp_dir, x) for x in self.test_files[1:2]]
 
         self.assertListEqual(ordered_files, expected_list)
 
     def test_find_files_in_directories_file_ext_2(self):
-        ordered_files = find_files_in_directories([self.__temp_dir], 1, '.jpg')
+        ordered_files = find_files_in_directories(self.__temp_dir, 1, '.jpg')
         expected_list = [os.path.join(self.__temp_dir, x) for x in self.test_files[1:2]]
 
         self.assertListEqual(ordered_files, expected_list)
 
     def test_find_files_in_directories_file_ext_3(self):
-        ordered_files = find_files_in_directories([self.__temp_dir], 1, '*.jpg')
+        ordered_files = find_files_in_directories(self.__temp_dir, 1, '*.jpg')
         expected_list = [os.path.join(self.__temp_dir, x) for x in self.test_files[1:2]]
 
         self.assertListEqual(ordered_files, expected_list)
 
     def test_find_files_in_directories_file_ext_4(self):
-        ordered_files = find_files_in_directories([self.__temp_dir], 0, '*jpg')
+        ordered_files = find_files_in_directories(self.__temp_dir, 0, '*jpg')
         expected_list = [os.path.join(self.__temp_dir, x) for x in self.test_files[1:2]]
 
         self.assertListEqual(ordered_files, expected_list)
 
     def test_find_files_in_directories_file_ext_5(self):
-        ordered_files = find_files_in_directories([self.__temp_dir], 1, '*.jp')
+        ordered_files = find_files_in_directories(self.__temp_dir, 1, '*.jp')
         expected_list = []
 
         self.assertListEqual(ordered_files, expected_list)

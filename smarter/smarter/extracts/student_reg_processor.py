@@ -107,9 +107,9 @@ def __get_report_queries(extract_params):
                    QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}
 
     if extract_type == ExtractType.studentRegistrationCompletion:
-        academic_year_query = student_reg_completion.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
-                                                                             extract_params[TaskConstants.STATE_CODE])
-        queries = {QueryType.QUERY: compile_query_to_sql_text(academic_year_query)}
+        registered_query = student_reg_completion.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
+                                                                          extract_params[TaskConstants.STATE_CODE])
+        queries = {QueryType.QUERY: compile_query_to_sql_text(registered_query)}
 
     return queries
 

@@ -4,7 +4,6 @@ from sqlalchemy.sql.expression import select
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
-from smarter.security.constants import RolesConstants
 
 
 def get_academic_year_query(academic_year, state_code):

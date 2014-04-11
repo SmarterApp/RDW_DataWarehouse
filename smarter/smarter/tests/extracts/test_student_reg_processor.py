@@ -2,8 +2,7 @@ __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from pyramid.registry import Registry
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import tempfile
@@ -19,7 +18,7 @@ from edauth.security.user import User
 from edcore.security.tenant import set_tenant_map
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
-from mock import patch
+from unittest.mock import patch
 from unittest.mock import ANY
 
 
@@ -139,4 +138,3 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
             self.assertEqual(response['tasks'][0]['academicYear'], 2015)
 
             apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)
-

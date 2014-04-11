@@ -15,13 +15,13 @@ def get_next_file(msg):
     :return: A string stating if the task found a file
     """
 
-    tenant_dirs = msg[mk.TENANT_SEARCH_PATHS]
+    tenant_dir = msg[mk.TENANT_SEARCH_PATHS]
 
-    files_in_dir = find_files_in_directories(tenant_dirs)
+    files_in_dir = find_files_in_directories(tenant_dir)
 
     next_file_msg = {
         mk.LOOP_PIPELINE: True,
-        mk.TENANT_SEARCH_PATHS: tenant_dirs,
+        mk.TENANT_SEARCH_PATHS: tenant_dir,
         mk.PARTS: msg[mk.PARTS],
         # TODO: Load type is needed?
         mk.LOAD_TYPE: msg[mk.LOAD_TYPE],

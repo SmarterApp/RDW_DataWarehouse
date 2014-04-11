@@ -7,6 +7,8 @@ from smarter.reports.helpers.constants import Constants
 
 
 def get_academic_year_query(academic_year, state_code):
+
+    # TODO: Make query from select_with_context once SONIC adds security context to completion reports.
     with EdCoreDBConnection(state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)
         academic_year_query = select([student_reg.c.state_code, student_reg.c.state_name, student_reg.c.district_guid,

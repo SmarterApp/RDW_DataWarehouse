@@ -305,6 +305,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SUPER_USER|||SBAC|||||||||||||
 givenName: Guy
 uid: gman
 userPassword:: e1NTSEF9MnBmeG5oMHVFc0RTRlNiVkFidWJaMDJTQ0wvTXRTb1AyV0Rwc3c9P

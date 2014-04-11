@@ -301,21 +301,21 @@ qa:
     mode: prod
     smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     services.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/services
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edmigrate
     extract.work_zone_base_dir: /opt/edware/extraction
     extract.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
+      BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/edextract
     extract:
       gpg:
         homedir : /opt/edware/conf/gpg
         keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
     cache:
-      public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
-      public.data.url: twprxydw0.qa.dum.edwdc.net:22121
-      session.url: twprxydw0.qa.dum.edwdc.net:22121
-      public.filtered_data.url: twprxydw0.qa.dum.edwdc.net:22121
+      public.shortlived.url: dwcache0.qa.dum.edwdc.net:11211
+      public.data.url: dwcache0.qa.dum.edwdc.net:11211
+      session.url: dwcache0.qa.dum.edwdc.net:11211
+      public.filtered_data.url: dwcache0.qa.dum.edwdc.net:11211
     pdf:
       base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html/
       report_base_dir: /opt/edware/pdf

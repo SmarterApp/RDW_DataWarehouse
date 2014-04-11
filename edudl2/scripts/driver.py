@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('--loop-dirs', nargs='+', help='a list of white space separated directories that specify '
                                                        'the tenant directories to be observed')
     args = parser.parse_args()
-    if args.dev_mode:
+    if args.dev_mode and args.archive_file is None:
         # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
         os.environ['PATH'] += os.pathsep + '/usr/local/bin'
         celery.conf.update(CELERY_ALWAYS_EAGER=True)

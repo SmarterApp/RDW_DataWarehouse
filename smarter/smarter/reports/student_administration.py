@@ -36,6 +36,26 @@ def get_student_list_asmt_administration(state_code, district_guid, school_guid,
     return results
 
 
+def get_student_report_asmt_administration(state_code, student_guid):
+    '''
+    Get asmt administration for an individual student report. There is no PII in the results and it can be stored in
+    shortlived cache
+    '''
+    with EdCoreDBConnection(state_code=state_code) as connection:
+        fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+        dim_asmt = connection.get_table(Constants.DIM_ASMT)
+        query = select([dim_asmt.c.effective_date, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome .c.asmt_grade],
+                       from_obj=[fact_asmt_outcome, dim_asmt])
+        query = query.where(fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id).\
+            where(fact_asmt_outcome.c.state_code == state_code).\
+            where(and_(fact_asmt_outcome.c.student_guid == student_guid)).\
+            where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT)).\
+            group_by(dim_asmt.c.effective_date, fact_asmt_outcome.c.asmt_type, fact_asmt_outcome.c.asmt_grade,).\
+            order_by(fact_asmt_outcome.c.asmt_type.desc(), dim_asmt.c.effective_date.desc())
+        results = connection.get_result(query)
+    return results
+
+
 @cache_region('public.shortlived')
 def get_academic_years(state_code, tenant=None, years_back=None):
     '''

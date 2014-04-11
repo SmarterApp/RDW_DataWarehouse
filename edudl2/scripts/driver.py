@@ -61,8 +61,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     parser.add_argument('-f', dest='config_file', default=UDL2_DEFAULT_CONFIG_PATH_FILE, help="configuration file for UDL2")
     parser.add_argument('-p', dest='file_parts', default=4, type=int, help="The number or parts that the given csv file should be split into. Default=4")
-    parser.add_argument('--loop-dirs', nargs='+', help='a list of white space separated directories that specify '
-                                                       'the tenant directories to be observed')
+    parser.add_argument('--loop-dir', default=None, help='a parent directory of the tenant be observed. all child directories will be searched')
     args = parser.parse_args()
     if args.dev_mode:
         celery.conf.update(CELERY_ALWAYS_EAGER=True)

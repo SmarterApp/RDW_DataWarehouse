@@ -20,6 +20,7 @@ from edcore.security.tenant import set_tenant_map
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
 from mock import patch
+from unittest.mock import ANY
 
 
 class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -116,21 +117,26 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
                           TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
 
         result = _get_extract_file_path("requestId", "tenant", extract_params)
+
         self.assertIn('.csv', result)
         self.assertIn('requestId', result)
         self.assertIn('tenant', result)
         self.assertIn('NC', result)
 
     @patch('smarter.extracts.student_reg_processor._create_task_info')
-    @patch('smarter.extracts.student_reg_processor.start_extract.apply_async')
-    def test_process_async_extraction_request(self, task_info, apply_async):
-        task_info.return_value = None
-        apply_async.return_value = 'Mocked Object Called'
+    def test_process_async_extraction_request(self, task_info):
+        with patch('smarter.extracts.student_reg_processor.start_extract.apply_async') as apply_async_mock:
+            dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
+            task_info.return_value = dummy_task_info
+            params = {'stateCode': ['NC'],
+                      'academicYear': [2015],
+                      Extract.EXTRACTTYPE: ['studentRegistrationStatistics']}
 
-        params = {'stateCode': ['NC'],
-                  'academicYear': [2015],
-                  Extract.EXTRACTTYPE: ['studentRegistrationStatistics']}
-        response = process_async_extraction_request(params)
-        self.assertIn('.zip.gpg', response['fileName'])
-        self.assertEqual(response['tasks'][0]['status'], 'ok')
-        self.assertEqual(response['tasks'][0]['academicYear'], 2015)
+            response = process_async_extraction_request(params)
+
+            self.assertIn('.zip.gpg', response['fileName'])
+            self.assertEqual(response['tasks'][0]['status'], 'ok')
+            self.assertEqual(response['tasks'][0]['academicYear'], 2015)
+
+            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)
+

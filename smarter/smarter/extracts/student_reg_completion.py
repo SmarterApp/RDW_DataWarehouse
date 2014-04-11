@@ -31,10 +31,10 @@ def get_headers(academic_year):
               'AY{year} Count of Students Assessed by Summative Math'.format(year=academic_year),
               'AY{year} Percent of Registered Students Assessed by Summative Math'.format(year=academic_year),
               'AY{year} Count of Students Assessed by Summative ELA'.format(year=academic_year),
-              'AY{year} Percent of Registered Students assessed by Summative ELA'.format(year=academic_year),
+              'AY{year} Percent of Registered Students Assessed by Summative ELA'.format(year=academic_year),
               'AY{year} Count of Students Assessed by Interim Comprehensive Math'.format(year=academic_year),
-              'AY{year} Percent of Registered Students assessed by Interim Comprehensive Math'.format(year=academic_year),
+              'AY{year} Percent of Registered Students Assessed by Interim Comprehensive Math'.format(year=academic_year),
               'AY{year} Count of Students Assessed by Interim Comprehensive ELA'.format(year=academic_year),
-              'AY{year} Percent of Registered Students assessed by Interim Comprehensive ELA'.format(year=academic_year))
+              'AY{year} Percent of Registered Students Assessed by Interim Comprehensive ELA'.format(year=academic_year))
 
     return header

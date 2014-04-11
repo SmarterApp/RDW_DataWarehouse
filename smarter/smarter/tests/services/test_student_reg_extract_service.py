@@ -19,6 +19,7 @@ import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter.services.student_reg_extract_service import post_sr_stat_extract_service, post_sr_comp_extract_service
 from mock import patch
+import json
 
 
 class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -72,22 +73,32 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
 
     @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
     def test_post_sr_comp_extraction_request(self, test_patch):
-        test_patch.return_value = 'Mocked Method Called'
+        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg"}')
+        test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
         self.__request.json_body = {'extractType': ['studentRegistrationCompletion'], 'academicYear': [2015], "stateCode": ["NC"]}
-        response = post_sr_stat_extract_service(None, self.__request)
+        response = post_sr_comp_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(str(response.body, encoding='UTF-8'), '"Mocked Method Called"')
+
+        response_json = json.loads(str(response.body, encoding='UTF-8'))
+        self.assertEqual(len(response_json), len(mock_response))
+        self.assertEqual(response_json['file_name'], 'test.gpg')
+        self.assertEqual(response_json['tasks']['state_code'], 'NC')
 
     @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
     def test_post_sr_stat_extraction_request(self, test_patch):
-        test_patch.return_value = 'Mocked Method Called'
+        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg"}')
+        test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
         self.__request.json_body = {'extractType': ['studentRegistrationStatistics'], 'academicYear': [2015], "stateCode": ["NC"]}
         response = post_sr_stat_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(str(response.body, encoding='UTF-8'), '"Mocked Method Called"')
+
+        response_json = json.loads(str(response.body, encoding='UTF-8'))
+        self.assertEqual(len(response_json), len(mock_response))
+        self.assertEqual(response_json['file_name'], 'test.gpg')
+        self.assertEqual(response_json['tasks']['state_code'], 'NC')

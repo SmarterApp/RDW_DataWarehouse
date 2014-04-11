@@ -19,7 +19,7 @@ from edauth.security.user import User
 from edcore.security.tenant import set_tenant_map
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
-from mock import patch
+from unittest.mock import patch
 from unittest.mock import ANY
 
 

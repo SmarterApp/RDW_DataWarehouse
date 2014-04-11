@@ -89,7 +89,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
 
     @patch('smarter.extracts.student_reg_processor.compile_query_to_sql_text')
     @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_headers')
-    @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_query')
+    @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_registered_query')
     def test__create_task_info_completion(self, util_patch, header_patch, query_patch):
         dummy_headers = ('H1', 'H2')
 

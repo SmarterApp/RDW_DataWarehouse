@@ -101,9 +101,6 @@ class IntToStarFTest(UDLTestHelper):
                                                   column_types)
 
         # handle deletion case
-        #matched_results = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        #move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, matched_results)
-        #move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
         move_to_target.handle_updates_and_deletes(self.conf)
 
         # check star schema table counts

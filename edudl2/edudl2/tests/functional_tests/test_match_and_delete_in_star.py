@@ -8,7 +8,6 @@ from unittest import skip
 from edudl2.database.udl2_connector import get_udl_connection,\
     get_target_connection, get_prod_connection
 from sqlalchemy.sql.functions import count
-# This test use file containing 3 rows that match to prod and one row not match to prod.
 
 
 class MatchAndDeleteFTest(UDLTestHelper):

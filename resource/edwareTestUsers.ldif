@@ -47,6 +47,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SUPER_USER||||||cat|NC|||||||||
 givenName: Susan
 uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P

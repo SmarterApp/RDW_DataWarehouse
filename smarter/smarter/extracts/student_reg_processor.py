@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 from pyramid.threadlocal import get_current_registry
 
-from smarter.extracts.constants import Constants as Extract, ExtractType
+from smarter.extracts.constants import Constants as Extract, ExtractType, ReportType
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
 from edextract.tasks.extract import start_extract
@@ -107,9 +107,9 @@ def __get_report_queries(extract_params):
                    QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}
 
     if extract_type == ExtractType.studentRegistrationCompletion:
-        academic_year_query = student_reg_completion.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
-                                                                             extract_params[TaskConstants.STATE_CODE])
-        queries = {QueryType.QUERY: compile_query_to_sql_text(academic_year_query)}
+        registered_query = student_reg_completion.get_registered_query(extract_params[TaskConstants.ACADEMIC_YEAR],
+                                                                       extract_params[TaskConstants.STATE_CODE])
+        queries = {QueryType.QUERY: compile_query_to_sql_text(registered_query)}
 
     return queries
 

@@ -312,10 +312,10 @@ qa:
         homedir : /opt/edware/conf/gpg
         keyserver: hkp://rbtmqdw0.qa.dum.edwdc.net
     cache:
-      public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
-      public.data.url: twprxydw0.qa.dum.edwdc.net:22121
-      session.url: twprxydw0.qa.dum.edwdc.net:22121
-      public.filtered_data.url: twprxydw0.qa.dum.edwdc.net:22121
+      public.shortlived.url: dwcache0.qa.dum.edwdc.net:11211
+      public.data.url: dwcache0.qa.dum.edwdc.net:11211
+      session.url: dwcache0.qa.dum.edwdc.net:11211
+      public.filtered_data.url: dwcache0.qa.dum.edwdc.net:11211
     pdf:
       base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html/
       report_base_dir: /opt/edware/pdf

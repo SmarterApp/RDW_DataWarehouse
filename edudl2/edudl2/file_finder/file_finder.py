@@ -1,10 +1,10 @@
 __author__ = 'swimberly'
 
 import os
-import glob
+import fnmatch
 
 
-def find_files_in_directories(directories, file_count=0, match_extension=None):
+def find_files_in_directories(directory, file_count=0, match_extension=None):
     """
     Given a list of directories, return a list of valid files for the pipeline
     :param directories: a list of directories as strings
@@ -13,13 +13,11 @@ def find_files_in_directories(directories, file_count=0, match_extension=None):
     :return: a list of files
     """
 
-    files = []
     extension = create_extension(match_extension) if match_extension else '*'
-
-    for tenant_dir in directories:
-        print("checking tenant directory:", tenant_dir)
-        # sort files by time created and filter possible directories
-        files += [x for x in glob.glob(os.path.join(tenant_dir, extension)) if not os.path.isdir(x)]
+    files = []
+    for root, dirnames, filenames in os.walk(directory):
+        for filename in fnmatch.filter(filenames, extension):
+            files.append(os.path.join(root, filename))
 
     files_in_dir = sorted(files, key=lambda x: os.stat(x).st_mtime)
 

@@ -64,10 +64,11 @@ if __name__ == '__main__':
     parser.add_argument('--loop-dirs', nargs='+', help='a list of white space separated directories that specify '
                                                        'the tenant directories to be observed')
     args = parser.parse_args()
+    if args.dev_mode:
+        celery.conf.update(CELERY_ALWAYS_EAGER=True)
+        os.environ['PATH'] += os.pathsep + '/usr/local/bin'
     if args.dev_mode and args.archive_file is None:
         # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
-        os.environ['PATH'] += os.pathsep + '/usr/local/bin'
-        celery.conf.update(CELERY_ALWAYS_EAGER=True)
         src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
         # Find the first tar.gz.gpg file as LZ file
         file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]

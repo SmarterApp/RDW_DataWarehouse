@@ -102,12 +102,16 @@ def _generate_completion_report_data(tenant, academic_year, queries):
     """
 
     academic_year_query = queries[QueryType.QUERY]
+    assessment_outcome_query = queries[QueryType.ASMT_OUTCOME_QUERY]
 
     row_data_processor = RowDataProcessor()
 
     with EdCoreDBConnection(tenant=tenant) as connection:
         registered_results = connection.get_streaming_result(academic_year_query)  # This result is a generator
         row_data_processor.process_yearly_row_data(registered_results)
+
+        assessment_outcome_results = connection.get_streamin_result(assessment_outcome_query)
+        row_data_processor.process_asmt_outcome_data(assessment_outcome_results)
 
     return _get_sr_comp_tenant_data_for_academic_year(row_data_processor, academic_year)
 

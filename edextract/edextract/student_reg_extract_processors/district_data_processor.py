@@ -22,5 +22,8 @@ class DistrictDataProcessor(EdOrgDataProcessor):
         if self._is_matched_district(data_row):
             self._call_matched_ids_trackers(data_row[AttributeFieldConstants.DISTRICT_GUID], data_row)
 
+    def process_asmt_outcome_data(self, data_row):
+        pass
+
     def _is_matched_district(self, data_row):
         return data_row[AttributeFieldConstants.DISTRICT_GUID] == data_row[AttributeFieldConstants.PREV_DISTRICT_GUID]

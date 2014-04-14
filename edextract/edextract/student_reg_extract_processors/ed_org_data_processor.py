@@ -34,3 +34,7 @@ class EdOrgDataProcessor(metaclass=ABCMeta):
     @abstractmethod
     def process_matched_ids_data(self, data_row):
         return
+
+    @abstractmethod
+    def process_asmt_outcome_data(self, data_row):
+        return

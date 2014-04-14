@@ -73,45 +73,50 @@ class UserContext(object):
 
     def get_chain(self, tenant, permission, params):
         if tenant in self.__map and permission in self.__map[tenant]:
+            idx = None
             if params.get('schoolGuid'):
-                if self.validate_hierarchy(tenant, permission, params, 'schoolGuid'):
-                    return {'all': True}
+                idx = 'schoolGuid'
             elif params.get('districtGuid'):
-                if self.validate_hierarchy(tenant, permission, params, 'districtGuid'):
-                    return self.__map[tenant][permission]['schoolGuid']
+                idx = 'districtGuid'
             elif params.get('stateCode'):
-                if self.validate_hierarchy(tenant, permission, params, 'stateCode'):
-                    return self.__map[tenant][permission]['districtGuid']
-        return {'all': False, 'guid': set()}
+                idx = 'stateCode'
+            else:
+                return self._get_default_permission()
+            return self.validate_hierarchy(tenant, permission, params, idx)
+        return self._get_default_permission()
 
     def build_chain(self, row):
         tenant = self.__map.get(row.tenant)
-        role = tenant.get(row.role)
-        role = {'stateCode': {'all': False, 'guid': set()}, 'districtGuid': {'all': False, 'guid': set()}, 'schoolGuid': {'all': False, 'guid': set()}} if role is None else role
-        for i in [(row.state_code, 'stateCode'), (row.district_guid, 'districtGuid'), (row.school_guid, 'schoolGuid')]:
-            guid = i[0]
-            key = i[1]
-            if guid and not role[key]['all']:
-                role[key]['guid'].add(guid)
-            else:
-                self.__set_all_permission(role, key)
-        tenant[row.role] = role
+        current = tenant.get(row.role, self._get_default_permission())
+        tenant[row.role] = self._create(row, current)
         self.__map[row.tenant] = tenant
 
-    def __set_all_permission(self, role, identifier):
-        role[identifier]['all'] = True
-        role[identifier]['guid'] = set()
+    def _create(self, role_rel, current):
+        head = current
+        for guid in [role_rel.state_code, role_rel.district_guid, role_rel.school_guid, None]:
+            if guid:
+                current['guid'].add(guid)
+                if current.get(guid) is None:
+                    current[guid] = self._get_default_permission()
+            else:
+                current['guid'] = set()
+                current['all'] = True
+                break
+            current = current.get(guid, self._get_default_permission())
+        return head
+
+    def _get_default_permission(self):
+        return {'all': False, 'guid': set()}
 
     def validate_hierarchy(self, tenant, permission, params, identifier):
-        hierarchy = ['schoolGuid', 'districtGuid', 'stateCode']
-        index = hierarchy.index(identifier)
-        rtn = True if index >= 0 else False
-        for i in hierarchy[index:]:
-            rtn = rtn and self.is_institution_accessible(tenant, permission, params.get(i), i)
-        return rtn
-
-    def is_institution_accessible(self, tenant, permission, request_guid, identifier):
-        return request_guid in self.__map[tenant][permission][identifier]['guid'] or self.__map[tenant][permission][identifier]['all']
+        current = self.__map[tenant][permission]
+        hierarchy = ['stateCode', 'districtGuid', 'schoolGuid']
+        idx = hierarchy.index(identifier)
+        for i in hierarchy[0:idx + 1]:
+            current = current.get(params.get(i), {})
+            if not current or current.get('all'):
+                break
+        return {'all': current.get('all', False), 'guid': current.get('guid', set())}
 
     def __json__(self, request):
         '''

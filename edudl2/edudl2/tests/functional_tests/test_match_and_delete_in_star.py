@@ -147,12 +147,6 @@ class MatchAndDeleteFTest(UDLTestHelper):
             mismatches = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
             self.assertEqual(0, len(mismatches))
 
-    @skip('to be fixed')
-    def test_5_check_mismatched_deletions_2(self):
+    def test_check_mismatched_deletions(self):
         with get_target_connection(self.tenant_code, self.guid_batch) as conn:
-            fact = conn.get_table('fact_asmt_outcome')
-            query = select([count(fact.c.asmnt_outcome_rec_id)], from_obj=fact)
-            result = self.target_conn.execute(query)
-            # now add one more row on the fact_asmt_outcome, this should trigger exception
-            # add code that insert one more row
-            self.assertRaises(DeleteRecordNotFound, move_to_target.check_mismatched_deletions(self.conf, self.match_conf))
+            self.assertRaises(DeleteRecordNotFound, move_to_target.check_mismatched_deletions(self.conf, conn, 'fact_asmt_outcome'))

@@ -133,10 +133,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
             result = []
             for rows in proxy_rows:
                 result.extend(rows)
-            # the below count should be 4 but there are multiple (3)
-            # 'C' records in the SDS for student '61ec47de-e8b5-4e78-9beb-677c44dd9b50'
-            # when SDS is fixed, this count should be asserted for 4
-            self.assertEqual(6, len(result))
+            self.assertEqual(4, len(result))
 
     def test_update_pre_prod_for_records_to_be_deleted(self):
         with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:

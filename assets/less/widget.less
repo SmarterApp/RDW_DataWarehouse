@@ -436,13 +436,22 @@ th.ui-th-column div {
 // Popover/Tooltip styles
 //
 .no_pii_msg {
-  min-width: 150px;
+  background-color: @color-C17;
+  min-width: 310px;
 
+  .mask {display: none;}
+  
   .popover-content {
-    width: 110px;
-    padding: 0px 20px 10px !important;
-    max-height: 80px !important;
+    width: 320px;
+    padding: 9px 10px 7px 10px !important;
+
+    i { padding-right: 5px; }
   }
+
+  &.popover.top .arrow:after {
+    border-top-color: @color-C17;
+  }
+  
 }
 
 .printFooterPopover {
@@ -1737,7 +1746,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
     .reminderMessage {
         line-height: 26px;
-        background-color: #fefdf2;
+        background-color: @color-C17;
         padding-left: 26px;
         border-top: solid 1px #f0efde;
         font-size: 13px;

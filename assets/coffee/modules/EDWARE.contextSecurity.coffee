@@ -33,13 +33,14 @@ define [
 
     apply_pii_security: () ->
       return if @permissions.pii.all
+      warningIcon = '<i class="edware-icon-warning"></i>'
       # bind tooltips popover
       $('a.disabled', '.ui-jqgrid').edwarePopover
         class: "no_pii_msg"
         placement: 'top'
         container: '#content'
         trigger: 'click'
-        content: @no_pii_msg
+        content: warningIcon + @no_pii_msg
 
     apply_raw_extract_security: () ->
       return if @permissions.sar_extracts.all

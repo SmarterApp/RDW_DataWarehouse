@@ -5,7 +5,7 @@ Created on Mar 14, 2013
 '''
 from edauth.security.roles import Roles
 import json
-from edauth.security.utils import SetEncoder, remove_none_from_sets
+from edauth.security.utils import SetEncoder, remove_duplicates_and_none_from_list
 from copy import deepcopy
 from edcore.security.tenant import get_all_state_codes, get_all_tenants
 
@@ -74,6 +74,7 @@ class UserContext(object):
     def get_chain(self, tenant, permission, params):
         if tenant in self.__map and permission in self.__map[tenant]:
             idx = None
+            # TODO: refactor this
             if params.get('schoolGuid'):
                 idx = 'schoolGuid'
             elif params.get('districtGuid'):
@@ -150,7 +151,8 @@ class User(object):
         self.__info[UserConstants.NAME] = {UserConstants.FULLNAME: None, UserConstants.FIRSTNAME: None, UserConstants.LASTNAME: None}
         self.__info[UserConstants.UID] = None
         self.__info[UserConstants.ROLES] = []
-        self.__info[UserConstants.TENANT] = None
+        self.__info[UserConstants.TENANT] = []
+        self.__info[UserConstants.STATECODE] = []
         self.__info[UserConstants.GUID] = None
         self.__info[UserConstants.DISPLAYHOME] = False
 
@@ -202,36 +204,53 @@ class User(object):
 
     def set_context(self, role_inst_rel_list_all):
         # For now set the roles and tenant like this to make everything continue to work
-        roles = set()
-        tenants = set()
-        state_codes = set()
-        role_inst_rel_list = [rel_chain for rel_chain in role_inst_rel_list_all if not Roles.has_undefined_roles([rel_chain.role])]
-        new_rel_list = []
-        # TODO: move this inside usercontext
-        known_tenants = get_all_tenants()
-        for rel_chain in role_inst_rel_list:
-            roles.add(rel_chain.role)
-            tenants.add(rel_chain.tenant)
-            state_codes.add(rel_chain.state_code)
-            if rel_chain.tenant is None and rel_chain.state_code is None and rel_chain.district_guid is None and rel_chain.school_guid is None:
-                # General Permission needs to explicitly add tenant / state codes
-                # TODO: check if it's General specific or for all roles.  It actually doesn't matter before
-                if Roles.has_default_permission(rel_chain.role):
-                    state_codes = set(list(state_codes) + get_all_state_codes())
-                    tenants = set(list(tenants) + known_tenants)
-                else:
-                    # We need to create the rolerelation for consortium level for every tenant that we know of
-                    for tenant in known_tenants:
-                        new_rel_list.append(RoleRelation(rel_chain.role, tenant, None, None, None))
+        role_inst_rel_list = []
+        default_permission = Roles.get_default_permission()
+        # Replace role with default role if the role is not in our defined list and clone every role relation with default Permission
+        for rel_chain in role_inst_rel_list_all:
+            if Roles.has_undefined_roles([rel_chain.role]):
+                rel_chain.role = default_permission
+            elif rel_chain.role != default_permission:
+                appended_role_rel = RoleRelation(default_permission, rel_chain.tenant, rel_chain.state_code, rel_chain.district_guid, rel_chain.school_guid)
+                role_inst_rel_list += self._populate_role_relation(appended_role_rel)
+            role_inst_rel_list += self._populate_role_relation(rel_chain)
         # If there is no roles, set it to an invalid one so user can logout
         if not role_inst_rel_list:
-            roles.add(Roles.get_invalid_role())
-        self.__context = UserContext(role_inst_rel_list + new_rel_list)
+            self._add_role(Roles.get_invalid_role())
+        self.__context = UserContext(role_inst_rel_list)
         # Check whether 'home' is enabled
-        self.__info[UserConstants.DISPLAYHOME] = Roles.has_display_home_permission(roles)
-        self.__info[UserConstants.ROLES] = remove_none_from_sets(roles)
-        self.__info[UserConstants.TENANT] = remove_none_from_sets(tenants)
-        self.__info[UserConstants.STATECODE] = remove_none_from_sets(state_codes)
+        self.__info[UserConstants.DISPLAYHOME] = Roles.has_display_home_permission(self.__info[UserConstants.ROLES])
+
+    def _populate_role_relation(self, rel_chain):
+        known_tenants = get_all_tenants()
+        new_rel_list = []
+        self._add_role(rel_chain.role)
+        if rel_chain.tenant is None and rel_chain.state_code is None and rel_chain.district_guid is None and rel_chain.school_guid is None:
+            # We need to create the rolerelation for consortium level for every tenant that we know of
+            for tenant in known_tenants:
+                new_rel_list.append(RoleRelation(rel_chain.role, tenant, None, None, None))
+                self._add_tenant(tenant)
+            self._add_state_code(get_all_state_codes())
+        else:
+            self._add_tenant(rel_chain.tenant)
+            self._add_state_code(rel_chain.state_code)
+            new_rel_list.append(rel_chain)
+        return new_rel_list
+
+    def _add_role(self, role):
+        self.__info[UserConstants.ROLES].append(role)
+        self.__info[UserConstants.ROLES] = remove_duplicates_and_none_from_list(self.__info[UserConstants.ROLES])
+
+    def _add_tenant(self, tenant):
+        self.__info[UserConstants.TENANT].append(tenant)
+        self.__info[UserConstants.TENANT] = remove_duplicates_and_none_from_list(self.__info[UserConstants.TENANT])
+
+    def _add_state_code(self, state_codes):
+        if isinstance(state_codes, list):
+            self.__info[UserConstants.STATECODE] += state_codes
+        else:
+            self.__info[UserConstants.STATECODE].append(state_codes)
+        self.__info[UserConstants.STATECODE] = remove_duplicates_and_none_from_list(self.__info[UserConstants.STATECODE])
 
     def set_guid(self, guid):
         '''

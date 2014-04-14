@@ -5,8 +5,6 @@ Created on Sep 19, 2013
 '''
 from edauth.security.identity_parser import IdentityParser
 from edauth.security.user import RoleRelation
-from smarter.security.constants import RolesConstants
-from edauth.security.roles import Roles
 
 
 class SbacIdentityParser(IdentityParser):
@@ -35,8 +33,6 @@ class SbacIdentityParser(IdentityParser):
             tenancy_chain.pop()
             # TODO: error handling of last element of tenancy chain
             role = tenancy_chain[SbacIdentityParser.ROLE_INDEX]
-            if Roles.has_undefined_roles([role]):
-                role = RolesConstants.GENERAL
             relations.append(RoleRelation(role, tenancy_chain[SbacIdentityParser.TENANT_INDEX], tenancy_chain[SbacIdentityParser.STATE_CODE_INDEX],
                              tenancy_chain[SbacIdentityParser.DISTRICT_GUID_INDEX], tenancy_chain[SbacIdentityParser.SCHOOL_GUID_INDEX]))
         return relations

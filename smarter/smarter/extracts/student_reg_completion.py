@@ -39,7 +39,8 @@ def get_assessment_query(academic_year, state_code):
                                       student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race, student_reg.c.academic_year,
                                       asmt_outcome.c.asmt_subject, asmt_outcome.c.asmt_type],
                                      from_obj=[student_reg.join(asmt_outcome, and_(student_reg.c.academic_year == asmt_outcome.c.asmt_year, student_reg.c.student_guid == asmt_outcome.c.student_guid))])\
-            .where(student_reg.c.academic_year == academic_year)
+            .where(and_(student_reg.c.academic_year == academic_year))\
+            .where(and_(asmt_outcome.c.rec_status == Constants.CURRENT))
 
     return academic_year_query
 

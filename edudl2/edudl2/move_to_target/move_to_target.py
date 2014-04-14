@@ -207,10 +207,7 @@ def get_columns_names_to_pick_for_delete(table):
 
     :param table: SQLAlchemy table object
     """
-    pk = get_primary_key_columns(table)
-    nk = get_natural_key(table)
-    nk = nk if nk is not None else []
-    return [c.name for c in pk + nk]
+    return [c.name for c in get_primary_key_columns(table) + get_natural_key(table)]
 
 
 def get_records_marked_for_deletion(conf, target_conn, table_name):

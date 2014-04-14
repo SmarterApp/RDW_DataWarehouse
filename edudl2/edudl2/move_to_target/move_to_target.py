@@ -196,18 +196,17 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
 
 
 def calculate_spend_time_as_second(start_time, finish_time):
-    '''
+    """
     Main function to calculate period distance as seconds
-    '''
+    """
     return (finish_time - start_time).total_seconds()
 
 
 def get_columns_names_to_pick_for_delete(table):
-    '''
-    returns column names to be picked for handling the delete
+    """Returns column names to be picked for handling the delete [pk + nk]
 
     :param table: SQLAlchemy table object
-    '''
+    """
     pk = get_primary_key_columns(table)
     nk = get_natural_key(table)
     nk = nk if nk is not None else []
@@ -215,6 +214,14 @@ def get_columns_names_to_pick_for_delete(table):
 
 
 def get_records_marked_for_deletion(conf, target_conn, table_name):
+    """Returns records marked for deletion from pre-prod (rec_status: 'W')
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param table_name: name of the table
+
+    @return: returns records marked for deletion
+    """
     table = target_conn.get_table(table_name)
     column_names = get_columns_names_to_pick_for_delete(table)
     columns_to_select = [table.c[column_name] for column_name in column_names]
@@ -224,16 +231,19 @@ def get_records_marked_for_deletion(conf, target_conn, table_name):
     return result
 
 
-def yield_records_to_be_deleted(conf, prod_conn, table_name, records_marked_for_deletion, batch_size=100):
-    '''
-    Yield records to  marked as deleted from pre-prod table
+def yield_records_to_be_deleted(prod_conn, table_name, records_marked_for_deletion, batch_size=100):
+    """Yield records to  marked as deleted from pre-prod table
+
 
     The methods yields records marked for delete('W') from the pre-prod database table
 
-    :param conf: udl configuration object
-    :param target_conn: connection object to pre-prod database
+    :param prod_conn: connection object to prod database
+    :param table_name: name of the table as string
+    :param records_marked_for_deletion: records from pre-prod marked for deletion (rec_status: 'W')
     :param batch_size: batch size to yield results
-    '''
+
+    @return: Yields records from prod in size of batch_size
+    """
     table = prod_conn.get_table(table_name)
     natural_keys = get_natural_key_columns(table)
     columns_to_select = [table.c[column_name] for column_name in get_columns_names_to_pick_for_delete(table)]
@@ -249,6 +259,19 @@ def yield_records_to_be_deleted(conf, prod_conn, table_name, records_marked_for_
 
 
 def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched):
+    """Update pre-prod records primary key and rec_status based on matching records from prod
+
+
+    For all the matching records the natural_key will be set to the natural key of the record from prod
+    and the rec_status will be updated to 'D' from 'W'
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param table_name: name of the table being updated
+    :param prod_records_matched: batch of records from prod that matches with pre-prod 'W' records based on natural keys
+
+    @return: True if update for successful else raises exception
+    """
     table = target_conn.get_table(table_name)
     columns = table.c
     for record in prod_records_matched:
@@ -274,10 +297,16 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
 
 
 def check_mismatched_deletions(conf, target_conn, table_name):
-    '''
-    check if any deleted record is not in target database
-    so we will raise error for this udl batch
-    '''
+    """check for records to be deleted in pre-prod which could not find a match with prod
+
+
+    This method will raise an exception and will fail the batch if there are records with rec_status 'W' in pre-prod
+    at this stage
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param table_name: name of the table being verified
+    """
     logger.info('check_mismatched_deletions')
     mismatches = get_records_marked_for_deletion(conf, target_conn, table_name)
     if mismatches:
@@ -291,12 +320,22 @@ def check_mismatched_deletions(conf, target_conn, table_name):
 
 
 def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):
-    '''
-    process records to be deleted
-    '''
+    """Process records to be deleted for the given table
+
+
+    The method grabs the records marked for deletion(rec_status: 'W') and if found, matched them against prod
+    based on natural key combination for the table and updates the pre-prod records primary key and rec_status
+    The processing happens in batches of records from prod. If the update fails, the pipeline will stop. The method
+    also verifies for any mistached records at the end of the process
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param prod_conn: connection object to prod database
+    :param table_name: name of the table being processed
+    """
     records_marked_for_deletion = get_records_marked_for_deletion(conf, target_conn, table_name)
     if len(records_marked_for_deletion) > 0:
-        proxy_rows = yield_records_to_be_deleted(conf, prod_conn, table_name, records_marked_for_deletion)
+        proxy_rows = yield_records_to_be_deleted(prod_conn, table_name, records_marked_for_deletion)
         for prod_rows in proxy_rows:
             update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_rows)
         check_mismatched_deletions(conf, target_conn, table_name)
@@ -306,9 +345,14 @@ def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):
 
 
 def handle_updates_and_deletes(conf):
-    '''
-    Main handler for updates and deletes
-    '''
+    """Main handler for updates and deletes
+
+
+    The method grabs tables to be processed for updates and deletes (Fact tables)
+    and runs process_records_to_be_deleted for each table
+
+    :param conf: udl configuration object
+    """
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as target_conn, get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
         tables = get_tables_starting_with(target_conn.get_metadata(), Constants.FACT_TABLES_PREFIX)
         for table_name in tables:
@@ -316,8 +360,8 @@ def handle_updates_and_deletes(conf):
 
 
 def handle_duplicates_in_dimensions(tenant_name, guid_batch):
-    '''
-    Handle duplicate records in dimensions by marking them as deleted
+    """Handle duplicate records in dimensions by marking them as deleted
+
 
     Steps:
     1. Soft delete records (Mark rec_status as 'S') in pre-prod dimensions that are already existing in production database
@@ -327,7 +371,9 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch):
 
     :param tenant_name: tenant name, to get target database connection
     :param guid_batch:  batch buid
-    '''
+
+    @return: Number of affected rows
+    """
     affected_rows = 0
     with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
 
@@ -346,8 +392,7 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch):
 
 
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):
-    '''
-    Move student registration data from source integration tables to target table.
+    """Move student registration data from source integration tables to target table.
     Source tables are INT_STU_REG and INT_STU_REG_META. Target table is student_registration.
 
     @param conf: Configuration for particular load type (assessment or studentregistration)
@@ -356,7 +401,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
     @param target_table: Name of the target table to where the data should be moved
 
     @return: Number of inserted rows
-    '''
+    """
     with get_udl_connection() as conn_to_source_db:
 
         column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,

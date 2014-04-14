@@ -31,3 +31,4 @@ class Constants():
 class QueryType():
     QUERY = 'query'
     MATCH_ID_QUERY = 'match_id_query'
+    ASMT_OUTCOME_QUERY = 'asmt_outcome_query'

@@ -16,11 +16,11 @@ STUDENT_REGISTRATION_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^" + ExtractType.studentRegistrationStatistics + "$"
+                "pattern": "^(" + ExtractType.studentRegistrationStatistics + "|" + ExtractType.studentRegistrationCompletion + ")$"
             },
             "minItems": 1,
             "uniqueItems": True,
-            "required": False
+            "required": True
         },
         Constants.ACADEMIC_YEAR: {
             "type": "array",
@@ -54,9 +54,27 @@ STUDENT_REGISTRATION_PARAMS = {
 @view_config(route_name='student_registration_statistics', request_method='POST')
 @validate_params(schema=STUDENT_REGISTRATION_PARAMS)
 @audit_event()
-def post_sr_extract_service(context, request):
+def post_sr_stat_extract_service(context, request):
     '''
     Handles POST request to /services/extract/student_registration_statistic
+
+    :param context:  Pyramid context object
+    :param request:  Pyramid request object
+    '''
+
+    params = convert_query_string_to_dict_arrays(request.json_body)
+
+    results = process_async_extraction_request(params)
+
+    return Response(body=json.dumps(results), content_type='application/json')
+
+
+@view_config(route_name='student_registration_completion', request_method='POST')
+@validate_params(schema=STUDENT_REGISTRATION_PARAMS)
+@audit_event()
+def post_sr_comp_extract_service(context, request):
+    '''
+    Handles POST request to /services/extract/student_registration_completion
 
     :param context:  Pyramid context object
     :param request:  Pyramid request object

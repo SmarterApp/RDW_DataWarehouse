@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
 from smarter.extracts.format import get_column_mapping
+from smarter.security.constants import RolesConstants
 
 
 def get_extract_assessment_query(params):
@@ -111,7 +112,7 @@ def get_extract_assessment_query(params):
                                               .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type == asmt_type))
-                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], state_code=state_code)
+                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], permission=RolesConstants.SAR_EXTRACTS, state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
         query = query.where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))

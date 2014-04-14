@@ -122,3 +122,5 @@ CALLBACK_URL = 'callback_url'
 PENDING = 'PENDING'
 ATTEMPT_NUMBER = 'attempt_number'
 NOTIFICATION_ERRORS = 'notification_errors'
+
+ACADEMIC_YEAR = 'academic_year'

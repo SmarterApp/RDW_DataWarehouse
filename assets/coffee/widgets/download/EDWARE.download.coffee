@@ -21,9 +21,9 @@ define [
 
   COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
 
-  TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results"}
+  TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentRegistrationCompletion": "Student Registration Completion"}
 
-  REQUEST_ENDPOINT = {"studentRegistrationStatistics": "/services/extract/student_registration_statistics", "studentAssessment": "/services/extract"}
+  REQUEST_ENDPOINT = {"studentRegistrationStatistics": "/services/extract/student_registration_statistics", "studentAssessment": "/services/extract", "studentRegistrationCompletion": "/services/extract/student_registration_completion"}
 
 
   class CSVDownloadModal
@@ -106,6 +106,7 @@ define [
       self.reportType = $('input:checked', self.reportTypeDropdownMenu).val()
       $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics')
       $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment')
+      $('tr.rpt_option.srcomp_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationCompletion')
 
     validate: ($dropdown) ->
       isValid  = false
@@ -242,7 +243,10 @@ define [
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
-          params[key].push $(this).attr('value')
+          if key == 'academicYear'
+            params[key].push Number($(this).attr('value'))
+          else
+            params[key].push $(this).attr('value')
       $('tr.rpt_option:not(.disabled) #academicYear', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')

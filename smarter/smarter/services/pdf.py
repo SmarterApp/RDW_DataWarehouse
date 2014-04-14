@@ -19,8 +19,8 @@ from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_p
 from smarter.reports.helpers.constants import AssessmentType, Constants
 import services.celery
 from edapi.decorators import validate_params
-import sys
 from edcore.utils.utils import to_bool
+from smarter.security.constants import RolesConstants
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
@@ -178,4 +178,4 @@ def has_context_for_pdf_request(state_code, student_guid):
     '''
     if type(student_guid) is not list:
         student_guid = [student_guid]
-    return check_context(state_code, student_guid)
+    return check_context(RolesConstants.PII, state_code, student_guid)

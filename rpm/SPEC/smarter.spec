@@ -39,7 +39,7 @@ cp ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf %{
 cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edmigrate/config/linux/opt/edware/conf/celeryd-edmigrate.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/celeryd-edmigrate %{buildroot}/etc/rc.d/init.d/
-
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/edmigrate-conductor %{buildroot}/etc/rc.d/init.d/
 
 %build
 export LANG=en_US.UTF-8

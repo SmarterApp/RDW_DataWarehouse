@@ -5,7 +5,7 @@ Created on Jul 18, 2013
 '''
 import unittest
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+    get_unittest_tenant_name
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from pyramid.testing import DummyRequest
@@ -19,6 +19,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import RoleRelation
+from edcore.security.tenant import set_tenant_map
 
 
 class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
@@ -31,14 +32,16 @@ class TestComparingPopulationsEthnicity(Unittest_with_edcore_sqlite):
         CacheManager(**parse_cache_config_options(cache_opts))
 
         self.__request = DummyRequest()
+        self.__tenant_name = get_unittest_tenant_name()
+        set_tenant_map({self.__tenant_name: "NC"})
         # Must set hook_zca to false to work with unittest_with_sqlite.
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, 'PII', ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
-        self.__config.testing_securitypolicy(dummy_session)
+        dummy_session = create_test_session(['PII'])
+        dummy_session.set_user_context([RoleRelation("PII", get_unittest_tenant_name(), "NC", "228", None)])
+        self.__config.testing_securitypolicy(dummy_session.get_user())
         set_default_min_cell_size(0)
 
     def tearDown(self):

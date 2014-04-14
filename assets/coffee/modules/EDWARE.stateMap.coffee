@@ -6,7 +6,8 @@ require [
   'edwareUtil'
   'edwareHeader'
   'edwareBreadcrumbs'
-], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs) ->
+  'edwarePreferences'
+], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs, edwarePreferences) ->
 
   SVG = (tag) ->
     document.createElementNS('http://www.w3.org/2000/svg', tag)
@@ -44,6 +45,7 @@ require [
           stateSpecificHoverStyles: stateHoverMap
           click: (event, data) ->
             if data.name in stateCodes
+              edwarePreferences.saveStateCode data.name
               window.location.href = edwareUtil.getBaseURL() + stateMapConfig.reportExtension + data.name
         }
 
@@ -105,6 +107,7 @@ require [
               'data-value': state_code
             st_rect.click (eventData) ->
               # get state code and redirect
+              edwarePreferences.saveStateCode $(this).data('value')
               window.location.href = edwareUtil.getBaseURL() + stateMapConfig.reportExtension + $(this).data('value')
             map_svg.append st_rect
 

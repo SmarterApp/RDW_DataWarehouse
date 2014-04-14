@@ -8,6 +8,7 @@ Created on Nov 7, 2013
 class ExtractType():
     studentAssessment = 'studentAssessment'
     studentRegistrationStatistics = 'studentRegistrationStatistics'
+    studentRegistrationCompletion = 'studentRegistrationCompletion'
 
 
 class ReportType():

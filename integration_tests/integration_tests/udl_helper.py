@@ -25,7 +25,6 @@ def empty_batch_table(self):
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
-            print(number_of_row)
 
 
 def empty_stats_table(self):
@@ -64,6 +63,7 @@ def run_udl_pipeline(self, guid_batch_id):
 #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
 def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
+            print("UDL Pipeline is running...")
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
             query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
             timer = 0
@@ -94,7 +94,7 @@ def validate_edware_stats_table_before_mig(self):
             self.assertEquals(result, expected_result)
 
 
- # Validate udl_stats table under edware_stats DB for successful migration
+# Validate udl_stats table under edware_stats DB for successful migration
 def validate_edware_stats_table_after_mig(self):
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
@@ -102,3 +102,25 @@ def validate_edware_stats_table_after_mig(self):
             result = conn.execute(query).fetchall()
             expected_result = [('migrate.ingested',), ('migrate.ingested',)]
             self.assertEquals(result, expected_result)
+
+
+# Validate udl_stars table with single batch(file) in migration
+def validate_udl_stats_before_mig(self):
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            query = select([table.c.load_status])
+            result = conn.execute(query).fetchall()
+            expected_result = [('udl.ingested',)]
+            self.assertEquals(result, expected_result)
+            print("Ready for migration")
+
+
+#validate udl_stats after single udl pipeline and before migration start.
+def validate_udl_stats_after_mig(self):
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            query = select([table.c.load_status])
+            result = conn.execute(query).fetchall()
+            expected_result = [('migrate.ingested',)]
+            self.assertEquals(result, expected_result)
+            print("Migration is complete")

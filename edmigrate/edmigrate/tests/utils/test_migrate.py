@@ -93,6 +93,8 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                           preprod_conn, prod_conn, 'fact_asmt_outcome', False, batch_size=1)
 
     def test_migrate_student_reg(self):
+        Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestMigrate.test_tenant),
+                                               use_metadata_from_db=False)
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "0aa942b9-75cf-4055-a67a-8b9ab53a9dfc"
@@ -130,7 +132,9 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
-                 UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT}
+                 UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT,
+                 UdlStatsConstants.BATCH_OPERATION: None,
+                 UdlStatsConstants.SNAPSHOT_CRITERIA: None}
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
 
@@ -138,9 +142,31 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         batch_guid = '2bb942b9-75cf-4055-a67a-8b9ab53a9dfc'
         batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
-                 UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION}
+                 UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION,
+                 UdlStatsConstants.BATCH_OPERATION: 's',
+                 UdlStatsConstants.SNAPSHOT_CRITERIA: '{"reg_system_id": "015247bd-058c-48cd-bb4d-f6cffe5b40c1", "academic_year": 2015}'}
+
+        preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
+        count_to_source_query = select([func.count()]).select_from(preprod_conn.get_table(Constants.STUDENT_REG))
+        count_to_be_inserted = preprod_conn.execute(count_to_source_query).fetchall()[0][0]
+        self.assertEqual(10, count_to_be_inserted)
+
+        prod_conn = EdMigrateDestConnection(tenant=get_unittest_preprod_tenant_name())
+        student_reg_table = prod_conn.get_table(Constants.STUDENT_REG)
+        count_query = select([func.count()]).select_from(student_reg_table)
+        count_before = prod_conn.execute(count_query).fetchall()[0][0]
+        self.assertEqual(2581, count_before)
+
+        count_snapshot_query = select([func.count()], student_reg_table.c.academic_year == 2015).select_from(student_reg_table)
+        count_to_be_deleted = prod_conn.execute(count_snapshot_query).fetchall()[0][0]
+        self.assertEqual(1217, count_to_be_deleted)
+
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
+
+        expected_count_after = count_before - count_to_be_deleted + count_to_be_inserted
+        count_after = prod_conn.execute(count_query).fetchall()[0][0]
+        self.assertEqual(expected_count_after, count_after)
 
     def test_cleanup_batch_asmt(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
@@ -159,7 +185,9 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     def test_migrate_batch_with_roll_back(self):
         batch = {UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38',
                  UdlStatsConstants.TENANT: 'tomcat', UdlStatsConstants.SCHEMA_NAME: None,
-                 Constants.DEACTIVATE: False, UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT}
+                 Constants.DEACTIVATE: False, UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT,
+                 UdlStatsConstants.BATCH_OPERATION: None,
+                 UdlStatsConstants.SNAPSHOT_CRITERIA: None}
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([101306, 101304, 91011691]))

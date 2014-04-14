@@ -4,7 +4,7 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
-from unittest import mock
+from unittest.mock import patch
 
 import tempfile
 import os
@@ -19,13 +19,14 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore
                                                             get_unittest_tenant_name)
 from sqlalchemy.sql.expression import select
 from edextract.celery import setup_celery
+from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
-from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_encryption, remote_copy,
-                                     prepare_path)
+from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_encryption,
+                                     remote_copy, prepare_path)
 from edextract.exceptions import RemoteCopyError
 
 
@@ -40,7 +41,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                     'extract.gpg.public_key.cat': 'kswimberly@amplify.com',
                     'extract.celery.CELERY_ALWAYS_EAGER': 'True',
                     'extract.retries_allowed': '1',
-                    'extract.retry_delay': '60'
+                    'extract.retry_delay': '3'
                     }
         setup_celery(settings)
         setup_settings(settings)
@@ -51,13 +52,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         for file in self.__files:
             with open(os.path.join(self.__tmp_dir, file), "w") as f:
                 f.write('hello ' + file)
-
-        self.statistics_headers = ['State', 'District', 'School', 'Category', 'Value', 'AY2014 Count', 'AY2014 Percent of Total',
-                                   'AY2015 Count', 'AY2015 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                   'Change in Percent of Total', 'AY2015 Matched IDs to AY2014 Count', 'AY2015 Matched IDs Percent of AY2014 Count']
-        self.completion_headers = ['State', 'District', 'School', 'Grade', 'Category', 'Value', 'Assessment Subject',
-                                   'Assessment Type', 'Assessment Date', 'Academic Year', 'Count of Students Registered',
-                                   'Count of Students Assessed', 'Percent of Students Assessed']
         self.maxDiff = None
 
     @classmethod
@@ -74,6 +68,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     def test_archive(self):
         open(self.__tmp_zip, 'wb').write(archive('req_id', self.__tmp_dir))
+
         zipfile = ZipFile(self.__tmp_zip, "r")
         namelist = zipfile.namelist()
         self.assertEqual(3, len(namelist))
@@ -97,8 +92,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: None
         }
+
         result = generate_extract_file.apply(args=[None, '0', task])    # @UndefinedVariable
         result.get()
+
         self.assertFalse(os.path.exists(output))
 
     def test_generate_csv(self):
@@ -113,8 +110,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
+
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
         result.get()
+
         self.assertTrue(os.path.exists(output))
         csv_data = []
         with open(output) as out:
@@ -137,7 +136,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
+
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+
         self.assertRaises(ExtractionError, result.get,)
 
     def test_generate_json(self):
@@ -152,8 +153,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
+
         results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
         results.get()
+
         self.assertTrue(os.path.exists(output))
         with open(output) as out:
             data = json.load(out)
@@ -171,7 +174,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
+
         results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+
         self.assertRaises(ExtractionError, results.get)
 
     def test_generate_json_with_no_results(self):
@@ -186,8 +191,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
+
         results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
         results.get()
+
         self.assertTrue(os.path.exists(output))
         statinfo = os.stat(output)
         self.assertEqual(0, statinfo.st_size)
@@ -204,25 +211,28 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
+
         results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+
         self.assertRaises(ExtractionError, results.get)
 
-    def test_generate_sr_statistics_csv_success(self):
+    @patch('edextract.tasks.extract.generate_statistics_report')
+    def test_generate_sr_statistics_csv_success(self, mock_generate_statistics_report):
+        mock_generate_statistics_report.return_value = None
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
-        task = self.construct_extract_args_sr_stat(ExtractionDataType.SR_STATISTICS, 2016, output)
+        queries = {QueryType.QUERY: 'academic_year_query', QueryType.MATCH_ID_QUERY: 'match_id_query'}
+        task = {TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS, TaskConstants.TASK_TASK_ID: 'task_id',
+                TaskConstants.ACADEMIC_YEAR: 2016, TaskConstants.TASK_FILE_NAME: output, TaskConstants.TASK_QUERIES: queries,
+                TaskConstants.CSV_HEADERS: 'statistics_csv_headers'}
+
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
         result.get()
-        self.assertTrue(os.path.exists(output))
-        csv_data = []
-        with open(output) as out:
-            data = csv.reader(out)
-            for row in data:
-                csv_data.append(row)
-        #Data has 15 edOrgs
-        self.assertEqual(len(csv_data), 421)
-        self.assertEqual(csv_data[0], ['State', 'District', 'School', 'Category', 'Value', 'AY2015 Count', 'AY2015 Percent of Total',
-                                       'AY2016 Count', 'AY2016 Percent of Total', 'Change in Count', 'Percent Difference in Count',
-                                       'Change in Percent of Total', 'AY2016 Matched IDs to AY2015 Count', 'AY2016 Matched IDs Percent of AY2015 Count'])
+
+        task_info = {Constants.TASK_ID: task[TaskConstants.TASK_TASK_ID],
+                     Constants.CELERY_TASK_ID: result.id,
+                     Constants.REQUEST_GUID: 'request_id'}
+
+        mock_generate_statistics_report.assert_called_with(self._tenant, output, task_info, task)
 
     def test_generate_sr_statistics_csv_no_tenant(self):
         output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
@@ -232,8 +242,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.ACADEMIC_YEAR: 2014
         }
+
         result = generate_extract_file.apply(args=[None, 'request_id', task])
         result.get()
+
         self.assertFalse(os.path.exists(output))
 
     def test_generate_sr_statistics_csv_bad_file(self):
@@ -244,8 +256,28 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_FILE_NAME: output,
             TaskConstants.ACADEMIC_YEAR: 2014
         }
+
         result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
+
         self.assertRaises(ExtractionError, result.get,)
+
+    @patch('edextract.tasks.extract.generate_completion_report')
+    def test_generate_sr_completion_csv_success(self, mock_generate_completion_report):
+        mock_generate_completion_report.return_value = None
+        output = os.path.join(self.__tmp_dir, 'stureg_stat.csv')
+        queries = {QueryType.QUERY: 'q1'}
+        task = {TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_COMPLETION, TaskConstants.TASK_TASK_ID: 'task_id',
+                TaskConstants.ACADEMIC_YEAR: 2016, TaskConstants.TASK_FILE_NAME: output, TaskConstants.TASK_QUERIES: queries,
+                TaskConstants.CSV_HEADERS: 'completion_csv_headers'}
+
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])
+        result.get()
+
+        task_info = {Constants.TASK_ID: task[TaskConstants.TASK_TASK_ID],
+                     Constants.CELERY_TASK_ID: result.id,
+                     Constants.REQUEST_GUID: 'request_id'}
+
+        mock_generate_completion_report.assert_called_with(self._tenant, output, task_info, task)
 
     def test_generate_extract_file_tasks_asmt_json_request(self):
         # Have to use OrderedDict here to ensure order in results.
@@ -253,7 +285,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                               (TaskConstants.TASK_FILE_NAME, 'abc'),
                               (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'abc'}),
                               (TaskConstants.TASK_TASK_ID, 'abc')])]
+
         tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
         self.assertIsInstance(tasks_group, group)
         self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryJSONExtract'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
 
@@ -263,11 +297,13 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                               (TaskConstants.TASK_FILE_NAME, 'abc'),
                               (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'abc'}),
                               (TaskConstants.TASK_TASK_ID, 'abc')])]
+
         tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
         self.assertIsInstance(tasks_group, group)
         self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryCSVExtract'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
 
-    def test_route_tasks_json_request_asmt_multi_requests(self):
+    def test_generate_extract_file_tasks_json_request_asmt_multi_requests(self):
         # Have to use OrderedDicts here to ensure order in results.
         tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_JSON),
                               (TaskConstants.TASK_FILE_NAME, 'abc'),
@@ -277,7 +313,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                               (TaskConstants.TASK_FILE_NAME, 'def'),
                               (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'def'}),
                               (TaskConstants.TASK_TASK_ID, 'def')])]
+
         tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
         self.assertIsInstance(tasks_group, group)
         self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryJSONExtract'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
         self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryCSVExtract'), ('file_name', 'def'), ('task_queries', {'query': 'def'}), ('task_id', 'def')]))", str(tasks_group.kwargs['tasks'][1]))
@@ -286,11 +324,25 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         # Have to use OrderedDict here to ensure order in results.
         tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.SR_STATISTICS),
                               (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'abc'}),
+                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'ayq1'), (QueryType.MATCH_ID_QUERY, 'miq1')])),
                               (TaskConstants.TASK_TASK_ID, 'abc')])]
+
         tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
         self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentRegistrationStatisticsReportCSV'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
+        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentRegistrationStatisticsReportCSV'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'ayq1'), ('match_id_query', 'miq1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
+
+    def test_generate_extract_file_tasks_sr_completion_request(self):
+        # Have to use OrderedDict here to ensure order in results.
+        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.SR_COMPLETION),
+                              (TaskConstants.TASK_FILE_NAME, 'abc'),
+                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'q1')])),
+                              (TaskConstants.TASK_TASK_ID, 'abc')])]
+
+        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
+        self.assertIsInstance(tasks_group, group)
+        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentRegistrationCompletionReportCSV'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
 
     def test_archive_with_encryption(self):
         files = ['test_0.csv', 'test_1.csv', 'test.json']
@@ -305,8 +357,10 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
             request_id = '1'
             recipients = 'kswimberly@amplify.com'
-            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])    # @UndefinedVariable
+
+            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])
             result.get()
+
             self.assertTrue(os.path.exists(gpg_file))
 
     def test_archive_with_encryption_no_recipients(self):
@@ -322,10 +376,14 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
             request_id = '1'
             recipients = 'nobody@amplify.com'
-            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])    # @UndefinedVariable
+
+            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])
+
             self.assertRaises(ExtractionError, result.get)
 
-    def test_remote_copy_success(self):
+    @patch('edextract.tasks.extract.copy')
+    def test_remote_copy_success(self, mock_copy):
+        mock_copy.return_value = None
         request_id = '1'
         tenant = 'es'
         gatekeeper = 'foo'
@@ -333,11 +391,14 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
-            with mock.patch('edextract.tasks.extract.copy') as mock_copy:
-                remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
-                mock_copy.assert_called_with(src_file_name, '128.0.0.2', 'es', 'foo', 'nobody', '/dev/null', timeout=3)
 
-    def test_remote_copy_failure(self):
+            remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})
+
+            mock_copy.assert_called_with(src_file_name, '128.0.0.2', 'es', 'foo', 'nobody', '/dev/null', timeout=3)
+
+    @patch('edextract.tasks.extract.copy')
+    def test_remote_copy_failure(self, mock_copy):
+        mock_copy.side_effect = RemoteCopyError
         request_id = '1'
         tenant = 'es'
         gatekeeper = 'foo'
@@ -345,75 +406,20 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
-            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})     # @UndefinedVariable
+
+            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})
+
             self.assertRaises(ExtractionError, result.get)
 
     def test_prepare_path(self):
         tmp_dir = tempfile.mkdtemp()
         shutil.rmtree(tmp_dir, ignore_errors=True)
         self.assertFalse(os.path.exists(tmp_dir))
-        prepare_path.apply(args=["id", [tmp_dir]]).get()    # @UndefinedVariable
+
+        prepare_path.apply(args=["id", [tmp_dir]]).get()
+
         self.assertTrue(os.path.exists(tmp_dir))
-
-    def construct_extract_args(self, extraction_type, academic_year, output):
-        current_year = str(academic_year)
-        previous_year = str(academic_year - 1)
-        query = 'SELECT * FROM student_reg WHERE academic_year == {current_year} OR academic_year == {previous_year}'\
-            .format(current_year=current_year, previous_year=previous_year)
-        headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
-            else self.completion_headers
-        extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,
-                        TaskConstants.TASK_TASK_ID: 'task_id',
-                        TaskConstants.ACADEMIC_YEAR: academic_year,
-                        TaskConstants.TASK_FILE_NAME: output,
-                        TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
-                        TaskConstants.CSV_HEADERS: headers
-                        }
-
-        return extract_args
-
-    def construct_extract_args_sr_stat(self, extraction_type, academic_year, output):
-        current_year = str(academic_year)
-        previous_year = str(academic_year - 1)
-        academic_year_query = 'SELECT * FROM student_reg WHERE academic_year == {current_year} OR academic_year == {previous_year}'\
-            .format(current_year=current_year, previous_year=previous_year)
-        match_query = 'SELECT cr.state_code, p.state_code as prev_state_code , cr.state_name, cr.district_guid, p.district_guid as prev_district_guid ,' \
-                      'cr.district_name, cr.school_guid, p.school_guid as prev_school_guid , cr.school_name, cr.gender, p.gender as prev_gender , ' \
-                      'cr.enrl_grade, p.enrl_grade as prev_enrl_grade , cr.dmg_eth_hsp, p.dmg_eth_hsp as prev_dmg_eth_hsp , cr.dmg_eth_ami, ' \
-                      'p.dmg_eth_ami as prev_dmg_eth_ami , cr.dmg_eth_asn, p.dmg_eth_asn as prev_dmg_eth_asn ,cr.dmg_eth_blk, p.dmg_eth_blk as prev_dmg_eth_blk , ' \
-                      'cr.dmg_eth_pcf, p.dmg_eth_pcf as prev_dmg_eth_pcf ,cr.dmg_eth_wht, p.dmg_eth_wht as prev_dmg_eth_wht , cr.dmg_prg_iep, ' \
-                      'p.dmg_prg_iep as prev_dmg_prg_iep , cr.dmg_prg_lep, p.dmg_prg_lep as prev_dmg_prg_lep ,cr.dmg_prg_504, ' \
-                      'p.dmg_prg_504 as prev_dmg_prg_504 , cr.dmg_sts_ecd, p.dmg_sts_ecd as prev_dmg_sts_ecd , cr.dmg_sts_mig, p.dmg_sts_mig as prev_dmg_sts_mig ,' \
-                      ' cr.dmg_multi_race, p.dmg_multi_race as prev_dmg_multi_race , cr.academic_year ' \
-                      'FROM student_reg cr inner join student_reg p on cr.student_guid = p.student_guid WHERE cr.academic_year == {current_year} AND p.academic_year == {previous_year}'\
-            .format(current_year=current_year, previous_year=previous_year)
-        headers = self.construct_statistics_headers(academic_year) if extraction_type == ExtractionDataType.SR_STATISTICS \
-            else self.completion_headers
-        extract_args = {TaskConstants.EXTRACTION_DATA_TYPE: extraction_type,
-                        TaskConstants.TASK_TASK_ID: 'task_id',
-                        TaskConstants.ACADEMIC_YEAR: academic_year,
-                        TaskConstants.TASK_FILE_NAME: output,
-                        TaskConstants.TASK_QUERIES: {QueryType.QUERY: academic_year_query, QueryType.MATCH_ID_QUERY: match_query},
-                        TaskConstants.CSV_HEADERS: headers
-                        }
-
-        return extract_args
-
-    def construct_statistics_headers(self, academic_year):
-        current_year = str(academic_year)
-        previous_year = str(academic_year - 1)
-        statistics_headers = ['State', 'District', 'School', 'Category', 'Value',
-                              'AY{previous_year} Count'.format(previous_year=previous_year),
-                              'AY{previous_year} Percent of Total'.format(previous_year=previous_year),
-                              'AY{current_year} Count'.format(current_year=current_year),
-                              'AY{current_year} Percent of Total'.format(current_year=current_year), 'Change in Count',
-                              'Percent Difference in Count', 'Change in Percent of Total',
-                              'AY{current_year} Matched IDs to AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year),
-                              'AY{current_year} Matched IDs Percent of AY{previous_year} Count'.format(current_year=current_year, previous_year=previous_year)]
-
-        return statistics_headers
 
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

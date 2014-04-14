@@ -16,7 +16,7 @@ from edudl2.udl2 import message_keys as mk
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from edudl2.udl2_util.database_util import connect_db, get_sqlalch_table_object
 from edudl2.move_to_target.move_to_target_setup import get_tenant_target_db_information
-from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_fact
+from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_facts
 
 data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 ASMT_OUTCOME_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')
@@ -151,7 +151,7 @@ class FTestMoveToTarget(unittest.TestCase):
         self.read_csv_data_to_dict(ASMT_OUTCOME_FILE, ASMT_FILE, self.int_asmt_outcome_table, self.int_asmt_table)
         msg = self.create_msg('assessment')
         explode_to_dims(msg)
-        explode_to_fact(msg)
+        explode_to_facts(msg)
         self.verify_target_assessment_schema(False)
 
     ##

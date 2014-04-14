@@ -17,6 +17,8 @@ from integration_tests.migrate_helper import start_migrate,\
     get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql.expression import bindparam, text
+from integration_tests.udl_helper import empty_batch_table, empty_stats_table, copy_file_to_tmp, run_udl_pipeline, \
+    check_job_completion, migrate_data, validate_edware_stats_table_after_mig, validate_udl_stats_before_mig, validate_udl_stats_after_mig, validate_edware_stats_table_before_mig
 
 
 #@unittest.skip("skipping this test till till ready for jenkins")
@@ -30,78 +32,34 @@ class Test_Error_In_Migration(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
 
-    def test_error_validation(self):
+    def test_migration_error_validation(self):
         '''
-        This is the first test : Empty udl_batch table, empty udl_stats table, run UDL with an unique batch guid
+        This test will run the udl twice with same delete record.first migration branch will be successful and second migration will be
+        failure as it is trying to delete same record twice
         '''
-        self.empty_udl_batch_table()
-        self.empty_stat_table()
-        self.run_validate_udl()
+        # ---- RUN 1 ----
+        # Empty udl batch table and udl_stats table under edware_stats
+        empty_batch_table(self)
+        empty_stats_table(self)
+        # Get unique batch guid and run the udl pipeline
+        self.guid_batch_id = str(uuid4())
+        run_udl_pipeline(self, self.guid_batch_id)
+        # validate that record has been deleted in preprod
+        self.validate_edware_database(schema_name=self.guid_batch_id)
 
-    # This test method will call secondly: This will empty batch table, run pipeline and validate udl and prepod schema
-    # trigger migration and validate prod.Migration will migrate data of two udl batches.
-    def test_validation(self):
-        self.empty_udl_batch_table()
-        self.run_validate_udl()
+        # ----- RUN 2 -----
+        # Empty udl batch table,get unique batch guid and run the udl pipeline
+        empty_batch_table(self)
+        self.guid_batch_id = str(uuid4())
+        run_udl_pipeline(self, self.guid_batch_id)
+        # validate the stats table and start migration
+        validate_edware_stats_table_before_mig
         self.migrate_data()
+        # validate that one migration batch is success and second batch is failure.
+        # This will also validate that schema clean up is successful in the case of miration success or migration failure.
         self.validate_udl_stats()
+        # validate production database for delete record
         self.validate_prod()
-
-    def empty_udl_batch_table(self):
-        '''
-        Deletes entire data from UDL batch_table
-        '''
-        with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-            result = connector.execute(batch_table.delete())
-            query = select([batch_table])
-            result1 = connector.execute(query).fetchall()
-            self.assertEqual(len(result1), 0)
-            print("udl_batch table is empty. ", len(result1), "rows found")
-
-    #Delete all data from udl_stats table in edware_stats
-    def empty_stat_table(self):
-        with StatsDBConnection() as conn:
-            table = conn.get_table('udl_stats')
-            conn.execute(table.delete())
-            query = select([table])
-            query_tab = conn.execute(query).fetchall()
-            no_rows = len(query_tab)
-            print(no_rows)
-
-    #Run UDL pipeline with file in tenant dir
-    def run_udl_pipeline(self, guid_batch_id):
-        self.conf = udl2_conf
-        arch_file = self.copy_file_to_tmp()
-        here = os.path.dirname(__file__)
-        driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
-        command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=guid_batch_id)
-        print(command)
-        subprocess.call(command, shell=True)
-        self.check_job_completion()
-
-    #Copy file to tenant folder
-    def copy_file_to_tmp(self):
-        if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
-        else:
-            print("copying")
-            os.makedirs(self.tenant_dir)
-        return shutil.copy2(self.archived_file, self.tenant_dir)
-
-    #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-    def check_job_completion(self, max_wait=30):
-        with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-            query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
-            timer = 0
-            result = connector.execute(query).fetchall()
-            while timer < max_wait and result == []:
-                sleep(0.25)
-                timer += 0.25
-                result = connector.execute(query).fetchall()
-            self.assertEqual(len(result), 1, "1 guids not found.")
-            print('Waited for', timer, 'second(s) for job to complete.')
 
     # Validate edware database : value in status column chnage to D from C.
     def validate_edware_database(self, schema_name):
@@ -124,7 +82,8 @@ class Test_Error_In_Migration(unittest.TestCase):
         tenant = 'cat'
         results = get_stats_table_has_migrated_ingested_status(tenant)
 
-    # Validate udl_stats table
+    # Validate udl_stats table for migration success and failure
+    # Validate that pre prod schema is delted in both the cases : migration success or migration failure
     def validate_udl_stats(self):
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
@@ -159,7 +118,6 @@ class Test_Error_In_Migration(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        #TODO validate that pre prod schema has been deleted
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

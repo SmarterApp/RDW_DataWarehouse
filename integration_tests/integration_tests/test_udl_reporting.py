@@ -17,19 +17,15 @@ import unittest
 from integration_tests.migrate_helper import start_migrate,\
     get_prod_table_count, get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
+from integration_tests.udl_helper import empty_stats_table
+import time
+from time import sleep
 
 
 class TestUDLReportingIntegration(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
-
-#     @classmethod
-#     def setUpClass(cls):
-#         '''
-#         Reads development ini and setup connection for migrations
-#         '''
-#         setUpMigrationConnection()
 
     @classmethod
     def setUpClass(cls):
@@ -49,7 +45,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.expected_unique_batch_guids = 30
         self.expected_rows = 957
         # TODO EXPECTED_ROWS should be 1186
-        self.empty_stat_table()
+        empty_stats_table(self)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -62,16 +58,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
 
-   #Delete all data from udl_stats table
-    def empty_stat_table(self):
-        with StatsDBConnection() as conn:
-            table = conn.get_table('udl_stats')
-            conn.execute(table.delete())
-            query = select([table])
-            query_tab = conn.execute(query).fetchall()
-            no_rows = len(query_tab)
-            print(no_rows)
-
     def test_validation(self):
         print("Running UDL Integration tests test_udl_reporting.py")
         # Truncate the database
@@ -79,21 +65,77 @@ class TestUDLReportingIntegration(unittest.TestCase):
         print("Completed empty_table")
         # Copy files to tenant_dir and run udl pipeline
         self.run_udl_pipeline()
-        print("Completed run_udl_pipeline")
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
         self.validate_UDL_database(self.expected_unique_batch_guids)
         print("Completed validate_UDL_database")
+        self.validate_stats_table_before_mig()
         self.migrate_data()
+        time.sleep(5)
         self.validate_migration('cat', (self.fact_table, self.expected_rows),
                                 (self.dim_table, self.expected_unique_batch_guids))
+        self.validate_stats_table_after_mig()
 
     def test_validation_student_registration(self):
         print('Running UDL Integration tests for student registration data')
+        #Validate Migration of student registration data from pre-prod to prod
+
+        #Empty batch table
         self.empty_table()
+        #----RUN 1----
+        #Run udl on a batch that has 10 rows of data
         self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
-        self.validate_UDL_database(1)
+        #Batch table should now have udl success for 1 batch
+        self.validate_UDL_database(1, max_wait=30)
         self.migrate_data()
+        #After migration, prod should have the 10 rows that was just ingested via UDL
         self.validate_migration('cat', (self.sr_table, 10))
+
+        #Validate snapshot aspect of student registration data
+
+        #----RUN 2----
+        #Run udl with the same data that's already in prod (10 rows)
+        #This should not be migrated since RUN 5 has the same test center and academic year
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 2 batches
+        self.validate_UDL_database(2, max_wait=30)
+
+        #----RUN 3----
+        #Run udl on a batch that has 4 rows of data, from a previous academic year than the year in RUN 1
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_prior_year_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 3 batches
+        self.validate_UDL_database(3, max_wait=30)
+
+        #----RUN 4----
+        #Run udl on a batch that has 3 rows of data, from a different test center than the data in RUN 1
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_different_test_center_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 4 batches
+        self.validate_UDL_database(4, max_wait=30)
+
+        #----RUN 5----
+        #Run udl on a batch that has 7 rows of data
+        #From the same test center and academic year as the data in RUN 1
+        #Should overwrite the 10 rows in prod after migration
+        #Should take precedence over the data in RUN 2 since this is the most recent UDL ingestion
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_sample_overwrite_sample_sr_data.tar.gz.gpg'))
+        #Batch table should now have udl success for 5 batches
+        self.validate_UDL_database(5, max_wait=30)
+
+        #----RUN 6----
+        #Run udl on assessment data (3 rows, math summative)
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_math_summative_assesment.tar.gz.gpg'))
+        #Batch table should now have udl success for 6 batches
+        self.validate_UDL_database(6, max_wait=30)
+
+        #----RUN 7----
+        #Run udl on assessment data (3 rows, ela summative)
+        self.run_udl_pipeline_on_single_file(os.path.join(self.sr_data_dir, 'nc_ela_summative_assesment.tar.gz.gpg'))
+        #Batch table should now have udl success for 7 batches
+        self.validate_UDL_database(7, max_wait=30)
+
+        self.migrate_data()
+        #After migration, prod table should have 14 rows (4 + 3 + 7) from RUN 3, RUN 4, and RUN 5
+        #The 10 rows that were in the prod table before should be overwritten
+        self.validate_migration('cat', (self.sr_table, 14))
 
     def migrate_data(self, tenant='cat'):
         print("Migration starting:")
@@ -132,16 +174,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
 
-            #Delete all table data from edware schema
-            #table_list = ed_connector.get_metadata().sorted_tables
-            #table_list.reverse()
-            #for table in table_list:
-            #    all_table = ed_connector.execute(table.delete())
-            #    query1 = select([table])
-            #    result2 = ed_connector.execute(query1).fetchall()
-            #    number_of_row = len(result2)
-            #    self.assertEqual(number_of_row, 0)
-
     def run_udl_pipeline(self):
         '''
         Run pipeline with given guid
@@ -160,8 +192,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         print(command)
         # Run the UDL pipeline using the command
         subprocess.call(command, shell=True)
-        # Validate the job status
-        #self.check_job_completion(self.connector)
 
     def run_udl_pipeline_on_single_file(self, file_path):
         """
@@ -189,25 +219,22 @@ class TestUDLReportingIntegration(unittest.TestCase):
         :type max_wait: int
         '''
         with get_udl_connection() as connector:
-            print("Entered validate_UDL_database")
+            print("UDL pipeline running...")
             # Get UDL batch_table connection
             batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
             # Prepare Query for finding all batch_guid's for SUCCESS scenarios and for FAILURE scenarios
             #TODO add error handling
             success_query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
-            failure_query = select([batch_table]).where(batch_table.c.udl_phase_step_status == 'FAILURE')
+            #failure_query = select([batch_table]).where(batch_table.c.udl_phase_step_status == 'FAILURE')
             timer = 0
             all_successful_batch_guids = []
             while timer <= max_wait and len(all_successful_batch_guids) is not expected_unique_batch_guids:
                 sleep(0.25)
                 timer += 0.25
                 all_successful_batch_guids = connector.execute(success_query).fetchall()
-                #failure_batch_data = connector.execute(failure_query).fetchall()
 
-            ## TODO: Enable this step
-            #self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "30 guids not found.")
-            print("UDL verification successful")
-            print(len(all_successful_batch_guids))
+            self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "30 guids not found.")
+            print("Completed run_udl_pipeline")
             print('Waited for', timer, 'second(s) for job to complete.')
 
     def copy_files_to_tenantdir(self, file_path, expected_unique_batch_guids):
@@ -249,21 +276,23 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # Copy all the files from tests/data directory to tenant directory
         return shutil.copy2(file_path, self.sr_tenant_dir)
 
-    def check_job_completion(self, connector, max_wait=600):
-        '''
-        Checks the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
-        '''
-        print("entered check_job_completion")
-        with get_udl_connection():
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
-            query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
-            timer = 0
-            result = connector.execute(query).fetchall()
-            while timer < max_wait and result == []:
-                sleep(0.25)
-                timer += 0.25
-                result = connector.execute(query).fetchall()
-            print('Waited for', timer, 'second(s) for job to complete.')
+    def validate_stats_table_before_mig(self):
+        ''' validate udl stats table before miration for 30 row with status udl.ingested '''
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            query = select([table]).where(table.c.load_status == 'udl.ingested')
+            result = conn.execute(query).fetchall()
+            print("successful validation of udl stats before migration")
+            self.assertEquals(len(result), self.expected_unique_batch_guids)
+
+    def validate_stats_table_after_mig(self):
+        ''' validate udl stats table after migration for 30 row having status migrate.ingested'''
+        with StatsDBConnection() as conn:
+            table = conn.get_table('udl_stats')
+            query = select([table]).where(table.c.load_status == 'migrate.ingested')
+            result = conn.execute(query).fetchall()
+            print("successful validation of udl stats table after migration finished")
+            self.assertEquals(len(result), self.expected_unique_batch_guids)
 
 
 if __name__ == "__main__":

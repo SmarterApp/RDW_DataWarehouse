@@ -92,6 +92,9 @@ define [
           if value is null
             self.data.metadata[subject] = self.defaultColors
 
+        # initialize context security
+        contextSecurity.init data.context.permissions, self.config
+
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)
         self.renderReportInfo()
@@ -158,7 +161,8 @@ define [
       }
       # We need to preserve sorting, so, update the column labels and color
       this.updateSortLabels(name, order)
-      contextSecurity.apply @data.user_info, @labels
+      # apply context security
+      contextSecurity.apply()
 
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')

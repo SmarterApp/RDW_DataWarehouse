@@ -1,26 +1,83 @@
 define [
-    'jquery'
-], ($) ->
+  'jquery'
+  'bootstrap'
+  'edwarePopover'
+], ($, bootstrap, edwarePopover) ->
 
-  apply_pii_security = (user, no_pii_msg) ->
-    pii = true
-    return if pii
-    # remove links to next level
-    $('a', '.ui-jqgrid').attr('href', '#').addClass('disabled').edwarePopover
-      class: "no_pii_msg"
-      placement: 'top'
-      container: '#content'
-      trigger: 'click'
-      content: no_pii_msg
+  DEFAULT_PERMISSIONS = {
+    pii: {
+      all: true,
+      guid: []
+    },
+    sar_extracts: {
+      all: true,
+      guid: []
+    },
+    srs_extracts: {
+      all: true,
+      guid: []
+    }
+  }
 
-  apply_extract_security = (user) ->
-    allow_extract = true
-    return if allow_extract
-    $('li.extract').hide()
+  class ContextSecurity
 
-  apply = (user, labels) ->
-    apply_pii_security user, labels.no_pii
-    apply_extract_security user
+    constructor: (permissions, config) ->
+      @permissions = $.extend(true, {}, DEFAULT_PERMISSIONS, permissions)
+      @no_pii_msg = config.labels.no_pii
+      @extractType = config.CSVOptions.extractType
+
+    apply: () ->
+      @apply_pii_security()
+      @apply_raw_extract_security()
+      @apply_bulk_extract_security()
+
+    apply_pii_security: () ->
+      return if @permissions.pii.all
+      warningIcon = '<i class="edware-icon-warning"></i>'
+      # bind tooltips popover
+      $('a.disabled', '.ui-jqgrid').edwarePopover
+        class: "no_pii_msg"
+        placement: 'top'
+        container: '#content'
+        trigger: 'click'
+        content: warningIcon + @no_pii_msg
+
+    apply_raw_extract_security: () ->
+      return if @permissions.sar_extracts.all
+      $('li.extract').hide()
+
+    apply_bulk_extract_security: () ->
+      assessment_access = @permissions.sar_extracts.all
+      registration_access = @permissions.srs_extracts.all
+      # hide csv extract option if user doesn't have any permission
+      if not assessment_access and not registration_access
+        $('li.csv').hide()
+      else if not assessment_access
+        @remove_extractType('studentAssessment')
+      else if not registration_access
+        @remove_extractType('studentRegistrationStatistics')
+
+    remove_extractType: (key) ->
+      options = []
+      for option in @extractType.options
+        options.push option if option.value isnt key
+      @extractType.options = options
+
+    hasPIIAccess: (row_id) ->
+      @permissions.pii.all or (row_id in @permissions.pii.guid)
 
 
+  init = (permissions, config) ->
+    @security = new ContextSecurity(permissions, config)
+
+  hasPIIAccess = (row_id) ->
+    if not @security
+      return true
+    @security.hasPIIAccess(row_id)
+
+  apply = () ->
+    @security.apply()
+
+  init: init
   apply: apply
+  hasPIIAccess: hasPIIAccess

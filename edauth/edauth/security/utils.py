@@ -104,3 +104,7 @@ class SetEncoder(JSONEncoder):
         if isinstance(obj, set):
             return list(obj)
         return JSONEncoder.default(self, obj)
+
+
+def remove_none_from_sets(s):
+    return list(s - set([None]))

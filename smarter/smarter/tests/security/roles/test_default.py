@@ -10,12 +10,12 @@ from smarter.security.roles.default import DefaultRole
 class TestDefaultContextSecurity(unittest.TestCase):
 
     def test_get_context(self):
-        default_context = DefaultRole("connection")
+        default_context = DefaultRole("connection", 'default')
         clause = default_context.get_context('tenant', {})
         self.assertIsNone(clause)
 
     def test_check_context(self):
-        default_context = DefaultRole("connection")
+        default_context = DefaultRole("connection", 'default')
         context = default_context.check_context('tenant', {}, [])
         self.assertTrue(context)
 

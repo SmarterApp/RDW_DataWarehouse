@@ -186,22 +186,27 @@ table td {
     white-space: nowrap !important;
 }
 
-ui-widget-content {
+.ui-widget-content {
   color: @color-B2;
 
   a {
-    color : @color-B1; text-decoration: none;
+    color : @color-A2; text-decoration: none;
 
-    &.enabled:hover {
-      color: @color-A2;
+    &:hover {
+      color: @color-A3;
+      text-decoration: underline;
+    }
+
+    &.disabled {
+      color: @color-B1;
+
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 
 }
-
-.ui-widget-content { color: @color-B2; }
-.ui-widget-content a { color: @color-A2; text-decoration: none; }
-.ui-widget-content a:hover { color: @color-A3; text-decoration: underline;}
 
 .ui-jqgrid .ui-jqgrid-view {
     font-size: 12px;
@@ -431,13 +436,22 @@ th.ui-th-column div {
 // Popover/Tooltip styles
 //
 .no_pii_msg {
-  min-width: 150px;
+  background-color: @color-C17;
+  min-width: 310px;
 
+  .mask {display: none;}
+  
   .popover-content {
-    width: 110px;
-    padding: 0px 20px 10px !important;
-    max-height: 80px !important;
+    width: 320px;
+    padding: 9px 10px 7px 10px !important;
+
+    i { padding-right: 5px; }
   }
+
+  &.popover.top .arrow:after {
+    border-top-color: @color-C17;
+  }
+  
 }
 
 .printFooterPopover {
@@ -1476,7 +1490,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
             }
 
             button.dropdown-toggle {
-                width: 225px;
+                width: 250px;
                 height: 28px;
                 text-align: left;
                 font-size: 14px;
@@ -1509,7 +1523,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
             ul {
                 margin: 0px 0px;
-                width: 225px;
+                width: 250px;
                 list-style-type: none;
 
                 label {
@@ -1732,7 +1746,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
     .reminderMessage {
         line-height: 26px;
-        background-color: #fefdf2;
+        background-color: @color-C17;
         padding-left: 26px;
         border-top: solid 1px #f0efde;
         font-size: 13px;

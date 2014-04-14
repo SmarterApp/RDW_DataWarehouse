@@ -8,13 +8,15 @@ from smarter.security.roles.default import BaseRole
 from smarter.security.roles.base import verify_context
 from smarter.security.context_role_map import ContextRoleMap
 from smarter.security.constants import RolesConstants
+from sqlalchemy.sql.expression import and_, or_
 
 
-@ContextRoleMap.register([RolesConstants.TEACHER])
-class Teacher(BaseRole):
+# PII and SAR Extracts have the same context
+@ContextRoleMap.register([RolesConstants.PII, RolesConstants.SAR_EXTRACTS])
+class PII(BaseRole):
 
-    def __init__(self, connector):
-        super().__init__(connector)
+    def __init__(self, connector, name):
+        super().__init__(connector, name)
 
     @verify_context
     def get_context(self, tenant, user):
@@ -23,10 +25,14 @@ class Teacher(BaseRole):
         If Context is an empty list, return none, which will return Forbidden Error
         '''
         fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        context = user.get_context().get_schools(tenant, RolesConstants.TEACHER)
-        expr = None
-        if context:
-            expr = fact_asmt_outcome.c.school_guid.in_(context)
+        context = user.get_context().get_all_context(tenant, self.name)
+        if not context:
+            # context returned is empty, therefore no context
+            return None
+        expr = []
+        for k, v in context.items():
+            if v:
+                expr.append(and_(fact_asmt_outcome.c[k].in_(v)))
         return expr
 
     def check_context(self, tenant, user, student_guids):
@@ -34,8 +40,6 @@ class Teacher(BaseRole):
         Given a list of student guids, return true if user guid has access to those students
         '''
         query = super().get_students(tenant, student_guids)
-        query = query.where(self.get_context(tenant, user))
-
+        query = query.where(or_(*self.get_context(tenant, user)))
         results = self.connector.get_result(query)
-
         return len(student_guids) == len(results)

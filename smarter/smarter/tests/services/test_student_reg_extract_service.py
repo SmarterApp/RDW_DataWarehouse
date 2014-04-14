@@ -1,5 +1,3 @@
-from smarter.services.student_reg_extract_service import post_sr_extract_service
-
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
@@ -9,6 +7,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 from pyramid.registry import Registry
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from smarter.security.constants import RolesConstants
 
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import smarter.extracts.format
@@ -17,8 +16,10 @@ from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
-from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
+from smarter.services.student_reg_extract_service import post_sr_stat_extract_service, post_sr_comp_extract_service
+from unittest.mock import patch
+import json
 
 
 class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -42,13 +43,12 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
 
-        defined_roles = [(Allow, 'STATE_EDUCATION_ADMINISTRATOR_1', ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         # Set up context security
-        dummy_session = create_test_session(['STATE_EDUCATION_ADMINISTRATOR_1'])
-        dummy_session.set_user_context([RoleRelation("STATE_EDUCATION_ADMINISTRATOR_1", get_unittest_tenant_name(), "NC", "228", "242")])
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
+        self.__config.testing_securitypolicy(dummy_session.get_user())
 
-        self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
@@ -60,15 +60,45 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.__request = None
         testing.tearDown()
 
-    def test_post_sr_extraction_request(self):
-        self.__request.method = 'POST'
-        self.__request.json_body = {'academicYear': [2015], "stateCode": ["NC"]}
-        response = post_sr_extract_service(None, self.__request)
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_post_sr_extraction_request_invalid_params(self):
+    def test_post_sr_stat_extraction_request_invalid_params(self):
         self.__request.method = 'POST'
         self.__request.json_body = {'academic_year': [2015]}
 
-        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_extract_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_stat_extract_service, self.__request)
+
+    def test_post_sr_invalid_type(self):
+        self.__request.method = 'POST'
+        self.__request.json_body = {'extractType': ['studentRegistrationComp'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_comp_extract_service, self.__request)
+
+    @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
+    def test_post_sr_comp_extraction_request(self, test_patch):
+        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg"}')
+        test_patch.return_value = mock_response
+
+        self.__request.method = 'POST'
+        self.__request.json_body = {'extractType': ['studentRegistrationCompletion'], 'academicYear': [2015], "stateCode": ["NC"]}
+        response = post_sr_comp_extract_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_json = json.loads(str(response.body, encoding='UTF-8'))
+        self.assertEqual(len(response_json), len(mock_response))
+        self.assertEqual(response_json['file_name'], 'test.gpg')
+        self.assertEqual(response_json['tasks']['state_code'], 'NC')
+
+    @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
+    def test_post_sr_stat_extraction_request(self, test_patch):
+        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg"}')
+        test_patch.return_value = mock_response
+
+        self.__request.method = 'POST'
+        self.__request.json_body = {'extractType': ['studentRegistrationStatistics'], 'academicYear': [2015], "stateCode": ["NC"]}
+        response = post_sr_stat_extract_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_json = json.loads(str(response.body, encoding='UTF-8'))
+        self.assertEqual(len(response_json), len(mock_response))
+        self.assertEqual(response_json['file_name'], 'test.gpg')
+        self.assertEqual(response_json['tasks']['state_code'], 'NC')

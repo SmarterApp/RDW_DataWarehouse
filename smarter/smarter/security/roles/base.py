@@ -12,14 +12,15 @@ class BaseRole(object):
     '''
     Base Class Role
     '''
-    def __init__(self, connector):
+    def __init__(self, connector, name):
         self.connector = connector
+        self.name = name
 
     def get_context(self, tenant, user):
         pass
 
     def check_context(self, tenant, user, student_guids):
-        pass
+        return False
 
     def get_students(self, tenant, student_guids):
         '''
@@ -32,7 +33,6 @@ class BaseRole(object):
         return query
 
 
-# TODO, we probably don't need this anymore as context is never going to be none
 def verify_context(fn):
     '''
     Decorator used to validate that we throw Forbidden error when context is an empty list

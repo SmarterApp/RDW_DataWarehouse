@@ -9,9 +9,10 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import celery
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
-from edcore.database.utils.constants import UdlStatsConstants
+from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats
 from edcore.utils.utils import merge_dict
+import json
 
 
 logger = get_task_logger(__name__)
@@ -29,13 +30,30 @@ def report_udl_batch_metrics_to_log(msg, end_time, pipeline_status):
         logger.info('Total Records Processed: ' + str(msg[mk.TOTAL_ROWS_LOADED]))
 
 
+def _create_stats_row(msg, end_time, status):
+    stats = {}
+    stats[UdlStatsConstants.LOAD_END] = end_time
+    stats[UdlStatsConstants.RECORD_LOADED_COUNT] = msg[mk.TOTAL_ROWS_LOADED] if mk.TOTAL_ROWS_LOADED in msg else 0
+
+    if status is mk.SUCCESS:
+        stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_INGESTED
+        if msg[mk.LOAD_TYPE] == LoadType.STUDENT_REGISTRATION:
+            stats[UdlStatsConstants.BATCH_OPERATION] = UdlStatsConstants.SNAPSHOT
+            snapshot_criteria = {}
+            snapshot_criteria['reg_system_id'] = msg[mk.REG_SYSTEM_ID]
+            snapshot_criteria['academic_year'] = msg[mk.ACADEMIC_YEAR]
+            stats[UdlStatsConstants.SNAPSHOT_CRITERIA] = json.dumps(snapshot_criteria)
+    else:
+        stats[UdlStatsConstants.LOAD_STATUS] = UdlStatsConstants.UDL_STATUS_FAILED
+
+    return stats
+
+
 def report_batch_to_udl_stats(msg, end_time, status):
     logger.info('Reporting to UDL daily stats')
-    stats = {}
-    # TODO: it's always zero
-    stats[UdlStatsConstants.RECORD_LOADED_COUNT] = msg[mk.TOTAL_ROWS_LOADED] if mk.TOTAL_ROWS_LOADED in msg else 0
-    load_status = UdlStatsConstants.UDL_STATUS_INGESTED if status is mk.SUCCESS else UdlStatsConstants.UDL_STATUS_FAILED
-    update_udl_stats(msg[mk.GUID_BATCH], merge_dict(stats, {UdlStatsConstants.LOAD_END: end_time, UdlStatsConstants.LOAD_STATUS: load_status}))
+    stats = _create_stats_row(msg, end_time, status)
+
+    update_udl_stats(msg[mk.GUID_BATCH], stats)
 
 
 @celery.task(name='udl2.W_all_done.task', base=Udl2BaseTask)

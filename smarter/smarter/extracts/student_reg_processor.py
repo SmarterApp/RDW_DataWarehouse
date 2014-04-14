@@ -1,5 +1,3 @@
-from edcore.utils.utils import compile_query_to_sql_text
-
 __author__ = 'ablum'
 
 """
@@ -11,13 +9,15 @@ import os
 from datetime import datetime
 from pyramid.threadlocal import get_current_registry
 
-from smarter.extracts.constants import Constants as Extract, ExtractType, ReportType
+from smarter.extracts.constants import Constants as Extract, ExtractType
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
 from edextract.tasks.extract import start_extract
 from edextract.status.status import create_new_entry
 from smarter.extracts import processor
-from smarter.extracts.student_reg_statistics import get_headers, get_academic_year_query, get_match_id_query
+from smarter.extracts import student_reg_statistics
+from smarter.extracts import student_reg_completion
+from edcore.utils.utils import compile_query_to_sql_text
 
 
 log = logging.getLogger('smarter')
@@ -35,14 +35,21 @@ def process_async_extraction_request(params):
     state_code = params[EndpointConstants.STATECODE][0]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
+    extract_type = params[Extract.EXTRACTTYPE][0]
+    extraction_data_type = ''
+    if extract_type == ExtractType.studentRegistrationStatistics:
+        extraction_data_type = ExtractionDataType.SR_STATISTICS
+    if extract_type == ExtractType.studentRegistrationCompletion:
+        extraction_data_type = ExtractionDataType.SR_COMPLETION
+
     extract_params = {TaskConstants.STATE_CODE: state_code,
                       TaskConstants.ACADEMIC_YEAR: params[EndpointConstants.ACADEMIC_YEAR][0],
-                      Extract.REPORT_TYPE: ReportType.STATISTICS,
-                      TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_STATISTICS}
+                      Extract.REPORT_TYPE: extract_type,
+                      TaskConstants.EXTRACTION_DATA_TYPE: extraction_data_type}
 
     task_response = {TaskConstants.STATE_CODE: extract_params[TaskConstants.STATE_CODE],
                      TaskConstants.ACADEMIC_YEAR: extract_params[TaskConstants.ACADEMIC_YEAR],
-                     Extract.EXTRACTTYPE: ExtractType.studentRegistrationStatistics,
+                     Extract.EXTRACTTYPE: extract_params[Extract.REPORT_TYPE],
                      Extract.REQUESTID: request_id,
                      Extract.STATUS: Extract.OK}
 
@@ -65,17 +72,46 @@ def process_async_extraction_request(params):
 
 
 def _create_task_info(request_id, user, tenant, extract_params):
-    academic_year_query = get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR], extract_params[TaskConstants.STATE_CODE])
-    match_id_query = get_match_id_query(extract_params[TaskConstants.ACADEMIC_YEAR], extract_params[TaskConstants.STATE_CODE])
 
     task_info = {TaskConstants.TASK_TASK_ID: create_new_entry(user, request_id, extract_params),
                  TaskConstants.TASK_FILE_NAME: _get_extract_file_path(request_id, tenant, extract_params),
-                 TaskConstants.CSV_HEADERS: get_headers(extract_params.get(TaskConstants.ACADEMIC_YEAR)),
-                 TaskConstants.TASK_QUERIES: {QueryType.QUERY: compile_query_to_sql_text(academic_year_query),
-                                              QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}}
+                 TaskConstants.CSV_HEADERS: __get_report_headers(extract_params),
+                 TaskConstants.TASK_QUERIES: __get_report_queries(extract_params)}
     task_info.update(extract_params)
 
     return task_info
+
+
+def __get_report_headers(extract_params):
+    extract_type = extract_params[Extract.REPORT_TYPE]
+    headers = ()
+
+    if extract_type == ExtractType.studentRegistrationStatistics:
+        headers = student_reg_statistics.get_headers(extract_params.get(TaskConstants.ACADEMIC_YEAR))
+    if extract_type == ExtractType.studentRegistrationCompletion:
+        headers = student_reg_completion.get_headers(extract_params.get(TaskConstants.ACADEMIC_YEAR))
+
+    return headers
+
+
+def __get_report_queries(extract_params):
+    extract_type = extract_params[Extract.REPORT_TYPE]
+    queries = {}
+
+    if extract_type == ExtractType.studentRegistrationStatistics:
+        academic_year_query = student_reg_statistics.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
+                                                                             extract_params[TaskConstants.STATE_CODE])
+        match_id_query = student_reg_statistics.get_match_id_query(extract_params[TaskConstants.ACADEMIC_YEAR],
+                                                                   extract_params[TaskConstants.STATE_CODE])
+        queries = {QueryType.QUERY: compile_query_to_sql_text(academic_year_query),
+                   QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}
+
+    if extract_type == ExtractType.studentRegistrationCompletion:
+        registered_query = student_reg_completion.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
+                                                                          extract_params[TaskConstants.STATE_CODE])
+        queries = {QueryType.QUERY: compile_query_to_sql_text(registered_query)}
+
+    return queries
 
 
 def _get_extract_file_path(request_id, tenant, params):

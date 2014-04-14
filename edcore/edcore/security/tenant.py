@@ -49,3 +49,13 @@ def get_tenant_by_state_code(state_code):
     '''
     global TENANT_MAP
     return reverse_map(TENANT_MAP).get(state_code)
+
+
+def get_all_tenants():
+    global TENANT_MAP
+    return list(TENANT_MAP.keys())
+
+
+def get_all_state_codes():
+    global TENANT_MAP
+    return list(TENANT_MAP.values())

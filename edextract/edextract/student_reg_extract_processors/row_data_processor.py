@@ -5,8 +5,8 @@ from edextract.student_reg_extract_processors.school_data_processor import Schoo
 from edextract.student_reg_extract_processors.state_data_processor import StateDataProcessor
 from edextract.trackers.total_tracker import TotalTracker
 from edextract.trackers.gender_tracker import FemaleTracker, MaleTracker
-from edextract.trackers.race_tracker import HispanicLatinoTracker, AmericanIndianTracker, AsianTracker, \
-    AfricanAmericanTracker, PacificIslanderTracker, WhiteTracker, MultiRaceTracker
+from edextract.trackers.race_tracker import (HispanicLatinoTracker, AmericanIndianTracker, AsianTracker, AfricanAmericanTracker,
+                                             PacificIslanderTracker, WhiteTracker, MultiRaceTracker)
 from edextract.trackers.program_tracker import (IDEAIndicatorTracker, LEPStatusTracker, Sec504StatusTracker,
                                                 EconDisadvStatusTracker, MigrantStatusTracker)
 from edextract.trackers.grade_tracker import (GradeKTracker, Grade1Tracker, Grade2Tracker, Grade3Tracker, Grade4Tracker,
@@ -19,6 +19,7 @@ This module contain functions to process iterator row data using data processors
 
 
 class RowDataProcessor():
+
     def __init__(self):
         self.total_tracker = TotalTracker()
         self.trackers = [self.total_tracker, MaleTracker(), FemaleTracker(), HispanicLatinoTracker(), AmericanIndianTracker(),

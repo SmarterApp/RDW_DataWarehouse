@@ -12,7 +12,8 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
-from smarter.security.context import select_with_context
+from smarter.security.context import select_with_context,\
+    get_current_request_context
 from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from edapi.cache import cache_region
@@ -25,6 +26,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_student_list_asmt_administration,\
     get_academic_years, get_default_academic_year
 from smarter.security.tenant import validate_user_tenant
+from smarter.security.constants import RolesConstants
 
 REPORT_NAME = "list_of_students"
 
@@ -71,6 +73,7 @@ REPORT_PARAMS = merge_dict({
     params=REPORT_PARAMS)
 @validate_user_tenant
 @user_info
+@get_current_request_context
 @audit_event()
 def get_list_of_students_report(params):
     '''
@@ -215,7 +218,7 @@ def get_list_of_students(params):
                                               .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
-                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], state_code=stateCode)
+                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))

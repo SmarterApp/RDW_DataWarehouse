@@ -20,4 +20,4 @@ class StateDataProcessor(EdOrgDataProcessor):
         self._call_matched_ids_trackers(data_row[AttributeFieldConstants.STATE_CODE], data_row)
 
     def process_asmt_outcome_data(self, data_row):
-        pass
+        self._call_asmt_trackers(data_row[AttributeFieldConstants.STATE_CODE], data_row)

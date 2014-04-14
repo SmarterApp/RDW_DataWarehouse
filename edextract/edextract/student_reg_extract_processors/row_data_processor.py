@@ -48,7 +48,7 @@ class RowDataProcessor():
         functions = [p.process_matched_ids_data for p in self.data_processors]
         self._process(rows, functions)
 
-    def process_asmt_outcome_data(self, rows):
+    def process_asmt_outcome_row_data(self, rows):
         """
         Iterate through the database results, processing each assessment and student reg data row
         @param: rows: Iterable containing all pertinent database rows

@@ -31,13 +31,13 @@ class TestStatisticsGenerator(unittest.TestCase):
         total_tracker = TotalTracker()
         trackers = [total_tracker]
         total_tracker._data_counter.map = {
-            'NJ': {2014: 444, 'summative': {'math': 115, 'ela': 105}, 'interim_comprehensive': {'math': 114, 'ela': 108}},
-            'district1': {2014: 123, 'summative': {'math': 44, 'ela': 47}, 'interim_comprehensive': {'math': 39, 'ela': 42}},
-            'district2': {2014: 20, 'summative': {'math': 5, 'ela': 4}, 'interim_comprehensive': {'math': 3, 'ela': 7}},
+            'NJ': {2014: 444, ('summative', 'math'): 115, ('summative', 'ela'): 105, ('interim comprehensive', 'math'): 114, ('interim comprehensive', 'ela'): 108},
+            'district1': {2014: 123, ('summative', 'math'): 44, ('summative', 'ela'): 47, ('interim comprehensive', 'math'): 39, ('interim comprehensive', 'ela'): 42},
+            'district2': {2014: 20, ('summative', 'math'): 5, ('summative', 'ela'): 4, ('interim comprehensive', 'math'): 3, ('interim comprehensive', 'ela'): 7},
             'school1': {},
-            'school2': {2014: 37, 'summative': {'math': 9, 'ela': 10}},
-            'school3': {2014: 8, 'summative': {'math': 4, 'ela': 2}, 'interim_comprehensive': {'ela': 1}},
-            'school4': {2014: 64, 'summative': {'ela': 55}, 'interim_comprehensive': {'math': 58}}
+            'school2': {2014: 37, ('summative', 'math'): 9, ('summative', 'ela'): 10},
+            'school3': {2014: 8, ('summative', 'math'): 4, ('summative', 'ela'): 2, ('interim comprehensive', 'ela'): 1},
+            'school4': {2014: 64, ('summative', 'ela'): 55, ('interim comprehensive', 'math'): 58},
         }
         expected_data = [
             ['New Jersey', 'ALL', 'ALL', 'Total', 'Total', '444', '115', '25.9', '105', '23.65', '114', '25.68', '108', '24.32'],

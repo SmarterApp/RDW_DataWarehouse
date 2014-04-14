@@ -41,6 +41,11 @@ class CategoryTracker(metaclass=ABCMeta):
             key = DataCounter.MATCHED_IDS
             self._data_counter.increment(guid, key)
 
+    def track_asmt(self, guid, row):
+        if self._should_increment(row):
+            key = (row[AttributeFieldConstants.ASSESSMENT_TYPE].lower(), row[AttributeFieldConstants.ASSESSMENT_SUBJECT].lower())
+            self._data_counter.increment(guid, key)
+
     def get_map_entry(self, guid):
         """
         Return the guid entry of the map containing all of the edorg totals by year.

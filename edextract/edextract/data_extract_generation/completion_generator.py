@@ -28,12 +28,10 @@ def get_tracker_results(report_map, trackers, current_year):
             current_year_count = summ_math_count = summ_ela_count = int_comp_math_count = int_comp_ela_count = 0
             if entry_data:
                 current_year_count = entry_data.get(current_year, 0)
-                summ_math_count = entry_data.get(AssessmentType.SUMMATIVE, {AssessmentSubject.MATH: 0}).get(AssessmentSubject.MATH, 0)
-                summ_ela_count = entry_data.get(AssessmentType.SUMMATIVE, {AssessmentSubject.ELA: 0}).get(AssessmentSubject.ELA, 0)
-                int_comp_math_count = entry_data.get(AssessmentType.INTERIM_COMPREHENSIVE,
-                                                     {AssessmentSubject.MATH: 0}).get(AssessmentSubject.MATH, 0)
-                int_comp_ela_count = entry_data.get(AssessmentType.INTERIM_COMPREHENSIVE,
-                                                    {AssessmentSubject.ELA: 0}).get(AssessmentSubject.ELA, 0)
+                summ_math_count = entry_data.get((AssessmentType.SUMMATIVE, AssessmentSubject.MATH), 0)
+                summ_ela_count = entry_data.get((AssessmentType.SUMMATIVE, AssessmentSubject.ELA), 0)
+                int_comp_math_count = entry_data.get((AssessmentType.INTERIM_COMPREHENSIVE, AssessmentSubject.MATH), 0)
+                int_comp_ela_count = entry_data.get((AssessmentType.INTERIM_COMPREHENSIVE, AssessmentSubject.ELA), 0)
 
             row = [state_name, district_name, school_name, category, value] + _generate_data_row(current_year_count, summ_math_count,
                                                                                                  summ_ela_count, int_comp_math_count,

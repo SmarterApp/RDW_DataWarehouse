@@ -24,6 +24,10 @@ class EdOrgDataProcessor(metaclass=ABCMeta):
         for tracker in self.category_trackers:
             tracker.track_matched_ids(guid, data_row)
 
+    def _call_asmt_trackers(self, guid, data_row):
+        for tracker in self.category_trackers:
+            tracker.track_asmt(guid, data_row)
+
     def get_ed_org_hierarchy(self):
         return self.ed_org_hierarchy
 

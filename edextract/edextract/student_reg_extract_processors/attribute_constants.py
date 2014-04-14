@@ -26,6 +26,8 @@ class AttributeFieldConstants():
     ECON_DISADV_STATUS = 'dmg_sts_ecd'
     MIGRANT_STATUS = 'dmg_sts_mig'
     GRADE = 'enrl_grade'
+    ASSESSMENT_TYPE = 'asmt_type'
+    ASSESSMENT_SUBJECT = 'asmt_subject'
 
 
 class AttributeValueConstants():

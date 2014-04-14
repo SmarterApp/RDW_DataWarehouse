@@ -7,7 +7,7 @@ This module contains the constants which describe the various Assessment types a
 
 class AssessmentType():
     SUMMATIVE = 'summative'
-    INTERIM_COMPREHENSIVE = 'interim_comprehensive'
+    INTERIM_COMPREHENSIVE = 'interim comprehensive'
 
 
 class AssessmentSubject():

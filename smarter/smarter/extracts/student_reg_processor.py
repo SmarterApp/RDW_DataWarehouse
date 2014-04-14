@@ -103,13 +103,18 @@ def __get_report_queries(extract_params):
                                                                              extract_params[TaskConstants.STATE_CODE])
         match_id_query = student_reg_statistics.get_match_id_query(extract_params[TaskConstants.ACADEMIC_YEAR],
                                                                    extract_params[TaskConstants.STATE_CODE])
+
         queries = {QueryType.QUERY: compile_query_to_sql_text(academic_year_query),
                    QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}
 
     if extract_type == ExtractType.studentRegistrationCompletion:
         registered_query = student_reg_completion.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
                                                                           extract_params[TaskConstants.STATE_CODE])
-        queries = {QueryType.QUERY: compile_query_to_sql_text(registered_query)}
+        asmt_query = student_reg_completion.get_assessment_query(extract_params[TaskConstants.ACADEMIC_YEAR],
+                                                                 extract_params[TaskConstants.STATE_CODE])
+
+        queries = {QueryType.QUERY: compile_query_to_sql_text(registered_query),
+                   QueryType.ASMT_OUTCOME_QUERY: compile_query_to_sql_text(asmt_query)}
 
     return queries
 

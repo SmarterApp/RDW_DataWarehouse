@@ -106,7 +106,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
 
         self.assertEqual(8, len(results))
         self.assertEquals(dummy_headers, results[TaskConstants.CSV_HEADERS])
-        self.assertEqual(1, len(results[TaskConstants.TASK_QUERIES]))
+        self.assertEqual(2, len(results[TaskConstants.TASK_QUERIES]))
         self.assertEquals('StudentRegistrationCompletionReportCSV', results[TaskConstants.EXTRACTION_DATA_TYPE])
 
     def test__get_extract_file_path(self):

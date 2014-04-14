@@ -15,8 +15,7 @@ def get_natural_key(table):
 
     :param table: SQLAlchemy table object
     '''
-    natural_key = [column for column in table.columns if NATURAL_KEY_ATTR in column.info.keys()]
-    return natural_key if len(natural_key) > 0 else None
+    return [column for column in table.columns if NATURAL_KEY_ATTR in column.info.keys()]
 
 
 def get_natural_key_columns(table):
@@ -25,8 +24,7 @@ def get_natural_key_columns(table):
 
     :param table: SQLAlchemy table object
     '''
-    natural_key = get_natural_key(table)
-    return None if natural_key is None else [c.name for c in natural_key]
+    return [c.name for c in get_natural_key(table)]
 
 
 def get_foreign_key_reference_columns(table):
@@ -35,8 +33,7 @@ def get_foreign_key_reference_columns(table):
 
     :param table: SQLAlchemy table object
     '''
-    columns = [column for column in table.columns if column.foreign_keys != set()]
-    return columns if len(columns) > 0 else None
+    return [column for column in table.columns if column.foreign_keys != set()]
 
 
 def get_meta_columns(table):
@@ -45,8 +42,7 @@ def get_meta_columns(table):
 
     :param table: SQLAlchemy table object
     '''
-    columns = [column for column in table.columns if getattr(column, "col_type", "Column") == META_COLUMN]
-    return columns if len(columns) > 0 else None
+    return [column for column in table.columns if getattr(column, "col_type", "Column") == META_COLUMN]
 
 
 def get_primary_key_columns(table):
@@ -66,12 +62,9 @@ def get_matcher_key_columns(table):
 
     :param table: SQLAlchemy table object
     '''
-    meta = get_meta_columns(table)
-    pk = get_primary_key_columns(table)
-    fk = get_foreign_key_reference_columns(table)
-    meta = meta if meta is not None else []
-    fk = fk if fk is not None else []
-    return list(set(table.columns) - set(meta + pk + fk))
+    return list(set(table.columns) - set(get_meta_columns(table) +
+                                         get_primary_key_columns(table) +
+                                         get_foreign_key_reference_columns(table)))
 
 
 def get_matcher_key_column_names(table):
@@ -80,8 +73,7 @@ def get_matcher_key_column_names(table):
 
     :param table: SQLAlchemy table object
     '''
-    matcher_columns = get_matcher_key_columns(table)
-    return None if matcher_columns is None else [c.name for c in matcher_columns]
+    return [c.name for c in get_matcher_key_columns(table)]
 
 
 def get_tables_starting_with(metadata, prefix):

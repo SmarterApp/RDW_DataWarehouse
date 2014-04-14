@@ -65,7 +65,7 @@ class TestMetadataUtil(unittest.TestCase):
         test_table = Table('test_table', self.__metadata,
                            Column('student_rec_id', BigInteger, primary_key=True),
                            Column('batch_guid', String(50), nullable=True))
-        self.assertTrue(get_natural_key(test_table) is None)
+        self.assertTrue(len(get_natural_key(test_table)) == 0)
 
     def test_get_natural_key_columns(self):
         '''
@@ -82,7 +82,7 @@ class TestMetadataUtil(unittest.TestCase):
         test_table = Table('test_table', self.__metadata,
                            Column('student_rec_id', BigInteger, primary_key=True),
                            Column('batch_guid', String(50), nullable=True))
-        self.assertTrue(get_natural_key_columns(test_table) is None)
+        self.assertTrue(len(get_natural_key_columns(test_table)) == 0)
 
     def test_get_foreign_key_columns_when_none_defined(self):
         '''
@@ -91,7 +91,7 @@ class TestMetadataUtil(unittest.TestCase):
         test_table = Table('test_table', self.__metadata,
                            Column('student_rec_id', BigInteger, primary_key=True),
                            Column('batch_guid', String(50), nullable=True))
-        self.assertTrue(get_foreign_key_reference_columns(test_table) is None)
+        self.assertTrue(len(get_foreign_key_reference_columns(test_table)) == 0)
 
     def test_get_foreign_key_columns_one_defined(self):
         '''
@@ -132,7 +132,7 @@ class TestMetadataUtil(unittest.TestCase):
         test_table_none = Table('test_table', self.__metadata,
                                 Column('student_rec_id', BigInteger, primary_key=True),
                                 Column('batch_guid', String(50), nullable=True))
-        self.assertTrue(get_meta_columns(test_table_none) is None)
+        self.assertTrue(len(get_meta_columns(test_table_none)) == 0)
 
     def test_get_primary_key_columns(self):
         '''

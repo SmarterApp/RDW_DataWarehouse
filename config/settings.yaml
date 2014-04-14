@@ -327,7 +327,7 @@ qa:
     edware:
       db:
         cat:
-          state_code: NC
+          state_code: ES
           schema_name: edware_es_1_4
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:

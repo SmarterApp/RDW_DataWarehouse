@@ -45,7 +45,7 @@ class Constants():
     STATUS_CURRENT = 'C'
     STATUS_SHADOW = 'S'
     STATUS_DELETE = 'D'
-    STATUS_WIP = 'W'
+    STATUS_WAITING = 'W'
     BATCH_GUID = 'batch_guid'
     REC_STATUS = 'rec_status'
     DIM_TABLES_PREFIX = 'dim_'

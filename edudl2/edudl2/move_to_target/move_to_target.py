@@ -226,7 +226,7 @@ def get_records_marked_for_deletion(conf, target_conn, table_name):
     column_names = get_columns_names_to_pick_for_delete(table)
     columns_to_select = [table.c[column_name] for column_name in column_names]
     query = select(columns_to_select, from_obj=table).where(and_(table.c.batch_guid == conf[mk.GUID_BATCH],
-                                                                 table.c.rec_status == Constants.STATUS_WIP))
+                                                                 table.c.rec_status == Constants.STATUS_WAITING))
     result = target_conn.get_result(query)
     return result
 
@@ -270,16 +270,14 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
     :param table_name: name of the table being updated
     :param prod_records_matched: batch of records from prod that matches with pre-prod 'W' records based on natural keys
 
-    @return: True if update for successful else raises exception
     """
     table = target_conn.get_table(table_name)
-    columns = table.c
     for record in prod_records_matched:
-        values = {columns[pk_column]: record[pk_column] for pk_column in table.primary_key.columns.keys()}
-        values[columns[Constants.REC_STATUS]] = Constants.STATUS_DELETE
+        values = {table.c[pk_column]: record[pk_column] for pk_column in table.primary_key.columns.keys()}
+        values[table.c[Constants.REC_STATUS]] = Constants.STATUS_DELETE
         criteria = [table.c[nk_column] == record[nk_column] for nk_column in get_natural_key_columns(table)]
         criteria.append(table.c.batch_guid == conf[mk.GUID_BATCH])
-        criteria.append(table.c.rec_status == Constants.STATUS_WIP)
+        criteria.append(table.c.rec_status == Constants.STATUS_WAITING)
         query = update(table).values(values).where(and_(*criteria))
         try:
             target_conn.execute(query)
@@ -293,7 +291,6 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
             e.insert_err_list(failure_time)
             # raise an exception and stop the pipeline
             raise e
-    return True
 
 
 def check_mismatched_deletions(conf, target_conn, table_name):

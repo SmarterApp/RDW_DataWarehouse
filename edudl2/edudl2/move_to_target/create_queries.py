@@ -275,69 +275,6 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
     return query
 
 
-def get_delete_candidates(tenant, schema_name, table_name, batch_guid, matching_conf):
-    '''
-    create a query to find all delete/updated record in current batch
-    '''
-    with get_target_connection(tenant, schema_name) as conn:
-        fact_asmt = conn.get_table(table_name)
-        columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
-        criterias = [fact_asmt.c[criteria] == matching_conf[criteria] for criteria in matching_conf['condition']]
-        query = select(columns, from_obj=fact_asmt).where(and_(fact_asmt.c.batch_guid == batch_guid))
-        query = query.where(and_(*criterias))
-        return conn.get_result(query)
-
-
-def match_delete_record_against_prod(tenant_name, schema_name, table_name, matching_conf, matched_preprod_values):
-    '''
-    create a query to find all delete/updated record in current batch, get the rec_id back
-    '''
-    matched_prod_values = matched_preprod_values.copy()
-    matched_prod_values['rec_status'] = matching_conf['rec_status']
-    with get_prod_connection(tenant_name) as conn:
-        fact_asmt = conn.get_table(table_name)
-        columns = [fact_asmt.c[column_name] for column_name in matching_conf['columns']]
-        criterias = [fact_asmt.c[criteria] == matched_prod_values[criteria] for criteria in matching_conf['condition']]
-        query = select(columns, from_obj=fact_asmt)
-        query = query.where(and_(*criterias))
-        return conn.get_result(query)
-
-
-def update_matched_fact_asmt_outcome_row(tenant_name, schema_name, table_name, batch_guid, matching_conf,
-                                         matched_prod_values):
-    '''
-    create a query to find all delete/updated record in current batch
-    UPDATE edware.fact_asmt_outcome
-    SET inst_hier_rec_id=tmp_dim_info.inst_hier_rec_id
-    FROM edware.dim_inst_hier,
-    (SELECT edware.dim_inst_hier.inst_hier_rec_id AS inst_hier_rec_id,
-    edware.dim_inst_hier.district_guid AS district_guid,
-    edware.dim_inst_hier.school_guid AS school_guid,
-    edware.dim_inst_hier.state_code AS state_code
-    FROM edware.dim_inst_hier) AS tmp_dim_info
-    WHERE edware.fact_asmt_outcome.inst_hier_rec_id =  -1
-    AND edware.dim_inst_hier.district_guid = tmp_dim_info.district_guid
-    AND edware.dim_inst_hier.school_guid = tmp_dim_info.school_guid
-    AND edware.dim_inst_hier.state_code = tmp_dim_info.state_code
-    '''
-    values = {}
-    matched_prod_values['rec_status'] = matching_conf['new_status']
-
-    matched_preprod_values = matched_prod_values.copy()
-    matched_preprod_values['rec_status'] = matching_conf['rec_status']
-    del matched_preprod_values['asmnt_outcome_rec_id']
-    # TODO: Query simplication
-    for k in matching_conf['columns'].keys():
-        values[k] = matched_prod_values[k]
-    with get_target_connection(tenant_name, schema_name) as conn:
-        fact_asmt = conn.get_table('fact_asmt_outcome')
-        criterias = [fact_asmt.c[k] == v for k, v in matched_preprod_values.items()]
-        query = fact_asmt.update().values(values).where(fact_asmt.c.batch_guid == batch_guid)
-        query = query.where(and_(*criterias))
-
-    return query
-
-
 def dblink_url_composer(host, port, db_name, db_user, db_password):
     return QuotedString('host={host} port={port} dbname={db_name} user={db_user} password={db_password}'
                         .format(host=host, port=port, db_name=db_name, db_user=db_user, db_password=db_password))

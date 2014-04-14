@@ -10,6 +10,7 @@ class Roles:
     defined_permissions = {}
     # Pre-Populate a role of none
     defined_roles = utils.enum(NONE='NONE')
+    default_permission = None
 
     @staticmethod
     def set_roles(mappings):
@@ -26,6 +27,8 @@ class Roles:
             permission = mapping[2]
             roles[role] = role
             permissions[role] = permission
+            if 'default' in permission:
+                Roles.default_permission = role
         # Make sure we have a role of None
         if 'NONE' not in roles.keys():
             roles['NONE'] = 'NONE'
@@ -66,3 +69,10 @@ class Roles:
         if not type(roles) is list:
             roles = [roles]
         return Roles.has_permission(roles, 'default')
+
+    @staticmethod
+    def get_default_permission():
+        '''
+        Returns the default permission defined.  There should only be one in the system
+        '''
+        return Roles.default_permission

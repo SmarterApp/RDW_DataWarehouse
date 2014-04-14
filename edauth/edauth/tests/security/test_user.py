@@ -6,13 +6,22 @@ Created on Mar 14, 2013
 import unittest
 from edauth.security.user import User, RoleRelation, UserContext
 from edauth.security.roles import Roles
+import edauth
+from pyramid.security import Allow
+from edcore.security.tenant import set_tenant_map
 
 
 class TestUser(unittest.TestCase):
 
+    def setUp(self):
+        defined_roles = [(Allow, 'PII', ('view', 'logout')),
+                         (Allow, 'DEFAULT', ('view', 'logout', 'default'))]
+        edauth.set_roles(defined_roles)
+        set_tenant_map({'tenant1': 'NC', 'tenant2': 'CA', 'tenant3': 'WA'})
+
     def test_empty_user(self):
         user = User()
-        data = {'name': {'fullName': None, 'firstName': None, 'lastName': None}, 'uid': None, 'roles': [], 'tenant': None, 'displayHome': False, 'guid': None}
+        data = {'name': {'fullName': None, 'firstName': None, 'lastName': None}, 'uid': None, 'roles': [], 'stateCode': [], 'tenant': [], 'displayHome': False, 'guid': None}
 
         name = user.get_name()
         self.assertEqual(name, {'name': data['name']})
@@ -27,7 +36,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual(roles, data['roles'])
 
         tenant = user.get_tenants()
-        self.assertIsNone(tenant)
+        self.assertEqual(0, len(tenant))
 
         guid = user.get_guid()
         self.assertIsNone(guid)
@@ -76,11 +85,11 @@ class TestUser(unittest.TestCase):
 
     def test_set_user_info(self):
         user = User()
-        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'junk': 'junk', 'roles': ['TEACHER'], 'tenant': 'dog', 'displayHome': False, 'guid': '123'}
+        data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'junk': 'junk', 'roles': ['TEACHER'], 'stateCode': [], 'tenant': 'dog', 'displayHome': False, 'guid': '123'}
 
         user.set_user_info(data)
         context = user.get_user_context()
-        self.assertEqual(len(context), 6)
+        self.assertEqual(len(context), 7)
         self.assertEqual(context['name'], data['name'])
         self.assertEqual(context['uid'], data['uid'])
         self.assertEqual(context['guid'], data['guid'])
@@ -118,6 +127,212 @@ class TestUser(unittest.TestCase):
         self.assertEqual(all_context['state_code'], set())
         self.assertEqual(all_context['district_guid'], {'1'})
         self.assertEqual(all_context['school_guid'], {'3'})
+
+    def test_get_chain_valid_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', 'District', 'School_1')]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+        self.assertIn('District', chain['guid'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'District'})
+        self.assertFalse(chain['all'])
+        self.assertIn('School_1', chain['guid'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'District', 'schoolGuid': 'School_1'})
+        self.assertTrue(chain['all'])
+
+    def test_get_chain_state_level_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', None, None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': '1234'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': '1234', 'schoolGuid': 'abcd'})
+        self.assertTrue(chain['all'])
+
+    def test_get_chain_district_level_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', '123', None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+        self.assertIn('123', chain['guid'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': '123'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': '123', 'schoolGuid': 'abcd'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'aaa'})
+        self.assertFalse(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'aaa', 'schoolGuid': 'abcd'})
+        self.assertFalse(chain['all'])
+
+    def test_get_chain_school_level_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', '123', 'abcd')]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+        self.assertIn('123', chain['guid'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': '123'})
+        self.assertFalse(chain['all'])
+        self.assertIn('abcd', chain['guid'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': '123', 'schoolGuid': 'abcd'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'aaa'})
+        self.assertFalse(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'aaa', 'schoolGuid': 'abcd'})
+        self.assertFalse(chain['all'])
+
+    def test_get_chain_invalid_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', 'District', 'School_1')]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NC'})
+        self.assertFalse(chain['all'])
+        self.assertEqual(len(chain['guid']), 0)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'District_2'})
+        self.assertFalse(chain['all'])
+        self.assertEqual(len(chain['guid']), 0)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'District', 'schoolGuid': 'School_2'})
+        self.assertFalse(chain['all'])
+        self.assertEqual(len(chain['guid']), 0)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'District_3', 'schoolGuid': 'School_2'})
+        self.assertFalse(chain['all'])
+        self.assertEqual(len(chain['guid']), 0)
+
+    def test_get_chain_multi_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', 'a', '1'),
+                    RoleRelation('Role', 'tenant', 'NY', 'a', '2'),
+                    RoleRelation('Role', 'tenant', 'NY', 'b', None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+        self.assertIn('a', chain['guid'])
+        self.assertIn('b', chain['guid'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'b'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'b', 'schoolGuid': '3'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'b', 'schoolGuid': '2'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': '2'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': '1'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': '3'})
+        self.assertFalse(chain['all'])
+
+    def test_get_chain_tenant_context(self):
+        role_rel = [RoleRelation('Role', 'tenant', None, None, None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a'})
+        self.assertFalse(chain['all'])
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': '1'})
+        self.assertFalse(chain['all'])
+
+    def test_get_chain_invalid_tenant(self):
+        role_rel = [RoleRelation('Role', 'tenant', None, None, None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('bad_tenant', 'Role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+
+    def test_get_chain_invalid_role(self):
+        role_rel = [RoleRelation('Role', 'tenant', None, None, None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'bad_role', {'stateCode': 'NY'})
+        self.assertFalse(chain['all'])
+
+    def test_get_chain_invalid_request_param(self):
+        role_rel = [RoleRelation('Role', 'tenant', None, None, None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant', 'Role', {'bad': 'NY'})
+        self.assertFalse(chain['all'])
+
+    def test__get_default_permission(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', None, None)]
+        uc = UserContext(role_rel)
+        perm = uc._get_default_permission()
+        self.assertFalse(perm['all'])
+        self.assertEqual(len(perm['guid']), 0)
+
+    def test_validate_hierarchy(self):
+        role_rel = [RoleRelation('Role', 'tenant', 'NY', 'a', None),
+                    RoleRelation('Role', 'tenant', 'NY', 'b', None)]
+        uc = UserContext(role_rel)
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY'}, 'stateCode')
+        self.assertFalse(result['all'])
+        self.assertIn('a', result['guid'])
+        self.assertIn('b', result['guid'])
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a'}, 'districtGuid')
+        self.assertTrue(result['all'])
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'b'}, 'districtGuid')
+        self.assertTrue(result['all'])
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'c'}, 'districtGuid')
+        self.assertFalse(result['all'])
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'c', 'schoolGuid': 'd'}, 'schoolGuid')
+        self.assertFalse(result['all'])
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': 'd'}, 'schoolGuid')
+        self.assertTrue(result['all'])
+        result = uc.validate_hierarchy('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'b', 'schoolGuid': 'd'}, 'schoolGuid')
+        self.assertTrue(result['all'])
+
+    def test__add_role(self):
+        user = User()
+        user._add_role('role')
+        self.assertIn('role', user.get_roles())
+        user._add_role(None)
+        self.assertEqual(1, len(user.get_roles()))
+        self.assertIn('role', user.get_roles())
+
+    def test__add_tenant(self):
+        user = User()
+        user._add_tenant('t')
+        self.assertIn('t', user.get_tenants())
+        user._add_tenant(None)
+        self.assertEqual(1, len(user.get_tenants()))
+        self.assertIn('t', user.get_tenants())
+
+    def test_default_permission_gets_added(self):
+        role_rel = [RoleRelation('badrole', 'tenant', 'NY', 'a', '1'),
+                    RoleRelation('PII', 'tenant', 'NY', 'a', '2'),
+                    RoleRelation('badrole2', 'tenant', 'NY', 'b', None)]
+        user = User()
+        user.set_context(role_rel)
+        roles = user.get_roles()
+        self.assertEqual(2, len(roles))
+        self.assertIn('DEFAULT', roles)
+        self.assertIn('PII', roles)
+        self.assertEqual(1, len(user.get_tenants()))
+
+    def test_with_default_permission(self):
+        role_rel = [RoleRelation('DEFAULT', 'tenant', 'NY', 'a', '1'),
+                    RoleRelation('PII', 'tenant', 'NY', 'a', '1')]
+        user = User()
+        user.set_context(role_rel)
+        roles = user.get_roles()
+        self.assertEqual(2, len(roles))
+        self.assertIn('DEFAULT', roles)
+        self.assertIn('PII', roles)
+        self.assertEqual(1, len(user.get_tenants()))
+
+    def test_tenantless(self):
+        role_rel = [RoleRelation('badrole', None, None, None, None),
+                    RoleRelation('PII', 'tenant1', 'NC', 'a', '2')]
+        user = User()
+        user.set_context(role_rel)
+        roles = user.get_roles()
+        self.assertEqual(2, len(roles))
+        self.assertIn('DEFAULT', roles)
+        self.assertIn('PII', roles)
+        tenants = user.get_tenants()
+        self.assertEqual(3, len(tenants))
+
+    def test_role_undefined(self):
+        role_rel = [RoleRelation('invalidrole', None, None, None, None)]
+        user = User()
+        user.set_context(role_rel)
+        roles = user.get_roles()
+        self.assertEqual(1, len(roles))
+        self.assertIn('DEFAULT', roles)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

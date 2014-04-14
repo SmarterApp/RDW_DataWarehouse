@@ -106,5 +106,5 @@ class SetEncoder(JSONEncoder):
         return JSONEncoder.default(self, obj)
 
 
-def remove_none_from_sets(s):
-    return list(s - set([None]))
+def remove_duplicates_and_none_from_list(l):
+    return list(set(l) - set([None]))

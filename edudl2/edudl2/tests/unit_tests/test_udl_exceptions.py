@@ -1,9 +1,8 @@
+__author__ = 'ejen'
+
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from edudl2.exceptions.errorcodes import ErrorSource, ErrorCode
-import ast
-__author__ = 'ejen'
 import unittest
-import os
 
 
 class TestUdlExceptions(unittest.TestCase):
@@ -11,15 +10,14 @@ class TestUdlExceptions(unittest.TestCase):
     def setUp(self):
         self.rows = [{'asmt_outcome_rec_id': 1,
                       'student_guid': 'student_guid_1',
-                      'asmt_guid': 'asmt_guid_1',
-                      'date_taken': 'date_taken_1'}]
+                      'asmt_guid': 'asmt_guid_1'}]
         self.batch_guid = 'test_batch_guid_1'
         self.schema_and_table = "schema.table"
         self.error_source = ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD
         self.dupe_error_source = ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE
         self.dupe_error_message = self.insert_error_message = """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"
 DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
- 'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s, status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s AND date_taken = %(date_taken)s AND status = %(status)s AND student_guid = %(student_guid)s' {'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', 'asmnt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', 'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5', 'date_taken': '20150207'}"""
+ 'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s, status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s AND status = %(status)s AND student_guid = %(student_guid)s' {'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', 'asmnt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', 'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}"""
 
     def tearDown(self):
         pass
@@ -55,11 +53,11 @@ DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
                          ' \'UPDATE "edware"."fact_asmt_outcome" '
                          'SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s, '
                          'status = %(new_status)s WHERE batch_guid = %(batch_guid)s '
-                         'AND asmt_guid = %(asmt_guid)s AND date_taken = %(date_taken)s AND '
+                         'AND asmt_guid = %(asmt_guid)s AND '
                          "status = %(status)s AND student_guid = %(student_guid)s' "
                          "{'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', "
                          "'asmnt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', "
-                         "'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5', 'date_taken': '20150207'}")
+                         "'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}")
 
     def test_error_code(self):
         attrs = dir(ErrorCode)

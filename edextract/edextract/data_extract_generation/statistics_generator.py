@@ -1,6 +1,7 @@
 __author__ = 'ablum'
 
-from edextract.data_extract_generation.data_generator_helper import percentage, subtract, format_intval, format_floatval
+from edextract.data_extract_generation.data_generator_helper import (percentage, subtract, format_intval, format_floatval,
+                                                                     get_row_identifiers)
 from edextract.trackers.category_tracker import DataCounter
 
 
@@ -25,10 +26,7 @@ def get_tracker_results(report_map, total_tracker, trackers, current_year):
         current_year_total = total_entry_data.get(current_year, None)
 
         for tracker in trackers:
-            state_name = key.state_name
-            district_name = key.district_name if key.district_name else 'ALL'
-            school_name = key.school_name if key.school_name else 'ALL'
-            category, value = tracker.get_category_and_value()
+            state_name, district_name, school_name, category, value = get_row_identifiers(key, tracker)
 
             if total_entry_data:
                 entry_data = _get_map_entry(tracker.get_map_entry(val), current_year, previous_year)

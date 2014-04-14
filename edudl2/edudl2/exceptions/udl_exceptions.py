@@ -36,10 +36,8 @@ class DeleteRecordNotFound(UDLException):
                       'err_code': ErrorCode.DELETE_RECORD_NOT_FOUND,
                       'err_code_text': ErrorCode.getText(ErrorCode.DELETE_RECORD_NOT_FOUND),
                       'err_input': "student_guid:{student_guid}, "
-                                   "asmt_guid:{asmt_guid}, "
-                                   "date_taken:{date_taken}".format(student_guid=row['student_guid'],
-                                                                    asmt_guid=row['asmt_guid'],
-                                                                    date_taken=row['date_taken'])}
+                                   "asmt_guid:{asmt_guid}".format(student_guid=row['student_guid'],
+                                                                  asmt_guid=row['asmt_guid'])}
             insert_to_table(get_udl_connection, 'err_list', values)
 
 
@@ -64,16 +62,14 @@ class UDLDataIntegrityError(UDLException):
         # DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
         #'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s,
         # # status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s
-        # AND date_taken = %(date_taken)s AND status = %(status)s AND student_guid = %(student_guid)s'
-        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'date_taken': '20150207', 'asmt_guid': 'guid_1',
+        # AND status = %(status)s AND student_guid = %(student_guid)s'
+        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'asmt_guid': 'guid_1',
         # 'new_status': 'D', 'batch_guid': 'guid_3', 'student_guid': 'guid_5'}
         #
         pattern = re.compile(r'(\{[^\{\}]+\})')
         error_input = re.findall(pattern, message)
         error = ast.literal_eval(error_input[0])
-        return "student_guid:{sg}, asmt_guid:{ag}, date_taken:{dt}".format(sg=error['student_guid_1'],
-                                                                           ag=error['asmt_guid_1'],
-                                                                           dt=error['date_taken_1'])
+        return "student_guid:{sg}, asmt_guid:{ag}".format(sg=error['student_guid_1'], ag=error['asmt_guid_1'])
 
     def get_record_id(self, message):
         # search postgres IntegrityError response for (), the 2nd one is the key id we have conflict
@@ -83,8 +79,8 @@ class UDLDataIntegrityError(UDLException):
         # DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
         #'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s,
         # # status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s
-        # AND date_taken = %(date_taken)s AND status = %(status)s AND student_guid = %(student_guid)s'
-        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'date_taken': '20150207', 'asmt_guid': 'guid_1',
+        # AND status = %(status)s AND student_guid = %(student_guid)s'
+        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'asmt_guid': 'guid_1',
         # 'new_status': 'D', 'batch_guid': 'guid_3', 'student_guid': 'guid_5'}
         #
         pattern = re.compile(r'(\([^\(\)\s]+\))')

@@ -289,6 +289,9 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
                                       conf[mk.WORKING_SCHEMA])
             failure_time = datetime.datetime.now()
             e.insert_err_list(failure_time)
+            # raise an exception and stop the pipeline
+            raise e
+    return True
 
 
 def check_mismatched_deletions(conf, target_conn, table_name):

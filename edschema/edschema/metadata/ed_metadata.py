@@ -92,8 +92,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('gender', String(10), nullable=True),
                      Column('email', String(256), nullable=True),
                      Column('dob', String(8), nullable=False),
+                     # This is not a metacolumn.
                      # marking this as meta column for now to ignore this in intelligent insert duplicate processing
-                     # this column will be deleted soon anyways
+                     # this column will be deleted soon anyways.
                      MetaColumn('section_guid', String(50), nullable=False),
                      Column('grade', String(10), nullable=False),  # TODO: Delete this field
                      Column('state_code', String(2), nullable=False),
@@ -327,10 +328,10 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                        Column('acc_scribe_nonembed', SmallInteger, nullable=False),
                                        Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                        Column('acc_streamline_mode', SmallInteger, nullable=False),
-                                       Column('rec_status', String(2), nullable=False),
-                                       Column('from_date', String(8), nullable=False),
-                                       Column('to_date', String(8), nullable=True),
-                                       Column('batch_guid', String(50), nullable=True),
+                                       MetaColumn('rec_status', String(2), nullable=False),
+                                       MetaColumn('from_date', String(8), nullable=False),
+                                       MetaColumn('to_date', String(8), nullable=True),
+                                       MetaColumn('batch_guid', String(50), nullable=True),
                                        )
 
     Index('fact_asmt_outcome_primary_student_idx', assessment_outcome_primary.c.student_guid, assessment_outcome_primary.c.asmt_guid, unique=False)

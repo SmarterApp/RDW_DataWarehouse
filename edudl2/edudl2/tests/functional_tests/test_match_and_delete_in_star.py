@@ -148,7 +148,6 @@ class MatchAndDeleteFTest(UDLTestHelper):
 
     @skip('to be fixed')
     def test_5_check_mismatched_deletions_2(self):
-        import pdb;pdb.set_trace();
         with get_target_connection(self.tenant_code, self.guid_batch) as conn:
             fact = conn.get_table('fact_asmt_outcome')
             query = select([count(fact.c.asmnt_outcome_rec_id)], from_obj=fact)

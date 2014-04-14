@@ -61,19 +61,19 @@ if __name__ == '__main__':
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     parser.add_argument('-f', dest='config_file', default=UDL2_DEFAULT_CONFIG_PATH_FILE, help="configuration file for UDL2")
     parser.add_argument('-p', dest='file_parts', default=4, type=int, help="The number or parts that the given csv file should be split into. Default=4")
-    parser.add_argument('--loop-dirs', nargs='+', help='a list of white space separated directories that specify '
-                                                       'the tenant directories to be observed')
+    parser.add_argument('--loop-dir', default=None, help='a parent directory of the tenant be observed. all child directories will be searched')
     args = parser.parse_args()
     if args.dev_mode:
-        # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
-        os.environ['PATH'] += os.pathsep + '/usr/local/bin'
         celery.conf.update(CELERY_ALWAYS_EAGER=True)
-        src_dir = os.path.join('/opt', 'edware', 'zones', 'data')
+        os.environ['PATH'] += os.pathsep + '/usr/local/bin'
+    if args.dev_mode and args.archive_file is None:
+        # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
+        src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
         # Find the first tar.gz.gpg file as LZ file
         file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
-        #dest = os.path.join(tempfile.mkdtemp(), os.path.basename(file_name))
-        dest = os.path.join('/opt', 'edware', 'zones', 'landing', 'arrivals', 'ca', 'ca_user1', 'file_drop')
+        dest = os.path.join(tempfile.mkdtemp(), os.path.basename(file_name))
         shutil.copy(file_name, dest)
-        args.archive_file = dest + '/' + os.path.basename(file_name)
+        args.archive_file = dest
 
-    start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced, tenant_dirs=args.loop_dirs)
+    start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced,
+                   tenant_dirs=args.loop_dir)

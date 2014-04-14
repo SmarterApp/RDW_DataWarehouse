@@ -64,3 +64,12 @@ def format_intval(intval):
         return str(intval)
     else:
         return ''
+
+
+def get_row_identifiers(key, tracker):
+    state_name = key.state_name
+    district_name = key.district_name if key.district_name else 'ALL'
+    school_name = key.school_name if key.school_name else 'ALL'
+    category, value = tracker.get_category_and_value()
+
+    return state_name, district_name, school_name, category, value

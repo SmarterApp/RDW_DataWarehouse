@@ -4,7 +4,7 @@ __author__ = 'tshewchuk'
 This module contains functions to generate data rows for the Student Registration Completion Report.
 """
 
-from edextract.data_extract_generation.data_generator_helper import format_intval
+from edextract.data_extract_generation.data_generator_helper import format_intval, get_row_identifiers
 
 
 def get_tracker_results(report_map, trackers, current_year):
@@ -21,10 +21,7 @@ def get_tracker_results(report_map, trackers, current_year):
     for key, val in report_map.items():
 
         for tracker in trackers:
-            state_name = key.state_name
-            district_name = key.district_name if key.district_name else 'ALL'
-            school_name = key.school_name if key.school_name else 'ALL'
-            category, value = tracker.get_category_and_value()
+            state_name, district_name, school_name, category, value = get_row_identifiers(key, tracker)
 
             entry_data = tracker.get_map_entry(val)
             current_year_count = entry_data.get(current_year, 0) if entry_data else 0

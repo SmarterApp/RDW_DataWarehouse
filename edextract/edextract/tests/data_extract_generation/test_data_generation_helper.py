@@ -5,7 +5,10 @@ Module containing data_generator_helper unit tests.
 """
 
 import unittest
-from edextract.data_extract_generation.data_generator_helper import percentage, subtract, format_intval, format_floatval
+from edextract.data_extract_generation.data_generator_helper import (percentage, subtract, format_intval, format_floatval,
+                                                                     get_row_identifiers)
+from edextract.student_reg_extract_processors.ed_org_data_processor import EdOrgNameKey
+from edextract.trackers.program_tracker import LEPStatusTracker
 
 
 class TestDataGenerationHelper(unittest.TestCase):
@@ -66,3 +69,15 @@ class TestDataGenerationHelper(unittest.TestCase):
 
     def test__format_intval_none(self):
         self.assertEquals(format_intval(None), '')
+
+    def test_get_row_identifiers(self):
+        # New Jersey state Central Regional district LEP Status row.
+        key = EdOrgNameKey(state_name='New Jersey', district_name='Central Regional', school_name='')
+        tracker = LEPStatusTracker()
+        state_name, district_name, school_name, category, value = get_row_identifiers(key, tracker)
+
+        self.assertEqual('New Jersey', state_name)
+        self.assertEqual('Central Regional', district_name)
+        self.assertEqual('ALL', school_name)
+        self.assertEqual('Program', category)
+        self.assertEqual('LEPStatus', value)

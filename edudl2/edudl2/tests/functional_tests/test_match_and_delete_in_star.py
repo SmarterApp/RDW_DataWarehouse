@@ -129,7 +129,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
     def test_match_all_records_to_be_deleted_with_prod(self):
         with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:
             records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
-            proxy_rows = move_to_target.yield_records_to_be_deleted(self.conf, prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
+            proxy_rows = move_to_target.yield_records_to_be_deleted(prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
             result = []
             for rows in proxy_rows:
                 result.extend(rows)
@@ -141,7 +141,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
     def test_update_pre_prod_for_records_to_be_deleted(self):
         with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:
             records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
-            proxy_rows = move_to_target.yield_records_to_be_deleted(self.conf, prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
+            proxy_rows = move_to_target.yield_records_to_be_deleted(prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
             for rows in proxy_rows:
                 move_to_target.update_rec_id_for_records_to_delete(self.conf, target_conn, 'fact_asmt_outcome', rows)
             mismatches = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')

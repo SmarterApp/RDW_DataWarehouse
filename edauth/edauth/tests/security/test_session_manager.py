@@ -89,7 +89,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
         identity_parser_class = getattr(module, 'BasicIdentityParser')
         session = create_new_user_session(create_SAMLResponse('SAMLResponse_no_memberOf.xml'), identity_parser_class)
-        self.assertEquals(session.get_roles(), [Roles.get_invalid_role(), 'TEACHER'], "no memberOf should have insert a role of none")
+        self.assertIn('TEACHER', session.get_roles(), "no memberOf should have insert a role of none")
 
 
 if __name__ == "__main__":

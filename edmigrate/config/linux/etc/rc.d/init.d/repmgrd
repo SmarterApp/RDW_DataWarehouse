@@ -13,7 +13,7 @@ DAEMON_COREFILE_LIMIT="unlimited"
 
 start() {
         echo -n "Starting repmgrd: "
-        daemon $REPMGRD
+        daemon --user=postgres $REPMGRD
         RETVAL=$?
 }
 

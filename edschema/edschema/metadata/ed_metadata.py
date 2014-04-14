@@ -267,6 +267,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.rec_status, unique=False)
     Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.rec_status, unique=False)
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False)
+    Index('fact_asmt_outcome_student_year', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_year, unique=False)
     # Filtering related indices
     Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.asmt_grade, unique=False)
     Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_lep, unique=False)

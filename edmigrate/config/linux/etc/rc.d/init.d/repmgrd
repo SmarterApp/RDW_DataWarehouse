@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+#. /opt/virtualenv/smarter/bin/activate
+CONF="/var/lib/pgsql/repmgrd.conf"
+PIDFILE="/var/run/repmgrd/repmgrd.pid"
+LOG="/var/log/repmgrd/repmgr.log"
+REPMGRD="ulimit -c unlimited; /usr/pgsql-9.2/bin/repmgrd -f $CONF -d -p $PIDFILE --verbose > $LOG 2>&1 &"
+DAEMON_COREFILE_LIMIT="unlimited"
+
+start() {
+        echo -n "Starting repmgrd: "
+        daemon $REPMGRD
+        RETVAL=$?
+}
+
+stop() {
+        echo -n "Stopping repmgrd: "
+        killproc -p $PIDFILE
+        RETVAL=$?
+}
+case $1 in
+        start)
+                start
+        ;;
+        stop)
+                stop
+        ;;
+        *)
+
+        echo $"Usage: repmgrd {start|stop}"
+        exit 2
+esac
+exit $RETVAL
+

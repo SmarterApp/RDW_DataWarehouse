@@ -47,12 +47,12 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         testing.tearDown()
 
     def test_invalid_params(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20, 'stateCode': 'AA'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": '3b10d26b-b013-4cdd-a916-5d577e895ed4', 'stateCode': 'AA'}
         results = get_student_report(params)
         self.assertIsInstance(results, HTTPForbidden)
 
     def test_student_report(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20, 'stateCode': 'NC'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": '3b10d26b-b013-4cdd-a916-5d577e895ed4', 'stateCode': 'NC'}
         result = get_student_report(params)['all_results']
         self.assertEqual(1, len(result), "studentGuid should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')

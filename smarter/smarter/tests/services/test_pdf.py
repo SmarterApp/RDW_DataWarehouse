@@ -75,19 +75,19 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160401}
+        self.__request.json_body = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160404}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': studentGuid, 'stateCode': 'NC', 'effectiveDate': 20160401}
+        self.__request.json_body = {'studentGuid': studentGuid, 'stateCode': 'NC', 'effectiveDate': 20160404}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -107,7 +107,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_pdf_service_no_context(self):
         self.__request.method
-        self.__request.GET = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160401}
+        self.__request.GET = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160404}
         self.__request.matchdict['report'] = 'indivStudentReport.html'
 
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, None, self.__request)
@@ -116,11 +116,11 @@ class TestServices(Unittest_with_edcore_sqlite):
         studentGuid = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
         self.__request.GET['studentGuid'] = studentGuid
         self.__request.GET['stateCode'] = 'NC'
-        self.__request.GET['effectiveDate'] = 20160401
+        self.__request.GET['effectiveDate'] = 20160404
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -136,13 +136,13 @@ class TestServices(Unittest_with_edcore_sqlite):
         params = {}
         params['studentGuid'] = studentGuid
         params['stateCode'] = 'NC'
-        params['effectiveDate'] = 20160401
+        params['effectiveDate'] = 20160404
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
@@ -156,7 +156,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         # Important, this pdf must not exist in directory
         params['studentGuid'] = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
         params['stateCode'] = 'NC'
-        params['effectiveDate'] = 20160401
+        params['effectiveDate'] = 20160404
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
@@ -192,12 +192,12 @@ class TestServices(Unittest_with_edcore_sqlite):
         params['studentGuid'] = studentGuid
         params['stateCode'] = 'NC'
         params['dummy'] = 'dummy'
-        params['effectiveDate'] = 20160401
+        params['effectiveDate'] = 20160404
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
         # prepare empty file to mimic a pdf was generated
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160401", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')

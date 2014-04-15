@@ -31,6 +31,7 @@ def generate_isr_report_path_by_student_guid(state_code, effective_date, pdf_rep
                                                       dim_asmt.c.asmt_type == asmt_type))])
         query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT, fact_asmt_outcome.c.student_guid == student_guid, dim_asmt.c.effective_date == effective_date))
         result = connection.get_result(query)
+        print('%s -> %s, %s, %s' % (str(query), effective_date, student_guid, asmt_type))
         if result:
             first_record = result[0]
             state_code = first_record[Constants.STATE_CODE]

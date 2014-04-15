@@ -82,8 +82,7 @@ def get_current_request_context(origin_func):
     def wrap(*args, **kwds):
         results = origin_func(*args, **kwds)
         if results:
-            # TODO: Make sure context and permission exists first
-            results['context']['permissions'] = json.loads(json.dumps(get_current_context(*args), cls=SetEncoder))
+            results['context']['permissions'] = get_current_context(*args)
         return results
     return wrap
 

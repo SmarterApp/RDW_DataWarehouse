@@ -74,7 +74,7 @@ class UDLExceptionTest(UDLTestHelper):
 
     def test_insert_err_list__delete_record_not_found(self):
         exc = DeleteRecordNotFound(self.guid_batch, self.mismatched_rows, self.schema_table,
-                                   self.error_source_mismatched, self.udl_phase_step, self.working_schema)
+                                   self.error_source_mismatched, self.udl_phase_step, self.working_schema, 'asmnt_outcome_rec_id')
         exc.insert_err_list('20140303')
         self.get_err_list()
         res = self.get_err_list()

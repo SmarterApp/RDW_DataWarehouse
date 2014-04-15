@@ -2,6 +2,7 @@ from edudl2.database.udl2_connector import get_udl_connection
 __author__ = 'swimberly'
 from edudl2.exceptions.errorcodes import ErrorCode, ErrorSource
 from edcore.database.utils.query import insert_to_table
+from edschema.metadata.util import get_primary_key_columns
 import re
 import ast
 
@@ -12,13 +13,15 @@ class UDLException(Exception):
 
 
 class DeleteRecordNotFound(UDLException):
-    def __init__(self, batch_guid, rows, schema_and_table, error_source, udl_phase_step='', working_schema=''):
+    def __init__(self, batch_guid, rows, schema_and_table, error_source, udl_phase_step='',
+                 working_schema='', primary_key_to_record=None):
         self.batch_guid = batch_guid
         self.rows = rows
         self.schema_and_table = schema_and_table
         self.udl_phase_step = udl_phase_step
         self.working_schema = working_schema
         self.error_source = error_source
+        self.primary_key_to_record = primary_key_to_record
 
     def __str__(self):
         return "DeleteRecordNotFound for batch_guid: {batch_guid}, "\
@@ -32,7 +35,7 @@ class DeleteRecordNotFound(UDLException):
                       'err_source_text': ErrorSource.getText(self.error_source),
                       'guid_batch': self.batch_guid,
                       'created_date': failure_time,
-                      'record_sid': row['asmnt_outcome_rec_id'],
+                      'record_sid': row[self.primary_key_to_record] if self.primary_key_to_record is not None else None,
                       'err_code': ErrorCode.DELETE_RECORD_NOT_FOUND,
                       'err_code_text': ErrorCode.getText(ErrorCode.DELETE_RECORD_NOT_FOUND),
                       'err_input': "student_guid:{student_guid}, "

@@ -304,13 +304,20 @@ def check_mismatched_deletions(conf, target_conn, table_name):
     logger.info('check_mismatched_deletions')
     mismatches = get_records_marked_for_deletion(conf, target_conn, table_name)
     if mismatches:
-        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
-                                   mismatches,
-                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                             table=table_name),
-                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
-                                   conf[mk.UDL_PHASE_STEP],
-                                   conf[mk.WORKING_SCHEMA])
+        pk_column = get_primary_key_columns(target_conn.get_table(table_name))[0].name
+        e = DeleteRecordNotFound(conf[mk.GUID_BATCH],
+                                 mismatches,
+                                 "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                           table=table_name),
+                                 ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
+                                 conf[mk.UDL_PHASE_STEP],
+                                 conf[mk.WORKING_SCHEMA],
+                                 pk_column
+                                 )
+        failure_time = datetime.datetime.now()
+        e.insert_err_list(failure_time)
+        # raise an exception and stop the pipeline
+        raise e
 
 
 def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):

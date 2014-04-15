@@ -44,9 +44,9 @@ class UserContext(object):
         Instantiates user context from RoleRelation array. We do not preserve inter-relationships between institutions
         '''
         self.__tenant_context_map = {row.tenant: {} for row in role_inst_rel_list}
-        self.__map = deepcopy(self.__tenant_context_map)
+        self.__hierarchy_context_map = deepcopy(self.__tenant_context_map)
         for row in role_inst_rel_list:
-            self.build_chain(row)
+            self.build_hierarchy(row)
             tenant = self.__tenant_context_map.get(row.tenant)
             role = tenant.get(row.role)
             role = {'state_code': set(), 'district_guid': set(), 'school_guid': set()} if role is None else role
@@ -72,52 +72,66 @@ class UserContext(object):
         return self.__tenant_context_map[tenant][role] if tenant in self.__tenant_context_map and role in self.__tenant_context_map[tenant] else {}
 
     def get_chain(self, tenant, permission, params):
-        if tenant in self.__map and permission in self.__map[tenant]:
-            idx = None
-            # TODO: refactor this
-            if params.get('schoolGuid'):
-                idx = 'schoolGuid'
-            elif params.get('districtGuid'):
-                idx = 'districtGuid'
-            elif params.get('stateCode'):
-                idx = 'stateCode'
-            else:
-                return self._get_default_permission()
-            return self.validate_hierarchy(tenant, permission, params, idx)
+        '''
+        Given a request parameter, determine if the user has context to the next hierarchy down.
+        Returns a dictionary object, with 'all', and 'guid' as key. {'all': True, 'guid': set()} if user can access everything in the next hierarchy.
+        {'all': False, 'guid': {'23'}} if user any only see guid '23' in the next hierarchy
+
+        :param string tenant:  name of the user's tenant
+        :param string permission: permission that we're verifying
+        :param dict params:  request parameter of report
+        '''
+        if tenant in self.__hierarchy_context_map and permission in self.__hierarchy_context_map[tenant]:
+            for guid in ['schoolGuid', 'districtGuid', 'stateCode']:
+                if params.get(guid):
+                    return self.validate_hierarchy(tenant, permission, params, guid)
         return self._get_default_permission()
 
-    def build_chain(self, row):
-        tenant = self.__map.get(row.tenant)
+    def build_hierarchy(self, row):
+        '''
+        Give a role relation object, build the hierarchy of permission that user can see
+        :param RoleRelation row:  the object that we're trying to add to the existing hierarchy context map
+        '''
+        tenant = self.__hierarchy_context_map.get(row.tenant)
         current = tenant.get(row.role, self._get_default_permission())
-        tenant[row.role] = self._create(row, current)
-        self.__map[row.tenant] = tenant
+        tenant[row.role] = self._traverse_hierarchy(row, current)
+        self.__hierarchy_context_map[row.tenant] = tenant
 
-    def _create(self, role_rel, current):
+    def _traverse_hierarchy(self, role_rel, current):
+        '''
+        With a role relation object, traverse to append to the existing current hierarchy
+        '''
         head = current
         for guid in [role_rel.state_code, role_rel.district_guid, role_rel.school_guid, None]:
             if guid:
-                current['guid'].add(guid)
-                if current.get(guid) is None:
-                    current[guid] = self._get_default_permission()
+                if current['guid'].get(guid) is None:
+                    current['guid'][guid] = self._get_default_permission()
             else:
-                current['guid'] = set()
+                current['guid'] = {}
                 current['all'] = True
                 break
-            current = current.get(guid, self._get_default_permission())
+            current = current['guid'].get(guid, self._get_default_permission())
         return head
 
     def _get_default_permission(self):
-        return {'all': False, 'guid': set()}
+        '''
+        Returns the default permission of a particular hierachy level, ie. user cannot see anything in the next level down.
+        '''
+        return {'all': False, 'guid': {}}
 
     def validate_hierarchy(self, tenant, permission, params, identifier):
-        current = self.__map[tenant][permission]
+        '''
+        Given request parameters and the level that the user is trying to access, return dict object that dictates whether
+        the user has context to the next level down
+        '''
+        current = self.__hierarchy_context_map[tenant][permission]
         hierarchy = ['stateCode', 'districtGuid', 'schoolGuid']
         idx = hierarchy.index(identifier)
         for i in hierarchy[0:idx + 1]:
-            current = current.get(params.get(i), {})
+            current = current['guid'].get(params.get(i), {})
             if not current or current.get('all'):
                 break
-        return {'all': current.get('all', False), 'guid': current.get('guid', set())}
+        return {'all': current.get('all', False), 'guid': list(current.get('guid', {}).keys())}
 
     def __json__(self, request):
         '''

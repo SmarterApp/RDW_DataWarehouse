@@ -6,13 +6,10 @@ from sqlalchemy.sql.expression import text, bindparam, select
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
 from unittest import skip
 from edudl2.database.udl2_connector import get_udl_connection,\
-    get_target_connection
+    get_target_connection, get_prod_connection
 from sqlalchemy.sql.functions import count
-import unittest
-# This test use file containing 3 rows that match to prod and one row not match to prod.
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
 class MatchAndDeleteFTest(UDLTestHelper):
 
     matched_prod_values = None
@@ -35,8 +32,8 @@ class MatchAndDeleteFTest(UDLTestHelper):
         self.phase_number = 4
         self.load_type = 'assessment'
         self.conf = move_to_target_setup.generate_conf(self.guid_batch, self.phase_number,
-                                                       self.load_type, MatchAndDeleteFTest.tenant_code, target_schema=MatchAndDeleteFTest.guid_batch)
-        self.match_conf = move_to_target_setup.get_move_to_target_conf()['handle_deletions']
+                                                       self.load_type, MatchAndDeleteFTest.tenant_code,
+                                                       target_schema=MatchAndDeleteFTest.guid_batch)
         self.load_to_dim_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task"
         self.load_to_fact_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_fact"
         self.dim_table_prefix = 'dim_'
@@ -44,7 +41,6 @@ class MatchAndDeleteFTest(UDLTestHelper):
         self.insert_sql = 'INSERT INTO "{staging_schema}"."{staging_table}" ({columns_string}) VALUES ({value_string});'
 
     def tearDown(self):
-        #super(MatchAndDeleteFTest, self).tearDown()
         pass
 
     def generate_insert_items(self, header, row):
@@ -123,29 +119,31 @@ class MatchAndDeleteFTest(UDLTestHelper):
             result = conn.get_result(query)
             return int(result[0]['count'])
 
-    def test_01_match_deleted_records(self):
+    def test_get_records_for_deletion(self):
         self.load_int_to_star()
         self.assertEqual(4, self.count_rows())
-        MatchAndDeleteFTest.matched_prod_values = move_to_target.match_deleted_records(self.conf, self.match_conf)
-        # This is coming to 5 because for student_guid = 61ec47de-e8b5-4e78-9beb-677c44dd9b50, asmt_guid =8117f196-bf78-4190-a1d0-e7ab004d1e09,date_taken = 20150406 there is 3 duplicate recods in prod.
-        self.assertEqual(5, len(MatchAndDeleteFTest.matched_prod_values))
+        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn:
+            records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
+            self.assertEqual(4, len(records_to_be_deleted))
 
-    def test_02_match_deleted_records(self):
-        result = move_to_target.update_deleted_record_rec_id(self.conf, self.match_conf, MatchAndDeleteFTest.matched_prod_values)
-        self.assertEqual(1, self.count_rows('W'))
-        self.assertEqual(3, self.count_rows('D'))
+    def test_match_all_records_to_be_deleted_with_prod(self):
+        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:
+            records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
+            proxy_rows = move_to_target.yield_records_to_be_deleted(prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
+            result = []
+            for rows in proxy_rows:
+                result.extend(rows)
+            self.assertEqual(4, len(result))
 
-    @skip('in dev')
-    def test_3_check_mismatched_deletions(self):
-        result = move_to_target.check_mismatched_deletions(self.conf, self.match_conf)
-        self.assertIsNotNone(result)
+    def test_update_pre_prod_for_records_to_be_deleted(self):
+        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:
+            records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
+            proxy_rows = move_to_target.yield_records_to_be_deleted(prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
+            for rows in proxy_rows:
+                move_to_target.update_rec_id_for_records_to_delete(self.conf, target_conn, 'fact_asmt_outcome', rows)
+            mismatches = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
+            self.assertEqual(0, len(mismatches))
 
-    @skip('in dev')
-    def test_5_check_mismatched_deletions_2(self):
+    def test_check_mismatched_deletions(self):
         with get_target_connection(self.tenant_code, self.guid_batch) as conn:
-            fact = conn.get_table('fact_asmt_outcome')
-            query = select([count(fact.c.asmnt_outcome_rec_id)], from_obj=fact)
-            result = self.target_conn.execute(query)
-            # now add one more row on the fact_asmt_outcome, this should trigger exception
-            # add code that insert one more row
-            self.assertRaises(DeleteRecordNotFound, move_to_target.check_mismatched_deletions(self.conf, self.match_conf))
+            self.assertRaises(DeleteRecordNotFound, move_to_target.check_mismatched_deletions(self.conf, conn, 'fact_asmt_outcome'))

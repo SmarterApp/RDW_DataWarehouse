@@ -8,6 +8,8 @@ This test cover following two scenario:
 '''
 import os
 import shutil
+import time 
+from time import sleep
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
@@ -19,7 +21,6 @@ from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.database.udl2_connector import get_udl_connection
 
 
-#@unittest.skip("test failed at jenkins, under investigation")
 class Test_Err_Handling_Scenario(unittest.TestCase):
 
     def setUp(self):
@@ -139,6 +140,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         self.archived_file = os.path.join(self.data_dir, 'test_rec_not_in_prod.tar.gz.gpg')
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
         self.validate_udl_stats(self.guid_batch_id)
+        time.sleep(5)
         self.validate_err_list(self.guid_batch_id)
 
     def test_del_rec_twice_same_batch(self):

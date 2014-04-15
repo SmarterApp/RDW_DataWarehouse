@@ -26,6 +26,14 @@ class TestRoles(unittest.TestCase):
         Roles.set_roles(mappings)
         self.assertTrue(Roles.has_undefined_roles(['DEPLOYMENT_ADMINISTRATOR', 'DEPLOYMENT_ADMINISTRATOR', 'Bad Role', 'DATA_LOADER']))
 
+    def test_default_permission(self):
+        mappings = {('Allow', 'DEPLOYMENT_ADMINISTRATOR', ('view', 'logout', 'default')),
+                    ('Allow', 'SYSTEM_ADMINISTRATOR', ('view', 'logout')),
+                    ('Allow', 'DATA_LOADER', ('view', 'logout'))}
+        Roles.set_roles(mappings)
+        default = Roles.get_default_permission()
+        self.assertEqual('DEPLOYMENT_ADMINISTRATOR', default)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

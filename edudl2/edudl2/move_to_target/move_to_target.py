@@ -15,14 +15,13 @@ from edudl2.database.udl2_connector import get_target_connection, get_udl_connec
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edschema.metadata_generator import generate_ed_metadata
 import edschema.metadata.util as edschema_util
-from sqlalchemy.sql.expression import text, select, and_
+from sqlalchemy import update
+from sqlalchemy.sql.expression import text, select, and_, tuple_
 from edcore.database.utils.utils import create_schema
 from edcore.database.utils.constants import Constants
+from edschema.metadata.util import get_primary_key_columns, get_natural_key, get_natural_key_columns
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
-    create_insert_query, update_foreign_rec_id_query,\
-    create_sr_table_select_insert_query,\
-    create_delete_query, update_matched_fact_asmt_outcome_row,\
-    get_delete_candidates, match_delete_record_against_prod
+    create_insert_query, update_foreign_rec_id_query, create_sr_table_select_insert_query, create_delete_query
 
 FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
@@ -197,39 +196,166 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
 
 
 def calculate_spend_time_as_second(start_time, finish_time):
-    '''
+    """
     Main function to calculate period distance as seconds
-    '''
+    """
     return (finish_time - start_time).total_seconds()
 
 
-def match_deleted_records(conf, match_conf):
-    '''
-    Match production database in fact_asmt_outcome. and get fact_asmt_outcome primary rec id
-    in production tables.
-    return a list of rec_id to delete reocrds
-    '''
-    matched_results = []
-    logger.info('in match_deleted_records')
-    candidates = get_delete_candidates(conf[mk.TENANT_NAME],
-                                       conf[mk.TARGET_DB_SCHEMA],
-                                       match_conf['target_table'],
-                                       conf[mk.GUID_BATCH],
-                                       match_conf['find_deleted_fact_asmt_outcome_rows'])
+def get_columns_names_to_pick_for_delete(table):
+    """Returns column names to be picked for handling the delete [pk + nk]
 
-    for candidate in candidates:
-        matched = match_delete_record_against_prod(conf[mk.TENANT_NAME],
-                                                   conf[mk.PROD_DB_SCHEMA],
-                                                   match_conf['prod_table'],
-                                                   match_conf['match_delete_fact_asmt_outcome_row_in_prod'],
-                                                   candidate)
-        matched_results.extend(matched)
-    return matched_results
+    :param table: SQLAlchemy table object
+    """
+    return [c.name for c in get_primary_key_columns(table) + get_natural_key(table)]
+
+
+def get_records_marked_for_deletion(conf, target_conn, table_name):
+    """Returns records marked for deletion from pre-prod (rec_status: 'W')
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param table_name: name of the table
+
+    @return: returns records marked for deletion
+    """
+    table = target_conn.get_table(table_name)
+    column_names = get_columns_names_to_pick_for_delete(table)
+    columns_to_select = [table.c[column_name] for column_name in column_names]
+    query = select(columns_to_select, from_obj=table).where(and_(table.c.batch_guid == conf[mk.GUID_BATCH],
+                                                                 table.c.rec_status == Constants.STATUS_WAITING))
+    result = target_conn.get_result(query)
+    return result
+
+
+def yield_records_to_be_deleted(prod_conn, table_name, records_marked_for_deletion, batch_size=100):
+    """Yield records to  marked as deleted from pre-prod table
+
+
+    The methods yields records marked for delete('W') from the pre-prod database table
+
+    :param prod_conn: connection object to prod database
+    :param table_name: name of the table as string
+    :param records_marked_for_deletion: records from pre-prod marked for deletion (rec_status: 'W')
+    :param batch_size: batch size to yield results
+
+    @return: Yields records from prod in size of batch_size
+    """
+    table = prod_conn.get_table(table_name)
+    natural_keys = get_natural_key_columns(table)
+    columns_to_select = [table.c[column_name] for column_name in get_columns_names_to_pick_for_delete(table)]
+    key_columns = [table.columns[key] for key in natural_keys]
+    key_values = [[row[key] for key in natural_keys] for row in records_marked_for_deletion]
+    query = select(columns_to_select, from_obj=table).where(and_(table.c.rec_status == Constants.STATUS_CURRENT,
+                                                                 tuple_(*key_columns).in_(key_values)))
+    result = prod_conn.execute(query, stream_results=True)
+    rows = result.fetchmany(batch_size)
+    while len(rows) > 0:
+        yield rows
+        rows = result.fetchmany(batch_size)
+
+
+def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_records_matched):
+    """Update pre-prod records primary key and rec_status based on matching records from prod
+
+
+    For all the matching records the natural_key will be set to the natural key of the record from prod
+    and the rec_status will be updated to 'D' from 'W'
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param table_name: name of the table being updated
+    :param prod_records_matched: batch of records from prod that matches with pre-prod 'W' records based on natural keys
+
+    """
+    table = target_conn.get_table(table_name)
+    for record in prod_records_matched:
+        values = {table.c[pk_column]: record[pk_column] for pk_column in table.primary_key.columns.keys()}
+        values[table.c[Constants.REC_STATUS]] = Constants.STATUS_DELETE
+        criteria = [table.c[nk_column] == record[nk_column] for nk_column in get_natural_key_columns(table)]
+        criteria.append(table.c.batch_guid == conf[mk.GUID_BATCH])
+        criteria.append(table.c.rec_status == Constants.STATUS_WAITING)
+        query = update(table).values(values).where(and_(*criteria))
+        try:
+            target_conn.execute(query)
+        except IntegrityError as ie:
+            e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
+                                      "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA], table=table_name),
+                                      ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
+                                      conf[mk.UDL_PHASE_STEP],
+                                      conf[mk.WORKING_SCHEMA])
+            failure_time = datetime.datetime.now()
+            e.insert_err_list(failure_time)
+            # raise an exception and stop the pipeline
+            raise e
+
+
+def check_mismatched_deletions(conf, target_conn, table_name):
+    """check for records to be deleted in pre-prod which could not find a match with prod
+
+
+    This method will raise an exception and will fail the batch if there are records with rec_status 'W' in pre-prod
+    at this stage
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param table_name: name of the table being verified
+    """
+    logger.info('check_mismatched_deletions')
+    mismatches = get_records_marked_for_deletion(conf, target_conn, table_name)
+    if mismatches:
+        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
+                                   mismatches,
+                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
+                                                             table=table_name),
+                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
+                                   conf[mk.UDL_PHASE_STEP],
+                                   conf[mk.WORKING_SCHEMA])
+
+
+def process_records_to_be_deleted(conf, target_conn, prod_conn, table_name):
+    """Process records to be deleted for the given table
+
+
+    The method grabs the records marked for deletion(rec_status: 'W') and if found, matched them against prod
+    based on natural key combination for the table and updates the pre-prod records primary key and rec_status
+    The processing happens in batches of records from prod. If the update fails, the pipeline will stop. The method
+    also verifies for any mistached records at the end of the process
+
+    :param conf: udl configuration object
+    :param target_conn: connection object to pre-prod database
+    :param prod_conn: connection object to prod database
+    :param table_name: name of the table being processed
+    """
+    records_marked_for_deletion = get_records_marked_for_deletion(conf, target_conn, table_name)
+    if len(records_marked_for_deletion) > 0:
+        proxy_rows = yield_records_to_be_deleted(prod_conn, table_name, records_marked_for_deletion)
+        for prod_rows in proxy_rows:
+            update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_rows)
+        check_mismatched_deletions(conf, target_conn, table_name)
+    else:
+        logger.info('No records found marked for deletion in {schema_name}.'
+                    '{target_table}'.format(schema_name=conf[mk.GUID_BATCH], target_table=table_name))
+
+
+def handle_updates_and_deletes(conf):
+    """Main handler for updates and deletes
+
+
+    The method grabs tables to be processed for updates and deletes (Fact tables)
+    and runs process_records_to_be_deleted for each table
+
+    :param conf: udl configuration object
+    """
+    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as target_conn, get_prod_connection(conf[mk.TENANT_NAME]) as prod_conn:
+        tables = get_tables_starting_with(target_conn.get_metadata(), Constants.FACT_TABLES_PREFIX)
+        for table_name in tables:
+            process_records_to_be_deleted(conf, target_conn, prod_conn, table_name)
 
 
 def handle_duplicates_in_dimensions(tenant_name, guid_batch):
-    '''
-    Handle duplicate records in dimensions by marking them as deleted
+    """Handle duplicate records in dimensions by marking them as deleted
+
 
     Steps:
     1. Soft delete records (Mark rec_status as 'S') in pre-prod dimensions that are already existing in production database
@@ -239,7 +365,9 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch):
 
     :param tenant_name: tenant name, to get target database connection
     :param guid_batch:  batch buid
-    '''
+
+    @return: Number of affected rows
+    """
     affected_rows = 0
     with get_target_connection(tenant_name, guid_batch) as target_conn, get_prod_connection(tenant_name) as prod_conn:
 
@@ -257,61 +385,8 @@ def handle_duplicates_in_dimensions(tenant_name, guid_batch):
     return affected_rows
 
 
-def check_mismatched_deletions(conf, match_conf):
-    '''
-    check if any deleted record is not in target database
-    so we will raise error for this udl batch
-    '''
-    logger.info('check_mismatched_deletions')
-    mismatches = get_delete_candidates(conf[mk.TENANT_NAME],
-                                       conf[mk.TARGET_DB_SCHEMA],
-                                       match_conf['target_table'],
-                                       conf[mk.GUID_BATCH],
-                                       match_conf['find_deleted_fact_asmt_outcome_rows'])
-    if mismatches:
-        raise DeleteRecordNotFound(conf[mk.GUID_BATCH],
-                                   mismatches,
-                                   "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                             table=match_conf['prod_table']),
-                                   ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
-                                   conf[mk.UDL_PHASE_STEP],
-                                   conf[mk.WORKING_SCHEMA])
-
-
-def update_deleted_record_rec_id(conf, match_conf, matched_values):
-    '''
-    update rows in the batch that have a match in prod with correct deletion status for migration.
-    and update the asmnt_outcome_rec_id in pre-prod to prod value so migration can work faster
-    '''
-    logger.info('update_deleted_record_rec_id')
-    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
-        for matched_value in matched_values:
-            # TODO: execute query in one
-            query = update_matched_fact_asmt_outcome_row(conf[mk.TENANT_NAME],
-                                                         conf[mk.TARGET_DB_SCHEMA],
-                                                         match_conf['target_table'],
-                                                         conf[mk.GUID_BATCH],
-                                                         match_conf['update_matched_fact_asmt_outcome_row'],
-                                                         matched_value)
-            try:
-                execute_udl_queries(conn, [query],
-                                    'Exception -- Failed at execute find_deleted_fact_asmt_outcome_rows query',
-                                    'move_to_target',
-                                    'update_deleted_record_rec_id')
-            except IntegrityError as ie:
-                e = UDLDataIntegrityError(conf[mk.GUID_BATCH], ie,
-                                          "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA],
-                                                                    table=match_conf['prod_table']),
-                                          ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
-                                          conf[mk.UDL_PHASE_STEP],
-                                          conf[mk.WORKING_SCHEMA])
-                failure_time = datetime.datetime.now()
-                e.insert_err_list(failure_time)
-
-
 def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, target_table):
-    '''
-    Move student registration data from source integration tables to target table.
+    """Move student registration data from source integration tables to target table.
     Source tables are INT_STU_REG and INT_STU_REG_META. Target table is student_registration.
 
     @param conf: Configuration for particular load type (assessment or studentregistration)
@@ -320,7 +395,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
     @param target_table: Name of the target table to where the data should be moved
 
     @return: Number of inserted rows
-    '''
+    """
     with get_udl_connection() as conn_to_source_db:
 
         column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,

@@ -25,7 +25,7 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(len(chain), 1)
         self.assertEqual(chain[0].tenant, '1326608')
         self.assertEqual(chain[0].state_code, 'CA')
-        self.assertEqual(chain[0].role, 'GENERAL')
+        self.assertEqual(chain[0].role, 'Test Administrator')
         self.assertEqual(chain[0].district_guid, '7062025')
         self.assertEqual(chain[0].school_guid, '4368641')
 
@@ -36,7 +36,7 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(len(chain), 2)
         self.assertEqual(chain[0].tenant, '1326608')
         self.assertEqual(chain[0].state_code, 'CA')
-        self.assertEqual(chain[0].role, 'GENERAL')
+        self.assertEqual(chain[0].role, 'Test Administrator')
         self.assertEqual(chain[0].district_guid, '7062025')
         self.assertEqual(chain[0].school_guid, '4368641')
         self.assertEqual(chain[1].tenant, 'cat')

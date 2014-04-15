@@ -40,6 +40,7 @@ cp ${WORKSPACE}/edextract/config/linux/etc/rc.d/init.d/celeryd-edextract %{build
 cp ${WORKSPACE}/edmigrate/config/linux/opt/edware/conf/celeryd-edmigrate.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/celeryd-edmigrate %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/edmigrate-conductor %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd %{buildroot}/etc/rc.d/init.d/
 
 %build
 export LANG=en_US.UTF-8
@@ -177,16 +178,26 @@ if [ ! -d /var/log/celery-edmigrate ]; then
     mkdir -p /var/log/celery-edmigrate
     chown celery.celery /var/log/celery-edmigrate
 fi
+if [ ! -d /var/log/repmgrd ]; then
+    mkdir -p /var/log/repmgrd
+    chown postgres.postgres /var/log/repmgrd
+fi
+if [ ! -d /var/run/repmgrd ]; then
+    mkdir -p /var/run/repmgrd
+    chown postgres.postgres /var/run/repmgrd
+fi
 
 %post
 chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
 chkconfig --add celeryd-edmigrate
+chkconfig --add repmgrd
 
 %preun
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 chkconfig --del celeryd-edmigrate
+chkconfig --del repmgrd
 
 %postun
 

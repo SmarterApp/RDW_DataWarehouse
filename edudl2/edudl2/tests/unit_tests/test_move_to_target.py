@@ -8,7 +8,6 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query
 from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
     create_queries_for_move_to_fact_table
-from edudl2.move_to_target.move_to_target_conf import get_move_to_target_conf
 from edudl2.move_to_target.move_to_target_setup import Column
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 import logging
@@ -209,8 +208,7 @@ def generate_conf(guid_batch, udl2_conf):
               mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
               mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
               mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
-              mk.TENANT_NAME: get_unittest_tenant_name(),
-              mk.MOVE_TO_TARGET: get_move_to_target_conf()}
+              mk.TENANT_NAME: get_unittest_tenant_name()}
     return conf
 
 

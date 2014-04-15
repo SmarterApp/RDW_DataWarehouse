@@ -7,8 +7,8 @@ Created on May 20, 2013
 import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edauth.security.utils import get_session_cookie, SetEncoder
-from edauth.security.user import User
+from edauth.security.utils import get_session_cookie, SetEncoder,\
+    remove_duplicates_and_none_from_list
 
 
 class TestUtils(unittest.TestCase):
@@ -35,6 +35,11 @@ class TestUtils(unittest.TestCase):
         results = encoder.default(s)
         self.assertIsInstance(results, list)
 
+    def test_remove_dup_and_none(self):
+        l = ['test', None, 'test']
+        results = remove_duplicates_and_none_from_list(l)
+        self.assertEqual(1, len(results))
+        self.assertIn('test', results)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

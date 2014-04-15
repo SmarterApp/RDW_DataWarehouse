@@ -15,17 +15,20 @@ from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
+from edcore.tests.utils.unittest_with_edcore_sqlite import get_unittest_tenant_name
+from edcore.security.tenant import set_tenant_map
 
 
 class TestSessionManagerWithCache(unittest.TestCase):
 
     def setUp(self):
         # delete all user_session before test
-        mappings = {('Allow', 'TEACHER', ('view', 'logout')),
+        mappings = {('Allow', 'TEACHER', ('view', 'logout', 'default')),
                     ('Allow', 'SYSTEM_ADMINISTRATOR', ('view', 'logout')),
                     ('Allow', 'DATA_LOADER', ('view', 'logout')),
                     ('Allow', 'NONE', ('logout'))}
         Roles.set_roles(mappings)
+        set_tenant_map({get_unittest_tenant_name(): 'NC'})
         self.__request = DummyRequest()
         reg = Registry()
         reg.settings = {}
@@ -86,7 +89,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
         identity_parser_class = getattr(module, 'BasicIdentityParser')
         session = create_new_user_session(create_SAMLResponse('SAMLResponse_no_memberOf.xml'), identity_parser_class)
-        self.assertEquals(session.get_roles(), [Roles.get_invalid_role()], "no memberOf should have insert a role of none")
+        self.assertIn('TEACHER', session.get_roles(), "no memberOf should have insert a role of none")
 
 
 if __name__ == "__main__":

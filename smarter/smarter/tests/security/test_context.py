@@ -122,11 +122,23 @@ class TestContext(Unittest_with_edcore_sqlite):
 
     def test_consortium_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
-        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, None, None, None, None)])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, None, None, None, None),
+                                        RoleRelation(RolesConstants.SRS_EXTRACTS, None, None, None, None)])
         # For Context Security, we need to save the user object
         self.__config.testing_securitypolicy(dummy_session.get_user())
         context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': '242'})
         self.assertTrue(context['pii']['all'])
+        self.assertTrue(context['srs_extracts']['all'])
+
+    def test_state_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, get_unittest_tenant_name(), 'NC', None, None),
+                                        RoleRelation(RolesConstants.SRS_EXTRACTS, get_unittest_tenant_name(), 'NC', None, None)])
+        # For Context Security, we need to save the user object
+        self.__config.testing_securitypolicy(dummy_session.get_user())
+        context = get_current_context({'stateCode': 'NC', 'districtGuid': '229', 'schoolGuid': '242'})
+        self.assertTrue(context['pii']['all'])
+        self.assertTrue(context['srs_extracts']['all'])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

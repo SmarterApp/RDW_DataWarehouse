@@ -43,10 +43,10 @@ objectClass: person
 cn: Susan Hall
 sn: Hall
 employeeNumber: 5e5ac3f1-df9d-48cd-8f25-b74f18dc1f9c
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Susan
 uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P
@@ -60,10 +60,10 @@ objectClass: person
 cn: Victor Lee
 sn: Lee
 employeeNumber: 4765a55c-452c-4ed3-8018-4931f73b7554
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Victor
 uid: vlee
 userPassword:: e1NTSEF9ZGo1YW9lM054Tm9QQzVQT2srbDZJa1N6U1FvQTEyUzJnTlU2Qmc9P
@@ -77,10 +77,10 @@ objectClass: person
 cn: Sara Lee
 sn: Lee
 employeeNumber: 8038a3ee-b822-43f3-bb14-c2c1bfc59860
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Sara
 uid: slee
 userPassword:: e1NTSEF9QWJNTStib2FkTmJ0UnZTY2p3dkhPblBJeWdRVHFYS1N1YTd5ckE9P
@@ -94,10 +94,10 @@ objectClass: person
 cn: Jamie Hine
 sn: Hine
 employeeNumber: ca2762c3-050b-4150-a0de-6f03f45d2f50
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Jamie
 uid: jhine
 userPassword:: e1NTSEF9WnhiL0dFTitGWFlXZWJLRm5seE9CcXNvMXErNlZwR2xZaWI1eXc9P
@@ -111,10 +111,10 @@ objectClass: person
 cn: Chris Davis
 sn: Davis
 employeeNumber: 548f2795-206a-4c47-954c-c261546204b6
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Chris
 uid: cdavis
 userPassword:: e1NTSEF9NXc2ZVFSQ0llVzN0R25mRFRJZlZ1VDRCMWNSVkJSWHVtMENuc0E9P
@@ -128,10 +128,10 @@ objectClass: person
 cn: Kelly Tidd
 sn: Tidd
 employeeNumber: f42466ef-21ff-41c6-9a57-00fc758ea2e0
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Kelly
 uid: ktidd
 userPassword:: e1NTSEF9V1FwN0lzdTU5clRUNzg5YUU5WUJNekhJUnFyS1hPdHg5Q2lCZUE9P
@@ -145,10 +145,10 @@ objectClass: person
 cn: Louisa Mui
 sn: Mui
 employeeNumber: 9fc3013a-01e6-40aa-8d5e-798b9b8524c3
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Louisa
 uid: lmui
 userPassword:: e1NTSEF9cTVSWDJGM2FrYXFvYjNVMWhBZFJnTEtHUk5FT0gzdm1sWW9QWEE9P
@@ -162,10 +162,10 @@ objectClass: person
 cn: Hugh Goree
 sn: Goree
 employeeNumber: eaf5cadb-9ebb-484d-9a93-8a7077d89214
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Hugh
 uid: hgoree
 userPassword:: e1NTSEF9eW5NakhCcTBXVUV6dGdzTUFiUHlxNjFNTWpDL0pEdmpYRVliSlE9P
@@ -179,10 +179,10 @@ objectClass: person
 cn: Clare Seabaugh
 sn: Seabaugh
 employeeNumber: cfc872c7-b9d7-4e0b-8632-e1ea643852ee
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Clare
 uid: cseabaugh
 userPassword:: e1NTSEF9QVpUYnhrV2VpSEFJeGJsN3NKR0s1UkwvR3RhZldsSHR4dWdsa1E9P
@@ -196,10 +196,10 @@ objectClass: person
 cn: Katy Bester
 sn: Bester
 employeeNumber: 0e2e5079-2969-4b47-ad8c-06610bbbacd5
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Katy
 uid: kbester
 userPassword:: e1NTSEF9VnN1YlR0RmxLVlM2dFBlM3oyTEluVFk4bjBVbmRqZUtnTjhsMnc9P
@@ -213,10 +213,10 @@ objectClass: person
 cn: Erik Croker
 sn: Croker
 employeeNumber: 8d1df6d9-e05d-41dd-8909-b0289e1bc21a
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Erik
 uid: ecroker
 userPassword:: e1NTSEF9bEZEK1NwcHVleFc5SldRZTdUVHk5V1kwSUh2RU1rbTk4NktZOGc9P
@@ -411,7 +411,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||dog|CA|||||||||
 employeeType: ||PII|||SBAC|||fish|VT|||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||dog|CA|||||||||
-employeeType: ||SRSEXTRACTS|||SBAC|||cat|ES|||||||||
+employeeType: ||SRSEXTRACTS|||SBAC|||cat|NC|||||||||
 givenName: Sam
 uid: swhite
 userPassword:: e1NTSEF9c1dqWm1pcVowcUZ2dVZCcyt5SkZnanJuRCtPVk82ZExuR1V1Y3c9P
@@ -463,9 +463,9 @@ employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
 employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
-employeeType: ||PII|||SBAC|||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||PII|||SBAC|||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||PII|||SBAC|||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+employeeType: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+employeeType: ||PII|||SBAC|||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
 givenName: Perry
 uid: pclark
 userPassword:: e1NTSEF9UG9MZGQvZlUyNjhJK2tuWnhKYlVXZ2Z5YXFTTE5YY2tmSDE4YVE9P
@@ -496,10 +496,10 @@ objectClass: person
 cn: Austin Rice
 sn: Rice
 employeeNumber: 7d0d1fd0-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||||||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||||||||
-employeeType: ||SRSEXTRACTS||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||||||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
 givenName: Austin
 uid: arice
 userPassword:: e1NTSEF9V2FwMTJmRjYvZXNVbE1WQ2lralQ4WkJkK2EyWXJreHNPUVpRNFE9P
@@ -513,7 +513,7 @@ objectClass: person
 cn: Charlie Rose
 sn: Rose
 employeeNumber: 84b01490-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|ES|||||||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
 givenName: Charlie
 uid: crose
 userPassword:: e1NTSEF9dERWVUhnQkFyVVNYMGI3ekJtVm0xTTh2d3VmdThCMDN5WVdNT1E9P
@@ -558,9 +558,9 @@ objectClass: person
 cn: Liz Neil
 sn: Neil
 employeeNumber: 9c313b30-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
 givenName: Liz
 uid: lneil
 userPassword:: e1NTSEF9a3U5bWZZYXRxVmk4Z1MvaHBEWWlpTzVlQ1JLYlBqcUhSTStQVVE9P
@@ -574,9 +574,9 @@ objectClass: person
 cn: Kevin Scott
 sn: Scott
 employeeNumber: a2b29350-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||State_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||State_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 givenName: Kevin
 uid: kscott
 userPassword:: e1NTSEF9c1lTdVBmTzFPVEw5R1crazRGaEc3d2Z6MWNaNUg3TlpXdjVLcmc9P
@@ -590,9 +590,9 @@ objectClass: person
 cn: Frank Bell
 sn: Bell
 employeeNumber: aa55d630-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||District_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
 givenName: Frank
 uid: fbell
 userPassword:: e1NTSEF9T2dMcVp6eHZYUkZ5UGRQc3VQT29NcUxCRngxUjNrTUtVODJFc0E9P
@@ -606,15 +606,15 @@ objectClass: person
 cn: Jason Brown
 sn: Brown
 employeeNumber: b2b7ae20-bf5e-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||PII||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
-employeeType: ||PII||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||SAREXTRACTS||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
-employeeType: ||SAREXTRACTS||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+employeeType: ||District_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
 givenName: Jason
 uid: jbrown
 userPassword:: e1NTSEF9anZCL1p6OW5TUjRIY2I1RnNlaGlRbktRc0hPZXp1YUVMeFAxOHc9P
@@ -628,11 +628,11 @@ objectClass: person
 cn: Harry Charles
 sn: Charles
 employeeNumber: f43db880-bf63-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||PII||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||SAREXTRACTS||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+employeeType: ||District_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
 givenName: Harry
 uid: hcharles
 userPassword:: e1NTSEF9eC84bTBEUWtsa2dKYTdMbDUvVHRvcW1zb1ZNSkpMMHR3SFBueUE9P
@@ -646,9 +646,9 @@ objectClass: person
 cn: Robert Wilson
 sn: Wilson
 employeeNumber: fb5499e0-bf63-11e3-8a33-0800200c9a66
-employeeType: ||District_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
-employeeType: ||PII||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
+employeeType: ||District_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||||
+employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
 givenName: Robert
 uid: rwilson
 userPassword:: e1NTSEF9a2tHRGhUSUhmYVA2WlpaRUpaSFFQVHNUWnp5ZlhkLzNDRUFFc2c9P
@@ -662,7 +662,7 @@ objectClass: person
 cn: Molly Davis
 sn: Davis
 employeeNumber: 03737560-bf64-11e3-8a33-0800200c9a66
-employeeType: ||District_Education_Administrator_2|||SBAC|||cat|ES|||||||||
+employeeType: ||District_Education_Administrator_2|||SBAC|||cat|NC|||||||||
 givenName: Molly
 uid: mdavis
 userPassword:: e1NTSEF9dlo4N2hPek9ocCtNQVQyamM2bmowZGRtd1dIK2pxZVllTXMzWGc9P
@@ -676,9 +676,9 @@ objectClass: person
 cn: Reid Field
 sn: Field
 employeeNumber: 0d9573e0-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Teacher||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||Teacher||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 givenName: Reid
 uid: rfield
 userPassword:: e1NTSEF9V3ZwemZZVGdPaGZ2bTlLaDJmeVlBYUN6SXVmZVVYVnpSaTkwZ0E9P
@@ -692,8 +692,8 @@ objectClass: person
 cn: Dan Carter
 sn: Carter
 employeeNumber: 172f7db0-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Teacher||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
+employeeType: ||Teacher||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||0eab62f5-6c97-4302-abff-7bfdc61f527c|Dolphin Razorfish Sch|
 givenName: Dan
 uid: dcarter
 userPassword:: e1NTSEF9V29qVUtMOUtFTjE3M3oveG8za0dqcEs3SElNWGhGY29wZUlkcGc9P
@@ -707,11 +707,11 @@ objectClass: person
 cn: Mike Turner
 sn: Turner
 employeeNumber: 1e363270-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Teacher||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||PII||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
-employeeType: ||SAREXTRACTS||||||cat|ES|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+employeeType: ||Teacher||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||PII||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
+employeeType: ||SAREXTRACTS||||||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||ccb4895f-0b6e-44dd-8b41-6293b0f5b3d4|Serotine Planetree Elementary School|
 givenName: Mike
 uid: mturner
 userPassword:: e1NTSEF9UndLZDlQM0NKS2ZiTmdLK2dZN1QyNk52S3UvOU1yMlluWHZCUnc9P
@@ -725,11 +725,11 @@ objectClass: person
 cn: Austin Hope
 sn: Hope
 employeeNumber: 2569eaa0-bf64-11e3-8a33-0800200c9a66
-employeeType: ||Building_Administrator||||||cat|ES|||||||||
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
-employeeType: ||PII||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
-employeeType: ||SAREXTRACTS||||||cat|ES|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+employeeType: ||Building_Administrator||||||cat|NC|||||||||
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
+employeeType: ||PII||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||1cc294ff-7b3f-4531-b9fc-9526138e4141|Nunbird Manefish HS|
+employeeType: ||SAREXTRACTS||||||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
 givenName: Austin
 uid: ahope
 userPassword:: e1NTSEF9czJEeEs3eExLZUxLS3crSGgzSW44K0hMMUhOZnlUMGlqMjFGYWc9P

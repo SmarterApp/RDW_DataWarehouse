@@ -53,3 +53,10 @@ class TestDistrictDataProcessor(unittest.TestCase):
         different_districts = {AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', 'prev_district_guid': 'NOTGUILFORDGUID'}
         result = self.district_data_processor._is_matched_district(different_districts)
         self.assertFalse(result)
+
+    def test_call_asmt_tracker(self):
+        self.district_data_processor._call_asmt_trackers = MagicMock(return_value=None)
+
+        self.district_data_processor.process_asmt_outcome_data(self.results)
+
+        self.district_data_processor._call_asmt_trackers.assert_called_with('GUILFORD_GUID', self.results)

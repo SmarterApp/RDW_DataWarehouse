@@ -14,6 +14,7 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.tracker = TotalTracker()
         self.tracker.track_academic_year = MagicMock(return_value=None)
         self.tracker.track_matched_ids = MagicMock(return_value=None)
+        self.tracker.track_asmt = MagicMock(return_value=None)
 
         self.category_tracker = [self.tracker]
 
@@ -25,16 +26,20 @@ class TestEdOrgDataProcessor(unittest.TestCase):
     def test_call_tracker(self):
         self.data_processor._call_academic_year_trackers('123', self.data)
         self.tracker.track_academic_year.assert_called_with('123', self.data)
+
         self.data_processor._call_academic_year_trackers('456', self.data)
         self.tracker.track_academic_year.assert_called_with('456', self.data)
+
         self.data_processor._call_academic_year_trackers('789', self.data)
         self.tracker.track_academic_year.assert_called_with('789', self.data)
 
     def test_call_matched_trackers(self):
         self.data_processor._call_matched_ids_trackers('123', self.data)
         self.tracker.track_matched_ids.assert_called_with('123', self.data)
+
         self.data_processor._call_matched_ids_trackers('456', self.data)
         self.tracker.track_matched_ids.assert_called_with('456', self.data)
+
         self.data_processor._call_matched_ids_trackers('789', self.data)
         self.tracker.track_matched_ids.assert_called_with('789', self.data)
 
@@ -47,3 +52,13 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         self.assertEquals('123', self.data_processor.get_ed_org_hierarchy()[('NC', '', '')])
         self.assertEquals('456', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', '')])
         self.assertEquals('789', self.data_processor.get_ed_org_hierarchy()[('NC', 'Gilfford', 'Daybreak School')])
+
+    def test_call_asmt_trackers(self):
+        self.data_processor._call_asmt_trackers('123', self.data)
+        self.tracker.track_asmt.assert_called_with('123', self.data)
+
+        self.data_processor._call_asmt_trackers('456', self.data)
+        self.tracker.track_asmt.assert_called_with('456', self.data)
+
+        self.data_processor._call_asmt_trackers('789', self.data)
+        self.tracker.track_asmt.assert_called_with('789', self.data)

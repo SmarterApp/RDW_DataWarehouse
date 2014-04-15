@@ -16,10 +16,12 @@ class TestRowDataProcessor(unittest.TestCase):
         self.mock_processor1 = MagicMock()
         self.mock_processor1.process_yearly_data = MagicMock(return_value=None)
         self.mock_processor1.process_matched_ids_data = MagicMock(return_value=None)
+        self.mock_processor1.process_asmt_outcome_row_data = MagicMock(return_value=None)
 
         self.mock_processor2 = MagicMock()
         self.mock_processor2.process_yearly_data = MagicMock(return_value=None)
         self.mock_processor2.process_matched_ids_data = MagicMock(return_value=None)
+        self.mock_processor2.process_asmt_outcome_row_data = MagicMock(return_value=None)
 
         self.data = [{'first': 'first'}, {'second': 'second'}]
 
@@ -52,3 +54,12 @@ class TestRowDataProcessor(unittest.TestCase):
 
         self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor1.process_matched_ids_data.call_args_list)
         self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor2.process_matched_ids_data.call_args_list)
+
+    def test_process_asmt_outcome_row_data(self):
+        row_data_processor = RowDataProcessor()
+        row_data_processor.data_processors = [self.mock_processor1, self.mock_processor2]
+
+        row_data_processor.process_asmt_outcome_row_data(self.data)
+
+        self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor1.process_asmt_outcome_data.call_args_list)
+        self.assertEquals([call({'first': 'first'}), call({'second': 'second'})], self.mock_processor2.process_asmt_outcome_data.call_args_list)

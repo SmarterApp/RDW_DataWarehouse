@@ -80,6 +80,40 @@ class TestCategoryTracker(unittest.TestCase):
 
         self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
 
+    def test_asmt_should_track(self):
+        ct = DummyCategoryTracker()
+
+        ct.track_asmt('guid1', {'asmt_type': 'SUMMATIVE', 'asmt_subject': 'Math'})
+        self.assertEqual(1, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(1, ct.get_map_entry('guid1')[('summative', 'math')], 'Tracker does not have expected entry')
+
+        ct.track_asmt('guid1', {'asmt_type': 'SUMMATIVE', 'asmt_subject': 'ELA'})
+        self.assertEqual(2, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(1, ct.get_map_entry('guid1')[('summative', 'ela')], 'Tracker does not have expected entry')
+
+        ct.track_asmt('guid1', {'asmt_type': 'INTERIM COMPREHENSIVE', 'asmt_subject': 'ELA'})
+        self.assertEqual(3, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(1, ct.get_map_entry('guid1')[('interim comprehensive', 'ela')], 'Tracker does not have expected entry')
+
+        ct.track_asmt('guid1', {'asmt_type': 'INTERIM COMPREHENSIVE', 'asmt_subject': 'ELA'})
+        self.assertEqual(3, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(2, ct.get_map_entry('guid1')[('interim comprehensive', 'ela')], 'Tracker does not have expected entry')
+
+        ct.track_asmt('guid2', {'asmt_type': 'INTERIM COMPREHENSIVE', 'asmt_subject': 'ELA'})
+        self.assertEqual(3, len(ct.get_map_entry('guid1')), 'Tracker returned unexpected entry')
+        self.assertEqual(2, ct.get_map_entry('guid1')[('interim comprehensive', 'ela')], 'Tracker does not have expected entry')
+        self.assertEqual(1, len(ct.get_map_entry('guid2')), 'Tracker returned unexpected entry')
+        self.assertEqual(1, ct.get_map_entry('guid2')[('interim comprehensive', 'ela')], 'Tracker does not have expected entry')
+
+    def test_asmt_should_not_track(self):
+        ct = DummyCategoryTracker(False)
+
+        self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
+
+        ct.track_asmt('guid1', {'asmt_type': 'SUMMATIVE', 'asmt_subject': 'ELA'})
+
+        self.assertIsNone(ct.get_map_entry('guid1'), 'Tracker returned unexpected entry')
+
 
 class DummyCategoryTracker(CategoryTracker):
 

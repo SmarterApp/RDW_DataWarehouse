@@ -8,8 +8,7 @@ from smarter.security.roles.default import BaseRole
 from smarter.security.roles.base import verify_context
 from smarter.security.context_role_map import ContextRoleMap
 from smarter.security.constants import RolesConstants
-from sqlalchemy.sql.expression import and_, or_, Alias
-from edschema.metadata.util import get_selectable_by_table_name
+from sqlalchemy.sql.expression import and_, or_
 
 
 # PII and SAR Extracts have the same context
@@ -42,7 +41,6 @@ class PII(BaseRole):
         Updates a query adding context
         If Context is an empty list, return None, which will return Forbidden Error
         '''
-        tables = {obj for (obj, name) in get_selectable_by_table_name(query).items() if name == Constants.FACT_ASMT_OUTCOME}
         context = user.get_context().get_states(tenant, self.name)
         if not context:
             # context returned is empty, therefore no context
@@ -50,7 +48,7 @@ class PII(BaseRole):
         expr = []
         for k, v in context.items():
             if v:
-                expr.append(and_([table.c[k].in_(v) for table in tables]))
+                expr.append(and_([table.c[k].in_(v) for table in self.get_context_tables(query)]))
         # context of none means that user has no access
         return query.where(or_(expr))
 

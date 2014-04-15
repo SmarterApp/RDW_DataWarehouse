@@ -7,7 +7,7 @@ from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.base import BaseRole, verify_context
 from smarter.security.context_role_map import ContextRoleMap
 from smarter.security.constants import RolesConstants
-from sqlalchemy.sql.expression import or_, and_
+from sqlalchemy.sql.expression import or_
 
 
 @ContextRoleMap.register([RolesConstants.SRS_EXTRACTS])
@@ -38,7 +38,7 @@ class SRSExtracts(BaseRole):
         '''
         context = user.get_context().get_states(tenant, self.name)
         # context of none means that user has no access
-        return None if context is None else query.where(and_(*[table.columns.state_code.in_(context) for table in self.get_context_tables(query)]))
+        return None if context is None else query.where(or_(*[table.columns.state_code.in_(context) for table in self.get_context_tables(query)]))
 
     def check_context(self, tenant, user, student_guids):
         '''

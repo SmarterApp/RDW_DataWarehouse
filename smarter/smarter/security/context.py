@@ -3,7 +3,7 @@ Created on May 7, 2013
 
 @author: dip
 '''
-from sqlalchemy.sql.expression import Select, or_, and_
+from sqlalchemy.sql.expression import Select
 from pyramid.security import authenticated_userid
 import pyramid
 from smarter.reports.helpers.constants import Constants
@@ -13,8 +13,6 @@ from edcore.security.tenant import get_tenant_by_state_code
 from pyramid.httpexceptions import HTTPForbidden
 from smarter.security.constants import RolesConstants
 from functools import wraps
-import json
-from edauth.security.utils import SetEncoder
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], permission=RolesConstants.PII, **kwargs):

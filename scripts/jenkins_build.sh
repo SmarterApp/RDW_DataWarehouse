@@ -311,7 +311,7 @@ function import_data_from_csv {
     python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant cat --stateCode NC --stateName "North Carolina"
     python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant dog --stateCode CA --stateName California --updateYear
     if (! $RUN_END_TO_END;) then
-        python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant fish --stateCode VT --stateName Vermont
+        python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources/student_registration_data/ --tenant fish --stateCode VT --stateName Vermont
     fi
 }
 

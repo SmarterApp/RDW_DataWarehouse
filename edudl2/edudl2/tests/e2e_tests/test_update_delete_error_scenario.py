@@ -8,8 +8,7 @@ This test cover following two scenario:
 '''
 import os
 import shutil
-import time 
-from time import sleep
+import time
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf

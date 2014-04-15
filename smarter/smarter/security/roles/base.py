@@ -4,7 +4,7 @@ Created on May 9, 2013
 @author: dip
 '''
 from edapi.exceptions import ForbiddenError
-from sqlalchemy.sql.expression import distinct, and_, select
+from sqlalchemy.sql.expression import distinct, and_, select, Alias
 from smarter.reports.helpers.constants import Constants
 
 
@@ -17,6 +17,9 @@ class BaseRole(object):
         self.name = name
 
     def get_context(self, tenant, user):
+        pass
+
+    def add_context(self, tenant, user, query):
         pass
 
     def check_context(self, tenant, user, student_guids):

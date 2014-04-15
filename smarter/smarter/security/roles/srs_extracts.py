@@ -7,7 +7,8 @@ from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.base import BaseRole, verify_context
 from smarter.security.context_role_map import ContextRoleMap
 from smarter.security.constants import RolesConstants
-from sqlalchemy.sql.expression import or_
+from sqlalchemy.sql.expression import or_, and_
+from edschema.metadata.util import get_selectable_by_table_name
 
 
 @ContextRoleMap.register([RolesConstants.SRS_EXTRACTS])
@@ -29,6 +30,17 @@ class SRSExtracts(BaseRole):
             return None
         else:
             return [student_reg.c.state_code.in_(context)] if context else []
+
+    @verify_context
+    def add_context(self, tenant, user, query):
+        '''
+        Updates a query adding context
+        If Context is an empty list, return None, which will return Forbidden Error
+        '''
+        tables = {obj for (obj, name) in get_selectable_by_table_name(query).items() if name == Constants.STUDENT_REG}
+        context = user.get_context().get_states(tenant, self.name)
+        # context of none means that user has no access
+        return None if context is None else query.where(and_(*[table.columns.state_code.in_(context) for table in tables]))
 
     def check_context(self, tenant, user, student_guids):
         '''

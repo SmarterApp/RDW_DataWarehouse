@@ -37,11 +37,7 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], permission=
             raise HTTPForbidden()
         context = __get_context_instance(permission, connector)
         # Get context security expression to attach to where clause
-        clauses = context.get_context(get_tenant_by_state_code(state_code), user)
-
-        # Set the where clauses with OR
-        if clauses:
-            query = query.where(and_(or_(*clauses)))
+        query = context.add_context(get_tenant_by_state_code(state_code), user, query)
 
     return query
 

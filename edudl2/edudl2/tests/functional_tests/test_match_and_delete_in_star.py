@@ -133,7 +133,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
             result = []
             for rows in proxy_rows:
                 result.extend(rows)
-            self.assertEqual(6, len(result))
+            self.assertEqual(4, len(result))
 
     def test_update_pre_prod_for_records_to_be_deleted(self):
         with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:

@@ -140,6 +140,16 @@ class TestUser(unittest.TestCase):
         chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'District', 'schoolGuid': 'School_1'})
         self.assertTrue(chain['all'])
 
+    def test_get_chain_tenant_level_context(self):
+        role_rel = [RoleRelation('Role', 'tenant1', None, None, None)]
+        uc = UserContext(role_rel)
+        chain = uc.get_chain('tenant1', 'Role', {'stateCode': 'NC'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant1', 'Role', {'stateCode': 'NC', 'districtGuid': '1234'})
+        self.assertTrue(chain['all'])
+        chain = uc.get_chain('tenant1', 'Role', {'stateCode': 'NC', 'districtGuid': '1234', 'schoolGuid': 'abcd'})
+        self.assertTrue(chain['all'])
+
     def test_get_chain_state_level_context(self):
         role_rel = [RoleRelation('Role', 'tenant', 'NY', None, None)]
         uc = UserContext(role_rel)
@@ -219,14 +229,14 @@ class TestUser(unittest.TestCase):
         chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': '3'})
         self.assertFalse(chain['all'])
 
-    def test_get_chain_tenant_context(self):
-        role_rel = [RoleRelation('Role', 'tenant', None, None, None)]
+    def test_get_chain_tenant_context_bad_tenant(self):
+        role_rel = [RoleRelation('Role', 'tenant1', None, None, None)]
         uc = UserContext(role_rel)
-        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY'})
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NC'})
         self.assertFalse(chain['all'])
-        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a'})
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NC', 'districtGuid': 'a'})
         self.assertFalse(chain['all'])
-        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NY', 'districtGuid': 'a', 'schoolGuid': '1'})
+        chain = uc.get_chain('tenant', 'Role', {'stateCode': 'NC', 'districtGuid': 'a', 'schoolGuid': '1'})
         self.assertFalse(chain['all'])
 
     def test_get_chain_invalid_tenant(self):

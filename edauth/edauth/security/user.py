@@ -128,9 +128,9 @@ class UserContext(object):
         hierarchy = ['stateCode', 'districtGuid', 'schoolGuid']
         idx = hierarchy.index(identifier)
         for i in hierarchy[0:idx + 1]:
-            current = current['guid'].get(params.get(i), {})
             if not current or current.get('all'):
                 break
+            current = current['guid'].get(params.get(i), {})
         return {'all': current.get('all', False), 'guid': list(current.get('guid', {}).keys())}
 
     def __json__(self, request):

@@ -66,13 +66,13 @@ class Test_Error_In_Migration(unittest.TestCase):
         with get_target_connection() as ed_connector:
             ed_connector.set_metadata_by_reflect(schema_name)
             fact_table = ed_connector.get_table('fact_asmt_outcome')
-            prod_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '115f7b10-9e18-11e2-9e96-0800200c9a66', )
+            prod_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_output_table = ed_connector.execute(prod_output_data).fetchall()
             expected_status_val_D = [('D',)]
             self.assertEquals(prod_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
 
             fact_table_pr = ed_connector.get_table('fact_asmt_outcome_primary')
-            prod_data = select([fact_table_pr.c.rec_status]).where(fact_table_pr.c.student_guid == '115f7b10-9e18-11e2-9e96-0800200c9a66', )
+            prod_data = select([fact_table_pr.c.rec_status]).where(fact_table_pr.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_table = ed_connector.execute(prod_data).fetchall()
             self.assertEquals(prod_table, expected_status_val_D, 'Status is wrong in fact_asmt_table_primary for delete record')
 
@@ -115,16 +115,15 @@ class Test_Error_In_Migration(unittest.TestCase):
     def validate_prod(self):
         with get_prod_connection() as conn:
             fact_table = conn.get_table('fact_asmt_outcome')
-            query = select([fact_table], and_(fact_table.c.student_guid == '115f7b10-9e18-11e2-9e96-0800200c9a66', fact_table.c.rec_status == 'D'))
+            query = select([fact_table], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.rec_status == 'D'))
             result = conn.execute(query).fetchall()
             expected_no_rows = 1
             self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
 
             fact_table_pr = conn.get_table('fact_asmt_outcome')
-            fact_asmt_pr = select([fact_table_pr], and_(fact_table_pr.c.student_guid == '115f7b10-9e18-11e2-9e96-0800200c9a66', fact_table_pr.c.rec_status == 'D'))
+            fact_asmt_pr = select([fact_table_pr], and_(fact_table_pr.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table_pr.c.rec_status == 'D'))
             fact_result = conn.execute(fact_asmt_pr).fetchall()
             self.assertEquals(len(fact_result), expected_no_rows, "Data has not been loaded to prod_fact_table_primary after edmigrate")
-
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):

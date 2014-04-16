@@ -62,15 +62,23 @@ class Test(unittest.TestCase):
             update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.asmt_guid == '8117f196-bf78-4190-a1d0-e7ab004d1e09'))
             update_output_table = connection.execute(update_output_data).fetchall()
             self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
-            #self.assertIn(('I',), update_output_table, "Insert status I is not found in the Update record")
+            self.assertIn(('C',), update_output_table, "Insert status C is not found in the Update record")
             # verify update asmt_score in fact_table
 
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.rec_status == 'I', fact_table.c.asmt_guid == '8117f196-bf78-4190-a1d0-e7ab004d1e09'))
+            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.rec_status == 'C', fact_table.c.asmt_guid == '8117f196-bf78-4190-a1d0-e7ab004d1e09'))
             new_asmt_score = connection.execute(update_asmt_score).fetchall()
             expected_asmt_score = [(1400,)]
-            #self.assertEquals(new_asmt_score, expected_asmt_score)
+            # verify that score is updated in fact_Asmt
+            self.assertEquals(new_asmt_score, expected_asmt_score)
+            # verify that there is only one record with status C
+            self.assertEquals(len(new_asmt_score), 1)
+
             # TODO add verification for dim_student update
-            #update_last_name = select([dim_student.c.last_name], and_(dim_student.c.studne_guid))
+            update_last_name = select([dim_student.c.last_name], and_(dim_student.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', dim_student.c.batch_guid == self.guid_batch_id))
+            result_dim_student = connection.execute(update_last_name).fetchall()
+            print(result_dim_student)
+            expected_last_name = [('Patel',)]
+            self.assertEquals(result_dim_student, expected_last_name)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

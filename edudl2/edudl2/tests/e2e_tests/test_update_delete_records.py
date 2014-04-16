@@ -88,10 +88,10 @@ class Test_Update_Delete(unittest.TestCase):
             update_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
             update_output_table = ed_connector.execute(update_output_data).fetchall()
             self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
-            self.assertIn(('I',), update_output_table, "Insert status I is not found in the Update record")
+            self.assertIn(('C',), update_output_table, "Insert status C is not found in the Update record")
 
             # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.rec_status == 'I'))
+            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.rec_status == 'C'))
             new_asmt_score = ed_connector.execute(update_asmt_score).fetchall()
             print('Updated asmt_score after update is:', new_asmt_score)
             expected_asmt_score = [(1500,)]

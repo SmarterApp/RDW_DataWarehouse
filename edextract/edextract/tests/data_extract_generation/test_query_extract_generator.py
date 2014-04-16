@@ -37,7 +37,7 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period], from_obj=[dim_asmt])
-            query = query.where(dim_asmt.c.asmt_guid == '22')
+            query = query.where(dim_asmt.c.asmt_guid == '7d10d26b-b013-4cdd-a916-5d577e895cff')
         output = os.path.join(self.__tmp_dir, 'asmt.csv')
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
@@ -52,13 +52,13 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
                 csv_data.append(row)
         self.assertEqual(len(csv_data), 2)
         self.assertEqual(csv_data[0], ['asmt_guid', 'asmt_period'])
-        self.assertEqual(csv_data[1], ['22', 'Spring 2016'])
+        self.assertEqual(csv_data[1], ['7d10d26b-b013-4cdd-a916-5d577e895cff', 'Spring 2016'])
 
     def test_generate_json_success(self):
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
             query = select([dim_asmt.c.asmt_guid], from_obj=[dim_asmt])
-            query = query.where(dim_asmt.c.asmt_guid == '22')
+            query = query.where(dim_asmt.c.asmt_guid == '7d10d26b-b013-4cdd-a916-5d577e895cff')
             output = os.path.join(self.__tmp_dir, 'asmt.json')
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
@@ -68,7 +68,7 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
         self.assertTrue(os.path.exists(output))
         with open(output) as out:
             data = json.load(out)
-        self.assertEqual(data['asmt_guid'], '22')
+        self.assertEqual(data['asmt_guid'], '7d10d26b-b013-4cdd-a916-5d577e895cff')
 
     def test_generate_csv_data_no_result(self):
         #Results are empty

@@ -39,8 +39,8 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def test_generate_isr_report_path_by_student_guid(self):
-        file_name = generate_isr_report_path_by_student_guid('NC', '20160401', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160401.en.pdf'))
+        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
+        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_exist(self):
         self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120101', pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
@@ -50,8 +50,8 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_for_grayScale(self):
-        file_name = generate_isr_report_path_by_student_guid('NC', '20160401', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=True, lang='jp')
-        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160401.jp.g.pdf'))
+        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=True, lang='jp')
+        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.jp.g.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_existd_for_grayScale(self):
         self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120201', pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4', grayScale=True)

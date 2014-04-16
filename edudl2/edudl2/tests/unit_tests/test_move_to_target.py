@@ -118,7 +118,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
 
     def test_handle_record_upsert_find_all(self):
         table_name = 'dim_student'
-        guid_batch = None
+        guid_batch = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
         with UnittestUDLTargetDBConnection() as conn:
             helper = HandleUpsertHelper(conn, guid_batch, table_name)
             all_records = helper.find_all()

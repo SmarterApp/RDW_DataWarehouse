@@ -112,7 +112,7 @@ def load_to_table(data_dict, guid_batch, int_table):
                         ref_column_mapping_columns[target_column] = stored_proc_name + '(' + QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8') + ')'
                     else:
                         format_value = {}
-                        format_value['value'] = QuotedString(value).getquoted().decode('utf-8')
+                        format_value['value'] = QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8')
                         if s_int_table.c[target_column].type.python_type is str:
                             format_value['length'] = s_int_table.c[target_column].type.length
                         ref_column_mapping_columns[target_column] = stored_proc_name.format(**format_value)

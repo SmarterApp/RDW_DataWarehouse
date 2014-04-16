@@ -84,3 +84,21 @@ def get_tables_starting_with(metadata, prefix):
     :param prefix: prefix string
     '''
     return [table.name for table in metadata.sorted_tables if table.name.startswith(prefix)]
+
+
+def get_selectables_from_query(query):
+    '''
+    Get selectables from query for reverse analysis
+
+    :param query: SQLAlchemy query object
+    '''
+    return {c.table if hasattr(c, 'table') else c.element.table for c in list(query.inner_columns)}
+
+
+def get_selectable_by_table_name(query):
+    '''
+    Get selectables from query for reverse analysis
+
+    :param query: SQLAlchemy query object
+    '''
+    return {table: (table.element.name if hasattr(table, 'element') else table.name) for table in get_selectables_from_query(query)}

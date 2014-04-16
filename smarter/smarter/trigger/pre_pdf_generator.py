@@ -61,6 +61,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
         query = query.where(fact_asmt_outcome.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome.c.batch_guid == batch_guid))
         query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
+        print('%s -> %s, %s, %s' % (str(query), tenant, state_code, batch_guid))
         results = connector.get_result(query)
         return results
 

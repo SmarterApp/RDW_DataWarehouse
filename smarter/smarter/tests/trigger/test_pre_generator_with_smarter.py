@@ -26,7 +26,7 @@ class TestPreCacheGenerator(Unittest_with_edcore_sqlite):
 
     def testPrepare_pre_cache(self):
         results = prepare_pre_cache(self.tenant, 'NC', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
-        self.assertEqual(2, len(results))
+        self.assertEqual(5, len(results))
 
     def testPrepare_pre_cache_nodata(self):
         results = prepare_pre_cache(self.tenant, 'NC', '2cf08036-ddb0-11e2-a15e-68a86d3c2f82')

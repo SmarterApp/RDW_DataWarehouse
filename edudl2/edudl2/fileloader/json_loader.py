@@ -21,6 +21,8 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
 import time
 from edudl2.udl2_util.udl_mappings import get_json_table_mapping
+from sqlalchemy.sql.expression import select, and_
+from psycopg2.extensions import QuotedString
 
 
 def load_json(conf):
@@ -88,15 +90,43 @@ def load_to_table(data_dict, guid_batch, int_table):
     @param guid_batch: the id for the batch
     @param int_table: the name of the integration table
     '''
-
     # Create sqlalchemy connection and get table information from sqlalchemy
+    ref_column_mapping_columns = {}
     with get_udl_connection() as conn:
-        s_int_table = conn.get_table(int_table)
-        data_dict = fix_empty_strings(data_dict)
         data_dict[mk.GUID_BATCH] = guid_batch
+        data_dict = fix_empty_strings(data_dict)
+        ref_table = conn.get_table('ref_column_mapping')
+        s_int_table = conn.get_table(int_table)
+        column_mapping_query = select([ref_table.c.target_column,
+                                       ref_table.c.stored_proc_name],
+                                      from_obj=ref_table).where(and_(ref_table.c.source_table == 'lz_json',
+                                                                     ref_table.c.target_table == int_table))
+        results = conn.get_result(column_mapping_query)
+        for result in results:
+            target_column = result['target_column']
+            stored_proc_name = result['stored_proc_name']
+            value = data_dict.get(target_column)
+            if value:
+                if stored_proc_name:
+                    if stored_proc_name.startswith('sp_'):
+                        ref_column_mapping_columns[target_column] = stored_proc_name + '(' + QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8') + ')'
+                    else:
+                        format_value = {}
+                        format_value['value'] = QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8')
+                        if s_int_table.c[target_column].type.python_type is str:
+                            format_value['length'] = s_int_table.c[target_column].type.length
+                        ref_column_mapping_columns[target_column] = stored_proc_name.format(**format_value)
+                    continue
+            ref_column_mapping_columns[target_column] = value
 
+        from_select_column_names = []
+        from_select_select_values = []
+        for column in s_int_table.c:
+            if data_dict.get(column.name):
+                from_select_column_names.append(column.name)
+                from_select_select_values.append(ref_column_mapping_columns.get(column.name, QuotedString(data_dict.get(column.name)).getquoted().decode('utf-8')))
+        insert_into_int_table = s_int_table.insert().from_select(from_select_column_names, select(from_select_select_values))
         # create insert statement and execute
-        insert_into_int_table = s_int_table.insert().values(**data_dict)
         affected_row = db_util.execute_udl_queries(conn, [insert_into_int_table],
                                                    'Exception in loading json data -- ',
                                                    'json_loader', 'load_to_table')

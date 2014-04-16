@@ -62,7 +62,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
-            self.assertEqual(len(results), 1211)
+            self.assertEqual(len(results), 1174)
 
     def test_pii_district_level(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -79,7 +79,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
-            self.assertEqual(len(results), 394)
+            self.assertEqual(len(results), 353)
 
     def test_pii_school_level(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -110,7 +110,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(or_(*clause)))
-            self.assertEqual(len(results), 403)
+            self.assertEqual(len(results), 374)
 
     def test_pii_context_with_multiple_level_chain(self):
         dummy_session = create_test_session([RolesConstants.PII])
@@ -128,7 +128,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(or_(*clause)))
-            self.assertEqual(len(results), 313)
+            self.assertEqual(len(results), 282)
 
     def test_sar_extract_tenant_level(self):
         dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
@@ -157,7 +157,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
-            self.assertEqual(len(results), 1211)
+            self.assertEqual(len(results), 1174)
 
     def test_sar_extracts_district_level(self):
         dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
@@ -174,7 +174,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
-            self.assertEqual(len(results), 394)
+            self.assertEqual(len(results), 353)
 
     def test_sar_extracts_school_level(self):
         with UnittestEdcoreDBConnection() as connection:

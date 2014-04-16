@@ -71,6 +71,11 @@ class Test_Error_In_Migration(unittest.TestCase):
             expected_status_val_D = [('D',)]
             self.assertEquals(prod_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
 
+            fact_table_pr = ed_connector.get_table('fact_asmt_outcome_primary')
+            prod_data = select([fact_table_pr.c.rec_status]).where(fact_table_pr.c.student_guid == '115f7b10-9e18-11e2-9e96-0800200c9a66', )
+            prod_table = ed_connector.execute(prod_data).fetchall()
+            self.assertEquals(prod_table, expected_status_val_D, 'Status is wrong in fact_asmt_table_primary for delete record')
+
     def run_validate_udl(self):
         self.guid_batch_id = str(uuid4())
         self.run_udl_pipeline(self.guid_batch_id)
@@ -114,6 +119,12 @@ class Test_Error_In_Migration(unittest.TestCase):
             result = conn.execute(query).fetchall()
             expected_no_rows = 1
             self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
+
+            fact_table_pr = conn.get_table('fact_asmt_outcome')
+            fact_asmt_pr = select([fact_table_pr], and_(fact_table_pr.c.student_guid == '115f7b10-9e18-11e2-9e96-0800200c9a66', fact_table_pr.c.rec_status == 'D'))
+            fact_result = conn.execute(fact_asmt_pr).fetchall()
+            self.assertEquals(len(fact_result), expected_no_rows, "Data has not been loaded to prod_fact_table_primary after edmigrate")
+
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):

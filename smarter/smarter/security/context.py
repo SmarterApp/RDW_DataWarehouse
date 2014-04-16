@@ -3,7 +3,7 @@ Created on May 7, 2013
 
 @author: dip
 '''
-from sqlalchemy.sql.expression import Select, or_, and_
+from sqlalchemy.sql.expression import Select
 from pyramid.security import authenticated_userid
 import pyramid
 from smarter.reports.helpers.constants import Constants
@@ -13,8 +13,6 @@ from edcore.security.tenant import get_tenant_by_state_code
 from pyramid.httpexceptions import HTTPForbidden
 from smarter.security.constants import RolesConstants
 from functools import wraps
-import json
-from edauth.security.utils import SetEncoder
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], permission=RolesConstants.PII, **kwargs):
@@ -37,11 +35,7 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], permission=
             raise HTTPForbidden()
         context = __get_context_instance(permission, connector)
         # Get context security expression to attach to where clause
-        clauses = context.get_context(get_tenant_by_state_code(state_code), user)
-
-        # Set the where clauses with OR
-        if clauses:
-            query = query.where(and_(or_(*clauses)))
+        query = context.add_context(get_tenant_by_state_code(state_code), user, query)
 
     return query
 

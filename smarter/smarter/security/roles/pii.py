@@ -35,6 +35,22 @@ class PII(BaseRole):
                 expr.append(and_(fact_asmt_outcome.c[k].in_(v)))
         return expr
 
+    @verify_context
+    def add_context(self, tenant, user, query):
+        '''
+        Updates a query adding context
+        If Context is an empty list, return None, which will return Forbidden Error
+        '''
+        context = user.get_context().get_all_context(tenant, self.name)
+        if not context:
+            # context returned is empty, therefore no context
+            return None
+        expr = []
+        for k, v in context.items():
+            if v:
+                expr.append(*[table.c[k].in_(v) for table in self.get_context_tables(query)])
+        return query.where(and_(or_(*expr)))
+
     def check_context(self, tenant, user, student_guids):
         '''
         Given a list of student guids, return true if user guid has access to those students

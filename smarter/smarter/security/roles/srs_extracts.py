@@ -30,6 +30,16 @@ class SRSExtracts(BaseRole):
         else:
             return [student_reg.c.state_code.in_(context)] if context else []
 
+    @verify_context
+    def add_context(self, tenant, user, query):
+        '''
+        Updates a query adding context
+        If Context is an empty list, return None, which will return Forbidden Error
+        '''
+        context = user.get_context().get_states(tenant, self.name)
+        # context of none means that user has no access
+        return None if context is None else query.where(or_(*[table.columns.state_code.in_(context) for table in self.get_context_tables(query)]))
+
     def check_context(self, tenant, user, student_guids):
         '''
         Returns true if it has context to the list of student guids

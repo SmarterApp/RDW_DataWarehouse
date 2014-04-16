@@ -6,6 +6,7 @@ Created on May 9, 2013
 from edapi.exceptions import ForbiddenError
 from sqlalchemy.sql.expression import distinct, and_, select
 from smarter.reports.helpers.constants import Constants
+from edschema.metadata.util import get_selectable_by_table_name
 
 
 class BaseRole(object):
@@ -17,6 +18,9 @@ class BaseRole(object):
         self.name = name
 
     def get_context(self, tenant, user):
+        pass
+
+    def add_context(self, tenant, user, query):
         pass
 
     def check_context(self, tenant, user, student_guids):
@@ -31,6 +35,12 @@ class BaseRole(object):
                        from_obj=[fact_asmt_outcome])
         query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT, fact_asmt_outcome.c.student_guid.in_(student_guids)))
         return query
+
+    def get_context_tables(self, query):
+        '''
+        Get a list of context tables from the query
+        '''
+        return {obj for (obj, name) in get_selectable_by_table_name(query).items() if name in (Constants.STUDENT_REG, Constants.FACT_ASMT_OUTCOME)}
 
 
 def verify_context(fn):

@@ -27,3 +27,9 @@ class DefaultRole(BaseRole):
         Has Context to resource
         '''
         return True
+
+    def add_context(self, tenant, user, query):
+        '''
+        noop
+        '''
+        pass

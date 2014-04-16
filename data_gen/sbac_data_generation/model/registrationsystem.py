@@ -13,6 +13,7 @@ class SBACRegistrationSystem(Document):
     Model a SBAC registration system.
     """
     guid = StringField(required=True, primary_key=True)
+    guid_sr = StringField(required=True)
     sys_guid = StringField(required=True)
     academic_year = IntField(required=True)
     extract_date = DateTimeField(required=True)

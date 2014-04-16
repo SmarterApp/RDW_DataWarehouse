@@ -89,6 +89,7 @@ def generate_registration_system(year, extract_date, id_gen):
     # Create the object
     ars = SBACRegistrationSystem()
     ars.guid = id_gen.get_uuid()
+    ars.guid_sr = id_gen.get_sr_uuid()
     ars.sys_guid = id_gen.get_uuid()
     ars.academic_year = year
     ars.extract_date = extract_date

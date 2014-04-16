@@ -8,7 +8,7 @@ This test cover following two scenario:
 '''
 import os
 import shutil
-import time 
+import time
 from time import sleep
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
@@ -140,7 +140,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         self.archived_file = os.path.join(self.data_dir, 'test_rec_not_in_prod.tar.gz.gpg')
         self.run_udl_pipeline(self.guid_batch_id, self.archived_file)
         self.validate_udl_stats(self.guid_batch_id)
-        time.sleep(5)
         self.validate_err_list(self.guid_batch_id)
 
     def test_del_rec_twice_same_batch(self):

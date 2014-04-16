@@ -60,6 +60,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
 
     # Set other specifics
     sa.rec_id = id_gen.get_rec_id('assessment')
+    sa.guid_sr = id_gen.get_sr_uuid()
     sa.asmt_type = asmt_type
     sa.period = period + ' ' + str((asmt_year - year_adj))
     sa.period_year = asmt_year

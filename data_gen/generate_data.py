@@ -169,7 +169,7 @@ def build_registration_systems(years, id_gen):
     for i in range(NUMBER_REGISTRATION_SYSTEMS):
         # Build the original system
         rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', id_gen)
-        guids.append(rs.guid)
+        guids.append(rs.guid_sr)
 
         # Update it over every year
         for year in YEARS:
@@ -181,11 +181,11 @@ def build_registration_systems(years, id_gen):
             if WRITE_LZ:
                 # Create the JSON file
                 file_name = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['name']
-                file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+                file_name = file_name.replace('<YEAR>', str(year)).replace('<GUID>', rs.guid_sr)
                 json_writer.write_object_to_file(file_name, rs_out_layout, rs, root_path=OUT_PATH_ROOT)
 
                 # Prepare the SR CSV file
-                file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid)
+                file_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(year)).replace('<GUID>', rs.guid_sr)
                 csv_writer.prepare_csv_file(file_name, sr_out_cols, root_path=OUT_PATH_ROOT)
 
     # Return the generated GUIDs
@@ -208,10 +208,10 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
 
     # Output to requested mediums
     if WRITE_LZ:
-        file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid)
+        file_name = sbac_out_config.ASMT_JSON_FORMAT['name'].replace('<GUID>', asmt.guid_sr)
         json_writer.write_object_to_file(file_name, sbac_out_config.ASMT_JSON_FORMAT['layout'], asmt,
                                          root_path=OUT_PATH_ROOT)
-        file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid)
+        file_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', asmt.guid_sr)
         csv_writer.prepare_csv_file(file_name, sbac_out_config.LZ_REALDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
 
     if WRITE_STAR:
@@ -255,25 +255,25 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
         return
 
     # Make sure the assessment is known in the results
-    if asmt.guid not in assessment_results:
-        assessment_results[asmt.guid] = []
+    if asmt.guid_sr not in assessment_results:
+        assessment_results[asmt.guid_sr] = []
 
     # Create the original outcome object
     ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
-    assessment_results[asmt.guid].append(ao)
+    assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
-        assessment_results[asmt.guid].append(ao2)
+        assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
-        assessment_results[asmt.guid].append(ao2)
+        assessment_results[asmt.guid_sr].append(ao2)
 
         # See if the updated record should be deleted
         if random.random() < delete_rate:

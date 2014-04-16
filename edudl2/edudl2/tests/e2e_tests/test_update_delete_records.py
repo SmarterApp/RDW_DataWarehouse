@@ -27,7 +27,7 @@ class Test_Update_Delete(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        drop_target_schema(self.guid_batch_id)
+        #drop_target_schema(self.guid_batch_id)
 
     def empty_table(self):
         #Delete all data from batch_table
@@ -96,6 +96,24 @@ class Test_Update_Delete(unittest.TestCase):
             print('Updated asmt_score after update is:', new_asmt_score)
             expected_asmt_score = [(1500,)]
             self.assertEquals(new_asmt_score, expected_asmt_score)
+
+            # Validate that delete and update also works for fact_Asmt_outcome_primary
+            fact_asmt = ed_connector.get_table('fact_asmt_outcome_primary')
+            output_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
+            output_table = ed_connector.execute(output_data).fetchall()
+            #verify delete record
+            self.assertEquals(output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
+            #Verify Update record
+            update_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c')
+            update_table = ed_connector.execute(update_data).fetchall()
+            self.assertIn(('D',), update_table, "Delete status D is not found in the Update record")
+            self.assertIn(('I',), update_table, "Insert status I is not found in the Update record")
+
+            # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
+            update_score = select([fact_asmt.c.asmt_score], and_(fact_asmt.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_asmt.c.rec_status == 'I'))
+            new_score = ed_connector.execute(update_score).fetchall()
+            print('Updated asmt_score after update is:', new_score)
+            self.assertEquals(new_score, expected_asmt_score)
 
     def test_validation(self):
         self.empty_table()

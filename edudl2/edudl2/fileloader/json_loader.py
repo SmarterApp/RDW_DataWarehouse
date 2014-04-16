@@ -109,7 +109,7 @@ def load_to_table(data_dict, guid_batch, int_table):
             if value:
                 if stored_proc_name:
                     if stored_proc_name.startswith('sp_'):
-                        ref_column_mapping_columns[target_column] = stored_proc_name + '(' + QuotedString(value).getquoted().decode('utf-8') + ')'
+                        ref_column_mapping_columns[target_column] = stored_proc_name + '(' + QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8') + ')'
                     else:
                         format_value = {}
                         format_value['value'] = QuotedString(value).getquoted().decode('utf-8')

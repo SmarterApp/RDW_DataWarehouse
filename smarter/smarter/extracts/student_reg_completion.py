@@ -43,8 +43,7 @@ def get_assessment_query(academic_year, state_code):
                                       student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd,
                                       student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race, student_reg.c.academic_year,
                                       assmt_query.c.asmt_subject, assmt_query.c.asmt_type],
-                                     from_obj=[student_reg.join(assmt_query, and_(student_reg.c.academic_year == assmt_query.c.asmt_year,
-                                                                                  student_reg.c.student_guid == assmt_query.c.student_guid))])\
+                                     from_obj=[student_reg.join(assmt_query, student_reg.c.student_guid == assmt_query.c.student_guid)])\
             .where(student_reg.c.academic_year == academic_year)
 
     return academic_year_query

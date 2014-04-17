@@ -14,6 +14,7 @@ def main():
     initialize_db_target(udl2_conf)
     clean_up_unused_schemas()
 
+
 def clean_up_unused_schemas():
     with get_target_connection() as conn:
         schemas = conn.execute("select schema_name from information_schema.schemata")

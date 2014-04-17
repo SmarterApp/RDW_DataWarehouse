@@ -69,7 +69,8 @@ def get_current_context(params):
     pii = user_context.get_chain(tenant, RolesConstants.PII, params) if params.get(Constants.SCHOOLGUID) else {'all': True}
     sar_extracts = user_context.get_chain(tenant, RolesConstants.SAR_EXTRACTS, params)
     srs_extracts = user_context.get_chain(tenant, RolesConstants.SRS_EXTRACTS, params)
-    return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts}
+    src_extracts = user_context.get_chain(tenant, RolesConstants.SRC_EXTRACTS, params)
+    return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts, 'src_extracts': src_extracts}
 
 
 def get_current_request_context(origin_func):

@@ -16,6 +16,10 @@ define [
     srs_extracts: {
       all: true,
       guid: []
+    },
+    src_extracts: {
+      all: true,
+      guid: []
     }
   }
 
@@ -49,13 +53,16 @@ define [
     apply_bulk_extract_security: () ->
       assessment_access = @permissions.sar_extracts.all
       registration_access = @permissions.srs_extracts.all
+      completion_access = @permissions.src_extracts.all
       # hide csv extract option if user doesn't have any permission
-      if not assessment_access and not registration_access
+      if not assessment_access and not registration_access and not completion_access
         $('li.csv').hide()
       else if not assessment_access
         @remove_extractType('studentAssessment')
       else if not registration_access
         @remove_extractType('studentRegistrationStatistics')
+      else if not completion_access
+        @remove_extractType('studentRegistrationCompletion')
 
     remove_extractType: (key) ->
       options = []

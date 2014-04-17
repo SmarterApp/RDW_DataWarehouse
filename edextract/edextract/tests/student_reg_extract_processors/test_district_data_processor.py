@@ -54,7 +54,7 @@ class TestDistrictDataProcessor(unittest.TestCase):
         result = self.district_data_processor._is_matched_district(different_districts)
         self.assertFalse(result)
 
-    def test_call_asmt_tracker(self):
+    def test_process_asmt_outcome_data(self):
         self.district_data_processor._call_asmt_trackers = MagicMock(return_value=None)
 
         self.district_data_processor.process_asmt_outcome_data(self.results)

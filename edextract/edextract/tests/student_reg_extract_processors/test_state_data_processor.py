@@ -36,7 +36,7 @@ class TestStateDataProcessor(unittest.TestCase):
 
         self.state_data_processor._call_matched_ids_trackers.assert_called_with('NC', self.results)
 
-    def test_call_asmt_tracker(self):
+    def test_process_asmt_outcome_data(self):
         self.state_data_processor._call_asmt_trackers = MagicMock(return_value=None)
 
         self.state_data_processor.process_asmt_outcome_data(self.results)

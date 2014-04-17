@@ -51,7 +51,7 @@ class TestSchoolDataProcessor(unittest.TestCase):
         result = self.school_data_processor._is_matched_school(different_school)
         self.assertFalse(result)
 
-    def test_call_asmt_tracker(self):
+    def test_process_asmt_outcome_data(self):
         self.school_data_processor._call_asmt_trackers = MagicMock(return_value=None)
 
         self.school_data_processor.process_asmt_outcome_data(self.data)

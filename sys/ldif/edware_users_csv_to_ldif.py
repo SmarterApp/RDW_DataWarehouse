@@ -159,6 +159,11 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
                         "sn: " + lname + "\n" + \
                         "givenName: " + fname + "\n" + \
                         "employeeNumber: " + str(employeeGuid) + "\n" + \
+                        "employeeType: ||State_Administrator||||||es|ES|||||||||\n" + \
+                        "employeeType: ||PII||||||es|ES|||||||||\n" + \
+                        "employeeType: ||SAREXTRACTS||||||es|ES|||||||||\n" + \
+                        "employeeType: ||SRSEXTRACTS||||||es|ES|||||||||\n" + \
+                        "employeeType: ||SRCEXTRACTS||||||es|ES|||||||||\n" + \
                         "uid: " + _email + "\n" + \
                         "mail: " + _email + "\n" + \
                         "userPassword: " + ssha_password(_passwd) + "\n"

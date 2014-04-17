@@ -47,6 +47,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Susan
 uid: shall
 userPassword:: e1NTSEF9UVdzd281MjVuRUtWOFJ1MGx3Q3VnN2VoUEtaQXVLQThJd1FOQlE9P
@@ -64,6 +65,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Victor
 uid: vlee
 userPassword:: e1NTSEF9ZGo1YW9lM054Tm9QQzVQT2srbDZJa1N6U1FvQTEyUzJnTlU2Qmc9P
@@ -81,6 +83,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Sara
 uid: slee
 userPassword:: e1NTSEF9QWJNTStib2FkTmJ0UnZTY2p3dkhPblBJeWdRVHFYS1N1YTd5ckE9P
@@ -98,6 +101,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Jamie
 uid: jhine
 userPassword:: e1NTSEF9WnhiL0dFTitGWFlXZWJLRm5seE9CcXNvMXErNlZwR2xZaWI1eXc9P
@@ -115,6 +119,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Chris
 uid: cdavis
 userPassword:: e1NTSEF9NXc2ZVFSQ0llVzN0R25mRFRJZlZ1VDRCMWNSVkJSWHVtMENuc0E9P
@@ -132,6 +137,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Kelly
 uid: ktidd
 userPassword:: e1NTSEF9V1FwN0lzdTU5clRUNzg5YUU5WUJNekhJUnFyS1hPdHg5Q2lCZUE9P
@@ -149,6 +155,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Louisa
 uid: lmui
 userPassword:: e1NTSEF9cTVSWDJGM2FrYXFvYjNVMWhBZFJnTEtHUk5FT0gzdm1sWW9QWEE9P
@@ -166,6 +173,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Hugh
 uid: hgoree
 userPassword:: e1NTSEF9eW5NakhCcTBXVUV6dGdzTUFiUHlxNjFNTWpDL0pEdmpYRVliSlE9P
@@ -183,6 +191,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Clare
 uid: cseabaugh
 userPassword:: e1NTSEF9QVpUYnhrV2VpSEFJeGJsN3NKR0s1UkwvR3RhZldsSHR4dWdsa1E9P
@@ -200,6 +209,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Katy
 uid: kbester
 userPassword:: e1NTSEF9VnN1YlR0RmxLVlM2dFBlM3oyTEluVFk4bjBVbmRqZUtnTjhsMnc9P
@@ -217,6 +227,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Erik
 uid: ecroker
 userPassword:: e1NTSEF9bEZEK1NwcHVleFc5SldRZTdUVHk5V1kwSUh2RU1rbTk4NktZOGc9P
@@ -234,6 +245,7 @@ employeeType: ||State_Administrator||||||dog|CA|||||||||
 employeeType: ||PII||||||dog|CA|||||||||
 employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
 employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
+employeeType: ||SRCEXTRACTS||||||dog|CA|||||||||
 givenName: Matt
 uid: msollars
 userPassword:: e1NTSEF9WXg1Wis0VGVzb0VvTjFmNWJ2eU4yMHp1cUFNTWtIUC80TzBnY1E9P
@@ -251,6 +263,7 @@ employeeType: ||State_Administrator||||||dog|CA|||||||||
 employeeType: ||PII||||||dog|CA|||||||||
 employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
 employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
+employeeType: ||SRCEXTRACTS||||||dog|CA|||||||||
 givenName: Clayton
 uid: ccroxton
 userPassword:: e1NTSEF9MUdHMmVrVlgwN3JTUHdJMUpmZ0tDaFRQWHZyTXV6T3lOb24wMEE9P
@@ -269,6 +282,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Amie
 uid: astroop
 userPassword:: e1NTSEF9Qm1GUkx5QUVPMDg5MmFwZklZVXRsSmhEZ3dnNmNHWEhZR1BISlE9P
@@ -287,6 +301,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Ted
 uid: tlazaro
 userPassword:: e1NTSEF9T2REUE11bVk1ZFQ5YXRQbGZ4Y3VkRW9Ba2g3M2tCR1FraXp0enc9P
@@ -305,6 +320,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 employeeType: ||SUPER_USER|||SBAC|||||||||||||
 givenName: Guy
 uid: gman
@@ -324,6 +340,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Selena
 uid: smagnusson
 userPassword:: e1NTSEF9djNGYkVyS0MvWkt2NWlNUEFtWk96U2NyZGlsSWNJbnQ5Z2wwd1E9P
@@ -342,6 +359,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Jessie
 uid: jmollica
 userPassword:: e1NTSEF9QmtGOTdGZjRvRUhuTEw1eExaVnFnVUljWkwydytBVG5pdGY1UEE9P
@@ -360,6 +378,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Liza
 uid: lbopp
 userPassword:: e1NTSEF9U1ZmMTMrZExwcjdOb1VZelFJZFAwSUs5V0ZxcEFibFdVZVpyc1E9P
@@ -378,6 +397,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Clinton
 uid: cdegraw
 userPassword:: e1NTSEF9ZnM4bWh0TkpQZUxjODZFb09TM2ltUFRIcmdDb3NjUmsyZVl3aGc9P
@@ -412,6 +432,7 @@ employeeType: ||PII|||SBAC|||dog|CA|||||||||
 employeeType: ||PII|||SBAC|||fish|VT|||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||dog|CA|||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||cat|NC||||||||
 givenName: Sam
 uid: swhite
 userPassword:: e1NTSEF9c1dqWm1pcVowcUZ2dVZCcyt5SkZnanJuRCtPVk82ZExuR1V1Y3c9P
@@ -430,6 +451,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Rachel
 uid: radams
 userPassword:: e1NTSEF9WHRkRkM0Q0ZxdmxEazRGaDk3WEE2bWR1V2Y2NE1NancxajZ0dVE9P
@@ -463,6 +485,7 @@ employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
 employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||52a84cfa-4cc6-46db-8b59-5938fd1daf12|Sandpiper Peccary Elementary|
 employeeType: ||PII|||SBAC|||cat|NC|||0513ba44-e8ec-4186-9a0e-8481e9c16206|Ropefish Lynx Public Schools|||fbc3e9f6-ad16-4cf0-bb84-5f3fc6929b41|Hickory Cornetfish Jr Middle|
 employeeType: ||PII|||SBAC|||cat|NC|||2ce72d77-1de2-4137-a083-77935831b817|Dealfish Pademelon SD|||||
@@ -483,6 +506,7 @@ employeeType: ||Consortium_Administrator|||SBAC|||||||||||||
 employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Chris
 uid: cmiller
 userPassword:: e1NTSEF9V0cvWnJxY1l2aTRVQm5za0d4SXpUbHkxZldKZ1RoelVYd3ovRHc9P
@@ -500,6 +524,7 @@ employeeType: ||State_Administrator||||||cat|NC|||||||||
 employeeType: ||PII||||||cat|NC|||||||||
 employeeType: ||SAREXTRACTS||||||cat|NC|||||||||
 employeeType: ||SRSEXTRACTS||||||cat|NC|||||||||
+employeeType: ||SRCEXTRACTS||||||cat|NC|||||||||
 givenName: Austin
 uid: arice
 userPassword:: e1NTSEF9V2FwMTJmRjYvZXNVbE1WQ2lralQ4WkJkK2EyWXJreHNPUVpRNFE9P
@@ -545,6 +570,7 @@ employeeNumber: 93d64110-bf5e-11e3-8a33-0800200c9a66
 employeeType: ||State_Administrator||||||dog|CA|||||||||
 employeeType: ||SAREXTRACTS||||||dog|CA|||||||||
 employeeType: ||SRSEXTRACTS||||||dog|CA|||||||||
+employeeType: ||SRCEXTRACTS||||||dog|CA|||||||||
 givenName: Larry
 uid: lprice
 userPassword:: e1NTSEF9dkZhcmZOUjFlUExtTlBqUDM2RFhGeE1TRjNYRmVrbnRqSmgvVlE9P
@@ -748,6 +774,7 @@ employeeType: ||ALLSTATES|||SBAC|||||||||||||
 employeeType: ||PII|||SBAC|||||||||||||
 employeeType: ||SAREXTRACTS|||SBAC|||||||||||||
 employeeType: ||SRSEXTRACTS|||SBAC|||||||||||||
+employeeType: ||SRCEXTRACTS|||SBAC|||||||||||||
 givenName: Elnora
 uid: eseinfeld
 userPassword:: e1NTSEF9SDJIWGNXWTluVDM3UmFLTWgzWHQ2ekxNV08wQWxaaGV1Q1dCQmc9P
@@ -765,6 +792,7 @@ employeeType: ||State_Administrator||||||fish|VT|||||||||
 employeeType: ||PII||||||fish|VT|||||||||
 employeeType: ||SAREXTRACTS||||||fish|VT|||||||||
 employeeType: ||SRSEXTRACTS||||||fish|VT|||||||||
+employeeType: ||SRCEXTRACTS||||||fish|VT|||||||||
 givenName: Mary
 uid: msmith
 userPassword:: e1NTSEF9SnZUMmNtVFE5TTNZbkRYODVWclZmVUlxZEVPSks2Yk5kWmdjY2c9P
@@ -946,6 +974,7 @@ employeeType: ||State_Administrator||||||fish|VT|||||||||
 employeeType: ||PII||||||fish|VT|||||||||
 employeeType: ||SAREXTRACTS||||||fish|VT|||||||||
 employeeType: ||SRSEXTRACTS||||||fish|VT|||||||||
+employeeType: ||SRCEXTRACTS||||||fish|VT|||||||||
 givenName: Javier
 uid: jmacey
 userPassword:: e1NTSEF9cm9Hcm5RYTB6UkR1MFIxNFlZNWMvZW1Za3A1UzVMZUdoR3ZLK2c9P

@@ -443,7 +443,7 @@ uat:
     edware:
       db:
         es:
-          state_code: CA
+          state_code: ES
           schema_name: edware_uat_1_1
           url: postgresql+psycopg2://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
     edware_stats:

@@ -69,6 +69,7 @@ def get_conf(msg):
         mk.STUDENT_REG_GUID: msg[mk.STUDENT_REG_GUID],
         mk.REG_SYSTEM_ID: msg[mk.REG_SYSTEM_ID],
         mk.GUID_BATCH: msg[mk.GUID_BATCH],
+        mk.TOTAL_ROWS_LOADED: msg[mk.TOTAL_ROWS_LOADED] if mk.TOTAL_ROWS_LOADED in msg else 0,
         mk.BATCH_TABLE: udl2_conf['udl2_db'][mk.BATCH_TABLE],
         ck.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL]
     }

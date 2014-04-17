@@ -30,7 +30,7 @@ def post_udl_job_status(conf):
     """
 
     notification_body = create_notification_body(conf[mk.GUID_BATCH], conf[mk.BATCH_TABLE], conf[mk.STUDENT_REG_GUID],
-                                                 conf[mk.REG_SYSTEM_ID])
+                                                 conf[mk.REG_SYSTEM_ID], conf[mk.TOTAL_ROWS_LOADED])
 
     notification_status, notification_error = post_notification(conf[mk.CALLBACK_URL],
                                                                 conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL], notification_body)
@@ -38,7 +38,7 @@ def post_udl_job_status(conf):
     return notification_status, notification_error
 
 
-def create_notification_body(guid_batch, batch_table, id, test_registration_id):
+def create_notification_body(guid_batch, batch_table, id, test_registration_id, row_count):
     """
     Create the notification request body for the job referenced by guid_batch.
 
@@ -52,21 +52,25 @@ def create_notification_body(guid_batch, batch_table, id, test_registration_id):
 
     status_codes = {mk.SUCCESS: 'Success', mk.FAILURE: 'Failed'}
 
-    # Get the job status
+    status = _retrieve_status(batch_table, guid_batch)
+    message = get_notification_message(status, guid_batch)
 
+    notification_body = {'status': status_codes[status], 'id': id, 'testRegistrationId': test_registration_id,
+                         'message': message}
+    if status == mk.SUCCESS:
+        notification_body['rowCount'] = row_count
+
+    return notification_body
+
+
+def _retrieve_status(batch_table, guid_batch):
     with get_udl_connection() as source_conn:
         batch_table = source_conn.get_table(batch_table)
         batch_select = select([batch_table.c.udl_phase_step_status]).where(and_(batch_table.c.guid_batch == guid_batch,
                                                                                 batch_table.c.udl_phase == 'UDL_COMPLETE'))
         status = source_conn.execute(batch_select).fetchone()[0]
 
-    # Get error messages
-    message = get_notification_message(status, guid_batch)
-
-    notification_body = {'status': status_codes[status], 'id': id, 'testRegistrationId': test_registration_id,
-                         'message': message}
-
-    return notification_body
+    return status
 
 
 def post_notification(callback_url, timeout_interval, notification_body):

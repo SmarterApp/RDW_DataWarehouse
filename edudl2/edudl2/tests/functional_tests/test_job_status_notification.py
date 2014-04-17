@@ -73,7 +73,8 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
         self.assertEquals(request['id'], 'wxyz5678')
         self.assertEquals(request['message'], ['Job completed successfully'])
         self.assertEquals(request['testRegistrationId'], 'abcd1234')
-        self.assertEquals(len(request), 4)
+        self.assertEquals(request['rowCount'], 100)
+        self.assertEquals(len(request), 5)
 
     #Check the body of the notification on a failed UDL run
     def verify_failed_request_body(self, request):
@@ -83,6 +84,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
         self.assertTrue('5000' in request['message'][1])
         self.assertEquals(request['testRegistrationId'], 'abcd1234')
         self.assertEquals(request['id'], 'wxyz5678')
+        self.assertTrue('rowCount' not in request)
         self.assertEquals(len(request), 4)
 
     def verify_header(self, headers):
@@ -162,7 +164,8 @@ def generate_message(guid):
         mk.LOAD_TYPE: udl2_conf['load_type']['student_registration'],
         mk.CALLBACK_URL: "http://www.this_is_a_dummy_url.com",
         mk.STUDENT_REG_GUID: "wxyz5678",
-        mk.REG_SYSTEM_ID: "abcd1234"
+        mk.REG_SYSTEM_ID: "abcd1234",
+        mk.TOTAL_ROWS_LOADED: 100
     }
     return message
 

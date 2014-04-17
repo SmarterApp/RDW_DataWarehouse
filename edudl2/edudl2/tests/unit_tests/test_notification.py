@@ -6,10 +6,10 @@ Unit tests for notification module.
 
 import unittest
 import httpretty
-import datetime
+from unittest.mock import patch
 
 from edudl2.udl2 import message_keys as mk
-from edudl2.notification.notification import post_notification
+from edudl2.notification.notification import post_notification, create_notification_body
 
 
 class TestNotification(unittest.TestCase):
@@ -68,6 +68,34 @@ class TestNotification(unittest.TestCase):
         # Verify results.
         self.assertEquals(mk.PENDING, notification_status)
         self.assertRegex(notification_error, "Max retries exceeded with url")
+
+    @patch('edudl2.notification.notification.get_notification_message')
+    @patch('edudl2.notification.notification._retrieve_status')
+    def test_create_notification_body_success(self, mock__retrieve_status, mock_get_notification_message):
+        mock__retrieve_status.return_value = mk.SUCCESS
+        mock_get_notification_message.return_value = ['Completed Successfully']
+
+        body = create_notification_body("guid_batch", "batch_table", "id", "test_reg_id", 100)
+
+        self.assertEquals(body['rowCount'], 100)
+        self.assertEquals(body['id'], 'id')
+        self.assertEquals(body['testRegistrationId'], 'test_reg_id')
+        self.assertEquals(body['status'], 'Success')
+        self.assertEquals(body['message'], ['Completed Successfully'])
+
+    @patch('edudl2.notification.notification.get_notification_message')
+    @patch('edudl2.notification.notification._retrieve_status')
+    def test_create_notification_body_failure(self, mock__retrieve_status, mock_get_notification_message):
+        mock__retrieve_status.return_value = mk.FAILURE
+        mock_get_notification_message.return_value = ['ERROR 3000']
+
+        body = create_notification_body("guid_batch", "batch_table", "id", "test_reg_id", 100)
+
+        self.assertTrue('rowCount' not in body)
+        self.assertEquals(body['id'], 'id')
+        self.assertEquals(body['testRegistrationId'], 'test_reg_id')
+        self.assertEquals(body['status'], 'Failed')
+        self.assertEquals(body['message'], ['ERROR 3000'])
 
     def register_url(self, return_statuses):
         url = "http://MyTestUri/MyEndpoint"

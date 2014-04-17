@@ -5,9 +5,9 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 
 install_requires = [
-    'pyramid == 1.4',
+    'pyramid==1.4',
     'apscheduler==2.1.1',
-    'psycopg2 == 2.5.1']
+    'psycopg2==2.5.1']
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat

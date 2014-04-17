@@ -9,6 +9,7 @@ from mongoengine import BooleanField, DateTimeField, IntField, ReferenceField, S
 
 from data_generation.model.student import Student
 from sbac_data_generation.model.district import SBACDistrict
+from sbac_data_generation.model.registrationsystem import SBACRegistrationSystem
 from sbac_data_generation.model.state import SBACState
 
 
@@ -19,6 +20,7 @@ class SBACStudent(Student):
     rec_id = IntField(required=True)
     state = ReferenceField(SBACState, required=True)
     district = ReferenceField(SBACDistrict, required=True)
+    reg_sys = ReferenceField(SBACRegistrationSystem, required=False)
     guid_sr = StringField(required=True, max_length=30)
     external_ssid = StringField(required=True, max_length=40)
     external_ssid_sr = StringField(required=True, max_length=30)
@@ -41,4 +43,5 @@ class SBACStudent(Student):
         return {'state': self.state,
                 'district': self.district,
                 'school': self.school,
+                'registration_system': self.reg_sys,
                 'student': self}

@@ -62,10 +62,23 @@ def filter_twenty_characters(val):
     return val[0:20] if len(val) > 20 else val
 
 
+def filter_zero_padded_grade(val):
+    """
+    Zero-pad a grade value so that it is always a two digit string.
+
+    @param val: The value to pad
+    @returns: The value as a two-digit string
+    """
+    if val is None:
+        return '00'
+    return '%02d' % val
+
+
 SBAC_FILTERS = {
     'yesno': filter_yesno,
     'yesnoblank': filter_yesnoblank,
     'always_true': filter_always_true,
     'only_delete': filter_only_delete,
-    'trim_to_20': filter_twenty_characters
+    'trim_to_20': filter_twenty_characters,
+    'zero_pad_grade': filter_zero_padded_grade
 }

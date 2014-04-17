@@ -83,7 +83,7 @@ def test_repopulate_school_grade_empty():
     pop_gen.repopulate_school_grade(elem_school, 3, students, ID_GEN, state, 2015)
 
     # Test
-    assert 10 <= len(students) <= 35
+    assert 75 <= len(students) <= 305
 
 
 def test_repopulate_school_grade_full_no_additional():

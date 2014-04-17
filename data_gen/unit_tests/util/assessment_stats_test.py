@@ -6,9 +6,8 @@ TODO: enter description
 """
 from sbac_data_generation.util.assessment_stats import RandomLevelByDemographics, Properties, GradeLevels
 from sbac_data_generation.util.assessment_stats import DemographicLevels, Stats
-from nose.tools import assert_equal
-from general.util.weighted_choice import weighted_choice
-from collections import defaultdict, Counter
+from data_generation.util.weighted_choice import weighted_choice
+
 
 def gen_random_entity(demographics):
     return {demo_name: weighted_choice(distribution)

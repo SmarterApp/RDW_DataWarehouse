@@ -26,6 +26,19 @@ def setup_module():
             pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
 
 
+def test_assessment_get_object_set():
+    # Create necessary objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
+
+    # Tests
+    objs = asmt.get_object_set()
+    assert len(objs) == 2
+    assert 'assessment' in objs
+    assert objs['assessment'].guid == asmt.guid
+    assert 'assessment_effective' in objs
+    assert len(objs['assessment_effective']['date']) == 8
+
+
 def test_assessment_outcome_get_object_set():
     # Create necessary objects
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
@@ -118,16 +131,20 @@ def test_student_get_object_set():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    reg_sys = hier_gen.generate_registration_system(2015, '2014-02-27', ID_GEN)
     student = pop_gen.generate_student(school, 3, ID_GEN, state)
+    student.reg_sys = reg_sys
 
     # Tests
     objs = student.get_object_set()
-    assert len(objs) == 4
+    assert len(objs) == 5
     assert 'state' in objs
     assert objs['state'].guid == state.guid
     assert 'district' in objs
     assert objs['district'].guid == district.guid
     assert 'school' in objs
     assert objs['school'].guid == school.guid
+    assert 'registration_system' in objs
+    assert objs['registration_system'].guid_sr == reg_sys.guid_sr
     assert 'student' in objs
     assert objs['student'].guid == student.guid

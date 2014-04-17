@@ -85,3 +85,15 @@ def test_filter_twenty_characters_long():
     filtered = sbac_filters.filter_twenty_characters(val)
     assert len(filtered) == 20
     assert filtered == expect_filtered
+
+
+def test_filter_zero_pad_grade_none():
+    assert sbac_filters.filter_zero_padded_grade(None) == '00'
+
+
+def test_filter_zero_pad_grade_single_digit():
+    assert sbac_filters.filter_zero_padded_grade(1) == '01'
+
+
+def test_filter_zero_pad_grade_double_digit():
+    assert sbac_filters.filter_zero_padded_grade(11) == '11'

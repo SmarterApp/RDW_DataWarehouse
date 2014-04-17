@@ -19,6 +19,7 @@ Command line arguments:
 """
 
 import argparse
+import copy
 import datetime
 import os
 import random
@@ -62,6 +63,7 @@ NUMBER_REGISTRATION_SYSTEMS = 1
 # These are global regardless of team
 GRADES_OF_CONCERN = {3, 4, 5, 6, 7, 8, 11}  # Made as a set for intersection later
 REGISTRATION_SYSTEM_GUIDS = []
+REGISTRATION_SYSTEMS = {}
 
 # Extend general configuration dictionaries with SBAC-specific configs
 hier_config.SCHOOL_TYPES.update(sbac_hier_config.SCHOOL_TYPES)
@@ -164,18 +166,19 @@ def build_registration_systems(years, id_gen):
     rs_out_layout = sbac_out_config.REGISTRATION_SYSTEM_FORMAT['layout']
 
     # Build the registration systems for every year
-    guids = []
+    guids = {}
     start_year = years[0] - 1
     for i in range(NUMBER_REGISTRATION_SYSTEMS):
         # Build the original system
         rs = sbac_hier_gen.generate_registration_system(start_year, str(start_year - 1) + '-02-25', id_gen)
-        guids.append(rs.guid_sr)
+        guids[rs.guid_sr] = {}
 
         # Update it over every year
         for year in YEARS:
             # Update the system
             rs.academic_year = year
             rs.extract_date = str(year - 1) + '-02-27'
+            guids[rs.guid_sr][year] = copy.deepcopy(rs)
 
             # Write landing zone files if requested
             if WRITE_LZ:
@@ -325,13 +328,16 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
     @param state: State the district belongs to
     @param district: District to generate data for
-    @param reg_sys_guid: GUID for the registration system this district is assigned to
+    @param reg_sys_guid: GUID for registration system this district is assigned to
     @param assessments: Dictionary of all assessment objects
     @param asmt_skip_rates_by_subject: The rate that students skip a given assessment
     @param id_gen: ID generator
     """
+    # Grab the registration system
+    reg_sys = REGISTRATION_SYSTEMS[reg_sys_guid]
+
     # Set up output file names and columns
-    sr_out_cols = sbac_out_config.SR_FORMAT['columns']
+    sr_lz_out_cols = sbac_out_config.SR_FORMAT['columns']
     lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
@@ -343,6 +349,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
     dsec_out_name = sbac_out_config.DIM_SECTION_FORMAT['name']
     dsec_out_cols = sbac_out_config.DIM_SECTION_FORMAT['columns']
+    sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
+    sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
 
     # Decide how many schools to make
     school_count = random.triangular(district.config['school_counts']['min'],
@@ -386,14 +394,18 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     student_count = 0
     for asmt_year in YEARS:
         # Prepare output file names
-        sr_out_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(asmt_year)).replace('<GUID>', reg_sys_guid)
-        lz_asmt_out_name = sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<YEAR>', str(asmt_year))
+        rg_sys_year = reg_sys[asmt_year]
+        rg_guid = rg_sys_year.guid_sr
+        sr_out_name = sbac_out_config.SR_FORMAT['name'].replace('<YEAR>', str(asmt_year)).replace('<GUID>', rg_guid)
 
         # Set up a dictionary of schools and their grades
         schools_with_grades = sbac_hier_gen.set_up_schools_with_grades(schools, GRADES_OF_CONCERN)
 
         # Advance the students forward in the grades
         for guid, student in students.items():
+            # Assign the registration system
+            student.reg_sys = rg_sys_year
+
             # Move the student forward (false from the advance method means the student disappears)
             if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):
                 schools_with_grades[student.school][student.grade].append(student)
@@ -409,7 +421,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
             for grade, grade_students in grades.items():
                 # Potentially re-populate the student population
-                sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, state, asmt_year)
+                sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, state, rg_sys_year,
+                                                     asmt_year)
                 student_count += len(grade_students)
 
                 # Create assessment results for this year if requested
@@ -469,7 +482,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         # Write data out to CSV
         if WRITE_LZ:
-            csv_writer.write_records_to_file(sr_out_name, sr_out_cols, sr_students, root_path=OUT_PATH_ROOT)
+            csv_writer.write_records_to_file(sr_out_name, sr_lz_out_cols, sr_students, root_path=OUT_PATH_ROOT)
         if WRITE_STAR:
             csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
                                              entity_filter=('held_back', False), tbl_name='dim_student',
@@ -477,11 +490,14 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
                                              entity_filter=('held_back', False), tbl_name='dim_student',
                                              root_path=OUT_PATH_ROOT)
+            csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
+                                             root_path=OUT_PATH_ROOT)
         if WRITE_PG:
             postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
                                                    entity_filter=('held_back', False))
             postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
                                                    dim_students, entity_filter=('held_back', False))
+            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
         if asmt_year in ASMT_YEARS:
             for guid, rslts in assessment_results.items():
                 if WRITE_LZ:
@@ -635,7 +651,9 @@ if __name__ == '__main__':
     prepare_output_files()
 
     # Create the registration systems
-    REGISTRATION_SYSTEM_GUIDS = build_registration_systems(YEARS, idg)
+    REGISTRATION_SYSTEMS = build_registration_systems(YEARS, idg)
+    for guid, _ in REGISTRATION_SYSTEMS.items():
+        REGISTRATION_SYSTEM_GUIDS.append(guid)
 
     # Start the generation of data
     for state_cfg in STATES:

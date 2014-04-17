@@ -83,7 +83,7 @@ def advance_student(student: SBACStudent, schools_by_grade, hold_back_rate=sbac_
     return True
 
 
-def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, state,
+def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, state, reg_sys,
                             acad_year=datetime.datetime.now().year,
                             additional_student_choice=sbac_in_config.REPOPULATE_ADDITIONAL_STUDENTS):
     """
@@ -93,7 +93,8 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
     @param grade: The grade in the school to potentially re-populate
     @param grade_students: The students currently in the grade for this school
     @param id_gen: ID generator
-    @parma state: The state these potential new students will fall within
+    @param state: The state these potential new students will fall within
+    @param reg_sys: The registration system this student falls under
     @param acad_year: The current academic year that the repopulation is occurring within (optional, defaults to your
                       machine clock's current year)
     @param additional_student_choice: Array of values for additional students to create in the grade
@@ -104,12 +105,14 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
                                               school.student_count_avg))
         for _ in range(student_count):
             s = generate_student(school, grade, id_gen, state, acad_year)
+            s.reg_sys = reg_sys
             grade_students.append(s)
     else:
         # The grade is populated, but see if we should add a few new students
         # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
         for _ in range(random.choice(additional_student_choice)):
             s = generate_student(school, grade, id_gen, state, acad_year)
+            s.reg_sys = reg_sys
             grade_students.append(s)
 
 

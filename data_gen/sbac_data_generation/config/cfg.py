@@ -197,7 +197,7 @@ DEMOGRAPHICS_BY_GRADE = {
     ),
 }
 LEVELS_BY_GRADE_BY_SUBJ = {
-    "ELA": {
+    "Math": {
         1: GradeLevels((14.0, 30.0, 49.0, 7.0),
                        dmg_prg_504=DemographicLevels(
                            {True: Stats(45.0, 37.0, 17.0, 1.0),
@@ -511,7 +511,7 @@ LEVELS_BY_GRADE_BY_SUBJ = {
                             dmg_eth_pcf=Stats(0.0, 0.0, 0.0, 0.0),
                             dmg_eth_wht=Stats(9.0, 25.0, 57.0, 9.0),),),
     },
-    "Math": {
+    "ELA": {
         1: GradeLevels((9.0, 30.0, 48.0, 13.0),
                        dmg_prg_504=DemographicLevels(
                            {True: Stats(29.0, 42.0, 26.0, 3.0),

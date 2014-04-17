@@ -162,16 +162,6 @@ def random_score_given_level(level: int, cuts: [int]) -> int:
         return random.randint(cuts[level], cuts[level + 1] - 1)
 
 
-def level_given_score(score: int, cuts: [int]) -> int:
-    """
-    @param cuts: the cut points for the levels.
-        cuts[0] is the min, cuts[-1] is the max.
-    """
-    assert cuts[0] <= score <= cuts[-1]
-
-    return bisect.bisect(score, cuts) - 1
-
-
 def adjust_score(score: int, scale_factor: float, min_score: int, max_score: int) -> int:
     """
     "scale" a score by a factor. This is used to alter scores of students who attend schools which are generally

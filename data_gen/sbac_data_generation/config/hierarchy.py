@@ -6,7 +6,7 @@ SBAC-specific hierarchy configuration.
 """
 
 # District sizes : min/max/avg schools per type of district
-SML_MIN = 5
+SML_MIN = 4
 SML_MAX = 2 * SML_MIN
 SML_AVG = int((SML_MAX + SML_MIN) / 2)
 
@@ -46,28 +46,28 @@ VERY_FEAT_ELEM = 7 * BASE_ELEM
 
 SCHOOL_TYPES = {'High School': {'type': 'High School',
                                 'grades': [11],
-                                'students': {'min': 50, 'max': 250, 'avg': 100}},
+                                'students': {'min': 200, 'max': 1000, 'avg': 400}},
                 'Middle School': {'type': 'Middle School',
                                   'grades': [6, 7, 8],
-                                  'students': {'min': 25, 'max': 100, 'avg': 50}},
+                                  'students': {'min': 100, 'max': 500, 'avg': 200}},
                 'Elementary School': {'type': 'Elementary School',
                                       'grades': [3, 4, 5],
-                                      'students': {'min': 10, 'max': 35, 'avg': 30}},
+                                      'students': {'min': 75, 'max': 300, 'avg': 150}},
                 'Poor High School': {'type': 'High School',
                                      'grades': [11],
-                                     'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.45},
+                                     'students': {'min': 200, 'max': 1000, 'avg': 400}, 'adjust_pld': -0.45},
                 'Poor Middle School': {'type': 'Middle School',
                                        'grades': [6, 7, 8],
-                                       'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.5},
+                                       'students': {'min': 100, 'max': 500, 'avg': 200}, 'adjust_pld': -0.5},
                 'Poor Elementary School': {'type': 'Elementary School',
                                            'grades': [3, 4, 5],
                                            'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.6},
                 'Good High School': {'type': 'High School',
                                      'grades': [11],
-                                     'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.35},
+                                     'students': {'min': 200, 'max': 1000, 'avg': 400}, 'adjust_pld': 0.35},
                 'Good Middle School': {'type': 'Middle School',
                                        'grades': [6, 7, 8],
-                                       'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.4},
+                                       'students': {'min': 100, 'max': 500, 'avg': 200}, 'adjust_pld': 0.4},
                 'Good Elementary School': {'type': 'Elementary School',
                                            'grades': [3, 4, 5],
                                            'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.5},
@@ -150,7 +150,7 @@ DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_M
                                                               'Good Elementary School': OTHR_ELEM}},
                   'Small Average': {'school_counts': {'min': SML_MIN, 'max': SML_MAX, 'avg': SML_AVG},  # if SML_MIN = 9 then (9, 18, 13)
                                     'school_types_and_ratios': {'High School': NORM_HIGH,
-                                                                'Middle School': NORM_MIDL,
+                                                                'Big Middle School': NORM_MIDL,
                                                                 'Elementary School': NORM_ELEM}},
                   'Small Good': {'school_counts': {'min': SML_MIN, 'max': SML_MAX, 'avg': SML_AVG},
                                  'school_types_and_ratios': {'High School': NORM_HIGH,
@@ -196,14 +196,12 @@ STATE_TYPES = {'california': {'district_types_and_counts': {'Big Average': 140, 
                                                             'Small Very Good': 70},
                               'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                               'demographics': 'california'},
-               'typical_1': {'district_types_and_counts': {'Big Average': 1, 'Big Poor': 1, 'Big Good': 1,
-                                                           'Medium Average': 2, 'Medium Poor': 1, 'Medium Good': 1,
-                                                           'Medium Very Poor': 1, 'Medium Very Good': 1,
-                                                           'Small Average': 10, 'Small Poor': 5, 'Small Good': 5,
-                                                           'Small Very Poor': 5, 'Small Very Good': 5},
+               'typical_1': {'district_types_and_counts': {'Big Average': 1,
+                                                           'Medium Average': 1, 'Medium Poor': 1, 'Medium Good': 1,
+                                                           'Small Average': 5, 'Small Poor': 2, 'Small Good': 2},
                              'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                              'demographics': 'california'},
-               'devel': {'district_types_and_counts': {'Small Average': 10},
+               'devel': {'district_types_and_counts': {'Small Average': 4},
                          'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                          'demographics': 'california'}
                }

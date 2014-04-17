@@ -89,7 +89,12 @@ function run_unit_tests {
     echo "Running unit tests"
 
     cd "$WORKSPACE"
-    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml unit_tests/*
+    nosetests unit_tests/*
+
+    if [ -f nosetests.xml ]; then
+      # move test results
+      mv nosetests.xml $WORKSPACE/nosetests.xml
+    fi
 
     if [ -f coverage.xml ]; then
        # move coverage results

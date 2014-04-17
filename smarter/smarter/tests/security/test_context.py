@@ -12,7 +12,7 @@ from smarter.security.context import check_context, select_with_context,\
     get_current_context
 # Import the roles below so test can run as a standalone
 from smarter.security.roles.pii import PII  # @UnusedImport
-from smarter.security.roles.srs_extracts import SRSExtracts  # @UnusedImport
+from smarter.security.roles.state_level import StateLevel  # @UnusedImport
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth

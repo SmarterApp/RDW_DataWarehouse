@@ -10,8 +10,8 @@ from smarter.security.constants import RolesConstants
 from sqlalchemy.sql.expression import or_
 
 
-@ContextRoleMap.register([RolesConstants.SRS_EXTRACTS])
-class SRSExtracts(BaseRole):
+@ContextRoleMap.register([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])
+class StateLevel(BaseRole):
 
     def __init__(self, connector, name):
         super().__init__(connector, name)

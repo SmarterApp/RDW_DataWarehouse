@@ -90,16 +90,6 @@ function run_unit_tests {
 
     cd "$WORKSPACE"
     nosetests unit_tests/*
-
-    if [ -f nosetests.xml ]; then
-      # move test results
-      mv nosetests.xml $WORKSPACE/nosetests.xml
-    fi
-
-    if [ -f coverage.xml ]; then
-       # move coverage results
-       mv coverage.xml $WORKSPACE/coverage.xml
-    fi
 }
 
 function run_func_tests {

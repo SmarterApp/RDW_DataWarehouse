@@ -14,7 +14,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
 
 
-@unittest.skip("Disabling the test till update functionality get fix")
+#@unittest.skip("Disabling the test till update functionality get fix")
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -59,26 +59,29 @@ class Test(unittest.TestCase):
         with get_prod_connection() as connection:
             fact_table = connection.get_table('fact_asmt_outcome')
             dim_student = connection.get_table('dim_student')
-            update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.asmt_guid == '8117f196-bf78-4190-a1d0-e7ab004d1e09'))
+            update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', fact_table.c.asmt_guid == '68177b81-a22a-4d53-a4e0-16d0da50937f'))
             update_output_table = connection.execute(update_output_data).fetchall()
             self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
             self.assertIn(('C',), update_output_table, "Insert status C is not found in the Update record")
             # verify update asmt_score in fact_table
 
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.rec_status == 'C', fact_table.c.asmt_guid == '8117f196-bf78-4190-a1d0-e7ab004d1e09'))
+            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', fact_table.c.rec_status == 'C', fact_table.c.asmt_guid == '68177b81-a22a-4d53-a4e0-16d0da50937f'))
             new_asmt_score = connection.execute(update_asmt_score).fetchall()
-            expected_asmt_score = [(1400,)]
+            expected_asmt_score = [(1900,)]
             # verify that score is updated in fact_Asmt
             self.assertEquals(new_asmt_score, expected_asmt_score)
             # verify that there is only one record with status C
             self.assertEquals(len(new_asmt_score), 1)
 
-            # TODO add verification for dim_student update
-            update_last_name = select([dim_student.c.last_name], and_(dim_student.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', dim_student.c.batch_guid == self.guid_batch_id))
+            # verification for dim_student update : last name change to Bush
+            update_last_name = select([dim_student.c.last_name], and_(dim_student.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', dim_student.c.batch_guid == self.guid_batch_id, dim_student.c.rec_status == "C"))
             result_dim_student = connection.execute(update_last_name).fetchall()
-            print(result_dim_student)
-            expected_last_name = [('Patel',)]
+            expected_last_name = [('Bush',)]
             self.assertEquals(result_dim_student, expected_last_name)
+            # verify that old recod is deactive
+            inactive_rec = select([dim_student], and_(dim_student.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', dim_student.c.rec_status == "D"))
+            inactive_result = connection.execute(inactive_rec).fetchall()
+            print(len(inactive_result))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

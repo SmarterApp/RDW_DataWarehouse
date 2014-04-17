@@ -10,6 +10,8 @@ define [
       value: "studentAssessment"
     }, {
       value: "studentRegistrationStatistics"
+    }, {
+      value: "studentRegistrationCompletion"
     }]
   }
 
@@ -83,7 +85,8 @@ define [
   test "Test bulk extract security", ->
     permission = {
       sar_extracts: {all: false},
-      srs_extracts: {all: false}
+      srs_extracts: {all: false},
+      src_extracts: {all: false}
     }
     contextSecurity.init permission, config
     contextSecurity.apply()
@@ -93,13 +96,16 @@ define [
   test "Test no registration extract", ->
     permission = {
       sar_extracts: {all: true},
-      srs_extracts: {all: false}
+      srs_extracts: {all: false},
+      src_extracts: {all: false}
     }
     extractType = {
       options: [{
         value: "studentAssessment"
       }, {
         value: "studentRegistrationStatistics"
+      }, {
+        value: "studentRegistrationCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType
@@ -110,16 +116,19 @@ define [
     equal extractType.options.length, 1, "Should only contain assessment"
     equal extractType.options[0].value, "studentAssessment", "Should only contain assessment option"
 
-  test "Test no assessment extract", ->
+  test "Test srs only extract", ->
     permission = {
       sar_extracts: {all: false},
-      srs_extracts: {all: true}
+      srs_extracts: {all: true},
+      src_extracts: {all: false}
     }
     extractType = {
       options: [{
         value: "studentAssessment"
       }, {
         value: "studentRegistrationStatistics"
+      }, {
+        value: "studentRegistrationCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType
@@ -129,6 +138,77 @@ define [
     ok visible, "Should display bulk extract option"
     equal extractType.options.length, 1, "Should only contain registration"
     equal extractType.options[0].value, "studentRegistrationStatistics", "Should only contain registration option"
+
+  test "Test src only extract", ->
+    permission = {
+      sar_extracts: {all: false},
+      srs_extracts: {all: false},
+      src_extracts: {all: true}
+    }
+    extractType = {
+      options: [{
+        value: "studentAssessment"
+      }, {
+        value: "studentRegistrationStatistics"
+      }, {
+        value: "studentRegistrationCompletion"
+      }]
+    }
+    config.CSVOptions.extractType = extractType
+    contextSecurity.init permission, config
+    contextSecurity.apply()
+    visible = $('.csv').is(":visible")
+    ok visible, "Should display bulk extract option"
+    equal extractType.options.length, 1, "Should only contain completion extract"
+    equal extractType.options[0].value, "studentRegistrationCompletion", "Should only contain completion option"
+
+  test "Test srs and src only extract", ->
+    permission = {
+      sar_extracts: {all: false},
+      srs_extracts: {all: true},
+      src_extracts: {all: true}
+    }
+    extractType = {
+      options: [{
+        value: "studentAssessment"
+      }, {
+        value: "studentRegistrationStatistics"
+      }, {
+        value: "studentRegistrationCompletion"
+      }]
+    }
+    config.CSVOptions.extractType = extractType
+    contextSecurity.init permission, config
+    contextSecurity.apply()
+    visible = $('.csv').is(":visible")
+    ok visible, "Should display bulk extract option"
+    equal extractType.options.length, 2, "Should contain registration and completion extract option"
+    equal extractType.options[0].value, "studentRegistrationStatistics", "Should contain registration option"
+    equal extractType.options[1].value, "studentRegistrationCompletion", "Should contain completion option"
+
+  test "Test sar and srs only extract", ->
+    permission = {
+      sar_extracts: {all: true},
+      srs_extracts: {all: true},
+      src_extracts: {all: false}
+    }
+    extractType = {
+      options: [{
+        value: "studentAssessment"
+      }, {
+        value: "studentRegistrationStatistics"
+      }, {
+        value: "studentRegistrationCompletion"
+      }]
+    }
+    config.CSVOptions.extractType = extractType
+    contextSecurity.init permission, config
+    contextSecurity.apply()
+    visible = $('.csv').is(":visible")
+    ok visible, "Should display bulk extract option"
+    equal extractType.options.length, 2, "Should contain sar and registration extract option"
+    equal extractType.options[0].value, "studentAssessment", "Should only contain assessment option"
+    equal extractType.options[1].value, "studentRegistrationStatistics", "Should contain registration option"
 
   test "Test hasPIIAccess function", ->
     permission = {

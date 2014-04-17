@@ -57,11 +57,11 @@ define [
       # hide csv extract option if user doesn't have any permission
       if not assessment_access and not registration_access and not completion_access
         $('li.csv').hide()
-      else if not assessment_access
+      if not assessment_access
         @remove_extractType('studentAssessment')
-      else if not registration_access
+      if not registration_access
         @remove_extractType('studentRegistrationStatistics')
-      else if not completion_access
+      if not completion_access
         @remove_extractType('studentRegistrationCompletion')
 
     remove_extractType: (key) ->

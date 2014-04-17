@@ -155,7 +155,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edmigrate
-
+%attr(755,root,root) /etc/rc.d/init.d/repmgrd
 
 %pre
 id celery > /dev/null 2>&1

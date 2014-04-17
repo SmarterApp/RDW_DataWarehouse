@@ -273,7 +273,7 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'rec_status', 'val': 'C'}]}
 
 STUDENT_REG_FORMAT = {'format': 'csv',
-                      'name': 'dim_reg.csv',
+                      'name': 'student_reg.csv',
                       'columns': [{'name': 'student_reg_rec_id', 'val': 'UNIQUE_REC_ID'},
                                   {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                   {'name': 'state_name', 'val': 'state.name'},

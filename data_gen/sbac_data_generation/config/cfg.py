@@ -14,13 +14,13 @@ HIERARCHY_TO_DATE = datetime.date(9999, 12, 31)
 LEP_LANGUAGE_CODES = ['fre', 'ben', 'ger', 'chi', 'kor', 'jpn', 'rus']
 LEP_PROFICIENCY_LEVELS = ['very poor', 'poor', 'adequate', 'good', 'very good']
 LEP_PROFICIENCY_LEVELS_EXIT = ['good', 'very good']
-LEP_TITLE_3_PROGRAMS = ['', '',  # Allow blanks and give them higher weight
+LEP_TITLE_3_PROGRAMS = [None, None,  # Allow blanks and give them higher weight
                         'DualLanguage', 'TwoWayImmersion', 'TransitionalBilingual', 'DevelopmentalBilingual',
                         'HeritageLanguage', 'ShelteredEnglishInstruction', 'StructuredEnglishImmersion', 'SDAIE',
                         'ContentBasedESL', 'PullOutESL', 'Other']
 LEP_HAS_ENTRY_DATE_RATE = .9
 
-PRG_DISABILITY_TYPES = ['', '',  # Allow blanks and give them higher weight
+PRG_DISABILITY_TYPES = [None, None,  # Allow blanks and give them higher weight
                         'AUT', 'DB', 'DD', 'EMN', 'HI', 'ID', 'MD', 'OI', 'OHI', 'SLD', 'SLI', 'TBI', 'VI']
 
 HAS_ASMT_RESULT_IN_SR_FILE_RATE = .985  # The rate at which students with assessment results are in the SR CSV file

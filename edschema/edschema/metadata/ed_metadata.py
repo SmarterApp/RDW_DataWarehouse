@@ -268,9 +268,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.rec_status, unique=False)
     Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.rec_status, unique=False)
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False)
-    Index('fact_asmt_outcome_student_guid', assessment_outcome.c.student_guid, unique=False)
-    Index('fact_asmt_outcome_asmt_typ_subj', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_subject, assessment_outcome.c.asmt_type, unique=True)
-    Index('fact_asmt_outcome_status_year', assessment_outcome.c.rec_status, assessment_outcome.c.asmt_year, unique=False)
+    Index('fact_asmt_outcome_asmt_subj_typ', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_subject, assessment_outcome.c.asmt_type, unique=False)
+    Index('fact_asmt_outcome_year_status', assessment_outcome.c.asmt_year, assessment_outcome.c.rec_status, unique=False)
     # Filtering related indices
     Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.asmt_grade, unique=False)
     Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_lep, unique=False)
@@ -381,8 +380,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('extract_date', String(10), nullable=False),
                                  Column('reg_system_id', String(50), nullable=False),
                                  )
-    Index('student_reg_system_id_yearx', student_registration.c.reg_system_id, student_registration.c.academic_year, unique=False)
-    Index('student_guid', student_registration.c.student_guid, unique=False)
-    Index('student_reg_year', student_registration.c.academic_year, unique=False)
+    Index('student_reg_year_system_idx', student_registration.c.academic_year, student_registration.c.reg_system_id, unique=False)
+    Index('student_reg_guid', student_registration.c.student_guid, unique=False)
 
     return metadata

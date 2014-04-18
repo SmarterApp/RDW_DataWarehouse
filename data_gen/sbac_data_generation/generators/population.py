@@ -101,11 +101,14 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
     @param additional_student_choice: Array of values for additional students to create in the grade
     """
     # Calculate a new theoretically student count
-    student_count = int(random.triangular(school.student_count_min, school.student_count_max, school.student_count_avg))
+    if school.student_count_min < school.student_count_max:
+        student_count = int(random.triangular(school.student_count_min, school.student_count_max,
+                                              school.student_count_avg))
+    else:
+        student_count = school.student_count_min
 
-    # Grades should always grow
-    if student_count < len(grade_students):
-        student_count = len(grade_students) + random.choice(additional_student_choice)
+    # Add in additional students
+    student_count = student_count + random.choice(additional_student_choice)
 
     # Re-fill grade to this new student count
     while len(grade_students) < student_count:

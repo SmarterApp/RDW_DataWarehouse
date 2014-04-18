@@ -88,10 +88,11 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
     @param state_code: Code of state to generate
     @param state_type: Type of state to generate
     """
-    global STATES, YEARS, ASMT_YEARS, INTERIM_ASMT_PERIODS, NUMBER_REGISTRATION_SYSTEMS
+    global STATES, YEARS, ASMT_YEARS, INTERIM_ASMT_PERIODS, NUMBER_REGISTRATION_SYSTEMS, WRITE_LZ, WRITE_STAR, \
+           WRITE_PG, GRADES_OF_CONCERN
 
     # Validate parameter
-    if team not in ['sonics', 'arkanoids']:
+    if team not in ['sonics', 'arkanoids', 'udl']:
         raise ValueError("Team name '%s' is not known" % team)
 
     # Set the state
@@ -108,6 +109,23 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         ASMT_YEARS = [2015, 2016, 2017]  # The years to generate summative assessments for
         INTERIM_ASMT_PERIODS = ['Fall', 'Winter', 'Spring']  # The periods for interim assessments
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
+    elif team == 'udl':
+        # This is a VERY specific configuration specifically designed to generate UDL test files
+        STATES = [{'name': 'Example State', 'code': 'ES', 'type': 'udl_test'}]
+        YEARS = [2016]
+        ASMT_YEARS = [2016]
+        INTERIM_ASMT_PERIODS = []
+        NUMBER_REGISTRATION_SYSTEMS = 1
+        GRADES_OF_CONCERN = {11}
+        sbac_in_config.SUBJECTS = ['Math']
+        sbac_in_config.INTERIM_ASMT_RATE = 0
+        sbac_in_config.ASMT_SKIP_RATE = 0
+        sbac_in_config.ASMT_RETAKE_RATE = 0
+        sbac_in_config.ASMT_DELETE_RATE = 0
+        sbac_in_config.ASMT_UPDATE_RATE = 0
+        WRITE_LZ = True
+        WRITE_STAR = False
+        WRITE_PG = False
 
 
 def connect_to_postgres(host, port, dbname, user, password):
@@ -142,8 +160,6 @@ def prepare_output_files():
                                 sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
                                 sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_SECTION_FORMAT['name'],
-                                sbac_out_config.DIM_SECTION_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
 
@@ -397,10 +413,6 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     # Grab the registration system
     reg_sys = REGISTRATION_SYSTEMS[reg_sys_guid]
 
-    # Set up output file names and columns
-    dsec_out_name = sbac_out_config.DIM_SECTION_FORMAT['name']
-    dsec_out_cols = sbac_out_config.DIM_SECTION_FORMAT['columns']
-
     # Decide how many schools to make
     school_count = random.triangular(district.config['school_counts']['min'],
                                      district.config['school_counts']['max'],
@@ -616,13 +628,13 @@ if __name__ == '__main__':
                         help='Output data to landing zone CSV and JSON', required=False)
     args, unknown = parser.parse_known_args()
 
-    # Set team-specific configuration options
-    assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
-
     # Save output flags
     WRITE_PG = args.pg_out
     WRITE_STAR = args.star_out
     WRITE_LZ = args.lz_out
+
+    # Set team-specific configuration options
+    assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
 
     # Validate at least one form of output
     if not WRITE_PG and not WRITE_STAR and not WRITE_LZ:

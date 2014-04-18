@@ -80,6 +80,9 @@ SCHOOL_TYPES = {'High School': {'type': 'High School',
                 'Big Elementary School': {'type': 'Elementary School',
                                           'grades': [3, 4, 5],
                                           'students': {'min': 100, 'max': 200, 'avg': 150}},
+                'UDL High School': {'type': 'High School',
+                                    'grades': [11],
+                                    'students': {'min': 999, 'max': 1001, 'avg': 1000}},
                 }
 
 DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_MAX, 'avg': BIG_AVG},  # if SML_MIN = 9 then (200, 450, 325)
@@ -185,7 +188,9 @@ DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_M
                                                              'Poor Elementary School': FEAT_ELEM,
                                                              'Good High School': OTHR_HIGH,
                                                              'Good Middle School': OTHR_MIDL,
-                                                             'Good Elementary School': OTHR_ELEM}}
+                                                             'Good Elementary School': OTHR_ELEM}},
+                  'Big UDL': {'school_counts': {'min': 100, 'max': 102, 'avg': 101},
+                              'school_types_and_ratios': {'UDL High School': 1}}
                   }
 
 STATE_TYPES = {'california': {'district_types_and_counts': [('Big Average', 140), ('Big Poor', 110),
@@ -205,5 +210,8 @@ STATE_TYPES = {'california': {'district_types_and_counts': [('Big Average', 140)
                              'demographics': 'california'},
                'devel': {'district_types_and_counts': [('Small Average', 4)],
                          'subject_skip_percentages': {'Math': .04, 'ELA': .03},
-                         'demographics': 'california'}
+                         'demographics': 'california'},
+               'udl_test': {'district_types_and_counts': [('Big UDL', 1)],
+                            'subject_skip_percentages': {'Math': 0, 'ELA': 0},
+                            'demographics': 'california'}
                }

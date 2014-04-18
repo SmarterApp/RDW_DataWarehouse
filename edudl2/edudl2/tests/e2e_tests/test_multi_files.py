@@ -35,8 +35,6 @@ class ValidateMultiFiles(unittest.TestCase):
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
-            print(number_of_row)
-            print("Sucessfully delete all data from Batch Table")
 
     #Run UDL
     def udl_run(self):
@@ -46,7 +44,6 @@ class ValidateMultiFiles(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
-        print(command)
         p = subprocess.Popen(command, shell=True)
         returncode = p.wait()
         self.check_job_completion()
@@ -59,7 +56,6 @@ class ValidateMultiFiles(unittest.TestCase):
             os.makedirs(self.tenant_dir)
         for file in self.files.values():
             files = shutil.copy2(file, self.tenant_dir)
-            print(files)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, max_wait=30):

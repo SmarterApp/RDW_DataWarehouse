@@ -2,7 +2,6 @@ import logging
 import datetime
 from uuid import uuid4
 from edudl2.udl2 import message_keys as mk
-from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 

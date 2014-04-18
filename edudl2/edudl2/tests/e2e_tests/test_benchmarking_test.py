@@ -36,7 +36,6 @@ class ValidateTableData(unittest.TestCase):
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
-            print(number_of_row)
             self.assertEqual(number_of_row, 0)
 
     def run_udl_pipeline(self):
@@ -45,7 +44,6 @@ class ValidateTableData(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_name} -g {guid}".format(driver_path=driver_path, file_name=arch_file, guid=self.guid_batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion()
 

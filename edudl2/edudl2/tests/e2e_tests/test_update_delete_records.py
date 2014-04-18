@@ -46,7 +46,6 @@ class Test_Update_Delete(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion()
 
@@ -55,7 +54,6 @@ class Test_Update_Delete(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
         else:
-            print("copying")
             os.makedirs(self.tenant_dir)
         return shutil.copy2(self.archived_file, self.tenant_dir)
 
@@ -75,7 +73,6 @@ class Test_Update_Delete(unittest.TestCase):
 
     # Validate edware database
     def validate_edware_database(self, schema_name):
-        print('schema name is:', schema_name)
         with get_target_connection() as ed_connector:
             ed_connector.set_metadata_by_reflect(schema_name)
             fact_table = ed_connector.get_table('fact_asmt_outcome')
@@ -93,7 +90,6 @@ class Test_Update_Delete(unittest.TestCase):
             # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
             update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_table.c.rec_status == 'C'))
             new_asmt_score = ed_connector.execute(update_asmt_score).fetchall()
-            print('Updated asmt_score after update is:', new_asmt_score)
             expected_asmt_score = [(1500,)]
             self.assertEquals(new_asmt_score, expected_asmt_score)
 
@@ -112,7 +108,6 @@ class Test_Update_Delete(unittest.TestCase):
             # Validate that upadte of asmt_score(1509 to 1500) is successful for student with student_guid =779e658d-de44-4c9e-ac97-ea366722a94c
             update_score = select([fact_asmt.c.asmt_score], and_(fact_asmt.c.student_guid == '779e658d-de44-4c9e-ac97-ea366722a94c', fact_asmt.c.rec_status == 'C'))
             new_score = ed_connector.execute(update_score).fetchall()
-            print('Updated asmt_score after update is:', new_score)
             self.assertEquals(new_score, expected_asmt_score)
 
     def test_validation(self):

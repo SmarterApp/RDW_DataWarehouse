@@ -77,7 +77,6 @@ class ValidateTableData(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
         else:
-            print("copying")
             os.makedirs(self.tenant_dir)
         return shutil.copy2(file_to_copy, self.tenant_dir)
 
@@ -98,10 +97,6 @@ class ValidateTableData(unittest.TestCase):
         query2 = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_post_etl.task'))
         batch_table_data = udl_connector.execute(query).fetchall()
         batch_table_post_udl = udl_connector.execute(query2).fetchall()
-        print('batch_table_data')
-        print(batch_table_data)
-        print('batch_table_post_udl')
-        print(batch_table_post_udl)
         self.assertEquals(status, batch_table_data)
         self.assertEquals([('SUCCESS',)], batch_table_post_udl)
 
@@ -110,7 +105,6 @@ class ValidateTableData(unittest.TestCase):
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_expander.task'))
         batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
-        print(batch_data_tasklevel)
         self.assertEquals([('FAILURE',)], batch_data_tasklevel)
 
     #Verify that UDL is failing at Decription task
@@ -118,25 +112,20 @@ class ValidateTableData(unittest.TestCase):
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_decrypter.task'))
         batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
-        print(batch_data_tasklevel)
         self.assertEquals([('FAILURE',)], batch_data_tasklevel)
 
     #Verify udl is failing at simple file validator
     def verify_corrupt_csv(self, udl_connector, guid_batch_id):
-        print(guid_batch_id)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_validator.task'))
         batch_data_corrupt_csv = udl_connector.execute(batch_table_status).fetchall()
-        print(batch_data_corrupt_csv)
         self.assertEquals([('FAILURE',)], batch_data_corrupt_csv)
 
     #Verify udl is failing at get load type
     def verify_invalid_load(self, udl_connector, guid_batch_id):
-        print(guid_batch_id)
         batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_get_load_type.task'))
         batch_data_invalid_load = udl_connector.execute(batch_table_status).fetchall()
-        print(batch_data_invalid_load)
         self.assertEquals([('FAILURE',)], batch_data_invalid_load)
 
     #Validate that the notification to the callback url was successful
@@ -151,47 +140,40 @@ class ValidateTableData(unittest.TestCase):
 
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for extra column in csv is : " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_csv_extra_col'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_csv(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_miss_csv(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for missing column in csv: " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_csv_missing_col'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_corrupt_json(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for corrupt json: " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_json'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_corrupt_source(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for corrupt source: " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['corrupt_source_file'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_corrupt_source(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_missing_json(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for missing json: " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['missing_json'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_missing_json(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_invalid_load_json(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for invalid load json: " + self.guid_batch_id)
         self.run_udl_with_file(self.guid_batch_id, FILE_DICT['invalid_load_json'])
         self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
         self.verify_invalid_load(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_sr_csv_missing_column(self):
         self.guid_batch_id = str(uuid4())
-        print("guid batch for student registration csv missing column: " + self.guid_batch_id)
 
         # Start the http post server subprocess
         self.start_post_server()
@@ -221,7 +203,6 @@ class ValidateTableData(unittest.TestCase):
             server_address = ('127.0.0.1', 8001)
             self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
             self.post_server.timeout = 0.25
-            print('POST Service receiving requests....')
             while self.receive_requests:
                 self.post_server.handle_request()
         finally:

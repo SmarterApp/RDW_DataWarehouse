@@ -100,21 +100,18 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
                       machine clock's current year)
     @param additional_student_choice: Array of values for additional students to create in the grade
     """
-    # Re-populate grades if necessary
-    if len(grade_students) < (school.student_count_avg / 20):
-        student_count = int(random.triangular(school.student_count_min, school.student_count_max,
-                                              school.student_count_avg))
-        for _ in range(student_count):
-            s = generate_student(school, grade, id_gen, state, acad_year)
-            s.reg_sys = reg_sys
-            grade_students.append(s)
-    else:
-        # The grade is populated, but see if we should add a few new students
-        # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
-        for _ in range(random.choice(additional_student_choice)):
-            s = generate_student(school, grade, id_gen, state, acad_year)
-            s.reg_sys = reg_sys
-            grade_students.append(s)
+    # Calculate a new theoretically student count
+    student_count = int(random.triangular(school.student_count_min, school.student_count_max, school.student_count_avg))
+
+    # Grades should always grow
+    if student_count < len(grade_students):
+        student_count = len(grade_students) + random.choice(additional_student_choice)
+
+    # Re-fill grade to this new student count
+    while len(grade_students) < student_count:
+        s = generate_student(school, grade, id_gen, state, acad_year)
+        s.reg_sys = reg_sys
+        grade_students.append(s)
 
 
 def _generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):

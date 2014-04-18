@@ -321,6 +321,70 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
                                          retake_rate, delete_rate, update_rate)
 
 
+def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results):
+    """
+    Write student and assessment data for a school to one or more output formats.
+
+    @param asmt_year: Current academic year
+    @param sr_out_name: Name of student registration landing zone CSV file to potentially write to
+    @param dim_students: Students to write to dim_student/dim_student_demographic star-schema CSVs/postgres tables
+    @param sr_students: Students to write to registration landing zone/star-schema CSV/postgres table
+    @param assessment_results: Assessment outcomes to write to landing zone/star-schema CSV/postgres table
+    """
+    # Set up output file names and columns
+    sr_lz_out_cols = sbac_out_config.SR_FORMAT['columns']
+    lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
+    fao_out_name = sbac_out_config.FAO_FORMAT['name']
+    fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
+    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
+    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
+    dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
+    dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
+    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
+    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
+    sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
+    sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
+
+    # Write student data optionally to landing zone CSV, star-schema CSV, and/or to postgres
+    if WRITE_LZ:
+        csv_writer.write_records_to_file(sr_out_name, sr_lz_out_cols, sr_students, root_path=OUT_PATH_ROOT)
+    if WRITE_STAR:
+        csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
+                                         entity_filter=('held_back', False), tbl_name='dim_student',
+                                         root_path=OUT_PATH_ROOT)
+        csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
+                                         entity_filter=('held_back', False), tbl_name='dim_student',
+                                         root_path=OUT_PATH_ROOT)
+        csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
+                                         root_path=OUT_PATH_ROOT)
+    if WRITE_PG:
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
+                                               entity_filter=('held_back', False))
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
+                                               dim_students, entity_filter=('held_back', False))
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
+
+    # Write assessment results if we have them; also optionally to landing zone CSV, star-schema CSV, and/or to postgres
+    if asmt_year in ASMT_YEARS:
+        for guid, rslts in assessment_results.items():
+            if WRITE_LZ:
+                csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
+                                                 lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
+            if WRITE_STAR:
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
+                                                 root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
+                                                 tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
+            if WRITE_PG:
+                try:
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                                                           rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
+                                                           fao_pri_out_cols, rslts)
+                except Exception as e:
+                    print('PostgreSQL EXCEPTION ::: %s' % str(e))
+
+
 def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments,
                            asmt_skip_rates_by_subject, id_gen):
     """
@@ -337,20 +401,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     reg_sys = REGISTRATION_SYSTEMS[reg_sys_guid]
 
     # Set up output file names and columns
-    sr_lz_out_cols = sbac_out_config.SR_FORMAT['columns']
-    lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
-    fao_out_name = sbac_out_config.FAO_FORMAT['name']
-    fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
-    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
-    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
-    dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
-    dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
-    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
-    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
     dsec_out_name = sbac_out_config.DIM_SECTION_FORMAT['name']
     dsec_out_cols = sbac_out_config.DIM_SECTION_FORMAT['columns']
-    sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
-    sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
 
     # Decide how many schools to make
     school_count = random.triangular(district.config['school_counts']['min'],
@@ -413,13 +465,14 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         # With the students moved around, we will re-populate empty grades and create sections and assessments with
         # outcomes for the students
-        assessment_results = {}
-        sr_students = []
-        dim_students = []
         for school, grades in schools_with_grades.items():
             # Get the institution hierarchy object
             inst_hier = inst_hiers[school.guid]
 
+            # Process the whole school
+            assessment_results = {}
+            sr_students = []
+            dim_students = []
             for grade, grade_students in grades.items():
                 # Potentially re-populate the student population
                 sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, state, rg_sys_year,
@@ -481,42 +534,11 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         if student.guid not in unique_students:
                             unique_students[student.guid] = True
 
-        # Write data out to CSV
-        if WRITE_LZ:
-            csv_writer.write_records_to_file(sr_out_name, sr_lz_out_cols, sr_students, root_path=OUT_PATH_ROOT)
-        if WRITE_STAR:
-            csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
-                                             entity_filter=('held_back', False), tbl_name='dim_student',
-                                             root_path=OUT_PATH_ROOT)
-            csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
-                                             entity_filter=('held_back', False), tbl_name='dim_student',
-                                             root_path=OUT_PATH_ROOT)
-            csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
-                                             root_path=OUT_PATH_ROOT)
-        if WRITE_PG:
-            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
-                                                   entity_filter=('held_back', False))
-            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
-                                                   dim_students, entity_filter=('held_back', False))
-            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
-        if asmt_year in ASMT_YEARS:
-            for guid, rslts in assessment_results.items():
-                if WRITE_LZ:
-                    csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
-                                                     lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
-                if WRITE_STAR:
-                    csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
-                                                     root_path=OUT_PATH_ROOT)
-                    csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
-                                                     tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
-                if WRITE_PG:
-                    try:
-                        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
-                                                               rslts)
-                        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
-                                                               fao_pri_out_cols, rslts)
-                    except Exception as e:
-                        print('PostgreSQL EXCEPTION ::: %s' % str(e))
+            # Write out the school
+            write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results)
+            del dim_students
+            del sr_students
+            del assessment_results
 
     # Some explicit garbage collection
     unique_student_count = len(unique_students)

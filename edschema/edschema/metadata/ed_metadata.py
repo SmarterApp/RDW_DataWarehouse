@@ -264,19 +264,16 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('acc_streamline_mode', SmallInteger, nullable=False),
                                )
 
-    Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
-    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.rec_status, unique=False)
-    Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.rec_status, unique=False)
+    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.asmt_year, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False)
     Index('fact_asmt_outcome_asmt_subj_typ', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_subject, assessment_outcome.c.asmt_type, unique=False)
-    Index('fact_asmt_outcome_year_status', assessment_outcome.c.asmt_year, assessment_outcome.c.rec_status, unique=False)
     # Filtering related indices
-    Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.asmt_grade, unique=False)
-    Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_lep, unique=False)
-    Index('fact_asmt_outcome_504', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_504, unique=False)
-    Index('fact_asmt_outcome_tt1', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_tt1, unique=False)
-    Index('fact_asmt_outcome_iep', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.dmg_prg_iep, unique=False)
-    Index('fact_asmt_outcome_gender', assessment_outcome.c.state_code, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_type, assessment_outcome.c.gender, unique=False)
+    Index('fact_asmt_outcome_grade', assessment_outcome.c.asmt_grade, unique=False)
+    Index('fact_asmt_outcome_lep', assessment_outcome.c.dmg_prg_lep, unique=False)
+    Index('fact_asmt_outcome_504', assessment_outcome.c.dmg_prg_504, unique=False)
+    Index('fact_asmt_outcome_tt1', assessment_outcome.c.dmg_prg_tt1, unique=False)
+    Index('fact_asmt_outcome_iep', assessment_outcome.c.dmg_prg_iep, unique=False)
+    Index('fact_asmt_outcome_gender', assessment_outcome.c.gender, unique=False)
 
     assessment_outcome_primary = Table('fact_asmt_outcome_primary', metadata,
                                        Column('asmnt_outcome_primary_rec_id', BigInteger, primary_key=True),

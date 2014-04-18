@@ -45,8 +45,6 @@ class FileLoaderFTest(UDLTestHelper):
                 delete(table).where(table.c.guid_batch == guid_batch)
             except Exception as e:
                 print('Exception -- ', e)
-            else:
-                print("Tear Down successful for batch", self.conf['guid_batch'])
 
     def test_assessment_row_number(self):
         # load data

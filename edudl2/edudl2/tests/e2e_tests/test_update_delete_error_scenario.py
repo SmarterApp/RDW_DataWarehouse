@@ -40,7 +40,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             result1 = connector.execute(query).fetchall()
             number_of_row = len(result1)
             self.assertEqual(number_of_row, 0)
-            print(number_of_row)
 
         #Delete all data from err_list
             err_list_table = connector.get_table('err_list')
@@ -49,7 +48,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             query_result = connector.execute(query_table).fetchall()
             number_of_row = len(query_result)
             self.assertEqual(number_of_row, 0)
-            print(number_of_row)
 
         #Delete all data from udl_stats table
         with StatsDBConnection() as conn:
@@ -58,7 +56,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             query = select([table])
             query_tab = conn.execute(query).fetchall()
             no_rows = len(query_tab)
-            print(no_rows)
 
     #Run UDL pipeline with file in tenant dir
     def run_udl_pipeline(self, guid_batch_id, file_to_load):
@@ -67,7 +64,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion()
 
@@ -76,7 +72,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             print("tenant dir already exists")
         else:
-            print("copying")
             os.makedirs(self.tenant_dir)
         return shutil.copy2(file_to_copy, self.tenant_dir)
 
@@ -109,7 +104,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             error_table = connector.get_table('err_list')
             error_record = select([error_table.c.err_code_text]).where(error_table.c.guid_batch == guid_batch_id)
             error_result = connector.execute(error_record).fetchall()
-            print(error_result)
             expected_result = [('DELETE_RECORD_NOT_FOUND',)]
             self.assertEquals(error_result, expected_result, "Error has not been logged into ERR_LIST table")
 
@@ -119,7 +113,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
             error_table = connector.get_table('err_list')
             error_record = select([error_table.c.err_source_text]).where(error_table.c.guid_batch == guid_batch_id)
             error_result = connector.execute(error_record).fetchall()
-            print(error_result)
             expected_result = [('DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE',)]
             self.assertEquals(error_result, expected_result, "Error has not been logged for deleting the same data twice into ERR_LIST table")
 

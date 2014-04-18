@@ -43,7 +43,6 @@ class ValidateSchemaChange(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=self.guid_batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion()
 
@@ -84,7 +83,6 @@ class ValidateSchemaChange(unittest.TestCase):
             self.assertGreater(row_count, 1, "Data is loaded to star shema")
             truple_str = (self.guid_batch_id, )
             self.assertIn(truple_str, output_data, "assert successful")
-            print('edware schema validation is successful')
 
             #TODO add dim student verification
             #dim_student = ed_connector.get_table(DIM_STUDENT)

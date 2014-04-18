@@ -114,7 +114,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             for row in result:
                 status = row['udl_phase_step_status']
                 load = row['load_type']
-                print('Load type:', load)
                 self.assertEqual(status, mk.SUCCESS)
                 self.assertEqual(load, self.load_type, 'Not the expected load type.')
 
@@ -125,7 +124,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             target_table = conn.get_table(udl2_conf['target_db']['sr_target_table'])
             query = select([func.count()]).select_from(target_table)
             record_count = conn.execute(query).fetchall()[0][0]
-            print('Number of rows for current job in target table:', record_count)
             self.assertEqual(record_count, self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in target table.')
 
     #Validate a student's data
@@ -184,7 +182,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=sr_file, guid=self.batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion(max_wait)
 
@@ -271,7 +268,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             server_address = ('127.0.0.1', 8000)
             self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
             self.post_server.timeout = 0.25
-            print('POST Service begin receiving requests....')
             while self.receive_requests:
                 self.post_server.handle_request()
         finally:

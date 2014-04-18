@@ -45,7 +45,6 @@ DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
     def test_UDLDataIntegrityError(self):
         exception = UDLDataIntegrityError(self.batch_guid, self.dupe_error_message, self.schema_and_table,
                                           self.dupe_error_source)
-        print(exception)
         self.assertEqual(str(exception),
                          'Data integrity violence found for batch: test_batch_guid_1 in schema.table, '
                          'error message: (IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"\n'

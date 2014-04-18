@@ -42,7 +42,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
             for row in output_data:
                 status = row['udl_phase_step_status']
                 self.assertEqual(status, 'SUCCESS')
-            print('UDL validation is successful')
             query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.guid_batch == self.batch_id))
             output_result = connector.execute(query).fetchall()
             tuple_str = [('SUCCESS',)]
@@ -59,7 +58,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
             self.assertGreater(row_count, 1, "Data is loaded to star shema")
             truple_str = (self.batch_id, )
             self.assertIn(truple_str, output_data, "assert successful")
-            print('edware schema validation is successful')
 
 #Copy file to tenant folder
     def copy_file_to_tmp(self):
@@ -89,7 +87,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=driver_path, file_path=arch_file, guid=self.batch_id)
-        print(command)
         subprocess.call(command, shell=True)
         self.check_job_completion()
 
@@ -101,19 +98,15 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.subfiles_path = os.path.join(path, 'subfiles')
 
         arrival_dir = glob.glob(self.arrivals_path + '*' + self.batch_id)
-        print("work-arrivals folder empty")
         self.assertEqual(0, len(arrival_dir))
 
         decrypted_dir = glob.glob(self.decrypted_path + '*' + self.batch_id)
-        print("work-decrypted folder emptydata ")
         self.assertEqual(0, len(decrypted_dir))
 
         expanded_dir = glob.glob(self.expanded_path + '*' + self.batch_id)
-        print("work-expanded folder emptydata ")
         self.assertEqual(0, len(expanded_dir))
 
         subfiles_dir = glob.glob(self.subfiles_path + '*' + self.batch_id)
-        print("work-subfiles folder emptydata ")
         self.assertEqual(0, len(subfiles_dir))
 
     def test_validation(self):

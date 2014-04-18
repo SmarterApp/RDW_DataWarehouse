@@ -37,6 +37,7 @@ def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetim
     s.state = state
     s.district = school.district
     s.rec_id = id_gen.get_rec_id('student')
+    s.rec_id_sr = id_gen.get_rec_id('sr_student')
     s.guid_sr = id_gen.get_sr_uuid()
     s.external_ssid = s.guid + 'ext'
     s.external_ssid_sr = id_gen.get_sr_uuid()
@@ -99,21 +100,21 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
                       machine clock's current year)
     @param additional_student_choice: Array of values for additional students to create in the grade
     """
-    # Re-populate grades if necessary
-    if len(grade_students) < (school.student_count_avg / 20):
+    # Calculate a new theoretically student count
+    if school.student_count_min < school.student_count_max:
         student_count = int(random.triangular(school.student_count_min, school.student_count_max,
                                               school.student_count_avg))
-        for _ in range(student_count):
-            s = generate_student(school, grade, id_gen, state, acad_year)
-            s.reg_sys = reg_sys
-            grade_students.append(s)
     else:
-        # The grade is populated, but see if we should add a few new students
-        # 33% of the time we do not add students and the other 67% of the time we add 1 to 4 students
-        for _ in range(random.choice(additional_student_choice)):
-            s = generate_student(school, grade, id_gen, state, acad_year)
-            s.reg_sys = reg_sys
-            grade_students.append(s)
+        student_count = school.student_count_min
+
+    # Add in additional students
+    student_count = student_count + random.choice(additional_student_choice)
+
+    # Re-fill grade to this new student count
+    while len(grade_students) < student_count:
+        s = generate_student(school, grade, id_gen, state, acad_year)
+        s.reg_sys = reg_sys
+        grade_students.append(s)
 
 
 def _generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):

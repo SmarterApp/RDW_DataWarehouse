@@ -79,11 +79,27 @@ def test_repopulate_school_grade_empty():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school.config['students']['min'], elem_school.config['students']['max'] = 100, 100
+    elem_school.config['students']['avg'] = 100
     students = []
-    pop_gen.repopulate_school_grade(elem_school, 3, students, ID_GEN, state, 2015)
+    pop_gen.repopulate_school_grade(elem_school, 3, students, ID_GEN, state, 2015, additional_student_choice=[0])
 
     # Test
-    assert 75 <= len(students) <= 305
+    assert len(students) == 100
+
+
+def test_repopulate_school_grade_empty_with_additional():
+    # Create objects
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school.config['students']['min'], elem_school.config['students']['max'] = 100, 100
+    elem_school.config['students']['avg'] = 100
+    students = []
+    pop_gen.repopulate_school_grade(elem_school, 3, students, ID_GEN, state, 2015, additional_student_choice=[3])
+
+    # Test
+    assert len(students) == 103
 
 
 def test_repopulate_school_grade_full_no_additional():
@@ -91,13 +107,15 @@ def test_repopulate_school_grade_full_no_additional():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school.config['students']['min'], elem_school.config['students']['max'] = 100, 100
+    elem_school.config['students']['avg'] = 100
     students = []
-    for _ in range(30):
+    for _ in range(100):
         students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, state, 2015))
     pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, state, 2015, additional_student_choice=[0])
 
     # Test
-    assert len(students) == 30
+    assert len(students) == 100
 
 
 def test_repopulate_school_grade_full_additional():
@@ -105,13 +123,31 @@ def test_repopulate_school_grade_full_additional():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school.config['students']['min'], elem_school.config['students']['max'] = 100, 100
+    elem_school.config['students']['avg'] = 100
     students = []
-    for _ in range(30):
+    for _ in range(100):
         students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, state, 2015))
     pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, state, 2015, additional_student_choice=[2])
 
     # Test
-    assert len(students) == 32
+    assert len(students) == 102
+
+
+def test_repopulate_school_grade_almost_full_additional():
+    # Create objects
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school.config['students']['min'], elem_school.config['students']['max'] = 100, 100
+    elem_school.config['students']['avg'] = 100
+    students = []
+    for _ in range(99):
+        students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, state, 2015))
+    pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, state, 2015, additional_student_choice=[2])
+
+    # Test
+    assert len(students) == 102
 
 
 def test_generate_derived_demographic_no_ethnicities():

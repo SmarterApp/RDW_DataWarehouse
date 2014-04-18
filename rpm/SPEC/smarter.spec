@@ -180,11 +180,15 @@ if [ ! -d /var/log/celery-edmigrate ]; then
 fi
 if [ ! -d /var/log/repmgrd ]; then
     mkdir -p /var/log/repmgrd
-    chown postgres.postgres /var/log/repmgrd
+    if id -u postgres > /dev/null 2>&1 ; then
+        chown postgres.postgres /var/log/repmgrd
+    fi
 fi
 if [ ! -d /var/run/repmgrd ]; then
     mkdir -p /var/run/repmgrd
-    chown postgres.postgres /var/run/repmgrd
+    if id -u postgres > /dev/null 2>&1; then
+        chown postgres.postgres /var/run/repmgrd
+    fi
 fi
 
 %post

@@ -12,7 +12,6 @@ from nose.tools import assert_raises
 
 import generate_data as generate_data
 import sbac_data_generation.generators.assessment as asmt_gen
-import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
@@ -124,14 +123,12 @@ def test_create_assessment_outcome_object_skipped():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=1,
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=1,
                                                    retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
@@ -144,14 +141,12 @@ def test_create_assessment_outcome_object_one_active_result():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=0,
                                                    retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
@@ -166,14 +161,12 @@ def test_create_assessment_outcome_object_retake_results():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=0,
                                                    retake_rate=1, delete_rate=0, update_rate=0)
 
     # Tests
@@ -190,14 +183,12 @@ def test_create_assessment_outcome_object_one_deleted_result():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=0,
                                                    retake_rate=0, delete_rate=1, update_rate=0)
 
     # Tests
@@ -212,14 +203,12 @@ def test_create_assessment_outcome_object_update_no_second_delete_results():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=0,
                                                    retake_rate=0, delete_rate=0, update_rate=1)
 
     # Tests
@@ -236,14 +225,12 @@ def test_create_assessment_outcome_object_update_second_delete_results():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_object(student, asmt, section, inst_hier, ID_GEN, outcomes, skip_rate=0,
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=0,
                                                    retake_rate=0, delete_rate=1, update_rate=1)
 
     # Tests
@@ -260,14 +247,12 @@ def test_create_assessment_outcome_objects_no_interims_skipped():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], inst_hier, ID_GEN, outcomes,
                                                     skip_rate=1, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
@@ -280,14 +265,12 @@ def test_create_assessment_outcome_objects_no_interims_one_active_result():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], inst_hier, ID_GEN, outcomes,
                                                     skip_rate=0, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
@@ -302,14 +285,12 @@ def test_create_assessment_outcome_objects_no_interims_retake_results():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], inst_hier, ID_GEN, outcomes,
                                                     skip_rate=0, retake_rate=1, delete_rate=0, update_rate=0)
 
     # Tests
@@ -326,14 +307,12 @@ def test_create_assessment_outcome_objects_no_interim_one_deleted_result():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], inst_hier, ID_GEN, outcomes,
                                                     skip_rate=0, retake_rate=0, delete_rate=1, update_rate=0)
 
     # Tests
@@ -348,14 +327,12 @@ def test_create_assessment_outcome_objects_no_interim_update_no_second_delete_re
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], inst_hier, ID_GEN, outcomes,
                                                     skip_rate=0, retake_rate=0, delete_rate=0, update_rate=1)
 
     # Tests
@@ -372,14 +349,12 @@ def test_create_assessment_outcome_objects_no_interim_update_second_delete_resul
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], section, inst_hier, ID_GEN, outcomes,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, [], inst_hier, ID_GEN, outcomes,
                                                     skip_rate=0, retake_rate=0, delete_rate=1, update_rate=1)
 
     # Tests
@@ -399,14 +374,12 @@ def test_create_assessment_outcome_objects_interims_skipped():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, ID_GEN,
                                                     outcomes, skip_rate=1, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
@@ -422,14 +395,12 @@ def test_create_assessment_outcome_objects_interims_one_active_result():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, ID_GEN,
                                                     outcomes, skip_rate=0, retake_rate=0, delete_rate=0, update_rate=0)
 
     # Tests
@@ -457,14 +428,12 @@ def test_create_assessment_outcome_objects_interims_retake_results():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, ID_GEN,
                                                     outcomes, skip_rate=0, retake_rate=1, delete_rate=0, update_rate=0)
 
     # Tests
@@ -504,14 +473,12 @@ def test_create_assessment_outcome_objects_interim_one_deleted_result():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, ID_GEN,
                                                     outcomes, skip_rate=0, retake_rate=0, delete_rate=1, update_rate=0)
 
     # Tests
@@ -539,14 +506,12 @@ def test_create_assessment_outcome_objects_interim_update_no_second_delete_resul
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, ID_GEN,
                                                     outcomes, skip_rate=0, retake_rate=0, delete_rate=0, update_rate=1)
 
     # Tests
@@ -586,14 +551,12 @@ def test_create_assessment_outcome_objects_interim_update_second_delete_results(
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
     inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
     outcomes = {}
 
     # Create outcomes
-    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, ID_GEN,
+    generate_data.create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, ID_GEN,
                                                     outcomes, skip_rate=0, retake_rate=0, delete_rate=1, update_rate=1)
 
     # Tests

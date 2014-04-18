@@ -21,7 +21,7 @@ if __name__ == '__main__':
         state_student_count = 0
         state_school_count = 0
         state_district_count = 0
-        for district_type, district_count in state_config['district_types_and_counts'].items():
+        for district_type, district_count in state_config['district_types_and_counts']:
             # Get the district config
             district_config = hier_config.DISTRICT_TYPES[district_type]
             avg_school_count = district_config['school_counts']['avg']

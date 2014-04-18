@@ -36,7 +36,6 @@ import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
 import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as sbac_asmt_gen
-import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
 
@@ -230,7 +229,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     return asmt
 
 
-def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, assessment_results,
+def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results,
                                      skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                      retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                      delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -243,7 +242,6 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
 
     @param student: The student to create an outcome for
     @param asmt: The assessment to create an outcome for
-    @param section: The section this assessment relates to
     @param inst_hier: The institution hierarchy this assessment relates to
     @param id_gen: ID generator
     @param assessment_results: Dictionary of assessment results to update
@@ -262,20 +260,20 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
         assessment_results[asmt.guid_sr] = []
 
     # Create the original outcome object
-    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
     assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
         assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
         assessment_results[asmt.guid_sr].append(ao2)
 
         # See if the updated record should be deleted
@@ -286,7 +284,7 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
 
-def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, id_gen, assessment_results,
+def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen, assessment_results,
                                       skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                       retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                       delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -300,7 +298,6 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     @param student: The student to create outcomes for
     @param asmt_summ: The summative assessment object
     @param interim_asmts: The interim assessment objects
-    @param section: The section these assessments relate to
     @param inst_hier: The institution hierarchy these assessments relate to
     @param id_gen: ID generator
     @param assessment_results: Dictionary of assessment results to update
@@ -310,15 +307,79 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
     """
     # Create the summative assessment outcome
-    create_assessment_outcome_object(student, asmt_summ, section, inst_hier, id_gen, assessment_results, skip_rate,
+    create_assessment_outcome_object(student, asmt_summ, inst_hier, id_gen, assessment_results, skip_rate,
                                      retake_rate, delete_rate, update_rate)
 
     # Generate interim assessment results (list will be empty if school does not perform
     # interim assessments)
     for asmt in interim_asmts:
         # Create the interim assessment outcome
-        create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, assessment_results, skip_rate,
+        create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results, skip_rate,
                                          retake_rate, delete_rate, update_rate)
+
+
+def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results):
+    """
+    Write student and assessment data for a school to one or more output formats.
+
+    @param asmt_year: Current academic year
+    @param sr_out_name: Name of student registration landing zone CSV file to potentially write to
+    @param dim_students: Students to write to dim_student/dim_student_demographic star-schema CSVs/postgres tables
+    @param sr_students: Students to write to registration landing zone/star-schema CSV/postgres table
+    @param assessment_results: Assessment outcomes to write to landing zone/star-schema CSV/postgres table
+    """
+    # Set up output file names and columns
+    sr_lz_out_cols = sbac_out_config.SR_FORMAT['columns']
+    lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
+    fao_out_name = sbac_out_config.FAO_FORMAT['name']
+    fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
+    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
+    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
+    dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
+    dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
+    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
+    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
+    sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
+    sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
+
+    # Write student data optionally to landing zone CSV, star-schema CSV, and/or to postgres
+    if WRITE_LZ:
+        csv_writer.write_records_to_file(sr_out_name, sr_lz_out_cols, sr_students, root_path=OUT_PATH_ROOT)
+    if WRITE_STAR:
+        csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
+                                         entity_filter=('held_back', False), tbl_name='dim_student',
+                                         root_path=OUT_PATH_ROOT)
+        csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
+                                         entity_filter=('held_back', False), tbl_name='dim_student',
+                                         root_path=OUT_PATH_ROOT)
+        csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
+                                         root_path=OUT_PATH_ROOT)
+    if WRITE_PG:
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
+                                               entity_filter=('held_back', False))
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
+                                               dim_students, entity_filter=('held_back', False))
+        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
+
+    # Write assessment results if we have them; also optionally to landing zone CSV, star-schema CSV, and/or to postgres
+    if asmt_year in ASMT_YEARS:
+        for guid, rslts in assessment_results.items():
+            if WRITE_LZ:
+                csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
+                                                 lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
+            if WRITE_STAR:
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
+                                                 root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
+                                                 tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
+            if WRITE_PG:
+                try:
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                                                           rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
+                                                           fao_pri_out_cols, rslts)
+                except Exception as e:
+                    print('PostgreSQL EXCEPTION ::: %s' % str(e))
 
 
 def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_guid, assessments,
@@ -337,20 +398,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     reg_sys = REGISTRATION_SYSTEMS[reg_sys_guid]
 
     # Set up output file names and columns
-    sr_lz_out_cols = sbac_out_config.SR_FORMAT['columns']
-    lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
-    fao_out_name = sbac_out_config.FAO_FORMAT['name']
-    fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
-    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
-    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
-    dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
-    dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
-    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
-    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
     dsec_out_name = sbac_out_config.DIM_SECTION_FORMAT['name']
     dsec_out_cols = sbac_out_config.DIM_SECTION_FORMAT['columns']
-    sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
-    sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
 
     # Decide how many schools to make
     school_count = random.triangular(district.config['school_counts']['min'],
@@ -403,8 +452,9 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         # Advance the students forward in the grades
         for guid, student in students.items():
-            # Assign the registration system
+            # Assign the registration system and bump up the record ID
             student.reg_sys = rg_sys_year
+            student.rec_id_sr = id_gen.get_rec_id('sr_student')
 
             # Move the student forward (false from the advance method means the student disappears)
             if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):
@@ -412,13 +462,14 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         # With the students moved around, we will re-populate empty grades and create sections and assessments with
         # outcomes for the students
-        assessment_results = {}
-        sr_students = []
-        dim_students = []
         for school, grades in schools_with_grades.items():
             # Get the institution hierarchy object
             inst_hier = inst_hiers[school.guid]
 
+            # Process the whole school
+            assessment_results = {}
+            sr_students = []
+            dim_students = []
             for grade, grade_students in grades.items():
                 # Potentially re-populate the student population
                 sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, state, rg_sys_year,
@@ -432,17 +483,6 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         # Get the subject skip rate
                         skip_rate = asmt_skip_rates_by_subject[subject]
 
-                        # Create a class and a section for this grade and subject
-                        clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
-                        section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, state,
-                                                              asmt_year)
-                        if WRITE_STAR:
-                            csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
-                                                             tbl_name='dim_section', root_path=OUT_PATH_ROOT)
-                        if WRITE_PG:
-                            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_section', dsec_out_cols,
-                                                                   [section])
-
                         # Grab the summative assessment object
                         asmt_summ = assessments[str(asmt_year) + 'summative' + str(grade) + subject]
 
@@ -455,8 +495,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
                         for student in grade_students:
                             # Create the outcome(s)
-                            create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                              id_gen, assessment_results, skip_rate)
+                            create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen,
+                                                              assessment_results, skip_rate)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -480,42 +520,11 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         if student.guid not in unique_students:
                             unique_students[student.guid] = True
 
-        # Write data out to CSV
-        if WRITE_LZ:
-            csv_writer.write_records_to_file(sr_out_name, sr_lz_out_cols, sr_students, root_path=OUT_PATH_ROOT)
-        if WRITE_STAR:
-            csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
-                                             entity_filter=('held_back', False), tbl_name='dim_student',
-                                             root_path=OUT_PATH_ROOT)
-            csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
-                                             entity_filter=('held_back', False), tbl_name='dim_student',
-                                             root_path=OUT_PATH_ROOT)
-            csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
-                                             root_path=OUT_PATH_ROOT)
-        if WRITE_PG:
-            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
-                                                   entity_filter=('held_back', False))
-            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
-                                                   dim_students, entity_filter=('held_back', False))
-            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
-        if asmt_year in ASMT_YEARS:
-            for guid, rslts in assessment_results.items():
-                if WRITE_LZ:
-                    csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
-                                                     lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
-                if WRITE_STAR:
-                    csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
-                                                     root_path=OUT_PATH_ROOT)
-                    csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
-                                                     tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
-                if WRITE_PG:
-                    try:
-                        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
-                                                               rslts)
-                        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
-                                                               fao_pri_out_cols, rslts)
-                    except Exception as e:
-                        print('PostgreSQL EXCEPTION ::: %s' % str(e))
+            # Write out the school
+            write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results)
+            del dim_students
+            del sr_students
+            del assessment_results
 
     # Some explicit garbage collection
     unique_student_count = len(unique_students)
@@ -560,7 +569,7 @@ def generate_state_data(state: SBACState, id_gen):
     # Build the districts
     student_avg_count = 0
     student_unique_count = 0
-    for district_type, dist_type_count in state.config['district_types_and_counts'].items():
+    for district_type, dist_type_count in state.config['district_types_and_counts']:
         for _ in range(dist_type_count):
             # Create the district
             district = sbac_hier_gen.generate_district(district_type, state, id_gen)

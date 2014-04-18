@@ -14,7 +14,6 @@ import data_generation.config.population as pop_config
 import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as asmt_gen
-import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
@@ -150,11 +149,9 @@ def test_generate_assessment_outcome_default_status():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.result_status == 'C'
@@ -166,11 +163,9 @@ def test_generate_assessment_outcome_scores():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Tests
     assert 1200 <= asmt_out.overall_score <= 2400
@@ -193,11 +188,9 @@ def test_generate_assessment_outcome_summative_taken_date():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2015, 5, 15)
@@ -209,11 +202,9 @@ def test_generate_assessment_outcome_interim_fall_taken_date():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2014, 9, 15)
@@ -225,11 +216,9 @@ def test_generate_assessment_outcome_interim_winter_taken_date():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2014, 12, 15)
@@ -241,11 +230,9 @@ def test_generate_assessment_outcome_interim_spring_taken_date():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Test
     assert asmt_out.date_taken == datetime.date(2015, 3, 15)
@@ -257,11 +244,9 @@ def test_generate_assessment_outcome_accommodations_ela():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Tests
     assert 4 <= asmt_out.acc_asl_video_embed <= 10
@@ -286,11 +271,9 @@ def test_generate_assessment_outcome_accommodations_math():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2015)
     student = pop_gen.generate_student(school, 3, ID_GEN, state, 2015)
     institution_hierarchy = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, institution_hierarchy, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, institution_hierarchy, ID_GEN)
 
     # Tests
     assert 4 <= asmt_out.acc_asl_video_embed <= 10

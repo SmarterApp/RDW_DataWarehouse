@@ -9,7 +9,6 @@ import data_generation.config.population as pop_config
 import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as asmt_gen
-import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
@@ -45,15 +44,13 @@ def test_assessment_outcome_get_object_set():
     district = hier_gen.generate_district('Small Average', state, ID_GEN)
     school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     ih = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2014)
     asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
     student = pop_gen.generate_student(school, 3, ID_GEN, state)
-    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, section, ih, ID_GEN)
+    asmt_out = asmt_gen.generate_assessment_outcome(student, asmt, ih, ID_GEN)
 
     # Tests
     objs = asmt_out.get_object_set()
-    assert len(objs) == 8
+    assert len(objs) == 7
     assert 'state' in objs
     assert objs['state'].guid == state.guid
     assert 'district' in objs
@@ -62,8 +59,6 @@ def test_assessment_outcome_get_object_set():
     assert objs['school'].guid == school.guid
     assert 'student' in objs
     assert objs['student'].guid == student.guid
-    assert 'section' in objs
-    assert objs['section'].guid == section.guid
     assert 'institution_hierarchy' in objs
     assert objs['institution_hierarchy'].guid == ih.guid
     assert 'assessment' in objs
@@ -101,29 +96,6 @@ def test_registration_system_get_object_set():
     assert len(objs) == 1
     assert 'registration_system' in objs
     assert objs['registration_system'].guid == reg_sys.guid
-
-
-def test_section_get_object_set():
-    # Create necessary objects
-    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
-    district = hier_gen.generate_district('Small Average', state, ID_GEN)
-    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
-    clss = enroll_gen.generate_class('Class', 'ELA', school)
-    section = enroll_gen.generate_section(clss, 'Section', 3, ID_GEN, state, 2014)
-
-    # Tests
-    objs = section.get_object_set()
-    assert len(objs) == 5
-    assert 'state' in objs
-    assert objs['state'].guid == state.guid
-    assert 'district' in objs
-    assert objs['district'].guid == district.guid
-    assert 'school' in objs
-    assert objs['school'].guid == school.guid
-    assert 'class' in objs
-    assert objs['class'].guid == clss.guid
-    assert 'section' in objs
-    assert objs['section'].guid == section.guid
 
 
 def test_student_get_object_set():

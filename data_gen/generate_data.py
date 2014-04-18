@@ -605,7 +605,7 @@ if __name__ == '__main__':
     # Argument parsing for task-specific arguments
     parser = argparse.ArgumentParser(description='SBAC data generation task.')
     parser.add_argument('-t', '--team', dest='team_name', action='store', default='sonics',
-                        help='Specify the name of the team to generate data for (sonics, arkanoids)',
+                        help='Specify the name of the team to generate data for (sonics, arkanoids, udl)',
                         required=False)
     parser.add_argument('-sn', '--state_name', dest='state_name', action='store', default='North Carolina',
                         help='Specify the name of the state to generate data for (default=North Carolina)',
@@ -614,7 +614,7 @@ if __name__ == '__main__':
                         help='Specify the code of the state to generate data for (default=NC)',
                         required=False)
     parser.add_argument('-st', '--state_type', dest='state_type', action='store', default='devel',
-                        help='Specify the type of state to generate data for (devel (default), typical_1, california)',
+                        help='Specify the type of state to generate data for (devel (default), typical_1, california, udl_test)',
                         required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')

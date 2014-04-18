@@ -274,7 +274,7 @@ DIM_ASMT_FORMAT = {'format': 'csv',
 
 STUDENT_REG_FORMAT = {'format': 'csv',
                       'name': 'student_reg.csv',
-                      'columns': [{'name': 'student_reg_rec_id', 'val': 'UNIQUE_REC_ID'},
+                      'columns': [{'name': 'student_reg_rec_id', 'val': 'student.rec_id_sr'},
                                   {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                   {'name': 'state_name', 'val': 'state.name'},
                                   {'name': 'state_code', 'val': 'state.code'},

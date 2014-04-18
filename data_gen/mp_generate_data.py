@@ -224,7 +224,9 @@ if __name__ == '__main__':
     generate_data.prepare_output_files()
 
     # Create the registration systems
-    generate_data.REGISTRATION_SYSTEM_GUIDS = generate_data.build_registration_systems(generate_data.YEARS, idg)
+    generate_data.REGISTRATION_SYSTEMS = generate_data.build_registration_systems(generate_data.YEARS, idg)
+    for guid, _ in generate_data.REGISTRATION_SYSTEMS.items():
+        generate_data.REGISTRATION_SYSTEM_GUIDS.append(guid)
 
     # Build the states and districts
     districts = generate_state_district_hierarchy(idg)

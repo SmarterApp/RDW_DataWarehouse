@@ -18,6 +18,7 @@ class SBACStudent(Student):
     The SBAC-specific student class.
     """
     rec_id = IntField(required=True)
+    rec_id_sr = IntField(required=True)
     state = ReferenceField(SBACState, required=True)
     district = ReferenceField(SBACDistrict, required=True)
     reg_sys = ReferenceField(SBACRegistrationSystem, required=False)

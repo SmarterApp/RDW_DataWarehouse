@@ -37,6 +37,7 @@ def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetim
     s.state = state
     s.district = school.district
     s.rec_id = id_gen.get_rec_id('student')
+    s.rec_id_sr = id_gen.get_rec_id('sr_student')
     s.guid_sr = id_gen.get_sr_uuid()
     s.external_ssid = s.guid + 'ext'
     s.external_ssid_sr = id_gen.get_sr_uuid()

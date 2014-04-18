@@ -403,8 +403,9 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
         # Advance the students forward in the grades
         for guid, student in students.items():
-            # Assign the registration system
+            # Assign the registration system and bump up the record ID
             student.reg_sys = rg_sys_year
+            student.rec_id_sr = id_gen.get_rec_id('sr_student')
 
             # Move the student forward (false from the advance method means the student disappears)
             if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):

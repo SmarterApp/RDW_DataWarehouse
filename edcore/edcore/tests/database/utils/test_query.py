@@ -42,7 +42,6 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
         udl_stats = {
             UdlStatsConstants.BATCH_GUID: 'abc',
             UdlStatsConstants.LOAD_TYPE: 'test',
-            UdlStatsConstants.STATE_CODE: 'AB',
             UdlStatsConstants.FILE_ARRIVED: datetime.now(),
             UdlStatsConstants.TENANT: 'tenant',
             UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
@@ -58,7 +57,6 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
         udl_stats = {
             UdlStatsConstants.BATCH_GUID: 'cde',
             UdlStatsConstants.LOAD_TYPE: 'test',
-            UdlStatsConstants.STATE_CODE: 'AB',
             UdlStatsConstants.FILE_ARRIVED: datetime.now(),
             UdlStatsConstants.TENANT: 'tenant',
             UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
@@ -67,10 +65,10 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
             table = conn.get_table('udl_stats')
             query = table.insert(udl_stats)
             conn.execute(query)
-            update_udl_stats('cde', {UdlStatsConstants.STATE_CODE: 'CD'})
-            query = select([table.c[UdlStatsConstants.STATE_CODE]], from_obj=[table]).where(table.c[UdlStatsConstants.BATCH_GUID] == 'cde')
+            update_udl_stats('cde', {UdlStatsConstants.LOAD_TYPE: 'CD'})
+            query = select([table.c[UdlStatsConstants.LOAD_TYPE]], from_obj=[table]).where(table.c[UdlStatsConstants.BATCH_GUID] == 'cde')
             results = conn.get_result(query)
-            self.assertEqual(results[0][UdlStatsConstants.STATE_CODE], 'CD')
+            self.assertEqual(results[0][UdlStatsConstants.LOAD_TYPE], 'CD')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

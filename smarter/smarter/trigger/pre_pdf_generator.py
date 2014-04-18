@@ -12,6 +12,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.utils.utils import run_cron_job
+from edcore.security.tenant import get_tenant_map
 
 
 logger = logging.getLogger('smarter')
@@ -24,7 +25,6 @@ def prepare_ed_stats():
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
         query = select([udl_stats.c.tenant.label(UdlStatsConstants.TENANT),
-                        udl_stats.c.state_code.label(UdlStatsConstants.STATE_CODE),
                         udl_stats.c.load_start.label(UdlStatsConstants.LOAD_START),
                         udl_stats.c.load_end.label(UdlStatsConstants.LOAD_END),
                         udl_stats.c.record_loaded_count.label(UdlStatsConstants.RECORD_LOADED_COUNT),
@@ -99,7 +99,7 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
     return triggered
 
 
-def update_ed_stats_for_prepdf(tenant, state_code, batch_guid):
+def update_ed_stats_for_prepdf(tenant, batch_guid):
     '''
     update current timestamp to last_pdf_generated field
 
@@ -108,7 +108,7 @@ def update_ed_stats_for_prepdf(tenant, state_code, batch_guid):
     '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
-        stmt = udl_stats.update(values={udl_stats.c.last_pdf_task_requested: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant).where(udl_stats.c.batch_guid == batch_guid)
+        stmt = udl_stats.update(values={udl_stats.c.last_pdf_task_requested: func.now()}).where(udl_stats.c.tenant == tenant).where(udl_stats.c.batch_guid == batch_guid)
         connector.execute(stmt)
 
 
@@ -119,14 +119,15 @@ def prepdf_task(settings):
     :param dict settings:  configuration for the application
     '''
     udl_stats_results = prepare_ed_stats()
+    tenant_to_state_code = get_tenant_map()
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get(UdlStatsConstants.TENANT)
-        state_code = udl_stats_result.get(UdlStatsConstants.STATE_CODE)
+        state_code = tenant_to_state_code.get(tenant)
         batch_guid = udl_stats_result.get(UdlStatsConstants.BATCH_GUID)
         fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, batch_guid)
         triggered_success = trigger_pre_pdf(settings, state_code, tenant, fact_asmt_outcome_results)
         if triggered_success:
-            update_ed_stats_for_prepdf(tenant, state_code, batch_guid)
+            update_ed_stats_for_prepdf(tenant, batch_guid)
 
 
 def run_cron_prepdf(settings):

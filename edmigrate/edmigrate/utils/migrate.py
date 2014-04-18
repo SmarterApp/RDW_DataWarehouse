@@ -49,20 +49,8 @@ def get_batches_to_migrate(tenant=None):
 
     :param tenant: The tenant to be migrated
     :type tenant: str
-    :returns: A dict mapping batch_guid to the row in udl_daily_stats table
-            {'f340322f-b0a8-44df-97bb-6a1f53c4ba48': OrderedDict([
-                    ('batch_guid','f340322f-b0a8-44df-97bb-6a1f53c4ba48'),
-                    ('tenant','ca'),
-                    ('state_code','ca'),
-                    ('record_loaded_count',100)
-                ]),
-                'g344322h-p0at-44df-97bb-8a1e53c1ba90': OrderedDict([
-                    ('batch_guid','g344322h-p0at-44df-97bb-8a1e53c1ba90'),
-                    ('tenant','ca'),
-                    ('state_code','ca'),
-                    ('record_loaded_count',150)
-            ])}
-            An empty dict if no batches found to be migrated
+    :returns: A list mapping batch_guid to the row in udl_stats table
+            An empty list if no batches found to be migrated
     """
     logger.info('Master: Getting daily delta batches to migrate' + ('with tenant: ' + tenant) if tenant else '')
 
@@ -71,7 +59,6 @@ def get_batches_to_migrate(tenant=None):
         query = \
             select([udl_status_table.c.batch_guid,
                     udl_status_table.c.tenant,
-                    udl_status_table.c.state_code,
                     udl_status_table.c.record_loaded_count,
                     udl_status_table.c.load_type,
                     udl_status_table.c.load_status,

@@ -10,7 +10,6 @@ class UdlStatsConstants():
     Constants related to extracts
     '''
     BATCH_GUID = 'batch_guid'
-    STATE_CODE = 'state_code'
     SCHEMA_NAME = 'schema_name'
     TENANT = 'tenant'
     FILE_ARRIVED = 'file_arrived'

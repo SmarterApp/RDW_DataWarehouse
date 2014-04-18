@@ -64,8 +64,6 @@ def task(incoming_msg):
     udl_stats = {
         UdlStatsConstants.BATCH_GUID: guid_batch,
         UdlStatsConstants.LOAD_TYPE: load_type,
-        # TODO: get state_code from tenant through configuration mapping
-        UdlStatsConstants.STATE_CODE: 'NC',
         UdlStatsConstants.FILE_ARRIVED: start_time,
         UdlStatsConstants.TENANT: tenant_name,
         UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED

@@ -10,7 +10,7 @@ from sqlalchemy.types import String, DateTime, BigInteger, Text
 def generate_stats_metadata(schema_name=None, bind=None):
     metadata = MetaData(schema=schema_name, bind=bind)
     udl_stats = Table('udl_stats', metadata,
-                      Column('state_code', String(2), nullable=False),
+                      Column('rec_id', BigInteger, primary_key=True),
                       Column('tenant', String(32), nullable=False),
                       Column('load_type', String(32), nullable=False),
                       Column('file_arrived', DateTime, nullable=False),

@@ -77,7 +77,7 @@ def generate_state_district_hierarchy(id_gen):
                         assessments[asmt_key_intrm] = asmt_intrm
 
         # Build the districts
-        for district_type, dist_type_count in state.config['district_types_and_counts'].items():
+        for district_type, dist_type_count in state.config['district_types_and_counts']:
             for _ in range(dist_type_count):
                 # Create the district
                 district = sbac_hier_gen.generate_district(district_type, state, id_gen)

@@ -561,7 +561,7 @@ def generate_state_data(state: SBACState, id_gen):
     # Build the districts
     student_avg_count = 0
     student_unique_count = 0
-    for district_type, dist_type_count in state.config['district_types_and_counts'].items():
+    for district_type, dist_type_count in state.config['district_types_and_counts']:
         for _ in range(dist_type_count):
             # Create the district
             district = sbac_hier_gen.generate_district(district_type, state, id_gen)

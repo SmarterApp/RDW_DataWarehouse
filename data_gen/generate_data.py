@@ -36,7 +36,6 @@ import sbac_data_generation.config.hierarchy as sbac_hier_config
 import sbac_data_generation.config.out as sbac_out_config
 import sbac_data_generation.config.population as sbac_pop_config
 import sbac_data_generation.generators.assessment as sbac_asmt_gen
-import sbac_data_generation.generators.enrollment as enroll_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
 
@@ -230,7 +229,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     return asmt
 
 
-def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, assessment_results,
+def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results,
                                      skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                      retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                      delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -243,7 +242,6 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
 
     @param student: The student to create an outcome for
     @param asmt: The assessment to create an outcome for
-    @param section: The section this assessment relates to
     @param inst_hier: The institution hierarchy this assessment relates to
     @param id_gen: ID generator
     @param assessment_results: Dictionary of assessment results to update
@@ -262,20 +260,20 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
         assessment_results[asmt.guid_sr] = []
 
     # Create the original outcome object
-    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
     assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
         assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, section, inst_hier, id_gen)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
         assessment_results[asmt.guid_sr].append(ao2)
 
         # See if the updated record should be deleted
@@ -286,7 +284,7 @@ def create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, 
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
 
-def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier, id_gen, assessment_results,
+def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen, assessment_results,
                                       skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                       retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                       delete_rate=sbac_in_config.ASMT_DELETE_RATE,
@@ -300,7 +298,6 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     @param student: The student to create outcomes for
     @param asmt_summ: The summative assessment object
     @param interim_asmts: The interim assessment objects
-    @param section: The section these assessments relate to
     @param inst_hier: The institution hierarchy these assessments relate to
     @param id_gen: ID generator
     @param assessment_results: Dictionary of assessment results to update
@@ -310,14 +307,14 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section
     @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
     """
     # Create the summative assessment outcome
-    create_assessment_outcome_object(student, asmt_summ, section, inst_hier, id_gen, assessment_results, skip_rate,
+    create_assessment_outcome_object(student, asmt_summ, inst_hier, id_gen, assessment_results, skip_rate,
                                      retake_rate, delete_rate, update_rate)
 
     # Generate interim assessment results (list will be empty if school does not perform
     # interim assessments)
     for asmt in interim_asmts:
         # Create the interim assessment outcome
-        create_assessment_outcome_object(student, asmt, section, inst_hier, id_gen, assessment_results, skip_rate,
+        create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results, skip_rate,
                                          retake_rate, delete_rate, update_rate)
 
 
@@ -486,17 +483,6 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         # Get the subject skip rate
                         skip_rate = asmt_skip_rates_by_subject[subject]
 
-                        # Create a class and a section for this grade and subject
-                        clss = enroll_gen.generate_class('Grade ' + str(grade) + ' ' + subject, subject, school)
-                        section = enroll_gen.generate_section(clss, clss.name + ' - 01', grade, id_gen, state,
-                                                              asmt_year)
-                        if WRITE_STAR:
-                            csv_writer.write_records_to_file(dsec_out_name, dsec_out_cols, [section],
-                                                             tbl_name='dim_section', root_path=OUT_PATH_ROOT)
-                        if WRITE_PG:
-                            postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_section', dsec_out_cols,
-                                                                   [section])
-
                         # Grab the summative assessment object
                         asmt_summ = assessments[str(asmt_year) + 'summative' + str(grade) + subject]
 
@@ -509,8 +495,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
 
                         for student in grade_students:
                             # Create the outcome(s)
-                            create_assessment_outcome_objects(student, asmt_summ, interim_asmts, section, inst_hier,
-                                                              id_gen, assessment_results, skip_rate)
+                            create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen,
+                                                              assessment_results, skip_rate)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:

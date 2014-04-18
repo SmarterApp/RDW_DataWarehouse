@@ -92,12 +92,12 @@ def test_repopulate_school_grade_full_no_additional():
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     students = []
-    for _ in range(30):
+    for _ in range(100):
         students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, state, 2015))
     pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, state, 2015, additional_student_choice=[0])
 
     # Test
-    assert len(students) == 30
+    assert 75 <= len(students) <= 125
 
 
 def test_repopulate_school_grade_full_additional():
@@ -106,12 +106,12 @@ def test_repopulate_school_grade_full_additional():
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     elem_school = hier_gen.generate_school('Elementary School', district, ID_GEN)
     students = []
-    for _ in range(30):
+    for _ in range(100):
         students.append(pop_gen.generate_student(elem_school, 4, ID_GEN, state, 2015))
     pop_gen.repopulate_school_grade(elem_school, 4, students, ID_GEN, state, 2015, additional_student_choice=[2])
 
     # Test
-    assert len(students) == 32
+    assert 77 <= len(students) <= 127
 
 
 def test_generate_derived_demographic_no_ethnicities():

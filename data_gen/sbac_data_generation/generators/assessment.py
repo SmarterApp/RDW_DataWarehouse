@@ -15,7 +15,6 @@ import sbac_data_generation.config.cfg as sbac_config
 from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
-from sbac_data_generation.model.section import SBACSection
 from sbac_data_generation.model.student import SBACStudent
 from sbac_data_generation.util.assessment_stats import Properties, RandomLevelByDemographics
 from sbac_data_generation.util.assessment_stats import random_score_given_level
@@ -105,14 +104,13 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     return sa
 
 
-def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, section: SBACSection,
-                                inst_hier: InstitutionHierarchy, id_gen):
+def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, inst_hier: InstitutionHierarchy,
+                                id_gen):
     """
     Generate an assessment outcome for a given student.
 
     @param student: The student to create the outcome for
     @param assessment: The assessment to create the outcome for
-    @param section: The section this assessment is related to
     @param inst_hier: The institution hierarchy this student belongs to
     @param id_gen: ID generator
     @returns: The assessment outcome
@@ -130,7 +128,6 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     # Set other specifics
     sao.rec_id = id_gen.get_rec_id('assessment_outcome')
     sao.inst_hierarchy = inst_hier
-    sao.section = section
 
     # Create the date taken
     year_adj = 1

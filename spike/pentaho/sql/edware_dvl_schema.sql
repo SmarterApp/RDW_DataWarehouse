@@ -305,7 +305,7 @@ ALTER TABLE edware_sds_1_0.external_user_student_rel OWNER TO edware;
 --
 
 CREATE TABLE fact_asmt_outcome (
-    asmnt_outcome_rec_id bigint NOT NULL,
+    asmt_outcome_rec_id bigint NOT NULL,
     asmt_rec_id bigint NOT NULL,
     student_guid character varying(50) NOT NULL,
     teacher_guid character varying(50) NOT NULL,
@@ -363,10 +363,10 @@ CREATE TABLE fact_asmt_outcome (
 ALTER TABLE edware_sds_1_0.fact_asmt_outcome OWNER TO edware;
 
 --
--- Name: fact_asmt_outcome_asmnt_outcome_rec_id_seq; Type: SEQUENCE; Schema: edware_sds_1_0; Owner: edware
+-- Name: fact_asmt_outcome_asmt_outcome_rec_id_seq; Type: SEQUENCE; Schema: edware_sds_1_0; Owner: edware
 --
 
-CREATE SEQUENCE fact_asmt_outcome_asmnt_outcome_rec_id_seq
+CREATE SEQUENCE fact_asmt_outcome_asmt_outcome_rec_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -374,13 +374,13 @@ CREATE SEQUENCE fact_asmt_outcome_asmnt_outcome_rec_id_seq
     CACHE 1;
 
 
-ALTER TABLE edware_sds_1_0.fact_asmt_outcome_asmnt_outcome_rec_id_seq OWNER TO edware;
+ALTER TABLE edware_sds_1_0.fact_asmt_outcome_asmt_outcome_rec_id_seq OWNER TO edware;
 
 --
--- Name: fact_asmt_outcome_asmnt_outcome_rec_id_seq; Type: SEQUENCE OWNED BY; Schema: edware_sds_1_0; Owner: edware
+-- Name: fact_asmt_outcome_asmt_outcome_rec_id_seq; Type: SEQUENCE OWNED BY; Schema: edware_sds_1_0; Owner: edware
 --
 
-ALTER SEQUENCE fact_asmt_outcome_asmnt_outcome_rec_id_seq OWNED BY fact_asmt_outcome.asmnt_outcome_rec_id;
+ALTER SEQUENCE fact_asmt_outcome_asmt_outcome_rec_id_seq OWNED BY fact_asmt_outcome.asmt_outcome_rec_id;
 
 
 --
@@ -431,10 +431,10 @@ ALTER TABLE ONLY dim_student ALTER COLUMN student_rec_id SET DEFAULT nextval('di
 
 
 --
--- Name: asmnt_outcome_rec_id; Type: DEFAULT; Schema: edware_sds_1_0; Owner: edware
+-- Name: asmt_outcome_rec_id; Type: DEFAULT; Schema: edware_sds_1_0; Owner: edware
 --
 
-ALTER TABLE ONLY fact_asmt_outcome ALTER COLUMN asmnt_outcome_rec_id SET DEFAULT nextval('fact_asmt_outcome_asmnt_outcome_rec_id_seq'::regclass);
+ALTER TABLE ONLY fact_asmt_outcome ALTER COLUMN asmt_outcome_rec_id SET DEFAULT nextval('fact_asmt_outcome_asmt_outcome_rec_id_seq'::regclass);
 
 
 --
@@ -1735,7 +1735,7 @@ COPY external_user_student_rel (external_user_student_guid, external_user_guid, 
 -- Data for Name: fact_asmt_outcome; Type: TABLE DATA; Schema: edware_sds_1_0; Owner: edware
 --
 
-COPY fact_asmt_outcome (asmnt_outcome_rec_id, asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl, asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max, asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max, status, most_recent, batch_guid, asmt_type, asmt_year, asmt_subject, gender, dmg_eth_hsp, dmg_eth_ami, dmg_eth_asn, dmg_eth_blk, dmg_eth_pcf, dmg_eth_wht, dmg_prg_iep, dmg_prg_lep, dmg_prg_504, dmg_prg_tt1, dmg_eth_derived) FROM stdin;
+COPY fact_asmt_outcome (asmt_outcome_rec_id, asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl, asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max, asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max, asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max, asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max, status, most_recent, batch_guid, asmt_type, asmt_year, asmt_subject, gender, dmg_eth_hsp, dmg_eth_ami, dmg_eth_asn, dmg_eth_blk, dmg_eth_pcf, dmg_eth_wht, dmg_prg_iep, dmg_prg_lep, dmg_prg_504, dmg_prg_tt1, dmg_eth_derived) FROM stdin;
 1011691	100021	19489898-d469-41e2-babc-265ecbab2337	788	NY	228	248	814	249	885	247	Ganges Shark Rorqual Bleu Junior High	11	11	20150428	28	4	2015	2023	1951	2095	3	2013	1945	2081	2135	2044	2226	1911	1836	1986	2029	1925	2133	C	t	90901b70-ddaa-11e2-a95d-68a86d3c2f82	INTERIM COMPREHENSIVE	2015	ELA	male	f	f	f	f	f	f	f	f	f	t	0
 1011681	100021	1d8cf4f3-6bea-4f39-9b52-cb04fa98d360	720	NY	228	245	732	246	761	247	Ganges Shark Rorqual Bleu Junior High	7	7	20150326	26	3	2015	1976	1898	2054	3	1966	1879	2053	1864	1804	1924	2084	1985	2183	1986	1911	2061	C	t	90901b70-ddaa-11e2-a95d-68a86d3c2f82	INTERIM COMPREHENSIVE	2015	ELA	male	t	f	f	f	t	f	f	f	f	f	3
 1011671	100020	e2f3c6a5-e28b-43e8-817b-fc7afed02b9b	272	NY	228	242	345	243	346	247	Ganges Shark Rorqual Bleu Junior High	3	3	20150317	17	3	2015	1790	1754	1826	2	1825	1777	1873	1825	1765	1885	1590	1514	1666	\N	\N	\N	C	t	90901b70-ddaa-11e2-a95d-68a86d3c2f82	INTERIM COMPREHENSIVE	2015	Math	male	t	f	f	f	f	f	t	t	t	f	3
@@ -2947,10 +2947,10 @@ COPY fact_asmt_outcome (asmnt_outcome_rec_id, asmt_rec_id, student_guid, teacher
 
 
 --
--- Name: fact_asmt_outcome_asmnt_outcome_rec_id_seq; Type: SEQUENCE SET; Schema: edware_sds_1_0; Owner: edware
+-- Name: fact_asmt_outcome_asmt_outcome_rec_id_seq; Type: SEQUENCE SET; Schema: edware_sds_1_0; Owner: edware
 --
 
-SELECT pg_catalog.setval('fact_asmt_outcome_asmnt_outcome_rec_id_seq', 1, false);
+SELECT pg_catalog.setval('fact_asmt_outcome_asmt_outcome_rec_id_seq', 1, false);
 
 
 --
@@ -3020,7 +3020,7 @@ ALTER TABLE ONLY external_user_student_rel
 --
 
 ALTER TABLE ONLY fact_asmt_outcome
-    ADD CONSTRAINT fact_asmt_outcome_pkey PRIMARY KEY (asmnt_outcome_rec_id, where_taken_name);
+    ADD CONSTRAINT fact_asmt_outcome_pkey PRIMARY KEY (asmt_outcome_rec_id, where_taken_name);
 
 
 --
@@ -3168,7 +3168,7 @@ CREATE INDEX fact_asmt_outcome_hier_keyx ON fact_asmt_outcome USING btree (state
 -- Name: fact_asmt_outcome_idx; Type: INDEX; Schema: edware_sds_1_0; Owner: edware; Tablespace: 
 --
 
-CREATE UNIQUE INDEX fact_asmt_outcome_idx ON fact_asmt_outcome USING btree (asmnt_outcome_rec_id);
+CREATE UNIQUE INDEX fact_asmt_outcome_idx ON fact_asmt_outcome USING btree (asmt_outcome_rec_id);
 
 
 --

@@ -62,11 +62,11 @@ class UDLDataIntegrityError(UDLException):
         # search postgres IntegrityError response for {}, Because that's input data
         #
         # """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"
-        # DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
-        #'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s,
+        # DETAIL:  Key (asmt_outcome_rec_id)=(11339) already exists.
+        #'UPDATE "edware"."fact_asmt_outcome" SET asmt_outcome_rec_id = %(asmt_outcome_rec_id)s,
         # # status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s
         # AND status = %(status)s AND student_guid = %(student_guid)s'
-        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'asmt_guid': 'guid_1',
+        # {'status': 'W', 'asmt_outcome_rec_id': 11339, 'asmt_guid': 'guid_1',
         # 'new_status': 'D', 'batch_guid': 'guid_3', 'student_guid': 'guid_5'}
         #
         pattern = re.compile(r'(\{[^\{\}]+\})')
@@ -79,11 +79,11 @@ class UDLDataIntegrityError(UDLException):
         # Message Example:
         #
         # """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"
-        # DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
-        #'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s,
+        # DETAIL:  Key (asmt_outcome_rec_id)=(11339) already exists.
+        #'UPDATE "edware"."fact_asmt_outcome" SET asmt_outcome_rec_id = %(asmt_outcome_rec_id)s,
         # # status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s
         # AND status = %(status)s AND student_guid = %(student_guid)s'
-        # {'status': 'W', 'asmnt_outcome_rec_id': 11339, 'asmt_guid': 'guid_1',
+        # {'status': 'W', 'asmt_outcome_rec_id': 11339, 'asmt_guid': 'guid_1',
         # 'new_status': 'D', 'batch_guid': 'guid_3', 'student_guid': 'guid_5'}
         #
         pattern = re.compile(r'(\([^\(\)\s]+\))')

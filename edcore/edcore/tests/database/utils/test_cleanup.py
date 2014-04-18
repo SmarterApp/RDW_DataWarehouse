@@ -37,7 +37,7 @@ class TestCleanup(Unittest_with_edcore_sqlite):
 
     def _verify_all_records_deleted_by_batch_guid(self, connection, table, batch_guid):
         fao = connection.get_table(table)
-        query = select([func.count(fao.c.asmnt_outcome_rec_id)], from_obj=[fao])
+        query = select([func.count(fao.c.asmt_outcome_rec_id)], from_obj=[fao])
         query = query.where(fao.c.batch_guid == batch_guid)
         results = connection.execute(query)
         fao_rows = results.first()

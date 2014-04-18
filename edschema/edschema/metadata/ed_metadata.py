@@ -187,7 +187,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('custom_metadata_id_idx', custom_metadata.c.state_code, custom_metadata.c.asmt_subject, unique=True)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
-                               Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
+                               Column('asmt_outcome_rec_id', BigInteger, primary_key=True),
                                MetaColumn('batch_guid', String(50), nullable=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
@@ -276,7 +276,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_gender', assessment_outcome.c.gender, unique=False)
 
     assessment_outcome_primary = Table('fact_asmt_outcome_primary', metadata,
-                                       Column('asmnt_outcome_primary_rec_id', BigInteger, primary_key=True),
+                                       Column('asmt_outcome_primary_rec_id', BigInteger, primary_key=True),
                                        Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                        Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
                                        Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),

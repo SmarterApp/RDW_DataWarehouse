@@ -16,8 +16,8 @@ class TestUdlExceptions(unittest.TestCase):
         self.error_source = ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD
         self.dupe_error_source = ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE
         self.dupe_error_message = self.insert_error_message = """(IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"
-DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
- 'UPDATE "edware"."fact_asmt_outcome" SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s, status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s AND status = %(status)s AND student_guid = %(student_guid)s' {'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', 'asmnt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', 'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}"""
+DETAIL:  Key (asmt_outcome_rec_id)=(11339) already exists.
+ 'UPDATE "edware"."fact_asmt_outcome" SET asmt_outcome_rec_id = %(asmt_outcome_rec_id)s, status = %(new_status)s WHERE batch_guid = %(batch_guid)s AND asmt_guid = %(asmt_guid)s AND status = %(status)s AND student_guid = %(student_guid)s' {'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', 'asmt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', 'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}"""
 
     def tearDown(self):
         pass
@@ -48,14 +48,14 @@ DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.
         self.assertEqual(str(exception),
                          'Data integrity violence found for batch: test_batch_guid_1 in schema.table, '
                          'error message: (IntegrityError) duplicate key value violates unique constraint "fact_asmt_outcome_pkey"\n'
-                         'DETAIL:  Key (asmnt_outcome_rec_id)=(11339) already exists.\n'
+                         'DETAIL:  Key (asmt_outcome_rec_id)=(11339) already exists.\n'
                          ' \'UPDATE "edware"."fact_asmt_outcome" '
-                         'SET asmnt_outcome_rec_id = %(asmnt_outcome_rec_id)s, '
+                         'SET asmt_outcome_rec_id = %(asmt_outcome_rec_id)s, '
                          'status = %(new_status)s WHERE batch_guid = %(batch_guid)s '
                          'AND asmt_guid = %(asmt_guid)s AND '
                          "status = %(status)s AND student_guid = %(student_guid)s' "
                          "{'status': 'W', 'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0', "
-                         "'asmnt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', "
+                         "'asmt_outcome_rec_id': 11339, 'batch_guid': 'c9b8baa3-0353-40a7-9618-1aaf8befae0e', "
                          "'new_status': 'D', 'asmt_guid': '7b7a8b43-17dc-4a0b-a37e-6170c08894a5'}")
 
     def test_error_code(self):

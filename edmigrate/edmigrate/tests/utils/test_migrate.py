@@ -52,7 +52,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "288220EB-3876-41EB-B3A7-F0E6C8BD013B"
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([func.count().label('asmt_outcome_rec_ids')], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([1000000776, 1000001034, 1000001112]))
+        query = select([func.count().label('asmt_outcome_rec_ids')], fact_asmt_outcome_table.c.asmt_outcome_rec_id.in_([1000000776, 1000001034, 1000001112]))
         query_c = query.where(fact_asmt_outcome_table.c.rec_status == 'C')
         query_d = query.where(fact_asmt_outcome_table.c.rec_status == 'D')
         query_I = query.where(fact_asmt_outcome_table.c.rec_status == 'I')
@@ -190,7 +190,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                  UdlStatsConstants.SNAPSHOT_CRITERIA: None}
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmnt_outcome_rec_id.in_([1000000777, 1000000778, 1000001035]))
+        query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmt_outcome_rec_id.in_([1000000777, 1000000778, 1000001035]))
         query_c = query.where(fact_asmt_outcome_table.c.rec_status == 'C')
         query_d = query.where(fact_asmt_outcome_table.c.rec_status == 'D')
         rset = prod_conn.execute(query_c)

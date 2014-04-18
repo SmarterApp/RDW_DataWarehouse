@@ -113,7 +113,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
     def count_rows(self, status=None):
         with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as conn:
             fact = conn.get_table('fact_asmt_outcome')
-            query = select([count(fact.c.asmnt_outcome_rec_id).label('count')], from_obj=fact)
+            query = select([count(fact.c.asmt_outcome_rec_id).label('count')], from_obj=fact)
             if status:
                 query = query.where(fact.c.rec_status == status)
             result = conn.get_result(query)

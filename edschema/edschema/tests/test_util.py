@@ -5,7 +5,7 @@ Created on Mar 24, 2014
 '''
 import unittest
 from sqlalchemy.schema import MetaData
-from sqlalchemy import Table, Column, Index
+from sqlalchemy import Table, Column, Index, and_
 from sqlalchemy import String, BigInteger, ForeignKey, SmallInteger
 from edschema.metadata.util import *
 from edschema.metadata.ed_metadata import MetaColumn
@@ -31,7 +31,7 @@ class TestMetadataUtil(unittest.TestCase):
         Index('dim_inst_hier_codex', test_dim_table.c.state_code, test_dim_table.c.district_guid,
               test_dim_table.c.school_guid, unique=False)
 
-        test_fact_table = Table('fact_asmt_outocme', self.__metadata,
+        test_fact_table = Table('fact_asmt_outcome', self.__metadata,
                                 Column('fact_asmt_outcome_rec_id', BigInteger, primary_key=True),
                                 Column('inst_hier_rec_id', BigInteger, ForeignKey(test_dim_table.c.inst_hier_rec_id), nullable=False),
                                 Column('asmt_grade', String(10), nullable=False),
@@ -179,3 +179,59 @@ class TestMetadataUtil(unittest.TestCase):
                                                                      self.__test_fact_table_mkcol +
                                                                      self.__test_fact_table_fkcol)
         self.assertEquals(expected_columns, set(get_matcher_key_columns(self.__test_fact_table)))
+
+    def test_get_selectable_by_table_name_for_single_table_query(self):
+        '''
+        test get selectable tables names from query
+        '''
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+                        self.__test_fact_table.c.inst_hier_rec_id], from_obj=self.__test_fact_table)
+        self.assertEquals({'fact_asmt_outcome'}, set(get_selectable_by_table_name(query).values()))
+
+    def test_get_selectable_by_table_name_for_multiple_table_join_query(self):
+        '''
+        test get selectable tables names from query
+        '''
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+                        self.__test_dim_table.c.inst_hier_rec_id],
+                       from_obj=self.__test_fact_table.join(
+                           self.__test_dim_table,
+                           and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
+        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+
+    def test_get_selectable_by_table_name_for_multiple_table_join_query_with_alias(self):
+        '''
+        test get selectable tables names from query
+        '''
+        dim_alias = self.__test_dim_table.alias()
+        fact_alias = self.__test_fact_table.alias()
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+                        self.__test_dim_table.c.inst_hier_rec_id],
+                       from_obj=fact_alias.join(dim_alias,
+                           and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
+        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+
+    def test_get_selectable_by_table_name_for_multiple_table_join_query_with_named_alias(self):
+        '''
+        test get selectable tables names from query
+        '''
+        dim_alias = self.__test_dim_table.alias('dim_inst_hier_alias')
+        fact_alias = self.__test_fact_table.alias('fact_asmt_outcome_alias')
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+                        self.__test_dim_table.c.inst_hier_rec_id],
+                       from_obj=fact_alias.join(
+                           dim_alias,
+                           and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
+        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+
+    def test_get_selectable_by_table_name_for_multi_table_join_with_query_tables(self):
+        '''
+        test get selectable tables names from query
+        '''
+        dim_alias = self.__test_dim_table.alias()
+        fact_alias = self.__test_fact_table.alias()
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+                        self.__test_dim_table.c.inst_hier_rec_id],
+                       from_obj=fact_alias.join(dim_alias,
+                           and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
+        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))

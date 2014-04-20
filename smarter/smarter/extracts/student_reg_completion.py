@@ -4,6 +4,8 @@ from sqlalchemy.sql.expression import select, and_
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
+from smarter.security.context import select_with_context
+from smarter.security.constants import RolesConstants
 
 
 def get_academic_year_query(academic_year, state_code):
@@ -11,14 +13,30 @@ def get_academic_year_query(academic_year, state_code):
     # TODO: Make query from select_with_context once SONIC adds security context to completion reports.
     with EdCoreDBConnection(state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)
-        academic_year_query = select([student_reg.c.state_code, student_reg.c.state_name, student_reg.c.district_guid,
-                                      student_reg.c.district_name, student_reg.c.school_guid, student_reg.c.school_name,
-                                      student_reg.c.gender, student_reg.c.enrl_grade, student_reg.c.dmg_eth_hsp,
-                                      student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn, student_reg.c.dmg_eth_blk,
-                                      student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep,
-                                      student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd,
-                                      student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race, student_reg.c.academic_year],
-                                     from_obj=[student_reg]).where(student_reg.c.academic_year == academic_year)
+        academic_year_query = select_with_context([student_reg.c.state_code,
+                                                   student_reg.c.state_name,
+                                                   student_reg.c.district_guid,
+                                                   student_reg.c.district_name,
+                                                   student_reg.c.school_guid,
+                                                   student_reg.c.school_name,
+                                                   student_reg.c.gender,
+                                                   student_reg.c.enrl_grade,
+                                                   student_reg.c.dmg_eth_hsp,
+                                                   student_reg.c.dmg_eth_ami,
+                                                   student_reg.c.dmg_eth_asn,
+                                                   student_reg.c.dmg_eth_blk,
+                                                   student_reg.c.dmg_eth_pcf,
+                                                   student_reg.c.dmg_eth_wht,
+                                                   student_reg.c.dmg_prg_iep,
+                                                   student_reg.c.dmg_prg_lep,
+                                                   student_reg.c.dmg_prg_504,
+                                                   student_reg.c.dmg_sts_ecd,
+                                                   student_reg.c.dmg_sts_mig,
+                                                   student_reg.c.dmg_multi_race,
+                                                   student_reg.c.academic_year],
+                                                  from_obj=[student_reg], permission=RolesConstants.SRC_EXTRACTS,
+                                                  state_code=state_code)\
+            .where(student_reg.c.academic_year == academic_year)
 
     return academic_year_query
 
@@ -30,20 +48,43 @@ def get_assessment_query(academic_year, state_code):
         student_reg = connection.get_table(Constants.STUDENT_REG)
         asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
 
-        assmt_query = select([asmt_outcome.c.student_guid, asmt_outcome.c.asmt_subject, asmt_outcome.c.asmt_type,
-                              asmt_outcome.c.asmt_year], from_obj=[asmt_outcome])\
+        assmt_query = select_with_context([asmt_outcome.c.student_guid,
+                                           asmt_outcome.c.asmt_subject,
+                                           asmt_outcome.c.asmt_type,
+                                           asmt_outcome.c.asmt_year],
+                                          from_obj=[asmt_outcome],
+                                          permission=RolesConstants.SRC_EXTRACTS,
+                                          state_code=state_code)\
             .distinct(asmt_outcome.c.student_guid, asmt_outcome.c.asmt_subject, asmt_outcome.c.asmt_type)\
-            .where(and_(asmt_outcome.c.rec_status == Constants.CURRENT, asmt_outcome.c.asmt_year == academic_year)).alias()
+            .where(and_(asmt_outcome.c.rec_status == Constants.CURRENT, asmt_outcome.c.asmt_year == academic_year))\
+            .alias(name='fact_asmt_outcome')
 
-        academic_year_query = select([student_reg.c.state_code, student_reg.c.state_name, student_reg.c.district_guid,
-                                      student_reg.c.district_name, student_reg.c.school_guid, student_reg.c.school_name,
-                                      student_reg.c.gender, student_reg.c.enrl_grade, student_reg.c.dmg_eth_hsp,
-                                      student_reg.c.dmg_eth_ami, student_reg.c.dmg_eth_asn, student_reg.c.dmg_eth_blk,
-                                      student_reg.c.dmg_eth_pcf, student_reg.c.dmg_eth_wht, student_reg.c.dmg_prg_iep,
-                                      student_reg.c.dmg_prg_lep, student_reg.c.dmg_prg_504, student_reg.c.dmg_sts_ecd,
-                                      student_reg.c.dmg_sts_mig, student_reg.c.dmg_multi_race, student_reg.c.academic_year,
-                                      assmt_query.c.asmt_subject, assmt_query.c.asmt_type],
-                                     from_obj=[student_reg.join(assmt_query, student_reg.c.student_guid == assmt_query.c.student_guid)])\
+        academic_year_query = select_with_context([student_reg.c.state_code,
+                                                   student_reg.c.state_name,
+                                                   student_reg.c.district_guid,
+                                                   student_reg.c.district_name,
+                                                   student_reg.c.school_guid,
+                                                   student_reg.c.school_name,
+                                                   student_reg.c.gender,
+                                                   student_reg.c.enrl_grade,
+                                                   student_reg.c.dmg_eth_hsp,
+                                                   student_reg.c.dmg_eth_ami,
+                                                   student_reg.c.dmg_eth_asn,
+                                                   student_reg.c.dmg_eth_blk,
+                                                   student_reg.c.dmg_eth_pcf,
+                                                   student_reg.c.dmg_eth_wht,
+                                                   student_reg.c.dmg_prg_iep,
+                                                   student_reg.c.dmg_prg_lep,
+                                                   student_reg.c.dmg_prg_504,
+                                                   student_reg.c.dmg_sts_ecd,
+                                                   student_reg.c.dmg_sts_mig,
+                                                   student_reg.c.dmg_multi_race,
+                                                   student_reg.c.academic_year,
+                                                   assmt_query.c.asmt_subject,
+                                                   assmt_query.c.asmt_type],
+                                                  from_obj=[student_reg.join(assmt_query, student_reg.c.student_guid == assmt_query.c.student_guid)],
+                                                  permission=RolesConstants.SRC_EXTRACTS,
+                                                  state_code=state_code)\
             .where(student_reg.c.academic_year == academic_year)
 
     return academic_year_query

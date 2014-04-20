@@ -4,6 +4,9 @@ Created on Mar 21, 2014
 @author: agrebneva
 '''
 
+from sqlalchemy.sql.expression import Select, Alias
+from sqlalchemy import Table
+
 #TODO: good place for it
 NATURAL_KEY_ATTR = 'natural_key'
 META_COLUMN = 'MetaColumn'
@@ -101,4 +104,16 @@ def get_selectable_by_table_name(query):
 
     :param query: SQLAlchemy query object
     '''
-    return {table: (table.element.name if hasattr(table, 'element') else table.name) for table in get_selectables_from_query(query)}
+    selectable = {}
+    for table in get_selectables_from_query(query):
+        if isinstance(table, Table):
+            # grab table name if its a table
+            name = table.name
+        elif isinstance(table, Alias) and isinstance(table.element, Table):
+            # grab alias name if its a table alias
+            name = table.element.name
+        else:
+            # skip otherwise
+            continue
+        selectable[table] = name
+    return selectable

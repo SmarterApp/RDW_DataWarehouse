@@ -46,9 +46,10 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.SRC_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
-        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS])
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])
         self.__config.testing_securitypolicy(dummy_session.get_user())
         set_tenant_map({get_unittest_tenant_name(): 'NC'})
 

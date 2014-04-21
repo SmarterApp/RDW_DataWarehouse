@@ -60,11 +60,6 @@ def generate_conf_for_loading(json_file, guid_batch, load_type):
     conf = {
         mk.FILE_TO_LOAD: json_file,
         mk.MAPPINGS: get_json_table_mapping(load_type),
-        mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
-        mk.TARGET_DB_PORT: udl2_conf['udl2_db']['db_port'],
-        mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
-        mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
-        mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
         mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
         mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
         mk.GUID_BATCH: guid_batch

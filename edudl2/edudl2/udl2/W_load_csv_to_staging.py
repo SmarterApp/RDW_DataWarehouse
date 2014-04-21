@@ -16,7 +16,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)
-    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
+    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> ' % (msg[mk.FILE_TO_LOAD]))
     guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.LOAD_TYPE], msg[mk.HEADERS], guid_batch)
     load_file(conf)

@@ -27,6 +27,17 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     return db_connection, engine
 
 
+def get_db_connection_params(db_url):
+    """returns a tuple with all db connection params extracted from the db_url
+
+    :param db_url: database connection string as url 'db_driver://db_user:db_password@db_host:db_port/db_name'
+
+    :returns tuple (db_driver, db_user, db_password, db_host, db_port, db_name)
+    """
+    db_params = re.match(r'^(.*)://(.*):(.*)@(.*):(.*)/(.*)$', db_url, re.IGNORECASE)
+    return None if db_params is None else db_params.groups()
+
+
 def print_get_affected_rows(result, action, module, function):
     '''
     get affected rows of a query execution and return the info

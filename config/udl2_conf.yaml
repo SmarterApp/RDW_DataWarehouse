@@ -92,12 +92,7 @@ common:
           assessment: int_sbac_asmt_outcome
           studentregistration: int_sbac_stu_reg
       batch_table: udl_batch
-      db_name: udl2
-      db_database: udl2
       db_schema: udl2
-      db_user: udl2
-      db_pass: udl2abc1234
-      db_driver: postgresql
       json_lz_table: lz_json
       csv_lz_table: lz_csv
       err_list_table: err_list
@@ -116,45 +111,27 @@ common:
           echo: False
           max_overflow: 10
           pool_size: 20
-          db_database: edware
-          db_user: edware
-          db_pass: edware2013
         ca:
           echo: False
           max_overflow: 10
           pool_size: 20
-          db_database: edware
-          db_user: edware
-          db_pass: edware2013
         func_tests:
           echo: False
           max_overflow: 10
           pool_size: 20
-          db_database: edware
-          db_user: edware
-          db_pass: edware2013
     prod_db_conn:
         edware:
             echo: False
             max_overflow: 10
             pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         ca:
             echo: False
             max_overflow: 10
             pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
         func_tests:
             echo: False
             max_overflow: 10
             pool_size: 20
-            db_database: edware
-            db_user: edware
-            db_pass: edware2013
 
 qa:
   '[app]':

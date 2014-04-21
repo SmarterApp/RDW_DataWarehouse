@@ -19,7 +19,7 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 
 
-class TestSRSContextSecurity(Unittest_with_edcore_sqlite):
+class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         defined_roles = [(Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout')),
@@ -120,6 +120,24 @@ class TestSRSContextSecurity(Unittest_with_edcore_sqlite):
     def test_has_context_with_some_invalid_guids(self):
         for role in self.role_constants:
             self.verify_has_context_with_some_invalid_guids(role)
+
+    def test_add_context_without_tenant(self):
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, None, None, None, None),
+                                        RoleRelation(RolesConstants.SRC_EXTRACTS, None, None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+
+        with UnittestEdcoreDBConnection() as connection:
+            dim_student = connection.get_table(Constants.DIM_STUDENT)
+            query = select([dim_student.c.student_guid], from_obj=[dim_student])
+            query = query.where(dim_student.c.state_code == 'BA')
+            state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
+            query = state_level.add_context(get_unittest_tenant_name(), self.user, query)
+            results = connection.get_result(query)
+            self.assertEqual(len(results), 0)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

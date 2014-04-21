@@ -19,8 +19,7 @@ class StateLevel(BaseRole):
     @verify_context
     def get_context(self, tenant, user):
         '''
-        Returns a sqlalchemy binary expression representing school_guid that user has context to
-        If Context is an empty list, return None, which will return Forbidden Error
+        Returns a sqlalchemy binary expression representing state_code that user has context to
         '''
         student_reg = self.connector.get_table(Constants.STUDENT_REG)
         context = user.get_context().get_states(tenant, self.name)
@@ -33,12 +32,16 @@ class StateLevel(BaseRole):
     @verify_context
     def add_context(self, tenant, user, query):
         '''
-        Updates a query adding context
-        If Context is an empty list, return None, which will return Forbidden Error
+        Updates a query adding context.  Tenant level context returns an empty set.
+        In that case, we don't need to append any where clauses
         '''
         context = user.get_context().get_states(tenant, self.name)
-        # context of none means that user has no access
-        return None if context is set() or context is None else query.where(or_(*[table.columns.state_code.in_(context) for table in self.get_context_tables(query)]))
+        # context can be None, an empty set, or non-empty set
+        if context is None:
+            query = None
+        elif context:
+            query = query.where(or_(*[table.columns.state_code.in_(context) for table in self.get_context_tables(query)]))
+        return query
 
     def check_context(self, tenant, user, student_guids):
         '''

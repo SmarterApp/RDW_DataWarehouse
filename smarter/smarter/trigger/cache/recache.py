@@ -6,7 +6,7 @@ Created on Jun 20, 2013
 from smarter.reports.compare_pop_report import ComparingPopReport,\
     get_comparing_populations_cache_key, get_comparing_populations_cache_route
 from edapi.cache import region_invalidate
-from smarter.reports.student_administration import get_academic_years
+from smarter.reports.student_administration import get_asmt_academic_years
 
 
 class CacheTrigger(object):
@@ -14,7 +14,7 @@ class CacheTrigger(object):
     def __init__(self, tenant, state_code, filter_config):
         self.tenant = tenant
         self.state_code = state_code
-        self.academic_years = get_academic_years(state_code, tenant)
+        self.academic_years = get_asmt_academic_years(state_code, tenant)
         self.latest_year = self.academic_years[0]
         self.init_filters(tenant, filter_config)
 

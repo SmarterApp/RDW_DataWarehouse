@@ -6,13 +6,14 @@ define [
   "edwareDownload"
   "edwarePopover"
   "edwareYearDropdown"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown) ->
+  "edwareDataProxy"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown, edwareDataProxy) ->
 
   class ReportInfoBar
 
     constructor: (@container, @config) ->
       @initialize()
-      @bindEvents()
+      @bindEvent()
 
     initialize: () ->
       $(@container).html Mustache.to_html InfoBarTemplate,
@@ -20,14 +21,20 @@ define [
         subjects: @config.subjects
         labels: @config.labels
       years = getAcademicYears @config.academicYears?.options
-      @createDownloadMenu(years)
       @createAcademicYear(years)
 
-    bindEvents: () ->
+    bindEvent: () ->
+      self = @
+      $('.downloadIcon').click ->
+        loadingData = fetchData self.config.param
+        loadingData.done (data)->
+          self.render(data)
+
+    render: (data) ->
       self = this
       # show download menu
-      $('.downloadIcon').click ->
-        self.edwareDownloadMenu.show()
+      @createDownloadMenu(data)
+      self.edwareDownloadMenu.show()
 
       # bind report info popover
       $('.reportInfoIcon').edwarePopover
@@ -40,10 +47,13 @@ define [
       $('.academicYearInfoIcon').edwarePopover
         content: 'placeholder'
 
-    createDownloadMenu: (years) ->
+    createDownloadMenu: (data) ->
       # merge academic years to JSON config
+      years = getAcademicYears data.asmt_period_year
+      studentRegYears = getAcademicYears data.studentRegAcademicYear
       @config.CSVOptions.asmtYear.options = years if years
       @config.CSVOptions.academicYear.options = years if years
+      @config.CSVOptions.studentRegAcademicYear.options = studentRegYears if studentRegYears
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
 
     getAcademicYears = (years)->
@@ -60,8 +70,15 @@ define [
       callback = @config.academicYears.callback
       @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
+    fetchData = (params)->
+        options =
+          method: "POST"
+          params: params
+        edwareDataProxy.getDatafromSource "/data/academic_year", options
+
   create = (container, config) ->
-    new ReportInfoBar(container, config)
+    infoBar = new ReportInfoBar(container, config)
+    
 
   ReportInfoBar: ReportInfoBar
   create: create

@@ -14,13 +14,10 @@ Created on May 16, 2013
 @author: swimberly
 '''
 
-import argparse
 import json
 import edudl2.udl2_util.database_util as db_util
 from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
-import time
-from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from sqlalchemy.sql.expression import select, and_
 from psycopg2.extensions import QuotedString
 
@@ -141,28 +138,3 @@ def fix_empty_strings(data_dict):
         if v == '':
             data_dict[k] = None
     return data_dict
-
-
-if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', dest='source_json', required=True, help="path to the source file")
-    args = parser.parse_args()
-    json_file = args.source_json
-    mapping = get_json_table_mapping('assessment')
-
-    conf = {mk.FILE_TO_LOAD: json_file,
-            mk.MAPPINGS: mapping,
-            mk.TARGET_DB_HOST: 'localhost',
-            mk.TARGET_DB_PORT: '5432',
-            mk.TARGET_DB_USER: 'udl2',
-            mk.TARGET_DB_NAME: 'udl2',
-            mk.TARGET_DB_PASSWORD: 'udl2abc1234',
-            mk.TARGET_DB_SCHEMA: 'udl2',
-            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT',
-            mk.GUID_BATCH: 100
-            }
-
-    start_time = time.time()
-    load_json(conf)
-    print('json loaded into %s in %.2fs' % (conf[mk.TARGET_DB_SCHEMA], time.time() - start_time))

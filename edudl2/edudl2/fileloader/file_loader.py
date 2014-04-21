@@ -2,12 +2,10 @@ import datetime
 import csv
 import edudl2.fileloader.prepare_queries as queries
 import random
-import argparse
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.sql.expression import select
 import edudl2.udl2.message_keys as mk
-from edudl2.udl2_util.database_util import execute_udl_queries, execute_udl_query_with_result
-from edudl2.udl2_util.file_util import extract_file_name
+from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.udl2.Constants import TableConstants
 import logging
 from edudl2.database.udl2_connector import get_udl_connection
@@ -176,15 +174,14 @@ def load_data_process(conn, conf):
 
 
 def check_header_contains_op(csv_file):
-    """
-    Open the csv file and determine if the file contains the OP column
+    """Open the csv file and determine if the file contains the OP column
+
     :param csv_file: the name of the csv file
     :returns True if the file contains the 'op' column, False otherwise
     """
     with open(csv_file, 'r') as fp:
         csv_reader = csv.reader(fp)
         header = next(csv_reader)
-        print('***, check header', header)
         return TableConstants.OP_COLUMN_NAME in header
 
 
@@ -192,42 +189,8 @@ def load_file(conf):
     '''
     Main function to initiate file loader
     '''
-    # log for start the file loader
-    # connect to database
+    logger.info("Starting data load from csv to staging")
     with get_udl_connection() as conn:
         # start loading file process
         time_for_load_as_seconds = load_data_process(conn, conf)
-
-    # log for end the file loader
-
-
-if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', dest='source_csv', required=True, help="path to the source file")
-    parser.add_argument('-m', dest='header_csv', required=True, help="path to the header file")
-    args = parser.parse_args()
-
-    conf = {mk.FILE_TO_LOAD: args.source_csv,
-            mk.HEADERS: args.header_csv,
-            mk.ROW_START: 10,
-            mk.TARGET_DB_HOST: 'localhost',
-            mk.TARGET_DB_PORT: '5432',
-            mk.TARGET_DB_USER: 'udl2',
-            mk.TARGET_DB_NAME: 'udl2',
-            mk.TARGET_DB_PASSWORD: 'udl2abc1234',
-            mk.CSV_SCHEMA: 'udl2',
-            mk.CSV_TABLE: extract_file_name(args.source_csv),
-            mk.FDW_SERVER: 'udl2_fdw_server',
-            mk.TARGET_DB_SCHEMA: 'udl2',
-            mk.TARGET_DB_TABLE: 'stg_sbac_asmt_outcome',
-            mk.APPLY_RULES: True,
-            mk.REF_TABLE: 'ref_column_mapping',
-            mk.CSV_LZ_TABLE: 'lz_csv',
-            mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000'
-            }
-    start_time = datetime.datetime.now()
-    load_file(conf)
-    finish_time = datetime.datetime.now()
-    spend_time = finish_time - start_time
-    logger.info("\nSpend time --", spend_time)
+    logger.info("Data Loaded from csv to Staging in %s seconds" % time_for_load_as_seconds)

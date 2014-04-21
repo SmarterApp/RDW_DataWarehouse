@@ -208,7 +208,7 @@ class TestMetadataUtil(unittest.TestCase):
         query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(dim_alias,
-                           and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
+                                                and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
         self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query_with_named_alias(self):
@@ -233,5 +233,5 @@ class TestMetadataUtil(unittest.TestCase):
         query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(dim_alias,
-                           and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
+                                                and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
         self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))

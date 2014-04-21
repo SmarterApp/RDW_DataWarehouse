@@ -140,9 +140,6 @@ qa:
         arrivals: /opt/edware/zones/landing/arrivals/   # this is where the file arrives.
         work: /opt/edware/zones/landing/work/           # this is the where the file are use for work. this should always be local for speed
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
-    udl2_db:
-        db_host: rbtmqudl0.qa.dum.edwdc.net
-        db_port: 5432
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@rbtmqudl0.qa.dum.edwdc.net:5432/udl2
     target_db_conn:
@@ -157,14 +154,6 @@ qa:
             db_schema: edware
     target_db:
         db_schema: edware
-        db_name: edware
-        # TBD make sure it is the production setting
-        db_host: dbpgudl0.qa.dum.edwdc.net
-        db_port: 5432
-        db_database: edware
-        db_user: edware
-        db_pass: edware2013
-        db_driver: postgresql
         sr_target_table: student_reg
     prod_db_conn:
         edware:
@@ -178,14 +167,6 @@ qa:
             db_schema: edware_sds_1_12
     prod_db:
         db_schema: edware_sds_1_12
-        db_name: edware
-        # TBD make sure it is the production setting
-        db_host: dwpool1.qa.dum.edwdc.net
-        db_port: 6432
-        db_database: edware
-        db_user: edware
-        db_pass: edware2013
-        db_driver: postgresql
     gpg_home: /home/udl2/.gnupg
     edware_stats:
         db:
@@ -202,26 +183,13 @@ development:
         datafiles: /opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: /opt/edware/zones/tests/                 # this is for running unit tests.
     udl2_db:
-        db_host: localhost
-        db_port: 5432
         db_schema: udl2
-        db_user: udl2
-        db_pass: udl2abc1234
-        db_driver: postgresql
         json_lz_table: lz_json
         csv_lz_table: lz_csv
         err_list_table: err_list
         master_metadata_table: master_metadata
     target_db:
         db_schema: edware
-        db_name: edware
-        db_database: edware
-        # TBD make sure it is the production setting
-        db_user: edware
-        db_pass: edware2013
-        db_host: localhost
-        db_port: 5432
-        db_driver: postgresql
         sr_target_table: student_reg
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
@@ -255,14 +223,6 @@ development:
             db_schema: edware_prod
     prod_db:
         db_schema: edware_prod
-        db_name: edware
-        # TBD make sure it is the production setting
-        db_host: localhost
-        db_port: 5432
-        db_database: edware
-        db_user: edware
-        db_pass: edware2013
-        db_driver: postgresql
     gpg_home: ~/.gnupg
     sr_notification_max_attempts: 5
     sr_notification_retry_interval: 1
@@ -279,18 +239,8 @@ jenksins_dev:
         tests: $WORKSPACE/opt/edware/zones/tests/                 # this is for running unit tests.
     udl2_db:
         batch_table: udl_batch
-        db_host: localhost
-        db_port: 5432
     target_db:
         db_schema: edware
-        db_name: edware
-        # TBD make sure it is the production setting
-        db_host: localhost
-        db_port: 5432
-        db_database: edware
-        db_user: edware
-        db_pass: edware2013
-        db_driver: postgresql
         sr_target_table: student_reg
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
@@ -324,12 +274,4 @@ jenksins_dev:
             db_schema: edware_sds_1_12
     prod_db:
         db_schema: edware_sds_1_12
-        db_name: edware
-        # TBD make sure it is the production setting
-        db_host: edwdbsrv4.poc.dum.edwdc.net
-        db_port: 9999
-        db_database: edware
-        db_user: edware
-        db_pass: edware2013
-        db_driver: postgresql
     gpg_home: ~/.gnupg

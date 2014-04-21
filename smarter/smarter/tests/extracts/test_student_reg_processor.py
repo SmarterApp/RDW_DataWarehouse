@@ -90,12 +90,14 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
     @patch('smarter.extracts.student_reg_processor.compile_query_to_sql_text')
     @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_headers')
     @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_academic_year_query')
-    def test__create_task_info_completion(self, util_patch, header_patch, aquery_patch):
+    @patch('smarter.extracts.student_reg_processor.student_reg_completion.get_assessment_query')
+    def test__create_task_info_completion(self, amstquery_patch, aquery_patch, header_patch, util_patch):
         dummy_headers = ('H1', 'H2')
 
         util_patch.return_value = ''
         header_patch.return_value = dummy_headers
         aquery_patch.return_value = ''
+        amstquery_patch.return_value = ''
 
         extract_params = {TaskConstants.STATE_CODE: "NC",
                           TaskConstants.ACADEMIC_YEAR: 2015,

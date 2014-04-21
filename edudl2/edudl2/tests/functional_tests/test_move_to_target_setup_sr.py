@@ -64,12 +64,6 @@ class FTestMoveToTarget(unittest.TestCase):
                                                      udl2_conf['udl2_db']['db_pass'], udl2_conf['udl2_db']['db_host'],
                                                      udl2_conf['udl2_db']['db_port'], udl2_conf['udl2_db']['db_name'])
 
-        # get the master_metadata table objects
-        self.master_data_table = get_sqlalch_table_object(self.udl_engine, udl2_conf['udl2_db']['db_schema'],
-                                                          udl2_conf['udl2_db']['master_metadata_table'])
-        # insert tenant information into the master_metadata table
-        self.udl2_conn.execute(self.master_data_table.insert(), [self.tenant_info])
-
         # other table objects that will be needed later
         self.get_table_objects()
 
@@ -79,10 +73,6 @@ class FTestMoveToTarget(unittest.TestCase):
         self.empty_int_tables()
         self.target_metadata.drop_all(self.target_engine)
         self.target_connection.execute(DropSchema(self.tenant_info['target_schema_name'], cascade=True))
-
-        delete_cmd = self.master_data_table.delete().\
-            where(self.master_data_table.c.tenant_code == self.tenant_info['tenant_code'])
-        self.udl2_conn.execute(delete_cmd)
         self.udl2_conn.close()
         self.target_connection.close()
         self.target_engine.dispose()

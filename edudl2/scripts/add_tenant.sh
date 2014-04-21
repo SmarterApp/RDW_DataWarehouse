@@ -12,18 +12,6 @@ function drop_tenant_schema {
     python -m edschema.metadata_generator --metadata edware -a teardown -s edware_$1 -d edware --host=localhost:5432 -u edware -p edware2013
 }
 
-function populate_tenant_master_meta_info {
-    # populate the udl2.master_metadata table for the new tenant being added
-    # TODO
-    echo "TODO: populate_tenant_master_meta_info"
-}
-
-function clear_tenant_master_meta_info {
-    # populate the udl2.master_metadata table for the new tenant being added
-    # TODO
-    echo "TODO: clear_tenant_master_meta_info"
-}
-
 function create_tenant_directories {
     # landing directories
     sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/arrivals/$1
@@ -121,11 +109,9 @@ function main {
         create_tenant_directories $TENANT
         update_permissions $TENANT
         create_tenant_schema $TENANT
-        populate_tenant_master_meta_info $TENANT
     elif [ ${MODE:=""} == "REMOVE" ]; then
         remove_tenant_directories $TENANT
         drop_tenant_schema $TENANT
-        clear_tenant_master_meta_info $TENANT
     fi
 }
 

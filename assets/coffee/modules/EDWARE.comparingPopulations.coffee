@@ -224,9 +224,11 @@ define [
         reportInfoText: @config.reportInfo
         labels: @labels
         CSVOptions: @config.CSVOptions
+        param: @param
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
+        
 
     renderReportActionBar: () ->
       self = this

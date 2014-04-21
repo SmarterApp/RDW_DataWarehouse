@@ -40,6 +40,7 @@ define [
         subject: this.config['asmtSubject']
         asmtYear: this.config['asmtYear']
         academicYear: this.config['academicYear']
+        studentRegAcademicYear: this.config['studentRegAcademicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
       }
@@ -50,7 +51,6 @@ define [
       this.checkboxMenu = $('ul.checkbox-menu', this.container)
       this.submitBtn = $('.btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
-      this.createSpinner()
       this.selectDefault()
       this.setMainPulldownLabel()
 
@@ -122,8 +122,8 @@ define [
 
     validate_sr_options: ($dropdown) ->
       checked = []
-      if $("#academicYear").spinner( "value" ) != null
-        checked.push $("#academicYear").data('label')
+      if $('#studentRegAcademicYear .dropdown-display').text() != ""
+        checked.push $('#studentRegAcademicYear .dropdown-display').text()
       allChecked = checked.concat this.getSelectedOptions $dropdown
       allChecked.length isnt 0
 
@@ -174,13 +174,13 @@ define [
     enableInput: () ->
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
-      $('#academicYear').spinner('enable')
+      $('#studentRegAcademicYear').attr('disabled', false)
       $('button.report_type', self.container).removeAttr 'disabled'
 
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')
       $('input:checkbox', this.container).attr('disabled', 'disabled')
-      $('#academicYear').spinner('disable')
+      $('#studentRegAcademicYear').attr('disabled', true)
       $('button.report_type', self.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->
@@ -247,11 +247,6 @@ define [
             params[key].push Number($(this).attr('value'))
           else
             params[key].push $(this).attr('value')
-      $('tr.rpt_option:not(.disabled) #academicYear', this.container).each (index, param)->
-        $param = $(param)
-        key = $param.data('key')
-        params[key] = []
-        params[key].push $(this).spinner( "value" );
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
@@ -259,9 +254,6 @@ define [
 
     show: () ->
       $('#CSVModal').modal()
-
-    createSpinner: () ->
-      $( "#academicYear" ).spinner({ numberFormat: "n" }, {min: 0}).spinner("value", (new Date()).getFullYear());
 
   class DownloadMenu
 

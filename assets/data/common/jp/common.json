@@ -527,15 +527,17 @@
                 }
             ]
         },
+        "academicYear": {
+            "name": "学業学年",
+            "key": "academicYear"
+        },
+        "studentRegAcademicYear": {
+            "name": "学業学年",
+            "key": "academicYear"
+        },
         "asmtYear": {
-            "name": "Assessment Year",
-            "key": "asmtYear",
-            "options": [
-                {
-                    "display": "2014 - 2015",
-                    "value": "2015"
-                }
-            ]
+            "name": "学業学年",
+            "key": "asmtYear"
         },
         "asmtType": {
             "name": "評価タイプ",

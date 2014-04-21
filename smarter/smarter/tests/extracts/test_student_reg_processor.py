@@ -1,3 +1,4 @@
+from smarter.reports.helpers.constants import Constants
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
@@ -130,14 +131,14 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         with patch('smarter.extracts.student_reg_processor.start_extract.apply_async') as apply_async_mock:
             dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
             task_info.return_value = dummy_task_info
-            params = {'stateCode': ['NC'],
-                      'academicYear': [2015],
+            params = {Constants.STATECODE: ['NC'],
+                      Constants.ACADEMIC_YEAR: [2015],
                       Extract.EXTRACTTYPE: ['studentRegistrationStatistics']}
 
             response = process_async_extraction_request(params)
 
             self.assertIn('.zip.gpg', response['fileName'])
             self.assertEqual(response['tasks'][0]['status'], 'ok')
-            self.assertEqual(response['tasks'][0]['academicYear'], 2015)
+            self.assertEqual(response['tasks'][0][Constants.ACADEMIC_YEAR], 2015)
 
             apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)

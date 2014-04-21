@@ -221,6 +221,87 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
             context = pii.check_context(self.tenant, self.user, student_guids)
             self.assertTrue(context)
 
+    def test_add_context_without_tenant(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, None, None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact.c.state_code], from_obj=[fact])
+            pii = PII(connection, RolesConstants.PII)
+            query = pii.add_context(self.tenant, self.user, query)
+            result = connection.get_result(query)
+            self.assertEqual(1234, len(result))
+
+    def test_add_context_with_tenant(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.tenant, None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact.c.state_code], from_obj=[fact])
+            pii = PII(connection, RolesConstants.PII)
+            query = pii.add_context(get_unittest_tenant_name(), self.user, query)
+            result = connection.get_result(query)
+            self.assertEqual(1234, len(result))
+
+    def test_add_context_with_state_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.tenant, 'NC', None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        # Checks that the query has applied where clause
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact.c.student_guid], from_obj=[fact])
+            pii = PII(connection, RolesConstants.PII)
+            query = pii.add_context(get_unittest_tenant_name(), self.user, query)
+            self.assertIsNotNone(query._whereclause)
+            result = connection.get_result(query)
+            self.assertEqual(len(result), 1234)
+
+    def test_add_context_with_district_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.tenant, 'NC', '228', None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        # Checks that the query has applied where clause
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact.c.state_code], from_obj=[fact])
+            pii = PII(connection, RolesConstants.PII)
+            query = pii.add_context(get_unittest_tenant_name(), self.user, query)
+            result = connection.get_result(query)
+            self.assertEqual(353, len(result))
+
+    def test_add_context_with_school_level(self):
+        dummy_session = create_test_session([RolesConstants.PII])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.tenant, 'NC', '228', '242')])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        # Checks that the query has applied where clause
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact.c.state_code], from_obj=[fact])
+            pii = PII(connection, RolesConstants.PII)
+            query = pii.add_context(get_unittest_tenant_name(), self.user, query)
+            result = connection.get_result(query)
+            self.assertEqual(242, len(result))
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

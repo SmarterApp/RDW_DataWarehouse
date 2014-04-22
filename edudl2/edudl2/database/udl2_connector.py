@@ -95,15 +95,14 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
     lookup_tenant = tenant if tenant else DEFAULT_TENANT
     datasource_name = namespace + '.' + lookup_tenant
     db_dict = udl2_conf[namespace]
+    db_defaults = udl2_conf['db_defaults']
     tenant_dict = db_dict[lookup_tenant] if tenant else db_dict
-
-    schema_name = tenant_dict['db_schema']
 
     settings = {
         'url': tenant_dict['url'],
-        'max_overflow': tenant_dict['max_overflow'],
-        'echo': tenant_dict['echo'],
-        'pool_size': tenant_dict['pool_size'],
-        'schema_name': schema_name
+        'schema_name': tenant_dict['db_schema'],
+        'max_overflow': db_defaults['max_overflow'],
+        'echo': db_defaults['echo'],
+        'pool_size': db_defaults['pool_size']
     }
     setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

@@ -62,6 +62,10 @@ common:
     passphrase: sbac udl2
     tenant_position: -4
     search_wait_time: 10
+    db_defaults:
+      echo: False
+      max_overflow: 10
+      pool_size: 20
     student_reg_guid_key:
         studentregistration: identification.guid
     reg_system_id_key:
@@ -98,35 +102,6 @@ common:
       err_list_table: err_list
     udl2_db_conn:
       db_schema: udl2
-      echo: False
-      max_overflow: 10
-      pool_size: 20
-    target_db_conn:
-        edware:
-          echo: False
-          max_overflow: 10
-          pool_size: 20
-        ca:
-          echo: False
-          max_overflow: 10
-          pool_size: 20
-        func_tests:
-          echo: False
-          max_overflow: 10
-          pool_size: 20
-    prod_db_conn:
-        edware:
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-        ca:
-            echo: False
-            max_overflow: 10
-            pool_size: 20
-        func_tests:
-            echo: False
-            max_overflow: 10
-            pool_size: 20
 
 qa:
   '[app]':
@@ -188,9 +163,6 @@ development:
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2
-        echo: False
-        max_overflow: 10
-        pool_size: 20
     edware_stats:
         db:
             schema_name: edware_stats
@@ -239,9 +211,6 @@ jenksins_dev:
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2
-        echo: False
-        max_overflow: 10
-        pool_size: 20
     edware_stats:
         db:
             schema_name: edware_stats

@@ -440,10 +440,10 @@ uat:
         public_key.es: kswimberly@amplify.com
       work_zone_base_dir: /opt/edware/extraction
     cache:
-      public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
-      public.data.url: twprxydw0.dmo.som.edwdc.net:22121
-      session.url: twprxydw0.dmo.som.edwdc.net:22121
-      public.filtered_data.url: twprxydw0.dmo.som.edwdc.net:22121
+      public.shortlived.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      public.data.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      session.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      public.filtered_data.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
     pdf:
       base.url: https://beta.smarterbalancedreporting.org/assets/html/
       report_base_dir: /opt/edware/pdf

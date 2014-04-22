@@ -264,7 +264,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('acc_streamline_mode', SmallInteger, nullable=False),
                                )
 
-    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.asmt_year, assessment_outcome.c.asmt_type, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
+    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.asmt_year, assessment_outcome.c.asmt_type, assessment_outcome.c.state_code, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, assessment_outcome.c.asmt_grade, unique=False)
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False)
     Index('fact_asmt_outcome_asmt_subj_typ', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_subject, assessment_outcome.c.asmt_type, unique=False)
     # Filtering related indices
@@ -379,5 +379,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  )
     Index('student_reg_year_system_idx', student_registration.c.academic_year, student_registration.c.reg_system_id, unique=False)
     Index('student_reg_guid', student_registration.c.student_guid, unique=False)
+    Index('student_reg_year', student_registration.c.academic_year, unique=False)
 
     return metadata

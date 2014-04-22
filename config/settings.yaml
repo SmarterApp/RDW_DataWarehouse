@@ -77,7 +77,7 @@ common:
     # Timeout for pdf generation process
     pdf:
       # expected pdf file size in bytes used to validate that pdf was generated without errors
-      minimum_file_size: 59000
+      minimum_file_size: 56000
       # number of retries allowed after the first failure
       retries_allowed: 1
       # delay in retry in seconds
@@ -328,11 +328,11 @@ qa:
       db:
         cat:
           state_code: ES
-          schema_name: edware_es_1_4
+          schema_name: edware_es_1_6
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_es_1_4
+        schema_name: edware_es_1_6
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     edware_rep:
       db:
@@ -340,6 +340,21 @@ qa:
         url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
     migrate:
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      timeout: 6
+    migrate_dest:
+      db:
+        cat:
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
+        sc:
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware
+    migrate_source:
+      db:
+        cat:
+          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
+        sc:
+          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -415,7 +430,7 @@ uat:
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
     migrate.celery:
-      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edmigrate
     extract.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/edextract
     extract:
@@ -425,10 +440,10 @@ uat:
         public_key.es: kswimberly@amplify.com
       work_zone_base_dir: /opt/edware/extraction
     cache:
-      public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
-      public.data.url: twprxydw0.dmo.som.edwdc.net:22121
-      session.url: twprxydw0.dmo.som.edwdc.net:22121
-      public.filtered_data.url: twprxydw0.dmo.som.edwdc.net:22121
+      public.shortlived.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      public.data.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      session.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
+      public.filtered_data.url: dwcache0.dmo.som.edwdc.net:11211;dwcache1.dmo.som.edwdc.net:11211
     pdf:
       base.url: https://beta.smarterbalancedreporting.org/assets/html/
       report_base_dir: /opt/edware/pdf
@@ -450,6 +465,27 @@ uat:
       db:
         schema_name: edware_uat_1_1
         url: postgresql+psycopg2://edware:xON.yw27aw@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
+    edware_rep:
+      db:
+        schema_name: repmgr_edware_pg_cluster
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dmo.som.edwdc.net:5432/edware
+    migrate:
+      pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      timeout: 6
+    migrate_dest:
+      db:
+        es:
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dmo.som.edwdc.net:5432/edware
+        sc:
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dbpgdw0.dmo.som.edwdc.net:5432/edware
+    migrate_source:
+      db:
+        es:
+          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
+        sc:
+          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

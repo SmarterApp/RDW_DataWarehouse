@@ -6,29 +6,32 @@ define [
   "edwareDownload"
   "edwarePopover"
   "edwareYearDropdown"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown) ->
+  "edwareDataProxy"
+  "edwareUtil"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown, edwareDataProxy, edwareUtil) ->
 
   class ReportInfoBar
 
     constructor: (@container, @config) ->
       @initialize()
-      @bindEvents()
+      @bindEvent()
 
     initialize: () ->
       $(@container).html Mustache.to_html InfoBarTemplate,
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
-      years = getAcademicYears @config.academicYears?.options
-      @createDownloadMenu(years)
+      years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
+      @render()
 
-    bindEvents: () ->
-      self = this
-      # show download menu
+    bindEvent: () ->
+      self = @
       $('.downloadIcon').click ->
-        self.edwareDownloadMenu.show()
+        # show download menu
+        self.createDownloadMenu()
 
+    render: () ->
       # bind report info popover
       $('.reportInfoIcon').edwarePopover
         class: 'reportInfoPopover'
@@ -40,20 +43,9 @@ define [
       $('.academicYearInfoIcon').edwarePopover
         content: 'placeholder'
 
-    createDownloadMenu: (years) ->
-      # merge academic years to JSON config
-      @config.CSVOptions.asmtYear.options = years if years
-      @config.CSVOptions.academicYear.options = years if years
+    createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
-
-    getAcademicYears = (years)->
-      return if not years
-      for year in years
-        "display": toDisplay(year),
-        "value": year
-
-    toDisplay = (year)->
-      (year - 1) + " - " + year
+      @edwareDownloadMenu.show()
 
     createAcademicYear: (years) ->
       return if not years
@@ -61,7 +53,8 @@ define [
       @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
   create = (container, config) ->
-    new ReportInfoBar(container, config)
+    infoBar = new ReportInfoBar(container, config)
+
 
   ReportInfoBar: ReportInfoBar
   create: create

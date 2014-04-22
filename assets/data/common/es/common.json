@@ -598,15 +598,17 @@
                 }
             ]
         },
+        "academicYear": {
+            "name": "Año Académico",
+            "key": "academicYear"
+        },
+        "studentRegAcademicYear": {
+            "name": "Año Académico",
+            "key": "academicYear"
+        },
         "asmtYear": {
             "name": "Año de evaluación",
-            "key": "asmtYear",
-            "options": [
-                {
-                    "display": "2014 - 2015",
-                    "value": "2015"
-                }
-            ]
+            "key": "asmtYear"
         },
         "asmtType": {
             "name": "Tipo de evaluación",

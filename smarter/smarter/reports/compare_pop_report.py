@@ -23,7 +23,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import merge_dict
 from copy import deepcopy
 from collections import OrderedDict, namedtuple
-from smarter.reports.student_administration import get_academic_years, get_default_academic_year
+from smarter.reports.student_administration import get_asmt_academic_years, get_default_asmt_academic_year
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
 
@@ -67,8 +67,8 @@ def get_comparing_populations_report(params):
     Comparing Populations Report
     '''
     # set default asmt year
-    if not Constants.ASMTYEAR in params:
-        params[Constants.ASMTYEAR] = get_default_academic_year(params)
+    if Constants.ASMTYEAR not in params:
+        params[Constants.ASMTYEAR] = get_default_asmt_academic_year(params)
 
     report = ComparingPopReport(**params).get_report()
     # query not stated students count
@@ -271,7 +271,7 @@ class ComparingPopReport(object):
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=state_code, district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant),
-                Constants.ASMT_PERIOD_YEAR: get_academic_years(state_code, self.tenant)}
+                Constants.ASMT_PERIOD_YEAR: get_asmt_academic_years(state_code, self.tenant)}
 
     @staticmethod
     def get_asmt_levels(subjects, metadata):

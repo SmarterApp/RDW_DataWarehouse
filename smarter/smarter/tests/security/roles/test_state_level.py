@@ -133,11 +133,43 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
         with UnittestEdcoreDBConnection() as connection:
             dim_student = connection.get_table(Constants.DIM_STUDENT)
             query = select([dim_student.c.student_guid], from_obj=[dim_student])
-            query = query.where(dim_student.c.state_code == 'BA')
+            state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
+            query = state_level.add_context(self.tenant, self.user, query)
+            self.assertIsNone(query._whereclause)
+
+    def test_add_context_with_tenant(self):
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, None, None, None),
+                                        RoleRelation(RolesConstants.SRC_EXTRACTS, self.tenant, None, None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+
+        with UnittestEdcoreDBConnection() as connection:
+            dim_student = connection.get_table(Constants.DIM_STUDENT)
+            query = select([dim_student.c.student_guid], from_obj=[dim_student])
             state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
             query = state_level.add_context(get_unittest_tenant_name(), self.user, query)
-            results = connection.get_result(query)
-            self.assertEqual(len(results), 0)
+            self.assertIsNone(query._whereclause)
+
+    def test_add_context_with_state_level(self):
+        dummy_session = create_test_session([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SRS_EXTRACTS, self.tenant, 'ZZ', None, None),
+                                        RoleRelation(RolesConstants.SRC_EXTRACTS, self.tenant, 'ZZ', None, None)])
+        self.user = dummy_session.get_user()
+        self.__request = DummyRequest()
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config.testing_securitypolicy(self.user)
+        # Checks that the query has applied where clause
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            query = select([fact.c.student_guid], from_obj=[fact])
+            state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
+            query = state_level.add_context(get_unittest_tenant_name(), self.user, query)
+            self.assertIsNotNone(query._whereclause)
+            result = connection.get_result(query)
+            self.assertEqual(len(result), 0)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

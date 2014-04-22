@@ -17,9 +17,9 @@
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu report_type" data-key="{{key}}">
+                        <ul class="dropdown-menu report_type edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input class="reportType {{value}}" type="radio" name="reportType" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            <li><label><input class="reportType {{value}}" type="radio" name="reportType" value="{{value}}" data-label="{{display}}" style="display:none;">{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -90,16 +90,24 @@
                 </td>
             </tr>
             {{/subject}}
-            {{#academicYear}}
+            {{#studentRegAcademicYear}}
             <tr class="rpt_option sr_rpt">
                 <td>{{name}}</td>
                 <td>
-                    <div class="ui-spinner ui-widget ui-widget-content btn-group" data-option-name="{{name}}">
-                        <input id="academicYear" data-label="{{name}}" data-key="{{key}}">
+                    <div class="btn-group {{name}}" data-option-name="{{name}}">
+                        <button id="studentRegAcademicYear" class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                            <span class='dropdown-display'>{{options.0.display}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="radio" name="academicYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            {{/options}}
+                        </ul>
                     </div>
                 </td>
             </tr>
-            {{/academicYear}}
+            {{/studentRegAcademicYear}}
         </table>
     </div>
     <div class="modal-footer">
@@ -166,9 +174,5 @@
              {{/optionNames}}
           </ul>
        </div>
-    </script>
-
-    <script type="text/template" id="DownloadMenuTemplate">
-       Hello WOrld
     </script>
 </div>

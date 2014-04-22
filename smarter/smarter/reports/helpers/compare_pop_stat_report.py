@@ -19,7 +19,8 @@ def get_not_stated_count(params):
     not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
                          Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID),
                          Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID),
-                         Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)}
+                         Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE),
+                         Constants.ASMTYEAR: params.get(Constants.ASMTYEAR)}
     return ComparingPopStatReport(**not_stated_params).get_report()
 
 
@@ -48,6 +49,8 @@ def get_comparing_populations_not_stated_cache_key(comparing_pop):
         cache_args.append(comparing_pop.state_code)
     if comparing_pop.district_guid is not None:
         cache_args.append(comparing_pop.district_guid)
+    if comparing_pop.asmt_year is not None:
+        cache_args.append(comparing_pop.asmt_year)
     return tuple(cache_args)
 
 
@@ -56,7 +59,7 @@ class ComparingPopStatReport:
     Statistic data for Comparing Population Report. Only contains not stated students count for now.
     '''
 
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, tenant=None):
+    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None):
         '''
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district, could be None
@@ -67,6 +70,7 @@ class ComparingPopStatReport:
         self.district_guid = districtGuid
         self.school_guid = schoolGuid
         self.asmt_type = asmtType
+        self.asmt_year = asmtYear
         self.tenant = tenant
 
     @cache_region(['public.data'], router=get_comparing_populations_not_stated_cache_route, key_generator=get_comparing_populations_not_stated_cache_key)
@@ -112,7 +116,7 @@ class ComparingPopStatReport:
         _fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([count().label(Constants.COUNT)],
                        from_obj=[_fact_asmt_outcome])\
-            .where(and_(_fact_asmt_outcome.c.rec_status == Constants.CURRENT, _fact_asmt_outcome.c.asmt_type == self.asmt_type))
+            .where(and_(_fact_asmt_outcome.c.rec_status == Constants.CURRENT, _fact_asmt_outcome.c.asmt_type == self.asmt_type, _fact_asmt_outcome.c.asmt_year == self.asmt_year))
         if self.state_code is not None:
             query = query.where(and_(_fact_asmt_outcome.c.state_code == self.state_code))
         if self.district_guid is not None:

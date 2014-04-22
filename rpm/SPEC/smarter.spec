@@ -196,6 +196,10 @@ chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
 chkconfig --add celeryd-edmigrate
 chkconfig --add repmgrd
+chkconfig --level 2345 celeryd-services off
+chkconfig --level 2345 celeryd-edextract off
+chkconfig --level 2345 celeryd-edmigrate off
+chkconfig --level 2345 repmgrd off
 
 %preun
 chkconfig --del celeryd-services

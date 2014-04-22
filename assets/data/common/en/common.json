@@ -535,23 +535,15 @@
         },
         "academicYear": {
             "name": "Academic Year",
-            "key": "academicYear",
-            "options": [
-                {
-                    "display": "2014 - 2015",
-                    "value": "2015"
-                }
-            ]
+            "key": "academicYear"
+        },
+        "studentRegAcademicYear": {
+            "name": "Academic Year",
+            "key": "academicYear"
         },
         "asmtYear": {
             "name": "Assessment Year",
-            "key": "asmtYear",
-            "options": [
-                {
-                    "display": "2014 - 2015",
-                    "value": "2015"
-                }
-            ]
+            "key": "asmtYear"
         },
         "asmtType": {
             "name": "Assessment Type",

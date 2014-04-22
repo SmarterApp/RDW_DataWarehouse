@@ -98,4 +98,5 @@ class Constants():
     RAW_EXPORT = 'raw'
     ASMT_YEAR = 'asmt_year'
     ACADEMIC_YEAR = 'academicYear'
+    STUDENT_REG_ACADEMIC_YEAR = 'studentRegAcademicYear'
     CURRENT = 'C'

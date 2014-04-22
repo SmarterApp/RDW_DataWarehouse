@@ -3,7 +3,7 @@ __author__ = 'swimberly'
 
 import unittest
 import os
-
+import tempfile
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import udl2_conf
 
@@ -14,9 +14,10 @@ HIST = udl2_conf['zones']['history']
 class TestFileArrived(unittest.TestCase):
 
     def test_get_tenant_name_regular_directory(self):
-        dir_name = '/home/person1/arrivals/ri/some_user/file_drop/some_file.tgz'
+        udl2_conf['zones']['arrivals'] = '/tmp/'
+        dir_name = '/tmp/ri/some_user/file_drop/some_file.tgz'
         expected = 'ri'
-        result = file_arrived.get_tenant_name(dir_name, -4)
+        result = file_arrived.get_tenant_name(dir_name)
 
         self.assertEqual(result, expected)
 
@@ -80,16 +81,20 @@ class TestFileArrived(unittest.TestCase):
         os.rmdir(history_dir)
 
     def test_move_file_from_arrivals(self):
-        incoming_file = '/tmp/udl2_test1.txt'
         batch_guid = 'guid1234'
-        open(incoming_file, 'w')
-
-        result1, result2 = file_arrived.move_file_from_arrivals(incoming_file, batch_guid, -2)
-        self.assertEqual(len(result1), 5)
-        self.assertEqual(result2, 'tmp')
-
-        # cleanup
-        os.remove(os.path.join(result1[mk.ARRIVED], 'udl2_test1.txt'))
-        os.remove(os.path.join(result1[mk.HISTORY], 'udl2_test1.txt'))
-        for directory in result1.values():
-            os.rmdir(directory)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            arrivals_dir = tmpdir + '/arrivals'
+            work_dir = tmpdir + '/work'
+            history_dir = tmpdir + '/history'
+            file_drop = arrivals_dir + '/ca/user/file_drop'
+            os.mkdir(arrivals_dir)
+            os.mkdir(work_dir)
+            os.mkdir(history_dir)
+            udl2_conf['zones']['arrivals'] = arrivals_dir
+            udl2_conf['zones']['work'] = work_dir
+            udl2_conf['zones']['history'] = history_dir
+            os.makedirs(file_drop)
+            tmpfile = tempfile.NamedTemporaryFile(dir=file_drop, delete=False)
+            result1, result2 = file_arrived.move_file_from_arrivals(tmpfile.name, batch_guid)
+            self.assertEqual(len(result1), 5)
+            self.assertEqual(result2, 'ca')

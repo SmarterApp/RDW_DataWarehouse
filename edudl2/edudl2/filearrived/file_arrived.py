@@ -9,17 +9,14 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2_util.file_util import convert_path_to_list
 
 
-def move_file_from_arrivals(incoming_file, batch_guid, tenant_name_pos=None):
+def move_file_from_arrivals(incoming_file, batch_guid):
     """
     Create the subdirectories for the current batch and mv the incoming file to the proper locations.
     :param incoming_file: the path the incoming file
     :param batch_guid: the guid for the current batch
-    :param tenant_name_pos: the position of where the tenant name is located in the incoming_file
-        path
     :return: a tuple of (A dictionary containing all the created directories, the tenant name)
     """
-    tenant_name_pos = tenant_name_pos if tenant_name_pos else udl2_conf['tenant_position']
-    tenant_name = get_tenant_name(incoming_file, tenant_name_pos)
+    tenant_name = get_tenant_name(incoming_file)
     tenant_directory_paths = create_directory_paths(tenant_name, batch_guid)
     create_batch_directories(tenant_directory_paths)
     move_file_to_work_and_history(incoming_file, tenant_directory_paths[mk.ARRIVED], tenant_directory_paths[mk.HISTORY])
@@ -39,14 +36,15 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     shutil.move(incoming_file, history_dir)
 
 
-def get_tenant_name(incoming_file, tenant_path_pos):
+def get_tenant_name(incoming_file):
     """
     Given the incoming files path return the name of the tenant
     :param incoming_file: the path to the incoming file
-    :param tenant_path_pos: the position of the tenant in the
     :return: A string containing the tenant name
     """
-    return convert_path_to_list(incoming_file)[tenant_path_pos]
+    arrivals_dir_path = udl2_conf['zones']['arrivals']
+    relative_file_path = os.path.relpath(incoming_file, arrivals_dir_path)
+    return convert_path_to_list(relative_file_path)[0]
 
 
 def create_directory_paths(tenant_name, batch_guid):

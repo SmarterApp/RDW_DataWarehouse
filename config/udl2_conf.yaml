@@ -60,7 +60,6 @@ common:
         default_tenant: edware
     quiet_mode: False
     passphrase: sbac udl2
-    tenant_position: -4
     search_wait_time: 10
     db_defaults:
       echo: False

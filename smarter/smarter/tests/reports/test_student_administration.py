@@ -7,7 +7,8 @@ from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from smarter.security.roles.pii import PII  # @UnusedImport
-from smarter.reports.student_administration import get_asmt_academic_years
+from smarter.reports.student_administration import get_asmt_academic_years,\
+    get_student_reg_academic_years
 from smarter.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
@@ -47,3 +48,11 @@ class TestStudentAdministration(Unittest_with_edcore_sqlite):
         for year_back, expect in test_cases:
             results = get_asmt_academic_years(state_code, None, year_back)
             self.assertEqual(expect, results, "%d most recent academic year should be %r" % (year_back, expect))
+
+    def test_get_student_reg_academic_years(self):
+        results = get_student_reg_academic_years('NC')
+        self.assertEqual(0, len(results))
+        results = get_student_reg_academic_years('ES')
+        self.assertEqual(2, len(results))
+        self.assertIn(2015, results)
+        self.assertIn(2016, results)

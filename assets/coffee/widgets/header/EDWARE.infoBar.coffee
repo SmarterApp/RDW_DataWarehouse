@@ -7,7 +7,8 @@ define [
   "edwarePopover"
   "edwareYearDropdown"
   "edwareDataProxy"
-], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown, edwareDataProxy) ->
+  "edwareUtil"
+], ($, bootstrap, Mustache, InfoBarTemplate, edwareDownload, edwarePopover, edwareYearDropdown, edwareDataProxy, edwareUtil) ->
 
   class ReportInfoBar
 
@@ -20,22 +21,17 @@ define [
         title: @config.reportTitle
         subjects: @config.subjects
         labels: @config.labels
-      years = getAcademicYears @config.academicYears?.options
+      years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
+      @render()
 
     bindEvent: () ->
       self = @
       $('.downloadIcon').click ->
-        loadingData = fetchData self.config.param
-        loadingData.done (data)->
-          self.render(data)
+        # show download menu
+        self.createDownloadMenu()
 
-    render: (data) ->
-      self = this
-      # show download menu
-      @createDownloadMenu(data)
-      self.edwareDownloadMenu.show()
-
+    render: () ->
       # bind report info popover
       $('.reportInfoIcon').edwarePopover
         class: 'reportInfoPopover'
@@ -47,38 +43,18 @@ define [
       $('.academicYearInfoIcon').edwarePopover
         content: 'placeholder'
 
-    createDownloadMenu: (data) ->
-      # merge academic years to JSON config
-      years = getAcademicYears data.asmt_period_year
-      studentRegYears = getAcademicYears data.studentRegAcademicYear
-      @config.CSVOptions.asmtYear.options = years if years
-      @config.CSVOptions.academicYear.options = years if years
-      @config.CSVOptions.studentRegAcademicYear.options = studentRegYears if studentRegYears
+    createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
-
-    getAcademicYears = (years)->
-      return if not years
-      for year in years
-        "display": toDisplay(year),
-        "value": year
-
-    toDisplay = (year)->
-      (year - 1) + " - " + year
+      @edwareDownloadMenu.show()
 
     createAcademicYear: (years) ->
       return if not years
       callback = @config.academicYears.callback
       @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
-    fetchData = (params)->
-        options =
-          method: "POST"
-          params: params
-        edwareDataProxy.getDatafromSource "/data/academic_year", options
-
   create = (container, config) ->
     infoBar = new ReportInfoBar(container, config)
-    
+
 
   ReportInfoBar: ReportInfoBar
   create: create

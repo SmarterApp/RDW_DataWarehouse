@@ -47,7 +47,7 @@ export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/smarter
 source virtualenv/smarter/bin/activate
 
-cp ${WORKSPACE}/scripts/repmgr_cleanup.sh %{buildroot}/opt/virtualenv/smarter/bin/
+cp ${WORKSPACE}/scripts/repmgr_cleanup.sh virtualenv/smarter/bin/
 
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}

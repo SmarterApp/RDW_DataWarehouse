@@ -401,12 +401,13 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[Constants.ASMTTYPE] = AssessmentType.SUMMATIVE
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['not_stated']['total'], 56)
-        self.assertEqual(results['not_stated']['dmgPrg504'], 5)
-        self.assertEqual(results['not_stated']['dmgPrgIep'], 5)
-        self.assertEqual(results['not_stated']['dmgPrgLep'], 1)
-        self.assertEqual(results['not_stated']['ethnicity'], 1)
-        self.assertEqual(results['not_stated']['gender'], 2)
+
+        self.assertEqual(results['not_stated']['total'], 29)
+        self.assertEqual(results['not_stated']['dmgPrg504'], 2)
+        self.assertEqual(results['not_stated']['dmgPrgIep'], 2)
+        self.assertEqual(results['not_stated']['dmgPrgLep'], 0)
+        self.assertEqual(results['not_stated']['ethnicity'], 0)
+        self.assertEqual(results['not_stated']['gender'], 1)
 
     def test_filter_with_unfiltered_results(self):
         testParam = {}

@@ -379,5 +379,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  )
     Index('student_reg_year_system_idx', student_registration.c.academic_year, student_registration.c.reg_system_id, unique=False)
     Index('student_reg_guid', student_registration.c.student_guid, unique=False)
+    Index('student_reg_year', student_registration.c.academic_year, unique=False)
 
     return metadata

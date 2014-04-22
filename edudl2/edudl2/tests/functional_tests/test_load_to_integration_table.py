@@ -11,7 +11,7 @@ import edudl2.rule_maker.rules.code_generator_special_rules as sr
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
-from edudl2.udl2_util.database_util import  get_db_connection_params
+from edudl2.udl2_util.database_util import get_db_connection_params
 from uuid import uuid4
 
 

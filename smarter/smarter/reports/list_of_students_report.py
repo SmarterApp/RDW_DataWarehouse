@@ -110,8 +110,6 @@ def get_list_of_students_report(params):
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
             student['enrollment_grade'] = result['enrollment_grade']
-            student['district_name'] = result['district_name']
-            student['school_name'] = result['school_name']
             student['state_code'] = result['state_code']
             student[Constants.ROWID] = result['student_guid']
 
@@ -178,8 +176,6 @@ def get_list_of_students(params):
                                     dim_student.c.middle_name.label('student_middle_name'),
                                     dim_student.c.last_name.label('student_last_name'),
                                     fact_asmt_outcome.c.state_code.label('state_code'),
-                                    dim_inst_hier.c.district_name.label('district_name'),
-                                    dim_inst_hier.c.school_name.label('school_name'),
                                     fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                                     fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                     dim_asmt.c.asmt_subject.label('asmt_subject'),
@@ -216,14 +212,13 @@ def get_list_of_students(params):
                                     fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
                                     from_obj=[fact_asmt_outcome
                                               .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
-                                                                   dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
-                                              .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
         query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmtYear))
         query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
+        query = query.where(and_(fact_asmt_outcome.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
         query = apply_filter_to_query(query, fact_asmt_outcome, params)
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))

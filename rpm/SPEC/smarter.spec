@@ -27,7 +27,6 @@ mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/smarter %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
-cp ${WORKSPACE}/scripts/repmgr_cleanup.sh %{buildroot}/opt/virtualenv/smarter/bin/
 touch %{buildroot}/opt/edware/assets/__init__.py
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
@@ -47,6 +46,8 @@ cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd %{buildroot}/etc/
 export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/smarter
 source virtualenv/smarter/bin/activate
+
+cp ${WORKSPACE}/scripts/repmgr_cleanup.sh %{buildroot}/opt/virtualenv/smarter/bin/
 
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}

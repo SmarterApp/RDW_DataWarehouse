@@ -15,7 +15,7 @@ from sqlalchemy import select, and_
 from edudl2.tests.unit_tests.unittest_with_udl2_sqlite import Unittest_with_udl2_sqlite,\
     UnittestUDLTargetDBConnection, get_unittest_schema_name,\
     get_unittest_tenant_name
-from edudl2.udl2_util.database_util import  get_db_connection_params
+from edudl2.udl2_util.database_util import get_db_connection_params
 logger = logging.getLogger(__name__)
 
 

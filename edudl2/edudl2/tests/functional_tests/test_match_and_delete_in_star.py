@@ -4,7 +4,6 @@ from edudl2.move_to_target import move_to_target, move_to_target_setup
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from sqlalchemy.sql.expression import text, bindparam, select
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
-from unittest import skip
 from edudl2.database.udl2_connector import get_udl_connection,\
     get_target_connection, get_prod_connection
 from sqlalchemy.sql.functions import count

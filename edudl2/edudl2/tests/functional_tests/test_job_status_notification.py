@@ -168,6 +168,3 @@ def generate_message(guid):
         mk.TOTAL_ROWS_LOADED: 100
     }
     return message
-
-if __name__ == '__main__':
-    unittest.main()

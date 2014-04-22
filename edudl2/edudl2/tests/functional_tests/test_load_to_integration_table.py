@@ -11,6 +11,7 @@ import edudl2.rule_maker.rules.code_generator_special_rules as sr
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
+from edudl2.udl2_util.database_util import  get_db_connection_params
 from uuid import uuid4
 
 
@@ -28,11 +29,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.FILE_TO_LOAD: os.path.join(data_dir, data_file),
             mk.HEADERS: os.path.join(data_dir, header_file),
             mk.CSV_TABLE: 'csv_table_for_file_loader',
-            mk.TARGET_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
-            mk.TARGET_DB_PORT: self.udl2_conf['udl2_db']['db_port'],
-            mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
-            mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
@@ -61,32 +57,27 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             return count
 
     def generate_conf_for_moving_from_stg_to_int(self, guid_batch, load_type):
+        db_params_tuple = get_db_connection_params(self.udl2_conf['udl2_db_conn']['url'])
         conf = {
             mk.GUID_BATCH: guid_batch,
-            mk.SOURCE_DB_DRIVER: self.udl2_conf['udl2_db']['db_driver'],
 
             # source database setting
-            mk.SOURCE_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
-            mk.SOURCE_DB_PORT: self.udl2_conf['udl2_db']['db_port'],
-            mk.SOURCE_DB_USER: self.udl2_conf['udl2_db']['db_user'],
-            mk.SOURCE_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
-            mk.SOURCE_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
+            mk.SOURCE_DB_DRIVER: db_params_tuple[0],
+            mk.SOURCE_DB_USER: db_params_tuple[1],
+            mk.SOURCE_DB_PASSWORD: db_params_tuple[2],
+            mk.SOURCE_DB_HOST: db_params_tuple[3],
+            mk.SOURCE_DB_PORT: db_params_tuple[4],
+            mk.SOURCE_DB_NAME: db_params_tuple[5],
             mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.SOURCE_DB_TABLE: self.udl2_conf['udl2_db']['staging_tables'][load_type],
 
             # target database setting
-            mk.TARGET_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
-            mk.TARGET_DB_PORT: self.udl2_conf['udl2_db']['db_port'],
-            mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
-            mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: self.udl2_conf['udl2_db']['csv_integration_tables'][load_type],
 
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.ERR_LIST_TABLE: self.udl2_conf['udl2_db']['err_list_table']
-
         }
         return conf
 

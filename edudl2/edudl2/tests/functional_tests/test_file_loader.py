@@ -1,5 +1,3 @@
-import unittest
-import subprocess
 import csv
 import os
 import time
@@ -12,29 +10,36 @@ from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.tests.functional_tests.util import UDLTestHelper
 
 
-STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec_num', 'guid_asmt', 'guid_asmt_location', 'name_asmt_location', 'grade_asmt', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'type_school', 'guid_student', 'external_student_id', 'name_student_first', 'name_student_middle', 'name_student_last', 'address_student_line1', 'address_student_line2', 'address_student_city', 'address_student_zip', 'gender_student', 'email_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'date_assessed', 'score_asmt', 'score_asmt_min', 'score_asmt_max', 'score_perf_level', 'score_claim_1', 'score_claim_1_min', 'score_claim_1_max', 'asmt_claim_1_perf_lvl', 'score_claim_2', 'score_claim_2_min', 'score_claim_2_max', 'asmt_claim_2_perf_lvl', 'score_claim_3', 'score_claim_3_min', 'score_claim_3_max', 'asmt_claim_3_perf_lvl', 'score_claim_4', 'score_claim_4_min', 'score_claim_4_max', 'asmt_claim_4_perf_lvl', 'asmt_type', 'asmt_subject', 'asmt_year', 'acc_asl_video_embed', 'acc_asl_human_nonembed', 'acc_braile_embed', 'acc_closed_captioning_embed', 'acc_text_to_speech_embed', 'acc_abacus_nonembed', 'acc_alternate_response_options_nonembed', 'acc_calculator_nonembed', 'acc_multiplication_table_nonembed', 'acc_print_on_demand_nonembed', 'acc_read_aloud_nonembed', 'acc_scribe_nonembed', 'acc_speech_to_text_nonembed', 'acc_streamline_mode']
+STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec_num', 'guid_asmt', 'guid_asmt_location',
+                                 'name_asmt_location', 'grade_asmt', 'name_state', 'code_state', 'guid_district', 'name_district',
+                                 'guid_school', 'name_school', 'type_school', 'guid_student', 'external_student_id', 'name_student_first',
+                                 'name_student_middle', 'name_student_last', 'address_student_line1', 'address_student_line2', 'address_student_city',
+                                 'address_student_zip', 'gender_student', 'email_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami',
+                                 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1',
+                                 'date_assessed', 'score_asmt', 'score_asmt_min', 'score_asmt_max', 'score_perf_level', 'score_claim_1', 'score_claim_1_min',
+                                 'score_claim_1_max', 'asmt_claim_1_perf_lvl', 'score_claim_2', 'score_claim_2_min', 'score_claim_2_max', 'asmt_claim_2_perf_lvl',
+                                 'score_claim_3', 'score_claim_3_min', 'score_claim_3_max', 'asmt_claim_3_perf_lvl', 'score_claim_4', 'score_claim_4_min',
+                                 'score_claim_4_max', 'asmt_claim_4_perf_lvl', 'asmt_type', 'asmt_subject', 'asmt_year', 'acc_asl_video_embed', 'acc_asl_human_nonembed',
+                                 'acc_braile_embed', 'acc_closed_captioning_embed', 'acc_text_to_speech_embed', 'acc_abacus_nonembed', 'acc_alternate_response_options_nonembed',
+                                 'acc_calculator_nonembed', 'acc_multiplication_table_nonembed', 'acc_print_on_demand_nonembed', 'acc_read_aloud_nonembed', 'acc_scribe_nonembed',
+                                 'acc_speech_to_text_nonembed', 'acc_streamline_mode']
 
-STG_SBAC_STU_REG_COLUMNS = ['record_sid', 'guid_batch', 'src_file_rec_num', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'guid_student', 'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last', 'gender_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig', 'dmg_multi_race', 'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date', 'lep_exit_date', 't3_program_type', 'prim_disability_type']
+STG_SBAC_STU_REG_COLUMNS = ['record_sid', 'guid_batch', 'src_file_rec_num', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'guid_student',
+                            'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last', 'gender_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp',
+                            'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig', 'dmg_multi_race',
+                            'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date', 'lep_exit_date', 't3_program_type', 'prim_disability_type']
 
 
 class FileLoaderFTest(UDLTestHelper):
 
     def setUp(self):
         # set up database configuration
-        self.conf = {
-            mk.TARGET_DB_HOST: self.udl2_conf['udl2_db']['db_host'],
-            mk.TARGET_DB_PORT: self.udl2_conf['udl2_db']['db_port'],
-            mk.TARGET_DB_USER: self.udl2_conf['udl2_db']['db_user'],
-            mk.TARGET_DB_NAME: self.udl2_conf['udl2_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: self.udl2_conf['udl2_db']['db_pass'],
-            mk.SOURCE_DB_DRIVER: self.udl2_conf['udl2_db']['db_driver'],
-            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
-            mk.FDW_SERVER: self.udl2_conf['udl2_db']['fdw_server'],
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
-            mk.ROW_START: 1,
-            mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
-            mk.APPLY_RULES: False
-        }
+        self.conf = {mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+                     mk.FDW_SERVER: self.udl2_conf['udl2_db']['fdw_server'],
+                     mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+                     mk.ROW_START: 1,
+                     mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
+                     mk.APPLY_RULES: False}
 
     def tearDown(self):
         table_name = self.conf[mk.TARGET_DB_TABLE]
@@ -54,7 +59,7 @@ class FileLoaderFTest(UDLTestHelper):
         load_file(self.conf)
 
         # verify
-        row_total_in_csv = get_row_number_in_csv(self.conf[mk.FILE_TO_LOAD])
+        row_total_in_csv = self.get_row_number_in_csv(self.conf[mk.FILE_TO_LOAD])
         row_total_in_db = self.get_row_number_in_table()
         self.assertEqual(row_total_in_csv, row_total_in_db)
 
@@ -64,7 +69,7 @@ class FileLoaderFTest(UDLTestHelper):
         self.conf[mk.GUID_BATCH] = self.generate_non_exsisting_guid_batch()
         load_file(self.conf)
 
-        row_total_in_csv = get_row_number_in_csv(self.conf[mk.FILE_TO_LOAD])
+        row_total_in_csv = self.get_row_number_in_csv(self.conf[mk.FILE_TO_LOAD])
         row_total_in_db = self.get_row_number_in_table()
         self.assertEqual(row_total_in_csv, row_total_in_db)
 
@@ -99,24 +104,24 @@ class FileLoaderFTest(UDLTestHelper):
         self.load_config('assessment')
         self.conf[mk.ROW_START] = 124
         self.conf[mk.GUID_BATCH] = self.generate_non_exsisting_guid_batch()
-        self.conf[mk.FILE_TO_LOAD] = get_csv_file('test_file_stored_proc_data.csv')
+        self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('test_file_stored_proc_data.csv')
         self.conf[mk.APPLY_RULES] = True
         load_file(self.conf)
 
         # get newly loaded data for comparison
-        assessment_csv_file2_clean = get_csv_file('test_file_stored_proc_data_CLEAN.csv')
+        assessment_csv_file2_clean = self.get_csv_file('test_file_stored_proc_data_CLEAN.csv')
         self.compare_csv_table_data(assessment_csv_file2_clean, 'guid_student')
 
     def test_stu_reg_transformations_occur_during_load(self):
         self.load_config('studentregistration')
         self.conf[mk.ROW_START] = 124
         self.conf[mk.GUID_BATCH] = self.generate_non_exsisting_guid_batch()
-        self.conf[mk.FILE_TO_LOAD] = get_csv_file('student_registration_data/test_stu_reg_before_stored_proc.csv')
+        self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('student_registration_data/test_stu_reg_before_stored_proc.csv')
         self.conf[mk.APPLY_RULES] = True
         load_file(self.conf)
 
         # Get newly loaded data for comparison
-        stu_reg_csv_file2_clean = get_csv_file('student_registration_data/test_stu_reg_after_stored_proc.csv')
+        stu_reg_csv_file2_clean = self.get_csv_file('student_registration_data/test_stu_reg_after_stored_proc.csv')
         self.compare_csv_table_data(stu_reg_csv_file2_clean, 'StudentIdentifier')
 
     def load_config(self, type):
@@ -124,14 +129,14 @@ class FileLoaderFTest(UDLTestHelper):
             self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_asmt_outcome'
             self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
             self.conf[mk.CSV_TABLE] = 'test_csv_table'
-            self.conf[mk.FILE_TO_LOAD] = get_csv_file('test_file_realdata.csv')
-            self.conf[mk.HEADERS] = get_csv_file('test_file_headers.csv')
+            self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('test_file_realdata.csv')
+            self.conf[mk.HEADERS] = self.get_csv_file('test_file_headers.csv')
         elif type == 'studentregistration':
             self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_stu_reg'
             self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
             self.conf[mk.CSV_TABLE] = 'test_stu_reg_csv_table'
-            self.conf[mk.FILE_TO_LOAD] = get_csv_file('student_registration_data/test_sample_student_reg.csv')
-            self.conf[mk.HEADERS] = get_csv_file('student_registration_data/test_stu_reg_header.csv')
+            self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('student_registration_data/test_sample_student_reg.csv')
+            self.conf[mk.HEADERS] = self.get_csv_file('student_registration_data/test_stu_reg_header.csv')
 
     def verify_regular_table_content(self, records_in_db):
         with open(self.conf[mk.FILE_TO_LOAD], newline='') as file:
@@ -169,7 +174,7 @@ class FileLoaderFTest(UDLTestHelper):
             query = select([table]).where(table.c.guid_batch == guid_batch)
             results = conn.execute(query)
             result_list = results.fetchall()
-            expected_rows = get_clean_rows_from_file(csv_file)
+            expected_rows = self.get_clean_rows_from_file(csv_file)
             # sort rows
             student_guid_index = results.keys().index('guid_student')  # Determine index of guid_student in results
             result_list = sorted(result_list, key=lambda i: i[student_guid_index])  # sort results using this index
@@ -184,8 +189,8 @@ class FileLoaderFTest(UDLTestHelper):
                 if results.keys()[ci] in expect_row:
                     # if column is in the expected data
                     # change_empty_vals_to_none() converts all 0's and empty strings to None
-                    self.assertEqual(change_empty_vals_to_none(res_row[ci]),
-                                     change_empty_vals_to_none(expect_row[results.keys()[ci]]),
+                    self.assertEqual(self.change_empty_vals_to_none(res_row[ci]),
+                                     self.change_empty_vals_to_none(expect_row[results.keys()[ci]]),
                                      'Values are not the same for column %s' % results.keys()[ci])
 
     def generate_non_exsisting_guid_batch(self):
@@ -209,26 +214,22 @@ class FileLoaderFTest(UDLTestHelper):
             result = conn.execute(query)
             return result.fetchall()
 
+    def get_clean_rows_from_file(self, filename):
+        with open(filename) as file:
+            reader = csv.DictReader(file)
+            return [row for row in reader]
 
-def get_clean_rows_from_file(filename):
-    with open(filename) as file:
-        reader = csv.DictReader(file)
-        return [row for row in reader]
+    def get_row_number_in_csv(self, csv_file):
+        with open(csv_file) as file:
+            reader = csv.reader(file)
+            all_data = list(reader)
+            return len(all_data)
 
+    def change_empty_vals_to_none(self, val):
+        if val is 0 or val is '':
+            return None
+        return val
 
-def get_row_number_in_csv(csv_file):
-    with open(csv_file) as file:
-        reader = csv.reader(file)
-        all_data = list(reader)
-        return len(all_data)
-
-
-def change_empty_vals_to_none(val):
-    if val is 0 or val is '':
-        return None
-    return val
-
-
-def get_csv_file(filename):
-    data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-    return os.path.join(data_dir, filename)
+    def get_csv_file(self, filename):
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        return os.path.join(data_dir, filename)

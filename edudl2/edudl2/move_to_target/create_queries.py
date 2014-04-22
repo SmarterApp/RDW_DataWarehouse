@@ -8,6 +8,74 @@ from edudl2.udl2_util.database_util import create_filtered_sql_string
 import edschema.metadata.util as edschema_util
 
 
+class InsertQueryBuilder:
+
+    def __init__(self, conf, source_table, target_table, column_mapping, column_types):
+        self.dblink_url = dblink_url_composer(host=conf[mk.SOURCE_DB_HOST],
+                                              port=conf[mk.SOURCE_DB_PORT],
+                                              db_name=conf[mk.SOURCE_DB_NAME],
+                                              db_user=conf[mk.SOURCE_DB_USER],
+                                              db_password=conf[mk.SOURCE_DB_PASSWORD])
+        self.source_table = source_table
+        self.target_table = target_table
+        self.column_types = column_types
+        self.target_columns = ",".join(list(column_mapping.keys()))
+        lst = list(column_mapping.values())
+        self.guid_field = lst[0]
+        self.quoted_source_columns = ",".join(value.replace("'", "''") for value in lst[1:])
+        self.group_by_columns = ",".join(value for value in lst[1:] if "'" not in value)
+        self.record_mapping = ",".join(list(column_types.values()))
+        self.params = [bindparam('guid_batch', conf[mk.GUID_BATCH])]
+        self.target_schema_and_table = combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
+                                                              target_table)
+        self.source_schema_and_table = combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table)
+
+    @property
+    def op(self):
+        return self._op
+
+    @op.setter
+    def op(self, op):
+        self._op = op
+        self.params += [bindparam('op', op)]
+
+    @property
+    def distinct(self):
+        return self._distinct
+
+    @distinct.setter
+    def distinct(self, distinct):
+        self._distinct = distinct
+        if distinct:
+            self.distinct_expression = 'max(%s)' % self.guid_field
+        else:
+            self.distinct_expression = self.guid_field
+
+    def build(self):
+        from_query = "SELECT {distinct_expression}, {quoted_source_columns} " + \
+                     "FROM {source_schema_and_table} " + \
+                     "WHERE guid_batch=':guid_batch' "
+        if self._op:
+            from_query += " AND op = ':op' "
+        if self._distinct:
+            from_query += " GROUP BY {group_by_columns}"
+        from_query = from_query.format(distinct_expression=self.distinct_expression,
+                                       quoted_source_columns=self.quoted_source_columns,
+                                       source_schema_and_table=self.source_schema_and_table,
+                                       group_by_columns=self.group_by_columns)
+
+        query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
+                "SELECT * FROM " + \
+                "dblink({dblink_url}, " + \
+                "'SELECT * FROM ({from_query}) as y') AS t({record_mapping});"
+        query = query.format(target_schema_and_table=self.target_schema_and_table,
+                             dblink_url=self.dblink_url,
+                             from_query=from_query,
+                             record_mapping=self.record_mapping,
+                             target_columns=self.target_columns)
+        return text(query, bindparams=self.params)
+
+
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct, op=None):
     '''
     Main function to create query to insert data from source table to target table
@@ -15,45 +83,12 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     Since the source tables and target tables can be existing on different databases/servers,
     dblink is used here to get data from source database in the select clause
     '''
-    distinct_expression = 'DISTINCT ' if need_distinct else ''
-    target_columns = ",".join(list(column_mapping.keys()))
-    lst = list(column_mapping.values())
-    quoted_source_columns = ",".join(value.replace("'", "''") for value in lst)
-    record_mapping = ",".join(list(column_types.values()))
-    params = []
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
-    if op is None:
-        query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
-                "SELECT * FROM " + \
-                "dblink({dblink_url}, " + \
-                "'SELECT * FROM (SELECT {distinct_expression}" + \
-                "{quoted_source_columns} " + \
-                "FROM {source_schema_and_table} " + \
-                "WHERE guid_batch=':guid_batch') as y') AS t({record_mapping});"
-        params = [bindparam('guid_batch', conf[mk.GUID_BATCH])]
-    else:
-        query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
-                "SELECT * FROM " + \
-                "dblink({dblink_url}, " + \
-                "'SELECT * FROM (SELECT {distinct_expression}" + \
-                "{quoted_source_columns} " + \
-                "FROM {source_schema_and_table} " + \
-                "WHERE op = ':op' AND guid_batch=':guid_batch') as y') AS t({record_mapping});"
-        params = [bindparam('guid_batch', conf[mk.GUID_BATCH]), bindparam('op', op)]
-    query = query.format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
-                                                                          target_table),
-                         dblink_url=dblink_url_composer(host=conf[mk.SOURCE_DB_HOST],
-                                                        port=conf[mk.SOURCE_DB_PORT],
-                                                        db_name=conf[mk.SOURCE_DB_NAME],
-                                                        db_user=conf[mk.SOURCE_DB_USER],
-                                                        db_password=conf[mk.SOURCE_DB_PASSWORD]),
-                         distinct_expression=distinct_expression,
-                         source_schema_and_table=combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table),
-                         quoted_source_columns=quoted_source_columns,
-                         record_mapping=record_mapping,
-                         target_columns=target_columns)
+    builder = InsertQueryBuilder(conf, source_table, target_table, column_mapping, column_types)
+    builder.op = op
+    builder.distinct = need_distinct
+    return builder.build()
 
-    return text(query, bindparams=params)
 
 
 def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapping, op=None):

@@ -16,10 +16,9 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     dblink is used here to get data from source database in the select clause
     '''
     distinct_expression = 'DISTINCT ' if need_distinct else ''
-    seq_expression = list(column_mapping.values())[0].replace("'", "''")
     target_columns = ",".join(list(column_mapping.keys()))
     lst = list(column_mapping.values())
-    quoted_source_columns = ",".join(value.replace("'", "''") for value in lst[1:])
+    quoted_source_columns = ",".join(value.replace("'", "''") for value in lst)
     record_mapping = ",".join(list(column_types.values()))
     params = []
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
@@ -27,7 +26,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
         query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
                 "SELECT * FROM " + \
                 "dblink({dblink_url}, " + \
-                "'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + \
+                "'SELECT * FROM (SELECT {distinct_expression}" + \
                 "{quoted_source_columns} " + \
                 "FROM {source_schema_and_table} " + \
                 "WHERE guid_batch=':guid_batch') as y') AS t({record_mapping});"
@@ -36,7 +35,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
         query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
                 "SELECT * FROM " + \
                 "dblink({dblink_url}, " + \
-                "'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}" + \
+                "'SELECT * FROM (SELECT {distinct_expression}" + \
                 "{quoted_source_columns} " + \
                 "FROM {source_schema_and_table} " + \
                 "WHERE op = ':op' AND guid_batch=':guid_batch') as y') AS t({record_mapping});"
@@ -48,7 +47,6 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                                                         db_name=conf[mk.SOURCE_DB_NAME],
                                                         db_user=conf[mk.SOURCE_DB_USER],
                                                         db_password=conf[mk.SOURCE_DB_PASSWORD]),
-                         seq_expression=seq_expression,
                          distinct_expression=distinct_expression,
                          source_schema_and_table=combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table),
                          quoted_source_columns=quoted_source_columns,

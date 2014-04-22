@@ -20,6 +20,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql.expression import select, and_
 from psycopg2.extensions import QuotedString
+from edudl2.udl2_util.sequence_util import GLOBAL_SEQUENCE
 
 
 def load_json(conf):
@@ -123,6 +124,9 @@ def load_to_table(data_dict, guid_batch, int_table):
             if value:
                 from_select_column_names.append(column.name)
                 from_select_select_values.append(ref_column_mapping_columns.get(column.name, QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8')))
+        # import ipdb; ipdb.set_trace()
+        # from_select_column_names.append("record_sid")
+        # from_select_select_values.append(GLOBAL_SEQUENCE.next())
         insert_into_int_table = s_int_table.insert().from_select(from_select_column_names, select(from_select_select_values))
         # create insert statement and execute
         affected_row = db_util.execute_udl_queries(conn, [insert_into_int_table],

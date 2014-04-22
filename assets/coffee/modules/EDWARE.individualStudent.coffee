@@ -184,7 +184,8 @@ define [
 
     getCacheKey: ()->
       if @isPdf
-        asmtType = @params['asmtType'] || Constants.ASMT_TYPE.SUMMATIVE
+        asmtType = @params['asmtType'].toUpperCase() if @params['asmtType']
+        asmtType = Constants.ASMT_TYPE[asmtType] || Constants.ASMT_TYPE.SUMMATIVE
         return @params['effectiveDate'] + asmtType
       else
         asmt = edwarePreferences.getAsmtForISR()

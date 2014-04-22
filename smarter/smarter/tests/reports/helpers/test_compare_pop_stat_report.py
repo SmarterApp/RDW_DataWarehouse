@@ -49,36 +49,39 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants.ASMTYEAR] = 2015
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 56)
-        self.assertEqual(results['dmgPrg504'], 5)
-        self.assertEqual(results['dmgPrgIep'], 5)
+        self.assertEqual(results['total'], 27)
+        self.assertEqual(results['dmgPrg504'], 3)
+        self.assertEqual(results['dmgPrgIep'], 3)
         self.assertEqual(results['dmgPrgLep'], 1)
         self.assertEqual(results['ethnicity'], 1)
-        self.assertEqual(results['gender'], 2)
+        self.assertEqual(results['gender'], 1)
 
     def test_comparing_populations_with_not_stated_count_state_view(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
+        testParam[Constants.ASMTYEAR] = 2015
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 675)
-        self.assertEqual(results['dmgPrg504'], 11)
-        self.assertEqual(results['dmgPrgIep'], 13)
-        self.assertEqual(results['dmgPrgLep'], 11)
-        self.assertEqual(results['ethnicity'], 17)
-        self.assertEqual(results['gender'], 2)
+        self.assertEqual(results['total'], 503)
+        self.assertEqual(results['dmgPrg504'], 5)
+        self.assertEqual(results['dmgPrgIep'], 5)
+        self.assertEqual(results['dmgPrgLep'], 3)
+        self.assertEqual(results['ethnicity'], 7)
+        self.assertEqual(results['gender'], 1)
 
     def test_comparing_populations_with_not_stated_count_school_view(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '242'
+        testParam[Constants.ASMTYEAR] = 2015
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 98)
-        self.assertEqual(results['dmgPrg504'], 6)
-        self.assertEqual(results['dmgPrgIep'], 8)
-        self.assertEqual(results['dmgPrgLep'], 10)
-        self.assertEqual(results['ethnicity'], 10)
+        self.assertEqual(results['total'], 28)
+        self.assertEqual(results['dmgPrg504'], 2)
+        self.assertEqual(results['dmgPrgIep'], 2)
+        self.assertEqual(results['dmgPrgLep'], 2)
+        self.assertEqual(results['ethnicity'], 4)
         self.assertEqual(results['gender'], 0)
 
 if __name__ == "__main__":

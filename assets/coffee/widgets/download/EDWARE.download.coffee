@@ -11,7 +11,8 @@ define [
   "edwarePreferences"
   "edwareExport"
   "edwareDataProxy"
-], ($, bootstrap, Mustache, moment, jqueryui, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy) ->
+  "edwareUtil"
+], ($, bootstrap, Mustache, moment, jqueryui, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -299,9 +300,25 @@ define [
       window.location = url
 
     sendCSVRequest: () ->
-      # display file download options
-      CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), @config.CSVOptions
-      CSVDownload.show()
+      CSVOptions = @config.CSVOptions
+      # construct CSVDownload modal
+      loadingData = fetchData @config.param
+      loadingData.done (data)->
+        # merge academic years to JSON config
+        years = edwareUtil.getAcademicYears data.asmt_period_year
+        studentRegYears = edwareUtil.getAcademicYears data.studentRegAcademicYear
+        CSVOptions.asmtYear.options = years if years
+        CSVOptions.academicYear.options = years if years
+        CSVOptions.studentRegAcademicYear.options = studentRegYears if studentRegYears
+        # display file download options
+        CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), CSVOptions
+        CSVDownload.show()
+
+    fetchData = (params)->
+      options =
+        method: "POST"
+        params: params
+      edwareDataProxy.getDatafromSource "/data/academic_year", options
 
   create = (container, config)->
     new CSVDownloadModal $(container), config

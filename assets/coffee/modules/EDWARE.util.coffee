@@ -5,46 +5,46 @@ define [
   #
   # * EDWARE util
   # * Handles constants, reusable or common methods required by other EDWARE javascript files
-  # 
-  
-  #global $ window 
-  
-  constants = 
+  #
+
+  #global $ window
+
+  constants =
       overall_ald: 275
       psychometric_characterLimits: 256
       policyContent_characterLimits: 256
       claims_characterLimits: 140
-      
+
   getConstants = (value) ->
     constants[value]
-    
+
   displayNoResultsMessage = ->
     displayErrorMessage "There is no data available for your request."
-      
+
   displayErrorMessage = (error) ->
-    
+
     if error isnt ""
       $("#errorMessage").show().html(error)
     else
       $("#errorMessage").hide()
-      
+
   getUrlParams = ->
     params = {}
     decoded = decodeURIComponent(window.location.search).replace(/\+/g, ' ')
     decoded.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
       params[key] = value
-  
+
     params
-  
+
   # Given an user_info object, return the one role of that user from the list
   getRole = (userInfo) ->
     # roles is a list, for beta, we can assume we only have 1 role
     userInfo._User__info.roles[0].toUpperCase()
-  
+
   # Given an user_info object, return the first and last name of the user
   getUserName = (userInfo) ->
     userInfo._User__info.name.firstName + ' ' + userInfo._User__info.name.lastName
-    
+
   # Given an user_info object, return the uid
   getUid = (userInfo) ->
     userInfo._User__info.uid
@@ -66,22 +66,22 @@ define [
     else
         middle_init = ''
     return "#{last_name}, #{first_name} #{middle_init}".replace '  ', ' '
-    
+
   # truncate the content and add ellipsis "..." if content is more than character limits
   truncateContent = (content, characterLimits)->
     if content.length > characterLimits
       content = content.substr(0, characterLimits)
-      
+
       # ignore characters after the last word
       content = content.substr(0, content.lastIndexOf(' ') + 1) + "..."
-      
+
     content
 
   # Set the popup position to left, right, top, bottom
   popupPlacement = (element, popupWidth, popupHeight)->
     isWithinBounds = (elementPosition) ->
         boundTop < elementPosition.top and boundLeft < elementPosition.left and boundRight > (elementPosition.left + actualWidth) and boundBottom > (elementPosition.top + actualHeight)
-    
+
     $element = $(element)
     pos = $.extend({}, $element.offset(),
       width: element.offsetWidth
@@ -96,19 +96,19 @@ define [
     elementAbove =
       top: pos.top - actualHeight
       left: pos.left + pos.width / 2 - actualWidth / 2
-  
+
     elementBelow =
       top: pos.top + pos.height
       left: pos.left + pos.width / 2 - actualWidth / 2
-  
+
     elementLeft =
       top: pos.top + pos.height / 2 - actualHeight / 2
       left: pos.left - actualWidth
-  
+
     elementRight =
       top: pos.top + pos.height / 2 - actualHeight / 2
       left: pos.left + pos.width
-  
+
     above = isWithinBounds(elementAbove)
     below = isWithinBounds(elementBelow)
     left = isWithinBounds(elementLeft)
@@ -126,10 +126,10 @@ define [
             "right"
           else
             "left"
-            
+
   showGrayScale = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/grayscale.css' />");
-    
+
   showPdfCSS = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/pdf.css' />");
 
@@ -156,13 +156,22 @@ define [
         escapeCSV item
     else
       value
-    
+
   getBaseURL = ->
     window.location.protocol + "//" + window.location.host
 
+  getAcademicYears = (years)->
+    return if not years
+    for year in years
+      "display": toDisplay(year),
+      "value": year
+
+   toDisplay = (year)->
+    (year - 1) + " - " + year
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
-  getUrlParams: getUrlParams 
+  getUrlParams: getUrlParams
   getRole: getRole
   getUserName: getUserName
   getUid: getUid
@@ -179,3 +188,4 @@ define [
   reRenderBody: reRenderBody
   escapeCSV: escapeCSV
   getBaseURL: getBaseURL
+  getAcademicYears: getAcademicYears

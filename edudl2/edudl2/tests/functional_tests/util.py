@@ -9,6 +9,7 @@ from sqlalchemy.sql.expression import select, func, true, cast
 from sqlalchemy.types import Integer
 from edcore.database.utils.utils import create_schema, drop_schema
 from edschema.metadata.ed_metadata import generate_ed_metadata
+from edschema.metadata.util import get_tables_starting_with
 
 
 class UDLTestHelper(unittest.TestCase):
@@ -38,8 +39,9 @@ class UDLTestHelper(unittest.TestCase):
 
     @classmethod
     def truncate_udl_tables(self):
-        tables = ['int_sbac_asmt', 'int_sbac_asmt_outcome', 'stg_sbac_asmt_outcome', 'err_list']
         with get_udl_connection() as conn:
+            tables = get_tables_starting_with(conn.get_metadata(), 'int_') + \
+                get_tables_starting_with(conn.get_metadata(), 'stg_') + ['err_list', 'udl_batch']
             for t in tables:
                 table = conn.get_table(t)
                 conn.execute(table.delete())

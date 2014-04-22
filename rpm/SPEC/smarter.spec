@@ -27,6 +27,7 @@ mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/smarter %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
+cp ${WORKSPACE}/scripts/repmgr_cleanup.sh %{buildroot}/opt/virtualenv/smarter/bin/
 touch %{buildroot}/opt/edware/assets/__init__.py
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
@@ -152,6 +153,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 %attr(755,root,root) /opt/virtualenv/smarter/bin/celeryev
 /opt/virtualenv/smarter/bin/python
 /opt/virtualenv/smarter/bin/python3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/repmgr_cleanup.sh
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edmigrate

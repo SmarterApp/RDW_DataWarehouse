@@ -83,7 +83,3 @@ class ValidateTableData(unittest.TestCase):
             os.makedirs(self.tenant_dir)
 
         return shutil.copy2(self.archived_file, self.tenant_dir)
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

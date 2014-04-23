@@ -5,6 +5,7 @@ __author__ = 'swimberly'
 
 import unittest
 from celery import chain
+from edudl2.udl2.constants import Constants
 
 MESSAGE_KEYS = ['start_timestamp', 'landing_zone_work_dir', 'load_type', 'batch_table',
                 'parts', 'guid_batch', 'input_file_path']
@@ -14,7 +15,7 @@ class TestUDL2Pipeline(unittest.TestCase):
 
     def setUp(self):
         self.udl_connector = get_udl_connection()
-        batch_table = self.udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = self.udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         self.udl_connector.execute(batch_table.delete())
 
     def test_get_pipeline_chain_check_type(self):

@@ -21,9 +21,10 @@ class Constants():
     INT_SR_TABLE = 'int_sbac_stu_reg'
 
     # other tables
-    UDL_BATCH = 'udl_batch'
+    UDL2_BATCH_TABLE = 'udl_batch'
     ASMT_REF_TABLE = 'ref_column_mapping'
     SR_REF_TABLE = 'sr_ref_column_mapping'
+    UDL2_ERR_LIST_TABLE = 'err_list'
 
     # column names
 

@@ -13,6 +13,7 @@ from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from uuid import uuid4
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
+from edudl2.udl2.constants import Constants
 
 
 class ValidateTableData(unittest.TestCase):
@@ -31,7 +32,7 @@ class ValidateTableData(unittest.TestCase):
 
     def empty_batch_table(self):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             result = connector.execute(batch_table.delete())
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
@@ -49,7 +50,7 @@ class ValidateTableData(unittest.TestCase):
 
     def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase], batch_table.c.udl_phase == 'UDL_COMPLETE')
             timer = 0
             result = connector.execute(query).fetchall()
@@ -61,7 +62,7 @@ class ValidateTableData(unittest.TestCase):
 
     def connect_verify_db(self):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table])
             result = connector.execute(query).fetchall()
             number_of_row = len(result)

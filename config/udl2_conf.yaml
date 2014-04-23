@@ -78,11 +78,9 @@ common:
     sr_notification_timeout_interval: 30
     udl2_db:
       fdw_server: udl2_fdw_server
-      batch_table: udl_batch
       db_schema: udl2
       json_lz_table: lz_json
       csv_lz_table: lz_csv
-      err_list_table: err_list
     udl2_db_conn:
       db_schema: udl2
 

@@ -104,7 +104,7 @@ class FTestMoveToTarget(UDLTestHelper):
 
     def create_msg(self, load_type, guid_batch):
         return {
-            mk.BATCH_TABLE: udl2_conf['udl2_db']['batch_table'],
+            mk.BATCH_TABLE: Constants.UDL2_BATCH_TABLE,
             mk.GUID_BATCH: guid_batch,
             mk.LOAD_TYPE: load_type,
             mk.PHASE: 4,

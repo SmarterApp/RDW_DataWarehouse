@@ -18,6 +18,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.constants import Constants
 import json
+from edudl2.udl2.constants import Constants
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop/'
 
@@ -78,7 +79,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     #Validate the UDL process completed successfully
     def validate_successful_job_completion(self):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
             result = connector.execute(query).fetchall()
             self.assertNotEqual(result, [])
@@ -108,7 +109,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     #Validate that the load type received is student registration
     def validate_load_type(self):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status, batch_table.c.load_type], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'udl2.W_get_load_type.task'))
             result = connector.execute(query).fetchall()
             self.assertNotEqual(result, [])
@@ -160,7 +161,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
         # Get the job results.
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status, batch_table.c.error_desc, batch_table.c.duration],
                            and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             result = connector.execute(query).fetchall()
@@ -189,7 +190,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase],
                            and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
             timer = 0
@@ -204,7 +205,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     #Check the batch table periodically for completion of the UDL job status notification, waiting up to max_wait seconds
     def check_notification_completion(self, max_wait=30):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase],
                            and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             timer = 0

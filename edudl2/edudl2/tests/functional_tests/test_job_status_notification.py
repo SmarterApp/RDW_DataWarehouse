@@ -30,7 +30,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
         self.failed_batch_id = "1a109333-8587-4875-8839-293356469f9a"
 
     #Load file to udl batch table. If empty is true, empties out the batch table first
-    def load_to_table(self, file, empty=True, table=udl2_conf['udl2_db']['batch_table']):
+    def load_to_table(self, file, empty=True, table=Constants.UDL2_BATCH_TABLE):
         with get_udl_connection() as conn:
             t = conn.get_table(table)
             if empty:
@@ -44,7 +44,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
     #Check batch table to see if the notification was successful
     def verify_notification_success(self, guid):
         with get_udl_connection() as conn:
-            batch_table = conn.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = conn.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status],
                            and_(batch_table.c.guid_batch == guid, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             result = conn.execute(query).fetchall()
@@ -56,7 +56,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
     #Check batch table to see if the notification failed, with a given number of attempts
     def verify_notification_failed(self, guid, attempts):
         with get_udl_connection() as conn:
-            batch_table = conn.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = conn.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status, batch_table.c.error_desc],
                            and_(batch_table.c.guid_batch == guid, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             result = conn.execute(query).fetchall()

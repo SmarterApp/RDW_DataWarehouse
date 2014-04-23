@@ -17,6 +17,7 @@ from uuid import uuid4
 import unittest
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.udl2.constants import Constants
 
 
 class Test_Err_Handling_Scenario(unittest.TestCase):
@@ -34,7 +35,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     def empty_table(self):
         #Delete all data from batch_table
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             result = connector.execute(batch_table.delete())
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
@@ -78,7 +79,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'FAILURE'))
             timer = 0
             result = connector.execute(query).fetchall()

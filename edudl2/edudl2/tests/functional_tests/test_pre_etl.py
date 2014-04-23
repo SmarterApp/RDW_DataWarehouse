@@ -6,7 +6,7 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.preetl.pre_etl import pre_etl_job
 from edudl2.database.udl2_connector import initialize_db_udl, get_udl_connection
 from edudl2.udl2_util.config_reader import read_ini_file
-from edudl2.exceptions.errorcodes import ErrorCode
+from edudl2.udl2.constants import Constants
 
 
 class PreEtlTest(unittest.TestCase):
@@ -16,7 +16,7 @@ class PreEtlTest(unittest.TestCase):
         conf_tup = read_ini_file(config_path_file)
         self.udl2_conf = conf_tup[0]
         initialize_db_udl(self.udl2_conf)
-        self.batch_table_name = self.udl2_conf['udl2_db']['batch_table']
+        self.batch_table_name = Constants.UDL2_BATCH_TABLE
 
     def tearDown(self):
         pass

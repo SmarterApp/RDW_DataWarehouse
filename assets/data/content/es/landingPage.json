@@ -6,22 +6,22 @@
         "sections": [
             {
                 "subtitle": "Pruebas",
-                "class": "pruebas",
+                "class": "assessments",
                 "desc": "Conozca más acerca de las pruebas de Smarter Balanced",
                 "link": "http://www.smarterbalanced.org/smarter-balanced-assessments"
             }, {
                 "subtitle": "Reportes",
-                "class": "reportes",
+                "class": "reports",
                 "desc": "Comprenda mejor el desempeño del estudiante",
                 "link": "#"
             }, {
                 "subtitle": "Seguridad de la información",
-                "class": "seguridad",
+                "class": "security",
                 "desc": "Conozca cómo Smarter Balanced protege la información del estudiante",
                 "link": "#"
             }, {
                 "subtitle": "El consorcio",
-                "class": "consorcio",
+                "class": "consortium",
                 "desc": "Desarrollamos evaluaciones alineadas con los Estándares Estatales Esenciales Comunes",
                 "link": "http://www.smarterbalanced.org"
             }

@@ -38,7 +38,7 @@ def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_pa
             mk.HEADERS: header_file_path,
             mk.CSV_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
             mk.CSV_TABLE: csv_table,
-            mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
+            mk.FDW_SERVER: Constants.UDL2_FDW_SERVER,
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
             mk.TARGET_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
             mk.APPLY_RULES: True,

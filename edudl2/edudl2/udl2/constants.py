@@ -27,6 +27,7 @@ class Constants():
     UDL2_ERR_LIST_TABLE = 'err_list'
     UDL2_CSV_LZ_TABLE = 'lz_csv'
     UDL2_JSON_LZ_TABLE = 'lz_json'
+    UDL2_FDW_SERVER = 'udl2_fdw_server'
 
     # column names
 

@@ -118,7 +118,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
 
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com")
         self.load_to_table(self.failed_batch)
-        self.load_to_table(self.failed_err_list, table=udl2_conf['udl2_db'][mk.ERR_LIST_TABLE])
+        self.load_to_table(self.failed_err_list, table=Constants.UDL2_ERR_LIST_TABLE)
         msg = generate_message(self.failed_batch_id)
         job_notify(msg)
 

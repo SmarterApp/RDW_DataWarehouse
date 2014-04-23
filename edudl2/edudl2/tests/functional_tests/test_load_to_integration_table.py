@@ -30,11 +30,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.FILE_TO_LOAD: os.path.join(data_dir, data_file),
             mk.HEADERS: os.path.join(data_dir, header_file),
             mk.CSV_TABLE: 'csv_table_for_file_loader',
-            mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+            mk.CSV_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
             mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
             mk.CSV_LZ_TABLE: Constants.UDL2_CSV_LZ_TABLE,
             mk.FDW_SERVER: 'udl2_fdw_server',
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
             mk.TARGET_DB_TABLE: staging_table,
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
@@ -48,7 +48,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             WHERE guid_batch = '{guid_batch}'
         """
         with get_udl_connection() as conn:
-            sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+            sql = sql_template.format(staging_schema=self.udl2_conf['udl2_db_conn']['db_schema'],
                                       staging_table=table,
                                       guid_batch=self.udl2_conf['guid_batch'])
             result = conn.execute(sql)
@@ -69,15 +69,15 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.SOURCE_DB_HOST: db_params_tuple[3],
             mk.SOURCE_DB_PORT: db_params_tuple[4],
             mk.SOURCE_DB_NAME: db_params_tuple[5],
-            mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+            mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
             mk.SOURCE_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
 
             # target database setting
-            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+            mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
             mk.TARGET_DB_TABLE: Constants.UDL2_INTEGRATION_TABLE(load_type),
 
             mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
-            mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+            mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
             mk.ERR_LIST_TABLE: Constants.UDL2_ERR_LIST_TABLE
         }
         return conf

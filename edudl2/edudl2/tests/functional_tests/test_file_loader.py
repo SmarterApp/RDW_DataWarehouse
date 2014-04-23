@@ -35,9 +35,9 @@ class FileLoaderFTest(UDLTestHelper):
 
     def setUp(self):
         # set up database configuration
-        self.conf = {mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
-                     mk.FDW_SERVER: self.udl2_conf['udl2_db']['fdw_server'],
-                     mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
+        self.conf = {mk.CSV_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
+                     mk.FDW_SERVER: Constants.UDL2_FDW_SERVER,
+                     mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db_conn']['db_schema'],
                      mk.ROW_START: 1,
                      mk.CSV_LZ_TABLE: Constants.UDL2_CSV_LZ_TABLE,
                      mk.APPLY_RULES: False}

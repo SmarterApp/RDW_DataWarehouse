@@ -61,7 +61,7 @@ def generate_conf_for_loading(json_file, guid_batch, load_type):
     conf = {
         mk.FILE_TO_LOAD: json_file,
         mk.MAPPINGS: get_json_table_mapping(load_type),
-        mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
+        mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
         mk.GUID_BATCH: guid_batch
     }

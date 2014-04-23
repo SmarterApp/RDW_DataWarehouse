@@ -29,7 +29,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
             mk.FILE_TO_LOAD: file,
             mk.MAPPINGS: get_json_table_mapping(load_type),
             mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         }
         return conf
 

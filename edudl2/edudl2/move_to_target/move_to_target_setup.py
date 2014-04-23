@@ -174,7 +174,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
         # add guid_batch from msg
         mk.GUID_BATCH: guid_batch,
         # source schema
-        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
+        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         # source database setting
         mk.SOURCE_DB_DRIVER: db_params_tuple[0],
         mk.SOURCE_DB_USER: db_params_tuple[1],

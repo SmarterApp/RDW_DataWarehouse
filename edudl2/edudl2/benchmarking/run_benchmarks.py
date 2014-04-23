@@ -98,7 +98,7 @@ def record_benchmark_info(batch_guid, history_schema_name, hist_user, hist_pass,
                                 udl2_conf['udl2_db']['db_database'])
 
     # Get relevant data from the udl_batch table
-    batch_table = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['db_schema'], Constants.UDL2_BATCH_TABLE)
+    batch_table = get_sqlalch_table_object(engine, udl2_conf['udl2_db_conn']['db_schema'], Constants.UDL2_BATCH_TABLE)
     batch_table_res = get_data_from_batch_table(batch_guid, conn, batch_table)
     conn.close()
 

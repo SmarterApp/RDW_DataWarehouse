@@ -28,7 +28,7 @@ class PopulateRefInfoFTest(unittest.TestCase):
         conf_tup = read_ini_file(config_path)
         udl2_conf = conf_tup[0]
         initialize_db_udl(udl2_conf)
-        self.ref_schema = udl2_conf['udl2_db']['db_schema']
+        self.ref_schema = udl2_conf['udl2_db_conn']['db_schema']
         self.ref_table_name = Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_ASSESSMENT)
 
         # Testable Rules

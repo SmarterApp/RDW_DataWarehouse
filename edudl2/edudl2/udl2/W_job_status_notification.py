@@ -14,6 +14,7 @@ from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.celery import celery, udl2_conf
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.notification.notification import post_udl_job_status
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -70,7 +71,7 @@ def get_conf(msg):
         mk.REG_SYSTEM_ID: msg[mk.REG_SYSTEM_ID],
         mk.GUID_BATCH: msg[mk.GUID_BATCH],
         mk.TOTAL_ROWS_LOADED: msg[mk.TOTAL_ROWS_LOADED] if mk.TOTAL_ROWS_LOADED in msg else 0,
-        mk.BATCH_TABLE: udl2_conf['udl2_db'][mk.BATCH_TABLE],
+        mk.BATCH_TABLE: Constants.UDL2_BATCH_TABLE,
         ck.SR_NOTIFICATION_TIMEOUT_INTERVAL: udl2_conf[ck.SR_NOTIFICATION_TIMEOUT_INTERVAL]
     }
 

@@ -107,8 +107,6 @@ qa:
         func_tests:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_es_1_6
-    prod_db:
-        db_schema: edware_es_1_6
     gpg_home: /home/udl2/.gnupg
     edware_stats:
         db:
@@ -187,8 +185,6 @@ development:
         func_tests:
             url: postgresql://edware:edware2013@localhost:5432/edware_functional_tests
             db_schema: edware_prod
-    prod_db:
-        db_schema: edware_prod
     gpg_home: ~/.gnupg
     sr_notification_max_attempts: 5
     sr_notification_retry_interval: 1
@@ -230,6 +226,4 @@ jenksins_dev:
         func_tests:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
             db_schema: edware_sds_1_12
-    prod_db:
-        db_schema: edware_sds_1_12
     gpg_home: ~/.gnupg

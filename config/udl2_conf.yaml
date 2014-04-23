@@ -81,15 +81,6 @@ common:
       ref_tables:
           assessment: ref_column_mapping
           studentregistration: sr_ref_column_mapping
-      staging_tables:
-          assessment: stg_sbac_asmt_outcome
-          studentregistration: stg_sbac_stu_reg
-      json_integration_tables:
-          assessment: int_sbac_asmt
-          studentregistration: int_sbac_stu_reg_meta
-      csv_integration_tables:
-          assessment: int_sbac_asmt_outcome
-          studentregistration: int_sbac_stu_reg
       batch_table: udl_batch
       db_schema: udl2
       json_lz_table: lz_json

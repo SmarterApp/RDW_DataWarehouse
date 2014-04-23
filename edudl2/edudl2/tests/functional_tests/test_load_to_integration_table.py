@@ -70,11 +70,11 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.SOURCE_DB_PORT: db_params_tuple[4],
             mk.SOURCE_DB_NAME: db_params_tuple[5],
             mk.SOURCE_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
-            mk.SOURCE_DB_TABLE: self.udl2_conf['udl2_db']['staging_tables'][load_type],
+            mk.SOURCE_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
 
             # target database setting
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
-            mk.TARGET_DB_TABLE: self.udl2_conf['udl2_db']['csv_integration_tables'][load_type],
+            mk.TARGET_DB_TABLE: Constants.UDL2_INTEGRATION_TABLE(load_type),
 
             mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
@@ -115,9 +115,9 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         self.udl2_conf['guid_batch'] = guid_batch
         self.load_file_to_stage(os.path.join('student_registration_data', 'test_stu_reg_without_headers.csv'),
                                 os.path.join('student_registration_data', 'test_stu_reg_header.csv'),
-                                load_type, self.udl2_conf['udl2_db']['staging_tables'][load_type], guid_batch)
+                                load_type, Constants.UDL2_STAGING_TABLE(load_type), guid_batch)
         move_data_from_staging_to_integration(conf)
-        postloading_total = self.postloading_count(self.udl2_conf['udl2_db']['csv_integration_tables'][load_type])
+        postloading_total = self.postloading_count(Constants.UDL2_INTEGRATION_TABLE(load_type))
         self.assertEqual(10, postloading_total)
 
     def test_derive_eth_function(self):

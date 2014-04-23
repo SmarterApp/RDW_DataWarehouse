@@ -8,6 +8,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.fileloader.file_loader import load_file
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2_util.file_util import extract_file_name
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -39,7 +40,7 @@ def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_pa
             mk.CSV_TABLE: csv_table,
             mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
-            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
+            mk.TARGET_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
             mk.APPLY_RULES: True,
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],

@@ -12,6 +12,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from edudl2.udl2_util.measurement import BatchTableBenchmark
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -39,9 +40,9 @@ def task(msg):
 
 def generate_conf(guid_batch, load_type):
     conf = {mk.GUID_BATCH: guid_batch,
-            mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
+            mk.SOURCE_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['csv_integration_tables'][load_type],
+            mk.TARGET_DB_TABLE: Constants.UDL2_INTEGRATION_TABLE(load_type),
             mk.ERR_LIST_TABLE: udl2_conf['udl2_db']['err_list_table'],
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]}
     return conf

@@ -7,6 +7,7 @@ from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, g
                                                   create_information_query)
 from edudl2.udl2_util.database_util import execute_udl_query_with_result, get_db_connection_params
 from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.udl2.constants import Constants
 
 Column = namedtuple('Column', ['src_col', 'type'])
 
@@ -182,7 +183,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
         mk.SOURCE_DB_PORT: db_params_tuple[4],
         mk.SOURCE_DB_NAME: db_params_tuple[5],
 
-        mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
+        mk.SOURCE_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
 
         mk.TARGET_DB_SCHEMA: target_schema,
         mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],

@@ -28,7 +28,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
             mk.GUID_BATCH: guid,
             mk.FILE_TO_LOAD: file,
             mk.MAPPINGS: get_json_table_mapping(load_type),
-            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
+            mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
         }
         return conf
@@ -36,7 +36,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
     def verify_json_load(self, load_type, conf, columns, guid):
         load_json(conf)
 
-        sr_int_table = self.udl2_conn.get_table(udl2_conf['udl2_db']['json_integration_tables'][load_type])
+        sr_int_table = self.udl2_conn.get_table(Constants.UDL2_JSON_INTEGRATION_TABLE(load_type))
         query = select(['*'], sr_int_table.c.guid_batch == guid)
         result = self.udl2_conn.execute(query).fetchall()
         for row in result:

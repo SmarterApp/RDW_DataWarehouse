@@ -39,7 +39,7 @@ class FileLoaderFTest(UDLTestHelper):
                      mk.FDW_SERVER: self.udl2_conf['udl2_db']['fdw_server'],
                      mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
                      mk.ROW_START: 1,
-                     mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
+                     mk.CSV_LZ_TABLE: Constants.UDL2_CSV_LZ_TABLE,
                      mk.APPLY_RULES: False}
 
     def tearDown(self):

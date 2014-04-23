@@ -32,7 +32,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.CSV_TABLE: 'csv_table_for_file_loader',
             mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
-            mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
+            mk.CSV_LZ_TABLE: Constants.UDL2_CSV_LZ_TABLE,
             mk.FDW_SERVER: 'udl2_fdw_server',
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: staging_table,

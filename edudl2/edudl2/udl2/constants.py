@@ -25,6 +25,8 @@ class Constants():
     ASMT_REF_TABLE = 'ref_column_mapping'
     SR_REF_TABLE = 'sr_ref_column_mapping'
     UDL2_ERR_LIST_TABLE = 'err_list'
+    UDL2_CSV_LZ_TABLE = 'lz_csv'
+    UDL2_JSON_LZ_TABLE = 'lz_json'
 
     # column names
 

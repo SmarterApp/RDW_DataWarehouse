@@ -79,8 +79,6 @@ common:
     udl2_db:
       fdw_server: udl2_fdw_server
       db_schema: udl2
-      json_lz_table: lz_json
-      csv_lz_table: lz_csv
     udl2_db_conn:
       db_schema: udl2
 

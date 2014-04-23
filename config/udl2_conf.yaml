@@ -73,10 +73,6 @@ common:
         studentregistration: source.testregcallbackurl
     academic_year_key:
         studentregistration: identification.academicyear
-    load_type_key: content
-    load_type:
-        assessment: assessment
-        student_registration: studentregistration
     sr_notification_max_attempts: 5
     sr_notification_retry_interval: 30
     sr_notification_timeout_interval: 30
@@ -121,9 +117,6 @@ qa:
         func_tests:
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
             db_schema: edware
-    target_db:
-        db_schema: edware
-        sr_target_table: student_reg
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
@@ -164,17 +157,6 @@ uat:
         func_tests:
             url: postgresql://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
-    target_db:
-        db_schema: edware
-        db_name: edware
-        # TBD make sure it is the production setting
-        db_host: dbpgudl0.dmo.som.edwdc.net
-        db_port: 5432
-        db_database: edware
-        db_user: edware
-        db_pass: edware2013
-        db_driver: postgresql
-        sr_target_table: student_reg
     prod_db_conn:
         edware:
             url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
@@ -215,9 +197,6 @@ development:
         json_lz_table: lz_json
         csv_lz_table: lz_csv
         err_list_table: err_list
-    target_db:
-        db_schema: edware
-        sr_target_table: student_reg
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2
@@ -263,9 +242,6 @@ jenksins_dev:
         tests: $WORKSPACE/opt/edware/zones/tests/                 # this is for running unit tests.
     udl2_db:
         batch_table: udl_batch
-    target_db:
-        db_schema: edware
-        sr_target_table: student_reg
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2

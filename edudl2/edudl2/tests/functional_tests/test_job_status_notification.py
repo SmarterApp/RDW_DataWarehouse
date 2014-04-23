@@ -4,7 +4,6 @@ from edudl2.database.udl2_connector import get_udl_connection
 __author__ = 'smuhit'
 
 import httpretty
-import unittest
 import os
 import csv
 import re
@@ -12,6 +11,7 @@ from sqlalchemy import select, func, and_
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.W_job_status_notification import task as job_notify
+from edudl2.udl2.constants import Constants
 
 
 @httpretty.activate
@@ -161,7 +161,7 @@ def clean_dictionary_values(val_dict):
 def generate_message(guid):
     message = {
         mk.GUID_BATCH: guid,
-        mk.LOAD_TYPE: udl2_conf['load_type']['student_registration'],
+        mk.LOAD_TYPE: Constants.LOAD_TYPE_STUDENT_REGISTRATION,
         mk.CALLBACK_URL: "http://www.this_is_a_dummy_url.com",
         mk.STUDENT_REG_GUID: "wxyz5678",
         mk.REG_SYSTEM_ID: "abcd1234",

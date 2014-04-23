@@ -6,7 +6,7 @@ from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.sql.expression import select
 import edudl2.udl2.message_keys as mk
 from edudl2.udl2_util.database_util import execute_udl_queries
-from edudl2.udl2.Constants import TableConstants
+from edudl2.udl2.constants import Constants
 import logging
 from edudl2.database.udl2_connector import get_udl_connection
 
@@ -105,7 +105,7 @@ def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, sta
     transformation_rules = ['', '']
     if column_mapping_result:
         for mapping in column_mapping_result:
-            if mapping[1] == TableConstants.OP_COLUMN_NAME and not op_column_present:
+            if mapping[1] == Constants.OP_COLUMN_NAME and not op_column_present:
                 continue
             csv_table_columns.append(mapping[0])
             stg_columns.append(mapping[1])
@@ -182,7 +182,7 @@ def check_header_contains_op(csv_file):
     with open(csv_file, 'r') as fp:
         csv_reader = csv.reader(fp)
         header = next(csv_reader)
-        return TableConstants.OP_COLUMN_NAME in header
+        return Constants.OP_COLUMN_NAME in header
 
 
 def load_file(conf):

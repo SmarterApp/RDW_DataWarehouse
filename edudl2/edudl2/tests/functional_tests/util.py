@@ -32,7 +32,7 @@ class UDLTestHelper(unittest.TestCase):
 
     @classmethod
     def truncate_edware_tables(self):
-        with get_target_connection(schema_name=self.udl2_conf['target_db']['db_schema']) as conn:
+        with get_target_connection(schema_name='edware') as conn:
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())

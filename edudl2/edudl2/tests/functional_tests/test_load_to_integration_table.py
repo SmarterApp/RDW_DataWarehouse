@@ -12,6 +12,7 @@ from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from edudl2.udl2_util.database_util import get_db_connection_params
+from edudl2.udl2.constants import Constants
 from uuid import uuid4
 
 
@@ -109,7 +110,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
 
     def test_load_stage_to_int_student_registration(self):
         guid_batch = str(uuid4())
-        load_type = self.udl2_conf['load_type']['student_registration']
+        load_type = Constants.LOAD_TYPE_STUDENT_REGISTRATION
         conf = self.generate_conf_for_moving_from_stg_to_int(guid_batch, load_type)
         self.udl2_conf['guid_batch'] = guid_batch
         self.load_file_to_stage(os.path.join('student_registration_data', 'test_stu_reg_without_headers.csv'),

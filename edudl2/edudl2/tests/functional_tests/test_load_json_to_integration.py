@@ -7,6 +7,7 @@ from uuid import uuid4
 from sqlalchemy.sql import select
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2.constants import Constants
 import os
 import unittest
 
@@ -47,7 +48,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         batch_guid = str(uuid4())
         json_file = os.path.join(data_dir, 'student_registration_data', 'test_sample_student_reg.json')
-        load_type = udl2_conf['load_type']['student_registration']
+        load_type = Constants.LOAD_TYPE_STUDENT_REGISTRATION
         conf = self.generate_config(load_type, json_file, batch_guid)
 
         columns = STUDENT_REGISTRATION_JSON_COLUMNS

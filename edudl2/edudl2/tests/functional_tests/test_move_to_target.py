@@ -9,6 +9,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.W_load_from_integration_to_star import explode_to_dims, explode_to_facts
 from edudl2.database.udl2_connector import get_target_connection, get_udl_connection
 from edudl2.udl2.W_load_sr_integration_to_target import task as load_student_registration_data_to_target
+from edudl2.udl2.constants import Constants
 
 data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 ASMT_OUTCOME_FILE = os.path.join(data_dir, 'INT_SBAC_ASMT_OUTCOME.csv')
@@ -45,7 +46,7 @@ class FTestMoveToTarget(UDLTestHelper):
         udl2_conf['multi_tenant']['active'] = True
         self.verify_target_assessment_schema(self.guid_batch_asmt, True)
         self.load_csv_data_to_integration(ASMT_OUTCOME_FILE, ASMT_FILE, 'int_sbac_asmt_outcome', 'int_sbac_asmt')
-        msg = self.create_msg('assessment', self.guid_batch_asmt)
+        msg = self.create_msg(Constants.LOAD_TYPE_ASSESSMENT, self.guid_batch_asmt)
         explode_to_dims(msg)
         explode_to_facts(msg)
         self.verify_target_assessment_schema(self.guid_batch_asmt, False)
@@ -54,7 +55,7 @@ class FTestMoveToTarget(UDLTestHelper):
         udl2_conf['multi_tenant']['active'] = True
         self.verify_target_student_registration_schema(self.guid_batch_sr, True)
         self.load_csv_data_to_integration(SR_FILE, SR_META_FILE, 'int_sbac_stu_reg', 'int_sbac_stu_reg_meta')
-        msg = self.create_msg('student_registration', self.guid_batch_sr)
+        msg = self.create_msg(Constants.LOAD_TYPE_STUDENT_REGISTRATION, self.guid_batch_sr)
         load_student_registration_data_to_target(msg)
         self.verify_target_student_registration_schema(self.guid_batch_sr, False)
 
@@ -105,7 +106,7 @@ class FTestMoveToTarget(UDLTestHelper):
         return {
             mk.BATCH_TABLE: udl2_conf['udl2_db']['batch_table'],
             mk.GUID_BATCH: guid_batch,
-            mk.LOAD_TYPE: udl2_conf['load_type'][load_type],
+            mk.LOAD_TYPE: load_type,
             mk.PHASE: 4,
             mk.TENANT_NAME: self.tenant_code,
             mk.TARGET_DB_SCHEMA: guid_batch}

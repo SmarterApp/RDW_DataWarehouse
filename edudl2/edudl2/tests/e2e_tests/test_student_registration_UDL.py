@@ -16,6 +16,7 @@ from edudl2.database.udl2_connector import get_udl_connection, get_target_connec
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
+from edudl2.udl2.constants import Constants
 import json
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop/'
@@ -62,7 +63,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             }
         }
         self.tenant_dir = TENANT_DIR
-        self.load_type = udl2_conf['load_type']['student_registration']
+        self.load_type = Constants.LOAD_TYPE_STUDENT_REGISTRATION
         self.receive_requests = True
         self.start_http_post_server()
         self.batches = []
@@ -121,7 +122,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
     def validate_stu_reg_target_table(self, file_to_load):
         with get_target_connection() as conn:
             conn.set_metadata_by_reflect(self.batch_id)
-            target_table = conn.get_table(udl2_conf['target_db']['sr_target_table'])
+            target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([func.count()]).select_from(target_table)
             record_count = conn.execute(query).fetchall()[0][0]
             self.assertEqual(record_count, self.student_reg_files[file_to_load]['num_records_in_data_file'], 'Unexpected number of records in target table.')
@@ -131,7 +132,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         with get_target_connection() as conn:
             student = self.student_reg_files[file_to_load]['test_student']
             conn.set_metadata_by_reflect(self.batch_id)
-            target_table = conn.get_table(udl2_conf['target_db']['sr_target_table'])
+            target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,
                             target_table.c.gender, target_table.c.student_dob, target_table.c.dmg_eth_hsp,
                             target_table.c.dmg_prg_504, target_table.c.academic_year, target_table.c.reg_system_id],

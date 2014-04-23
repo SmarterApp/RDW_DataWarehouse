@@ -8,6 +8,7 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target import move_data_from_int_tables_to_target_table
 from edudl2.move_to_target.move_to_target_setup import generate_conf
 from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -20,7 +21,7 @@ def task(msg):
     load_type = msg[mk.LOAD_TYPE]
 
     source_tables = [udl2_conf['udl2_db']['csv_integration_tables'][load_type], udl2_conf['udl2_db']['json_integration_tables'][load_type]]
-    target_table = udl2_conf['target_db']['sr_target_table']
+    target_table = Constants.SR_TARGET_TABLE
 
     target_schema = msg[mk.TARGET_DB_SCHEMA] if mk.TARGET_DB_SCHEMA in msg else msg[mk.GUID_BATCH]
     conf = generate_conf(guid_batch, msg[mk.PHASE], load_type, msg[mk.TENANT_NAME], target_schema)

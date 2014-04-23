@@ -49,6 +49,7 @@ def get_target_connection(tenant='edware', schema_name=None):
 def get_prod_connection(tenant='edware'):
     '''
     Get Target connection
+    TODO: remove default tenant value. Client code should pass tenant name explicitly.
     '''
     return UDL2DBConnection(tenant, namespace=PRODUCTION_NAMESPACE)
 

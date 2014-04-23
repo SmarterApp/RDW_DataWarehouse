@@ -20,7 +20,7 @@ from edudl2.udl2.constants import Constants
 import json
 from edudl2.udl2.constants import Constants
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):

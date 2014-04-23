@@ -17,9 +17,9 @@ from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.constants import Constants
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
-path = '/opt/edware/zones/landing/work/test_tenant'
+path = '/opt/edware/zones/landing/work/ca'
 FACT_TABLE = 'fact_asmt_outcome'
 #DIM_STUDENT = 'dim_student'
 

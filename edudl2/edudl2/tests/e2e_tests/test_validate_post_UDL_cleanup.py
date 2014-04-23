@@ -17,8 +17,8 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
-path = '/opt/edware/zones/landing/work/test_tenant/landing/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+path = '/opt/edware/zones/landing/work/ca/landing/'
 FACT_TABLE = 'fact_asmt_outcome'
 
 

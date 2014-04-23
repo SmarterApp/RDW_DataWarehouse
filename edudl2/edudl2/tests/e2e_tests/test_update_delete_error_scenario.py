@@ -23,14 +23,17 @@ from edudl2.udl2.constants import Constants
 class Test_Err_Handling_Scenario(unittest.TestCase):
 
     def setUp(self):
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
         self.err_list = 'err_list'
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        drop_target_schema(self.guid_batch_id)
+        try:
+            drop_target_schema(self.guid_batch_id)
+        except:
+            pass
 
     def empty_table(self):
         #Delete all data from batch_table

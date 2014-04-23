@@ -19,7 +19,7 @@ from edudl2.udl2.constants import Constants
 class ValidateTableData(unittest.TestCase):
     def setUp(self):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         #self.connector = get_udl_connection()
         self.guid_batch_id = str(uuid4())

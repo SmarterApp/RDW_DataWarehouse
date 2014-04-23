@@ -1,5 +1,6 @@
 require [
   'jquery'
+  'mustache'
   'raphael'
   'usmap'
   'edwareDataProxy'
@@ -7,12 +8,16 @@ require [
   'edwareHeader'
   'edwareBreadcrumbs'
   'edwarePreferences'
-], ($, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs, edwarePreferences) ->
+  'text!templates/state_map_label_template.html'
+], ($, Mustache, Raphael, usmap, edwareDataProxy, edwareUtil, edwareHeader, edwareBreadcrumbs, edwarePreferences, labelTemplate) ->
 
   SVG = (tag) ->
     document.createElementNS('http://www.w3.org/2000/svg', tag)
 
   edwareDataProxy.getDataForReport('stateMap').done (stateMapConfig) ->
+      #this.labels = stateMapConfig.labels
+      output = Mustache.to_html labelTemplate, stateMapConfig
+      $("#titleString").html output
       options =
         method: 'POST'
       load = edwareDataProxy.getDatafromSource "/services/userinfo", options

@@ -76,6 +76,7 @@
         "score": "Puntuación",
         "score_range": "Rango de la puntuación",
         "select_measure": "Seleccionar medida",
+        "select_state_prompt": "Select State to start exploring Smarter Balanced test results",
         "show_all": "Mostrar todo",
         "sort_by": "Ordenar por",
         "state": "Estado",

@@ -78,6 +78,7 @@
         "score": "スコア",
         "score_range": "スコア範囲",
         "select_measure": "セレクトメジャー",
+        "select_state_prompt": "Select State to start exploring Smarter Balanced test results",
         "show_all": "表示",
         "sort_by": "並べ替え",
         "state": "州",

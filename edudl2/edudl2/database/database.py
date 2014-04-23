@@ -21,6 +21,7 @@ from edudl2.database.udl2_connector import get_target_connection, initialize_db_
 from edudl2.database.populate_ref_info import populate_ref_column_map,\
     populate_stored_proc
 from sqlalchemy.sql.expression import text
+from edudl2.udl2.constants import Constants
 
 
 def _parse_args():
@@ -145,25 +146,26 @@ def drop_foreign_data_wrapper_server(fdw_server):
         conn.execute(text("DROP SERVER IF EXISTS %s CASCADE" % (fdw_server)))
 
 
-def load_reference_data(udl2_conf):
+def load_reference_data():
     '''
     load the reference data into the reference tables
     @param udl2_conf: The configuration dictionary for
     '''
     asmt_ref_table_info = ref_table_data.ref_table_conf
-    populate_ref_column_map(asmt_ref_table_info, udl2_conf['ref_tables']['assessment'])
+    populate_ref_column_map(asmt_ref_table_info, Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_ASSESSMENT))
 
     sr_ref_table_info = sr_ref_table_data.ref_table_conf
-    populate_ref_column_map(sr_ref_table_info, udl2_conf['ref_tables']['studentregistration'])
+    populate_ref_column_map(sr_ref_table_info, Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION))
 
 
-def load_stored_proc(udl2_conf):
+def load_stored_proc():
     '''
     Generate and load the stored procedures to be used for transformations and
     validations into the database.
     @param udl2_conf: The configuration dictionary for
     '''
-    populate_stored_proc(udl2_conf['ref_tables']['assessment'], udl2_conf['ref_tables']['studentregistration'])
+    populate_stored_proc(Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_ASSESSMENT),
+                         Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION))
 
 
 def setup_udl2_schema(udl2_conf):
@@ -184,8 +186,8 @@ def setup_udl2_schema(udl2_conf):
     create_dblink_extension(get_target_connection)
 
     # load data and stored procedures into udl tables
-    load_reference_data(udl2_conf['udl2_db'])
-    load_stored_proc(udl2_conf['udl2_db'])
+    load_reference_data()
+    load_stored_proc()
 
 
 def teardown_udl2_schema(udl2_conf):

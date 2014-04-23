@@ -175,13 +175,13 @@ define [
     enableInput: () ->
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
-      $('#studentRegAcademicYear').attr('disabled', false)
+      $('.btn-extract-academic-year').attr('disabled', false)
       $('button.report_type', self.container).removeAttr 'disabled'
 
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')
       $('input:checkbox', this.container).attr('disabled', 'disabled')
-      $('#studentRegAcademicYear').attr('disabled', true)
+      $('.btn-extract-academic-year').attr('disabled', true)
       $('button.report_type', self.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->
@@ -244,6 +244,9 @@ define [
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
+          # TODO: dirty fix
+          if key == 'academicYear1'
+            key = 'academicYear'
           if key == 'academicYear'
             params[key].push Number($(this).attr('value'))
           else

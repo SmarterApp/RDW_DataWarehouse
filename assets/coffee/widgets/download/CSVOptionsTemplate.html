@@ -31,7 +31,7 @@
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group {{name}}" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                        <button class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
@@ -49,13 +49,13 @@
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group {{name}}" data-option-name="{{name}}">
-                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                        <button class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu academicYearOptions edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="radio" name="academicYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li><label><input type="radio" name="academicYear1" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -95,7 +95,7 @@
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group {{name}}" data-option-name="{{name}}">
-                        <button id="studentRegAcademicYear" class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                        <button id="studentRegAcademicYear" class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>

@@ -47,6 +47,8 @@ export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/smarter
 source virtualenv/smarter/bin/activate
 
+cp ${WORKSPACE}/scripts/repmgr_cleanup.sh virtualenv/smarter/bin/
+
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}
 WORKSPACE_PATH=${BUILDROOT//\//\\\/}
@@ -152,6 +154,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 %attr(755,root,root) /opt/virtualenv/smarter/bin/celeryev
 /opt/virtualenv/smarter/bin/python
 /opt/virtualenv/smarter/bin/python3
+%attr(755,root,root) /opt/virtualenv/smarter/bin/repmgr_cleanup.sh
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edmigrate

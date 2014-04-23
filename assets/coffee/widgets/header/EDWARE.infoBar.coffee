@@ -23,13 +23,14 @@ define [
         labels: @config.labels
       years = edwareUtil.getAcademicYears @config.academicYears?.options
       @createAcademicYear(years)
+      @createDownloadMenu()
       @render()
 
     bindEvent: () ->
       self = @
       $('.downloadIcon').click ->
         # show download menu
-        self.createDownloadMenu()
+        self.edwareDownloadMenu.show()
 
     render: () ->
       # bind report info popover
@@ -45,7 +46,6 @@ define [
 
     createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
-      @edwareDownloadMenu.show()
 
     createAcademicYear: (years) ->
       return if not years

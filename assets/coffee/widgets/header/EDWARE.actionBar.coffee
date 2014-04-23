@@ -47,9 +47,9 @@ define [
         preference = edwarePreferences.getAsmtForISR
       else
         preference = edwarePreferences.getAsmtPreference
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, preference, (asmtType) ->
-        self.updateDisclaimer()
-        self.reloadCallback asmtType
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, preference, (asmt) ->
+        self.updateDisclaimer asmt
+        self.reloadCallback asmt
       @createDisclaimer()
       asmtDropdown
 
@@ -57,8 +57,8 @@ define [
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer
       @updateDisclaimer()
 
-    updateDisclaimer: () ->
-      currentAsmtType = edwarePreferences.getAsmtPreference()
+    updateDisclaimer: (asmtType) ->
+      currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()
       @disclaimer.update currentAsmtType
 
     prepareSubjects: () ->

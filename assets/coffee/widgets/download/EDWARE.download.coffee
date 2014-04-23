@@ -244,6 +244,9 @@ define [
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
+          # TODO: dirty fix
+          if key == 'academicYear1'
+            key = 'academicYear'
           if key == 'academicYear'
             params[key].push Number($(this).attr('value'))
           else

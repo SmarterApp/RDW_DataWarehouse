@@ -44,5 +44,5 @@ def generate_conf(guid_batch, load_type):
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: Constants.UDL2_INTEGRATION_TABLE(load_type),
             mk.ERR_LIST_TABLE: udl2_conf['udl2_db']['err_list_table'],
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]}
+            mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type)}
     return conf

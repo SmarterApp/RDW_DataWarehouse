@@ -22,6 +22,8 @@ class Constants():
 
     # other tables
     UDL_BATCH = 'udl_batch'
+    ASMT_REF_TABLE = 'ref_column_mapping'
+    SR_REF_TABLE = 'sr_ref_column_mapping'
 
     # column names
 
@@ -47,3 +49,7 @@ class Constants():
                                                      Constants.INT_ASMT_TABLE,
                                                      Constants.LOAD_TYPE_STUDENT_REGISTRATION:
                                                      Constants.INT_SR_META_TABLE}.get(load_type, None)
+    UDL2_REF_MAPPING_TABLE = lambda load_type: {Constants.LOAD_TYPE_ASSESSMENT:
+                                                Constants.ASMT_REF_TABLE,
+                                                Constants.LOAD_TYPE_STUDENT_REGISTRATION:
+                                                Constants.SR_REF_TABLE}.get(load_type, None)

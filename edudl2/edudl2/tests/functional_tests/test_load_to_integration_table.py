@@ -31,7 +31,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.HEADERS: os.path.join(data_dir, header_file),
             mk.CSV_TABLE: 'csv_table_for_file_loader',
             mk.CSV_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
-            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
+            mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
             mk.CSV_LZ_TABLE: self.udl2_conf['udl2_db']['csv_lz_table'],
             mk.FDW_SERVER: 'udl2_fdw_server',
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
@@ -76,7 +76,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.TARGET_DB_TABLE: Constants.UDL2_INTEGRATION_TABLE(load_type),
 
-            mk.REF_TABLE: self.udl2_conf['udl2_db']['ref_tables'][load_type],
+            mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
             mk.ERROR_DB_SCHEMA: self.udl2_conf['udl2_db']['db_schema'],
             mk.ERR_LIST_TABLE: self.udl2_conf['udl2_db']['err_list_table']
         }
@@ -171,7 +171,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                                   'substr("A".prim_disability_type, 1, 3)', '"A".created_date']
         with get_udl_connection() as conn:
             target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn,
-                                                                                               self.udl2_conf['udl2_db']['ref_tables']['studentregistration'],
+                                                                                               Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION),
                                                                                                'stg_sbac_stu_reg', 'int_sbac_stu_reg')
             self.assertEqual(expected_target_columns, target_columns)
             self.assertEqual(expected_source_columns_with_tran_rule, source_columns_with_tran_rule)

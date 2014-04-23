@@ -186,7 +186,7 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
         mk.SOURCE_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
 
         mk.TARGET_DB_SCHEMA: target_schema,
-        mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
+        mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
         mk.PHASE: int(phase_number),
         mk.LOAD_TYPE: load_type,
         mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant'],

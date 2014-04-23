@@ -42,7 +42,7 @@ def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_pa
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
             mk.TARGET_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
             mk.APPLY_RULES: True,
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
+            mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
             mk.GUID_BATCH: guid_batch}
     return conf

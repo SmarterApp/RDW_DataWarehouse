@@ -14,6 +14,7 @@ from edudl2.rule_maker.rules import transformation_code_generator
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.database.populate_ref_info import populate_stored_proc
 from edudl2.database.udl2_connector import initialize_db_udl, get_udl_connection
+from edudl2.udl2.constants import Constants
 
 
 class PopulateRefInfoFTest(unittest.TestCase):
@@ -28,7 +29,7 @@ class PopulateRefInfoFTest(unittest.TestCase):
         udl2_conf = conf_tup[0]
         initialize_db_udl(udl2_conf)
         self.ref_schema = udl2_conf['udl2_db']['db_schema']
-        self.ref_table_name = udl2_conf['udl2_db']['ref_tables']['assessment']
+        self.ref_table_name = Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_ASSESSMENT)
 
         # Testable Rules
         self.rule_names = transform_rules.keys()

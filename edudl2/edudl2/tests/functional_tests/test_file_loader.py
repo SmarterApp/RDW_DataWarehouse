@@ -8,6 +8,7 @@ from edudl2.fileloader.file_loader import load_file
 from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.tests.functional_tests.util import UDLTestHelper
+from edudl2.udl2.constants import Constants
 
 
 STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec_num', 'guid_asmt', 'guid_asmt_location',
@@ -127,13 +128,13 @@ class FileLoaderFTest(UDLTestHelper):
     def load_config(self, type):
         if type == 'assessment':
             self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_asmt_outcome'
-            self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['assessment']
+            self.conf[mk.REF_TABLE] = Constants.UDL2_REF_MAPPING_TABLE('assessment')
             self.conf[mk.CSV_TABLE] = 'test_csv_table'
             self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('test_file_realdata.csv')
             self.conf[mk.HEADERS] = self.get_csv_file('test_file_headers.csv')
         elif type == 'studentregistration':
             self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_stu_reg'
-            self.conf[mk.REF_TABLE] = self.udl2_conf['udl2_db']['ref_tables']['studentregistration']
+            self.conf[mk.REF_TABLE] = Constants.UDL2_REF_MAPPING_TABLE('studentregistration')
             self.conf[mk.CSV_TABLE] = 'test_stu_reg_csv_table'
             self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('student_registration_data/test_sample_student_reg.csv')
             self.conf[mk.HEADERS] = self.get_csv_file('student_registration_data/test_stu_reg_header.csv')

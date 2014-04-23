@@ -175,13 +175,13 @@ define [
     enableInput: () ->
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
-      $('#studentRegAcademicYear').attr('disabled', false)
+      $('.btn-extract-academic-year').attr('disabled', false)
       $('button.report_type', self.container).removeAttr 'disabled'
 
     disableInput: () ->
       this.submitBtn.attr('disabled','disabled')
       $('input:checkbox', this.container).attr('disabled', 'disabled')
-      $('#studentRegAcademicYear').attr('disabled', true)
+      $('.btn-extract-academic-year').attr('disabled', true)
       $('button.report_type', self.container).attr('disabled', 'disabled')
 
     showSuccessMessage: (response)->

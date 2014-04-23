@@ -20,7 +20,6 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql.expression import select, and_
 from psycopg2.extensions import QuotedString
-from edudl2.udl2_util.sequence_util import GLOBAL_SEQUENCE
 
 
 def load_json(conf):

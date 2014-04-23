@@ -8,26 +8,26 @@ INCREMENTAL = udl2_conf['prod_db']['global_seq_batch_size']
 
 SEQUENCE_NAME = udl2_conf['prod_db']['global_seq_name']
 
-SCHEMA_NAME = udl2_conf['prod_db']['db_schema']
-
+PROD_SCHEMA_NAME = udl2_conf['prod_db']['db_schema']
 
 class UDLSequence:
 
-    def __init__(self):
+    def __init__(self, tenant_name):
+        self.tenant_name = tenant_name
         self.max_value = -1
         self.current = 0
         self.check_sequence_existence()
 
     def fetch_next_batch(self):
-        with get_prod_connection() as conn:
+        with get_prod_connection(self.tenant_name) as conn:
             seq = conn.execute("SELECT nextval('%s.%s') from generate_series(1, %d);"
-                               % (SCHEMA_NAME, SEQUENCE_NAME, INCREMENTAL))
+                               % (PROD_SCHEMA_NAME, SEQUENCE_NAME, INCREMENTAL))
             batch = [val[0] for val in seq]
             self.current = batch[0]
             self.max_value = batch[-1]
 
     def check_sequence_existence(self):
-        with get_prod_connection() as conn:
+        with get_prod_connection(self.tenant_name) as conn:
             if not self.sequence_exists(conn):
                 seq = Sequence(name=SEQUENCE_NAME, metadata=conn.get_metadata(), start=20 * 1000)
                 conn.execute(CreateSequence(seq))
@@ -46,4 +46,15 @@ class UDLSequence:
         return next_value
 
 
-GLOBAL_SEQUENCE = UDLSequence()
+GLOBAL_SEQUENCE_POOL = {}
+
+
+def get_global_sequence(tenant_name="edware"):
+    '''
+    TODO: add doc string
+    '''
+    if tenant_name in GLOBAL_SEQUENCE_POOL:
+        return GLOBAL_SEQUENCE_POOL.get(tenant_name)
+    seq = UDLSequence(tenant_name)
+    GLOBAL_SEQUENCE_POOL[tenant_name] = seq
+    return seq

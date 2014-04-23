@@ -14,7 +14,7 @@ from edudl2.udl2 import message_keys as mk, W_load_csv_to_staging
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.database.database import get_udl_connection
 from edcore.database.utils.constants import Constants
-from edudl2.udl2_util.sequence_util import GLOBAL_SEQUENCE
+from edudl2.udl2_util.sequence_util import get_global_sequence
 
 
 logger = get_task_logger(__name__)
@@ -40,7 +40,8 @@ def task(msg):
     loader_group = group(loader_tasks)
     result = loader_group.delay()
     result.get()
-    # TODO: update record_sid
+
+    #update record sid with global sequence in production database
     update_record_sid(msg)
 
     end_time = datetime.datetime.now()
@@ -73,18 +74,16 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
 
 
 def update_record_sid(msg):
-    '''
-    TODO: add docstring
-    '''
     guid_batch = msg[mk.GUID_BATCH]
     load_type = msg[mk.LOAD_TYPE]
     target_db_table = udl2_conf['udl2_db']['staging_tables'][load_type]
+    global_sequence = get_global_sequence(msg[mk.TENANT_NAME])
     with get_udl_connection() as conn:
         _table = conn.get_table(target_db_table)
         query = select([_table]).where(_table.c[Constants.GUID_BATCH] == guid_batch)
         records = conn.execute(query)
         for rec in records:
             # set record sid
-            next_guid = GLOBAL_SEQUENCE.next()
+            next_guid = global_sequence.next()
             update_stmt = update(_table).values(record_sid=next_guid).where(_table.c.record_sid == rec['record_sid'])
             conn.execute(update_stmt)

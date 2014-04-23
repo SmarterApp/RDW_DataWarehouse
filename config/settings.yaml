@@ -483,9 +483,9 @@ uat:
     migrate_source:
       db:
         es:
-          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@rbtmqudl0.dmo.som.edwdc.net:5432/edware
         sc:
-          url: postgresql+psycopg2://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@rbtmqudl0.dmo.som.edwdc.net:5432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

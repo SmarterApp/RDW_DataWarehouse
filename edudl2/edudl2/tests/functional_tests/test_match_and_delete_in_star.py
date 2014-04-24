@@ -4,7 +4,6 @@ from edudl2.move_to_target import move_to_target, move_to_target_setup
 from edudl2.tests.functional_tests.util import UDLTestHelper
 from sqlalchemy.sql.expression import text, bindparam, select
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound
-from unittest import skip
 from edudl2.database.udl2_connector import get_udl_connection,\
     get_target_connection, get_prod_connection
 from sqlalchemy.sql.functions import count
@@ -61,7 +60,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
                 # set record_sid = 7 in this func test
                 row.insert(0, str(7))
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db_conn']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),
@@ -75,7 +74,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
             header = next(cf)
             for row in cf:
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db_conn']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),

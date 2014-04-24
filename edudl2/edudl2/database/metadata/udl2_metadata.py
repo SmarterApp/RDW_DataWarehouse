@@ -1,4 +1,3 @@
-from datetime import datetime
 from sqlalchemy.schema import MetaData, Sequence, Index
 from sqlalchemy import Table, Column, text
 from sqlalchemy.types import Text, Boolean, TIMESTAMP, Interval, TIME
@@ -389,20 +388,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('stored_proc_created_date', TIMESTAMP(timezone=True), nullable=True),
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                                   )
-
-    master_metadata = Table('master_metadata', metadata,
-                            Column('metadata_sid', BigInteger, primary_key=True),
-                            Column('tenant_code', String(10), nullable=False),
-                            Column('tenant_name', String(255), nullable=True),
-                            Column('udl_tenant_schema', String(255), nullable=True),
-                            Column('target_db_host', String(255), nullable=False),
-                            Column('target_db_name', String(255), nullable=False),
-                            Column('target_schema_name', String(255), nullable=False),
-                            Column('target_schema_port', SmallInteger, nullable=False),
-                            Column('target_schema_user_name', String(255), nullable=False),
-                            Column('target_schema_passwd', String(255), nullable=False),
-                            Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
-                            )
 
     return metadata
 

@@ -26,6 +26,7 @@ from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -60,13 +61,8 @@ def generate_conf_for_loading(json_file, guid_batch, load_type):
     conf = {
         mk.FILE_TO_LOAD: json_file,
         mk.MAPPINGS: get_json_table_mapping(load_type),
-        mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
-        mk.TARGET_DB_PORT: udl2_conf['udl2_db']['db_port'],
-        mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
-        mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
-        mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-        mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-        mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
+        mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
+        mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
         mk.GUID_BATCH: guid_batch
     }
     return conf

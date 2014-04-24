@@ -3,7 +3,6 @@ Created on Mar 28, 2014
 
 @author: bpatel
 '''
-from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf
 from edudl2.database.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
 from sqlalchemy.sql import select, and_
@@ -14,12 +13,13 @@ import subprocess
 from time import sleep
 from integration_tests.migrate_helper import start_migrate,\
     get_stats_table_has_migrated_ingested_status
+from edudl2.udl2.constants import Constants
 
 
 def empty_batch_table(self):
         #Delete all data from batch_table
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             result = connector.execute(batch_table.delete())
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
@@ -64,7 +64,7 @@ def run_udl_pipeline(self, guid_batch_id):
 def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
             print("UDL Pipeline is running...")
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
             timer = 0
             result = connector.execute(query).fetchall()

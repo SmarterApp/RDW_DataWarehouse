@@ -12,11 +12,11 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from edudl2.udl2_util.measurement import BatchTableBenchmark
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
 
-#*************implemented via chord*************
 @celery.task(name="udl2.W_load_to_integration_table.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
@@ -40,28 +40,9 @@ def task(msg):
 
 def generate_conf(guid_batch, load_type):
     conf = {mk.GUID_BATCH: guid_batch,
-            mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
-
-            # source database setting
-            mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
-            mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
-            mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
-            mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
-            mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-            mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
-
-            # target database setting
-            mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
-            mk.TARGET_DB_PORT: udl2_conf['udl2_db']['db_port'],
-            mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
-            mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['csv_integration_tables'][load_type],
-
-            mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-            mk.ERR_LIST_TABLE: udl2_conf['udl2_db']['err_list_table'],
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type]
-            }
+            mk.SOURCE_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
+            mk.TARGET_DB_TABLE: Constants.UDL2_INTEGRATION_TABLE(load_type),
+            mk.ERR_LIST_TABLE: Constants.UDL2_ERR_LIST_TABLE,
+            mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type)}
     return conf

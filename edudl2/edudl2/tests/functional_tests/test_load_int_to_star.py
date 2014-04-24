@@ -52,7 +52,7 @@ class IntToStarFTest(UDLTestHelper):
                 # set record_sid = 7 in this func test
                 row.insert(0, str(7))
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db_conn']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),
@@ -66,7 +66,7 @@ class IntToStarFTest(UDLTestHelper):
             header = next(cf)
             for row in cf:
                 (columns, values, params) = self.generate_insert_items(header, row)
-                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['db_schema'],
+                insert_query = text(self.insert_sql.format(staging_schema=self.udl2_conf['udl2_db_conn']['db_schema'],
                                                            staging_table=table,
                                                            columns_string=", ".join(columns),
                                                            value_string=", ".join(values)),

@@ -14,6 +14,7 @@ from time import sleep
 from sqlalchemy.sql.expression import and_
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2.constants import Constants
 
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
@@ -36,7 +37,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 # Validate that in Batch_Table for given guid every udl_phase output is Success
     def validate_UDL_database(self):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             output = select([batch_table.c.udl_phase_step_status, batch_table.c.guid_batch]).where(batch_table.c.guid_batch == self.batch_id)
             output_data = connector.execute(output).fetchall()
             for row in output_data:
@@ -70,7 +71,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == self.batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
             timer = 0
             result = connector.execute(query).fetchall()

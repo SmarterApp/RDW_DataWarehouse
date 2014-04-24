@@ -17,6 +17,7 @@ from multiprocessing import Process
 from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
 from edudl2.udl2.celery import udl2_conf
 from sqlalchemy.sql.expression import and_, select
+from edudl2.udl2.constants import Constants
 
 FACT_TABLE = 'fact_asmt_outcome'
 file_to_path = ''
@@ -61,7 +62,7 @@ class ValidateTableData(unittest.TestCase):
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, connector, guid_batch_id, max_wait=60):
-        batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
         query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
         timer = 0
         result = connector.execute(query).fetchall()
@@ -92,7 +93,7 @@ class ValidateTableData(unittest.TestCase):
     #In UDL_Batch Table,After each udl run verify that UDL_Complete task is Failure and Post_udl cleanup task is successful
     def verify_udl_failure(self, udl_connector, guid_batch_id):
         status = [('FAILURE',)]
-        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         query = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
         query2 = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_post_etl.task'))
         batch_table_data = udl_connector.execute(query).fetchall()
@@ -102,35 +103,35 @@ class ValidateTableData(unittest.TestCase):
 
     #Verify that udl is failing due to corrcet task failure.For i.e if json is missing udl should fail due to missing file at file expander task
     def verify_missing_json(self, udl_connector, guid_batch_id):
-        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_expander.task'))
         batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
         self.assertEquals([('FAILURE',)], batch_data_tasklevel)
 
     #Verify that UDL is failing at Decription task
     def verify_corrupt_source(self, udl_connector, guid_batch_id):
-        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_decrypter.task'))
         batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
         self.assertEquals([('FAILURE',)], batch_data_tasklevel)
 
     #Verify udl is failing at simple file validator
     def verify_corrupt_csv(self, udl_connector, guid_batch_id):
-        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_validator.task'))
         batch_data_corrupt_csv = udl_connector.execute(batch_table_status).fetchall()
         self.assertEquals([('FAILURE',)], batch_data_corrupt_csv)
 
     #Verify udl is failing at get load type
     def verify_invalid_load(self, udl_connector, guid_batch_id):
-        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_get_load_type.task'))
         batch_data_invalid_load = udl_connector.execute(batch_table_status).fetchall()
         self.assertEquals([('FAILURE',)], batch_data_invalid_load)
 
     #Validate that the notification to the callback url was successful
     def verify_notification_success(self, udl_connector, guid_batch_id):
-        batch_table = udl_connector.get_table(udl2_conf['udl2_db']['batch_table'])
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         query = select([batch_table.c.udl_phase_step_status],
                        and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
         result = udl_connector.execute(query).fetchall()

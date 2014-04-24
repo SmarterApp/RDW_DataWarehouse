@@ -8,6 +8,7 @@ from edudl2.udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_ge
                          W_load_json_to_integration, W_load_to_integration_table, W_parallel_csv_load,
                          W_determine_end_chain)
 from edcore.utils.utils import merge_dict
+from edudl2.udl2.constants import Constants
 __author__ = 'swimberly'
 
 
@@ -28,7 +29,7 @@ def get_pipeline_chain(archive_file, load_type='Unknown', file_parts=4, batch_gu
         return
 
     lzw = udl2_conf['zones']['work']
-    jc_batch_table = udl2_conf['udl2_db']['batch_table']
+    jc_batch_table = Constants.UDL2_BATCH_TABLE
 
     # generate common message for each stage
     common_msg = _generate_common_message(jc_batch_table, guid_batch, load_type, file_parts, initial_msg)

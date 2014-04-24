@@ -5,8 +5,9 @@ from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, get_column_mapping_query,
                                                   create_information_query)
-from edudl2.udl2_util.database_util import execute_udl_query_with_result
+from edudl2.udl2_util.database_util import execute_udl_query_with_result, get_db_connection_params
 from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.udl2.constants import Constants
 
 Column = namedtuple('Column', ['src_col', 'type'])
 
@@ -166,52 +167,33 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
     :param tenant_code: the tenants 2 letter code
     :return: A dictionary of the config details
     """
-    tenant_target_db_info = get_tenant_target_db_information(tenant_code, target_schema=target_schema)
     tenant_prod_db_info = get_tenant_prod_db_information(tenant_code)
+    db_params_tuple = get_db_connection_params(udl2_conf['udl2_db_conn']['url'])
 
     conf = {
         # add guid_batch from msg
         mk.GUID_BATCH: guid_batch,
-
-        # db driver
-        mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
         # source schema
-        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
+        mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         # source database setting
-        mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
-        mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
-        mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
-        mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
-        mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-        mk.SOURCE_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
+        mk.SOURCE_DB_DRIVER: db_params_tuple[0],
+        mk.SOURCE_DB_USER: db_params_tuple[1],
+        mk.SOURCE_DB_PASSWORD: db_params_tuple[2],
+        mk.SOURCE_DB_HOST: db_params_tuple[3],
+        mk.SOURCE_DB_PORT: db_params_tuple[4],
+        mk.SOURCE_DB_NAME: db_params_tuple[5],
 
-        mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
+        mk.SOURCE_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
+
+        mk.TARGET_DB_SCHEMA: target_schema,
+        mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
         mk.PHASE: int(phase_number),
         mk.LOAD_TYPE: load_type,
         mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant'],
     }
-
-    conf.update(tenant_target_db_info)
     conf.update(tenant_prod_db_info)
 
     return conf
-
-
-def get_tenant_target_db_information(tenant_code, target_schema):
-    """
-    If multi-tenancy is on look in the Master metadata table to pull out
-    information about this tenant, otherwise get the target db info from udl2_conf
-    :param tenant_code: The code (2 char name) for the give tenant
-    :return: A dictionary containing the relevant connection information
-    """
-    tenant_code = tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant']
-
-    return {
-        mk.TARGET_DB_NAME: udl2_conf['target_db_conn'][tenant_code]['db_database'],
-        mk.TARGET_DB_USER: udl2_conf['target_db_conn'][tenant_code]['db_user'],
-        mk.TARGET_DB_SCHEMA: target_schema,
-        mk.TARGET_DB_PASSWORD: udl2_conf['target_db_conn'][tenant_code]['db_pass'],
-    }
 
 
 def get_tenant_prod_db_information(tenant_code):
@@ -223,9 +205,4 @@ def get_tenant_prod_db_information(tenant_code):
     """
     tenant_code = tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant']
 
-    return {
-        mk.PROD_DB_NAME: udl2_conf['prod_db_conn'][tenant_code]['db_database'],
-        mk.PROD_DB_USER: udl2_conf['prod_db_conn'][tenant_code]['db_user'],
-        mk.PROD_DB_SCHEMA: udl2_conf['prod_db_conn'][tenant_code]['db_schema'],
-        mk.PROD_DB_PASSWORD: udl2_conf['prod_db_conn'][tenant_code]['db_pass'],
-    }
+    return {mk.PROD_DB_SCHEMA: udl2_conf['prod_db_conn'][tenant_code]['db_schema']}

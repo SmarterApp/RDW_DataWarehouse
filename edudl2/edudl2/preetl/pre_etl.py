@@ -24,7 +24,7 @@ def pre_etl_job(udl2_conf, load_type='Unknown', batch_guid_forced=None):
         # record the pre_etl step to udl batch table
         benchmark = BatchTableBenchmark(guid_batch=guid_batch, load_type=load_type,
                                         udl_phase='PRE ETL', start_timestamp=start_time,
-                                        working_schema=udl2_conf['udl2_db']['db_schema'],
+                                        working_schema=udl2_conf['udl2_db_conn']['db_schema'],
                                         udl_leaf=str(False), udl_phase_step_status=mk.SUCCESS)
         benchmark.record_benchmark()
         return guid_batch

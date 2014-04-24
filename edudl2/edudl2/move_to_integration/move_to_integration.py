@@ -1,8 +1,7 @@
-from edudl2.udl2_util.database_util import execute_udl_queries, get_table_columns_info, execute_udl_query_with_result
-from edudl2.udl2 import message_keys as mk
 import logging
+from edudl2.udl2_util.database_util import execute_udl_queries, get_table_columns_info
+from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
-from edudl2.fileloader.prepare_queries import get_column_mapping_query
 from sqlalchemy.sql.expression import select, and_
 from sqlalchemy.orm import aliased
 

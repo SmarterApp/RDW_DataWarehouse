@@ -4,7 +4,6 @@ from edudl2.database.udl2_connector import get_udl_connection
 __author__ = 'smuhit'
 
 import httpretty
-import unittest
 import os
 import csv
 import re
@@ -12,6 +11,7 @@ from sqlalchemy import select, func, and_
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.W_job_status_notification import task as job_notify
+from edudl2.udl2.constants import Constants
 
 
 @httpretty.activate
@@ -30,7 +30,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
         self.failed_batch_id = "1a109333-8587-4875-8839-293356469f9a"
 
     #Load file to udl batch table. If empty is true, empties out the batch table first
-    def load_to_table(self, file, empty=True, table=udl2_conf['udl2_db']['batch_table']):
+    def load_to_table(self, file, empty=True, table=Constants.UDL2_BATCH_TABLE):
         with get_udl_connection() as conn:
             t = conn.get_table(table)
             if empty:
@@ -44,7 +44,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
     #Check batch table to see if the notification was successful
     def verify_notification_success(self, guid):
         with get_udl_connection() as conn:
-            batch_table = conn.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = conn.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status],
                            and_(batch_table.c.guid_batch == guid, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             result = conn.execute(query).fetchall()
@@ -56,7 +56,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
     #Check batch table to see if the notification failed, with a given number of attempts
     def verify_notification_failed(self, guid, attempts):
         with get_udl_connection() as conn:
-            batch_table = conn.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = conn.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase_step_status, batch_table.c.error_desc],
                            and_(batch_table.c.guid_batch == guid, batch_table.c.udl_phase == 'UDL_JOB_STATUS_NOTIFICATION'))
             result = conn.execute(query).fetchall()
@@ -118,7 +118,7 @@ class FunctionalTestJobStatusNotification(UDLTestHelper):
 
         httpretty.register_uri(httpretty.POST, "http://www.this_is_a_dummy_url.com")
         self.load_to_table(self.failed_batch)
-        self.load_to_table(self.failed_err_list, table=udl2_conf['udl2_db'][mk.ERR_LIST_TABLE])
+        self.load_to_table(self.failed_err_list, table=Constants.UDL2_ERR_LIST_TABLE)
         msg = generate_message(self.failed_batch_id)
         job_notify(msg)
 
@@ -161,13 +161,10 @@ def clean_dictionary_values(val_dict):
 def generate_message(guid):
     message = {
         mk.GUID_BATCH: guid,
-        mk.LOAD_TYPE: udl2_conf['load_type']['student_registration'],
+        mk.LOAD_TYPE: Constants.LOAD_TYPE_STUDENT_REGISTRATION,
         mk.CALLBACK_URL: "http://www.this_is_a_dummy_url.com",
         mk.STUDENT_REG_GUID: "wxyz5678",
         mk.REG_SYSTEM_ID: "abcd1234",
         mk.TOTAL_ROWS_LOADED: 100
     }
     return message
-
-if __name__ == '__main__':
-    unittest.main()

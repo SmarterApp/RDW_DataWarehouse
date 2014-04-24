@@ -8,6 +8,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.fileloader.file_loader import load_file
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2_util.file_util import extract_file_name
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -16,7 +17,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)
-    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
+    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> ' % (msg[mk.FILE_TO_LOAD]))
     guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.LOAD_TYPE], msg[mk.HEADERS], guid_batch)
     load_file(conf)
@@ -35,18 +36,13 @@ def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_pa
     conf = {mk.FILE_TO_LOAD: file_to_load,
             mk.ROW_START: start_seq,
             mk.HEADERS: header_file_path,
-            mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
-            mk.TARGET_DB_PORT: udl2_conf['udl2_db']['db_port'],
-            mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
-            mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            mk.CSV_SCHEMA: udl2_conf['udl2_db']['db_schema'],
+            mk.CSV_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
             mk.CSV_TABLE: csv_table,
-            mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
-            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['staging_tables'][load_type],
+            mk.FDW_SERVER: Constants.UDL2_FDW_SERVER,
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
+            mk.TARGET_DB_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
             mk.APPLY_RULES: True,
-            mk.REF_TABLE: udl2_conf['udl2_db']['ref_tables'][load_type],
-            mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
+            mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
+            mk.CSV_LZ_TABLE: Constants.UDL2_CSV_LZ_TABLE,
             mk.GUID_BATCH: guid_batch}
     return conf

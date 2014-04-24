@@ -15,6 +15,7 @@ from sqlalchemy import select, and_
 from edudl2.tests.unit_tests.unittest_with_udl2_sqlite import Unittest_with_udl2_sqlite,\
     UnittestUDLTargetDBConnection, get_unittest_schema_name,\
     get_unittest_tenant_name
+from edudl2.udl2_util.database_util import get_db_connection_params
 logger = logging.getLogger(__name__)
 
 
@@ -188,27 +189,17 @@ def generate_conf(guid_batch, udl2_conf):
     '''
     Return all needed configuration information
     '''
-    conf = {  # add guid_batch from msg
-              mk.GUID_BATCH: guid_batch,
-
-              # source schema
-              mk.SOURCE_DB_SCHEMA: get_unittest_schema_name(),
-              # source database setting
-              mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
-              mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
-              mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
-              mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
-              mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-
-              # target schema
-              mk.TARGET_DB_SCHEMA: get_unittest_schema_name(),
-              # target database setting
-              mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
-              mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
-              mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
-              mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
-              mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
-              mk.TENANT_NAME: get_unittest_tenant_name()}
+    db_params_tuple = get_db_connection_params(udl2_conf['udl2_db_conn']['url'])
+    conf = {mk.GUID_BATCH: guid_batch,
+            mk.SOURCE_DB_SCHEMA: get_unittest_schema_name(),
+            mk.TARGET_DB_SCHEMA: get_unittest_schema_name(),
+            mk.SOURCE_DB_DRIVER: db_params_tuple[0],
+            mk.SOURCE_DB_USER: db_params_tuple[1],
+            mk.SOURCE_DB_PASSWORD: db_params_tuple[2],
+            mk.SOURCE_DB_HOST: db_params_tuple[3],
+            mk.SOURCE_DB_PORT: db_params_tuple[4],
+            mk.SOURCE_DB_NAME: db_params_tuple[5],
+            mk.TENANT_NAME: get_unittest_tenant_name()}
     return conf
 
 

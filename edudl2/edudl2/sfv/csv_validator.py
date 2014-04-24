@@ -15,6 +15,7 @@ from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.sfv import sfv_util
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2_util.file_util import abs_path_join
+from edudl2.udl2.constants import Constants
 
 
 class CsvValidator():
@@ -401,7 +402,7 @@ class DoesSourceFileInExpectedFormat(object):
 
     def __init__(self, load_type, csv_fields=None):
         self.expected_csv_fields = sfv_util.get_source_column_values_from_ref_column_mapping(
-            udl2_conf['udl2_db']['csv_lz_table'], load_type) if csv_fields is None else csv_fields
+            Constants.UDL2_CSV_LZ_TABLE, load_type) if csv_fields is None else csv_fields
 
     def are_eq(self, a, b):
         return len(a) == len(b) and set(a) == set(b)

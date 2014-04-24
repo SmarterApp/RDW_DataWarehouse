@@ -7,6 +7,7 @@ from uuid import uuid4
 from sqlalchemy.sql import select
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2.constants import Constants
 import os
 import unittest
 
@@ -27,20 +28,15 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
             mk.GUID_BATCH: guid,
             mk.FILE_TO_LOAD: file,
             mk.MAPPINGS: get_json_table_mapping(load_type),
-            mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
-            mk.TARGET_DB_PORT: udl2_conf['udl2_db']['db_port'],
-            mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
-            mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            mk.TARGET_DB_TABLE: udl2_conf['udl2_db']['json_integration_tables'][load_type],
-            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['db_schema'],
+            mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         }
         return conf
 
     def verify_json_load(self, load_type, conf, columns, guid):
         load_json(conf)
 
-        sr_int_table = self.udl2_conn.get_table(udl2_conf['udl2_db']['json_integration_tables'][load_type])
+        sr_int_table = self.udl2_conn.get_table(Constants.UDL2_JSON_INTEGRATION_TABLE(load_type))
         query = select(['*'], sr_int_table.c.guid_batch == guid)
         result = self.udl2_conn.execute(query).fetchall()
         for row in result:
@@ -52,7 +48,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         batch_guid = str(uuid4())
         json_file = os.path.join(data_dir, 'student_registration_data', 'test_sample_student_reg.json')
-        load_type = udl2_conf['load_type']['student_registration']
+        load_type = Constants.LOAD_TYPE_STUDENT_REGISTRATION
         conf = self.generate_config(load_type, json_file, batch_guid)
 
         columns = STUDENT_REGISTRATION_JSON_COLUMNS

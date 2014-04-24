@@ -2,6 +2,7 @@ from sqlalchemy import select, and_
 from edudl2.udl2.celery import udl2_conf
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2 import message_keys as mk
+from edudl2.udl2.constants import Constants
 
 __author__ = 'ablum'
 
@@ -29,12 +30,12 @@ def fetch_msg(err_code):
 def retrieve_job_error_messages(guid_batch):
     messages = []
     with get_udl_connection() as source_conn:
-        batch_table = source_conn.get_table(udl2_conf['udl2_db'][mk.BATCH_TABLE])
+        batch_table = source_conn.get_table(Constants.UDL2_BATCH_TABLE)
         error_message_select = select([batch_table.c.error_desc]).where(and_(batch_table.c.guid_batch == guid_batch, batch_table.c.udl_phase_step_status == mk.FAILURE))
         error_messages = source_conn.execute(error_message_select)
         messages.extend([r[0] for r in error_messages if r[0]])
 
-        err_list_table = source_conn.get_table(udl2_conf['udl2_db'][mk.ERR_LIST_TABLE])
+        err_list_table = source_conn.get_table(Constants.UDL2_ERR_LIST_TABLE)
         err_list_select = select([err_list_table.c.err_code, err_list_table.c.err_source]).where(err_list_table.c.guid_batch == guid_batch)
         err_list_result = source_conn.execute(err_list_select)
         formatted_results = _format_row_errors(err_list_result)

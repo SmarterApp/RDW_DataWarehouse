@@ -129,6 +129,7 @@ def format_assessments(results, subjects_map):
         studentGuid = result['student_guid'] # e.g. student_1
 
         student = asmtList.get(studentGuid, {})
+        student['student_guid'] = studentGuid
         student['student_first_name'] = result['student_first_name']
         student['student_middle_name'] = result['student_middle_name']
         student['student_last_name'] = result['student_last_name']

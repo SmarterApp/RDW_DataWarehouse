@@ -226,22 +226,22 @@ uat:
         db_host: rbtmqudl0.dmo.som.edwdc.net
         db_port: 5432
     udl2_db_conn:
-        url: postgresql://udl2:udl2abc1234@rbtmqudl0.dmo.som.edwdc.net:5432/udl2
+        url: postgresql://udl2:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/udl2
     target_db_conn:
         edware:
-            url: postgresql://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
+            url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
         ca:
-            url: postgresql://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
+            url: postgresql://edware:xON.yw27aw@drbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
         func_tests:
-            url: postgresql://edware:edware2013@dbpgudl0.dmo.som.edwdc.net:5432/edware
+            url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
     target_db:
         db_schema: edware
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: dbpgudl0.dmo.som.edwdc.net
+        db_host: rbtmqudl0.dmo.som.edwdc.net
         db_port: 5432
         db_database: edware
         db_user: edware
@@ -250,13 +250,13 @@ uat:
         sr_target_table: student_reg
     prod_db_conn:
         edware:
-            url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
+            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
         ca:
-            url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
+            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
         func_tests:
-            url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
+            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
     prod_db:
         db_schema: edware_es_1_6
@@ -266,13 +266,13 @@ uat:
         db_port: 6432
         db_database: edware
         db_user: edware
-        db_pass: edware2013
+        db_pass: xON.yw27aw
         db_driver: postgresql
     gpg_home: /home/udl2/.gnupg
     edware_stats:
         db:
             schema_name: edware_es_1_6
-            url: postgresql://edware:edware2013@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
+            url: postgresql://edware:xON.yw27aw@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
 
 development:
   '[app]':

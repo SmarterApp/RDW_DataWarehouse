@@ -66,8 +66,7 @@ class InsertQueryBuilder:
 
         query = "INSERT INTO {target_schema_and_table} ({target_columns}) " + \
                 "SELECT * FROM " + \
-                "dblink({dblink_url}, " + \
-                "'SELECT * FROM ({from_query}) as y') AS t({record_mapping});"
+                "dblink({dblink_url}, '{from_query}') AS t({record_mapping});"
         query = query.format(target_schema_and_table=self.target_schema_and_table,
                              dblink_url=self.dblink_url,
                              from_query=from_query,
@@ -124,7 +123,8 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
     key_name = mk.GUID_BATCH
     key_value = conf[mk.GUID_BATCH]
     primary_table = list(column_and_type_mapping.keys())[0]
-    seq_expression = list(column_and_type_mapping[primary_table].values())[0].src_col.replace("'", "''")
+    record_sid = list(column_and_type_mapping[primary_table].values())[0].src_col.replace("'", "''")
+    seq_expression = "max(%s.%s)" % (primary_table, record_sid)
     target_keys = []
     source_keys = []
     source_key_assignments = []
@@ -134,15 +134,15 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
 
     # TODO: If guid_batch (key_name) is changed to uuid, need to add quotes around it.
     if op:
-        where_statement = "WHERE op = \'\'{op}\'\' AND " + primary_table_lower + ".{key_name}=\'\'{key_value}\'\') AS y\')"
+        where_statement = "WHERE op = \'\'{op}\'\' AND " + primary_table_lower + ".{key_name}=\'\'{key_value}\'\'"
     else:
-        where_statement = "WHERE " + primary_table_lower + ".{key_name}=\'\'{key_value}\'\') AS y\')"
+        where_statement = "WHERE " + primary_table_lower + ".{key_name}=\'\'{key_value}\'\'"
     where_statement = where_statement.format(key_name=key_name, key_value=key_value, op=op)
 
     for source_table in column_and_type_mapping.keys():
         source_table_lower = source_table.lower()
 
-        if 'nextval' in list(column_and_type_mapping[source_table].values())[0].src_col:
+        if 'record_sid' in list(column_and_type_mapping[source_table].values())[0].src_col:
             source_keys.extend(list(re.sub('^', source_table.lower() + '.', value.src_col).replace("'", "''") for value in list(column_and_type_mapping[source_table].values())[1:]))
         else:
             source_keys.extend(list(re.sub('^', source_table.lower() + '.', value.src_col).replace("'", "''") for value in list(column_and_type_mapping[source_table].values())))
@@ -159,19 +159,22 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
 
         prev_table = source_table
 
+
+    source_columns = ",".join(source_keys)
     insert_query = ["INSERT INTO {target_schema_and_table}(" + ",".join(target_keys),
                     ") SELECT * FROM ",
                     "dblink({dblink_url}, ",
-                    "\'SELECT {seq_expression}, * FROM (SELECT " + ",".join(source_keys),
-                    " FROM " + ' '.join(source_key_assignments) + " {where_statement} AS t(" + ",".join(types) + ");"]
+                    "\'SELECT {seq_expression}, {source_columns}",
+                    " FROM " + ' '.join(source_key_assignments) + " {where_statement} GROUP BY {source_columns} \') AS t(" + ",".join(types) + ");"]
     insert_query = "".join(insert_query).format(target_schema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
                                                 dblink_url=dblink_url_composer(host=conf[mk.SOURCE_DB_HOST],
                                                                                port=conf[mk.SOURCE_DB_PORT],
                                                                                db_name=conf[mk.SOURCE_DB_NAME],
                                                                                db_user=conf[mk.SOURCE_DB_USER],
                                                                                db_password=conf[mk.SOURCE_DB_PASSWORD]),
-                                                seq_expression=seq_expression, where_statement=where_statement)
-
+                                                seq_expression=seq_expression,
+                                                where_statement=where_statement,
+                                                source_columns=source_columns)
     return insert_query
 
 

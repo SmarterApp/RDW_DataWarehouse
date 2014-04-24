@@ -74,7 +74,10 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
         for batch in self.batches:
-            drop_target_schema(batch)
+            try:
+                drop_target_schema(batch)
+            except:
+                pass
 
     #Validate the UDL process completed successfully
     def validate_successful_job_completion(self):

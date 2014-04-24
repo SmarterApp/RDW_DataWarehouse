@@ -84,7 +84,7 @@ ref_table_conf = {
         ('3', 'stg_sbac_stu_reg', 'prim_disability_type', 'int_sbac_stu_reg', 'prim_disability_type', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_stu_reg', 'created_date', 'int_sbac_stu_reg', 'created_date', None, None),
         #Integration to Target
-        ('4', 'int_sbac_stu_reg', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'student_reg', 'student_reg_rec_id', None, None),
+        ('4', 'int_sbac_stu_reg', 'record_sid', 'student_reg', 'student_reg_rec_id', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_batch', 'student_reg', 'batch_guid', None, None),
         ('4', 'int_sbac_stu_reg', 'name_state', 'student_reg', 'state_name', None, None),
         ('4', 'int_sbac_stu_reg', 'code_state', 'student_reg', 'state_code', None, None),

@@ -96,26 +96,27 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             mk.SOURCE_DB_PASSWORD: 'source_password'
         }
 
-        mapping = OrderedDict([('table_A', OrderedDict([('rec_id', Column(src_col='nextval(\'"GLOBAL_REC_SEQ"\')', type='rec_id bigint')),
+        mapping = OrderedDict([('table_A', OrderedDict([('rec_id', Column(src_col='record_sid', type='rec_id bigint')),
                                                         ('batch_guid', Column(src_col='guid_batch', type='batch_guid varchar(5)')),
                                                         ('table_X_col_XC', Column(src_col='table_A_col_AC', type='table_X_col_XC boolean'))])),
                                ('table_B', OrderedDict([('table_X_col_XE', Column(src_col='table_B_col_BE', type='table_X_col_XE smallint'))]))])
 
         noop_query = create_sr_table_select_insert_query(conf, 'table_X', mapping)
-        logger.info(noop_query)
+        # logger.info(noop_query)
         self.assertEqual(noop_query, "INSERT INTO \"target_schema\".\"table_X\"(rec_id,batch_guid,table_X_col_XC,table_X_col_XE) " +
                          "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
-                         ", 'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), * FROM (SELECT table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE " +
+                         ", 'SELECT max(table_A.record_sid), table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE " +
                          "FROM \"source_schema\".\"table_A\" table_a INNER JOIN \"source_schema\".\"table_B\" table_b ON table_b.guid_batch = table_a.guid_batch "
-                         "WHERE table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
+                         "WHERE table_a.guid_batch=''1'' GROUP BY table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE ') " +
+                         "AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
 
         op_query = create_sr_table_select_insert_query(conf, 'table_X', mapping, 'D')
-        logger.info(op_query)
+        # logger.info(op_query)
         self.assertEqual(op_query, "INSERT INTO \"target_schema\".\"table_X\"(rec_id,batch_guid,table_X_col_XC,table_X_col_XE) " +
                          "SELECT * FROM dblink('host=source_host port=source_port dbname=source_name user=source_user password=source_password'" +
-                         ", 'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), * FROM (SELECT table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE " +
+                         ", 'SELECT max(table_A.record_sid), table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE " +
                          "FROM \"source_schema\".\"table_A\" table_a INNER JOIN \"source_schema\".\"table_B\" table_b ON table_b.guid_batch = table_a.guid_batch "
-                         "WHERE op = ''D'' AND table_a.guid_batch=''1'') AS y') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
+                         "WHERE op = ''D'' AND table_a.guid_batch=''1'' GROUP BY table_a.guid_batch,table_a.table_A_col_AC,table_b.table_B_col_BE ') AS t(rec_id bigint,batch_guid varchar(5),table_X_col_XC boolean,table_X_col_XE smallint);")
 
     def test_handle_record_upsert_find_all(self):
         table_name = 'dim_student'

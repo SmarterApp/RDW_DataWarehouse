@@ -225,6 +225,7 @@ uat:
     udl2_db:
         db_host: rbtmqudl0.dmo.som.edwdc.net
         db_port: 5432
+        db_pass: xON.yw27aw
     udl2_db_conn:
         url: postgresql://udl2:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/udl2
     target_db_conn:

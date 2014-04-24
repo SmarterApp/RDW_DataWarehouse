@@ -232,12 +232,15 @@ uat:
         edware:
             url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
+            db_pass: xON.yw27aw
         ca:
             url: postgresql://edware:xON.yw27aw@drbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
+            db_pass: xON.yw27aw
         func_tests:
             url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
+            db_pass: xON.yw27aw
     target_db:
         db_schema: edware
         db_name: edware
@@ -253,12 +256,15 @@ uat:
         edware:
             url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
+            db_pass: xON.yw27aw
         ca:
             url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
+            db_pass: xON.yw27aw
         func_tests:
             url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
+            db_pass: xON.yw27aw
     prod_db:
         db_schema: edware_es_1_6
         db_name: edware

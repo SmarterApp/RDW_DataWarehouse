@@ -32,5 +32,4 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(get_broker_url(config['app:main']), 'mybrokerURL')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

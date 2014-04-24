@@ -64,5 +64,4 @@ class Test(unittest.TestCase):
         self.assertEqual(self.__routing_key, routing_key)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -7,8 +7,12 @@ import unittest
 from sqlalchemy.schema import MetaData
 from sqlalchemy import Table, Column, Index, and_
 from sqlalchemy import String, BigInteger, ForeignKey, SmallInteger
-from edschema.metadata.util import *
 from edschema.metadata.ed_metadata import MetaColumn
+from edschema.metadata.util import get_foreign_key_reference_columns,\
+    get_meta_columns, get_matcher_key_column_names, get_matcher_key_columns,\
+    get_primary_key_columns, get_selectable_by_table_name,\
+    get_tables_starting_with, get_natural_key, get_natural_key_columns
+from sqlalchemy.sql.expression import Select
 
 
 class TestMetadataUtil(unittest.TestCase):

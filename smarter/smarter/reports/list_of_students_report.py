@@ -169,7 +169,6 @@ def get_list_of_students(params):
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),

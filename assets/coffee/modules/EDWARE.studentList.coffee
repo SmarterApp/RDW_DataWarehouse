@@ -23,13 +23,15 @@ define [
 
     constructor: (@effectiveDate, @dataSet) ->
 
-    init: (row, assessment) ->
-      @appendColors assessment
+    init: (row) ->
+      @appendColors row
       row = @appendExtraInfo row
       row
 
     appendColors: (assessment) ->
-      for key, value of assessment
+      for key, value of @dataSet.subjectsData
+        value = assessment[key]
+        continue if not value
         cutpoint = @dataSet.cutPointsData[key]
         $.extend value, cutpoint
         # display asssessment type in the tooltip title
@@ -90,24 +92,19 @@ define [
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: () ->
-      for asmt in @asmtTypes
-        asmtType = asmt['name']
-        for assessments in @assessmentsData
-          assessment = assessments[asmtType]
-          continue if not assessment
-
-          for key, value of assessment
-            continue if not value
-            effectiveDate = value.effective_date
-            row = new StudentModel(effectiveDate, this).init assessments, assessment
-            @cache[effectiveDate] ?= {}
-            @cache[effectiveDate][asmtType] ?= {}
-            subjectType = @subjectsData[key]
-            @cache[effectiveDate][asmtType][subjectType] ?= []
-            @cache[effectiveDate][asmtType][subjectType].push row
-            @cache[effectiveDate][asmtType][@allSubjects] ?= []
-            allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
-            allsubjects.push row  if row not in allsubjects
+      for effectiveDate, assessments of @assessmentsData
+        @cache[effectiveDate] ?= {}
+        for asmtType, studentList of assessments
+          @cache[effectiveDate][asmtType] ?= {}
+          for studentId, assessment of studentList
+            row = new StudentModel(effectiveDate, this).init assessment
+            for subjectName, subjectType of @subjectsData
+              continue if not row[subjectName]
+              @cache[effectiveDate][asmtType][subjectType] ?= []
+              @cache[effectiveDate][asmtType][subjectType].push row
+              @cache[effectiveDate][asmtType][@allSubjects] ?= []
+              allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
+              allsubjects.push row  if row not in allsubjects
 
     getAsmtData: (viewName)->
       # Saved asmtType and viewName

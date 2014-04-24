@@ -11,7 +11,6 @@ from edudl2.database.udl2_connector import get_udl_connection, get_target_connec
     get_prod_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
-from time import sleep
 from sqlalchemy.sql.expression import and_
 import unittest
 from integration_tests.migrate_helper import start_migrate,\
@@ -20,6 +19,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from integration_tests.udl_helper import empty_stats_table
 import time
 from time import sleep
+from edudl2.udl2.constants import Constants
 
 
 class TestUDLReportingIntegration(unittest.TestCase):
@@ -164,10 +164,8 @@ class TestUDLReportingIntegration(unittest.TestCase):
         param ed_connector: Edware database connection
         type ed_connector: db connection
         '''
-        print("Entered empty_table")
-        #Delete all data from batch_table
         with get_target_connection() as ed_connector, get_udl_connection() as connector:
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             result = connector.execute(batch_table.delete())
             query = select([batch_table])
             result1 = connector.execute(query).fetchall()
@@ -178,7 +176,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         '''
         Run pipeline with given guid
         '''
-        print("Entered run_udl_pipeline")
         # Reads the udl2_conf.ini file from /opt/edware directory
         self.conf = udl2_conf
         # Copy the gpg test data  files from the edudl2/tests/data directory to the /opt/tmp directory
@@ -189,7 +186,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
         # Set the command to run UDL pipeline
         command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
-        print(command)
         # Run the UDL pipeline using the command
         subprocess.call(command, shell=True)
 
@@ -197,7 +193,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         """
         Run pipeline with given file
         """
-        print("Entered run_udl_pipeline")
         self.conf = udl2_conf
         # copy and set file path to tenant directory that includes the gpg file
         arch_file = self.copy_file_to_sr_tenant_dir(file_path)
@@ -205,7 +200,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
         # Set the command to run UDL pipeline
         command = "python {driver_path} -a {file_path}".format(driver_path=driver_path, file_path=arch_file)
-        print(command)
         # Run the UDL pipeline using the command
         subprocess.call(command, shell=True)
 
@@ -219,9 +213,8 @@ class TestUDLReportingIntegration(unittest.TestCase):
         :type max_wait: int
         '''
         with get_udl_connection() as connector:
-            print("UDL pipeline running...")
             # Get UDL batch_table connection
-            batch_table = connector.get_table(udl2_conf['udl2_db']['batch_table'])
+            batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             # Prepare Query for finding all batch_guid's for SUCCESS scenarios and for FAILURE scenarios
             #TODO add error handling
             success_query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
@@ -234,8 +227,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
                 all_successful_batch_guids = connector.execute(success_query).fetchall()
 
             self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "30 guids not found.")
-            print("Completed run_udl_pipeline")
-            print('Waited for', timer, 'second(s) for job to complete.')
 
     def copy_files_to_tenantdir(self, file_path, expected_unique_batch_guids):
         '''
@@ -243,7 +234,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         :param file_path: file path containing all gpg files
         :type file_path: string
         '''
-        print("entered copy_files_to_tenantdir")
         # Get all file paths from tests/data/udl_to_reporting_e2e_integration directory
         all_files = []
         for file in os.listdir(file_path):
@@ -252,11 +242,8 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.assertEqual(len(all_files), expected_unique_batch_guids, "%i files not found."
                                                                       % expected_unique_batch_guids)
         # Create a tenant directory if does not exist already
-        if os.path.exists(self.tenant_dir):
-            print("Tenant directory already exists")
-        else:
+        if not os.path.exists(self.tenant_dir):
             os.makedirs(self.tenant_dir)
-            print(self.tenant_dir)
         # Copy all the files from tests/data directory to tenant directory
         for file in all_files:
             files = shutil.copy2(file, self.tenant_dir)
@@ -268,11 +255,8 @@ class TestUDLReportingIntegration(unittest.TestCase):
         :type file_path: string
         '''
         # Create a tenant directory if does not exist already
-        if os.path.exists(self.sr_tenant_dir):
-            print("Tenant directory already exists")
-        else:
+        if not os.path.exists(self.sr_tenant_dir):
             os.makedirs(self.sr_tenant_dir)
-            print(self.sr_tenant_dir)
         # Copy all the files from tests/data directory to tenant directory
         return shutil.copy2(file_path, self.sr_tenant_dir)
 
@@ -282,7 +266,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
             table = conn.get_table('udl_stats')
             query = select([table]).where(table.c.load_status == 'udl.ingested')
             result = conn.execute(query).fetchall()
-            print("successful validation of udl stats before migration")
             self.assertEquals(len(result), self.expected_unique_batch_guids)
 
     def validate_stats_table_after_mig(self):
@@ -291,10 +274,4 @@ class TestUDLReportingIntegration(unittest.TestCase):
             table = conn.get_table('udl_stats')
             query = select([table]).where(table.c.load_status == 'migrate.ingested')
             result = conn.execute(query).fetchall()
-            print("successful validation of udl stats table after migration finished")
             self.assertEquals(len(result), self.expected_unique_batch_guids)
-
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()

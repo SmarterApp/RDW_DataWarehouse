@@ -4,8 +4,7 @@ Created on Apr 8, 2014
 @author: bpatel
 '''
 import unittest
-from integration_tests.udl_helper import empty_batch_table, empty_stats_table, copy_file_to_tmp, run_udl_pipeline, \
-    check_job_completion, migrate_data, validate_edware_stats_table_before_mig, validate_edware_stats_table_after_mig
+from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, migrate_data
 import os
 import shutil
 from uuid import uuid4
@@ -14,7 +13,6 @@ from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
 
 
-#@unittest.skip("Disabling the test till update functionality get fix")
 class Test(unittest.TestCase):
 
     def setUp(self):

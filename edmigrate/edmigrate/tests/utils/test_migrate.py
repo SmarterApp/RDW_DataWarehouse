@@ -13,6 +13,8 @@ from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name as get_unittest_prod_tenant_name
 from edschema.metadata.util import get_natural_key_columns
+import datetime
+from edcore.database.utils.query import insert_udl_stats
 
 __author__ = 'sravi'
 
@@ -33,6 +35,15 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
 
     def tearDown(self):
         pass
+
+    def insert_into_udl_stats(self, rec_id, guid_batch, load_type, tenant_name):
+        udl_stats = {UdlStatsConstants.REC_ID: rec_id,
+                     UdlStatsConstants.BATCH_GUID: guid_batch,
+                     UdlStatsConstants.LOAD_TYPE: load_type,
+                     UdlStatsConstants.FILE_ARRIVED: datetime.datetime.now(),
+                     UdlStatsConstants.TENANT: tenant_name,
+                     UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED}
+        insert_udl_stats(udl_stats)
 
     def test_migrate_getting_natural_key(self):
         with EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name()) as prod_conn:
@@ -130,21 +141,25 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
 
     def test_migrate_batch_asmt(self):
         batch_guid = '3384654F-9076-45A6-BB13-64E8EE252A49'
-        batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
+        batch = {UdlStatsConstants.REC_ID: '5',
+                 UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
                  UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT,
                  UdlStatsConstants.BATCH_OPERATION: None,
                  UdlStatsConstants.SNAPSHOT_CRITERIA: None}
+        self.insert_into_udl_stats(batch[UdlStatsConstants.REC_ID], batch_guid, self.__tenant, batch[UdlStatsConstants.LOAD_TYPE])
         rtn = migrate_batch(batch)
         self.assertTrue(rtn)
 
     def test_migrate_batch_stureg(self):
         batch_guid = '2bb942b9-75cf-4055-a67a-8b9ab53a9dfc'
-        batch = {UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
+        batch = {UdlStatsConstants.REC_ID: '6',
+                 UdlStatsConstants.BATCH_GUID: batch_guid, UdlStatsConstants.TENANT: self.__tenant,
                  UdlStatsConstants.SCHEMA_NAME: None, Constants.DEACTIVATE: False,
                  UdlStatsConstants.LOAD_TYPE: LoadType.STUDENT_REGISTRATION,
                  UdlStatsConstants.BATCH_OPERATION: 's',
                  UdlStatsConstants.SNAPSHOT_CRITERIA: '{"reg_system_id": "015247bd-058c-48cd-bb4d-f6cffe5b40c1", "academic_year": 2015}'}
+        self.insert_into_udl_stats(batch[UdlStatsConstants.REC_ID], batch_guid, self.__tenant, batch[UdlStatsConstants.LOAD_TYPE])
 
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         count_to_source_query = select([func.count()]).select_from(preprod_conn.get_table(Constants.STUDENT_REG))
@@ -183,7 +198,8 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         self.assertFalse(rtn)
 
     def test_migrate_batch_with_roll_back(self):
-        batch = {UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38',
+        batch = {UdlStatsConstants.REC_ID: '7',
+                 UdlStatsConstants.BATCH_GUID: '13DCC2AB-4FC6-418D-844E-65ED5D9CED38',
                  UdlStatsConstants.TENANT: 'tomcat', UdlStatsConstants.SCHEMA_NAME: None,
                  Constants.DEACTIVATE: False, UdlStatsConstants.LOAD_TYPE: LoadType.ASSESSMENT,
                  UdlStatsConstants.BATCH_OPERATION: None,
@@ -221,7 +237,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
         batches_to_migrate = get_batches_to_migrate('hotdog')
         self.assertEqual(1, len(batches_to_migrate))
         self.assertEqual(UdlStatsConstants.UDL_STATUS_INGESTED, batches_to_migrate[0][UdlStatsConstants.LOAD_STATUS])
-        updated_count = report_udl_stats_batch_status(batches_to_migrate[0][UdlStatsConstants.BATCH_GUID], UdlStatsConstants.MIGRATE_INGESTED)
+        updated_count = report_udl_stats_batch_status(batches_to_migrate[0][UdlStatsConstants.REC_ID], UdlStatsConstants.MIGRATE_INGESTED)
         self.assertEqual(1, updated_count)
         batches_to_migrate = get_batches_to_migrate('hotdog')
         self.assertEqual(0, len(batches_to_migrate))

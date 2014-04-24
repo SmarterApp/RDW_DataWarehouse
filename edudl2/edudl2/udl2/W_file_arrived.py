@@ -68,6 +68,7 @@ def task(incoming_msg):
         UdlStatsConstants.TENANT: tenant_name,
         UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
     }
-    insert_udl_stats(udl_stats)
+    udl_stats_id = insert_udl_stats(udl_stats)
+    outgoing_msg[mk.UDL_STATS_REC_ID] = udl_stats_id.inserted_primary_key[0]
 
     return outgoing_msg

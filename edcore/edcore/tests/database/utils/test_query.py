@@ -64,8 +64,9 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
         with StatsDBConnection() as conn:
             table = conn.get_table('udl_stats')
             query = table.insert(udl_stats)
-            conn.execute(query)
-            update_udl_stats('cde', {UdlStatsConstants.LOAD_TYPE: 'CD'})
+            result = conn.execute(query)
+            rec_id = result.inserted_primary_key[0]
+            update_udl_stats(rec_id, {UdlStatsConstants.LOAD_TYPE: 'CD'})
             query = select([table.c[UdlStatsConstants.LOAD_TYPE]], from_obj=[table]).where(table.c[UdlStatsConstants.BATCH_GUID] == 'cde')
             results = conn.get_result(query)
             self.assertEqual(results[0][UdlStatsConstants.LOAD_TYPE], 'CD')

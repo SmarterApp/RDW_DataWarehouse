@@ -1,10 +1,8 @@
 from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
-from edudl2.database.udl2_connector import get_udl_connection
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.database.utils.query import update_udl_stats, insert_to_table
-from edudl2.exceptions.errorcodes import ErrorCode
+from edcore.database.utils.query import update_udl_stats
 from edudl2.exceptions.udl_exceptions import UDLException
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
@@ -80,7 +78,7 @@ class Udl2BaseTask(Task):
                                         error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()
         # Write to udl stats table on exceptions
-        update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+        update_udl_stats(args[0][mk.UDL_STATS_REC_ID], {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
         # Write to ERR_LIST
         try:
             exc.insert_err_list(failure_time)

@@ -124,3 +124,6 @@ ATTEMPT_NUMBER = 'attempt_number'
 NOTIFICATION_ERRORS = 'notification_errors'
 
 ACADEMIC_YEAR = 'academic_year'
+
+# for udl stats
+UDL_STATS_REC_ID = 'udl_stats_rec_id'

@@ -11,7 +11,6 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edcore.database.utils.constants import UdlStatsConstants, LoadType
 from edcore.database.utils.query import update_udl_stats
-from edcore.utils.utils import merge_dict
 import json
 
 
@@ -53,7 +52,7 @@ def report_batch_to_udl_stats(msg, end_time, status):
     logger.info('Reporting to UDL daily stats')
     stats = _create_stats_row(msg, end_time, status)
 
-    update_udl_stats(msg[mk.GUID_BATCH], stats)
+    update_udl_stats(msg[mk.UDL_STATS_REC_ID], stats)
 
 
 @celery.task(name='udl2.W_all_done.task', base=Udl2BaseTask)

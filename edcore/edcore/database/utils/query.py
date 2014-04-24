@@ -9,7 +9,7 @@ def insert_to_table(conn, table_name, values):
     with conn() as connector:
         table = connector.get_table(table_name)
         stmt = table.insert(values)
-        connector.execute(stmt)
+        return connector.execute(stmt)
 
 
 def update_records_in_table(conn, table_name, values, criteria):
@@ -28,11 +28,11 @@ def insert_udl_stats(values):
     '''
     Insert into udl stats table
     '''
-    insert_to_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values)
+    return insert_to_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values)
 
 
-def update_udl_stats(batch_guid, values):
+def update_udl_stats(rec_id, values):
     '''
-    Update udl stats table by batch_guid
+    Update udl stats table by rec_id
     '''
-    update_records_in_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values, {UdlStatsConstants.BATCH_GUID: batch_guid})
+    update_records_in_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values, {UdlStatsConstants.REC_ID: rec_id})

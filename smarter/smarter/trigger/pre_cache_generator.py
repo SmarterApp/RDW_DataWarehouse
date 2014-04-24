@@ -25,7 +25,8 @@ def prepare_ed_stats():
     '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
-        query = select([udl_stats.c.tenant.label(UdlStatsConstants.TENANT),
+        query = select([udl_stats.c.rec_id.label(UdlStatsConstants.REC_ID),
+                        udl_stats.c.tenant.label(UdlStatsConstants.TENANT),
                         udl_stats.c.load_start.label(UdlStatsConstants.LOAD_START),
                         udl_stats.c.load_end.label(UdlStatsConstants.LOAD_END),
                         udl_stats.c.record_loaded_count.label(UdlStatsConstants.RECORD_LOADED_COUNT),
@@ -91,7 +92,7 @@ def trigger_precache(tenant, state_code, results, filter_config):
     return triggered
 
 
-def update_ed_stats_for_precached(tenant, batch_guid):
+def update_ed_stats_for_precached(rec_id):
     '''
     update current timestamp to last_pre_cached field
 
@@ -100,7 +101,7 @@ def update_ed_stats_for_precached(tenant, batch_guid):
     '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table(UdlStatsConstants.UDL_STATS)
-        stmt = udl_stats.update(values={udl_stats.c.last_pre_cached: func.now()}).where(udl_stats.c.tenant == tenant).where(udl_stats.c.batch_guid == batch_guid)
+        stmt = udl_stats.update(values={udl_stats.c.last_pre_cached: func.now()}).where(udl_stats.c.rec_id == rec_id)
         connector.execute(stmt)
 
 
@@ -120,7 +121,7 @@ def precached_task(settings):
         fact_asmt_outcome_results = prepare_pre_cache(tenant, state_code, batch_guid)
         triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_results, filter_settings)
         if triggered_success:
-            update_ed_stats_for_precached(tenant, batch_guid)
+            update_ed_stats_for_precached(udl_stats_result[UdlStatsConstants.REC_ID])
 
 
 def run_cron_recache(settings):

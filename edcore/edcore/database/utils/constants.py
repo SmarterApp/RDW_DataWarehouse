@@ -9,6 +9,7 @@ class UdlStatsConstants():
     '''
     Constants related to extracts
     '''
+    REC_ID = 'rec_id'
     BATCH_GUID = 'batch_guid'
     SCHEMA_NAME = 'schema_name'
     TENANT = 'tenant'

@@ -57,13 +57,11 @@ def get_batches_to_migrate(tenant=None):
     with StatsDBConnection() as connector:
         udl_status_table = connector.get_table(UdlStatsConstants.UDL_STATS)
         query = \
-            select([udl_status_table.c.batch_guid,
+            select([udl_status_table.c.rec_id,
+                    udl_status_table.c.batch_guid,
                     udl_status_table.c.tenant,
-                    udl_status_table.c.record_loaded_count,
                     udl_status_table.c.load_type,
                     udl_status_table.c.load_status,
-                    udl_status_table.c.load_start,
-                    udl_status_table.c.load_end,
                     udl_status_table.c.batch_operation,
                     udl_status_table.c.snapshot_criteria],
                    from_obj=[udl_status_table]).\
@@ -83,6 +81,7 @@ def migrate_batch(batch):
     :returns true: sucess, false: fail (for UT purpose)
     """
     rtn = False
+    rec_id = batch[UdlStatsConstants.REC_ID]
     batch_guid = batch[UdlStatsConstants.BATCH_GUID]
     tenant = batch[UdlStatsConstants.TENANT]
     schema_name = batch[UdlStatsConstants.SCHEMA_NAME]
@@ -99,13 +98,13 @@ def migrate_batch(batch):
             # start transaction for this batch
             trans = dest_connector.get_transaction()
             source_connector.set_metadata_by_generate(schema_name=schema_name, metadata_func=generate_ed_metadata)
-            report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_IN_PROCESS)
+            report_udl_stats_batch_status(rec_id, UdlStatsConstants.MIGRATE_IN_PROCESS)
             tables_to_migrate = get_ordered_tables_to_migrate(dest_connector, load_type)
             # migrate all tables
             migrate_all_tables(batch_guid, schema_name, source_connector,
                                dest_connector, tables_to_migrate, deactivate=deactivate, batch_op=batch_op, batch_criteria=batch_criteria)
             # report udl stats with the new batch migrated
-            report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_INGESTED)
+            report_udl_stats_batch_status(rec_id, UdlStatsConstants.MIGRATE_INGESTED)
             # commit transaction
             trans.commit()
             logger.info('Master: Migration successful for batch: ' + batch_guid)
@@ -117,13 +116,13 @@ def migrate_batch(batch):
             logger.exception('migrate rollback')
             trans.rollback()
             try:
-                report_udl_stats_batch_status(batch_guid, UdlStatsConstants.MIGRATE_FAILED)
+                report_udl_stats_batch_status(rec_id, UdlStatsConstants.MIGRATE_FAILED)
             except Exception as e:
                 pass
     return rtn
 
 
-def report_udl_stats_batch_status(batch_guid, migrate_load_status):
+def report_udl_stats_batch_status(rec_id, migrate_load_status):
     """This method populates udl_stats for batches that had successful migration
 
     :param batch_guid: The batch that was successfully migrated
@@ -133,11 +132,11 @@ def report_udl_stats_batch_status(batch_guid, migrate_load_status):
     with StatsDBConnection() as connector:
         udl_stats_table = connector.get_table(UdlStatsConstants.UDL_STATS)
         update_query = udl_stats_table.update().values(load_status=migrate_load_status).\
-            where(udl_stats_table.c.batch_guid == batch_guid)
+            where(udl_stats_table.c.rec_id == rec_id)
         rtn = connector.execute(update_query)
         rowcount = rtn.rowcount
         if rowcount == 0:
-            raise EdMigrateUdl_statException('Failed to update record for batch_guid=' + batch_guid)
+            raise EdMigrateUdl_statException('Failed to update record for rec_id=' + rec_id)
     return rowcount
 
 

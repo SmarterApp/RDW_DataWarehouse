@@ -34,5 +34,5 @@ def task(incoming_msg):
     outgoing_msg.update(incoming_msg)
     outgoing_msg.update({mk.LOAD_TYPE: load_type})
     # Update UDL stats
-    update_udl_stats(guid_batch, {UdlStatsConstants.LOAD_TYPE: load_type})
+    update_udl_stats(incoming_msg[mk.UDL_STATS_REC_ID], {UdlStatsConstants.LOAD_TYPE: load_type})
     return outgoing_msg

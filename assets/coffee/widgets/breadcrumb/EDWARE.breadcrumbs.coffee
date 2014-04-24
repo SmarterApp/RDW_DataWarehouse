@@ -54,7 +54,7 @@ define [
       name = element.name
       if type is 'home'
         name = @labels.breadcrumb_home
-      if type is 'grade'
+      else if type is 'grade'
         name = @labels.grade + ' ' + name
       else if type is 'student'
         # Special case for names that end with an 's'

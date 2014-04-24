@@ -78,10 +78,13 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertTrue('subject1' in claims)
 
         assessments = results['assessments']
-        self.assertEqual(21, len(assessments), "21 assessments")
-        self.assertEqual("Steve", assessments[9]['student_first_name'], "student_first_name")
-        self.assertEqual("Glenda", assessments[10]['student_first_name'], "student_first_name")
-        self.assertEqual("Eric", assessments[11]['student_first_name'], "student_first_name")
+        self.assertEqual(3, len(assessments), "3 assessments")
+        student1 = assessments['20160106']['Interim Comprehensive']['f9da4c5d-dc65-42d0-a36f-5d13ba930c50']
+        student2 = assessments['20160106']['Interim Comprehensive']['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
+        student3 = assessments['20160106']['Interim Comprehensive']['dae1acf4-afb0-4013-90ba-9dcde4b25621']
+        self.assertEqual("Verda", student1['student_first_name'], "student_first_name")
+        self.assertEqual("Mi-Ha", student2['student_first_name'], "student_first_name")
+        self.assertEqual("Lettie", student3['student_first_name'], "student_first_name")
 
     def test_breadcrumbs(self):
         testParam = {}
@@ -157,7 +160,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
     def test_LOS_with_filters(self):
         testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242'}
         results = get_list_of_students_report(testParam)
-        self.assertEqual(len(results['assessments']), 10)
+        self.assertEqual(len(results['assessments']), 3)
 
         testParam['gender'] = ['not_stated']
         results = get_list_of_students_report(testParam)
@@ -166,9 +169,8 @@ class TestLOS(Unittest_with_edcore_sqlite):
     def test_asmt_type(self):
         testParam = {'asmtGrade': '3', 'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242', 'asmtYear': '2015'}
         results = get_list_of_students_report(testParam)
-        self.assertEqual(len(results['assessments']), 14)
-        self.assertIsNotNone(results['assessments'][0]['Interim Comprehensive']['subject1'])
-        # self.assertIsNotNone(results['assessments'][0]['Summative']['subject1'])
+        self.assertEqual(len(results['assessments']), 3)
+        self.assertIsNotNone(results['assessments']['20150106']['Interim Comprehensive']['cad811ad-9b08-4dd1-aa10-52360b80ff7f']['subject2'])
 
 
 if __name__ == "__main__":

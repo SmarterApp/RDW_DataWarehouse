@@ -122,11 +122,11 @@ def format_assessments(results, subjects_map):
     assessments = {}
     # Formatting data for Front End
     for result in results:
-        effectiveDate = result['effective_date'] # e.g. 20140401
+        effectiveDate = result['effective_date']  # e.g. 20140401
         asmtDict = assessments.get(effectiveDate, {})
-        asmtType = capwords(result['asmt_type'], ' ') # Summative, Interim
+        asmtType = capwords(result['asmt_type'], ' ')  # Summative, Interim
         asmtList = asmtDict.get(asmtType, {})
-        studentGuid = result['student_guid'] # e.g. student_1
+        studentGuid = result['student_guid']  # e.g. student_1
 
         student = asmtList.get(studentGuid, {})
         student['student_guid'] = studentGuid

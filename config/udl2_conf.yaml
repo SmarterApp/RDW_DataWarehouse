@@ -246,7 +246,7 @@ uat:
         db_port: 5432
         db_database: edware
         db_user: edware
-        db_pass: edware2013
+        db_pass: xON.yw27aw
         db_driver: postgresql
         sr_target_table: student_reg
     prod_db_conn:

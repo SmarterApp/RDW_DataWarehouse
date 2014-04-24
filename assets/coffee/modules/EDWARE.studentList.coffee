@@ -148,7 +148,7 @@ define [
       @userData = data.user_info
       @academicYears = data.asmt_period_year
       @grade = @contextData['items'][4]
-      @renderBreadcrumbs(data.context)
+      @renderBreadcrumbs(@labels)
       @renderReportInfo()
       @renderReportActionBar()
       @createHeaderAndFooter()
@@ -193,9 +193,9 @@ define [
     fetchExportData: () ->
       this.assessmentsData
 
-    renderBreadcrumbs: () ->
+    renderBreadcrumbs: (labels) ->
       displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
-      $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb, displayHome)
+      $('#breadcrumb').breadcrumbs(@contextData, @config.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',

@@ -120,7 +120,7 @@ define [
       @grade = @data.context.items[4]
       @subjectsData = @data.subjects
       @render()
-      @createBreadcrumb()
+      @createBreadcrumb(@data.labels)
       @renderReportInfo()
       @renderReportActionBar()
       #Grayscale logo for print version
@@ -157,9 +157,9 @@ define [
       edwareUtil.showPdfCSS() if @isPdf
 
 
-    createBreadcrumb: () ->
+    createBreadcrumb: (labels) ->
       displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
-      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb, displayHome)
+      $('#breadcrumb').breadcrumbs(this.data.context, @configData.breadcrumb, displayHome, labels)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',

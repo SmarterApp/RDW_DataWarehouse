@@ -5,8 +5,6 @@ class Constants():
     """
     constants related to udl db schema
     """
-    # schema names
-
     # table names
     SR_TARGET_TABLE = 'student_reg'
 
@@ -29,11 +27,10 @@ class Constants():
     UDL2_JSON_LZ_TABLE = 'lz_json'
     UDL2_FDW_SERVER = 'udl2_fdw_server'
 
-    # column names
-
     # column values
     OP_COLUMN_NAME = 'op'
 
+    # load types
     LOAD_TYPE_KEY = 'content'
     LOAD_TYPE_ASSESSMENT = 'assessment'
     LOAD_TYPE_STUDENT_REGISTRATION = 'studentregistration'

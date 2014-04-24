@@ -49,14 +49,10 @@ class TestPostEtl(unittest.TestCase):
         dir_name = self._get_mock_work_zone_directory()
 
         work_zone_directories_to_cleanup = {
-            mk.ARRIVED: os.path.join(self.temp_dir, tenant_name,
-                                     self.conf['work_zone_sub_dir']['arrived'], dir_name),
-            mk.DECRYPTED: os.path.join(self.temp_dir, tenant_name,
-                                       self.conf['work_zone_sub_dir']['decrypted'], dir_name),
-            mk.EXPANDED: os.path.join(self.temp_dir, tenant_name,
-                                      self.conf['work_zone_sub_dir']['expanded'], dir_name),
-            mk.SUBFILES: os.path.join(self.temp_dir, tenant_name,
-                                      self.conf['work_zone_sub_dir']['subfiles'], dir_name),
+            mk.ARRIVED: os.path.join(self.temp_dir, tenant_name, 'arrived', dir_name),
+            mk.DECRYPTED: os.path.join(self.temp_dir, tenant_name, 'decrypted', dir_name),
+            mk.EXPANDED: os.path.join(self.temp_dir, tenant_name, 'expanded', dir_name),
+            mk.SUBFILES: os.path.join(self.temp_dir, tenant_name, 'subfiles', dir_name),
         }
         self._set_up_mock_work_zone(work_zone_directories_to_cleanup)
         self.assertTrue(post_etl.cleanup_work_zone(work_zone_directories_to_cleanup))

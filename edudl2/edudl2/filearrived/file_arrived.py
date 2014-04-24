@@ -58,14 +58,10 @@ def create_directory_paths(tenant_name, batch_guid):
     dir_name += '_' + batch_guid
 
     directories = {
-        mk.ARRIVED: os.path.join(udl2_conf['zones']['work'], tenant_name,
-                                 udl2_conf['work_zone_sub_dir']['arrived'], dir_name),
-        mk.DECRYPTED: os.path.join(udl2_conf['zones']['work'], tenant_name,
-                                   udl2_conf['work_zone_sub_dir']['decrypted'], dir_name),
-        mk.EXPANDED: os.path.join(udl2_conf['zones']['work'], tenant_name,
-                                  udl2_conf['work_zone_sub_dir']['expanded'], dir_name),
-        mk.SUBFILES: os.path.join(udl2_conf['zones']['work'], tenant_name,
-                                  udl2_conf['work_zone_sub_dir']['subfiles'], dir_name),
+        mk.ARRIVED: os.path.join(udl2_conf['zones']['work'], tenant_name, 'arrived', dir_name),
+        mk.DECRYPTED: os.path.join(udl2_conf['zones']['work'], tenant_name, 'decrypted', dir_name),
+        mk.EXPANDED: os.path.join(udl2_conf['zones']['work'], tenant_name, 'expanded', dir_name),
+        mk.SUBFILES: os.path.join(udl2_conf['zones']['work'], tenant_name, 'subfiles', dir_name),
         mk.HISTORY: os.path.join(udl2_conf['zones']['history'], tenant_name, dir_name)
     }
     return directories

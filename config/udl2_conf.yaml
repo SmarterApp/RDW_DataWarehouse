@@ -44,12 +44,6 @@ common:
         parts: 1                            # default parts of files
         output_path: .                      # where the newly generated split file located
         keep_headers: True                  # preserve csv header for importing
-    work_zone_sub_dir:
-        arrived: arrived
-        decrypted: decrypted
-        expanded: expanded
-        subfiles: subfiles
-        history: history
     logging:        # log location. this should be in the long run as file locations or more sophisticated logging system
         level: INFO
         debug: FALSE

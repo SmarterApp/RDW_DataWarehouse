@@ -29,8 +29,6 @@ define [
         if staticElement.type isnt element.type
           # make sure the type matches with the type from json file
           continue
-        if element.type is 'home'
-          element.name = @labels.breadcrumb_home
         # sets the url link and returns the current query parameters
         currentParams = @setUrlLink currentParams, element, staticElement
         elements.push @formatName element
@@ -54,8 +52,10 @@ define [
     formatName: (element) ->
       type = element.type
       name = element.name
+      if type is 'home'
+        name = @labels.breadcrumb_home
       if type is 'grade'
-        name = "Grade " + name
+        name = @labels.grade + ' ' + name
       else if type is 'student'
         # Special case for names that end with an 's'
         name += if /s$|S$/.test(name) then "'" else "'s"

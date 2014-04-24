@@ -293,9 +293,14 @@ define [
       $('#gridTable').edwareExport @config.reportName, @config.labels
 
     sendExtractRequest: () ->
-      params = JSON.parse edwareClientStorage.filterStorage.load()
+      values = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
+      params = {}
+      params['stateCode'] = values['stateCode']
+      params['districtGuid'] = values['districtGuid']
+      params['schoolGuid'] = values['schoolGuid']
+      params['asmtGrade'] = values['asmtGrade'] if values['asmtGrade']
       params['asmtType'] = asmtType.toUpperCase()
       params['asmtSubject'] = edwarePreferences.getSubjectPreference()
       params['asmtYear'] = edwarePreferences.getAsmtYearPreference()

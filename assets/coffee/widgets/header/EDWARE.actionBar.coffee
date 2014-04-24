@@ -28,7 +28,7 @@ define [
       @printer ?= @createPrint()
 
     createPrint: () ->
-      @printer = edwarePrint.create '.printModal'
+      @printer = edwarePrint.create '.printModal', @config.labels
 
     createLegend: () ->
       # create legend

@@ -1,25 +1,25 @@
 <div id="PrintModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h2 id="myModalLabel">Print</h2>
+        <h2 id="myModalLabel">{{{print}}}</h2>
     </div>
     <div class="modal-body">
         <ul>
             <li>
                 <label>
                     <input type="radio" name="print" value="color" checked/>
-                    <span>Color</span>
+                    <span>{{{color}}}</span>
                 </label>
             </li>
             <li>
                 <label>
                     <input type="radio" name="print" value="grayscale"/>
-                    <span>Grayscale (use for black & white printing)</span>
+                    <span>{{{grayscale}}} ({{{grayscale_message}}})</span>
                 </label>
             </li>
         </ul>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary edware-btn-primary">Print</button>
+        <button class="btn btn-primary edware-btn-primary">{{{print}}}</button>
     </div>
 </div>

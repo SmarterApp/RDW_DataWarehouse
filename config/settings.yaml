@@ -214,7 +214,7 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate
   '[handlers]':
     keys: console, filelog, audit, security_event
 
@@ -254,6 +254,11 @@ common:
     qualname: audit
     # Important: this means it doesn't propagate to root logger
     propagate: 0
+
+  '[logger_edmigrate]':
+    level: INFO
+    handlers: filelog
+    qualname: edmigrate
 
   '[logger_security_event]':
     level: INFO
@@ -367,7 +372,7 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: audit, syslog, security_event
+    keys: audit, syslog, security_event, edmigrate
   '[logger_root]':
     level: INFO
     handlers: syslog
@@ -402,6 +407,10 @@ qa:
     level: ERROR
     handlers: syslog
     qualname: exc_logger
+  '[logger_edmigrate]':
+    level: WARN
+    handlers: syslog
+    qualname: edmigrate
 
 jenkins_qa:
   '[app:main]':
@@ -498,7 +507,7 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
   '[handlers]':
-    keys: audit, syslog, security_event
+    keys: audit, syslog, security_event, edmigrate
   '[logger_root]':
     level: INFO
     handlers: syslog
@@ -533,6 +542,10 @@ uat:
     level: ERROR
     handlers: syslog
     qualname: exc_logger
+  '[logger_edmigrate]':
+    level: WARN
+    handlers: syslog
+    qualname: edmigrate
 
 localOpenAM:
   '[app:main]':

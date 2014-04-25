@@ -95,52 +95,8 @@ def get_list_of_students_report(params):
 
     results = get_list_of_students(params)
     subjects_map = get_subjects_map(asmtSubject)
-    students = {}
-    # Formatting data for Front End
-    for result in results:
-        student_guid = result['student_guid']
-        student = {}
-        assessments = {}
-        if student_guid in students:
-            student = students[student_guid]
-            assessments = student.get(capwords(result['asmt_type'], ' '), {})
-        else:
-            student['student_guid'] = result['student_guid']
-            student['student_first_name'] = result['student_first_name']
-            student['student_middle_name'] = result['student_middle_name']
-            student['student_last_name'] = result['student_last_name']
-            student['enrollment_grade'] = result['enrollment_grade']
-            student['state_code'] = result['state_code']
-            student[Constants.ROWID] = result['student_guid']
-
-        assessment = {}
-        assessment['asmt_grade'] = result['asmt_grade']
-        assessment['asmt_score'] = result['asmt_score']
-        assessment['asmt_type'] = capwords(result['asmt_type'], ' ')
-        assessment['asmt_score_range_min'] = result['asmt_score_range_min']
-        assessment['asmt_score_range_max'] = result['asmt_score_range_max']
-        assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
-        assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
-        assessment['effective_date'] = result['effective_date']
-        assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
-
-        assessments[subjects_map[result['asmt_subject']]] = assessment
-        student[capwords(result['asmt_type'], ' ')] = assessments
-
-        students[student_guid] = student
-
-    # including assessments and cutpoints to returning JSON
     los_results = {}
-    assessments = []
-
-    # keep them in orders from result set
-    student_guid_track = {}
-    for result in results:
-        if result['student_guid'] not in student_guid_track:
-            assessments.append(students[result['student_guid']])
-            student_guid_track[result['student_guid']] = True
-
-    los_results['assessments'] = assessments
+    los_results['assessments'] = format_assessments(results, subjects_map)
 
     # query dim_asmt to get cutpoints
     asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
@@ -156,6 +112,46 @@ def get_list_of_students_report(params):
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
 
     return los_results
+
+
+def format_assessments(results, subjects_map):
+    '''
+    Format student assessments.
+    '''
+
+    assessments = {}
+    # Formatting data for Front End
+    for result in results:
+        effectiveDate = result['effective_date'] # e.g. 20140401
+        asmtDict = assessments.get(effectiveDate, {})
+        asmtType = capwords(result['asmt_type'], ' ') # Summative, Interim
+        asmtList = asmtDict.get(asmtType, {})
+        studentGuid = result['student_guid'] # e.g. student_1
+
+        student = asmtList.get(studentGuid, {})
+        student['student_guid'] = studentGuid
+        student['student_first_name'] = result['student_first_name']
+        student['student_middle_name'] = result['student_middle_name']
+        student['student_last_name'] = result['student_last_name']
+        student['enrollment_grade'] = result['enrollment_grade']
+        student['state_code'] = result['state_code']
+        student[Constants.ROWID] = result['student_guid']
+
+        subject = subjects_map[result['asmt_subject']]
+        assessment = student.get(subject, {})
+        assessment['asmt_grade'] = result['asmt_grade']
+        assessment['asmt_score'] = result['asmt_score']
+        assessment['asmt_score_range_min'] = result['asmt_score_range_min']
+        assessment['asmt_score_range_max'] = result['asmt_score_range_max']
+        assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
+        assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
+        assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
+
+        student[subject] = assessment
+        asmtList[studentGuid] = student
+        asmtDict[asmtType] = asmtList
+        assessments[effectiveDate] = asmtDict
+    return assessments
 
 
 def get_list_of_students(params):

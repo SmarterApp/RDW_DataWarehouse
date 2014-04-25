@@ -124,9 +124,9 @@ define [
 
   showPerfLevel = (value, options, rowObject) ->
     names = options.colModel.name.split "."
-    subject = rowObject[names[0]][names[1]]
+    subject = rowObject[names[0]]
     return '' if not subject
-    perf_lvl_name = subject[names[2]][names[3]]['perf_lvl_name']
+    perf_lvl_name = subject[names[1]][names[2]]['perf_lvl_name']
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       asmtType: subject.asmt_type,
       labels: options.colModel.labels
@@ -154,8 +154,7 @@ define [
       subject.asmt_perf_lvl || ''
 
     subject_type = options.colModel.formatoptions.asmt_type
-    subject = rowObject.assessments[subject_type]
-    subject = filter_subject(subject)
+    subject = rowObject[subject_type]
     score_ALD = getScoreALD(subject)
     student_name = getStudentName()
     asmt_perf_lvl = getAsmtPerfLvl(subject)
@@ -177,15 +176,6 @@ define [
       export: 'edwareExportColumn' if options.colModel.export
     }
     perfBar
-
-
-  filter_subject = (subject) ->
-    # check if showing current subject
-    return subject if not subject
-    effectiveDate = parseInt(subject.effective_date)
-    savedEffectiveDate = edwarePreferences.getAsmtPreference().effectiveDate
-    subject = undefined if effectiveDate isnt savedEffectiveDate
-    return subject
 
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type

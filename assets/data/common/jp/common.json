@@ -207,8 +207,8 @@
             {
             "name": "<h4 class='pull-left'>{{subject1}}</h4>総合評点",
             "displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
-            "index": "assessments.subject1.asmt_score",
-            "field": "assessments.subject1.asmt_score",
+            "index": "subject1.asmt_score",
+            "field": "subject1.asmt_score",
             "width": 230,
             "formatter": "performanceBar",
             "options": {
@@ -222,8 +222,8 @@
                     {
                         "name": "<h4 class='pull-left'>{{subject2}}</h4>総合評点",
                         "displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
-                        "index": "assessments.subject2.asmt_score",
-                        "field": "assessments.subject2.asmt_score",
+                        "index": "subject2.asmt_score",
+                        "field": "subject2.asmt_score",
                         "width": 230,
                         "formatter": "performanceBar",
                         "options": {
@@ -266,8 +266,8 @@
                     {
                         "name": "<h4 class='pull-left'>{{subject1}}</h4>総合評点",
                         "displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
-                        "index": "assessments.subject1.asmt_score",
-                        "field": "assessments.subject1.asmt_score",
+                        "index": "subject1.asmt_score",
+                        "field": "subject1.asmt_score",
                         "width": 175,
                         "formatter": "performanceBar",
                         "options": {
@@ -281,8 +281,8 @@
                     {
                         "name": "{{claims.subject1.0.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject1.claims.0.perf_lvl",
-                        "field": "assessments.subject1.claims.0.perf_lvl",
+                        "index": "subject1.claims.0.perf_lvl",
+                        "field": "subject1.claims.0.perf_lvl",
                         "width": 154,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
@@ -293,8 +293,8 @@
                     {
                         "name": "{{claims.subject1.1.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject1.claims.1.perf_lvl",
-                        "field": "assessments.subject1.claims.1.perf_lvl",
+                        "index": "subject1.claims.1.perf_lvl",
+                        "field": "subject1.claims.1.perf_lvl",
                         "width": 160,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
@@ -305,8 +305,8 @@
                     {
                         "name": "{{claims.subject1.2.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject1.claims.2.perf_lvl",
-                        "field": "assessments.subject1.claims.2.perf_lvl",
+                        "index": "subject1.claims.2.perf_lvl",
+                        "field": "subject1.claims.2.perf_lvl",
                         "width": 160,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
@@ -339,8 +339,8 @@
                     {
                         "name": "<h4 class='pull-left'>{{subject2}}</h4>総合評点",
                         "displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
-                        "index": "assessments.subject2.asmt_score",
-                        "field": "assessments.subject2.asmt_score",
+                        "index": "subject2.asmt_score",
+                        "field": "subject2.asmt_score",
                         "width": 175,
                         "formatter": "performanceBar",
                         "options": {
@@ -354,8 +354,8 @@
                     {
                         "name": "{{claims.subject2.0.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject2.claims.0.perf_lvl",
-                        "field": "assessments.subject2.claims.0.perf_lvl",
+                        "index": "subject2.claims.0.perf_lvl",
+                        "field": "subject2.claims.0.perf_lvl",
                         "width": 118,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
@@ -366,8 +366,8 @@
                     {
                         "name": "{{claims.subject2.1.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject2.claims.1.perf_lvl",
-                        "field": "assessments.subject2.claims.1.perf_lvl",
+                        "index": "subject2.claims.1.perf_lvl",
+                        "field": "subject2.claims.1.perf_lvl",
                         "width": 118,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
@@ -378,8 +378,8 @@
                     {
                         "name": "{{claims.subject2.2.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject2.claims.2.perf_lvl",
-                        "field": "assessments.subject2.claims.2.perf_lvl",
+                        "index": "subject2.claims.2.perf_lvl",
+                        "field": "subject2.claims.2.perf_lvl",
                         "width": 118,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",
@@ -390,8 +390,8 @@
                     {
                         "name": "{{claims.subject2.3.name}}",
                         "displayTpl": "",
-                        "index": "assessments.subject2.claims.3.perf_lvl",
-                        "field": "assessments.subject2.claims.3.perf_lvl",
+                        "index": "subject2.claims.3.perf_lvl",
+                        "field": "subject2.claims.3.perf_lvl",
                         "width": 120,
                         "formatter": "showPerfLevel",
                         "sorttype": "int",

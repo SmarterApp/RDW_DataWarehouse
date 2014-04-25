@@ -242,7 +242,7 @@ def test_generate_derived_demographic_hispanic():
     student.eth_white = False
 
     # Test
-    assert pop_gen._generate_derived_demographic(student) == 2
+    assert pop_gen._generate_derived_demographic(student) == 3
 
 
 def test_generate_derived_demographic_multi():
@@ -280,7 +280,7 @@ def test_generate_derived_demographic_multi_hispanic():
     student.eth_white = False
 
     # Test
-    assert pop_gen._generate_derived_demographic(student) == 2
+    assert pop_gen._generate_derived_demographic(student) == 3
 
 
 def test_generate_derived_demographic_none():

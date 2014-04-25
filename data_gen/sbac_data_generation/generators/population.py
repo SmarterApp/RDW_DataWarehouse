@@ -143,7 +143,7 @@ def _generate_derived_demographic(student):
     try:
         # TODO: need to decide the value. is it true/false, or f/t, or others
         if student.eth_hispanic is True:
-            return 2
+            return 3
 
         else:
             demos = {0: student.eth_none,

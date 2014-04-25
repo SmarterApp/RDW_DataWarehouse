@@ -14,6 +14,7 @@ define [
 
     initialize: () ->
       for ddval in @dropdownValues
+        ddval.asmt_grade = ddval.asmt_grade.replace('Grade', @labels.grade)
         if ddval.asmts isnt undefined
           for asmt in ddval.asmts
             asmt.asmt_subject_text = asmt.asmt_subject_text.replace('Details', @labels.details)

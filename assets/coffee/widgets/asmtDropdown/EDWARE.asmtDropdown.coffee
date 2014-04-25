@@ -7,12 +7,16 @@ define [
 
   class EdwareAsmtDropdown
 
-    constructor: (@container, @dropdownValues, @getAsmtPreference, @callback) ->
+    constructor: (@container, @labels, @dropdownValues, @getAsmtPreference, @callback) ->
       @initialize()
       @setDefaultOption()
       @bindEvents()
 
     initialize: () ->
+      for ddval in @dropdownValues
+        if ddval.asmts isnt undefined
+          for asmt in ddval.asmts
+            asmt.asmt_subject_text = asmt.asmt_subject_text.replace('Details', @labels.details)
       @optionTemplate = @dropdownValues[0]?.display
       output = Mustache.to_html AsmtDropdownTemplate,
         dropdownValues: @dropdownValues
@@ -68,10 +72,10 @@ define [
 
   # dropdownValues is an array of values to feed into dropdown
   (($)->
-    $.fn.edwareAsmtDropdown = (dropdownValues, getAsmtPreference, callback) ->
+    $.fn.edwareAsmtDropdown = (labels, dropdownValues, getAsmtPreference, callback) ->
       for asmt in dropdownValues
         asmt.effective_date_text = _format_effective_date(asmt.effective_date)
-      new EdwareAsmtDropdown($(this), dropdownValues, getAsmtPreference, callback)
+      new EdwareAsmtDropdown($(this), labels, dropdownValues, getAsmtPreference, callback)
   ) jQuery
 
   EdwareAsmtDropdown: EdwareAsmtDropdown

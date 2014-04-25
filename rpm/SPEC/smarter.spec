@@ -158,6 +158,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edextract
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edmigrate
+%attr(755,root,root) /etc/rc.d/init.d/edmigrate-conductor
 %attr(755,root,root) /etc/rc.d/init.d/repmgrd
 
 %pre
@@ -198,16 +199,19 @@ fi
 chkconfig --add celeryd-services
 chkconfig --add celeryd-edextract
 chkconfig --add celeryd-edmigrate
+chkconfig --add edmigrate-conductor
 chkconfig --add repmgrd
 chkconfig --level 2345 celeryd-services off
 chkconfig --level 2345 celeryd-edextract off
 chkconfig --level 2345 celeryd-edmigrate off
+chkconfig --level 2345 edmigrate-conductor off
 chkconfig --level 2345 repmgrd off
 
 %preun
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 chkconfig --del celeryd-edmigrate
+chkconfig --add edmigrate-conductor
 chkconfig --del repmgrd
 
 %postun

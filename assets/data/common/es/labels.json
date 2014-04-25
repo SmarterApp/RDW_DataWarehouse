@@ -1,6 +1,8 @@
 {
     "labels": {
         "achievement_level_descriptors": "Descriptores del nivel de desempeño (DND)",
+        "academic_year": "Año escolar",
+        "accommodations": "Accommodations",
         "ald_color_coded": "Código de color DND ",
         "ald_cutpoints": "Puntos de ejecución mínima DND",
         "align": "Alinear",
@@ -120,7 +122,10 @@
             "Adequate Understanding": "Comprensión adecuada",
             "Minimal Understanding": "Comprensión mínima",
             "Partial Understanding": "Comprensión parcial",
-            "Thorough Understanding": "Comprensión completa"
+            "Thorough Understanding": "Comprensión completa",
+            "Below Standard": "Below Standard",
+            "At/Near Standard": "At/Near Standard",
+            "Above Standard": "Above Standard"
         }
     }
 }

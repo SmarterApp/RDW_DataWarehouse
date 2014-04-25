@@ -2,6 +2,7 @@
     "labels": {
         "achievement_level_descriptors": "アチーブメントレベルの記述 (ALD)",
         "academic_year": "学年",
+        "accommodations": "Accommodations",
         "ald_cutpoints": "ALD カットポイント",
         "ald_color_coded": "ALD色分け",
         "align": "整列",
@@ -122,7 +123,10 @@
             "Adequate Understanding": "十分な理解",
             "Minimal Understanding": "最低限の理解",
             "Partial Understanding": "部分的な理解",
-            "Thorough Understanding": "完全な理解"
+            "Thorough Understanding": "完全な理解",
+            "Below Standard": "Below Standard",
+            "At/Near Standard": "At/Near Standard",
+            "Above Standard": "Above Standard"
         }
     }
 }

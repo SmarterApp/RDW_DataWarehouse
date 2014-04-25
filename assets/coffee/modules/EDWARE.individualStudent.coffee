@@ -69,7 +69,7 @@ define [
         assessment.score_color = performance_level.bg_color
         assessment.score_text_color = performance_level.text_color
         assessment.score_bg_color = performance_level.bg_color
-        assessment.score_name = performance_level.name
+        assessment.score_name = @configData.labels.asmt[performance_level.name]
 
         # set level-based overall ald content
         overallALD = Mustache.render(this.configData.overall_ald[assessment.asmt_subject], assessment)
@@ -96,6 +96,8 @@ define [
           claim.desc = @configData.claims[assessment.asmt_subject]["description"][claim.indexer]
           # length info is used for bootstrap to determine how many columns for a claim
           claim.length = 12 / assessment.claims.length
+          claim.name = @configData.labels.asmt[claim.name]
+          claim.perf_lvl_name = @configData.labels.asmt[claim.perf_lvl_name]
 
         key = assessment.effective_date + assessment.asmt_type
         @data[key] ?= []

@@ -49,7 +49,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             counter = 0
             for result in results:
                 counter = counter + 1
-            self.assertEqual(counter, 1234)
+            self.assertEqual(counter, 1221)
 
     # Test student_registration data
     def test_student_registration(self):

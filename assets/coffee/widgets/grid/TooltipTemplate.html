@@ -1,0 +1,28 @@
+<div id="TOOLTIP_TEMPLATE">
+    {{#subject}}
+    <div class='losTooltip hide'>
+        <div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{labels.overall_score}}</div>
+        <div class='summary'>
+            <div class='title left'>{{labels.overall_score}}</div>
+            <div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'>
+                <span>{{subject.asmt_score}}</span>
+            </div>
+            <div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div>
+        </div>
+        <hr/>
+        <div class='losPerfBar'>{{{confidenceLevelBar}}}</div>
+        <div class='errorBand'>{{labels.error_band}}:
+            <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
+        </div>
+        <span class='edwareExportField' data-export-value='{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}'
+                  data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>
+        <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
+        <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level_number}}'></span>
+    </div>
+    {{/subject}}
+    {{^subject}}
+    <span class='edwareExportField' data-export-value='' data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>
+    <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
+    <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level_number}}'></span>
+    {{/subject}}
+</div>

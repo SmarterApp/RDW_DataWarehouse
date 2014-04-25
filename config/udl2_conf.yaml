@@ -70,7 +70,10 @@ common:
     sr_notification_max_attempts: 5
     sr_notification_retry_interval: 30
     sr_notification_timeout_interval: 30
-
+    global_sequence:
+        name: global_udl2_seq
+        batch_size: 100
+        
 qa:
   '[app]':
     zones:                                              # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
@@ -106,6 +109,9 @@ qa:
         db:
             schema_name: edware_es_1_6
             url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
+    global_sequence:
+        batch_size: 1000
+                                            
 
 uat:
   '[app]':
@@ -142,6 +148,8 @@ uat:
         db:
             schema_name: edware_es_1_6
             url: postgresql://edware:edware2013@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
+    global_sequence:
+        batch_size: 1000
 
 development:
   '[app]':

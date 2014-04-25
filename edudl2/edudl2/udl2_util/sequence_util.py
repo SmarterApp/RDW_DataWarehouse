@@ -3,15 +3,15 @@ Utility module to get global sequence from production database.
 '''
 from sqlalchemy import Sequence
 from sqlalchemy.sql import select
-from edudl2.database.udl2_connector import get_prod_connection
 from sqlalchemy.schema import CreateSequence
+from edudl2.database.udl2_connector import get_prod_connection
+from edudl2.move_to_target.move_to_target_setup import get_tenant_prod_db_information
 from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2 import message_keys as mk
 
-INCREMENTAL = udl2_conf['prod_db']['global_seq_batch_size']
+INCREMENTAL = udl2_conf['global_sequence']['batch_size']
 
-SEQUENCE_NAME = udl2_conf['prod_db']['global_seq_name']
-
-PROD_SCHEMA_NAME = udl2_conf['prod_db']['db_schema']
+SEQUENCE_NAME = udl2_conf['global_sequence']['name']
 
 START_WITH = 20 * 1000
 
@@ -25,6 +25,8 @@ class UDLSequence(object):
 
     def __init__(self, tenant_name, seq_name):
         self.tenant_name = tenant_name
+        schema = get_tenant_prod_db_information(tenant_name)
+        self.schema_name = schema[mk.PROD_DB_SCHEMA]
         self.seq_name = seq_name
         self.max_value = -1
         self.current = 0
@@ -37,7 +39,7 @@ class UDLSequence(object):
         '''
         with get_prod_connection(self.tenant_name) as conn:
             seq = conn.execute("SELECT nextval('%s.%s') from generate_series(1, %d);"
-                               % (PROD_SCHEMA_NAME, self.seq_name, INCREMENTAL))
+                               % (self.schema_name, self.seq_name, INCREMENTAL))
             batch = [val[0] for val in seq]
             self.current = batch[0]
             self.max_value = batch[-1]

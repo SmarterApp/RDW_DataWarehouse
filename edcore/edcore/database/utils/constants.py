@@ -52,3 +52,4 @@ class Constants():
     DIM_TABLES_PREFIX = 'dim_'
     FACT_TABLES_PREFIX = 'fact_'
     META_COLUMN = 'MetaColumn'
+    RECORD_SID = 'record_sid'

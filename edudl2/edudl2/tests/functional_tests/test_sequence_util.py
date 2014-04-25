@@ -55,10 +55,10 @@ class TestSequenceUtil(UDLTestHelper):
 
     def test_get_global_sequence(self):
         seq = get_global_sequence(self.test_tenant)
-        self.assertEqual(seq.next(), 20000, "Should return next sequence id")
         sameSeq = get_global_sequence(self.test_tenant)
         self.assertEqual(seq, sameSeq, "Should return the same sequence")
-        self.assertEqual(sameSeq.next(), 20001, "Should return next sequence id")
+        seq = get_global_sequence("ca")
+        self.assertNotEqual(seq, sameSeq, "Should return different sequence")
 
 
 if __name__ == '__main__':

@@ -14,6 +14,7 @@ from edudl2.udl2 import message_keys as mk, W_load_csv_to_staging
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.database.database import get_udl_connection
 from edcore.database.utils.constants import Constants
+from edudl2.udl2.constants import Constants as SchemaConstants
 from edudl2.udl2_util.sequence_util import get_global_sequence
 
 
@@ -80,7 +81,7 @@ def update_record_sid(msg):
     '''
     guid_batch = msg[mk.GUID_BATCH]
     load_type = msg[mk.LOAD_TYPE]
-    target_db_table = udl2_conf['udl2_db']['staging_tables'][load_type]
+    target_db_table = SchemaConstants.UDL2_STAGING_TABLE(load_type)
     global_sequence = get_global_sequence(msg[mk.TENANT_NAME])
     with get_udl_connection() as conn:
         _table = conn.get_table(target_db_table)
@@ -89,5 +90,6 @@ def update_record_sid(msg):
         for rec in records:
             # set record sid
             next_guid = global_sequence.next()
-            update_stmt = update(_table).values(record_sid=next_guid).where(_table.c.record_sid == rec['record_sid'])
+            update_stmt = update(_table).values(record_sid=next_guid).\
+                          where(_table.c.record_sid == rec[Constants.RECORD_SID])
             conn.execute(update_stmt)

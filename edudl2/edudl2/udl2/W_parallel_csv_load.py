@@ -74,6 +74,10 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
 
 
 def update_record_sid(msg):
+    '''
+    Update record primary keys with the value of global sequence, to
+    avoid primary key conflict in migration when running multiple UDLs.
+    '''
     guid_batch = msg[mk.GUID_BATCH]
     load_type = msg[mk.LOAD_TYPE]
     target_db_table = udl2_conf['udl2_db']['staging_tables'][load_type]

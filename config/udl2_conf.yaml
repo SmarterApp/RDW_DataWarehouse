@@ -269,7 +269,7 @@ uat:
         db_schema: edware_es_1_6
         db_name: edware
         # TBD make sure it is the production setting
-        db_host: dwpool1.qa.dum.edwdc.net
+        db_host: dwpool0.dmo.som.edwdc.net
         db_port: 6432
         db_database: edware
         db_user: edware

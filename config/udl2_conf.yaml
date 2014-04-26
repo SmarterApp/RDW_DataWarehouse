@@ -254,15 +254,15 @@ uat:
         sr_target_table: student_reg
     prod_db_conn:
         edware:
-            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
+            url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
             db_pass: xON.yw27aw
         ca:
-            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
+            url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
             db_pass: xON.yw27aw
         func_tests:
-            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
+            url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
             db_pass: xON.yw27aw
     prod_db:

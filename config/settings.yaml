@@ -372,7 +372,7 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: audit, syslog, security_event, edmigrate
+    keys: audit, syslog, security_event
   '[logger_root]':
     level: INFO
     handlers: syslog
@@ -507,7 +507,7 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
   '[handlers]':
-    keys: audit, syslog, security_event, edmigrate
+    keys: audit, syslog, security_event
   '[logger_root]':
     level: INFO
     handlers: syslog

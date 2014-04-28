@@ -479,7 +479,7 @@ uat:
         schema_name: repmgr_edware_pg_cluster
         url: postgresql+psycopg2://edware:xON.yw27aw@dbpgdw0.dmo.som.edwdc.net:5432/edware
     migrate:
-      pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'
+      pgpool.hostname: 'dwrouter0.dmo.som.edwdc.net'
       timeout: 6
     migrate_dest:
       db:

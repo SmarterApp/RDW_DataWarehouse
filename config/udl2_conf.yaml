@@ -101,6 +101,9 @@ qa:
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_es_1_6
+        cat:
+            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            db_schema: edware_es_1_6            
         func_tests:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_es_1_6
@@ -140,6 +143,9 @@ uat:
         ca:
             url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
+        cat:
+            url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
+            db_schema: edware_es_1_6            
         func_tests:
             url: postgresql://edware:edware2013@dwpool1.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
@@ -184,6 +190,9 @@ development:
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
+        cat:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: edware_prod
         func_tests:
             url: postgresql://edware:edware2013@localhost:5432/edware_functional_tests
             db_schema: edware_prod
@@ -223,6 +232,9 @@ jenksins_dev:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_12
         ca:
+            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
+            db_schema: edware_sds_1_12_dog
+        cat:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_12_dog
         func_tests:

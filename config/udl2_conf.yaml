@@ -27,6 +27,7 @@ common:
             - edudl2.udl2.W_post_etl
             - edudl2.udl2.W_report_error_or_success
             - edudl2.udl2.W_all_done
+            - edudl2.udl2.W_tasks_utils
             - edudl2.benchmarking.run_benchmarks
     celery_defaults:
         CELERY_DEFAULT_QUEUE: celery        # default celery queue name for celery internal tasks

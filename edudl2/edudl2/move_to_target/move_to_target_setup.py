@@ -147,17 +147,6 @@ def get_table_column_types(conf, target_table, column_names):
     return column_types
 
 
-def create_group_tuple(task_name, arg_list):
-    '''
-    Create task call as a tuple
-    Example: task_name = add, arg_list = [(2,2), (2,4)]
-             returns: (add.s(2,4), add.s(2,4))
-    '''
-    grouped_tasks = [task_name.s(*arg) for arg in arg_list]
-
-    return tuple(grouped_tasks)
-
-
 def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schema):
     """
     Return all needed configuration information

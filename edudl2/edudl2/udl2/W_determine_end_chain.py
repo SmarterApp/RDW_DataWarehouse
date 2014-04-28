@@ -25,9 +25,9 @@ def task(msg):
     logger.info('DETERMINE END ROUTE: Determining end route by %s' % load_type)
 
     target_tasks = {"assessment": [W_load_from_integration_to_star.create_target_schema.s(msg),
-                                   W_load_from_integration_to_star.explode_to_dims.s(),
+                                   W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
                                    W_load_from_integration_to_star.handle_record_upsert.s(),
-                                   W_load_from_integration_to_star.explode_to_facts.s(),
+                                   W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'fact'),
                                    W_load_from_integration_to_star.handle_deletions.s()
                                    ],
                     "studentregistration": [W_load_from_integration_to_star.create_target_schema.s(msg),

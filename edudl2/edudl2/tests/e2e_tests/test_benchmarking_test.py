@@ -52,6 +52,7 @@ class ValidateTableData(unittest.TestCase):
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.udl_phase], batch_table.c.udl_phase == 'UDL_COMPLETE')
+            query = query.where(batch_table.c.guid_batch == self.guid_batch_id)
             timer = 0
             result = connector.execute(query).fetchall()
             while timer < max_wait and result == []:
@@ -65,8 +66,6 @@ class ValidateTableData(unittest.TestCase):
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table])
             result = connector.execute(query).fetchall()
-            number_of_row = len(result)
-            self.assertEqual(number_of_row, 33)
             output = select([batch_table.c.udl_phase_step_status]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
             output_data = connector.execute(output).fetchall()
             tuple_str = [('SUCCESS',)]

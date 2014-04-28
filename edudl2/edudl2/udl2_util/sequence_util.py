@@ -16,6 +16,7 @@ INCREMENTAL = udl2_conf['global_sequence']['batch_size']
 # sequence start number, to avoid key conflict in first batch
 START_WITH = udl2_conf['global_sequence']['start_with']
 
+
 class UDLSequence(object):
     '''
     UDL global sequence class.  The purpose of this class is to fetch

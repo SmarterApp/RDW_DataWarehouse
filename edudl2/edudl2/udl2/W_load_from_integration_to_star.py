@@ -7,10 +7,12 @@ from edudl2.udl2 import message_keys as mk
 from celery import group
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_table_and_column_mapping, generate_conf,\
-    create_group_tuple, get_table_column_types
+    get_table_column_types
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calculate_spend_time_as_second,\
     explode_data_to_fact_table, handle_duplicates_in_dimensions, create_target_schema_for_batch, handle_updates_and_deletes
+from celery.canvas import chord
+from edudl2.udl2.W_tasks_utils import handle_group_results
 
 logger = get_task_logger(__name__)
 
@@ -32,37 +34,23 @@ def create_target_schema(msg):
     return msg
 
 
-#*************implemented via group*************
-@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims', base=Udl2BaseTask)
-def explode_to_dims(msg):
+def get_explode_to_tables_tasks(msg, prefix):
     '''
-    This is the celery task to move data from integration tables to dim tables.
-    In the input batch object, guid_batch is provided.
+    Returns a chord of tasks to migrate to pre-prod tables
     '''
-    start_time = datetime.datetime.now()
+    task_map = {'dim': explode_data_to_dim_table_task,
+                'fact': explode_data_to_fact_table_task}
+    task_name = task_map.get(prefix)
     conf = _get_conf(msg)
-    table_map, column_map = get_table_and_column_mapping(conf, explode_to_dims.name, 'dim_')
-    grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
-                                       [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
-                                        for dim_table, source_table in table_map.items()])
-    result_uuid = group(*grouped_tasks)()
-    msg['dim_tables'] = result_uuid.get()
-
-    total_affected_rows = 0
-    for dim_table_result in msg['dim_tables']:
-        total_affected_rows += dim_table_result[mk.SIZE_RECORDS]
-
-    end_time = datetime.datetime.now()
-
-    # Create benchmark object ant record benchmark
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], explode_to_dims.name, start_time, end_time,
-                                    size_records=total_affected_rows, task_id=str(explode_to_dims.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
-    benchmark.record_benchmark()
-    return msg
+    table_map, column_map = get_table_and_column_mapping(conf, 'explode to ' + prefix, prefix + '_')
+    grouped_tasks = []
+    for table, source_table in table_map.items():
+        grouped_tasks.append(task_name.subtask(args=(conf, source_table, table, column_map[table], get_table_column_types(conf, table, list(column_map[table].keys())))))
+    return chord(group(grouped_tasks), handle_group_results.s())
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task", base=Udl2BaseTask)
-def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
+def explode_data_to_dim_table_task(msg, conf, source_table, dim_table, column_mapping, column_types):
     """
     This is the celery task to move data from one integration table to one dim table.
     :param conf:
@@ -84,46 +72,11 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
                                     udl_phase_step=udl_phase_step, size_records=affected_rows[0], task_id=str(explode_data_to_dim_table_task.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True)
     benchmark.record_benchmark()
-    return benchmark.get_result_dict()
-
-
-#*************implemented via group*************
-@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_facts', base=Udl2BaseTask)
-def explode_to_facts(msg):
-    '''
-    This is the celery task to move data from integration table to fact tables.
-    In batch, guid_batch is provided.
-    '''
-    start_time = datetime.datetime.now()
-    conf = _get_conf(msg)
-    table_map, column_map = get_table_and_column_mapping(conf, explode_to_dims.name, 'fact_')
-    grouped_tasks = create_group_tuple(explode_data_to_fact_table_task,
-                                       [(conf, source_table, fact_table, column_map[fact_table], get_table_column_types(conf, fact_table, list(column_map[fact_table].keys())))
-                                        for fact_table, source_table in table_map.items()])
-    result_uuid = group(*grouped_tasks)()
-    msg['fact_tables'] = result_uuid.get()
-
-    total_affected_rows = 0
-    for fact_table_result in msg['fact_tables']:
-        total_affected_rows += fact_table_result[mk.SIZE_RECORDS]
-
-    end_time = datetime.datetime.now()
-
-    # Create benchmark object ant record benchmark
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], explode_to_facts.name, start_time, end_time,
-                                    size_records=total_affected_rows, task_id=str(explode_to_facts.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA])
-    benchmark.record_benchmark()
-
-    # Outgoing message to be piped to the file decrypter
-    outgoing_msg = {}
-    outgoing_msg.update(msg)
-    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: total_affected_rows})
-    return outgoing_msg
+    return msg
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_fact_table_task", base=Udl2BaseTask)
-def explode_data_to_fact_table_task(conf, source_table, fact_table, column_mapping, column_types):
+def explode_data_to_fact_table_task(msg, conf, source_table, fact_table, column_mapping, column_types):
     """
     This is the celery task to move data from one integration table to one fact table.
     :param conf:
@@ -145,7 +98,7 @@ def explode_data_to_fact_table_task(conf, source_table, fact_table, column_mappi
                                     task_id=str(explode_data_to_fact_table_task.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True)
     benchmark.record_benchmark()
-    return benchmark.get_result_dict()
+    return msg
 
 
 @celery.task(name='udl2.W_load_from_integration_to_star.handle_deletions', base=Udl2BaseTask)
@@ -159,11 +112,9 @@ def handle_deletions(msg):
     start_time = datetime.datetime.now()
     guid_batch = msg[mk.GUID_BATCH]
     # pass down the affected row from previous stage
-    affected_rows = msg[mk.TOTAL_ROWS_LOADED]
     udl_phase_step = 'HANDLE DELETION IN FACT'
     conf = _get_conf(msg)
     conf[mk.UDL_PHASE_STEP] = udl_phase_step
-    conf[mk.WORKING_SCHEMA] = msg['dim_tables'][0][mk.WORKING_SCHEMA]
 
     # handle updates and deletes
     handle_updates_and_deletes(conf)
@@ -171,14 +122,13 @@ def handle_deletions(msg):
 
     # Create benchmark object ant record benchmark
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], handle_deletions.name, start_time, finish_time,
-                                    udl_phase_step=udl_phase_step, size_records=affected_rows,
+                                    udl_phase_step=udl_phase_step,
                                     task_id=str(handle_deletions.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file decrypter
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.TOTAL_ROWS_LOADED: affected_rows})
     return outgoing_msg
 
 

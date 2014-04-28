@@ -21,7 +21,7 @@ from edcore.database.utils.utils import create_schema
 from edcore.database.utils.constants import Constants
 from edschema.metadata.util import get_primary_key_columns, get_natural_key, get_natural_key_columns
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
-    create_insert_query, update_foreign_rec_id_query, create_sr_table_select_insert_query, create_delete_query
+    create_insert_query, update_foreign_rec_id_query, create_sr_table_select_insert_query
 
 FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
@@ -283,7 +283,7 @@ def update_rec_id_for_records_to_delete(conf, target_conn, table_name, prod_reco
                                       "{schema}.{table}".format(schema=conf[mk.PROD_DB_SCHEMA], table=table_name),
                                       ErrorSource.DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE,
                                       conf[mk.UDL_PHASE_STEP],
-                                      conf[mk.WORKING_SCHEMA])
+                                      conf[mk.TARGET_DB_SCHEMA])
             failure_time = datetime.datetime.now()
             e.insert_err_list(failure_time)
             # raise an exception and stop the pipeline
@@ -311,7 +311,7 @@ def check_mismatched_deletions(conf, target_conn, table_name):
                                                            table=table_name),
                                  ErrorSource.MISMATCHED_FACT_ASMT_OUTCOME_RECORD,
                                  conf[mk.UDL_PHASE_STEP],
-                                 conf[mk.WORKING_SCHEMA],
+                                 conf[mk.TARGET_DB_SCHEMA],
                                  pk_column
                                  )
         failure_time = datetime.datetime.now()

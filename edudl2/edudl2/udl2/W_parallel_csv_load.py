@@ -91,5 +91,5 @@ def update_record_sid(msg):
             # set record sid
             next_guid = global_sequence.next()
             update_stmt = update(_table).values(record_sid=next_guid).\
-                          where(_table.c.record_sid == rec[Constants.RECORD_SID])
+                where(_table.c.record_sid == rec[Constants.RECORD_SID])
             conn.execute(update_stmt)

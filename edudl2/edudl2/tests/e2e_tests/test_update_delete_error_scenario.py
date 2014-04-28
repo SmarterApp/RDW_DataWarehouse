@@ -83,7 +83,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
     def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'FAILURE'))
+            query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'FAILURE', batch_table.c.guid_batch == self.guid_batch_id))
             timer = 0
             result = connector.execute(query).fetchall()
             while timer < max_wait and result == []:

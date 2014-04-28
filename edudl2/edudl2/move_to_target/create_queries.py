@@ -2,7 +2,7 @@ import re
 from edudl2.udl2 import message_keys as mk
 from sqlalchemy.sql.expression import text, bindparam, select, and_
 from edudl2.database.udl2_connector import get_udl_connection, \
-    get_target_connection, get_prod_connection
+    get_target_connection
 from psycopg2.extensions import QuotedString
 from edudl2.udl2_util.database_util import create_filtered_sql_string
 import edschema.metadata.util as edschema_util
@@ -27,7 +27,7 @@ class InsertQueryBuilder:
         self.record_mapping = ",".join(list(column_types.values()))
         self.params = [bindparam('guid_batch', conf[mk.GUID_BATCH])]
         self.target_schema_and_table = combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA],
-                                                              target_table)
+                                                                target_table)
         self.source_schema_and_table = combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table)
 
     @property
@@ -87,7 +87,6 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     builder.op = op
     builder.distinct = need_distinct
     return builder.build()
-
 
 
 def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapping, op=None):
@@ -158,7 +157,6 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
         types.extend(list(value.type for value in column_and_type_mapping[source_table].values()))
 
         prev_table = source_table
-
 
     source_columns = ",".join(source_keys)
     insert_query = ["INSERT INTO {target_schema_and_table}(" + ",".join(target_keys),

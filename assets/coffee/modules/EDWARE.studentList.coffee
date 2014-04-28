@@ -59,7 +59,7 @@ define [
     constructor: (@config) ->
       @asmtTypes = config.students.customViews.asmtTypes
 
-    build: (@data) ->
+    build: (@data, @labels) ->
       @cache = {}
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
@@ -80,8 +80,12 @@ define [
 
     createColumns: () ->
       # Use mustache template to replace text in json config
-      # Add assessments data there so we can get column names
+      # Add assessments data there so we can get column names and translate column names
       claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
+      for idx, claim of claimsData.subject1
+        claim.name = @labels.asmt[claim.name]
+      for idx, claim of claimsData.subject2
+        claim.name = @labels.asmt[claim.name]
       combinedData = $.extend(true, {}, this.data.subjects)
       combinedData.claims = claimsData
       columnData = JSON.parse(Mustache.render(JSON.stringify(@config.students), combinedData))
@@ -142,7 +146,7 @@ define [
       @stickyCompare.setReportInfo Constants.REPORT_JSON_NAME.LOS, "student", params
 
     loadPage: (@data)->
-      @studentsDataSet.build data
+      @studentsDataSet.build data, @labels
       @contextData = data.context
       @subjectsData = data.subjects
       @userData = data.user_info

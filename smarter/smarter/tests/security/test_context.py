@@ -81,7 +81,7 @@ class TestContext(Unittest_with_edcore_sqlite):
                                         from_obj=([fact_asmt_outcome]), permission=RolesConstants.PII, state_code='NC')
             query = query.where(and_(fact_asmt_outcome.c.school_guid == '242'))
             results = connection.get_result(query)
-            self.assertEqual(len(results), 242)
+            self.assertEqual(len(results), 234)
 
     def test_check_context_with_empty_guids(self):
         context = check_context('base', 'NC', [])

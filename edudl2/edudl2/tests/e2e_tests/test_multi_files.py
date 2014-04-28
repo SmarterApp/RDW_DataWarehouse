@@ -22,7 +22,7 @@ class ValidateMultiFiles(unittest.TestCase):
         self.files = {'file1': os.path.join(path, 'test_source_file_tar_gzipped.tar.gz.gpg'),
                       'file2': os.path.join(path, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
                       'file3': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/edware/edware_user/filedrop/'
 
     #teardown tenant folder
     def tearDown(self):

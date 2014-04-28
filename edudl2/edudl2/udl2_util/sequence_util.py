@@ -8,12 +8,13 @@ from edudl2.database.udl2_connector import get_prod_connection
 from edudl2.move_to_target.move_to_target_setup import get_tenant_prod_db_information
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
+from edudl2.udl2.constants import Constants
 
+# size of each sequence batch
 INCREMENTAL = udl2_conf['global_sequence']['batch_size']
 
-SEQUENCE_NAME = udl2_conf['global_sequence']['name']
-
-START_WITH = 20 * 1000
+# sequence start number, to avoid key conflict in first batch
+START_WITH = udl2_conf['global_sequence']['start_with']
 
 class UDLSequence(object):
     '''
@@ -76,12 +77,12 @@ class UDLSequence(object):
 GLOBAL_SEQUENCE_POOL = {}
 
 
-def get_global_sequence(tenant_name="edware"):
+def get_global_sequence(tenant_name):
     '''
-    TODO: add doc string
+    Get global sequence for given tenant.
     '''
     if tenant_name in GLOBAL_SEQUENCE_POOL:
         return GLOBAL_SEQUENCE_POOL.get(tenant_name)
-    seq = UDLSequence(tenant_name, SEQUENCE_NAME)
+    seq = UDLSequence(tenant_name, Constants.SEQUENCE_NAME)
     GLOBAL_SEQUENCE_POOL[tenant_name] = seq
     return seq

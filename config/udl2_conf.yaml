@@ -71,8 +71,8 @@ common:
     sr_notification_retry_interval: 30
     sr_notification_timeout_interval: 30
     global_sequence:
-        name: global_udl2_seq
         batch_size: 100
+        start_with: 20000
         
 qa:
   '[app]':

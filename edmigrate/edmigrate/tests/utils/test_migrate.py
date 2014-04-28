@@ -92,14 +92,14 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     def test_migrate_fact_asmt_outcome_record_already_deleted1(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
-        batch_guid = "9FCD871F-DE8F-4DDD-936C-E02F00258DD8"
+        batch_guid = "288220EB-3876-41EB-B3A7-F0E6C8BD013B"
         self.assertRaises(EdMigrateRecordAlreadyDeletedException, migrate_table, batch_guid, None,
                           preprod_conn, prod_conn, 'fact_asmt_outcome', False)
 
     def test_migrate_fact_asmt_outcome_record_already_deleted2(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
-        batch_guid = "9FCD871F-DE8F-4DDD-936C-E02F00258DD8"
+        batch_guid = "288220EB-3876-41EB-B3A7-F0E6C8BD013B"
         self.assertRaises(EdMigrateRecordAlreadyDeletedException, migrate_table, batch_guid, None,
                           preprod_conn, prod_conn, 'fact_asmt_outcome', False, batch_size=1)
 

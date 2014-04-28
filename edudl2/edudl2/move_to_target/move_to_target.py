@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
-from edschema.metadata.util import get_tables_starting_with
+from edschema.metadata.util import get_tables_starting_with, get_foreign_key_reference_columns
 from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.exceptions.errorcodes import ErrorSource
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
@@ -35,20 +35,23 @@ def create_target_schema_for_batch(conf):
         schema_name = conf[mk.TARGET_DB_SCHEMA]
         create_schema(conn, generate_ed_metadata, schema_name)
         conn.set_metadata_by_reflect(schema_name)
-        drop_foreign_keys_on_fact_asmt_outcome(conn, schema_name)
+        drop_foreign_keys_on_schema(conn, schema_name)
 
 
-def drop_foreign_keys_on_fact_asmt_outcome(conn, schema):
+def drop_foreign_keys_on_schema(conn, schema):
     '''
-    drop foreign key constraints of fact_asmt_outcome table in target db.
-    :param target_db: The configuration dictionary for
+    Drop all foreign key constraints in a given schema
+    :param conn: SQLAlchemy connection
+    :param schema: Name of schema to drop foreign key constraints in
     '''
-    constraints = ['fact_asmt_outcome_student_rec_id_fkey', 'fact_asmt_outcome_asmt_rec_id_fkey', 'fact_asmt_outcome_inst_hier_rec_id_fkey']
-    for constraint in constraints:
-        sql = text('ALTER TABLE "{schema}".{table} DROP CONSTRAINT {constraint}'.format(schema=schema,
-                                                                                        table='fact_asmt_outcome',
-                                                                                        constraint=constraint))
-        conn.execute(sql)
+    meta = conn.get_metadata()
+    for table in meta.sorted_tables:
+        for constraint in get_foreign_key_reference_columns(table):
+            for fkey in constraint.foreign_keys:
+                sql = text('ALTER TABLE "{schema}".{table} DROP CONSTRAINT {constraint}'.format(schema=schema,
+                                                                                                table=table.name,
+                                                                                                constraint=fkey.name))
+                conn.execute(sql)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):

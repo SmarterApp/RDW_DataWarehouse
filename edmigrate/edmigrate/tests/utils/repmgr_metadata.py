@@ -28,6 +28,7 @@ def generate_repmgr_metadata(schema_name=None, bind=None):
     repl_nodes = Table('repl_nodes', metadata,
                        Column('id', Integer, primary_key=True),
                        Column('cluster', Text(255), nullable=False),
+                       Column('name', Text(255), nullable=False),
                        Column('conninfo', Text(255), nullable=False)
                        )
 

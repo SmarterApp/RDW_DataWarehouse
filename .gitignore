@@ -60,6 +60,7 @@ data_gen/old/DataGeneration/build
 data_gen/old/DataGeneration/.pydevproject
 
 config/gpg/random_seed
+edudl2/edudl2/tests/data/keys/random_seed
 data_gen/DataGeneration/datafiles/csv
 
 *.ini

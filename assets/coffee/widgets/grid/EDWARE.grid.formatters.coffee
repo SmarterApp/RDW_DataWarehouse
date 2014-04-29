@@ -6,9 +6,11 @@ define [
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'
   'text!edwareFormatterTemplate'
+  'text!edwareGridPerformanceBarTemplate'
+  'text!edwareGridTooltipTemplate'
   'edwarePreferences'
   'edwareContextSecurity'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate, edwarePreferences, contextSecurity) ->
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate, edwareGridPerformanceBarTemplate, edwareGridTooltipTemplate, edwarePreferences, contextSecurity) ->
 
   getTemplate = (name) ->
     $(edwareFormatterTemplate).find('div#' + name).html()
@@ -21,13 +23,13 @@ define [
 
   NAME_TEMPLATE = getTemplate('NAME_TEMPLATE')
 
-  TOOLTIP_TEMPLATE = getTemplate('TOOLTIP_TEMPLATE')
+  TOOLTIP_TEMPLATE = edwareGridTooltipTemplate
 
   CONFIDENCE_TEMPLATE = getTemplate('CONFIDENCE_TEMPLATE')
 
   TEXT_TEMPLATE = getTemplate('TEXT_TEMPLATE')
 
-  PERFORMANCE_BAR_TEMPLATE = getTemplate('PERFORMANCE_BAR_TEMPLATE')
+  PERFORMANCE_BAR_TEMPLATE = edwareGridPerformanceBarTemplate
 
   PERF_LEVEL_TEMPLATE = getTemplate('PERF_LEVEL_TEMPLATE')
 

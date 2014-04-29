@@ -79,6 +79,8 @@ require {
     edwareDropdownTemplate: 'widgets/dropdown/template.html',
     edwareStickyCompareTemplate: 'widgets/grid/stickyCompare.template.html',
     edwareFormatterTemplate: 'widgets/grid/FormatterTemplate.html',
+    edwareGridPerformanceBarTemplate: 'widgets/grid/PerformanceBarTemplate.html',
+    edwareGridTooltipTemplate: 'widgets/grid/TooltipTemplate.html',
     CSVOptionsTemplate: 'widgets/download/CSVOptionsTemplate.html',
     DownloadMenuTemplate: 'widgets/download/DownloadMenuTemplate.html',
     AsmtDropdownTemplate: 'widgets/asmtDropdown/template.html',

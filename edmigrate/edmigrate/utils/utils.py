@@ -48,15 +48,15 @@ def get_my_master_by_id(my_node_id):
     with RepMgrDBConnection() as conn:
         repl_nodes = conn.get_table(Constants.REPL_NODES)
         repl_status = conn.get_table(Constants.REPL_STATUS)
-        query = select([repl_nodes.c.conninfo.label('conninfo')],
+        query = select([repl_nodes.c.conninfo.label('name')],
                        from_obj=[repl_nodes
                                  .join(repl_status, repl_status.c.primary_node == repl_nodes.c.id)])\
             .where(repl_status.c.standby_node == my_node_id)
         results = conn.get_result(query)
         if results:
             result = results[0]
-            conninfo = result['conninfo']
-            m = re.match('^host=(\S+)\s+', conninfo)
+            node_name = result['name']
+            m = re.match('^host=(\S+)\s+', node_name)
             if m:
                 master_hostname = m.group(1)
     if not master_hostname:
@@ -72,7 +72,7 @@ def get_node_id_from_hostname(hostname):
     with RepMgrDBConnection() as conn:
         repl_nodes = conn.get_table(Constants.REPL_NODES)
         query = select([repl_nodes.c.id.label('id')],
-                       repl_nodes.c.conninfo.like("host=" + hostname + " %"),
+                       repl_nodes.c.name.like("%" + hostname + "%"),
                        from_obj=[repl_nodes])
         results = conn.get_result(query)
         if results:

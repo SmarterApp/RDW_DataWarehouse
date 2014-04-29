@@ -11,6 +11,9 @@ import shutil
 SOURCE_DIR = '/opt/sftp/landing/arrivals'
 DEST_DIR = '/opt/sftp/landing/arrivals_final'
 PATTERN = '*.gpg'
+FILE_STAT_WATCH_INTERVAL_IN_SECONDS = 5
+FILE_STAT_WATCH_PERIOD_IN_SECONDS = 10
+FILE_SYSTEM_SCAN_DELAY_IN_SECONDS = 5
 
 
 def set_interval(interval):
@@ -40,7 +43,7 @@ class FileSync:
         return self
 
     def clear_file_stats(self):
-        self.file_stats = {}
+        self.file_stats.clear()
 
     def find_all_files(self, directory, extension):
         for root, dirs, files in os.walk(directory):
@@ -55,7 +58,7 @@ class FileSync:
     def get_file_stats(self):
         return {filename: FileSync.get_file_stat(filename) for filename in self.file_stats.keys()}
 
-    @set_interval(5)
+    @set_interval(interval=FILE_STAT_WATCH_INTERVAL_IN_SECONDS)
     def watch_and_filter_files_by_stats_changes(self):
         file_stats_latest = self.get_file_stats()
         for file, size in self.file_stats.copy().items():
@@ -67,7 +70,7 @@ class FileSync:
         # monitor the files for change in stats
         stop = self.watch_and_filter_files_by_stats_changes()
         # monitor for a duration
-        time.sleep(10)
+        time.sleep(FILE_STAT_WATCH_PERIOD_IN_SECONDS)
         # stop the timer
         stop.set()
 
@@ -97,7 +100,7 @@ def sftp_file_sync():
         print('Searching for new files')
         files_moved = finder.find_and_move_files(SOURCE_DIR, DEST_DIR, PATTERN)
         print('Files Moved: ' + str(files_moved))
-        time.sleep(5)
+        time.sleep(FILE_SYSTEM_SCAN_DELAY_IN_SECONDS)
 
 if __name__ == "__main__":
     sftp_file_sync()

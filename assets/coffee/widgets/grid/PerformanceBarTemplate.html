@@ -1,8 +1,6 @@
-<div id="PERFORMANCE_BAR_TEMPLATE">
-    <div class='{{export}}'>
-        <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}</div>
-        <span class='edwareExportField' data-export-value='{{subject.asmt_score}}' data-export-name='{{columnName}}'></span>
-        <div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>
-        {{{toolTip}}}
-    </div>
+<div class='{{export}}'>
+    <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}</div>
+    <span class='edwareExportField' data-export-value='{{subject.asmt_score}}' data-export-name='{{columnName}}'></span>
+    <div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>
+    {{{toolTip}}}
 </div>

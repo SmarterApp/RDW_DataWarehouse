@@ -265,7 +265,9 @@ define [
       this.bindEvents()
 
     initialize: (@container) ->
-      output = Mustache.to_html DownloadMenuTemplate, {}
+      output = Mustache.to_html DownloadMenuTemplate, {
+        labels: this.config['labels']
+      }
       $(@container).html output
       this.eventHandler =
         file: this.downloadAsFile
@@ -308,6 +310,7 @@ define [
 
     sendCSVRequest: () ->
       CSVOptions = @config.CSVOptions
+      CSVOptions.labels = @config.labels
       # construct CSVDownload modal
       loadingData = fetchData @config.param
       loadingData.done (data)->

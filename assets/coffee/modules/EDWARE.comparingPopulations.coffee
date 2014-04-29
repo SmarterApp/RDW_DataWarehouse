@@ -96,7 +96,7 @@ define [
         contextSecurity.init data.context.permissions, self.config
 
         # process breadcrumbs
-        self.renderBreadcrumbs(self.data.context)
+        self.renderBreadcrumbs(self.data.context, self.labels)
         self.renderReportInfo()
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
@@ -213,9 +213,9 @@ define [
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
-    renderBreadcrumbs: (breadcrumbsData)->
+    renderBreadcrumbs: (breadcrumbsData, labels)->
       displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
-      this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType, displayHome)
+      this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType, displayHome, labels)
 
     renderReportInfo: () ->
       edwareReportInfoBar.create '#infoBar',
@@ -274,9 +274,9 @@ define [
 
   class Breadcrumbs
 
-    constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType, @displayHome) ->
+    constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType, @displayHome, @labels) ->
       # Render breadcrumbs on the page
-      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs, @displayHome)
+      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs, @displayHome, @labels)
       this.initialize()
 
     initialize: () ->

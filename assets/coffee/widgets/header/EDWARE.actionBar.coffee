@@ -28,7 +28,7 @@ define [
       @printer ?= @createPrint()
 
     createPrint: () ->
-      @printer = edwarePrint.create '.printModal'
+      @printer = edwarePrint.create '.printModal', @config.labels
 
     createLegend: () ->
       # create legend
@@ -47,7 +47,7 @@ define [
         preference = edwarePreferences.getAsmtForISR
       else
         preference = edwarePreferences.getAsmtPreference
-      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.asmtTypes, preference, (asmt) ->
+      asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown @config.labels, @config.asmtTypes, preference, (asmt) ->
         self.updateDisclaimer asmt
         self.reloadCallback asmt
       @createDisclaimer()

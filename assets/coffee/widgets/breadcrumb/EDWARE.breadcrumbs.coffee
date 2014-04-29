@@ -5,13 +5,14 @@
 define [
   'jquery'
   "mustache"
-] , ($, Mustache) ->
+  "edwareDataProxy"
+] , ($, Mustache, edwareDataProxy) ->
 
   BREADCRUMBS_TEMPLATE = "<ul>{{#items}}<li><a href='{{link}}'>{{name}}</a></li>{{/items}}<ul>"
 
   class EdwareBreadcrumbs
 
-    constructor: (@container, @contextData, @configs, @displayHome) ->
+    constructor: (@container, @contextData, @configs, @displayHome, @labels) ->
       @initialize()
       @bindEvents()
 
@@ -51,8 +52,10 @@ define [
     formatName: (element) ->
       type = element.type
       name = element.name
-      if type is 'grade'
-        name = "Grade " + name
+      if type is 'home'
+        name = @labels.breadcrumb_home
+      else if type is 'grade'
+        name = @labels.grade + ' ' + name
       else if type is 'student'
         # Special case for names that end with an 's'
         name += if /s$|S$/.test(name) then "'" else "'s"
@@ -82,8 +85,8 @@ define [
   #    *  @param configs
   #    *  Example: $("#table1").breadcrumbs(data, configs)
   #
-  $.fn.breadcrumbs = (contextData, configs, displayHome) ->
-    new EdwareBreadcrumbs(this, contextData, configs, displayHome)
+  $.fn.breadcrumbs = (contextData, configs, displayHome, labels) ->
+    new EdwareBreadcrumbs(this, contextData, configs, displayHome, labels)
 
   #
   #    * Creates breadcrumbs widget

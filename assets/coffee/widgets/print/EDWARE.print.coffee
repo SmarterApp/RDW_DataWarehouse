@@ -9,12 +9,12 @@ define [
 
   class PrintModal
 
-    constructor: (@container) ->
+    constructor: (@container, @labels) ->
       @initialize()
       @bindEvents()
 
     initialize: () ->
-      output = Mustache.to_html PrintTemplate, {}
+      output = Mustache.to_html PrintTemplate, @labels
       $(@container).html output
 
     bindEvents: () ->
@@ -44,8 +44,8 @@ define [
     hide: () ->
       $('#PrintModal').modal('hide')
 
-  create = (container) ->
-    new PrintModal(container)
+  create = (container, labels) ->
+    new PrintModal(container, labels)
 
   create: create
   PrintModal: PrintModal

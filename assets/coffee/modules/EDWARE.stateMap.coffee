@@ -13,6 +13,7 @@ require [
     document.createElementNS('http://www.w3.org/2000/svg', tag)
 
   edwareDataProxy.getDataForReport('stateMap').done (stateMapConfig) ->
+      $("#titleString").html "<text>#{stateMapConfig.labels.select_state_prompt}</text>"
       options =
         method: 'POST'
       load = edwareDataProxy.getDatafromSource "/services/userinfo", options

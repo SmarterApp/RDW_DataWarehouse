@@ -4,6 +4,7 @@ import unittest
 import shutil
 import tempfile
 import os
+import time
 from edsftp.scripts.watcher import FileSync
 
 
@@ -63,4 +64,11 @@ class TestWatcher(unittest.TestCase):
         self.test_file_1.flush()
         self.assertEqual(self.test_sync.get_updated_file_stats(), {self.test_file_1.name: 5, self.test_file_2.name: 0})
 
-
+    def test_watch_files(self):
+        self.test_sync.find_all_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+        self.test_sync.watch_and_filter_files_by_stats_changes()
+        self.test_file_1.write(b"test\n")
+        self.test_file_1.flush()
+        time.sleep(10)
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})

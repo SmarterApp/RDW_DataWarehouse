@@ -11,6 +11,7 @@ from edsftp.scripts.util import set_interval, Singleton
 console = logging.StreamHandler()
 logger = logging.getLogger(__name__)
 
+# TODO: move these to ini
 SOURCE_DIR = '/opt/sftp/landing/arrivals'
 DEST_DIR = '/opt/sftp/landing/arrivals_final'
 PATTERN = '*.gpg'
@@ -87,7 +88,6 @@ class FileSync(metaclass=Singleton):
         self.watch_files()
         files_moved = self.move_files()
         return files_moved
-
 
 def sftp_file_sync():
     finder = FileSync()

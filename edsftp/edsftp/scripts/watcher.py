@@ -1,6 +1,5 @@
 __author__ = 'sravi'
 
-
 import os
 import fnmatch
 import time
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 SOURCE_DIR = '/opt/sftp/landing/arrivals'
 DEST_DIR = '/opt/sftp/landing/arrivals_final'
 PATTERN = '*.gpg'
-FILE_STAT_WATCH_INTERVAL_IN_SECONDS = 5
+FILE_STAT_WATCH_INTERVAL_IN_SECONDS = 2
 FILE_STAT_WATCH_PERIOD_IN_SECONDS = 10
 FILE_SYSTEM_SCAN_DELAY_IN_SECONDS = 5
 
@@ -53,7 +52,7 @@ class FileSync(metaclass=Singleton):
         file_stats_latest = self.get_updated_file_stats()
         for file, size in self._file_stats.copy().items():
             if file_stats_latest[file] != size:
-                print('Removing file {file} due to size changes during monitoring'.format(file=file))
+                logger.info('Removing file {file} due to size changes during monitoring'.format(file=file))
                 del self._file_stats[file]
 
     def watch_files(self):
@@ -71,7 +70,7 @@ class FileSync(metaclass=Singleton):
             destination_file_directory = os.path.split(destination_file_path)[0]
             if not os.path.exists(destination_file_directory):
                 os.makedirs(destination_file_directory)
-            print('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
+            logger.info('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
             shutil.move(file, destination_file_path)
         return len(files_to_move)
 
@@ -89,15 +88,16 @@ class FileSync(metaclass=Singleton):
         files_moved = self.move_files()
         return files_moved
 
+
 def sftp_file_sync():
     finder = FileSync()
     FileSync.source_dir = SOURCE_DIR
     FileSync.dest_dir = DEST_DIR
     FileSync.pattern = PATTERN
     while True:
-        print('Searching for new files')
+        logger.info('Searching for new files')
         files_moved = finder.find_and_move_files()
-        print('Files Moved: {count} '.format(count=str(files_moved)))
+        logger.info('Files Moved: {count} '.format(count=str(files_moved)))
         time.sleep(FILE_SYSTEM_SCAN_DELAY_IN_SECONDS)
 
 if __name__ == "__main__":

@@ -49,6 +49,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
         '''
         self.guid_batch_id = str(uuid4())
         run_udl_pipeline(self, self.guid_batch_id)
+        time.sleep(5)
         # Take the btach guid of first run in parameter for later verification
         self.guid = self.guid_batch_id
 

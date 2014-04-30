@@ -3,6 +3,7 @@ __author__ = 'sravi'
 import unittest
 import shutil
 import tempfile
+import os
 from edsftp.scripts.watcher import FileSync
 
 
@@ -19,9 +20,22 @@ class TestWatcher(unittest.TestCase):
         self.test_sync = FileSync()
 
     @classmethod
-    def tearDownClss(self):
+    def tearDownClass(self):
         shutil.rmtree(self.source_dir)
         shutil.rmtree(self.dest_dir)
+
+    def setUp(self):
+        self.test_sync.clear_file_stats()
+        self.tmp_dir_1 = tempfile.mkdtemp(dir=self.source_dir)
+        self.tmp_dir_2 = tempfile.mkdtemp(dir=self.source_dir)
+        self.test_file_1 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern,
+                                                       prefix='test_file_1', dir=self.tmp_dir_1)
+        self.test_file_2 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern,
+                                                       prefix='test_file_2', dir=self.tmp_dir_2)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir_1, ignore_errors=True)
+        shutil.rmtree(self.tmp_dir_2, ignore_errors=True)
 
     def test_clear_file_stats(self):
         self.test_sync.clear_file_stats()
@@ -39,13 +53,14 @@ class TestWatcher(unittest.TestCase):
         self.assertEqual(self.test_sync.get_file_stat(test_file.name), 5)
 
     def test_find_all_files(self):
-        tmp_dir_1 = tempfile.mkdtemp(dir=self.source_dir)
-        tmp_dir_2 = tempfile.mkdtemp(dir=self.source_dir)
-        test_file_1 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern, prefix='test_file', dir=tmp_dir_1)
-        test_file_2 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern, prefix='test_file', dir=tmp_dir_2)
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {test_file_1.name: 0, test_file_2.name: 0})
-        shutil.rmtree(tmp_dir_1)
-        shutil.rmtree(tmp_dir_2)
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+
+    def test_get_updated_file_stats(self):
+        self.test_sync.find_all_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+        self.test_file_1.write(b"test\n")
+        self.test_file_1.flush()
+        self.assertEqual(self.test_sync.get_updated_file_stats(), {self.test_file_1.name: 5, self.test_file_2.name: 0})
 
 

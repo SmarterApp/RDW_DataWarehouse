@@ -148,6 +148,26 @@ common:
           -   name: extract_sync
               exchange: direct
               key: extract_sync
+    sftp:
+        sftp_home: /
+        sftp_base_dir: /sftp/opt/edware/home
+        sftp_arrivals_dir: arrivals
+        sftp_arrivals_rsync_dir: arrivals_rsync
+        file_pattern_to_watch: '*.gpg'
+        file_stat_watch_internal_in_seconds: 2
+        file_stat_watch_period_in_seconds: 10
+        file_system_scan_delay_in_seconds: 10
+        sftp_departures_dir: departures
+        sftp_filerouter_dir:
+        user_home_base_dir: /opt/edware/home
+        group: edwaredataadmin
+        roles:
+            - sftparrivals
+            - sftpdepartures
+            - filerouter
+        user_path_sftparrivals_dir: file_drop
+        user_path_sftpdepartures_dir: reports
+        user_path_filerouter_dir: route
     migrate:
       broadcast.queue: 'edmigrate_players'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'

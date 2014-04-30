@@ -114,4 +114,4 @@ require [
 
         edwareHeader.create(data, stateMapConfig)
         displayHome = edwareUtil.getDisplayBreadcrumbsHome data.user_info
-        $('#breadcrumb').breadcrumbs(data.context, stateMapConfig.breadcrumb, displayHome)
+        $('#breadcrumb').breadcrumbs(data.context, stateMapConfig.breadcrumb, displayHome, stateMapConfig.labels)

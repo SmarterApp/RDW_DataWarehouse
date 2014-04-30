@@ -160,8 +160,9 @@ define [
       # create key and display text mapping
       configMap = {}
       for key, value of this.config
-        for option in value.options
-          configMap[option.value] = option.display
+        if key isnt 'labels'
+          for option in value.options
+            configMap[option.value] = option.display
       for key, value of item
         item[key] = configMap[value] if configMap[value]
       item

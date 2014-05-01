@@ -198,7 +198,7 @@ define [
       for colModel in colModels
         #reset labels
         if colModel.index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
-          grid.jqGrid('setLabel', colModel.name, "<b>#{colModel.label}</b>")
+          grid.jqGrid('setLabel', colModel.name, "<a href='#'>#{colModel.label}</a>")
         else
           grid.jqGrid('setLabel', colModel.name, colModel.label)
 
@@ -207,9 +207,9 @@ define [
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc'
-          newLabel = "<b>#{newLabel}</b> #{this.config.proficiencyAscending}"
+          newLabel = "<a href='#'>#{newLabel}</a> #{this.config.proficiencyAscending}"
         else
-          newLabel = "<b>#{newLabel}</b> #{this.config.proficiencyDescending}"
+          newLabel = "<a href='#'>#{newLabel}</a> #{this.config.proficiencyDescending}"
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
@@ -228,7 +228,7 @@ define [
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
-        
+
 
     renderReportActionBar: () ->
       self = this

@@ -14,7 +14,7 @@ define [
 
       $.each languages, (lang, name) ->
         language_selections = $('<li></li>')
-        input = $("<input type='radio' name='language' value='#{lang}' >#{name}</input>")
+        input = $("<label><input type='radio' name='language' value='#{lang}'>#{name}</input></label>")
         if lang is iso_language
           input.attr('checked', true)
           $('#user-settings span.lang').text name

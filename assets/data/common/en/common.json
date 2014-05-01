@@ -449,7 +449,7 @@
                         "title": false
                     },
                     {
-                        "name": "Total Pop",
+                        "name": "<a href='#'>Total Pop</a>",
                         "displayTpl": "",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
@@ -478,7 +478,7 @@
                         "title": false
                     },
                     {
-                        "name": "Total Pop",
+                        "name": "<a href='#'>Total Pop</a>",
                         "displayTpl": "",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",

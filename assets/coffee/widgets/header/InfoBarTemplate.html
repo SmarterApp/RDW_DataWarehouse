@@ -1,6 +1,6 @@
 <ul>
-    <li><h2 class="title">{{title}}</h2><div class="reportInfoIcon"></div></li>
-    <li class="download"><div class="downloadIcon"></div><div id="downloadMenuPopup"></div></li>
+    <li><h2 class="title">{{title}}</h2><a class="reportInfoIcon" href='#'></a></li>
+    <li class="download"><a class="downloadIcon" href='#'></a><div id="downloadMenuPopup"></div></li>
     <li class="overall">
     {{#subjects}}
         <div class="info">
@@ -13,7 +13,7 @@
     {{/subjects}}
     </li>
     <li class="academicYearArea pull-right">
-        <span class="info pull-left">{{labels.academic_year}}: <i class="edware-icon-info-mark marginRight8 academicYearInfoIcon"></i></span>
+        <span class="info pull-left">{{labels.academic_year}}: <a href='#' class="academicYearInfoIcon"><i class="edware-icon-info-mark marginRight8"></i></a></span>
         <div id="academicYearAnchor" class="pull-left"></div>
     </li>
 </ul>

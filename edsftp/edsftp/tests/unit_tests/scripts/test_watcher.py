@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import time
 import os
-from edsftp.scripts.watcher import FileSync
+from edsftp.scripts.watcher import Watcher
 
 
 class TestWatcher(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestWatcher(unittest.TestCase):
         pass
 
     def setUp(self):
-        self.pattern = '*.gpg'
+        self.pattern = ['*.gpg', '*.gpg.done']
         self.sftp_base_dir = tempfile.mkdtemp(prefix='sftp_base')
         self.arrivals_dir = tempfile.mkdtemp(prefix='arrivals', dir=self.sftp_base_dir)
         self.arrivals_rsync_dir = tempfile.mkdtemp(prefix='arrivals_rsync', dir=self.sftp_base_dir)
@@ -29,18 +29,18 @@ class TestWatcher(unittest.TestCase):
             'sftp_base_dir': self.sftp_base_dir,
             'sftp_arrivals_dir': self.arrivals_dir,
             'sftp_arrivals_sync_dir': self.arrivals_rsync_dir,
-            'file_pattern_to_watch': self.pattern,
+            'file_patterns_to_watch': self.pattern,
             'file_stat_watch_internal_in_seconds': 1,
             'file_stat_watch_period_in_seconds': 3,
             'file_system_scan_delay_in_seconds': 2
         }
-        self.test_sync = FileSync()
+        self.test_sync = Watcher()
         self.test_sync.set_conf(self.conf)
         self.tmp_dir_1 = tempfile.mkdtemp(prefix='tmp_1', dir=self.source_dir)
         self.tmp_dir_2 = tempfile.mkdtemp(prefix='tmp_2', dir=self.source_dir)
-        self.test_file_1 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern,
+        self.test_file_1 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern[0],
                                                        prefix='test_file_1', dir=self.tmp_dir_1)
-        self.test_file_2 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern,
+        self.test_file_2 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern[0],
                                                        prefix='test_file_2', dir=self.tmp_dir_2)
 
     def tearDown(self):
@@ -97,7 +97,7 @@ class TestWatcher(unittest.TestCase):
         self.assertEqual(files_moved, 1)
         self.assertEqual(len(os.listdir(self.dest_dir)), 1)
 
-    def test_find_and_move_files(self):
-        files_moved = self.test_sync.find_and_move_files()
+    def test_watch_and_move_files(self):
+        files_moved = self.test_sync.watch_and_move_files()
         self.assertEqual(files_moved, 2)
         self.assertEqual(len(os.listdir(self.dest_dir)), 2)

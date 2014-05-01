@@ -4,6 +4,7 @@ import os
 import fnmatch
 import time
 import shutil
+import hashlib
 import logging
 from edsftp.scripts.util import set_interval, Singleton
 
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 WATCH_INTERVAL_IN_SECONDS = 2
 
 
-class FileSync(metaclass=Singleton):
+class Watcher(metaclass=Singleton):
     """File sync class to watch for complete files"""
     conf = None
     file_stats = {}
@@ -21,18 +22,64 @@ class FileSync(metaclass=Singleton):
     def __init__(self):
         pass
 
-    @staticmethod
-    def get_file_stat(filename):
-        return os.stat(filename).st_size if os.path.exists(filename) else None
-
     @classmethod
     def set_conf(cls, config):
         cls.conf = config
         cls.clear_file_stats()
         global WATCH_INTERVAL_IN_SECONDS
-        WATCH_INTERVAL_IN_SECONDS = FileSync.conf['file_stat_watch_internal_in_seconds']
-        FileSync.source_dir = os.path.join(FileSync.conf['sftp_base_dir'], FileSync.conf['sftp_arrivals_dir'])
-        FileSync.dest_dir = os.path.join(FileSync.conf['sftp_base_dir'], FileSync.conf['sftp_arrivals_sync_dir'])
+        WATCH_INTERVAL_IN_SECONDS = cls.conf['file_stat_watch_internal_in_seconds']
+        cls.source_dir = os.path.join(cls.conf['sftp_base_dir'], cls.conf['sftp_arrivals_dir'])
+        cls.dest_dir = os.path.join(cls.conf['sftp_base_dir'], cls.conf['sftp_arrivals_sync_dir'])
+
+    @staticmethod
+    def get_file_stat(filename):
+        return os.stat(filename).st_size if os.path.exists(filename) else None
+
+    @staticmethod
+    def md5_for_file(path, block_size=256, hex_digest=True):
+        """Returns md5 secure hash for the file specified
+
+        :param path: path of the file for which md5 hash needs to be generated
+        :param block_size: read the file in chunks of size block_size * md5.block_size (Defaults to 4MB)
+        :param hex_digest: Generate md5 digest as string object with only hexadecimal digits
+
+        :returns hexadecimal or simple digest of the file contents
+        """
+        md5 = hashlib.md5()
+        with open(path, 'rb') as f:
+            for chunk in iter(lambda: f.read(block_size * md5.block_size), b''):
+                md5.update(chunk)
+        if not hex_digest:
+            return md5.digest()
+        return md5.hexdigest()
+
+    @staticmethod
+    def get_file_hash(file):
+        return Watcher.md5_for_file(file)
+
+    @staticmethod
+    def file_contains_hash(file, file_hash):
+        with open(file) as f:
+            if file_hash in f.read():
+                return True
+        return False
+
+    @staticmethod
+    def valid_check_sum(file):
+        checksum_file = Watcher.get_complement_file_name(file)
+        if not os.path.exists(file) or not os.path.exists(checksum_file):
+            return False
+        file_hash = Watcher.get_file_hash(file)
+        return Watcher.file_contains_hash(checksum_file, file_hash)
+
+    @staticmethod
+    def get_complement_file_name(file):
+        if fnmatch.fnmatch(file, '*.done'):
+            # return corresponding source file
+            return file.strip('.done')
+        else:
+            # return corresponding '.done' file
+            return ''.join([file, '.done'])
 
     @classmethod
     def clear_file_stats(cls):
@@ -45,7 +92,9 @@ class FileSync(metaclass=Singleton):
     @classmethod
     def find_all_files(cls):
         for root, dirs, files in os.walk(cls.source_dir):
-            for filename in fnmatch.filter(files, cls.conf['file_pattern_to_watch']):
+            filtered_files = [filename for pattern in set(cls.conf['file_patterns_to_watch'])
+                              for filename in fnmatch.filter(files, pattern)]
+            for filename in filtered_files:
                 file_path = os.path.join(root, filename)
                 file_stat = cls.get_file_stat(file_path)
                 if file_stat is not None:
@@ -62,16 +111,45 @@ class FileSync(metaclass=Singleton):
         for file, size in cls.get_file_stats().copy().items():
             if file_stats_latest[file] is None or file_stats_latest[file] != size:
                 print('Removing file {file} due to size changes during monitoring'.format(file=file))
-                del cls.file_stats[file]
+                cls.remove_file_pair_from_dict(file)
 
     @classmethod
     def watch_files(cls):
+        """Watches the files for the defined duration and discards file undergoing change"""
         # monitor the files for change in stats
         stop = cls.watch_and_filter_files_by_stats_changes()
         # monitor for a duration
         time.sleep(float(cls.conf['file_stat_watch_period_in_seconds']))
         # stop the timer
         stop.set()
+
+    @classmethod
+    def remove_file_from_dict(cls, file):
+        cls.file_stats.pop(file, None)
+
+    @classmethod
+    def remove_file_pair_from_dict(cls, file):
+        # check the file being removed and remove the corresponding pair file
+        cls.remove_file_from_dict(cls.get_complement_file_name(file))
+        # remove the main file
+        cls.remove_file_from_dict(file)
+
+    @classmethod
+    def filter_files_for_digest_mismatch(cls):
+        """Verifies checksum for all the files (ignoring '*.done' files) currently being watched"""
+        all_files = cls.get_file_stats().copy().keys()
+        # filter out the '*.done' files which will contain the checksum for a corresponding source file
+        source_files = set(all_files) - set(fnmatch.filter(all_files, '*.done'))
+        for file in source_files:
+            if not cls.valid_check_sum(file):
+                print('Removing file {file} due to invalid hash'.format(file=file))
+                cls.remove_file_pair_from_dict(file)
+
+    @classmethod
+    def filter_checksum_files(cls):
+        """Remove '*.done' files"""
+        for file in set(fnmatch.filter(cls.get_file_stats().copy().keys(), '*.done')):
+            cls.remove_file_from_dict(file)
 
     @classmethod
     def move_files(cls):
@@ -90,22 +168,45 @@ class FileSync(metaclass=Singleton):
         assert cls.conf is not None
 
     @classmethod
-    def find_and_move_files(cls):
+    def find_files(cls):
         cls.clear_file_stats()
         cls.assert_inputs()
         cls.find_all_files()
+
+    @classmethod
+    def watch_and_move_files(cls):
+        cls.find_files()
         cls.watch_files()
-        return cls.move_files()
+        files_moved = cls.move_files()
+        return files_moved
+
+    @classmethod
+    def find_udl_ready_files(cls):
+        cls.find_files()
+        cls.watch_files()
+        cls.filter_files_for_digest_mismatch()
+        cls.filter_checksum_files()
+        return cls.get_file_stats()
 
 
-def sftp_file_sync(sftp_conf):
-    file_sync = FileSync()
-    file_sync.set_conf(sftp_conf)
+def sftp_file_sync(config):
+    file_watcher = Watcher()
+    file_watcher.set_conf(config)
     while True:
         print('Searching for new files')
-        files_moved = file_sync.find_and_move_files()
+        files_moved = file_watcher.watch_and_move_files()
         print('Files Moved: {count} '.format(count=str(files_moved)))
-        time.sleep(float(FileSync.conf['file_system_scan_delay_in_seconds']))
+        time.sleep(float(Watcher.conf['file_system_scan_delay_in_seconds']))
+
+
+def udl_trigger(config):
+    file_watcher = Watcher()
+    file_watcher.set_conf(config)
+    while True:
+        print('Searching for new files')
+        udl_ready_files = file_watcher.find_udl_ready_files()
+        print('UDL ready files: {files} '.format(files=udl_ready_files))
+        time.sleep(float(Watcher.conf['file_system_scan_delay_in_seconds']))
 
 if __name__ == "__main__":
 
@@ -113,9 +214,10 @@ if __name__ == "__main__":
         'sftp_base_dir': '/sftp/opt/edware/home',
         'sftp_arrivals_dir': 'arrivals',
         'sftp_arrivals_sync_dir': 'arrivals_sync',
-        'file_pattern_to_watch': '*.gpg',
+        'file_patterns_to_watch': ['*.gpg', '*.gpg.done'],
         'file_stat_watch_internal_in_seconds': 1,
         'file_stat_watch_period_in_seconds': 5,
         'file_system_scan_delay_in_seconds': 2
     }
-    sftp_file_sync(conf)
+    #sftp_file_sync(conf)
+    udl_trigger(conf)

@@ -1,6 +1,7 @@
 from edudl2.udl2.W_load_from_integration_to_star import get_explode_to_tables_tasks,\
     create_target_schema
 from celery.canvas import chain
+from edudl2.udl2.W_tasks_utils import handle_group_results
 __author__ = 'swimberly'
 
 import os
@@ -51,7 +52,7 @@ class FTestMoveToTarget(UDLTestHelper):
         msg = self.create_msg(Constants.LOAD_TYPE_ASSESSMENT, self.guid_batch_asmt)
         dim_tasks = get_explode_to_tables_tasks(msg, 'dim')
         fact_tasks = get_explode_to_tables_tasks(msg, 'fact')
-        tasks = chain(create_target_schema.s(msg), dim_tasks, fact_tasks)
+        tasks = chain(create_target_schema.s(msg), dim_tasks, handle_group_results.s(), fact_tasks, handle_group_results.s())
         results = tasks.delay()
         results.get()
         self.verify_target_assessment_schema(self.guid_batch_asmt, False)

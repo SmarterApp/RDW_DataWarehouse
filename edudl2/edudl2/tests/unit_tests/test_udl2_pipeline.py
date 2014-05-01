@@ -7,8 +7,7 @@ import unittest
 from celery import chain
 from edudl2.udl2.constants import Constants
 
-MESSAGE_KEYS = ['start_timestamp', 'landing_zone_work_dir', 'load_type', 'batch_table',
-                'parts', 'guid_batch', 'input_file_path']
+MESSAGE_KEYS = ['landing_zone_work_dir', 'load_type', 'parts', 'guid_batch', 'input_file_path']
 
 
 class TestUDL2Pipeline(unittest.TestCase):

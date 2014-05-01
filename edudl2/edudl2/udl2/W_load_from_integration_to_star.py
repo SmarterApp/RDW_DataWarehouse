@@ -13,6 +13,7 @@ from edudl2.move_to_target.move_to_target import explode_data_to_dim_table, calc
     explode_data_to_fact_table, handle_duplicates_in_dimensions, create_target_schema_for_batch, handle_updates_and_deletes
 from celery.canvas import chord
 from edudl2.udl2.W_tasks_utils import handle_group_results
+from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
 
@@ -24,7 +25,9 @@ def create_target_schema(msg):
     """
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
+
     create_target_schema_for_batch(conf)
+
     end_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark
@@ -45,8 +48,10 @@ def get_explode_to_tables_tasks(msg, prefix):
     table_map, column_map = get_table_and_column_mapping(conf, 'explode to ' + prefix, prefix + '_')
     grouped_tasks = []
     for table, source_table in table_map.items():
-        grouped_tasks.append(task_name.subtask(args=(conf, source_table, table, column_map[table], get_table_column_types(conf, table, list(column_map[table].keys())))))
-    return chord(group(grouped_tasks), handle_group_results.s())
+        grouped_tasks.append(task_name.subtask(args=[conf, source_table, table, column_map[table], get_table_column_types(conf, table, list(column_map[table].keys()))]))
+    # TODO: This breaks local dev debugging for some reason
+    #return chord(group(grouped_tasks), handle_group_results.s())
+    return group(grouped_tasks)
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task", base=Udl2BaseTask)
@@ -156,7 +161,7 @@ def handle_record_upsert(msg):
 
 def _get_conf(msg):
     guid_batch = msg[mk.GUID_BATCH]
-    phase_number = msg[mk.PHASE]
+    phase_number = Constants.INT_TO_STAR_PHASE
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
     # if target schema name is specifically injected use that else use batch_guid as the schema name always

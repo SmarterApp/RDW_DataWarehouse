@@ -8,15 +8,12 @@ __author__ = 'sravi'
 
 import argparse
 import os
-import logging
-import logging.config
 import configparser
-from edsftp.src.sftp_config import sftp_conf
 from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
 from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
-from edsftp.scripts.watcher import sftp_file_sync
+from edsftp.scripts.sftp_watcher import sftp_file_sync
 
 
 def get_ini_file():

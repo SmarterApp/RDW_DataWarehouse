@@ -20,15 +20,15 @@ class TestWatcher(unittest.TestCase):
 
     def setUp(self):
         self.pattern = ['*.gpg', '*.gpg.done']
-        self.sftp_base_dir = tempfile.mkdtemp(prefix='sftp_base')
-        self.arrivals_dir = tempfile.mkdtemp(prefix='arrivals', dir=self.sftp_base_dir)
-        self.arrivals_rsync_dir = tempfile.mkdtemp(prefix='arrivals_rsync', dir=self.sftp_base_dir)
-        self.source_dir = os.path.join(self.sftp_base_dir, self.arrivals_dir)
-        self.dest_dir = os.path.join(self.sftp_base_dir, self.arrivals_rsync_dir)
+        self.base_dir = tempfile.mkdtemp(prefix='base')
+        self.source_dir = tempfile.mkdtemp(prefix='arrivals', dir=self.base_dir)
+        self.dest_dir = tempfile.mkdtemp(prefix='arrivals_sync', dir=self.base_dir)
+        self.source_path = os.path.join(self.base_dir, self.source_dir)
+        self.dest_path = os.path.join(self.base_dir, self.dest_dir)
         self.conf = {
-            'sftp_base_dir': self.sftp_base_dir,
-            'sftp_arrivals_dir': self.arrivals_dir,
-            'sftp_arrivals_sync_dir': self.arrivals_rsync_dir,
+            'base_dir': self.base_dir,
+            'source_dir': self.source_dir,
+            'dest_dir': self.dest_dir,
             'file_patterns_to_watch': self.pattern,
             'file_stat_watch_internal_in_seconds': 1,
             'file_stat_watch_period_in_seconds': 3,
@@ -36,15 +36,15 @@ class TestWatcher(unittest.TestCase):
         }
         self.test_sync = Watcher()
         self.test_sync.set_conf(self.conf)
-        self.tmp_dir_1 = tempfile.mkdtemp(prefix='tmp_1', dir=self.source_dir)
-        self.tmp_dir_2 = tempfile.mkdtemp(prefix='tmp_2', dir=self.source_dir)
+        self.tmp_dir_1 = tempfile.mkdtemp(prefix='tmp_1', dir=self.source_path)
+        self.tmp_dir_2 = tempfile.mkdtemp(prefix='tmp_2', dir=self.source_path)
         self.test_file_1 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern[0],
                                                        prefix='test_file_1', dir=self.tmp_dir_1)
         self.test_file_2 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern[0],
                                                        prefix='test_file_2', dir=self.tmp_dir_2)
 
     def tearDown(self):
-        shutil.rmtree(self.sftp_base_dir, ignore_errors=True)
+        shutil.rmtree(self.base_dir, ignore_errors=True)
 
     def test_clear_file_stats(self):
         self.test_sync.clear_file_stats()
@@ -95,9 +95,9 @@ class TestWatcher(unittest.TestCase):
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
         files_moved = self.test_sync.move_files()
         self.assertEqual(files_moved, 1)
-        self.assertEqual(len(os.listdir(self.dest_dir)), 1)
+        self.assertEqual(len(os.listdir(self.dest_path)), 1)
 
     def test_watch_and_move_files(self):
         files_moved = self.test_sync.watch_and_move_files()
         self.assertEqual(files_moved, 2)
-        self.assertEqual(len(os.listdir(self.dest_dir)), 2)
+        self.assertEqual(len(os.listdir(self.dest_path)), 2)

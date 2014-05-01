@@ -6,9 +6,8 @@ import time
 import shutil
 import hashlib
 import logging
-from edsftp.scripts.util import set_interval, Singleton
+from edcore.watch.util import set_interval, Singleton
 
-console = logging.StreamHandler()
 logger = logging.getLogger(__name__)
 
 WATCH_INTERVAL_IN_SECONDS = 2
@@ -28,8 +27,8 @@ class Watcher(metaclass=Singleton):
         cls.clear_file_stats()
         global WATCH_INTERVAL_IN_SECONDS
         WATCH_INTERVAL_IN_SECONDS = cls.conf['file_stat_watch_internal_in_seconds']
-        cls.source_dir = os.path.join(cls.conf['sftp_base_dir'], cls.conf['sftp_arrivals_dir'])
-        cls.dest_dir = os.path.join(cls.conf['sftp_base_dir'], cls.conf['sftp_arrivals_sync_dir'])
+        cls.source_path = os.path.join(cls.conf['base_dir'], cls.conf['source_dir'])
+        cls.dest_path = os.path.join(cls.conf['base_dir'], cls.conf['dest_dir']) if 'dest_dir' in cls.conf else None
 
     @staticmethod
     def get_file_stat(filename):
@@ -91,7 +90,7 @@ class Watcher(metaclass=Singleton):
 
     @classmethod
     def find_all_files(cls):
-        for root, dirs, files in os.walk(cls.source_dir):
+        for root, dirs, files in os.walk(cls.source_path):
             filtered_files = [filename for pattern in set(cls.conf['file_patterns_to_watch'])
                               for filename in fnmatch.filter(files, pattern)]
             for filename in filtered_files:
@@ -155,7 +154,7 @@ class Watcher(metaclass=Singleton):
     def move_files(cls):
         files_to_move = cls.get_file_stats().keys()
         for file in files_to_move:
-            destination_file_path = os.path.join(cls.dest_dir, os.path.relpath(file, cls.source_dir))
+            destination_file_path = os.path.join(cls.dest_path, os.path.relpath(file, cls.source_path))
             destination_file_directory = os.path.split(destination_file_path)[0]
             if not os.path.exists(destination_file_directory):
                 os.makedirs(destination_file_directory)
@@ -187,37 +186,3 @@ class Watcher(metaclass=Singleton):
         cls.filter_files_for_digest_mismatch()
         cls.filter_checksum_files()
         return cls.get_file_stats()
-
-
-def sftp_file_sync(config):
-    file_watcher = Watcher()
-    file_watcher.set_conf(config)
-    while True:
-        print('Searching for new files')
-        files_moved = file_watcher.watch_and_move_files()
-        print('Files Moved: {count} '.format(count=str(files_moved)))
-        time.sleep(float(Watcher.conf['file_system_scan_delay_in_seconds']))
-
-
-def udl_trigger(config):
-    file_watcher = Watcher()
-    file_watcher.set_conf(config)
-    while True:
-        print('Searching for new files')
-        udl_ready_files = file_watcher.find_udl_ready_files()
-        print('UDL ready files: {files} '.format(files=udl_ready_files))
-        time.sleep(float(Watcher.conf['file_system_scan_delay_in_seconds']))
-
-if __name__ == "__main__":
-
-    conf = {
-        'sftp_base_dir': '/sftp/opt/edware/home',
-        'sftp_arrivals_dir': 'arrivals',
-        'sftp_arrivals_sync_dir': 'arrivals_sync',
-        'file_patterns_to_watch': ['*.gpg', '*.gpg.done'],
-        'file_stat_watch_internal_in_seconds': 1,
-        'file_stat_watch_period_in_seconds': 5,
-        'file_system_scan_delay_in_seconds': 2
-    }
-    #sftp_file_sync(conf)
-    udl_trigger(conf)

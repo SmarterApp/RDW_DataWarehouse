@@ -28,7 +28,7 @@ class TestWatcher(unittest.TestCase):
         conf = {
             'sftp_base_dir': self.sftp_base_dir,
             'sftp_arrivals_dir': self.arrivals_dir,
-            'sftp_arrivals_rsync_dir': self.arrivals_rsync_dir,
+            'sftp_arrivals_sync_dir': self.arrivals_rsync_dir,
             'file_pattern_to_watch': self.pattern,
             'file_stat_watch_internal_in_seconds': 1,
             'file_stat_watch_period_in_seconds': 5,

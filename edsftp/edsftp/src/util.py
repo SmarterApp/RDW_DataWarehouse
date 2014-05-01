@@ -41,5 +41,3 @@ def group_exists(name):
 
 def change_owner(path, user, group):
     shutil.chown(path, user, group)
-
-

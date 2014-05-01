@@ -152,7 +152,7 @@ common:
         sftp_home: /
         sftp_base_dir: /sftp/opt/edware/home
         sftp_arrivals_dir: arrivals
-        sftp_arrivals_rsync_dir: arrivals_rsync
+        sftp_arrivals_sync_dir: arrivals_sync
         file_pattern_to_watch: '*.gpg'
         file_stat_watch_internal_in_seconds: 2
         file_stat_watch_period_in_seconds: 10

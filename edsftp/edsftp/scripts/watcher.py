@@ -31,7 +31,7 @@ class FileSync(metaclass=Singleton):
         global WATCH_INTERVAL_IN_SECONDS
         WATCH_INTERVAL_IN_SECONDS = FileSync.conf['file_stat_watch_internal_in_seconds']
         FileSync.source_dir = os.path.join(FileSync.conf['sftp_base_dir'], FileSync.conf['sftp_arrivals_dir'])
-        FileSync.dest_dir = os.path.join(FileSync.conf['sftp_base_dir'], FileSync.conf['sftp_arrivals_rsync_dir'])
+        FileSync.dest_dir = os.path.join(FileSync.conf['sftp_base_dir'], FileSync.conf['sftp_arrivals_sync_dir'])
 
     def clear_file_stats(self):
         self._file_stats.clear()
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     conf = {
         'sftp_base_dir': '/sftp/opt/edware/home',
         'sftp_arrivals_dir': 'arrivals',
-        'sftp_arrivals_rsync_dir': 'arrivals_rsync',
+        'sftp_arrivals_sync_dir': 'arrivals_rsync',
         'file_pattern_to_watch': '*.gpg',
         'file_stat_watch_internal_in_seconds': 1,
         'file_stat_watch_period_in_seconds': 5,

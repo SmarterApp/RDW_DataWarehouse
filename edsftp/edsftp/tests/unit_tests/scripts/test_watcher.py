@@ -25,18 +25,17 @@ class TestWatcher(unittest.TestCase):
         self.arrivals_rsync_dir = tempfile.mkdtemp(prefix='arrivals_rsync', dir=self.sftp_base_dir)
         self.source_dir = os.path.join(self.sftp_base_dir, self.arrivals_dir)
         self.dest_dir = os.path.join(self.sftp_base_dir, self.arrivals_rsync_dir)
-        conf = {
+        self.conf = {
             'sftp_base_dir': self.sftp_base_dir,
             'sftp_arrivals_dir': self.arrivals_dir,
             'sftp_arrivals_sync_dir': self.arrivals_rsync_dir,
             'file_pattern_to_watch': self.pattern,
             'file_stat_watch_internal_in_seconds': 1,
-            'file_stat_watch_period_in_seconds': 5,
-            'file_system_scan_delay_in_seconds': 3
+            'file_stat_watch_period_in_seconds': 3,
+            'file_system_scan_delay_in_seconds': 2
         }
-        self.test_sync = FileSync(conf)
-        FileSync.set_conf(conf)
-        self.test_sync.clear_file_stats()
+        self.test_sync = FileSync()
+        self.test_sync.set_conf(self.conf)
         self.tmp_dir_1 = tempfile.mkdtemp(prefix='tmp_1', dir=self.source_dir)
         self.tmp_dir_2 = tempfile.mkdtemp(prefix='tmp_2', dir=self.source_dir)
         self.test_file_1 = tempfile.NamedTemporaryFile(delete=False, suffix=self.pattern,
@@ -80,7 +79,7 @@ class TestWatcher(unittest.TestCase):
         time.sleep(2)
         self.test_file_1.write(b"test\n")
         self.test_file_1.flush()
-        time.sleep(5)
+        time.sleep(self.conf['file_stat_watch_period_in_seconds'])
         stop.set()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
 
@@ -91,7 +90,7 @@ class TestWatcher(unittest.TestCase):
         time.sleep(2)
         self.test_file_1.write(b"test\n")
         self.test_file_1.flush()
-        time.sleep(5)
+        time.sleep(self.conf['file_stat_watch_period_in_seconds'])
         stop.set()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
         files_moved = self.test_sync.move_files()

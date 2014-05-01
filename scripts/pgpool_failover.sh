@@ -18,4 +18,3 @@ wait_for_host_to_recover() {
 }
 
 wait_for_host_to_recover &
-~                          

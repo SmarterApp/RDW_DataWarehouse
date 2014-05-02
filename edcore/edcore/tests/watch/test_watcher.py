@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import time
 import os
+import hashlib
 from edcore.watch.watcher import Watcher
 
 
@@ -101,3 +102,48 @@ class TestWatcher(unittest.TestCase):
         files_moved = self.test_sync.watch_and_move_files()
         self.assertEqual(files_moved, 2)
         self.assertEqual(len(os.listdir(self.dest_path)), 2)
+
+    def _get_file_hash(self, test_file_path):
+        with open(test_file_path, 'rb') as f:
+            md5 = hashlib.md5()
+            for buf in iter(lambda: f.read(md5.block_size), b''):
+                md5.update(buf)
+            return md5.hexdigest(), md5.digest()
+
+    def _write_something_to_a_blank_file(self):
+        with tempfile.NamedTemporaryFile(delete=False, dir=self.tmp_dir_1, prefix='source', suffix='.tar.gz.gpg') as test_file:
+            self.assertEqual(self.test_sync.get_file_stat(test_file.name), 0)
+            test_file.write(b"test\n")
+            test_file.flush()
+            return test_file.name
+
+    def _create_checksum_file(self, source_file_path):
+        with open(source_file_path + '.done', 'wb') as checksum_file:
+            self.assertEqual(self.test_sync.get_file_stat(checksum_file.name), 0)
+            hex_digest, _ = self._get_file_hash(source_file_path)
+            checksum_file.write(bytes("MD5 =" + hex_digest, 'UTF-8'))
+            checksum_file.flush()
+            return checksum_file.name
+
+    def test_md5_for_file(self):
+        test_file_path = self._write_something_to_a_blank_file()
+        hex_digest, digest = self._get_file_hash(test_file_path)
+        self.assertEqual(self.test_sync.md5_for_file(test_file_path), hex_digest)
+        self.assertEqual(self.test_sync.md5_for_file(test_file_path, block_size=64, hex_digest=True), hex_digest)
+        self.assertEqual(self.test_sync.md5_for_file(test_file_path, hex_digest=False), digest)
+        self.assertEqual(self.test_sync.get_file_hash(test_file_path), hex_digest)
+
+    def test_file_contains_hash(self):
+        test_file_path = self._write_something_to_a_blank_file()
+        hex_digest, digest = self._get_file_hash(test_file_path)
+        check_sum_file_path = self._create_checksum_file(test_file_path)
+        self.assertTrue(self.test_sync.file_contains_hash(check_sum_file_path, hex_digest))
+
+    def test_valid_check_sum_with_no_checksum_file(self):
+        test_file_path = self._write_something_to_a_blank_file()
+        self.assertFalse(self.test_sync.valid_check_sum(test_file_path))
+
+    def test_valid_check_sum_with_valid_checksum_file(self):
+        test_file_path = self._write_something_to_a_blank_file()
+        _ = self._create_checksum_file(test_file_path)
+        self.assertTrue(self.test_sync.valid_check_sum(test_file_path))

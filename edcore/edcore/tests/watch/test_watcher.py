@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import time
 import os
-from edsftp.scripts.watcher import Watcher
+from edcore.watch.watcher import Watcher
 
 
 class TestWatcher(unittest.TestCase):

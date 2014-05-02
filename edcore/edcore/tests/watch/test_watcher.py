@@ -159,3 +159,53 @@ class TestWatcher(unittest.TestCase):
     def test_get_complement_file_name(self):
         self.assertEqual(self.test_sync.get_complement_file_name(self.test_file_1.name), self.test_file_1.name + ".done")
         self.assertEqual(self.test_sync.get_complement_file_name(self.test_file_1.name + ".done"), self.test_file_1.name)
+
+    def test_remove_files_from_dict(self):
+        test_file_path = self._write_something_to_a_blank_file()
+        checksum_file_path = self._create_checksum_file(test_file_path)
+        self.test_sync.find_all_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                                                           test_file_path: 5, checksum_file_path: 37})
+        self.test_sync.remove_file_from_dict(self.test_file_1.name)
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0, test_file_path: 5,
+                                                           checksum_file_path: 37})
+        self.test_sync.remove_file_pair_from_dict(test_file_path)
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
+        self.test_sync.remove_file_pair_from_dict(self.test_file_2.name)
+        self.assertEqual(self.test_sync.get_file_stats(), {})
+
+    def test_filter_files_for_digest_mismatch(self):
+        test_file_3_path = self._write_something_to_a_blank_file()
+        checksum_file_3_path = self._create_checksum_file(test_file_3_path)
+        test_file_4_path = self._write_something_to_a_blank_file()
+        checksum_file_4_path = self._create_checksum_file(test_file_4_path)
+        self.test_sync.find_all_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                                                           test_file_3_path: 5, checksum_file_3_path: 37,
+                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        self.test_sync.filter_files_for_digest_mismatch()
+        self.assertEqual(self.test_sync.get_file_stats(), {test_file_3_path: 5, checksum_file_3_path: 37,
+                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        test_file_5_path = self._write_something_to_a_blank_file()
+        checksum_file_5_path = self._create_checksum_file(test_file_5_path, valid_check_sum=False)
+        self.test_sync.find_all_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                                                           test_file_3_path: 5, checksum_file_3_path: 37,
+                                                           test_file_4_path: 5, checksum_file_4_path: 37,
+                                                           test_file_5_path: 5, checksum_file_5_path: 26})
+        self.test_sync.filter_files_for_digest_mismatch()
+        self.assertEqual(self.test_sync.get_file_stats(), {test_file_3_path: 5, checksum_file_3_path: 37,
+                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+
+    def test_filter_files_for_digest_mismatch(self):
+        test_file_3_path = self._write_something_to_a_blank_file()
+        checksum_file_3_path = self._create_checksum_file(test_file_3_path)
+        test_file_4_path = self._write_something_to_a_blank_file()
+        checksum_file_4_path = self._create_checksum_file(test_file_4_path)
+        self.test_sync.find_all_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                                                           test_file_3_path: 5, checksum_file_3_path: 37,
+                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        self.test_sync.filter_checksum_files()
+        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                                                           test_file_3_path: 5,test_file_4_path: 5})

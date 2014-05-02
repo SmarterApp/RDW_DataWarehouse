@@ -11,6 +11,7 @@ from edcore.watch.util import set_interval, Singleton
 logger = logging.getLogger(__name__)
 
 WATCH_INTERVAL_IN_SECONDS = 2
+CHECKSUM_FILE_EXTENSION = '.done'
 
 
 class Watcher(metaclass=Singleton):
@@ -73,12 +74,12 @@ class Watcher(metaclass=Singleton):
 
     @staticmethod
     def get_complement_file_name(file):
-        if fnmatch.fnmatch(file, '*.done'):
+        if fnmatch.fnmatch(file, '*' + CHECKSUM_FILE_EXTENSION):
             # return corresponding source file
-            return file.strip('.done')
+            return file.strip(CHECKSUM_FILE_EXTENSION)
         else:
             # return corresponding '.done' file
-            return ''.join([file, '.done'])
+            return ''.join([file, CHECKSUM_FILE_EXTENSION])
 
     @classmethod
     def clear_file_stats(cls):

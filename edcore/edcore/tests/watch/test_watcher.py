@@ -111,17 +111,20 @@ class TestWatcher(unittest.TestCase):
             return md5.hexdigest(), md5.digest()
 
     def _write_something_to_a_blank_file(self):
-        with tempfile.NamedTemporaryFile(delete=False, dir=self.tmp_dir_1, prefix='source', suffix='.tar.gz.gpg') as test_file:
+        with tempfile.NamedTemporaryFile(delete=False, dir=self.tmp_dir_1, prefix='source', suffix=self.pattern[0]) as test_file:
             self.assertEqual(self.test_sync.get_file_stat(test_file.name), 0)
             test_file.write(b"test\n")
             test_file.flush()
             return test_file.name
 
-    def _create_checksum_file(self, source_file_path):
+    def _create_checksum_file(self, source_file_path, valid_check_sum=True):
         with open(source_file_path + '.done', 'wb') as checksum_file:
             self.assertEqual(self.test_sync.get_file_stat(checksum_file.name), 0)
             hex_digest, _ = self._get_file_hash(source_file_path)
-            checksum_file.write(bytes("MD5 =" + hex_digest, 'UTF-8'))
+            if not valid_check_sum:
+                checksum_file.write(bytes("MD5 =" + 'aaavfi385etegdg83kdgd', 'UTF-8'))
+            else:
+                checksum_file.write(bytes("MD5 =" + hex_digest, 'UTF-8'))
             checksum_file.flush()
             return checksum_file.name
 
@@ -147,3 +150,12 @@ class TestWatcher(unittest.TestCase):
         test_file_path = self._write_something_to_a_blank_file()
         _ = self._create_checksum_file(test_file_path)
         self.assertTrue(self.test_sync.valid_check_sum(test_file_path))
+
+    def test_valid_check_sum_with_invalid_checksum_file(self):
+        test_file_path = self._write_something_to_a_blank_file()
+        _ = self._create_checksum_file(test_file_path, valid_check_sum=False)
+        self.assertFalse(self.test_sync.valid_check_sum(test_file_path))
+
+    def test_get_complement_file_name(self):
+        self.assertEqual(self.test_sync.get_complement_file_name(self.test_file_1.name), self.test_file_1.name + ".done")
+        self.assertEqual(self.test_sync.get_complement_file_name(self.test_file_1.name + ".done"), self.test_file_1.name)

@@ -9,7 +9,7 @@ common:
         broker: amqp://guest@localhost//    # this is the url to message broker. Currently it is located on localhost for rabbitmq
         backend: amqp://guest@localhost//   # this is the url to task results for each request. Currently it is located on localhost for rabbitmq
         include:
-            - edudl2.udl2.W_get_udl_file
+            - edudl2.udl2.W_schedule_pipeline
             - edudl2.udl2.W_file_arrived
             - edudl2.udl2.W_file_decrypter
             - edudl2.udl2.W_file_expander
@@ -74,6 +74,15 @@ common:
     global_sequence:
         batch_size: 100
         start_with: 20000
+    udl2_trigger:
+        base_dir: /opt/edware/zones/landing
+        source_dir: arrivals
+        file_patterns_to_watch:
+            - '*.gpg'
+            - '*.gpg.done'
+        file_stat_watch_internal_in_seconds: 2
+        file_stat_watch_period_in_seconds: 10
+        file_system_scan_delay_in_seconds: 10
         
 qa:
   '[app]':

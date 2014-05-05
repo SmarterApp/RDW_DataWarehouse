@@ -15,6 +15,7 @@ from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.constants import Constants
 
 
+@unittest.skip("Skipping muti files till the refactoring is completed around running multiple files in pipeline")
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):

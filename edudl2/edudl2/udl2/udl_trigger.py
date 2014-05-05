@@ -10,10 +10,16 @@ from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
 logger = logging.getLogger(__name__)
 
 
-#TODO: move this generic method to core and make edsftp also use the same
+# TODO: move this generic method to core and make edsftp also use the same
 def get_config_from_ini(config, config_prefix):
     """Filters and returns the configs starting with the prefix specified.
-    The key's in the returned config will exclude the prefix"""
+    The key's in the returned config will exclude the prefix
+
+    :param config: ini config
+    :param config_prefix: prefix string to look for in the config key
+
+    :returns dict: dictionary of configs starting with the prefix specified
+    """
     options = {}
     config_prefix_len = len(config_prefix)
     for key, val in config.items():
@@ -22,22 +28,14 @@ def get_config_from_ini(config, config_prefix):
     return options
 
 
-def get_udl_trigger_conf(config):
-    """massages the conf to make it usable for the Watcher core module
-
-    :param config: udl trigger config
-    """
-    udl_trigger_conf = get_config_from_ini(config, config_prefix='udl2_trigger.')
-    return {
-        'base_dir': udl_trigger_conf['base_dir'],
-        'source_dir': udl_trigger_conf['source_dir'],
-        'file_patterns_to_watch': udl_trigger_conf['file_patterns_to_watch'],
-        'file_stat_watch_internal_in_seconds': udl_trigger_conf['file_stat_watch_internal_in_seconds'],
-        'file_stat_watch_period_in_seconds': udl_trigger_conf['file_stat_watch_period_in_seconds'],
-        'file_system_scan_delay_in_seconds': udl_trigger_conf['file_system_scan_delay_in_seconds']}
-
-
 def udl_trigger(config):
+    """Runs the watcher script on the udl arrivals zone to schedule pipeline
+    when a file is ready
+
+    :param config: Entire udl2_conf as flat dictionary
+    """
+    # get the settings needed for the udl trigger alone
+    config = get_config_from_ini(config, config_prefix='udl2_trigger.')
     file_watcher = Watcher()
     file_watcher.set_conf(config)
     while True:
@@ -50,4 +48,4 @@ def udl_trigger(config):
 
 if __name__ == "__main__":
     """Dev testing entry point"""
-    udl_trigger(config=get_udl_trigger_conf(udl2_conf))
+    udl_trigger(config=udl2_conf)

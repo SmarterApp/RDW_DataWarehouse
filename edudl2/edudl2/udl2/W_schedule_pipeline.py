@@ -19,4 +19,3 @@ def schedule_pipeline(archive_file):
 
     logger.info('W_schedule_pipeline: Scheduling pipeline for file <%s>' % archive_file)
     udl2_pipeline.get_pipeline_chain(archive_file).delay()
-    return True

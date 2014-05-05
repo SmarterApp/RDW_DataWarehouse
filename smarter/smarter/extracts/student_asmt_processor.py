@@ -108,11 +108,6 @@ def process_sync_item_extract_request(params):
     if tasks:
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        # Synchronous calls to generate json and csv and then to archive
-        # BUG, it still routes to 'extract' queue due to chain
-#        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
-#                       route_tasks(tenant, request_id, tasks, queue_name=queue),
-#                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
         prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue, item_level=True)().get(timeout=celery_timeout)
         result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
@@ -127,30 +122,18 @@ def process_async_item_extraction_request(params, is_tenant_level=True):
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-    tasks = []
-    response = {}
-    task_responses = []
     request_id, user, tenant = processor.get_extract_request_user_info()
+    task_response = {Constants.STATECODE: params[Constants.STATECODE],
+                     Extract.EXTRACTTYPE: ExtractType.studentAssessment,
+                     Constants.ASMTSUBJECT: params[Constants.ASMTSUBJECT],
+                     Constants.ASMTTYPE: params[Constants.ASMTTYPE],
+                     Constants.ASMTYEAR: params[Constants.ASMTYEAR],
+                     Extract.REQUESTID: request_id}
+    extract_params = copy.deepcopy(params)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, tenant, extract_params,
+                                                                    task_response, is_tenant_level=is_tenant_level)
 
-    for s in params[Constants.ASMTSUBJECT]:
-        for t in params[Constants.ASMTTYPE]:
-            param = ({Constants.ASMTSUBJECT: s,
-                     Constants.ASMTTYPE: t,
-                     Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE][0]})
-
-            task_response = {Constants.STATECODE: param[Constants.STATECODE],
-                             Extract.EXTRACTTYPE: ExtractType.studentAssessment,
-                             Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
-                             Constants.ASMTTYPE: param[Constants.ASMTTYPE],
-                             Constants.ASMTYEAR: param[Constants.ASMTYEAR],
-                             Extract.REQUESTID: request_id}
-
-            # separate by grades if no grade is specified
-            __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
-            tasks += __tasks
-            task_responses += __task_responses
-
+    response = {}
     response['tasks'] = task_responses
     if len(tasks) > 0:
         # TODO: handle empty public key

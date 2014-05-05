@@ -25,7 +25,7 @@ def task(msg):
     logger.info('W_GET_CALLBACK_URL: Callback URL is <%s>' % callback_url)
     end_time = datetime.datetime.now()
 
-    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id), tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     outgoing_msg = {}

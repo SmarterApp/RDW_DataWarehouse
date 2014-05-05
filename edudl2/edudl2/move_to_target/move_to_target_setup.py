@@ -156,7 +156,6 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
     :param tenant_code: the tenants 2 letter code
     :return: A dictionary of the config details
     """
-    tenant_prod_db_info = get_tenant_prod_db_information(tenant_code)
     db_params_tuple = get_db_connection_params(udl2_conf['udl2_db_conn']['url'])
 
     conf = {
@@ -171,27 +170,12 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code, target_schem
         mk.SOURCE_DB_HOST: db_params_tuple[3],
         mk.SOURCE_DB_PORT: db_params_tuple[4],
         mk.SOURCE_DB_NAME: db_params_tuple[5],
-
         mk.SOURCE_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
-
         mk.TARGET_DB_SCHEMA: target_schema,
         mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
         mk.PHASE: int(phase_number),
         mk.LOAD_TYPE: load_type,
-        mk.TENANT_NAME: tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant'],
+        mk.TENANT_NAME: tenant_code,
+        mk.PROD_DB_SCHEMA: udl2_conf['prod_db_conn'][tenant_code]['db_schema']
     }
-    conf.update(tenant_prod_db_info)
-
     return conf
-
-
-def get_tenant_prod_db_information(tenant_code):
-    """
-    If multi-tenancy is on look in the Master metadata table to pull out
-    information about this tenant, otherwise get the target db info from udl2_conf
-    :param tenant_code: The code (2 char name) for the give tenant
-    :return: A dictionary containing the relevant connection information
-    """
-    tenant_code = tenant_code if udl2_conf['multi_tenant']['active'] else udl2_conf['multi_tenant']['default_tenant']
-
-    return {mk.PROD_DB_SCHEMA: udl2_conf['prod_db_conn'][tenant_code]['db_schema']}

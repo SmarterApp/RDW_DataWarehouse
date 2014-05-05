@@ -41,7 +41,7 @@ def task(incoming_msg):
     finish_time = datetime.datetime.now()
 
     # Benchmark
-    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time, task_id=str(task.request.id), tenant=incoming_msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file expander

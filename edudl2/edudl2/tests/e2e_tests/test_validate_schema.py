@@ -35,7 +35,7 @@ class ValidateSchemaChange(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        drop_target_schema(self.guid_batch_id)
+        #drop_target_schema('ca', self.guid_batch_id)
 
     # Run the pipeline
     def run_udl_pipeline(self):
@@ -70,8 +70,7 @@ class ValidateSchemaChange(unittest.TestCase):
 
     #Validate that for given batch guid data loded on star schema and student_rec_id in not -1
     def validate_edware_database(self):
-        with get_target_connection() as ed_connector:
-            ed_connector.set_metadata_by_reflect(self.guid_batch_id)
+        with get_target_connection('ca', self.guid_batch_id) as ed_connector:
             edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.guid_batch_id)
             output_val = select([edware_table.c.student_rec_id]).where(edware_table.c.batch_guid == self.guid_batch_id)

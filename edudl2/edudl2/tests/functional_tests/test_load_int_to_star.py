@@ -20,7 +20,7 @@ class IntToStarFTest(UDLTestHelper):
         self.guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         self.phase_number = 4
         self.load_type = 'assessment'
-        self.tenant_code = 'edware'
+        self.tenant_code = 'ca'
         self.conf = move_to_target_setup.generate_conf(self.guid_batch, self.phase_number,
                                                        self.load_type, self.tenant_code, target_schema=self.guid_batch)
         self.load_to_dim_task_name = "udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task"

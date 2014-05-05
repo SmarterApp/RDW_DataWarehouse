@@ -13,7 +13,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
 
     matched_prod_values = None
     guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-    tenant_code = 'edware'
+    tenant_code = 'ca'
 
     @classmethod
     def setUpClass(cls):
@@ -126,7 +126,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
             self.assertEqual(4, len(records_to_be_deleted))
 
     def test_match_all_records_to_be_deleted_with_prod(self):
-        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:
+        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection(MatchAndDeleteFTest.tenant_code) as prod_conn:
             records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
             proxy_rows = move_to_target.yield_records_to_be_deleted(prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
             result = []
@@ -135,7 +135,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
             self.assertEqual(4, len(result))
 
     def test_update_pre_prod_for_records_to_be_deleted(self):
-        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection() as prod_conn:
+        with get_target_connection(MatchAndDeleteFTest.tenant_code, MatchAndDeleteFTest.guid_batch) as target_conn, get_prod_connection(MatchAndDeleteFTest.tenant_code) as prod_conn:
             records_to_be_deleted = move_to_target.get_records_marked_for_deletion(self.conf, target_conn, 'fact_asmt_outcome')
             proxy_rows = move_to_target.yield_records_to_be_deleted(prod_conn, 'fact_asmt_outcome', records_to_be_deleted, batch_size=10)
             for rows in proxy_rows:

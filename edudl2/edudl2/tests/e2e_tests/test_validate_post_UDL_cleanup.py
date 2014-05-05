@@ -32,7 +32,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        drop_target_schema(self.batch_id)
+        drop_target_schema('ca', self.batch_id)
 
 # Validate that in Batch_Table for given guid every udl_phase output is Success
     def validate_UDL_database(self):
@@ -50,7 +50,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
 #Validate that for given guid data loded on star schema
     def validate_edware_database(self, schema_name):
-        with get_target_connection() as ed_connector:
+        with get_target_connection('ca') as ed_connector:
             ed_connector.set_metadata_by_reflect(schema_name)
             edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.batch_id)

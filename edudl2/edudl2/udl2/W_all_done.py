@@ -66,7 +66,7 @@ def task(msg):
     pipeline_status = mk.FAILURE if mk.PIPELINE_STATE in msg and msg[mk.PIPELINE_STATE] == 'error' else mk.SUCCESS
 
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE',
-                                    start_time, end_time, udl_phase_step_status=pipeline_status)
+                                    start_time, end_time, udl_phase_step_status=pipeline_status, tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     # record batch stats to udl stats table

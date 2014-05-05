@@ -18,7 +18,6 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.constants import Constants
 import json
-from edudl2.udl2.constants import Constants
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
 
@@ -75,7 +74,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             shutil.rmtree(self.tenant_dir)
         for batch in self.batches:
             try:
-                drop_target_schema(batch)
+                drop_target_schema('ca', batch)
             except:
                 pass
 
@@ -124,8 +123,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate the target table
     def validate_stu_reg_target_table(self, file_to_load):
-        with get_target_connection() as conn:
-            conn.set_metadata_by_reflect(self.batch_id)
+        with get_target_connection('ca', self.batch_id) as conn:
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([func.count()]).select_from(target_table)
             record_count = conn.execute(query).fetchall()[0][0]
@@ -133,9 +131,8 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate a student's data
     def validate_student_data(self, file_to_load):
-        with get_target_connection() as conn:
+        with get_target_connection('ca', self.batch_id) as conn:
             student = self.student_reg_files[file_to_load]['test_student']
-            conn.set_metadata_by_reflect(self.batch_id)
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,
                             target_table.c.gender, target_table.c.student_dob, target_table.c.dmg_eth_hsp,

@@ -18,7 +18,7 @@ def main():
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
     udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
     initialize_db_prod(udl2_conf)
-    load_data('edware')
+    load_data('ca')
 
 
 def load_data(tenant_name):

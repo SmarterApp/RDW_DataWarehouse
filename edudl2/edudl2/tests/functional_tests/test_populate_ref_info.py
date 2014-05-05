@@ -78,6 +78,6 @@ class PopulateRefInfoFTest(unittest.TestCase):
         with get_udl_connection() as conn:
             results = conn.execute(select_stmt)
 
-        for res in results:
-            self.assertEqual(res[1], proc_map[res[0]], 'Each row should have matching stored_proc and rule name')
-            self.assertIsNotNone(res[2], 'Stored proc created date should not be null')
+            for res in results:
+                self.assertEqual(res[1], proc_map[res[0]], 'Each row should have matching stored_proc and rule name')
+                self.assertIsNotNone(res[2], 'Stored proc created date should not be null')

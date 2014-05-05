@@ -31,8 +31,8 @@ class UDLTestHelper(unittest.TestCase):
         cls.truncate_udl_tables()
 
     @classmethod
-    def truncate_edware_tables(self):
-        with get_target_connection(schema_name='edware') as conn:
+    def truncate_edware_tables(self, tenant='ca'):
+        with get_target_connection(tenant, schema_name='edware') as conn:
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())
@@ -75,10 +75,10 @@ class UDLTestHelper(unittest.TestCase):
                             func.avg(cast(stg_outcome.c.score_claim_4_min, Integer)),
                             func.avg(cast(stg_outcome.c.score_claim_4_max, Integer))], from_obj=stg_outcome)
             result = conn.execute(query)
-        for row in result:
-            asmt_avgs = row
+            for row in result:
+                asmt_avgs = row
 
-        return asmt_avgs
+            return asmt_avgs
 
     def get_integration_asmt_score_avgs(self):
         with get_udl_connection() as conn:
@@ -99,10 +99,10 @@ class UDLTestHelper(unittest.TestCase):
                             func.avg(int_outcome.c.score_claim_4_min),
                             func.avg(int_outcome.c.score_claim_4_max)], from_obj=int_outcome)
             result = conn.execute(query)
-        for row in result:
-            asmt_avgs = row
+            for row in result:
+                asmt_avgs = row
 
-        return asmt_avgs
+            return asmt_avgs
 
     def get_edware_asmt_score_avgs(self, tenant, schema):
         with get_target_connection(tenant, schema) as conn:
@@ -123,10 +123,10 @@ class UDLTestHelper(unittest.TestCase):
                             func.avg(fact.c.asmt_claim_4_score_range_min),
                             func.avg(fact.c.asmt_claim_4_score_range_max)], from_obj=fact)
             result = conn.execute(query)
-        for row in result:
-            star_asmt_avgs = row
+            for row in result:
+                star_asmt_avgs = row
 
-        return star_asmt_avgs
+            return star_asmt_avgs
 
     def get_staging_demographic_counts(self):
         demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']

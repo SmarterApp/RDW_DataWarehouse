@@ -1,5 +1,5 @@
 from edudl2.udl2.W_load_from_integration_to_star import get_explode_to_tables_tasks,\
-    create_target_schema
+    prepare_target_schema
 from celery.canvas import chain
 from edudl2.udl2.W_tasks_utils import handle_group_results
 __author__ = 'swimberly'
@@ -25,7 +25,7 @@ class FTestMoveToTarget(UDLTestHelper):
 
     guid_batch_asmt = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
     guid_batch_sr = '75f1aa80-a459-406a-8529-c357ad0996ad'
-    tenant_code = 'edware'
+    tenant_code = 'ca'
 
     @classmethod
     def setUpClass(cls):
@@ -46,19 +46,17 @@ class FTestMoveToTarget(UDLTestHelper):
         pass
 
     def test_multi_tenant_move_to_target_assessment_data(self):
-        udl2_conf['multi_tenant']['active'] = True
         self.verify_target_assessment_schema(self.guid_batch_asmt, True)
         self.load_csv_data_to_integration(ASMT_OUTCOME_FILE, ASMT_FILE, 'int_sbac_asmt_outcome', 'int_sbac_asmt')
         msg = self.create_msg(Constants.LOAD_TYPE_ASSESSMENT, self.guid_batch_asmt)
         dim_tasks = get_explode_to_tables_tasks(msg, 'dim')
         fact_tasks = get_explode_to_tables_tasks(msg, 'fact')
-        tasks = chain(create_target_schema.s(msg), dim_tasks, handle_group_results.s(), fact_tasks, handle_group_results.s())
+        tasks = chain(prepare_target_schema.s(msg), dim_tasks, handle_group_results.s(), fact_tasks, handle_group_results.s())
         results = tasks.delay()
         results.get()
         self.verify_target_assessment_schema(self.guid_batch_asmt, False)
 
     def test_multi_tenant_move_to_target_student_registration_data(self):
-        udl2_conf['multi_tenant']['active'] = True
         self.verify_target_student_registration_schema(self.guid_batch_sr, True)
         self.load_csv_data_to_integration(SR_FILE, SR_META_FILE, 'int_sbac_stu_reg', 'int_sbac_stu_reg_meta')
         msg = self.create_msg(Constants.LOAD_TYPE_STUDENT_REGISTRATION, self.guid_batch_sr)

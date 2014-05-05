@@ -4,7 +4,7 @@ Created on Mar 28, 2014
 @author: bpatel
 '''
 from edudl2.udl2.celery import udl2_conf
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
+from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql import select, and_
 from edcore.database.stats_connector import StatsDBConnection
 import os

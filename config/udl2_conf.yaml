@@ -50,9 +50,6 @@ common:
         debug: FALSE
         audit: /opt/edware/log/udl2.audit.log  # for status log for everything
         error: /opt/edware/log/udl2.error.log  # for error message and exceptions,
-    multi_tenant:
-        active: False
-        default_tenant: edware
     quiet_mode: False
     passphrase: sbac udl2
     search_wait_time: 10
@@ -95,28 +92,19 @@ qa:
         url: postgresql://udl2:udl2abc1234@rbtmqudl0.qa.dum.edwdc.net:5432/udl2
         db_schema: udl2
     target_db_conn:
-        edware:
-            url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
-            db_schema: edware
         ca:
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
             db_schema: edware
-        func_tests:
-            url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
-            db_schema: edware
-    prod_db_conn:
-        edware:
+        cat:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware_es_1_6
+            db_schema: edware 
+    prod_db_conn:
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_es_1_6
         cat:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_es_1_6            
-        func_tests:
-            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
-            db_schema: edware_es_1_6
     gpg_home: /home/udl2/.gnupg
     edware_stats:
         db:
@@ -137,27 +125,13 @@ uat:
         url: postgresql://udl2:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/udl2
         db_schema: udl2
     target_db_conn:
-        edware:
-            url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
-            db_schema: edware
-            db_pass: xON.yw27aw
         ca:
             url: postgresql://edware:xON.yw27aw@drbtmqudl0.dmo.som.edwdc.net:5432/edware
             db_schema: edware
-            db_pass: xON.yw27aw
-        func_tests:
-            url: postgresql://edware:xON.yw27aw@rbtmqudl0.dmo.som.edwdc.net:5432/edware
-            db_schema: edware
     prod_db_conn:
-        edware:
-            url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
-            db_schema: edware_es_1_6
-            db_pass: xON.yw27aw
         ca:
             url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
-        cat:
-            url: postgresql://edware:xON.yw27aw@dwpool1.dmo.som.edwdc.net:6432/edware
     gpg_home: /home/udl2/.gnupg
     edware_stats:
         db:
@@ -181,27 +155,24 @@ development:
             schema_name: edware_stats
             url: postgresql://edware:edware2013@localhost:5432/edware_stats
     target_db_conn:
-        edware:
-            url: postgresql://edware:edware2013@localhost:5432/edware
-            db_schema: edware
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
-        func_tests:
+        cat:
+            url: postgresql://edware:edware2013@localhost:5432/edware
+            db_schema: edware
+        nc:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: ftest_test_schema
     prod_db_conn:
-        edware:
-            url: postgresql://edware:edware2013@localhost:5432/edware
-            db_schema: edware_prod
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
         cat:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
-        func_tests:
-            url: postgresql://edware:edware2013@localhost:5432/edware_functional_tests
+        nc:
+            url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod
     gpg_home: ~/.gnupg
     sr_notification_max_attempts: 5
@@ -225,26 +196,11 @@ jenksins_dev:
             schema_name: edware_stats
             url: postgresql://edware:edware2013@localhost:5432/edware_stats
     target_db_conn:
-        edware:
-            url: postgresql://edware:edware2013@localhost:5432/edware
-            db_schema: edware
         ca:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
-        func_tests:
-            url: postgresql://edware:edware2013@localhost:5432/edware
-            db_schema: ftest_test_schema
     prod_db_conn:
-        edware:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_12
         ca:
             url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
             db_schema: edware_sds_1_12_dog
-        cat:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware
-            db_schema: edware_sds_1_12_dog
-        func_tests:
-            url: postgresql://edware:edware2013@edwdbsrv4.poc.dum.edwdc.net:9999/edware_functional_tests
-            db_schema: edware_sds_1_12
     gpg_home: ~/.gnupg

@@ -7,22 +7,15 @@ Test Scenario: 1) Test file contains one record that is not exist in production.
                2) This test also verify that foregn keys into fact_asmt table is match to dim_tables 
                2) In second udl run, it will verify that duplicate records in fact_table is inactive. also in preprod dim tables status of duplicate record is S
 '''
-from sqlalchemy.schema import DropSchema
 import unittest
 import os
 import shutil
-from sqlalchemy.sql import select, and_
-from edudl2.udl2.celery import udl2_conf
+from sqlalchemy.sql import select
 import time
-from time import sleep
-import subprocess
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
-from integration_tests.migrate_helper import start_migrate,\
-    get_stats_table_has_migrated_ingested_status
-from edcore.database.stats_connector import StatsDBConnection
-from integration_tests.udl_helper import empty_batch_table, empty_stats_table, copy_file_to_tmp, run_udl_pipeline, \
-    check_job_completion, migrate_data, validate_edware_stats_table_after_mig, validate_udl_stats_before_mig, validate_udl_stats_after_mig
+from edudl2.database.udl2_connector import get_target_connection, get_prod_connection
+from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
+    migrate_data, validate_udl_stats_before_mig, validate_udl_stats_after_mig
 
 
 #@unittest.skip("skipping this test till till ready for jenkins")
@@ -35,6 +28,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_intelligent_insert.tar.gz.gpg')
+        self.tenant = 'cat'
         empty_batch_table(self)
         empty_stats_table(self)
 
@@ -82,8 +76,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
 
     # Validate preprod edware schema for foriegn key validation
     def validate_edware_database(self, schema_name):
-        with get_target_connection() as ed_connector:
-            ed_connector.set_metadata_by_reflect(schema_name)
+        with get_target_connection(self.tenant, schema_name) as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome')
             pre_prod_data = select([fact_table.c.student_rec_id, fact_table.c.inst_hier_rec_id, fact_table.c.asmt_rec_id])
             pre_prod_table = ed_connector.execute(pre_prod_data).fetchall()
@@ -124,8 +117,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
     # Validate preprod tables after second run of udl pipeline.
     # For duplicate data into dim tables status change to S
     def validate_prepod_tables(self, schema_name):
-        with get_target_connection() as connection:
-            connection.set_metadata_by_reflect(schema_name)
+        with get_target_connection(self.tenant, schema_name) as connection:
             fact_table = connection.get_table('fact_asmt_outcome')
             dim_inst_hier = connection.get_table('dim_inst_hier')
             dim_student = connection.get_table('dim_student')
@@ -143,7 +135,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
 
     # Validate prod after the first udl run for data has been migrated to production successfully.
     def validate_prod(self, guid_batch_id):
-        with get_prod_connection() as conn:
+        with get_prod_connection(self.tenant) as conn:
             fact_table = conn.get_table('fact_asmt_outcome')
             dim_asmt = conn.get_table('dim_asmt')
             dim_inst_hier = conn.get_table('dim_inst_hier')
@@ -162,7 +154,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
     # Validate prod dim tables and fact tables after second run of udl pipeleine.
     # This will verify that for duplicate records status changes to I (inactive)
     def validate_prod_after_sec_migration(self):
-        with get_prod_connection() as conn:
+        with get_prod_connection(self.tenant) as conn:
             fact_table = conn.get_table('fact_asmt_outcome')
             query = select([fact_table.c.rec_status]).where(fact_table.c.batch_guid == self.guid_batch_id)
             result = conn.execute(query).fetchall()

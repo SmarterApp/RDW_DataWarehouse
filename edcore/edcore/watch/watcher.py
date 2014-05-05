@@ -14,6 +14,7 @@ WATCH_INTERVAL_IN_SECONDS = 2
 CHECKSUM_FILE_EXTENSION = '.done'
 
 
+
 class Watcher(metaclass=Singleton):
     """File sync class to watch for complete files"""
     conf = None

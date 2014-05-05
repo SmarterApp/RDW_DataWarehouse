@@ -2,7 +2,7 @@ from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_queries
 from edcore.utils.utils import compile_query_to_sql_text
 from edextract.status.status import create_new_entry
 from edextract.tasks.extract import start_extract, archive, generate_extract_file_tasks, prepare_path
@@ -62,6 +62,75 @@ def process_async_extraction_request(params, is_tenant_level=True):
     task_responses = []
     state_code = params[Constants.STATECODE][0]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
+
+    for s in params[Constants.ASMTSUBJECT]:
+        for t in params[Constants.ASMTTYPE]:
+            param = ({Constants.ASMTSUBJECT: s,
+                     Constants.ASMTTYPE: t,
+                     Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
+                     Constants.STATECODE: params[Constants.STATECODE][0]})
+
+            task_response = {Constants.STATECODE: param[Constants.STATECODE],
+                             Extract.EXTRACTTYPE: ExtractType.studentAssessment,
+                             Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
+                             Constants.ASMTTYPE: param[Constants.ASMTTYPE],
+                             Constants.ASMTYEAR: param[Constants.ASMTYEAR],
+                             Extract.REQUESTID: request_id}
+
+            # separate by grades if no grade is specified
+            __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
+            tasks += __tasks
+            task_responses += __task_responses
+
+    response['tasks'] = task_responses
+    if len(tasks) > 0:
+        # TODO: handle empty public key
+        public_key_id = processor.get_encryption_public_key_identifier(tenant)
+        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
+        response['fileName'] = os.path.basename(archive_file_name)
+        directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
+        gatekeeper_id = processor.get_gatekeeper(tenant)
+        pickup_zone_info = processor.get_pickup_zone_info(tenant)
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue=queue)  # @UndefinedVariable
+    return response
+
+
+def process_sync_item_extract_request(params):
+    '''
+    TODO add doc string
+    '''
+    settings = get_current_registry().settings
+    queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
+    archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
+    request_id, user, tenant = processor.get_extract_request_user_info()
+    extract_params = copy.deepcopy(params)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, tenant, extract_params)
+    if tasks:
+        directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
+        celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
+        # Synchronous calls to generate json and csv and then to archive
+        # BUG, it still routes to 'extract' queue due to chain
+#        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
+#                       route_tasks(tenant, request_id, tasks, queue_name=queue),
+#                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
+        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue, item_level=True)().get(timeout=celery_timeout)
+        result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
+        return result.get(timeout=celery_timeout)
+    else:
+        raise NotFoundException("There are no results")
+
+
+def process_async_item_extraction_request(params, is_tenant_level=True):
+    '''
+    :param dict params: contains query parameter.  Value for each pair is expected to be a list
+    :param bool is_tenant_level:  True if it is a tenant level request
+    '''
+    queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
+    tasks = []
+    response = {}
+    task_responses = []
+    request_id, user, tenant = processor.get_extract_request_user_info()
 
     for s in params[Constants.ASMTSUBJECT]:
         for t in params[Constants.ASMTTYPE]:
@@ -182,12 +251,29 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     return tasks, task_responses
 
 
+def _create_item_level_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
+    '''
+    TODO comment
+    '''
+    tasks = []
+    task_responses = []
+    copied_task_response = copy.deepcopy(task_response)
+
+    query = get_extract_assessment_item_queries(param, 'NC')
+    tasks.append(_create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level,
+                                  extract_file_path=get_items_extract_file_path, item_level=True))
+    copied_task_response[Extract.STATUS] = Extract.OK
+    task_responses.append(copied_task_response)
+    return tasks, task_responses
+
+
 def _create_tasks(request_id, user, tenant, params, query, is_tenant_level=False):
     '''
     TODO comment
     '''
     tasks = []
-    tasks.append(_create_new_task(request_id, user, tenant, params, query, is_tenant_level=is_tenant_level))
+    tasks.append(_create_new_task(request_id, user, tenant, params, query, is_tenant_level=is_tenant_level,
+                                  extract_file_path=get_extract_file_path))
     tasks.append(_create_asmt_metadata_task(request_id, user, tenant, params))
     return tasks
 
@@ -200,7 +286,8 @@ def _create_asmt_metadata_task(request_id, user, tenant, params):
     return _create_new_task(request_id, user, tenant, params, query, asmt_metadata=True)
 
 
-def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False):
+def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=False, is_tenant_level=False,
+                     extract_file_path=None, item_level=False):
     '''
     TODO comment
     '''
@@ -211,8 +298,11 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
         task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
         task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_JSON
     else:
-        task[TaskConstants.TASK_FILE_NAME] = get_extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
-        task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_CSV
+        task[TaskConstants.TASK_FILE_NAME] = extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
+        if item_level:
+            task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_ITEMS_CSV
+        else:
+            task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_CSV
     return task
 
 
@@ -226,6 +316,16 @@ def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
                        currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
                        asmtYear=param[Constants.ASMTYEAR],
                        asmtGuid=param[Constants.ASMTGUID])
+    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
+
+
+def get_items_extract_file_path(param, tenant, request_id, is_tenant_level=False):
+    file_name = 'ITEMS_{asmtYear}_{asmtType}_{asmtSubject}_{asmtGrade}_{currentTime}.csv'.\
+                format(asmtYear=param[Constants.ASMTYEAR],
+                       asmtType=param[Constants.ASMTTYPE].upper(),
+                       asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                       asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
+                       currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
 
 

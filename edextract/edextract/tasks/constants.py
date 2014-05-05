@@ -10,6 +10,7 @@ class ExtractionDataType():
     SR_COMPLETION = 'StudentRegistrationCompletionReportCSV'
     QUERY_CSV = 'QueryCSVExtract'
     QUERY_JSON = 'QueryJSONExtract'
+    QUERY_ITEMS_CSV = 'QueryItemsCSVExtract'
 
 
 class Constants():

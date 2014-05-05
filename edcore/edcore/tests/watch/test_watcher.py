@@ -208,4 +208,4 @@ class TestWatcher(unittest.TestCase):
                                                            test_file_4_path: 5, checksum_file_4_path: 37})
         self.test_sync.filter_checksum_files()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
-                                                           test_file_3_path: 5,test_file_4_path: 5})
+                                                           test_file_3_path: 5, test_file_4_path: 5})

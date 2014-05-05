@@ -7,6 +7,21 @@ import edcore.database as edcoredb
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.database.udl2_connector import initialize_db_target, initialize_db_udl, initialize_db_prod
+from celery.loaders.base import BaseLoader
+
+
+class UDL2CeleryLoader(BaseLoader):
+    def on_worker_process_init(self):
+        '''
+        This method is called when a child process starts.
+        '''
+        # init db engine
+        initialize_db_udl(udl2_conf)
+        initialize_db_target(udl2_conf)
+        initialize_db_prod(udl2_conf)
+        # using edcore connection class to init statsdb connection
+        # this needs a flat config file rather than udl2 which needs nested config
+        edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf, allow_schema_create=True)
 
 
 def setup_udl2_queues(conf):
@@ -48,7 +63,8 @@ udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
 # the celery instance has to be named as celery due to celery driver looks for this object in celery.py
 # this is the default protocol between celery system and our implementation of tasks.
 
-celery = Celery(udl2_conf['celery']['root'],
+celery = Celery(loader=UDL2CeleryLoader,
+                udl2_conf['celery']['root'],
                 broker=udl2_conf['celery']['broker'],
                 backend=udl2_conf['celery']['backend'],
                 include=udl2_conf['celery']['include'])
@@ -59,13 +75,6 @@ celery = setup_celery_conf(udl2_conf, celery, udl2_queues)
 
 # TODO: Change udl2 to use edcore connection class for all connections
 
-# init db engine
-initialize_db_udl(udl2_conf)
-initialize_db_target(udl2_conf)
-initialize_db_prod(udl2_conf)
-# using edcore connection class to init statsdb connection
-# this needs a flat config file rather than udl2 which needs nested config
-edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf, allow_schema_create=True)
 
 if __name__ == '__main__':
     celery.start()

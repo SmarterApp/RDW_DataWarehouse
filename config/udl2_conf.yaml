@@ -77,9 +77,9 @@ common:
         file_patterns_to_watch:
             - '*.gpg'
             - '*.gpg.done'
-        file_stat_watch_internal_in_seconds: 2
-        file_stat_watch_period_in_seconds: 10
-        file_system_scan_delay_in_seconds: 10
+        file_stat_watch_internal: 2
+        file_stat_watch_period: 10
+        file_system_scan_delay: 10
         
 qa:
   '[app]':

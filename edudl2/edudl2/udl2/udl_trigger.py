@@ -2,30 +2,22 @@ __author__ = 'sravi'
 
 import time
 import logging
-from edcore.watch.watcher import Watcher
+from edcore.watch.watcher import FileWatcher
 from edudl2.udl2.W_schedule_pipeline import schedule_pipeline
 from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
+from edcore.utils.utils import get_config_from_ini
+from edcore.watch.constants import WatcherConstants as Const
 
 
 logger = logging.getLogger(__name__)
 
 
-# TODO: move this generic method to core and make edsftp also use the same
-def get_config_from_ini(config, config_prefix):
-    """Filters and returns the configs starting with the prefix specified.
-    The key's in the returned config will exclude the prefix
-
-    :param config: ini config
-    :param config_prefix: prefix string to look for in the config key
-
-    :returns dict: dictionary of configs starting with the prefix specified
-    """
-    options = {}
-    config_prefix_len = len(config_prefix)
-    for key, val in config.items():
-        if key.startswith(config_prefix):
-            options[key[config_prefix_len:]] = val
-    return options
+def _find_udl_ready_files(file_watcher):
+    file_watcher.find_all_files()
+    file_watcher.watch_files()
+    file_watcher.filter_files_for_digest_mismatch()
+    file_watcher.filter_checksum_files()
+    return file_watcher.get_file_stats()
 
 
 def udl_trigger(config):
@@ -35,16 +27,15 @@ def udl_trigger(config):
     :param config: Entire udl2_conf as flat dictionary
     """
     # get the settings needed for the udl trigger alone
-    config = get_config_from_ini(config, config_prefix='udl2_trigger.')
-    file_watcher = Watcher()
-    file_watcher.set_conf(config)
+    config = get_config_from_ini(config=config, config_prefix='udl2_trigger.')
+    file_watcher = FileWatcher(config)
     while True:
         print('Searching for new files')
-        udl_ready_files = file_watcher.find_udl_ready_files()
+        udl_ready_files = _find_udl_ready_files(file_watcher)
         print('UDL ready files: {files} '.format(files=udl_ready_files))
-        for file in udl_ready_files:
-            schedule_pipeline.delay(file)
-        time.sleep(float(Watcher.conf['file_system_scan_delay_in_seconds']))
+        #for file in udl_ready_files:
+            #schedule_pipeline.delay(file)
+        time.sleep(float(FileWatcher.conf[Const.FILE_SYSTEM_SCAN_DELAY]))
 
 if __name__ == "__main__":
     """Dev testing entry point"""

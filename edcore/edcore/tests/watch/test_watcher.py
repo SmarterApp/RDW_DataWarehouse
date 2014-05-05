@@ -6,7 +6,7 @@ import tempfile
 import time
 import os
 import hashlib
-from edcore.watch.watcher import Watcher
+from edcore.watch.watcher import FileWatcher
 
 
 class TestWatcher(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestWatcher(unittest.TestCase):
             'file_stat_watch_period_in_seconds': 3,
             'file_system_scan_delay_in_seconds': 2
         }
-        self.test_sync = Watcher()
+        self.test_sync = FileWatcher()
         self.test_sync.set_conf(self.conf)
         self.tmp_dir_1 = tempfile.mkdtemp(prefix='tmp_1', dir=self.source_path)
         self.tmp_dir_2 = tempfile.mkdtemp(prefix='tmp_2', dir=self.source_path)

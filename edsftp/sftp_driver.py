@@ -7,43 +7,12 @@ Module to initialize sftp zones and creating groups
 __author__ = 'sravi'
 
 import argparse
-import os
-import configparser
 from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
 from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
 from edsftp.scripts.sftp_watcher import sftp_file_sync
-
-
-def get_ini_file():
-    '''
-    Get ini file path name
-    '''
-    jenkins_ini = '/opt/edware/conf/smarter.ini'
-    if os.path.exists(jenkins_ini):
-        ini_file = jenkins_ini
-    else:
-        here = os.path.abspath(os.path.dirname(__file__))
-        ini_file = os.path.join(here, '../../config/development.ini')
-    return ini_file
-
-
-def read_ini(ini_file):
-    config = configparser.ConfigParser()
-    config.read(ini_file)
-    return config['app:main']
-
-
-def get_sftp_config_from_ini(settings):
-    sftp_options = {}
-    config_prefix = 'sftp.'
-    config_prefix_len = len(config_prefix)
-    for key, val in settings.items():
-        if key.startswith(config_prefix):
-            sftp_options[key[config_prefix_len:]] = val
-    return sftp_options
-
+from edcore.utils.utils import read_ini, get_config_from_ini
 
 if __name__ == "__main__":
     """
@@ -68,11 +37,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     file = args.ini_file
-    if file is None or not os.path.exists(file):
-        file = get_ini_file()
     #logging.config.fileConfig(file)
     settings = read_ini(file)
-    sftp_conf = get_sftp_config_from_ini(settings)
+    sftp_conf = get_config_from_ini(config=settings, config_prefix='sftp.')
 
     if args.driver_init_action:
         sftp_zone_init(sftp_conf)

@@ -149,16 +149,16 @@ common:
               exchange: direct
               key: extract_sync
     sftp:
-        sftp_home: /
-        sftp_base_dir: /sftp/opt/edware/home
-        sftp_arrivals_dir: arrivals
-        sftp_arrivals_sync_dir: arrivals_sync
+        home: /
+        base_dir: /sftp/opt/edware/home
+        arrivals_dir: arrivals
+        arrivals_sync_dir: arrivals_sync
         file_patterns_to_watch:
             - '*.gpg'
             - '*.gpg.done'
-        file_stat_watch_internal_in_seconds: 2
-        file_stat_watch_period_in_seconds: 10
-        file_system_scan_delay_in_seconds: 10
+        file_stat_watch_internal: 2
+        file_stat_watch_period: 10
+        file_system_scan_delay: 10
         sftp_departures_dir: departures
         sftp_filerouter_dir:
         user_home_base_dir: /opt/edware/home

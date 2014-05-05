@@ -19,9 +19,9 @@ class TestInitSFTPUser(unittest.TestCase):
     def setUp(self):
         self.__temp_dir = tempfile.mkdtemp()
         self.sftp_conf = {
-            'sftp_home': self.__temp_dir,
-            'sftp_base_dir': 'sftp/opt/edware/home',
-            'sftp_arrivals_dir': 'arrivals',
+            'home': self.__temp_dir,
+            'base_dir': 'sftp/opt/edware/home',
+            'arrivals_dir': 'arrivals',
             'sftp_departures_dir': 'departures',
             'sftp_filerouter_dir': '',
             'group': 'testgroup',

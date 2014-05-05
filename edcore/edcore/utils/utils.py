@@ -7,6 +7,7 @@ from copy import deepcopy
 from psycopg2.extensions import adapt as sqlescape
 from apscheduler.scheduler import Scheduler
 from sqlalchemy.sql.compiler import BIND_TEMPLATES
+import configparser
 
 
 def merge_dict(d1, d2):
@@ -107,3 +108,26 @@ def run_cron_job(settings, prefix, job):
             sched = Scheduler()
             sched.start()
             sched.add_cron_job(job, args=[settings], **cron_time)
+
+
+def read_ini(ini_file):
+    config = configparser.ConfigParser()
+    config.read(ini_file)
+    return config['app:main']
+
+
+def get_config_from_ini(config, config_prefix):
+    """Filters and returns the configs starting with the prefix specified.
+    The key's in the returned config will exclude the prefix
+
+    :param config: ini config
+    :param config_prefix: prefix string to look for in the config key
+
+    :returns dict: dictionary of configs starting with the prefix specified
+    """
+    options = {}
+    config_prefix_len = len(config_prefix)
+    for key, val in config.items():
+        if key.startswith(config_prefix):
+            options[key[config_prefix_len:]] = val
+    return options

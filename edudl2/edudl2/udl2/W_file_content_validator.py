@@ -28,7 +28,8 @@ def task(msg):
 
     end_time = datetime.datetime.now()
 
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
+                                    tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     return msg

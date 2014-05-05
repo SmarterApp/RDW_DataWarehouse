@@ -7,8 +7,7 @@ import subprocess
 import os
 import fnmatch
 import shutil
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
-    get_prod_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_prod_connection
 from sqlalchemy.sql import select
 from edudl2.udl2.celery import udl2_conf
 from sqlalchemy.sql.expression import and_
@@ -52,7 +51,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
             shutil.rmtree(self.tenant_dir)
 
     def delete_prod_tables(self):
-        with get_prod_connection() as conn:
+        with get_prod_connection('cat') as conn:
             # TODO: read from ini the name of schema
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
@@ -164,10 +163,9 @@ class TestUDLReportingIntegration(unittest.TestCase):
         Truncates the udl batch_table and all the tables from the edware database
         param connector: UDL database connection
         type connector: db connection
-        param ed_connector: Edware database connection
         type ed_connector: db connection
         '''
-        with get_target_connection() as ed_connector, get_udl_connection() as connector:
+        with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             result = connector.execute(batch_table.delete())
             query = select([batch_table])

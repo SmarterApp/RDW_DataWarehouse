@@ -31,7 +31,7 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
         try:
-            drop_target_schema(self.guid_batch_id)
+            drop_target_schema('ca', self.guid_batch_id)
         except:
             pass
 

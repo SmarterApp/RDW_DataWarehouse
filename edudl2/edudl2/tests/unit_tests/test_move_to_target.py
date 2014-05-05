@@ -6,8 +6,7 @@ from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2 import message_keys as mk
 from edudl2.move_to_target.create_queries import create_insert_query, create_sr_table_select_insert_query
-from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second,\
-    create_queries_for_move_to_fact_table
+from edudl2.move_to_target.move_to_target import calculate_spend_time_as_second
 from edudl2.move_to_target.move_to_target_setup import Column
 from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 import logging
@@ -39,22 +38,6 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
 
     def tearDown(self,):
         pass
-
-    def test_create_queries_for_move_to_fact_table(self):
-        guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'
-        conf = generate_conf(guid_batch, self.conf)
-        source_table = 'INT_SBAC_ASMT_OUTCOME'
-        target_table = 'fact_asmt_outcome'
-        column_mapping = get_expected_column_mapping(target_table)
-        # give value for 2 foreign keys
-        column_mapping['asmt_rec_id'] = '100'
-        column_mapping['section_rec_id'] = '1'
-        column_types = get_expected_column_types_for_fact_table(target_table)
-
-        queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
-
-        self.assertGreaterEqual(len(queries), 3)  # Drop constraints, insert, add constraints, up to 3 fk queries
-        self.assertLessEqual(len(queries), 6)  # Drop constraints, insert, add constraints, up to 3 fk queries
 
     def test_create_insert_query_for_dim_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'

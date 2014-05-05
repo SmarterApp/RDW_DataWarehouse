@@ -3,22 +3,18 @@ Created on Mar 7, 2014
 @author: bpatel
 Description: Deleting the same record in two different batches will lead to a successful first migration batch and failed second migration batch.
 '''
-from sqlalchemy.schema import DropSchema
 import unittest
 import os
 import shutil
 from sqlalchemy.sql import select, and_
-from edudl2.udl2.celery import udl2_conf
-from time import sleep
-import subprocess
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection, get_prod_connection
+from edudl2.database.udl2_connector import get_target_connection, get_prod_connection
 from integration_tests.migrate_helper import start_migrate,\
     get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql.expression import bindparam, text
-from integration_tests.udl_helper import empty_batch_table, empty_stats_table, copy_file_to_tmp, run_udl_pipeline, \
-    check_job_completion, migrate_data, validate_edware_stats_table_after_mig, validate_udl_stats_before_mig, validate_udl_stats_after_mig, validate_edware_stats_table_before_mig
+from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
+    validate_edware_stats_table_before_mig
 
 
 #@unittest.skip("skipping this test till till ready for jenkins")
@@ -31,6 +27,7 @@ class Test_Error_In_Migration(unittest.TestCase):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
+        self.tenant = 'cat'
 
     def test_migration_error_validation(self):
         '''
@@ -63,8 +60,7 @@ class Test_Error_In_Migration(unittest.TestCase):
 
     # Validate edware database : value in status column chnage to D from C.
     def validate_edware_database(self, schema_name):
-        with get_target_connection() as ed_connector:
-            ed_connector.set_metadata_by_reflect(schema_name)
+        with get_target_connection(self.tenant, schema_name) as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome')
             prod_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_output_table = ed_connector.execute(prod_output_data).fetchall()
@@ -84,8 +80,7 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Call migration
     def migrate_data(self):
         start_migrate()
-        tenant = 'cat'
-        results = get_stats_table_has_migrated_ingested_status(tenant)
+        results = get_stats_table_has_migrated_ingested_status(self.tenant)
 
     # Validate udl_stats table for migration success and failure
     # Validate that pre prod schema is delted in both the cases : migration success or migration failure
@@ -104,7 +99,7 @@ class Test_Error_In_Migration(unittest.TestCase):
             tpl_schema_name_2 = schema_name_result[1]
             schema_name_1 = tpl_schema_name_1[0]
             schema_name_2 = tpl_schema_name_2[0]
-            with get_target_connection() as connector:
+            with get_target_connection(self.tenant) as connector:
                     query = select(['schema_name'], from_obj=['information_schema.schemata']).where('schema_name in :a')
                     params = [bindparam('a', (schema_name_1, schema_name_2))]
                     new_query = text(str(query), bindparams=params)
@@ -113,7 +108,7 @@ class Test_Error_In_Migration(unittest.TestCase):
 
     #Validate edware_prod table for given student status has change to D for first batch.
     def validate_prod(self):
-        with get_prod_connection() as conn:
+        with get_prod_connection(self.tenant) as conn:
             fact_table = conn.get_table('fact_asmt_outcome')
             query = select([fact_table], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.rec_status == 'D'))
             result = conn.execute(query).fetchall()

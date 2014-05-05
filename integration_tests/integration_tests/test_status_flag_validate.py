@@ -4,14 +4,13 @@ Created on Mar 28, 2014
 @author: bpatel
 '''
 import unittest
-from integration_tests.udl_helper import empty_batch_table, empty_stats_table, copy_file_to_tmp, run_udl_pipeline, \
-    check_job_completion, migrate_data, validate_edware_stats_table_before_mig, validate_edware_stats_table_after_mig
+from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
+    migrate_data, validate_edware_stats_table_before_mig, validate_edware_stats_table_after_mig
 import os
 import shutil
 from uuid import uuid4
 from edudl2.database.udl2_connector import get_prod_connection
-from edcore.database.stats_connector import StatsDBConnection
-from sqlalchemy.sql import select, and_
+from sqlalchemy.sql import select
 
 
 class Test_Validate_Status_Flag(unittest.TestCase):
@@ -23,6 +22,7 @@ class Test_Validate_Status_Flag(unittest.TestCase):
         empty_stats_table(self)
         self.status_validation()
         self.first_guid = self.guid
+        self.tenant = 'cat'
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -45,7 +45,7 @@ class Test_Validate_Status_Flag(unittest.TestCase):
 
     def validate_edware_prod(self):
         second_guid = self.guid
-        with get_prod_connection() as connection:
+        with get_prod_connection(self.tenant) as connection:
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
             dim_inst_hier = connection.get_table('dim_inst_hier')
             dim_student = connection.get_table('dim_student')

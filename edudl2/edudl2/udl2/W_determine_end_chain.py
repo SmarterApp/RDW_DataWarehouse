@@ -31,7 +31,7 @@ def task(msg):
                     W_file_content_validator.task.s(),
                     W_load_json_to_integration.task.s(),
                     W_load_to_integration_table.task.s(),
-                    W_load_from_integration_to_star.create_target_schema.s()]
+                    W_load_from_integration_to_star.prepare_target_schema.s()]
 
     target_tasks = {"assessment": [W_load_from_integration_to_star.get_explode_to_tables_tasks(msg, 'dim'),
                                    W_tasks_utils.handle_group_results.s(),

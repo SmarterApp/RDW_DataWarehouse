@@ -28,7 +28,7 @@ def task(msg):
 
     # benchmark
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, size_records=affected_rows,
-                                    task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
+                                    task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA], tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file expander

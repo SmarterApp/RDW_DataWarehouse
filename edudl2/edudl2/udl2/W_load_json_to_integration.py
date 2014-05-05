@@ -46,7 +46,7 @@ def task(msg):
 
     # record benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time, task_id=str(task.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA], size_records=affected_rows)
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], size_records=affected_rows, tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
     # Update udl stats
     update_udl_stats(msg[mk.UDL_STATS_REC_ID], {UdlStatsConstants.LOAD_START: start_time, UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_LOADING})

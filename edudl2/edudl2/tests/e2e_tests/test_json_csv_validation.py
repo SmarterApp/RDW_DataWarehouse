@@ -14,14 +14,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from uuid import uuid4
 from time import sleep
 from multiprocessing import Process
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.celery import udl2_conf
 from sqlalchemy.sql.expression import and_, select
 from edudl2.udl2.constants import Constants
 
 FACT_TABLE = 'fact_asmt_outcome'
 file_to_path = ''
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/test_tenant/test_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/test_user/filedrop/'
 FILE_DICT = {}
 
 
@@ -38,7 +38,6 @@ class ValidateTableData(unittest.TestCase):
                      'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
                      'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
         self.archived_file = FILE_DICT
-        self.connector = get_target_connection()
         self.udl_connector = get_udl_connection()
         self.tenant_dir = TENANT_DIR
         here = os.path.dirname(__file__)
@@ -46,7 +45,6 @@ class ValidateTableData(unittest.TestCase):
 
     @classmethod
     def teardownClass(self):
-        self.connector.close_connection()
         self.udl_connector.close_connection()
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
@@ -58,7 +56,6 @@ class ValidateTableData(unittest.TestCase):
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         subprocess.call(command, shell=True)
         self.check_job_completion(self.udl_connector, guid_batch)
-        self.connect_to_star_shema(self.connector)
 
     #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, connector, guid_batch_id, max_wait=60):
@@ -80,15 +77,6 @@ class ValidateTableData(unittest.TestCase):
         else:
             os.makedirs(self.tenant_dir)
         return shutil.copy2(file_to_copy, self.tenant_dir)
-
-            #connect to star schmea after each of above udl run and verify that data has not been loaded into star schema
-    def connect_to_star_shema(self, connector):
-        # Connect to DB and make sure that star shma dont have any data
-        fact_table = connector.get_table(FACT_TABLE)
-        output = select([fact_table.c.batch_guid])
-        output_data = connector.execute(output).fetchall()
-        trp_str = (self.guid_batch_id,)
-        self.assertNotIn(trp_str, output_data, "assert successful")
 
     #In UDL_Batch Table,After each udl run verify that UDL_Complete task is Failure and Post_udl cleanup task is successful
     def verify_udl_failure(self, udl_connector, guid_batch_id):

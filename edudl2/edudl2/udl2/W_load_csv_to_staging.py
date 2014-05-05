@@ -25,7 +25,8 @@ def task(msg):
 
     #Record benchmark
     benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True, size_records=msg[mk.SIZE_RECORDS])
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True, size_records=msg[mk.SIZE_RECORDS],
+                                    tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     return msg

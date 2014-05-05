@@ -7,10 +7,9 @@ from edudl2.udl2.udl2_pipeline import get_pipeline_chain
 from edudl2.udl2.W_get_udl_file import get_next_file
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from edudl2.udl2.celery import celery
+from edudl2.udl2.celery import celery, udl2_conf
 import shutil
 import glob
-import tempfile
 
 
 def start_pipeline(archive_file=None, load_type='Unknown', file_parts=4, batch_guid_forced=None, tenant_dirs=None):
@@ -64,16 +63,17 @@ if __name__ == '__main__':
     parser.add_argument('--loop-dir', default=None, help='a parent directory of the tenant be observed. all child directories will be searched')
     args = parser.parse_args()
     if args.dev_mode:
+        # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
         celery.conf.update(CELERY_ALWAYS_EAGER=True)
         os.environ['PATH'] += os.pathsep + '/usr/local/bin'
-    if args.dev_mode and args.archive_file is None:
-        # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
-        src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
-        # Find the first tar.gz.gpg file as LZ file
-        file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
-        dest = os.path.join(tempfile.mkdtemp(), os.path.basename(file_name))
-        shutil.copy(file_name, dest)
-        args.archive_file = dest
+        if args.archive_file is None:
+            src_dir = os.path.join(os.path.dirname(__file__), '..', 'edudl2', 'tests', 'data', 'test_data_latest')
+            # Find the first tar.gz.gpg file as LZ file
+            file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
+            # Copy file to arrivals dir of ca tenant
+            dest = os.path.join(udl2_conf['zones']['arrivals'], 'ca', os.path.basename(file_name))
+            shutil.copy(file_name, dest)
+            args.archive_file = dest
 
     start_pipeline(args.archive_file, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced,
                    tenant_dirs=args.loop_dir)

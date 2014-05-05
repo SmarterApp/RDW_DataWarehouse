@@ -3,12 +3,11 @@ from sqlalchemy.exc import IntegrityError
 from edudl2.udl2 import message_keys as mk
 import datetime
 import logging
-from edschema.metadata.util import get_tables_starting_with, get_foreign_key_reference_columns
+from edschema.metadata.util import get_tables_starting_with
 from edcore.utils.utils import compile_query_to_sql_text
 from edudl2.exceptions.errorcodes import ErrorSource
 from edudl2.exceptions.udl_exceptions import DeleteRecordNotFound, UDLDataIntegrityError
 from config.ref_table_data import op_table_conf
-from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.move_to_target.move_to_target_setup import get_column_and_type_mapping
 from edudl2.database.udl2_connector import get_target_connection, get_udl_connection,\
     get_prod_connection
@@ -16,42 +15,22 @@ from edudl2.move_to_target.handle_upsert_helper import HandleUpsertHelper
 from edschema.metadata_generator import generate_ed_metadata
 import edschema.metadata.util as edschema_util
 from sqlalchemy import update
-from sqlalchemy.sql.expression import text, select, and_, tuple_
+from sqlalchemy.sql.expression import select, and_, tuple_
 from edcore.database.utils.utils import create_schema
 from edcore.database.utils.constants import Constants
 from edschema.metadata.util import get_primary_key_columns, get_natural_key, get_natural_key_columns
 from edudl2.move_to_target.create_queries import enable_trigger_query,\
     create_insert_query, update_foreign_rec_id_query, create_sr_table_select_insert_query
 
-FAKE_REC_ID = -1
 logger = logging.getLogger(__name__)
 
 
-def create_target_schema_for_batch(conf):
+def create_target_schema_for_batch(tenant, schema_name):
     """
     creates the target star schema needed for this batch
     """
-    with get_target_connection(conf[mk.TENANT_NAME]) as conn:
-        schema_name = conf[mk.TARGET_DB_SCHEMA]
+    with get_target_connection(tenant) as conn:
         create_schema(conn, generate_ed_metadata, schema_name)
-        conn.set_metadata_by_reflect(schema_name)
-        drop_foreign_keys_on_schema(conn, schema_name)
-
-
-def drop_foreign_keys_on_schema(conn, schema):
-    '''
-    Drop all foreign key constraints in a given schema
-    :param conn: SQLAlchemy connection
-    :param schema: Name of schema to drop foreign key constraints in
-    '''
-    meta = conn.get_metadata()
-    for table in meta.sorted_tables:
-        for constraint in get_foreign_key_reference_columns(table):
-            for fkey in constraint.foreign_keys:
-                sql = text('ALTER TABLE "{schema}".{table} DROP CONSTRAINT {constraint}'.format(schema=schema,
-                                                                                                table=table.name,
-                                                                                                constraint=fkey.name))
-                conn.execute(sql)
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
@@ -59,50 +38,26 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome
     The basic steps are:
     0. Get three foreign keys: asmt_rec_id, student_rec_id and section_rec_id
-    1. Disable trigger of table fact_asmt_outcome
-    2. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome. But for columns inst_hier_rec_id and student_rec_id ,
+    1. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome. But for columns inst_hier_rec_id and student_rec_id ,
        put the temporary value as -1
-    3. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
-    4. Update foreign key student_rec_id by comparing student_guid, batch_guid
-    5. Enable trigger of table fact_asmt_outcome
+    2. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
+    3. Update foreign key student_rec_id by comparing student_guid, batch_guid
     '''
-    # get list of queries to be executed
-    queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
+    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as conn:
+        # Drops FK
+        conn.execute(enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False))
 
-    # create database connection (connect to target)
-    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn:
-        # execute above four queries in order, 2 parts
-        # First part: Disable Trigger & Load Data
+        # create insertion insert_into_fact_table_query
+        result = conn.execute(create_insert_query(conf, source_table, target_table, column_mapping, column_types, False))
+        affected_rows = result.rowcount
 
-        inserted_rows = 0
-        start_time = datetime.datetime.now()
-        for query in queries:
-            logger.info(query)
-            q_start_time = datetime.datetime.now()
-            affected_rows = execute_udl_queries(conn, [query], 'Exception -- Query', 'move_to_target',
-                                                'explode_data_to_fact_table')
-            q_finish_time = datetime.datetime.now()
+        # update fact table's foreign key columns' id
+        fact_table = conn.get_table(target_table)
+        for fk in edschema_util.get_foreign_key_reference_columns(fact_table):
+            for query in update_foreign_rec_id_query(fk):
+                result = conn.execute(query)
 
-            if str(query).startswith('INSERT INTO'):
-                # Record the number of inserted rows and record a run-time benchmark for this query
-                inserted_rows = affected_rows[0]
-                benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                                'udl2.W_load_from_integration_to_star.explode_to_facts', q_start_time,
-                                                q_finish_time, working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                                udl_phase_step='Insert to fact query')
-                benchmark.record_benchmark()
-
-        finish_time = datetime.datetime.now()
-
-        # Record benchmark for whole operation
-        benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE],
-                                        'udl2.W_load_from_integration_to_star.explode_to_facts', start_time,
-                                        finish_time, working_schema=conf[mk.TARGET_DB_SCHEMA],
-                                        udl_phase_step='Populate fact table queries')
-        benchmark.record_benchmark()
-
-    # returns the number of rows that are inserted into fact table. It maps to the second query result
-    return inserted_rows
+    return affected_rows
 
 
 def get_asmt_rec_id(guid_batch, tenant_name, asmt_rec_id_info):
@@ -138,34 +93,6 @@ def get_asmt_rec_id(guid_batch, tenant_name, asmt_rec_id_info):
             asmt_rec_id = results[0][rec_id_column_name]
 
     return asmt_rec_id
-
-
-def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
-    '''
-    Main function to create four queries(in order) for moving data from integration table
-    INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome.
-    These four queries are corresponding to four steps described in method explode_data_to_fact_table().
-    @return: list of four queries
-    '''
-    # disable foreign key in fact table
-    queries = [enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)]
-
-    # create insertion insert_into_fact_table_query
-    insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types,
-                                                       False)
-    logger.info(insert_into_fact_table_query)
-    queries.append(insert_into_fact_table_query)
-
-    # update inst_hier_query back
-    with get_target_connection(conf[mk.TENANT_NAME], conf[mk.TARGET_DB_SCHEMA]) as conn:
-        trg_tbl = conn.get_table(target_table)
-        for fk in edschema_util.get_foreign_key_reference_columns(trg_tbl):
-            queries.extend(update_foreign_rec_id_query(fk))
-
-    # enable foreign key in fact table
-    queries.append(enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True))
-
-    return queries
 
 
 def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):

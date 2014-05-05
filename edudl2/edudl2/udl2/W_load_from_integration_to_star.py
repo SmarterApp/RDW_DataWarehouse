@@ -18,21 +18,23 @@ from edudl2.udl2.constants import Constants
 logger = get_task_logger(__name__)
 
 
-@celery.task(name='udl2.W_load_from_integration_to_star.create_target_schema', base=Udl2BaseTask)
-def create_target_schema(msg):
+@celery.task(name='udl2.W_load_from_integration_to_star.prepare_target_schema', base=Udl2BaseTask)
+def prepare_target_schema(msg):
     """
     Task to create target star schema
     """
     start_time = datetime.datetime.now()
     conf = _get_conf(msg)
+    tenant = conf[mk.TENANT_NAME]
+    schema = conf[mk.TARGET_DB_SCHEMA]
 
-    create_target_schema_for_batch(conf)
+    create_target_schema_for_batch(tenant, schema)
 
     end_time = datetime.datetime.now()
 
     # Create benchmark object ant record benchmark
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], create_target_schema.name, start_time, end_time,
-                                    task_id=str(create_target_schema.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], prepare_target_schema.name, start_time, end_time,
+                                    task_id=str(prepare_target_schema.request.id), working_schema=schema, tenant=tenant)
     benchmark.record_benchmark()
     return msg
 
@@ -75,7 +77,7 @@ def explode_data_to_dim_table_task(msg, conf, source_table, dim_table, column_ma
     udl_phase_step = 'INT --> DIM:' + dim_table
     benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], explode_data_to_dim_table_task.name, start_time, finish_time,
                                     udl_phase_step=udl_phase_step, size_records=affected_rows[0], task_id=str(explode_data_to_dim_table_task.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True)
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True, tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
     return msg
 
@@ -96,11 +98,9 @@ def explode_data_to_fact_table_task(msg, conf, source_table, fact_table, column_
     affected_rows = explode_data_to_fact_table(conf, source_table, fact_table, column_mapping, column_types)
     finish_time = datetime.datetime.now()
 
-    # Create benchmark object ant record benchmark
-    udl_phase_step = 'INT --> FACT:' + fact_table
     benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], explode_data_to_fact_table_task.name,
-                                    start_time, finish_time, udl_phase_step=udl_phase_step, size_records=affected_rows,
-                                    task_id=str(explode_data_to_fact_table_task.request.id),
+                                    start_time, finish_time, udl_phase_step='INT --> FACT:' + fact_table, size_records=affected_rows,
+                                    task_id=str(explode_data_to_fact_table_task.request.id), tenant=msg[mk.TENANT_NAME],
                                     working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True)
     benchmark.record_benchmark()
     return msg
@@ -127,7 +127,7 @@ def handle_deletions(msg):
 
     # Create benchmark object ant record benchmark
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], handle_deletions.name, start_time, finish_time,
-                                    udl_phase_step=udl_phase_step,
+                                    udl_phase_step=udl_phase_step, tenant=msg[mk.TENANT_NAME],
                                     task_id=str(handle_deletions.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
 
@@ -153,7 +153,7 @@ def handle_record_upsert(msg):
     udl_phase_step = 'Delete duplicate record in dim tables'
     benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], handle_record_upsert.name, start_time, finish_time,
                                     udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(handle_record_upsert.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA])
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     return msg
@@ -164,7 +164,6 @@ def _get_conf(msg):
     phase_number = Constants.INT_TO_STAR_PHASE
     load_type = msg[mk.LOAD_TYPE]
     tenant_name = msg[mk.TENANT_NAME]
-    # if target schema name is specifically injected use that else use batch_guid as the schema name always
-    target_schema = msg[mk.TARGET_DB_SCHEMA] if mk.TARGET_DB_SCHEMA in msg else msg[mk.GUID_BATCH]
+    target_schema = msg[mk.GUID_BATCH]
     conf = generate_conf(guid_batch, phase_number, load_type, tenant_name, target_schema)
     return conf

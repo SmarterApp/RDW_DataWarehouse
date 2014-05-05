@@ -9,14 +9,13 @@ Created on May 10, 2013
 
 @author: ejen
 '''
-from sqlalchemy.schema import CreateSequence, DropSequence, DropTable, DropSchema
+from sqlalchemy.schema import CreateSequence, DropSequence, DropSchema
 import argparse
 from config import ref_table_data, sr_ref_table_data
 from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.database.metadata.udl2_metadata import generate_udl2_sequences
-from edudl2.database.udl2_connector import get_target_connection, initialize_db_udl,\
-    initialize_db_target,\
+from edudl2.database.udl2_connector import initialize_db_udl,\
     get_udl_connection
 from edudl2.database.populate_ref_info import populate_ref_column_map,\
     populate_stored_proc
@@ -46,21 +45,6 @@ def drop_schema(schema_name):
     '''
     with get_udl_connection() as conn:
         conn.execute(DropSchema(schema_name, cascade=True))
-
-
-def drop_tables():
-    '''
-    drop tables according to configuration file
-    @param udl2_conf: The configuration dictionary for
-    '''
-    print("drop tables")
-    try:
-        with get_udl_connection() as conn:
-            metadata = conn.get_metadata()
-            for table in reversed(metadata.sorted_tables):
-                conn.execute(DropTable(table))
-    except Exception as e:
-        print("Error happens when tearing down tables: " + e)
 
 
 def create_udl2_sequence(schema_name):
@@ -105,25 +89,6 @@ def drop_foreign_data_wrapper_extension():
     print('drop foreign data wrapper extension')
     with get_udl_connection() as conn:
         conn.execute(text("DROP EXTENSION IF EXISTS file_fdw CASCADE"))
-
-
-def create_dblink_extension(cls):
-    '''
-    create dblink extension according to configuration file
-    @param udl2_conf: The configuration dictionary for
-    '''
-    print('create dblink extension')
-    with cls() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink"))
-
-
-def drop_dblink_extension(cls):
-    '''
-    drop dblink extension according to configuration file
-    '''
-    print('drop dblink extension')
-    with cls() as conn:
-        conn.execute(text("DROP EXTENSION IF EXISTS dblink CASCADE"))
 
 
 def create_foreign_data_wrapper_server(fdw_server):
@@ -180,10 +145,6 @@ def setup_udl2_schema(udl2_conf):
     create_foreign_data_wrapper_extension(udl2_schema_name)
     create_foreign_data_wrapper_server(Constants.UDL2_FDW_SERVER)
 
-    # Create dblink in pre-prod database
-    initialize_db_target(udl2_conf)
-    create_dblink_extension(get_target_connection)
-
     # load data and stored procedures into udl tables
     load_reference_data()
     load_stored_proc()
@@ -197,14 +158,9 @@ def teardown_udl2_schema(udl2_conf):
     # Tear down udl2 schema
     initialize_db_udl(udl2_conf)
     drop_udl2_sequences()
-    drop_tables()
     drop_foreign_data_wrapper_server(Constants.UDL2_FDW_SERVER)
     drop_foreign_data_wrapper_extension()
     drop_schema(udl2_conf['udl2_db_conn']['db_schema'])
-
-    # Drop dblink in pre-prod
-    initialize_db_target(udl2_conf)
-    drop_dblink_extension(get_target_connection)
 
 
 def main():

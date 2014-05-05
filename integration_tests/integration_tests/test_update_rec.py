@@ -22,6 +22,7 @@ class Test(unittest.TestCase):
         empty_stats_table(self)
         empty_batch_table(self)
         self.guid_batch_id = str(uuid4())
+        self.tenant = 'cat'
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -54,7 +55,7 @@ class Test(unittest.TestCase):
             self.assertEquals(result, expected_result)
 
     def validate_edware_prod(self):
-        with get_prod_connection() as connection:
+        with get_prod_connection(self.tenant) as connection:
             fact_table = connection.get_table('fact_asmt_outcome')
             dim_student = connection.get_table('dim_student')
             update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', fact_table.c.asmt_guid == '68177b81-a22a-4d53-a4e0-16d0da50937f'))

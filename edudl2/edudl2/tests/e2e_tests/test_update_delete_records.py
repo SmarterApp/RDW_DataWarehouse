@@ -73,8 +73,7 @@ class Test_Update_Delete(unittest.TestCase):
 
     # Validate edware database
     def validate_edware_database(self, schema_name):
-        with get_target_connection() as ed_connector:
-            ed_connector.set_metadata_by_reflect(schema_name)
+        with get_target_connection('ca', schema_name) as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome')
             delete_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()

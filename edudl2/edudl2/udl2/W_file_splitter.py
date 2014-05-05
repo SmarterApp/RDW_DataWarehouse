@@ -40,7 +40,7 @@ def task(incoming_msg):
     # Benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time,
                                     size_records=totalrows, size_units=filesize, udl_phase_step_status=mk.SUCCESS,
-                                    task_id=str(task.request.id))
+                                    task_id=str(task.request.id), tenant=incoming_msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the parallel file loader

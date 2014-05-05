@@ -1,6 +1,7 @@
 from edudl2.database.metadata.udl2_metadata import generate_udl2_metadata
 from edschema.database.connector import DBConnection
 from edschema.database.generic_connector import setup_db_connection_from_ini
+from sqlalchemy.sql.expression import text
 __author__ = 'swimberly'
 from edschema.metadata_generator import generate_ed_metadata
 
@@ -29,16 +30,16 @@ class UDL2DBConnection(DBConnection):
         return self.datasource_name
 
 
-def get_udl_connection(tenant='edware'):
+def get_udl_connection():
     '''
     Get UDL connection
     '''
-    return UDL2DBConnection(tenant=tenant, namespace=UDL_NAMESPACE)
+    return UDL2DBConnection(tenant=DEFAULT_TENANT, namespace=UDL_NAMESPACE)
 
 
-def get_target_connection(tenant='edware', schema_name=None):
+def get_target_connection(tenant, schema_name=None):
     '''
-    Get Target connection
+    Get Target pre-prod connection
     '''
     conn = UDL2DBConnection(tenant=tenant, namespace=TARGET_NAMESPACE)
     if schema_name:
@@ -46,10 +47,9 @@ def get_target_connection(tenant='edware', schema_name=None):
     return conn
 
 
-def get_prod_connection(tenant='edware'):
+def get_prod_connection(tenant):
     '''
-    Get Target connection
-    TODO: remove default tenant value. Client code should pass tenant name explicitly.
+    Get production connection
     '''
     return UDL2DBConnection(tenant, namespace=PRODUCTION_NAMESPACE)
 
@@ -60,6 +60,10 @@ def initialize_db_udl(udl2_conf, allow_create_schema=False):
 
 def initialize_db_target(udl2_conf):
     initialize_db(TARGET_NAMESPACE, generate_ed_metadata, True, udl2_conf)
+    # Install dblink extension on preprod database if it doesn't exist
+    for tenant in udl2_conf[TARGET_NAMESPACE]:
+        with get_target_connection(tenant) as conn:
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink"))
 
 
 def initialize_db_prod(udl2_conf):
@@ -78,11 +82,6 @@ def initialize_db(namespace, metadata_generator, allows_multiple_tenants, udl2_c
         # Get information for all tenants listed
         for tenant_name in udl2_conf[namespace]:
             create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator, tenant_name)
-
-        # add default tenant information to dict (this should already be listed)
-        default_tenant = udl2_conf['multi_tenant']['default_tenant']
-        create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator, default_tenant)
-
     else:
         create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator)
 
@@ -102,8 +101,8 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
     settings = {
         'url': tenant_dict['url'],
         'schema_name': tenant_dict['db_schema'],
-        'max_overflow': db_defaults['max_overflow'],
+        #'max_overflow': db_defaults['max_overflow'],
         'echo': db_defaults['echo'],
-        'pool_size': db_defaults['pool_size']
+        #'pool_size': db_defaults['pool_size']
     }
     setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

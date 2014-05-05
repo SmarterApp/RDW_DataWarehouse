@@ -22,7 +22,7 @@ class ValidateMultiFiles(unittest.TestCase):
         self.files = {'file1': os.path.join(path, 'test_source_file_tar_gzipped.tar.gz.gpg'),
                       'file2': os.path.join(path, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
                       'file3': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/edware/edware_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/nc/edware_user/filedrop/'
 
     #teardown tenant folder
     def tearDown(self):
@@ -64,11 +64,11 @@ class ValidateMultiFiles(unittest.TestCase):
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
             timer = 0
-            result = connector.execute(query).fetchall()
-            while timer < max_wait and len(result) <= len(self.files):
+            result = connector.get_result(query)
+            while timer < max_wait and len(result) < len(self.files.keys()):
                 sleep(0.25)
                 timer += 0.25
-                result = connector.execute(query).fetchall()
+                result = connector.get_result(query)
             print('Waited for', timer, 'second(s) for job to complete.')
 
     #Connect to UDL database through config_file
@@ -80,7 +80,7 @@ class ValidateMultiFiles(unittest.TestCase):
             number_of_guid = len(result)
             self.assertEqual(number_of_guid, 3)
             for batch in result:
-                drop_target_schema(batch[0])
+                drop_target_schema('nc', batch[0])
 
     #Test method for edware db
     def test_database(self):

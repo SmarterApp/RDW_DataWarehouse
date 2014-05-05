@@ -1,8 +1,7 @@
 import re
 from edudl2.udl2 import message_keys as mk
 from sqlalchemy.sql.expression import text, bindparam, select, and_
-from edudl2.database.udl2_connector import get_udl_connection, \
-    get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection
 from psycopg2.extensions import QuotedString
 from edudl2.udl2_util.database_util import create_filtered_sql_string
 import edschema.metadata.util as edschema_util
@@ -174,27 +173,6 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
                                                 where_statement=where_statement,
                                                 source_columns=source_columns)
     return insert_query
-
-
-def create_delete_query(tenant, schema_name, table_name, criteria=None):
-    '''
-    Create a query to delete a db table.
-
-    @param schema_name: DB schema name
-    @param table_name: DB table name
-    @param criteria: (optional) Delete criteria to apply
-                    This is a dictionary of pairs of field_name : field_value
-
-    @return Delete query
-    '''
-    with get_target_connection(tenant, schema_name) as conn:
-        table = conn.get_table(table_name)
-        query = table.delete()
-        if criteria:
-            expr = [k == v for k, v in criteria.items()]
-            query = query.where(and_(*expr))
-
-    return query
 
 
 def enable_trigger_query(schema_name, table_name, is_enable):

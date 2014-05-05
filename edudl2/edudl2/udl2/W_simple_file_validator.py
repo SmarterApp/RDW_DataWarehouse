@@ -39,7 +39,8 @@ def task(incoming_msg):
     end_time = datetime.datetime.now()
 
     # benchmark
-    benchmark = BatchTableBenchmark(guid_batch, incoming_msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(guid_batch, incoming_msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
+                                    tenant=incoming_msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to the file splitter

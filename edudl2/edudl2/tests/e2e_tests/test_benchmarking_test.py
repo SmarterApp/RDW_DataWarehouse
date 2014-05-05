@@ -28,7 +28,7 @@ class ValidateTableData(unittest.TestCase):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
         #self.connector.close_connection()
-        drop_target_schema(self.guid_batch_id)
+        drop_target_schema('ca', self.guid_batch_id)
 
     def empty_batch_table(self):
         with get_udl_connection() as connector:

@@ -30,7 +30,7 @@ def task(msg):
 
     # benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time, task_id=str(task.request.id),
-                                    working_schema="", size_records=affected_rows[0])
+                                    working_schema="", size_records=affected_rows[0], tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     outgoing_msg = {}

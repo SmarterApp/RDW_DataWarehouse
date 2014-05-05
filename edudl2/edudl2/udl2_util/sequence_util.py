@@ -5,9 +5,7 @@ from sqlalchemy import Sequence
 from sqlalchemy.sql import select
 from sqlalchemy.schema import CreateSequence
 from edudl2.database.udl2_connector import get_prod_connection
-from edudl2.move_to_target.move_to_target_setup import get_tenant_prod_db_information
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.constants import Constants
 
 # size of each sequence batch
@@ -27,8 +25,7 @@ class UDLSequence(object):
 
     def __init__(self, tenant_name, seq_name):
         self.tenant_name = tenant_name
-        schema = get_tenant_prod_db_information(tenant_name)
-        self.schema_name = schema[mk.PROD_DB_SCHEMA]
+        self.schema_name = udl2_conf['prod_db_conn'][tenant_name]['db_schema']
         self.seq_name = seq_name
         self.max_value = -1
         self.current = 0

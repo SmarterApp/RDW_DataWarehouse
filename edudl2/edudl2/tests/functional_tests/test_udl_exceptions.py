@@ -46,42 +46,46 @@ class UDLExceptionTest(UDLTestHelper):
         super(UDLExceptionTest, self).truncate_udl_tables()
 
     def get_err_list(self):
-        conn = get_udl_connection()
-        err_list_table = conn.get_table('err_list')
-        query = select([err_list_table]).where(err_list_table.c['guid_batch'].__eq__(self.guid_batch))
-        result = conn.execute(query)
-        return result
+        with get_udl_connection() as conn:
+            err_list_table = conn.get_table('err_list')
+            query = select([err_list_table]).where(err_list_table.c['guid_batch'].__eq__(self.guid_batch))
+            result = conn.get_result(query)
+            return result
 
     def get_udl_batch(self):
-        conn = get_udl_connection()
-        batch_table = conn.get_table('udl_batch')
-        query = select([batch_table]).where(batch_table.c['guid_batch'].__eq__(self.guid_batch))
-        result = conn.execute(query)
-        return result
+        with get_udl_connection() as conn:
+            batch_table = conn.get_table('udl_batch')
+            query = select([batch_table]).where(batch_table.c['guid_batch'].__eq__(self.guid_batch))
+            result = conn.get_result(query)
+            return result
 
     def test_insert_err_list_integrity_error(self):
         exc = UDLDataIntegrityError(self.guid_batch, self.insert_error_message, self.schema_table,
                                     self.error_source_delete_twice, self.udl_phase_step, self.working_schema)
         exc.insert_err_list('20140303')
-        res = self.get_err_list()
-        errors = res.fetchall()
+        errors = self.get_err_list()
         self.assertEqual(1, len(errors))
-        self.assertListEqual(errors, [(11339, '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7', 1001, 2,
-                                       'DATA_INTEGRITY_ERROR', 'DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE',
-                                       datetime.datetime(2014, 3, 3, 0, 0),
-                                       'student_guid:60ca47b5-527e-4cb0-898d-f754fd7099a0, '
-                                       'asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')])
+        self.assertEqual(errors[0]['record_sid'], 11339)
+        self.assertEqual(errors[0]['guid_batch'], '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7')
+        self.assertEqual(errors[0]['err_code'], 1001)
+        self.assertEqual(errors[0]['err_source'], 2)
+        self.assertEqual(errors[0]['err_code_text'], 'DATA_INTEGRITY_ERROR')
+        self.assertEqual(errors[0]['err_source_text'], 'DELETE_FACT_ASMT_OUTCOME_RECORD_MORE_THAN_ONCE')
+        self.assertEqual(errors[0]['created_date'], datetime.datetime(2014, 3, 3, 0, 0))
+        self.assertEqual(errors[0]['err_input'], 'student_guid:60ca47b5-527e-4cb0-898d-f754fd7099a0, asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')
 
     def test_insert_err_list__delete_record_not_found(self):
         exc = DeleteRecordNotFound(self.guid_batch, self.mismatched_rows, self.schema_table,
                                    self.error_source_mismatched, self.udl_phase_step, self.working_schema, 'asmt_outcome_rec_id')
         exc.insert_err_list('20140303')
         self.get_err_list()
-        res = self.get_err_list()
-        errors = res.fetchall()
+        errors = self.get_err_list()
         self.assertEqual(1, len(errors))
-        self.assertListEqual(errors, [(1000, '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7', 1000, 1,
-                                       'DELETE_RECORD_NOT_FOUND', 'MISMATCHED_FACT_ASMT_OUTCOME_RECORD',
-                                       datetime.datetime(2014, 3, 3, 0, 0),
-                                       'student_guid:60ca47b5-527e-4cb0-898d-f754fd7099a0, '
-                                       'asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')])
+        self.assertEqual(errors[0]['record_sid'], 1000)
+        self.assertEqual(errors[0]['guid_batch'], '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7')
+        self.assertEqual(errors[0]['err_code'], 1000)
+        self.assertEqual(errors[0]['err_source'], 1)
+        self.assertEqual(errors[0]['err_code_text'], 'DELETE_RECORD_NOT_FOUND')
+        self.assertEqual(errors[0]['err_source_text'], 'MISMATCHED_FACT_ASMT_OUTCOME_RECORD')
+        self.assertEqual(errors[0]['created_date'], datetime.datetime(2014, 3, 3, 0, 0))
+        self.assertEqual(errors[0]['err_input'], 'student_guid:60ca47b5-527e-4cb0-898d-f754fd7099a0, asmt_guid:7b7a8b43-17dc-4a0b-a37e-6170c08894a5')

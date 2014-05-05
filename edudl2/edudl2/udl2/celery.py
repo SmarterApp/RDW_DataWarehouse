@@ -63,11 +63,11 @@ udl2_conf, udl2_flat_conf = read_ini_file(config_path_file)
 # the celery instance has to be named as celery due to celery driver looks for this object in celery.py
 # this is the default protocol between celery system and our implementation of tasks.
 
-celery = Celery(loader=UDL2CeleryLoader,
-                udl2_conf['celery']['root'],
+celery = Celery(udl2_conf['celery']['root'],
                 broker=udl2_conf['celery']['broker'],
                 backend=udl2_conf['celery']['backend'],
-                include=udl2_conf['celery']['include'])
+                include=udl2_conf['celery']['include'],
+                loader=UDL2CeleryLoader)
 
 # Create all queues entities to be use by task functions
 udl2_queues = setup_udl2_queues(udl2_conf)

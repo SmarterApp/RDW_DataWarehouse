@@ -7,12 +7,10 @@ Created on Oct 21, 2013
 import unittest
 import os
 import shutil
+import sys
 from edsftp.src import configure_sftp_zone
 from edsftp.src import configure_sftp_groups
-from edsftp.src import sftp_config
-import sys
 from edsftp.src import initialize_sftp_tenant
-from edsftp.src.util import cleanup_directory
 from edsftp.src import initialize_sftp_user
 
 

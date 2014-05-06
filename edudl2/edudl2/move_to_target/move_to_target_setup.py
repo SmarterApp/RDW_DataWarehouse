@@ -3,8 +3,7 @@ __author__ = 'swimberly'
 from collections import OrderedDict, namedtuple
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2 import message_keys as mk
-from edudl2.move_to_target.create_queries import (get_dim_table_mapping_query, get_column_mapping_query,
-                                                  create_information_query)
+from edudl2.move_to_target.create_queries import get_dim_table_mapping_query, get_column_mapping_query
 from edudl2.udl2_util.database_util import execute_udl_query_with_result, get_db_connection_params
 from edudl2.database.udl2_connector import get_udl_connection
 from edudl2.udl2.constants import Constants
@@ -122,28 +121,14 @@ def get_table_column_types(conf, target_table, column_names):
     The values are column types with maximum length if it is defined in table.
     The pattern of the value is: <column_name data_type(length)> or <column_name data_type>
     '''
-
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     tenant = conf[mk.TENANT_NAME]
 
     with get_target_connection(tenant, conf[mk.GUID_BATCH]) as conn:
-        query = create_information_query(target_table)
-
-        try:
-            result = conn.execute(query)
-            for row in result:
-                column_name = row[0]
-                data_type = row[1]
-                character_maximum_length = row[2]
-
-                if column_name in column_types.keys():
-                    return_value = column_name + " " + data_type
-                    if character_maximum_length:
-                        return_value += "(" + str(character_maximum_length) + ")"
-                    column_types[column_name] = return_value
-        except Exception as e:
-            print('Exception in getting type', e)
-
+        table = conn.get_table(target_table)
+        for column in table.columns:
+            if column.name in column_types.keys():
+                column_types[column.name] = column.name + " " + str(column.type)
     return column_types
 
 

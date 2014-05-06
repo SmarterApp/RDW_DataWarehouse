@@ -230,19 +230,6 @@ def update_foreign_rec_id_query(fk_constraint):
     return queries
 
 
-def create_information_query(target_table):
-    '''
-    Main function to crate query to get column types in a table. 'information_schema.columns' is used.
-    '''
-    # TODO: Investigate what this is used for
-    query = text("SELECT column_name, data_type, character_maximum_length "
-                 "FROM information_schema.columns "
-                 "WHERE table_name = :target_table",
-                 bindparams=[bindparam('target_table', target_table)])
-
-    return query
-
-
 def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"

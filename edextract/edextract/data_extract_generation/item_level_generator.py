@@ -30,17 +30,18 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     items_root_dir = get_current_registry().settings.get('extract.item_level_base_dir', '/opt/edware/item_level')
 
-    with EdCoreDBConnection(tenant=tenant) as connection:
+    with EdCoreDBConnection(state_code=extract_args[TaskConstants.STATE_CODE]) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)
         results = connection.get_streaming_result(query)
 
         # Write the header to the file
         # TODO: Should not be hard coded
-        write_csv(output_file,
-                  ['position', 'segmentId', 'key', 'clientId', 'operational', 'isSelected', 'format', 'score',
-                   'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel', 'pageNumber', 'pageVisits',
-                   'pageTime', 'dropped'],
-                  [])
+        if not os.path.exists(output_file):
+            write_csv(output_file,
+                      ['position', 'segmentId', 'key', 'clientId', 'operational', 'isSelected', 'format', 'score',
+                       'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel', 'pageNumber', 'pageVisits',
+                       'pageTime', 'dropped'],
+                      [])
 
         # Open the file to stream it out
         with open(output_file, 'a') as out_file:

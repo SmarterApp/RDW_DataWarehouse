@@ -30,6 +30,16 @@ ITEM_EXTRACT_PARAMS = {
             "pattern": "^" + ExtractType.itemLevel + "$",
             "required": True
         },
+        Constants.STATECODE: {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z]{2}$"
+            },
+            "minItems": 1,
+            "uniqueItems": True,
+            "required": True,
+        },
         Constants.ASMTYEAR: {
             "type": "string",
             "pattern": "^\d{4}$",
@@ -50,11 +60,6 @@ ITEM_EXTRACT_PARAMS = {
             "pattern": "^[K0-9]+$",
             "maxLength": 2,
             "required": True,
-        },
-        Constants.STATECODE: {
-            "type": "string",
-            "pattern": "^[a-zA-Z]{2}$",
-            "required": False,
         },
         Extract.ASYNC: {
             "type": "string",
@@ -119,11 +124,11 @@ def send_extraction_request(params):
         # By default, it is a sync call
         is_async = params.get(Extract.ASYNC, False)
         if is_async:
-            if ExtractType.studentAssessment == params[Extract.EXTRACTTYPE]:
-                results = process_async_item_extraction_request(params)
-                response = Response(body=json.dumps(results), content_type='application/json')
+            results = process_async_item_extraction_request(params)
+            response = Response(body=json.dumps(results), content_type='application/json')
         else:
-            extract_params = {Constants.ASMTYEAR: params.get(Constants.ASMTYEAR),
+            extract_params = {Constants.STATECODE: params.get(Constants.STATECODE),
+                              Constants.ASMTYEAR: params.get(Constants.ASMTYEAR),
                               Constants.ASMTTYPE: params.get(Constants.ASMTTYPE),
                               Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT),
                               Constants.ASMTGRADE: params.get(Constants.ASMTGRADE)}

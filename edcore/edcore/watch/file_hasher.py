@@ -45,7 +45,7 @@ class MD5Hasher(FileHasher):
         super().__init__(block_size=block_size)
         self.hex_digest = hex_digest
 
-    def md5_for_file(self, file_path):
+    def _md5_for_file(self, file_path):
         """Returns md5 secure hash for the file specified
 
         :returns hexadecimal or binary digest of the file contents
@@ -65,9 +65,4 @@ class MD5Hasher(FileHasher):
         """
         if file_path is None or not os.path.exists(file_path):
             raise FileHasherException('Invalid file')
-        return self.md5_for_file(file_path)
-
-if __name__ == "__main__":
-    md5 = MD5Hasher()
-    print(md5.get_file_hash('/opt/edware/zones/landing/arrivals/ca/ca_user1/file_drop/test_source_file_tar_gzipped.tar.gz.gpg'))
-    print(md5.get_file_hash(None))
+        return self._md5_for_file(file_path)

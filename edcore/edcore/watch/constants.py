@@ -6,7 +6,7 @@ class WatcherConstants():
     constants related to watcher module
     """
 
-    FILE_STAT_WATCH_INTERVAL = 'file_stat_watch_internal'
+    FILE_STAT_WATCH_INTERVAL = 'file_stat_watch_interval'
     FILE_STAT_WATCH_PERIOD = 'file_stat_watch_period'
     FILE_SYSTEM_SCAN_DELAY = 'file_system_scan_delay'
     BASE_DIR = 'base_dir'

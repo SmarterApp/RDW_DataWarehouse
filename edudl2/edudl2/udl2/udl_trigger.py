@@ -33,8 +33,8 @@ def udl_trigger(config):
         print('Searching for new files')
         udl_ready_files = _find_udl_ready_files(file_watcher)
         print('UDL ready files: {files} '.format(files=udl_ready_files))
-        #for file in udl_ready_files:
-            #schedule_pipeline.delay(file)
+        for file in udl_ready_files:
+            schedule_pipeline.delay(file)
         time.sleep(float(FileWatcher.conf[Const.FILE_SYSTEM_SCAN_DELAY]))
 
 if __name__ == "__main__":

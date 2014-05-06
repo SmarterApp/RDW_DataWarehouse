@@ -5,7 +5,7 @@ import fnmatch
 import time
 import shutil
 import logging
-from edcore.watch.util import set_interval, Singleton, FileUtil
+from edcore.watch.util import set_interval, FileUtil
 from edcore.watch.file_hasher import MD5Hasher
 from edcore.watch.constants import WatcherConstants as Const
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 WATCH_INTERVAL = 2
 
 
-class FileWatcher(metaclass=Singleton):
+class FileWatcher():
     """File sync class to watch for complete files"""
     conf = None
     file_stats = {}

@@ -77,7 +77,7 @@ common:
         file_patterns_to_watch:
             - '*.gpg'
             - '*.gpg.done'
-        file_stat_watch_internal: 2
+        file_stat_watch_interval: 2
         file_stat_watch_period: 10
         file_system_scan_delay: 10
         

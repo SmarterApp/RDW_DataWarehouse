@@ -236,7 +236,7 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp
   '[handlers]':
     keys: console, filelog, audit, security_event
 
@@ -281,6 +281,11 @@ common:
     level: INFO
     handlers: filelog
     qualname: edmigrate
+
+  '[logger_edsftp]':
+    level: INFO
+    handlers: filelog
+    qualname: edsftp
 
   '[logger_security_event]':
     level: INFO
@@ -433,6 +438,10 @@ qa:
     level: WARN
     handlers: syslog
     qualname: edmigrate
+  '[logger_edsftp]':
+    level: WARN
+    handlers: syslog
+    qualname: edsftp
 
 jenkins_qa:
   '[app:main]':
@@ -571,6 +580,10 @@ uat:
     level: WARN
     handlers: syslog
     qualname: edmigrate
+  '[logger_edsftp]':
+    level: WARN
+    handlers: syslog
+    qualname: edsftp
 
 localOpenAM:
   '[app:main]':

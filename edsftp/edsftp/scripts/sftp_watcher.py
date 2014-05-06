@@ -36,6 +36,8 @@ def sftp_file_sync(config):
     :param config: sftp config needed for file sync
     """
     file_watcher = FileWatcher(get_conf(config))
+    logger.info('Starting SFTP file sync loop {source_dir} => {dest_dir}'.format(
+        source_dir=config[SFTPConst.ARRIVALS_DIR], dest_dir=config[SFTPConst.ARRIVALS_SYNC_DIR]))
     while True:
         try:
             logger.debug('Searching for new files in {source_dir}'.format(source_dir=config[SFTPConst.ARRIVALS_DIR]))

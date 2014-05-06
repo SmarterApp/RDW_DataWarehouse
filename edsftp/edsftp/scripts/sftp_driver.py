@@ -8,6 +8,7 @@ __author__ = 'sravi'
 
 import argparse
 import logging
+import logging.config
 from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
 from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
@@ -51,7 +52,7 @@ def main():
     args = parser.parse_args()
 
     file = args.ini_file
-    #logging.config.fileConfig(file)
+    logging.config.fileConfig(file)
     settings = read_ini(file)
     sftp_conf = get_config_from_ini(config=settings, config_prefix='sftp.')
 

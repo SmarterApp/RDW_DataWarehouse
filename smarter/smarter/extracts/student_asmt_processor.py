@@ -122,18 +122,12 @@ def process_async_item_extraction_request(params, is_tenant_level=True):
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-    request_id, user, tenant = processor.get_extract_request_user_info()
-    task_response = {Constants.STATECODE: params[Constants.STATECODE],
-                     Extract.EXTRACTTYPE: ExtractType.studentAssessment,
-                     Constants.ASMTSUBJECT: params[Constants.ASMTSUBJECT],
-                     Constants.ASMTTYPE: params[Constants.ASMTTYPE],
-                     Constants.ASMTYEAR: params[Constants.ASMTYEAR],
-                     Extract.REQUESTID: request_id}
-    extract_params = copy.deepcopy(params)
-    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, tenant, extract_params,
-                                                                    task_response, is_tenant_level=is_tenant_level)
-
     response = {}
+    state_code = params[Constants.STATECODE][0]
+    request_id, user, tenant = processor.get_extract_request_user_info(state_code)
+    extract_params = copy.deepcopy(params)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, tenant, extract_params)
+
     response['tasks'] = task_responses
     if len(tasks) > 0:
         # TODO: handle empty public key

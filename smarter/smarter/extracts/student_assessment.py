@@ -168,5 +168,5 @@ def get_extract_assessment_item_queries(params, state_code):
         query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
         query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
-        query = apply_filter_to_query(query, fact_asmt_outcome, params)
+        query = apply_filter_to_query(query, fact_asmt_outcome, params)  # Filters demographics
     return query

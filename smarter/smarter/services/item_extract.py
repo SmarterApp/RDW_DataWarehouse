@@ -16,8 +16,10 @@ from smarter.reports.helpers.constants import AssessmentType, Constants
 from smarter.extracts.student_asmt_processor import process_async_item_extraction_request,\
     process_sync_item_extract_request
 from smarter.extracts.constants import ExtractType, Constants as Extract
+from smarter.reports.helpers.filters import FILTERS_CONFIG
 from datetime import datetime
 import logging
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +75,7 @@ ITEM_EXTRACT_PARAMS = {
         }
     }
 }
+ITEM_EXTRACT_PARAMS['properties'].update(FILTERS_CONFIG)
 
 
 @view_config(route_name='assessment_item_level', request_method='POST')
@@ -127,11 +130,7 @@ def send_extraction_request(params):
             results = process_async_item_extraction_request(params)
             response = Response(body=json.dumps(results), content_type='application/json')
         else:
-            extract_params = {Constants.STATECODE: params.get(Constants.STATECODE),
-                              Constants.ASMTYEAR: params.get(Constants.ASMTYEAR),
-                              Constants.ASMTTYPE: params.get(Constants.ASMTTYPE),
-                              Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT),
-                              Constants.ASMTGRADE: params.get(Constants.ASMTGRADE)}
+            extract_params = copy.deepcopy(params)
             zip_file_name = generate_zip_file_name(extract_params)
             content = process_sync_item_extract_request(extract_params)
             response = Response(body=content, content_type='application/octet-stream')

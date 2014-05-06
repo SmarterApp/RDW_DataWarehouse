@@ -6,16 +6,13 @@ This module contains the logic to write to an Assessment CSV or JSON extract fil
 
 from itertools import chain
 import json
-import os
-import csv
 
-from edextract.utils.csv_writer import write_csv, append_csv
+from edextract.utils.csv_writer import write_csv
 from edextract.utils.json_formatter import format_json
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
-from pyramid.threadlocal import get_current_registry
 import logging
 
 logger = logging.getLogger(__name__)
@@ -61,51 +58,6 @@ def generate_json(tenant, output_file, task_info, extract_args):
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.GENERATED_JSON})
         else:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: "Results length is: " + str(len(results))})
-
-
-def generate_items_csv(tenant, output_file, task_info, extract_args):
-    """
-    Write item-level data to CSV file
-
-    @param tenant: Requestor's tenant ID
-    @param output_file: File pathname of extract file
-    @param task_info: Task information for recording stats
-    @param extract_args: Arguments specific to generate_json
-    """
-    # Get stuff
-    query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
-    items_root_dir = get_current_registry().settings.get('extract.item_level_base_dir', '/opt/edware/item_level')
-
-    with EdCoreDBConnection(tenant=tenant) as connection:
-        # Get results
-        results = connection.get_result(query)
-
-        # Write the header to the file
-        write_csv(output_file,
-                  ['position', 'segmentId', 'key', 'clientId', 'operational', 'isSelected', 'format', 'score',
-                   'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel', 'pageNumber', 'pageVisits',
-                   'pageTime', 'dropped'],
-                  [])
-
-        # Read through to get item level files
-        for result in results:
-            # Build path to file
-            path = os.path.join(items_root_dir, str(result['code_state']).upper(), str(result['asmt_year']),
-                                str(result['asmt_type']).upper(), str(result['effective_date']),
-                                str(result['asmt_subject']).upper(), str(result['grade_asmt']),
-                                str(result['guid_district']), (str(result['guid_student']) + '.csv'))
-
-            # If the file exists, read file and append to CSV
-            if os.path.exists(path):
-                rows = []
-                with open(path, 'r') as csv_file:
-                    csvreader = csv.reader(csv_file, quoting=csv.QUOTE_MINIMAL)
-                    for row in csvreader:
-                        rows.append(row)
-                append_csv(output_file, rows[1:])
-
-        # Done
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
 def _generate_csv_data(results):

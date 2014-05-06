@@ -55,8 +55,8 @@ common:
     search_wait_time: 10
     db_defaults:
       echo: False
-      max_overflow: 10
-      pool_size: 20
+      max_overflow: 0
+      pool_size: 2
     student_reg_guid_key:
         studentregistration: identification.guid
     reg_system_id_key:
@@ -146,9 +146,6 @@ development:
             schema_name: edware_stats
             url: postgresql://edware:edware2013@localhost:5432/edware_stats
     target_db_conn:
-        ca:
-            url: postgresql://edware:edware2013@localhost:5432/edware
-            db_schema: edware
         cat:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
@@ -156,9 +153,6 @@ development:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: ftest_test_schema
     prod_db_conn:
-        ca:
-            url: postgresql://edware:edware2013@localhost:5432/edware
-            db_schema: edware_prod
         cat:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware_prod

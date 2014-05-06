@@ -13,10 +13,11 @@ import shutil
 from sqlalchemy.sql import select
 import time
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_target_connection, get_prod_connection
+from edudl2.database.udl2_connector import get_target_connection, get_prod_connection,\
+    initialize_all_db
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
     migrate_data, validate_udl_stats_before_mig, validate_udl_stats_after_mig
-
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 #@unittest.skip("skipping this test till till ready for jenkins")
 class Test_Intelligent_Insert(unittest.TestCase):
@@ -29,6 +30,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_intelligent_insert.tar.gz.gpg')
         self.tenant = 'cat'
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         empty_batch_table(self)
         empty_stats_table(self)
 

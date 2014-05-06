@@ -8,11 +8,11 @@ import os
 import shutil
 import subprocess
 from time import sleep
-from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 from sqlalchemy.sql import select, and_
-from edudl2.udl2.celery import udl2_conf
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.constants import Constants
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 class ValidateMultiFiles(unittest.TestCase):
@@ -23,6 +23,7 @@ class ValidateMultiFiles(unittest.TestCase):
                       'file2': os.path.join(path, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
                       'file3': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/nc/edware_user/filedrop/'
+        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     #teardown tenant folder
     def tearDown(self):
@@ -39,7 +40,6 @@ class ValidateMultiFiles(unittest.TestCase):
 
     #Run UDL
     def udl_run(self):
-        self.conf = udl2_conf
         self.copy_file_to_tmp()
         arch_file = self.tenant_dir
         here = os.path.dirname(__file__)

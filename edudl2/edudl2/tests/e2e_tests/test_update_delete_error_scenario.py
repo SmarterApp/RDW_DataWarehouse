@@ -10,28 +10,29 @@ import os
 import shutil
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql import select, and_
-from edudl2.udl2.celery import udl2_conf
 from time import sleep
 import subprocess
 from uuid import uuid4
 import unittest
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
-from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 from edudl2.udl2.constants import Constants
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 class Test_Err_Handling_Scenario(unittest.TestCase):
 
     def setUp(self):
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
         self.err_list = 'err_list'
+        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
         try:
-            drop_target_schema('ca', self.guid_batch_id)
+            drop_target_schema('cat', self.guid_batch_id)
         except:
             pass
 
@@ -63,7 +64,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
 
     #Run UDL pipeline with file in tenant dir
     def run_udl_pipeline(self, guid_batch_id, file_to_load):
-        self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp(file_to_load)
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")

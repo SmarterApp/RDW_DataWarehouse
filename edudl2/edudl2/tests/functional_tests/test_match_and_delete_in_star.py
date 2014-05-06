@@ -13,7 +13,7 @@ class MatchAndDeleteFTest(UDLTestHelper):
 
     matched_prod_values = None
     guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-    tenant_code = 'ca'
+    tenant_code = 'cat'
 
     @classmethod
     def setUpClass(cls):

@@ -8,13 +8,15 @@ import os
 import shutil
 from sqlalchemy.sql import select, and_
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_target_connection, get_prod_connection
+from edudl2.database.udl2_connector import get_target_connection, get_prod_connection,\
+    initialize_all_db
 from integration_tests.migrate_helper import start_migrate,\
     get_stats_table_has_migrated_ingested_status
 from edcore.database.stats_connector import StatsDBConnection
 from sqlalchemy.sql.expression import bindparam, text
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, \
     validate_edware_stats_table_before_mig
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 #@unittest.skip("skipping this test till till ready for jenkins")
@@ -28,6 +30,7 @@ class Test_Error_In_Migration(unittest.TestCase):
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_delete_record.tar.gz.gpg')
         self.tenant = 'cat'
+        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def test_migration_error_validation(self):
         '''

@@ -31,7 +31,7 @@ class UDLTestHelper(unittest.TestCase):
         cls.truncate_udl_tables()
 
     @classmethod
-    def truncate_edware_tables(self, tenant='ca'):
+    def truncate_edware_tables(self, tenant='cat'):
         with get_target_connection(tenant, schema_name='edware') as conn:
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):

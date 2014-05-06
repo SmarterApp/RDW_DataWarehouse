@@ -1,6 +1,6 @@
 from edudl2.udl2.udl2_pipeline import get_pipeline_chain
-from edudl2.udl2.celery import udl2_conf
-from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
+from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 __author__ = 'swimberly'
 
 import unittest
@@ -13,6 +13,7 @@ MESSAGE_KEYS = ['landing_zone_work_dir', 'load_type', 'parts', 'guid_batch', 'in
 class TestUDL2Pipeline(unittest.TestCase):
 
     def setUp(self):
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         self.udl_connector = get_udl_connection()
         batch_table = self.udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
         self.udl_connector.execute(batch_table.delete())

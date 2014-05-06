@@ -5,6 +5,8 @@ import unittest
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import os
 from edudl2.udl2_util.config_reader import read_ini_file
+from edudl2.database.udl2_connector import initialize_all_db
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 class UnitTestSimpleFileValidator(unittest.TestCase):
@@ -16,6 +18,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         conf_tup = read_ini_file(config_path)
         self.conf = conf_tup[0]
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 
     def test_simple_file_validator_passes_for_valid_assmt_csv(self):

@@ -10,7 +10,7 @@ from edudl2.tests.functional_tests.util import UDLTestHelper
 class TestSequenceUtil(UDLTestHelper):
 
     def setUp(self):
-        self.test_tenant = "ca"
+        self.test_tenant = "cat"
         self.sequence_guid = str(uuid.uuid4())
 
     @classmethod

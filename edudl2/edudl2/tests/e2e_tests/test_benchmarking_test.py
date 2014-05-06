@@ -7,28 +7,27 @@ import unittest
 import subprocess
 import os
 import shutil
-from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 from sqlalchemy.sql import select
-from edudl2.udl2.celery import udl2_conf
 from time import sleep
 from uuid import uuid4
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
 from edudl2.udl2.constants import Constants
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 class ValidateTableData(unittest.TestCase):
     def setUp(self):
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
-        #self.connector = get_udl_connection()
         self.guid_batch_id = str(uuid4())
+        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        #self.connector.close_connection()
-        drop_target_schema('ca', self.guid_batch_id)
+        drop_target_schema('cat', self.guid_batch_id)
 
     def empty_batch_table(self):
         with get_udl_connection() as connector:
@@ -40,7 +39,6 @@ class ValidateTableData(unittest.TestCase):
             self.assertEqual(number_of_row, 0)
 
     def run_udl_pipeline(self):
-        self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")

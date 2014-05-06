@@ -7,9 +7,10 @@ import subprocess
 import os
 import fnmatch
 import shutil
-from edudl2.database.udl2_connector import get_udl_connection, get_prod_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_prod_connection,\
+    initialize_all_db
 from sqlalchemy.sql import select
-from edudl2.udl2.celery import udl2_conf
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 from sqlalchemy.sql.expression import and_
 import unittest
 from integration_tests.migrate_helper import start_migrate,\
@@ -29,6 +30,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("Emptying out prod tables")
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         cls.delete_prod_tables(cls)
 
     def setUp(self):

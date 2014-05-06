@@ -2,8 +2,9 @@ from edudl2.database.metadata.udl2_metadata import generate_udl2_metadata
 from edschema.database.connector import DBConnection
 from edschema.database.generic_connector import setup_db_connection_from_ini
 from sqlalchemy.sql.expression import text
-__author__ = 'swimberly'
+import edcore.database as edcoredb
 from edschema.metadata_generator import generate_ed_metadata
+from edcore.database.stats_connector import StatsDBConnection
 
 
 UDL_NAMESPACE = 'udl2_db_conn'
@@ -54,6 +55,16 @@ def get_prod_connection(tenant):
     return UDL2DBConnection(tenant, namespace=PRODUCTION_NAMESPACE)
 
 
+def initialize_all_db(udl2_conf, udl2_flat_conf):
+    # init db engine
+    initialize_db_udl(udl2_conf)
+    initialize_db_target(udl2_conf)
+    initialize_db_prod(udl2_conf)
+    # using edcore connection class to init statsdb connection
+    # this needs a flat config file rather than udl2 which needs nested config
+    edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf, allow_schema_create=True)
+
+
 def initialize_db_udl(udl2_conf, allow_create_schema=False):
     initialize_db(UDL_NAMESPACE, generate_udl2_metadata, False, udl2_conf, allow_create_schema)
 
@@ -101,8 +112,8 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
     settings = {
         'url': tenant_dict['url'],
         'schema_name': tenant_dict['db_schema'],
-        #'max_overflow': db_defaults['max_overflow'],
+        'max_overflow': db_defaults['max_overflow'],
         'echo': db_defaults['echo'],
-        #'pool_size': db_defaults['pool_size']
+        'pool_size': db_defaults['pool_size']
     }
     setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

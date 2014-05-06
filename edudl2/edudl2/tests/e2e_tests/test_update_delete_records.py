@@ -5,14 +5,15 @@ Created on Feb 28, 2014
 '''
 import os
 import shutil
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
+    initialize_all_db
 from sqlalchemy.sql import select, and_
-from edudl2.udl2.celery import udl2_conf
 from time import sleep
 import subprocess
 from uuid import uuid4
 import unittest
 from edudl2.udl2.constants import Constants
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 #@unittest.skip("test failed at jenkins, under investigation")
@@ -20,9 +21,10 @@ class Test_Update_Delete(unittest.TestCase):
 
     def setUp(self):
         self.guid_batch_id = str(uuid4())
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
         self.data_dir = os.path.join(os.path.dirname(__file__), "..", "data", "update_delete_files")
         self.archived_file = os.path.join(self.data_dir, 'test_update_delete_record.tar.gz.gpg')
+        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
@@ -41,7 +43,6 @@ class Test_Update_Delete(unittest.TestCase):
 
     #Run UDL pipeline with file in tenant dir
     def run_udl_pipeline(self):
-        self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
@@ -73,7 +74,7 @@ class Test_Update_Delete(unittest.TestCase):
 
     # Validate edware database
     def validate_edware_database(self, schema_name):
-        with get_target_connection('ca', schema_name) as ed_connector:
+        with get_target_connection('cat', schema_name) as ed_connector:
             fact_table = ed_connector.get_table('fact_asmt_outcome')
             delete_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()

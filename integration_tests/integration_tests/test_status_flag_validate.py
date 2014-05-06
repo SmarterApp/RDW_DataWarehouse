@@ -9,8 +9,10 @@ from integration_tests.udl_helper import empty_batch_table, empty_stats_table, r
 import os
 import shutil
 from uuid import uuid4
-from edudl2.database.udl2_connector import get_prod_connection
+from edudl2.database.udl2_connector import get_prod_connection,\
+    initialize_all_db
 from sqlalchemy.sql import select
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
 class Test_Validate_Status_Flag(unittest.TestCase):
@@ -19,6 +21,7 @@ class Test_Validate_Status_Flag(unittest.TestCase):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user/filedrop'
         self.data_dir = os.path.join(os.path.dirname(__file__), "data")
         self.archived_file = os.path.join(self.data_dir, 'test_status_flag.tar.gz.gpg')
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         empty_stats_table(self)
         self.status_validation()
         self.first_guid = self.guid

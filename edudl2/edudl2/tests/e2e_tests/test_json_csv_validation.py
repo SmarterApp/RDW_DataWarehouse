@@ -14,14 +14,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from uuid import uuid4
 from time import sleep
 from multiprocessing import Process
-from edudl2.database.udl2_connector import get_udl_connection
-from edudl2.udl2.celery import udl2_conf
+from edudl2.database.udl2_connector import get_udl_connection, initialize_all_db
 from sqlalchemy.sql.expression import and_, select
 from edudl2.udl2.constants import Constants
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 FACT_TABLE = 'fact_asmt_outcome'
 file_to_path = ''
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/test_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/test_user/filedrop/'
 FILE_DICT = {}
 
 
@@ -38,6 +38,7 @@ class ValidateTableData(unittest.TestCase):
                      'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
                      'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
         self.archived_file = FILE_DICT
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         self.udl_connector = get_udl_connection()
         self.tenant_dir = TENANT_DIR
         here = os.path.dirname(__file__)
@@ -51,7 +52,6 @@ class ValidateTableData(unittest.TestCase):
 
     #Run the UDL with specified file
     def run_udl_with_file(self, guid_batch, file_to_load):
-        self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp(file_to_load)
         command = "python {driver_path} -a {file_path} -g {guid}".format(driver_path=self.driver_path, file_path=arch_file, guid=self.guid_batch_id)
         subprocess.call(command, shell=True)

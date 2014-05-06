@@ -8,16 +8,17 @@ import os
 import shutil
 from uuid import uuid4
 import glob
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
+    initialize_all_db
 from sqlalchemy.sql import select
 from time import sleep
 from sqlalchemy.sql.expression import and_
 from edudl2.tests.e2e_tests.database_helper import drop_target_schema
-from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
 path = '/opt/edware/zones/landing/work/ca/landing/'
 FACT_TABLE = 'fact_asmt_outcome'
 
@@ -28,11 +29,12 @@ class ValidatePostUDLCleanup(unittest.TestCase):
         self.archived_file = os.path.join(data_dir, 'test_source_file_tar_gzipped.tar.gz.gpg')
         self.tenant_dir = TENANT_DIR
         self.batch_id = str(uuid4())
+        initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
         if os.path.exists(self.tenant_dir):
             shutil.rmtree(self.tenant_dir)
-        drop_target_schema('ca', self.batch_id)
+        drop_target_schema('cat', self.batch_id)
 
 # Validate that in Batch_Table for given guid every udl_phase output is Success
     def validate_UDL_database(self):
@@ -50,7 +52,7 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
 #Validate that for given guid data loded on star schema
     def validate_edware_database(self, schema_name):
-        with get_target_connection('ca') as ed_connector:
+        with get_target_connection('cat') as ed_connector:
             ed_connector.set_metadata_by_reflect(schema_name)
             edware_table = ed_connector.get_table(FACT_TABLE)
             output = select([edware_table.c.batch_guid]).where(edware_table.c.batch_guid == self.batch_id)
@@ -83,7 +85,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
 
 # Run pipeline with given guid.
     def run_udl_pipeline(self):
-        self.conf = udl2_conf
         arch_file = self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")

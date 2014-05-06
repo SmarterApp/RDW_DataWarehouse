@@ -25,7 +25,7 @@ class FTestMoveToTarget(UDLTestHelper):
 
     guid_batch_asmt = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
     guid_batch_sr = '75f1aa80-a459-406a-8529-c357ad0996ad'
-    tenant_code = 'ca'
+    tenant_code = 'cat'
 
     @classmethod
     def setUpClass(cls):

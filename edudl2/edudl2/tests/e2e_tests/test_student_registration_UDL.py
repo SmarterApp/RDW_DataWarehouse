@@ -12,14 +12,15 @@ from uuid import uuid4
 from sqlalchemy.sql import select, and_, func
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from multiprocessing import Process
-from edudl2.database.udl2_connector import get_udl_connection, get_target_connection
-from edudl2.udl2.celery import udl2_conf
+from edudl2.database.udl2_connector import get_udl_connection, get_target_connection,\
+    initialize_all_db
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2 import configuration_keys as ck
 from edudl2.udl2.constants import Constants
 import json
+from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
-TENANT_DIR = '/opt/edware/zones/landing/arrivals/ca/ca_user/filedrop/'
+TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
 
 
 class FTestStudentRegistrationUDL(unittest.TestCase):
@@ -65,6 +66,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
         self.tenant_dir = TENANT_DIR
         self.load_type = Constants.LOAD_TYPE_STUDENT_REGISTRATION
         self.receive_requests = True
+        initialize_all_db(udl2_conf, udl2_flat_conf)
         self.start_http_post_server()
         self.batches = []
 
@@ -74,7 +76,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             shutil.rmtree(self.tenant_dir)
         for batch in self.batches:
             try:
-                drop_target_schema('ca', batch)
+                drop_target_schema('cat', batch)
             except:
                 pass
 
@@ -123,7 +125,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate the target table
     def validate_stu_reg_target_table(self, file_to_load):
-        with get_target_connection('ca', self.batch_id) as conn:
+        with get_target_connection('cat', self.batch_id) as conn:
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([func.count()]).select_from(target_table)
             record_count = conn.execute(query).fetchall()[0][0]
@@ -131,7 +133,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Validate a student's data
     def validate_student_data(self, file_to_load):
-        with get_target_connection('ca', self.batch_id) as conn:
+        with get_target_connection('cat', self.batch_id) as conn:
             student = self.student_reg_files[file_to_load]['test_student']
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,

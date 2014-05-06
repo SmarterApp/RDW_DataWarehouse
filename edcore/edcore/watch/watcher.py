@@ -72,7 +72,7 @@ class FileWatcher():
         file_stats_latest = cls.get_updated_file_stats()
         for file, size in cls.file_stats.copy().items():
             if file_stats_latest[file] is None or file_stats_latest[file] != size:
-                logger.warn('Removing file {file} due to size changes during monitoring'.format(file=file))
+                logger.debug('Removing file {file} due to size changes during monitoring'.format(file=file))
                 cls.remove_file_pair_from_dict(file)
 
     @classmethod
@@ -121,6 +121,6 @@ class FileWatcher():
             destination_file_directory = os.path.split(destination_file_path)[0]
             if not os.path.exists(destination_file_directory):
                 os.makedirs(destination_file_directory)
-            logger.info('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
+            logger.debug('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
             shutil.move(file, destination_file_path)
         return len(files_to_move)

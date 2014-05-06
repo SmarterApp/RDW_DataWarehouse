@@ -236,7 +236,7 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2
   '[handlers]':
     keys: console, filelog, audit, security_event
 
@@ -286,6 +286,11 @@ common:
     level: INFO
     handlers: filelog
     qualname: edsftp
+
+  '[logger_edudl2]':
+    level: INFO
+    handlers: filelog
+    qualname: edudl2
 
   '[logger_security_event]':
     level: INFO

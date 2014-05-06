@@ -5,17 +5,17 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 . /opt/virtualenv/smarter/bin/activate
-PIDFILE="/opt/edware/run/edsftp.pid"
-EDSFTP_SYNC="python -m edsftp.scripts.sftp_driver -d -p $PIDFILE"
+PIDFILE="/opt/edware/run/edudl2.pid"
+EDUDL2_TRIGGER="python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
 
 start() {
 	echo -n "Starting edsftp sync: "
-	daemon $EDSFTP_SYNC
+	daemon $EDUDL2_TRIGGER
 	RETVAL=$?
 }
 
 stop() {
-	echo -n "Stopping edsftp sync: "
+	echo -n "Stopping edudl2 trigger: "
 	killproc -p $PIDFILE
 	RETVAL=$?
 }
@@ -28,7 +28,7 @@ case $1 in
 	;;
 	*)
 
-	echo $"Usage: edsftp-watcher {start|stop}"
+	echo $"Usage: edudl2-trigger {start|stop}"
 	exit 2
 esac
 deactivate

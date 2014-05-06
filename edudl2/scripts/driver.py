@@ -51,4 +51,3 @@ if __name__ == '__main__':
         run_pipeline(args.archive_file, batch_guid_forced=args.batch_guid_forced)
     else:
         parser.error('Please specify a valid argument')
-

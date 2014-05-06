@@ -4,7 +4,6 @@ import time
 import logging
 from edcore.watch.watcher import FileWatcher
 from edudl2.udl2.W_schedule_pipeline import schedule_pipeline
-from edudl2.udl2.celery import udl2_flat_conf as udl2_conf
 from edcore.utils.utils import get_config_from_ini
 from edcore.watch.constants import WatcherConstants as Const
 
@@ -36,7 +35,3 @@ def udl_trigger(config):
         for file in udl_ready_files:
             schedule_pipeline.delay(file)
         time.sleep(float(FileWatcher.conf[Const.FILE_SYSTEM_SCAN_DELAY]))
-
-if __name__ == "__main__":
-    """Dev testing entry point"""
-    udl_trigger(config=udl2_conf)

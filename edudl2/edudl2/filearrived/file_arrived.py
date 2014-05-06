@@ -7,6 +7,7 @@ import shutil
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2_util.file_util import convert_path_to_list
+from edcore.watch.util import FileUtil
 
 
 def move_file_from_arrivals(incoming_file, batch_guid):
@@ -25,8 +26,8 @@ def move_file_from_arrivals(incoming_file, batch_guid):
 
 def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     """
-    Move the incoming file to its arrived directory under the work folder
-        and move it to its history directory
+    Copy the incoming source file to its arrived directory under the work folder
+        and move the file pair(source and checksum file) to its history directory
     :param incoming_file: the path to the incoming file
     :param arrived_dir: the directory path to the arrived directory
     :param history_dir: the directory path to the history directory
@@ -34,6 +35,7 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     """
     shutil.copy2(incoming_file, arrived_dir)
     shutil.move(incoming_file, history_dir)
+    shutil.move(FileUtil.get_complement_file_name(incoming_file), history_dir)
 
 
 def get_tenant_name(incoming_file):

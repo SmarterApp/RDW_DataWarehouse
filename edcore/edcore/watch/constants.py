@@ -14,4 +14,3 @@ class WatcherConstants():
     DEST_DIR = 'dest_dir'
     FILE_PATTERNS_TO_WATCH = 'file_patterns_to_watch'
     CHECKSUM_FILE_EXTENSION = '.done'
-

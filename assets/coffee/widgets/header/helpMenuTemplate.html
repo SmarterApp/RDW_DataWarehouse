@@ -1,12 +1,12 @@
-<div id="HelpMenuModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="HelpMenuModal" class="modal hide fade" tabindex="-1" role="dialog" aria-label="{{{labels.help}}} dialog" aria-hidden="true">
     <div class="modal-header">
-        <a type="button" class="close" data-dismiss="modal" aria-hidden="false" href="#" title="close help menu">&times;</a>
-        <h2 class="helpText"><i class="padBottom4 edware-icon-question-mark-grayscale"></i><span>{{{labels.help}}}</span></h2>
-        <ul class="nav nav-tabs" id="helpMenuTab">
-            <li class="active"><a href="#faq">{{{labels.help_tab_faq}}}</a></li>
-            <li><a href="#userGuide">{{{labels.help_tab_guide}}}</a></li>
-            <li><a href="#glossary">{{{labels.help_tab_glossary}}}</a></li>
-            <li><a href="#addition">{{{labels.help_tab_additional}}}</a></li>
+        <a type="button" class="close" data-dismiss="modal" href="#" title="close help menu" aria-label="close">&times;</a>
+        <h2 class="helpText" aria-hidden="true"><i class="padBottom4 edware-icon-question-mark-grayscale"></i><span>{{{labels.help}}}</span></h2>
+        <ul class="nav nav-tabs" id="helpMenuTab" role="tablist">
+            <li class="active"><a href="#faq" aria-role="tab">{{{labels.help_tab_faq}}}</a></li>
+            <li><a href="#userGuide" aria-role="tab">{{{labels.help_tab_guide}}}</a></li>
+            <li><a href="#glossary" aria-role="tab">{{{labels.help_tab_glossary}}}</a></li>
+            <li><a href="#addition" aria-role="tab">{{{labels.help_tab_additional}}}</a></li>
         </ul>
     </div>
     <div class="modal-body">

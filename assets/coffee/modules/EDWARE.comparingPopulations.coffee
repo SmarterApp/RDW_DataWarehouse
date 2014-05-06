@@ -141,7 +141,8 @@ define [
     createGrid: () ->
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
-      preprocessor = new DataProcessor(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
+      # TODO: need to get cut_point_intervals from database
+      preprocessor = new DataProcessor(@summaryData[0], @asmtSubjectsData, @data.metadata, @defaultColors, @config.legendInfo.sample_intervals.cut_point_intervals)
       this.populationData = preprocessor.process(this.populationData)
       summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
@@ -198,7 +199,7 @@ define [
       for colModel in colModels
         #reset labels
         if colModel.index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
-          grid.jqGrid('setLabel', colModel.name, "<a href='#'>#{colModel.label}</a>")
+          grid.jqGrid('setLabel', colModel.name, "<a class='inherit' href='#'>#{colModel.label}</a>")
         else
           grid.jqGrid('setLabel', colModel.name, colModel.label)
 
@@ -207,9 +208,9 @@ define [
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc'
-          newLabel = "<a href='#'>#{newLabel}</a> #{this.config.proficiencyAscending}"
+          newLabel = "<a class='inherit' href='#'>#{newLabel}</a> #{this.config.proficiencyAscending}"
         else
-          newLabel = "<a href='#'>#{newLabel}</a> #{this.config.proficiencyDescending}"
+          newLabel = "<a class='inherit' href='#'>#{newLabel}</a> #{this.config.proficiencyDescending}"
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
@@ -329,7 +330,7 @@ define [
 
   class DataProcessor
 
-    constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors) ->
+    constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors, @intervals) ->
 
     # Traverse through to intervals to prepare to append color to data
     # Handle population bar alignment calculations
@@ -373,6 +374,7 @@ define [
         element = intervals[i]
         element = {'count': 0, 'percentage': 0} if element is undefined
         element.count = edwareUtil.formatNumber(element.count)
+        element.description = @intervals[i].name
         if colors and colors[i]
           element.color = colors[i]
         else

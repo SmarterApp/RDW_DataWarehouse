@@ -434,7 +434,7 @@
                         "export": true
                     },
                      {
-                        "name": "{{subject1}}",
+                        "name": "<b>{{subject1}}</b>",
                         "displayTpl": "",
                         "index": "results.subject1.sortedValue",
                         "field": "results.subject1.sortedValue",
@@ -449,7 +449,7 @@
                         "title": false
                     },
                     {
-                        "name": "<a href='#'>Total Pop</a>",
+                        "name": "<a class='inherit' href='#'>Total Pop</a>",
                         "displayTpl": "",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
@@ -463,7 +463,7 @@
                         "title": false
                     },
                     {
-                        "name": "{{subject2}}",
+                        "name": "<b>{{subject2}}</b>",
                         "displayTpl": "",
                         "index": "results.subject2.sortedValue",
                         "field": "results.subject2.sortedValue",
@@ -478,7 +478,7 @@
                         "title": false
                     },
                     {
-                        "name": "<a href='#'>Total Pop</a>",
+                        "name": "<a class='inherit' href='#'>Total Pop</a>",
                         "displayTpl": "",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
@@ -496,17 +496,17 @@
         ],
         "customViews": {
             "school": {
-                "name": "Grade",
+                "name": "<a class='inherit' href='#'>Grade</a>",
                 "link": "studentList.html",
                 "id_name": "asmtGrade"
             },
             "district": {
-                "name": "School Name",
+                "name": "<a class='inherit' href='#'>School Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "schoolGuid"
             },
             "state": {
-                "name": "District Name",
+                "name": "<a class='inherit' href='#'>District Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "districtGuid"
             }

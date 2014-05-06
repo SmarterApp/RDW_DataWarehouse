@@ -15,10 +15,12 @@
   {{rightTotalPercentage}}{{#rightTotalPercentage}}%{{/rightTotalPercentage}}
 </div>
 <div class="progress">
+    <span class="screenreader">{{asmt_subject}}</span>
     {{#intervals}}
     <div class="bar" style="background-color: {{#color}}{{bg_color}} !important; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}) !important; background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}) !important; background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}) !important; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">
           {{#showPercentage}}
-      <span class="marginRight5 percentageOnBar">{{percentage}}%</span>
+        <span class="screenreader">{{description}}</span>
+        <span class="marginRight5 percentageOnBar">{{percentage}}%</span>
           {{/showPercentage}}
     </div>
       {{/intervals}}

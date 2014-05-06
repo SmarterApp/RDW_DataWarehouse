@@ -5,19 +5,19 @@
         <div class="disclaimerInfo interimDisclaimerIcon"></div>
     </li>
 </ul>
-<ul>
+<ul role="toolbar">
     <li class="legendItem">
         <div class="divider">
         <i class="edware-icon-legend"></i>
-        <a class="legendLabel" href="#">{{labels.legend}}</a>
+        <a class="legendLabel inherit" href="#">{{labels.legend}}</a>
         <span class="legendPopup"></span>
         </div>
     </li>
     <li class="alignmentItem">
         <div class="divider">
-            <span class='alignLabel'>{{labels.align}}</span>
+            <span id="aria-align-label" class='alignLabel' aria-hidden='true'>{{labels.align}}</span>
             <span class='align_button_area'>
-                <a class="align_button align_off" href="#">
+                <a class="align_button align_off inherit" href="#" aria-labelledby="aria-align-label" aria-live="polite">
                     <span class="alignText">{{labels.off}}</span>
                 </a>
             </span>
@@ -25,7 +25,7 @@
     </li>
     <li class="filterItem">
         <div class="divider">
-            <a class="filterLabel" href='#'>{{labels.filter}}</a>
+            <a class="filterLabel inherit" href='#'>{{labels.filter}}</a>
         </div>
     </li>
     <li class="printItem">

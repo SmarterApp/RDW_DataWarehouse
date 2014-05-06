@@ -1,8 +1,13 @@
-<ul>
-    <li><h2 class="title">{{title}}</h2><a class="reportInfoIcon" href='#'></a></li>
-    <li class="download"><a class="downloadIcon" href='#'></a><div id="downloadMenuPopup"></div></li>
+<ul role="menubar" aria-label="information bar menu">
+    <li>
+        <h2 class="title" role="heading">{{title}}</h2>
+        <a class="reportInfoIcon" href='#' aria-label="report information" role="tooltip"></a>
+    </li>
+    <li class="download">
+        <a class="downloadIcon" href='#' aria-label="download button"></a>
+        <div id="downloadMenuPopup"></div></li>
     <li class="overall">
-    {{#subjects}}
+        {{#subjects}}
         <div class="info">
             <span>{{asmt_subject}}</span>
             <span class="indicator_cell" style="background-color: {{score_bg_color}}; color: {{score_text_color}}">
@@ -10,10 +15,13 @@
             </span>
             <span class="overallDesc" style="color:{{score_color}};">{{score_name}}</span>
         </div>
-    {{/subjects}}
+        {{/subjects}}
     </li>
     <li class="academicYearArea pull-right">
-        <span class="info pull-left">{{labels.academic_year}}: <a href='#' class="academicYearInfoIcon"><i class="edware-icon-info-mark marginRight8"></i></a></span>
+        <a href="#" class="info pull-left inherit" aria-label="academic year information" role="tooltip">
+            {{labels.academic_year}}:
+            <i class="edware-icon-info-mark marginRight8 academicYearInfoIcon"></i>
+        </a>
         <div id="academicYearAnchor" class="pull-left"></div>
     </li>
 </ul>

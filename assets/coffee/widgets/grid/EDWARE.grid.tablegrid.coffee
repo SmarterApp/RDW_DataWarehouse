@@ -53,6 +53,15 @@ define [
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
+      this.addARIA()
+
+    addARIA: ()->
+      #TODO:
+      $('.ui-jqgrid-hdiv').attr('aria-label', 'headers')
+      $('.ui-jqgrid-sdiv').attr('aria-label', 'summary')
+      $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
+      # $('table.ui-jqgrid-htable').removeAttr('aria-labelledby')
+      $('.jqgfirstrow').attr('aria-hidden', 'true')
 
     renderBody: () ->
       colNames = this.getColumnNames()

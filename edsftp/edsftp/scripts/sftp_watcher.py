@@ -27,11 +27,12 @@ def _watch_and_move_files(file_watcher):
     return files_moved
 
 
-def sftp_file_sync(config):
+def sftp_file_sync(daemon_mode, config):
     """sftp file sync main entry point
 
     This is a forever script
 
+    :param daemon_mode: Flag to run in daemon mode
     :param config: sftp config needed for file sync
     """
     file_watcher = FileWatcher(get_conf(config))

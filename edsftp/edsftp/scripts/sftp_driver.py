@@ -7,14 +7,26 @@ Module to initialize sftp zones and creating groups
 __author__ = 'sravi'
 
 import argparse
+import logging
 from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
 from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
 from edsftp.scripts.sftp_watcher import sftp_file_sync
 from edcore.utils.utils import read_ini, get_config_from_ini
+from edcore.utils.utils import create_daemon
 
-if __name__ == "__main__":
+logger = logging.getLogger('edsftp')
+pidfile = None
+
+
+def run_sftp_sync_process(daemon_mode, sftp_conf, pid_file):
+    if daemon_mode:
+        create_daemon(pid_file)
+    sftp_file_sync(daemon_mode, sftp_conf)
+
+
+def main():
     """
     Driver script to build and maintain sftp machine
     This script needs to be run as root user
@@ -33,6 +45,9 @@ if __name__ == "__main__":
                                                'Will not be used if -ssh-key is specified')
     parser.add_argument('--remove-user', action='store_true', help='Delete the user defined by the -u option')
     parser.add_argument('--remove-tenant', action='store_true', help='Remove the tenant specified by the -t option')
+    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edsftp-watcher.pid',
+                        help="pid file for sftp watcher daemon")
+    parser.add_argument('-d', dest='daemon', action='store_true', default=False, help="daemon mode for sync option")
     parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter.ini', help="ini file")
     args = parser.parse_args()
 
@@ -48,7 +63,9 @@ if __name__ == "__main__":
         sftp_groups_cleanup(sftp_conf)
         sftp_zone_cleanup(sftp_conf)
     elif args.driver_run_sync:
-        sftp_file_sync(sftp_conf)
+        daemon_mode = args.daemon
+        pid_file = args.pidfile
+        run_sftp_sync_process(daemon_mode, sftp_conf, pid_file)
     elif args.add_tenant:
         if args.tenant_name is None:
             parser.error('Tenant name is required to add a new tenant')
@@ -67,3 +84,6 @@ if __name__ == "__main__":
         remove_tenant(args.tenant_name, sftp_conf)
     else:
         parser.error('Please specify a valid argument')
+
+if __name__ == "__main__":
+    main()

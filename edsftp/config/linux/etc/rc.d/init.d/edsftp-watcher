@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+. /opt/virtualenv/smarter/bin/activate
+PIDFILE="/opt/edware/run/edsftp.pid"
+EDSFTP_SYNC="python -m edsftp.scripts.sftp_driver -d -p $PIDFILE"
+
+start() {
+	echo -n "Starting edsftp sync: "
+	daemon $EDSFTP_SYNC
+	RETVAL=$?
+}
+
+stop() {
+	echo -n "Stopping edsftp sync: "
+	killproc -p $PIDFILE
+	RETVAL=$?
+}
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	*)
+
+	echo $"Usage: edsftp {start|stop}"
+	exit 2
+esac
+deactivate
+exit $RETVAL

@@ -17,13 +17,12 @@ from edcore.utils.utils import read_ini, get_config_from_ini
 from edcore.utils.utils import create_daemon
 
 logger = logging.getLogger('edsftp')
-pidfile = None
 
 
 def run_sftp_sync_process(daemon_mode, sftp_conf, pid_file):
     if daemon_mode:
         create_daemon(pid_file)
-    sftp_file_sync(daemon_mode, sftp_conf)
+    sftp_file_sync(sftp_conf)
 
 
 def main():

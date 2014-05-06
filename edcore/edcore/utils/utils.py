@@ -14,6 +14,7 @@ from sqlalchemy.sql.compiler import BIND_TEMPLATES
 import configparser
 
 logger = logging.getLogger(__name__)
+pidfile = None
 
 
 def merge_dict(d1, d2):

@@ -1,12 +1,13 @@
 __author__ = 'sravi'
 
 import time
+import os
 import logging
 from edcore.watch.watcher import FileWatcher
 from edcore.watch.constants import WatcherConstants as WatcherConst
 from edsftp.src.constants import Constants as SFTPConst
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("edsftp")
 
 
 def get_conf(config):
@@ -27,17 +28,25 @@ def _watch_and_move_files(file_watcher):
     return files_moved
 
 
-def sftp_file_sync(daemon_mode, config):
+def sftp_file_sync(config):
     """sftp file sync main entry point
 
     This is a forever script
 
-    :param daemon_mode: Flag to run in daemon mode
     :param config: sftp config needed for file sync
     """
     file_watcher = FileWatcher(get_conf(config))
     while True:
-        print('Searching for new files')
-        files_moved = _watch_and_move_files(file_watcher)
-        print('Files Moved: {count} '.format(count=str(files_moved)))
-        time.sleep(float(FileWatcher.conf[WatcherConst.FILE_SYSTEM_SCAN_DELAY]))
+        try:
+            logger.debug('Searching for new files in {source_dir}'.format(source_dir=config[SFTPConst.ARRIVALS_DIR]))
+            files_moved = _watch_and_move_files(file_watcher)
+            logger.debug('Moved {count} files to {dest_dir}'.format(count=str(files_moved),
+                                                                    dest_dir=config[SFTPConst.ARRIVALS_SYNC_DIR]))
+        except KeyboardInterrupt:
+            logger.warn('SFTP watcher process terminated by a user')
+            os._exit(0)
+        except Exception as e:
+            logger.error(e)
+        finally:
+            time.sleep(float(FileWatcher.conf[WatcherConst.FILE_SYSTEM_SCAN_DELAY]))
+    logger.warn('Exiting sftp watcher process')

@@ -7,6 +7,7 @@ import edudl2.udl2.udl2_pipeline as udl2_pipeline
 
 logger = get_task_logger(__name__)
 
+
 @celery.task(name="udl2.W_schedule_pipeline.schedule_pipeline")
 def schedule_pipeline(archive_file):
     """Point of entry task to start the pipeline chain

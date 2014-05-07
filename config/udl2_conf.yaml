@@ -52,7 +52,6 @@ common:
         error: /opt/edware/log/udl2.error.log  # for error message and exceptions,
     quiet_mode: False
     passphrase: sbac udl2
-    search_wait_time: 10
     db_defaults:
       echo: False
       max_overflow: 0

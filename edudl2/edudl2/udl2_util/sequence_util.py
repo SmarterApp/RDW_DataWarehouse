@@ -1,12 +1,16 @@
 '''
 Utility module to get global sequence from production database.
 '''
+from celery.utils.log import get_task_logger
 from sqlalchemy import Sequence
 from sqlalchemy.sql import select
 from sqlalchemy.schema import CreateSequence
 from edudl2.database.udl2_connector import get_prod_connection
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
+from sqlalchemy import exc
+
+logger = get_task_logger(__name__)
 
 # size of each sequence batch
 INCREMENTAL = udl2_conf['global_sequence']['batch_size']
@@ -48,9 +52,12 @@ class UDLSequence(object):
         Check if sequence exists, and create one if not.
         '''
         with get_prod_connection(self.tenant_name) as conn:
-            if not self.sequence_exists(conn):
-                seq = Sequence(name=self.seq_name, metadata=conn.get_metadata(), start=START_WITH)
-                conn.execute(CreateSequence(seq))
+            try:
+                if not self.sequence_exists(conn):
+                    seq = Sequence(name=self.seq_name, metadata=conn.get_metadata(), start=START_WITH)
+                    conn.execute(CreateSequence(seq))
+            except exc.IntegrityError as e:
+                logger.warn('Sequence creation failed with Integrity error. Must have been created by other process')
 
     def sequence_exists(self, conn):
         '''

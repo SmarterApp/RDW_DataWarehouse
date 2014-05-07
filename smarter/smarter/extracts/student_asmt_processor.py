@@ -106,7 +106,9 @@ def process_sync_item_extract_request(params):
     item_root_dir = get_current_registry().settings.get('extract.item_level_base_dir', '/opt/edware/item_level')
     request_id, user, tenant = processor.get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
-    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, extract_params, item_root_dir)
+    out_file_name = get_items_extract_file_path(extract_params, tenant, request_id)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, extract_params, item_root_dir,
+                                                                    out_file_name)
     if tasks:
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
@@ -129,7 +131,9 @@ def process_async_item_extraction_request(params, is_tenant_level=True):
     state_code = params[Constants.STATECODE][0]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
     extract_params = copy.deepcopy(params)
-    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, extract_params, item_root_dir)
+    out_file_name = get_items_extract_file_path(extract_params, tenant, request_id, is_tenant_level=is_tenant_level)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, extract_params, item_root_dir,
+                                                                    out_file_name)
 
     response['tasks'] = task_responses
     if len(tasks) > 0:
@@ -231,7 +235,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     return tasks, task_responses
 
 
-def _create_item_level_tasks_with_responses(request_id, user, param, item_root_dir, task_response={}, is_tenant_level=False):
+def _create_item_level_tasks_with_responses(request_id, user, param, item_root_dir, out_file, task_response={}, is_tenant_level=False):
     '''
     TODO comment
     '''
@@ -243,8 +247,8 @@ def _create_item_level_tasks_with_responses(request_id, user, param, item_root_d
     for state_code in param.get(Constants.STATECODE):
         query = get_extract_assessment_item_queries(param, state_code)
         tenant = states_to_tenants[state_code]
-        task = _create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level,
-                                extract_file_path=get_items_extract_file_path, item_level=True)
+        task = _create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level, item_level=True)
+        task[TaskConstants.TASK_FILE_NAME] = out_file
         task[TaskConstants.ROOT_DIRECTORY] = item_root_dir
         task[TaskConstants.ITEM_IDS] = param.get(Constants.ITEMID) if Constants.ITEMID in param else None
         tasks.append(task)
@@ -284,7 +288,9 @@ def _create_new_task(request_id, user, tenant, params, query, asmt_metadata=Fals
         task[TaskConstants.TASK_FILE_NAME] = get_asmt_metadata_file_path(params, tenant, request_id)
         task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_JSON
     else:
-        task[TaskConstants.TASK_FILE_NAME] = extract_file_path(params, tenant, request_id, is_tenant_level=is_tenant_level)
+        if extract_file_path is not None:
+            task[TaskConstants.TASK_FILE_NAME] = extract_file_path(params, tenant, request_id,
+                                                                   is_tenant_level=is_tenant_level)
         if item_level:
             task[TaskConstants.EXTRACTION_DATA_TYPE] = ExtractionDataType.QUERY_ITEMS_CSV
         else:

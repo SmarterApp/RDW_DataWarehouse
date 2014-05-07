@@ -4,6 +4,7 @@ from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_queries
 from edcore.utils.utils import compile_query_to_sql_text
+from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
 from edextract.tasks.extract import start_extract, archive, generate_extract_file_tasks, prepare_path
 from pyramid.threadlocal import get_current_registry
@@ -102,9 +103,10 @@ def process_sync_item_extract_request(params):
     settings = get_current_registry().settings
     queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
     archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
+    item_root_dir = get_current_registry().settings.get('extract.item_level_base_dir', '/opt/edware/item_level')
     request_id, user, tenant = processor.get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
-    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, tenant, extract_params)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, extract_params, item_root_dir)
     if tasks:
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
@@ -122,11 +124,12 @@ def process_async_item_extraction_request(params, is_tenant_level=True):
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
+    item_root_dir = get_current_registry().settings.get('extract.item_level_base_dir', '/opt/edware/item_level')
     response = {}
     state_code = params[Constants.STATECODE][0]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
     extract_params = copy.deepcopy(params)
-    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, tenant, extract_params)
+    tasks, task_responses = _create_item_level_tasks_with_responses(request_id, user, extract_params, item_root_dir)
 
     response['tasks'] = task_responses
     if len(tasks) > 0:
@@ -228,19 +231,21 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     return tasks, task_responses
 
 
-def _create_item_level_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
+def _create_item_level_tasks_with_responses(request_id, user, param, item_root_dir, task_response={}, is_tenant_level=False):
     '''
     TODO comment
     '''
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
+    states_to_tenants = get_state_code_to_tenant_map()
 
     for state_code in param.get(Constants.STATECODE):
         query = get_extract_assessment_item_queries(param, state_code)
+        tenant = states_to_tenants[state_code]
         task = _create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level,
                                 extract_file_path=get_items_extract_file_path, item_level=True)
-        task[TaskConstants.STATE_CODE] = state_code
+        task[TaskConstants.ROOT_DIRECTORY] = item_root_dir
         task[TaskConstants.ITEM_IDS] = param.get(Constants.ITEMID) if Constants.ITEMID in param else None
         tasks.append(task)
     copied_task_response[Extract.STATUS] = Extract.OK

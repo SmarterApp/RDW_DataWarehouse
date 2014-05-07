@@ -8,6 +8,7 @@ from edapi.logging import audit_event
 from edapi.decorators import validate_params
 from edapi.utils import convert_query_string_to_dict_arrays
 from edextract.exceptions import ExtractionError
+from edcore.utils.utils import merge_dict
 from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPInternalServerError
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 ITEM_EXTRACT_PARAMS = {
     "type": "object",
     "additionalProperties": False,
-    "properties": {
+    "properties": merge_dict({
         Extract.EXTRACTTYPE: {
             "type": "string",
             "pattern": "^" + ExtractType.itemLevel + "$",
@@ -83,9 +84,8 @@ ITEM_EXTRACT_PARAMS = {
             "required": False,
             "pattern": "^(true|TRUE)$",
         }
-    }
+    }, FILTERS_CONFIG)
 }
-ITEM_EXTRACT_PARAMS['properties'].update(FILTERS_CONFIG)
 
 
 @view_config(route_name='assessment_item_level', request_method='POST')

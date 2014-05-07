@@ -27,6 +27,7 @@ class Constants():
     STATE_CODE = 'state_code'
     ACADEMIC_YEAR = 'academicYear'
     EXTRACTION_DATA_TYPE = 'extraction_data_type'
+    ROOT_DIRECTORY = 'root_directory'
     ITEM_IDS = 'item_ids'
 
 

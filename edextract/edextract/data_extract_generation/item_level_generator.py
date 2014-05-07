@@ -8,8 +8,6 @@ import csv
 import logging
 import os
 
-from pyramid.threadlocal import get_current_registry
-
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
@@ -32,11 +30,11 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
     """
     # Get stuff
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
-    items_root_dir = get_current_registry().settings.get('extract.item_level_base_dir', '/opt/edware/item_level')
+    items_root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
     item_ids = extract_args[TaskConstants.ITEM_IDS]
     checking_ids = item_ids is not None
 
-    with EdCoreDBConnection(state_code=extract_args[TaskConstants.STATE_CODE]) as connection:
+    with EdCoreDBConnection(tenant=tenant) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)
         results = connection.get_streaming_result(query)
 
@@ -44,7 +42,7 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
         # TODO: Should not be hard coded
         if not os.path.exists(output_file):
             write_csv(output_file,
-                      ['position', 'segmentId', 'key', 'clientId', 'operational', 'isSelected', 'format', 'score',
+                      ['key', 'segmentId', 'position', 'clientId', 'operational', 'isSelected', 'format', 'score',
                        'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel', 'pageNumber', 'pageVisits',
                        'pageTime', 'dropped'],
                       [])
@@ -79,7 +77,6 @@ def _check_file_for_items(path, item_ids):
             for row in csv_reader:
                 if row[ITEM_KEY_POS] in item_ids:
                     return True
-
     return False
 
 

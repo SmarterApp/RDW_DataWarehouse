@@ -33,9 +33,7 @@ common:
         CELERY_DEFAULT_QUEUE: celery        # default celery queue name for celery internal tasks
         CELERY_DEFAULT_EXCHANGE: direct     # default celery exchange name, and exchange type
         CELERY_DEFAULT_ROUTING_KEY: celery  # default celery routing key for tasks
-        CELERY_TASK_RESULT_EXPIRES: 10      # TTL for results
-        CELERY_CONCURRENCY: 10              # number of available workers processes
-        CELERY_SEND_EVENTS: True            # send events for monitor
+        CELERYD_CONCURRENCY: 3              # number of available workers processes
     rabbitmq:                               # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         RABBITMQ_SERVER_PATH:
             - /opt/local/sbin/rabbitmq-server

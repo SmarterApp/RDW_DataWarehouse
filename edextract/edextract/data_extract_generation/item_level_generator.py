@@ -18,7 +18,7 @@ from edextract.utils.csv_writer import write_csv
 
 logger = logging.getLogger(__name__)
 
-ITEM_KEY_POS = 2
+ITEM_KEY_POS = 0
 
 
 def generate_items_csv(tenant, output_file, task_info, extract_args):

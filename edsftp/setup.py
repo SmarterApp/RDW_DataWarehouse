@@ -8,7 +8,7 @@ README = open(os.path.join(here, 'README.txt')).read()
 
 requires = []
 
-scripts = ['sftp_driver.py']
+scripts = ['edsftp/scripts/sftp_driver.py']
 
 tests_require = requires + [
     'nose == 1.3.0',

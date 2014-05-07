@@ -28,8 +28,10 @@ mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/edudl2/config/linux/opt/edware/conf/celeryd-udl2.conf %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/celeryd-udl2 %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edudl2/config/linux/etc/rc.d/init.d/edudl2-trigger %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/udl2_conf.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
@@ -72,6 +74,7 @@ rm -rf %{buildroot}
 /opt/edware/conf/celeryd-udl2.conf
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/udl2_conf.yaml
+/opt/edware/conf/settings.yaml
 /opt/edware/edudl2/scripts/driver.py
 /opt/virtualenv/udl2/include/*
 /opt/virtualenv/udl2/lib/*
@@ -104,6 +107,7 @@ rm -rf %{buildroot}
 /opt/virtualenv/udl2/bin/python
 /opt/virtualenv/udl2/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-udl2
+%attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
 
 %pre
 

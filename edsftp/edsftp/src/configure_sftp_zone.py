@@ -38,7 +38,7 @@ def _create_sftp_arrivals_sync_zone(sftp_conf):
     :return: None
     """
     if os.path.exists(os.path.join(sftp_conf['home'], sftp_conf['base_dir'])):
-        create_path(os.path.join(sftp_conf['home'], sftp_conf['base_dir'], sftp_conf['dest_dir']))
+        create_path(os.path.join(sftp_conf['home'], sftp_conf['base_dir'], sftp_conf['arrivals_sync_dir']))
 
 
 def _create_sftp_departures_zone(sftp_conf):

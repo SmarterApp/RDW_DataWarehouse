@@ -15,7 +15,6 @@ from edudl2.udl2.constants import Constants
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-@unittest.skip("Skipping muti files till the refactoring is completed around running multiple files in pipeline")
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):
@@ -26,41 +25,35 @@ class ValidateMultiFiles(unittest.TestCase):
         self.tenant_dir = '/opt/edware/zones/landing/arrivals/nc/edware_user/filedrop/'
         initialize_all_db(udl2_conf, udl2_flat_conf)
 
-    #teardown tenant folder
     def tearDown(self):
         shutil.rmtree(self.tenant_dir)
 
-    #Delete all data from Batch table
     def empty_batch_table(self):
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            result = connector.execute(batch_table.delete())
-            query = select([batch_table])
-            result1 = connector.execute(query).fetchall()
-            number_of_row = len(result1)
+            connector.execute(batch_table.delete())
 
-    #Run UDL
     def udl_run(self):
         self.copy_file_to_tmp()
-        arch_file = self.tenant_dir
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        command = "python {driver_path} --loop-dir {file_path}".format(driver_path=driver_path, file_path=arch_file)
-        p = subprocess.Popen(command, shell=True)
-        returncode = p.wait()
+        for file in self.files.values():
+            arch_file = os.path.join(self.tenant_dir) + os.path.basename(file)
+            command = "python {driver_path} -a {file_path}".format(driver_path=driver_path, file_path=arch_file)
+            p = subprocess.Popen(command, shell=True)
+            p.wait()
         self.check_job_completion()
 
-    #Copy file to tenant folder
     def copy_file_to_tmp(self):
-        if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
-        else:
+        if not os.path.exists(self.tenant_dir):
             os.makedirs(self.tenant_dir)
         for file in self.files.values():
-            files = shutil.copy2(file, self.tenant_dir)
+            shutil.copy2(file, self.tenant_dir)
 
-    #Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
     def check_job_completion(self, max_wait=30):
+        """
+        Check the batch table periodically for completion of the UDL pipeline, waiting up to max_wait seconds
+        """
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
             query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
@@ -70,20 +63,21 @@ class ValidateMultiFiles(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.get_result(query)
-            print('Waited for', timer, 'second(s) for job to complete.')
 
-    #Connect to UDL database through config_file
     def connect_verify_udl(self):
+        """
+        Connect to UDL database through config_file
+        """
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE', batch_table.c.udl_phase_step_status == 'SUCCESS'))
+            query = select([batch_table.c.guid_batch], and_(batch_table.c.udl_phase == 'UDL_COMPLETE',
+                                                            batch_table.c.udl_phase_step_status == 'SUCCESS'))
             result = connector.execute(query).fetchall()
             number_of_guid = len(result)
             self.assertEqual(number_of_guid, 3)
             for batch in result:
                 drop_target_schema('nc', batch[0])
 
-    #Test method for edware db
     def test_database(self):
         self.empty_batch_table()
         self.udl_run()

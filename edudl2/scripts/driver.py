@@ -19,7 +19,7 @@ def run_pipeline(archive_file=None, batch_guid_forced=None):
     """
     if not archive_file:
         raise Exception
-    get_pipeline_chain(archive_file, batch_guid_forced=batch_guid_forced).delay()
+    get_pipeline_chain(archive_file, guid_batch=batch_guid_forced).delay()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

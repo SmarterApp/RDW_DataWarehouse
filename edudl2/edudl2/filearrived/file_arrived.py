@@ -35,7 +35,9 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     """
     shutil.copy2(incoming_file, arrived_dir)
     shutil.move(incoming_file, history_dir)
-    shutil.move(FileUtil.get_complement_file_name(incoming_file), history_dir)
+    checksum_file = FileUtil.get_complement_file_name(incoming_file)
+    if os.path.exists(checksum_file):
+        shutil.move(checksum_file, history_dir)
 
 
 def get_tenant_name(incoming_file):

@@ -27,6 +27,7 @@ class Constants():
     STATE_CODE = 'state_code'
     ACADEMIC_YEAR = 'academicYear'
     EXTRACTION_DATA_TYPE = 'extraction_data_type'
+    ITEM_IDS = 'item_ids'
 
 
 class QueryType():

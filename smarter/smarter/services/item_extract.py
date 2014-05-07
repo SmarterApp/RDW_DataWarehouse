@@ -63,6 +63,16 @@ ITEM_EXTRACT_PARAMS = {
             "maxLength": 2,
             "required": True,
         },
+        Constants.ITEMID: {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]*$"
+            },
+            "minItems": 1,
+            "uniqueItems": True,
+            "required": False,
+        },
         Extract.ASYNC: {
             "type": "string",
             "required": False,

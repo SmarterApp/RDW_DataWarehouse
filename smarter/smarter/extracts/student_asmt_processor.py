@@ -241,6 +241,7 @@ def _create_item_level_tasks_with_responses(request_id, user, tenant, param, tas
         task = _create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level,
                                 extract_file_path=get_items_extract_file_path, item_level=True)
         task[TaskConstants.STATE_CODE] = state_code
+        task[TaskConstants.ITEM_IDS] = param.get(Constants.ITEMID) if Constants.ITEMID in param else None
         tasks.append(task)
     copied_task_response[Extract.STATUS] = Extract.OK
     task_responses.append(copied_task_response)

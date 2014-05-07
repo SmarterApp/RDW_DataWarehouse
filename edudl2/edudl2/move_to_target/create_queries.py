@@ -240,19 +240,7 @@ def combine_schema_and_table(schema_name, table_name):
         return create_filtered_sql_string('"{table}"', table=table_name)
 
 
-def get_dim_table_mapping_query(schema_name, table_name, phase_number):
-    '''
-    Function to get target table and source table mapping in a specific udl phase
-    '''
-    with get_udl_connection() as conn:
-        table = conn.get_table(table_name)
-        query = select([table.c.target_table,
-                        table.c.source_table],
-                       from_obj=table).where(table.c.phase == phase_number).group_by(table.c.target_table, table.c.source_table)
-        return query
-
-
-def get_column_mapping_query(schema_name, ref_table, target_table, source_table=None):
+def get_column_mapping(schema_name, ref_table, target_table, source_table=None):
     '''
     Get column mapping to target table.
 
@@ -271,7 +259,7 @@ def get_column_mapping_query(schema_name, ref_table, target_table, source_table=
         query = query.where(table.c.target_table == target_table)
         if source_table:
             query = query.where(and_(table.c.source_table == source_table))
-    return query
+        return conn.get_result(query)
 
 
 def dblink_url_composer(host, port, db_name, db_user, db_password):

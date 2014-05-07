@@ -19,9 +19,9 @@ class TestInitSFTPUser(unittest.TestCase):
     def setUp(self):
         self.__temp_dir = tempfile.mkdtemp()
         self.sftp_conf = {
-            'sftp_home': self.__temp_dir,
-            'sftp_base_dir': 'sftp/opt/edware/home',
-            'sftp_arrivals_dir': 'arrivals',
+            'home': self.__temp_dir,
+            'base_dir': 'sftp/opt/edware/home',
+            'arrivals_dir': 'arrivals',
             'sftp_departures_dir': 'departures',
             'sftp_filerouter_dir': '',
             'group': 'testgroup',
@@ -77,27 +77,6 @@ class TestInitSFTPUser(unittest.TestCase):
 
         self.assertEqual(expected_result, result)
 
-#    def test__set_ssh_key_exists(self):
-#        create_path('/tmp/test_sftp_user')
-#        self.cleanup_dirs.append('/tmp/test_sftp_user')
-#
-#        public_key_str = "blahblahblahblahblah" * 20
-#        _set_ssh_key('test_sftp_user', 'testgrp1', '/tmp/test_sftp_user', public_key_str)
-#        self.assertTrue(os.path.exists('/tmp/test_sftp_user/.ssh/authorized_keys'))
-#
-#    def test__set_ssh_key(self):
-#        create_path('/tmp/test_sftp_user')
-#        init_group(self.sftp_conf)
-#        self.cleanup_dirs.append('/tmp/test_sftp_user')
-#
-#        public_key_str = "blahblahblahblahblah" * 20
-#        _set_ssh_key('test_sftp_user', 'testgrp1', '/tmp/test_sftp_user', public_key_str)
-#        with open('/tmp/test_sftp_user/.ssh/authorized_keys') as key_file:
-#            public_key_str += '\n'
-#            self.assertEqual(key_file.read(), public_key_str)
-#
-#        self.del_groups = True
-
     def check_user_does_not_exist(self, user):
         with self.assertRaises(KeyError):
             pwd.getpwnam(user)
@@ -116,7 +95,7 @@ class TestInitSFTPUser(unittest.TestCase):
 
     def test_get_user_role_dir_arrivals(self):
         _dir = get_user_role_dir(self.sftp_conf, 'sftparrivals')
-        self.assertEqual(_dir, self.sftp_conf["sftp_arrivals_dir"])
+        self.assertEqual(_dir, self.sftp_conf["arrivals_dir"])
 
     def test_get_user_role_dir_departures(self):
         _dir = get_user_role_dir(self.sftp_conf, 'sftpdepartures')

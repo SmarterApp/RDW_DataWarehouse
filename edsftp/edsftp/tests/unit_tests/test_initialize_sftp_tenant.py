@@ -12,9 +12,9 @@ class TestInitializeTenant(unittest.TestCase):
     def setUp(self):
         self.__temp_dir = tempfile.mkdtemp()
         self.sftp_conf = {
-            'sftp_home': self.__temp_dir,
-            'sftp_base_dir': 'tenant_test_dir',
-            'sftp_arrivals_dir': 'test_arrivals_1',
+            'home': self.__temp_dir,
+            'base_dir': 'tenant_test_dir',
+            'arrivals_dir': 'test_arrivals_1',
             'sftp_departures_dir': 'test_departures_1',
             'user_home_base_dir': self.__temp_dir,
             'group': 'edwaredataadmin',
@@ -32,15 +32,15 @@ class TestInitializeTenant(unittest.TestCase):
 
     def test_create_tenant_path_string_arrivals(self):
         tenant = 'test_tenant123'
-        expected = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_base_dir'],
-                                self.sftp_conf['sftp_arrivals_dir'], tenant)
+        expected = os.path.join(self.sftp_conf['home'], self.sftp_conf['base_dir'],
+                                self.sftp_conf['arrivals_dir'], tenant)
         result = initialize_sftp_tenant.create_tenant_path_string(tenant, self.sftp_conf, True)
 
         self.assertEqual(expected, result)
 
     def test_create_tenant_path_string_departures(self):
         tenant = 'test_tenant123'
-        expected = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_base_dir'],
+        expected = os.path.join(self.sftp_conf['home'], self.sftp_conf['base_dir'],
                                 self.sftp_conf['sftp_departures_dir'], tenant)
         result = initialize_sftp_tenant.create_tenant_path_string(tenant, self.sftp_conf, False)
 
@@ -48,7 +48,7 @@ class TestInitializeTenant(unittest.TestCase):
 
     def test_create_tenant_home_folder_string_arrivals(self):
         tenant = "test_tenant1234"
-        expected = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['sftp_arrivals_dir'], tenant)
+        expected = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['arrivals_dir'], tenant)
         result = initialize_sftp_tenant.create_tenant_home_folder_string(tenant, self.sftp_conf, True)
 
         self.assertEqual(result, expected)
@@ -62,11 +62,11 @@ class TestInitializeTenant(unittest.TestCase):
 
     def test_create_tenant(self):
         tenant = 'test_tenant123'
-        expected_path1 = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_base_dir'],
-                                      self.sftp_conf['sftp_arrivals_dir'], tenant)
-        expected_path2 = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_base_dir'],
+        expected_path1 = os.path.join(self.sftp_conf['home'], self.sftp_conf['base_dir'],
+                                      self.sftp_conf['arrivals_dir'], tenant)
+        expected_path2 = os.path.join(self.sftp_conf['home'], self.sftp_conf['base_dir'],
                                       self.sftp_conf['sftp_departures_dir'], tenant)
-        expected_path3 = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['sftp_arrivals_dir'], tenant)
+        expected_path3 = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['arrivals_dir'], tenant)
         expected_path4 = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['sftp_departures_dir'], tenant)
 
         self.assertFalse(os.path.exists(expected_path1), 'expected path should not exist')
@@ -82,11 +82,11 @@ class TestInitializeTenant(unittest.TestCase):
 
     def test_remove_tenant(self):
         tenant = 'test_tenant123'
-        expected_path1 = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_base_dir'],
-                                      self.sftp_conf['sftp_arrivals_dir'], tenant)
-        expected_path2 = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_base_dir'],
+        expected_path1 = os.path.join(self.sftp_conf['home'], self.sftp_conf['base_dir'],
+                                      self.sftp_conf['arrivals_dir'], tenant)
+        expected_path2 = os.path.join(self.sftp_conf['home'], self.sftp_conf['base_dir'],
                                       self.sftp_conf['sftp_departures_dir'], tenant)
-        expected_path3 = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['sftp_arrivals_dir'], tenant)
+        expected_path3 = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['arrivals_dir'], tenant)
         expected_path4 = os.path.join(self.sftp_conf['user_home_base_dir'], self.sftp_conf['sftp_departures_dir'], tenant)
 
         initialize_sftp_tenant.create_tenant(tenant, self.sftp_conf)

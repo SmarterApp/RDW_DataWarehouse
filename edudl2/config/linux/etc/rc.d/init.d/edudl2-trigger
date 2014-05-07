@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 10
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+. /opt/virtualenv/smarter/bin/activate
+PIDFILE="/opt/edware/run/edudl2.pid"
+EDUDL2_TRIGGER="python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
+
+start() {
+	echo -n "Starting edsftp sync: "
+	daemon $EDUDL2_TRIGGER
+	RETVAL=$?
+}
+
+stop() {
+	echo -n "Stopping edudl2 trigger: "
+	killproc -p $PIDFILE
+	RETVAL=$?
+}
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	*)
+
+	echo $"Usage: edudl2-trigger {start|stop}"
+	exit 2
+esac
+deactivate
+exit $RETVAL

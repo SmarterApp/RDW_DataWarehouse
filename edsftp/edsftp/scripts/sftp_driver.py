@@ -7,45 +7,26 @@ Module to initialize sftp zones and creating groups
 __author__ = 'sravi'
 
 import argparse
-import os
-import configparser
+import logging
+import logging.config
 from edsftp.src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
 from edsftp.src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from edsftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
 from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
 from edsftp.scripts.sftp_watcher import sftp_file_sync
+from edcore.utils.utils import read_ini, get_config_from_ini
+from edcore.utils.utils import create_daemon
+
+logger = logging.getLogger('edsftp')
 
 
-def get_ini_file():
-    '''
-    Get ini file path name
-    '''
-    jenkins_ini = '/opt/edware/conf/smarter.ini'
-    if os.path.exists(jenkins_ini):
-        ini_file = jenkins_ini
-    else:
-        here = os.path.abspath(os.path.dirname(__file__))
-        ini_file = os.path.join(here, '../../config/development.ini')
-    return ini_file
+def run_sftp_sync_process(daemon_mode, sftp_conf, pid_file):
+    if daemon_mode:
+        create_daemon(pid_file)
+    sftp_file_sync(sftp_conf)
 
 
-def read_ini(ini_file):
-    config = configparser.ConfigParser()
-    config.read(ini_file)
-    return config['app:main']
-
-
-def get_sftp_config_from_ini(settings):
-    sftp_options = {}
-    config_prefix = 'sftp.'
-    config_prefix_len = len(config_prefix)
-    for key, val in settings.items():
-        if key.startswith(config_prefix):
-            sftp_options[key[config_prefix_len:]] = val
-    return sftp_options
-
-
-if __name__ == "__main__":
+def main():
     """
     Driver script to build and maintain sftp machine
     This script needs to be run as root user
@@ -64,15 +45,16 @@ if __name__ == "__main__":
                                                'Will not be used if -ssh-key is specified')
     parser.add_argument('--remove-user', action='store_true', help='Delete the user defined by the -u option')
     parser.add_argument('--remove-tenant', action='store_true', help='Remove the tenant specified by the -t option')
+    parser.add_argument('-p', dest='pidfile', default='/opt/edware/run/edsftp-watcher.pid',
+                        help="pid file for sftp watcher daemon")
+    parser.add_argument('-d', dest='daemon', action='store_true', default=False, help="daemon mode for sync option")
     parser.add_argument('-i', dest='ini_file', default='/opt/edware/conf/smarter.ini', help="ini file")
     args = parser.parse_args()
 
     file = args.ini_file
-    if file is None or not os.path.exists(file):
-        file = get_ini_file()
-    #logging.config.fileConfig(file)
+    logging.config.fileConfig(file)
     settings = read_ini(file)
-    sftp_conf = get_sftp_config_from_ini(settings)
+    sftp_conf = get_config_from_ini(config=settings, config_prefix='sftp.')
 
     if args.driver_init_action:
         sftp_zone_init(sftp_conf)
@@ -81,7 +63,9 @@ if __name__ == "__main__":
         sftp_groups_cleanup(sftp_conf)
         sftp_zone_cleanup(sftp_conf)
     elif args.driver_run_sync:
-        sftp_file_sync(sftp_conf)
+        daemon_mode = args.daemon
+        pid_file = args.pidfile
+        run_sftp_sync_process(daemon_mode, sftp_conf, pid_file)
     elif args.add_tenant:
         if args.tenant_name is None:
             parser.error('Tenant name is required to add a new tenant')
@@ -100,3 +84,6 @@ if __name__ == "__main__":
         remove_tenant(args.tenant_name, sftp_conf)
     else:
         parser.error('Please specify a valid argument')
+
+if __name__ == "__main__":
+    main()

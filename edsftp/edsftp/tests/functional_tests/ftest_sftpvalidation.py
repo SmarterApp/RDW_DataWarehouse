@@ -7,12 +7,10 @@ Created on Oct 21, 2013
 import unittest
 import os
 import shutil
+import sys
 from edsftp.src import configure_sftp_zone
 from edsftp.src import configure_sftp_groups
-from edsftp.src import sftp_config
-import sys
 from edsftp.src import initialize_sftp_tenant
-from edsftp.src.util import cleanup_directory
 from edsftp.src import initialize_sftp_user
 
 
@@ -22,16 +20,16 @@ class sftpvalidation(unittest.TestCase):
         if not os.path.exists("/tmp/sftp_functional_test"):
             os.mkdir("/tmp/sftp_functional_test", 0o755)
         self.test_sftp_conf = {
-            'sftp_home': '/tmp/sftp_functional_test',
-            'sftp_base_dir': 'sftp',
-            'sftp_arrivals_dir': 'arrivals',
+            'home': '/tmp/sftp_functional_test',
+            'base_dir': 'sftp',
+            'arrivals_dir': 'arrivals',
             'sftp_departures_dir': 'departures',
             'groups': ['sftparrivals', 'tenantadmin'],
             'group_directories': {'sftparrivals': 'arrivals',
                                   'tenantadmin': 'departures'}
         }
-        self.sftp_zone_path = os.path.join(self.test_sftp_conf['sftp_home'], self.test_sftp_conf['sftp_base_dir'])
-        self.sftp_arrivals_path = os.path.join(self.sftp_zone_path, self.test_sftp_conf['sftp_arrivals_dir'])
+        self.sftp_zone_path = os.path.join(self.test_sftp_conf['home'], self.test_sftp_conf['base_dir'])
+        self.sftp_arrivals_path = os.path.join(self.sftp_zone_path, self.test_sftp_conf['arrivals_dir'])
         self.sftp_departures_path = os.path.join(self.sftp_zone_path, self.test_sftp_conf['sftp_departures_dir'])
         self.sftp_arrivals_tenant_path = os.path.join(self.sftp_arrivals_path, 'tenant_dir')
         self.sftp_departures_tenant_path = os.path.join(self.sftp_departures_path, 'tenant_dir')

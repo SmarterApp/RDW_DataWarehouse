@@ -30,6 +30,10 @@ export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/edsftp
 source virtualenv/edsftp/bin/activate
 
+cd ${WORKSPACE}/edcore
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edsftp
 python setup.py clean --all
 python setup.py install

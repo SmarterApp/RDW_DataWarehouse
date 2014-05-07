@@ -15,7 +15,7 @@ __author__ = 'swimberly'
 
 def get_user_role_dir(sftp_conf, role):
     if role == 'sftparrivals':
-        arrive_depart_dir = sftp_conf['sftp_arrivals_dir']
+        arrive_depart_dir = sftp_conf['arrivals_dir']
     elif role == 'sftpdepartures':
         arrive_depart_dir = sftp_conf['sftp_departures_dir']
     else:
@@ -45,7 +45,7 @@ def get_tenant_sftp_jail_dir(sftp_conf, tenant, role):
     arrive_depart_dir = get_user_role_dir(sftp_conf, role)
     if role not in ['sftparrivals', 'sftpdepartures']:
         tenant = ""
-    return os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], arrive_depart_dir, tenant)
+    return os.path.join(sftp_conf['home'], sftp_conf['base_dir'], arrive_depart_dir, tenant)
 
 
 def get_user_path(sftp_conf, role):

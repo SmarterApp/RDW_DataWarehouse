@@ -89,21 +89,8 @@ class Udl2BaseTask(Task):
         msg.update({mk.PIPELINE_STATE: 'error'})
 
         error_handler_chain = self.__get_pipeline_error_handler_chain(msg, self.name)
-        if mk.LOOP_PIPELINE in msg and msg[mk.LOOP_PIPELINE] is True:
-            next_file_msg = {
-                mk.TENANT_SEARCH_PATHS: msg[mk.TENANT_SEARCH_PATHS],
-                mk.PARTS: msg[mk.PARTS],
-                # TODO: Check if we need to pass the load type
-                mk.LOAD_TYPE: msg[mk.LOAD_TYPE],
-            }
-
-            import edudl2.udl2.W_get_udl_file as W_get_udl_file
-            chain = W_get_udl_file.get_next_file.si(next_file_msg) \
-                if error_handler_chain is None else error_handler_chain | W_get_udl_file.get_next_file.si(next_file_msg)
-            chain.apply_async()
-        else:
-            if error_handler_chain is not None:
-                error_handler_chain.delay()
+        if error_handler_chain is not None:
+            error_handler_chain.delay()
 
     def on_success(self, retval, task_id, args, kwargs):
         logger.info('Task completed successfully: '.format(task_id))

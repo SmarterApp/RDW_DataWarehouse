@@ -4,82 +4,39 @@ import os
 import fnmatch
 import time
 import shutil
-import hashlib
 import logging
-from edcore.watch.util import set_interval, Singleton
+from edcore.watch.util import set_interval, FileUtil
+from edcore.watch.file_hasher import MD5Hasher
+from edcore.watch.constants import WatcherConstants as Const
 
 logger = logging.getLogger(__name__)
 
-WATCH_INTERVAL_IN_SECONDS = 2
-CHECKSUM_FILE_EXTENSION = '.done'
+WATCH_INTERVAL = 2
 
 
-class Watcher(metaclass=Singleton):
+class FileWatcher():
     """File sync class to watch for complete files"""
     conf = None
     file_stats = {}
+    hasher = MD5Hasher()
 
-    def __init__(self):
-        pass
+    def __init__(self, config):
+        FileWatcher.conf = config
+        FileWatcher.clear_file_stats()
+        global WATCH_INTERVAL
+        WATCH_INTERVAL = FileWatcher.conf[Const.FILE_STAT_WATCH_INTERVAL]
+        FileWatcher.source_path = os.path.join(FileWatcher.conf[Const.BASE_DIR], FileWatcher.conf[Const.SOURCE_DIR])
+        FileWatcher.dest_path = \
+            os.path.join(FileWatcher.conf[Const.BASE_DIR],
+                         FileWatcher.conf[Const.DEST_DIR]) if Const.DEST_DIR in FileWatcher.conf else None
 
     @classmethod
-    def set_conf(cls, config):
-        cls.conf = config
-        cls.clear_file_stats()
-        global WATCH_INTERVAL_IN_SECONDS
-        WATCH_INTERVAL_IN_SECONDS = cls.conf['file_stat_watch_internal_in_seconds']
-        cls.source_path = os.path.join(cls.conf['base_dir'], cls.conf['source_dir'])
-        cls.dest_path = os.path.join(cls.conf['base_dir'], cls.conf['dest_dir']) if 'dest_dir' in cls.conf else None
-
-    @staticmethod
-    def get_file_stat(filename):
-        return os.stat(filename).st_size if os.path.exists(filename) else None
-
-    @staticmethod
-    def md5_for_file(path, block_size=256, hex_digest=True):
-        """Returns md5 secure hash for the file specified
-
-        :param path: path of the file for which md5 hash needs to be generated
-        :param block_size: read the file in chunks of size block_size * md5.block_size (Defaults to 4MB)
-        :param hex_digest: Generate md5 digest as string object with only hexadecimal digits
-
-        :returns hexadecimal or simple digest of the file contents
-        """
-        md5 = hashlib.md5()
-        with open(path, 'rb') as f:
-            for chunk in iter(lambda: f.read(block_size * md5.block_size), b''):
-                md5.update(chunk)
-        if not hex_digest:
-            return md5.digest()
-        return md5.hexdigest()
-
-    @staticmethod
-    def get_file_hash(file):
-        return Watcher.md5_for_file(file)
-
-    @staticmethod
-    def file_contains_hash(file, file_hash):
-        with open(file) as f:
-            if file_hash in f.read():
-                return True
-        return False
-
-    @staticmethod
-    def valid_check_sum(file):
-        checksum_file = Watcher.get_complement_file_name(file)
+    def valid_check_sum(cls, file):
+        checksum_file = FileUtil.get_complement_file_name(file)
         if not os.path.exists(file) or not os.path.exists(checksum_file):
             return False
-        file_hash = Watcher.get_file_hash(file)
-        return Watcher.file_contains_hash(checksum_file, file_hash)
-
-    @staticmethod
-    def get_complement_file_name(file):
-        if fnmatch.fnmatch(file, '*' + CHECKSUM_FILE_EXTENSION):
-            # return corresponding source file
-            return file.strip(CHECKSUM_FILE_EXTENSION)
-        else:
-            # return corresponding '.done' file
-            return ''.join([file, CHECKSUM_FILE_EXTENSION])
+        file_hash = cls.hasher.get_file_hash(file)
+        return FileUtil.file_contains_hash(checksum_file, file_hash)
 
     @classmethod
     def clear_file_stats(cls):
@@ -91,26 +48,31 @@ class Watcher(metaclass=Singleton):
 
     @classmethod
     def find_all_files(cls):
+        assert cls.conf is not None
+
+        cls.clear_file_stats()
         for root, dirs, files in os.walk(cls.source_path):
-            filtered_files = [filename for pattern in set(cls.conf['file_patterns_to_watch'])
+            filtered_files = [filename for pattern in set(cls.conf[Const.FILE_PATTERNS_TO_WATCH])
                               for filename in fnmatch.filter(files, pattern)]
+            # filter hidden file
+            filtered_files = [filename for filename in filtered_files if not filename.startswith('.')]
             for filename in filtered_files:
                 file_path = os.path.join(root, filename)
-                file_stat = cls.get_file_stat(file_path)
+                file_stat = FileUtil.get_file_stat(file_path)
                 if file_stat is not None:
                     cls.file_stats[file_path] = file_stat
 
     @classmethod
     def get_updated_file_stats(cls):
-        return {filename: cls.get_file_stat(filename) for filename in cls.get_file_stats().keys()}
+        return {filename: FileUtil.get_file_stat(filename) for filename in cls.file_stats.keys()}
 
     @classmethod
-    @set_interval(interval=WATCH_INTERVAL_IN_SECONDS)
+    @set_interval(interval=WATCH_INTERVAL)
     def watch_and_filter_files_by_stats_changes(cls):
         file_stats_latest = cls.get_updated_file_stats()
-        for file, size in cls.get_file_stats().copy().items():
+        for file, size in cls.file_stats.copy().items():
             if file_stats_latest[file] is None or file_stats_latest[file] != size:
-                print('Removing file {file} due to size changes during monitoring'.format(file=file))
+                logger.debug('Removing file {file} due to size changes during monitoring'.format(file=file))
                 cls.remove_file_pair_from_dict(file)
 
     @classmethod
@@ -119,7 +81,7 @@ class Watcher(metaclass=Singleton):
         # monitor the files for change in stats
         stop = cls.watch_and_filter_files_by_stats_changes()
         # monitor for a duration
-        time.sleep(float(cls.conf['file_stat_watch_period_in_seconds']))
+        time.sleep(float(cls.conf[Const.FILE_STAT_WATCH_PERIOD]))
         # stop the timer
         stop.set()
 
@@ -130,60 +92,35 @@ class Watcher(metaclass=Singleton):
     @classmethod
     def remove_file_pair_from_dict(cls, file):
         # check the file being removed and remove the corresponding pair file
-        cls.remove_file_from_dict(cls.get_complement_file_name(file))
+        cls.remove_file_from_dict(FileUtil.get_complement_file_name(file))
         # remove the main file
         cls.remove_file_from_dict(file)
 
     @classmethod
     def filter_files_for_digest_mismatch(cls):
         """Verifies checksum for all the files (ignoring '*.done' files) currently being watched"""
-        all_files = cls.get_file_stats().copy().keys()
-        # filter out the '*.done' files which will contain the checksum for a corresponding source file
-        source_files = set(all_files) - set(fnmatch.filter(all_files, '*.done'))
+        all_files = cls.file_stats.copy().keys()
+        # filter out the checksum files which will contain the checksum for a corresponding source file
+        source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
         for file in source_files:
             if not cls.valid_check_sum(file):
-                print('Removing file {file} due to invalid hash'.format(file=file))
+                logger.error('Removing file {file} due to invalid hash'.format(file=file))
                 cls.remove_file_pair_from_dict(file)
 
     @classmethod
     def filter_checksum_files(cls):
-        """Remove '*.done' files"""
-        for file in set(fnmatch.filter(cls.get_file_stats().copy().keys(), '*.done')):
+        """Remove checksum files"""
+        for file in set(fnmatch.filter(cls.file_stats.copy().keys(), '*' + Const.CHECKSUM_FILE_EXTENSION)):
             cls.remove_file_from_dict(file)
 
     @classmethod
     def move_files(cls):
-        files_to_move = cls.get_file_stats().keys()
+        files_to_move = cls.file_stats.keys()
         for file in files_to_move:
             destination_file_path = os.path.join(cls.dest_path, os.path.relpath(file, cls.source_path))
             destination_file_directory = os.path.split(destination_file_path)[0]
             if not os.path.exists(destination_file_directory):
                 os.makedirs(destination_file_directory)
-            print('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
+            logger.debug('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
             shutil.move(file, destination_file_path)
         return len(files_to_move)
-
-    @classmethod
-    def assert_inputs(cls):
-        assert cls.conf is not None
-
-    @classmethod
-    def find_files(cls):
-        cls.clear_file_stats()
-        cls.assert_inputs()
-        cls.find_all_files()
-
-    @classmethod
-    def watch_and_move_files(cls):
-        cls.find_files()
-        cls.watch_files()
-        files_moved = cls.move_files()
-        return files_moved
-
-    @classmethod
-    def find_udl_ready_files(cls):
-        cls.find_files()
-        cls.watch_files()
-        cls.filter_files_for_digest_mismatch()
-        cls.filter_checksum_files()
-        return cls.get_file_stats()

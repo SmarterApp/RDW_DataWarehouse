@@ -333,10 +333,7 @@ def move_data_from_int_tables_to_target_table(conf, task_name, source_tables, ta
 
     @return: Number of inserted rows
     """
-    with get_udl_connection() as conn_to_source_db:
-
-        column_and_type_mapping = get_column_and_type_mapping(conf, conn_to_source_db, task_name,
-                                                              target_table, source_tables)
+    column_and_type_mapping = get_column_and_type_mapping(conf, task_name, target_table, source_tables)
 
     with get_target_connection(conf[mk.TENANT_NAME], conf[mk.GUID_BATCH]) as conn_to_target_db:
         insert_query = create_sr_table_select_insert_query(conf, target_table, column_and_type_mapping)

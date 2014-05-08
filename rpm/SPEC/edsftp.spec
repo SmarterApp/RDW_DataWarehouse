@@ -93,6 +93,11 @@ if [ $? -ne 0 ]; then
    useradd sftp_admin -g sftp_admin -u 505
 fi
 
+EDWARE_ROOT=/opt/edware
+if [ ! -d $EDWARE_ROOT/run ]; then
+    mkdir -p $EDWARE_ROOT/run
+fi
+
 %postun
 userdel -rf sftp_admin > /dev/null 2>&1
 groupdel sftp_admin > /dev/null 2>&1
@@ -101,4 +106,3 @@ groupdel sftp_admin > /dev/null 2>&1
 chkconfig --del edsftp-watcher
 
 %changelog
-

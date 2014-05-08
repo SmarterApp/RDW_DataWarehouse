@@ -4,7 +4,7 @@
 
 # Source function library.
 . /etc/rc.d/init.d/functions
-. /opt/virtualenv/smarter/bin/activate
+. /opt/virtualenv/edsftp/bin/activate
 PIDFILE="/opt/edware/run/edsftp.pid"
 EDSFTP_SYNC="python -m edsftp.scripts.sftp_driver -d -p $PIDFILE"
 

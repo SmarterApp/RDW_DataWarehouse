@@ -139,6 +139,10 @@ if [ ! -d $UDL2_ROOT/keys ]; then
     mkdir -p $UDL2_ROOT/keys
 fi
 
+if [ ! -d $UDL2_ROOT/run ]; then
+    mkdir -p $UDL2_ROOT/run
+fi
+
 if [ ! -f $UDL2_ROOT/log/udl2.audit.log ]; then
     touch $UDL2_ROOT/log/udl2.audit.log
 fi
@@ -188,4 +192,3 @@ chkconfig --del celeryd-udl2
 chkconfig --del edudl2-trigger
 
 %changelog
-

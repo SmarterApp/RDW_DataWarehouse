@@ -24,11 +24,12 @@ def _find_udl_ready_files(file_watcher):
     return file_watcher.get_file_stats()
 
 
-def udl_trigger(config):
+def udl_trigger(config, loop_once=False):
     """Runs the watcher script on the udl arrivals zone to schedule pipeline
     when a file is ready
 
     :param config: Entire udl2_conf as flat dictionary
+    :pram loop_once: Runs the loop only once if set to True (Needed for testing)
     """
     # get the settings needed for the udl trigger alone
     config = get_config_from_ini(config=config, config_prefix='udl2_trigger.')
@@ -43,6 +44,8 @@ def udl_trigger(config):
             for file in udl_ready_files:
                 logger.debug('Scheduling pipeline for file - {file}'.format(file=file))
                 schedule_pipeline.delay(file)
+            if loop_once:
+                break
         except KeyboardInterrupt:
             logger.warn('UDL2 trigger process terminated by a user')
             os._exit(0)

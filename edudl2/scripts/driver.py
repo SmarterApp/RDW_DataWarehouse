@@ -28,8 +28,8 @@ if __name__ == '__main__':
                         default=False, help="dev mode (Celery will run as eager and file is optional)")
     parser.add_argument('-g', dest='batch_guid_forced', default=None,
                         help="force the udl2 pipeline to use this batch guid")
-    parser.add_argument('--loop', dest='loop', action='store_true',
-                        help='Runs the udl_trigger script to watch the arrivals directory and schedule pipeline')
+    parser.add_argument('--loop-once', dest='loop_once', action='store_true',
+                        help='Runs the udl_trigger script to watch the arrivals directory, schedule all files and exit')
     args = parser.parse_args()
     if args.dev_mode:
         # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
@@ -46,9 +46,10 @@ if __name__ == '__main__':
             shutil.copy(file_name, dest)
             args.archive_file = dest
 
-    if args.loop:
-        # run the udl trigger to watch the arrivals directory and schedule pipeline
-        udl_trigger(udl2_flat_conf)
+    if args.loop_once:
+        # run the udl trigger to watch the arrivals directory and schedule all files and exit
+        # this is to help tests call trigger script and get an handle back
+        udl_trigger(udl2_flat_conf, loop_once=True)
     elif args.dev_mode or args.archive_file is not None:
         # run the pipeline for a single file
         run_pipeline(args.archive_file, batch_guid_forced=args.batch_guid_forced)

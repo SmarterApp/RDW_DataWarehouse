@@ -57,6 +57,7 @@ require {
     edwarePrintURL: 'widgets/print/EDWARE.printURL',
     edwareRedirect: 'modules/EDWARE.stateViewRedirect',
     edwarePopover: 'widgets/popover/EDWARE.popover',
+    edwareSearch: 'widgets/search/EDWARE.search',
 
     # widgets
     edwareYearDropdown: 'widgets/academicYear/EDWARE.yearDropdown',

@@ -13,7 +13,8 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
+  "edwareSearch"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -189,7 +190,10 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
+      self = this
       this.header = edwareHeader.create(this.data, this.config) unless this.header
+      this.search ?= new edwareSearch.EdwareSearch this.labels, () ->
+        self.updateView()
 
     fetchExportData: () ->
       this.assessmentsData
@@ -262,14 +266,15 @@ define [
       # get filtered data and we pass in the first columns' config
       # field name for sticky chain list
       filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, filedName)
+      searchData = this.search.getSearchResults filteredInfo, filedName
 
       self = this
       edwareGrid.create {
-        data: filteredInfo.data
+        data: searchData.data
         columns: @studentsDataSet.columnData[viewName]
         options:
           labels: this.labels
-          stickyCompareEnabled: filteredInfo.enabled
+          stickyCompareEnabled: searchData.enabled
           gridComplete: () ->
             self.afterGridLoadComplete()
       }

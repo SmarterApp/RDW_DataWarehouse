@@ -21,6 +21,7 @@ class TestInitializeSFTPZone(unittest.TestCase):
             'base_dir': 'sftp',
             'arrivals_dir': 'arrivals',
             'arrivals_sync_dir': 'arrivals_sync',
+            'arrivals_sync_user': 'arrivals_sync',
             'sftp_departures_dir': 'departures'
         }
         self.sftp_zone_path = os.path.join(self.test_sftp_conf['home'], self.test_sftp_conf['base_dir'])

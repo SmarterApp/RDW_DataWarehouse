@@ -21,9 +21,8 @@ define [
     if userName
       headerTemplate.find('#user-settings #username').html userName
     header = $("#header").html headerTemplate
-    dropdown_menu = header.find '.dropdown-menu'
     # Add language selector
-    edwareLanguageSelector.create dropdown_menu, labels
+    edwareLanguageSelector.create $('#languageSelector', header), labels
     $('.text_logout').html labels.logout
     createHelp labels
     bindEvents()

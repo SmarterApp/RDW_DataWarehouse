@@ -78,10 +78,27 @@ rm -rf %{buildroot}
 %pre
 
 %post
+chkconfig --add edsftp-watcher
+
+# check if sftp_admin group exists and create if not
+egrep -i "^sftp_admin:" /etc/group > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+   groupadd sftp_admin -f -g 505
+fi
+
+# check if sftp_admin user exists and create if not
+id sftp_admin > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+   # add sftp_admin user with id 505 and group sftp_admin
+   useradd sftp_admin -g sftp_admin -u 505
+fi
 
 %postun
+userdel -rf sftp_admin > /dev/null 2>&1
+groupdel sftp_admin > /dev/null 2>&1
 
 %preun
+chkconfig --del edsftp-watcher
 
 %changelog
 

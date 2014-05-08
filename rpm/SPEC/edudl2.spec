@@ -124,8 +124,7 @@ fi
 # check if udl2 user exists and create if not
 id udl2 > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-   # add udl2 user with id 501 and group udl2,
-   # the same user/group, id combination needs to be created in the DB server
+   # add udl2 user with id 501 and group udl2
    useradd udl2 -g udl2 -u 501
 fi
 
@@ -134,6 +133,10 @@ UDL2_ZONES=$UDL2_ROOT/zones
 
 if [ ! -d $UDL2_ROOT/log ]; then
     mkdir -p $UDL2_ROOT/log
+fi
+
+if [ ! -d $UDL2_ROOT/keys ]; then
+    mkdir -p $UDL2_ROOT/keys
 fi
 
 if [ ! -f $UDL2_ROOT/log/udl2.audit.log ]; then
@@ -173,6 +176,7 @@ if [ ! -d $UDL2_ZONES/landing/history ]; then
 fi
 chown -R udl2.udl2 $UDL2_ROOT/zones
 chown -R udl2.udl2 $UDL2_ROOT/log
+chown -R udl2.udl2 $UDL2_ROOT/keys
 chown -R udl2.udl2 $UDL2_ROOT/conf
 
 %postun
@@ -181,6 +185,7 @@ groupdel udl2 > /dev/null 2>&1
 
 %preun
 chkconfig --del celeryd-udl2
+chkconfig --del edudl2-trigger
 
 %changelog
 

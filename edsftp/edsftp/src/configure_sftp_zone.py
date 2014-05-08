@@ -33,14 +33,6 @@ def _create_sftp_arrivals_zone(sftp_conf):
         create_path(os.path.join(sftp_conf['home'], sftp_conf['base_dir'], sftp_conf['arrivals_dir']))
 
 
-def _create_sftp_arrivals_sync_user(sftp_conf):
-    """
-    create sftp arrivals sync user. This user will be used to run the sftp sync script
-    :param sftp_conf
-    """
-    subprocess.call(['useradd', sftp_conf['arrivals_sync_user']])
-
-
 def _create_sftp_arrivals_sync_zone(sftp_conf):
     """
     create sftp arrivals sync zone. This is the zone from which remote udl2 machine syncs completely uploaded files
@@ -50,11 +42,6 @@ def _create_sftp_arrivals_sync_zone(sftp_conf):
     arrivals_sync_dir = os.path.join(sftp_conf['home'], sftp_conf['base_dir'], sftp_conf['arrivals_sync_dir'])
     if os.path.exists(os.path.join(sftp_conf['home'], sftp_conf['base_dir'])):
         create_path(arrivals_sync_dir)
-    if sys.platform == 'linux':
-        _create_sftp_arrivals_sync_user(sftp_conf)
-        change_owner(arrivals_sync_dir, sftp_conf['arrivals_sync_user'], sftp_conf['arrivals_sync_user'])
-    else:
-        print('Not a Unix machine. Not adding sftp sync user: %s' % sftp_conf['arrivals_sync_user'])
 
 
 def _create_sftp_departures_zone(sftp_conf):

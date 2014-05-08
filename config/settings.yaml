@@ -152,7 +152,6 @@ common:
         home: /
         base_dir: /sftp/opt/edware/home
         arrivals_dir: arrivals
-        arrivals_sync_user: arrivals_sync
         arrivals_sync_dir: arrivals_sync
         file_patterns_to_watch:
             - '*.gpg'

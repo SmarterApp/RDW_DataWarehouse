@@ -2,7 +2,7 @@ from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_queries
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_query
 from edcore.utils.utils import compile_query_to_sql_text
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
@@ -245,7 +245,7 @@ def _create_item_level_tasks_with_responses(request_id, user, param, item_root_d
     states_to_tenants = get_state_code_to_tenant_map()
 
     state_code = param.get(Constants.STATECODE)
-    query = get_extract_assessment_item_queries(param, state_code)
+    query = get_extract_assessment_item_query(param, state_code)
     tenant = states_to_tenants[state_code]
     task = _create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level, item_level=True)
     task[TaskConstants.TASK_FILE_NAME] = out_file

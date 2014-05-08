@@ -4,7 +4,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extracts.student_asmt_processor import process_async_extraction_request, \
-    get_extract_file_path, process_sync_extract_request, \
+    process_async_item_extraction_request, get_items_extract_file_path, \
+    get_extract_file_path, process_sync_extract_request, process_sync_item_extract_request, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
     _create_tasks_with_responses
@@ -83,6 +84,18 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual(tasks[0]['status'], 'fail')
         self.assertEqual(tasks[3]['status'], 'fail')
 
+    def test_process_async_item_extraction_request(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2018',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3',
+                  'extractType': 'itemLevel'}
+        results = process_async_item_extraction_request(params)
+        tasks = results['tasks']
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]['status'], 'fail')
+
     def test_get_file_name_tenant_level(self):
         params = {'stateCode': 'CA',
                   'asmtSubject': 'UUUU',
@@ -120,6 +133,15 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         path = get_extract_file_path(params, 'tenant', 'request_id')
         self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_5_UUUU_ABC_', path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
+
+    def test_get_item_file_name(self):
+        params = {'stateCode': 'CA',
+                  'asmtYear': '2015',
+                  'asmtType': 'abc',
+                  'asmtSubject': 'UUUU',
+                  'asmtGrade': '5'}
+        path = get_items_extract_file_path(params, 'tenant', 'request_id')
+        self.assertIn('/tmp/work_zone/tenant/request_id/data/ITEMS_CA_2015_ABC_UUUU_GRADE_5', path)
 
     def test_process_sync_extraction_request_NotFoundException(self):
         params = {'stateCode': 'CA',
@@ -162,6 +184,33 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': ['2016'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         response = process_async_extraction_request(params)
+        self.assertIn('.zip.gpg', response['fileName'])
+        self.assertEqual(response['tasks'][0]['status'], 'ok')
+
+    def test_process_sync_items_extraction_request_NotFoundException(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2018',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3'}
+        self.assertRaises(NotFoundException, process_sync_item_extract_request, params)
+
+    def test_process_sync_items_extraction_request_with_subject(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2016',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'ELA',
+                  'asmtGrade': '3'}
+        zip_data = process_sync_item_extract_request(params)
+        self.assertIsNotNone(zip_data)
+
+    def test_process_async_items_extraction_request_with_subject(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2016',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'ELA',
+                  'asmtGrade': '3'}
+        response = process_async_item_extraction_request(params)
         self.assertIn('.zip.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
 
@@ -259,7 +308,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False)
+        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=False,
+                                extract_file_path=get_extract_file_path)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
         self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
@@ -295,7 +345,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         user = User()
-        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=True)
+        task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=False, is_tenant_level=True,
+                                extract_file_path=get_extract_file_path)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
         self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
@@ -317,6 +368,20 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_JSON, task[TaskConstants.EXTRACTION_DATA_TYPE])
         self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
+
+    def test__create_new_task_item_level(self):
+        with UnittestEdcoreDBConnection() as connection:
+            fact = connection.get_table('fact_asmt_outcome')
+            query = select([fact.c.student_guid], from_obj=[fact])
+        params = {'stateCode': 'CA',
+                  'asmtYear': '2015',
+                  'asmtType': 'abc',
+                  'asmtSubject': 'UUUU',
+                  'asmtGrade': '5'}
+        user = User()
+        task = _create_new_task('request_id', user, 'tenant', params, query, item_level=True, is_tenant_level=True)
+        self.assertIsNotNone(task)
+        self.assertEquals(ExtractionDataType.QUERY_ITEMS_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
 
     def test__create_tasks_with_responses_non_tenant_level(self):
         params = {'stateCode': 'NC',

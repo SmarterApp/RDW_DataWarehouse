@@ -109,6 +109,11 @@ def get_item_extract_service(context, request):
     '''
     try:
         params = convert_query_string_to_dict_arrays(request.GET)
+        params[Constants.STATECODE] = params[Constants.STATECODE][0]
+        params[Constants.ASMTYEAR] = params[Constants.ASMTYEAR][0]
+        params[Constants.ASMTTYPE] = params[Constants.ASMTTYPE][0]
+        params[Constants.ASMTSUBJECT] = params[Constants.ASMTSUBJECT][0]
+        params[Constants.ASMTGRADE] = params[Constants.ASMTGRADE][0]
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)

@@ -2,7 +2,7 @@
     <div id="SUMMARY_TEMPLATE">
         <div class='marginLeft20 {{cssClass}} {{export}}'>
             <span class='summarySubtitle' aria-hidden="true">{{subTitle}}:</span><br/>
-            <a class='summaryTitle inherit' href='#'>{{summaryTitle}}</a>
+            <span class='summaryTitle'>{{summaryTitle}}</span>
             <span class='edwareExportField' data-export-value='{{summaryTitle}}' data-export-name='{{columnName}}'></span>
         </div>
     </div>
@@ -15,7 +15,7 @@
                 </div>
             </div>
                 {{#hasTextReplacement}}
-                <div>{{displayText}}</div>
+                <div aria-label="{{subject.asmt_subject}} {{displayText}}" role="">{{displayText}}</div>
                 {{/hasTextReplacement}}
 
                 {{^hasTextReplacement}}
@@ -36,18 +36,21 @@
         {{/hasTextReplacement}}
 
         {{^hasTextReplacement}}
-        <div class='studentsTotal' aria-label='{{subject.asmt_subject}} total population {{subject.total}}' role=''>{{subject.total}}
         {{#subject.unfilteredTotal}}
-        <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
-        <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
-        <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
-        <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        <div class='studentsTotal' aria-label='{{subject.asmt_subject}} total population {{subject.total}} {{subject.ratio}}% of {{subject.unfilteredTotal}}' role=''>
+            {{subject.total}}
+            <div class='unfilteredTotal' aria-hidden='true'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
+            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+            <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
+            <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        </div>
         {{/subject.unfilteredTotal}}
         {{^subject.unfilteredTotal}}
-        <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        <div class='studentsTotal' aria-label='{{subject.asmt_subject}} total population {{subject.total}}' role=''>{{subject.total}}
+            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        </div>
         {{/subject.unfilteredTotal}}
         {{/hasTextReplacement}}
-        </div>
         </div>
     </div>
 

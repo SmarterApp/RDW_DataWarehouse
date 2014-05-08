@@ -56,11 +56,11 @@ define [
       this.addARIA()
 
     addARIA: ()->
-      #TODO:
+      # TODO:
       $('.ui-jqgrid-hdiv').attr('aria-label', 'headers')
       $('.ui-jqgrid-sdiv').attr('aria-label', 'summary')
       $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
-      # $('table.ui-jqgrid-htable').removeAttr('aria-labelledby')
+      $('#gridTable').removeAttr('aria-labelledby').attr('aria-label', 'grid body')
       $('.jqgfirstrow').attr('aria-hidden', 'true')
 
     renderBody: () ->
@@ -136,7 +136,7 @@ define [
       colModelItem
 
     getColumnName: (column) ->
-      column.name + column.displayTpl
+      column.displayTpl
 
     getHeaders: () ->
       for column in this.columns

@@ -192,7 +192,7 @@
         "items": [
             {
             "name": "Students",
-            "displayTpl": "",
+            "displayTpl": "<a href='#' class='inherit'>Students</>",
             "index": "student_full_name",
             "field": "student_full_name",
             "width": 330,
@@ -206,8 +206,8 @@
             "export": true
             },
             {
-            "name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
-            "displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
+            "name": "{{subject1}}",
+            "displayTpl": "<h4 class='pull-left' tabindex='0'>{{subject1}}</h4> Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
             "index": "subject1.asmt_score",
             "field": "subject1.asmt_score",
             "width": 230,
@@ -221,8 +221,8 @@
             "export": true
             },
             {
-            "name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
-            "displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
+            "name": "{{subject2}}",
+            "displayTpl": "<h4 class='pull-left' tabindex='0'>{{subject2}}</h4> Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
             "index": "subject2.asmt_score",
             "field": "subject2.asmt_score",
             "width": 230,
@@ -251,7 +251,7 @@
         "items": [
             {
             "name": "Students",
-            "displayTpl": "",
+            "displayTpl": "<a href='#' class='inherit'>Students</a>",
             "index": "student_full_name",
             "field": "student_full_name",
             "width": 330,
@@ -265,8 +265,8 @@
             "export": true
             },
             {
-            "name": "<h4 class='pull-left'>{{subject1}}</h4> Overall Score",
-            "displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
+            "name": "{{subject1}}",
+            "displayTpl": "<h4 class='pull-left' tabindex='0'>{{subject1}}</h4> Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
             "index": "subject1.asmt_score",
             "field": "subject1.asmt_score",
             "width": 175,
@@ -281,7 +281,7 @@
             },
             {
             "name": "{{claims.subject1.0.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject1.0.name}}",
             "index": "subject1.claims.0.perf_lvl",
             "field": "subject1.claims.0.perf_lvl",
             "width": 154,
@@ -293,7 +293,7 @@
             },
             {
             "name": "{{claims.subject1.1.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject1.1.name}}",
             "index": "subject1.claims.1.perf_lvl",
             "field": "subject1.claims.1.perf_lvl",
             "width": 160,
@@ -305,7 +305,7 @@
             },
             {
             "name": "{{claims.subject1.2.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject1.2.name}}",
             "index": "subject1.claims.2.perf_lvl",
             "field": "subject1.claims.2.perf_lvl",
             "width": 160,
@@ -324,7 +324,7 @@
         "items": [
             {
             "name": "Students",
-            "displayTpl": "",
+            "displayTpl": "<a href='#' class='inherit'>Students</a>",
             "index": "student_full_name",
             "field": "student_full_name",
             "width": 330,
@@ -338,8 +338,8 @@
             "export": true
             },
             {
-            "name": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score",
-            "displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
+            "name": "{{subject2}}",
+            "displayTpl": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
             "index": "subject2.asmt_score",
             "field": "subject2.asmt_score",
             "width": 175,
@@ -354,7 +354,7 @@
             },
             {
             "name": "{{claims.subject2.0.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject2.0.name}}",
             "index": "subject2.claims.0.perf_lvl",
             "field": "subject2.claims.0.perf_lvl",
             "width": 118,
@@ -366,7 +366,7 @@
             },
             {
             "name": "{{claims.subject2.1.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject2.1.name}}",
             "index": "subject2.claims.1.perf_lvl",
             "field": "subject2.claims.1.perf_lvl",
             "width": 118,
@@ -378,7 +378,7 @@
             },
             {
             "name": "{{claims.subject2.2.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject2.2.name}}",
             "index": "subject2.claims.2.perf_lvl",
             "field": "subject2.claims.2.perf_lvl",
             "width": 118,
@@ -390,7 +390,7 @@
             },
             {
             "name": "{{claims.subject2.3.name}}",
-            "displayTpl": "",
+            "displayTpl": "{{claims.subject2.3.name}}",
             "index": "subject2.claims.3.perf_lvl",
             "field": "subject2.claims.3.perf_lvl",
             "width": 120,
@@ -419,7 +419,7 @@
                 "items": [
                     {
                         "name": "School Name",
-                        "displayTpl": "",
+                        "displayTpl": "School Name",
                         "index": "name",
                         "field": "name",
                         "width": 186,
@@ -434,8 +434,8 @@
                         "export": true
                     },
                      {
-                        "name": "<b>{{subject1}}</b>",
-                        "displayTpl": "",
+                        "name": "{{subject1}}",
+                        "displayTpl": "<a class='inherit' href='#'><b>{{subject1}}</b></a>",
                         "index": "results.subject1.sortedValue",
                         "field": "results.subject1.sortedValue",
                         "sorttype": "int",
@@ -449,8 +449,8 @@
                         "title": false
                     },
                     {
-                        "name": "<a class='inherit' href='#'>Total Pop</a>",
-                        "displayTpl": "",
+                        "name": "Total Pop",
+                        "displayTpl": "<a class='inherit' href='#'>Total Pop</a>",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
                         "sorttype": "int",
@@ -463,8 +463,8 @@
                         "title": false
                     },
                     {
-                        "name": "<b>{{subject2}}</b>",
-                        "displayTpl": "",
+                        "name": "{{subject2}}",
+                        "displayTpl": "<a href='#' class='inherit'><b>{{subject2}}</b></a>",
                         "index": "results.subject2.sortedValue",
                         "field": "results.subject2.sortedValue",
                         "width": 300,
@@ -478,8 +478,8 @@
                         "title": false
                     },
                     {
-                        "name": "<a class='inherit' href='#'>Total Pop</a>",
-                        "displayTpl": "",
+                        "name": "Total Pop",
+                        "displayTpl": "<a class='inherit' href='#'>Total Pop</a>",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
                         "sorttype": "int",
@@ -496,17 +496,20 @@
         ],
         "customViews": {
             "school": {
-                "name": "<a class='inherit' href='#'>Grade</a>",
+                "name": "Grade",
+                "displayTpl": "<a href='#' class='inherit'>Grade</a>",
                 "link": "studentList.html",
                 "id_name": "asmtGrade"
             },
             "district": {
-                "name": "<a class='inherit' href='#'>School Name</a>",
+                "name": "School Name",
+                "displayTpl": "<a href='#' class='inherit'>School Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "schoolGuid"
             },
             "state": {
-                "name": "<a class='inherit' href='#'>District Name</a>",
+                "name": "District Name",
+                "displayTpl": "<a href='#' class='inherit'>District Name</a>",
                 "link": "comparingPopulations.html",
                 "id_name": "districtGuid"
             }

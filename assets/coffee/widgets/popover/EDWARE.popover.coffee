@@ -48,4 +48,6 @@ define ["jquery"], ($) ->
       resize.call(self)
     this.unbind('mouseleave').mouseleave ->
       self.popover 'hide'
+    this.on 'focusout', ->
+      self.popover 'hide'
     this

@@ -19,7 +19,7 @@
                         </button>
                         <ul class="dropdown-menu report_type edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input class="reportType {{value}}" type="radio" name="reportType" value="{{value}}" data-label="{{display}}" style="display:none;">{{display}}</label></li>
+                            <li tabindex="0"><label><input class="reportType {{value}}" type="radio" name="reportType" value="{{value}}" data-label="{{display}}" style="display:none;">{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -37,7 +37,7 @@
                         </button>
                         <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="radio" name="asmtYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li tabindex="0"><label><input type="radio" name="asmtYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -55,7 +55,7 @@
                         </button>
                         <ul class="dropdown-menu academicYearOptions edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="radio" name="academicYear1" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li tabindex="0"><label><input type="radio" name="academicYear1" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -101,7 +101,7 @@
                         </button>
                         <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
                             {{#options}}
-                            <li><label><input type="radio" name="academicYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li tabindex="0"><label><input type="radio" name="academicYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -111,7 +111,7 @@
         </table>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary">{{labels.export_request_files}}</button>
+        <button class="btn edware-btn-primary">{{labels.export_request_files}}</button>
     </div>
 
     <script type="text/template" id="ErrorMessageTemplate">

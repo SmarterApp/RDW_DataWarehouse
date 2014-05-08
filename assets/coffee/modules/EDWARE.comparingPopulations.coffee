@@ -33,6 +33,7 @@ define [
     customize: (customView) ->
       firstColumn = this.gridConfig[0].items[0]
       firstColumn.name = customView.name
+      firstColumn.displayTpl = customView.displayTpl
       firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
       firstColumn.options.id_name = customView.id_name
@@ -198,19 +199,16 @@ define [
       # Reset back to original color for all columns
       for colModel in colModels
         #reset labels
-        if colModel.index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
-          grid.jqGrid('setLabel', colModel.name, "<a class='inherit' href='#'>#{colModel.label}</a>")
-        else
-          grid.jqGrid('setLabel', colModel.name, colModel.label)
-
+        label = "<a class='inherit' href='#'>#{colModel.label}</a>"
+        grid.jqGrid('setLabel', colModel.label, label)
         if colModel.name is index
-          newLabel = colModel.label
+          newLabel = label
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc'
-          newLabel = "<a class='inherit' href='#'>#{newLabel}</a> #{this.config.proficiencyAscending}"
+          newLabel = "#{newLabel} #{this.config.proficiencyAscending}"
         else
-          newLabel = "<a class='inherit' href='#'>#{newLabel}</a> #{this.config.proficiencyDescending}"
+          newLabel = "#{newLabel} #{this.config.proficiencyDescending}"
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
@@ -250,7 +248,13 @@ define [
             container: '#content'
             trigger: 'hover'
             content: ->
-              $(this).find(".progressBar_tooltip").html() # template location: widgets/populationBar/template.html
+              # template location: widgets/populationBar/template.html
+              $(this).find(".progressBar_tooltip").html()
+        # also display tooltips when focus on
+      $(".progress").on 'focus', ()->
+        $(this).popover('show')
+      .focusout ()->
+        $(this).popover('hide')
 
     # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->

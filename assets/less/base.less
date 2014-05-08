@@ -172,9 +172,10 @@ hr {
     background-image: linear-gradient(to bottom,@color-C6,@color-C7);
     background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
 
-    &:hover {
+    &:hover, &:focus {
         background-position: initial;
         background-color: @color-C6;
+        color: @color-white;
     }
 }
 
@@ -196,7 +197,7 @@ ul.edware-dropdown-menu {
 
         &:last-child { border-bottom: none; }
 
-        &:hover {
+        &:hover, &:focus {
             color: #f4f4f4;
             background-color: #096aac;
         }

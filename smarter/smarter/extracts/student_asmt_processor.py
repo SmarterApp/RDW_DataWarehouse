@@ -245,7 +245,7 @@ def _create_item_level_tasks_with_responses(request_id, user, param, item_root_d
     states_to_tenants = get_state_code_to_tenant_map()
 
     state_code = param.get(Constants.STATECODE)
-    query = get_extract_assessment_item_query(param, state_code)
+    query = get_extract_assessment_item_query(param)
     tenant = states_to_tenants[state_code]
     task = _create_new_task(request_id, user, tenant, param, query, is_tenant_level=is_tenant_level, item_level=True)
     task[TaskConstants.TASK_FILE_NAME] = out_file

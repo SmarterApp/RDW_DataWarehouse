@@ -133,13 +133,13 @@ def get_extract_assessment_query(params):
     return query
 
 
-def get_extract_assessment_item_query(params, state_code):
+def get_extract_assessment_item_query(params):
     """
     private method to generate SQLAlchemy object or sql code for extraction of students for item level data
 
     :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
-    :param state_code: state code for query to build
     """
+    state_code = params.get(Constants.STATECODE)
     asmt_year = params.get(Constants.ASMTYEAR)
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_subject = params.get(Constants.ASMTSUBJECT)

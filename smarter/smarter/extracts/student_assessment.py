@@ -145,23 +145,22 @@ def get_extract_assessment_item_queries(params, state_code):
     asmt_subject = params.get(Constants.ASMTSUBJECT)
     asmt_grade = params.get(Constants.ASMTGRADE)
 
-    dim_asmt_label = get_column_mapping(Constants.DIM_ASMT)
-    fact_asmt_outcome_label = get_column_mapping(Constants.FACT_ASMT_OUTCOME)
-
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         # TODO: Look at removing dim_asmt
-        query = select_with_context([fact_asmt_outcome.c.state_code.label(fact_asmt_outcome_label.get(Constants.STATE_CODE, Constants.STATE_CODE)),
-                                     fact_asmt_outcome.c.asmt_year.label(fact_asmt_outcome_label.get(Constants.ASMT_YEAR, Constants.ASMT_YEAR)),
-                                     fact_asmt_outcome.c.asmt_type.label(fact_asmt_outcome_label.get(Constants.ASMT_TYPE, Constants.ASMT_TYPE)),
-                                     dim_asmt.c.effective_date.label(dim_asmt_label.get(Constants.EFFECTIVE_DATE, Constants.EFFECTIVE_DATE)),
-                                     fact_asmt_outcome.c.asmt_subject.label(fact_asmt_outcome_label.get(Constants.ASMT_SUBJECT, Constants.ASMT_SUBJECT)),
-                                     fact_asmt_outcome.c.asmt_grade.label(fact_asmt_outcome_label.get(Constants.ASMT_GRADE, Constants.ASMT_GRADE)),
-                                     fact_asmt_outcome.c.district_guid.label(fact_asmt_outcome_label.get(Constants.DISTRICT_GUID, Constants.DISTRICT_GUID)),
-                                     fact_asmt_outcome.c.student_guid.label(fact_asmt_outcome_label.get(Constants.STUDENT_GUID, Constants.STUDENT_GUID))],
+        query = select_with_context([fact_asmt_outcome.c.state_code,
+                                     fact_asmt_outcome.c.asmt_year,
+                                     fact_asmt_outcome.c.asmt_type,
+                                     dim_asmt.c.effective_date,
+                                     fact_asmt_outcome.c.asmt_subject,
+                                     fact_asmt_outcome.c.asmt_grade,
+                                     fact_asmt_outcome.c.district_guid,
+                                     fact_asmt_outcome.c.student_guid],
                                     from_obj=[fact_asmt_outcome
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.SAR_EXTRACTS, state_code=state_code)
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))],
+                                    permission=RolesConstants.SAR_EXTRACTS,
+                                    state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
         query = query.where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))

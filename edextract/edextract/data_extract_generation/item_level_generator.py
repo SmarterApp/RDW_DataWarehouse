@@ -64,10 +64,10 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
 
 
 def _get_path_to_item_csv(items_root_dir, record):
-    return os.path.join(items_root_dir, str(record['code_state']).upper(), str(record['asmt_year']),
+    return os.path.join(items_root_dir, str(record['state_code']).upper(), str(record['asmt_year']),
                         str(record['asmt_type']).upper().replace(' ', '_'), str(record['effective_date']),
-                        str(record['asmt_subject']).upper(), str(record['grade_asmt']), str(record['guid_district']),
-                        (str(record['guid_student']) + '.csv'))
+                        str(record['asmt_subject']).upper(), str(record['asmt_grade']), str(record['district_guid']),
+                        (str(record['student_guid']) + '.csv'))
 
 
 def _check_file_for_items(path, item_ids):

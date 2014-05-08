@@ -41,8 +41,8 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.here = os.path.dirname(__file__)
         self.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
         self.sr_data_dir = os.path.join(self.here, "data", "udl_to_sr_reporting_e2e_integration")
-        self.expected_unique_batch_guids = 51
-        self.expected_rows = 678
+        self.expected_unique_batch_guids = 56
+        self.expected_rows = 777
         # TODO EXPECTED_ROWS should be 1186
         empty_stats_table(self)
 

@@ -318,12 +318,12 @@ def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
 
 
 def get_items_extract_file_path(param, tenant, request_id):
-    file_name = 'ITEMS_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_{asmtGrade}_{currentTime}.csv'.\
+    file_name = 'ITEMS_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_GRADE_{asmtGrade}_{currentTime}.csv'.\
                 format(stateCode=param[Constants.STATECODE],
                        asmtYear=param[Constants.ASMTYEAR],
                        asmtType=param[Constants.ASMTTYPE].upper(),
                        asmtSubject=param[Constants.ASMTSUBJECT].upper(),
-                       asmtGrade=('GRADE_' + param.get(Constants.ASMTGRADE)).upper(),
+                       asmtGrade=param.get(Constants.ASMTGRADE),
                        currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
 

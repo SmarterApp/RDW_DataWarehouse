@@ -160,8 +160,9 @@ def generate_zip_file_name(params):
 
         ITEMS_<year>_<type>_<subject>_<grade>_<timestamp>.zip
     '''
-    return "ITEMS_{asmtYear}_{asmtType}_{asmtSubject}_{asmtGrade}_{timestamp}.zip".\
-        format(asmtYear=params.get(Constants.ASMTYEAR),
+    return "ITEMS_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_GRADE_{asmtGrade}_{timestamp}.zip".\
+        format(stateCode=params.get(Constants.STATECODE),
+               asmtYear=params.get(Constants.ASMTYEAR),
                asmtType=params.get(Constants.ASMTTYPE).upper(),
                asmtSubject=params.get(Constants.ASMTSUBJECT).upper(),
                asmtGrade=params.get(Constants.ASMTGRADE).upper(),

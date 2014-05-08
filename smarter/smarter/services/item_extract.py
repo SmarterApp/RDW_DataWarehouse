@@ -34,14 +34,9 @@ ITEM_EXTRACT_PARAMS = {
             "required": True
         },
         Constants.STATECODE: {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^[a-zA-Z]{2}$"
-            },
-            "minItems": 1,
-            "uniqueItems": True,
-            "required": True,
+            "type": "string",
+            "pattern": "^[a-zA-Z]{2}$",
+            "required": True
         },
         Constants.ASMTYEAR: {
             "type": "string",

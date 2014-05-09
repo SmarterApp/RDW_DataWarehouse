@@ -18,7 +18,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edschema.database.connector import DBConnection
 
 
-def main(config_file, tenant_to_update, out_dir):
+def main(config_file, tenant_to_update, out_dir, verbose):
     """
     Imports data from csv
     """
@@ -38,7 +38,7 @@ def main(config_file, tenant_to_update, out_dir):
             # Build files for each assessment
             for asmt in assessments:
                 students = get_students_for_assessment(tenant, asmt['guid'])
-                generate_item_level_files(out_dir, state_code, asmt, students)
+                generate_item_level_files(out_dir, state_code, asmt, students, verbose)
 
 
 def get_state_code(tenant):
@@ -95,7 +95,7 @@ def get_students_for_assessment(tenant, asmt_guid):
     return students
 
 
-def generate_item_level_files(root_dir, state_code, asmt, students):
+def generate_item_level_files(root_dir, state_code, asmt, students, verbose):
     """Generate item-level files"""
     for student in students:
         # Build directory path and file name
@@ -120,7 +120,8 @@ def generate_item_level_files(root_dir, state_code, asmt, students):
                 csv_writer.writerow([item['key'], student['guid'], item['segment'], i, item['client'], 1, 1,
                                      item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
                                      'MA-Undesignated', 1, 1, 1, 0])
-        print(os.path.join(dir_path, file_name))
+        if verbose:
+            print(os.path.join(dir_path, file_name))
 
 
 if __name__ == '__main__':
@@ -128,11 +129,13 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--config', help='Set the path to ini file')
     parser.add_argument('-t', '--tenant', help='Tenant to import data to', default='cat')
     parser.add_argument('-o', '--outDir', help='Root directory to place files', default='/opt/edware/item_level')
+    parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true', default=False)
     args = parser.parse_args()
 
     __config = args.config
     __tenant = args.tenant
     __out_dir = args.outDir
+    __verbose = args.verbose
 
     parent_dir = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
 
@@ -143,4 +146,4 @@ if __name__ == '__main__':
         print('Error: config file does not exist')
         exit(-1)
 
-    main(__config, __tenant, __out_dir)
+    main(__config, __tenant, __out_dir, __verbose)

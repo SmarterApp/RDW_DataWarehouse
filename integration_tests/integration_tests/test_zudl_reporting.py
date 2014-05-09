@@ -62,9 +62,8 @@ class TestUDLReportingIntegration(unittest.TestCase):
         self.empty_table()
         # Copy files to tenant_dir and run udl pipeline
         self.run_udl_pipeline()
-        time.sleep(50)
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
-        self.validate_udl_database(self.expected_unique_batch_guids)
+        self.validate_udl_database(self.expected_unique_batch_guids, 500)
         self.validate_stats_table_before_mig()
         self.migrate_data()
         time.sleep(30)
@@ -201,7 +200,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # Run the UDL pipeline using the command
         subprocess.call(command, shell=True)
 
-    def validate_udl_database(self, expected_unique_batch_guids, max_wait=500):
+    def validate_udl_database(self, expected_unique_batch_guids, max_wait):
         '''
         Validate that udl_phase output is Success for expected number of guid_batch in batch_table
         Validate that there are no failures(udl_phase_step_status) in any of the UDL phases. Write the entry to a csv/excel file for any errors.
@@ -220,9 +219,9 @@ class TestUDLReportingIntegration(unittest.TestCase):
             timer = 0
             all_successful_batch_guids = []
             while timer <= max_wait and len(all_successful_batch_guids) is not expected_unique_batch_guids:
-                sleep(20)
+                sleep(0.25)
                 timer += 0.25
-                all_successful_batch_guids = connector.execute(success_query).fetchall()
+                all_successful_batch_guids = connector.get_result(success_query)
 
             self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "56 guids not found.")
 

@@ -3,6 +3,7 @@ __author__ = 'sravi'
 import os
 import fnmatch
 import time
+import ast
 import shutil
 import logging
 from edcore.watch.util import set_interval, FileUtil
@@ -52,7 +53,7 @@ class FileWatcher():
 
         cls.clear_file_stats()
         for root, dirs, files in os.walk(cls.source_path):
-            filtered_files = [filename for pattern in set(cls.conf[Const.FILE_PATTERNS_TO_WATCH])
+            filtered_files = [filename for pattern in set(ast.literal_eval(cls.conf[Const.FILE_PATTERNS_TO_WATCH]))
                               for filename in fnmatch.filter(files, pattern)]
             # filter hidden file
             filtered_files = [filename for filename in filtered_files if not filename.startswith('.')]

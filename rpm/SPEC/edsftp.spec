@@ -35,6 +35,10 @@ export LANG=en_US.UTF-8
 virtualenv-3.3 --distribute virtualenv/edsftp
 source virtualenv/edsftp/bin/activate
 
+cd ${WORKSPACE}/config
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edcore
 python setup.py clean --all
 python setup.py install
@@ -80,23 +84,25 @@ rm -rf %{buildroot}
 %post
 chkconfig --add edsftp-watcher
 
-# check if sftp_admin group exists and create if not
-egrep -i "^sftp_admin:" /etc/group > /dev/null 2>&1
+# check if edwaredataadmin group exists and create if not
+egrep -i "^edwaredataadmin:" /etc/group > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-   groupadd sftp_admin -f -g 505
+   groupadd edwaredataadmin -f -g 505
 fi
 
 # check if sftp_admin user exists and create if not
 id sftp_admin > /dev/null 2>&1
 if [ $? -ne 0 ]; then
    # add sftp_admin user with id 505 and group sftp_admin
-   useradd sftp_admin -g sftp_admin -u 505
+   useradd sftp_admin -g edwaredataadmin -u 505
 fi
 
 EDWARE_ROOT=/opt/edware
 if [ ! -d $EDWARE_ROOT/run ]; then
     mkdir -p $EDWARE_ROOT/run
 fi
+
+chown -R sftp_admin.edwaredataadmin $EDWARE_ROOT/run
 
 %postun
 userdel -rf sftp_admin > /dev/null 2>&1

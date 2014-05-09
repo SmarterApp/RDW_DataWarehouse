@@ -121,6 +121,8 @@ class FileWatcher():
             destination_file_directory = os.path.split(destination_file_path)[0]
             if not os.path.exists(destination_file_directory):
                 os.makedirs(destination_file_directory)
+                # the last folder containing the file needs to have 777 for rsync client to be able to delete
+                os.chmod(destination_file_directory, 0o777)
             logger.debug('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
             shutil.move(file, destination_file_path)
         return len(files_to_move)

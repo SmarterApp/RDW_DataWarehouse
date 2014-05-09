@@ -63,7 +63,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # Copy files to tenant_dir and run udl pipeline
         self.run_udl_pipeline()
         # Validate the UDL database and Edware database upon successful run of the UDL pipeline
-        self.validate_udl_database(self.expected_unique_batch_guids, 500)
+        self.validate_udl_database(self.expected_unique_batch_guids, 600)
         self.validate_stats_table_before_mig()
         self.migrate_data()
         time.sleep(30)

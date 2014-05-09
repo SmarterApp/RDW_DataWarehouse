@@ -9,6 +9,7 @@ class ExtractType():
     studentAssessment = 'studentAssessment'
     studentRegistrationStatistics = 'studentRegistrationStatistics'
     studentRegistrationCompletion = 'studentRegistrationCompletion'
+    itemLevel = 'itemLevel'
 
 
 class ReportType():

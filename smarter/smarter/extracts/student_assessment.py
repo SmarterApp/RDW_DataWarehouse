@@ -9,6 +9,7 @@ from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
 from smarter.extracts.format import get_column_mapping
 from smarter.security.constants import RolesConstants
+from smarter.reports.helpers.filters import apply_filter_to_query
 
 
 def get_extract_assessment_query(params):
@@ -129,4 +130,42 @@ def get_extract_assessment_query(params):
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
+    return query
+
+
+def get_extract_assessment_item_query(params):
+    """
+    private method to generate SQLAlchemy object or sql code for extraction of students for item level data
+
+    :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
+    """
+    state_code = params.get(Constants.STATECODE)
+    asmt_year = params.get(Constants.ASMTYEAR)
+    asmt_type = params.get(Constants.ASMTTYPE)
+    asmt_subject = params.get(Constants.ASMTSUBJECT)
+    asmt_grade = params.get(Constants.ASMTGRADE)
+
+    with EdCoreDBConnection(state_code=state_code) as connector:
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        # TODO: Look at removing dim_asmt
+        query = select_with_context([fact_asmt_outcome.c.state_code,
+                                     fact_asmt_outcome.c.asmt_year,
+                                     fact_asmt_outcome.c.asmt_type,
+                                     dim_asmt.c.effective_date,
+                                     fact_asmt_outcome.c.asmt_subject,
+                                     fact_asmt_outcome.c.asmt_grade,
+                                     fact_asmt_outcome.c.district_guid,
+                                     fact_asmt_outcome.c.student_guid],
+                                    from_obj=[fact_asmt_outcome
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))],
+                                    permission=RolesConstants.SAR_EXTRACTS,
+                                    state_code=state_code)
+
+        query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
+        query = query.where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))
+        query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
+        query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
+        query = apply_filter_to_query(query, fact_asmt_outcome, params)  # Filters demographics
     return query

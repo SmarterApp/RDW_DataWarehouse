@@ -9,17 +9,17 @@
         </div>
         <table class='csv_options_table'>
             {{#extractType}}
-            <tr class="rpt_option">
+            <tr style="display: table-row;">
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group {{name}}" data-option-name="{{name}}">
+                    <div class="btn-group" data-option-name="{{name}}">
                         <button class="btn dropdown-toggle btn-small report_type" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu report_type edware-dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu report_type edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
                             {{#options}}
-                            <li tabindex="0"><label><input class="reportType {{value}}" type="radio" name="reportType" value="{{value}}" data-label="{{display}}" style="display:none;">{{display}}</label></li>
+                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}"><label>{{display}}</label></li>
                             {{/options}}
                         </ul>
                     </div>
@@ -27,17 +27,19 @@
             </tr>
             {{/extractType}}
             {{#asmtYear}}
-            <tr class="rpt_option assm_rpt">
+            <tr class="assm_rpt">
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group {{name}}" data-option-name="{{name}}">
+                    <div class="btn-group" data-option-name="{{name}}">
                         <button class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
                             {{#options}}
-                            <li tabindex="0"><label><input type="radio" name="asmtYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                                <label>{{display}}</label>
+                            </li>
                             {{/options}}
                         </ul>
                     </div>
@@ -45,17 +47,18 @@
             </tr>
             {{/asmtYear}}
             {{#academicYear}}
-            <tr class="rpt_option srcomp_rpt">
+            <tr class="srcomp_rpt">
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group {{name}}" data-option-name="{{name}}">
+                    <div class="btn-group" data-option-name="{{name}}">
                         <button class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu academicYearOptions edware-dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu academicYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
                             {{#options}}
-                            <li tabindex="0"><label><input type="radio" name="academicYear1" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                                <label>{{display}}</label>
                             {{/options}}
                         </ul>
                     </div>
@@ -63,7 +66,7 @@
             </tr>
             {{/academicYear}}
             {{#asmtType}}
-            <tr class="rpt_option assm_rpt">
+            <tr class="assm_rpt">
                 <td>{{name}}</td>
                 <td>
                     <div id="asmtType" class="btn-group" data-option-name="{{name}}">
@@ -77,7 +80,7 @@
             </tr>
             {{/asmtType}}
             {{#subject}}
-            <tr class="rpt_option assm_rpt">
+            <tr class="assm_rpt">
                 <td>{{name}}</td>
                 <td>
                     <div class="btn-group" data-option-name="{{name}}">
@@ -91,17 +94,19 @@
             </tr>
             {{/subject}}
             {{#studentRegAcademicYear}}
-            <tr class="rpt_option sr_rpt">
+            <tr class="sr_rpt">
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group {{name}}" data-option-name="{{name}}">
+                    <div class="btn-group" data-option-name="{{name}}">
                         <button id="studentRegAcademicYear" class="btn dropdown-toggle btn-small btn-extract-academic-year" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}">
+                        <ul class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}"  data-value="{{options.0.value}}">
                             {{#options}}
-                            <li tabindex="0"><label><input type="radio" name="academicYear" value="{{value}}" data-label="{{display}}" style="display:none;"/>{{display}}</label></li>
+                            <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                                <label>{{display}}</label>
+                            </li>
                             {{/options}}
                         </ul>
                     </div>

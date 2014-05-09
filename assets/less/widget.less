@@ -1601,6 +1601,23 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
             background-position: initial;
         }
     }
+
+    tr {
+      display: none;
+    }
+    
+    //control widgets visibility
+    &.studentAssessment .assm_rpt {
+      display: table-row;
+    }
+
+    &.studentRegistrationStatistics .sr_rpt{
+      display: table-row;
+    }
+
+    &.studentRegistrationCompletion .srcomp_rpt {
+      display: table-row;
+    }
 }
 
 #infoBar {

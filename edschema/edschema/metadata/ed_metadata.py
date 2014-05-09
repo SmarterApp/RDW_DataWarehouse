@@ -81,7 +81,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('student_rec_id', BigInteger, primary_key=True),
                      MetaColumn('batch_guid', String(50), nullable=True),
                      Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
-                     #Column('external_student_id', String(40), nullable=True),  # TODO: Add this field
+                     # Column('external_student_id', String(40), nullable=True),  # TODO: Add this field
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
                      Column('last_name', String(256), nullable=False),
@@ -264,7 +264,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('acc_streamline_mode', SmallInteger, nullable=False),
                                )
 
-    Index('fact_asmt_outcome_district_idx', assessment_outcome.c.asmt_year, assessment_outcome.c.asmt_type, assessment_outcome.c.state_code, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, assessment_outcome.c.asmt_grade, unique=False)
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_guid, unique=False)
     Index('fact_asmt_outcome_asmt_subj_typ', assessment_outcome.c.student_guid, assessment_outcome.c.asmt_subject, assessment_outcome.c.asmt_type, unique=False)
     # Filtering related indices
@@ -274,6 +273,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_tt1', assessment_outcome.c.dmg_prg_tt1, unique=False)
     Index('fact_asmt_outcome_iep', assessment_outcome.c.dmg_prg_iep, unique=False)
     Index('fact_asmt_outcome_gender', assessment_outcome.c.gender, unique=False)
+    Index('fact_asmt_outcome_cpop_stateview', assessment_outcome.c.state_code, assessment_outcome.c.asmt_type, assessment_outcome.c.rec_status, assessment_outcome.c.asmt_year, assessment_outcome.c.inst_hier_rec_id, assessment_outcome.c.asmt_subject, assessment_outcome.c.asmt_perf_lvl, unique=False)
 
     assessment_outcome_primary = Table('fact_asmt_outcome_primary', metadata,
                                        Column('asmt_outcome_primary_rec_id', BigInteger, primary_key=True),

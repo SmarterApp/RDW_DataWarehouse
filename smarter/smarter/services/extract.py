@@ -58,7 +58,7 @@ TENANT_EXTRACT_PARAMS = {
         Constants.ASMTYEAR: {
             "type": "array",
             "items": {
-                "type": "string",
+                "type": "integer",
                 "pattern": "^\d{4}$"
             },
             "minItems": 1,

@@ -146,7 +146,7 @@ define [
 
     selectDefault: ()->
       # check first option of each dropdown
-      $('ul li:nth-child(1)',this.container).each ()->
+      $('ul li:nth-child(1) input',this.container).each ()->
         $(this).trigger 'click'
 
     sendRequest: (url)->
@@ -254,11 +254,7 @@ define [
         $this = $(this)
         key = $this.data('key')
         value = $this.data('value')
-        params[key] = []
-        if key == 'academicYear'
-            params[key].push Number(value)
-        else
-            params[key].push value
+        params[key] = [value]
 
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']

@@ -117,8 +117,9 @@ def generate_item_level_files(root_dir, state_code, asmt, students):
             csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             for i in range(100):
                 item = items[i]
-                csv_writer.writerow([item['key'], item['segment'], i, item['client'], 1, 1, item['type'], 0, 1,
-                                     '2013-04-03T16:21:33.660', 1, 'MA-Undesignated', 'MA-Undesignated', 1, 1, 1, 0])
+                csv_writer.writerow([item['key'], student['guid'], item['segment'], i, item['client'], 1, 1,
+                                     item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
+                                     'MA-Undesignated', 1, 1, 1, 0])
         print(os.path.join(dir_path, file_name))
 
 

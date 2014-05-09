@@ -20,9 +20,12 @@ class ValidateMultiFiles(unittest.TestCase):
     def setUp(self):
         path = os.path.join(os.path.dirname(__file__), "..", "data")
         self.files = {'file1': os.path.join(path, 'test_source_file_tar_gzipped.tar.gz.gpg'),
+                      'file1a': os.path.join(path, 'test_source_file_tar_gzipped.tar.gz.gpg.done'),
                       'file2': os.path.join(path, 'test_source_file1_tar_gzipped.tar.gz.gpg'),
-                      'file3': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg')}
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/nc/edware_user/filedrop/'
+                      'file2a': os.path.join(path, 'test_source_file1_tar_gzipped.tar.gz.gpg.done'),
+                      'file3': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg'),
+                      'file3a': os.path.join(path, 'test_source_file2_tar_gzipped.tar.gz.gpg.done')}
+        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/edware_user/filedrop/'
         initialize_all_db(udl2_conf, udl2_flat_conf)
 
     def tearDown(self):
@@ -34,14 +37,13 @@ class ValidateMultiFiles(unittest.TestCase):
             connector.execute(batch_table.delete())
 
     def udl_run(self):
-        self.copy_file_to_tmp()
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "..", "scripts", "driver.py")
-        for file in self.files.values():
-            arch_file = os.path.join(self.tenant_dir) + os.path.basename(file)
-            command = "python {driver_path} -a {file_path}".format(driver_path=driver_path, file_path=arch_file)
-            p = subprocess.Popen(command, shell=True)
-            p.wait()
+        #for file in self.files.values():
+        arch_file = self.copy_file_to_tmp()
+        command = "python {driver_path} --loop-once ".format(driver_path=driver_path)
+        p = subprocess.Popen(command, shell=True)
+        p.wait()
         self.check_job_completion()
 
     def copy_file_to_tmp(self):
@@ -56,9 +58,10 @@ class ValidateMultiFiles(unittest.TestCase):
         """
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            query = select([batch_table.c.guid_batch], batch_table.c.udl_phase == 'UDL_COMPLETE')
+            query = select([batch_table.c.guid_batch]).where(batch_table.c.udl_phase == 'UDL_COMPLETE')
             timer = 0
-            result = connector.get_result(query)
+            result = connector.execute(query).fetchall()
+
             while timer < max_wait and len(result) < len(self.files.keys()):
                 sleep(0.25)
                 timer += 0.25
@@ -76,9 +79,9 @@ class ValidateMultiFiles(unittest.TestCase):
             number_of_guid = len(result)
             self.assertEqual(number_of_guid, 3)
             for batch in result:
-                drop_target_schema('nc', batch[0])
+                drop_target_schema('cat', batch[0])
 
-    def test_database(self):
+    def test_(self):
         self.empty_batch_table()
         self.udl_run()
         # wait for a while

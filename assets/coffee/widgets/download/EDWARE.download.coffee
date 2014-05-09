@@ -254,7 +254,10 @@ define [
         $this = $(this)
         key = $this.data('key')
         value = $this.data('value')
-        params[key] = [value]
+        if key is 'academicYear'
+          params[key] = [value]
+        else
+          params[key] = [value.toString()]
 
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
@@ -269,6 +272,9 @@ define [
     constructor: (@container, @config) ->
       this.initialize(@container)
       this.bindEvents()
+
+    disableInvisibleButtons: () ->
+      $('input[type="radio"]:not(:visible)', @container).attr('disabled', 'disabled')
 
     initialize: (@container) ->
       output = Mustache.to_html DownloadMenuTemplate, {
@@ -294,6 +300,8 @@ define [
         option = $(self.container).find('input[type="radio"]:checked').val()
         self.eventHandler[option].call(self)
         self.hide()
+      $('#DownloadMenuModal').on 'shown', ->
+        self.disableInvisibleButtons()
 
     downloadAsFile: () ->
       # download 508-compliant file

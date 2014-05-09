@@ -21,15 +21,17 @@ from edextract.tasks.constants import Constants as TaskConstants, QueryType
 
 
 class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqlite):
+    __tmp_item_dir = tempfile.mkdtemp('item_level_files')
+    __built_files = False
 
     def setUp(self):
         self.__tmp_out_dir = tempfile.mkdtemp('item_file_archiver_test')
         self._tenant = get_unittest_tenant_name()
         self.__state_code = 'NC'
         set_tenant_map({get_unittest_tenant_name(): 'NC'})
-        if not self.__built_files:
+        if not TestItemLevelGenerator.__built_files:
             self.__build_item_level_files()
-            self.__built_files = True
+            TestItemLevelGenerator.__built_files = True
 
     def tearDown(self):
         shutil.rmtree(self.__tmp_out_dir)
@@ -37,14 +39,12 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
 
     @classmethod
     def setUpClass(cls):
-        cls.__built_files = False
-        cls.__tmp_item_dir = tempfile.mkdtemp('item_level_files')
         Unittest_with_edcore_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(cls.__tmp_item_dir)
+        shutil.rmtree(TestItemLevelGenerator.__tmp_item_dir)
 
     def test_generate_item_csv_success_no_item_ids(self):
         params = {'stateCode': 'NC',
@@ -99,7 +99,6 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         self.assertIn('score', csv_data[0])
 
     def test_get_path_to_item_csv_summative(self):
-        print(self.__state_code)
         items_root_dir = '/opt/edware/item_level'
         record = {'state_code': 'NC',
                   'asmt_year': 2015,
@@ -181,14 +180,14 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                     student_pool = item_pools[asmt_guid][5:10]
                 flip_flop = not flip_flop
 
-                dir_path = os.path.join(self.__tmp_item_dir, str(result['state_code']).upper(), str(result['asmt_year']),
-                                        str(result['asmt_type']).upper().replace(' ', '_'),
+                dir_path = os.path.join(TestItemLevelGenerator.__tmp_item_dir, str(result['state_code']).upper(),
+                                        str(result['asmt_year']), str(result['asmt_type']).upper().replace(' ', '_'),
                                         str(result['effective_date']), str(result['asmt_subject']).upper(),
                                         str(result['asmt_grade']), str(result['district_guid']))
                 if not os.path.exists(dir_path):
                     os.makedirs(dir_path)
 
-                with open(_get_path_to_item_csv(self.__tmp_item_dir, result), 'w') as csv_file:
+                with open(_get_path_to_item_csv(TestItemLevelGenerator.__tmp_item_dir, result), 'w') as csv_file:
                     csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
                     for item in student_pool:
                         csv_writer.writerow([item['key'], result['student_guid'], item['segment'], 0, item['client'],

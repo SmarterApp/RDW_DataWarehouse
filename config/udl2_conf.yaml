@@ -156,7 +156,7 @@ development:
             url: postgresql://edware:edware2013@localhost:5432/edware
             db_schema: edware
         nc:
-            url: postgresql://edware:edware2013@localhost:5432/edware
+            url: postgresql://edware:edware2013@localhost:5432/nc_functional_test
             db_schema: ftest_test_schema
     prod_db_conn:
         cat:

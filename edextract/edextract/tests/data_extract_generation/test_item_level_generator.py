@@ -18,38 +18,41 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import (get_unittest_tenant_
 from edextract.data_extract_generation.item_level_generator import generate_items_csv, _get_path_to_item_csv
 from edextract.status.constants import Constants
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
-from smarter.extracts.student_assessment import get_extract_assessment_item_query
 
 
 class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqlite):
 
     def setUp(self):
         self.__tmp_out_dir = tempfile.mkdtemp('item_file_archiver_test')
-        #self.__tmp_item_dir = '/opt/edware/item_level_ut'
-        self.__tmp_item_dir = tempfile.mkdtemp('item_level_files')
         self._tenant = get_unittest_tenant_name()
         self.__state_code = 'NC'
         set_tenant_map({get_unittest_tenant_name(): 'NC'})
-        self.__build_item_level_files()
+        if not self.__built_files:
+            self.__build_item_level_files()
+            self.__built_files = True
 
     def tearDown(self):
         shutil.rmtree(self.__tmp_out_dir)
-        #shutil.rmtree(self.__tmp_item_dir)
+        pass
 
     @classmethod
     def setUpClass(cls):
+        cls.__built_files = False
+        cls.__tmp_item_dir = tempfile.mkdtemp('item_level_files')
         Unittest_with_edcore_sqlite.setUpClass()
         Unittest_with_stats_sqlite.setUpClass()
 
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.__tmp_item_dir)
+
     def test_generate_item_csv_success_no_item_ids(self):
-        #3181376a-f3a8-40d3-bbde-e65fdd9f4494
         params = {'stateCode': 'NC',
                   'asmtYear': '2015',
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
                   'asmtGrade': '3'}
-        #query = get_extract_assessment_item_query(params)
-        query = None
+        query = self.__create_query(params)
         output = os.path.join(self.__tmp_out_dir, 'items.csv')
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
@@ -64,9 +67,36 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
             data = csv.reader(out)
             for row in data:
                 csv_data.append(row)
-        self.assertEqual(len(csv_data), 2)
-        self.assertEqual(csv_data[0], ['asmt_guid', 'asmt_period'])
-        self.assertEqual(csv_data[1], ['7d10d26b-b013-4cdd-a916-5d577e895cff', 'Spring 2016'])
+        self.assertEqual(len(csv_data), 211)
+        self.assertIn('key', csv_data[0])
+        self.assertIn('student_guid', csv_data[0])
+        self.assertIn('score', csv_data[0])
+
+    def test_generate_item_csv_success_item_ids(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3'}
+        query = self.__create_query(params)
+        output = os.path.join(self.__tmp_out_dir, 'items.csv')
+        task_info = {Constants.TASK_ID: '01',
+                     Constants.CELERY_TASK_ID: '02',
+                     Constants.REQUEST_GUID: '03'}
+        extract_args = {TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
+                        TaskConstants.ROOT_DIRECTORY: self.__tmp_item_dir,
+                        TaskConstants.ITEM_IDS: ['160', '150']}
+        generate_items_csv(self._tenant, output, task_info, extract_args)
+        self.assertTrue(os.path.exists(output))
+        csv_data = []
+        with open(output) as out:
+            data = csv.reader(out)
+            for row in data:
+                csv_data.append(row)
+        self.assertEqual(len(csv_data), 66)
+        self.assertIn('key', csv_data[0])
+        self.assertIn('student_guid', csv_data[0])
+        self.assertIn('score', csv_data[0])
 
     def test_get_path_to_item_csv_summative(self):
         print(self.__state_code)
@@ -96,6 +126,28 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         self.assertEqual(path,
                          '/opt/edware/item_level/NC/2015/INTERIM_COMPREHENSIVE/20150106/ELA/3/3ab54de78a/a78dbf34.csv')
 
+    def __create_query(self, params):
+        with UnittestEdcoreDBConnection() as connection:
+            dim_asmt = connection.get_table('dim_asmt')
+            fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
+            query = select([fact_asmt_outcome.c.state_code,
+                            fact_asmt_outcome.c.asmt_year,
+                            fact_asmt_outcome.c.asmt_type,
+                            dim_asmt.c.effective_date,
+                            fact_asmt_outcome.c.asmt_subject,
+                            fact_asmt_outcome.c.asmt_grade,
+                            fact_asmt_outcome.c.district_guid,
+                            fact_asmt_outcome.c.student_guid],
+                           from_obj=[fact_asmt_outcome
+                                     .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))])
+
+            query = query.where(and_(fact_asmt_outcome.c.asmt_year == params['asmtYear']))
+            query = query.where(and_(fact_asmt_outcome.c.asmt_type == params['asmtType']))
+            query = query.where(and_(fact_asmt_outcome.c.asmt_subject == params['asmtSubject']))
+            query = query.where(and_(fact_asmt_outcome.c.asmt_grade == params['asmtGrade']))
+            query = query.where(and_(fact_asmt_outcome.c.rec_status == 'C'))
+            return query
+
     def __build_item_pool(self, asmt_count):
         pool = []
         for i in range(10):
@@ -104,7 +156,6 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
         return pool
 
     def __build_item_level_files(self):
-        a = 0
         with UnittestEdcoreDBConnection() as connection:
             item_pools, asmt_count, flip_flop = {}, 0, False
             fact_asmt = connection.get_table('fact_asmt_outcome')
@@ -143,4 +194,3 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                         csv_writer.writerow([item['key'], result['student_guid'], item['segment'], 0, item['client'],
                                              1, 1, item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
                                              'MA-Undesignated', 1, 1, 1, 0])
-                    csv_writer.writerow([asmt_guid])

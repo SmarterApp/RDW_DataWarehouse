@@ -42,9 +42,9 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
         # TODO: Should not be hard coded
         if not os.path.exists(output_file):
             write_csv(output_file,
-                      ['key', 'segmentId', 'position', 'clientId', 'operational', 'isSelected', 'format', 'score',
-                       'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel', 'pageNumber', 'pageVisits',
-                       'pageTime', 'dropped'],
+                      ['key', 'student_guid', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
+                       'format', 'score', 'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel',
+                       'pageNumber', 'pageVisits', 'pageTime', 'dropped'],
                       [])
 
         # Open the file to stream it out

@@ -4,7 +4,7 @@ Created on Nov 8, 2013
 @author: dip
 '''
 import unittest
-from smarter.extracts.student_assessment import get_extract_assessment_query
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_query
 from edcore.utils.utils import compile_query_to_sql_text
 from pyramid.testing import DummyRequest
 from pyramid import testing
@@ -96,6 +96,56 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         # Check for columns are in results
         self.assertIn('acc_streamline_mode', results[0])
         self.assertIn('acc_asl_human_nonembed', results[0])
+
+    def test_get_extract_items_query(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2019',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3',
+                  'extractType': 'itemLevel'}
+        query = get_extract_assessment_item_query(params)
+        self.assertIsNotNone(query)
+        self.assertIn('fact_asmt_outcome.asmt_type', str(query._whereclause))
+
+    def test_get_extract_items_query_limit(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3',
+                  'extractType': 'itemLevel'}
+        query = get_extract_assessment_item_query(params).limit(541)
+        self.assertIsNotNone(query)
+        self.assertIn('541', str(query._limit))
+
+    def test_get_extract_items_query_compiled(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3',
+                  'extractType': 'itemLevel'}
+        query = compile_query_to_sql_text(get_extract_assessment_item_query(params))
+        self.assertIsNotNone(query)
+        self.assertIsInstance(query, str)
+        self.assertIn('SUMMATIVE', query)
+
+    def test_get_extract_items_query_results(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3'}
+        query = get_extract_assessment_item_query(params)
+        self.assertIsNotNone(query)
+        with UnittestEdcoreDBConnection() as connection:
+            results = connection.get_result(query)
+        self.assertIsNotNone(results)
+        self.assertGreater(len(results), 0)
+        # Check for columns are in results
+        self.assertIn('district_guid', results[0])
+        self.assertIn('student_guid', results[0])
 
 
 if __name__ == "__main__":

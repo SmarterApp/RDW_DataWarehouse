@@ -5,6 +5,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 
 install_requires = [
+    'SQLAlchemy==0.8.3',
     'pyramid==1.4',
     'apscheduler==2.1.1',
     'psycopg2==2.5.1']

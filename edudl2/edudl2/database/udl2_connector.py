@@ -5,12 +5,16 @@ from sqlalchemy.sql.expression import text
 import edcore.database as edcoredb
 from edschema.metadata_generator import generate_ed_metadata
 from edcore.database.stats_connector import StatsDBConnection
+from celery.utils.log import get_task_logger
+from sqlalchemy.exc import IntegrityError
 
 
 UDL_NAMESPACE = 'udl2_db_conn'
 TARGET_NAMESPACE = 'target_db_conn'
 PRODUCTION_NAMESPACE = 'prod_db_conn'
 DEFAULT_TENANT = 'edware'
+
+logger = get_task_logger(__name__)
 
 
 class UDL2DBConnection(DBConnection):
@@ -74,7 +78,10 @@ def initialize_db_target(udl2_conf):
     # Install dblink extension on preprod database if it doesn't exist
     for tenant in udl2_conf[TARGET_NAMESPACE]:
         with get_target_connection(tenant) as conn:
-            conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink"))
+            try:
+                conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink"))
+            except IntegrityError as e:
+                logger.warning('dblink did not exist at creation time, but fails with IntegrityError')
 
 
 def initialize_db_prod(udl2_conf):

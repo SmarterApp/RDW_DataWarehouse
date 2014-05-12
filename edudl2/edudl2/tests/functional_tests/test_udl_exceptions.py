@@ -18,7 +18,6 @@ class UDLExceptionTest(UDLTestHelper):
         super(UDLExceptionTest, cls).tearDownClass()
 
     def setUp(self):
-        super(UDLExceptionTest, self).truncate_edware_tables()
         super(UDLExceptionTest, self).truncate_udl_tables()
         self.guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         self.insert_error_message = 'Data integrity violence found for batch: test_batch_guid_1 in schema.table, ' +\
@@ -42,7 +41,6 @@ class UDLExceptionTest(UDLTestHelper):
                                  'student_guid': '60ca47b5-527e-4cb0-898d-f754fd7099a0'}]
 
     def tearDown(self):
-        super(UDLExceptionTest, self).truncate_edware_tables()
         super(UDLExceptionTest, self).truncate_udl_tables()
 
     def get_err_list(self):

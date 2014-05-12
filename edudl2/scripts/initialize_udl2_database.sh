@@ -2,8 +2,6 @@
 
 # initialize edware star schema
 
-python3.3 -m edschema.metadata_generator --metadata edware -s edware -d edware --host=localhost:5432 -u edware -p edware2013
-
 python3.3 -m edschema.metadata_generator --metadata stats -s edware_stats -d edware_stats --host=localhost:5432 -u edware -p edware2013
 
 # Create prod schema

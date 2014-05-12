@@ -22,17 +22,15 @@ class UDLTestHelper(unittest.TestCase):
         initialize_db_udl(cls.udl2_conf)
         initialize_db_target(cls.udl2_conf)
         initialize_db_prod(cls.udl2_conf)
-        cls.truncate_edware_tables()
         cls.truncate_udl_tables()
 
     @classmethod
     def tearDownClass(cls):
-        cls.truncate_edware_tables()
         cls.truncate_udl_tables()
 
     @classmethod
-    def truncate_edware_tables(self, tenant='cat'):
-        with get_target_connection(tenant, schema_name='edware') as conn:
+    def truncate_edware_tables(self, schema, tenant='cat'):
+        with get_target_connection(tenant, schema_name=schema) as conn:
             metadata = conn.get_metadata()
             for table in reversed(metadata.sorted_tables):
                 conn.execute(table.delete())

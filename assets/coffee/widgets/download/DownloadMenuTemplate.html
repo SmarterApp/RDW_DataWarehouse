@@ -1,31 +1,31 @@
 <div id="DownloadMenuModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="3">&times;</button>
         <h2 id="myModalLabel">{{labels.export_label}}</h2>
     </div>
     <div class="modal-body">
-       <ul>
-           <li class="file">
-               <label>
-                   <input type="radio" name="download" value="file" checked/>
-                   <span>{{labels.export_download_curr_view}}</span>
-               </label>
-           </li>
-           <li class="extract">
-               <label>
-                   <input type="radio" name="download" value="extract"/>
-                   <span>{{labels.export_download_raw_view}}</span>
-               </label>
-           </li>
-           <li class="csv">
-               <label>
-                   <input type="radio" name="download" value="csv"/>
-                   <span>{{labels.export_request_extract}}</span>
-               </label>
-           </li>
-       </ul>
+        <ul tabindex="2">
+            <li class="file">
+                <label>
+                    <input type="radio" name="download" value="file" checked/>
+                    <span>{{labels.export_download_curr_view}}</span>
+                </label>
+            </li>
+            <li class="extract">
+                <label>
+                    <input type="radio" name="download" value="extract"/>
+                    <span>{{labels.export_download_raw_view}}</span>
+                </label>
+            </li>
+            <li class="csv">
+                <label>
+                    <input type="radio" name="download" value="csv"/>
+                    <span>{{labels.export_request_extract}}</span>
+                </label>
+            </li>
+        </ul>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary edware-btn-primary" id='exportButton'>{{labels.export_label}}</button>
+        <button class="btn btn-primary edware-btn-primary" id='exportButton' tabindex="1">{{labels.export_label}}</button>
     </div>
 </div>

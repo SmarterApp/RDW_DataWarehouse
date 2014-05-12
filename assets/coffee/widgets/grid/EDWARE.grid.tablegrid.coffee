@@ -57,7 +57,7 @@ define [
 
     addARIA: ()->
       # TODO:
-      $('.ui-jqgrid-hdiv').attr('aria-label', 'headers')
+      $('.ui-jqgrid-hdiv .jqg-third-row-header').attr('role', 'row')
       $('.ui-jqgrid-sdiv').attr('aria-label', 'summary')
       $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
       $('#gridTable').removeAttr('aria-labelledby').attr('aria-label', 'grid body')

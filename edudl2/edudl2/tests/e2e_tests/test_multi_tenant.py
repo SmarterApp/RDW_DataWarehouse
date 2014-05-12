@@ -49,8 +49,6 @@ class ValidateTableData(unittest.TestCase):
     def check_job_completion(self, max_wait=30):
         with get_udl_connection() as connector:
             batch_table = connector.get_table(Constants.UDL2_BATCH_TABLE)
-            #query = select([batch_table.c.udl_phase], batch_table.c.udl_phase == 'UDL_COMPLETE')
-            #query = query.where(batch_table.c.guid_batch == self.guid_batch_id)
             query = select([batch_table.c.udl_phase], and_(batch_table.c.guid_batch == self.guid_batch_id, batch_table.c.udl_phase == 'UDL_COMPLETE'))
             timer = 0
             result = connector.execute(query).fetchall()
@@ -89,4 +87,4 @@ class ValidateTableData(unittest.TestCase):
             edware_table = ed_connector.get_table('dim_asmt')
             query_dim_table = select([edware_table])
             result_dim_table = ed_connector.execute(query_dim_table).fetchall()
-            self.assertEquals(len(result_dim_table), 1, "Data is loaded to star shema")
+            self.assertEquals(len(result_dim_table), 1, "Data not loaded into preprod")

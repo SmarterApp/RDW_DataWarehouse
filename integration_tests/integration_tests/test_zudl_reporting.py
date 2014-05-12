@@ -20,6 +20,8 @@ from integration_tests.udl_helper import empty_stats_table
 import time
 from time import sleep
 from edudl2.udl2.constants import Constants
+from edcore.tests.watch.common_test_utils import get_file_hash
+from edcore.tests.watch.common_test_utils import create_checksum_file
 
 
 class TestUDLReportingIntegration(unittest.TestCase):
@@ -31,17 +33,27 @@ class TestUDLReportingIntegration(unittest.TestCase):
     def setUpClass(cls):
         initialize_all_db(udl2_conf, udl2_flat_conf)
         cls.delete_prod_tables(cls)
+        cls.expected_unique_batch_guids = 56
+        cls.here = os.path.dirname(__file__)
+        cls.data_dir = os.path.join(cls.here, "data", "udl_to_reporting_e2e_integration")
+        cls.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_1/filedrop/'
+        cls.copy_file_to_tenant_dir(cls, cls.data_dir, cls.expected_unique_batch_guids)
+        for file in os.listdir(cls.tenant_dir):
+            if fnmatch.fnmatch(file, '*.gpg'):
+                source_file = os.path.join(cls.tenant_dir, file)
+                hex_digest, digest = get_file_hash(cls.tenant_dir + "/" + file)
+                with open(source_file + '.done', 'w') as checksum_file:
+                    checksum_file.write(hex_digest)
 
     def setUp(self):
-        self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_1/filedrop/'
+        #self.tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_1/filedrop/'
         self.sr_tenant_dir = '/opt/edware/zones/landing/arrivals/cat/cat_user_2/filedrop/'
         self.dim_table = 'dim_asmt'
         self.fact_table = 'fact_asmt_outcome'
         self.sr_table = 'student_reg'
-        self.here = os.path.dirname(__file__)
-        self.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
-        self.sr_data_dir = os.path.join(self.here, "data", "udl_to_sr_reporting_e2e_integration")
-        self.expected_unique_batch_guids = 56
+        #self.here = os.path.dirname(__file__)
+        #cls.data_dir = os.path.join(self.here, "data", "udl_to_reporting_e2e_integration")
+        self.sr_data_dir = os.path.join(TestUDLReportingIntegration.here, "data", "udl_to_sr_reporting_e2e_integration")
         self.expected_rows = 777
         # TODO EXPECTED_ROWS should be 1186
         empty_stats_table(self)
@@ -172,18 +184,18 @@ class TestUDLReportingIntegration(unittest.TestCase):
         # Reads the udl2_conf.ini file from /opt/edware directory
         self.conf = udl2_conf
         # Copy the gpg test data  files from the edudl2/tests/data directory to the /opt/tmp directory
-        self.copy_files_to_tenantdir(self.data_dir, self.expected_unique_batch_guids)
+        #self.copy_files_to_tenantdir(TestUDLReportingIntegration.data_dir)
         # set file path to tenant directory that includes all the gpg files
         here = os.path.dirname(__file__)
         driver_path = os.path.join(here, "..", "..", "edudl2", "scripts", "driver.py")
-        for file in os.listdir(self.tenant_dir):
-            if fnmatch.fnmatch(file, '*.gpg'):
-                arch_file = os.path.join(self.tenant_dir) + os.path.basename(file)
+        #for file in os.listdir(self.tenant_dir):
+        #if fnmatch.fnmatch(file, '*.gpg', '*.done'):
+        #arch_file = os.path.join(self.tenant_dir) + os.path.basename(file)
                 # Set the command to run UDL pipeline
-                command = "python {driver_path} -a {file_path}".format(driver_path=driver_path, file_path=arch_file)
+        command = "python {driver_path} --loop-once".format(driver_path=driver_path)
                 # Run the UDL pipeline using the command
-                p = subprocess.Popen(command, shell=True)
-                p.wait()
+        p = subprocess.Popen(command, shell=True)
+        p.wait()
 
     def run_udl_pipeline_on_single_file(self, file_path):
         """
@@ -225,7 +237,7 @@ class TestUDLReportingIntegration(unittest.TestCase):
 
             self.assertEqual(len(all_successful_batch_guids), expected_unique_batch_guids, "56 guids not found.")
 
-    def copy_files_to_tenantdir(self, file_path, expected_unique_batch_guids):
+    def copy_file_to_tenant_dir(self, data_dir, expected_unique_batch_guids):
         '''
         Copies the gpg files from  edudl2/tests/data/udl_to_reporting_e2e_integration to the tenant directory
         :param file_path: file path containing all gpg files
@@ -233,17 +245,16 @@ class TestUDLReportingIntegration(unittest.TestCase):
         '''
         # Get all file paths from tests/data/udl_to_reporting_e2e_integration directory
         all_files = []
-        for file in os.listdir(file_path):
+        for file in os.listdir(data_dir):
             if fnmatch.fnmatch(file, '*.gpg'):
-                all_files.append(os.path.join(file_path + '/' + str(file)))
-        self.assertEqual(len(all_files), expected_unique_batch_guids, "%i files not found."
-                                                                      % expected_unique_batch_guids)
+                all_files.append(os.path.join(data_dir, file))
+            #self.assertEqual(len(all_files), expected_unique_batch_guids, "%i files not found.")
         # Create a tenant directory if does not exist already
-        if not os.path.exists(self.tenant_dir):
-            os.makedirs(self.tenant_dir)
+        if not os.path.exists(TestUDLReportingIntegration.tenant_dir):
+            os.makedirs(TestUDLReportingIntegration.tenant_dir)
         # Copy all the files from tests/data directory to tenant directory
         for file in all_files:
-            shutil.copy2(file, self.tenant_dir)
+            shutil.copy2(file, TestUDLReportingIntegration.tenant_dir)
 
     def copy_file_to_sr_tenant_dir(self, file_path):
         '''

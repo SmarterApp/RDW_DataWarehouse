@@ -7,6 +7,8 @@ import unittest
 from integration_tests.udl_helper import empty_batch_table, empty_stats_table, run_udl_pipeline, migrate_data
 import os
 import shutil
+import time
+from time import sleep
 from uuid import uuid4
 from edudl2.database.udl2_connector import get_prod_connection,\
     initialize_all_db
@@ -36,6 +38,7 @@ class Test(unittest.TestCase):
         print("UDL pipeleine completed successfull")
         self.validate_edware_stats_table_before_mig()
         migrate_data(self)
+        time.sleep(10)
         self.validate_edware_stats_table_after_mig()
         self.validate_edware_prod()
 

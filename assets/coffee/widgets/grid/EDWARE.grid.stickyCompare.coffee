@@ -74,7 +74,7 @@ define [
         self.compare()
 
       # Text that appears next to checkbox after checkbox is clicked
-      $(document).on 'click', '.stickyCompareLabelChecked', () ->
+      $(document).onClickAndEnterKey '.stickyCompareLabelChecked', () ->
         self.compare()
 
       # Deselect Button in summary row
@@ -99,7 +99,7 @@ define [
         self.renderStickyChainRows()
 
       # Remove button on each row in grid
-      $(document).on 'click', '.stickyCompareRemove', () ->
+      $(document).onClickAndEnterKey '.stickyCompareRemove', () ->
         self.removeCurrentRow this
         self.updateSelection()
 
@@ -150,7 +150,7 @@ define [
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
       label = $(element).siblings("label")
-      label.text(this.labels.compare)
+      label.removeAttr('tabindex').text(this.labels.compare)
       label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
 
       this.resetCompareRowControls()
@@ -209,7 +209,7 @@ define [
       else
         returnData = allData
       return {'data': returnData, 'enabled': selectedRows.length > 0}
-    
+
     reset: () ->
       this.selectedRows = {}
       this.compareMode = false
@@ -271,7 +271,8 @@ define [
         # Hide all buttons
         this.hideCompareSection()
       text += " " + countText if countText
-      $('.stickyCheckbox:checked').siblings("label").text(text)
+      $('.stickyCheckbox:checked').siblings("label")\
+        .attr('tabindex', '0').text(text)
       this.stickyCompareBtn.text(text)
       # To display ex. "districts_selected" label
       this.stickyChainBtn.text(count + " " + this.labels[labelNameKey + "_selected"])
@@ -343,5 +344,9 @@ define [
           btnGroupElement.parent().mouseleave ->
             self.stickyChainBtn.popover 'hide'
             btnGroupElement.removeClass 'open'
+      .focus ->
+        $(this).mouseover()
+      .focusout ->
+        $(this).mouseleave()
 
   EdwareGridStickyCompare:EdwareGridStickyCompare

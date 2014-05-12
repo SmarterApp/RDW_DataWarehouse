@@ -8,7 +8,7 @@ pcp_pass=postgres  # replace this with your pcp.conf password if necessary
 pcp_host=localhost
 pcp_port=9898     # replace this with your pcp.conf pgpool.conf pcp port if necessary
 attach_timeout=100
-pgpool_status_file=/var/log/pgpool-II/pgpool_status
+pgpool_status_file=/var/log/pgpool-II/pgpool_status # replace with your pgpool_status file location
 
 # command to check pgpool parent is running or not
 COMMAND_PS="ps -C pgpool|wc -l"

@@ -3,7 +3,7 @@ define [
   "mustache"
   "text!edwarePopulationBarTemplate"
 ], ($, Mustache, populationBarTemplate) ->
-   
+
   #
   #    * Population level bar widget
   #    * Generate confidence level bar and calculate cutpoint pixel width, score position, score interval position
@@ -20,7 +20,7 @@ define [
     # render population bar from template
     output = Mustache.to_html populationBarTemplate, items
     output
-  
+
   create = (data, container) ->
     if container
       $(container).populationBar data

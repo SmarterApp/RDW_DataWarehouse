@@ -53,6 +53,15 @@ define [
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
+      this.addARIA()
+
+    addARIA: ()->
+      # TODO:
+      $('.ui-jqgrid-hdiv .jqg-third-row-header').attr('role', 'row')
+      $('.ui-jqgrid-sdiv').attr('aria-label', 'summary')
+      $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
+      $('#gridTable').removeAttr('aria-labelledby').removeAttr('tabindex').attr('aria-label', 'grid body')
+      $('.jqgfirstrow').attr('aria-hidden', 'true')
 
     renderBody: () ->
       colNames = this.getColumnNames()
@@ -127,7 +136,7 @@ define [
       colModelItem
 
     getColumnName: (column) ->
-      column.name + column.displayTpl
+      column.displayTpl
 
     getHeaders: () ->
       for column in this.columns
@@ -170,6 +179,13 @@ define [
       $component = $(component)
       height += $component.height() if $component.is(':visible')
     window.innerHeight - height
+
+  $.fn.onClickAndEnterKey = (selector, callback) ->
+    # delegate click event
+    $(this).on 'click', selector, callback
+    # listen to enter key press event
+    $(this).on 'keypress', selector, (e) ->
+      callback.call(this) if e.keyCode is 13
 
   #
   #    * Creates EDWARE grid

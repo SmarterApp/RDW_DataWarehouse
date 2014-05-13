@@ -8,6 +8,11 @@ a {
     color: @color-A1;
     text-decoration: underline;
   }
+
+  &.inherit {
+    color: inherit !important;
+    text-decoration: inherit !important;
+  }
 }
 
 .underline {
@@ -167,9 +172,10 @@ hr {
     background-image: linear-gradient(to bottom,@color-C6,@color-C7);
     background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
 
-    &:hover {
+    &:hover, &:focus {
         background-position: initial;
         background-color: @color-C6;
+        color: @color-white;
     }
 }
 
@@ -182,6 +188,7 @@ hr {
 
 ul.edware-dropdown-menu {
     li {
+        cursor: pointer;
         padding: 5px 0px;
         border-bottom: solid 1px #e2e2e2;
 
@@ -191,7 +198,7 @@ ul.edware-dropdown-menu {
 
         &:last-child { border-bottom: none; }
 
-        &:hover {
+        &:hover, &:focus {
             color: #f4f4f4;
             background-color: #096aac;
         }
@@ -243,3 +250,5 @@ table {
     }
 
 }
+
+.screenreader {position: absolute; top:0; left:-9999px}

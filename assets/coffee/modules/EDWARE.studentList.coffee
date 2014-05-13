@@ -167,7 +167,7 @@ define [
     bindEvents: ()->
       # Show tooltip for overall score on mouseover
       $(document).on
-        mouseenter: ->
+        'mouseenter focus': ->
           elem = $(this)
           elem.popover
             html: true
@@ -183,7 +183,7 @@ define [
           .popover("show")
         click: (e) ->
           e.preventDefault()
-        mouseleave: ->
+        'mouseleave focusout': ->
           elem = $(this)
           elem.popover("hide")
       , ".asmtScore"

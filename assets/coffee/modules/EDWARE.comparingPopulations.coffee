@@ -33,6 +33,7 @@ define [
     customize: (customView) ->
       firstColumn = this.gridConfig[0].items[0]
       firstColumn.name = customView.name
+      firstColumn.displayTpl = customView.displayTpl
       firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
       firstColumn.options.id_name = customView.id_name
@@ -141,7 +142,8 @@ define [
     createGrid: () ->
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
-      preprocessor = new DataProcessor(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
+      # TODO: need to get cut_point_intervals from database
+      preprocessor = new DataProcessor(@summaryData[0], @asmtSubjectsData, @data.metadata, @defaultColors, @config.legendInfo.sample_intervals.cut_point_intervals)
       this.populationData = preprocessor.process(this.populationData)
       summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
@@ -197,19 +199,16 @@ define [
       # Reset back to original color for all columns
       for colModel in colModels
         #reset labels
-        if colModel.index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
-          grid.jqGrid('setLabel', colModel.name, "<b>#{colModel.label}</b>")
-        else
-          grid.jqGrid('setLabel', colModel.name, colModel.label)
-
+        label = "<a class='inherit' href='#'>#{colModel.label}</a>"
+        grid.jqGrid('setLabel', colModel.label, label)
         if colModel.name is index
-          newLabel = colModel.label
+          newLabel = label
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc'
-          newLabel = "<b>#{newLabel}</b> #{this.config.proficiencyAscending}"
+          newLabel = "#{newLabel} #{this.config.proficiencyAscending}"
         else
-          newLabel = "<b>#{newLabel}</b> #{this.config.proficiencyDescending}"
+          newLabel = "#{newLabel} #{this.config.proficiencyDescending}"
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
@@ -228,7 +227,7 @@ define [
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
-        
+
 
     renderReportActionBar: () ->
       self = this
@@ -249,7 +248,13 @@ define [
             container: '#content'
             trigger: 'hover'
             content: ->
-              $(this).find(".progressBar_tooltip").html() # template location: widgets/populationBar/template.html
+              # template location: widgets/populationBar/template.html
+              $(this).find(".progressBar_tooltip").html()
+        # also display tooltips when focus on
+      $(".progress").on 'focus', ()->
+        $(this).popover('show')
+      .focusout ()->
+        $(this).popover('hide')
 
     # Format the summary data for summary row rendering purposes
     formatSummaryData: (summaryData) ->
@@ -329,7 +334,7 @@ define [
 
   class DataProcessor
 
-    constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors) ->
+    constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors, @intervals) ->
 
     # Traverse through to intervals to prepare to append color to data
     # Handle population bar alignment calculations
@@ -373,6 +378,7 @@ define [
         element = intervals[i]
         element = {'count': 0, 'percentage': 0} if element is undefined
         element.count = edwareUtil.formatNumber(element.count)
+        element.description = @intervals[i].name
         if colors and colors[i]
           element.color = colors[i]
         else

@@ -1,7 +1,7 @@
 <div>
     <div id="SUMMARY_TEMPLATE">
         <div class='marginLeft20 {{cssClass}} {{export}}'>
-            <span class=summarySubtitle>{{subTitle}}:</span><br/>
+            <span class='summarySubtitle' aria-hidden="true">{{subTitle}}:</span><br/>
             <span class='summaryTitle'>{{summaryTitle}}</span>
             <span class='edwareExportField' data-export-value='{{summaryTitle}}' data-export-name='{{columnName}}'></span>
         </div>
@@ -10,10 +10,12 @@
     <div id="POPULATION_BAR_TEMPLATE">
         <div class='barContainer default {{export}}'>
             <div class='alignmentHighlightSection'>
-                <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
+                <div class ='populationBar' data-margin-left='{{subject.alignment}}'>
+                    {{{populationBar}}}
+                </div>
             </div>
                 {{#hasTextReplacement}}
-                <div>{{displayText}}</div>
+                <div aria-label="{{subject.asmt_subject}} {{displayText}}" role="">{{displayText}}</div>
                 {{/hasTextReplacement}}
 
                 {{^hasTextReplacement}}
@@ -29,22 +31,26 @@
         <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
         <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
         {{/subject.unfilteredTotal}}
+        <span class="screenreader">{{subject.asmt_subject}} total population data not available</span>
         <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
         {{/hasTextReplacement}}
 
         {{^hasTextReplacement}}
-        <div class='studentsTotal'>{{subject.total}}
         {{#subject.unfilteredTotal}}
-        <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
-        <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
-        <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
-        <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        <div class='studentsTotal' aria-label='{{subject.asmt_subject}} total population {{subject.total}} {{subject.ratio}}% of {{subject.unfilteredTotal}}' role=''>
+            {{subject.total}}
+            <div class='unfilteredTotal' aria-hidden='true'>{{subject.ratio}}% of {{subject.unfilteredTotal}}</div>
+            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.filtered_student_count}}'></span>
+            <span class='edwareExportField' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.filtered_percentage_of_total}}'></span>
+            <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        </div>
         {{/subject.unfilteredTotal}}
         {{^subject.unfilteredTotal}}
-        <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        <div class='studentsTotal' aria-label='{{subject.asmt_subject}} total population {{subject.total}}' role=''>{{subject.total}}
+            <span class='edwareExportField' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.total_assessed}}'></span>
+        </div>
         {{/subject.unfilteredTotal}}
         {{/hasTextReplacement}}
-        </div>
         </div>
     </div>
 
@@ -58,12 +64,12 @@
     <div id="NAME_TEMPLATE">
         <div class='marginLeft20 {{cssClass}} {{export}}'>
             {{#isSticky}}
-            <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
+            <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}' tabindex='0'></div>
             <label class='stickyRemoveLabel paddingBottom9'>{{labels.remove}}</label>
             <div class='edwareExportField stickyState' data-label='{{labels.on}}'></div>
             {{/isSticky}}
             {{^isSticky}}
-            <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
+            <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}' aria-label='{{labels.compare}}'></input>
             <label class='stickyCompareLabel paddingBottom9'>{{labels.compare}}</label>
             <div class='edwareExportField stickyState' data-label='{{labels.off}}'></div>
             {{/isSticky}}

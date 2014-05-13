@@ -31,6 +31,10 @@ define [
       $('.downloadIcon').click ->
         # show download menu
         self.edwareDownloadMenu.show()
+      $('.reportInfoIcon').click ->
+        $(this).popover('show')
+      $('.academicYearInfoIcon').click ->
+        $(this).popover('show')
 
     render: () ->
       # bind report info popover

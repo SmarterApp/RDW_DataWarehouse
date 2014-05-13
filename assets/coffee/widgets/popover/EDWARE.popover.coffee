@@ -32,6 +32,10 @@ define ["jquery"], ($) ->
       arrowLeft = $popover.width() / 2 + popRight
       $(".arrow", $popover).css "left", arrowLeft
 
+  $(document).keyup (e)->
+    if e.keyCode is 27
+      $('.popover').parent().popover 'hide'
+
   $.fn.edwarePopover = (config) ->
     # setup default template with customized class name
     config.template ?= "<div class='popover #{config.class} edwarePopover'><div class='mask'/><div class='arrow'/><div class='popover-content edwareScrollable'><p></p></div></div>"
@@ -43,5 +47,7 @@ define ["jquery"], ($) ->
       reposition.call(self)
       resize.call(self)
     this.unbind('mouseleave').mouseleave ->
+      self.popover 'hide'
+    this.on 'focusout', ->
       self.popover 'hide'
     this

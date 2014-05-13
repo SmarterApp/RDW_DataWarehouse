@@ -265,13 +265,14 @@ define [
 
     generateLabel: (data) ->
       template = "<span class='selectedFilterGroup'>
-        <span>
+        <span aria-hidden='true' id='aria-{{display}}'>
           <span>{{display}}: </span>
           {{#values}}
             <span>{{.}}</span><span class='seperator'>, </span>
           {{/values}}
         </span>
-        <div class='removeIcon'/>
+        <a href='#' class='removeIcon' role='button'
+          aria-labelledby='aria-filtered-by aria-{{display}}'/>
       </span>"
       output = Mustache.to_html(template, data)
       $(output)

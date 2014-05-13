@@ -46,6 +46,9 @@ define [
         self.setSelectedValue displayText
         # additional parameters
         self.callback(asmt)
+      $('.asmtSelection', @container).keypress event, ->
+        if event.keyCode == 13 || event.keyCode == 32
+          $(this).click()
 
     parseAsmtInfo: ($option) ->
       display: $option.data('display')

@@ -1,22 +1,32 @@
 <div class="btn-group">
-    <button type="button" class="btn-small dropdown-toggle asmtTypeButton" data-toggle="dropdown">
-        <span id="selectedAsmtType">{{defaultValue}}</span></button>
+    <button type="button" class="btn-small dropdown-toggle asmtTypeButton" data-toggle="dropdown" aria-labelledby="aria-assessment-opportunity selectedAsmtType">
+        <span id="aria-assessment-opportunity" style="display: none;">selected assessment opportunity</span>
+        <span id="selectedAsmtType">{{defaultValue}}</span>
+    </button>
     <ul class="dropdown-menu asmtDropdownMenu" role="menu">
         {{#dropdownValues}}
     {{#hasAsmtSubject}}
         <li>
-        <span class="asmtTypeText">{{effective_date_text}} · {{asmt_grade}} · {{asmt_type}}</span>
-        <ul class="asmtDropdownOption">
-        {{#asmts}}
-        <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}' data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}' data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}' tabindex='0'><span class="subjectText">{{asmt_subject_text}}</span></li>
-        {{/asmts}}
-        </ul>
-    </li>
+            <span class="asmtTypeText">{{effective_date_text}} · {{asmt_grade}} · {{asmt_type}}</span>
+            <ul class="asmtDropdownOption">
+            {{#asmts}}
+                <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
+                    data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}'
+                    data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}'>
+                    <span class="subjectText" tabindex="0" role="button"
+                          aria-label="click to select assessment details">{{asmt_subject_text}}</span>
+                </li>
+            {{/asmts}}
+            </ul>
+        </li>
     {{/hasAsmtSubject}}
     {{^hasAsmtSubject}}
-        <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}' data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}' data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}' tabindex='0'>
-        <span class="asmtTypeText">{{effective_date_text}} · {{asmt_grade}} · {{asmt_type}}</span>
-    </li>
+        <li class="asmtSelection" data-display='{{display}}' data-value='{{asmt_subject}}' data-asmttype='{{asmt_type}}'
+            data-asmtguid='{{asmt_guid}}' data-effectivedate='{{effective_date}}' data-effectivedate-text='{{effective_date_text}}'
+            data-grade='{{asmt_grade}}' data-subjecttext='{{asmt_subject_text}}'>
+                <span class="asmtTypeText" tabindex="0" role="button"
+                      aria-label="click to select assessment">{{effective_date_text}} · {{asmt_grade}} · {{asmt_type}}</span>
+        </li>
     {{/hasAsmtSubject}}
         {{/dropdownValues}}
     </ul>

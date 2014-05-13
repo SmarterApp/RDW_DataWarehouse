@@ -46,7 +46,7 @@ define [
         edwarePreferences.saveAsmtYearPreference(value)
         self.callback(value)
       $('li', @container).keypress (event) ->
-        if event.keyCode == 13 || event.keyCode == 32
+        if event.keyCode == 13
           $(this).click()
       $('.reminderMessage a').click ->
         value = self.latestYear

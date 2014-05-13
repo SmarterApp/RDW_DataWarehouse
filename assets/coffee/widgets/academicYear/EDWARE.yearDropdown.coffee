@@ -45,7 +45,7 @@ define [
         self.setSelectedValue display, value
         edwarePreferences.saveAsmtYearPreference(value)
         self.callback(value)
-      $('li', @container).keypress event, ->
+      $('li', @container).keypress (event) ->
         if event.keyCode == 13 || event.keyCode == 32
           $(this).click()
       $('.reminderMessage a').click ->

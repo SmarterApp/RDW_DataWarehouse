@@ -6,8 +6,9 @@
     </button>
     <ul class="dropdown-menu edware-dropdown-menu" role="menu">
         {{#options}}
-        <li class="asmtYearButton asmtYearButton{{value}}" data-display='{{display}}' data-value='{{value}}'>
-            <span tabindex="0" role="button" aria-label="click to select academic year">{{display}}</span>
+        <li class="asmtYearButton asmtYearButton{{value}}" data-display='{{display}}' data-value='{{value}}'
+            tabindex="0" role="button" aria-label="click to select academic year">
+            <span>{{display}}</span>
         </li>
         {{/options}}
     </ul>

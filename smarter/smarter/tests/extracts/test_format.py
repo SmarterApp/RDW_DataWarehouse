@@ -34,7 +34,6 @@ class TestFormat(unittest.TestCase):
         self.assertIsNotNone(dim_student)
         self.assertEqual(dim_student['student_guid'], 'guid_student')
         self.assertEqual(dim_student['first_name'], 'name_student_first')
-        self.assertEqual(dim_student['address_1'], 'address_student_line1')
         self.assertEqual(dim_student['gender'], 'gender_student')
         self.assertEqual(dim_student['email'], 'email_student')
         self.assertEqual(dim_student['dob'], 'dob_student')

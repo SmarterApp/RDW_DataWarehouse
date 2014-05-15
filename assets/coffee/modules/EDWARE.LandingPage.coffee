@@ -20,9 +20,6 @@ require [
       helpMenu.show target
     $('.btn-login').click ()->
       window.location.href = window.location.protocol + "//" + window.location.host + "/assets/html/index.html"
-    $('#about li').click ()->
-      link = $(this).data('link')
-      window.location.href = link
     $('.languageDropdown').click ()->
       $this = $(this)
       $this.toggleClass('show')

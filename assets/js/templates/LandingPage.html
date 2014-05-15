@@ -1,23 +1,25 @@
 <div id="header" class="content">
-    <div class="logo"></div>
+    <div class="logo" tabindex='1'></div>
     <ul class="action">
     <li class="helpMenu">
-        <div class="divider">
-        <a><i class="edware-icon-question-mark marginRight8"></i>{{labels.help}}</a>
-        </div>
+    	<div class="divider">
+        <a tabindex="2" href="#" role='menuitem'>
+        		<i class="edware-icon-question-mark marginRight8"></i>{{labels.help}}
+       	</a>
+       </div>
     </li>
     <li class="languageDropdown">
         <div class="divider">
-        <a id="user-settings">
+        <a id="user-settings" tabindex="3" href="#" role='menuitem'>
             <i class="edware-icon-globe-blue marginRight8"></i>
             <span class="lang">English</span>
             <i class="edware-icon-downarrow-blue marginLeft8"></i>
         </a>
-        <ul class="languageMenu dropdown-menu" role="menu"></ul>
+	<ul class="languageMenu dropdown-menu" role="radiogroup"></ul>
         </div>
     </li>
     <li><div class="divider">
-        <button class="btn btn-primary btn-login edware-btn-primary">{{labels.login}}</button>
+        <button class="btn btn-primary btn-login edware-btn-primary" role='menuitem'>{{labels.login}}</button>
     </div></li>
     </ul>
     <div class="helpMenuContainer"></div>
@@ -36,10 +38,12 @@
     <h3>{{title}}</h3>
     <ul>
     {{#sections}}
-    <li data-link="{{link}}">
+	<li>
+    	<a href="{{link}}">
         <div class="{{class}} asset"></div>
         <h2>{{subtitle}}</h2>
         <p>{{desc}}</p>
+        </a>
     </li>
     {{/sections}}
     </ul>

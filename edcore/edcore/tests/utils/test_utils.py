@@ -32,5 +32,4 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(len(reverse.keys()), 0)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

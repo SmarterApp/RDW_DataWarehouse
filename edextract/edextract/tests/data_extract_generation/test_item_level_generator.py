@@ -46,7 +46,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
     def tearDownClass(cls):
         shutil.rmtree(TestItemLevelGenerator.__tmp_item_dir)
         Unittest_with_edcore_sqlite.tearDownClass()
-        #Unittest_with_stats_sqlite.tearDownClass()  # Not sure why we don't need to do this
+        # Unittest_with_stats_sqlite.tearDownClass()  # Not sure why we don't need to do this
 
     def test_generate_item_csv_success_no_item_ids(self):
         params = {'stateCode': 'NC',

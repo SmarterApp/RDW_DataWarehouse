@@ -36,7 +36,7 @@ class TestInitializeSFTPZone(unittest.TestCase):
         create_path(test_path)
         self.assertTrue(os.path.exists(test_path))
 
-        #cleanup
+        # cleanup
         if os.path.exists(test_path):
             shutil.rmtree(test_path, True)
         self.assertFalse(os.path.exists(test_path))
@@ -50,7 +50,7 @@ class TestInitializeSFTPZone(unittest.TestCase):
         create_path(test_path)
         self.assertTrue(os.path.exists(test_path))
 
-        #cleanup
+        # cleanup
         if os.path.exists(test_path):
             shutil.rmtree(test_path, True)
         self.assertFalse(os.path.exists(test_path))

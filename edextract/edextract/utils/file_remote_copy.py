@@ -16,12 +16,12 @@ def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file
         raise NotForWindowsException('sftp remote copy cannot be served for Windows users')
 
     status, proc = SendFileUtil.remote_transfer_file(source_file=filename,
-                                               hostname=hostname,
-                                               remote_base_dir=get_setting(Config.PICKUP_ROUTE_BASE_DIR),
-                                               file_tenantname=tenant,
-                                               file_username=gatekeeper,
-                                               sftp_username=sftp_username,
-                                               private_key_file=private_key_file,
-                                               timeout=timeout)
+                                                     hostname=hostname,
+                                                     remote_base_dir=get_setting(Config.PICKUP_ROUTE_BASE_DIR),
+                                                     file_tenantname=tenant,
+                                                     file_username=gatekeeper,
+                                                     sftp_username=sftp_username,
+                                                     private_key_file=private_key_file,
+                                                     timeout=timeout)
     if status != 0:
         raise RemoteCopyError(proc.stderr.read().decode())

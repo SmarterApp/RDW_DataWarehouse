@@ -97,5 +97,4 @@ class TestStatus(Unittest_with_stats_sqlite):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

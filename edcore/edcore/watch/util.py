@@ -44,7 +44,6 @@ class SendFileUtil:
     @staticmethod
     def remote_transfer_file(source_file, hostname, remote_base_dir, file_tenantname,
                              file_username, sftp_username, private_key_file, timeout=1800):
-        print(source_file, hostname, remote_base_dir, file_tenantname, file_username, sftp_username, private_key_file)
         sftp_command_line = ['sftp', '-b', '-']
         if private_key_file is not None:
             sftp_command_line += ['-oIdentityFile=' + private_key_file]
@@ -63,7 +62,7 @@ class SendFileUtil:
         proc.stdin.close()
         proc.wait(timeout=timeout)
         status = proc.returncode
-        return status
+        return status, proc
 
 
 def set_interval(interval):

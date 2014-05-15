@@ -7,8 +7,9 @@ from edcore.watch.watcher import FileWatcher
 from edcore.watch.mover import FileMover
 from edcore.watch.constants import WatcherConstants as WatcherConst, MoverConstants as MoverConst
 from edsftp.src.constants import Constants as SFTPConst
+from edsftp import DEFAULT_LOGGER_NAME
 
-logger = logging.getLogger("edsftp")
+logger = logging.getLogger(DEFAULT_LOGGER_NAME)
 
 
 def get_watcher_conf(config):
@@ -43,8 +44,8 @@ def _watch_and_move_files(file_watcher, file_mover):
     file_watcher.find_all_files()
     file_watcher.watch_files()
     files_to_move = list(file_watcher.get_file_stats().keys())
-    logger.debug('files to move {files_to_move}'.format(files_to_move=files_to_move))
     if len(files_to_move) > 0:
+        logger.debug('files to move {files_to_move}'.format(files_to_move=files_to_move))
         files_moved = file_mover.move_files(files_to_move)
     return files_moved
 
@@ -57,8 +58,8 @@ def sftp_file_sync(config):
     :param config: sftp config needed for file sync
     """
     remote_conf = get_mover_conf(config)
-    file_watcher = FileWatcher(get_watcher_conf(config))
-    file_mover = FileMover(remote_conf)
+    file_watcher = FileWatcher(get_watcher_conf(config), append_logs_to=DEFAULT_LOGGER_NAME)
+    file_mover = FileMover(remote_conf, append_logs_to=DEFAULT_LOGGER_NAME)
     logger.info('Starting SFTP file sync loop {source_dir} => {dest_host}:{dest_dir}'.format(
         source_dir=config[SFTPConst.ARRIVALS_DIR], dest_host=remote_conf[MoverConst.LANDING_ZONE_HOSTNAME],
         dest_dir=remote_conf[MoverConst.ARRIVALS_PATH]))

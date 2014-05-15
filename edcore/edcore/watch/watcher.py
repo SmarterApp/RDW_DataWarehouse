@@ -8,8 +8,7 @@ import logging
 from edcore.watch.util import set_interval, FileUtil
 from edcore.watch.file_hasher import MD5Hasher
 from edcore.watch.constants import WatcherConstants as Const
-
-logger = logging.getLogger(__name__)
+from edcore import DEFAULT_LOGGER_NAME
 
 WATCH_INTERVAL = 2
 
@@ -17,15 +16,17 @@ WATCH_INTERVAL = 2
 class FileWatcher():
     """File sync class to watch for complete files"""
     conf = None
+    logger = None
     file_stats = {}
     hasher = MD5Hasher()
 
-    def __init__(self, config):
+    def __init__(self, config, append_logs_to=DEFAULT_LOGGER_NAME):
         FileWatcher.conf = config
         FileWatcher.clear_file_stats()
         global WATCH_INTERVAL
         WATCH_INTERVAL = FileWatcher.conf[Const.FILE_STAT_WATCH_INTERVAL]
         FileWatcher.source_path = os.path.join(FileWatcher.conf[Const.BASE_DIR], FileWatcher.conf[Const.SOURCE_DIR])
+        FileWatcher.logger = logging.getLogger(append_logs_to)
 
     @classmethod
     def valid_check_sum(cls, file):
@@ -69,7 +70,7 @@ class FileWatcher():
         file_stats_latest = cls.get_updated_file_stats()
         for file, size in cls.file_stats.copy().items():
             if file_stats_latest[file] is None or file_stats_latest[file] != size:
-                logger.debug('Removing file {file} due to size changes during monitoring'.format(file=file))
+                cls.logger.debug('Removing file {file} due to size changes during monitoring'.format(file=file))
                 cls.remove_file_pair_from_dict(file)
 
     @classmethod
@@ -101,7 +102,7 @@ class FileWatcher():
         source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
         for file in source_files:
             if not cls.valid_check_sum(file):
-                logger.error('Removing file {file} due to invalid hash'.format(file=file))
+                cls.logger.error('Removing file {file} due to invalid hash'.format(file=file))
                 cls.remove_file_pair_from_dict(file)
 
     @classmethod

@@ -4,7 +4,6 @@ import os
 import fnmatch
 import time
 import ast
-import shutil
 import logging
 from edcore.watch.util import set_interval, FileUtil
 from edcore.watch.file_hasher import MD5Hasher
@@ -27,9 +26,6 @@ class FileWatcher():
         global WATCH_INTERVAL
         WATCH_INTERVAL = FileWatcher.conf[Const.FILE_STAT_WATCH_INTERVAL]
         FileWatcher.source_path = os.path.join(FileWatcher.conf[Const.BASE_DIR], FileWatcher.conf[Const.SOURCE_DIR])
-        FileWatcher.dest_path = \
-            os.path.join(FileWatcher.conf[Const.BASE_DIR],
-                         FileWatcher.conf[Const.DEST_DIR]) if Const.DEST_DIR in FileWatcher.conf else None
 
     @classmethod
     def valid_check_sum(cls, file):
@@ -113,17 +109,3 @@ class FileWatcher():
         """Remove checksum files"""
         for file in set(fnmatch.filter(cls.file_stats.copy().keys(), '*' + Const.CHECKSUM_FILE_EXTENSION)):
             cls.remove_file_from_dict(file)
-
-    @classmethod
-    def move_files(cls):
-        files_to_move = cls.file_stats.keys()
-        for file in files_to_move:
-            destination_file_path = os.path.join(cls.dest_path, os.path.relpath(file, cls.source_path))
-            destination_file_directory = os.path.split(destination_file_path)[0]
-            if not os.path.exists(destination_file_directory):
-                os.makedirs(destination_file_directory)
-                # the last folder containing the file needs to have 777 for rsync client to be able to delete
-                os.chmod(destination_file_directory, 0o777)
-            logger.debug('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
-            shutil.move(file, destination_file_path)
-        return len(files_to_move)

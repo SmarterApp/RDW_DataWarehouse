@@ -24,13 +24,10 @@ class TestWatcher(unittest.TestCase):
         self.pattern = "['*.gpg', '*.gpg.done']"
         self.base_dir = tempfile.mkdtemp(prefix='base')
         self.source_dir = tempfile.mkdtemp(prefix='arrivals', dir=self.base_dir)
-        self.dest_dir = tempfile.mkdtemp(prefix='arrivals_sync', dir=self.base_dir)
         self.source_path = os.path.join(self.base_dir, self.source_dir)
-        self.dest_path = os.path.join(self.base_dir, self.dest_dir)
         self.conf = {
             'base_dir': self.base_dir,
             'source_dir': self.source_dir,
-            'dest_dir': self.dest_dir,
             'file_patterns_to_watch': self.pattern,
             'file_stat_watch_interval': 1,
             'file_stat_watch_period': 3,
@@ -74,7 +71,7 @@ class TestWatcher(unittest.TestCase):
         stop.set()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
 
-    def test_move_files(self):
+    def test_watch_files(self):
         self.test_sync.find_all_files()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
         stop = self.test_sync.watch_and_filter_files_by_stats_changes()
@@ -84,16 +81,6 @@ class TestWatcher(unittest.TestCase):
         time.sleep(self.conf['file_stat_watch_period'])
         stop.set()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
-        files_moved = self.test_sync.move_files()
-        self.assertEqual(files_moved, 1)
-        self.assertEqual(len(os.listdir(self.dest_path)), 1)
-
-    def test_watch_and_move_files(self):
-        self.test_sync.find_all_files()
-        self.test_sync.watch_files()
-        files_moved = self.test_sync.move_files()
-        self.assertEqual(files_moved, 2)
-        self.assertEqual(len(os.listdir(self.dest_path)), 2)
 
     def test_valid_check_sum_with_no_checksum_file(self):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)

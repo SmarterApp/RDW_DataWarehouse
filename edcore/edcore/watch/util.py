@@ -29,6 +29,13 @@ class FileUtil:
             return ''.join([file, Const.CHECKSUM_FILE_EXTENSION])
 
 
+class FileCopyUtil:
+
+    @staticmethod
+    def remote_transfer_file(source_file):
+        pass
+
+
 def set_interval(interval):
     """Decorator to schedule method to run after every interval
 

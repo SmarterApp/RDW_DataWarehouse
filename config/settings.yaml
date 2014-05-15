@@ -153,7 +153,6 @@ common:
         home: /
         base_dir: /sftp/opt/edware/home
         arrivals_dir: arrivals
-        arrivals_sync_dir: arrivals_sync
         file_patterns_to_watch:
             - '*.gpg'
             - '*.gpg.done'
@@ -171,6 +170,11 @@ common:
         user_path_sftparrivals_dir: file_drop
         user_path_sftpdepartures_dir: reports
         user_path_filerouter_dir: route
+        remote:
+            landing_zone_hostname: edwappsrv6.poc.dum.edwdc.net
+            arrivals_path: /opt/edware/landing/arrivals
+            user: udl2
+            private_key_file: /opt/edware/ssh/.ssh/id_rsa
     migrate:
       broadcast.queue: 'edmigrate_players'
       pgpool.hostname: 'dwrouter1.qa.dum.edwdc.net'

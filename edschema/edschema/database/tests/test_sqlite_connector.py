@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
 
 
 def check_order_of_fact_asmt_outcome(sorted_tables):
-    foreign_keys_tables = ['dim_asmt', 'dim_inst_hier', 'dim_section']
+    foreign_keys_tables = ['dim_asmt', 'dim_inst_hier']
     for table in sorted_tables:
         if table.key == 'fact_asmt_outcome':
             # check foreign_keys_tables.

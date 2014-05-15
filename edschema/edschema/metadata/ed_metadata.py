@@ -56,26 +56,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_inst_hier_idx', instit_hier.c.inst_hier_rec_id, unique=True)
     Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_guid, instit_hier.c.school_guid, unique=False)
 
-    sections = Table('dim_section', metadata,
-                     Column('section_rec_id', BigInteger, primary_key=True),
-                     MetaColumn('batch_guid', String(50), nullable=True),
-                     Column('section_guid', String(50), nullable=False, info={'natural_key': True}),
-                     Column('section_name', String(256), nullable=False),
-                     Column('grade', String(10), nullable=False),
-                     Column('class_name', String(256), nullable=False),
-                     Column('subject_name', String(256), nullable=False),
-                     Column('state_code', String(2), nullable=False),
-                     Column('district_guid', String(50), nullable=False),
-                     Column('school_guid', String(50), nullable=False),
-                     MetaColumn('from_date', String(8), nullable=False),
-                     MetaColumn('to_date', String(8), nullable=True),
-                     MetaColumn('rec_status', String(1), nullable=False),
-                     )
-
-    Index('dim_section_idx', sections.c.section_rec_id, unique=True)
-    Index('dim_section_current_idx', sections.c.section_guid, sections.c.subject_name, sections.c.grade, sections.c.rec_status, unique=False)
-    Index('dim_section_dim_inst_hier_idx', sections.c.state_code, sections.c.district_guid, sections.c.school_guid, sections.c.from_date, sections.c.to_date, unique=False)
-
     # NB! Figure out uniques in dim_student
     students = Table('dim_student', metadata,
                      Column('student_rec_id', BigInteger, primary_key=True),
@@ -92,10 +72,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('gender', String(10), nullable=True),
                      Column('email', String(256), nullable=True),
                      Column('dob', String(8), nullable=False),
-                     # This is not a metacolumn.
-                     # marking this as meta column for now to ignore this in intelligent insert duplicate processing
-                     # this column will be deleted soon anyways.
-                     MetaColumn('section_guid', String(50), nullable=False),
                      Column('grade', String(10), nullable=False),  # TODO: Delete this field
                      Column('state_code', String(2), nullable=False),
                      Column('district_guid', String(50), nullable=False),
@@ -197,9 +173,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),
                                Column('school_guid', String(50), nullable=False),
-                               Column('section_guid', String(50), nullable=False),  # TODO: Delete this field
                                Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
-                               Column('section_rec_id', BigInteger, nullable=False),  # this column will be dropped soon
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                Column('where_taken_name', String(256)),
                                Column('asmt_grade', String(10), nullable=False),

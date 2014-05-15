@@ -46,7 +46,6 @@ class Constants():
     DISTRICT_GUID = 'district_guid'
     SCHOOL_NAME = 'school_name'
     SCHOOL_GUID = 'school_guid'
-    SECTION_GUID = 'section_guid'
     STUDENT_GUID = 'student_guid'
     EFFECTIVE_DATE = 'effective_date'
     GUID = 'guid'

@@ -13,7 +13,7 @@ from edcore.database.utils.utils import drop_schema
 from edschema.metadata.ed_metadata import generate_ed_metadata
 
 __author__ = 'sravi'
-TABLES_NOT_CONNECTED_WITH_BATCH = [Constants.DIM_SECTION]
+TABLES_NOT_CONNECTED_WITH_BATCH = []
 logger = logging.getLogger('edmigrate')
 admin_logger = logging.getLogger(Constants.EDMIGRATE_ADMIN_LOGGER)
 

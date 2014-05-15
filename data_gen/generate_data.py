@@ -72,7 +72,6 @@ pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california
 for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
     if grade in pop_config.DEMOGRAPHICS['typical1']:
         pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
-enroll_config.TEACHERS_PER_SECTION = 0
 
 # Register output filters
 csv_writer.register_filters(SBAC_FILTERS)
@@ -472,8 +471,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):
                 schools_with_grades[student.school][student.grade].append(student)
 
-        # With the students moved around, we will re-populate empty grades and create sections and assessments with
-        # outcomes for the students
+        # With the students moved around, we will re-populate empty grades and create assessments with outcomes for
+        # the students
         for school, grades in schools_with_grades.items():
             # Get the institution hierarchy object
             inst_hier = inst_hiers[school.guid]

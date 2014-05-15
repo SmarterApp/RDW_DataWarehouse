@@ -49,12 +49,11 @@ def update_state(tenant, state_code, state_name):
     '''
     with DBConnection(tenant) as connection:
         dim_inst_hier = connection.get_table("dim_inst_hier")
-        dim_section = connection.get_table("dim_section")
         custom_metadata = connection.get_table("custom_metadata")
         fact_asmt = connection.get_table("fact_asmt_outcome")
         dim_student = connection.get_table("dim_student")
         fact_student_reg = connection.get_table("student_reg")
-        tables = [dim_inst_hier, dim_section, custom_metadata, fact_asmt, dim_student, fact_student_reg]
+        tables = [dim_inst_hier, custom_metadata, fact_asmt, dim_student, fact_student_reg]
         for table in tables:
             stmt = update(table).values(state_code=state_code)
             connection.execute(stmt)

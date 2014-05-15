@@ -20,7 +20,6 @@ class Constants():
     PLAYER_GROUP_A = 'A'
     PLAYER_GROUP_B = 'B'
     FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
-    DIM_SECTION = 'dim_section'
     ASMT_OUTCOME_REC_ID = 'asmt_outcome_rec_id'
     WHERE_TAKEN_NAME = 'where_taken_name'
     STATUS = 'rec_status'

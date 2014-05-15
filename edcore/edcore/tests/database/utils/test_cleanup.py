@@ -22,7 +22,7 @@ class TestCleanup(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         self._tenant = get_unittest_tenant_name()
-        self.dim_tables = ['dim_asmt', 'dim_inst_hier', 'dim_section', 'dim_student']
+        self.dim_tables = ['dim_asmt', 'dim_inst_hier', 'dim_student']
         self.fact_tables = ['fact_asmt_outcome']
         self.other_tables = ['custom_metadata', 'user_mapping', 'student_reg']
 

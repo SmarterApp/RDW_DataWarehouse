@@ -172,8 +172,8 @@ common:
         user_path_filerouter_dir: route
         remote:
             landing_zone_hostname: edwappsrv6.poc.dum.edwdc.net
-            arrivals_path: /opt/edware/landing/arrivals
-            user: udl2
+            arrivals_path: /opt/edware/zones/landing/arrivals
+            sftp_user: udl2
             private_key_file: /opt/edware/ssh/.ssh/id_rsa
     migrate:
       broadcast.queue: 'edmigrate_players'

@@ -20,6 +20,8 @@ class MoverConstants():
     constants related to mover module
     """
     LANDING_ZONE_HOSTNAME = 'landing_zone_hostname'
-    USER = 'user'
+    SFTP_USER = 'sftp_user'
     PRIVATE_KEY_FILE = 'private_key_file'
     ARRIVALS_PATH = 'arrivals_path'
+    FILE_TENANT = 'file_tenant'
+    FILE_USER = 'file_user'

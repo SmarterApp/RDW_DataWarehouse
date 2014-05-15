@@ -29,19 +29,23 @@ def get_mover_conf(config):
     remote_conf = {}
     prefix = 'remote.'
     remote_conf.update({MoverConst.LANDING_ZONE_HOSTNAME: config[prefix + MoverConst.LANDING_ZONE_HOSTNAME],
-                        MoverConst.USER: config[prefix + MoverConst.USER],
+                        MoverConst.SFTP_USER: config[prefix + MoverConst.SFTP_USER],
                         MoverConst.PRIVATE_KEY_FILE: config[prefix + MoverConst.PRIVATE_KEY_FILE],
-                        MoverConst.ARRIVALS_PATH: config[prefix + MoverConst.ARRIVALS_PATH]})
+                        MoverConst.ARRIVALS_PATH: config[prefix + MoverConst.ARRIVALS_PATH],
+                        WatcherConst.BASE_DIR: config[WatcherConst.BASE_DIR],
+                        WatcherConst.SOURCE_DIR: config[SFTPConst.ARRIVALS_DIR]})
     return remote_conf
 
 
 def _watch_and_move_files(file_watcher, file_mover):
     """watch and move files from the sftp arrivals zone to arrivals sync zone"""
+    files_moved = 0
     file_watcher.find_all_files()
     file_watcher.watch_files()
     files_to_move = list(file_watcher.get_file_stats().keys())
     logger.debug('files to move {files_to_move}'.format(files_to_move=files_to_move))
-    files_moved = file_mover.move_files(files_to_move)
+    if len(files_to_move) > 0:
+        files_moved = file_mover.move_files(files_to_move)
     return files_moved
 
 

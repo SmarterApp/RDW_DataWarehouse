@@ -68,7 +68,9 @@ class FTestMoveToTarget(UDLTestHelper):
         if is_empty:
             self.assertEqual(counts[:5], (0, 0, 0, 0, 0))
         else:
-            self.assertEqual(counts[:5], (99, 99, 1, 71, 94))
+            print(schema_name)
+            print(counts)
+            self.assertEqual(counts[:5], (99, 99, 1, 99, 94))
         return
 
     def verify_target_student_registration_schema(self, schema_name, is_empty=False):

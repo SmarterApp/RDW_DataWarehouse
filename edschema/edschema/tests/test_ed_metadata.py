@@ -20,7 +20,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             dim_inst_hier = connector.get_table("dim_inst_hier")
 
             # check number of field in the table
-            self.assertEqual(12, len(dim_inst_hier.c), "Number of fields in dim_district")
+            self.assertEqual(11, len(dim_inst_hier.c), "Number of fields in dim_district")
 
             query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
             result = connector.get_result(query)
@@ -33,7 +33,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             dim_inst_hier = connector.get_table("dim_inst_hier")
 
             # check number of field in the table
-            self.assertEqual(12, len(dim_inst_hier.c), "Number of fields in dim_district")
+            self.assertEqual(11, len(dim_inst_hier.c), "Number of fields in dim_district")
 
             query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
             results = connector.get_streaming_result(query, fetch_size=1)

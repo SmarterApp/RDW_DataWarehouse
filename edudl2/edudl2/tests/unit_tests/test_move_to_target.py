@@ -244,7 +244,7 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
     column_names = list(get_expected_column_mapping(table_name).keys())
     column_types = ['inst_hier_rec_id bigint', 'state_name character varying(32)', 'state_code character varying(2)', 'district_guid character varying(50)',
                     'district_name character varying(256)', 'school_guid character varying(50)', 'school_name character varying(256)',
-                    'school_category character varying(20)', 'from_date character varying(8)', 'to_date character varying(8)', 'most_recent boolean']
+                    'from_date character varying(8)', 'to_date character varying(8)', 'most_recent boolean']
     column_name_type_map = OrderedDict()
     for i in range(len(column_names)):
         column_name_type_map[column_names[i]] = column_types[i]
@@ -253,14 +253,14 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
 
 def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, guid_batch, dbname, user, password):
     return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_name,state_code,district_guid,district_name,"\
-           "school_guid,school_name,school_category,from_date,to_date,most_recent) SELECT * FROM "\
+           "school_guid,school_name,from_date,to_date,most_recent) SELECT * FROM "\
            "dblink('host={host} port={port} dbname={dbname} user={user} password={password}', " \
            "'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), "\
-           "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,"\
+           "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,"\
            "to_char(CURRENT_TIMESTAMP, ''yyyymmdd''),''99991231'',True FROM \"udl2\".\"INT_SBAC_ASMT_OUTCOME\" WHERE op = ''C'' AND guid_batch=''{guid_batch}'') as y') "\
            "AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),"\
            "district_name character varying(256),school_guid character varying(50),school_name character varying(256),"\
-           "school_category character varying(20),from_date character varying(8),to_date character varying(8),"\
+           "from_date character varying(8),to_date character varying(8),"\
            "most_recent boolean);".format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
 
@@ -360,7 +360,6 @@ def get_expected_column_mapping(target_table):
                                                                       ('district_name', 'name_district'),
                                                                       ('school_guid', 'guid_school'),
                                                                       ('school_name', 'name_school'),
-                                                                      ('school_category', 'type_school'),
                                                                       ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
                                                                       ('to_date', "'99991231'"),
                                                                       ('most_recent', 'True'),

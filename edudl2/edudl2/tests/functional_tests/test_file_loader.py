@@ -13,7 +13,7 @@ from edudl2.udl2.constants import Constants
 
 STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec_num', 'guid_asmt', 'guid_asmt_location',
                                  'name_asmt_location', 'grade_asmt', 'name_state', 'code_state', 'guid_district', 'name_district',
-                                 'guid_school', 'name_school', 'type_school', 'guid_student', 'external_student_id', 'name_student_first',
+                                 'guid_school', 'name_school', 'guid_student', 'external_student_id', 'name_student_first',
                                  'name_student_middle', 'name_student_last',
                                  'gender_student', 'email_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami',
                                  'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1',

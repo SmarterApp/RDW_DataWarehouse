@@ -73,7 +73,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         self.assertEqual(results[1][0], ErrorCode.SRC_FILE_WRONG_DELIMITER)
 
     def test_for_source_file_with_matching_columns(self):
-        test_csv_fields = ['date_assessed', 'dob_student', 'type_school',
+        test_csv_fields = ['date_assessed', 'dob_student',
                            'email_student', 'grade_asmt', 'grade_enrolled', 'guid_asmt', 'guid_asmt_location', 'guid_district', 'guid_school', 'guid_student', 'external_student_id',
                            'name_asmt_location', 'name_district', 'name_school', 'name_state', 'name_student_first',
                            'name_student_last', 'name_student_middle', 'score_asmt', 'score_asmt_max', 'score_asmt_min', 'score_claim_1', 'score_claim_1_max', 'score_claim_1_min',

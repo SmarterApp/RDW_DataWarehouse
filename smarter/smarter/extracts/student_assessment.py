@@ -47,7 +47,6 @@ def get_extract_assessment_query(params):
                                     dim_inst_hier.c.district_name.label(dim_inst_hier_label.get(Constants.DISTRICT_NAME, 'name_distrct')),
                                     dim_inst_hier.c.school_guid.label(dim_inst_hier_label.get(Constants.SCHOOL_GUID, 'guid_school')),
                                     dim_inst_hier.c.school_name.label(dim_inst_hier_label.get(Constants.SCHOOL_NAME, 'name_school')),
-                                    dim_inst_hier.c.school_category.label(dim_inst_hier_label.get('school_category', 'school_category')),
                                     dim_student.c.student_guid.label(dim_student_label.get(Constants.STUDENT_GUID, 'guid_student')),
                                     dim_student.c.first_name.label(dim_student_label.get('first_name', 'student_first_name')),
                                     dim_student.c.middle_name.label(dim_student_label.get('middle_name', 'student_middle_name')),

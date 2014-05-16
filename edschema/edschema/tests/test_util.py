@@ -27,7 +27,6 @@ class TestMetadataUtil(unittest.TestCase):
                                Column('district_name', String(256), nullable=False),
                                Column('school_guid', String(50), nullable=False, info={'natural_key': True}),
                                Column('school_name', String(256), nullable=False),
-                               Column('school_category', String(20), nullable=False),
                                MetaColumn('from_date', String(8), nullable=False),
                                MetaColumn('to_date', String(8), nullable=True),
                                MetaColumn('rec_status', String(1), nullable=False))

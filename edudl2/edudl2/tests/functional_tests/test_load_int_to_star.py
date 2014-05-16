@@ -107,7 +107,7 @@ class IntToStarFTest(UDLTestHelper):
 
         # check star schema table counts
         with get_target_connection(self.tenant_code, self.guid_batch) as conn:
-            tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
+            tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 99, 'dim_student': 94, 'fact_asmt_outcome': 99}
             for entry in tables_to_check.keys():
                 table = conn.get_table(entry)
                 query = select([count()], from_obj=table)

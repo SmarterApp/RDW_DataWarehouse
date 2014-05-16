@@ -45,8 +45,6 @@ validations = {
                     'name_district': [IsNotNull, {HasMaxLength: DEFAULT_MAX_LENGTH}, {IsUniqueWithin: 'guid_district'}],
                     'guid_school': [IsNotNull, IsGoodGUID],
                     'name_school': [IsNotNull, {HasMaxLength: DEFAULT_MAX_LENGTH}],
-                    'type_school': [IsNotNull, {IsInList: ['High School', 'Middle School', 'Elementary School']},
-                                               {IsUniqueWithin: ['guid_school', 'name_school']}],
                     'guid_student': [IsNotNull, IsGoodGUID,
                                      {IsUniqueWithin: ['name_student_first', 'name_student_middle',
                                                        'name_student_last', 'gender_student', 'email_student']}],

@@ -220,6 +220,7 @@ function run_functional_tests {
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    sed -i.back "s/host_hpz = localhost/host = $HOSTNAME/g" test.ini
     export DISPLAY=:6.0
     
     if $RUN_END_TO_END; then

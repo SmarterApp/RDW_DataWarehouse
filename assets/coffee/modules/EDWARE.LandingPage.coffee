@@ -3,10 +3,11 @@ require [
   'bootstrap'
   'mustache'
   'edwareDataProxy'
+  'edwareModal'
   'edwareHelpMenu'
   'text!templates/LandingPage.html'
   'edwareLanguageSelector'
-], ($, bootstrap, Mustache, edwareDataProxy, edwareHelpMenu, landingPageTemplate, edwareLanguageSelector) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareModal, edwareHelpMenu, landingPageTemplate, edwareLanguageSelector) ->
   
   edwareDataProxy.getDataForLandingPage().done (data) ->
     output = Mustache.to_html landingPageTemplate, data

@@ -11,6 +11,7 @@ define [
   "edwareExport"
   "edwareDataProxy"
   "edwareUtil"
+  "edwareModal"
 ], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
@@ -287,10 +288,10 @@ define [
         extract: this.sendExtractRequest
 
     show: () ->
-      $('#DownloadMenuModal').modal()
+      $('#DownloadMenuModal').edwareModal()
 
     hide: () ->
-      $('#DownloadMenuModal').modal('hide')
+      $('#DownloadMenuModal').edwareModal('hide')
 
     bindEvents: () ->
       self = this

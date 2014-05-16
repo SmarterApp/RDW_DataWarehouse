@@ -123,6 +123,7 @@ define [
     closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'
       $(this.filterTrigger).removeClass('active')
+      $('a', this.filterTrigger).focus()
       noTags = $(this.tagPanel).is(':empty')
       if noTags
         filterArrow = this.filterArrow

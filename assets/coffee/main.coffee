@@ -23,6 +23,7 @@ require {
     'Edware.IndividualStudentReport': 'modules/EDWARE.individualStudentReport',
     'Edware.StateMap': 'modules/EDWARE.stateMap',
 
+    edware: 'modules/EDWARE',
     edwareContextSecurity: 'modules/EDWARE.contextSecurity',
     edwareUtil: 'modules/EDWARE.util',
     edwareConstants: 'modules/EDWARE.constants',
@@ -57,6 +58,7 @@ require {
     edwarePrintURL: 'widgets/print/EDWARE.printURL',
     edwareRedirect: 'modules/EDWARE.stateViewRedirect',
     edwarePopover: 'widgets/popover/EDWARE.popover',
+    edwareModal: 'widgets/modal/EDWARE.modal',
 
     # widgets
     edwareYearDropdown: 'widgets/academicYear/EDWARE.yearDropdown',

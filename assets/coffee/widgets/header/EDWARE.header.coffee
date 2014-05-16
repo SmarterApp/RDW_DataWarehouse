@@ -41,7 +41,7 @@ define [
     $('#header #log_out_button').click ->
       window.open '/logout', 'iframe_logout'
     $('#header #resources').click ->
-      $('#ResourcesModal').modal 'show'
+      $('#ResourcesModal').edwareModal()
     $('#header .dropdown').mouseleave ->
       $(@).removeClass 'open'
 

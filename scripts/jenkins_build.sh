@@ -227,6 +227,7 @@ function run_functional_tests {
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     elif [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
        cd hpz
+       FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
        nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml

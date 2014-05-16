@@ -475,13 +475,15 @@ function main {
         # Restart memcached
         restart_memcached
         restart_celeryd
-        import_data_from_csv
-        if [ ! ${RUN_END_TO_END} && ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
-           setup_python33_functional_test_dependencies
-           run_python33_functional_tests
-        elif [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
-            setup_for_udl
-            run_udl_integration_tests
+        if [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
+            import_data_from_csv
+            if [ ! ${RUN_END_TO_END}  ]; then
+                setup_python33_functional_test_dependencies
+                run_python33_functional_tests
+            else
+                setup_for_udl
+                run_udl_integration_tests
+            fi
         fi
         setup_functional_test_dependencies
         run_functional_tests

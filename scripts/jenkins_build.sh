@@ -19,6 +19,8 @@ function set_vars {
     export PATH=$PATH:/opt/python3/bin
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
+    HPZ_PACKAGE="hpz"
+
     if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
         FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
     else
@@ -30,7 +32,6 @@ function set_vars {
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
-    HPZ_PACKAGE="hpz"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then

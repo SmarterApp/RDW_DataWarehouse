@@ -20,12 +20,7 @@ function set_vars {
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     HPZ_PACKAGE="hpz"
-
-    if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
-        FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
-    else
-        FUNC_DIR="edware_test/edware_test/functional_tests"
-    fi
+    FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/conf/smarter.ini"
     HPZ_INI="/opt/edware/conf/hpz.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
@@ -230,11 +225,12 @@ function run_functional_tests {
     if $RUN_END_TO_END; then
        cd e2e_tests
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
-    elif [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
+    elif [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
+       cd hpz
+       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    else
        nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
-    else
-       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     fi
 
     echo "Finish running functional tests"

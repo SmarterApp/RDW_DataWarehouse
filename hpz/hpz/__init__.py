@@ -1,5 +1,6 @@
 from pyramid.config import Configurator
 import logging
+from hpz import frs
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +11,8 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
 
-    config.add_route('registration', '/registration')
+    # include add routes from frs. Calls includeme
+    config.include(frs)
     config.scan()
 
     logger.info("HPZ Started")

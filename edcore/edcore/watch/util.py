@@ -10,6 +10,10 @@ from edcore.watch.constants import WatcherConstants as Const
 class FileUtil:
 
     @staticmethod
+    def get_file_last_modified_time(filename):
+        return os.stat(filename).st_mtime if os.path.exists(filename) else None
+
+    @staticmethod
     def get_file_stat(filename):
         return os.stat(filename).st_size if os.path.exists(filename) else None
 

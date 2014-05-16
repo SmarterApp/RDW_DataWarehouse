@@ -8,6 +8,7 @@ class WatcherConstants():
     FILE_STAT_WATCH_INTERVAL = 'file_stat_watch_interval'
     FILE_STAT_WATCH_PERIOD = 'file_stat_watch_period'
     FILE_SYSTEM_SCAN_DELAY = 'file_system_scan_delay'
+    FILE_CHECKSUM_THRESHOLD_WAIT_PERIOD = 'file_checksum_threshold_wait_period'
     BASE_DIR = 'base_dir'
     SOURCE_DIR = 'source_dir'
     DEST_DIR = 'dest_dir'

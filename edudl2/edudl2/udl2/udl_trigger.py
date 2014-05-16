@@ -21,7 +21,7 @@ def _find_udl_ready_files(file_watcher):
     file_watcher.watch_files()
     file_watcher.filter_files_for_digest_mismatch()
     file_watcher.filter_checksum_files()
-    return file_watcher.get_file_stats()
+    return file_watcher.get_file_stats().keys()
 
 
 def udl_trigger(config, loop_once=False):
@@ -33,7 +33,7 @@ def udl_trigger(config, loop_once=False):
     """
     # get the settings needed for the udl trigger alone
     config = get_config_from_ini(config=config, config_prefix='udl2_trigger.')
-    file_watcher = FileWatcher(config)
+    file_watcher = FileWatcher(config, append_logs_to='edudl2')
     logger.info('Starting UDL2 trigger loop. Looking at directory => {source_dir}'.format(
                 source_dir=config[Const.SOURCE_DIR]))
     while True:

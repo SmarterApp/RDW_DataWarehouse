@@ -29,12 +29,31 @@ class FileWatcher():
         FileWatcher.logger = logging.getLogger(append_logs_to)
 
     @classmethod
-    def valid_check_sum(cls, file):
-        checksum_file = FileUtil.get_complement_file_name(file)
-        if not os.path.exists(file) or not os.path.exists(checksum_file):
-            return False
-        file_hash = cls.hasher.get_file_hash(file)
+    def include_file_missing_checksum(cls, source_file):
+        """handle files missing checksum file
+
+        Returns true if age of file is too old than a defined threshold else False
+        """
+        file_last_modified = FileUtil.get_file_last_modified_time(source_file)
+        # check if age of file is greater than threshold to wait for checksum file
+        if int(file_last_modified and (time.time() - file_last_modified)) > \
+                int(FileWatcher.conf[Const.FILE_CHECKSUM_THRESHOLD_WAIT_PERIOD]):
+                return True
+        return False
+
+    @classmethod
+    def _verify_source_file_check_sum(cls, source_file, checksum_file):
+        file_hash = cls.hasher.get_file_hash(source_file)
         return FileUtil.file_contains_hash(checksum_file, file_hash)
+
+    @classmethod
+    def valid_check_sum(cls, source_file):
+        checksum_file = FileUtil.get_complement_file_name(source_file)
+        if not os.path.exists(source_file):
+            return False
+        if not os.path.exists(checksum_file):
+            return cls.include_file_missing_checksum(source_file)
+        return cls._verify_source_file_check_sum(source_file, checksum_file)
 
     @classmethod
     def clear_file_stats(cls):
@@ -102,7 +121,7 @@ class FileWatcher():
         source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
         for file in source_files:
             if not cls.valid_check_sum(file):
-                cls.logger.error('Removing file {file} due to invalid hash'.format(file=file))
+                cls.logger.error('Removing file {file} due to invalid/missing checksum'.format(file=file))
                 cls.remove_file_pair_from_dict(file)
 
     @classmethod

@@ -9,7 +9,6 @@ def main(global_config, **settings):
     """
     config = Configurator(settings=settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
-    #config.add_route('home', '/')
     config.scan()
 
     logger.info("HPZ Started")

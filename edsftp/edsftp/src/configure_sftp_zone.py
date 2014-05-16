@@ -33,17 +33,6 @@ def _create_sftp_arrivals_zone(sftp_conf):
         create_path(os.path.join(sftp_conf['home'], sftp_conf['base_dir'], sftp_conf['arrivals_dir']))
 
 
-def _create_sftp_arrivals_sync_zone(sftp_conf):
-    """
-    create sftp arrivals sync zone. This is the zone from which remote udl2 machine syncs completely uploaded files
-    :param sftp_conf
-    :return: None
-    """
-    arrivals_sync_dir = os.path.join(sftp_conf['home'], sftp_conf['base_dir'], sftp_conf['arrivals_sync_dir'])
-    if os.path.exists(os.path.join(sftp_conf['home'], sftp_conf['base_dir'])):
-        create_path(arrivals_sync_dir)
-
-
 def _create_sftp_departures_zone(sftp_conf):
     """
     create sftp departures zone
@@ -67,7 +56,6 @@ def _cleanup_sftp_zone(sftp_zone_path):
 def initialize(sftp_conf):
     _create_sftp_base_dir(sftp_conf)
     _create_sftp_arrivals_zone(sftp_conf)
-    _create_sftp_arrivals_sync_zone(sftp_conf)
     _create_sftp_departures_zone(sftp_conf)
     print('SFTP zone initialized successfully')
 

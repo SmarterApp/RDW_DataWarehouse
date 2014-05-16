@@ -10,7 +10,8 @@ requires = [
     'pyramid == 1.4',
     'pyramid_debugtoolbar==1.0.8',
     'waitress==0.8.7',
-    'config']
+    'config',
+    'SQLAlchemy == 0.8.3']
 
 setup(name='hpz',
       version='0.1',

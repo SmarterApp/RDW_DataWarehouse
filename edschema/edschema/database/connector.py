@@ -148,7 +148,7 @@ class DBConnection(ConnectionBase):
             if tries < 1:
                 time.sleep(10)
                 if err.connection_invalidated:
-                    logger.error("Conection was invalidated.  Will reconnect.")
+                    logger.error("Connection was invalidated.  Will reconnect.")
                     self.close_connection()
                     self.__connection = self.get_engine().connect()
                 # Retry query

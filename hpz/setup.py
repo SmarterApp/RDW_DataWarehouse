@@ -9,7 +9,8 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'pyramid == 1.4',
     'pyramid_debugtoolbar==1.0.8',
-    'waitress==0.8.7']
+    'waitress==0.8.7',
+    'config']
 
 setup(name='hpz',
       version='0.1',

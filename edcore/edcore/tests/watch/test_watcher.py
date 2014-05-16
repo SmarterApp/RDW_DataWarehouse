@@ -30,7 +30,8 @@ class TestWatcher(unittest.TestCase):
             'source_dir': self.source_dir,
             'file_patterns_to_watch': self.pattern,
             'file_stat_watch_interval': 1,
-            'file_stat_watch_period': 3,
+            'file_stat_watch_period': 6,
+            'file_checksum_threshold_wait_period': 4,
             'file_system_scan_delay': 2
         }
         self.test_sync = FileWatcher(self.conf)
@@ -60,7 +61,7 @@ class TestWatcher(unittest.TestCase):
         self.test_file_1.flush()
         self.assertEqual(self.test_sync.get_updated_file_stats(), {self.test_file_1.name: 5, self.test_file_2.name: 0})
 
-    def test_watch_files(self):
+    def test_watch_files_1(self):
         self.test_sync.find_all_files()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
         stop = self.test_sync.watch_and_filter_files_by_stats_changes()
@@ -71,7 +72,7 @@ class TestWatcher(unittest.TestCase):
         stop.set()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
 
-    def test_watch_files(self):
+    def test_watch_files_2(self):
         self.test_sync.find_all_files()
         self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
         stop = self.test_sync.watch_and_filter_files_by_stats_changes()
@@ -85,6 +86,16 @@ class TestWatcher(unittest.TestCase):
     def test_valid_check_sum_with_no_checksum_file(self):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         self.assertFalse(self.test_sync.valid_check_sum(test_file_path))
+
+    def test_valid_check_sum_with_no_checksum_file_for_shorter_time(self):
+        test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
+        time.sleep(2)
+        self.assertFalse(self.test_sync.valid_check_sum(test_file_path))
+
+    def test_valid_check_sum_with_no_checksum_file_for_longer_time(self):
+        test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
+        time.sleep(5)
+        self.assertTrue(self.test_sync.valid_check_sum(test_file_path))
 
     def test_valid_check_sum_with_valid_checksum_file(self):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)

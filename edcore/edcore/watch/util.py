@@ -36,10 +36,12 @@ class FileUtil:
     @staticmethod
     def get_file_tenant_and_user_name(file, base_path):
         file_rel_path = os.path.relpath(file, base_path)
-        file_path_splits = file_rel_path.split(os.sep)
-        if len(file_path_splits) > 2:
-            # return tenant and tenant username
-            return file_path_splits[0], file_path_splits[1]
+        if os.path.join(base_path, file_rel_path) == file:
+            file_dir_path = os.path.split(file_rel_path)[0]
+            file_path_splits = file_dir_path.split(os.sep)
+            if len(file_path_splits) > 2:
+                # return tenant and tenant username
+                return file_path_splits[0], file_path_splits[1]
         return None, None
 
 

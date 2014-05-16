@@ -3,6 +3,7 @@ __author__ = 'sravi'
 import unittest
 import shutil
 import tempfile
+import time
 from edcore.watch.util import FileUtil
 from edcore.tests.watch.common_test_utils import get_file_hash, write_something_to_a_blank_file, create_checksum_file
 
@@ -32,6 +33,9 @@ class TestUtil(unittest.TestCase):
         test_file = tempfile.NamedTemporaryFile(dir=self.tmp_dir_1, delete=True)
         self.assertEqual(FileUtil.get_file_stat(test_file.name), 0)
 
+    def test_get_file_stat_for_invalid_file(self):
+        self.assertIsNone(FileUtil.get_file_stat('/tmp/xyz.gpg'))
+
     def test_get_complement_file_name(self):
         self.assertEqual(FileUtil.get_complement_file_name(self.test_file_1), self.test_file_1 + ".done")
         self.assertEqual(FileUtil.get_complement_file_name(self.test_file_1 + ".done"), self.test_file_1)
@@ -47,3 +51,29 @@ class TestUtil(unittest.TestCase):
         test_file.write(b"test\n")
         test_file.flush()
         self.assertEqual(FileUtil.get_file_stat(test_file.name), 5)
+
+    def test_get_file_tenant_and_user_name(self):
+        self.assertEqual(FileUtil.get_file_tenant_and_user_name(
+            '/opt/edware/home/landing/arrivals/ca/ca_user1/file_drop/xyz.gz.gpg',
+            '/opt/edware/home/landing/arrivals'), ('ca', 'ca_user1'))
+        self.assertEqual(FileUtil.get_file_tenant_and_user_name(
+            '/opt/edware/home/landing/arrivals/ca/ca_user1/file_drop/xyz.gz.gpg',
+            '/opt/edware/home/landing/arrivals/ca'), (None, None))
+        self.assertEqual(FileUtil.get_file_tenant_and_user_name(
+            '/opt/edware/home/landing/arrivals/ca/ca_user1/xyz.gz.gpg',
+            '/opt/edware/home/landing/arrivals'), (None, None))
+        self.assertEqual(FileUtil.get_file_tenant_and_user_name(
+            '/opt/edware/home/landing/arrivals/ca/ca_user1/file_drop/xyz.gz.gpg',
+            '/tmp'), (None, None))
+        self.assertEqual(FileUtil.get_file_tenant_and_user_name(
+            '/opt/edware/home/landing/arrivals/ca/xyz.gz.gpg',
+            '/opt/edware/home/landing/arrivals'), (None, None))
+
+    def test_get_file_last_modified_time_for_invalid_file(self):
+        self.assertIsNone(FileUtil.get_file_last_modified_time('/tmp/xyz.gpg'))
+
+    def test_get_file_last_modified_time_for_valid_file(self):
+        test_file = tempfile.NamedTemporaryFile(dir=self.tmp_dir_1, delete=True)
+        file_last_modified_time = FileUtil.get_file_last_modified_time(test_file.name)
+        time.sleep(2)
+        self.assertTrue(int(time.time() - file_last_modified_time) > 1)

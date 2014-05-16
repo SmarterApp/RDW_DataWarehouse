@@ -19,12 +19,18 @@ function set_vars {
     export PATH=$PATH:/opt/python3/bin
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
-    FUNC_DIR="edware_test/edware_test/functional_tests"
+    if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
+        FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
+    else
+        FUNC_DIR="edware_test/edware_test/functional_tests"
+    fi
     SMARTER_INI="/opt/edware/conf/smarter.ini"
+    HPZ_INI="/opt/edware/conf/hpz.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
+    HPZ_PACKAGE="hpz"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -223,9 +229,11 @@ function run_functional_tests {
     if $RUN_END_TO_END; then
        cd e2e_tests
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
-    else
-       nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    elif [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
+       nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
+    else
+       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     fi
 
     echo "Finish running functional tests"
@@ -239,13 +247,20 @@ function create_sym_link_for_apache {
         rm -rf ${APACHE_DIR}
     fi
     mkdir -p ${APACHE_DIR}
+
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
-    /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
-    /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-    compile_assets true
+    if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
+        /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
+        /bin/ln -sf ${WORKSPACE}/hpz/hpz.wsgi ${APACHE_DIR}/pyramid_conf
+    else
+        /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
+        /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
+        /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
+        compile_assets true
+    fi
+
 
     echo "Creating sym links for celery purposes"
    
@@ -364,6 +379,9 @@ function build_egg {
 
 function generate_ini {
 	cd "$WORKSPACE/config"
+	if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
+	   python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
+	fi
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
 	else
@@ -457,10 +475,10 @@ function main {
         restart_memcached
         restart_celeryd
         import_data_from_csv
-        if (! $RUN_END_TO_END;) then
+        if [ ! ${RUN_END_TO_END} && ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
            setup_python33_functional_test_dependencies
            run_python33_functional_tests
-        else
+        elif [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
             setup_for_udl
             run_udl_integration_tests
         fi

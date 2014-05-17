@@ -19,18 +19,14 @@ function set_vars {
     export PATH=$PATH:/opt/python3/bin
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
-    if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
-        FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
-    else
-        FUNC_DIR="edware_test/edware_test/functional_tests"
-    fi
+    HPZ_PACKAGE="hpz"
+    FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/conf/smarter.ini"
     HPZ_INI="/opt/edware/conf/hpz.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
-    HPZ_PACKAGE="hpz"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -224,16 +220,20 @@ function run_functional_tests {
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    sed -i.back "s/host_hpz = localhost/host_hpz = $HOSTNAME/g" test.ini
+    sed -i.back "s/port_hpz = 6544/port_hpz = 80/g" test.ini
     export DISPLAY=:6.0
     
     if $RUN_END_TO_END; then
        cd e2e_tests
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
-    elif [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
+    elif [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
+       cd hpz
+       FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
+       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    else
        nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
-    else
-       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     fi
 
     echo "Finish running functional tests"
@@ -474,13 +474,15 @@ function main {
         # Restart memcached
         restart_memcached
         restart_celeryd
-        import_data_from_csv
-        if [ ! ${RUN_END_TO_END} && ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
-           setup_python33_functional_test_dependencies
-           run_python33_functional_tests
-        elif [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
-            setup_for_udl
-            run_udl_integration_tests
+        if [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
+            import_data_from_csv
+            if [ ! ${RUN_END_TO_END}  ]; then
+                setup_python33_functional_test_dependencies
+                run_python33_functional_tests
+            else
+                setup_for_udl
+                run_udl_integration_tests
+            fi
         fi
         setup_functional_test_dependencies
         run_functional_tests

@@ -1,0 +1,72 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+common:
+  '[app:main]':
+    use: egg:hpz
+    disable_stack_trace: false
+    hpz.PATH: /usr/local/bin
+    batch.user.session.timeout: 300000
+    pyramid:
+      reload_templates: true
+      debug_all: false
+      debug_authorization: false
+      debug_notfound: false
+      debug_routematch: false
+      default_locale_name: en
+
+  '[server:main]':
+    use: 'egg:waitress#main'
+    host: 0.0.0.0
+    port: 6544
+
+  ###
+  # logging configuration
+  # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+  ###
+
+  '[loggers]':
+    keys: root, hpz
+  '[handlers]':
+    keys: console, filelog
+
+  '[formatters]':
+    keys: generic
+
+  '[logger_root]':
+    level: INFO
+    handlers: filelog, console
+
+  '[logger_hpz]':
+    level: INFO
+    handlers: filelog
+    qualname: hpz
+
+  '[handler_console]':
+    class: StreamHandler
+    args: (sys.stderr,)
+    level: NOTSET
+    formatter: generic
+
+  '[handler_filelog]':
+    class: logging.handlers.TimedRotatingFileHandler
+    args: '(''/tmp/hpz.log'',''midnight'')'  # (path, when)
+    level: INFO
+    formatter: generic
+
+  '[formatter_generic]':
+    format: '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s'
+
+
+# End logging configuration
+
+
+development:
+  '[app:main]':
+    mode: dev
+
+jenkins_dev:
+    '[app:main]':
+      mode: test

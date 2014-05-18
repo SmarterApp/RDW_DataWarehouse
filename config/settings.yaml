@@ -452,6 +452,10 @@ qa:
     level: WARN
     handlers: syslog
     qualname: edsftp
+  '[logger_edudl2]':
+    level: WARN
+    handlers: syslog
+    qualname: edudl2
 
 jenkins_qa:
   '[app:main]':

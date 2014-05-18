@@ -1,10 +1,14 @@
 __author__ = 'sravi'
 
+import sys
 import os
 import threading
 import fnmatch
 import subprocess
 from edcore.watch.constants import WatcherConstants as Const
+from edcore.exceptions import RemoteCopyError, NotForWindowsException
+
+mswindows = (sys.platform == "win32")
 
 
 class FileUtil:
@@ -15,7 +19,7 @@ class FileUtil:
 
     @staticmethod
     def get_file_stat(filename):
-        return os.stat(filename).st_size if os.path.exists(filename) else None
+        return (os.stat(filename).st_size, os.stat(filename).st_mtime) if os.path.exists(filename) else None
 
     @staticmethod
     def file_contains_hash(file, file_hash):
@@ -50,6 +54,9 @@ class SendFileUtil:
     @staticmethod
     def remote_transfer_file(source_file, hostname, remote_base_dir, file_tenantname,
                              file_username, sftp_username, private_key_file, timeout=1800):
+        if mswindows:
+            raise NotForWindowsException('sftp remote copy cannot be served for Windows users')
+
         sftp_command_line = ['sftp', '-b', '-']
         if private_key_file is not None:
             sftp_command_line += ['-oIdentityFile=' + private_key_file]
@@ -68,7 +75,9 @@ class SendFileUtil:
         proc.stdin.close()
         proc.wait(timeout=timeout)
         status = proc.returncode
-        return status, proc
+        if status != 0:
+            raise RemoteCopyError(proc.stderr.read().decode())
+        return status
 
 
 def set_interval(interval):

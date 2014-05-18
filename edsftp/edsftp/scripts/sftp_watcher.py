@@ -18,7 +18,7 @@ def get_watcher_conf(config):
     :param config: sftp config
     """
     sftp_conf = config
-    sftp_conf.update({WatcherConst.SOURCE_DIR: config[SFTPConst.ARRIVALS_DIR]})
+    sftp_conf.update({WatcherConst.SOURCE_DIR: config.get(SFTPConst.ARRIVALS_DIR)})
     return sftp_conf
 
 
@@ -29,12 +29,12 @@ def get_mover_conf(config):
     """
     remote_conf = {}
     prefix = 'remote.'
-    remote_conf.update({MoverConst.LANDING_ZONE_HOSTNAME: config[prefix + MoverConst.LANDING_ZONE_HOSTNAME],
-                        MoverConst.SFTP_USER: config[prefix + MoverConst.SFTP_USER],
-                        MoverConst.PRIVATE_KEY_FILE: config[prefix + MoverConst.PRIVATE_KEY_FILE],
-                        MoverConst.ARRIVALS_PATH: config[prefix + MoverConst.ARRIVALS_PATH],
-                        WatcherConst.BASE_DIR: config[WatcherConst.BASE_DIR],
-                        WatcherConst.SOURCE_DIR: config[SFTPConst.ARRIVALS_DIR]})
+    remote_conf.update({MoverConst.LANDING_ZONE_HOSTNAME: config.get(prefix + MoverConst.LANDING_ZONE_HOSTNAME),
+                        MoverConst.SFTP_USER: config.get(prefix + MoverConst.SFTP_USER),
+                        MoverConst.PRIVATE_KEY_FILE: config.get(prefix + MoverConst.PRIVATE_KEY_FILE),
+                        MoverConst.ARRIVALS_PATH: config.get(prefix + MoverConst.ARRIVALS_PATH),
+                        WatcherConst.BASE_DIR: config.get(WatcherConst.BASE_DIR),
+                        WatcherConst.SOURCE_DIR: config.get(SFTPConst.ARRIVALS_DIR)})
     return remote_conf
 
 
@@ -61,19 +61,19 @@ def sftp_file_sync(config):
     file_watcher = FileWatcher(get_watcher_conf(config), append_logs_to=DEFAULT_LOGGER_NAME)
     file_mover = FileMover(remote_conf, append_logs_to=DEFAULT_LOGGER_NAME)
     logger.info('Starting SFTP file sync loop {source_dir} => {dest_host}:{dest_dir}'.format(
-        source_dir=config[SFTPConst.ARRIVALS_DIR], dest_host=remote_conf[MoverConst.LANDING_ZONE_HOSTNAME],
-        dest_dir=remote_conf[MoverConst.ARRIVALS_PATH]))
+        source_dir=config.get(SFTPConst.ARRIVALS_DIR), dest_host=remote_conf.get(MoverConst.LANDING_ZONE_HOSTNAME),
+        dest_dir=remote_conf.get(MoverConst.ARRIVALS_PATH)))
     while True:
         try:
-            logger.debug('Searching for new files in {source_dir}'.format(source_dir=config[SFTPConst.ARRIVALS_DIR]))
+            logger.debug('Searching for new files in {source_dir}'.format(source_dir=config.get(SFTPConst.ARRIVALS_DIR)))
             files_moved = _watch_and_move_files(file_watcher, file_mover)
             logger.debug('Moved {count} files to {destination}'.format(count=str(files_moved),
-                                                                       destination=remote_conf[MoverConst.LANDING_ZONE_HOSTNAME]))
+                                                                       destination=remote_conf.get(MoverConst.LANDING_ZONE_HOSTNAME)))
         except KeyboardInterrupt:
             logger.warn('SFTP watcher process terminated by a user')
             os._exit(0)
         except Exception as e:
             logger.error(e)
         finally:
-            time.sleep(float(FileWatcher.conf[WatcherConst.FILE_SYSTEM_SCAN_DELAY]))
+            time.sleep(float(file_watcher.conf.get(WatcherConst.FILE_SYSTEM_SCAN_DELAY)))
     logger.warn('Exiting sftp watcher process')

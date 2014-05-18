@@ -26,12 +26,12 @@ class TestUtil(unittest.TestCase):
         shutil.rmtree(self.tmp_dir_1, ignore_errors=True)
 
     def test_get_file_stat_for_non_empty_file(self):
-        file_size = FileUtil.get_file_stat(self.test_file_1)
+        file_size = FileUtil.get_file_stat(self.test_file_1)[0]
         self.assertEqual(file_size, 5)
 
     def test_get_file_stat_for_empty_file(self):
         test_file = tempfile.NamedTemporaryFile(dir=self.tmp_dir_1, delete=True)
-        self.assertEqual(FileUtil.get_file_stat(test_file.name), 0)
+        self.assertEqual(FileUtil.get_file_stat(test_file.name)[0], 0)
 
     def test_get_file_stat_for_invalid_file(self):
         self.assertIsNone(FileUtil.get_file_stat('/tmp/xyz.gpg'))
@@ -47,10 +47,10 @@ class TestUtil(unittest.TestCase):
 
     def test_get_updated_stats(self):
         test_file = tempfile.NamedTemporaryFile(dir=self.tmp_dir_1, delete=True)
-        self.assertEqual(FileUtil.get_file_stat(test_file.name), 0)
+        self.assertEqual(FileUtil.get_file_stat(test_file.name)[0], 0)
         test_file.write(b"test\n")
         test_file.flush()
-        self.assertEqual(FileUtil.get_file_stat(test_file.name), 5)
+        self.assertEqual(FileUtil.get_file_stat(test_file.name)[0], 5)
 
     def test_get_file_tenant_and_user_name(self):
         self.assertEqual(FileUtil.get_file_tenant_and_user_name(

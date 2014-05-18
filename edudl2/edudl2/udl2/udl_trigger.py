@@ -35,10 +35,10 @@ def udl_trigger(config, loop_once=False):
     config = get_config_from_ini(config=config, config_prefix='udl2_trigger.')
     file_watcher = FileWatcher(config, append_logs_to='edudl2')
     logger.info('Starting UDL2 trigger loop. Looking at directory => {source_dir}'.format(
-                source_dir=config[Const.SOURCE_DIR]))
+                source_dir=config.get(Const.SOURCE_DIR)))
     while True:
         try:
-            logger.debug('Searching for new files in {source_dir}'.format(source_dir=config[Const.SOURCE_DIR]))
+            logger.debug('Searching for new files in {source_dir}'.format(source_dir=config.get(Const.SOURCE_DIR)))
             udl_ready_files = _find_udl_ready_files(file_watcher)
             logger.debug('Found {count} files ready to process'.format(count=str(len(udl_ready_files))))
             for file in udl_ready_files:
@@ -52,7 +52,7 @@ def udl_trigger(config, loop_once=False):
         except Exception as e:
             logger.error(e)
         finally:
-            time.sleep(float(FileWatcher.conf[Const.FILE_SYSTEM_SCAN_DELAY]))
+            time.sleep(float(file_watcher.conf.get(Const.FILE_SYSTEM_SCAN_DELAY)))
     logger.warn('Exiting udl trigger process')
 
 

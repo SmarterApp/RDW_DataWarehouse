@@ -43,45 +43,56 @@ class TestWatcher(unittest.TestCase):
         self.test_file_2 = tempfile.NamedTemporaryFile(delete=False, suffix='*.gpg',
                                                        prefix='test_file_2', dir=self.tmp_dir_2)
 
+    def _without_timestamps(self, file_stats):
+        dict_without_timestamps = {}
+        for file in file_stats.keys():
+            dict_without_timestamps[file] = file_stats[file][0]
+        return dict_without_timestamps
+
     def tearDown(self):
         shutil.rmtree(self.base_dir, ignore_errors=True)
 
     def test_clear_file_stats(self):
         self.test_sync.clear_file_stats()
-        self.assertEqual(self.test_sync.get_file_stats(), {})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {})
 
     def test_find_all_files(self):
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0})
 
     def test_get_updated_file_stats(self):
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0})
         self.test_file_1.write(b"test\n")
         self.test_file_1.flush()
-        self.assertEqual(self.test_sync.get_updated_file_stats(), {self.test_file_1.name: 5, self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_updated_file_stats()), {
+            self.test_file_1.name: 5, self.test_file_2.name: 0})
 
     def test_watch_files_1(self):
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0})
         stop = self.test_sync.watch_and_filter_files_by_stats_changes()
         time.sleep(2)
         self.test_file_1.write(b"test\n")
         self.test_file_1.flush()
         time.sleep(self.conf['file_stat_watch_period'])
         stop.set()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {self.test_file_2.name: 0})
 
     def test_watch_files_2(self):
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0})
         stop = self.test_sync.watch_and_filter_files_by_stats_changes()
         time.sleep(2)
         self.test_file_1.write(b"test\n")
         self.test_file_1.flush()
         time.sleep(self.conf['file_stat_watch_period'])
         stop.set()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {self.test_file_2.name: 0})
 
     def test_valid_check_sum_with_no_checksum_file(self):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
@@ -111,15 +122,16 @@ class TestWatcher(unittest.TestCase):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         checksum_file_path = create_checksum_file(test_file_path)
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
-                                                           test_file_path: 5, checksum_file_path: 37})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0,
+            test_file_path: 5, checksum_file_path: 37})
         self.test_sync.remove_file_from_dict(self.test_file_1.name)
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0, test_file_path: 5,
-                                                           checksum_file_path: 37})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_2.name: 0, test_file_path: 5, checksum_file_path: 37})
         self.test_sync.remove_file_pair_from_dict(test_file_path)
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_2.name: 0})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {self.test_file_2.name: 0})
         self.test_sync.remove_file_pair_from_dict(self.test_file_2.name)
-        self.assertEqual(self.test_sync.get_file_stats(), {})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {})
 
     def test_filter_files_for_digest_mismatch_1(self):
         test_file_3_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
@@ -127,22 +139,26 @@ class TestWatcher(unittest.TestCase):
         test_file_4_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         checksum_file_4_path = create_checksum_file(test_file_4_path)
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
-                                                           test_file_3_path: 5, checksum_file_3_path: 37,
-                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()),
+                         {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                          test_file_3_path: 5, checksum_file_3_path: 37,
+                          test_file_4_path: 5, checksum_file_4_path: 37})
         self.test_sync.filter_files_for_digest_mismatch()
-        self.assertEqual(self.test_sync.get_file_stats(), {test_file_3_path: 5, checksum_file_3_path: 37,
-                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()),
+                         {test_file_3_path: 5, checksum_file_3_path: 37,
+                          test_file_4_path: 5, checksum_file_4_path: 37})
         test_file_5_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         checksum_file_5_path = create_checksum_file(test_file_5_path, valid_check_sum=False)
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
-                                                           test_file_3_path: 5, checksum_file_3_path: 37,
-                                                           test_file_4_path: 5, checksum_file_4_path: 37,
-                                                           test_file_5_path: 5, checksum_file_5_path: 26})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0,
+            test_file_3_path: 5, checksum_file_3_path: 37,
+            test_file_4_path: 5, checksum_file_4_path: 37,
+            test_file_5_path: 5, checksum_file_5_path: 26})
         self.test_sync.filter_files_for_digest_mismatch()
-        self.assertEqual(self.test_sync.get_file_stats(), {test_file_3_path: 5, checksum_file_3_path: 37,
-                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            test_file_3_path: 5, checksum_file_3_path: 37,
+            test_file_4_path: 5, checksum_file_4_path: 37})
 
     def test_filter_files_for_digest_mismatch_2(self):
         test_file_3_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
@@ -150,9 +166,11 @@ class TestWatcher(unittest.TestCase):
         test_file_4_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         checksum_file_4_path = create_checksum_file(test_file_4_path)
         self.test_sync.find_all_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
-                                                           test_file_3_path: 5, checksum_file_3_path: 37,
-                                                           test_file_4_path: 5, checksum_file_4_path: 37})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0,
+            test_file_3_path: 5, checksum_file_3_path: 37,
+            test_file_4_path: 5, checksum_file_4_path: 37})
         self.test_sync.filter_checksum_files()
-        self.assertEqual(self.test_sync.get_file_stats(), {self.test_file_1.name: 0, self.test_file_2.name: 0,
-                                                           test_file_3_path: 5, test_file_4_path: 5})
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()), {
+            self.test_file_1.name: 0, self.test_file_2.name: 0,
+            test_file_3_path: 5, test_file_4_path: 5})

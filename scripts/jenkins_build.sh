@@ -375,14 +375,12 @@ function build_egg {
 
 function generate_ini {
 	cd "$WORKSPACE/config"
-	if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
-	   python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
-	   python generate_ini.py -e jenkins_dev -i settings.yaml
-	fi
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
+	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini
 	else
-		python generate_ini.py -e jenkins_dev -i settings.yaml
+	    python generate_ini.py -e jenkins_dev -i settings.yaml
+	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
 	fi
 }
 

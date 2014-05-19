@@ -130,9 +130,9 @@ def format_assessments(results, subjects_map):
 
         student = asmtList.get(studentGuid, {})
         student['student_guid'] = studentGuid
-        student['student_first_name'] = result['student_first_name']
-        student['student_middle_name'] = result['student_middle_name']
-        student['student_last_name'] = result['student_last_name']
+        student['student_first_name'] = result['first_name']
+        student['student_middle_name'] = result['middle_name']
+        student['student_last_name'] = result['last_name']
         student['enrollment_grade'] = result['enrollment_grade']
         student['state_code'] = result['state_code']
         student[Constants.ROWID] = result['student_guid']
@@ -167,9 +167,9 @@ def get_list_of_students(params):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
-                                    dim_student.c.first_name.label('student_first_name'),
-                                    dim_student.c.middle_name.label('student_middle_name'),
-                                    dim_student.c.last_name.label('student_last_name'),
+                                    dim_student.c.first_name.label('first_name'),
+                                    dim_student.c.middle_name.label('middle_name'),
+                                    dim_student.c.last_name.label('last_name'),
                                     fact_asmt_outcome_vw.c.state_code.label('state_code'),
                                     fact_asmt_outcome_vw.c.enrl_grade.label('enrollment_grade'),
                                     fact_asmt_outcome_vw.c.asmt_grade.label('asmt_grade'),

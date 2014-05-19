@@ -33,9 +33,9 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
     query = select_with_context([fact_asmt_outcome_vw.c.student_guid,
-                                dim_student.c.first_name.label('student_first_name'),
-                                dim_student.c.middle_name.label('student_middle_name'),
-                                dim_student.c.last_name.label('student_last_name'),
+                                dim_student.c.first_name.label('first_name'),
+                                dim_student.c.middle_name.label('middle_name'),
+                                dim_student.c.last_name.label('last_name'),
                                 fact_asmt_outcome_vw.c.enrl_grade.label('grade'),
                                 fact_asmt_outcome_vw.c.district_guid.label('district_guid'),
                                 fact_asmt_outcome_vw.c.school_guid.label('school_guid'),
@@ -150,7 +150,7 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
     new_results = []
     for result in results:
 
-        result['student_full_name'] = format_full_name(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
+        result['student_full_name'] = format_full_name(result['first_name'], result['middle_name'], result['last_name'])
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
 
@@ -219,7 +219,7 @@ def get_student_report(params):
         district_guid = first_student[Constants.DISTRICT_GUID]
         school_guid = first_student[Constants.SCHOOL_GUID]
         asmt_grade = first_student['asmt_grade']
-        student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
+        student_name = format_full_name(first_student['first_name'], first_student['middle_name'], first_student['last_name'])
         context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
         student_report_asmt_administration = get_student_report_asmt_administration(state_code, student_guid)
 

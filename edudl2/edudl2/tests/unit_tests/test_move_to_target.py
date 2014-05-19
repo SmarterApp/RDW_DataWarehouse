@@ -266,7 +266,7 @@ def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, gui
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):
     return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_name,state_code,district_guid,district_name,'\
-           'school_guid,school_name,student_guid,external_student_ssid,student_first_name,student_middle_name,student_last_name,'\
+           'school_guid,school_name,student_guid,external_student_ssid,first_name,middle_name,last_name,'\
            'sex,birthdate,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\

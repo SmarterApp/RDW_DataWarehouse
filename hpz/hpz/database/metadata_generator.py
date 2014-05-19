@@ -13,6 +13,7 @@ DEBUG = 0
 VERBOSE = False
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(description='Create New Schema for HPZ')
     parser.add_argument("-s", "--schema", help="set schema name.  required")
     parser.add_argument("-m", "--metadata", help="hpz")
@@ -31,6 +32,7 @@ if __name__ == "__main__":
     __user = args.user
     __passwd = args.passwd
     __action = args.action
+    __URL = DBDRIVER + "://" + __user + ":" + __passwd + "@" + __host + "/" + __database
 
     if __metadata is None:
         print('Please specify --metadata option')
@@ -38,10 +40,11 @@ if __name__ == "__main__":
     else:
         if __metadata != 'hpz':
             print('Please specify hpz for -m or --metadata')
+
     if __schema is None:
         print("Please specify --schema option")
         exit(-1)
-    __URL = DBDRIVER + "://" + __user + ":" + __passwd + "@" + __host + "/" + __database
+
     print("DB Driver:" + DBDRIVER)
     print("     User:" + __user)
     print("  Password:" + __passwd)
@@ -50,16 +53,17 @@ if __name__ == "__main__":
     print("    Schema:" + __schema)
     print("       URL:" + __URL)
     print("####################")
+
     engine = create_engine(__URL, echo=True)
-    connection = engine.connect()
 
-    if __action == 'setup':
-        connection.execute(CreateSchema(__schema))
-        metadata = generate_metadata(schema_name=__schema, bind=engine)
-        metadata.create_all(engine)
-    elif __action == 'teardown':
-        metadata = generate_metadata(schema_name=__schema, bind=engine)
-        metadata.drop_all(engine)
-        connection.execute(DropSchema(__schema, cascade=True))
+    with engine.connect() as connection:
 
-    connection.close()
+        if __action == 'setup':
+            connection.execute(CreateSchema(__schema))
+            metadata = generate_metadata(schema_name=__schema, bind=engine)
+            metadata.create_all(engine)
+
+        elif __action == 'teardown':
+            metadata = generate_metadata(schema_name=__schema, bind=engine)
+            metadata.drop_all(engine)
+            connection.execute(DropSchema(__schema, cascade=True))

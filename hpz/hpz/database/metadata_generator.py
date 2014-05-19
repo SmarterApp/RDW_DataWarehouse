@@ -61,3 +61,5 @@ if __name__ == "__main__":
         metadata = generate_metadata(schema_name=__schema, bind=engine)
         metadata.drop_all(engine)
         connection.execute(DropSchema(__schema, cascade=True))
+
+    connection.close()

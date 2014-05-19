@@ -40,7 +40,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
     # Two-letter state - some countries have 3 or more, but two will do for US
     instit_hier = Table('dim_inst_hier', metadata,
                         Column('inst_hier_rec_id', BigInteger, primary_key=True),
-                        MetaColumn('batch_guid', String(50), nullable=True),
                         Column('state_name', String(32), nullable=False),
                         Column('state_code', String(2), nullable=False, info={'natural_key': True}),
                         Column('district_guid', String(50), nullable=False, info={'natural_key': True}),
@@ -50,6 +49,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                         MetaColumn('from_date', String(8), nullable=False),
                         MetaColumn('to_date', String(8), nullable=True),
                         MetaColumn('rec_status', String(1), nullable=False),
+                        MetaColumn('batch_guid', String(50), nullable=True),
                         )
 
     Index('dim_inst_hier_idx', instit_hier.c.inst_hier_rec_id, unique=True)
@@ -58,7 +58,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
     # NB! Figure out uniques in dim_student
     students = Table('dim_student', metadata,
                      Column('student_rec_id', BigInteger, primary_key=True),
-                     MetaColumn('batch_guid', String(50), nullable=True),
                      Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
                      # Column('external_student_id', String(40), nullable=True),  # TODO: Add this field
                      Column('first_name', String(256), nullable=False),
@@ -74,6 +73,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      MetaColumn('from_date', String(8), nullable=False),
                      MetaColumn('to_date', String(8), nullable=True),
                      MetaColumn('rec_status', String(1), nullable=False),
+                     MetaColumn('batch_guid', String(50), nullable=True),
                      )
 
     Index('dim_student_pk', students.c.student_rec_id, unique=True)
@@ -81,7 +81,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     student_demographics = Table('dim_student_demographics', metadata,
                                  Column('student_demographic_rec_id', BigInteger, primary_key=True),
-                                 MetaColumn('batch_guid', String(50), nullable=True),
                                  Column('student_guid', String(50), nullable=False, info={'natural_key': True}),
                                  Column('dmg_eth_hsp', Boolean, nullable=True),
                                  Column('dmg_eth_ami', Boolean, nullable=True),
@@ -96,14 +95,14 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('dmg_eth_derived', SmallInteger, nullable=True),
                                  MetaColumn('from_date', String(8), nullable=False),
                                  MetaColumn('to_date', String(8), nullable=True),
-                                 MetaColumn('rec_status', String(2), nullable=False)
+                                 MetaColumn('rec_status', String(2), nullable=False),
+                                 MetaColumn('batch_guid', String(50), nullable=True),
                                  )
 
     Index('dim_student_demographics_idx', student_demographics.c.student_guid, unique=False)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
-                       MetaColumn('batch_guid', String(50), nullable=True),
                        Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
                        Column('asmt_type', String(32), nullable=False),
                        Column('asmt_period', String(32), nullable=False),
@@ -144,6 +143,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        MetaColumn('to_date', String(8), nullable=True),
                        MetaColumn('effective_date', String(8), nullable=True),
                        MetaColumn('rec_status', String(1), nullable=False),
+                       MetaColumn('batch_guid', String(50), nullable=True),
                        )
 
     Index('dim_asmt_rec_idx', assessment.c.asmt_rec_id, unique=True)
@@ -159,7 +159,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     assessment_outcome_vw = Table('fact_asmt_outcome_vw', metadata,
                                   Column('asmt_outcome_vw_rec_id', BigInteger, primary_key=True),
-                                  MetaColumn('batch_guid', String(50), nullable=True),
                                   Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                   Column('asmt_guid', String(50), nullable=False, info={'natural_key': True}),
                                   Column('student_rec_id', BigInteger, ForeignKey(students.c.student_rec_id), nullable=False),
@@ -197,9 +196,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                                  MetaColumn('rec_status', String(1), nullable=False),
-                                  MetaColumn('from_date', String(8), nullable=False),
-                                  MetaColumn('to_date', String(8), nullable=True),
                                   # Add 4 assessment columns
                                   Column('asmt_type', String(32), nullable=False),
                                   Column('asmt_year', SmallInteger, nullable=False),
@@ -231,6 +227,10 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('acc_scribe_nonembed', SmallInteger, nullable=False),
                                   Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
+                                  MetaColumn('rec_status', String(1), nullable=False),
+                                  MetaColumn('from_date', String(8), nullable=False),
+                                  MetaColumn('to_date', String(8), nullable=True),
+                                  MetaColumn('batch_guid', String(50), nullable=True),
                                   )
 
     Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_guid, assessment_outcome_vw.c.asmt_guid, unique=False)
@@ -306,7 +306,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     student_registration = Table('student_reg', metadata,
                                  Column('student_reg_rec_id', BigInteger, primary_key=True),
-                                 Column('batch_guid', String(36), nullable=False),
                                  Column('state_name', String(50), nullable=False),
                                  Column('state_code', String(2), nullable=False),
                                  Column('district_guid', String(30), nullable=False),
@@ -345,6 +344,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('academic_year', SmallInteger, nullable=False),
                                  Column('extract_date', String(10), nullable=False),
                                  Column('reg_system_id', String(50), nullable=False),
+                                 Column('batch_guid', String(36), nullable=False),
                                  )
     Index('student_reg_year_system_idx', student_registration.c.academic_year, student_registration.c.reg_system_id, unique=False)
     Index('student_reg_guid', student_registration.c.student_guid, unique=False)

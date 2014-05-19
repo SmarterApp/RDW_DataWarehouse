@@ -55,7 +55,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
 
     stg_sbac_stu_reg = Table('stg_sbac_stu_reg', metadata,
                              Column('record_sid', BigInteger, primary_key=True),
-                             Column('guid_batch', String(256), nullable=False),
                              Column('src_file_rec_num', BigInteger, nullable=True),
                              Column('name_state', String(256), nullable=True),
                              Column('code_state', String(256), nullable=True),
@@ -92,13 +91,13 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('t3_program_type', String(256), nullable=True),
                              Column('prim_disability_type', String(256), nullable=True),
                              Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
+                             Column('guid_batch', String(256), nullable=False),
                              )
     Index('stg_sbac_stu_reg_guid_batchx', stg_sbac_stu_reg.c.guid_batch, unique=False)
 
     stg_sbac_asmt_outcome = Table('stg_sbac_asmt_outcome', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
                                   Column('op', String(1), nullable=True, server_default='C'),
-                                  Column('guid_batch', String(256), nullable=False),
                                   Column('src_file_rec_num', BigInteger, nullable=True),
                                   Column('guid_asmt', String(256), nullable=True),
                                   Column('guid_asmt_location', String(256), nullable=True),
@@ -168,6 +167,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_scribe_nonembed', String(256), nullable=False),
                                   Column('acc_speech_to_text_nonembed', String(256), nullable=False),
                                   Column('acc_streamline_mode', String(256), nullable=False),
+                                  Column('guid_batch', String(256), nullable=False),
                                   )
 
     err_list = Table('err_list', metadata,
@@ -183,7 +183,6 @@ def generate_udl2_metadata(schema_name=None, bind=None):
 
     int_sbac_asmt = Table('int_sbac_asmt', metadata,
                           Column('record_sid', BigInteger, primary_key=True),
-                          Column('guid_batch', String(256), nullable=False),
                           Column('guid_asmt', String(50), nullable=False),
                           Column('type', String(32), nullable=False),
                           Column('period', String(32), nullable=False),
@@ -222,12 +221,12 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('score_cut_point_4', SmallInteger, nullable=True),
                           Column('effective_date', String(8), nullable=True),
                           Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
+                          Column('guid_batch', String(256), nullable=False),
                           )
 
     int_sbac_asmt_outcome = Table('int_sbac_asmt_outcome', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
                                   Column('op', String(1), server_default='C', nullable=False),
-                                  Column('guid_batch', String(256), nullable=False),
                                   Column('guid_asmt', String(50), nullable=True),
                                   Column('guid_asmt_location', String(50), nullable=True),
                                   Column('name_asmt_location', String(256), nullable=True),
@@ -300,11 +299,11 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('acc_scribe_nonembed', SmallInteger, nullable=False),
                                   Column('acc_speech_to_text_nonembed', SmallInteger, nullable=False),
                                   Column('acc_streamline_mode', SmallInteger, nullable=False),
+                                  Column('guid_batch', String(256), nullable=False),
                                   )
 
     int_sbac_stu_reg = Table('int_sbac_stu_reg', metadata,
                              Column('record_sid', BigInteger, primary_key=True),
-                             Column('guid_batch', String(36), nullable=False),
                              Column('name_state', String(50), nullable=False),
                              Column('code_state', String(2), nullable=False),
                              Column('guid_district', String(30), nullable=False),
@@ -340,17 +339,18 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                              Column('t3_program_type', String(27), nullable=True,),
                              Column('prim_disability_type', String(3), nullable=True,),
                              Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
+                             Column('guid_batch', String(36), nullable=False),
                              )
     Index('int_sbac_stu_reg_guid_batchx', int_sbac_stu_reg.c.guid_batch, unique=False)
 
     int_sbac_stu_reg_meta = Table('int_sbac_stu_reg_meta', metadata,
                                   Column('record_sid', BigInteger, primary_key=True),
-                                  Column('guid_batch', String(36), nullable=False),
                                   Column('guid_registration', String(50), nullable=False),
                                   Column('academic_year', SmallInteger, nullable=False),
                                   Column('extract_date', String(10), nullable=False),
                                   Column('test_reg_id', String(50), nullable=False),
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
+                                  Column('guid_batch', String(36), nullable=False),
                                   )
 
     ref_column_mapping = Table('ref_column_mapping', metadata,

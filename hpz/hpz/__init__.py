@@ -1,7 +1,6 @@
 from pyramid.config import Configurator
 import logging
 from hpz import frs
-from hpz.frs.registration_service import set_base_url
 from hpz.database.hpz_connector import initialize_db
 
 logger = logging.getLogger(__name__)
@@ -11,9 +10,6 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
 
-    base_url = settings['base.url']
-    set_base_url(base_url)
-
     initialize_db(settings)
 
     config = Configurator(settings=settings)
@@ -21,6 +17,9 @@ def main(global_config, **settings):
 
     # include add routes from frs. Calls includeme
     config.include(frs)
+
+    # Adding a dummy route for download endpoint
+    config.add_route('download', '/{reg_id}')
     config.scan()
 
     logger.info("HPZ Started")

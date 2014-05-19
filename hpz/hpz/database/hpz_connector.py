@@ -9,20 +9,10 @@ HPZ_NAMESPACE = 'hpz_db_conn'
 
 class HPZDBConnection(DBConnection):
     """
-    DBConnector for the UDL Database
+    DBConnector for the HPZ Database
     """
     def __init__(self, namespace=HPZ_NAMESPACE):
-        self.datasource_name = namespace
-        super().__init__(name=self.datasource_name)
-
-    def get_namespace(self):
-        return self.namespace
-
-    def get_datasource_name(self):
-        '''
-        Returns datasource name for UDL Stats
-        '''
-        return self.datasource_name
+        super().__init__(name=namespace)
 
 
 def get_hpz_connection():

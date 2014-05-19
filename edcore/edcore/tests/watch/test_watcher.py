@@ -106,7 +106,7 @@ class TestWatcher(unittest.TestCase):
     def test_valid_check_sum_with_no_checksum_file_for_longer_time(self):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         time.sleep(5)
-        self.assertTrue(self.test_sync.valid_check_sum(test_file_path))
+        self.assertFalse(self.test_sync.valid_check_sum(test_file_path))
 
     def test_valid_check_sum_with_valid_checksum_file(self):
         test_file_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)

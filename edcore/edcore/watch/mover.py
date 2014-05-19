@@ -18,6 +18,8 @@ class FileMover():
 
     def move_files(self, files_to_move):
         files_moved = 0
+        # sort by file length in reverse order to get all checksum files sent first before source files
+        files_to_move.sort(key=len, reverse=True)
         for file in files_to_move:
             self.logger.debug('SFTPing file: ' + file)
             file_tenant_name, file_tenant_user_name = \

@@ -25,35 +25,25 @@ class FileWatcher():
         self.source_path = os.path.join(self.conf.get(Const.BASE_DIR), self.conf.get(Const.SOURCE_DIR))
         self.logger = logging.getLogger(append_logs_to)
 
-    def include_file_missing_checksum(self, source_file):
-        """handle files missing checksum file
-
-        Returns true if age of file is too old than a defined threshold else False
-        """
-        file_last_modified = FileUtil.get_file_last_modified_time(source_file)
-        # check if age of file is greater than threshold to wait for checksum file
-        if int(file_last_modified and (time.time() - file_last_modified)) > \
-                int(self.conf.get(Const.FILE_CHECKSUM_THRESHOLD_WAIT_PERIOD)):
-                return True
-        return False
-
-    def _verify_source_file_check_sum(self, source_file, checksum_file):
+    def verify_source_file_check_sum(self, source_file, checksum_file):
         file_hash = self.hasher.get_file_hash(source_file)
         return FileUtil.file_contains_hash(checksum_file, file_hash)
 
     def valid_check_sum(self, source_file):
         checksum_file = FileUtil.get_complement_file_name(source_file)
-        if not os.path.exists(source_file):
+        if not os.path.exists(source_file) or not os.path.exists(checksum_file):
             return False
-        if not os.path.exists(checksum_file):
-            return self.include_file_missing_checksum(source_file)
-        return self._verify_source_file_check_sum(source_file, checksum_file)
+        return self.verify_source_file_check_sum(source_file, checksum_file)
 
     def clear_file_stats(self):
         self.file_stats.clear()
 
     def get_file_stats(self):
         return self.file_stats
+
+    def add_file_to_snapshot(self, file_path):
+        if file_path and os.path.exists(file_path):
+            self.file_stats[file_path] = FileUtil.get_file_stat(file_path)
 
     def find_all_files(self):
         if self.conf is None:
@@ -67,9 +57,7 @@ class FileWatcher():
             filtered_files = [filename for filename in filtered_files if not filename.startswith('.')]
             for filename in filtered_files:
                 file_path = os.path.join(root, filename)
-                file_stat = FileUtil.get_file_stat(file_path)
-                if file_stat is not None:
-                    self.file_stats[file_path] = file_stat
+                self.add_file_to_snapshot(file_path)
 
     def get_updated_file_stats(self):
         return {filename: FileUtil.get_file_stat(filename) for filename in self.file_stats.keys()}
@@ -79,7 +67,7 @@ class FileWatcher():
         file_stats_latest = self.get_updated_file_stats()
         for file, stat in self.file_stats.copy().items():
             if file_stats_latest[file] is None or file_stats_latest[file] != stat:
-                self.logger.debug('Removing file {file} due to size changes during monitoring'.format(file=file))
+                self.logger.debug('Not picking file {file} due to size changes during monitoring'.format(file=file))
                 self.remove_file_pair_from_dict(file)
 
     def watch_files(self):
@@ -107,10 +95,21 @@ class FileWatcher():
         source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
         for file in source_files:
             if not self.valid_check_sum(file):
-                self.logger.error('Removing file {file} due to invalid/missing checksum'.format(file=file))
+                self.logger.error('Not picking file {file} due to invalid/missing checksum'.format(file=file))
                 self.remove_file_pair_from_dict(file)
 
     def filter_checksum_files(self):
         """Remove checksum files"""
         for file in set(fnmatch.filter(self.file_stats.copy().keys(), '*' + Const.CHECKSUM_FILE_EXTENSION)):
             self.remove_file_from_dict(file)
+
+    def generate_missing_checksum_files(self):
+        """Generates md5 checksum files for source files if missing"""
+        all_files = self.file_stats.keys()
+        # filter out the checksum files which will contain the checksum for a corresponding source file
+        source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
+        for file in source_files:
+            if not os.path.exists(FileUtil.get_complement_file_name(file)):
+                # create checksum file if does not exist (uses md5 checksum)
+                checksum_file = FileUtil.create_checksum_file(source_file=file, file_hash=self.hasher.get_file_hash(file))
+                self.add_file_to_snapshot(checksum_file)

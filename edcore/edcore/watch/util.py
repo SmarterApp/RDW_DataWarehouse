@@ -48,6 +48,19 @@ class FileUtil:
                 return file_path_splits[0], file_path_splits[1]
         return None, None
 
+    @staticmethod
+    def create_checksum_file(source_file, file_hash):
+        """Writes a checksum file under the same directory as the source file with the given hash
+
+        format: <hash> <source file base name>
+        """
+        checksum_file_path = source_file + Const.CHECKSUM_FILE_EXTENSION
+        with open(checksum_file_path, 'w') as f:
+            f.write(file_hash + ' ' + os.path.basename(source_file) + '\n')
+            f.flush()
+
+        return checksum_file_path if os.path.exists(checksum_file_path) else None
+
 
 class SendFileUtil:
 

@@ -12,7 +12,8 @@ define [
   "edwareDataProxy"
   "edwareUtil"
   "edwareModal"
-], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil) ->
+  "edwareEvents"
+], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareEvents) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -92,6 +93,10 @@ define [
           self.showNoneEmptyMessage $dropdown.data('option-name')
         else
           $dropdown.removeClass('invalid')
+
+      # collapse dropdown menu when focus out
+      $('.btn-group', this.container).focuslost ()->
+        $(this).removeClass('open')
 
       this.submitBtn.click ()->
         # remove earlier error messages

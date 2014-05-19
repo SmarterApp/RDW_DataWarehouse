@@ -3,7 +3,8 @@ define [
   "mustache"
   "text!AsmtDropdownTemplate"
   "edwarePreferences"
-], ($, Mustache, AsmtDropdownTemplate, edwarePreferences) ->
+  "edwareEvents"
+], ($, Mustache, AsmtDropdownTemplate, edwarePreferences, edwareEvents) ->
 
   class EdwareAsmtDropdown
 
@@ -37,7 +38,7 @@ define [
 
     bindEvents: () ->
       self = this
-      $('.asmtSelection', @container).click ->
+      $('.asmtSelection', @container).onClickAndEnterKey ->
         asmt = self.parseAsmtInfo $(this)
         subject = asmt.asmtView.split("_")
         # save subject value
@@ -46,9 +47,11 @@ define [
         self.setSelectedValue displayText
         # additional parameters
         self.callback(asmt)
-      $('.asmtSelection', @container).keypress (event) ->
-        if event.keyCode == 13
-          $(this).click()
+
+      # collapse dropdown menu when focus out
+      $('.btn-group', @container).focuslost ->
+        $(this).removeClass('open')
+
 
     parseAsmtInfo: ($option) ->
       display: $option.data('display')

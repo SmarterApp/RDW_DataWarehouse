@@ -1,16 +1,7 @@
 define ["jquery"], ($) ->
 
-  $('body').on
-    keypress: () ->
-      $this = $(this)
-      if not $this.hasClass('highlight')
-        $this.addClass('highlight')
-    mouseup: () ->
-      $this = $(this)
-      if $this.hasClass('highlight')
-        $this.removeClass('highlight')
-
   # define namespace
+  # TODO: we don't use this object from the beginning, maybe we should start using it
   EDWARE = EDWARE or {}
 
   EDWARE

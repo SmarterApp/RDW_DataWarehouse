@@ -1,11 +1,11 @@
 require [
-  "edware"
+  "edwareEvents"
   "edwareComparingPopulations"
   "edwareFilter"
   "edwareDataProxy"
   "edwareConstants"
   "edwarePreferences"
-], (edware, edwareComparingPopulations,edwareFilter, edwareDataProxy, Constants, edwarePreferences) ->
+], (edwareEvents, edwareComparingPopulations,edwareFilter, edwareDataProxy, Constants, edwarePreferences) ->
 
   reportName = Constants.REPORT_JSON_NAME.CPOP
 

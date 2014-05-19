@@ -6,7 +6,8 @@ define [
   "edwareLanguageSelector"
   "edwareHelpMenu"
   "text!headerTemplateHtml"
-], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml) ->
+  "edwareEvents"
+], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml, edwareEvents) ->
 
   create = (data, config) ->
     labels = config.labels
@@ -43,7 +44,9 @@ define [
     $('#header #resources').click ->
       $('#ResourcesModal').edwareModal()
     $('#header .dropdown').mouseleave ->
-      $(@).removeClass 'open'
+      $(this).removeClass 'open'
+    .focuslost ->
+      $(this).mouseleave()
 
   # The code below is curently not being used.  Waiting to be refactored
   createCommonRegion = ()->

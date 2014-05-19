@@ -34,6 +34,14 @@ define [
       this.options.loadComplete = () ->
         self.afterLoadComplete()
 
+    bindEvents: ()->
+      # reset focus after sorting
+      self = this
+      $('.ui-jqgrid-sortable').click ()->
+        lastFocus = "##{this.id}"
+        # escape dot in element id
+        self.lastFocus = lastFocus.replace(/\./gi, '\\.')
+
     setSortedColumn: (columns) ->
       sorted = this.options.sort
       return columns if not sorted
@@ -49,11 +57,17 @@ define [
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
       this.highlightSortLabels()
 
+    resetFocus: ()->
+      $("#{this.lastFocus} a").focus()
+      # reset last focus on sorting header
+      delete @lastFocus
+
     render: ()->
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
       this.addARIA()
+      this.bindEvents()
 
     addARIA: ()->
       # TODO:
@@ -150,12 +164,14 @@ define [
       column = grid.jqGrid('getGridParam', 'sortname')
       grid.jqGrid('setLabel', column, '', 'active')
 
+
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)
       this.grid.render()
 
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
+      return this.grid
 
     $.fn.eagerLoad = () ->
       # load all data at once
@@ -179,13 +195,6 @@ define [
       $component = $(component)
       height += $component.height() if $component.is(':visible')
     window.innerHeight - height
-
-  $.fn.onClickAndEnterKey = (selector, callback) ->
-    # delegate click event
-    $(this).on 'click', selector, callback
-    # listen to enter key press event
-    $(this).on 'keypress', selector, (e) ->
-      callback.call(this) if e.keyCode is 13
 
   #
   #    * Creates EDWARE grid

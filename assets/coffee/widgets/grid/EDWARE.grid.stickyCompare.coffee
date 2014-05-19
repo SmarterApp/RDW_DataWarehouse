@@ -5,7 +5,8 @@ define [
   'edwareClientStorage'
   'text!edwareStickyCompareTemplate'
   'edwareGrid'
-], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid) ->
+  'edwareEvents'
+], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid, edwareEvents) ->
 
   STICKY_POPOVER_TEMPLATE = '<div class="popover stickyPopover"><div class="mask"></div><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
 

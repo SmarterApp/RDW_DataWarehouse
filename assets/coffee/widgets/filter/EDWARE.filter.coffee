@@ -91,6 +91,10 @@ define [
         # clear session storage
         self.storage.clear()
 
+      # collapse dropdown menu when focus out
+      $('.btn-group', this.filterArea).focuslost ()->
+        $(this).removeClass('open')
+
     cancel: (self) ->
       self.reset()
       self.closeFilter()

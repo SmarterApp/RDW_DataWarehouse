@@ -24,6 +24,7 @@ require {
     'Edware.StateMap': 'modules/EDWARE.stateMap',
 
     edware: 'modules/EDWARE',
+    edwareEvents: 'modules/EDWARE.events',
     edwareContextSecurity: 'modules/EDWARE.contextSecurity',
     edwareUtil: 'modules/EDWARE.util',
     edwareConstants: 'modules/EDWARE.constants',

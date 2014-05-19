@@ -8,7 +8,11 @@ body {
     width: 980px;
     color: @color-B2;
     background-color: @color-A7;
-    /* border: solid 1px @color-A8; */
+
+    *:focus {
+      // reset on focus effect
+      outline: none;
+    }
 
     &.highlight {
 
@@ -155,6 +159,11 @@ h6 {
         &.active {
             background-image: none !important;
             background-color: @color-C14 !important;
+        }
+
+        a.subject {
+          font-size: 14px;
+          font-weight: bold;
         }
     }
 

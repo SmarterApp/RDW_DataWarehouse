@@ -8,7 +8,7 @@ require [
   'text!templates/LandingPage.html'
   'edwareLanguageSelector'
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareModal, edwareHelpMenu, landingPageTemplate, edwareLanguageSelector) ->
-  
+
   edwareDataProxy.getDataForLandingPage().done (data) ->
     output = Mustache.to_html landingPageTemplate, data
     $('body').html output

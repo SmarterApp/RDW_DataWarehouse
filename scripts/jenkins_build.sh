@@ -250,15 +250,12 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-    if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
-        /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
-        /bin/ln -sf ${WORKSPACE}/hpz/hpz.wsgi ${APACHE_DIR}/hpz_pyramid_conf
-    else
-        /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
-        /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
-        /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
-        compile_assets true
-    fi
+    /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
+    /bin/ln -sf ${WORKSPACE}/hpz/hpz.wsgi ${APACHE_DIR}/hpz_pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
+    compile_assets true
 
 
     echo "Creating sym links for celery purposes"
@@ -380,6 +377,7 @@ function generate_ini {
 	cd "$WORKSPACE/config"
 	if [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
 	   python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
+	   python generate_ini.py -e jenkins_dev -i settings.yaml
 	fi
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml

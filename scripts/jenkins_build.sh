@@ -440,6 +440,13 @@ function setup_for_udl {
     sleep 2
 }
 
+function setup_for_hpz {
+    echo "Rebuild HPZ DB"
+    cd $WORKSPACE/hpz/scripts
+    /bin/sh teardown_database.sh
+    /bin/sh initialize_database.sh
+}
+
 function run_udl_integration_tests {
     echo "Running UDL integration tests"
     cd $WORKSPACE/integration_tests
@@ -460,7 +467,9 @@ function main {
             UT_PATH="$MAIN_PKG"
             if [ ${MAIN_PKG:=""} == "edudl2" ]; then
                 setup_for_udl
-            fi 
+            elif [ ${MAIN_PKG:=""} == "hpz" ]; then
+                setup_for_hpz
+            fi
             run_unit_tests $UT_PATH
         fi
         check_pep8 $MAIN_PKG
@@ -483,6 +492,8 @@ function main {
                 setup_for_udl
                 run_udl_integration_tests
             fi
+        else
+            setup_for_hpz
         fi
         setup_functional_test_dependencies
         run_functional_tests

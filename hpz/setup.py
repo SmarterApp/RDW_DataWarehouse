@@ -9,17 +9,22 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'pyramid == 1.4',
     'pyramid_debugtoolbar==1.0.8',
-    'waitress==0.8.7']
+    'waitress==0.8.7',
+    'SQLAlchemy == 0.8.3',
+    'py-postgresql == 1.1.0',
+    'zope.sqlalchemy==0.7.3',
+    'config',
+    'edschema']
 
 setup(name='hpz',
       version='0.1',
       description='hpz',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-      "Programming Language :: Python",
-      "Framework :: Pyramid",
-      "Topic :: Internet :: WWW/HTTP",
-      "Topic :: Internet :: WWW/HTTP :: WSGI :: Application", ],
+          "Programming Language :: Python",
+          "Framework :: Pyramid",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application", ],
       author='',
       author_email='',
       url='',

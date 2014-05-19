@@ -4,6 +4,7 @@ import unittest
 import shutil
 import tempfile
 import time
+import os
 from edcore.watch.util import FileUtil
 from edcore.tests.watch.common_test_utils import get_file_hash, write_something_to_a_blank_file, create_checksum_file
 
@@ -77,3 +78,13 @@ class TestUtil(unittest.TestCase):
         file_last_modified_time = FileUtil.get_file_last_modified_time(test_file.name)
         time.sleep(2)
         self.assertTrue(int(time.time() - file_last_modified_time) > 1)
+
+    def test_create_checksum_file(self):
+        test_file = tempfile.NamedTemporaryFile(dir=self.tmp_dir_1, delete=True)
+        test_file.write(b"test\n")
+        test_file.flush()
+        FileUtil.create_checksum_file(test_file.name, '715a9aa9257aadb001e1b85c858b0a91')
+        self.assertTrue(os.path.exists(test_file.name + '.done'))
+        with open(test_file.name + '.done') as f:
+            line = f.readline()
+            self.assertEqual(line.strip(), '715a9aa9257aadb001e1b85c858b0a91'  + ' ' +  os.path.basename(test_file.name))

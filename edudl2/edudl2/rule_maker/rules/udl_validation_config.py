@@ -53,7 +53,7 @@ validations = {
                     'name_student_last': [IsNotNull, IsSQLSafe, {HasMaxLength: DEFAULT_MAX_LENGTH}],
                     'gender_student': [IsNotNull, {IsInList: ['male', 'female']}],
                     'email_student': [IsNotNull, IsGoodEmail, {HasMaxLength: DEFAULT_MAX_LENGTH}],
-                    'dob_student': [IsNotNull, IsGoodDate],
+                    'birthdate': [IsNotNull, IsGoodDate],
                     'grade_enrolled': {IsInList: [3, 4, 5, 6, 7, 8, 11]},
                     'date_assessed': [IsNotNull, IsGoodDate],
                     'score_asmt': [IsNotNull, {IsInRange: [MIN_ASMT_SCORE, MAX_ASMT_SCORE]}],

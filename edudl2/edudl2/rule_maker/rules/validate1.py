@@ -56,7 +56,7 @@ __validation_rules_definition = {BYCOLUMN: {'guid_asmt': [ISNOTNULL],  # for EAC
                                             'guid_student': [ISNOTNULL, ALL],  # record one error in ERR table if in ALL rows guid_student is NULL
                                             'guid_assessment': [ISNOTNULL, BOTH],  # combination of ALL then EACH
                                             'date_assessed': [ISNOTNULL, {DATE: 'YYYY-MM-DD'}],  # check EACH date not null, and has the given format
-                                            'dob_student': [ISNOTNULL, AFTER_2001, ALL],  # record 1 error if ALL dob_student are NULL or if all dob_student are less than Jan 1st 2001
+                                            'birthdate': [ISNOTNULL, AFTER_2001, ALL],  # record 1 error if ALL birthdate are NULL or if all birthdate are less than Jan 1st 2001
                                             'guid_staff': [[ISNOTNULL, ALL], [ISUNIQUE, EACH]],
                                             'name_student_first': ALPHA,
                                             'guid_inst_hier': GUID
@@ -65,12 +65,12 @@ __validation_rules_definition = {BYCOLUMN: {'guid_asmt': [ISNOTNULL],  # for EAC
                                  #==============================================
                                  # BYRULE: { 'sumto100' : ['measure1', 'measure2', 'measure3'], # checks that the sum of these 3 columns is exactly 100
                                  #          'sumtox': {'total':1200, 'columns':['colABC', 'colXYZ']},  # checks that colABC + colXYZ == 1200
-                                 #          NULL: ['dob_student', 'dob_teacher'], # record an error for EACH row where both the dob_student AND dob_teacher are NULL}
+                                 #          NULL: ['birthdate', 'dob_teacher'], # record an error for EACH row where both the birthdate AND dob_teacher are NULL}
                                  #==============================================
 
                                  BYRULE: [{NAME: 'check-123', ASSERT: '{measure1}+{measure2}+{measure3}=100'},
                                           {NAME: 'checkABCXYZ', ASSERT: '{colABC}+{colXYZ}!=1200'},
-                                          {NAME: 'both-dob-null', ALLNULL: ['dob_student', 'dob_teacher']}
+                                          {NAME: 'both-dob-null', ALLNULL: ['birthdate', 'dob_teacher']}
                                           ]}
 
 

@@ -66,7 +66,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('last_name', String(256), nullable=False),
                      Column('gender', String(10), nullable=True),
                      Column('email', String(256), nullable=True),
-                     Column('dob', String(8), nullable=False),
+                     Column('birthdate', String(8), nullable=False),
                      Column('grade', String(10), nullable=False),  # TODO: Delete this field
                      Column('state_code', String(2), nullable=False),
                      Column('district_guid', String(50), nullable=False),
@@ -319,7 +319,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('student_middle_name', String(35), nullable=True),
                                  Column('student_last_name', String(35), nullable=True),
                                  Column('gender', String(6), nullable=False),
-                                 Column('student_dob', String(10), nullable=True),
+                                 Column('birthdate', String(10), nullable=True),
                                  Column('enrl_grade', String(10), nullable=False),
                                  Column('dmg_eth_hsp', Boolean, nullable=False),
                                  Column('dmg_eth_ami', Boolean, nullable=False),

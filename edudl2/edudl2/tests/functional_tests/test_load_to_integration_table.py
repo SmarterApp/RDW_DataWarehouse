@@ -151,7 +151,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
     def test_get_column_mapping_from_stg_to_int(self):
         expected_target_columns = ['guid_batch', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school',
                                    'guid_student', 'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last',
-                                   'gender_student', 'dob_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk',
+                                   'gender_student', 'birthdate_student', 'grade_enrolled', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk',
                                    'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig',
                                    'dmg_multi_race', 'code_confirm', 'code_language', 'eng_prof_lvl', 'us_school_entry_date', 'lep_entry_date',
                                    'lep_exit_date', 't3_program_type', 'prim_disability_type', 'created_date']
@@ -160,7 +160,7 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                                                   'substr("A".name_school, 1, 60)', 'substr("A".guid_student, 1, 30)',
                                                   'substr("A".external_ssid_student, 1, 50)', 'substr("A".name_student_first, 1, 35)',
                                                   'substr("A".name_student_middle, 1, 35)', 'substr("A".name_student_last, 1, 35)',
-                                                  'substr("A".gender_student, 1, 6)', 'substr("A".dob_student, 1, 10)', 'substr("A".grade_enrolled, 1, 2)',
+                                                  'substr("A".gender_student, 1, 6)', 'substr("A".birthdate_student, 1, 10)', 'substr("A".grade_enrolled, 1, 2)',
                                                   'cast("A".dmg_eth_hsp as bool)', 'cast("A".dmg_eth_ami as bool)', 'cast("A".dmg_eth_asn as bool)',
                                                   'cast("A".dmg_eth_blk as bool)', 'cast("A".dmg_eth_pcf as bool)', 'cast("A".dmg_eth_wht as bool)',
                                                   'cast("A".dmg_prg_iep as bool)', 'cast("A".dmg_prg_lep as bool)', 'cast("A".dmg_prg_504 as bool)',

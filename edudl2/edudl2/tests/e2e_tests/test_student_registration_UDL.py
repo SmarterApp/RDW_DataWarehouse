@@ -137,7 +137,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             student = self.student_reg_files[file_to_load]['test_student']
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,
-                            target_table.c.gender, target_table.c.student_dob, target_table.c.dmg_eth_hsp,
+                            target_table.c.gender, target_table.c.birthdate, target_table.c.dmg_eth_hsp,
                             target_table.c.dmg_prg_504, target_table.c.academic_year, target_table.c.reg_system_id],
                            and_(target_table.c.student_guid == student['student_guid'], target_table.c.batch_guid == self.batch_id))
             result = conn.execute(query).fetchall()

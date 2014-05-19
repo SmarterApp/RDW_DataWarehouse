@@ -36,7 +36,7 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(dim_student['first_name'], 'name_student_first')
         self.assertEqual(dim_student['gender'], 'gender_student')
         self.assertEqual(dim_student['email'], 'email_student')
-        self.assertEqual(dim_student['dob'], 'dob_student')
+        self.assertEqual(dim_student['birthdate'], 'dob_student')
         self.assertEqual(dim_student['grade'], 'grade_enrolled')
         self.assertEqual(dim_student['state_code'], 'code_state')
         self.assertEqual(dim_student['school_guid'], 'guid_school')

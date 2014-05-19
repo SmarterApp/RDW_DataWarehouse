@@ -24,7 +24,7 @@ class PII(BaseRole):
         Returns a sqlalchemy binary expression representing section_guid that user has context to
         If Context is an empty list, return none, which will return Forbidden Error
         '''
-        fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        fact_asmt_outcome_vw = self.connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         context = user.get_context().get_all_context(tenant, self.name)
         if not context:
             # context returned is empty, therefore no context
@@ -32,7 +32,7 @@ class PII(BaseRole):
         expr = []
         for k, v in context.items():
             if v:
-                expr.append(and_(fact_asmt_outcome.c[k].in_(v)))
+                expr.append(and_(fact_asmt_outcome_vw.c[k].in_(v)))
         return expr
 
     @verify_context

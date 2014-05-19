@@ -49,10 +49,10 @@ class Test_Validate_Status_Flag(unittest.TestCase):
     def validate_edware_prod(self):
         second_guid = self.guid
         with get_prod_connection(self.tenant) as connection:
-            fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
+            fact_asmt_outcome_vw = connection.get_table('fact_asmt_outcome_vw')
             dim_inst_hier = connection.get_table('dim_inst_hier')
             dim_student = connection.get_table('dim_student')
-            tables = [fact_asmt_outcome, dim_student]
+            tables = [fact_asmt_outcome_vw, dim_student]
             for table in tables:
                 inactive_rec = select([table.c.rec_status]).where(table.c.batch_guid == self.first_guid)
                 inactive_rec_result = connection.execute(inactive_rec).fetchall()

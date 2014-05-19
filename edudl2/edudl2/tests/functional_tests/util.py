@@ -104,7 +104,7 @@ class UDLTestHelper(unittest.TestCase):
 
     def get_edware_asmt_score_avgs(self, tenant, schema):
         with get_target_connection(tenant, schema) as conn:
-            fact = conn.get_table('fact_asmt_outcome')
+            fact = conn.get_table('fact_asmt_outcome_vw')
             query = select([func.avg(fact.c.asmt_score),
                             func.avg(fact.c.asmt_score_range_min),
                             func.avg(fact.c.asmt_score_range_max),
@@ -167,7 +167,7 @@ class UDLTestHelper(unittest.TestCase):
         demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
         results_dict = {}
         with get_target_connection(tenant, schema) as conn:
-            fact = conn.get_table('fact_asmt_outcome')
+            fact = conn.get_table('fact_asmt_outcome_vw')
             for entry in demographics:
                 demo_query = select([func.count(fact.c[entry])], from_obj=fact).where(fact.c[entry] == true())
                 result = conn.execute(demo_query)

@@ -49,8 +49,8 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(dim_inst['district_guid'], 'guid_district')
         self.assertEqual(dim_inst['district_name'], 'name_district')
 
-    def test_fact_asmt_outcome(self):
-        fact = get_column_mapping(Constants.FACT_ASMT_OUTCOME)
+    def test_fact_asmt_outcome_vw(self):
+        fact = get_column_mapping(Constants.FACT_ASMT_OUTCOME_VW)
         self.assertIsNotNone(fact)
         self.assertEqual(fact['student_guid'], 'guid_student')
         self.assertEqual(fact['where_taken_id'], 'guid_asmt_location')

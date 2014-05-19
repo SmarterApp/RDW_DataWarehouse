@@ -163,7 +163,7 @@ class TestStateLevelContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         # Checks that the query has applied where clause
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact.c.student_guid], from_obj=[fact])
             state_level = StateLevel(connection, RolesConstants.SRS_EXTRACTS)
             query = state_level.add_context(get_unittest_tenant_name(), self.user, query)

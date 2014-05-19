@@ -184,7 +184,7 @@ def generate_conf(guid_batch, udl2_conf):
 
 def get_expected_column_types_for_fact_table(table_name):
     column_names = list(get_expected_column_mapping(table_name).keys())
-    column_types = ['asmt_outcome_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
+    column_types = ['asmt_outcome_vw_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
                     'teacher_guid character varying(50)', 'state_code character varying(2)', 'district_guid character varying(50)',
                     'school_guid character varying(50)', 'inst_hier_rec_id bigint',
                     'where_taken_id character varying(50)', 'where_taken_name character varying(256)',
@@ -203,7 +203,7 @@ def get_expected_column_types_for_fact_table(table_name):
 
 
 def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."{table_name}" (asmt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
+    return 'INSERT INTO "edware"."{table_name}" (asmt_outcome_vw_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
            'school_guid,inst_hier_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
@@ -214,7 +214,7 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
            'score_claim_4,score_claim_4_min,score_claim_4_max,\'\'\'\',True,guid_batch '\
-           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
+           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmt_outcome_vw_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
            'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
            'inst_hier_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
            'asmt_grade character varying(10),enrl_grade character varying(10),date_taken character varying(8),date_taken_day smallint,date_taken_month smallint,'\
@@ -381,42 +381,42 @@ def get_expected_column_mapping(target_table):
                                                                     ('most_recent', 'True'),
                                                                     ]),
 
-                                        'fact_asmt_outcome': OrderedDict([('asmt_outcome_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
-                                                                          ('asmt_rec_id', None),
-                                                                          ('student_guid', 'guid_student'),
-                                                                          ('teacher_guid', 'guid_staff'),
-                                                                          ('state_code', 'code_state'),
-                                                                          ('district_guid', 'guid_district'),
-                                                                          ('school_guid', 'guid_school'),
-                                                                          ('inst_hier_rec_id', '-1'),
-                                                                          ('where_taken_id', 'guid_asmt_location'),
-                                                                          ('where_taken_name', 'name_asmt_location'),
-                                                                          ('asmt_grade', 'grade_asmt'),
-                                                                          ('enrl_grade', 'grade_enrolled'),
-                                                                          ('date_taken', 'date_assessed'),
-                                                                          ('date_taken_day', 'date_taken_day'),  # date_assessed is a varchar(8)
-                                                                          ('date_taken_month', 'date_taken_month'),  # date_assessed is a varchar(8)
-                                                                          ('date_taken_year', 'date_taken_year'),  # date_assessed is a varchar(8)
-                                                                          ('asmt_score', 'score_asmt'),
-                                                                          ('asmt_score_range_min', 'score_asmt_min'),
-                                                                          ('asmt_score_range_max', 'score_asmt_max'),
-                                                                          ('asmt_perf_lvl', 'score_perf_level'),
-                                                                          ('asmt_claim_1_score', 'score_claim_1'),
-                                                                          ('asmt_claim_1_score_range_min', 'score_claim_1_min'),
-                                                                          ('asmt_claim_1_score_range_max', 'score_claim_1_max'),
-                                                                          ('asmt_claim_2_score', 'score_claim_2'),
-                                                                          ('asmt_claim_2_score_range_min', 'score_claim_2_min'),
-                                                                          ('asmt_claim_2_score_range_max', 'score_claim_2_max'),
-                                                                          ('asmt_claim_3_score', 'score_claim_3'),
-                                                                          ('asmt_claim_3_score_range_min', 'score_claim_3_min'),
-                                                                          ('asmt_claim_3_score_range_max', 'score_claim_3_max'),
-                                                                          ('asmt_claim_4_score', 'score_claim_4'),
-                                                                          ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
-                                                                          ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
-                                                                          ('status', '\'\''),
-                                                                          ('most_recent', 'True'),
-                                                                          ('batch_guid', 'guid_batch'),
-                                                                          ])
+                                        'fact_asmt_outcome_vw': OrderedDict([('asmt_outcome_vw_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                             ('asmt_rec_id', None),
+                                                                             ('student_guid', 'guid_student'),
+                                                                             ('teacher_guid', 'guid_staff'),
+                                                                             ('state_code', 'code_state'),
+                                                                             ('district_guid', 'guid_district'),
+                                                                             ('school_guid', 'guid_school'),
+                                                                             ('inst_hier_rec_id', '-1'),
+                                                                             ('where_taken_id', 'guid_asmt_location'),
+                                                                             ('where_taken_name', 'name_asmt_location'),
+                                                                             ('asmt_grade', 'grade_asmt'),
+                                                                             ('enrl_grade', 'grade_enrolled'),
+                                                                             ('date_taken', 'date_assessed'),
+                                                                             ('date_taken_day', 'date_taken_day'),  # date_assessed is a varchar(8)
+                                                                             ('date_taken_month', 'date_taken_month'),  # date_assessed is a varchar(8)
+                                                                             ('date_taken_year', 'date_taken_year'),  # date_assessed is a varchar(8)
+                                                                             ('asmt_score', 'score_asmt'),
+                                                                             ('asmt_score_range_min', 'score_asmt_min'),
+                                                                             ('asmt_score_range_max', 'score_asmt_max'),
+                                                                             ('asmt_perf_lvl', 'score_perf_level'),
+                                                                             ('asmt_claim_1_score', 'score_claim_1'),
+                                                                             ('asmt_claim_1_score_range_min', 'score_claim_1_min'),
+                                                                             ('asmt_claim_1_score_range_max', 'score_claim_1_max'),
+                                                                             ('asmt_claim_2_score', 'score_claim_2'),
+                                                                             ('asmt_claim_2_score_range_min', 'score_claim_2_min'),
+                                                                             ('asmt_claim_2_score_range_max', 'score_claim_2_max'),
+                                                                             ('asmt_claim_3_score', 'score_claim_3'),
+                                                                             ('asmt_claim_3_score_range_min', 'score_claim_3_min'),
+                                                                             ('asmt_claim_3_score_range_max', 'score_claim_3_max'),
+                                                                             ('asmt_claim_4_score', 'score_claim_4'),
+                                                                             ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
+                                                                             ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
+                                                                             ('status', '\'\''),
+                                                                             ('most_recent', 'True'),
+                                                                             ('batch_guid', 'guid_batch'),
+                                                                             ])
                                         }
     return column_map_integration_to_target[target_table]
 

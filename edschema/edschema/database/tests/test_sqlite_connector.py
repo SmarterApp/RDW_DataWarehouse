@@ -44,14 +44,14 @@ class Test(unittest.TestCase):
         for table in sorted_tables:
             print('SORTED TABLES: ' + str(table))
 
-        # fact_asmt_outcome has Foreign keys from dim_asmt, dim_inst_hier, and dim_section_subject
-        self.assertTrue(check_order_of_fact_asmt_outcome(sorted_tables))
+        # fact_asmt_outcome_vw has Foreign keys from dim_asmt, dim_inst_hier, and dim_section_subject
+        self.assertTrue(check_order_of_fact_asmt_outcome_vw(sorted_tables))
 
 
-def check_order_of_fact_asmt_outcome(sorted_tables):
+def check_order_of_fact_asmt_outcome_vw(sorted_tables):
     foreign_keys_tables = ['dim_asmt', 'dim_inst_hier']
     for table in sorted_tables:
-        if table.key == 'fact_asmt_outcome':
+        if table.key == 'fact_asmt_outcome_vw':
             # check foreign_keys_tables.
             if len(foreign_keys_tables) == 0:
                 return True

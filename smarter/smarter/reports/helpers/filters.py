@@ -124,7 +124,7 @@ def has_filters(params):
     return not params.keys().isdisjoint(FILTERS_CONFIG.keys())
 
 
-def apply_filter_to_query(query, fact_asmt_outcome, filters):
+def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
     '''
     Apply demographics filters to a query
 
@@ -133,22 +133,22 @@ def apply_filter_to_query(query, fact_asmt_outcome, filters):
     :param dict filters: dictionary that contains filter related key value
     '''
     if filters:
-        filter_iep = _get_filter(FILTERS_PROGRAM_IEP, fact_asmt_outcome.c.dmg_prg_iep, filters)
+        filter_iep = _get_filter(FILTERS_PROGRAM_IEP, fact_asmt_outcome_vw.c.dmg_prg_iep, filters)
         if filter_iep is not None:
             query = query.where(filter_iep)
-        filter_504 = _get_filter(FILTERS_PROGRAM_504, fact_asmt_outcome.c.dmg_prg_504, filters)
+        filter_504 = _get_filter(FILTERS_PROGRAM_504, fact_asmt_outcome_vw.c.dmg_prg_504, filters)
         if filter_504 is not None:
             query = query.where(filter_504)
-        filter_lep = _get_filter(FILTERS_PROGRAM_LEP, fact_asmt_outcome.c.dmg_prg_lep, filters)
+        filter_lep = _get_filter(FILTERS_PROGRAM_LEP, fact_asmt_outcome_vw.c.dmg_prg_lep, filters)
         if filter_lep is not None:
             query = query.where(filter_lep)
         filter_grade = filters.get(FILTERS_GRADE)
         if filters.get(FILTERS_GRADE):
-            query = query.where(fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
+            query = query.where(fact_asmt_outcome_vw.c.asmt_grade.in_(filter_grade))
         filter_eth = filters.get(FILTERS_ETHNICITY)
         if filter_eth is not None:
-            query = query.where(fact_asmt_outcome.c.dmg_eth_derived.in_(filter_eth))
+            query = query.where(fact_asmt_outcome_vw.c.dmg_eth_derived.in_(filter_eth))
         filter_gender = filters.get(FILTERS_GENDER)
         if filter_gender is not None:
-            query = query.where(fact_asmt_outcome.c.gender.in_(filter_gender))
+            query = query.where(fact_asmt_outcome_vw.c.gender.in_(filter_gender))
     return query

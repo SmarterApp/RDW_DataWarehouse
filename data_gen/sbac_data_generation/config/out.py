@@ -6,8 +6,8 @@ Define the output format for SBAC assessment and registration data.
 """
 
 FAO_FORMAT = {'format': 'csv',
-              'name': 'fact_asmt_outcome.csv',
-              'columns': [{'name': 'asmt_outcome_rec_id', 'val': 'assessment_outcome.rec_id'},
+              'name': 'fact_asmt_outcome_vw.csv',
+              'columns': [{'name': 'asmt_outcome_vw_rec_id', 'val': 'assessment_outcome.rec_id'},
                           {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                           {'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
                           {'name': 'asmt_guid', 'val': 'assessment.guid_sr'},

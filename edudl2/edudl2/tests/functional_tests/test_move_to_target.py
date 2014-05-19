@@ -83,7 +83,7 @@ class FTestMoveToTarget(UDLTestHelper):
 
     def get_counts(self, schema_name):
         with get_target_connection(self.tenant_code, schema_name) as conn:
-            fact_select = select([func.count()]).select_from(conn.get_table('fact_asmt_outcome'))
+            fact_select = select([func.count()]).select_from(conn.get_table('fact_asmt_outcome_vw'))
             fact_primary_select = select([func.count()]).select_from(conn.get_table('fact_asmt_outcome_primary'))
             asmt_selct = select([func.count()]).select_from(conn.get_table('dim_asmt'))
             inst_select = select([func.count()]).select_from(conn.get_table('dim_inst_hier'))

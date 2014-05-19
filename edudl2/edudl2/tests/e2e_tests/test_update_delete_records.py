@@ -75,7 +75,7 @@ class Test_Update_Delete(unittest.TestCase):
     # Validate edware database
     def validate_edware_database(self, schema_name):
         with get_target_connection('cat', schema_name) as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome')
+            fact_table = ed_connector.get_table('fact_asmt_outcome_vw')
             delete_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
             delete_output_table = ed_connector.execute(delete_output_data).fetchall()
             expected_status_val_D = [('D',)]
@@ -93,7 +93,7 @@ class Test_Update_Delete(unittest.TestCase):
             expected_asmt_score = [(1500,)]
             self.assertEquals(new_asmt_score, expected_asmt_score)
 
-            # Validate that delete and update also works for fact_Asmt_outcome_primary
+            # Validate that delete and update also works for fact_asmt_outcome_primary
             fact_asmt = ed_connector.get_table('fact_asmt_outcome_primary')
             output_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
             output_table = ed_connector.execute(output_data).fetchall()

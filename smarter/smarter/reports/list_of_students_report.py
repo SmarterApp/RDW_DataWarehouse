@@ -165,20 +165,20 @@ def get_list_of_students(params):
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),
                                     dim_student.c.last_name.label('student_last_name'),
-                                    fact_asmt_outcome.c.state_code.label('state_code'),
-                                    fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
-                                    fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
+                                    fact_asmt_outcome_vw.c.state_code.label('state_code'),
+                                    fact_asmt_outcome_vw.c.enrl_grade.label('enrollment_grade'),
+                                    fact_asmt_outcome_vw.c.asmt_grade.label('asmt_grade'),
                                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                                     dim_asmt.c.effective_date.label('effective_date'),
-                                    fact_asmt_outcome.c.asmt_score.label('asmt_score'),
-                                    fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
-                                    fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
-                                    fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                                    fact_asmt_outcome_vw.c.asmt_score.label('asmt_score'),
+                                    fact_asmt_outcome_vw.c.asmt_score_range_min.label('asmt_score_range_min'),
+                                    fact_asmt_outcome_vw.c.asmt_score_range_max.label('asmt_score_range_max'),
+                                    fact_asmt_outcome_vw.c.asmt_perf_lvl.label('asmt_perf_lvl'),
                                     dim_asmt.c.asmt_type.label('asmt_type'),
                                     dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                     dim_asmt.c.asmt_score_max.label('asmt_score_max'),
@@ -186,39 +186,39 @@ def get_list_of_students(params):
                                     dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                                     dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
                                     dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
-                                    fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
-                                    fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
-                                    fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
-                                    fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
-                                    fact_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
-                                    fact_asmt_outcome.c.asmt_claim_2_score_range_min.label('asmt_claim_2_score_range_min'),
-                                    fact_asmt_outcome.c.asmt_claim_3_score_range_min.label('asmt_claim_3_score_range_min'),
-                                    fact_asmt_outcome.c.asmt_claim_4_score_range_min.label('asmt_claim_4_score_range_min'),
-                                    fact_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
-                                    fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
-                                    fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
-                                    fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_1_score.label('asmt_claim_1_score'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_2_score.label('asmt_claim_2_score'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_3_score.label('asmt_claim_3_score'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_4_score.label('asmt_claim_4_score'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_2_score_range_min.label('asmt_claim_2_score_range_min'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_3_score_range_min.label('asmt_claim_3_score_range_min'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_4_score_range_min.label('asmt_claim_4_score_range_min'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_1.label('asmt_claim_perf_lvl_name_1'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_2.label('asmt_claim_perf_lvl_name_2'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_3.label('asmt_claim_perf_lvl_name_3'),
-                                    fact_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
-                                    fact_asmt_outcome.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
-                                    fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
-                                    fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
-                                    from_obj=[fact_asmt_outcome
-                                              .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
-        query = query.where(fact_asmt_outcome.c.state_code == stateCode)
-        query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
-        query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
-        query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmtYear))
-        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
-        query = query.where(and_(fact_asmt_outcome.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
-        query = apply_filter_to_query(query, fact_asmt_outcome, params)
+                                    fact_asmt_outcome_vw.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
+                                    fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl')],
+                                    from_obj=[fact_asmt_outcome_vw
+                                              .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=stateCode)
+        query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
+        query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == schoolGuid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == districtGuid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmtYear))
+        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:
-            query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmtGrade))
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
         return connector.get_result(query)

@@ -18,18 +18,18 @@ def generate_isr_report_path_by_student_guid(state_code, effective_date, pdf_rep
     '''
     # find state_code, asmt_period_year, district_guid, school_guid, and asmt_grade from DB
     with EdCoreDBConnection(state_code=state_code) as connection:
-        fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+        fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        query = Select([fact_asmt_outcome.c.state_code.label(Constants.STATE_CODE),
+        query = Select([fact_asmt_outcome_vw.c.state_code.label(Constants.STATE_CODE),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
-                        fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
-                        fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),
-                        fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
-                       from_obj=[fact_asmt_outcome
-                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
+                        fact_asmt_outcome_vw.c.district_guid.label(Constants.DISTRICT_GUID),
+                        fact_asmt_outcome_vw.c.school_guid.label(Constants.SCHOOL_GUID),
+                        fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                       from_obj=[fact_asmt_outcome_vw
+                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id,
                                                       dim_asmt.c.rec_status == Constants.CURRENT,
                                                       dim_asmt.c.asmt_type == asmt_type))])
-        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT, fact_asmt_outcome.c.student_guid == student_guid, dim_asmt.c.effective_date == effective_date))
+        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT, fact_asmt_outcome_vw.c.student_guid == student_guid, dim_asmt.c.effective_date == effective_date))
         result = connection.get_result(query)
         if result:
             first_record = result[0]

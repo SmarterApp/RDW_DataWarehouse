@@ -51,57 +51,57 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student_demographics')),
                               ['student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_asmt')), ['asmt_guid'])
-            self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome')),
+            self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_vw')),
                               ['asmt_guid', 'student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_primary')),
                               ['asmt_guid', 'student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_inst_hier')),
                               ['state_code', 'district_guid', 'school_guid'])
 
-    def test_migrate_fact_asmt_outcome(self):
+    def test_migrate_fact_asmt_outcome_vw(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "288220EB-3876-41EB-B3A7-F0E6C8BD013B"
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([func.count().label('asmt_outcome_rec_ids')], fact_asmt_outcome_table.c.asmt_outcome_rec_id.in_([1000000776, 1000001034, 1000001112]))
+        query = select([func.count().label('asmt_outcome_vw_rec_ids')], fact_asmt_outcome_table.c.asmt_outcome_vw_rec_id.in_([1000000776, 1000001034, 1000001112]))
         query_c = query.where(fact_asmt_outcome_table.c.rec_status == 'C')
         query_d = query.where(fact_asmt_outcome_table.c.rec_status == 'D')
         query_I = query.where(fact_asmt_outcome_table.c.rec_status == 'I')
         rset = prod_conn.execute(query_c)
         row = rset.fetchone()
-        self.assertEqual(3, row['asmt_outcome_rec_ids'])
+        self.assertEqual(3, row['asmt_outcome_vw_rec_ids'])
         rset.close()
         delete_count, insert_count = migrate_table(batch_guid, None, preprod_conn, prod_conn,
-                                                   'fact_asmt_outcome', False)
+                                                   'fact_asmt_outcome_vw', False)
         self.assertEqual(3, delete_count)
         self.assertEqual(3, insert_count)
         rset = prod_conn.execute(query_c)
         row = rset.fetchone()
-        self.assertEqual(0, row['asmt_outcome_rec_ids'])
+        self.assertEqual(0, row['asmt_outcome_vw_rec_ids'])
         rset.close()
         rset = prod_conn.execute(query_d)
         row = rset.fetchone()
-        self.assertEqual(3, row['asmt_outcome_rec_ids'])
+        self.assertEqual(3, row['asmt_outcome_vw_rec_ids'])
         rset.close()
         # The deactivation count will be always zero in unit test
         rset = prod_conn.execute(query_I)
         row = rset.fetchone()
-        self.assertEqual(0, row['asmt_outcome_rec_ids'])
+        self.assertEqual(0, row['asmt_outcome_vw_rec_ids'])
         rset.close()
 
-    def test_migrate_fact_asmt_outcome_record_already_deleted1(self):
+    def test_migrate_fact_asmt_outcome_vw_record_already_deleted1(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "288220EB-3876-41EB-B3A7-F0E6C8BD013B"
         self.assertRaises(EdMigrateRecordAlreadyDeletedException, migrate_table, batch_guid, None,
-                          preprod_conn, prod_conn, 'fact_asmt_outcome', False)
+                          preprod_conn, prod_conn, 'fact_asmt_outcome_vw', False)
 
-    def test_migrate_fact_asmt_outcome_record_already_deleted2(self):
+    def test_migrate_fact_asmt_outcome_vw_record_already_deleted2(self):
         preprod_conn = EdMigrateSourceConnection(tenant=get_unittest_preprod_tenant_name())
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         batch_guid = "288220EB-3876-41EB-B3A7-F0E6C8BD013B"
         self.assertRaises(EdMigrateRecordAlreadyDeletedException, migrate_table, batch_guid, None,
-                          preprod_conn, prod_conn, 'fact_asmt_outcome', False, batch_size=1)
+                          preprod_conn, prod_conn, 'fact_asmt_outcome_vw', False, batch_size=1)
 
     def test_migrate_student_reg(self):
         Unittest_with_edcore_sqlite.setUpClass(EdMigrateDestConnection.get_datasource_name(TestMigrate.test_tenant),
@@ -206,7 +206,7 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
                  UdlStatsConstants.SNAPSHOT_CRITERIA: None}
         prod_conn = EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name())
         fact_asmt_outcome_table = prod_conn.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmt_outcome_rec_id.in_([1000000777, 1000000778, 1000001035]))
+        query = select([fact_asmt_outcome_table], fact_asmt_outcome_table.c.asmt_outcome_vw_rec_id.in_([1000000777, 1000000778, 1000001035]))
         query_c = query.where(fact_asmt_outcome_table.c.rec_status == 'C')
         query_d = query.where(fact_asmt_outcome_table.c.rec_status == 'D')
         rset = prod_conn.execute(query_c)

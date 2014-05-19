@@ -383,13 +383,13 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
                                                  lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
             if WRITE_STAR:
-                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome_vw',
                                                  root_path=OUT_PATH_ROOT)
                 csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
-                                                 tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
+                                                 tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
             if WRITE_PG:
                 try:
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw', fao_out_cols,
                                                            rslts)
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
                                                            fao_pri_out_cols, rslts)

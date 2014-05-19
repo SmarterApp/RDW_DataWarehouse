@@ -147,7 +147,7 @@ def get_ordered_tables_to_migrate(connector, load_type):
     @param load_type: The load type for the current table
 
     @return: A list of table names ordered by dependencies
-             e.g., [dim_section, dim_student, fact_asmt_outcome]
+             e.g., [dim_section, dim_student, fact_asmt_outcome_vw]
     """
 
     return [table.name for table in connector.get_metadata().sorted_tables if _include_table(table.name, load_type)]

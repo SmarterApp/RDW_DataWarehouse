@@ -19,7 +19,7 @@ from sqlalchemy.sql.expression import and_, select
 from edudl2.udl2.constants import Constants
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
-FACT_TABLE = 'fact_asmt_outcome'
+FACT_TABLE = 'fact_asmt_outcome_vw'
 file_to_path = ''
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/test_user/filedrop/'
 FILE_DICT = {}

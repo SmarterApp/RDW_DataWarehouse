@@ -42,8 +42,8 @@ class TestEdMetadata(Unittest_with_sqlite):
                 self.assertEqual('228', result['district_guid'])
                 break
             # test for larger file out of fetch_size
-            fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-            query = fact_asmt_outcome.select()
+            fact_asmt_outcome_vw = connector.get_table('fact_asmt_outcome_vw')
+            query = fact_asmt_outcome_vw.select()
             results = connector.get_streaming_result(query, fetch_size=1)
             self.assertEqual(type(results), types.GeneratorType)
             counter = 0

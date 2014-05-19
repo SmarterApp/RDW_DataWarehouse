@@ -23,7 +23,7 @@ class TestCleanup(Unittest_with_edcore_sqlite):
     def setUp(self):
         self._tenant = get_unittest_tenant_name()
         self.dim_tables = ['dim_asmt', 'dim_inst_hier', 'dim_student']
-        self.fact_tables = ['fact_asmt_outcome']
+        self.fact_tables = ['fact_asmt_outcome_vw']
         self.other_tables = ['custom_metadata', 'user_mapping', 'student_reg']
 
     @classmethod
@@ -37,7 +37,7 @@ class TestCleanup(Unittest_with_edcore_sqlite):
 
     def _verify_all_records_deleted_by_batch_guid(self, connection, table, batch_guid):
         fao = connection.get_table(table)
-        query = select([func.count(fao.c.asmt_outcome_rec_id)], from_obj=[fao])
+        query = select([func.count(fao.c.asmt_outcome_vw_rec_id)], from_obj=[fao])
         query = query.where(fao.c.batch_guid == batch_guid)
         results = connection.execute(query)
         fao_rows = results.first()
@@ -66,13 +66,13 @@ class TestCleanup(Unittest_with_edcore_sqlite):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
             cleanup_all_tables(connection, 'batch_guid', test_batch_guid, False, table_name_prefix='fact_')
-            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
+            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome_vw', test_batch_guid)
 
     def test_cleanup_all_tables_for_valid_batch_guid(self):
         with UnittestEdcoreDBConnection() as connection:
             test_batch_guid = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'
-            cleanup_all_tables(connection, 'batch_guid', test_batch_guid, False, tables=['fact_asmt_outcome'])
-            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome', test_batch_guid)
+            cleanup_all_tables(connection, 'batch_guid', test_batch_guid, False, tables=['fact_asmt_outcome_vw'])
+            self._verify_all_records_deleted_by_batch_guid(connection, 'fact_asmt_outcome_vw', test_batch_guid)
 
     def test_get_schema_check_query(self):
         expected_query = "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '90901b70-ddaa-11e2-a95d-68a86d3c2f82'"

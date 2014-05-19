@@ -4,126 +4,112 @@ import os
 import fnmatch
 import time
 import ast
-import shutil
 import logging
 from edcore.watch.util import set_interval, FileUtil
 from edcore.watch.file_hasher import MD5Hasher
 from edcore.watch.constants import WatcherConstants as Const
+from edcore import DEFAULT_LOGGER_NAME
 
-logger = logging.getLogger(__name__)
-
-WATCH_INTERVAL = 2
+watch_interval = 2
 
 
 class FileWatcher():
     """File sync class to watch for complete files"""
-    conf = None
-    file_stats = {}
-    hasher = MD5Hasher()
 
-    def __init__(self, config):
-        FileWatcher.conf = config
-        FileWatcher.clear_file_stats()
-        global WATCH_INTERVAL
-        WATCH_INTERVAL = FileWatcher.conf[Const.FILE_STAT_WATCH_INTERVAL]
-        FileWatcher.source_path = os.path.join(FileWatcher.conf[Const.BASE_DIR], FileWatcher.conf[Const.SOURCE_DIR])
-        FileWatcher.dest_path = \
-            os.path.join(FileWatcher.conf[Const.BASE_DIR],
-                         FileWatcher.conf[Const.DEST_DIR]) if Const.DEST_DIR in FileWatcher.conf else None
+    def __init__(self, config, append_logs_to=DEFAULT_LOGGER_NAME):
+        self.conf = config
+        self.file_stats = {}
+        self.hasher = MD5Hasher()
+        global watch_interval
+        watch_interval = self.conf.get(Const.FILE_STAT_WATCH_INTERVAL, 2)
+        self.source_path = os.path.join(self.conf.get(Const.BASE_DIR), self.conf.get(Const.SOURCE_DIR))
+        self.logger = logging.getLogger(append_logs_to)
 
-    @classmethod
-    def valid_check_sum(cls, file):
-        checksum_file = FileUtil.get_complement_file_name(file)
-        if not os.path.exists(file) or not os.path.exists(checksum_file):
-            return False
-        file_hash = cls.hasher.get_file_hash(file)
+    def verify_source_file_check_sum(self, source_file, checksum_file):
+        file_hash = self.hasher.get_file_hash(source_file)
         return FileUtil.file_contains_hash(checksum_file, file_hash)
 
-    @classmethod
-    def clear_file_stats(cls):
-        cls.file_stats.clear()
+    def valid_check_sum(self, source_file):
+        checksum_file = FileUtil.get_complement_file_name(source_file)
+        if not os.path.exists(source_file) or not os.path.exists(checksum_file):
+            return False
+        return self.verify_source_file_check_sum(source_file, checksum_file)
 
-    @classmethod
-    def get_file_stats(cls):
-        return cls.file_stats
+    def clear_file_stats(self):
+        self.file_stats.clear()
 
-    @classmethod
-    def find_all_files(cls):
-        assert cls.conf is not None
+    def get_file_stats(self):
+        return self.file_stats
 
-        cls.clear_file_stats()
-        for root, dirs, files in os.walk(cls.source_path):
-            filtered_files = [filename for pattern in set(ast.literal_eval(cls.conf[Const.FILE_PATTERNS_TO_WATCH]))
+    def add_file_to_snapshot(self, file_path):
+        if file_path and os.path.exists(file_path):
+            self.file_stats[file_path] = FileUtil.get_file_stat(file_path)
+
+    def find_all_files(self):
+        if self.conf is None:
+            raise Exception('Invalid Config object')
+
+        self.clear_file_stats()
+        for root, dirs, files in os.walk(self.source_path):
+            filtered_files = [filename for pattern in set(ast.literal_eval(self.conf.get(Const.FILE_PATTERNS_TO_WATCH)))
                               for filename in fnmatch.filter(files, pattern)]
             # filter hidden file
             filtered_files = [filename for filename in filtered_files if not filename.startswith('.')]
             for filename in filtered_files:
                 file_path = os.path.join(root, filename)
-                file_stat = FileUtil.get_file_stat(file_path)
-                if file_stat is not None:
-                    cls.file_stats[file_path] = file_stat
+                self.add_file_to_snapshot(file_path)
 
-    @classmethod
-    def get_updated_file_stats(cls):
-        return {filename: FileUtil.get_file_stat(filename) for filename in cls.file_stats.keys()}
+    def get_updated_file_stats(self):
+        return {filename: FileUtil.get_file_stat(filename) for filename in self.file_stats.keys()}
 
-    @classmethod
-    @set_interval(interval=WATCH_INTERVAL)
-    def watch_and_filter_files_by_stats_changes(cls):
-        file_stats_latest = cls.get_updated_file_stats()
-        for file, size in cls.file_stats.copy().items():
-            if file_stats_latest[file] is None or file_stats_latest[file] != size:
-                logger.debug('Removing file {file} due to size changes during monitoring'.format(file=file))
-                cls.remove_file_pair_from_dict(file)
+    @set_interval(interval=watch_interval)
+    def watch_and_filter_files_by_stats_changes(self):
+        file_stats_latest = self.get_updated_file_stats()
+        for file, stat in self.file_stats.copy().items():
+            if file_stats_latest[file] is None or file_stats_latest[file] != stat:
+                self.logger.debug('Not picking file {file} due to size changes during monitoring'.format(file=file))
+                self.remove_file_pair_from_dict(file)
 
-    @classmethod
-    def watch_files(cls):
+    def watch_files(self):
         """Watches the files for the defined duration and discards file undergoing change"""
         # monitor the files for change in stats
-        stop = cls.watch_and_filter_files_by_stats_changes()
+        stop = self.watch_and_filter_files_by_stats_changes()
         # monitor for a duration
-        time.sleep(float(cls.conf[Const.FILE_STAT_WATCH_PERIOD]))
+        time.sleep(float(self.conf.get(Const.FILE_STAT_WATCH_PERIOD)))
         # stop the timer
         stop.set()
 
-    @classmethod
-    def remove_file_from_dict(cls, file):
-        cls.file_stats.pop(file, None)
+    def remove_file_from_dict(self, file):
+        self.file_stats.pop(file, None)
 
-    @classmethod
-    def remove_file_pair_from_dict(cls, file):
+    def remove_file_pair_from_dict(self, file):
         # check the file being removed and remove the corresponding pair file
-        cls.remove_file_from_dict(FileUtil.get_complement_file_name(file))
+        self.remove_file_from_dict(FileUtil.get_complement_file_name(file))
         # remove the main file
-        cls.remove_file_from_dict(file)
+        self.remove_file_from_dict(file)
 
-    @classmethod
-    def filter_files_for_digest_mismatch(cls):
+    def filter_files_for_digest_mismatch(self):
         """Verifies checksum for all the files (ignoring '*.done' files) currently being watched"""
-        all_files = cls.file_stats.copy().keys()
+        all_files = self.file_stats.keys()
         # filter out the checksum files which will contain the checksum for a corresponding source file
         source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
         for file in source_files:
-            if not cls.valid_check_sum(file):
-                logger.error('Removing file {file} due to invalid hash'.format(file=file))
-                cls.remove_file_pair_from_dict(file)
+            if not self.valid_check_sum(file):
+                self.logger.error('Not picking file {file} due to invalid/missing checksum'.format(file=file))
+                self.remove_file_pair_from_dict(file)
 
-    @classmethod
-    def filter_checksum_files(cls):
+    def filter_checksum_files(self):
         """Remove checksum files"""
-        for file in set(fnmatch.filter(cls.file_stats.copy().keys(), '*' + Const.CHECKSUM_FILE_EXTENSION)):
-            cls.remove_file_from_dict(file)
+        for file in set(fnmatch.filter(self.file_stats.copy().keys(), '*' + Const.CHECKSUM_FILE_EXTENSION)):
+            self.remove_file_from_dict(file)
 
-    @classmethod
-    def move_files(cls):
-        files_to_move = cls.file_stats.keys()
-        for file in files_to_move:
-            destination_file_path = os.path.join(cls.dest_path, os.path.relpath(file, cls.source_path))
-            destination_file_directory = os.path.split(destination_file_path)[0]
-            if not os.path.exists(destination_file_directory):
-                os.makedirs(destination_file_directory)
-                # the last folder containing the file needs to have 777 for rsync client to be able to delete
-                os.chmod(destination_file_directory, 0o777)
-            logger.debug('Moving file {source} to {dest}'.format(source=file, dest=destination_file_path))
-            shutil.move(file, destination_file_path)
-        return len(files_to_move)
+    def generate_missing_checksum_files(self):
+        """Generates md5 checksum files for source files if missing"""
+        all_files = self.file_stats.keys()
+        # filter out the checksum files which will contain the checksum for a corresponding source file
+        source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
+        for file in source_files:
+            if not os.path.exists(FileUtil.get_complement_file_name(file)):
+                # create checksum file if does not exist (uses md5 checksum)
+                checksum_file = FileUtil.create_checksum_file(source_file=file, file_hash=self.hasher.get_file_hash(file))
+                self.add_file_to_snapshot(checksum_file)

@@ -119,7 +119,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'first_name': 'Richard',
             'middle_name': None,
             'last_name': 'Mccarty',
-            'gender': 'male',
+            'sex': 'male',
             'email': 'richard.mccarty@gangessharkbrownhyaenaprimary.edu',
             'birthdate': '20040312',
             'grade': '3',
@@ -267,7 +267,7 @@ def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, gui
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):
     return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_name,state_code,district_guid,district_name,'\
            'school_guid,school_name,student_guid,external_student_ssid,student_first_name,student_middle_name,student_last_name,'\
-           'gender,birthdate,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
+           'sex,birthdate,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
@@ -276,7 +276,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
            'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
-           'int_sbac_stu_reg.gender_student,int_sbac_stu_reg.birthdate_student,int_sbac_stu_reg.grade_enrolled,'\
+           'int_sbac_stu_reg.sex_student,int_sbac_stu_reg.birthdate_student,int_sbac_stu_reg.grade_enrolled,'\
            'int_sbac_stu_reg.dmg_eth_hsp,int_sbac_stu_reg.dmg_eth_ami,int_sbac_stu_reg.dmg_eth_asn,'\
            'int_sbac_stu_reg.dmg_eth_blk,int_sbac_stu_reg.dmg_eth_pcf,int_sbac_stu_reg.dmg_eth_wht,'\
            'int_sbac_stu_reg.dmg_prg_iep,int_sbac_stu_reg.dmg_prg_lep,int_sbac_stu_reg.dmg_prg_504,'\
@@ -292,7 +292,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\
            'school_name character varying(60),student_guid character varying(30),external_student_ssid character varying(50),'\
            'student_first_name character varying(35),student_middle_name character varying(35),'\
-           'student_last_name character varying(35),gender character varying(6),birthdate_student character varying(10),'\
+           'student_last_name character varying(35),sex character varying(6),birthdate_student character varying(10),'\
            'enrl_grade character varying(10),dmg_eth_hsp boolean,dmg_eth_ami boolean,dmg_eth_asn boolean,dmg_eth_blk boolean,'\
            'dmg_eth_pcf boolean,dmg_eth_wht boolean,dmg_prg_iep boolean,dmg_prg_lep boolean,dmg_prg_504 boolean,'\
            'dmg_sts_ecd boolean,dmg_sts_mig boolean,dmg_multi_race boolean,confirm_code character varying(35),'\
@@ -369,7 +369,7 @@ def get_expected_column_mapping(target_table):
                                                                     ('first_name', 'name_student_first'),
                                                                     ('middle_name', 'name_student_middle'),
                                                                     ('last_name', 'name_student_last'),
-                                                                    ('gender', 'gender_student'),
+                                                                    ('sex', 'sex_student'),
                                                                     ('email', 'email_student'),
                                                                     ('birthdate', 'birthdate_student'),
                                                                     ('grade', 'grade_enrolled'),
@@ -441,7 +441,7 @@ def get_expected_sr_column_and_type_mapping():
                                                              ('student_first_name', Column(src_col='name_student_first', type='character varying(35)')),
                                                              ('student_middle_name', Column(src_col='name_student_middle', type='character varying(35)')),
                                                              ('student_last_name', Column(src_col='name_student_last', type='character varying(35)')),
-                                                             ('gender', Column(src_col='gender_student', type='character varying(6)')),
+                                                             ('sex', Column(src_col='sex_student', type='character varying(6)')),
                                                              ('birthdate', Column(src_col='birthdate_student', type='character varying(10)')),
                                                              ('enrl_grade', Column(src_col='grade_enrolled', type='character varying(10)')),
                                                              ('dmg_eth_hsp', Column(src_col='dmg_eth_hsp', type='boolean')),

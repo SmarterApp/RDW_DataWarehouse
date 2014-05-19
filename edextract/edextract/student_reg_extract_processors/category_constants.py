@@ -4,7 +4,7 @@ __author__ = 'npandey'
 class CategoryNameConstants():
 
     TOTAL = 'Total'
-    GENDER = 'Sex'
+    SEX = 'Sex'
     ETHNICITY = 'Ethnicity'
     RACE = 'Race'
     PROGRAM = 'Program'

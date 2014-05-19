@@ -37,7 +37,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                     'state_name_col': 'Dummy State',
                     'district_name_col': 'West Podunk School District',
                     'school_guid_col': '3333-3333-3333-3333',
-                    'gender_col': 'female',
+                    'sex_col': 'female',
                     'dob_col': '1999-12-22',
                     'eth_hsp_col': True,
                     'sec504_col': False,
@@ -54,7 +54,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                     'state_name_col': 'Dummy State',
                     'district_name_col': 'West Podunk School District',
                     'school_guid_col': '3333-3333-3333-3333',
-                    'gender_col': 'male',
+                    'sex_col': 'male',
                     'dob_col': '1998-01-23',
                     'eth_hsp_col': False,
                     'sec504_col': True,
@@ -137,7 +137,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             student = self.student_reg_files[file_to_load]['test_student']
             target_table = conn.get_table(Constants.SR_TARGET_TABLE)
             query = select([target_table.c.state_name, target_table.c.district_name, target_table.c.school_guid,
-                            target_table.c.gender, target_table.c.birthdate, target_table.c.dmg_eth_hsp,
+                            target_table.c.sex, target_table.c.birthdate, target_table.c.dmg_eth_hsp,
                             target_table.c.dmg_prg_504, target_table.c.academic_year, target_table.c.reg_system_id],
                            and_(target_table.c.student_guid == student['student_guid'], target_table.c.batch_guid == self.batch_id))
             result = conn.execute(query).fetchall()
@@ -145,7 +145,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertEquals(student_data_tuple[0], student['state_name_col'], 'State Name did not match')
             self.assertEquals(student_data_tuple[1], student['district_name_col'], 'District Name did not match')
             self.assertEquals(student_data_tuple[2], student['school_guid_col'], 'School Id did not match')
-            self.assertEquals(student_data_tuple[3], student['gender_col'], 'Gender did not match')
+            self.assertEquals(student_data_tuple[3], student['sex_col'], 'Sex did not match')
             self.assertEquals(student_data_tuple[4], student['dob_col'], 'Date of Birth did not match')
             self.assertEquals(student_data_tuple[5], student['eth_hsp_col'], 'Hispanic Ethnicity should be true')
             self.assertEquals(student_data_tuple[6], student['sec504_col'], 'Section504 status should be false')

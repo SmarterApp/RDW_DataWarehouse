@@ -3,7 +3,7 @@ CLEAN = 'clean'
 CLEAN_UP = 'cleanUpper'
 DATE = 'date'
 SCHOOL_TY = 'schoolType'
-GENDER = 'gender'
+SEX = 'sex'
 YN = 'yn'
 
 COLUMNS = ('phase', 'source_table', 'source_column', 'target_table', 'target_column', 'transformation_rule', 'stored_proc_name')
@@ -62,7 +62,7 @@ ref_table_conf = {
         ('1', 'lz_csv', 'date_assessed', 'stg_sbac_asmt_outcome', 'date_assessed', 'date', None),
         ('1', 'lz_csv', 'dob_student', 'stg_sbac_asmt_outcome', 'birthdate_student', 'date', None),
         ('1', 'lz_csv', 'email_student', 'stg_sbac_asmt_outcome', 'email_student', 'clean', None),
-        ('1', 'lz_csv', 'gender_student', 'stg_sbac_asmt_outcome', 'gender_student', 'gender', None),
+        ('1', 'lz_csv', 'gender_student', 'stg_sbac_asmt_outcome', 'sex_student', 'gender', None),
         ('1', 'lz_csv', 'grade_asmt', 'stg_sbac_asmt_outcome', 'grade_asmt', 'clean', None),
         ('1', 'lz_csv', 'grade_enrolled', 'stg_sbac_asmt_outcome', 'grade_enrolled', 'clean', None),
         ('1', 'lz_csv', 'guid_asmt', 'stg_sbac_asmt_outcome', 'guid_asmt', 'clean', None),
@@ -145,7 +145,7 @@ ref_table_conf = {
         ('3', 'stg_sbac_asmt_outcome', 'name_student_first', 'int_sbac_asmt_outcome', 'name_student_first', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'name_student_middle', 'int_sbac_asmt_outcome', 'name_student_middle', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'name_student_last', 'int_sbac_asmt_outcome', 'name_student_last', None, 'substr({src_column}, 1, {length})'),
-        ('3', 'stg_sbac_asmt_outcome', 'gender_student', 'int_sbac_asmt_outcome', 'gender_student', None, 'substr({src_column}, 1, {length})'),
+        ('3', 'stg_sbac_asmt_outcome', 'sex_student', 'int_sbac_asmt_outcome', 'sex_student', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'email_student', 'int_sbac_asmt_outcome', 'email_student', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'birthdate_student', 'int_sbac_asmt_outcome', 'birthdate_student', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'grade_enrolled', 'int_sbac_asmt_outcome', 'grade_enrolled', None, 'substr({src_column}, 1, {length})'),
@@ -262,7 +262,7 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', 'name_student_first', 'dim_student', 'first_name', None, None),
         ('4', 'int_sbac_asmt_outcome', 'name_student_middle', 'dim_student', 'middle_name', None, None),
         ('4', 'int_sbac_asmt_outcome', 'name_student_last', 'dim_student', 'last_name', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'gender_student', 'dim_student', 'gender', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'sex_student', 'dim_student', 'sex', None, None),
         ('4', 'int_sbac_asmt_outcome', 'email_student', 'dim_student', 'email', None, None),
         ('4', 'int_sbac_asmt_outcome', 'birthdate_student', 'dim_student', 'birthdate', None, None),
         ('4', 'int_sbac_asmt_outcome', 'grade_enrolled', 'dim_student', 'grade', None, None),
@@ -334,7 +334,7 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt_outcome', 'asmt_type', 'fact_asmt_outcome_vw', 'asmt_type', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_subject', 'fact_asmt_outcome_vw', 'asmt_subject', None, None),
         ('4', 'int_sbac_asmt_outcome', 'asmt_year', 'fact_asmt_outcome_vw', 'asmt_year', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'gender_student', 'fact_asmt_outcome_vw', 'gender', None, None),
+        ('4', 'int_sbac_asmt_outcome', 'sex_student', 'fact_asmt_outcome_vw', 'sex', None, None),
         ('4', 'int_sbac_asmt_outcome', 'dmg_eth_hsp', 'fact_asmt_outcome_vw', 'dmg_eth_hsp', None, None),
         ('4', 'int_sbac_asmt_outcome', 'dmg_eth_ami', 'fact_asmt_outcome_vw', 'dmg_eth_ami', None, None),
         ('4', 'int_sbac_asmt_outcome', 'dmg_eth_asn', 'fact_asmt_outcome_vw', 'dmg_eth_asn', None, None),

@@ -64,7 +64,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
                      Column('last_name', String(256), nullable=False),
-                     Column('gender', String(10), nullable=True),
+                     Column('sex', String(10), nullable=True),
                      Column('email', String(256), nullable=True),
                      Column('birthdate', String(8), nullable=False),
                      Column('grade', String(10), nullable=False),  # TODO: Delete this field
@@ -204,7 +204,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('asmt_type', String(32), nullable=False),
                                   Column('asmt_year', SmallInteger, nullable=False),
                                   Column('asmt_subject', String(100)),
-                                  Column('gender', String(10), nullable=True),
+                                  Column('sex', String(10), nullable=True),
                                   # Add 10 demographic columns
                                   Column('dmg_eth_hsp', Boolean, nullable=True),
                                   Column('dmg_eth_ami', Boolean, nullable=True),
@@ -241,7 +241,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_vw_504', assessment_outcome_vw.c.dmg_prg_504, unique=False)
     Index('fact_asmt_outcome_vw_tt1', assessment_outcome_vw.c.dmg_prg_tt1, unique=False)
     Index('fact_asmt_outcome_vw_iep', assessment_outcome_vw.c.dmg_prg_iep, unique=False)
-    Index('fact_asmt_outcome_vw_gender', assessment_outcome_vw.c.gender, unique=False)
+    Index('fact_asmt_outcome_vw_sex', assessment_outcome_vw.c.sex, unique=False)
     Index('fact_asmt_outcome_vw_cpop_stateview', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
@@ -318,7 +318,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('student_first_name', String(35), nullable=True),
                                  Column('student_middle_name', String(35), nullable=True),
                                  Column('student_last_name', String(35), nullable=True),
-                                 Column('gender', String(6), nullable=False),
+                                 Column('sex', String(6), nullable=False),
                                  Column('birthdate', String(10), nullable=True),
                                  Column('enrl_grade', String(10), nullable=False),
                                  Column('dmg_eth_hsp', Boolean, nullable=False),

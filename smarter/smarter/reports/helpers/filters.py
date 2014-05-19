@@ -25,13 +25,13 @@ FILTERS_ETHNICITY_WHITE = '6'
 FILTERS_ETHNICITY_MULTI = '7'
 FILTERS_ETHNICITY_NOT_STATED = '0'
 
-FILTERS_GENDER_MALE = 'male'
-FILTERS_GENDER_FEMALE = 'female'
-FILTERS_GENDER_NOT_STATED = 'not_stated'
+FILTERS_SEX_MALE = 'male'
+FILTERS_SEX_FEMALE = 'female'
+FILTERS_SEX_NOT_STATED = 'not_stated'
 
 FILTERS_GRADE = 'grade'
 FILTERS_ETHNICITY = 'ethnicity'
-FILTERS_GENDER = 'gender'
+FILTERS_SEX = 'sex'
 
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
@@ -83,12 +83,12 @@ FILTERS_CONFIG = {
             "pattern": "^(3|4|5|6|7|8|11)$"
         }
     },
-    FILTERS_GENDER: {
+    FILTERS_SEX: {
         "type": "array",
         "required": False,
         "items": {
             "type": "string",
-            "pattern": "^(" + FILTERS_GENDER_MALE + "|" + FILTERS_GENDER_FEMALE + "|" + FILTERS_GENDER_NOT_STATED + ")$"
+            "pattern": "^(" + FILTERS_SEX_MALE + "|" + FILTERS_SEX_FEMALE + "|" + FILTERS_SEX_NOT_STATED + ")$"
         }
     }
 }
@@ -148,7 +148,7 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
         filter_eth = filters.get(FILTERS_ETHNICITY)
         if filter_eth is not None:
             query = query.where(fact_asmt_outcome_vw.c.dmg_eth_derived.in_(filter_eth))
-        filter_gender = filters.get(FILTERS_GENDER)
-        if filter_gender is not None:
-            query = query.where(fact_asmt_outcome_vw.c.gender.in_(filter_gender))
+        filter_sex = filters.get(FILTERS_SEX)
+        if filter_sex is not None:
+            query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
     return query

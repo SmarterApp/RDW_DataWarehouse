@@ -6,9 +6,9 @@ Created on Jul 16, 2013
 import unittest
 from sqlalchemy.sql.expression import true, false, null, select
 from smarter.reports.helpers.filters import _get_filter,\
-    has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, FILTERS_GENDER,\
-    FILTERS_GENDER_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
-    FILTERS_GENDER_MALE, FILTERS_ETHNICITY_AMERICAN,\
+    has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, FILTERS_SEX,\
+    FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
+    FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN,\
     FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
     UnittestEdcoreDBConnection
@@ -48,7 +48,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         self.assertTrue(has_filters({FILTERS_PROGRAM_504: 'a'}))
         self.assertTrue(has_filters({FILTERS_PROGRAM_LEP: 'a'}))
         self.assertTrue(has_filters({FILTERS_ETHNICITY: 'a'}))
-        self.assertTrue(has_filters({FILTERS_GENDER: 'a'}))
+        self.assertTrue(has_filters({FILTERS_SEX: 'a'}))
         self.assertTrue(has_filters({FILTERS_GRADE: 'a'}))
 
     def test_apply_filter_to_query_with_no_filters(self):
@@ -109,7 +109,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
-            query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_GENDER: [FILTERS_GENDER_FEMALE, FILTERS_GENDER_MALE]})
+            query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_SEX: [FILTERS_SEX_FEMALE, FILTERS_SEX_MALE]})
             self.assertIsNotNone(query._whereclause)
             self.assertIn("fact_asmt_outcome_vw.gender", str(query._whereclause))
 
@@ -118,7 +118,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
-            filters = {FILTERS_GENDER: [FILTERS_GENDER_FEMALE],
+            filters = {FILTERS_SEX: [FILTERS_SEX_FEMALE],
                        FILTERS_PROGRAM_IEP: [NOT_STATED],
                        FILTERS_ETHNICITY: [FILTERS_ETHNICITY_MULTI]}
             query = apply_filter_to_query(query, fact_asmt_outcome, filters)

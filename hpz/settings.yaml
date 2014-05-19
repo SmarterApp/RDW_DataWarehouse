@@ -65,8 +65,16 @@ common:
 
 development:
   '[app:main]':
-    mode: dev
+    base.url: http://localhost:6544
+    hpz:
+      db:
+        schema_name: hpz
+        url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
 
 jenkins_dev:
     '[app:main]':
-      mode: test
+      base.url: http://localhost:80
+      hpz:
+        db:
+          schema_name: hpz
+          url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz

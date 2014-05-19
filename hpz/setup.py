@@ -12,7 +12,9 @@ requires = [
     'waitress==0.8.7',
     'SQLAlchemy == 0.8.3',
     'py-postgresql == 1.1.0',
-    'config']
+    'zope.sqlalchemy==0.7.3',
+    'config',
+    'edschema']
 
 setup(name='hpz',
       version='0.1',

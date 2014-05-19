@@ -93,8 +93,8 @@ class Test_Update_Delete(unittest.TestCase):
             expected_asmt_score = [(1500,)]
             self.assertEquals(new_asmt_score, expected_asmt_score)
 
-            # Validate that delete and update also works for fact_asmt_outcome_primary
-            fact_asmt = ed_connector.get_table('fact_asmt_outcome_primary')
+            # Validate that delete and update also works for fact_asmt_outcome
+            fact_asmt = ed_connector.get_table('fact_asmt_outcome')
             output_data = select([fact_asmt.c.rec_status]).where(fact_asmt.c.student_guid == '60ca47b5-527e-4cb0-898d-f754fd7099a0')
             output_table = ed_connector.execute(output_data).fetchall()
             #verify delete record

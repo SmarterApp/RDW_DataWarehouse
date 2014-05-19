@@ -86,7 +86,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
             self.expected_pk_val_for_inst = pre_prod_table[0][1]
             self.expected_pk_val_for_asmt = pre_prod_table[0][2]
 
-            lean_table = ed_connector.get_table('fact_asmt_outcome_primary')
+            lean_table = ed_connector.get_table('fact_asmt_outcome')
             pre_prod_data = select([lean_table.c.student_rec_id, fact_table.c.inst_hier_rec_id, fact_table.c.asmt_rec_id])
             pre_prod_table = ed_connector.execute(pre_prod_data).fetchall()
             self.lean_pk_val_for_student = pre_prod_table[0][0]

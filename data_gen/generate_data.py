@@ -391,7 +391,7 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                 try:
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw', fao_out_cols,
                                                            rslts)
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome',
                                                            fao_pri_out_cols, rslts)
                 except Exception as e:
                     print('PostgreSQL EXCEPTION ::: %s' % str(e))

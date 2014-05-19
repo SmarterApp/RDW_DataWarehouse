@@ -64,14 +64,14 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Validate edware database : value in status column chnage to D from C.
     def validate_edware_database(self, schema_name):
         with get_target_connection(self.tenant, schema_name) as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome_vw')
-            prod_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
+            fact_table_vw = ed_connector.get_table('fact_asmt_outcome_vw')
+            prod_output_data = select([fact_table_vw.c.rec_status]).where(fact_table_vw.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_output_table = ed_connector.execute(prod_output_data).fetchall()
             expected_status_val_D = [('D',)]
             self.assertEquals(prod_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
 
-            fact_table_pr = ed_connector.get_table('fact_asmt_outcome_primary')
-            prod_data = select([fact_table_pr.c.rec_status]).where(fact_table_pr.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
+            fact_table = ed_connector.get_table('fact_asmt_outcome')
+            prod_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_table = ed_connector.execute(prod_data).fetchall()
             self.assertEquals(prod_table, expected_status_val_D, 'Status is wrong in fact_asmt_table_primary for delete record')
 

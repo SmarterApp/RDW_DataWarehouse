@@ -8,7 +8,6 @@ Define the output format for SBAC assessment and registration data.
 FAO_FORMAT = {'format': 'csv',
               'name': 'fact_asmt_outcome_vw.csv',
               'columns': [{'name': 'asmt_outcome_vw_rec_id', 'val': 'assessment_outcome.rec_id'},
-                          {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                           {'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
                           {'name': 'asmt_guid', 'val': 'assessment.guid_sr'},
                           {'name': 'student_rec_id', 'val': 'student.rec_id'},
@@ -83,7 +82,8 @@ FAO_FORMAT = {'format': 'csv',
                           {'name': 'acc_scribe_nonembed', 'val': 'assessment_outcome.acc_scribe_nonembed'},
                           {'name': 'acc_speech_to_text_nonembed',
                                    'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
-                          {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'}]}
+                          {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'},
+                          {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 FAO_PRI_FORMAT = {'format': 'csv',
                   'name': 'fact_asmt_outcome.csv',
@@ -152,7 +152,6 @@ FAO_PRI_FORMAT = {'format': 'csv',
 DIM_STUDENT_FORMAT = {'format': 'csv',
                       'name': 'dim_student.csv',
                       'columns': [{'name': 'student_rec_id', 'val': 'student.rec_id'},
-                                  {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                   {'name': 'student_guid', 'val': 'student.guid_sr'},
                                   {'name': 'first_name', 'val': 'student.first_name'},
                                   {'name': 'middle_name', 'val': 'student.middle_name'},
@@ -166,12 +165,12 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
                                   {'name': 'school_guid', 'val': 'school.guid_sr'},
                                   {'name': 'from_date', 'val': '20130901'},
                                   {'name': 'to_date', 'val': '99991231'},
-                                  {'name': 'rec_status', 'val': 'C'}]}
+                                  {'name': 'rec_status', 'val': 'C'},
+                                  {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 DIM_STUDENT_DEMO_FORMAT = {'format': 'csv',
                            'name': 'dim_student_demographics.csv',
                            'columns': [{'name': 'student_demographic_rec_id', 'val': 'student.rec_id'},
-                                       {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                        {'name': 'student_guid', 'val': 'student.guid_sr'},
                                        {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
                                        {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
@@ -186,12 +185,12 @@ DIM_STUDENT_DEMO_FORMAT = {'format': 'csv',
                                        {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'},
                                        {'name': 'from_date', 'val': '20130901'},
                                        {'name': 'to_date', 'val': '99991231'},
-                                       {'name': 'rec_status', 'val': 'C'}]}
+                                       {'name': 'rec_status', 'val': 'C'},
+                                       {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 DIM_INST_HIER_FORMAT = {'format': 'csv',
                         'name': 'dim_inst_hier.csv',
                         'columns': [{'name': 'inst_hier_rec_id', 'val': 'institution_hierarchy.rec_id'},
-                                    {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                     {'name': 'state_name', 'val': 'state.name'},
                                     {'name': 'state_code', 'val': 'state.code'},
                                     {'name': 'district_guid', 'val': 'district.guid_sr'},
@@ -201,12 +200,12 @@ DIM_INST_HIER_FORMAT = {'format': 'csv',
                                     {'name': 'from_date', 'val': 'institution_hierarchy.from_date',
                                      'filter': 'date_Ymd'},
                                     {'name': 'to_date', 'val': 'institution_hierarchy.to_date', 'filter': 'date_Ymd'},
-                                    {'name': 'rec_status', 'val': 'C'}]}
+                                    {'name': 'rec_status', 'val': 'C'},
+                                    {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 DIM_ASMT_FORMAT = {'format': 'csv',
                    'name': 'dim_asmt.csv',
                    'columns': [{'name': 'asmt_rec_id', 'val': 'assessment.rec_id'},
-                               {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                {'name': 'asmt_guid', 'val': 'assessment.guid_sr'},
                                {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
                                {'name': 'asmt_period', 'val': 'assessment.period'},
@@ -246,12 +245,12 @@ DIM_ASMT_FORMAT = {'format': 'csv',
                                {'name': 'from_date', 'val': 'assessment.from_date', 'filter': 'date_Ymd'},
                                {'name': 'to_date', 'val': 'assessment.to_date', 'filter': 'date_Ymd'},
                                {'name': 'effective_date', 'val': 'assessment.effective_date', 'filter': 'date_Ymd'},
-                               {'name': 'rec_status', 'val': 'C'}]}
+                               {'name': 'rec_status', 'val': 'C'},
+                               {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 STUDENT_REG_FORMAT = {'format': 'csv',
                       'name': 'student_reg.csv',
                       'columns': [{'name': 'student_reg_rec_id', 'val': 'student.rec_id_sr'},
-                                  {'name': 'batch_guid', 'val': 'BATCH_GUID'},
                                   {'name': 'state_name', 'val': 'state.name'},
                                   {'name': 'state_code', 'val': 'state.code'},
                                   {'name': 'district_guid', 'val': 'district.guid_sr'},
@@ -292,7 +291,8 @@ STUDENT_REG_FORMAT = {'format': 'csv',
                                   {'name': 'academic_year', 'val': 'registration_system.academic_year'},
                                   {'name': 'extract_date', 'val': 'registration_system.extract_date',
                                    'filter': 'date_Y_m_d'},
-                                  {'name': 'reg_system_id', 'val': 'registration_system.sys_guid'}]}
+                                  {'name': 'reg_system_id', 'val': 'registration_system.sys_guid'},
+                                  {'name': 'batch_guid', 'val': 'BATCH_GUID'}]}
 
 ASMT_JSON_FORMAT = {'format': 'json',
                     'name': 'METADATA_ASMT_ID_<GUID>.json',

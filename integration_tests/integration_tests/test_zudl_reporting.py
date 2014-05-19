@@ -195,7 +195,6 @@ class TestUDLReportingIntegration(unittest.TestCase):
         command = "python {driver_path} --loop-once".format(driver_path=driver_path)
                 # Run the UDL pipeline using the command
         p = subprocess.Popen(command, shell=True)
-        p.wait()
 
     def run_udl_pipeline_on_single_file(self, file_path):
         """

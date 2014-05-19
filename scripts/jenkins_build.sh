@@ -467,8 +467,6 @@ function main {
             UT_PATH="$MAIN_PKG"
             if [ ${MAIN_PKG:=""} == "edudl2" ]; then
                 setup_for_udl
-            elif [ ${MAIN_PKG:=""} == "hpz" ]; then
-                setup_for_hpz
             fi
             run_unit_tests $UT_PATH
         fi

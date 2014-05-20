@@ -12,7 +12,11 @@ class FileRegistry:
         registration_info = {'uuid': str(registration_id)}
 
         with get_hpz_connection() as conn:
-            file_reg_table = conn.get_table(table_name='file_registration')
+            file_reg_table = conn.get_table(table_name='file_registry')
             conn.execute(file_reg_table.insert().values(registration_info))
 
         return registration_id
+
+    @staticmethod
+    def register_file(registration_id, file_path):
+        pass

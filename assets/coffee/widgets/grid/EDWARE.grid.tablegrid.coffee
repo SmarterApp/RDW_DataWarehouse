@@ -41,6 +41,18 @@ define [
         lastFocus = "##{this.id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
+      # load more data when focus on first and last row by triggering
+      # scrolling event.
+      bodyTable = $('.ui-jqgrid-btable')
+      bodyDiv = bodyTable.closest('.ui-jqgrid-bdiv')
+      bodyTable.on 'focus', 'tr:last-child ', ->
+        offset = bodyDiv.scrollTop()
+        bodyDiv.scrollTop(offset + 10)
+      # The first row that contains user content is
+      # actually the second `tr`
+      bodyTable.on 'focus', 'tr:nth-child(2) ', ->
+        offset = bodyDiv.scrollTop()
+        bodyDiv.scrollTop(offset - 10)
 
     setSortedColumn: (columns) ->
       sorted = this.options.sort

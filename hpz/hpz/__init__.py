@@ -1,6 +1,6 @@
 from pyramid.config import Configurator
 import logging
-from hpz import frs
+from hpz import frs, swi
 from hpz.database.hpz_connector import initialize_db
 
 logger = logging.getLogger(__name__)
@@ -17,9 +17,8 @@ def main(global_config, **settings):
 
     # include add routes from frs. Calls includeme
     config.include(frs)
+    config.include(swi)
 
-    # Adding a dummy route for download endpoint
-    config.add_route('download', '/{reg_id}')
     config.scan()
 
     logger.info("HPZ Started")

@@ -372,6 +372,28 @@ ASMT_JSON_FORMAT = {'format': 'json',
                         }
                     }}
 
+LZ_ITEMDATA_FORMAT = {'format': 'csv',
+                      'name': 'STUDENT_<GUID>.csv',
+                      'columns': [{'name': 'key', 'val': 'assessment_outcome_item_data.key'},
+                                  {'name': 'student_guid', 'val': 'assessment_outcome_item_data.student_guid'},# 'student.guid_sr'},
+                                  {'name': 'segmentId', 'val': 'assessment_outcome_item_data.segment_id'},
+                                  {'name': 'position', 'val': 'assessment_outcome_item_data.position'},
+                                  {'name': 'clientId', 'val': '3b6a2490'},
+                                  {'name': 'operational', 'val': '0'},
+                                  {'name': 'isSelected', 'val': '1'},
+                                  {'name': 'format', 'val': 'assessment_outcome_item_data.format'},
+                                  {'name': 'score', 'val': '0'},
+                                  {'name': 'scoreStatus', 'val': '1'},
+                                  {'name': 'adminDate', 'val': '2013-05-03 16:21:44'},
+                                  {'name': 'numberVisits', 'val': '1'},
+                                  {'name': 'strand', 'val': 'MA-Undesignated'},
+                                  {'name': 'contentLevel', 'val': 'MA-Undesignated'},
+                                  {'name': 'pageNumber', 'val': '1'},
+                                  {'name': 'pageVisits', 'val': '0'},
+                                  {'name': 'pageTime', 'val': '0'},
+                                  {'name': 'dropped', 'val': '0'}
+                      ]}
+
 LZ_REALDATA_FORMAT = {'format': 'csv',
                       'name': 'REALDATA_ASMT_ID_<GUID>.csv',
                       'columns': [{'name': 'guid_asmt', 'val': 'assessment.guid_sr'},

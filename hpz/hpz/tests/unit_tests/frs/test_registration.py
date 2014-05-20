@@ -21,7 +21,7 @@ class RegistrationTest(unittest.TestCase):
     def tearDown(self):
         self.__request = None
 
-    @patch('hpz.frs.registration_service.persist_registration_request')
+    @patch('hpz.frs.registration_service.FileRegistry.register_request')
     def test_registration(self, persist_patch):
 
         persist_patch.return_value = None

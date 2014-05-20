@@ -16,6 +16,7 @@ import sbac_data_generation.generators.hierarchy as hier_gen
 import sbac_data_generation.generators.population as pop_gen
 
 from sbac_data_generation.util.id_gen import IDGen
+import sbac_data_generation.config.cfg as sbac_config
 
 ID_GEN = IDGen()
 
@@ -116,6 +117,30 @@ def test_create_assessment_object_interim_spring():
     assert asmt.from_date == datetime.date(2015, 3, 15)
     assert asmt.to_date == datetime.date(9999, 12, 31)
 
+
+def test_create_assessment_object_item_data():
+    asmt = generate_data.create_assessment_object('INTERIM COMPREHENSIVE', 'Spring', 2015, 'ELA', ID_GEN)
+
+    assert len(asmt.item_bank) == sbac_config.ASMT_ITEM_BANK_SIZE
+
+
+def test_create_assessment_outcome_object_item_data():
+    # Create objects
+    asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Small Average', state, ID_GEN)
+    school = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    student = pop_gen.generate_student(school, 3, ID_GEN, 2015)
+    inst_hier = hier_gen.generate_institution_hierarchy(state, district, school, ID_GEN)
+    outcomes = {}
+
+    # Create outcomes
+    generate_data.create_assessment_outcome_object(student, asmt, inst_hier, ID_GEN, outcomes, skip_rate=0,
+                                                   retake_rate=0, delete_rate=0, update_rate=0)
+
+    # Tests
+    assert len(outcomes) == 1
+    assert len(outcomes[asmt.guid_sr][0].item_level_data) == sbac_config.ITEMS_PER_ASMT
 
 def test_create_assessment_outcome_object_skipped():
     # Create objects

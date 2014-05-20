@@ -69,6 +69,8 @@ development:
       db:
         schema_name: hpz
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
+      frs:
+        upload_base_path: /opt/edware/hpz/uploads
 
 jenkins_dev:
     '[app:main]':
@@ -76,3 +78,5 @@ jenkins_dev:
         db:
           schema_name: hpz
           url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
+      frs:
+        upload_base_path: /opt/edware/hpz/uploads

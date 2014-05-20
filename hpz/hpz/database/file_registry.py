@@ -32,6 +32,8 @@ class FileRegistry:
     def get_file_path(registration_id):
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name='file_registry')
-            registration_info = conn.execute(file_reg_table.select().where(file_reg_table.c.uuid == registration_id))
+            result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == registration_id))
+
+            registration_info = result.fetchone()
 
             return registration_info['file_path']

@@ -87,4 +87,4 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(os.path.exists(test_file.name + '.done'))
         with open(test_file.name + '.done') as f:
             line = f.readline()
-            self.assertEqual(line.strip(), '715a9aa9257aadb001e1b85c858b0a91'  + ' ' +  os.path.basename(test_file.name))
+            self.assertEqual(line.strip(), '715a9aa9257aadb001e1b85c858b0a91' + ' ' + os.path.basename(test_file.name))

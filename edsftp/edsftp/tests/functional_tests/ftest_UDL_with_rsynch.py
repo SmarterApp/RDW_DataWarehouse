@@ -30,19 +30,16 @@ class rsynch_validation(unittest.TestCase):
         # To upload the file
         srv.put(local_file, 'filedrop/' + os.path.basename(local_file))
 
-        #Assert file is loded to remote server (appserver5)
-
         data = srv.listdir('/filedrop')
         print("new file")
         print(len(data))
-        if (len(data) != 0):
+        if len(data) != 0:
             for i in data:
                 self.assertEqual(i, 'test_source_file_tar_gzipped.tar.gz.gpg')
 
         # Closes the connection
         srv.close()
 
-# SSH to app server 6 to make sure that file copied over.
     def testnew(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -51,5 +48,6 @@ class rsynch_validation(unittest.TestCase):
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('ls /opt/wgen/edware-udl/zones/landing/history/test_tenant')
         print("output", ssh_stdout.read())
         ssh.close()
+
 if __name__ == '__main__':
     unittest.main()

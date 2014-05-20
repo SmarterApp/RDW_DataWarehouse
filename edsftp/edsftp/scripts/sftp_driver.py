@@ -16,8 +16,9 @@ from edsftp.src.initialize_sftp_user import create_sftp_user, delete_user
 from edsftp.scripts.sftp_watcher import sftp_file_sync
 from edcore.utils.utils import read_ini, get_config_from_ini
 from edcore.utils.utils import create_daemon
+from edcore import DEFAULT_LOGGER_NAME
 
-logger = logging.getLogger('edsftp')
+logger = logging.getLogger(DEFAULT_LOGGER_NAME)
 
 
 def run_sftp_sync_process(daemon_mode, sftp_conf, pid_file):

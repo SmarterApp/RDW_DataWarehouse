@@ -26,23 +26,6 @@ class ExtractionError(EdExtractError):
         EdExtractError.__init__(self, self.msg)
 
 
-class RemoteCopyError(EdExtractError):
-    '''
-    a custom exception raised when a sftp failed
-    '''
-    def __init__(self, msg='Remote Copy for Extraction failed'):
-        self.msg = msg
-        EdExtractError.__init__(self, self.msg)
-
-
-class NotForWindowsException(Exception):
-    '''
-    Exception for Windows users
-    '''
-    def __init__(self, message):
-        Exception.__init(self, message)
-
-
 class GPGException(Exception):
     def __init__(self, msg='gpg execution error'):
         self.msg = msg

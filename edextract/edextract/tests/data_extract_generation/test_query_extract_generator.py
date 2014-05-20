@@ -71,7 +71,7 @@ class TestQueryExtractGenerator(Unittest_with_edcore_sqlite, Unittest_with_stats
         self.assertEqual(data['asmt_guid'], '7d10d26b-b013-4cdd-a916-5d577e895cff')
 
     def test_generate_csv_data_no_result(self):
-        #Results are empty
+        # Results are empty
         results = self.dummy_empty_iterator()
 
         header, data = _generate_csv_data(results)

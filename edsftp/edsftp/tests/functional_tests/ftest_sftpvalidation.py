@@ -73,20 +73,20 @@ class sftpvalidation(unittest.TestCase):
 
     def sftp_cleanup(self):
 
-        #For clean up zones and base directories
+        # For clean up zones and base directories
         configure_sftp_zone.cleanup(self.test_sftp_conf)
         self.assertFalse(os.path.exists(self.sftp_zone_path))
         self.assertFalse(os.path.exists(self.sftp_arrivals_path))
         self.assertFalse(os.path.exists(self.sftp_departures_path))
 
-        #for clean up users
+        # for clean up users
         initialize_sftp_user. delete_user('arrival_user')
         initialize_sftp_user. delete_user('departure_user')
 
-        #for clean up tenant
+        # for clean up tenant
         initialize_sftp_tenant.remove_tenant('tenant_dir', self.test_sftp_conf)
 
-        #  clean up the groups
+        # clean up the groups
         configure_sftp_groups.cleanup(self.test_sftp_conf)
         for name in self.test_sftp_conf['groups']:
             if sys.platform == 'linux':

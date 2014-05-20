@@ -74,5 +74,4 @@ class TestEdcoreConnector(Unittest_with_edcore_sqlite):
         self.assertEqual(dim_student.name, 'dim_student')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

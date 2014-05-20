@@ -57,5 +57,4 @@ class TestTenant(unittest.TestCase):
         self.assertIn('CC', states)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

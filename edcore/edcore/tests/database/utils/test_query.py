@@ -72,5 +72,4 @@ class TestQuery(Unittest_with_stats_sqlite_no_data_load):
             self.assertEqual(results[0][UdlStatsConstants.LOAD_TYPE], 'CD')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

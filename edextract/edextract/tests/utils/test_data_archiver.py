@@ -137,5 +137,4 @@ class Test_FileUtils(unittest.TestCase):
             self.assertNotEqual(os.stat(outputfile).st_size, 0)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

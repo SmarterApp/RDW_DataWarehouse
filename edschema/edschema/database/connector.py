@@ -11,6 +11,8 @@ from sqlalchemy import Table
 from sqlalchemy import schema
 from collections import OrderedDict
 import logging
+from sqlalchemy.exc import DatabaseError
+import time
 
 
 logger = logging.getLogger(__name__)
@@ -137,8 +139,24 @@ class DBConnection(ConnectionBase):
         dbUtil = component.queryUtility(IDbUtil, name=self.__name)
         dbUtil.set_metadata(metadata)
 
-    def execute(self, statement, *multiparams, stream_results=False, **params):
-        return self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)
+    def execute(self, statement, *multiparams, stream_results=False, tries=0, **params):
+        try:
+            results = self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)
+        except DatabaseError as err:
+            logger.error(err)
+            # Allow an one time retry
+            if tries < 1:
+                time.sleep(10)
+                if err.connection_invalidated:
+                    logger.error("Connection was invalidated.  Will reconnect.")
+                    self.close_connection()
+                    self.__connection = self.get_engine().connect()
+                # Retry query
+                results = self.execute(statement, *multiparams, stream_results=stream_results, tries=tries + 1, **params)
+            else:
+                logger.error("Maximum retries exhausted.")
+                raise err
+        return results
 
     def get_transaction(self):
         """

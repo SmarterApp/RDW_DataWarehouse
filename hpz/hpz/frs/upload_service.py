@@ -1,11 +1,14 @@
-__author__ = 'ablum, tshewchuk'
 """
 This module describes the file upload endpoint for HPZ.
 """
 
+__author__ = 'ablum,'
+__author__ = 'tshewchuk'
+
 from pyramid.response import Response
 from pyramid.view import view_config
 import os
+from hpz.database.file_registry import FileRegistry
 
 
 @view_config(route_name='files', renderer='json', request_method='POST')
@@ -25,5 +28,7 @@ def file_upload_service(context, request):
                 if not data:
                     break
                 new_file.write(data)
+
+    FileRegistry.file_upload_request(registration_id, file_pathname)
 
     return Response()

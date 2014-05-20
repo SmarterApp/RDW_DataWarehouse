@@ -7,6 +7,7 @@ An assessment generator for the SBAC assessment.
 
 import datetime
 import random
+from collections import OrderedDict
 
 import data_generation.config.hierarchy as hierarchy_config
 import data_generation.generators.assessment as gen_asmt_generator
@@ -14,6 +15,7 @@ import sbac_data_generation.config.cfg as sbac_config
 
 from sbac_data_generation.model.assessment import SBACAssessment
 from sbac_data_generation.model.assessmentoutcome import SBACAssessmentOutcome
+from sbac_data_generation.model.itemdata import SBACAssessmentOutcomeItemData
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.student import SBACStudent
 from sbac_data_generation.util.assessment_stats import Properties, RandomLevelByDemographics
@@ -56,6 +58,12 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     elif 'Spring' in period:
         year_adj = 0
         period_month = 3
+
+    #Generate Assessment Item Bank
+    item_bank = {}
+    for i in range(1, sbac_config.ASMT_ITEM_BANK_SIZE+1):
+        item_bank[i] = id_gen.get_rec_id('assmt_item_id')
+
 
     # Set other specifics
     sa.rec_id = id_gen.get_rec_id('assessment')
@@ -100,6 +108,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     sa.effective_date = datetime.date(asmt_year - year_adj, period_month, 15)
     sa.from_date = from_date if from_date is not None else sa.effective_date
     sa.to_date = to_date if to_date is not None else sbac_config.ASMT_TO_DATE
+    sa.item_bank = item_bank
 
     return sa
 
@@ -128,6 +137,26 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     # Set other specifics
     sao.rec_id = id_gen.get_rec_id('assessment_outcome')
     sao.inst_hierarchy = inst_hier
+
+    #Generate assessment outcome Item-level data
+    item_data_dict = {}
+    for i in range(1, sbac_config.ITEMS_PER_ASMT+1):
+        pos_item = random.choice(list(assessment.item_bank.keys()))
+        while pos_item in item_data_dict:
+            pos_item = random.choice(list(assessment.item_bank.keys()))
+        item_id = assessment.item_bank[pos_item]
+        item_data_dict[pos_item] = item_id
+
+    od = OrderedDict(sorted(item_data_dict.items()))
+
+    segment_id = '(SBAC)SBAC-MG110PT-S2-'+assessment.subject+'-'+str(student.grade)+'-'+assessment.period[0:-5]+'-'+str(assessment.period_year-1)+'-'+str(assessment.period_year)
+
+    for pos in od:
+        item_format = random.choice(sbac_config.ASMT_ITEM_BANK_FORMAT)
+        item_level_data = SBACAssessmentOutcomeItemData(student_guid=student.guid_sr,
+                                                        key=od[pos], segment_id=segment_id,
+                                                        position=pos, format=item_format)
+        sao.item_level_data.append(item_level_data)
 
     # Create the date taken
     year_adj = 1

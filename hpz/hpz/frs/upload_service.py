@@ -8,7 +8,7 @@ from pyramid.view import view_config
 import os
 
 
-@view_config(route_name='upload', renderer='json', request_method='POST')
+@view_config(route_name='files', renderer='json', request_method='POST')
 def file_upload_service(context, request):
 
     registration_id = request.matchdict['registration_id']

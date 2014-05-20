@@ -28,4 +28,3 @@ class FileRegistry:
             registration_info = conn.execute(file_reg_table.select().where(file_reg_table.c.uuid == registration_id))
 
             return registration_info['file_path']
-

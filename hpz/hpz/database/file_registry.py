@@ -20,7 +20,7 @@ class FileRegistry:
         return registration_id
 
     @staticmethod
-    def register_file(registration_id, file_path):
+    def file_upload_request(registration_id, file_path):
         registration_info = {DatabaseConstants.FILE_PATH: file_path,
                              DatabaseConstants.CREATION_DATE: datetime.date()}
 

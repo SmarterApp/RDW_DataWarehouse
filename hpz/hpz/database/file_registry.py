@@ -20,3 +20,12 @@ class FileRegistry:
     @staticmethod
     def register_file(registration_id, file_path):
         pass
+
+    @staticmethod
+    def get_file_path(registration_id):
+        with get_hpz_connection() as conn:
+            file_reg_table = conn.get_table(table_name='file_registry')
+            registration_info = conn.execute(file_reg_table.select().where(file_reg_table.c.uuid == registration_id))
+
+            return registration_info['file_path']
+

@@ -6,7 +6,8 @@ from distutils.core import run_setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-dependencies = ['edcore']
+dependencies = ['edcore',
+                'edapi']
 
 
 for dependency in dependencies:

@@ -43,7 +43,6 @@ class ValidateMultiFiles(unittest.TestCase):
         arch_file = self.copy_file_to_tmp()
         command = "python {driver_path} --loop-once ".format(driver_path=driver_path)
         p = subprocess.Popen(command, shell=True)
-        p.wait()
         self.check_job_completion()
 
     def copy_file_to_tmp(self):
@@ -81,7 +80,7 @@ class ValidateMultiFiles(unittest.TestCase):
             for batch in result:
                 drop_target_schema('cat', batch[0])
 
-    def test_(self):
+    def test_multi_files(self):
         self.empty_batch_table()
         self.udl_run()
         # wait for a while

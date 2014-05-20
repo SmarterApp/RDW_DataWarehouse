@@ -94,7 +94,7 @@ define [
         siblingDivider.css('border-left-color', '#e2e2e2')
 
       # bind print popover
-      $('span.printLabel').click ->
+      $('a.printLabel').click ->
         self.printer.show()
 
   create = (container, config, reloadCallback) ->

@@ -30,6 +30,7 @@ if __name__ == '__main__':
                         help="force the udl2 pipeline to use this batch guid")
     parser.add_argument('--loop-once', dest='loop_once', action='store_true',
                         help='Runs the udl_trigger script to watch the arrivals directory, schedule all files and exit')
+    parser.add_argument('-t', dest='tenant', default='cat', help="path to the source archive file.")
     args = parser.parse_args()
     if args.dev_mode:
         # TODO: Add to ini for $PATH and eager mode when celery.py is refactored
@@ -42,7 +43,7 @@ if __name__ == '__main__':
             # Find the first tar.gz.gpg file as LZ file
             file_name = glob.glob(os.path.join(src_dir, "*.tar.gz.gpg"))[0]
             # Copy file to arrivals dir of ca tenant
-            dest = os.path.join(udl2_conf['zones']['arrivals'], 'cat', os.path.basename(file_name))
+            dest = os.path.join(udl2_conf['zones']['arrivals'], args.tenant, os.path.basename(file_name))
             shutil.copy(file_name, dest)
             args.archive_file = dest
 

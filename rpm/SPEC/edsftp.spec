@@ -27,8 +27,6 @@ cp -r ${WORKSPACE}/edsftp %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/edsftp/config/linux/etc/rc.d/init.d/edsftp-watcher %{buildroot}/etc/rc.d/init.d/
-cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
@@ -40,6 +38,10 @@ python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edcore
+python setup.py clean --all
+python setup.py install
+cd -
+cd ${WORKSPACE}/edapi
 python setup.py clean --all
 python setup.py install
 cd -
@@ -60,8 +62,6 @@ rm -rf %{buildroot}
 
 %files
 %defattr(644,root,root,-)
-/opt/edware/conf/generate_ini.py
-/opt/edware/conf/settings.yaml
 /opt/virtualenv/edsftp/include/*
 /opt/virtualenv/edsftp/lib/*
 /opt/virtualenv/edsftp/lib64
@@ -84,29 +84,12 @@ rm -rf %{buildroot}
 %post
 chkconfig --add edsftp-watcher
 
-# check if edwaredataadmin group exists and create if not
-egrep -i "^edwaredataadmin:" /etc/group > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-   groupadd edwaredataadmin -f -g 505
-fi
-
-# check if sftp_admin user exists and create if not
-id sftp_admin > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-   # add sftp_admin user with id 505 and group sftp_admin
-   useradd sftp_admin -g edwaredataadmin -u 505
-fi
-
 EDWARE_ROOT=/opt/edware
 if [ ! -d $EDWARE_ROOT/run ]; then
     mkdir -p $EDWARE_ROOT/run
 fi
 
-chown -R sftp_admin.edwaredataadmin $EDWARE_ROOT/run
-
 %postun
-userdel -rf sftp_admin > /dev/null 2>&1
-groupdel sftp_admin > /dev/null 2>&1
 
 %preun
 chkconfig --del edsftp-watcher

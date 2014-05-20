@@ -23,7 +23,11 @@ define [
 
   TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentRegistrationCompletion": "Student Registration Completion"}
 
-  REQUEST_ENDPOINT = {"studentRegistrationStatistics": "/services/extract/student_registration_statistics", "studentAssessment": "/services/extract", "studentRegistrationCompletion": "/services/extract/student_registration_completion"}
+  REQUEST_ENDPOINT = {
+    "studentRegistrationStatistics": "/services/extract/student_registration_statistics",
+    "studentAssessment": "/services/extract",
+    "studentRegistrationCompletion": "/services/extract/student_registration_completion"
+  }
 
 
   class CSVDownloadModal
@@ -46,29 +50,36 @@ define [
       }
       this.container.html output
       this.message = $('#message', this.container)
-      this.reportTypeDropdownMenu = $('ul.dropdown-menu.report_type', this.container)
       this.dropdownMenu = $('ul.dropdown-menu', this.container)
       this.checkboxMenu = $('ul.checkbox-menu', this.container)
-      this.submitBtn = $('.btn-primary', this.container)
+      this.submitBtn = $('.edware-btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
       this.selectDefault()
-      this.setMainPulldownLabel()
+      this.reportTypes = for option in @config.extractType.options
+        option.value
+      this.setMainPulldownLabel(@reportTypes[0])
 
     bindEvents: ()->
       self = this
       # prevent dropdown menu from disappearing
-      $(this.reportTypeDropdownMenu).click (e) ->
+      $('ul.dropdown-menu.report_type li', @container).click (e) ->
         $('div.error', self.messages).remove()
-        self.setMainPulldownLabel()
+        reportType = $(this).data('value')
+        self.setMainPulldownLabel(reportType)
 
       # set up academic years
-      $('input:radio', @container).click (e) ->
+      $('ul.edware-dropdown-menu li', @container).click (e)->
         $this = $(this)
         display = $this.data('label')
+        value = $this.data('value')
         $dropdown = $this.closest('.btn-group')
+        $dropdown.find('.dropdown-menu').attr('data-value', value)
         # display selected option
         $dropdown.find('.dropdown-display').html display
         $dropdown.removeClass 'open'
+      .keypress (e) ->
+        $(this).click() if e.keyCode is 13
+
 
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
@@ -88,7 +99,7 @@ define [
         invalidFields = []
         # check if button is 'Close' or 'Request'
         if $(this).data('dismiss') != 'modal'
-          $('tr.rpt_option:not(.disabled) div.btn-group', self.container).each ()->
+          $('tr:visible div.btn-group', self.container).each ()->
             $dropdown = $(this)
             if not self.validate($dropdown)
               $dropdown.addClass('invalid')
@@ -100,13 +111,9 @@ define [
             self.disableInput()
             self.sendRequest REQUEST_ENDPOINT[self.reportType]
 
-    setMainPulldownLabel: ()->
-      self = this
-      $('span.dropdown-display', self.reportTypeDropdownMenu.parent()).text($('input:checked', self.reportTypeDropdownMenu).attr('data-label'))
-      self.reportType = $('input:checked', self.reportTypeDropdownMenu).val()
-      $('tr.rpt_option.sr_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationStatistics')
-      $('tr.rpt_option.assm_rpt', self.container).toggleClass('disabled', self.reportType != 'studentAssessment')
-      $('tr.rpt_option.srcomp_rpt', self.container).toggleClass('disabled', self.reportType != 'studentRegistrationCompletion')
+    setMainPulldownLabel: (reportType)->
+      @reportType = reportType
+      $('#CSVModal').removeClass(@reportTypes.join(" ")).addClass(reportType)
 
     validate: ($dropdown) ->
       isValid  = false
@@ -132,6 +139,9 @@ define [
       checked = []
       $dropdown.find('input:checked').each () ->
           checked.push $(this).data('label')
+      optionValue = $dropdown.find('.dropdown-menu').data('value')
+      if optionValue
+        checked.push optionValue
       checked
 
     selectDefault: ()->
@@ -140,7 +150,7 @@ define [
         $(this).trigger 'click'
 
     sendRequest: (url)->
-      params = $.extend(true, {'async': 'true'} ,this.getParams())
+      params = $.extend(true, {'async': 'true'}, this.getParams())
       # Get request time
       currentTime = moment()
       this.requestDate = currentTime.format 'MMM Do'
@@ -233,24 +243,22 @@ define [
 
     getParams: ()->
       params = {}
-      $('tr.rpt_option:not(.disabled) ul.checkbox-menu', this.container).each (index, param)->
+      $('tr:visible ul.checkbox-menu', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
-      $('tr.rpt_option:not(.disabled) ul.dropdown-menu', this.container).each (index, param)->
-        $param = $(param)
-        key = $param.data('key')
-        params[key] = []
-        $param.find('input:checked').each ()->
-          # TODO: dirty fix
-          if key == 'academicYear1'
-            key = 'academicYear'
-          if key == 'academicYear'
-            params[key].push Number($(this).attr('value'))
-          else
-            params[key].push $(this).attr('value')
+
+      $('tr:visible ul.dropdown-menu', this.container).each (index, param)->
+        $this = $(this)
+        key = $this.data('key')
+        value = $this.data('value')
+        if key is 'academicYear'
+          params[key] = [value]
+        else
+          params[key] = [value.toString()]
+
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
@@ -264,6 +272,9 @@ define [
     constructor: (@container, @config) ->
       this.initialize(@container)
       this.bindEvents()
+
+    disableInvisibleButtons: () ->
+      $('input[type="radio"]:not(:visible)', @container).attr('disabled', 'disabled')
 
     initialize: (@container) ->
       output = Mustache.to_html DownloadMenuTemplate, {
@@ -289,6 +300,8 @@ define [
         option = $(self.container).find('input[type="radio"]:checked').val()
         self.eventHandler[option].call(self)
         self.hide()
+      $('#DownloadMenuModal').on 'shown', ->
+        self.disableInvisibleButtons()
 
     downloadAsFile: () ->
       # download 508-compliant file

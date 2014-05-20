@@ -6,6 +6,7 @@ Created on Mar 17, 2014
 import unittest
 from edschema.database.connector import DBConnection, IDbUtil, DbUtil
 from zope import component
+from sqlalchemy.exc import DatabaseError
 
 
 class DummyEngine():
@@ -13,6 +14,18 @@ class DummyEngine():
         pass
 
     def connect(self):
+        return DummyConn()
+
+
+class DummyConn():
+    def execution_options(self, stream_results):
+        return self
+
+    @staticmethod
+    def execute(statement, *kwargs, **args):
+        raise DatabaseError(statement, kwargs, args, connection_invalidated=True)
+
+    def close(self):
         pass
 
 
@@ -52,6 +65,12 @@ class TestConnector(unittest.TestCase):
         db.set_metadata_by_generate('schema_name', dummyFunc)
         metadata = db.get_metadata()
         self.assertEqual(metadata, dummyFunc())
+
+    def test_retries(self):
+        dbUtil = DbUtil(engine=DummyEngine(), metadata=DummyMetadata())
+        component.provideUtility(dbUtil, IDbUtil, name='unittest')
+        db = DBConnection('unittest')
+        self.assertRaises(DatabaseError, db.execute, 'query')
 
 
 if __name__ == "__main__":

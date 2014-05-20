@@ -50,6 +50,10 @@ cd ${WORKSPACE}/edschema
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edapi
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edworker
 python setup.py clean --all
 python setup.py install
@@ -149,14 +153,6 @@ fi
 
 if [ ! -f $UDL2_ROOT/log/udl2.error.log ]; then
     touch $UDL2_ROOT/log/udl2.error.log
-fi
-
-if [ ! -f $UDL2_ROOT/log/udl2.rsync.audit.log ]; then
-    touch $UDL2_ROOT/log/udl2.rsync.audit.log
-fi
-
-if [ ! -f $UDL2_ROOT/log/udl2.rsync.error.log ]; then
-    touch $UDL2_ROOT/log/udl2.rsync.error.log
 fi
 
 if [ ! -d $UDL2_ZONES ]; then

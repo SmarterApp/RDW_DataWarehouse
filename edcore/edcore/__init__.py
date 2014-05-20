@@ -1,0 +1,1 @@
+DEFAULT_LOGGER_NAME = "edcore"

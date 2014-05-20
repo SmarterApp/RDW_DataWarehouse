@@ -1,10 +1,13 @@
 <div class="btn-group">
-    <button type="button" class="btn edware-btn-flat dropdown-toggle" data-toggle="dropdown">
-        <span id="selectedAcademicYear"></span><i class="edware-icon-globalheader-downarrow marginLeft8"></i>
+    <button type="button" class="btn edware-btn-flat dropdown-toggle" data-toggle="dropdown" aria-labelledby="aria-academic-year selectedAcademicYear">
+        <span id="aria-academic-year" style="display: none;">selected academic year</span>
+        <span id="selectedAcademicYear"></span>
+        <i class="edware-icon-globalheader-downarrow marginLeft8"></i>
     </button>
     <ul class="dropdown-menu edware-dropdown-menu" role="menu">
         {{#options}}
-        <li class="asmtYearButton asmtYearButton{{value}}" data-display='{{display}}' data-value='{{value}}'>
+        <li class="asmtYearButton asmtYearButton{{value}}" data-display='{{display}}' data-value='{{value}}'
+            tabindex="0" role="button" aria-label="click to select academic year">
             <span>{{display}}</span>
         </li>
         {{/options}}

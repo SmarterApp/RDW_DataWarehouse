@@ -170,6 +170,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
                                   Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                   Column('where_taken_name', String(256)),
+                                  Column('asmt_type', String(32), nullable=False),
+                                  Column('asmt_year', SmallInteger, nullable=False),
+                                  Column('asmt_subject', String(100)),
                                   Column('asmt_grade', String(10), nullable=False),
                                   Column('enrl_grade', String(10), nullable=False),
                                   Column('date_taken', String(8), nullable=False),
@@ -196,12 +199,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
                                   Column('asmt_claim_4_perf_lvl', SmallInteger, nullable=True),
-                                  # Add 4 assessment columns
-                                  Column('asmt_type', String(32), nullable=False),
-                                  Column('asmt_year', SmallInteger, nullable=False),
-                                  Column('asmt_subject', String(100)),
                                   Column('sex', String(10), nullable=True),
-                                  # Add 10 demographic columns
                                   Column('dmg_eth_hsp', Boolean, nullable=True),
                                   Column('dmg_eth_ami', Boolean, nullable=True),
                                   Column('dmg_eth_asn', Boolean, nullable=True),

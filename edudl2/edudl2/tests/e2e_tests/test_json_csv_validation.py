@@ -189,7 +189,7 @@ class ValidateTableData(unittest.TestCase):
 
     def run_post_server(self):
         try:
-            server_address = ('127.0.0.1', 8001)
+            server_address = ('127.0.0.1', 50472)
             self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
             self.post_server.timeout = 0.25
             while self.receive_requests:

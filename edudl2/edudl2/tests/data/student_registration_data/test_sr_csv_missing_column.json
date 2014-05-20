@@ -7,6 +7,6 @@
   },
   "Source": {
     "TestRegSysID": "800b3654-4406-4a90-9591-be84b67054df",
-    "TestRegCallbackURL": "http://127.0.0.1:8001"
+    "TestRegCallbackURL": "http://127.0.0.1:50472"
   }
 }

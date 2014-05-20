@@ -4,6 +4,7 @@ Unit tests for the file upload service of HPZ.
 """
 
 import unittest
+from unittest.mock import patch
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from hpz.frs.upload_service import file_upload_service
@@ -23,7 +24,10 @@ class RegistrationTest(unittest.TestCase):
     def tearDown(self):
         self.__request = None
 
-    def test_file_upload_service(self):
+    @patch('hpz.frs.registration_service.FileRegistry.file_upload_request')
+    def test_file_upload_service(self, file_upload_patch):
+
+        file_upload_patch.return_value = None
 
         self.__request.method = 'POST'
         self.__request.json_body = {}

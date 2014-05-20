@@ -22,7 +22,7 @@ class FileRegistry:
     @staticmethod
     def file_upload_request(registration_id, file_path):
         registration_info = {DatabaseConstants.FILE_PATH: file_path,
-                             DatabaseConstants.CREATION_DATE: datetime.date()}
+                             DatabaseConstants.CREATION_DATE: datetime.now().date()}
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)

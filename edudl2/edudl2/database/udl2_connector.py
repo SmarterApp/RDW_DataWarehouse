@@ -79,7 +79,7 @@ def initialize_db_target(udl2_conf):
     for tenant in udl2_conf[TARGET_NAMESPACE]:
         with get_target_connection(tenant) as conn:
             try:
-                conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink"))
+                conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA public"))
             except IntegrityError as e:
                 logger.warning('dblink did not exist at creation time, but fails with IntegrityError')
 

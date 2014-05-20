@@ -478,7 +478,7 @@ function main {
         restart_celeryd
         if [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
             import_data_from_csv
-            if [ ! ${RUN_END_TO_END}  ]; then
+            if (! $RUN_END_TO_END;) then
                 setup_python33_functional_test_dependencies
                 run_python33_functional_tests
             else

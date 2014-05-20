@@ -13,6 +13,6 @@ def generate_metadata(schema_name=None, bind=None):
     metadata = MetaData(schema=schema_name, bind=bind)
 
     file_registration = Table('file_registration', metadata,
-                              Column('uuid', String(36), primary_key=True))
+                              Column('registration_id', String(36), primary_key=True))
 
     return metadata

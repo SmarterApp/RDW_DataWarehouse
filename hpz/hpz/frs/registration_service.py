@@ -18,13 +18,13 @@ def put_file_registration_service(context, request):
     persist_registration_request(registration_id)
 
     url = request.route_url('download', reg_id=str(registration_id))
-    response_body = json.dumps({'url': url})
+    response_body = json.dumps({'url': url, 'registration_id': str(registration_id)})
 
     return Response(body=response_body, content_type='application/json')
 
 
 def persist_registration_request(registration_id):
-    registration_info = {'uuid': str(registration_id)}
+    registration_info = {'registration_id': str(registration_id)}
 
     with get_hpz_connection() as conn:
         file_reg_table = conn.get_table(table_name='file_registration')

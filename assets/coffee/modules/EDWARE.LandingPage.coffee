@@ -29,3 +29,8 @@ require [
       # toggle icon color
       $this.find('.edware-icon-globe-blue').toggleClass('edware-icon-globe-grayscale')
       $this.find('.edware-icon-downarrow-blue').toggleClass('edware-icon-downarrow-grayscale')
+
+      $('.languageDropdown').focuslost ->
+        $this = $(this)
+        # collpase language dropdown menu if it's expanded
+        $this.click() if $this.hasClass("show")

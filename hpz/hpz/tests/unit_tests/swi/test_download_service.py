@@ -13,10 +13,6 @@ class RegistrationTest(unittest.TestCase):
 
     def setUp(self):
         self.__request = DummyRequest()
-        reg = Registry()
-        reg.settings = {}
-        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-        #self.__config.add_route('download', '/{reg_id}')
 
     def tearDown(self):
         self.__request = None

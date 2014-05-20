@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from pyramid.response import Response
 import json
-from hpz.database.file_registration import FileRegistry
+from hpz.database.file_registry import FileRegistry
 
 __author__ = 'npandey'
 __author__ = 'okrook'

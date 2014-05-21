@@ -25,11 +25,11 @@ define ["jquery", "edwarePrint", "edwarePreferences"],
     ok typeof(create), "function", "Print widget should provide a create function"
 
   test "Test show function", ->
-    printModal = create '#printModalContainer'
+    printModal = create '#printModalContainer', {}
     printModal.show()
     ok $('.modal-backdrop')[0], 'Showing print modal should set up a backdrop'
 
   test "Test color print function", ->
-    printModal = create '#printModalContainer'
+    printModal = create '#printModalContainer', {}
     actual = printModal.print()
     equal actual, 'Mocked url', 'Should return pdf generating url'

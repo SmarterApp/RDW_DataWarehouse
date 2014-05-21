@@ -1,4 +1,4 @@
-define ["jquery"], ($) ->
+define ["jquery", "edwareEvents"], ($, edwareEvents) ->
 
   DEFAULT_CONFIG =
     html: true

@@ -5,7 +5,8 @@ define [
   "text!PrintTemplate"
   "edwarePreferences"
   "edwareUtil"
-], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences, edwareUtil) ->
+  "edwareModal"
+], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences, edwareUtil, edwareModal) ->
 
   class PrintModal
 

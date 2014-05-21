@@ -3,7 +3,7 @@ define [
   "mustache"
   "text!YearDropdownTemplate"
   "edwarePreferences"
-  "edwareevents"
+  "edwareEvents"
 ], ($, Mustache, YearDropdownTemplate, edwarePreferences, edwareEvents) ->
 
   class AcademicYearDropdown

@@ -38,7 +38,7 @@ define [
 
     bindEvents: () ->
       self = this
-      $('.asmtSelection', @container).onClickAndEnterKey ->
+      $(@container).onClickAndEnterKey '.asmtSelection', ->
         asmt = self.parseAsmtInfo $(this)
         subject = asmt.asmtView.split("_")
         # save subject value

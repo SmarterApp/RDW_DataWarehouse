@@ -33,7 +33,7 @@ class UploadTest(unittest.TestCase):
         self.__request = None
 
     @patch('hpz.frs.upload_service.FileRegistry.file_upload_request')
-    @patch('hpz.frs.registration_service.FileRegistry.is_file_registered')
+    @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
     @patch('shutil.copyfileobj')
     @patch('builtins.open')
     def test_file_upload_service(self, open_patch, copyfileobj_patch, is_file_registered, file_upload_patch):
@@ -51,8 +51,8 @@ class UploadTest(unittest.TestCase):
         self.assertTrue(file_upload_patch.called)
         self.assertTrue(is_file_registered.called)
 
-    @patch('hpz.frs.registration_service.FileRegistry.file_upload_request')
-    @patch('hpz.frs.registration_service.FileRegistry.is_file_registered')
+    @patch('hpz.frs.upload_service.FileRegistry.file_upload_request')
+    @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
     def test_file_upload_service_not_registered(self, is_file_registered, file_upload_patch):
         test_logger = logging.getLogger(file_upload_service.__name__)
         with mock.patch.object(test_logger, 'error') as mock_debug:

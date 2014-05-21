@@ -40,8 +40,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
     # Two-letter state - some countries have 3 or more, but two will do for US
     instit_hier = Table('dim_inst_hier', metadata,
                         Column('inst_hier_rec_id', BigInteger, primary_key=True),
-                        Column('state_name', String(32), nullable=False),
                         Column('state_code', String(2), nullable=False, info={'natural_key': True}),
+                        Column('state_name', String(32), nullable=False),
                         Column('district_guid', String(50), nullable=False, info={'natural_key': True}),
                         Column('district_name', String(256), nullable=False),
                         Column('school_guid', String(50), nullable=False, info={'natural_key': True}),

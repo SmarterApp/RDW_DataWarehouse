@@ -26,6 +26,3 @@ result = template.render(templatevars)
 
 with open('wsgi_hpz.conf', mode='w',) as new_file:
     new_file.write(result)
-
-
-

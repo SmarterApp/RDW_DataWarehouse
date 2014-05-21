@@ -1,13 +1,13 @@
 import logging
 import unittest
-import mock
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from hpz.frs import registration_service
 from hpz.frs.registration_service import put_file_registration_service
 from pyramid.registry import Registry
 import json
-from unittest.mock import patch, Mock, ANY
+from unittest import mock
+from unittest.mock import patch
 
 __author__ = 'npandey'
 

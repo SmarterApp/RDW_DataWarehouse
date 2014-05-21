@@ -7,13 +7,13 @@ Model an assessment outcome (an instance of a student taking an assessment) for 
 
 import datetime
 
-from mongoengine import DateTimeField, IntField, ReferenceField, StringField
+from mongoengine import DateTimeField, IntField, ReferenceField, StringField, DictField, EmbeddedDocumentField, ListField
 
 import sbac_data_generation.config.cfg as sbac_config
 
 from data_generation.model.assessmentoutcome import AssessmentOutcome
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
-
+from sbac_data_generation.model.itemdata import SBACAssessmentOutcomeItemData
 
 class SBACAssessmentOutcome(AssessmentOutcome):
     """
@@ -70,6 +70,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     acc_streamline_mode = IntField(required=True, default=0, min_value=0, max_value=10)
     from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
     to_date = DateTimeField(required=True, default=datetime.date(9999, 12, 31))
+    item_level_data = ListField(EmbeddedDocumentField(SBACAssessmentOutcomeItemData))
 
     def get_object_set(self):
         """

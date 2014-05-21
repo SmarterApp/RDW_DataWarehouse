@@ -27,7 +27,7 @@ from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_encryption,
                                      remote_copy, prepare_path)
-from edextract.exceptions import RemoteCopyError
+from edcore.exceptions import RemoteCopyError
 
 
 class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

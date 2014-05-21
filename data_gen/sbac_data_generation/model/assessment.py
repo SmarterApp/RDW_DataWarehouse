@@ -5,7 +5,7 @@ Model an assessment for the SBAC assessment.
 @date: February 24, 2014
 """
 
-from mongoengine import DateTimeField, FloatField, IntField, StringField
+from mongoengine import DateTimeField, FloatField, IntField, StringField, DictField
 
 import data_generation.writers.filters as write_filters
 import sbac_data_generation.config.cfg as sbac_config
@@ -59,6 +59,7 @@ class SBACAssessment(Assessment):
     from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
     to_date = DateTimeField(required=False)
     effective_date = DateTimeField(required=False)
+    item_bank = DictField(required=True)
 
     def get_object_set(self):
         """Get the set of objects that this exposes to a CSV or JSON writer.

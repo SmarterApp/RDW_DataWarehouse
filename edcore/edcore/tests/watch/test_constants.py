@@ -25,6 +25,7 @@ class TestWatcherConstants(unittest.TestCase):
         self.assertEqual(Const.FILE_STAT_WATCH_INTERVAL, 'file_stat_watch_interval')
         self.assertEqual(Const.FILE_STAT_WATCH_PERIOD, 'file_stat_watch_period')
         self.assertEqual(Const.FILE_PATTERNS_TO_WATCH, 'file_patterns_to_watch')
+        self.assertEqual(Const.FILE_CHECKSUM_THRESHOLD_WAIT_PERIOD, 'file_checksum_threshold_wait_period')
         self.assertEqual(Const.CHECKSUM_FILE_EXTENSION, '.done')
         self.assertEqual(Const.SOURCE_DIR, 'source_dir')
         self.assertEqual(Const.DEST_DIR, 'dest_dir')

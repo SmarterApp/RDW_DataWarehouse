@@ -19,8 +19,10 @@ function set_vars {
     export PATH=$PATH:/opt/python3/bin
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
+    HPZ_PACKAGE="hpz"
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/conf/smarter.ini"
+    HPZ_INI="/opt/edware/conf/hpz.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
@@ -42,29 +44,29 @@ function setup_virtualenv {
     fi
 
 # This will change your $PATH to point to the virtualenv bin/ directory,
-    
+
     source ${VIRTUALENV_DIR}/bin/activate
-    for var in "${INSTALL_PKGS[@]}" 
+    for var in "${INSTALL_PKGS[@]}"
     do
         cd "$WORKSPACE/$var"
         pwd
         if [ -f setup-developer.py ];  then
            echo "running setup-developer.py"
            python setup-developer.py develop
-        else 
+        else
            echo "running setup.py"
            python setup.py develop
         fi
     done
- 
+
     echo "Finished setting up virtualenv"
 
-} 
+}
 
 function setup_unit_test_dependencies {
-    
+
     echo "Setting up unit tests dependencies"
-    
+
     pip install nose
     pip install coverage
     pip install pep8
@@ -76,9 +78,9 @@ function setup_unit_test_dependencies {
 function check_pep8 {
     echo "********************************"
     echo "Checking code style against pep8"
-    echo "********************************" 
+    echo "********************************"
     ignore="E501"
-    
+
     pep8 --ignore=$ignore $WORKSPACE/$1
 
     echo "Finished checking code style against pep8"
@@ -86,7 +88,7 @@ function check_pep8 {
 
 function run_unit_tests {
     echo "Running unit tests"
-   
+
     cd "$WORKSPACE/$1"
 
 	nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
@@ -101,14 +103,14 @@ function get_opts {
 	echo "Usage: `basename $0` options (-n) (-u) (-f) (-b) (-e) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
- 
+
     # By default, make the mode to be unit
     MODE='UNIT'
     RUN_UNIT_TEST=true
     RUN_END_TO_END=false
 
     while getopts ":m:d:ufbhne" opt; do
-        case $opt in 
+        case $opt in
             u)
                echo "Unit test mode"
                MODE='UNIT'
@@ -126,15 +128,15 @@ function get_opts {
                ;;
             n)
                RUN_UNIT_TEST=false
-               ;; 
+               ;;
             e)
                RUN_END_TO_END=true
                ;;
-            m)  
+            m)
                MAIN_PKG=$OPTARG
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$MAIN_PKG")
                ;;
-            d) 
+            d)
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$OPTARG")
                ;;
             ?)
@@ -146,7 +148,7 @@ function get_opts {
 
 function show_help {
     echo "#To set unit test mode with main package as edapi"
-    echo "jenkins_build.sh -u -m edapi" 
+    echo "jenkins_build.sh -u -m edapi"
     echo "#To set functional test mode with main package as smarter"
     echo "jenkins_build.sh -f -m smarter -d edapi"
 }
@@ -192,7 +194,7 @@ function enable_python27 {
 
 function setup_python33_functional_test_dependencies {
     echo "Setup python 33functional test dependencies"
-    
+
     cd "$WORKSPACE/test/backend_tests"
     python setup.py develop
 
@@ -207,7 +209,7 @@ function run_python33_functional_tests {
     nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
 
     echo "Finish running python33 functional tests"
-}	
+}
 
 function run_functional_tests {
     echo "Run functional tests"
@@ -218,13 +220,18 @@ function run_functional_tests {
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    sed -i.back "s/host_hpz = localhost/host_hpz = $HOSTNAME/g" test.ini
     export DISPLAY=:6.0
-    
+
     if $RUN_END_TO_END; then
        cd e2e_tests
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    elif [ ${MAIN_PKG:=""} == ${HPZ_PACKAGE} ]; then
+       cd hpz
+       FUNC_DIR="edware_test/edware_test/functional_tests/hpz"
+       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
-       nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+       nosetests --exclude-dir=e2e_tests --exclude-dir=hpz -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
        generate_docs edware_test/edware_test/functional_tests
     fi
 
@@ -239,16 +246,20 @@ function create_sym_link_for_apache {
         rm -rf ${APACHE_DIR}
     fi
     mkdir -p ${APACHE_DIR}
+
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
-    /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
-    /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
+    /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
+    /bin/ln -sf ${WORKSPACE}/hpz/hpz.wsgi ${APACHE_DIR}/hpz_pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}
     compile_assets true
 
+
     echo "Creating sym links for celery purposes"
-   
+
     EDWARE_VENV_DIR="/opt/virtualenv"
     if [ -d ${EDWARE_VENV_DIR} ]; then
         rm -rf ${EDWARE_VENV_DIR}
@@ -256,7 +267,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${VIRTUALENV_DIR} ${EDWARE_VENV_DIR}
     sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf
     sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf
-   
+
     sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf
     sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf
 }
@@ -274,7 +285,7 @@ function compile_assets {
 }
 
 function restart_apache {
-    /usr/bin/sudo /etc/rc.d/init.d/httpd graceful 
+    /usr/bin/sudo /etc/rc.d/init.d/httpd graceful
     RES=$?
     if [ $RES != 0 ]; then
        echo "httpd graceful failed to restart"
@@ -298,16 +309,16 @@ function restart_celeryd {
 
 function import_data_from_csv {
     echo "Import data from csv"
-    
-    # This needs to run in python3.3 
+
+    # This needs to run in python3.3
     cd "$WORKSPACE/test_utils"
-    
+
     # This is a workaround as pgpool is read-only, replace pgpool server with db master
     echo "${WORKSPACE}/config/data_copy.ini"
     echo "${WORKSPACE}/config/${INI_FILE_FOR_ENV}"
     cp "${WORKSPACE}/config/${INI_FILE_FOR_ENV}" "${WORKSPACE}/config/data_copy.ini"
     sed -i.bak "s/edwdbsrv4.poc.dum.edwdc.net:9999/edwdbsrv1.poc.dum.edwdc.net:5432/" ${WORKSPACE}/config/data_copy.ini
-    
+
     python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant cat --stateCode NC --stateName "North Carolina"
     python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources --tenant dog --stateCode CA --stateName California --updateYear
     if (! $RUN_END_TO_END;) then
@@ -366,13 +377,15 @@ function generate_ini {
 	cd "$WORKSPACE/config"
 	if $RUN_END_TO_END; then
 		python generate_ini.py -e jenkins_int -i settings.yaml
+	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_int.ini
 	else
-		python generate_ini.py -e jenkins_dev -i settings.yaml
+	    python generate_ini.py -e jenkins_dev -i settings.yaml
+	    python generate_ini.py -e jenkins_dev -i ../hpz/settings.yaml -o ../hpz/jenkins_dev.ini
 	fi
 }
 
 function generate_docs {
-    # Generate docs if docs directory exists 
+    # Generate docs if docs directory exists
     if [ -d "$WORKSPACE/$1/docs" ]; then
         echo "***************"
         echo "Generating Docs"
@@ -402,24 +415,31 @@ function setup_for_udl {
     echo "Setting up ini for udl"
     cd "$WORKSPACE/config"
     python generate_ini.py -i udl2_conf.yaml -e development -o udl2_conf.ini
-    cp udl2_conf.ini /opt/edware/conf/udl2_conf.ini 
+    cp udl2_conf.ini /opt/edware/conf/udl2_conf.ini
 
     echo "Stop celery"
     cd $WORKSPACE/edudl2/scripts
     /bin/sh stop_celery.sh
     sleep 2
     celeryctl purge
-    
+
     echo "Run db cleanup script"
     /bin/sh teardown_udl2_database.sh
     /bin/sh initialize_udl2_database.sh
-    
+
     echo "Copy keys"
     cp $WORKSPACE/edudl2/edudl2/tests/data/keys/* ~/.gnupg/
-    
+
     echo "Start celery"
     /bin/sh start_celery.sh &
     sleep 2
+}
+
+function setup_for_hpz {
+    echo "Rebuild HPZ DB"
+    cd $WORKSPACE/hpz/scripts
+    /bin/sh teardown_database.sh
+    /bin/sh initialize_database.sh
 }
 
 function run_udl_integration_tests {
@@ -430,7 +450,7 @@ function run_udl_integration_tests {
 }
 
 function main {
-	
+
     get_opts $@
     check_vars
     set_vars
@@ -442,7 +462,7 @@ function main {
             UT_PATH="$MAIN_PKG"
             if [ ${MAIN_PKG:=""} == "edudl2" ]; then
                 setup_for_udl
-            fi 
+            fi
             run_unit_tests $UT_PATH
         fi
         check_pep8 $MAIN_PKG
@@ -456,13 +476,17 @@ function main {
         # Restart memcached
         restart_memcached
         restart_celeryd
-        import_data_from_csv
-        if (! $RUN_END_TO_END;) then
-           setup_python33_functional_test_dependencies
-           run_python33_functional_tests
+        if [ ${MAIN_PKG:=""} != ${HPZ_PACKAGE} ]; then
+            import_data_from_csv
+            if (! $RUN_END_TO_END;) then
+                setup_python33_functional_test_dependencies
+                run_python33_functional_tests
+            else
+                setup_for_udl
+                run_udl_integration_tests
+            fi
         else
-            setup_for_udl
-            run_udl_integration_tests
+            setup_for_hpz
         fi
         setup_functional_test_dependencies
         run_functional_tests

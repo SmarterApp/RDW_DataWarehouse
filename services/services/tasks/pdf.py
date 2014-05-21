@@ -10,7 +10,8 @@ import sys
 import logging
 import subprocess
 from services.celery import celery
-from services.exceptions import PdfGenerationError, NotForWindowsException
+from services.exceptions import PdfGenerationError
+from edcore.exceptions import NotForWindowsException
 import copy
 from services.celery import TIMEOUT
 import services

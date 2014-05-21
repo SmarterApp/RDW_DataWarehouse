@@ -86,8 +86,8 @@ ref_table_conf = {
         #Integration to Target
         ('4', 'int_sbac_stu_reg', 'record_sid', 'student_reg', 'student_reg_rec_id', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_batch', 'student_reg', 'batch_guid', None, None),
-        ('4', 'int_sbac_stu_reg', 'name_state', 'student_reg', 'state_name', None, None),
         ('4', 'int_sbac_stu_reg', 'code_state', 'student_reg', 'state_code', None, None),
+        ('4', 'int_sbac_stu_reg', 'name_state', 'student_reg', 'state_name', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_district', 'student_reg', 'district_guid', None, None),
         ('4', 'int_sbac_stu_reg', 'name_district', 'student_reg', 'district_name', None, None),
         ('4', 'int_sbac_stu_reg', 'guid_school', 'student_reg', 'school_guid', None, None),

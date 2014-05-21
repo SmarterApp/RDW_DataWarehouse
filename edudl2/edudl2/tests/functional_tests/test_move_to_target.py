@@ -70,7 +70,7 @@ class FTestMoveToTarget(UDLTestHelper):
         else:
             print(schema_name)
             print(counts)
-            self.assertEqual(counts[:5], (99, 99, 1, 99, 94))
+            self.assertEqual(counts[:5], (99, 99, 1, 71, 99))
         return
 
     def verify_target_student_registration_schema(self, schema_name, is_empty=False):

@@ -116,6 +116,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
         guid_batch = None
         example_record = {
             'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
+            'external_student_id': None,
             'first_name': 'Richard',
             'middle_name': None,
             'last_name': 'Mccarty',

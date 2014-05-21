@@ -12,7 +12,7 @@ def download_file(context, request):
     registration_id = request.matchdict['reg_id']
 
     file_path = FileRegistry.get_file_path(registration_id)
-    folder, fn = os.path.split(file_path)
+    fn = os.path.basename(file_path)
 
     headers = {'X-Sendfile': file_path, 'Content-Type': '', 'Content-Disposition': 'attachment; filename=' + fn}
 

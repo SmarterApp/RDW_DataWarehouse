@@ -221,6 +221,7 @@ function run_functional_tests {
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     sed -i.back "s/host_hpz = localhost/host_hpz = $HOSTNAME/g" test.ini
+    sed -i.bak 's/port = 6544/port = 81/g' test.ini
     export DISPLAY=:6.0
 
     if $RUN_END_TO_END; then
@@ -251,7 +252,8 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
     /bin/ln -sf ${WORKSPACE}/hpz/${INI_FILE_FOR_ENV} ${HPZ_INI}
-    /bin/ln -sf ${WORKSPACE}/hpz/hpz.wsgi ${APACHE_DIR}/hpz_pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/hpz/frs.wsgi ${APACHE_DIR}/hpz__frs_pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/hpz/swi.wsgi ${APACHE_DIR}/hpz_swi_pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/${INI_FILE_FOR_ENV} ${SMARTER_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${WORKSPACE}/config/comparing_populations_precache_filters.json ${PRECACHE_FILTER_JSON}

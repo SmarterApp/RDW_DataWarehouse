@@ -103,13 +103,25 @@ class FileWatcher():
         for file in set(fnmatch.filter(self.file_stats.copy().keys(), '*' + Const.CHECKSUM_FILE_EXTENSION)):
             self.remove_file_from_dict(file)
 
-    def generate_missing_checksum_files(self):
-        """Generates md5 checksum files for source files if missing"""
+    def handle_missing_checksum_files(self):
+        """Handle checksum files generation logic
+
+        The method will generate checksum files for the source files which miss checksum file pair in the file_stats
+        If a checksum file which is missing in the snapshot is actually available on the filesystem the entire file pair
+        will dropped for next iteration
+        """
         all_files = self.file_stats.keys()
         # filter out the checksum files which will contain the checksum for a corresponding source file
         source_files = set(all_files) - set(fnmatch.filter(all_files, '*' + Const.CHECKSUM_FILE_EXTENSION))
         for file in source_files:
-            if not os.path.exists(FileUtil.get_complement_file_name(file)):
-                # create checksum file if does not exist (uses md5 checksum)
-                checksum_file = FileUtil.create_checksum_file(source_file=file, file_hash=self.hasher.get_file_hash(file))
-                self.add_file_to_snapshot(checksum_file)
+            checksum_file = FileUtil.get_complement_file_name(file)
+            if checksum_file not in all_files:
+                if not os.path.exists(checksum_file):
+                    # create checksum file if does not exist (uses md5 checksum)
+                    system_checksum_file = FileUtil.create_checksum_file(source_file=file,
+                                                                         file_hash=self.hasher.get_file_hash(file))
+                    self.add_file_to_snapshot(system_checksum_file)
+                else:
+                    # looks like the checksum file exists on filesystem (could have been dropped late)
+                    # the file pair will be dropped for next iteration
+                    self.remove_file_pair_from_dict(file)

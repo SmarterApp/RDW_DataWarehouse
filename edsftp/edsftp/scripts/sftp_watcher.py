@@ -43,7 +43,7 @@ def _watch_and_move_files(file_watcher, file_mover):
     files_moved = 0
     file_watcher.find_all_files()
     file_watcher.watch_files()
-    file_watcher.generate_missing_checksum_files()
+    file_watcher.handle_missing_checksum_files()
     files_to_move = list(file_watcher.get_file_stats().keys())
     if len(files_to_move) > 0:
         logger.debug('files to move {files_to_move}'.format(files_to_move=files_to_move))

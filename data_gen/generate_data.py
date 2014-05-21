@@ -23,6 +23,7 @@ import copy
 import datetime
 import os
 import random
+import shutil
 
 import data_generation.config.enrollment as enroll_config
 import data_generation.config.hierarchy as hier_config
@@ -380,6 +381,23 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     # Write assessment results if we have them; also optionally to landing zone CSV, star-schema CSV, and/or to postgres
     if asmt_year in ASMT_YEARS:
         for guid, rslts in assessment_results.items():
+
+            for sao in rslts:
+
+                OUT_PATH = os.path.join(sao.student.school.district.state.code, str(sao.assessment.period_year),
+                                        sao.assessment.asmt_type, str(sao.assessment.effective_date)
+                                        , sao.assessment.subject, str(sao.student.grade),
+                                        sao.student.school.district.guid)
+
+                if not os.path.exists(os.path.join(OUT_PATH_ROOT, OUT_PATH)):
+                    os.makedirs(os.path.join(OUT_PATH_ROOT, OUT_PATH))
+
+                csv_writer.prepare_csv_file(os.path.join(OUT_PATH, sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr))
+                                            , sbac_out_config.LZ_ITEMDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+
+                csv_writer.write_records_to_file(os.path.join(OUT_PATH, sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr))
+                                                 , sbac_out_config.LZ_ITEMDATA_FORMAT['columns'], sao.item_level_data, root_path=OUT_PATH_ROOT)
+
             if WRITE_LZ:
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
                                                  lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
@@ -657,6 +675,8 @@ if __name__ == '__main__':
         try:
             if os.path.isfile(file_path):
                 os.unlink(file_path)
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)
         except:
             pass
 

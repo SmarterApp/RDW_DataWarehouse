@@ -4,7 +4,7 @@ from pyramid import testing
 from hpz.frs.registration_service import put_file_registration_service
 from pyramid.registry import Registry
 import json
-from unittest.mock import patch
+from unittest.mock import patch, Mock, ANY
 
 __author__ = 'npandey'
 
@@ -36,3 +36,23 @@ class RegistrationTest(unittest.TestCase):
         response_json = json.loads(str(response.body, encoding='UTF-8'))
         self.assertTrue('url' in response_json)
         self.assertTrue(persist_patch.called)
+
+    @patch('hpz.frs.registration_service.FileRegistry.register_request')
+    @patch('hpz.frs.registration_service.logging')
+    def test_registration_incorrect_payload(self, logging, persist_patch):
+
+        persist_patch.return_value = None
+
+        logger = Mock()
+        logging.side_effect = logger
+
+        self.__request.method = 'PUT'
+        self.__request.json_body = {}
+
+        response = put_file_registration_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_json = json.loads(str(response.body, encoding='UTF-8'))
+        self.assertTrue('url' not in response_json)
+        self.assertTrue(not persist_patch.called)

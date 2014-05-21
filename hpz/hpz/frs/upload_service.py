@@ -18,11 +18,7 @@ def file_upload_service(context, request):
     file_name = request.headers['Filename']
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
 
-    base_directory = os.path.join(base_upload_path, registration_id)
-    if not os.path.exists(base_directory):
-        os.makedirs(base_directory)
-
-    file_pathname = os.path.join(base_upload_path, registration_id, file_name)
+    file_pathname = os.path.join(base_upload_path, registration_id + file_name)
 
     for item, f in request.POST.items():
         with open(file_pathname, mode='wb',) as new_file:

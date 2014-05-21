@@ -38,7 +38,7 @@ define ["jquery"], ($) ->
 
   $.fn.edwarePopover = (config) ->
     # setup default template with customized class name
-    config.template ?= "<div class='popover #{config.class} edwarePopover'><div class='mask'/><div class='arrow'/><div class='popover-content edwareScrollable'><p></p></div></div>"
+    config.template ?= "<div class='popover #{config.class} edwarePopover'><div class='mask'/><div class='arrow'/><div class='popover-content edwareScrollable' tabindex='0'><p></p></div></div>"
     config.container ?= this
     config = $.extend({}, DEFAULT_CONFIG, config)
     this.popover config
@@ -46,6 +46,9 @@ define ["jquery"], ($) ->
     this.on 'shown.bs.popover', ->
       reposition.call(self)
       resize.call(self)
-    this.unbind('mouseleave').on 'mouseleave focusout', ->
+      # hide popover when focus out
+      self.focuslost ->
+        self.popover 'hide'
+    this.unbind('mouseleave').on 'mouseleave', ->
       self.popover 'hide'
     this

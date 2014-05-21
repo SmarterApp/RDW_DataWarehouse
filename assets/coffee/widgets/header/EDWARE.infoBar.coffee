@@ -41,6 +41,7 @@ define [
       $('.reportInfoIcon').edwarePopover
         class: 'reportInfoPopover'
         content: @config.reportInfoText
+
       # set report info text
       $('.reportInfoWrapper').append @config.reportInfoText
 
@@ -55,6 +56,9 @@ define [
       return if not years
       callback = @config.academicYears.callback
       @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
+      # move focus on button after selection
+      $('#academicYearAnchor button').focus()
+
 
   create = (container, config) ->
     infoBar = new ReportInfoBar(container, config)

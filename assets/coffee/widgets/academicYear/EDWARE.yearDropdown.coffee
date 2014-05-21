@@ -40,17 +40,12 @@ define [
 
     bindEvents: () ->
       self = this
-      $('li', @container).on
-        click: () ->
-          display = $(this).data('display')
-          value = $(this).data('value')
-          self.setSelectedValue display, value
-          edwarePreferences.saveAsmtYearPreference(value)
-          self.callback(value)
-        #TODO:
-        keypress: (event) ->
-          if event.keyCode == 13
-            $(this).click()
+      $(@container).onClickAndEnterKey 'li', ->
+        display = $(this).data('display')
+        value = $(this).data('value')
+        self.setSelectedValue display, value
+        edwarePreferences.saveAsmtYearPreference(value)
+        self.callback(value)
 
       # hide on focus lost
       @container.focuslost ()->

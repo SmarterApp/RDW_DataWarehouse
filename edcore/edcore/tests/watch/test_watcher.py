@@ -181,25 +181,40 @@ class TestWatcher(unittest.TestCase):
             self.test_file_1.name: 0, self.test_file_2.name: 0,
             test_file_3_path: 5, test_file_4_path: 5})
 
-    def test_generate_missing_checksum_files_1(self):
+    def test_handle_missing_checksum_files_when_user_forgets_to_drop_checksum_file(self):
         self.test_sync.find_all_files()
         self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()),
                          {self.test_file_1.name: 0, self.test_file_2.name: 0})
-        self.test_sync.generate_missing_checksum_files()
+        self.test_sync.handle_missing_checksum_files()
         self.assertEqual(len(self._without_timestamps(self.test_sync.get_file_stats()).keys()), 4)
         self.assertEqual(set(self._without_timestamps(self.test_sync.get_file_stats()).keys()),
                          {self.test_file_1.name, self.test_file_2.name,
                           self.test_file_1.name + '.done', self.test_file_2.name + '.done'})
 
-    def test_generate_missing_checksum_files_2(self):
+    def test_handle_missing_checksum_files_with_both_missing_and_avail(self):
         test_file_3_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
         checksum_file_3_path = create_checksum_file(test_file_3_path)
         self.test_sync.find_all_files()
         self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()),
                          {self.test_file_1.name: 0, self.test_file_2.name: 0,
                           test_file_3_path: 5, checksum_file_3_path: 37})
-        self.test_sync.generate_missing_checksum_files()
+        self.test_sync.handle_missing_checksum_files()
         self.assertEqual(len(self._without_timestamps(self.test_sync.get_file_stats()).keys()), 6)
         self.assertEqual(set(self._without_timestamps(self.test_sync.get_file_stats()).keys()),
                          {self.test_file_1.name, self.test_file_2.name, test_file_3_path,
                           self.test_file_1.name + '.done', self.test_file_2.name + '.done', test_file_3_path + '.done'})
+
+    def test_handle_missing_checksum_files_when_user_drops_checksum_file_during_a_watch_period(self):
+        test_file_3_path = write_something_to_a_blank_file(dir_path=self.tmp_dir_1)
+        self.test_sync.find_all_files()
+        self.assertEqual(self._without_timestamps(self.test_sync.get_file_stats()),
+                         {self.test_file_1.name: 0, self.test_file_2.name: 0,
+                          test_file_3_path: 5})
+        # user drops the checksum file after a snapshot is taken
+        checksum_file_3_path = create_checksum_file(test_file_3_path)
+        self.test_sync.watch_files()
+        self.test_sync.handle_missing_checksum_files()
+        self.assertEqual(len(self._without_timestamps(self.test_sync.get_file_stats()).keys()), 4)
+        self.assertEqual(set(self._without_timestamps(self.test_sync.get_file_stats()).keys()),
+                         {self.test_file_1.name, self.test_file_2.name,
+                          self.test_file_1.name + '.done', self.test_file_2.name + '.done'})

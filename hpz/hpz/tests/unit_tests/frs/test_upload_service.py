@@ -25,9 +25,11 @@ class RegistrationTest(unittest.TestCase):
         self.__request = None
 
     @patch('hpz.frs.registration_service.FileRegistry.file_upload_request')
-    def test_file_upload_service(self, file_upload_patch):
+    @patch('hpz.frs.registration_service.FileRegistry.is_file_registered')
+    def test_file_upload_service(self, is_file_registered, file_upload_patch):
 
         file_upload_patch.return_value = None
+        is_file_registered.return_value = True
 
         self.__request.method = 'POST'
         self.__request.json_body = {}
@@ -35,3 +37,21 @@ class RegistrationTest(unittest.TestCase):
         response = file_upload_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(file_upload_patch.called)
+        self.assertTrue(is_file_registered.called)
+
+    @patch('hpz.frs.registration_service.FileRegistry.file_upload_request')
+    @patch('hpz.frs.registration_service.FileRegistry.is_file_registered')
+    def test_file_upload_service_not_registered(self, is_file_registered, file_upload_patch):
+
+        file_upload_patch.return_value = None
+        is_file_registered.return_value = False
+
+        self.__request.method = 'POST'
+        self.__request.json_body = {}
+
+        response = file_upload_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(not file_upload_patch.called)
+        self.assertTrue(is_file_registered.called)

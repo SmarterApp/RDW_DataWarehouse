@@ -1,6 +1,9 @@
+import logging
 import unittest
+import mock
 from pyramid.testing import DummyRequest
 from pyramid import testing
+from hpz.frs import registration_service
 from hpz.frs.registration_service import put_file_registration_service
 from pyramid.registry import Registry
 import json
@@ -38,21 +41,19 @@ class RegistrationTest(unittest.TestCase):
         self.assertTrue(persist_patch.called)
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
-    @patch('hpz.frs.registration_service.logging')
-    def test_registration_incorrect_payload(self, logging, persist_patch):
+    def test_registration_incorrect_payload(self, persist_patch):
+        test_logger = logging.getLogger(registration_service.__name__)
+        with mock.patch.object(test_logger, 'error') as mock_debug:
+            persist_patch.return_value = None
 
-        persist_patch.return_value = None
+            self.__request.method = 'PUT'
+            self.__request.json_body = {}
 
-        logger = Mock()
-        logging.side_effect = logger
+            response = put_file_registration_service(None, self.__request)
 
-        self.__request.method = 'PUT'
-        self.__request.json_body = {}
+            self.assertEqual(response.status_code, 200)
 
-        response = put_file_registration_service(None, self.__request)
-
-        self.assertEqual(response.status_code, 200)
-
-        response_json = json.loads(str(response.body, encoding='UTF-8'))
-        self.assertTrue('url' not in response_json)
-        self.assertTrue(not persist_patch.called)
+            response_json = json.loads(str(response.body, encoding='UTF-8'))
+            self.assertTrue('url' not in response_json)
+            self.assertTrue(not persist_patch.called)
+            self.assertTrue(mock_debug.called)

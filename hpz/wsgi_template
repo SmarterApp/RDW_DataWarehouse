@@ -8,6 +8,13 @@ XSendFile on
     XSendFilePath /opt/edware
 </Directory>
 
+<Directory />
+    Options FollowSymLinks
+    AllowOverride None
+    Order deny,allow
+    Allow from all
+</Directory>
+
 <VirtualHost *:80>
 	WSGIApplicationGroup %{GLOBAL}
 	WSGIPassAuthorization On

@@ -1,9 +1,13 @@
 from datetime import datetime
+import logging
 from uuid import uuid4
+from sqlalchemy.sql.expression import exists, select
 from hpz.database.constants import DatabaseConstants
 from hpz.database.hpz_connector import get_hpz_connection
 
 __author__ = 'okrook'
+
+logger = logging.getLogger(__name__)
 
 
 class FileRegistry:
@@ -22,7 +26,7 @@ class FileRegistry:
     @staticmethod
     def file_upload_request(registration_id, file_path):
         registration_info = {DatabaseConstants.FILE_PATH: file_path,
-                             DatabaseConstants.CREATION_DATE: datetime.now().date()}
+                             DatabaseConstants.CREATION_DATE: datetime.now()}
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
@@ -37,3 +41,11 @@ class FileRegistry:
             registration_info = result.fetchone()
 
             return registration_info['file_path']
+
+    @staticmethod
+    def is_file_registered(registration_id):
+        with get_hpz_connection() as conn:
+            file_reg_table = conn.get_table(table_name='file_registry')
+            result = conn.execute(file_reg_table.select(exists(select([file_reg_table.c.registration_id]).where(file_reg_table.c.registration_id == registration_id))))
+
+            return result

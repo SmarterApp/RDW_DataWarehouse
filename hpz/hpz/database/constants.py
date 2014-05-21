@@ -4,5 +4,5 @@ __author__ = 'ablum'
 class DatabaseConstants:
     HPZ_TABLE = 'file_registry'
     FILE_PATH = 'file_path'
-    CREATION_DATE = 'creation_date'
+    CREATE_DT = 'create_dt'
     REGISTRATION_ID = 'registration_id'

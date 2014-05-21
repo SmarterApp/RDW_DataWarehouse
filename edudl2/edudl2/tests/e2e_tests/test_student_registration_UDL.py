@@ -269,7 +269,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     def run_http_post_server(self):
         try:
-            server_address = ('127.0.0.1', 8000)
+            server_address = ('127.0.0.1', 50473)
             self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
             self.post_server.timeout = 0.25
             while self.receive_requests:

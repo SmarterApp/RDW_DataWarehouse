@@ -45,6 +45,8 @@ define [
         value = $(this).data('value')
         self.setSelectedValue display, value
         edwarePreferences.saveAsmtYearPreference(value)
+        # TODO: move focus on button after selection
+        $('#academicYearAnchor button').focus()
         self.callback(value)
 
       # hide on focus lost

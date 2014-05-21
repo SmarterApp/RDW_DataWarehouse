@@ -93,8 +93,8 @@ define [
   #    * @param containerId - The container id for breadcrumbs
   #    * @param data
   #
-  create = (containerId, contextData, configs, displayHome) ->
-    $(containerId).breadcrumbs contextData, configs, displayHome
+  create = (containerId, contextData, configs, displayHome, labels) ->
+    $(containerId).breadcrumbs contextData, configs, displayHome, labels
 
   create: create
   EdwareBreadcrumbs: EdwareBreadcrumbs

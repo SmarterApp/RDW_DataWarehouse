@@ -73,10 +73,10 @@ development:
         upload_base_path: /opt/edware/hpz/uploads
 
 jenkins_dev:
-    '[app:main]':
-      hpz:
-        db:
-          schema_name: hpz
-          url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
+  '[app:main]':
+    hpz:
+      db:
+        schema_name: hpz
+        url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
       frs:
         upload_base_path: /opt/edware/hpz/uploads

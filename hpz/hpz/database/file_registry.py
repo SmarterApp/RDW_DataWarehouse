@@ -1,7 +1,6 @@
 from datetime import datetime
 import logging
 from uuid import uuid4
-from sqlalchemy.sql.expression import exists, select
 from hpz.database.constants import DatabaseConstants
 from hpz.database.hpz_connector import get_hpz_connection
 
@@ -30,7 +29,9 @@ class FileRegistry:
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
-            conn.execute(file_reg_table.update().where(file_reg_table.c.registration_id == registration_id).values(registration_info))
+            result = conn.execute(file_reg_table.update().where(file_reg_table.c.registration_id == registration_id).values(registration_info))
+
+            return result.rowcount > 0
 
     @staticmethod
     def get_file_path(registration_id):
@@ -41,11 +42,3 @@ class FileRegistry:
             registration_info = result.fetchone()
 
             return registration_info['file_path']
-
-    @staticmethod
-    def is_file_registered(registration_id):
-        with get_hpz_connection() as conn:
-            file_reg_table = conn.get_table(table_name='file_registry')
-            result = conn.execute(file_reg_table.select(limit=1).where(file_reg_table.c.registration_id == registration_id))
-
-            return result.rowcount == 1

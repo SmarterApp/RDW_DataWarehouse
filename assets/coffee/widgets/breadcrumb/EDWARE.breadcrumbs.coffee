@@ -8,7 +8,7 @@ define [
   "edwareDataProxy"
 ] , ($, Mustache, edwareDataProxy) ->
 
-  BREADCRUMBS_TEMPLATE = "<ul>{{#items}}<li><a href='{{link}}'>{{name}}</a></li>{{/items}}<ul>"
+  BREADCRUMBS_TEMPLATE = "<ul>{{#items}}<li><a href='{{link}}' aria-label='breadcrumb {{name}}'>{{name}}</a></li>{{/items}}<ul>"
 
   class EdwareBreadcrumbs
 
@@ -21,6 +21,8 @@ define [
       output = Mustache.to_html BREADCRUMBS_TEMPLATE,
         items: elements
       $(@container).html output
+      # ignore last link
+      $('li:last a', @container).attr('tabindex', '-1')
 
     getCurrentPath: ->
       elements = []

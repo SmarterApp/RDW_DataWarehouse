@@ -37,8 +37,13 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
       $('.popover').parent().popover 'hide'
 
   $.fn.edwarePopover = (config) ->
+    # default tabindex
+    config.tabindex = -1 if config.tabindex is undefined
+    config.id = config.class if not config.id
     # setup default template with customized class name
-    config.template ?= "<div class='popover #{config.class} edwarePopover'><div class='mask'/><div class='arrow'/><div class='popover-content edwareScrollable' tabindex='0'><p></p></div></div>"
+    config.template ?= "<div id='#{config.id}' aria-labelledby='#{config.id}' class='popover #{config.class} edwarePopover'>
+      <div class='mask'/><div class='arrow'/>
+      <div class='popover-content edwareScrollable' tabindex='#{config.tabindex}'><p></p></div></div>"
     config.container ?= this
     config = $.extend({}, DEFAULT_CONFIG, config)
     this.popover config

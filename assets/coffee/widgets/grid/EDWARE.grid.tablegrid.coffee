@@ -41,6 +41,7 @@ define [
         lastFocus = "##{this.id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
+
       # load more data when focus on first and last row by triggering
       # scrolling event.
       bodyTable = $('.ui-jqgrid-btable')
@@ -88,6 +89,9 @@ define [
       $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
       $('#gridTable').removeAttr('aria-labelledby').removeAttr('tabindex').attr('aria-label', 'grid body')
       $('.jqgfirstrow').attr('aria-hidden', 'true')
+      # sorting headers
+      $('.jqg-third-row-header .ui-th-ltr').attr('aria-live', 'polite')
+
 
     renderBody: () ->
       colNames = this.getColumnNames()
@@ -171,11 +175,11 @@ define [
         titleText: column.name
 
     highlightSortLabels: () ->
-      $('.jqg-third-row-header .ui-th-ltr').removeClass('active')
+      sortingHeaders = $('.jqg-third-row-header .ui-th-ltr')
+      sortingHeaders.removeClass('active')
       grid = $('#gridTable')
       column = grid.jqGrid('getGridParam', 'sortname')
       grid.jqGrid('setLabel', column, '', 'active')
-
 
     $.fn.edwareGrid = (columns, options, footer) ->
       this.grid = new EdwareGrid(this, columns, options, footer)

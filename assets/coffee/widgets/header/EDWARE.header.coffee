@@ -7,7 +7,8 @@ define [
   "edwareHelpMenu"
   "text!headerTemplateHtml"
   "edwareEvents"
-], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml, edwareEvents) ->
+  "edwareModal"
+], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml, edwareEvents, edwareModal) ->
 
   create = (data, config) ->
     labels = config.labels

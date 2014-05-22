@@ -277,7 +277,7 @@ define [
           {{/values}}
         </span>
         <a href='#' class='removeIcon' role='button'
-          aria-labelledby='aria-filtered-by aria-{{display}}'/>
+          aria-labelledby='aria-filtered-by aria-{{display}} aria-filter-remove'/>
       </span>"
       output = Mustache.to_html(template, data)
       $(output)

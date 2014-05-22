@@ -5,11 +5,11 @@ define [
 ], ($, Mustache, HelpMenuTemplate) ->
 
   class EdwareHelpMenu
-    
+
     constructor: (@container, @config) ->
       @initialize()
       @bindEvents()
-            
+
     initialize: () ->
       output = Mustache.to_html HelpMenuTemplate, @config
       $(@container).html(output)
@@ -33,10 +33,10 @@ define [
 
     setActiveTabId: (tabId) ->
       @activeTab = tabId
-      
+
     show: (tabId) ->
       @setActiveTabId tabId if tabId
-      $('#HelpMenuModal').modal 'show'
+      $('#HelpMenuModal').edwareModal()
 
   create = (container, config) ->
     new EdwareHelpMenu(container, config)

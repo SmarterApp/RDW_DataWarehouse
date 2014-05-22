@@ -1,4 +1,4 @@
-define ["jquery"], ($) ->
+define ["jquery", "edwareEvents"], ($, edwareEvents) ->
 
   DEFAULT_CONFIG =
     html: true
@@ -37,8 +37,13 @@ define ["jquery"], ($) ->
       $('.popover').parent().popover 'hide'
 
   $.fn.edwarePopover = (config) ->
+    # default tabindex
+    config.tabindex = -1 if config.tabindex is undefined
+    config.id = config.class if not config.id
     # setup default template with customized class name
-    config.template ?= "<div class='popover #{config.class} edwarePopover'><div class='mask'/><div class='arrow'/><div class='popover-content edwareScrollable'><p></p></div></div>"
+    config.template ?= "<div id='#{config.id}' aria-labelledby='#{config.id}' class='popover #{config.class} edwarePopover'>
+      <div class='mask'/><div class='arrow'/>
+      <div class='popover-content edwareScrollable' tabindex='#{config.tabindex}'><p></p></div></div>"
     config.container ?= this
     config = $.extend({}, DEFAULT_CONFIG, config)
     this.popover config
@@ -46,8 +51,9 @@ define ["jquery"], ($) ->
     this.on 'shown.bs.popover', ->
       reposition.call(self)
       resize.call(self)
-    this.unbind('mouseleave').mouseleave ->
-      self.popover 'hide'
-    this.on 'focusout', ->
+      # hide popover when focus out
+      self.focuslost ->
+        self.popover 'hide'
+    this.unbind('mouseleave').on 'mouseleave', ->
       self.popover 'hide'
     this

@@ -22,3 +22,11 @@ class UDL2SQLFilteredSQLStringException(UDL2Exception):
     '''
     def __init__(self, msg='UDL2 Filtered SQL String Exception'):
         super().__init__(msg)
+
+
+class UDL2GlobalSequenceMissingException(UDL2Exception):
+    """
+    Production database is missing Global Sequence
+    """
+    def __init__(self, msg='UDL2 Prod Global Sequence Missing'):
+        super().__init__(msg)

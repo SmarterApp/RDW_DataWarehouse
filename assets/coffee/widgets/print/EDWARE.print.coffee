@@ -5,7 +5,8 @@ define [
   "text!PrintTemplate"
   "edwarePreferences"
   "edwareUtil"
-], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences, edwareUtil) ->
+  "edwareModal"
+], ($, bootstrap, Mustache, PrintTemplate, edwarePreferences, edwareUtil, edwareModal) ->
 
   class PrintModal
 
@@ -39,10 +40,10 @@ define [
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
 
     show: () ->
-      $('#PrintModal').modal('show')
+      $('#PrintModal').edwareModal()
 
     hide: () ->
-      $('#PrintModal').modal('hide')
+      $('#PrintModal').edwareModal('hide')
 
   create = (container, labels) ->
     new PrintModal(container, labels)

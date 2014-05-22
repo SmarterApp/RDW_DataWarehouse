@@ -41,11 +41,14 @@ define [
       $('.reportInfoIcon').edwarePopover
         class: 'reportInfoPopover'
         content: @config.reportInfoText
+        tabindex: 0
+
       # set report info text
       $('.reportInfoWrapper').append @config.reportInfoText
 
       # bind academic year info popover
       $('.academicYearInfoIcon').edwarePopover
+        class: 'academicYearInfoPopover'
         content: 'placeholder'
 
     createDownloadMenu: () ->

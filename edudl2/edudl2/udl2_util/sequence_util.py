@@ -2,13 +2,11 @@
 Utility module to get global sequence from production database.
 '''
 from celery.utils.log import get_task_logger
-from sqlalchemy import Sequence
 from sqlalchemy.sql import select
-from sqlalchemy.schema import CreateSequence
 from edudl2.database.udl2_connector import get_prod_connection
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
-from sqlalchemy import exc
+from edudl2.udl2_util.exceptions import UDL2GlobalSequenceMissingException
 
 logger = get_task_logger(__name__)
 
@@ -49,15 +47,12 @@ class UDLSequence(object):
 
     def check_sequence_existence(self):
         '''
-        Check if sequence exists, and create one if not.
+        Check if sequence exists, if not raise exception UDL2GlobalSequenceMissingException
         '''
         with get_prod_connection(self.tenant_name) as conn:
-            try:
                 if not self.sequence_exists(conn):
-                    seq = Sequence(name=self.seq_name, metadata=conn.get_metadata(), start=START_WITH)
-                    conn.execute(CreateSequence(seq))
-            except exc.IntegrityError as e:
-                logger.warn('Sequence creation failed with Integrity error. Must have been created by other process')
+                    raise UDL2GlobalSequenceMissingException(
+                        msg='UDL2 Prod Global Sequence Missing for tenant: ' + self.tenant_name)
 
     def sequence_exists(self, conn):
         '''

@@ -8,13 +8,26 @@ body {
     width: 980px;
     color: @color-B2;
     background-color: @color-A7;
-    /* border: solid 1px @color-A8; */
 
     *:focus {
-      box-shadow: 0 0 5px rgba(89, 119, 162, 1);
-      -webkit-box-shadow: 0 0 5px rgba(89, 119, 162, 1); 
-      -moz-box-shadow: 0 0 5px rgba(89, 119, 162, 1);
-      border:0px solid rgba(89, 119,162, 0.8); 
+      // reset on focus effect
+      outline: none;
+    }
+
+    &.highlight {
+
+      *:focus {
+        box-shadow: 0 0 5px rgba(89, 119, 162, 1);
+        -webkit-box-shadow: 0 0 5px rgba(89, 119, 162, 1);
+        -moz-box-shadow: 0 0 5px rgba(89, 119, 162, 1);
+        border:0px solid rgba(89, 119,162, 0.8);
+      }
+
+      a:focus {
+        // TODO:
+        outline: 5px auto -webkit-focus-ring-color;
+        outline: 5px auto -moz-focus-ring-color;
+      }
     }
 }
 
@@ -152,6 +165,11 @@ h6 {
         &.active {
             background-image: none !important;
             background-color: @color-C14 !important;
+        }
+
+        a.subject {
+          font-size: 14px;
+          font-weight: bold;
         }
     }
 

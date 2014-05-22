@@ -19,7 +19,7 @@ from integration_tests.udl_helper import empty_batch_table, empty_stats_table, r
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-#@unittest.skip("skipping this test till till ready for jenkins")
+@unittest.skip("skipping this test till till ready for jenkins")
 class Test_Error_In_Migration(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):

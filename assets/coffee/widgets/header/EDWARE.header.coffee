@@ -6,7 +6,9 @@ define [
   "edwareLanguageSelector"
   "edwareHelpMenu"
   "text!headerTemplateHtml"
-], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml) ->
+  "edwareEvents"
+  "edwareModal"
+], ($, Bootstrap, Mustache, edwareUtil, edwareLanguageSelector, edwareHelpMenu, headerTemplateHtml, edwareEvents, edwareModal) ->
 
   create = (data, config) ->
     labels = config.labels
@@ -41,9 +43,11 @@ define [
     $('#header #log_out_button').click ->
       window.open '/logout', 'iframe_logout'
     $('#header #resources').click ->
-      $('#ResourcesModal').modal 'show'
+      $('#ResourcesModal').edwareModal()
     $('#header .dropdown').mouseleave ->
-      $(@).removeClass 'open'
+      $(this).removeClass 'open'
+    .focuslost ->
+      $(this).mouseleave()
 
   # The code below is curently not being used.  Waiting to be refactored
   createCommonRegion = ()->

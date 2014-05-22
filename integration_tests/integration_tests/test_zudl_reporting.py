@@ -24,6 +24,7 @@ from edcore.tests.watch.common_test_utils import get_file_hash
 from edcore.tests.watch.common_test_utils import create_checksum_file
 
 
+@unittest.skip("skipping this test till till ready for jenkins")
 class TestUDLReportingIntegration(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):

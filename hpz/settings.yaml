@@ -70,6 +70,7 @@ development:
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
       frs:
         upload_base_path: /opt/edware/hpz/uploads
+        file_size_limit: 4294967296
 
 jenkins_dev:
   '[app:main]':
@@ -79,3 +80,4 @@ jenkins_dev:
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
       frs:
         upload_base_path: /opt/edware/hpz/uploads
+        file_size_limit: 4294967296

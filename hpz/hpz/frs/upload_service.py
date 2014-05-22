@@ -23,18 +23,25 @@ def file_upload_service(context, request):
     registration_id = request.matchdict['registration_id']
     file_ext = request.headers['Fileext']
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
+    file_size_limit = int(request.registry.settings['hpz.frs.file_size_limit'])
     file_pathname = os.path.join(base_upload_path, registration_id + '.' + file_ext)
 
-    if FileRegistry.update_registration(registration_id, file_pathname):
+    try:
+        if FileRegistry.update_registration(registration_id, file_pathname):
 
-        input_file = request.POST['file'].file
+            input_file = request.POST['file'].file
 
-        with open(file_pathname, mode='wb') as output_file:
-            shutil.copyfileobj(input_file, output_file)
+            with open(file_pathname, mode='wb') as output_file:
+                shutil.copyfileobj(input_file, output_file)
 
-        logger.info('The file was successfully uploaded')
+            if os.path.getsize(file_pathname) > file_size_limit:
+                logger.warning('File [%s] exceeds recommended size limit', file_pathname)
 
-    else:
-        logger.error('The file attempting to be upload is not registered')
+            logger.info('The file was successfully uploaded')
+
+        else:
+            logger.error('The file attempting to be upload is not registered')
+    except IOError as e:
+        logger.error('Cannot complete file copying due to: %s' % str(e))
 
     return Response()

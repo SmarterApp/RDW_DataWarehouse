@@ -15,6 +15,7 @@ from data_generation.model.assessmentoutcome import AssessmentOutcome
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.itemdata import SBACAssessmentOutcomeItemData
 
+
 class SBACAssessmentOutcome(AssessmentOutcome):
     """
     The SBAC-specific assessment outcome class.

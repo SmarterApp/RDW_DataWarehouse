@@ -1,6 +1,6 @@
 WSGIPythonPath {{venv}}/lib/python3.3/site-packages
-WSGIDaemonProcess pyramid user={{user}} group=apache processes=1 threads=1 python-path={{venv}}/lib/python3.3/site-packages
-WSGIProcessGroup pyramid
+WSGIDaemonProcess swi user={{user}} group=apache processes=1 threads=1 python-path={{venv}}/lib/python3.3/site-packages
+WSGIProcessGroup swi
 
 XSendFile on
 <Directory "/opt/edware">
@@ -18,19 +18,8 @@ XSendFile on
 <VirtualHost *:80>
 	WSGIApplicationGroup %{GLOBAL}
 	WSGIPassAuthorization On
-	WSGIScriptAlias / {{repo}}/edware/hpz/frs.wsgi
-	WSGIImportScript {{repo}}/edware/hpz/frs.wsgi process-group=pyramid application-group=%{GLOBAL}
-	<Directory {{repo}}/edware/hpz/frs>
-  		Order allow,deny
-  		Allow from all
-	</Directory>
-</VirtualHost>
-
-<VirtualHost *:80>
-	WSGIApplicationGroup %{GLOBAL}
-	WSGIPassAuthorization On
 	WSGIScriptAlias / {{repo}}/edware/hpz/swi.wsgi
-	WSGIImportScript {{repo}}/edware/hpz/swi.wsgi process-group=pyramid application-group=%{GLOBAL}
+	WSGIImportScript {{repo}}/edware/hpz/swi.wsgi process-group=swi application-group=%{GLOBAL}
 	<Directory {{repo}}/edware/hpz/swi>
   		Order allow,deny
   		Allow from all

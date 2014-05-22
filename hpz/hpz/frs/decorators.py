@@ -1,4 +1,5 @@
 from functools import wraps
+import json
 import logging
 from pyramid.response import Response
 
@@ -18,7 +19,7 @@ def validate_request_info(parameter, *fields):
             for field in fields:
                 if field not in request_fields:
                     logger.error('The request does not contain %s, rejecting request' % field)
-                    return Response()
+                    return Response(body=json.dumps({}))
 
             return request_handler(*args, **kwds)
 

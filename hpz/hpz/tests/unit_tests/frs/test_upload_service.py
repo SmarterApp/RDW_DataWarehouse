@@ -106,3 +106,43 @@ class UploadTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(update_registration_patch.called)
+
+    @patch('hpz.frs.upload_service.FileRegistry.update_registration')
+    @patch('shutil.copyfileobj')
+    @patch('builtins.open')
+    def test_invalid_headers(self, open_patch, copyfileobj_patch, update_registration_patch):
+        update_registration_patch.return_value = True
+        copyfileobj_patch.return_value = DummyFile()
+        open_patch.return_value.__exit__.return_value = None
+
+        __invalid_request = DummyRequest()
+        __invalid_request.matchdict['registration_id'] = 'a1-b2-c3-d4-e5'
+        __invalid_request.headers['InvalidFileext'] = 'zip'
+
+        self.__request.method = 'POST'
+        self.__request.POST['file'] = DummyFile()
+
+        response = file_upload_service(None, __invalid_request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(not update_registration_patch.called)
+        self.assertTrue(not copyfileobj_patch.called)
+        self.assertTrue(not open_patch.called)
+
+    @patch('hpz.frs.upload_service.FileRegistry.update_registration')
+    @patch('shutil.copyfileobj')
+    @patch('builtins.open')
+    def test_invalid_file_body(self, open_patch, copyfileobj_patch, update_registration_patch):
+        update_registration_patch.return_value = True
+        copyfileobj_patch.return_value = DummyFile()
+        open_patch.return_value.__exit__.return_value = None
+
+        self.__request.method = 'POST'
+        self.__request.POST['invalid_file'] = DummyFile()
+
+        response = file_upload_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(not update_registration_patch.called)
+        self.assertTrue(not copyfileobj_patch.called)
+        self.assertTrue(not open_patch.called)

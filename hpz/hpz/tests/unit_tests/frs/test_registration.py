@@ -42,8 +42,6 @@ class RegistrationTest(unittest.TestCase):
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
     def test_registration_incorrect_payload(self, persist_patch):
-        test_logger = logging.getLogger(registration_service.__name__)
-        with mock.patch.object(test_logger, 'error') as mock_debug:
             persist_patch.return_value = None
 
             self.__request.method = 'PUT'
@@ -56,4 +54,3 @@ class RegistrationTest(unittest.TestCase):
             response_json = json.loads(str(response.body, encoding='UTF-8'))
             self.assertTrue('url' not in response_json)
             self.assertTrue(not persist_patch.called)
-            self.assertTrue(mock_debug.called)

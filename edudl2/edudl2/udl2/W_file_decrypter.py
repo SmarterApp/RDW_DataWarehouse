@@ -34,12 +34,13 @@ def task(incoming_msg):
     decrypt_to_dir = tenant_directory_paths[mk.DECRYPTED]
     load_type = incoming_msg[mk.LOAD_TYPE]
 
-    logger.info('W_FILE_DECRYPTER: received file <%s> with guid_batch = <%s>' % (file_to_decrypt, guid_batch))
-    logger.info('W_FILE_DECRYPTER: Decrypt to <%s>' % decrypt_to_dir)
+    logger.info('W_FILE_DECRYPTER: received file {file} with guid_batch {guid_batch}'.format(file=file_to_decrypt,
+                                                                                             guid_batch=guid_batch))
+    logger.info('W_FILE_DECRYPTER: Decrypt to {dir}'.format(dir=decrypt_to_dir))
 
     status, decrypted_file = decrypt_file(file_to_decrypt, decrypt_to_dir, passphrase, gpghome)
-    logger.info('Decrypted file:', decrypted_file)
-    logger.info('Decryption status:', status)
+    logger.info('Decrypted file: {file}'.format(file=decrypted_file))
+    logger.info('Decryption status: {status}'.format(status=str(status)))
 
     finish_time = datetime.datetime.now()
 

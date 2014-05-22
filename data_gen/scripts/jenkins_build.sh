@@ -82,9 +82,9 @@ function check_pep8 {
 
 	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/sbac_data_generation
 	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/unit_tests
-	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/generate_data
-	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/mp_generate_data
-	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/calculate_state_size
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/generate_data.py
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/mp_generate_data.py
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/calculate_state_size.py
 
 	echo "finished check code style against pep8"
 }

@@ -206,9 +206,9 @@ define [
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc'
-          newLabel = "#{newLabel} #{this.config.proficiencyAscending}"
+          newLabel = "#{newLabel} <span aria-hidden='true'>#{this.config.proficiencyAscending}</span>"
         else
-          newLabel = "#{newLabel} #{this.config.proficiencyDescending}"
+          newLabel = "#{newLabel} <span aria-hidden='true'>#{this.config.proficiencyDescending}</span>"
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 

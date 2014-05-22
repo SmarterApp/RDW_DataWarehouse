@@ -92,7 +92,6 @@ define [
       # sorting headers
       $('.jqg-third-row-header .ui-th-ltr').attr('aria-live', 'polite')
 
-
     renderBody: () ->
       colNames = this.getColumnNames()
       colModel = this.getColumnModels()

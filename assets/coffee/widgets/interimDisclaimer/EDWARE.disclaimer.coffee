@@ -30,6 +30,9 @@ define [
       @interimDisclaimerIcon.edwarePopover
         class: 'disclaimerPopover'
         content: @content
+        tabindex: 0
+      .click ->
+        $(this).mouseover()
 
     hasLoaded: () ->
       edwarePreferences.getInterimInfo()

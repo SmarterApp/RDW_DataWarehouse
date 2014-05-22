@@ -207,7 +207,7 @@
             },
             {
             "name": "{{subject1}}",
-            "displayTpl": "<h4 class='pull-left' tabindex='0'>{{subject1}}</h4> Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
+            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
             "index": "subject1.asmt_score",
             "field": "subject1.asmt_score",
             "width": 230,
@@ -222,7 +222,7 @@
             },
             {
             "name": "{{subject2}}",
-            "displayTpl": "<h4 class='pull-left' tabindex='0'>{{subject2}}</h4> Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
+            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
             "index": "subject2.asmt_score",
             "field": "subject2.asmt_score",
             "width": 230,
@@ -266,7 +266,7 @@
             },
             {
             "name": "{{subject1}}",
-            "displayTpl": "<h4 class='pull-left' tabindex='0'>{{subject1}}</h4> Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
+            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
             "index": "subject1.asmt_score",
             "field": "subject1.asmt_score",
             "width": 175,
@@ -281,7 +281,7 @@
             },
             {
             "name": "{{claims.subject1.0.name}}",
-            "displayTpl": "{{claims.subject1.0.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
             "index": "subject1.claims.0.perf_lvl",
             "field": "subject1.claims.0.perf_lvl",
             "width": 154,
@@ -293,7 +293,7 @@
             },
             {
             "name": "{{claims.subject1.1.name}}",
-            "displayTpl": "{{claims.subject1.1.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
             "index": "subject1.claims.1.perf_lvl",
             "field": "subject1.claims.1.perf_lvl",
             "width": 160,
@@ -305,7 +305,7 @@
             },
             {
             "name": "{{claims.subject1.2.name}}",
-            "displayTpl": "{{claims.subject1.2.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
             "index": "subject1.claims.2.perf_lvl",
             "field": "subject1.claims.2.perf_lvl",
             "width": 160,
@@ -339,7 +339,7 @@
             },
             {
             "name": "{{subject2}}",
-            "displayTpl": "<h4 class='pull-left'>{{subject2}}</h4> Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
+            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
             "index": "subject2.asmt_score",
             "field": "subject2.asmt_score",
             "width": 175,
@@ -354,7 +354,7 @@
             },
             {
             "name": "{{claims.subject2.0.name}}",
-            "displayTpl": "{{claims.subject2.0.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
             "index": "subject2.claims.0.perf_lvl",
             "field": "subject2.claims.0.perf_lvl",
             "width": 118,
@@ -366,7 +366,7 @@
             },
             {
             "name": "{{claims.subject2.1.name}}",
-            "displayTpl": "{{claims.subject2.1.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
             "index": "subject2.claims.1.perf_lvl",
             "field": "subject2.claims.1.perf_lvl",
             "width": 118,
@@ -378,7 +378,7 @@
             },
             {
             "name": "{{claims.subject2.2.name}}",
-            "displayTpl": "{{claims.subject2.2.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
             "index": "subject2.claims.2.perf_lvl",
             "field": "subject2.claims.2.perf_lvl",
             "width": 118,
@@ -390,7 +390,7 @@
             },
             {
             "name": "{{claims.subject2.3.name}}",
-            "displayTpl": "{{claims.subject2.3.name}}",
+            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
             "index": "subject2.claims.3.perf_lvl",
             "field": "subject2.claims.3.perf_lvl",
             "width": 120,

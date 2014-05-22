@@ -3,7 +3,8 @@ define [
   "mustache"
   "text!YearDropdownTemplate"
   "edwarePreferences"
-], ($, Mustache, YearDropdownTemplate, edwarePreferences) ->
+  "edwareEvents"
+], ($, Mustache, YearDropdownTemplate, edwarePreferences, edwareEvents) ->
 
   class AcademicYearDropdown
 
@@ -39,20 +40,26 @@ define [
 
     bindEvents: () ->
       self = this
-      $('li', @container).click ->
+      $(@container).onClickAndEnterKey 'li', ->
         display = $(this).data('display')
         value = $(this).data('value')
         self.setSelectedValue display, value
         edwarePreferences.saveAsmtYearPreference(value)
+        # TODO: move focus on button after selection
+        $('#academicYearAnchor button').focus()
         self.callback(value)
-      $('li', @container).keypress (event) ->
-        if event.keyCode == 13
-          $(this).click()
+
+      # hide on focus lost
+      @container.focuslost ()->
+        self.hide()
+
       $('.reminderMessage a').click ->
         value = self.latestYear
         edwarePreferences.saveAsmtYearPreference(value)
         self.callback(value)
 
+    hide: ()->
+      @container.find('.btn-group').removeClass('open')
 
 
   (($) ->

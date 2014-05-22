@@ -2,7 +2,7 @@ define ["jquery", "edwareAsmtDropdown", "edwarePreferences"], ($, edwareAsmtDrop
 
   EdwareAsmtDropdown = edwareAsmtDropdown.EdwareAsmtDropdown
 
-  dropdownValues = [{asmtType: 'asmtType1', display: 'display1', value: 'value1'}, { asmtType: 'asmtType2', display: 'display2', value: 'value2'}]
+  dropdownValues = [{asmtType: 'asmtType1', display: 'display1', value: 'value1', asmt_grade: '1'}, { asmtType: 'asmtType2', display: 'display2', value: 'value2', asmt_grade: '2'}]
 
   getPreference = ()->
     {}
@@ -23,13 +23,14 @@ define ["jquery", "edwareAsmtDropdown", "edwarePreferences"], ($, edwareAsmtDrop
 
   test "Test EdwareAsmtDropdown initialization", ->
     edwarePreferences.saveAsmtPreference({ asmtType: 'asmtType2', display: 'display2', value: 'value2'})
-    dropdown = new EdwareAsmtDropdown($('#asmtDropdownContainer'), dropdownValues, getPreference)
+    dropdown = new EdwareAsmtDropdown $('#asmtDropdownContainer'), {}, dropdownValues, getPreference, (asmtType) ->
+      asmtType
     ok $('.asmtTypeButton')[0], 'Should create an asmt type dropdown menu'
     equal $('#selectedAsmtType').text(), 'display1', 'Should select asmtType1 by default'
 
   test "Test selecting option", ->
     edwarePreferences.saveAsmtPreference({ asmtType: 'asmtType1', display: 'display1', value: 'value2'})
-    dropdown = new EdwareAsmtDropdown $('#asmtDropdownContainer'), dropdownValues, getPreference, (asmtType) ->
+    dropdown = new EdwareAsmtDropdown $('#asmtDropdownContainer'), {}, dropdownValues, getPreference, (asmtType) ->
       asmtType
     $('.asmtSelection[data-asmtType="asmtType1"]').click()
     equal $('#selectedAsmtType').text(), 'display1', 'Should set asmtType1 as display text'

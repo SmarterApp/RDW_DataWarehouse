@@ -1,69 +1,75 @@
-<div id="header" class="content">
+<div id="header" class="content" role="banner">
     <div class="logo"></div>
-    <ul class="action">
+    <ul class="action" role="menubar">
     <li class="helpMenu">
-        <div class="divider">
-        <a><i class="edware-icon-question-mark marginRight8"></i>{{labels.help}}</a>
-        </div>
+    	<div class="divider">
+        <a href="#" role='menuitem'>
+        		<i class="edware-icon-question-mark marginRight8"></i>{{labels.help}}
+       	</a>
+       </div>
     </li>
     <li class="languageDropdown">
         <div class="divider">
-        <a id="user-settings">
+        <a id="user-settings" href="#" role='menuitem'>
             <i class="edware-icon-globe-blue marginRight8"></i>
             <span class="lang">English</span>
             <i class="edware-icon-downarrow-blue marginLeft8"></i>
         </a>
-        <ul class="languageMenu dropdown-menu" role="menu"></ul>
+	<ul class="languageMenu dropdown-menu" role="radiogroup"></ul>
         </div>
     </li>
     <li><div class="divider">
-        <button class="btn btn-primary btn-login edware-btn-primary">{{labels.login}}</button>
+        <button class="btn btn-primary btn-login edware-btn-primary" role='menuitem'>{{labels.login}}</button>
     </div></li>
     </ul>
     <div class="helpMenuContainer"></div>
 </div>
-<div id="content">
-    <div class="content">
-    <div class="intro">
-        <h1>{{title}}</h1>
-        <p>{{summary}}</p>
-        <button class="btn btn-primary btn-small btn-login edware-btn-primary">{{labels.login}}</button>
-    </div>
-    </div>
-</div>
-{{#about}}
-<div id="about" class="content">
-    <h3>{{title}}</h3>
-    <ul>
-    {{#sections}}
-    <li data-link="{{link}}">
-        <div class="{{class}} asset"></div>
-        <h2>{{subtitle}}</h2>
-        <p>{{desc}}</p>
-    </li>
-    {{/sections}}
-    </ul>
-</div>
-{{/about}}
-<div id="footer">
-    <div class="content">
-    <div class="copyright">
-        <div class="logo"></div>
-        <p>{{copyright}}</p>
-    </div>
-    <div class="help">
-        <h4>{{labels.help}}</h4>
-        <ul class="helpMenu">
-        <li><a href="#userGuide">{{userGuide}}</a></li>
-        <li><a href="#faq">{{faq}}</a></li>
-        <li><a href="#glossary">{{tutorials}}</a></li>
-        </ul>
-    </div>
-    <div class="contact">
-        <h4>{{contact}}</h4>
-        <ul>
-        <li><a href="mailto:{{email}}">{{email}}</a></li>
-        </ul>
-    </div>
-    </div>
+<div role="main">
+	<div id="content">
+	    <div class="content">
+	    <div class="intro">
+	        <h1>{{title}}</h1>
+	        <p>{{summary}}</p>
+	        <button class="btn btn-primary btn-small btn-login edware-btn-primary">{{labels.login}}</button>
+	    </div>
+	    </div>
+	</div>
+	{{#about}}
+	<div id="about" class="content">
+	    <h3>{{title}}</h3>
+	    <ul>
+	    {{#sections}}
+		<li>
+	    	<a href="{{link}}">
+	        <div class="{{class}} asset"></div>
+	        <h2>{{subtitle}}</h2>
+	        <p>{{desc}}</p>
+	        </a>
+	    </li>
+	    {{/sections}}
+	    </ul>
+	</div>
+	{{/about}}
+	<div id="footer">
+	    <div class="content">
+	    <div class="copyright">
+	        <div class="logo"></div>
+	        <p>{{copyright}}</p>
+	    </div>
+	    <div class="help">
+	        <h4>{{labels.help}}</h4>
+	        <ul class="helpMenu">
+	        <li><a href="#userGuide">{{userGuide}}</a></li>
+	        <li><a href="#faq">{{faq}}</a></li>
+	        <li><a href="#glossary">{{tutorials}}</a></li>
+	        </ul>
+	    </div>
+	    <div class="contact">
+	        <h4>{{contact}}</h4>
+	        <ul>
+	        <li><a href="mailto:{{email}}">{{email}}</a></li>
+	        </ul>
+	    </div>
+	    </div>
+	</div>
 </div>

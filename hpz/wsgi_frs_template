@@ -12,9 +12,9 @@ WSGIProcessGroup frs
 <VirtualHost *:80>
 	WSGIApplicationGroup %{GLOBAL}
 	WSGIPassAuthorization On
-	WSGIScriptAlias / {{repo}}/edware/hpz/frs.wsgi
-	WSGIImportScript {{repo}}/edware/hpz/frs.wsgi process-group=frs application-group=%{GLOBAL}
-	<Directory {{repo}}/edware/hpz/frs>
+	WSGIScriptAlias / {{repo}}/hpz/frs.wsgi
+	WSGIImportScript {{repo}}/hpz/frs.wsgi process-group=frs application-group=%{GLOBAL}
+	<Directory {{repo}}/hpz/frs>
   		Order allow,deny
   		Allow from all
 	</Directory>

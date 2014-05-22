@@ -88,7 +88,7 @@ def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
         raise Exception('Decryption Failed')
     if status.trust_level is None or status.trust_level < 4:
         raise Exception('Verification Failed. Signature not trusted')
-    return (status, output_file)
+    return status, output_file
 
 
 if __name__ == "__main__":

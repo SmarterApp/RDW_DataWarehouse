@@ -34,6 +34,27 @@ define [
       this.options.loadComplete = () ->
         self.afterLoadComplete()
 
+    bindEvents: ()->
+      # reset focus after sorting
+      self = this
+      $('.ui-jqgrid-sortable').click ()->
+        lastFocus = "##{this.id}"
+        # escape dot in element id
+        self.lastFocus = lastFocus.replace(/\./gi, '\\.')
+
+      # load more data when focus on first and last row by triggering
+      # scrolling event.
+      bodyTable = $('.ui-jqgrid-btable')
+      bodyDiv = bodyTable.closest('.ui-jqgrid-bdiv')
+      bodyTable.on 'focus', 'tr:last-child ', ->
+        offset = bodyDiv.scrollTop()
+        bodyDiv.scrollTop(offset + 10)
+      # The first row that contains user content is
+      # actually the second `tr`
+      bodyTable.on 'focus', 'tr:nth-child(2) ', ->
+        offset = bodyDiv.scrollTop()
+        bodyDiv.scrollTop(offset - 10)
+
     setSortedColumn: (columns) ->
       sorted = this.options.sort
       return columns if not sorted
@@ -49,11 +70,17 @@ define [
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
       this.highlightSortLabels()
 
+    resetFocus: ()->
+      $("#{this.lastFocus} a").focus()
+      # reset last focus on sorting header
+      delete @lastFocus
+
     render: ()->
       this.renderBody()
       this.renderHeader()
       this.renderFooter()
       this.addARIA()
+      this.bindEvents()
 
     addARIA: ()->
       # TODO:
@@ -62,6 +89,9 @@ define [
       $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
       $('#gridTable').removeAttr('aria-labelledby').removeAttr('tabindex').attr('aria-label', 'grid body')
       $('.jqgfirstrow').attr('aria-hidden', 'true')
+      # sorting headers
+      $('.jqg-third-row-header .ui-th-ltr').attr('aria-live', 'polite')
+
 
     renderBody: () ->
       colNames = this.getColumnNames()
@@ -145,7 +175,8 @@ define [
         titleText: column.name
 
     highlightSortLabels: () ->
-      $('.jqg-third-row-header .ui-th-ltr').removeClass('active')
+      sortingHeaders = $('.jqg-third-row-header .ui-th-ltr')
+      sortingHeaders.removeClass('active')
       grid = $('#gridTable')
       column = grid.jqGrid('getGridParam', 'sortname')
       grid.jqGrid('setLabel', column, '', 'active')
@@ -156,6 +187,7 @@ define [
 
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
+      return this.grid
 
     $.fn.eagerLoad = () ->
       # load all data at once
@@ -179,13 +211,6 @@ define [
       $component = $(component)
       height += $component.height() if $component.is(':visible')
     window.innerHeight - height
-
-  $.fn.onClickAndEnterKey = (selector, callback) ->
-    # delegate click event
-    $(this).on 'click', selector, callback
-    # listen to enter key press event
-    $(this).on 'keypress', selector, (e) ->
-      callback.call(this) if e.keyCode is 13
 
   #
   #    * Creates EDWARE grid

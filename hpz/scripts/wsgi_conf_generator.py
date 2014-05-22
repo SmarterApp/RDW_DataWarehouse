@@ -11,7 +11,7 @@ class CustomNS:
 customNS = CustomNS()
 parser = argparse.ArgumentParser(description='Generate HPZ apache config')
 parser.add_argument('-v', help='Path to virtual environment', required=True)
-parser.add_argument('-r', help='Path to local repository', required=True)
+parser.add_argument('-r', help='Path where local edware repository resides', required=True)
 parser.add_argument('-u', help='User name', required=True)
 
 args = parser.parse_args(namespace=customNS)

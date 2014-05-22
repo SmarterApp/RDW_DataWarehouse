@@ -91,6 +91,10 @@ define [
         # clear session storage
         self.storage.clear()
 
+      # collapse dropdown menu when focus out
+      $('.btn-group', this.filterArea).focuslost ()->
+        $(this).removeClass('open')
+
     cancel: (self) ->
       self.reset()
       self.closeFilter()
@@ -123,6 +127,7 @@ define [
     closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'
       $(this.filterTrigger).removeClass('active')
+      $('a', this.filterTrigger).focus()
       noTags = $(this.tagPanel).is(':empty')
       if noTags
         filterArrow = this.filterArrow
@@ -272,7 +277,7 @@ define [
           {{/values}}
         </span>
         <a href='#' class='removeIcon' role='button'
-          aria-labelledby='aria-filtered-by aria-{{display}}'/>
+          aria-labelledby='aria-filtered-by aria-{{display}} aria-filter-remove'/>
       </span>"
       output = Mustache.to_html(template, data)
       $(output)

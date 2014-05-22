@@ -5,7 +5,8 @@ define [
   'edwareClientStorage'
   'text!edwareStickyCompareTemplate'
   'edwareGrid'
-], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid) ->
+  'edwareEvents'
+], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate, edwareGrid, edwareEvents) ->
 
   STICKY_POPOVER_TEMPLATE = '<div class="popover stickyPopover"><div class="mask"></div><div class="arrow"></div><div class="popover-inner large"><div class="popover-content"><p></p></div></div></div>'
 
@@ -321,11 +322,12 @@ define [
       table = $('<div class=" stickyChainTable"></div>')
       for name in names
         table.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + reverse[name] + '" class="tableCellRight removeStickyChainIcon"></div></div>')
+        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><a href="#" data-id="' + reverse[name] + '" class="tableCellRight removeStickyChainIcon"></a></div>')
         idx++
       scrollable.append table
 
     renderStickyChainRows: () ->
+      # TODO:
       self = this
       @stickyChainBtn.popover
         html: true
@@ -341,12 +343,15 @@ define [
           popoverElement = $(this).parent().find('.popover')
           popoverElement.css 'left', 0
           popoverElement.find('.arrow').css 'left', self.stickyChainBtn.width()/2
-          btnGroupElement.parent().mouseleave ->
+          btnGroupElement.mouseleave ->
             self.stickyChainBtn.popover 'hide'
             btnGroupElement.removeClass 'open'
+
+          btnGroupElement.focuslost ()->
+            # collpase on foucs out
+            $(this).mouseleave()
       .focus ->
         $(this).mouseover()
-      .focusout ->
-        $(this).mouseleave()
+
 
   EdwareGridStickyCompare:EdwareGridStickyCompare

@@ -1,9 +1,6 @@
 import unittest
 from pyramid.testing import DummyRequest
-from pyramid import testing
 from hpz.swi.download_service import download_file
-from pyramid.registry import Registry
-import json
 from unittest.mock import patch
 
 __author__ = 'npandey'

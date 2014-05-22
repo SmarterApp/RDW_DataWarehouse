@@ -18,9 +18,9 @@ XSendFile on
 <VirtualHost *:80>
 	WSGIApplicationGroup %{GLOBAL}
 	WSGIPassAuthorization On
-	WSGIScriptAlias / {{repo}}/edware/hpz/swi.wsgi
-	WSGIImportScript {{repo}}/edware/hpz/swi.wsgi process-group=swi application-group=%{GLOBAL}
-	<Directory {{repo}}/edware/hpz/swi>
+	WSGIScriptAlias / {{repo}}/hpz/swi.wsgi
+	WSGIImportScript {{repo}}/hpz/swi.wsgi process-group=swi application-group=%{GLOBAL}
+	<Directory {{repo}}/hpz/swi>
   		Order allow,deny
   		Allow from all
 	</Directory>

@@ -40,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <div class='info'>
+            <div class='info' id="infoScreenReader{{count}}" aria-labelledby="infoScreenReader{{count}}">
                 <div class="overallText">
                     <strong>{{labels.overall_score}}</strong>
                 </div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="confidenceLevel"></div>
+        <div class="confidenceLevel" id="confidenceLevelScreenReader{{count}}" aria-labelledby="confidenceLevelScreenReader{{count}}"></div>
         <div class="claimsSection clearfix">
             <div class="row-fluid">
                 {{#claims}}

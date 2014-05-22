@@ -57,6 +57,7 @@ if __name__ == "__main__":
         connection.execute(CreateSchema(__schema))
         if __metadata == 'edware':
             metadata = generate_ed_metadata(schema_name=__schema, bind=engine)
+            connection.execute('CREATE SEQUENCE "' + __schema + '"."global_udl2_sequence"')
         else:
             metadata = generate_stats_metadata(schema_name=__schema, bind=engine)
         metadata.create_all(engine)

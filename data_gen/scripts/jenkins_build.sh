@@ -80,7 +80,11 @@ function check_pep8 {
 
 	ignore="E501"
 
-	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/$1
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/sbac_data_generation
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/unit_tests
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/generate_data
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/mp_generate_data
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/calculate_state_size
 
 	echo "finished check code style against pep8"
 }

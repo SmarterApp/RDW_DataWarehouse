@@ -7,11 +7,12 @@ Model an item data generated for an assessment outcome (an instance of a student
 
 from mongoengine import ReferenceField, Document, EmbeddedDocument, IntField, StringField, DateTimeField
 
+
 class SBACAssessmentOutcomeItemData(EmbeddedDocument):
     """
     The SBAC-specific assessment outcome Item Data class.
     """
-    #assessment_outcome = ReferenceField(SBACAssessmentOutcome, required=True)
+    # assessment_outcome = ReferenceField(SBACAssessmentOutcome, required=True)
     student_guid = StringField(required=True)
     key = IntField(required=True)
     segment_id = StringField(required=True)
@@ -30,7 +31,6 @@ class SBACAssessmentOutcomeItemData(EmbeddedDocument):
     page_visits = IntField(required=False)
     page_time = IntField(required=False)
     dropped = IntField(required=False)
-
 
     def get_object_set(self):
         """

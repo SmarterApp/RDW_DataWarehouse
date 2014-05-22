@@ -90,7 +90,7 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
     @param state_type: Type of state to generate
     """
     global STATES, YEARS, ASMT_YEARS, INTERIM_ASMT_PERIODS, NUMBER_REGISTRATION_SYSTEMS, WRITE_LZ, WRITE_STAR, \
-           WRITE_PG, GRADES_OF_CONCERN
+        WRITE_PG, GRADES_OF_CONCERN
 
     # Validate parameter
     if team not in ['sonics', 'arkanoids', 'udl']:
@@ -383,20 +383,22 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
         for guid, rslts in assessment_results.items():
 
             for sao in rslts:
-
-                OUT_PATH = os.path.join(sao.student.school.district.state.code, str(sao.assessment.period_year),
-                                        sao.assessment.asmt_type, str(sao.assessment.effective_date)
-                                        , sao.assessment.subject, str(sao.student.grade),
+                out_path = os.path.join(sao.student.school.district.state.code, str(sao.assessment.period_year),
+                                        sao.assessment.asmt_type, str(sao.assessment.effective_date),
+                                        sao.assessment.subject, str(sao.student.grade),
                                         sao.student.school.district.guid)
 
-                if not os.path.exists(os.path.join(OUT_PATH_ROOT, OUT_PATH)):
-                    os.makedirs(os.path.join(OUT_PATH_ROOT, OUT_PATH))
+                if not os.path.exists(os.path.join(OUT_PATH_ROOT, out_path)):
+                    os.makedirs(os.path.join(OUT_PATH_ROOT, out_path))
 
-                csv_writer.prepare_csv_file(os.path.join(OUT_PATH, sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr))
-                                            , sbac_out_config.LZ_ITEMDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
+                csv_writer.prepare_csv_file(os.path.join(out_path,
+                                                         sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr)),
+                                            sbac_out_config.LZ_ITEMDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
 
-                csv_writer.write_records_to_file(os.path.join(OUT_PATH, sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr))
-                                                 , sbac_out_config.LZ_ITEMDATA_FORMAT['columns'], sao.item_level_data, root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(os.path.join(out_path,
+                                                              sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr)),
+                                                 sbac_out_config.LZ_ITEMDATA_FORMAT['columns'],
+                                                 sao.item_level_data, root_path=OUT_PATH_ROOT)
 
             if WRITE_LZ:
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
@@ -616,7 +618,7 @@ def generate_state_data(state: SBACState, id_gen):
 
     # Print completion of state
     print('State %s created with average of %i students/year and %i total unique' % (state.name, student_avg_count,
-                                                                                      student_unique_count))
+                                                                                     student_unique_count))
 
 
 if __name__ == '__main__':

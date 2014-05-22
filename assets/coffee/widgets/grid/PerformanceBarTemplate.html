@@ -1,7 +1,7 @@
 <div class='{{export}}'>
     {{#subject.asmt_score}}
         <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};' tabindex='0'
-             aria-label='{{subject.asmt_type}} assessment score'>{{subject.asmt_score}}</div>
+             aria-labelledby='{{rowId}}'>{{subject.asmt_score}}</div>
     {{/subject.asmt_score}}
     {{^subject.asmt_score}}
         <div class='asmtScore'>&nbsp;</div>

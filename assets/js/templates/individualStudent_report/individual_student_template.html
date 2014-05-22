@@ -83,9 +83,10 @@
         <div class="accommodationSection clearfix">
             <div class="content">
                 <h4>{{labels.accommodations}}</h4>
-                <div>
+                <div id="accommodationScreenReader{{count}}" aria-labelledby="accommodationScreenReader{{count}}">
                     {{#sections}}
                     <div class="section">
+                    	<div class="screenreader"></div> 
                         <p>{{current.0.student_first_name}} {{{description}}}</p>
                         <div>
                             {{#accommodation}}

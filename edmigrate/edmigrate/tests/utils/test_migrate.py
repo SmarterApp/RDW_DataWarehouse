@@ -48,8 +48,6 @@ class TestMigrate(Unittest_with_edcore_sqlite, Unittest_with_preprod_sqlite, Uni
     def test_migrate_getting_natural_key(self):
         with EdMigrateDestConnection(tenant=get_unittest_prod_tenant_name()) as prod_conn:
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student')), ['student_guid'])
-            self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_student_demographics')),
-                              ['student_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('dim_asmt')), ['asmt_guid'])
             self.assertEquals(get_natural_key_columns(prod_conn.get_table('fact_asmt_outcome_vw')),
                               ['asmt_guid', 'student_guid'])

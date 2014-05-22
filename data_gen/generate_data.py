@@ -156,8 +156,6 @@ def prepare_output_files():
                                 root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
                                 sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name'],
-                                sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
                                 sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
@@ -340,7 +338,7 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
 
     @param asmt_year: Current academic year
     @param sr_out_name: Name of student registration landing zone CSV file to potentially write to
-    @param dim_students: Students to write to dim_student/dim_student_demographic star-schema CSVs/postgres tables
+    @param dim_students: Students to write to dim_student star-schema CSVs/postgres tables
     @param sr_students: Students to write to registration landing zone/star-schema CSV/postgres table
     @param assessment_results: Assessment outcomes to write to landing zone/star-schema CSV/postgres table
     """
@@ -353,8 +351,6 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
     dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
     dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
-    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
-    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
     sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
     sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
 
@@ -365,16 +361,11 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
         csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
                                          entity_filter=('held_back', False), tbl_name='dim_student',
                                          root_path=OUT_PATH_ROOT)
-        csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
-                                         entity_filter=('held_back', False), tbl_name='dim_student',
-                                         root_path=OUT_PATH_ROOT)
         csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
                                          root_path=OUT_PATH_ROOT)
     if WRITE_PG:
         postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
                                                entity_filter=('held_back', False))
-        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
-                                               dim_students, entity_filter=('held_back', False))
         postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
 
     # Write assessment results if we have them; also optionally to landing zone CSV, star-schema CSV, and/or to postgres

@@ -123,10 +123,17 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'sex': 'male',
             'email': 'richard.mccarty@gangessharkbrownhyaenaprimary.edu',
             'birthdate': '20040312',
-            'grade': '3',
-            'state_code': 'NC',
-            'district_guid': '228',
-            'school_guid': '242'
+            'dmg_eth_derived': 3,
+            'dmg_eth_hsp': True,
+            'dmg_eth_ami': False,
+            'dmg_eth_asn': False,
+            'dmg_eth_blk': False,
+            'dmg_eth_pcf': False,
+            'dmg_eth_wht': False,
+            'dmg_prg_iep': False,
+            'dmg_prg_lep': False,
+            'dmg_prg_504': False,
+            'dmg_prg_tt1': False
         }
         bad_record = {
             'student_guid': 'not_really_exist'

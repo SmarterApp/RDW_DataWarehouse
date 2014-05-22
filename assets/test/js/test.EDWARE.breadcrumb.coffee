@@ -55,11 +55,12 @@ define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     ]
 
     deepEqual $("#breadcrumbs")[0].innerHTML.length, 0, "breadcrumbs should be empty before test is running"
-    edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
-    equal $("#breadcrumbs a").length, 3, "3 links should have been created"
-    equal $("#breadcrumbs a")[0].text, "Redmond District", "wrong text shown"
+    edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb, 'home', {})
+    equal $("#breadcrumbs a").length, 4, "3 links should have been created"
+    equal $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
 
   test "Test format name", ->
+    EdwareBreadcrumbs::labels = {grade: 'Grade'}
     element = { type: 'grade', name: '1'}
     actual = EdwareBreadcrumbs::formatName element
     equal 'Grade 1', actual.name, "grade name should have grade as prefix"

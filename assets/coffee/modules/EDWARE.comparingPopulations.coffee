@@ -212,6 +212,10 @@ define [
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
+      # TODO: need refactoring:
+      # get last focused element from EdwareGrid object
+      @grid?.resetFocus()
+
     renderBreadcrumbs: (breadcrumbsData, labels)->
       displayHome = edwareUtil.getDisplayBreadcrumbsHome this.data.user_info
       this.breadcrumbs ?= new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType, displayHome, labels)

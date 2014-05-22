@@ -97,13 +97,13 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
 
   test "Test request button click event", 1, ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
-    $('.btn-primary').trigger 'click'
+    $('.edware-btn-primary').trigger 'click'
     ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
 
   test "Test validating parameters", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('.dropdown-menu input').removeAttr 'checked'
-    $('.btn-primary').trigger 'click'
+    $('.edware-btn-primary').trigger 'click'
     ok $('#message').find('.error')[0], "Should display invalid message"
 
   test "Test invalid selection", ->

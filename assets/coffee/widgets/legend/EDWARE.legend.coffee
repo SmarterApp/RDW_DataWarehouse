@@ -76,6 +76,8 @@ define [
       $('#legendTemplate .populationBar', container).prepend(output)
       # remove pop up when hovering over population bar
       container.find('.progressBar_tooltip').remove()
+      # do not tab on progress bar in legend
+      container.find('.progress').removeAttr('tabindex')
 
 
   # Legend section on individual student report

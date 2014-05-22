@@ -23,18 +23,16 @@ def file_upload_service(context, request):
     registration_id = request.matchdict['registration_id']
     file_ext = request.headers['Fileext']
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
+    file_pathname = os.path.join(base_upload_path, registration_id + '.' + file_ext)
 
-    if FileRegistry.is_file_registered(registration_id):
-
-        file_pathname = os.path.join(base_upload_path, registration_id + '.' + file_ext)
+    if FileRegistry.update_registration(registration_id, file_pathname):
 
         input_file = request.POST['file'].file
 
         with open(file_pathname, mode='wb') as output_file:
             shutil.copyfileobj(input_file, output_file)
 
-        FileRegistry.update_registration(registration_id, file_pathname)
-        logger.error('This file was successfully uploaded')
+        logger.info('The file was successfully uploaded')
 
     else:
         logger.error('The file attempting to be upload is not registered')

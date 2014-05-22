@@ -41,9 +41,12 @@ def test_generate_assessment():
     assert asmt.from_date == datetime.date(2015, 5, 15)
     assert asmt.to_date == datetime.date(9999, 12, 31)
 
+
 def test_generate_item_data():
-    item_data = item_lvl_data.SBACAssessmentOutcomeItemData(student_guid='0b43854416674ec8961b9db797bca2'
-                ,key='1938', segment_id='(SBAC)SBAC-MG110PT-S2-ELA-7-Spring-2014-2015', position='19', format='MC')
+    item_data = item_lvl_data.SBACAssessmentOutcomeItemData(student_guid='0b43854416674ec8961b9db797bca2',
+                                                            key='1938',
+                                                            segment_id='(SBAC)SBAC-MG110PT-S2-ELA-7-Spring-2014-2015',
+                                                            position='19', format='MC')
 
     assert item_data.student_guid == '0b43854416674ec8961b9db797bca2'
     assert item_data.key == 1938

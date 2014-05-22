@@ -15,6 +15,6 @@ def generate_metadata(schema_name=None, bind=None):
     file_registry = Table('file_registry', metadata,
                           Column('registration_id', String(36), primary_key=True),
                           Column('file_path', String(256), nullable=True),
-                          Column('creation_date', DateTime(timezone=True), nullable=True))
+                          Column('create_dt', DateTime(timezone=True), nullable=True))
 
     return metadata

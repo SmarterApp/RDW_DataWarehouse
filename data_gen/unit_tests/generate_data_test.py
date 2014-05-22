@@ -142,6 +142,7 @@ def test_create_assessment_outcome_object_item_data():
     assert len(outcomes) == 1
     assert len(outcomes[asmt.guid_sr][0].item_level_data) == sbac_config.ITEMS_PER_ASMT
 
+
 def test_create_assessment_outcome_object_skipped():
     # Create objects
     asmt = asmt_gen.generate_assessment('SUMMATIVE', 'Spring', 2015, 'ELA', ID_GEN)

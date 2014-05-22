@@ -52,7 +52,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                         MetaColumn('batch_guid', String(50), nullable=False),
                         )
 
-    Index('dim_inst_hier_idx', instit_hier.c.inst_hier_rec_id, unique=True)
+    Index('dim_inst_hier_rec_pk_idx', instit_hier.c.inst_hier_rec_id, unique=True)
     Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_guid, instit_hier.c.school_guid, unique=False)
 
     # NB! Figure out uniques in dim_student
@@ -83,8 +83,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      MetaColumn('batch_guid', String(50), nullable=False),
                      )
 
-    Index('dim_student_pk', students.c.student_rec_id, unique=True)
-    Index('dim_student_idx', students.c.student_guid, unique=False)
+    Index('dim_student_rec_pk_idx', students.c.student_rec_id, unique=True)
+    Index('dim_student_guid_idx', students.c.student_guid, unique=False)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
@@ -127,9 +127,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        MetaColumn('batch_guid', String(50), nullable=False),
                        )
 
-    Index('dim_asmt_rec_idx', assessment.c.asmt_rec_id, unique=True)
+    Index('dim_asmt_rec_pk_idx', assessment.c.asmt_rec_id, unique=True)
     Index('dim_asmt_guid_idx', assessment.c.asmt_guid, unique=False)
-    Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, unique=False)
+    Index('dim_asmt_id_type_idx', assessment.c.asmt_rec_id, assessment.c.asmt_type, unique=False)
 
     custom_metadata = Table('custom_metadata', metadata,
                             Column('state_code', String(2), nullable=False),
@@ -149,7 +149,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('district_guid', String(50), nullable=False),
                                   Column('school_guid', String(50), nullable=False),
                                   Column('where_taken_id', String(50), nullable=True),  # external id if provided
-                                  Column('where_taken_name', String(60)),
+                                  Column('where_taken_name', String(60), nullable=True),
                                   Column('asmt_type', String(32), nullable=False),
                                   Column('asmt_year', SmallInteger, nullable=False),
                                   Column('asmt_subject', String(64), nullable=False),
@@ -212,15 +212,16 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   )
 
     Index('fact_asmt_outcome_vw_student_idx', assessment_outcome_vw.c.student_guid, assessment_outcome_vw.c.asmt_guid, unique=False)
-    Index('fact_asmt_outcome_vw_asmt_subj_typ', assessment_outcome_vw.c.student_guid, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_type, unique=False)
+    Index('fact_asmt_outcome_vw_asmt_subj_typ_idx', assessment_outcome_vw.c.student_guid, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_type, unique=False)
     # Filtering related indices
-    Index('fact_asmt_outcome_vw_grade', assessment_outcome_vw.c.asmt_grade, unique=False)
-    Index('fact_asmt_outcome_vw_lep', assessment_outcome_vw.c.dmg_prg_lep, unique=False)
-    Index('fact_asmt_outcome_vw_504', assessment_outcome_vw.c.dmg_prg_504, unique=False)
-    Index('fact_asmt_outcome_vw_tt1', assessment_outcome_vw.c.dmg_prg_tt1, unique=False)
-    Index('fact_asmt_outcome_vw_iep', assessment_outcome_vw.c.dmg_prg_iep, unique=False)
-    Index('fact_asmt_outcome_vw_sex', assessment_outcome_vw.c.sex, unique=False)
-    Index('fact_asmt_outcome_vw_cpop_stateview', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, unique=False)
+    Index('fact_asmt_outcome_vw_grade_idx', assessment_outcome_vw.c.asmt_grade, unique=False)
+    Index('fact_asmt_outcome_vw_eth_derived_idx', assessment_outcome_vw.c.dmg_eth_derived, unique=False)
+    Index('fact_asmt_outcome_vw_lep_idx', assessment_outcome_vw.c.dmg_prg_lep, unique=False)
+    Index('fact_asmt_outcome_vw_504_idx', assessment_outcome_vw.c.dmg_prg_504, unique=False)
+    Index('fact_asmt_outcome_vw_tt1_idx', assessment_outcome_vw.c.dmg_prg_tt1, unique=False)
+    Index('fact_asmt_outcome_vw_iep_idx', assessment_outcome_vw.c.dmg_prg_iep, unique=False)
+    Index('fact_asmt_outcome_vw_sex_idx', assessment_outcome_vw.c.sex, unique=False)
+    Index('fact_asmt_outcome_vw_cpop_stateview_idx', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmt_outcome_rec_id', BigInteger, primary_key=True),
@@ -325,6 +326,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                  Column('batch_guid', String(50), nullable=False),
                                  )
     Index('student_reg_year_system_idx', student_registration.c.academic_year, student_registration.c.reg_system_id, unique=False)
-    Index('student_reg_guid', student_registration.c.student_guid, unique=False)
+    Index('student_reg_guid_idx', student_registration.c.student_guid, unique=False)
 
     return metadata

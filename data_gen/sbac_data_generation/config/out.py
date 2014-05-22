@@ -383,7 +383,7 @@ ASMT_JSON_FORMAT = {'format': 'json',
 LZ_ITEMDATA_FORMAT = {'format': 'csv',
                       'name': 'STUDENT_<GUID>.csv',
                       'columns': [{'name': 'key', 'val': 'assessment_outcome_item_data.key'},
-                                  {'name': 'student_guid', 'val': 'assessment_outcome_item_data.student_guid'},# 'student.guid_sr'},
+                                  {'name': 'student_guid', 'val': 'assessment_outcome_item_data.student_guid'},  # 'student.guid_sr'},
                                   {'name': 'segmentId', 'val': 'assessment_outcome_item_data.segment_id'},
                                   {'name': 'position', 'val': 'assessment_outcome_item_data.position'},
                                   {'name': 'clientId', 'val': '3b6a2490'},
@@ -399,8 +399,7 @@ LZ_ITEMDATA_FORMAT = {'format': 'csv',
                                   {'name': 'pageNumber', 'val': '1'},
                                   {'name': 'pageVisits', 'val': '0'},
                                   {'name': 'pageTime', 'val': '0'},
-                                  {'name': 'dropped', 'val': '0'}
-                      ]}
+                                  {'name': 'dropped', 'val': '0'}]}
 
 LZ_REALDATA_FORMAT = {'format': 'csv',
                       'name': 'REALDATA_ASMT_ID_<GUID>.csv',

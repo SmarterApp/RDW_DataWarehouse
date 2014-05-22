@@ -59,11 +59,10 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
         year_adj = 0
         period_month = 3
 
-    #Generate Assessment Item Bank
+    # Generate Assessment Item Bank
     item_bank = {}
-    for i in range(1, sbac_config.ASMT_ITEM_BANK_SIZE+1):
+    for i in range(1, sbac_config.ASMT_ITEM_BANK_SIZE + 1):
         item_bank[i] = id_gen.get_rec_id('assmt_item_id')
-
 
     # Set other specifics
     sa.rec_id = id_gen.get_rec_id('assessment')
@@ -138,9 +137,9 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.rec_id = id_gen.get_rec_id('assessment_outcome')
     sao.inst_hierarchy = inst_hier
 
-    #Generate assessment outcome Item-level data
+    # Generate assessment outcome Item-level data
     item_data_dict = {}
-    for i in range(1, sbac_config.ITEMS_PER_ASMT+1):
+    for i in range(1, sbac_config.ITEMS_PER_ASMT + 1):
         pos_item = random.choice(list(assessment.item_bank.keys()))
         while pos_item in item_data_dict:
             pos_item = random.choice(list(assessment.item_bank.keys()))
@@ -149,7 +148,8 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
 
     od = OrderedDict(sorted(item_data_dict.items()))
 
-    segment_id = '(SBAC)SBAC-MG110PT-S2-'+assessment.subject+'-'+str(student.grade)+'-'+assessment.period[0:-5]+'-'+str(assessment.period_year-1)+'-'+str(assessment.period_year)
+    segment_id = '(SBAC)SBAC-MG110PT-S2-' + assessment.subject + '-' + str(student.grade) + '-' + \
+                 assessment.period[0:-5] + '-' + str(assessment.period_year - 1) + '-' + str(assessment.period_year)
 
     for pos in od:
         item_format = random.choice(sbac_config.ASMT_ITEM_BANK_FORMAT)

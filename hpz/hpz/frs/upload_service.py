@@ -12,16 +12,20 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from hpz.database.file_registry import FileRegistry
+from hpz.frs.decorators import validate_request_info
 
 
 logger = logging.getLogger(__name__)
+FILE_EXTENSION_HEADER = 'Fileext'
+FILE_BODY_ATTRIBUTE = 'file'
 
 
 @view_config(route_name='files', renderer='json', request_method='POST')
+@validate_request_info('headers', FILE_EXTENSION_HEADER)
+@validate_request_info('POST', FILE_BODY_ATTRIBUTE)
 def file_upload_service(context, request):
-
     registration_id = request.matchdict['registration_id']
-    file_ext = request.headers['Fileext']
+    file_ext = request.headers[FILE_EXTENSION_HEADER]
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
     file_pathname = os.path.join(base_upload_path, registration_id + '.' + file_ext)
 

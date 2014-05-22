@@ -57,7 +57,7 @@ class UploadTest(unittest.TestCase):
             update_registration_patch.return_value = False
 
             self.__request.method = 'POST'
-            self.__request.json_body = {}
+            self.__request.POST['file'] = DummyFile()
 
             response = file_upload_service(None, self.__request)
 

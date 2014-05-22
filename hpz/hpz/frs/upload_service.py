@@ -31,7 +31,7 @@ def file_upload_service(context, request):
     file_pathname = os.path.join(base_upload_path, registration_id + '.' + file_ext)
 
     try:
-        if FileRegistry.update_registration(registration_id, file_pathname):
+        if FileRegistry.is_file_registered(registration_id):
 
             input_file = request.POST['file'].file
 
@@ -42,6 +42,7 @@ def file_upload_service(context, request):
                 logger.warning('File [%s] exceeds recommended size limit', file_pathname)
 
             logger.info('The file was successfully uploaded')
+            FileRegistry.update_registration(registration_id, file_pathname)
 
         else:
             logger.error('The file attempting to be upload is not registered')

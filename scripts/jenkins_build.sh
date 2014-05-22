@@ -159,14 +159,10 @@ function setup_functional_test_dependencies {
     if [ -d /opt/edware/pdf/NY ]; then
         rm -rf /opt/edware/pdf/NY
     fi
-    # Remove the extract directory
-    #if [ -d /sftp/opt/edware/home/cat/kswimberly/reports ]; then
-    #    rm -rf /sftp/opt/edware/home/cat/kswimberly/reports
-    #fi
     # Remove the tmp/FTs_extracted_files directory that is used for extract FTs
-    if [-d /tmp/FTs_extracted_files]; then
-    		rm -rf /tmp/FTs_extracted_files
-    	fi
+    if [ -d /tmp/FTs_extracted_files ]; then
+        rm -rf /tmp/FTs_extracted_files
+    fi
     rm -rf $WORKSPACE/edware_test
     mkdir  $WORKSPACE/edware_test
     cd $WORKSPACE/edware_test

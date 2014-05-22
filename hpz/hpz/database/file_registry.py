@@ -1,9 +1,12 @@
 from datetime import datetime
+import logging
 from uuid import uuid4
 from hpz.database.constants import DatabaseConstants
 from hpz.database.hpz_connector import get_hpz_connection
 
 __author__ = 'okrook'
+
+logger = logging.getLogger(__name__)
 
 
 class FileRegistry:
@@ -20,13 +23,15 @@ class FileRegistry:
         return registration_id
 
     @staticmethod
-    def file_upload_request(registration_id, file_path):
+    def update_registration(registration_id, file_path):
         registration_info = {DatabaseConstants.FILE_PATH: file_path,
-                             DatabaseConstants.CREATION_DATE: datetime.now().date()}
+                             DatabaseConstants.CREATE_DT: datetime.now()}
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
-            conn.execute(file_reg_table.update().where(file_reg_table.c.registration_id == registration_id).values(registration_info))
+            result = conn.execute(file_reg_table.update().where(file_reg_table.c.registration_id == registration_id).values(registration_info))
+
+            return result.rowcount > 0
 
     @staticmethod
     def get_file_path(registration_id):

@@ -1,0 +1,31 @@
+WSGIPythonPath {{venv}}/lib/python3.3/site-packages
+WSGIDaemonProcess swi user={{user}} group=apache processes=1 threads=1 python-path={{venv}}/lib/python3.3/site-packages
+WSGIProcessGroup swi
+
+XSendFile on
+<Directory "/opt/edware">
+    XSendFile on
+    XSendFilePath /opt/edware
+</Directory>
+
+<Directory />
+    Options FollowSymLinks
+    AllowOverride None
+    Order deny,allow
+    Allow from all
+</Directory>
+
+<VirtualHost *:80>
+	WSGIApplicationGroup %{GLOBAL}
+	WSGIPassAuthorization On
+	WSGIScriptAlias / {{repo}}/hpz/swi.wsgi
+	WSGIImportScript {{repo}}/hpz/swi.wsgi process-group=swi application-group=%{GLOBAL}
+	<Directory {{repo}}/hpz/swi>
+  		Order allow,deny
+  		Allow from all
+	</Directory>
+</VirtualHost>
+
+Listen 80
+LoadModule wsgi_module libexec/apache2/mod_wsgi.so
+LoadModule xsendfile_module libexec/apache2/mod_xsendfile.so

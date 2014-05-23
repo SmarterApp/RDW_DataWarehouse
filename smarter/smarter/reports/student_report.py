@@ -29,17 +29,17 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
     '''
     Returns query for individual student report
     '''
-    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
+    fact_asmt_outcome_vw = connector.get_table('fact_asmt_outcome_vw')
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
-    query = select_with_context([fact_asmt_outcome.c.student_guid,
-                                dim_student.c.first_name.label('student_first_name'),
-                                dim_student.c.middle_name.label('student_middle_name'),
-                                dim_student.c.last_name.label('student_last_name'),
-                                fact_asmt_outcome.c.enrl_grade.label('grade'),
-                                fact_asmt_outcome.c.district_guid.label('district_guid'),
-                                fact_asmt_outcome.c.school_guid.label('school_guid'),
-                                fact_asmt_outcome.c.state_code.label('state_code'),
+    query = select_with_context([fact_asmt_outcome_vw.c.student_guid,
+                                dim_student.c.first_name.label('first_name'),
+                                dim_student.c.middle_name.label('middle_name'),
+                                dim_student.c.last_name.label('last_name'),
+                                fact_asmt_outcome_vw.c.enrl_grade.label('grade'),
+                                fact_asmt_outcome_vw.c.district_guid.label('district_guid'),
+                                fact_asmt_outcome_vw.c.school_guid.label('school_guid'),
+                                fact_asmt_outcome_vw.c.state_code.label('state_code'),
                                 dim_asmt.c.asmt_subject.label('asmt_subject'),
                                 dim_asmt.c.asmt_period.label('asmt_period'),
                                 dim_asmt.c.asmt_period_year.label('asmt_period_year'),
@@ -59,14 +59,14 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 dim_asmt.c.asmt_claim_perf_lvl_name_1.label("asmt_claim_perf_lvl_name_1"),
                                 dim_asmt.c.asmt_claim_perf_lvl_name_2.label("asmt_claim_perf_lvl_name_2"),
                                 dim_asmt.c.asmt_claim_perf_lvl_name_3.label("asmt_claim_perf_lvl_name_3"),
-                                fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
-                                fact_asmt_outcome.c.asmt_score.label('asmt_score'),
-                                fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
-                                fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
-                                fact_asmt_outcome.c.date_taken_day.label('date_taken_day'),
-                                fact_asmt_outcome.c.date_taken_month.label('date_taken_month'),
-                                fact_asmt_outcome.c.date_taken_year.label('date_taken_year'),
-                                fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                                fact_asmt_outcome_vw.c.asmt_grade.label('asmt_grade'),
+                                fact_asmt_outcome_vw.c.asmt_score.label('asmt_score'),
+                                fact_asmt_outcome_vw.c.asmt_score_range_min.label('asmt_score_range_min'),
+                                fact_asmt_outcome_vw.c.asmt_score_range_max.label('asmt_score_range_max'),
+                                fact_asmt_outcome_vw.c.date_taken_day.label('date_taken_day'),
+                                fact_asmt_outcome_vw.c.date_taken_month.label('date_taken_month'),
+                                fact_asmt_outcome_vw.c.date_taken_year.label('date_taken_year'),
+                                fact_asmt_outcome_vw.c.asmt_perf_lvl.label('asmt_perf_lvl'),
                                 dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
                                 dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                                 dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
@@ -79,40 +79,40 @@ def __prepare_query(connector, state_code, student_guid, assessment_guid):
                                 dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
                                 dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
                                 dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max'),
-                                fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
-                                fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
-                                fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
-                                fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
-                                fact_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
-                                fact_asmt_outcome.c.asmt_claim_2_score_range_min.label('asmt_claim_2_score_range_min'),
-                                fact_asmt_outcome.c.asmt_claim_3_score_range_min.label('asmt_claim_3_score_range_min'),
-                                fact_asmt_outcome.c.asmt_claim_4_score_range_min.label('asmt_claim_4_score_range_min'),
-                                fact_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
-                                fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
-                                fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
-                                fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
-                                fact_asmt_outcome.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
-                                fact_asmt_outcome.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
-                                fact_asmt_outcome.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
-                                fact_asmt_outcome.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
-                                fact_asmt_outcome.c.acc_asl_video_embed.label('acc_asl_video_embed'),
-                                fact_asmt_outcome.c.acc_asl_human_nonembed.label('acc_asl_human_nonembed'),
-                                fact_asmt_outcome.c.acc_braile_embed.label('acc_braile_embed'),
-                                fact_asmt_outcome.c.acc_closed_captioning_embed.label('acc_closed_captioning_embed'),
-                                fact_asmt_outcome.c.acc_text_to_speech_embed.label('acc_text_to_speech_embed'),
-                                fact_asmt_outcome.c.acc_abacus_nonembed.label('acc_abacus_nonembed'),
-                                fact_asmt_outcome.c.acc_alternate_response_options_nonembed.label('acc_alternate_response_options_nonembed'),
-                                fact_asmt_outcome.c.acc_calculator_nonembed.label('acc_calculator_nonembed'),
-                                fact_asmt_outcome.c.acc_multiplication_table_nonembed.label('acc_multiplication_table_nonembed'),
-                                fact_asmt_outcome.c.acc_print_on_demand_nonembed.label('acc_print_on_demand_nonembed'),
-                                fact_asmt_outcome.c.acc_read_aloud_nonembed.label('acc_read_aloud_nonembed'),
-                                fact_asmt_outcome.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
-                                fact_asmt_outcome.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
-                                fact_asmt_outcome.c.acc_streamline_mode.label('acc_streamline_mode')],
-                                from_obj=[fact_asmt_outcome
-                                          .join(dim_student, and_(fact_asmt_outcome.c.student_rec_id == dim_student.c.student_rec_id))
-                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
-    query = query.where(and_(fact_asmt_outcome.c.student_guid == student_guid, fact_asmt_outcome.c.rec_status == Constants.CURRENT))
+                                fact_asmt_outcome_vw.c.asmt_claim_1_score.label('asmt_claim_1_score'),
+                                fact_asmt_outcome_vw.c.asmt_claim_2_score.label('asmt_claim_2_score'),
+                                fact_asmt_outcome_vw.c.asmt_claim_3_score.label('asmt_claim_3_score'),
+                                fact_asmt_outcome_vw.c.asmt_claim_4_score.label('asmt_claim_4_score'),
+                                fact_asmt_outcome_vw.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
+                                fact_asmt_outcome_vw.c.asmt_claim_2_score_range_min.label('asmt_claim_2_score_range_min'),
+                                fact_asmt_outcome_vw.c.asmt_claim_3_score_range_min.label('asmt_claim_3_score_range_min'),
+                                fact_asmt_outcome_vw.c.asmt_claim_4_score_range_min.label('asmt_claim_4_score_range_min'),
+                                fact_asmt_outcome_vw.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
+                                fact_asmt_outcome_vw.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
+                                fact_asmt_outcome_vw.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
+                                fact_asmt_outcome_vw.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
+                                fact_asmt_outcome_vw.c.asmt_claim_1_perf_lvl.label('asmt_claim_1_perf_lvl'),
+                                fact_asmt_outcome_vw.c.asmt_claim_2_perf_lvl.label('asmt_claim_2_perf_lvl'),
+                                fact_asmt_outcome_vw.c.asmt_claim_3_perf_lvl.label('asmt_claim_3_perf_lvl'),
+                                fact_asmt_outcome_vw.c.asmt_claim_4_perf_lvl.label('asmt_claim_4_perf_lvl'),
+                                fact_asmt_outcome_vw.c.acc_asl_video_embed.label('acc_asl_video_embed'),
+                                fact_asmt_outcome_vw.c.acc_asl_human_nonembed.label('acc_asl_human_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_braile_embed.label('acc_braile_embed'),
+                                fact_asmt_outcome_vw.c.acc_closed_captioning_embed.label('acc_closed_captioning_embed'),
+                                fact_asmt_outcome_vw.c.acc_text_to_speech_embed.label('acc_text_to_speech_embed'),
+                                fact_asmt_outcome_vw.c.acc_abacus_nonembed.label('acc_abacus_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_alternate_response_options_nonembed.label('acc_alternate_response_options_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_calculator_nonembed.label('acc_calculator_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_multiplication_table_nonembed.label('acc_multiplication_table_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_print_on_demand_nonembed.label('acc_print_on_demand_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_read_aloud_nonembed.label('acc_read_aloud_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_scribe_nonembed.label('acc_scribe_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_speech_to_text_nonembed.label('acc_speech_to_text_nonembed'),
+                                fact_asmt_outcome_vw.c.acc_streamline_mode.label('acc_streamline_mode')],
+                                from_obj=[fact_asmt_outcome_vw
+                                          .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
+                                          .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.PII, state_code=state_code)
+    query = query.where(and_(fact_asmt_outcome_vw.c.student_guid == student_guid, fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     query = query.order_by(dim_asmt.c.asmt_subject.desc(), dim_asmt.c.asmt_period_year.desc())
@@ -150,7 +150,7 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
     new_results = []
     for result in results:
 
-        result['student_full_name'] = format_full_name(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
+        result['student_full_name'] = format_full_name(result['first_name'], result['middle_name'], result['last_name'])
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
 
@@ -219,7 +219,7 @@ def get_student_report(params):
         district_guid = first_student[Constants.DISTRICT_GUID]
         school_guid = first_student[Constants.SCHOOL_GUID]
         asmt_grade = first_student['asmt_grade']
-        student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
+        student_name = format_full_name(first_student['first_name'], first_student['middle_name'], first_student['last_name'])
         context = get_breadcrumbs_context(state_code=state_code, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_name=student_name)
         student_report_asmt_administration = get_student_report_asmt_administration(state_code, student_guid)
 

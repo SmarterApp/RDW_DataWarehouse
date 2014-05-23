@@ -13,16 +13,16 @@ from edextract.student_reg_extract_processors.attribute_constants import Attribu
 class MaleTracker(CategoryTracker):
 
     def __init__(self):
-        super().__init__(CategoryNameConstants.GENDER, CategoryValueConstants.MALE, AttributeFieldConstants.GENDER)
+        super().__init__(CategoryNameConstants.SEX, CategoryValueConstants.MALE, AttributeFieldConstants.SEX)
 
     def _should_increment(self, row):
-        return row[AttributeFieldConstants.GENDER] == AttributeValueConstants.MALE
+        return row[AttributeFieldConstants.SEX] == AttributeValueConstants.MALE
 
 
 class FemaleTracker(CategoryTracker):
 
     def __init__(self):
-        super().__init__(CategoryNameConstants.GENDER, CategoryValueConstants.FEMALE, AttributeFieldConstants.GENDER)
+        super().__init__(CategoryNameConstants.SEX, CategoryValueConstants.FEMALE, AttributeFieldConstants.SEX)
 
     def _should_increment(self, row):
-        return row[AttributeFieldConstants.GENDER] == AttributeValueConstants.FEMALE
+        return row[AttributeFieldConstants.SEX] == AttributeValueConstants.FEMALE

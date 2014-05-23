@@ -116,21 +116,24 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
         guid_batch = None
         example_record = {
             'student_guid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d',
+            'external_student_id': None,
             'first_name': 'Richard',
             'middle_name': None,
             'last_name': 'Mccarty',
-            'address_1': '493 Longfin South Ave',
-            'address_2': None,
-            'city': 'Common tern Gurnard',
-            'zip_code': '11363',
-            'gender': 'male',
+            'sex': 'male',
             'email': 'richard.mccarty@gangessharkbrownhyaenaprimary.edu',
-            'dob': '20040312',
-            'grade': '3',
-            'state_code': 'NC',
-            'district_guid': '228',
-            'school_guid': '242',
-            'section_guid': '345'
+            'birthdate': '20040312',
+            'dmg_eth_derived': 3,
+            'dmg_eth_hsp': True,
+            'dmg_eth_ami': False,
+            'dmg_eth_asn': False,
+            'dmg_eth_blk': False,
+            'dmg_eth_pcf': False,
+            'dmg_eth_wht': False,
+            'dmg_prg_iep': False,
+            'dmg_prg_lep': False,
+            'dmg_prg_504': False,
+            'dmg_prg_tt1': False
         }
         bad_record = {
             'student_guid': 'not_really_exist'
@@ -189,10 +192,10 @@ def generate_conf(guid_batch, udl2_conf):
 
 def get_expected_column_types_for_fact_table(table_name):
     column_names = list(get_expected_column_mapping(table_name).keys())
-    column_types = ['asmt_outcome_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
+    column_types = ['asmt_outcome_vw_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
                     'teacher_guid character varying(50)', 'state_code character varying(2)', 'district_guid character varying(50)',
-                    'school_guid character varying(50)', 'section_guid character varying(50)', 'inst_hier_rec_id bigint',
-                    'section_rec_id bigint', 'where_taken_id character varying(50)', 'where_taken_name character varying(256)',
+                    'school_guid character varying(50)', 'inst_hier_rec_id bigint',
+                    'where_taken_id character varying(50)', 'where_taken_name character varying(256)',
                     'asmt_grade character varying(10)', 'enrl_grade character varying(10)', 'date_taken character varying(8)',
                     'date_taken_day smallint', 'date_taken_month smallint', 'date_taken_year smallint', 'asmt_score smallint',
                     'asmt_score_range_min smallint', 'asmt_score_range_max smallint', 'asmt_perf_lvl smallint',
@@ -207,28 +210,28 @@ def get_expected_column_types_for_fact_table(table_name):
     return column_name_type_map
 
 
-def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, section_rec_id, guid_batch, dbname, user, password):
-    return 'INSERT INTO "edware"."{table_name}" (asmt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
-           'school_guid,section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
+def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_rec_id, guid_batch, dbname, user, password):
+    return 'INSERT INTO "edware"."{table_name}" (asmt_outcome_vw_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
+           'school_guid,inst_hier_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,status,most_recent,batch_guid) '\
            'SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
-           '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\'\'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
+           '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,-1,guid_asmt_location,name_asmt_location,grade_asmt,'\
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
            'score_claim_4,score_claim_4_min,score_claim_4_max,\'\'\'\',True,guid_batch '\
-           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
+           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmt_outcome_vw_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
            'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
-           'section_guid character varying(50),inst_hier_rec_id bigint,section_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
+           'inst_hier_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
            'asmt_grade character varying(10),enrl_grade character varying(10),date_taken character varying(8),date_taken_day smallint,date_taken_month smallint,'\
            'date_taken_year smallint,asmt_score smallint,asmt_score_range_min smallint,asmt_score_range_max smallint,asmt_perf_lvl smallint,asmt_claim_1_score smallint,'\
            'asmt_claim_1_score_range_min smallint,asmt_claim_1_score_range_max smallint,asmt_claim_2_score smallint,asmt_claim_2_score_range_min smallint,'\
            'asmt_claim_2_score_range_max smallint,asmt_claim_3_score smallint,asmt_claim_3_score_range_min smallint,asmt_claim_3_score_range_max smallint,'\
            'asmt_claim_4_score smallint,asmt_claim_4_score_range_min smallint,asmt_claim_4_score_range_max smallint,'\
            'status character varying(2),most_recent boolean,batch_guid character varying(50));'.format(host=host_name, port=port, table_name=table_name, asmt_rec_id=asmt_rec_id,
-                                                                                                       section_rec_id=section_rec_id, guid_batch=guid_batch,
+                                                                                                       guid_batch=guid_batch,
                                                                                                        dbname=dbname, user=user, password=password)
 
 
@@ -249,7 +252,7 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
     column_names = list(get_expected_column_mapping(table_name).keys())
     column_types = ['inst_hier_rec_id bigint', 'state_name character varying(32)', 'state_code character varying(2)', 'district_guid character varying(50)',
                     'district_name character varying(256)', 'school_guid character varying(50)', 'school_name character varying(256)',
-                    'school_category character varying(20)', 'from_date character varying(8)', 'to_date character varying(8)', 'most_recent boolean']
+                    'from_date character varying(8)', 'to_date character varying(8)', 'most_recent boolean']
     column_name_type_map = OrderedDict()
     for i in range(len(column_names)):
         column_name_type_map[column_names[i]] = column_types[i]
@@ -258,21 +261,21 @@ def get_expected_column_types_for_dim_inst_hier(table_name):
 
 def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, guid_batch, dbname, user, password):
     return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_name,state_code,district_guid,district_name,"\
-           "school_guid,school_name,school_category,from_date,to_date,most_recent) SELECT * FROM "\
+           "school_guid,school_name,from_date,to_date,most_recent) SELECT * FROM "\
            "dblink('host={host} port={port} dbname={dbname} user={user} password={password}', " \
            "'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), "\
-           "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,type_school,"\
+           "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,"\
            "to_char(CURRENT_TIMESTAMP, ''yyyymmdd''),''99991231'',True FROM \"udl2\".\"INT_SBAC_ASMT_OUTCOME\" WHERE op = ''C'' AND guid_batch=''{guid_batch}'') as y') "\
            "AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),"\
            "district_name character varying(256),school_guid character varying(50),school_name character varying(256),"\
-           "school_category character varying(20),from_date character varying(8),to_date character varying(8),"\
+           "from_date character varying(8),to_date character varying(8),"\
            "most_recent boolean);".format(host=host_name, port=port, table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
 
 def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_batch, dbname, user, password):
     return 'INSERT INTO "edware"."student_reg"(student_reg_rec_id,batch_guid,state_name,state_code,district_guid,district_name,'\
-           'school_guid,school_name,student_guid,external_student_ssid,student_first_name,student_middle_name,student_last_name,'\
-           'gender,student_dob,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
+           'school_guid,school_name,student_guid,external_student_ssid,first_name,middle_name,last_name,'\
+           'sex,birthdate,enrl_grade,dmg_eth_hsp,dmg_eth_ami,dmg_eth_asn,dmg_eth_blk,dmg_eth_pcf,dmg_eth_wht,dmg_prg_iep,'\
            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
@@ -281,7 +284,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
            'int_sbac_stu_reg.name_student_first,int_sbac_stu_reg.name_student_middle,int_sbac_stu_reg.name_student_last,'\
-           'int_sbac_stu_reg.gender_student,int_sbac_stu_reg.dob_student,int_sbac_stu_reg.grade_enrolled,'\
+           'int_sbac_stu_reg.sex_student,int_sbac_stu_reg.birthdate_student,int_sbac_stu_reg.grade_enrolled,'\
            'int_sbac_stu_reg.dmg_eth_hsp,int_sbac_stu_reg.dmg_eth_ami,int_sbac_stu_reg.dmg_eth_asn,'\
            'int_sbac_stu_reg.dmg_eth_blk,int_sbac_stu_reg.dmg_eth_pcf,int_sbac_stu_reg.dmg_eth_wht,'\
            'int_sbac_stu_reg.dmg_prg_iep,int_sbac_stu_reg.dmg_prg_lep,int_sbac_stu_reg.dmg_prg_504,'\
@@ -297,7 +300,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'district_guid character varying(30),district_name character varying(60),school_guid character varying(30),'\
            'school_name character varying(60),student_guid character varying(30),external_student_ssid character varying(50),'\
            'student_first_name character varying(35),student_middle_name character varying(35),'\
-           'student_last_name character varying(35),gender character varying(6),student_dob character varying(10),'\
+           'student_last_name character varying(35),sex character varying(6),birthdate_student character varying(10),'\
            'enrl_grade character varying(10),dmg_eth_hsp boolean,dmg_eth_ami boolean,dmg_eth_asn boolean,dmg_eth_blk boolean,'\
            'dmg_eth_pcf boolean,dmg_eth_wht boolean,dmg_prg_iep boolean,dmg_prg_lep boolean,dmg_prg_504 boolean,'\
            'dmg_sts_ecd boolean,dmg_sts_mig boolean,dmg_multi_race boolean,confirm_code character varying(35),'\
@@ -365,7 +368,6 @@ def get_expected_column_mapping(target_table):
                                                                       ('district_name', 'name_district'),
                                                                       ('school_guid', 'guid_school'),
                                                                       ('school_name', 'name_school'),
-                                                                      ('school_category', 'type_school'),
                                                                       ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
                                                                       ('to_date', "'99991231'"),
                                                                       ('most_recent', 'True'),
@@ -375,15 +377,9 @@ def get_expected_column_mapping(target_table):
                                                                     ('first_name', 'name_student_first'),
                                                                     ('middle_name', 'name_student_middle'),
                                                                     ('last_name', 'name_student_last'),
-                                                                    ('address_1', 'address_student_line1'),
-                                                                    ('address_2', 'address_student_line2'),
-                                                                    ('city', 'address_student_city'),
-                                                                    ('zip_code', 'address_student_zip'),
-                                                                    ('gender', 'gender_student'),
+                                                                    ('sex', 'sex_student'),
                                                                     ('email', 'email_student'),
-                                                                    ('dob', 'dob_student'),
-                                                                    # TODO: the fake value for 'section_guid' will be replaced by reading from conf
-                                                                    ('section_guid', '\'\''),
+                                                                    ('birthdate', 'birthdate_student'),
                                                                     ('grade', 'grade_enrolled'),
                                                                     ('state_code', 'code_state'),
                                                                     ('district_guid', 'guid_district'),
@@ -393,60 +389,42 @@ def get_expected_column_mapping(target_table):
                                                                     ('most_recent', 'True'),
                                                                     ]),
 
-                                        'dim_staff': OrderedDict([('staff_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
-                                                                  ('staff_guid', 'guid_staff'),
-                                                                  ('first_name', 'name_staff_first'),
-                                                                  ('middle_name', 'name_staff_middle'),
-                                                                  ('last_name', 'name_staff_last'),
-                                                                  # TODO: the fake value for 'section_guid' will be replaced by reading from conf
-                                                                  ('section_guid', '\'\''),
-                                                                  ('hier_user_type', 'type_staff'),
-                                                                  ('state_code', 'code_state'),
-                                                                  ('district_guid', 'guid_district'),
-                                                                  ('school_guid', 'guid_school'),
-                                                                  ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
-                                                                  ('to_date', "'99991231'"),
-                                                                  ('most_recent', 'True'),
-                                                                  ]),
-
-                                        'fact_asmt_outcome': OrderedDict([('asmt_outcome_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
-                                                                          ('asmt_rec_id', None),
-                                                                          ('student_guid', 'guid_student'),
-                                                                          ('teacher_guid', 'guid_staff'),
-                                                                          ('state_code', 'code_state'),
-                                                                          ('district_guid', 'guid_district'),
-                                                                          ('school_guid', 'guid_school'),
-                                                                          ('section_guid', '\'\''),
-                                                                          ('inst_hier_rec_id', '-1'),
-                                                                          ('section_rec_id', None),
-                                                                          ('where_taken_id', 'guid_asmt_location'),
-                                                                          ('where_taken_name', 'name_asmt_location'),
-                                                                          ('asmt_grade', 'grade_asmt'),
-                                                                          ('enrl_grade', 'grade_enrolled'),
-                                                                          ('date_taken', 'date_assessed'),
-                                                                          ('date_taken_day', 'date_taken_day'),  # date_assessed is a varchar(8)
-                                                                          ('date_taken_month', 'date_taken_month'),  # date_assessed is a varchar(8)
-                                                                          ('date_taken_year', 'date_taken_year'),  # date_assessed is a varchar(8)
-                                                                          ('asmt_score', 'score_asmt'),
-                                                                          ('asmt_score_range_min', 'score_asmt_min'),
-                                                                          ('asmt_score_range_max', 'score_asmt_max'),
-                                                                          ('asmt_perf_lvl', 'score_perf_level'),
-                                                                          ('asmt_claim_1_score', 'score_claim_1'),
-                                                                          ('asmt_claim_1_score_range_min', 'score_claim_1_min'),
-                                                                          ('asmt_claim_1_score_range_max', 'score_claim_1_max'),
-                                                                          ('asmt_claim_2_score', 'score_claim_2'),
-                                                                          ('asmt_claim_2_score_range_min', 'score_claim_2_min'),
-                                                                          ('asmt_claim_2_score_range_max', 'score_claim_2_max'),
-                                                                          ('asmt_claim_3_score', 'score_claim_3'),
-                                                                          ('asmt_claim_3_score_range_min', 'score_claim_3_min'),
-                                                                          ('asmt_claim_3_score_range_max', 'score_claim_3_max'),
-                                                                          ('asmt_claim_4_score', 'score_claim_4'),
-                                                                          ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
-                                                                          ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
-                                                                          ('status', '\'\''),
-                                                                          ('most_recent', 'True'),
-                                                                          ('batch_guid', 'guid_batch'),
-                                                                          ])
+                                        'fact_asmt_outcome_vw': OrderedDict([('asmt_outcome_vw_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                             ('asmt_rec_id', None),
+                                                                             ('student_guid', 'guid_student'),
+                                                                             ('teacher_guid', 'guid_staff'),
+                                                                             ('state_code', 'code_state'),
+                                                                             ('district_guid', 'guid_district'),
+                                                                             ('school_guid', 'guid_school'),
+                                                                             ('inst_hier_rec_id', '-1'),
+                                                                             ('where_taken_id', 'guid_asmt_location'),
+                                                                             ('where_taken_name', 'name_asmt_location'),
+                                                                             ('asmt_grade', 'grade_asmt'),
+                                                                             ('enrl_grade', 'grade_enrolled'),
+                                                                             ('date_taken', 'date_assessed'),
+                                                                             ('date_taken_day', 'date_taken_day'),  # date_assessed is a varchar(8)
+                                                                             ('date_taken_month', 'date_taken_month'),  # date_assessed is a varchar(8)
+                                                                             ('date_taken_year', 'date_taken_year'),  # date_assessed is a varchar(8)
+                                                                             ('asmt_score', 'score_asmt'),
+                                                                             ('asmt_score_range_min', 'score_asmt_min'),
+                                                                             ('asmt_score_range_max', 'score_asmt_max'),
+                                                                             ('asmt_perf_lvl', 'score_perf_level'),
+                                                                             ('asmt_claim_1_score', 'score_claim_1'),
+                                                                             ('asmt_claim_1_score_range_min', 'score_claim_1_min'),
+                                                                             ('asmt_claim_1_score_range_max', 'score_claim_1_max'),
+                                                                             ('asmt_claim_2_score', 'score_claim_2'),
+                                                                             ('asmt_claim_2_score_range_min', 'score_claim_2_min'),
+                                                                             ('asmt_claim_2_score_range_max', 'score_claim_2_max'),
+                                                                             ('asmt_claim_3_score', 'score_claim_3'),
+                                                                             ('asmt_claim_3_score_range_min', 'score_claim_3_min'),
+                                                                             ('asmt_claim_3_score_range_max', 'score_claim_3_max'),
+                                                                             ('asmt_claim_4_score', 'score_claim_4'),
+                                                                             ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
+                                                                             ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
+                                                                             ('status', '\'\''),
+                                                                             ('most_recent', 'True'),
+                                                                             ('batch_guid', 'guid_batch'),
+                                                                             ])
                                         }
     return column_map_integration_to_target[target_table]
 
@@ -471,8 +449,8 @@ def get_expected_sr_column_and_type_mapping():
                                                              ('student_first_name', Column(src_col='name_student_first', type='character varying(35)')),
                                                              ('student_middle_name', Column(src_col='name_student_middle', type='character varying(35)')),
                                                              ('student_last_name', Column(src_col='name_student_last', type='character varying(35)')),
-                                                             ('gender', Column(src_col='gender_student', type='character varying(6)')),
-                                                             ('student_dob', Column(src_col='dob_student', type='character varying(10)')),
+                                                             ('sex', Column(src_col='sex_student', type='character varying(6)')),
+                                                             ('birthdate', Column(src_col='birthdate_student', type='character varying(10)')),
                                                              ('enrl_grade', Column(src_col='grade_enrolled', type='character varying(10)')),
                                                              ('dmg_eth_hsp', Column(src_col='dmg_eth_hsp', type='boolean')),
                                                              ('dmg_eth_ami', Column(src_col='dmg_eth_ami', type='boolean')),

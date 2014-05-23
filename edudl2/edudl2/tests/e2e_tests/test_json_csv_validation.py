@@ -19,7 +19,7 @@ from sqlalchemy.sql.expression import and_, select
 from edudl2.udl2.constants import Constants
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
-FACT_TABLE = 'fact_asmt_outcome'
+FACT_TABLE = 'fact_asmt_outcome_vw'
 file_to_path = ''
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/test_user/filedrop/'
 FILE_DICT = {}
@@ -189,7 +189,7 @@ class ValidateTableData(unittest.TestCase):
 
     def run_post_server(self):
         try:
-            server_address = ('127.0.0.1', 8001)
+            server_address = ('127.0.0.1', 50472)
             self.post_server = HTTPServer(server_address, HTTPPOSTHandler)
             self.post_server.timeout = 0.25
             while self.receive_requests:

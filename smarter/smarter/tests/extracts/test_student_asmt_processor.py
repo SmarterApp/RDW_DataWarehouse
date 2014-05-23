@@ -222,10 +222,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'ELA',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         smarter.extracts.format.json_column_mapping = {}
-        guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(params)
+        guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(params)
         self.assertEqual(1, len(guid_grade))
         self.assertIsNotNone(dim_asmt)
-        self.assertIsNotNone(fact_asmt_outcome)
+        self.assertIsNotNone(fact_asmt_outcome_vw)
         (guid, grade) = guid_grade[0]
         self.assertEqual(guid, 'a685f0ec-a0a6-4b1e-93b8-0c4298ff6374')
         self.assertEqual(grade, '11')
@@ -245,7 +245,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_tasks_for_non_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
@@ -264,7 +264,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_tasks_for_tenant_lvl(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
@@ -297,7 +297,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_new_task_non_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
@@ -316,7 +316,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
@@ -334,7 +334,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
@@ -353,7 +353,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'districtGuid': '341',
@@ -371,7 +371,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def test__create_new_task_item_level(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.student_guid], from_obj=[fact])
         params = {'stateCode': 'CA',
                   'asmtYear': '2015',

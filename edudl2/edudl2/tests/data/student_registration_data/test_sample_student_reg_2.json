@@ -7,6 +7,6 @@
   },
   "Source": {
     "TestRegSysID": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-    "TestRegCallbackURL": "http://127.0.0.1:8000"
+    "TestRegCallbackURL": "http://127.0.0.1:50473"
   }
 }

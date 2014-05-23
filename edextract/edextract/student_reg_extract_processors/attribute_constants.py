@@ -12,7 +12,7 @@ class AttributeFieldConstants():
     PREV_DISTRICT_GUID = 'prev_district_guid'
     SCHOOL_GUID = 'school_guid'
     PREV_SCHOOL_GUID = 'prev_school_guid'
-    GENDER = 'gender'
+    SEX = 'sex'
     HISPANIC_ETH = 'dmg_eth_hsp'
     AMERICAN_INDIAN = 'dmg_eth_ami'
     ASIAN = 'dmg_eth_asn'

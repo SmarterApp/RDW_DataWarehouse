@@ -23,7 +23,6 @@ __sample_data = {
     "district_id": ["d1", "d2"],
     "district_name": ["Daybreak", "Sunset"],
     "school_id": ["sc1", "sc2"],
-    "section_id": ["sec1", "sec2"],
     "grade": range(0, 12),
     "gender": ["M", "F", "N/A"],
     "hier_user_type": ['Teacher', 'Staff']

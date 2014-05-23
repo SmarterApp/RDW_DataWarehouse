@@ -27,7 +27,6 @@ class TestMetadataUtil(unittest.TestCase):
                                Column('district_name', String(256), nullable=False),
                                Column('school_guid', String(50), nullable=False, info={'natural_key': True}),
                                Column('school_name', String(256), nullable=False),
-                               Column('school_category', String(20), nullable=False),
                                MetaColumn('from_date', String(8), nullable=False),
                                MetaColumn('to_date', String(8), nullable=True),
                                MetaColumn('rec_status', String(1), nullable=False))
@@ -35,8 +34,8 @@ class TestMetadataUtil(unittest.TestCase):
         Index('dim_inst_hier_codex', test_dim_table.c.state_code, test_dim_table.c.district_guid,
               test_dim_table.c.school_guid, unique=False)
 
-        test_fact_table = Table('fact_asmt_outcome', self.__metadata,
-                                Column('fact_asmt_outcome_rec_id', BigInteger, primary_key=True),
+        test_fact_table = Table('fact_asmt_outcome_vw', self.__metadata,
+                                Column('fact_asmt_outcome_vw_rec_id', BigInteger, primary_key=True),
                                 Column('inst_hier_rec_id', BigInteger, ForeignKey(test_dim_table.c.inst_hier_rec_id), nullable=False),
                                 Column('asmt_grade', String(10), nullable=False),
                                 Column('enrl_grade', String(10), nullable=False),
@@ -52,7 +51,7 @@ class TestMetadataUtil(unittest.TestCase):
         self.__nkcol = [test_dim_table.c.state_name, test_dim_table.c.district_guid, test_dim_table.c.school_guid]
         self.__mkcol = [test_dim_table.c.batch_guid, test_dim_table.c.from_date, test_dim_table.c.to_date, test_dim_table.c.rec_status]
         self.__pkcol = [test_dim_table.c.inst_hier_rec_id]
-        self.__test_fact_table_pkcol = [test_fact_table.c.fact_asmt_outcome_rec_id]
+        self.__test_fact_table_pkcol = [test_fact_table.c.fact_asmt_outcome_vw_rec_id]
         self.__test_fact_table_mkcol = [test_fact_table.c.batch_guid]
         self.__test_fact_table_fkcol = [test_fact_table.c.inst_hier_rec_id]
 
@@ -188,20 +187,20 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         test get selectable tables names from query
         '''
-        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_vw_rec_id,
                         self.__test_fact_table.c.inst_hier_rec_id], from_obj=self.__test_fact_table)
-        self.assertEquals({'fact_asmt_outcome'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEquals({'fact_asmt_outcome_vw'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query(self):
         '''
         test get selectable tables names from query
         '''
-        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_vw_rec_id,
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=self.__test_fact_table.join(
                            self.__test_dim_table,
                            and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query_with_alias(self):
         '''
@@ -209,11 +208,11 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         dim_alias = self.__test_dim_table.alias()
         fact_alias = self.__test_fact_table.alias()
-        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_vw_rec_id,
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(dim_alias,
                                                 and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multiple_table_join_query_with_named_alias(self):
         '''
@@ -221,12 +220,12 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         dim_alias = self.__test_dim_table.alias('dim_inst_hier_alias')
         fact_alias = self.__test_fact_table.alias('fact_asmt_outcome_alias')
-        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_vw_rec_id,
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(
                            dim_alias,
                            and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
 
     def test_get_selectable_by_table_name_for_multi_table_join_with_query_tables(self):
         '''
@@ -234,8 +233,8 @@ class TestMetadataUtil(unittest.TestCase):
         '''
         dim_alias = self.__test_dim_table.alias()
         fact_alias = self.__test_fact_table.alias()
-        query = Select([self.__test_fact_table.c.fact_asmt_outcome_rec_id,
+        query = Select([self.__test_fact_table.c.fact_asmt_outcome_vw_rec_id,
                         self.__test_dim_table.c.inst_hier_rec_id],
                        from_obj=fact_alias.join(dim_alias,
                                                 and_(self.__test_fact_table.c.inst_hier_rec_id == self.__test_dim_table.c.inst_hier_rec_id)))
-        self.assertEquals({'fact_asmt_outcome', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))
+        self.assertEquals({'fact_asmt_outcome_vw', 'dim_inst_hier'}, set(get_selectable_by_table_name(query).values()))

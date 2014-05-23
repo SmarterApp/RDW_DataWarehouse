@@ -79,15 +79,15 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
             helper = QueryHelper(connection, **get_param_school_view())
             query = helper.get_query_for_school_view()
             columns = query._raw_columns
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
         self.assertEquals(5, len(columns))
         # first two columns are for school view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.NAME, 'test for alias name')
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
-        self.assertEqual(columns[1].element.table.name, fact_asmt_outcome.name)
-        self.assertEqual(columns[1].element.name, fact_asmt_outcome.c.asmt_grade.name)
+        self.assertEqual(columns[1].element.table.name, fact_asmt_outcome_vw.name)
+        self.assertEqual(columns[1].element.name, fact_asmt_outcome_vw.c.asmt_grade.name)
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def check_asmt_custom_metadata(self, connection, asmt_custom_metadata_column):

@@ -49,37 +49,37 @@ class TestContext(Unittest_with_edcore_sqlite):
 
     def test_select_with_context_as_pii(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.school_guid],
-                                        from_obj=([fact_asmt_outcome]), limit=1, permission=RolesConstants.PII, state_code='NC')
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select_with_context([fact_asmt_outcome_vw.c.school_guid],
+                                        from_obj=([fact_asmt_outcome_vw]), limit=1, permission=RolesConstants.PII, state_code='NC')
             results = connection.get_result(query)
             self.assertEqual(len(results), 1)
             self.assertIn(results[0][Constants.SCHOOL_GUID], ['242', '245'])
 
     def test_select_with_context_as_srs(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.state_code],
-                                        from_obj=([fact_asmt_outcome]), limit=1, permission=RolesConstants.SRS_EXTRACTS, state_code='NC')
-            results = connection.get_result(query.where(fact_asmt_outcome.c.district_guid == '228'))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select_with_context([fact_asmt_outcome_vw.c.state_code],
+                                        from_obj=([fact_asmt_outcome_vw]), limit=1, permission=RolesConstants.SRS_EXTRACTS, state_code='NC')
+            results = connection.get_result(query.where(fact_asmt_outcome_vw.c.district_guid == '228'))
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0][Constants.STATE_CODE], 'NC')
 
     def test_select_with_context_as_src(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.state_code],
-                                        from_obj=([fact_asmt_outcome]), limit=1, permission=RolesConstants.SRC_EXTRACTS, state_code='NC')
-            results = connection.get_result(query.where(fact_asmt_outcome.c.district_guid == '228'))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select_with_context([fact_asmt_outcome_vw.c.state_code],
+                                        from_obj=([fact_asmt_outcome_vw]), limit=1, permission=RolesConstants.SRC_EXTRACTS, state_code='NC')
+            results = connection.get_result(query.where(fact_asmt_outcome_vw.c.district_guid == '228'))
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0][Constants.STATE_CODE], 'NC')
 
     def test_select_with_context_or_query(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.state_code],
-                                        from_obj=([fact_asmt_outcome]), permission=RolesConstants.PII, state_code='NC')
-            query = query.where(and_(fact_asmt_outcome.c.school_guid == '242'))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select_with_context([fact_asmt_outcome_vw.c.state_code],
+                                        from_obj=([fact_asmt_outcome_vw]), permission=RolesConstants.PII, state_code='NC')
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == '242'))
             results = connection.get_result(query)
             self.assertEqual(len(results), 234)
 

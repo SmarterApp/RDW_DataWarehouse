@@ -155,25 +155,25 @@ def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_y
     # TODO: remove dim_asmt
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
-                                     fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                                     fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
                                     from_obj=[dim_asmt
-                                              .join(fact_asmt_outcome, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))], permission=RolesConstants.SAR_EXTRACTS, state_code=state_code)\
-            .where(and_(fact_asmt_outcome.c.state_code == state_code))\
-            .where(and_(fact_asmt_outcome.c.asmt_type == asmt_type))\
-            .where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))\
-            .where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))\
-            .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome.c.asmt_grade)
+                                              .join(fact_asmt_outcome_vw, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.SAR_EXTRACTS, state_code=state_code)\
+            .where(and_(fact_asmt_outcome_vw.c.state_code == state_code))\
+            .where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))\
+            .where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))\
+            .where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))\
+            .group_by(dim_asmt.c.asmt_guid, fact_asmt_outcome_vw.c.asmt_grade)
 
         if district_guid is not None:
-            query = query.where(and_(fact_asmt_outcome.c.district_guid == district_guid))
+            query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
         if school_guid is not None:
-            query = query.where(and_(fact_asmt_outcome.c.school_guid == school_guid))
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
         if asmt_grade is not None:
-            query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
         if asmt_year is not None:
-            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
 
         results = connector.get_result(query)
     return results
@@ -185,7 +185,7 @@ def _prepare_data(param):
     '''
     asmt_guid_with_grades = []
     dim_asmt = None
-    fact_asmt_outcome = None
+    fact_asmt_outcome_vw = None
     asmt_type = param.get(Constants.ASMTTYPE)
     asmt_subject = param.get(Constants.ASMTSUBJECT)
     state_code = param.get(Constants.STATECODE)
@@ -201,9 +201,9 @@ def _prepare_data(param):
     if asmt_guid_with_grades:
         with EdCoreDBConnection(state_code=state_code) as connector:
             dim_asmt = connector.get_table(Constants.DIM_ASMT)
-            fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
     # Returns list of asmt guid with grades, and table objects
-    return asmt_guid_with_grades, dim_asmt, fact_asmt_outcome
+    return asmt_guid_with_grades, dim_asmt, fact_asmt_outcome_vw
 
 
 def _create_tasks_with_responses(request_id, user, tenant, param, task_response={}, is_tenant_level=False):
@@ -213,7 +213,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    guid_grade, dim_asmt, fact_asmt_outcome = _prepare_data(param)
+    guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(param)
 
     copied_params = copy.deepcopy(param)
     copied_params[Constants.ASMTGRADE] = None
@@ -224,7 +224,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
             copied_params[Constants.ASMTGUID] = asmt_guid
             copied_params[Constants.ASMTGRADE] = asmt_grade
             query_with_asmt_rec_id_and_asmt_grade = query.where(and_(dim_asmt.c.asmt_guid == asmt_guid))\
-                .where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+                .where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
             tasks += (_create_tasks(request_id, user, tenant, copied_params, query_with_asmt_rec_id_and_asmt_grade, is_tenant_level=is_tenant_level))
         copied_task_response[Extract.STATUS] = Extract.OK
         task_responses.append(copied_task_response)

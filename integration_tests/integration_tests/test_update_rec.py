@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
 
     def validate_edware_prod(self):
         with get_prod_connection(self.tenant) as connection:
-            fact_table = connection.get_table('fact_asmt_outcome')
+            fact_table = connection.get_table('fact_asmt_outcome_vw')
             dim_student = connection.get_table('dim_student')
             update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', fact_table.c.asmt_guid == '68177b81-a22a-4d53-a4e0-16d0da50937f'))
             update_output_table = connection.execute(update_output_data).fetchall()

@@ -19,7 +19,6 @@ from integration_tests.udl_helper import empty_batch_table, empty_stats_table, r
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-#@unittest.skip("skipping this test till till ready for jenkins")
 class Test_Error_In_Migration(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -64,14 +63,14 @@ class Test_Error_In_Migration(unittest.TestCase):
     # Validate edware database : value in status column chnage to D from C.
     def validate_edware_database(self, schema_name):
         with get_target_connection(self.tenant, schema_name) as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome')
-            prod_output_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
+            fact_table_vw = ed_connector.get_table('fact_asmt_outcome_vw')
+            prod_output_data = select([fact_table_vw.c.rec_status]).where(fact_table_vw.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_output_table = ed_connector.execute(prod_output_data).fetchall()
             expected_status_val_D = [('D',)]
             self.assertEquals(prod_output_table, expected_status_val_D, 'Status is wrong in fact table for delete record')
 
-            fact_table_pr = ed_connector.get_table('fact_asmt_outcome_primary')
-            prod_data = select([fact_table_pr.c.rec_status]).where(fact_table_pr.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
+            fact_table = ed_connector.get_table('fact_asmt_outcome')
+            prod_data = select([fact_table.c.rec_status]).where(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', )
             prod_table = ed_connector.execute(prod_data).fetchall()
             self.assertEquals(prod_table, expected_status_val_D, 'Status is wrong in fact_asmt_table_primary for delete record')
 
@@ -112,13 +111,13 @@ class Test_Error_In_Migration(unittest.TestCase):
     #Validate edware_prod table for given student status has change to D for first batch.
     def validate_prod(self):
         with get_prod_connection(self.tenant) as conn:
-            fact_table = conn.get_table('fact_asmt_outcome')
+            fact_table = conn.get_table('fact_asmt_outcome_vw')
             query = select([fact_table], and_(fact_table.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table.c.rec_status == 'D'))
             result = conn.execute(query).fetchall()
             expected_no_rows = 1
             self.assertEquals(len(result), expected_no_rows, "Data has not been loaded to prod_fact_table after edmigrate")
 
-            fact_table_pr = conn.get_table('fact_asmt_outcome')
+            fact_table_pr = conn.get_table('fact_asmt_outcome_vw')
             fact_asmt_pr = select([fact_table_pr], and_(fact_table_pr.c.student_guid == 'e2c4e2c0-2a2d-4572-81fb-529b511c6e8c', fact_table_pr.c.rec_status == 'D'))
             fact_result = conn.execute(fact_asmt_pr).fetchall()
             self.assertEquals(len(fact_result), expected_no_rows, "Data has not been loaded to prod_fact_table_primary after edmigrate")

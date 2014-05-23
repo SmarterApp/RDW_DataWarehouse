@@ -4,7 +4,7 @@ Created on Mar 14, 2013
 @author: dip
 '''
 from pyramid.authentication import AuthTktAuthenticationPolicy
-from pyramid.security import unauthenticated_userid
+from pyramid.security import unauthenticated_userid, Authenticated
 from edauth.security.session_manager import get_user_session
 
 
@@ -46,5 +46,6 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
                 return effective_principals
 
         effective_principals.extend(groups)
+        effective_principals.append(Authenticated)
 
         return effective_principals

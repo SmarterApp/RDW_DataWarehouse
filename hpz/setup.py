@@ -16,7 +16,8 @@ requires = [
     'Jinja2==2.7.2',
     'config',
     'edschema',
-    'edauth']
+    'edauth',
+    'edcore']
 
 setup(name='hpz',
       version='0.1',

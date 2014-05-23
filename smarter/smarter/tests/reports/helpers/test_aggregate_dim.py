@@ -13,6 +13,7 @@ from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from edauth.tests.test_helper.create_session import create_test_session
 from smarter.reports.helpers.constants import AssessmentType
+from smarter.reports.helpers.constants import Constants
 
 
 class TestCustomMetaData(Unittest_with_edcore_sqlite):
@@ -36,7 +37,12 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
 
     def test_get_aggregate_dim(self):
         tenant = get_unittest_tenant_name()
-        results = get_aggregate_dim('NC', districtGuid=None, schoolGuid=None, asmtYear=2016, asmtType=AssessmentType.INTERIM_COMPREHENSIVE, tenant=tenant)
+        rec = get_aggregate_dim({'subject1': 'Math', 'subject2': 'ELA'}, 'NC', districtGuid=None, schoolGuid=None, asmtYear=2016, asmtType=AssessmentType.INTERIM_COMPREHENSIVE, tenant=tenant)
+        self.assertEqual(4, len(rec[Constants.RECORDS]))
+        records = rec[Constants.RECORDS][3]
+        results = records[Constants.RESULTS]
+        self.assertFalse(results['subject1'][Constants.HASINTERIM])
+        self.assertTrue(results['subject2'][Constants.HASINTERIM])
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

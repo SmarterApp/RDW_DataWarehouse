@@ -9,6 +9,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'pyramid == 1.4',
     'pyramid_debugtoolbar==1.0.8',
+    'pyramid_beaker==0.8',
     'waitress==0.8.7',
     'SQLAlchemy == 0.8.3',
     'py-postgresql == 1.1.0',

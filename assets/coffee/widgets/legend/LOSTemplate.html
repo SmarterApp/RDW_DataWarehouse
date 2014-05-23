@@ -1,6 +1,7 @@
 <div id="legendTemplate" class="content">
     <div class="row">
-        <div class="span4">
+        <div class="span4" aria-labelledby="aria-ALD">
+            <span id="aria-ALD" class="screenreader">hello world</span>
             <!-- ALD -->
             <h4>{{labels.achievement_level_descriptors}}:</h4>
             <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
@@ -22,7 +23,8 @@
         </div>
         <div class="losPerformanceBar span7 edware-border-left">
             <div class="row">
-                <div id="overall_score_details" class="span4 edware-border-right">
+                <div id="overall_score_details" class="span4 edware-border-right" aria-labelledby="overall_score_details">
+                    <span id="overall_score_details" class="screenreader">
                     <h4>{{labels.overall_score_details}}:</h4>
                     <div class="confidenceLevel">
                         <div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000;">

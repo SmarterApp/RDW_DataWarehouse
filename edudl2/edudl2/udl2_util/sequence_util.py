@@ -10,12 +10,6 @@ from edudl2.udl2_util.exceptions import UDL2GlobalSequenceMissingException
 
 logger = get_task_logger(__name__)
 
-# size of each sequence batch
-INCREMENTAL = udl2_conf['global_sequence']['batch_size']
-
-# sequence start number, to avoid key conflict in first batch
-START_WITH = udl2_conf['global_sequence']['start_with']
-
 
 class UDLSequence(object):
     '''
@@ -45,8 +39,8 @@ class UDLSequence(object):
         '''
         Return True if sequence exists, otherwise return False.
         '''
-        query = select([("sequence_name")]).select_from("information_schema.sequences")\
-                                           .where("sequence_name = '" + self.seq_name + "'")
+        query = select(["sequence_name"]).select_from(
+            "information_schema.sequences").where("sequence_name = '" + self.seq_name + "'")
         exist = conn.execute(query).scalar()
         return exist
 
@@ -63,8 +57,11 @@ class UDLSequence(object):
             seq.close()
 
     def offset(self, batch_size):
-        '''
-        '''
+        """Returns offset value to be used to create sequence id's for a batch
+
+        :param batch_size: size of batch
+        """
+        # increment the global sequence by batch_size and return the first sequence id as offset
         self.fetch_next_batch(batch_size)
         return self.current
 
@@ -76,7 +73,6 @@ def get_global_sequence(tenant_name):
     '''
     Get global sequence for given tenant.
     '''
-    #import pdb;pdb.set_trace()
     if tenant_name in GLOBAL_SEQUENCE_POOL:
         return GLOBAL_SEQUENCE_POOL.get(tenant_name)
     seq = UDLSequence(tenant_name, Constants.SEQUENCE_NAME)

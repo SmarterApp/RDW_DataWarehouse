@@ -460,17 +460,17 @@ class QueryHelper():
         '''
         build select columns based on request
         '''
-        query = select(extra_columns + [self._fact_asmt_outcome_vw.cc.asmt_subject.label(Constants.ASMT_SUBJECT),
-                                        self._fact_asmt_outcome_vw.cc.inst_hier_rec_id,
+        query = select(extra_columns + [self._fact_asmt_outcome_vw.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                                        self._fact_asmt_outcome_vw.c.inst_hier_rec_id,
                                         func.count().label(Constants.TOTAL),
-                                        self._fact_asmt_outcome_vw.cc.asmt_perf_lvl.label(Constants.LEVEL)])\
-            .where(and_(self._fact_asmt_outcome_vw.cc.state_code == self._state_code,
-                        self._fact_asmt_outcome_vw.cc.asmt_type == self._asmt_type,
-                        self._fact_asmt_outcome_vw.cc.rec_status == Constants.CURRENT,
-                        self._fact_asmt_outcome_vw.cc.asmt_year == self._asmt_year))\
-            .group_by(self._fact_asmt_outcome_vw.cc.asmt_subject,
-                      self._fact_asmt_outcome_vw.cc.inst_hier_rec_id,
-                      self._fact_asmt_outcome_vw.cc.asmt_perf_lvl)
+                                        self._fact_asmt_outcome_vw.c.asmt_perf_lvl.label(Constants.LEVEL)])\
+            .where(and_(self._fact_asmt_outcome_vw.c.state_code == self._state_code,
+                        self._fact_asmt_outcome_vw.c.asmt_type == self._asmt_type,
+                        self._fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT,
+                        self._fact_asmt_outcome_vw.c.asmt_year == self._asmt_year))\
+            .group_by(self._fact_asmt_outcome_vw.c.asmt_subject,
+                      self._fact_asmt_outcome_vw.c.inst_hier_rec_id,
+                      self._fact_asmt_outcome_vw.c.asmt_perf_lvl)
         if where_guid is not None:
             query = query.where(and_(where_guid))
         return apply_filter_to_query(query, self._fact_asmt_outcome, self._filters)
@@ -494,10 +494,10 @@ class QueryHelper():
         return self.build_query(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)
 
     def get_query_for_district_view(self):
-        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid, subquery_where_guid=(self._fact_asmt_outcome_vw.cc.district_guid == self._district_guid))
+        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid, subquery_where_guid=(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid))
 
     def get_query_for_school_view(self):
-        return self.build_sub_query(extra_columns=[self._fact_asmt_outcome_vw.cc.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.cc.asmt_grade.label(Constants.ID)],
-                                    where_guid=(and_(self._fact_asmt_outcome_vw.cc.district_guid == self._district_guid, self._fact_asmt_outcome_vw.cc.school_guid == self._school_guid)))\
-            .group_by(self._fact_asmt_outcome_vw.cc.asmt_grade)\
-            .order_by(self._fact_asmt_outcome_vw.cc.asmt_grade)
+        return self.build_sub_query(extra_columns=[self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ID)],
+                                    where_guid=(and_(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid, self._fact_asmt_outcome_vw.c.school_guid == self._school_guid)))\
+            .group_by(self._fact_asmt_outcome_vw.c.asmt_grade)\
+            .order_by(self._fact_asmt_outcome_vw.c.asmt_grade)

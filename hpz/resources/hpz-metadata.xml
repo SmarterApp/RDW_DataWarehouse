@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:EntityDescriptor xmlns:ns0="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ns1="http://www.w3.org/2000/09/xmldsig#" entityID="http://localhost:80/sp.xml">
+   <ns0:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+       <ns0:KeyDescriptor use="signing">
+           <ns1:KeyInfo>
+               <ns1:X509Data>
+                   <ns1:X509Certificate>MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC6dlOjWkiMqgnI
+FHDTFRu2VwWawiqRAdyNDtGOjy2TGNvH76cXKpb267Au3gua4bwRDYcK7moUgat+
+tQh5+ouowNfZPgrRqzDnIoxyi1Pr2dG/1f1pJk36gYwVu0T3iWFqyZLdzNwfrze7
+3q5re/RIbDn9G7QQq/w1VygAnIuk+3ZxUYvVJYim+Kc0/yDw2WmQqBh+MtSA6UYK
+6Y1af3Nm8dxllGiqocT/UxEXfoSnwQBzzVeLKswr9fTBSfuodugpMoJPQm/iYWzq
+70PYdq4iwPPqwSDQ3PrawABylJGR6CY5rS80ehQhLZg3UqveyyJqYZpHaSI3vHTE
+d8yX3GkJAgMBAAECggEAamcXd0IP4GUvy8MOVwXWmIi0JAnk7HaZes0X/DfsE+K9
+mCxDt06QczsvgK8pBCsIfNqxUyWV1znfuSBpQ+IbTCMviUKEPf1onJz0dHDZZN8Z
+eFUOlLBNE0RVwhjpVDBLLPr2GifK/TGppkV+VsuXLLTFqo/igxkBhRbFNwQeE/iH
+8Z86yNIuiDLc77SEDDsT9Y5VXokyWlk01eAdMJb0vJUjeX4IhtXq5lfnqI8h8LBO
+Y3ASaJHoOrSyoKf7Nenn2xy10b+ZzICVPBlQXeI42LB/ncBj6RcsDdMm7M/oEZkX
+Ra7wytJ7CSXbihtLZD2yizY9ZzHBQ5M8QojYhzdH2QKBgQD3Gzqbom0reMpi2zTe
+PRrsiKDzSJIozn4ZqrEnH0q04ng+9WCid0iEAce7K8oz//S2gHvy/WHpFJ3X2iiq
+2dzCtLJh+w0HRNt1VsAXLooJAfNTOqfXwZpPsFSsHZTJcZI+Ox/KHiNPvpsoqPmC
+Ftrc3oDsfQ1pFS8dRNVBM01B6wKBgQDBLFbJzzXiMgSq0h7Jr6EUatguK705H6ii
+yrn5KthE3cCLot/Z07CId5OXTcA1cJiO+uY83EjHZ5eLvwM5hSUC6CQQg2Bp8U6X
+Lcnqcq3M4RsBNGeHgYA2rfM0BcQgOoEGi+DudcfoMD1GlJXiY0qtx7o7Rc/bbzdF
+MiOEH2jP2wKBgQCtWhTLii88CAkzQMTeA9AXj+IZyhd/OR2NtAmDgJhQPXBN+qZI
+U5YzxWvxCs9Xm4B5Z7mMxeUiNqxk+U7+TMhqb4mU4yJIry2mK62mlaeQmiWxhbyp
+x9ARh4pfFIGEsH//2Ep86JetIfKHm8MuWApCWHXpcfEufwYGanuQugTA8QKBgCbY
+fr9ofuJ0woGDbZOLUO4lKkHmo8+n8SaDc/CKUCFRIpYx86f/LOHUggaMKRnWAafH
+BqO4fJ4008HTcJeRkcbK3e3ALZRAZVh7ab5Ov2qS3fZZDnSucxUL1/tfKXh9q1Kg
+sGPjpYaopLnbyWRUKUFXB7lBqbHr5IZytbetBUu/AoGAcrU6d+ellgGmMkJMQ6kP
+iEoiFfgxp7+o5rDPEQBznmnIzgVIA8n81kdkYXcZKOUDemZ72WGcHO3iSVpZyIDW
+0k5Ar1nBSCr0bZn35WBcFB58es9yY75F0P+tN3HcQ5uzUg7LeF/LIvkK4D39Ol+g
+NdB8BihIpUAP54CkV1T+WXw=
+                   </ns1:X509Certificate>
+               </ns1:X509Data>
+           </ns1:KeyInfo>
+       </ns0:KeyDescriptor>
+       <ns0:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://localhost:80/logout_redirect" />
+       <ns0:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://localhost:80/saml_post" index="1" />
+   </ns0:SPSSODescriptor>
+</ns0:EntityDescriptor>

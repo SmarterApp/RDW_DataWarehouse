@@ -27,7 +27,6 @@ from smarter.reports.student_administration import get_asmt_academic_years, get_
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
 from smarter.reports.helpers.aggregate_dim import get_aggregate_dim
-from smarter.reports.helpers.constants import Constants
 
 
 REPORT_NAME = "comparing_populations"
@@ -473,7 +472,7 @@ class QueryHelper():
                       self._fact_asmt_outcome_vw.c.asmt_perf_lvl)
         if where_guid is not None:
             query = query.where(and_(where_guid))
-        return apply_filter_to_query(query, self._fact_asmt_outcome, self._filters)
+        return apply_filter_to_query(query, self._fact_asmt_outcome_vw, self._filters)
 
     def build_query(self, name_field, id_field, subquery_where_guid=None):
         fao = self.build_sub_query(where_guid=subquery_where_guid).alias()

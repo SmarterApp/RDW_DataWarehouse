@@ -21,7 +21,6 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(dim_asmt['asmt_perf_lvl_name_1'], 'performance_levels.level_1.name')
         self.assertEqual(dim_asmt['asmt_score_min'], 'overall.min_score')
         self.assertEqual(dim_asmt['asmt_claim_1_score_max'], 'claims.claim_1.max_score')
-        self.assertEqual(dim_asmt['asmt_claim_2_score_weight'], 'claims.claim_2.weight')
         self.assertEqual(dim_asmt['asmt_cut_point_3'], 'performance_levels.level_4.cut_point')
 
     def test_workaround_with_asmt_guid(self):

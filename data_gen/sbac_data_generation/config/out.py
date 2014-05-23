@@ -156,9 +156,9 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
                                   {'name': 'first_name', 'val': 'student.first_name'},
                                   {'name': 'middle_name', 'val': 'student.middle_name'},
                                   {'name': 'last_name', 'val': 'student.last_name'},
+                                  {'name': 'birthdate', 'val': 'student.dob', 'filter': 'date_Ymd'},
                                   {'name': 'sex', 'val': 'student.gender'},
                                   {'name': 'email', 'val': 'student.email'},
-                                  {'name': 'birthdate', 'val': 'student.dob', 'filter': 'date_Ymd'},
                                   {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'},
                                   {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
                                   {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
@@ -245,8 +245,8 @@ STUDENT_REG_FORMAT = {'format': 'csv',
                                   {'name': 'first_name', 'val': 'student.first_name'},
                                   {'name': 'middle_name', 'val': 'student.middle_name'},
                                   {'name': 'last_name', 'val': 'student.last_name'},
-                                  {'name': 'sex', 'val': 'student.gender'},
                                   {'name': 'birthdate', 'val': 'student.dob', 'filter': 'date_Y_m_d'},
+                                  {'name': 'sex', 'val': 'student.gender'},
                                   {'name': 'enrl_grade', 'val': 'student.grade', 'filter': 'zero_pad_grade'},
                                   {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
                                   {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
@@ -320,26 +320,22 @@ ASMT_JSON_FORMAT = {'format': 'json',
                             'claim_1': {
                                 'name': 'assessment.claim_1_name',
                                 'min_score': 'assessment.claim_1_score_min',
-                                'max_score': 'assessment.claim_1_score_max',
-                                'weight': 'assessment.claim_1_score_weight'
+                                'max_score': 'assessment.claim_1_score_max'
                             },
                             'claim_2': {
                                 'name': 'assessment.claim_2_name',
                                 'min_score': 'assessment.claim_2_score_min',
-                                'max_score': 'assessment.claim_2_score_max',
-                                'weight': 'assessment.claim_2_score_weight'
+                                'max_score': 'assessment.claim_2_score_max'
                             },
                             'claim_3': {
                                 'name': 'assessment.claim_3_name',
                                 'min_score': 'assessment.claim_3_score_min',
-                                'max_score': 'assessment.claim_3_score_max',
-                                'weight': 'assessment.claim_3_score_weight'
+                                'max_score': 'assessment.claim_3_score_max'
                             },
                             'claim_4': {
                                 'name': 'assessment.claim_4_name',
                                 'min_score': 'assessment.claim_4_score_min',
-                                'max_score': 'assessment.claim_4_score_max',
-                                'weight': 'assessment.claim_4_score_weight'
+                                'max_score': 'assessment.claim_4_score_max'
                             }
                         },
                         'claim_performance_levels': {

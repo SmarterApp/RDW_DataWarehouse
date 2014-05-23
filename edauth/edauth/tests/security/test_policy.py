@@ -67,14 +67,14 @@ class TestPolicy(unittest.TestCase):
     def test_effective_principals_no_callback(self):
         self.__config.testing_securitypolicy('123', ['TEACHER'])
         principals = self.__policy.effective_principals(self.__request)
-        self.assertEqual(principals, [])
+        self.assertEqual(principals, ['system.Authenticated'])
 
     def test_effective_principals_callback(self):
         self.__policy = EdAuthAuthenticationPolicy('secret', callback=dummy_callback, cookie_name='cookieName')
         self.__config.testing_securitypolicy('123', ['TEACHER'])
 
         principals = self.__policy.effective_principals(self.__request)
-        self.assertEqual(principals, dummy_callback(None, None))
+        self.assertEqual(principals, ['TEACHER', 'system.Authenticated'])
 
     def test_effective_principals_with_callback_return_none(self):
         self.__policy = EdAuthAuthenticationPolicy('secret', callback=dummy_callback_return_none, cookie_name='cookieName')

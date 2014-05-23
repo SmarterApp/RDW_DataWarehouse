@@ -34,7 +34,7 @@ common:
       session:
         timeout: 1200
       idp:
-        metadata: ./edware/resource/idp_metadata.xml
+        metadata: ../../resource/idp_metadata.xml
       skip.verify: False
       saml:
         identity_parser: hpz.security.hpz_identity_parser.HPZIdentityParser

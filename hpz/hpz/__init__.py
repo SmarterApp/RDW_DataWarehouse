@@ -5,6 +5,7 @@ from hpz.database.hpz_connector import initialize_db
 import edauth
 from pyramid_beaker import set_cache_regions_from_settings
 from hpz.security.root_factory import RootFactory
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ def main(global_config, **settings):
     """
 
     initialize_db(settings)
+    prepare_env(settings)
 
     # set beaker cache region
     set_cache_regions_from_settings(settings)
@@ -33,3 +35,10 @@ def main(global_config, **settings):
     logger.info("HPZ Started")
 
     return config.make_wsgi_app()
+
+
+def prepare_env(settings):
+    auth_idp_metadata = settings.get('auth.idp.metadata', None)
+    if auth_idp_metadata is not None:
+        if auth_idp_metadata.startswith('../'):
+            settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))

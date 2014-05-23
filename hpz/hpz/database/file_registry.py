@@ -42,3 +42,11 @@ class FileRegistry:
             registration_info = result.fetchone()
 
             return registration_info['file_path']
+
+    @staticmethod
+    def is_file_registered(registration_id):
+        with get_hpz_connection() as conn:
+            file_reg_table = conn.get_table(table_name='file_registry')
+            result = conn.execute(file_reg_table.select(limit=1).where(file_reg_table.c.registration_id == registration_id))
+
+            return result.rowcount == 1

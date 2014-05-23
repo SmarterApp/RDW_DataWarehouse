@@ -50,7 +50,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'extractType': 'studentAssessment'}
         query = get_extract_assessment_query(params)
         self.assertIsNotNone(query)
-        self.assertIn('fact_asmt_outcome.asmt_type', str(query._whereclause))
+        self.assertIn('fact_asmt_outcome_vw.asmt_type', str(query._whereclause))
 
     def test_get_extract_assessment_query_limit(self):
         params = {'stateCode': 'NC',
@@ -75,11 +75,11 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
 
     def test_compile_query_to_sql_text(self):
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table('fact_asmt_outcome')
+            fact = connection.get_table('fact_asmt_outcome_vw')
             query = select([fact.c.state_code], from_obj=[fact])
             query = query.where(fact.c.state_code == 'UT')
             str_query = compile_query_to_sql_text(query)
-            self.assertIn("fact_asmt_outcome.state_code = 'UT'", str_query)
+            self.assertIn("fact_asmt_outcome_vw.state_code = 'UT'", str_query)
 
     def test_get_extract_assessment_query_results(self):
         params = {'stateCode': 'NC',
@@ -106,7 +106,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'extractType': 'itemLevel'}
         query = get_extract_assessment_item_query(params)
         self.assertIsNotNone(query)
-        self.assertIn('fact_asmt_outcome.asmt_type', str(query._whereclause))
+        self.assertIn('fact_asmt_outcome_vw.asmt_type', str(query._whereclause))
 
     def test_get_extract_items_query_limit(self):
         params = {'stateCode': 'NC',

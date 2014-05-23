@@ -36,7 +36,7 @@ class Constants():
     LOAD_TYPE_STUDENT_REGISTRATION = 'studentregistration'
 
     # global sequence name
-    SEQUENCE_NAME = 'global_udl2_seq'
+    SEQUENCE_NAME = 'GLOBAL_REC_SEQ'
 
     # Phase number
     INT_TO_STAR_PHASE = 4

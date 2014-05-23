@@ -155,12 +155,15 @@ def teardown_udl2_schema(udl2_conf):
     drop whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
-    # Tear down udl2 schema
-    initialize_db_udl(udl2_conf)
-    drop_udl2_sequences()
-    drop_foreign_data_wrapper_server(Constants.UDL2_FDW_SERVER)
-    drop_foreign_data_wrapper_extension()
-    drop_schema(udl2_conf['udl2_db_conn']['db_schema'])
+    try:
+        # Tear down udl2 schema
+        initialize_db_udl(udl2_conf)
+        # drop_udl2_sequences()
+        drop_foreign_data_wrapper_server(Constants.UDL2_FDW_SERVER)
+        drop_foreign_data_wrapper_extension()
+        drop_schema(udl2_conf['udl2_db_conn']['db_schema'])
+    except:
+        pass
 
 
 def main():

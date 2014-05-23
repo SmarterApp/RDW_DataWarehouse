@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-requires = ['pyyaml']
+requires = ['pyyaml==3.10']
 
 docs_extras = [
     'Sphinx',

@@ -56,9 +56,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.state_code],
-                           from_obj=([fact_asmt_outcome])).where(fact_asmt_outcome.c.rec_status == 'C')
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.state_code],
+                           from_obj=([fact_asmt_outcome_vw])).where(fact_asmt_outcome_vw.c.rec_status == 'C')
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
@@ -73,9 +73,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.state_code],
-                           from_obj=([fact_asmt_outcome]))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.state_code],
+                           from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
@@ -84,9 +84,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
     def test_pii_school_level(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.school_guid],
-                           from_obj=([fact_asmt_outcome]))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.school_guid],
+                           from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
@@ -104,9 +104,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.state_code],
-                           from_obj=([fact_asmt_outcome]))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.state_code],
+                           from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(or_(*clause)))
@@ -122,9 +122,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.PII)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.state_code],
-                           from_obj=([fact_asmt_outcome]))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.state_code],
+                           from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(or_(*clause)))
@@ -151,9 +151,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.SAR_EXTRACTS)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.state_code],
-                           from_obj=([fact_asmt_outcome])).where(fact_asmt_outcome.c.rec_status == 'C')
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.state_code],
+                           from_obj=([fact_asmt_outcome_vw])).where(fact_asmt_outcome_vw.c.rec_status == 'C')
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
@@ -168,9 +168,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.SAR_EXTRACTS)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.state_code],
-                           from_obj=([fact_asmt_outcome]))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.state_code],
+                           from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
@@ -179,9 +179,9 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
     def test_sar_extracts_school_level(self):
         with UnittestEdcoreDBConnection() as connection:
             pii = PII(connection, RolesConstants.SAR_EXTRACTS)
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.school_guid],
-                           from_obj=([fact_asmt_outcome]))
+            fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome_vw.c.school_guid],
+                           from_obj=([fact_asmt_outcome_vw]))
             clause = pii.get_context(self.tenant, self.user)
 
             results = connection.get_result(query.where(*clause))
@@ -230,7 +230,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
 
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact.c.state_code], from_obj=[fact])
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(self.tenant, self.user, query)
@@ -246,7 +246,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
 
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact.c.state_code], from_obj=[fact])
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
@@ -262,7 +262,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         # Checks that the query has applied where clause
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact.c.student_guid], from_obj=[fact])
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
@@ -279,7 +279,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         # Checks that the query has applied where clause
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact.c.state_code], from_obj=[fact])
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)
@@ -295,7 +295,7 @@ class TestPIIContextSecurity(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(self.user)
         # Checks that the query has applied where clause
         with UnittestEdcoreDBConnection() as connection:
-            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             query = select([fact.c.state_code], from_obj=[fact])
             pii = PII(connection, RolesConstants.PII)
             query = pii.add_context(get_unittest_tenant_name(), self.user, query)

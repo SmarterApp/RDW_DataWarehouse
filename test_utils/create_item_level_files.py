@@ -44,7 +44,7 @@ def main(config_file, tenant_to_update, out_dir, verbose):
 def get_state_code(tenant):
     """Get the state code in FAO"""
     with DBConnection(tenant) as connection:
-        fact_asmt = connection.get_table("fact_asmt_outcome")
+        fact_asmt = connection.get_table("fact_asmt_outcome_vw")
         query = select([fact_asmt.c.state_code], from_obj=[fact_asmt]).limit(1)
         results = connection.get_result(query)
 
@@ -82,7 +82,7 @@ def create_item_pools(assessments):
 def get_students_for_assessment(tenant, asmt_guid):
     """Get all students who have records for a given assessment"""
     with DBConnection(tenant) as connection:
-        fact_asmt = connection.get_table("fact_asmt_outcome")
+        fact_asmt = connection.get_table("fact_asmt_outcome_vw")
         query = select([fact_asmt.c.student_guid, fact_asmt.c.asmt_grade, fact_asmt.c.district_guid],
                        from_obj=fact_asmt).where(and_(fact_asmt.c.asmt_guid == asmt_guid))
         results = connection.get_result(query)

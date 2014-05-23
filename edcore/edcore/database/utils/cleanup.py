@@ -8,7 +8,7 @@ def get_filtered_tables(connector, table_name_prefix=None):
 
     :param connector: The connection to the database
     :returns : A list of table names
-             [dim_section, dim_student]
+             [dim_student]
     """
     all_tables = []
     for table in connector.get_metadata().tables:

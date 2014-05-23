@@ -35,10 +35,10 @@ def create_target_schema_for_batch(tenant, schema_name):
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
-    Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome
+    Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome_vw
     The basic steps are:
-    0. Get three foreign keys: asmt_rec_id, student_rec_id and section_rec_id
-    1. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome. But for columns inst_hier_rec_id and student_rec_id ,
+    0. Get two foreign keys: asmt_rec_id and student_rec_id
+    1. Insert data from INT_SBAC_ASMT_OUTCOME to fact_asmt_outcome_vw. But for columns inst_hier_rec_id and student_rec_id ,
        put the temporary value as -1
     2. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
     3. Update foreign key student_rec_id by comparing student_guid, batch_guid

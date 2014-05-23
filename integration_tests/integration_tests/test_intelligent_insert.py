@@ -79,14 +79,14 @@ class Test_Intelligent_Insert(unittest.TestCase):
     # Validate preprod edware schema for foriegn key validation
     def validate_edware_database(self, schema_name):
         with get_target_connection(self.tenant, schema_name) as ed_connector:
-            fact_table = ed_connector.get_table('fact_asmt_outcome')
+            fact_table = ed_connector.get_table('fact_asmt_outcome_vw')
             pre_prod_data = select([fact_table.c.student_rec_id, fact_table.c.inst_hier_rec_id, fact_table.c.asmt_rec_id])
             pre_prod_table = ed_connector.execute(pre_prod_data).fetchall()
             self.expected_pk_val_for_student = pre_prod_table[0][0]
             self.expected_pk_val_for_inst = pre_prod_table[0][1]
             self.expected_pk_val_for_asmt = pre_prod_table[0][2]
 
-            lean_table = ed_connector.get_table('fact_asmt_outcome_primary')
+            lean_table = ed_connector.get_table('fact_asmt_outcome')
             pre_prod_data = select([lean_table.c.student_rec_id, fact_table.c.inst_hier_rec_id, fact_table.c.asmt_rec_id])
             pre_prod_table = ed_connector.execute(pre_prod_data).fetchall()
             self.lean_pk_val_for_student = pre_prod_table[0][0]
@@ -120,7 +120,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
     # For duplicate data into dim tables status change to S
     def validate_prepod_tables(self, schema_name):
         with get_target_connection(self.tenant, schema_name) as connection:
-            fact_table = connection.get_table('fact_asmt_outcome')
+            fact_table = connection.get_table('fact_asmt_outcome_vw')
             dim_inst_hier = connection.get_table('dim_inst_hier')
             dim_student = connection.get_table('dim_student')
             dim_asmt = connection.get_table('dim_asmt')
@@ -138,7 +138,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
     # Validate prod after the first udl run for data has been migrated to production successfully.
     def validate_prod(self, guid_batch_id):
         with get_prod_connection(self.tenant) as conn:
-            fact_table = conn.get_table('fact_asmt_outcome')
+            fact_table = conn.get_table('fact_asmt_outcome_vw')
             dim_asmt = conn.get_table('dim_asmt')
             dim_inst_hier = conn.get_table('dim_inst_hier')
             dim_student = conn.get_table('dim_student')
@@ -157,7 +157,7 @@ class Test_Intelligent_Insert(unittest.TestCase):
     # This will verify that for duplicate records status changes to I (inactive)
     def validate_prod_after_sec_migration(self):
         with get_prod_connection(self.tenant) as conn:
-            fact_table = conn.get_table('fact_asmt_outcome')
+            fact_table = conn.get_table('fact_asmt_outcome_vw')
             query = select([fact_table.c.rec_status]).where(fact_table.c.batch_guid == self.guid_batch_id)
             result = conn.execute(query).fetchall()
             expected_status = [('C',)]

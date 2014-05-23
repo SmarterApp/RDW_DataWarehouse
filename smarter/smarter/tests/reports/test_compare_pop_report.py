@@ -372,12 +372,12 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
 #        self.assertEqual(results['records'][0]['results']['subject1']['intervals'][3]['percentage'], -1)
 #        set_default_min_cell_size(0)
 
-    def test_comparing_populations_with_gender(self):
+    def test_comparing_populations_with_sex(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[Constants.ASMTYEAR] = 2016
-        testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_MALE]
+        testParam[filters.FILTERS_SEX] = [filters.FILTERS_SEX_MALE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
@@ -385,11 +385,11 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][1]['results']['subject2']['total'], 0)
 
-    def test_comparing_populations_with_gender_not_stated(self):
+    def test_comparing_populations_with_sex_not_stated(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_NOT_STATED]
+        testParam[filters.FILTERS_SEX] = [filters.FILTERS_SEX_NOT_STATED]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
@@ -407,14 +407,14 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results['not_stated']['dmgPrgIep'], 2)
         self.assertEqual(results['not_stated']['dmgPrgLep'], 0)
         self.assertEqual(results['not_stated']['ethnicity'], 0)
-        self.assertEqual(results['not_stated']['gender'], 1)
+        self.assertEqual(results['not_stated']['sex'], 1)
 
     def test_filter_with_unfiltered_results(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NC'
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[Constants.ASMTYEAR] = 2016
-        testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_MALE]
+        testParam[filters.FILTERS_SEX] = [filters.FILTERS_SEX_MALE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
         self.assertEqual(results['records'][0]['results']['subject1']['unfilteredTotal'], 10)

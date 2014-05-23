@@ -20,7 +20,7 @@ from edudl2.udl2.celery import udl2_flat_conf, udl2_conf
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/edware/conf/udl2_conf.py'
 path = '/opt/edware/zones/landing/work/ca'
-FACT_TABLE = 'fact_asmt_outcome'
+FACT_TABLE = 'fact_asmt_outcome_vw'
 #DIM_STUDENT = 'dim_student'
 
 

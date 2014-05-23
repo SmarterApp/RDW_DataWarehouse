@@ -20,7 +20,7 @@ from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 TENANT_DIR = '/opt/edware/zones/landing/arrivals/cat/ca_user/filedrop/'
 path = '/opt/edware/zones/landing/work/ca/landing/'
-FACT_TABLE = 'fact_asmt_outcome'
+FACT_TABLE = 'fact_asmt_outcome_vw'
 
 
 class ValidatePostUDLCleanup(unittest.TestCase):

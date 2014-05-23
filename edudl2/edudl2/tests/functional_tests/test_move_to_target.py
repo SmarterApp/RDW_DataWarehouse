@@ -68,7 +68,9 @@ class FTestMoveToTarget(UDLTestHelper):
         if is_empty:
             self.assertEqual(counts[:5], (0, 0, 0, 0, 0))
         else:
-            self.assertEqual(counts[:5], (99, 99, 1, 71, 94))
+            print(schema_name)
+            print(counts)
+            self.assertEqual(counts[:5], (99, 99, 1, 71, 99))
         return
 
     def verify_target_student_registration_schema(self, schema_name, is_empty=False):
@@ -81,15 +83,15 @@ class FTestMoveToTarget(UDLTestHelper):
 
     def get_counts(self, schema_name):
         with get_target_connection(self.tenant_code, schema_name) as conn:
+            fact_vw_select = select([func.count()]).select_from(conn.get_table('fact_asmt_outcome_vw'))
             fact_select = select([func.count()]).select_from(conn.get_table('fact_asmt_outcome'))
-            fact_primary_select = select([func.count()]).select_from(conn.get_table('fact_asmt_outcome_primary'))
             asmt_selct = select([func.count()]).select_from(conn.get_table('dim_asmt'))
             inst_select = select([func.count()]).select_from(conn.get_table('dim_inst_hier'))
             stud_select = select([func.count()]).select_from(conn.get_table('dim_student'))
             sr_select = select([func.count()]).select_from(conn.get_table('student_reg'))
 
-            fact_count = conn.execute(fact_select).fetchall()[0][0]
-            fact_primary_count = conn.execute(fact_primary_select).fetchall()[0][0]
+            fact_count = conn.execute(fact_vw_select).fetchall()[0][0]
+            fact_primary_count = conn.execute(fact_select).fetchall()[0][0]
             asmt_count = conn.execute(asmt_selct).fetchall()[0][0]
             inst_count = conn.execute(inst_select).fetchall()[0][0]
             stud_count = conn.execute(stud_select).fetchall()[0][0]

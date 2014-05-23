@@ -55,6 +55,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'asmtSubject': 'Math',
                   'asmtGrade': '3'}
         query = self.__create_query(params)
+        print(query)
         output = os.path.join(self.__tmp_out_dir, 'items.csv')
         task_info = {Constants.TASK_ID: '01',
                      Constants.CELERY_TASK_ID: '02',
@@ -130,23 +131,23 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
     def __create_query(self, params):
         with UnittestEdcoreDBConnection() as connection:
             dim_asmt = connection.get_table('dim_asmt')
-            fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            query = select([fact_asmt_outcome.c.state_code,
-                            fact_asmt_outcome.c.asmt_year,
-                            fact_asmt_outcome.c.asmt_type,
+            fact_asmt_outcome_vw = connection.get_table('fact_asmt_outcome_vw')
+            query = select([fact_asmt_outcome_vw.c.state_code,
+                            fact_asmt_outcome_vw.c.asmt_year,
+                            fact_asmt_outcome_vw.c.asmt_type,
                             dim_asmt.c.effective_date,
-                            fact_asmt_outcome.c.asmt_subject,
-                            fact_asmt_outcome.c.asmt_grade,
-                            fact_asmt_outcome.c.district_guid,
-                            fact_asmt_outcome.c.student_guid],
-                           from_obj=[fact_asmt_outcome
-                                     .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id))])
+                            fact_asmt_outcome_vw.c.asmt_subject,
+                            fact_asmt_outcome_vw.c.asmt_grade,
+                            fact_asmt_outcome_vw.c.district_guid,
+                            fact_asmt_outcome_vw.c.student_guid],
+                           from_obj=[fact_asmt_outcome_vw
+                                     .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))])
 
-            query = query.where(and_(fact_asmt_outcome.c.asmt_year == params['asmtYear']))
-            query = query.where(and_(fact_asmt_outcome.c.asmt_type == params['asmtType']))
-            query = query.where(and_(fact_asmt_outcome.c.asmt_subject == params['asmtSubject']))
-            query = query.where(and_(fact_asmt_outcome.c.asmt_grade == params['asmtGrade']))
-            query = query.where(and_(fact_asmt_outcome.c.rec_status == 'C'))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == params['asmtYear']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == params['asmtType']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == params['asmtSubject']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == params['asmtGrade']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == 'C'))
             return query
 
     def __build_item_pool(self, asmt_count):
@@ -159,7 +160,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
     def __build_item_level_files(self):
         with UnittestEdcoreDBConnection() as connection:
             item_pools, asmt_count, flip_flop = {}, 0, False
-            fact_asmt = connection.get_table('fact_asmt_outcome')
+            fact_asmt = connection.get_table('fact_asmt_outcome_vw')
             dim_asmt = connection.get_table('dim_asmt')
             query = select([fact_asmt.c.state_code, fact_asmt.c.asmt_year, fact_asmt.c.asmt_type,
                             dim_asmt.c.effective_date, fact_asmt.c.asmt_subject, fact_asmt.c.asmt_grade,

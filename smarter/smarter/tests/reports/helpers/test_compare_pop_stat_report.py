@@ -56,7 +56,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         self.assertEqual(results['dmgPrgIep'], 3)
         self.assertEqual(results['dmgPrgLep'], 1)
         self.assertEqual(results['ethnicity'], 1)
-        self.assertEqual(results['gender'], 1)
+        self.assertEqual(results['sex'], 1)
 
     def test_comparing_populations_with_not_stated_count_state_view(self):
         testParam = {}
@@ -68,7 +68,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         self.assertEqual(results['dmgPrgIep'], 5)
         self.assertEqual(results['dmgPrgLep'], 3)
         self.assertEqual(results['ethnicity'], 7)
-        self.assertEqual(results['gender'], 1)
+        self.assertEqual(results['sex'], 1)
 
     def test_comparing_populations_with_not_stated_count_school_view(self):
         testParam = {}
@@ -82,7 +82,7 @@ class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
         self.assertEqual(results['dmgPrgIep'], 2)
         self.assertEqual(results['dmgPrgLep'], 2)
         self.assertEqual(results['ethnicity'], 4)
-        self.assertEqual(results['gender'], 0)
+        self.assertEqual(results['sex'], 0)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

@@ -49,12 +49,11 @@ def update_state(tenant, state_code, state_name):
     '''
     with DBConnection(tenant) as connection:
         dim_inst_hier = connection.get_table("dim_inst_hier")
-        dim_section = connection.get_table("dim_section")
         custom_metadata = connection.get_table("custom_metadata")
         fact_asmt = connection.get_table("fact_asmt_outcome")
-        dim_student = connection.get_table("dim_student")
+        fact_asmt_vw = connection.get_table("fact_asmt_outcome_vw")
         fact_student_reg = connection.get_table("student_reg")
-        tables = [dim_inst_hier, dim_section, custom_metadata, fact_asmt, dim_student, fact_student_reg]
+        tables = [dim_inst_hier, custom_metadata, fact_asmt, fact_asmt_vw, fact_student_reg]
         for table in tables:
             stmt = update(table).values(state_code=state_code)
             connection.execute(stmt)
@@ -72,7 +71,7 @@ def update_aca_year(tenant):
                                                                                           dim_asmt.c.asmt_period_year: '2015',
                                                                                           dim_asmt.c.effective_date: '20150101',
                                                                                           dim_asmt.c.from_date: '20150101'})
-        fact_asmt = connection.get_table("fact_asmt_outcome")
+        fact_asmt = connection.get_table("fact_asmt_outcome_vw")
         fact_query = update(fact_asmt).where(fact_asmt.c.asmt_year == '2016').values({fact_asmt.c.asmt_year: '2015',
                                                                                      fact_asmt.c.date_taken: '20150106',
                                                                                      fact_asmt.c.date_taken_day: '6',

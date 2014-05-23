@@ -73,7 +73,6 @@ pop_config.DEMOGRAPHICS['california'] = sbac_pop_config.DEMOGRAPHICS['california
 for grade, demo in sbac_pop_config.DEMOGRAPHICS['typical1'].items():
     if grade in pop_config.DEMOGRAPHICS['typical1']:
         pop_config.DEMOGRAPHICS['typical1'][grade].update(demo)
-enroll_config.TEACHERS_PER_SECTION = 0
 
 # Register output filters
 csv_writer.register_filters(SBAC_FILTERS)
@@ -157,8 +156,6 @@ def prepare_output_files():
                                 root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
                                 sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name'],
-                                sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_INST_HIER_FORMAT['name'],
                                 sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
@@ -341,7 +338,7 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
 
     @param asmt_year: Current academic year
     @param sr_out_name: Name of student registration landing zone CSV file to potentially write to
-    @param dim_students: Students to write to dim_student/dim_student_demographic star-schema CSVs/postgres tables
+    @param dim_students: Students to write to dim_student star-schema CSVs/postgres tables
     @param sr_students: Students to write to registration landing zone/star-schema CSV/postgres table
     @param assessment_results: Assessment outcomes to write to landing zone/star-schema CSV/postgres table
     """
@@ -354,8 +351,6 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
     dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
     dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
-    dstu_demo_out_name = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['name']
-    dstu_demo_out_cols = sbac_out_config.DIM_STUDENT_DEMO_FORMAT['columns']
     sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
     sr_pg_out_cols = sbac_out_config.STUDENT_REG_FORMAT['columns']
 
@@ -366,16 +361,11 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
         csv_writer.write_records_to_file(dstu_out_name, dstu_out_cols, dim_students,
                                          entity_filter=('held_back', False), tbl_name='dim_student',
                                          root_path=OUT_PATH_ROOT)
-        csv_writer.write_records_to_file(dstu_demo_out_name, dstu_demo_out_cols, dim_students,
-                                         entity_filter=('held_back', False), tbl_name='dim_student',
-                                         root_path=OUT_PATH_ROOT)
         csv_writer.write_records_to_file(sr_pg_out_name, sr_pg_out_cols, sr_students, tbl_name='student_reg',
                                          root_path=OUT_PATH_ROOT)
     if WRITE_PG:
         postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student', dstu_out_cols, dim_students,
                                                entity_filter=('held_back', False))
-        postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.dim_student_demographics', dstu_demo_out_cols,
-                                               dim_students, entity_filter=('held_back', False))
         postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.student_reg', sr_pg_out_cols, sr_students)
 
     # Write assessment results if we have them; also optionally to landing zone CSV, star-schema CSV, and/or to postgres
@@ -404,15 +394,15 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
                                                  lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
             if WRITE_STAR:
-                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome',
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome_vw',
                                                  root_path=OUT_PATH_ROOT)
                 csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
-                                                 tbl_name='fact_asmt_outcome', root_path=OUT_PATH_ROOT)
+                                                 tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
             if WRITE_PG:
                 try:
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome', fao_out_cols,
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw', fao_out_cols,
                                                            rslts)
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_primary',
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome',
                                                            fao_pri_out_cols, rslts)
                 except Exception as e:
                     print('PostgreSQL EXCEPTION ::: %s' % str(e))
@@ -492,8 +482,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):
                 schools_with_grades[student.school][student.grade].append(student)
 
-        # With the students moved around, we will re-populate empty grades and create sections and assessments with
-        # outcomes for the students
+        # With the students moved around, we will re-populate empty grades and create assessments with outcomes for
+        # the students
         for school, grades in schools_with_grades.items():
             # Get the institution hierarchy object
             inst_hier = inst_hiers[school.guid]

@@ -47,21 +47,21 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
     :return:  list of results containing student information used to generate pdf
     '''
     with EdCoreDBConnection(tenant=tenant) as connector:
-        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        query = select([distinct(fact_asmt_outcome.c.student_guid).label(Constants.STUDENT_GUID),
+        query = select([distinct(fact_asmt_outcome_vw.c.student_guid).label(Constants.STUDENT_GUID),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
                         dim_asmt.c.effective_date.label(Constants.EFFECTIVE_DATE),
-                        fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
-                        fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),
-                        fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
-                       from_obj=[fact_asmt_outcome
-                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
+                        fact_asmt_outcome_vw.c.district_guid.label(Constants.DISTRICT_GUID),
+                        fact_asmt_outcome_vw.c.school_guid.label(Constants.SCHOOL_GUID),
+                        fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                       from_obj=[fact_asmt_outcome_vw
+                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id,
                                                       dim_asmt.c.rec_status == Constants.CURRENT,
                                                       dim_asmt.c.asmt_type == AssessmentType.SUMMATIVE))])
-        query = query.where(fact_asmt_outcome.c.state_code == state_code)
-        query = query.where(and_(fact_asmt_outcome.c.batch_guid == batch_guid))
-        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
+        query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
+        query = query.where(and_(fact_asmt_outcome_vw.c.batch_guid == batch_guid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         results = connector.get_result(query)
         return results
 
@@ -125,8 +125,8 @@ def prepdf_task(settings):
         tenant = udl_stats_result.get(UdlStatsConstants.TENANT)
         state_code = tenant_to_state_code.get(tenant)
         batch_guid = udl_stats_result.get(UdlStatsConstants.BATCH_GUID)
-        fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, batch_guid)
-        triggered_success = trigger_pre_pdf(settings, state_code, tenant, fact_asmt_outcome_results)
+        fact_asmt_outcome_vw_results = prepare_pre_pdf(tenant, state_code, batch_guid)
+        triggered_success = trigger_pre_pdf(settings, state_code, tenant, fact_asmt_outcome_vw_results)
         if triggered_success:
             update_ed_stats_for_prepdf(udl_stats_result[UdlStatsConstants.REC_ID])
 

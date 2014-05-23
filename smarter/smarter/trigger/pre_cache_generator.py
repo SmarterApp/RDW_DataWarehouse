@@ -49,11 +49,11 @@ def prepare_pre_cache(tenant, state_code, batch_guid):
     :return:  list of results containing district guids
     '''
     with EdCoreDBConnection(tenant=tenant) as connector:
-        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([distinct(fact_asmt_outcome.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome])
-        query = query.where(fact_asmt_outcome.c.state_code == state_code)
-        query = query.where(and_(fact_asmt_outcome.c.batch_guid == batch_guid))
-        query = query.where(and_(fact_asmt_outcome.c.rec_status == Constants.CURRENT))
+        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+        query = select([distinct(fact_asmt_outcome_vw.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome_vw])
+        query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
+        query = query.where(and_(fact_asmt_outcome_vw.c.batch_guid == batch_guid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         results = connector.get_result(query)
         return results
 
@@ -118,8 +118,8 @@ def precached_task(settings):
         tenant = udl_stats_result.get(UdlStatsConstants.TENANT)
         state_code = tenant_to_state_code.get(tenant)
         batch_guid = udl_stats_result.get(UdlStatsConstants.BATCH_GUID)
-        fact_asmt_outcome_results = prepare_pre_cache(tenant, state_code, batch_guid)
-        triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_results, filter_settings)
+        fact_asmt_outcome_vw_results = prepare_pre_cache(tenant, state_code, batch_guid)
+        triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_vw_results, filter_settings)
         if triggered_success:
             update_ed_stats_for_precached(udl_stats_result[UdlStatsConstants.REC_ID])
 

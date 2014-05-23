@@ -1,0 +1,58 @@
+#!/bin/env bash
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# lock file
+LOCK_FILE=/var/run/repmgrd/repmgrd-watcher.pid
+REPMGRD_PID=/var/run/repmgrd/repmgrd.pid
+
+monitor() {
+        if [ -e ${LOCK_FILE} ] && kill -0 `cat ${LOCK_FILE}` ; then
+                echo "already running"
+                exit 2 
+        fi
+        trap "rm -f ${LOCK_FILE}; exit" INT TERM EXIT KILL
+        echo $BASHPID > $LOCK_FILE
+        while [ 1 ]; do
+                # check repmgrd is running
+                if [ ! -e ${REPMGRD_PID} ] 
+                then
+                        /etc/init.d/repmgrd start 2>&1 >> /dev/null
+                        sleep 10
+                elif [ -e ${REPMGRD_PID} ] && ! kill -0 `cat ${REPMGRD_PID}`  
+                then
+                        /etc/init.d/repmgrd start 2>&1 >> /dev/null
+                        sleep 10     
+                else
+                   sleep 10
+                fi
+        done
+}
+
+start() {
+        echo "start the watcher"
+        monitor &
+}
+
+stop() {
+       echo "stop the watcher"
+       if [ -f $LOCK_FILE ]; then
+           kill -s KILL `cat $LOCK_FILE`
+       fi
+       rm -f $LOCK_FILE
+}
+
+case $1 in
+        start)
+                start
+        ;;
+        stop)
+                stop
+        ;;
+        *)
+
+        echo $"Usage: repmgrd {start|stop}"
+        exit 2
+esac
+exit $RETVAL

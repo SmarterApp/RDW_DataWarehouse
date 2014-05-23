@@ -72,7 +72,7 @@ def process_input_file_format(phases, input_source):
 
 def format_mappings(mapping):
     # Format based on column_mapping schema mapping. Currently, only format for these tables
-    column_mapping = {Constants.DIM_ASMT: {}, Constants.DIM_STUDENT: {}, Constants.FACT_ASMT_OUTCOME: {}, Constants.DIM_INST_HIER: {}}
+    column_mapping = {Constants.DIM_ASMT: {}, Constants.DIM_STUDENT: {}, Constants.FACT_ASMT_OUTCOME_VW: {}, Constants.DIM_INST_HIER: {}}
     for k, v in mapping.items():
         table_column_index = k.index('|')
         star_table = k[:table_column_index]

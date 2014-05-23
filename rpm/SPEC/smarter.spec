@@ -41,6 +41,7 @@ cp ${WORKSPACE}/edmigrate/config/linux/opt/edware/conf/celeryd-edmigrate.conf %{
 cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/celeryd-edmigrate %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/edmigrate-conductor %{buildroot}/etc/rc.d/init.d/
 cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/edmigrate/config/linux/etc/rc.d/init.d/repmgrd-watcher %{buildroot}/etc/rc.d/init.d/
 
 %build
 export LANG=en_US.UTF-8
@@ -160,6 +161,7 @@ cp -r virtualenv/smarter %{buildroot}/opt/virtualenv
 %attr(755,root,root) /etc/rc.d/init.d/celeryd-edmigrate
 %attr(755,root,root) /etc/rc.d/init.d/edmigrate-conductor
 %attr(755,root,root) /etc/rc.d/init.d/repmgrd
+%attr(755,root,root) /etc/rc.d/init.d/repmgrd-watcher
 
 %pre
 id celery > /dev/null 2>&1
@@ -201,11 +203,13 @@ chkconfig --add celeryd-edextract
 chkconfig --add celeryd-edmigrate
 chkconfig --add edmigrate-conductor
 chkconfig --add repmgrd
+chkconfig --add repmgrd-watcher
 chkconfig --level 2345 celeryd-services off
 chkconfig --level 2345 celeryd-edextract off
 chkconfig --level 2345 celeryd-edmigrate off
 chkconfig --level 2345 edmigrate-conductor off
 chkconfig --level 2345 repmgrd off
+chkconfig --level 2345 repmgrd-watcher off
 
 %preun
 chkconfig --del celeryd-services
@@ -213,6 +217,7 @@ chkconfig --del celeryd-edextract
 chkconfig --del celeryd-edmigrate
 chkconfig --add edmigrate-conductor
 chkconfig --del repmgrd
+chkconfig --del repmgrd-watcher off
 
 %postun
 

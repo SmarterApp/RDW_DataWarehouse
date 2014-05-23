@@ -15,7 +15,9 @@ requires = [
     'zope.sqlalchemy==0.7.3',
     'Jinja2==2.7.2',
     'config',
-    'edschema']
+    'edschema',
+    'edauth',
+    'edcore']
 
 setup(name='hpz',
       version='0.1',

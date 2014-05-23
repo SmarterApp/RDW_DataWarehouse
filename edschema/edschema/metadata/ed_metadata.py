@@ -224,7 +224,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_vw_cpop_stateview_idx', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, assessment_outcome_vw.c.district_guid, unique=False)
     Index('fact_asmt_outcome_vw_cpop_not_stated_count_idx', assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.district_guid, assessment_outcome_vw.c.school_guid, assessment_outcome_vw.c.dmg_prg_iep, assessment_outcome_vw.c.dmg_prg_504, assessment_outcome_vw.c.dmg_prg_lep, assessment_outcome_vw.c.asmt_grade, assessment_outcome_vw.c.dmg_eth_derived, assessment_outcome_vw.c.sex, unique=False)
 
-
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmt_outcome_rec_id', BigInteger, primary_key=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),

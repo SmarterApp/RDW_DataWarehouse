@@ -36,9 +36,6 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(dim_student['sex'], 'gender_student')
         self.assertEqual(dim_student['email'], 'email_student')
         self.assertEqual(dim_student['birthdate'], 'dob_student')
-        self.assertEqual(dim_student['grade'], 'grade_enrolled')
-        self.assertEqual(dim_student['state_code'], 'code_state')
-        self.assertEqual(dim_student['school_guid'], 'guid_school')
 
     def test_dim_inst_hier(self):
         dim_inst = get_column_mapping(Constants.DIM_INST_HIER)
@@ -64,7 +61,7 @@ class TestFormat(unittest.TestCase):
         self.assertEqual(fact['asmt_perf_lvl'], 'score_perf_level')
         self.assertEqual(fact['asmt_claim_1_score'], 'score_claim_1')
         self.assertEqual(fact['asmt_claim_1_score_range_max'], 'score_claim_1_max')
-        self.assertEqual(fact['sex'], 'sex_student')
+        self.assertEqual(fact['sex'], 'gender_student')
         self.assertEqual(fact['acc_closed_captioning_embed'], 'acc_closed_captioning_embed')
         self.assertEqual(fact['acc_print_on_demand_nonembed'], 'acc_print_on_demand_nonembed')
         self.assertEqual(fact['acc_streamline_mode'], 'acc_streamline_mode')

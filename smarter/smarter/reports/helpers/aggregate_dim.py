@@ -29,7 +29,7 @@ def get_aggregate_dim(subjects={}, stateCode=None, districtGuid=None, schoolGuid
         with EdCoreDBConnection(tenant=tenant, state_code=stateCode) as connector:
             # query custom metadata by state code
             dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
-            fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+            fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
             s = exists(['*'], from_obj=[dim_inst_hier]).where(and_(fact_asmt_outcome.c.asmt_year == asmtYear, fact_asmt_outcome.c.state_code == stateCode, fact_asmt_outcome.c.rec_status == 'C',
                                                                    fact_asmt_outcome.c.asmt_type == asmtType, fact_asmt_outcome.c.inst_hier_rec_id == dim_inst_hier.c.inst_hier_rec_id,
                                                                    fact_asmt_outcome.c.asmt_subject == subject))

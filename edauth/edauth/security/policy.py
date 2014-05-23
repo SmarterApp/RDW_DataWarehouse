@@ -46,6 +46,6 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
                 return effective_principals
 
         effective_principals.extend(groups)
-        effective_principals.append(Authenticated)
+        #effective_principals.append(Authenticated)
 
         return effective_principals

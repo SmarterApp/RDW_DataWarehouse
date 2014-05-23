@@ -11,4 +11,4 @@ class HPZIdentityParser(IdentityParser):
         Returns a list of role/relationship
         '''
         relations = []
-        return relations 
+        return relations

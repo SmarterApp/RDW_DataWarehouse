@@ -1,4 +1,4 @@
-<div class="screenreader"> Overall Score {{asmt_score}}, Error band from {{asmt_score_range_min}} to {{asmt_score_range_max}} and Cut Point Intervals {{asmt_score_min}}, {{#cut_point_intervals}}{{interval}}, {{/cut_point_intervals}}</div> 
+<div class="screenreader"> Overall Score {{asmt_score}} {{score_name}}, Error band from {{asmt_score_range_min}} to {{asmt_score_range_max}} and Cut Point Intervals {{asmt_score_min}}, {{#cut_point_intervals}}{{interval}}, {{/cut_point_intervals}}</div> 
 <div class="scoreWrapper" aria-hidden="true" style="width: {{bar_width}}px;">
     <div class="overall_score" style="margin-left: {{score_text_pos}}px;color: {{score_color}}"><strong style="color: {{score_color}}!important;">{{asmt_score}}</strong></div>
     <div class="indicator progressbar_indicator{{bar_width}}" style="margin-left: {{asmt_score_pos}}px"></div>

@@ -81,7 +81,7 @@ class Test(Unittest_with_edcore_sqlite_no_data_load):
             columns = query._raw_columns
             fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
-        self.assertEquals(5, len(columns))
+        self.assertEquals(6, len(columns))
         # first two columns are for school view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.NAME, 'test for alias name')

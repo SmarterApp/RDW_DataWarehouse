@@ -7,7 +7,7 @@ import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report,\
     ComparingPopReport, CACHE_REGION_PUBLIC_DATA,\
     CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route,\
-    set_default_min_cell_size, get_merged_report_records, reset_subject_intervals
+    set_default_min_cell_size, get_merged_report_records
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants, AssessmentType
@@ -320,8 +320,8 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         testParam[Constants.ASMTYEAR] = 2016
         testParam[filters.FILTERS_GRADE] = ['3', '6', '7', '11']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 8)
-        self.assertEqual(results['records'][2]['results']['subject1']['total'], 0)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 0)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 8)
         self.assertEqual(len(results['records']), 3)
 
     def test_view_with_lep_yes(self):
@@ -454,7 +454,6 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]['type'], 'int')
         self.assertEqual(results[0]['name'], 'a')
-        self.assertEqual(results[0]['results']['a']['total'], -1)
         self.assertEqual(results[1]['type'], 'int')
         self.assertEqual(results[1]['name'], 'b')
 
@@ -471,8 +470,6 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]['type'], 'int')
         self.assertEqual(results[0]['name'], 'a')
-        self.assertEqual(results[0]['results']['a']['total'], -1)
-        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
         self.assertEqual(results[1]['type'], 'sum')
         self.assertEqual(results[1]['name'], 'b')
 
@@ -487,9 +484,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['type'], 'sum')
         self.assertEqual(results[0]['name'], 'b')
-        self.assertEqual(results[0]['results']['a']['total'], -1)
         self.assertEqual(results[0]['results']['a']['hasInterim'], True)
-        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
 
     def test_get_merged_report_records_with_no_results(self):
         summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
@@ -502,15 +497,6 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['type'], 'sum')
         self.assertEqual(results[0]['name'], 'b')
-        self.assertEqual(results[0]['results']['a']['total'], -1)
-        self.assertEqual(results[0]['results']['a']['intervals'][0]['percentage'], -1)
-
-    def test_reset_intervals(self):
-        data = {'intervals': [{'percentage': 20}, {'percentage': 30}], 'total': 3}
-        reset_subject_intervals(data)
-        self.assertEqual(data['intervals'][0]['percentage'], -1)
-        self.assertEqual(data['intervals'][1]['percentage'], -1)
-        self.assertEqual(data['total'], -1)
 
 
 if __name__ == "__main__":

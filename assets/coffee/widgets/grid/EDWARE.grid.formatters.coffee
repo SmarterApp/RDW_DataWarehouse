@@ -214,7 +214,10 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     exportable = options.colModel.export
-    total = parseInt(subject.total)
+    if subject is `undefined`
+      total = 0
+    else
+      total = parseInt(subject.total)
     # No data when total is 0, Insufficient when total is -1
     insufficient = total < 0
     noData = total is 0

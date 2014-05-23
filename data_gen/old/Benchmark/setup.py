@@ -11,7 +11,7 @@ requires = ['SQLAlchemy==0.8.3',
 
 tests_require = requires + [
     'sqlite3',
-    'nose >= 1.2.1',
+    'nose == 1.3.3',
     'coverage', ]
 
 setup(name='Benchmark',

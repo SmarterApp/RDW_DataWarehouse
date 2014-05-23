@@ -14,7 +14,7 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_load_to_staging_table.task", base=Udl2BaseTask)
-def task(msg):
+def  task(msg):
     start_time = datetime.datetime.now()
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> ' % (msg[mk.FILE_TO_LOAD]))

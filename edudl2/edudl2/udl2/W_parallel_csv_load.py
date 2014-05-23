@@ -52,17 +52,20 @@ def update_record_sid(msg):
     load_type = msg[mk.LOAD_TYPE]
     start_time = datetime.datetime.now()
     target_db_table = SchemaConstants.UDL2_STAGING_TABLE(load_type)
+    #import pdb;pdb.set_trace()
     global_sequence = get_global_sequence(msg[mk.TENANT_NAME])
     with get_udl_connection() as conn:
         _table = conn.get_table(target_db_table)
-        query = select([_table]).where(_table.c[Constants.GUID_BATCH] == guid_batch)
+        query = select([_table.c.record_sid]).where(_table.c[Constants.GUID_BATCH] == guid_batch)
         records = conn.execute(query)
-        for rec in records:
+        staging_record_count = records.rowcount
+        current_offset_start = global_sequence.offset(batch_size=staging_record_count)
+        #for rec in records:
             # set record sid
-            next_guid = global_sequence.next()
-            update_stmt = update(_table).values(record_sid=next_guid).\
-                where(_table.c.record_sid == rec[Constants.RECORD_SID])
-            conn.execute(update_stmt)
+        #    next_guid = global_sequence.next()
+        update_stmt = update(_table).values(record_sid=current_offset_start + _table.c.src_file_rec_num - 1).\
+            where(_table.c[Constants.GUID_BATCH] == guid_batch)
+        conn.execute(update_stmt)
 
     end_time = datetime.datetime.now()
     #Record benchmark

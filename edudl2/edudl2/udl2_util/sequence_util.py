@@ -29,25 +29,12 @@ class UDLSequence(object):
         self.tenant_name = tenant_name
         self.schema_name = udl2_conf['prod_db_conn'][tenant_name]['db_schema']
         self.seq_name = seq_name
-        self.max_value = -1
         self.current = 0
         self.check_sequence_existence()
 
-    def fetch_next_batch(self):
-        '''
-        Gets sequence in batch.  Batch size is defined by
-        `global_seq_batch_size` in configuration file.
-        '''
-        with get_prod_connection(self.tenant_name) as conn:
-            seq = conn.execute("SELECT nextval('%s.%s') from generate_series(1, %d);"
-                               % (self.schema_name, self.seq_name, INCREMENTAL))
-            batch = [val[0] for val in seq]
-            self.current = batch[0]
-            self.max_value = batch[-1]
-
     def check_sequence_existence(self):
         '''
-        Check if sequence exists, if not raise exception UDL2GlobalSequenceMissingException
+        Check if sequence exists, if not raise exception UDL2GlobalSequenceMissingExceptin
         '''
         with get_prod_connection(self.tenant_name) as conn:
                 if not self.sequence_exists(conn):
@@ -63,15 +50,23 @@ class UDLSequence(object):
         exist = conn.execute(query).scalar()
         return exist
 
-    def next(self):
+    def fetch_next_batch(self, batch_size):
         '''
-        Get next sequence id.
+        Gets sequence in batch.  Batch size is defined by
+        `global_seq_batch_size` in configuration file.
         '''
-        if self.current >= self.max_value + 1:
-            self.fetch_next_batch()
-        next_value = self.current
-        self.current += 1
-        return next_value
+        with get_prod_connection(self.tenant_name) as conn:
+            seq = conn.execute("SELECT nextval('%s.%s') from generate_series(1, %d);"
+                               % (self.schema_name, self.seq_name, batch_size))
+            batch = seq.fetchone()
+            self.current = batch[0]
+            seq.close()
+
+    def offset(self, batch_size):
+        '''
+        '''
+        self.fetch_next_batch(batch_size)
+        return self.current
 
 
 GLOBAL_SEQUENCE_POOL = {}
@@ -81,6 +76,7 @@ def get_global_sequence(tenant_name):
     '''
     Get global sequence for given tenant.
     '''
+    #import pdb;pdb.set_trace()
     if tenant_name in GLOBAL_SEQUENCE_POOL:
         return GLOBAL_SEQUENCE_POOL.get(tenant_name)
     seq = UDLSequence(tenant_name, Constants.SEQUENCE_NAME)

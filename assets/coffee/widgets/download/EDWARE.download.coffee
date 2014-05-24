@@ -25,6 +25,8 @@ define [
 
   TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentRegistrationCompletion": "Student Registration Completion"}
 
+  DOWNLOAD_URL_MESSAGE = {"studentRegistrationCompletion": "You can retrieve your file from the following link ", "studentRegistrationStatistics": "You can retrieve your file from the following link ", "studentAssessment": ""}
+
   REQUEST_ENDPOINT = {
     "studentRegistrationStatistics": "/services/extract/student_registration_statistics",
     "studentAssessment": "/services/extract",
@@ -203,6 +205,14 @@ define [
     showSuccessMessage: (response)->
       taskResponse = response['tasks'].map this.toDisplay.bind(this)
       fileName = response['fileName']
+
+      #TODO move to html when message is the same
+      if this.reportType is 'studentRegistrationStatistics' || this.reportType is 'studentRegistrationCompletion'
+        downloadUrlMessage = "You can retrieve your file from the following link "
+      else
+        downloadUrlMessage = ""
+
+      downloadUrl = response['download_url']
       success = taskResponse.filter (item)->
         item['status'] is 'ok'
       failure = taskResponse.filter (item)->
@@ -216,6 +226,8 @@ define [
         requestTime: this.requestTime
         requestDate: this.requestDate
         fileName: fileName
+        downloadUrlMessage: downloadUrlMessage
+        downloadUrl: downloadUrl
         testName: TEST_NAME[this.reportType]
         # success messages
         success: success

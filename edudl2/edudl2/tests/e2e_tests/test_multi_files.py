@@ -15,7 +15,6 @@ from edudl2.udl2.constants import Constants
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-@unittest.skip("skipping this test till ready for jenkins")
 class ValidateMultiFiles(unittest.TestCase):
 
     def setUp(self):

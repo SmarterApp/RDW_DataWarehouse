@@ -54,8 +54,8 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                       )
 
     stg_sbac_stu_reg = Table('stg_sbac_stu_reg', metadata,
-                             Column('record_sid', BigInteger, primary_key=True),
-                             Column('src_file_rec_num', BigInteger, nullable=True),
+                             Column('record_sid', BigInteger),
+                             Column('src_file_rec_num', BigInteger, nullable=False),
                              Column('name_state', String(256), nullable=True),
                              Column('code_state', String(256), nullable=True),
                              Column('guid_district', String(256), nullable=True),
@@ -96,9 +96,9 @@ def generate_udl2_metadata(schema_name=None, bind=None):
     Index('stg_sbac_stu_reg_guid_batchx', stg_sbac_stu_reg.c.guid_batch, unique=False)
 
     stg_sbac_asmt_outcome = Table('stg_sbac_asmt_outcome', metadata,
-                                  Column('record_sid', BigInteger, primary_key=True),
+                                  Column('record_sid', BigInteger),
                                   Column('op', String(1), nullable=True, server_default='C'),
-                                  Column('src_file_rec_num', BigInteger, nullable=True),
+                                  Column('src_file_rec_num', BigInteger, nullable=False),
                                   Column('guid_asmt', String(256), nullable=True),
                                   Column('guid_asmt_location', String(256), nullable=True),
                                   Column('name_asmt_location', String(256), nullable=True),

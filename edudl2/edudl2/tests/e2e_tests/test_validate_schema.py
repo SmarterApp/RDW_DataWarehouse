@@ -66,7 +66,6 @@ class ValidateSchemaChange(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()
-            print('Waited for', timer, 'second(s) for job to complete.')
 
     #Validate that for given batch guid data loded on star schema and student_rec_id in not -1
     def validate_edware_database(self):

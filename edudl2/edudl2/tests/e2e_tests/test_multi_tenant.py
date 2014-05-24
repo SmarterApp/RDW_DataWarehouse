@@ -56,7 +56,6 @@ class ValidateTableData(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()
-            print('Waited for', timer, 'second(s) for job to complete.')
 
     def connect_verify_db(self):
         with get_udl_connection() as connector:

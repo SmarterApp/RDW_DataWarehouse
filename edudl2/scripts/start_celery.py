@@ -23,6 +23,7 @@ def start_celery(config=None):
         else:
             local_env = dict(os.environ)
             local_env['UDL2_CONF'] = config
+            local_env['CELERYD_LOG_LEVEL'] = 'INFO'
             subprocess.call(["celery worker --app=edudl2.udl2 --workdir=../edudl2 -l debug"], shell=True, env=local_env)
     except Exception as e:
         print(e)

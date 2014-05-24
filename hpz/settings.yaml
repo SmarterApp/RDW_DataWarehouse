@@ -17,6 +17,46 @@ common:
       debug_routematch: false
       default_locale_name: en
 
+    # Authentication
+    auth:
+      state:
+        secret: long_secret_for_redirects1111234
+      policy:
+        secret: edware_secret
+        cookie_name: edware
+        hashalg: sha512
+        http_only: true
+        # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
+        #max_age: 2400
+        # Maximum number of seconds which a newly issued ticket will be considered valid
+        timeout: 1200
+        # Session expiration time
+      session:
+        timeout: 1200
+      idp:
+        metadata: ../../resource/idp_metadata.xml
+      skip.verify: False
+      saml:
+        identity_parser: hpz.security.hpz_identity_parser.HPZIdentityParser
+    cache:
+      expire: 3600
+      lock_dir: /tmp/memcache
+      public:
+        data:
+            expire: 10
+        filtered_data:
+            expire: 15552000
+        shortlived:
+            expire: 7776000
+      regions: public.data, public.filtered_data, public.shortlived, session
+      session:
+        expire: 1200
+      type:
+       memory
+    ldap:
+      base:
+        dn: ou=environment,dc=edwdc,dc=net
+
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -71,6 +111,12 @@ development:
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296
+    auth:
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:80/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
 
 jenkins_dev:
   '[app:main]':
@@ -81,3 +127,9 @@ jenkins_dev:
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296
+    auth:
+        saml:
+          idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+          idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+          name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+          issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'

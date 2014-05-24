@@ -322,7 +322,7 @@ define [
       table = $('<div class=" stickyChainTable"></div>')
       for name in names
         table.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><a href="#" data-id="' + reverse[name] + '" class="tableCellRight removeStickyChainIcon"></a></div>')
+        table.append $("<div class='tableRow'><div class='tableCellLeft'>#{name}</div><a aria-label='click to remove #{name}' href='#' data-id='#{reverse[name]}' class='tableCellRight removeStickyChainIcon'></a></div>")
         idx++
       scrollable.append table
 

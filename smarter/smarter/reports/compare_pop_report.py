@@ -16,7 +16,7 @@ import collections
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
 from edapi.cache import cache_region
-from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
+from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters, \
     apply_filter_to_query
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from edcore.database.edcore_connector import EdCoreDBConnection
@@ -26,6 +26,7 @@ from collections import OrderedDict, namedtuple
 from smarter.reports.student_administration import get_asmt_academic_years, get_default_asmt_academic_year
 from smarter.security.tenant import validate_user_tenant
 from smarter.security.context import get_current_request_context
+from smarter.reports.helpers.aggregate_dim import get_aggregate_dim
 
 
 REPORT_NAME = "comparing_populations"
@@ -81,7 +82,7 @@ def get_comparing_populations_report(params):
     else:
         interim_params = deepcopy(params)
         interim_params[Constants.ASMTTYPE] = AssessmentType.INTERIM_COMPREHENSIVE
-        interim_report = ComparingPopReport(**interim_params).get_report()
+        interim_report = get_aggregate_dim(subjects=report.get(Constants.SUBJECTS, []), **interim_params)
         report['records'] = get_merged_report_records(report, interim_report)
     return report
 
@@ -95,11 +96,21 @@ def get_merged_report_records(summative, interim):
     merged = {}
     for record in interim[Constants.RECORDS]:
         r = Records(id=record[Constants.ID], name=record[Constants.NAME])
-        for subject in interim[Constants.SUBJECTS].keys():
+        for subject in record[Constants.RESULTS].keys():
             # when total number of students is not zero, that means there are results (could be insufficient data)
-            if record[Constants.RESULTS][subject][Constants.TOTAL] is not 0:
-                record[Constants.RESULTS][subject][Constants.HASINTERIM] = True
-            reset_subject_intervals(record[Constants.RESULTS][subject])
+            # mocking interval
+            summative_records = summative[Constants.RECORDS]
+            if summative_records:
+                summative_subject = summative_records[0][Constants.RESULTS].get(subject)
+                if summative_subject is not None:
+                    intervals = summative_subject.get(Constants.INTERVALS)
+                    if intervals is not None:
+                        record[Constants.RESULTS][subject][Constants.INTERVALS] = []
+                        for interval in intervals:
+                            copied_interval = deepcopy(interval)
+                            copied_interval[Constants.COUNT] = -1
+                            copied_interval[Constants.PERCENTAGE] = -1
+                            record[Constants.RESULTS][subject][Constants.INTERVALS].append(deepcopy(interval))
         merged[r] = record
     # Go through summative
     for record in summative[Constants.RECORDS]:
@@ -108,22 +119,13 @@ def get_merged_report_records(summative, interim):
             for subject in summative[Constants.SUBJECTS].keys():
                 # when total is zero, that means there are no summative results, so check if there is interim results
                 if record[Constants.RESULTS][subject][Constants.TOTAL] is 0:
-                    hasInterim = merged[r][Constants.RESULTS][subject].get(Constants.HASINTERIM, False)
                     # Check if there is interim results, if so, update current record to have hasInterim
-                    if hasInterim:
-                        record[Constants.RESULTS][subject][Constants.HASINTERIM] = hasInterim
-                        reset_subject_intervals(record[Constants.RESULTS][subject])
+                    record[Constants.RESULTS][subject][Constants.HASINTERIM] = True
 
         merged[r] = record
     # Create an ordered dictionary sorted by the name of institution
     sorted_results = OrderedDict(sorted(merged.items(), key=lambda x: (x[0].name)))
     return list(sorted_results.values())
-
-
-def reset_subject_intervals(subject_data):
-    subject_data[Constants.TOTAL] = -1
-    for i in subject_data[Constants.INTERVALS]:
-        i[Constants.PERCENTAGE] = -1
 
 
 def merge_filtered_results(filtered, unfiltered):
@@ -233,7 +235,7 @@ class ComparingPopReport(object):
         results = self.run_query(**params)
 
         # Only return 404 if results is empty and there are no filters being applied
-        #if not results and len(self.filters.keys()) is 0:
+        # if not results and len(self.filters.keys()) is 0:
         #    raise NotFoundException("There are no results")
 
         return self.arrange_results(results, **params)
@@ -453,40 +455,48 @@ class QueryHelper():
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
-    def build_query(self, f, extra_columns, **kwargs):
+    def build_sub_query(self, extra_columns=[], where_guid=None):
         '''
         build select columns based on request
         '''
-        query = f(extra_columns +
-                  [self._fact_asmt_outcome_vw.c.asmt_subject.label(Constants.ASMT_SUBJECT),
-                   self._fact_asmt_outcome_vw.c.asmt_perf_lvl.label(Constants.LEVEL),
-                   func.count().label(Constants.TOTAL)],
-                  from_obj=[self._fact_asmt_outcome_vw.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome_vw.c.inst_hier_rec_id))], **kwargs)\
-            .where(and_(self._fact_asmt_outcome_vw.c.state_code == self._state_code, self._fact_asmt_outcome_vw.c.asmt_type == self._asmt_type,
-                        self._fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT, self._fact_asmt_outcome_vw.c.asmt_year == self._asmt_year))\
+        query = select(extra_columns + [self._fact_asmt_outcome_vw.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                                        self._fact_asmt_outcome_vw.c.inst_hier_rec_id,
+                                        func.count().label(Constants.TOTAL),
+                                        self._fact_asmt_outcome_vw.c.asmt_perf_lvl.label(Constants.LEVEL)])\
+            .where(and_(self._fact_asmt_outcome_vw.c.state_code == self._state_code,
+                        self._fact_asmt_outcome_vw.c.asmt_type == self._asmt_type,
+                        self._fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT,
+                        self._fact_asmt_outcome_vw.c.asmt_year == self._asmt_year))\
             .group_by(self._fact_asmt_outcome_vw.c.asmt_subject,
-                      self._fact_asmt_outcome_vw.c.asmt_perf_lvl)\
-            .order_by(self._fact_asmt_outcome_vw.c.asmt_subject.desc())
-
-        # apply demographics filters to query
+                      self._fact_asmt_outcome_vw.c.inst_hier_rec_id,
+                      self._fact_asmt_outcome_vw.c.asmt_perf_lvl)
+        if where_guid is not None:
+            query = query.where(and_(where_guid))
         return apply_filter_to_query(query, self._fact_asmt_outcome_vw, self._filters)
+
+    def build_query(self, name_field, id_field, subquery_where_guid=None):
+        fao = self.build_sub_query(where_guid=subquery_where_guid).alias()
+        query = select([name_field.label(Constants.NAME),
+                        id_field.label(Constants.ID),
+                        fao.columns[Constants.ASMT_SUBJECT].label(Constants.ASMT_SUBJECT),
+                        fao.columns[Constants.LEVEL].label(Constants.LEVEL),
+                        func.sum(fao.columns[Constants.TOTAL]).label(Constants.TOTAL)],
+                       from_obj=[fao.join(self._dim_inst_hier, self._dim_inst_hier.c.inst_hier_rec_id == fao.c.inst_hier_rec_id)])\
+            .group_by(Constants.NAME, Constants.ID, Constants.ASMT_SUBJECT, Constants.LEVEL)\
+            .order_by(Constants.NAME)
+        return query
 
     def get_query(self):
         return self._f()
 
     def get_query_for_state_view(self):
-        return self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])\
-                   .group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)\
-                   .order_by(self._dim_inst_hier.c.district_name)
+        return self.build_query(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)
 
     def get_query_for_district_view(self):
-        return self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
-                   .where(and_(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid))\
-                   .group_by(self._dim_inst_hier.c.school_guid, self._dim_inst_hier.c.school_name)\
-                   .order_by(self._dim_inst_hier.c.school_name)
+        return self.build_query(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid, subquery_where_guid=(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid))
 
     def get_query_for_school_view(self):
-        return self.build_query(select, [self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ID)])\
-                   .where(and_(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid, self._fact_asmt_outcome_vw.c.school_guid == self._school_guid))\
-                   .group_by(self._fact_asmt_outcome_vw.c.asmt_grade)\
-                   .order_by(self._fact_asmt_outcome_vw.c.asmt_grade)
+        return self.build_sub_query(extra_columns=[self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ID)],
+                                    where_guid=(and_(self._fact_asmt_outcome_vw.c.district_guid == self._district_guid, self._fact_asmt_outcome_vw.c.school_guid == self._school_guid)))\
+            .group_by(self._fact_asmt_outcome_vw.c.asmt_grade)\
+            .order_by(self._fact_asmt_outcome_vw.c.asmt_grade)

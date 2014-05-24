@@ -1,23 +1,23 @@
-<ul>
+<ul role="menubar">
     <li class="asmtTypeItem">
-        <div class="asmtViewText">View:</div>
+        <div class="asmtViewText" aria-hidden="true">View:</div>
         <div class="asmtDropdown"></div>
         <a class="disclaimerInfo interimDisclaimerIcon" href="#"></a>
     </li>
 </ul>
 <ul role="menubar">
-    <li class="legendItem" aria-labelledby="legendPopover" aria-live="polite">
+    <li class="legendItem" aria-live="polite">
         <div class="divider">
         <i class="edware-icon-legend"></i>
         <a class="legendLabel inherit" href="#">{{labels.legend}}</a>
-        <span class="legendPopup"></span>
+        <span class="legendPopup" aria-hidden="true"></span>
         </div>
     </li>
     <li class="alignmentItem">
         <div class="divider">
             <span id="aria-align-label" class='alignLabel' aria-hidden='true'>{{labels.align}}</span>
             <span class='align_button_area'>
-                <a class="align_button align_off inherit" href="#" aria-labelledby="aria-align-label" aria-live="polite">
+                <a class="align_button align_off inherit" href="#" title="center align bar charts" aria-label="center align bar charts" aria-live="polite">
                     <span class="alignText">{{labels.off}}</span>
                 </a>
             </span>

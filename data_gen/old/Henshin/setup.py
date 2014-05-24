@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 requires = ['mock']
 
 tests_require = requires + [
-    'nose >= 1.2.1',
+    'nose == 1.3.3',
     'coverage', ]
 
 setup(name='Henshin',

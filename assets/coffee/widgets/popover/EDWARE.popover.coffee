@@ -41,8 +41,11 @@ define ["jquery", "edwareEvents"], ($, edwareEvents) ->
     config.tabindex = -1 if config.tabindex is undefined
     config.id = config.class if not config.id
     # setup default template with customized class name
-    config.template ?= "<div id='#{config.id}' aria-labelledby='#{config.id}' class='popover #{config.class} edwarePopover'>
-      <div class='mask'/><div class='arrow'/>
+    if config.labelledby
+      config.template ?= "<div id='#{config.id}' aria-labelledby='#{config.labelledby}' class='popover #{config.class} edwarePopover'>"
+    else
+      config.template ?= "<div id='#{config.id}' class='popover #{config.class} edwarePopover'>"
+    config.template += "<div class='mask'/><div class='arrow'/>
       <div class='popover-content edwareScrollable' tabindex='#{config.tabindex}'><p></p></div></div>"
     config.container ?= this
     config = $.extend({}, DEFAULT_CONFIG, config)

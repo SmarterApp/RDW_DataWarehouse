@@ -111,7 +111,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
                            from_obj=([fact_asmt_outcome]))
             query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_SEX: [FILTERS_SEX_FEMALE, FILTERS_SEX_MALE]})
             self.assertIsNotNone(query._whereclause)
-            self.assertIn("fact_asmt_outcome_vw.gender", str(query._whereclause))
+            self.assertIn("fact_asmt_outcome_vw.sex", str(query._whereclause))
 
     def test_apply_filter_to_query_with_multi_filters(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -123,7 +123,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
                        FILTERS_ETHNICITY: [FILTERS_ETHNICITY_MULTI]}
             query = apply_filter_to_query(query, fact_asmt_outcome, filters)
             self.assertIsNotNone(query._whereclause)
-            self.assertIn("fact_asmt_outcome_vw.gender", str(query._whereclause))
+            self.assertIn("fact_asmt_outcome_vw.sex", str(query._whereclause))
             self.assertIn("fact_asmt_outcome_vw.dmg_eth_derived", str(query._whereclause))
             self.assertIn("fact_asmt_outcome_vw.dmg_prg_iep", str(query._whereclause))
 

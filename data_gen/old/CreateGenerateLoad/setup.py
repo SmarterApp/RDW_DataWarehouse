@@ -11,8 +11,8 @@ requires = ['psycopg2',
             'SQLAlchemy==0.8.3',
             'py-postgresql',
             'mock',
-            'zope.component >= 4.0.2',
-            'zope.interface >= 4.0.3']
+            'zope.component == 4.1.0',
+            'zope.interface == 4.0.3']
 
 
 setup(name='CreateGenerateLoad',

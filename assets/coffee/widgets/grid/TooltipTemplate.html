@@ -18,6 +18,7 @@
     <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
     <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level_number}}'></span>
 </div>
+<div id="{{rowId}}" class='screenreader' aria-hidden="true">{{subject.asmt_type}} {{labels.overall_score}} {{subject.asmt_score}} {{score_ALD}} {{labels.error_band}} {{subject.asmt_score_range_min}} to {{subject.asmt_score_range_max}}</div>
 {{/subject}}
 {{^subject}}
 <span class='edwareExportField' data-export-value='' data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>

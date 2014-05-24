@@ -6,7 +6,7 @@ define [
 
   create = (language_selector, labels) ->
     language_selector.prepend $("""
-      <div class='language_selections_header'>
+      <div class='language_selections_header' aria-hidden='true'>
         <div class='padTopBottom9'><i class='icon-globe'></i>#{labels.language}</div>
           <li class='divider' role='radio'></li>
       </div>
@@ -20,7 +20,8 @@ define [
 
       $.each languages, (lang, name) ->
         language_selections = $('<li></li>')
-        input = $("<input type='radio' name='language' value='#{lang}'>#{name}</input>")
+        input = $("<input type='radio' name='language' value='#{lang}' aria-label='#{name}'>
+          <span aria-hidden='true'>#{name}</span></input>")
         if lang is current_lang
           input.attr('checked', true)
           $('#user-settings span.lang').text name

@@ -160,6 +160,7 @@ define [
     score_ALD = getScoreALD(subject)
     student_name = getStudentName()
     asmt_perf_lvl = getAsmtPerfLvl(subject)
+    rowId = rowObject.rowId + subject_type
     toolTip = Mustache.to_html TOOLTIP_TEMPLATE, {
       student_name: student_name
       subject: subject
@@ -167,6 +168,7 @@ define [
       score_ALD: score_ALD
       asmt_perf_lvl: asmt_perf_lvl
       confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
+      rowId: rowId
     }
     # hack to remove html tag in name
     columnName = removeHTMLTags(options.colModel.label)
@@ -176,6 +178,7 @@ define [
       toolTip: toolTip
       columnName: columnName
       export: 'edwareExportColumn' if options.colModel.export
+      rowId: rowId
     }
     perfBar
 
@@ -211,7 +214,10 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     exportable = options.colModel.export
-    total = parseInt(subject.total)
+    if subject is `undefined`
+      total = 0
+    else
+      total = parseInt(subject.total)
     # No data when total is 0, Insufficient when total is -1
     insufficient = total < 0
     noData = total is 0

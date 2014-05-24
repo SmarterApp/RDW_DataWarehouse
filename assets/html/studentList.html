@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>Ed-Ware List of Students Report</title>
-    <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="../css/3p/ui.jqgrid.css" />
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
-    <script src="../js/3p/require.js"></script>
-    <script>
+        <title>Ed-Ware List of Students Report</title>
+        <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../css/3p/ui.jqgrid.css" />
+        <link rel="stylesheet" type="text/css" href="../css/style.css" />
+        <script src="../js/3p/require.js"></script>
+        <script>
          require(['../js/src/main.js'], function(){
            require(['Edware.StudentListReport']);
          });
         </script>
-    <link rel="shortcut icon" href="../images/icons/favicon.ico" />
+        <link rel="shortcut icon" href="../images/icons/favicon.ico" />
     </head>
     <body style="overflow-y: hidden;" class="los">
-    <div id="header"></div>
-    <div id="breadcrumb"></div>
-        <div id="infoBar"></div>
-        <div id="actionBar" class="clearfix"></div>
-        <!-- The content below gets appended to body tag of this html -->
-        <div id="content" class="losWrapper">
-        <div id="losFilter"></div>
-        <div id="stickyCompareSection"></div>
-        <div id="errorMessage"></div>
-           <div id="gridWrapper">
-            <table id="gridTable"></table>
+        <div id="header" role="banner"></div>
+        <div id="breadcrumb" role="navigation"></div>
+        <div role="main">
+            <div id="infoBar"></div>
+            <div id="actionBar" class="clearfix"></div>
+            <!-- The content below gets appended to body tag of this html -->
+            <div id="content" class="losWrapper">
+                <div id="losFilter"></div>
+                <div id="stickyCompareSection"></div>
+                <div id="errorMessage"></div>
+                <div id="gridWrapper">
+                    <table id="gridTable"></table>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <script type="text/template" id="edwareLOSHeaderConfidenceLevelBarTemplate">
-     <div class='progress' style='width: {{bar_width}}px;'>
-     {{#cut_point_intervals}}
-     <div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>
-     {{/cut_point_intervals}}
-     </div>
-    </script>
+        <script type="text/template" id="edwareLOSHeaderConfidenceLevelBarTemplate">
+         <div class='progress' style='width: {{bar_width}}px;'>
+         {{#cut_point_intervals}}
+         <div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>
+         {{/cut_point_intervals}}
+         </div>
+        </script>
 
     </body>
 </html>

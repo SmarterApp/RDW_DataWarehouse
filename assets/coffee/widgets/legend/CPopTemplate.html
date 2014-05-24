@@ -1,6 +1,7 @@
 <div id="legendTemplate">
     <div class="row">
-        <div class="span4">
+        <div class="span4" aria-labelledby="aria-ALD">
+            <span id="aria-ALD" class="screenreader">test</span>
             <!-- ALD -->
             <h4>{{labels.achievement_level_descriptors}}:</h4>
             <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
@@ -20,7 +21,8 @@
                 {{/ALDs}}
             </table>
         </div>
-        <div class="populationBarDetails span7 edware-border-left">
+        <div class="populationBarDetails span7 edware-border-left" aria-labelledby="aria-populationbardetails">
+            <span id="aria-populationbardetails" class="screenreader">test</span>
             <h4>{{labels.population_bar_details}}:</h4>
             <div class="populationBar">
                 <div class="arrow1"></div>

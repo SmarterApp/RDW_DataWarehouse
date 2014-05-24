@@ -206,9 +206,9 @@ define [
 
       if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
         if sortorder is 'asc'
-          newLabel = "#{newLabel} #{this.config.proficiencyAscending}"
+          newLabel = "#{newLabel} <span aria-hidden='true'>#{this.config.proficiencyAscending}</span>"
         else
-          newLabel = "#{newLabel} #{this.config.proficiencyDescending}"
+          newLabel = "#{newLabel} <span aria-hidden='true'>#{this.config.proficiencyDescending}</span>"
       # Set label for active sort column
       grid.jqGrid('setLabel', index, newLabel, '')
 
@@ -277,7 +277,6 @@ define [
       data['header'] = true
       data['results'] = summaryData.results
       data['name'] = summaryRowName
-      data['isInterim'] = summaryData.isInterim
       data
 
 
@@ -354,8 +353,8 @@ define [
           subjectData = item['results'][subject]
           if subjectData
             this.appendColor subjectData, this.colorsData[subject]
-          if subjectData['hasInterim']
-            interimCount += 1
+            if subjectData['hasInterim']
+              interimCount += 1
         # Summary row hasInterim when one of the rows is an Interim row and Summary row has no data
         this.summaryData['results'][subject]['hasInterim'] = (interimCount > 0 and this.summaryData['results'][subject]['total'] is 0)
       data
@@ -378,7 +377,7 @@ define [
       intervals = data.intervals
       if colors and colors['colors'] then len = colors['colors'].length else len = defaultColors.length
       sort = 0
-      while i < len
+      while i < len and intervals
         element = intervals[i]
         element = {'count': 0, 'percentage': 0} if element is undefined
         element.count = edwareUtil.formatNumber(element.count)

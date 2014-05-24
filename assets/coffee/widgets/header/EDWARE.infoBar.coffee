@@ -40,6 +40,7 @@ define [
       # bind report info popover
       $('.reportInfoIcon').edwarePopover
         class: 'reportInfoPopover'
+        labelledby: 'reportInfoPopover'
         content: @config.reportInfoText
         tabindex: 0
 
@@ -49,6 +50,7 @@ define [
       # bind academic year info popover
       $('.academicYearInfoIcon').edwarePopover
         class: 'academicYearInfoPopover'
+        labelledby: 'academicYearInfoPopover'
         content: 'placeholder'
 
     createDownloadMenu: () ->

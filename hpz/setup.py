@@ -9,13 +9,16 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'pyramid == 1.4',
     'pyramid_debugtoolbar==1.0.8',
+    'pyramid_beaker==0.8',
     'waitress==0.8.7',
     'SQLAlchemy == 0.8.3',
     'py-postgresql == 1.1.0',
     'zope.sqlalchemy==0.7.3',
     'Jinja2==2.7.2',
     'config',
-    'edschema']
+    'edschema',
+    'edauth',
+    'edcore']
 
 setup(name='hpz',
       version='0.1',

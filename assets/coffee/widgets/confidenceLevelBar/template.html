@@ -1,4 +1,5 @@
-<div class="scoreWrapper" style="width: {{bar_width}}px;">
+<div class="screenreader"> Overall Score {{asmt_score}} {{score_name}}, Error band from {{asmt_score_range_min}} to {{asmt_score_range_max}} and Cut Point Intervals {{asmt_score_min}}, {{#cut_point_intervals}}{{interval}}, {{/cut_point_intervals}}</div> 
+<div class="scoreWrapper" aria-hidden="true" style="width: {{bar_width}}px;">
     <div class="overall_score" style="margin-left: {{score_text_pos}}px;color: {{score_color}}"><strong style="color: {{score_color}}!important;">{{asmt_score}}</strong></div>
     <div class="indicator progressbar_indicator{{bar_width}}" style="margin-left: {{asmt_score_pos}}px"></div>
 </div>
@@ -18,13 +19,13 @@
         <div class="bar" style="background-color: {{bg_color}} !important; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;"></div>
     {{/cut_point_intervals}}
 </div>
-<div class="cutPointsBar" style="width: {{bar_width}}px;">
+<div class="cutPointsBar" aria-hidden="true" style="width: {{bar_width}}px;">
     <div class="cutPoints startPoint">{{asmt_score_min}}</div>
     {{#cut_point_intervals}}
         <div class="cutPoints" style="width: {{asmt_cut_point}}px;">{{interval}}</div>
     {{/cut_point_intervals}}
 </div>
-<div class="aldDescText" style="width: {{bar_width}}px;">
+<div class="aldDescText" aria-hidden="true" style="width: {{bar_width}}px;">
     {{#cut_point_intervals}}
     <div style="width: {{asmt_cut_point}}px;" class="pull-left"><p>{{name}}</p></div>
     {{/cut_point_intervals}}

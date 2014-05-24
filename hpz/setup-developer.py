@@ -6,7 +6,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = [
     'config',
-    'edschema']
+    'edschema',
+    'edauth',
+    'edcore']
 
 
 for dependency in dependencies:

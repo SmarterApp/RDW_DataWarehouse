@@ -11,8 +11,8 @@ install_requires = [
     'psycopg2==2.5.1']
 
 tests_require = [
-    'WebTest >= 1.3.1',  # py3 compat
-    'nose >= 1.2.1',
+    'WebTest == 1.3.6',  # py3 compat
+    'nose == 1.3.3',
     'coverage',
     'virtualenv']  # for scaffolding tests
 

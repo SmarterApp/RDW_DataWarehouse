@@ -67,7 +67,6 @@ class ValidateTableData(unittest.TestCase):
             sleep(0.25)
             timer += 0.25
             result = connector.execute(query).fetchall()
-        print('Waited for', timer, 'second(s) for job to complete.')
 
     #copy files to tenant directory
     def copy_file_to_tmp(self, file_to_copy):

@@ -81,7 +81,6 @@ class ValidatePostUDLCleanup(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()
-            print('Waited for', timer, 'second(s) for job to complete.')
 
 # Run pipeline with given guid.
     def run_udl_pipeline(self):

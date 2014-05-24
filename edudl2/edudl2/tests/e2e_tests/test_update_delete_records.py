@@ -70,7 +70,6 @@ class Test_Update_Delete(unittest.TestCase):
                 timer += 0.25
                 result = connector.execute(query).fetchall()
             self.assertEqual(len(result), 1, "UDl Pipeline Failure.")
-            print('Waited for', timer, 'second(s) for job to complete.')
 
     # Validate edware database
     def validate_edware_database(self, schema_name):

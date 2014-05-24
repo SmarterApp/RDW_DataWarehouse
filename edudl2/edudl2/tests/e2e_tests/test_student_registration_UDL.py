@@ -201,7 +201,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()
-            print('Waited for', timer, 'second(s) for job to complete.')
             self.assertTrue(result, "No result retrieved")
 
     #Check the batch table periodically for completion of the UDL job status notification, waiting up to max_wait seconds
@@ -216,7 +215,6 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
                 sleep(0.25)
                 timer += 0.25
                 result = connector.execute(query).fetchall()
-            print('Waited for', timer, 'second(s) for notification to complete.')
             self.assertTrue(result, "No result retrieved")
 
     #Copy file to tenant directory

@@ -73,7 +73,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
 
     @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
     def test_post_sr_comp_extraction_request(self, test_patch):
-        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg"}')
+        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg", "download_url": "http://somehost:82/download/a1-b2-c3-d4-e1e10"}')
         test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
@@ -86,10 +86,11 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.assertEqual(len(response_json), len(mock_response))
         self.assertEqual(response_json['file_name'], 'test.gpg')
         self.assertEqual(response_json['tasks']['state_code'], 'NC')
+        self.assertEqual(response_json['download_url'], 'http://somehost:82/download/a1-b2-c3-d4-e1e10')
 
     @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
     def test_post_sr_stat_extraction_request(self, test_patch):
-        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg"}')
+        mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg", "download_url": "http://somehost:82/download/a1-b2-c3-d4-e1e10"}')
         test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
@@ -102,3 +103,4 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.assertEqual(len(response_json), len(mock_response))
         self.assertEqual(response_json['file_name'], 'test.gpg')
         self.assertEqual(response_json['tasks']['state_code'], 'NC')
+        self.assertEqual(response_json['download_url'], 'http://somehost:82/download/a1-b2-c3-d4-e1e10')

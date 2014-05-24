@@ -1,6 +1,6 @@
 __author__ = 'tshewchuk'
 """
-This module contains the functionality for registering and uploading extract files to the HPZ.
+This module contains the functionality for registering extract files with the HPZ.
 """
 
 import json

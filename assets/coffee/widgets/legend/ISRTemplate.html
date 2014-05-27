@@ -1,6 +1,16 @@
 <div id="legendTemplate" class="container">
-    <div class="row">
-        <div class="span4">
+	<!-- This section is for screenreader-->
+	<div aria-labelledby="isr-aria-legend" id="isr-aria-legend"></div>
+		<div class="screenreader">{{labels.achievement_level_descriptors}} {{#ALDs}} {{description}} {{labels.score_range}} {{range}} {{/ALDs}}
+			{{labels.claim_score_details}}
+			{{#legendInfo.performance_levels}}
+            	{{desc}} means {{meaning}}
+            {{/legendInfo.performance_levels}}
+			{{labels.error_band}} means {{legendInfo.error_band}}
+       </div>
+   	<!-- End of section is for screenreader-->
+    <div class="row" aria-hidden="true">
+    	<div class="span4">
             <!-- ALD -->
             <h4>{{labels.achievement_level_descriptors}}:</h4>
             <table class="table edware-table-bordered edware-table-center marginLeft8" style="width: 275px;">

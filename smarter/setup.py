@@ -24,6 +24,7 @@ requires = [
     'psycopg2==2.5.1',
     'pyramid_exclog==0.7',
     'pyyaml==3.10',
+    'requests == 2.2.1',
     'services',
     'python3-memcached == 1.51']
 

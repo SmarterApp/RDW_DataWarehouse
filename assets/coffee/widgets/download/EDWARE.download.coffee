@@ -207,6 +207,8 @@ define [
       fileName = response['fileName']
 
       downloadUrl = response['download_url']
+      if downloadUrl
+        downloadUrlMessage = DOWNLOAD_URL_MESSAGE[this.reportType]
       success = taskResponse.filter (item)->
         item['status'] is 'ok'
       failure = taskResponse.filter (item)->
@@ -220,7 +222,7 @@ define [
         requestTime: this.requestTime
         requestDate: this.requestDate
         fileName: fileName
-        downloadUrlMessage: DOWNLOAD_URL_MESSAGE[this.reportType]
+        downloadUrlMessage: downloadUrlMessage
         downloadUrl: downloadUrl
         testName: TEST_NAME[this.reportType]
         # success messages

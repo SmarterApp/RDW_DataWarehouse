@@ -231,7 +231,7 @@ common:
       gatekeeper.dog: skong
       gatekeeper.fish: kswimberly
     hpz:
-        registration_endpoint: /registration
+        reg_endpoint: &registration_endpoint registration
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -410,6 +410,9 @@ qa:
         idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+    hpz:
+
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -478,6 +481,8 @@ jenkins_qa:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edmigrate
     extract.celery:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
+    hpz:
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
 
 uat:
   '[app:main]':
@@ -556,6 +561,8 @@ uat:
         idp_server_login_url: https://betaauth.smarterbalancedreporting.org/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
+    hpz:
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -622,6 +629,8 @@ localOpenAM:
         issuer_name: http://local.slidev.org:6543/sp.xml
         name_qualifier: http://local.slidev.org:8080/openam
     mode: dev
+    hpz:
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
 
 development:
   '[app:main]':
@@ -695,7 +704,7 @@ development:
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     sftp.jail.base_path: /tmp
     hpz:
-        base_url: http://localhost:80
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
 
 test:
   '[app:main]':
@@ -748,7 +757,7 @@ test:
     migrate.celery:
       celery_always_eager: true
     hpz:
-        base_url: http://localhost:80
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
 
 integration:
   '[app:main]':
@@ -794,7 +803,7 @@ integration:
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
-        base_url: http://localhost:80
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]
 
 jenkins_int:
   '[app:main]':
@@ -849,7 +858,7 @@ jenkins_int:
     pickup:
       sftp.hostname: localhost
     hpz:
-        base_url: http://localhost:81
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost:81', *registration_endpoint]
 
 jenkins_dev:
   '[app:main]':
@@ -904,7 +913,7 @@ jenkins_dev:
     pickup:
       sftp.hostname: localhost
     hpz:
-        base_url: http://localhost:81
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost:81', *registration_endpoint]
 
 air:
   '[app:main]':
@@ -949,3 +958,5 @@ air:
       always_generate: True
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
+    hpz:
+        file_registration_url: !!python/object/apply:os.path.join ['http://localhost', *registration_endpoint]

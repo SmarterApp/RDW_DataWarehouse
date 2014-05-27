@@ -47,6 +47,7 @@ def get_aggregate_dim(subjects={}, stateCode=None, districtGuid=None, schoolGuid
                 if schoolGuid is not None:
                     params[Constants.SCHOOLGUID] = schoolGuid
                 data = {Constants.ID: result.get(Constants.ID),
+                        Constants.ROWID: result.get(Constants.ID),
                         Constants.NAME: result.get(Constants.NAME),
                         Constants.PARAMS: params} if rows.get(result.get(Constants.ID)) is None else rows.get(result.get(Constants.ID))
                 results = data.get(Constants.RESULTS, {})

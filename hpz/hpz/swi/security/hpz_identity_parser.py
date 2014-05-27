@@ -11,7 +11,6 @@ class HPZIdentityParser(IdentityParser):
         '''
         Returns a list of role/relationship
         '''
-        relations = []
-        relations.append(RoleRelation('General', '', '', '', ''))
+        relations = [RoleRelation('General', '', '', '', '')]
 
         return relations

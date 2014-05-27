@@ -230,6 +230,8 @@ common:
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
       gatekeeper.fish: kswimberly
+    hpz:
+        registration_endpoint: /registration
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -692,6 +694,8 @@ development:
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     sftp.jail.base_path: /tmp
+    hpz:
+        base_url: http://localhost:80
 
 test:
   '[app:main]':
@@ -743,6 +747,8 @@ test:
       celery_always_eager: true
     migrate.celery:
       celery_always_eager: true
+    hpz:
+        base_url: http://localhost:80
 
 integration:
   '[app:main]':
@@ -787,6 +793,8 @@ integration:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: dev
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
+    hpz:
+        base_url: http://localhost:80
 
 jenkins_int:
   '[app:main]':
@@ -840,6 +848,8 @@ jenkins_int:
       session.url: edwappsrv2.poc.dum.edwdc.net:11211
     pickup:
       sftp.hostname: localhost
+    hpz:
+        base_url: http://localhost:81
 
 jenkins_dev:
   '[app:main]':
@@ -893,6 +903,8 @@ jenkins_dev:
       session.url: edwappsrv2.poc.dum.edwdc.net:11211
     pickup:
       sftp.hostname: localhost
+    hpz:
+        base_url: http://localhost:81
 
 air:
   '[app:main]':

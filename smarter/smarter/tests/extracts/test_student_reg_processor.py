@@ -1,4 +1,3 @@
-from smarter.reports.helpers.constants import Constants
 __author__ = 'ablum'
 
 from pyramid.testing import DummyRequest
@@ -13,6 +12,7 @@ from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
 from smarter.security.constants import RolesConstants
 from smarter.extracts.constants import Constants as Extract
+from smarter.reports.helpers.constants import Constants
 from pyramid.security import Allow
 import edauth
 from edauth.security.user import User
@@ -127,8 +127,10 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.assertIn('NC', result)
 
     @patch('smarter.extracts.student_reg_processor._create_task_info')
-    def test_process_async_extraction_request(self, task_info):
+    @patch('smarter.extracts.student_reg_processor.register_file')
+    def test_process_async_extraction_request(self, register_file_patch, task_info):
         with patch('smarter.extracts.student_reg_processor.start_extract.apply_async') as apply_async_mock:
+            register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
             dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
             task_info.return_value = dummy_task_info
             params = {Constants.STATECODE: ['NC'],
@@ -140,5 +142,6 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
             self.assertIn('.zip.gpg', response['fileName'])
             self.assertEqual(response['tasks'][0]['status'], 'ok')
             self.assertEqual(response['tasks'][0][Constants.ACADEMIC_YEAR], 2015)
+            self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
             apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)

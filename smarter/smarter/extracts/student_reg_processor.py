@@ -18,6 +18,7 @@ from smarter.extracts import processor
 from smarter.extracts import student_reg_statistics
 from smarter.extracts import student_reg_completion
 from edcore.utils.utils import compile_query_to_sql_text
+from smarter.extracts.file_registration import register_file
 
 
 log = logging.getLogger('smarter')
@@ -65,6 +66,10 @@ def process_async_extraction_request(params):
     public_key_id = processor.get_encryption_public_key_identifier(tenant)
     gatekeeper_id = processor.get_gatekeeper(tenant)
     pickup_zone_info = processor.get_pickup_zone_info(tenant)
+
+    # Register extract file with HPZ.
+    registration_id, download_url = register_file(user.get_uid())  # TODO: Pass registration_id to start_extract for file upload to HPZ.
+    response['download_url'] = download_url
 
     start_extract.apply_async(args=[tenant, request_id, public_key_id, encrypted_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, [task_info]], queue=queue)
 

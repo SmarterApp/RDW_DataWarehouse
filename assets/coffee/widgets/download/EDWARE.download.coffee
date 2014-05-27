@@ -277,7 +277,8 @@ define [
       params
 
     show: () ->
-      $('#CSVModal').modal()
+      $('#CSVModal').edwareModal
+        keepLastFocus: true
 
   class DownloadMenu
 

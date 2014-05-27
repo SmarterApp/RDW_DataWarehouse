@@ -88,6 +88,7 @@ define [
       $('.ui-jqgrid-sdiv').attr('aria-label', 'summary')
       $('.ui-jqgrid-bdiv').attr('aria-label', 'body')
       $('#gridTable').removeAttr('aria-labelledby').removeAttr('tabindex').attr('aria-label', 'grid body')
+      $('.ui-jqgrid-htable').removeAttr('aria-labelledby')
       $('.jqgfirstrow').attr('aria-hidden', 'true')
       # sorting headers
       $('.jqg-third-row-header .ui-th-ltr').attr('aria-live', 'polite')

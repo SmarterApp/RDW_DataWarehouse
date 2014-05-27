@@ -53,7 +53,7 @@ def get_aggregate_dim(subjects={}, stateCode=None, districtGuid=None, schoolGuid
                 results[key] = {Constants.ASMT_SUBJECT: subject, Constants.TOTAL: -1, Constants.HASINTERIM: True}
                 data[Constants.RESULTS] = results
                 rows[data[Constants.ID]] = data
-    records = list(rows.values())
+    records = sorted(list(rows.values()), key=lambda k: k['name'])
     for record in records:
         results = record[Constants.RESULTS]
         for key in subjects.keys():

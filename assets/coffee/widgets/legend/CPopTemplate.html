@@ -1,12 +1,13 @@
 <div id="legendTemplate">
     <!-- aria-ALD element is to provide information for screenreader only -->
-    <span id="aria-ALD" class="screenreader" aria-labelledby="aria-ALD">
+    <div aria-labelledby="cpop-aria-legend" id="cpop-aria-legend"></div>
+    <div class="screenreader">
         {{labels.achievement_level_descriptors}}
         {{#ALDs}}
-        {{description}} means score range {{range}}
+        {{description}} score range {{range}}
         {{/ALDs}}
         {{#legendInfo.notes}}{{.}} {{/legendInfo.notes}}
-    </span>
+    </div>
     <div class="row" aria-hidden='true'>
         <div class="span4">
             <!-- ALD -->

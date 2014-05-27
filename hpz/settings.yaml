@@ -132,4 +132,4 @@ jenkins_dev:
           idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
           idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
           name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
-          issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
+          issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'

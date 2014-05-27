@@ -10,12 +10,6 @@ from edudl2.udl2_util.exceptions import UDL2GlobalSequenceMissingException
 
 logger = get_task_logger(__name__)
 
-# size of each sequence batch
-INCREMENTAL = udl2_conf['global_sequence']['batch_size']
-
-# sequence start number, to avoid key conflict in first batch
-START_WITH = udl2_conf['global_sequence']['start_with']
-
 
 class UDLSequence(object):
     '''
@@ -29,25 +23,12 @@ class UDLSequence(object):
         self.tenant_name = tenant_name
         self.schema_name = udl2_conf['prod_db_conn'][tenant_name]['db_schema']
         self.seq_name = seq_name
-        self.max_value = -1
         self.current = 0
         self.check_sequence_existence()
 
-    def fetch_next_batch(self):
-        '''
-        Gets sequence in batch.  Batch size is defined by
-        `global_seq_batch_size` in configuration file.
-        '''
-        with get_prod_connection(self.tenant_name) as conn:
-            seq = conn.execute("SELECT nextval('%s.%s') from generate_series(1, %d);"
-                               % (self.schema_name, self.seq_name, INCREMENTAL))
-            batch = [val[0] for val in seq]
-            self.current = batch[0]
-            self.max_value = batch[-1]
-
     def check_sequence_existence(self):
         '''
-        Check if sequence exists, if not raise exception UDL2GlobalSequenceMissingException
+        Check if sequence exists, if not raise exception UDL2GlobalSequenceMissingExceptin
         '''
         with get_prod_connection(self.tenant_name) as conn:
                 if not self.sequence_exists(conn):
@@ -58,20 +39,31 @@ class UDLSequence(object):
         '''
         Return True if sequence exists, otherwise return False.
         '''
-        query = select([("sequence_name")]).select_from("information_schema.sequences")\
-                                           .where("sequence_name = '" + self.seq_name + "'")
+        query = select(["sequence_name"]).select_from(
+            "information_schema.sequences").where("sequence_name = '" + self.seq_name + "'")
         exist = conn.execute(query).scalar()
         return exist
 
-    def next(self):
+    def fetch_next_batch(self, batch_size):
         '''
-        Get next sequence id.
+        Gets sequence in batch.  Batch size is defined by
+        `global_seq_batch_size` in configuration file.
         '''
-        if self.current >= self.max_value + 1:
-            self.fetch_next_batch()
-        next_value = self.current
-        self.current += 1
-        return next_value
+        with get_prod_connection(self.tenant_name) as conn:
+            seq = conn.execute("SELECT nextval('%s.%s') from generate_series(1, %d);"
+                               % (self.schema_name, self.seq_name, batch_size))
+            batch = seq.fetchone()
+            self.current = batch[0]
+            seq.close()
+
+    def offset(self, batch_size):
+        """Returns offset value to be used to create sequence id's for a batch
+
+        :param batch_size: size of batch
+        """
+        # increment the global sequence by batch_size and return the first sequence id as offset
+        self.fetch_next_batch(batch_size)
+        return self.current
 
 
 GLOBAL_SEQUENCE_POOL = {}

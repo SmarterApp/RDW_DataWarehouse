@@ -6,7 +6,7 @@ from hpz.database.file_registry import FileRegistry
 __author__ = 'okrook'
 
 
-@view_config(route_name='download', request_method='GET')
+@view_config(route_name='download', request_method='GET', permission='download')
 def download_file(context, request):
 
     registration_id = request.matchdict['reg_id']

@@ -217,7 +217,7 @@ def get_expected_insert_query_for_fact_table(host_name, port, table_name, asmt_r
            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,status,most_recent,batch_guid) '\
-           'SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
+           'SELECT * FROM dblink(\'host={host} port={port} dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"global_rec_seq"\'\'), * FROM '\
            '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,-1,guid_asmt_location,name_asmt_location,grade_asmt,'\
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
@@ -263,7 +263,7 @@ def get_expected_insert_query_for_dim_inst_hier(host_name, port, table_name, gui
     return "INSERT INTO \"edware\".\"{table_name}\" (inst_hier_rec_id,state_name,state_code,district_guid,district_name,"\
            "school_guid,school_name,from_date,to_date,most_recent) SELECT * FROM "\
            "dblink('host={host} port={port} dbname={dbname} user={user} password={password}', " \
-           "'SELECT nextval(''\"GLOBAL_REC_SEQ\"''), "\
+           "'SELECT nextval(''\"global_rec_seq\"''), "\
            "* FROM (SELECT DISTINCT name_state,code_state,guid_district,name_district,guid_school,name_school,"\
            "to_char(CURRENT_TIMESTAMP, ''yyyymmdd''),''99991231'',True FROM \"udl2\".\"INT_SBAC_ASMT_OUTCOME\" WHERE op = ''C'' AND guid_batch=''{guid_batch}'') as y') "\
            "AS t(inst_hier_rec_id bigint,state_name character varying(32),state_code character varying(2),district_guid character varying(50),"\
@@ -279,7 +279,7 @@ def get_expected_insert_query_for_student_reg(host_name, port, table_name, guid_
            'dmg_prg_lep,dmg_prg_504,dmg_sts_ecd,dmg_sts_mig,dmg_multi_race,confirm_code,language_code,eng_prof_lvl,'\
            'us_school_entry_date,lep_entry_date,lep_exit_date,t3_program_type,prim_disability_type,student_reg_guid,'\
            'academic_year,extract_date,reg_system_id) SELECT * FROM dblink(\'host={host} port={port} '\
-           'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * '\
+           'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"global_rec_seq"\'\'), * '\
            'FROM (SELECT int_sbac_stu_reg.guid_batch,int_sbac_stu_reg.name_state,int_sbac_stu_reg.code_state,'\
            'int_sbac_stu_reg.guid_district,int_sbac_stu_reg.name_district,int_sbac_stu_reg.guid_school,'\
            'int_sbac_stu_reg.name_school,int_sbac_stu_reg.guid_student,int_sbac_stu_reg.external_ssid_student,'\
@@ -321,7 +321,7 @@ def get_expected_column_mapping(target_table):
     Value -- ordered dictionary: (column_in_target_table, column_in_source_table), e.g. 'asmt_guid': 'guid_asmt'
     '''
 
-    column_map_integration_to_target = {'dim_asmt': OrderedDict([('asmt_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+    column_map_integration_to_target = {'dim_asmt': OrderedDict([('asmt_rec_id', 'nextval(\'"global_rec_seq"\')'),
                                                                  ('asmt_guid', 'guid_asmt'),
                                                                  ('asmt_type', 'type'),
                                                                  ('asmt_period', 'period'),
@@ -357,7 +357,7 @@ def get_expected_column_mapping(target_table):
                                                                  ('most_recent', 'TRUE'),
                                                                  ]),
 
-                                        'dim_inst_hier': OrderedDict([('inst_hier_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                        'dim_inst_hier': OrderedDict([('inst_hier_rec_id', 'nextval(\'"global_rec_seq"\')'),
                                                                       ('state_name', 'name_state'),
                                                                       ('state_code', 'code_state'),
                                                                       ('district_guid', 'guid_district'),
@@ -368,7 +368,7 @@ def get_expected_column_mapping(target_table):
                                                                       ('to_date', "'99991231'"),
                                                                       ('most_recent', 'True'),
                                                                       ]),
-                                        'dim_student': OrderedDict([('student_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                        'dim_student': OrderedDict([('student_rec_id', 'nextval(\'"global_rec_seq"\')'),
                                                                     ('student_guid', 'guid_student'),
                                                                     ('first_name', 'name_student_first'),
                                                                     ('middle_name', 'name_student_middle'),
@@ -385,7 +385,7 @@ def get_expected_column_mapping(target_table):
                                                                     ('most_recent', 'True'),
                                                                     ]),
 
-                                        'fact_asmt_outcome_vw': OrderedDict([('asmt_outcome_vw_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                        'fact_asmt_outcome_vw': OrderedDict([('asmt_outcome_vw_rec_id', 'nextval(\'"global_rec_seq"\')'),
                                                                              ('asmt_rec_id', None),
                                                                              ('student_guid', 'guid_student'),
                                                                              ('teacher_guid', 'guid_staff'),
@@ -432,7 +432,7 @@ def get_expected_sr_column_and_type_mapping():
     Value -- named tuple: (column in source table, target column type), e.g. Column('external_ssid_student': 'character varying(50)')
     '''
 
-    mapping = OrderedDict([('INT_SBAC_STU_REG', OrderedDict([('student_reg_rec_id', Column(src_col='nextval(\'"GLOBAL_REC_SEQ"\')', type='bigint')),
+    mapping = OrderedDict([('INT_SBAC_STU_REG', OrderedDict([('student_reg_rec_id', Column(src_col='nextval(\'"global_rec_seq"\')', type='bigint')),
                                                              ('batch_guid', Column(src_col='guid_batch', type='character varying(36)')),
                                                              ('state_name', Column(src_col='name_state', type='character varying(50)')),
                                                              ('state_code', Column(src_col='code_state', type='character varying(2)')),

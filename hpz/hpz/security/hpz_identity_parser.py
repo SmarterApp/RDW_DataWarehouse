@@ -1,4 +1,5 @@
 from edauth.security.identity_parser import IdentityParser
+from edauth.security.user import RoleRelation
 
 __author__ = 'npandey'
 
@@ -11,4 +12,6 @@ class HPZIdentityParser(IdentityParser):
         Returns a list of role/relationship
         '''
         relations = []
+        relations.append(RoleRelation('General', '', '', '', ''))
+
         return relations

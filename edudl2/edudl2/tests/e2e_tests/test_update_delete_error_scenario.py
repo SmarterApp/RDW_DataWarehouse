@@ -91,7 +91,6 @@ class Test_Err_Handling_Scenario(unittest.TestCase):
                 timer += 0.25
                 result = connector.execute(query).fetchall()
             self.assertEqual(len(result), 1, "UDL pipeline fils")
-            print('Waited for', timer, 'second(s) for job to complete.')
 
     #Validate that error has been logged into err_list table for udl failure with datafile containing record not found in prod
     def validate_err_list(self, guid_batch_id):

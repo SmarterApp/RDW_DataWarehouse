@@ -76,7 +76,7 @@ def initialize_db_udl(udl2_conf, allow_create_schema=False):
 def initialize_db_target(udl2_conf):
     initialize_db(TARGET_NAMESPACE, generate_ed_metadata, True, udl2_conf)
     # Install dblink extension on preprod database if it doesn't exist
-    for tenant in udl2_conf[TARGET_NAMESPACE]:
+    for tenant in udl2_conf.get(TARGET_NAMESPACE):
         with get_target_connection(tenant) as conn:
             try:
                 conn.execute(text("CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA public"))
@@ -98,7 +98,7 @@ def initialize_db(namespace, metadata_generator, allows_multiple_tenants, udl2_c
     """
     if allows_multiple_tenants:
         # Get information for all tenants listed
-        for tenant_name in udl2_conf[namespace]:
+        for tenant_name in udl2_conf.get(namespace):
             create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator, tenant_name)
     else:
         create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_generator)
@@ -113,14 +113,14 @@ def create_sqlalchemy(namespace, udl2_conf, allow_schema_create, metadata_genera
     lookup_tenant = tenant if tenant else DEFAULT_TENANT
     datasource_name = namespace + '.' + lookup_tenant
     db_dict = udl2_conf[namespace]
-    db_defaults = udl2_conf['db_defaults']
+    db_defaults = udl2_conf.get('db_defaults')
     tenant_dict = db_dict[lookup_tenant] if tenant else db_dict
 
     settings = {
-        'url': tenant_dict['url'],
-        'schema_name': tenant_dict['db_schema'],
-        'max_overflow': db_defaults['max_overflow'],
-        'echo': db_defaults['echo'],
-        'pool_size': db_defaults['pool_size']
+        'url': tenant_dict.get('url'),
+        'schema_name': tenant_dict.get('db_schema'),
+        'max_overflow': db_defaults.get('max_overflow'),
+        'echo': db_defaults.get('echo'),
+        'pool_size': db_defaults.get('pool_size')
     }
     setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

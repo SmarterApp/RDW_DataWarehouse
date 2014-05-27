@@ -16,17 +16,14 @@ body {
 
     &.highlight {
 
-      *:focus {
-        box-shadow: 0 0 5px rgba(89, 119, 162, 1);
-        -webkit-box-shadow: 0 0 5px rgba(89, 119, 162, 1);
-        -moz-box-shadow: 0 0 5px rgba(89, 119, 162, 1);
-        border:0px solid rgba(89, 119,162, 0.8);
+      *:hover, *:active {
+        outline:none;
       }
 
-      a:focus {
-        // TODO:
-        outline: 5px auto -webkit-focus-ring-color;
-        outline: 5px auto -moz-focus-ring-color;
+      *:focus {
+        outline: #00B5E2 solid medium;
+        outline-offset:2px;
+        // z-index:5;
       }
     }
 }

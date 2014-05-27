@@ -118,7 +118,8 @@ def import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
     '''
     Load data from foreign table to staging table
     '''
-    # create sequence name, use table_name and a random number combination. This sequence is used for column src_file_rec_num
+    # create sequence name, use table_name and a random number combination.
+    # This sequence is used for column src_file_rec_num
     seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
 
     # query 1 -- create query to create sequence

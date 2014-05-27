@@ -25,7 +25,6 @@ import os
 import random
 import shutil
 
-import data_generation.config.enrollment as enroll_config
 import data_generation.config.hierarchy as hier_config
 import data_generation.config.population as pop_config
 import data_generation.util.hiearchy as hier_util
@@ -40,6 +39,7 @@ import sbac_data_generation.generators.assessment as sbac_asmt_gen
 import sbac_data_generation.generators.hierarchy as sbac_hier_gen
 import sbac_data_generation.generators.population as sbac_pop_gen
 
+from data_generation.writers.filters import FILTERS as DG_FILTERS
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.state import SBACState
 from sbac_data_generation.util.id_gen import IDGen
@@ -52,6 +52,7 @@ DB_SCHEMA = None
 WRITE_STAR = False
 WRITE_LZ = False
 WRITE_PG = False
+WRITE_IL = False
 
 # See assign_team_configuration_options for these values
 STATES = []
@@ -89,7 +90,7 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
     @param state_type: Type of state to generate
     """
     global STATES, YEARS, ASMT_YEARS, INTERIM_ASMT_PERIODS, NUMBER_REGISTRATION_SYSTEMS, WRITE_LZ, WRITE_STAR, \
-        WRITE_PG, GRADES_OF_CONCERN
+        WRITE_PG, WRITE_IL, GRADES_OF_CONCERN
 
     # Validate parameter
     if team not in ['sonics', 'arkanoids', 'udl']:
@@ -126,6 +127,7 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         WRITE_LZ = True
         WRITE_STAR = False
         WRITE_PG = False
+        WRITE_IL = False
 
 
 def connect_to_postgres(host, port, dbname, user, password):
@@ -332,7 +334,7 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hi
                                          retake_rate, delete_rate, update_rate)
 
 
-def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results):
+def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state_code, district_guid):
     """
     Write student and assessment data for a school to one or more output formats.
 
@@ -345,6 +347,8 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     # Set up output file names and columns
     sr_lz_out_cols = sbac_out_config.SR_FORMAT['columns']
     lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
+    it_lz_out_name = sbac_out_config.LZ_ITEMDATA_FORMAT['name']
+    it_lz_out_cols = sbac_out_config.LZ_ITEMDATA_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
     fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
@@ -372,23 +376,25 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     if asmt_year in ASMT_YEARS:
         for guid, rslts in assessment_results.items():
 
-            for sao in rslts:
-                out_path = os.path.join(sao.student.school.district.state.code, str(sao.assessment.period_year),
-                                        sao.assessment.asmt_type, str(sao.assessment.effective_date),
-                                        sao.assessment.subject, str(sao.student.grade),
-                                        sao.student.school.district.guid)
+            if WRITE_IL:
+                for sao in rslts:
+                    try:
+                        asmt = sao.assessment
+                        # Only write out summative item level results
+                        if asmt.asmt_type == 'SUMMATIVE':
+                            it_dir_path = os.path.join(state_code, str(asmt.period_year), asmt.asmt_type,
+                                                       DG_FILTERS['date_Ymd'](asmt.effective_date), asmt.subject,
+                                                       str(sao.student.grade), district_guid)
+                            it_file_path = os.path.join(it_dir_path, it_lz_out_name.replace('<STUDENT_GUID>',
+                                                                                            sao.student.guid_sr))
 
-                if not os.path.exists(os.path.join(OUT_PATH_ROOT, out_path)):
-                    os.makedirs(os.path.join(OUT_PATH_ROOT, out_path))
+                            if not os.path.exists(os.path.join(OUT_PATH_ROOT, it_dir_path)):
+                                os.makedirs(os.path.join(OUT_PATH_ROOT, it_dir_path))
 
-                csv_writer.prepare_csv_file(os.path.join(out_path,
-                                                         sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr)),
-                                            sbac_out_config.LZ_ITEMDATA_FORMAT['columns'], root_path=OUT_PATH_ROOT)
-
-                csv_writer.write_records_to_file(os.path.join(out_path,
-                                                              sbac_out_config.LZ_ITEMDATA_FORMAT['name'].replace('<GUID>', sao.student.guid_sr)),
-                                                 sbac_out_config.LZ_ITEMDATA_FORMAT['columns'],
-                                                 sao.item_level_data, root_path=OUT_PATH_ROOT)
+                            csv_writer.write_records_to_file(it_file_path, it_lz_out_cols, sao.item_level_data,
+                                                             root_path=OUT_PATH_ROOT)
+                    finally:
+                        pass
 
             if WRITE_LZ:
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
@@ -543,7 +549,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                             unique_students[student.guid] = True
 
             # Write out the school
-            write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results)
+            write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state.code,
+                              district.guid)
             del dim_students
             del sr_students
             del assessment_results
@@ -636,12 +643,15 @@ if __name__ == '__main__':
                         help='Output data to star schema CSV', required=False)
     parser.add_argument('-lo', '--lz_out', dest='lz_out', action='store_true',
                         help='Output data to landing zone CSV and JSON', required=False)
+    parser.add_argument('-io', '--il_out', dest='il_out', action='store_true', help='Output item-level data',
+                        required=False)
     args, unknown = parser.parse_known_args()
 
     # Save output flags
     WRITE_PG = args.pg_out
     WRITE_STAR = args.star_out
     WRITE_LZ = args.lz_out
+    WRITE_IL = args.il_out
 
     # Set team-specific configuration options
     assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)

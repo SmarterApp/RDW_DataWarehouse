@@ -98,7 +98,7 @@ def create_sr_table_select_insert_query(conf, target_table, column_and_type_mapp
     Query is of format:
     INSERT INTO "{target_schema}"."{target_table}"(target_col_1,target_col_2,...,target_col_n)
     SELECT FROM dblink('host={host} port={port} dbname={db_name} user={db_user} password={db_password}',
-    SELECT nextval(''"GLOBAL_REC_SEQ"''), * FROM (SELECT src_table1.src_col_1,...,src_table_1.src_col_j,
+    SELECT nextval(''"global_rec_seq"''), * FROM (SELECT src_table1.src_col_1,...,src_table_1.src_col_j,
     src_table_2.src_col_1,...,src_table_2.src_col_k,...,src_table_m.src_col_1,...,src_table_m.src_col_l
     FROM "{source_schema}"."{source_table_1}" source_table_1_lowercase INNER JOIN
     "{source_schema}"."{source_table_2}" source_table_2_lowercase

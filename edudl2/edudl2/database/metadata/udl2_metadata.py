@@ -382,6 +382,6 @@ def generate_udl2_sequences(schema_name=None, metadata=None):
     '''
     generate_udl2_sequences returns all udl2 related sequences as a tuple.
     '''
-    seq1 = Sequence(name='GLOBAL_REC_SEQ', start=1, increment=1, schema=schema_name,
+    seq1 = Sequence(name='global_rec_seq', start=1, increment=1, schema=schema_name,
                     optional=True, quote='Global record id sequences. form 1 to 2^63 -1 on postgresql', metadata=metadata)
     return (seq1, )

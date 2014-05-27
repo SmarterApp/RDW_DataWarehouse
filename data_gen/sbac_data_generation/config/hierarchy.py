@@ -208,7 +208,7 @@ STATE_TYPES = {'california': {'district_types_and_counts': [('Big LA', 1), ('Big
                                                            ('Small Good', 2)],
                              'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                              'demographics': 'california'},
-               'devel': {'district_types_and_counts': [('Small Average', 4)],
+               'devel': {'district_types_and_counts': [('Small Average', 1)],
                          'subject_skip_percentages': {'Math': .04, 'ELA': .03},
                          'demographics': 'california'},
                'udl_test': {'district_types_and_counts': [('Big UDL', 1)],

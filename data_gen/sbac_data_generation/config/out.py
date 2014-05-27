@@ -352,7 +352,7 @@ ASMT_JSON_FORMAT = {'format': 'json',
                     }}
 
 LZ_ITEMDATA_FORMAT = {'format': 'csv',
-                      'name': 'STUDENT_<GUID>.csv',
+                      'name': '<STUDENT_GUID>.csv',
                       'columns': [{'name': 'key', 'val': 'assessment_outcome_item_data.key'},
                                   {'name': 'student_guid', 'val': 'assessment_outcome_item_data.student_guid'},  # 'student.guid_sr'},
                                   {'name': 'segmentId', 'val': 'assessment_outcome_item_data.segment_id'},

@@ -175,6 +175,8 @@ if __name__ == '__main__':
                         help='Output data to star schema CSV', required=False)
     parser.add_argument('-lo', '--lz_out', dest='lz_out', action='store_true',
                         help='Output data to landing zone CSV and JSON', required=False)
+    parser.add_argument('-io', '--il_out', dest='il_out', action='store_true', help='Output item-level data',
+                        required=False)
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
@@ -184,6 +186,7 @@ if __name__ == '__main__':
     generate_data.WRITE_PG = args.pg_out
     generate_data.WRITE_STAR = args.star_out
     generate_data.WRITE_LZ = args.lz_out
+    generate_data.WRITE_IL = args.il_out
 
     # Validate at least one form of output
     if not generate_data.WRITE_PG and not generate_data.WRITE_STAR and not generate_data.WRITE_LZ:

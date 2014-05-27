@@ -11,7 +11,7 @@ from sqlalchemy import Table
 from sqlalchemy import schema
 from collections import OrderedDict
 import logging
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy.exc import DatabaseError, InterfaceError
 import time
 
 
@@ -142,15 +142,14 @@ class DBConnection(ConnectionBase):
     def execute(self, statement, *multiparams, stream_results=False, tries=0, **params):
         try:
             results = self.__connection.execution_options(stream_results=stream_results).execute(statement, *multiparams, **params)
-        except DatabaseError as err:
+        except (DatabaseError, InterfaceError) as err:
             logger.error(err)
             # Allow an one time retry
             if tries < 1:
                 time.sleep(10)
-                if err.connection_invalidated:
-                    logger.error("Connection was invalidated.  Will reconnect.")
-                    self.close_connection()
-                    self.__connection = self.get_engine().connect()
+                logger.error("Connection was invalidated.  Will reconnect.")
+                self.close_connection()
+                self.__connection = self.get_engine().connect()
                 # Retry query
                 results = self.execute(statement, *multiparams, stream_results=stream_results, tries=tries + 1, **params)
             else:

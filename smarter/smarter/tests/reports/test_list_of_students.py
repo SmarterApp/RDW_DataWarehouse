@@ -82,9 +82,9 @@ class TestLOS(Unittest_with_edcore_sqlite):
         student1 = assessments['20160106']['Interim Comprehensive']['f9da4c5d-dc65-42d0-a36f-5d13ba930c50']
         student2 = assessments['20160106']['Interim Comprehensive']['e2f3c6a5-e28b-43e8-817b-fc7afed02b9b']
         student3 = assessments['20160106']['Interim Comprehensive']['dae1acf4-afb0-4013-90ba-9dcde4b25621']
-        self.assertEqual("Verda", student1['first_name'], "first_name")
-        self.assertEqual("Mi-Ha", student2['first_name'], "first_name")
-        self.assertEqual("Lettie", student3['first_name'], "first_name")
+        self.assertEqual("Verda", student1['student_first_name'], "first_name")
+        self.assertEqual("Mi-Ha", student2['student_first_name'], "first_name")
+        self.assertEqual("Lettie", student3['student_first_name'], "first_name")
 
     def test_breadcrumbs(self):
         testParam = {}
@@ -164,7 +164,7 @@ class TestLOS(Unittest_with_edcore_sqlite):
 
         testParam['gender'] = ['not_stated']
         results = get_list_of_students_report(testParam)
-        self.assertEqual(len(results['assessments']), 0)
+        self.assertEqual(len(results['assessments']), 3)
 
     def test_asmt_type(self):
         testParam = {'asmtGrade': '3', 'stateCode': 'NC', 'districtGuid': '228', 'schoolGuid': '242', 'asmtYear': '2015'}

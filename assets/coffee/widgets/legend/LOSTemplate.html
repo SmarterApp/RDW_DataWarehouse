@@ -1,7 +1,14 @@
 <div id="legendTemplate" class="content">
-    <div class="row">
-        <div class="span4" aria-labelledby="aria-ALD">
-            <span id="aria-ALD" class="screenreader">hello world</span>
+	<!-- This section is for screenreader-->
+	<div aria-labelledby="los-aria-legend" id="los-aria-legend"></div>
+	<span class="screenreader">
+		{{labels.achievement_level_descriptors}} {{#ALDs}} {{description}} {{labels.score_range}} {{range}} {{/ALDs}}
+		{{labels.claim_score_details}} possible values {{#legendInfo.performance_levels}} {{desc}} {{/legendInfo.performance_levels}}
+		{{labels.error_band}} means {{legendInfo.error_band}}
+	</span>
+   	<!-- End of section is for screenreader-->
+    <div class="row" aria-hidden="true">
+        <div class="span4">
             <!-- ALD -->
             <h4>{{labels.achievement_level_descriptors}}:</h4>
             <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
@@ -23,8 +30,7 @@
         </div>
         <div class="losPerformanceBar span7 edware-border-left">
             <div class="row">
-                <div id="overall_score_details" class="span4 edware-border-right" aria-labelledby="overall_score_details">
-                    <span id="overall_score_details" class="screenreader">
+                <div id="overall_score_details" class="span4 edware-border-right">
                     <h4>{{labels.overall_score_details}}:</h4>
                     <div class="confidenceLevel">
                         <div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000;">
@@ -67,7 +73,7 @@
                 </div>
             </div>
             <hr>
-            <div class="error_band_wrapper">
+            <div class="error_band_wrapper" aria-hidden="true">
                 <h4>{{labels.error_band}}:</h4>
                 <p>{{legendInfo.error_band}}</p>
             </div>

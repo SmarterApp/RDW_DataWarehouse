@@ -4,7 +4,8 @@ __author__ = 'npandey'
 
 
 class RootFactory(object):
-    __acl__ = [(Allow, Authenticated, 'download')]
+
+    __acl__ = [(Allow, 'GENERAL', ('download', 'default'))]
 
     def __init__(self, request):
         pass

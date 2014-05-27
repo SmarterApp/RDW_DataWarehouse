@@ -6,20 +6,20 @@ This module contains the functionality for registering extract files with the HP
 import json
 from pyramid.threadlocal import get_current_registry
 from requests import put
-
-DEFAULT_REG_BASE_URL = 'http://localhost'
-DEFAULT_REG_ENDPOINT = '/registration'
+from requests.exceptions import ConnectionError
 
 
 def register_file(user_id):
-    registration_url = get_current_registry().settings.get('hpz.base_url', DEFAULT_REG_BASE_URL) + \
-        get_current_registry().settings.get('hpz.registration_endpoint', DEFAULT_REG_ENDPOINT)
-
+    registration_url = get_current_registry().settings.get('hpz.file_registration_url')
     registration_body = {'uid': user_id}
 
-    response = put(registration_url, json.dumps(registration_body))
-
-    registration_id = response.json()['registration_id']
-    download_url = response.json()['url']
+    try:
+        response = put(registration_url, json.dumps(registration_body))
+        response_json = response.json()
+        registration_id = response_json['registration_id']
+        download_url = response_json['url']
+    except ConnectionError:
+        registration_id = ''
+        download_url = ''
 
     return registration_id, download_url

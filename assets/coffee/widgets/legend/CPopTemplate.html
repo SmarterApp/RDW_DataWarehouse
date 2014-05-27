@@ -1,7 +1,14 @@
 <div id="legendTemplate">
-    <div class="row">
-        <div class="span4" aria-labelledby="aria-ALD">
-            <span id="aria-ALD" class="screenreader">test</span>
+    <!-- aria-ALD element is to provide information for screenreader only -->
+    <span id="aria-ALD" class="screenreader" aria-labelledby="aria-ALD">
+        {{labels.achievement_level_descriptors}}
+        {{#ALDs}}
+        {{description}} means score range {{range}}
+        {{/ALDs}}
+        {{#legendInfo.notes}}{{.}} {{/legendInfo.notes}}
+    </span>
+    <div class="row" aria-hidden='true'>
+        <div class="span4">
             <!-- ALD -->
             <h4>{{labels.achievement_level_descriptors}}:</h4>
             <table class="table edware-table-bordered marginLeft8" style="width: 275px;">
@@ -21,8 +28,7 @@
                 {{/ALDs}}
             </table>
         </div>
-        <div class="populationBarDetails span7 edware-border-left" aria-labelledby="aria-populationbardetails">
-            <span id="aria-populationbardetails" class="screenreader">test</span>
+        <div class="populationBarDetails span7 edware-border-left">
             <h4>{{labels.population_bar_details}}:</h4>
             <div class="populationBar">
                 <div class="arrow1"></div>
@@ -35,7 +41,7 @@
                 <h5>{{legendInfo.desc2}}</h5>
                 <p>{{legendInfo.desc3}}</p>
             </div>
-            <div class="notes">
+            <div class="notes" id="aria-populationbardetails">
                 <h5>{{labels.notes}}:</h5>
                 <p>{{#legendInfo.notes}}{{.}}<br/><br/>{{/legendInfo.notes}}</p>
             </div>

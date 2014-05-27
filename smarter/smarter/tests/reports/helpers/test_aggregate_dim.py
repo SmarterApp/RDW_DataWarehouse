@@ -37,7 +37,7 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
 
     def test_get_aggregate_dim(self):
         tenant = get_unittest_tenant_name()
-        agg_results = get_aggregate_dim({'subject1': 'Math', 'subject2': 'ELA'}, 'NC', districtGuid=None, schoolGuid=None, asmtYear=2016, asmtType=AssessmentType.INTERIM_COMPREHENSIVE, tenant=tenant)
+        agg_results = get_aggregate_dim('NC', None, None, AssessmentType.INTERIM_COMPREHENSIVE, 2016, tenant, {'subject1': 'Math', 'subject2': 'ELA'})
         records = agg_results[Constants.RECORDS]
         self.assertEqual(4, len(records))
         record = records[3]

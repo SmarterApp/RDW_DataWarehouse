@@ -855,7 +855,7 @@ jenkins_int:
     pickup:
       sftp.hostname: localhost
     hpz:
-        file_registration_url: http://localhost:81/registration
+        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
 
 jenkins_dev:
   '[app:main]':
@@ -910,7 +910,7 @@ jenkins_dev:
     pickup:
       sftp.hostname: localhost
     hpz:
-        file_registration_url: http://localhost:81/registration
+        file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
 
 air:
   '[app:main]':

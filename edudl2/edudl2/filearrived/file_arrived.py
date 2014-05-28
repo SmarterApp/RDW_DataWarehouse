@@ -20,7 +20,8 @@ def move_file_from_arrivals(incoming_file, batch_guid):
     tenant_name = get_tenant_name(incoming_file)
     tenant_directory_paths = create_directory_paths(tenant_name, batch_guid)
     create_batch_directories(tenant_directory_paths)
-    move_file_to_work_and_history(incoming_file, tenant_directory_paths[mk.ARRIVED], tenant_directory_paths[mk.HISTORY])
+    move_file_to_work_and_history(incoming_file, tenant_directory_paths.get(mk.ARRIVED),
+                                  tenant_directory_paths.get(mk.HISTORY))
     return tenant_directory_paths, tenant_name
 
 
@@ -46,7 +47,9 @@ def get_tenant_name(incoming_file):
     :param incoming_file: the path to the incoming file
     :return: A string containing the tenant name
     """
-    arrivals_dir_path = udl2_conf['zones']['arrivals']
+    zones_config = udl2_conf.get('zones')
+    if zones_config:
+        arrivals_dir_path = zones_config.get('arrivals')
     relative_file_path = os.path.relpath(incoming_file, arrivals_dir_path)
     return convert_path_to_list(relative_file_path)[0]
 
@@ -60,14 +63,16 @@ def create_directory_paths(tenant_name, batch_guid):
     """
     dir_name = time.strftime('%Y%m%d%H%M%S', time.gmtime())
     dir_name += '_' + batch_guid
-
-    directories = {
-        mk.ARRIVED: os.path.join(udl2_conf['zones']['work'], tenant_name, 'arrived', dir_name),
-        mk.DECRYPTED: os.path.join(udl2_conf['zones']['work'], tenant_name, 'decrypted', dir_name),
-        mk.EXPANDED: os.path.join(udl2_conf['zones']['work'], tenant_name, 'expanded', dir_name),
-        mk.SUBFILES: os.path.join(udl2_conf['zones']['work'], tenant_name, 'subfiles', dir_name),
-        mk.HISTORY: os.path.join(udl2_conf['zones']['history'], tenant_name, dir_name)
-    }
+    zones_config = udl2_conf.get('zones')
+    if zones_config:
+        work_zone = zones_config.get('work')
+        directories = {
+            mk.ARRIVED: os.path.join(work_zone, tenant_name, 'arrived', dir_name),
+            mk.DECRYPTED: os.path.join(work_zone, tenant_name, 'decrypted', dir_name),
+            mk.EXPANDED: os.path.join(work_zone, tenant_name, 'expanded', dir_name),
+            mk.SUBFILES: os.path.join(work_zone, tenant_name, 'subfiles', dir_name),
+            mk.HISTORY: os.path.join(zones_config.get('history'), tenant_name, dir_name)
+        }
     return directories
 
 

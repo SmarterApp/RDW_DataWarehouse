@@ -1,5 +1,4 @@
 import os
-import argparse
 import logging
 import gnupg
 
@@ -42,7 +41,7 @@ def _print_status(status):
     logger.info('ok: %s ' % status.ok)
     logger.debug('status: %s ' % status.status)
     logger.debug('stderr: %s ' % status.stderr)
-    if(status.ok):
+    if status.ok:
         logger.debug('signer: %s ' % status.username)
         logger.debug('signer key id: %s ' % status.key_id)
         logger.debug('signer key fingerprint: %s ' % status.fingerprint)
@@ -89,22 +88,3 @@ def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
     if status.trust_level is None or status.trust_level < 4:
         raise Exception('Verification Failed. Signature not trusted')
     return status, output_file
-
-
-if __name__ == "__main__":
-    """
-    Entry point to file_decrypter to run as stand alone script
-    """
-    parser = argparse.ArgumentParser(description='Process file decrypter args')
-    parser.add_argument('-i', '--input', dest='file_to_decrypt', help='file_to_expand')
-    parser.add_argument('-o', '--output', dest='destination_dir', default='.', help='output directory')
-    parser.add_argument('-p', '--passphrase', dest='passphrase', default=None, help='passphrase to access private verifier key')
-    parser.add_argument('-gh', '--gpghome', dest='gpg_home', help='GPG Home directory for keys')
-
-    args = parser.parse_args()
-    print('Input file is: ' + args.file_to_decrypt)
-    print('Passphrase: ' + args.passphrase)
-    if args.destination_dir:
-        print('Decrypt files to: ' + args.destination_dir)
-
-    decrypt_file(args.file_to_decrypt, args.destination_dir, args.passphrase, args.gpg_home)

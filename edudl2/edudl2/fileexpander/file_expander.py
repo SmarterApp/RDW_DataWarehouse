@@ -1,5 +1,4 @@
 import os
-import argparse
 import logging
 import tarfile
 
@@ -98,19 +97,3 @@ def expand_file(file_to_expand, expanded_dir):
     tar_file_contents = _extract_tar_file_contents(file_to_expand, expanded_dir)
 
     return tar_file_contents
-
-
-if __name__ == "__main__":
-    """
-    Entry point to file_expander to run as stand alone script
-    """
-    parser = argparse.ArgumentParser(description='Process file expander args')
-    parser.add_argument('-i', '--input', dest="file_to_expand", help='file_to_expand')
-    parser.add_argument('-o', '--output', dest="expanded_dir", default='.', help='output directory')
-
-    args = parser.parse_args()
-    print("Input file is: " + args.file_to_expand)
-    if args.expanded_dir:
-        print("Expand files to: " + args.expanded_dir)
-
-    expand_file(args.file_to_expand, args.expanded_dir)

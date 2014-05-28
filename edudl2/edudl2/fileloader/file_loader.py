@@ -1,13 +1,13 @@
 import datetime
 import csv
-import edudl2.fileloader.prepare_queries as queries
 import random
+import logging
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.sql.expression import select
 import edudl2.udl2.message_keys as mk
-from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.udl2.constants import Constants
-import logging
+import edudl2.fileloader.prepare_queries as queries
+from edudl2.udl2_util.database_util import execute_udl_queries
 from edudl2.database.udl2_connector import get_udl_connection
 
 
@@ -149,27 +149,27 @@ def load_data_process(conn, conf):
     Load data from csv to staging table. The database connection and configuration information are provided
     '''
     # read headers from header_file
-    header_names, header_types = extract_csv_header(conn, conf[mk.TARGET_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE], conf[mk.HEADERS])
+    header_names, header_types = extract_csv_header(conn, conf.get(mk.TARGET_DB_SCHEMA), conf.get(mk.REF_TABLE), conf.get(mk.CSV_LZ_TABLE), conf.get(mk.HEADERS))
 
     # create FDW table
-    create_fdw_tables(conn, header_names, header_types, conf[mk.FILE_TO_LOAD], conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.FDW_SERVER])
+    create_fdw_tables(conn, header_names, header_types, conf.get(mk.FILE_TO_LOAD), conf.get(mk.CSV_SCHEMA), conf.get(mk.CSV_TABLE), conf.get(mk.FDW_SERVER))
 
     # get field map
-    stg_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
-                                                                          conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD],
-                                                                          conf[mk.TARGET_DB_SCHEMA], conf[mk.HEADERS])
+    stg_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf.get(mk.REF_TABLE), conf.get(mk.CSV_LZ_TABLE),
+                                                                          conf.get(mk.GUID_BATCH), conf.get(mk.FILE_TO_LOAD),
+                                                                          conf.get(mk.TARGET_DB_SCHEMA), conf.get(mk.HEADERS))
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
     import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
-                   conf[mk.APPLY_RULES], conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE],
-                   conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.ROW_START])
+                   conf.get(mk.APPLY_RULES), conf.get(mk.TARGET_DB_SCHEMA), conf.get(mk.TARGET_DB_TABLE),
+                   conf.get(mk.CSV_SCHEMA), conf.get(mk.CSV_TABLE), conf.get(mk.ROW_START))
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
 
     # drop FDW table
-    drop_fdw_tables(conn, conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE])
+    drop_fdw_tables(conn, conf.get(mk.CSV_SCHEMA), conf.get(mk.CSV_TABLE))
 
     return time_as_seconds
 

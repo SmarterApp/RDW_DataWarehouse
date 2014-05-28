@@ -28,9 +28,9 @@ def load_json(conf):
     @param conf: The configuration dictionary
     '''
 
-    json_dict = read_json_file(conf[mk.FILE_TO_LOAD])
-    flattened_json = flatten_json_dict(json_dict, conf[mk.MAPPINGS])
-    return load_to_table(flattened_json, conf[mk.GUID_BATCH], conf[mk.TARGET_DB_TABLE])
+    json_dict = read_json_file(conf.get(mk.FILE_TO_LOAD))
+    flattened_json = flatten_json_dict(json_dict, conf.get(mk.MAPPINGS))
+    return load_to_table(flattened_json, conf.get(mk.GUID_BATCH), conf.get(mk.TARGET_DB_TABLE))
 
 
 def read_json_file(json_file):
@@ -108,8 +108,9 @@ def load_to_table(data_dict, guid_batch, int_table):
                     if stored_proc_name.startswith('sp_'):
                         ref_column_mapping_columns[target_column] = stored_proc_name + '(' + QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8') + ')'
                     else:
-                        format_value = {}
-                        format_value['value'] = QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8')
+                        format_value = dict()
+                        format_value['value'] = QuotedString(value if type(value) is str
+                                                             else str(value)).getquoted().decode('utf-8')
                         if s_int_table.c[target_column].type.python_type is str:
                             format_value['length'] = s_int_table.c[target_column].type.length
                         ref_column_mapping_columns[target_column] = stored_proc_name.format(**format_value)
@@ -122,11 +123,11 @@ def load_to_table(data_dict, guid_batch, int_table):
             value = data_dict.get(column.name)
             if value:
                 from_select_column_names.append(column.name)
-                from_select_select_values.append(ref_column_mapping_columns.get(column.name, QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8')))
-        # import ipdb; ipdb.set_trace()
-        # from_select_column_names.append("record_sid")
-        # from_select_select_values.append(GLOBAL_SEQUENCE.next())
-        insert_into_int_table = s_int_table.insert().from_select(from_select_column_names, select(from_select_select_values))
+                from_select_select_values.append(
+                    ref_column_mapping_columns.get(column.name,
+                                                   QuotedString(value if type(value) is str else str(value)).getquoted().decode('utf-8')))
+        insert_into_int_table = s_int_table.insert().from_select(from_select_column_names,
+                                                                 select(from_select_select_values))
         # create insert statement and execute
         affected_row = db_util.execute_udl_queries(conn, [insert_into_int_table],
                                                    'Exception in loading json data -- ',

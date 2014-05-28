@@ -52,6 +52,7 @@ define [
         class: 'academicYearInfoPopover'
         labelledby: 'academicYearInfoPopover'
         content: 'placeholder'
+        tabindex: 0
 
     createDownloadMenu: () ->
       @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)

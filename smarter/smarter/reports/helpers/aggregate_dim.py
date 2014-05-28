@@ -74,7 +74,7 @@ def _get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtT
                     Constants.PARAMS: params,
                     Constants.RESULTS: {}
                     }
-            data[Constants.RESULTS][subject_key] = {Constants.ASMT_SUBJECT: subject, Constants.TOTAL:-1, Constants.HASINTERIM: True}
+            data[Constants.RESULTS][subject_key] = {Constants.ASMT_SUBJECT: subject, Constants.TOTAL: -1, Constants.HASINTERIM: True}
             rows[data[Constants.ID]] = data
     return rows
 

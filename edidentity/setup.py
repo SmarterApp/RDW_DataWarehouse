@@ -8,22 +8,11 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid == 1.4',
-    'pyramid_debugtoolbar==1.0.8',
-    'pyramid_beaker==0.8',
-    'waitress==0.8.7',
-    'SQLAlchemy == 0.8.3',
-    'py-postgresql == 1.1.0',
-    'zope.sqlalchemy==0.7.3',
-    'Jinja2==2.7.2',
-    'config',
-    'edschema',
-    'edauth',
-    'edcore',
-    'edidentity']
+    'edauth']
 
-setup(name='hpz',
+setup(name='edidentity',
       version='0.1',
-      description='hpz',
+      description='edidentity',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
           "Programming Language :: Python",
@@ -37,11 +26,8 @@ setup(name='hpz',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      install_requires=requires,
-      tests_require=requires,
       test_suite='nose.collector',
+      install_requires=requires,
       entry_points="""\
-      [paste.app_factory]
-      main = hpz:main
       """,
       )

@@ -39,7 +39,8 @@ class UploadTest(unittest.TestCase):
     @patch('builtins.open')
     @patch('os.path.getsize')
     @patch('hpz.frs.upload_service.logger.info')
-    def test_file_upload_service(self, logger_patch, get_size_patch, open_patch, copyfileobj_patch, is_file_registered_patch, update_registration_patch):
+    def test_file_upload_service(self, logger_patch, get_size_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
+                                 update_registration_patch):
         update_registration_patch.return_value = None
         copyfileobj_patch.return_value = DummyFile()
         open_patch.return_value.__exit__.return_value = None
@@ -84,7 +85,8 @@ class UploadTest(unittest.TestCase):
     @patch('builtins.open')
     @patch('hpz.frs.upload_service.logger.error')
     @patch('os.path.getsize')
-    def test_file_creation_error(self, get_size_patch, logger_patch, open_patch, copyfileobj_patch, is_file_registered_patch, update_registration_patch):
+    def test_file_creation_error(self, get_size_patch, logger_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
+                                 update_registration_patch):
         update_registration_patch.return_value = True
         copyfileobj_patch.return_value = DummyFile()
         logger_patch.return_value = None
@@ -108,7 +110,8 @@ class UploadTest(unittest.TestCase):
     @patch('builtins.open')
     @patch('hpz.frs.upload_service.logger.warning')
     @patch('os.path.getsize')
-    def test_file_size_error(self, getsize_patch, logger_patch, open_patch, copyfileobj_patch, is_file_registered_patch, update_registration_patch):
+    def test_file_size_error(self, getsize_patch, logger_patch, open_patch, copyfileobj_patch, is_file_registered_patch,
+                             update_registration_patch):
         update_registration_patch.return_value = True
         is_file_registered_patch.return_value = True
         copyfileobj_patch.return_value = DummyFile()

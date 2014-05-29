@@ -92,7 +92,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        Column('asmt_type', String(32), nullable=False),
                        Column('asmt_period', String(32), nullable=False),
                        Column('asmt_period_year', SmallInteger, nullable=False),
-                       Column('asmt_version', String(16), nullable=False),
+                       Column('asmt_version', String(30), nullable=False),
                        Column('asmt_subject', String(64), nullable=False),
                        MetaColumn('effective_date', String(8), nullable=False),
                        Column('asmt_claim_1_name', String(128), nullable=True),

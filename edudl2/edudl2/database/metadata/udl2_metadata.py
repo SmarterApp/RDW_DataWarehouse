@@ -187,7 +187,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                           Column('type', String(32), nullable=False),
                           Column('period', String(32), nullable=False),
                           Column('year', SmallInteger, nullable=False),
-                          Column('version', String(16), nullable=False),
+                          Column('version', String(30), nullable=False),
                           Column('subject', String(64), nullable=True),
                           Column('score_overall_min', SmallInteger, nullable=True),
                           Column('score_overall_max', SmallInteger, nullable=True),

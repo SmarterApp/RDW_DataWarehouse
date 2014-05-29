@@ -14,7 +14,8 @@ dependencies = [
     'services',
     'edcore',
     'edextract',
-    'config']
+    'config',
+    'edidentity']
 
 
 for dependency in dependencies:

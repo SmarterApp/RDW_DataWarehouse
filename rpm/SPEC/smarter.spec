@@ -95,6 +95,10 @@ cd ${WORKSPACE}/edmigrate
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edidentity
+python setup.py clean --all
+python setup.py install
+cd -
 cd %{buildroot}/opt/edware/smarter
 rm -rf assets
 mv ../assets .

@@ -210,7 +210,7 @@ def build_registration_systems(years, id_gen):
     return guids
 
 
-def create_assessment_object(asmt_type, period, year, subject, id_gen):
+def create_assessment_object(asmt_type, period, year, subject, id_gen, generate_item_level=True):
     """
     Create a new assessment object and write it out to JSON.
 
@@ -219,10 +219,12 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     @param year: Year of assessment to create
     @param subject: Subject of assessment to create
     @param id_gen: ID generator
+    @param generate_item_level: If sshould generate item-level data
     @returns: New assessment object
     """
     # Create assessment
-    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen, generate_item_level=WRITE_IL)
+    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen,
+                                             generate_item_level=generate_item_level)
 
     # Output to requested mediums
     if WRITE_LZ:
@@ -249,7 +251,8 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
                                      skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                      retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                      delete_rate=sbac_in_config.ASMT_DELETE_RATE,
-                                     update_rate=sbac_in_config.ASMT_UPDATE_RATE):
+                                     update_rate=sbac_in_config.ASMT_UPDATE_RATE,
+                                     generate_item_level=True):
     """
     Create the outcome(s) for a single assessment for a student. If the student is determined to have skipped the
     assessment, the resulting array will be empty. Otherwise, one outcome will be created with the chance that a second
@@ -265,6 +268,7 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
     @param retake_rate: The rate (chance) that this student will re-take the assessment
     @param delete_rate: The rate (chance) that this student's result will be deleted
     @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
+    @param generate_item_level: If should generate item-level data
     @returns: Array of outcomes
     """
     # Make sure they are taking the assessment
@@ -276,20 +280,23 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
         assessment_results[asmt.guid_sr] = []
 
     # Create the original outcome object
-    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen, generate_item_level=WRITE_IL)
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
+                                                   generate_item_level=generate_item_level)
     assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen, generate_item_level=WRITE_IL)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
+                                                        generate_item_level=generate_item_level)
         assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen, generate_item_level=WRITE_IL)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
+                                                        generate_item_level=generate_item_level)
         assessment_results[asmt.guid_sr].append(ao2)
 
         # See if the updated record should be deleted
@@ -304,7 +311,8 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hi
                                       skip_rate=sbac_in_config.ASMT_SKIP_RATE,
                                       retake_rate=sbac_in_config.ASMT_RETAKE_RATE,
                                       delete_rate=sbac_in_config.ASMT_DELETE_RATE,
-                                      update_rate=sbac_in_config.ASMT_UPDATE_RATE):
+                                      update_rate=sbac_in_config.ASMT_UPDATE_RATE,
+                                      generate_item_level=True):
     """
     Create a set of assessment outcome object(s) for a student. If the student is determined to have skipped the
     assessment, the resulting array will be empty. Otherwise, one outcome will be created with the chance that a second
@@ -321,17 +329,18 @@ def create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hi
     @param retake_rate: The rate (chance) that this student will re-take an assessment
     @param delete_rate: The rate (chance) that this student's result will be deleted
     @param update_rate: The rate (chance) that this student's result will be updated (deleted and re-added)
+    @param generate_item_level: If should generate item-level data
     """
     # Create the summative assessment outcome
     create_assessment_outcome_object(student, asmt_summ, inst_hier, id_gen, assessment_results, skip_rate,
-                                     retake_rate, delete_rate, update_rate)
+                                     retake_rate, delete_rate, update_rate, generate_item_level)
 
     # Generate interim assessment results (list will be empty if school does not perform
     # interim assessments)
     for asmt in interim_asmts:
         # Create the interim assessment outcome
         create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessment_results, skip_rate,
-                                         retake_rate, delete_rate, update_rate)
+                                         retake_rate, delete_rate, update_rate, generate_item_level)
 
 
 def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessment_results, state_code, district_guid):
@@ -524,7 +533,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         for student in grade_students:
                             # Create the outcome(s)
                             create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen,
-                                                              assessment_results, skip_rate)
+                                                              assessment_results, skip_rate, WRITE_IL)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:

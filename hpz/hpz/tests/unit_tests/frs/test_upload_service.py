@@ -58,7 +58,7 @@ class UploadTest(unittest.TestCase):
         self.assertTrue(copyfileobj_patch.called)
         self.assertTrue(open_patch.called)
         self.assertTrue(is_file_registered_patch.called)
-        logger_patch.assert_called_once_with('File %s was successfully uploaded', '/dev/null/a1-b2-c3-d4-e5.zip')
+        logger_patch.assert_called_once_with('File %s was successfully uploaded', '/dev/null/a1-b2-c3-d4-e5')
 
     @patch('hpz.frs.upload_service.FileRegistry.update_registration')
     @patch('hpz.frs.upload_service.FileRegistry.is_file_registered')
@@ -124,7 +124,7 @@ class UploadTest(unittest.TestCase):
 
         response = file_upload_service(None, self.__request)
 
-        logger_patch.assert_called_once_with('File %s exceeds recommended size limit', '/dev/null/a1-b2-c3-d4-e5.zip')
+        logger_patch.assert_called_once_with('File %s exceeds recommended size limit', '/dev/null/a1-b2-c3-d4-e5')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(update_registration_patch.called)

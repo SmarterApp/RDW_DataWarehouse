@@ -65,7 +65,7 @@ common:
       idp:
         metadata: ../../resource/idp_metadata.xml
       saml:
-        identity_parser: smarter.security.sbac_identity_parser.SbacIdentityParser
+        identity_parser: edidentity.security.sbac_identity_parser.SbacIdentityParser
 
     # Static cache max age
     smarter.resources.static.max_age: 3600

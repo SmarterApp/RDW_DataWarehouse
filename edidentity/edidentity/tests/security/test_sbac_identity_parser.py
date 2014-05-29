@@ -4,7 +4,7 @@ Created on Feb 25, 2014
 @author: dip
 '''
 import unittest
-from smarter.security.sbac_identity_parser import SbacIdentityParser
+from edidentity.security.sbac_identity_parser import SbacIdentityParser
 import edauth
 from pyramid.security import Allow
 

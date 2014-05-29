@@ -1,54 +1,70 @@
 #! /bin/bash
-cd /Users/bpatel/Documents/sds_19_data_extracts/gman_05-27-2014_15-43-16/
+# get work dir from shell argument list or default value
+if [ -n "$1" ]
+then
+    work_dir=$1
+else
+    work_dir=/Users/bpatel/Documents/sds_19_data_extracts/gman_05-27-2014_15-43-16/
+fi
+
+# exit if work_dir doesn't exist
+echo "work dir is " $work_dir
+if [[ ! -d $work_dir ]]; then
+   echo "please specify working directory because $work_dir doesn't exist"
+   exit 1
+fi
+
+cd $work_dir
+asmt_types=(COMPREHENSIVE_ SUMMATIVE_) # separate by " "
 mkdir tar_dir
 cp *.json tar_dir
 cp *.csv tar_dir
 cd tar_dir
 IFS=$'\n'
-for file in `ls *`
+
+####
+# list all csv and json files and normalized file name to use '_' instead of ' '
+####
+
+for file in `ls *.csv *.json`
 do
-    d=`echo $file | tr " " _`
-    mv "$file" $d
-    echo $d
+    normalized_file_name=`echo $file | tr " " _`
+    mv "$file" $normalized_file_name
+    echo "replace file name to " $normalized_file_name
 done
-for filename in `ls *.json`
-do
-	echo ${filename#*COMPREHENSIVE_}
-	substr=${filename#*COMPREHENSIVE_}
-	final_substr=${substr%.*}
-	echo $final_substr
-	for csv_file in `ls *.csv`
-	do
-		if [[ $csv_file =~ $final_substr ]];then echo $csv_file;
-			csv=${csv_file%.*}
-			echo $csv
-			tar -cvzf $csv.tar.gz --disable-copyfile $csv_file $filename
-			echo sbac udl2 | gpg --armor --local-user ca_user@ca.com --recipient sbac_data_provider@sbac.com --encrypt --passphrase-fd 0 --sign $csv.tar.gz
-			mv $csv.tar.gz.asc $csv.tar.gz.gpg
-		fi
-	done
-done
-for filename in `ls *.json`
-do
-    echo ${filename#*SUMMATIVE_}
-    substr=${filename#*SUMMATIVE_}
-    final_substr=${substr%.*}
-    echo $final_substr
-    for csv_file in `ls *.csv`
+
+##
+# loop through all json, find related csv, tar and gpg them for landig zone format
+#
+##
+for asmt_type in ${asmt_types[*]}
     do
-        if [[ $csv_file =~ $final_substr ]];then echo $csv_file;
-            csv=${csv_file%.*}
-            echo $csv
-            tar -cvzf $csv.tar.gz --disable-copyfile $csv_file $filename
-            echo sbac udl2 | gpg --armor --local-user ca_user@ca.com --recipient sbac_data_provider@sbac.com --encrypt --passphrase-fd 0 --sign $csv.tar.gz
-            mv $csv.tar.gz.asc $csv.tar.gz.gpg
-        fi
+    # find all json file
+    for json_file in `ls *${asmt_type}*.json`
+    do
+        echo "json file for ${asmt_type}: " ${json_file}
+        json_grade=`echo ${json_file}|cut -d _ -f 6`
+        echo "json_grade" $json_grade
+        echo "guid with extension " ${json_file#*${asmt_type}}
+        substr=${json_file#*${asmt_type}}
+        guid=${substr%.*}
+        echo "guid " $guid
+        for csv_file in `ls *${asmt_type}*.csv`
+        do
+            csv_grade=`echo ${csv_file}|cut -d _ -f 5`
+            echo "csv grade " $csv_grade
+            if [[ $csv_file =~ $guid ]] && [[ $csv_grade && $json_grade ]] ;then
+                echo "csv file" $csv_file;
+                csv=${csv_file%.*}
+                echo "csv " $csv
+                tar -cvzf $csv.tar.gz --disable-copyfile $csv_file $json_file
+                echo sbac udl2 | gpg --armor --local-user ca_user@ca.com --recipient sbac_data_provider@sbac.com --encrypt --passphrase-fd 0 --sign $csv.tar.gz
+                mv $csv.tar.gz.asc $csv.tar.gz.gpg
+            fi
+        done
     done
 done
 mkdir gz_dir
 mkdir gpg_dir
 cp *.gz gz_dir
 cp *.gpg gpg_dir
-
-
-

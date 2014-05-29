@@ -7,6 +7,7 @@ import json
 from pyramid.threadlocal import get_current_registry
 from requests import put
 from requests.exceptions import ConnectionError
+from simplejson.scanner import JSONDecodeError
 
 
 def register_file(user_id):
@@ -18,7 +19,7 @@ def register_file(user_id):
         response_json = response.json()
         registration_id = response_json['registration_id']
         download_url = response_json['url']
-    except ConnectionError:
+    except (ConnectionError, JSONDecodeError):
         registration_id = ''
         download_url = ''
 

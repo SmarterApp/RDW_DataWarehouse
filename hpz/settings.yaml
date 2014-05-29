@@ -108,6 +108,7 @@ development:
       db:
         schema_name: hpz
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
+        pool_size: 5
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296
@@ -124,6 +125,7 @@ jenkins_dev:
       db:
         schema_name: hpz
         url: postgresql+psycopg2://hpz:hpz2014@localhost:5432/hpz
+        pool_size: 5
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296

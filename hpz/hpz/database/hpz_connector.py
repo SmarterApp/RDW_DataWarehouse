@@ -32,6 +32,7 @@ def create_sqlalchemy(namespace, settings, allow_schema_create, metadata_generat
 
     settings = {
         'url': settings['hpz.db.url'],
-        'schema_name': settings['hpz.db.schema_name']
+        'schema_name': settings['hpz.db.schema_name'],
+        'pool_size': settings['hpz.db.pool_size']
     }
     setup_db_connection_from_ini(settings, '', metadata_generator, datasource_name, allow_schema_create)

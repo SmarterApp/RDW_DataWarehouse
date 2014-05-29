@@ -222,7 +222,7 @@ def create_assessment_object(asmt_type, period, year, subject, id_gen):
     @returns: New assessment object
     """
     # Create assessment
-    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen)
+    asmt = sbac_asmt_gen.generate_assessment(asmt_type, period, year, subject, id_gen, generate_item_level=WRITE_IL)
 
     # Output to requested mediums
     if WRITE_LZ:
@@ -276,20 +276,20 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
         assessment_results[asmt.guid_sr] = []
 
     # Create the original outcome object
-    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
+    ao = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen, generate_item_level=WRITE_IL)
     assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
     if random.random() < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen, generate_item_level=WRITE_IL)
         assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
     elif random.random() < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
-        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen)
+        ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen, generate_item_level=WRITE_IL)
         assessment_results[asmt.guid_sr].append(ao2)
 
         # See if the updated record should be deleted

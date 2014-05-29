@@ -25,7 +25,8 @@ from sbac_data_generation.util.assessment_stats import adjust_score
 
 
 def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date=None, to_date=None,
-                        claim_definitions=sbac_config.CLAIM_DEFINITIONS):
+                        claim_definitions=sbac_config.CLAIM_DEFINITIONS,
+                        generate_item_level=True):
     """
     Generate an assessment object.
 
@@ -37,6 +38,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
     @param from_date: Assessment from date
     @param to_date: Assessment to date
     @param claim_definitions: Definitions for claims to generate
+    @param generate_item_level: If should create item-level item bank
     @returns: The assessment object
     """
     # Get the claim definitions for this subject
@@ -61,8 +63,9 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
 
     # Generate Assessment Item Bank
     item_bank = {}
-    for i in range(1, sbac_config.ASMT_ITEM_BANK_SIZE + 1):
-        item_bank[i] = id_gen.get_rec_id('assmt_item_id')
+    if generate_item_level:
+        for i in range(1, sbac_config.ASMT_ITEM_BANK_SIZE + 1):
+            item_bank[i] = id_gen.get_rec_id('assmt_item_id')
 
     # Set other specifics
     sa.rec_id = id_gen.get_rec_id('assessment')
@@ -113,7 +116,7 @@ def generate_assessment(asmt_type, period, asmt_year, subject, id_gen, from_date
 
 
 def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment, inst_hier: InstitutionHierarchy,
-                                id_gen):
+                                id_gen, generate_item_level=True):
     """
     Generate an assessment outcome for a given student.
 
@@ -121,6 +124,7 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     @param assessment: The assessment to create the outcome for
     @param inst_hier: The institution hierarchy this student belongs to
     @param id_gen: ID generator
+    @param generate_item_level: If should create item-level responses
     @returns: The assessment outcome
     """
     # Create cut-point lists
@@ -138,25 +142,26 @@ def generate_assessment_outcome(student: SBACStudent, assessment: SBACAssessment
     sao.inst_hierarchy = inst_hier
 
     # Generate assessment outcome Item-level data
-    item_data_dict = {}
-    for i in range(1, sbac_config.ITEMS_PER_ASMT + 1):
-        pos_item = random.choice(list(assessment.item_bank.keys()))
-        while pos_item in item_data_dict:
+    if generate_item_level:
+        item_data_dict = {}
+        for i in range(1, sbac_config.ITEMS_PER_ASMT + 1):
             pos_item = random.choice(list(assessment.item_bank.keys()))
-        item_id = assessment.item_bank[pos_item]
-        item_data_dict[pos_item] = item_id
+            while pos_item in item_data_dict:
+                pos_item = random.choice(list(assessment.item_bank.keys()))
+            item_id = assessment.item_bank[pos_item]
+            item_data_dict[pos_item] = item_id
 
-    od = OrderedDict(sorted(item_data_dict.items()))
+        od = OrderedDict(sorted(item_data_dict.items()))
 
-    segment_id = '(SBAC)SBAC-MG110PT-S2-' + assessment.subject + '-' + str(student.grade) + '-' + \
-                 assessment.period[0:-5] + '-' + str(assessment.period_year - 1) + '-' + str(assessment.period_year)
+        segment_id = '(SBAC)SBAC-MG110PT-S2-' + assessment.subject + '-' + str(student.grade) + '-' + \
+                     assessment.period[0:-5] + '-' + str(assessment.period_year - 1) + '-' + str(assessment.period_year)
 
-    for pos in od:
-        item_format = random.choice(sbac_config.ASMT_ITEM_BANK_FORMAT)
-        item_level_data = SBACAssessmentOutcomeItemData(student_guid=student.guid_sr,
-                                                        key=od[pos], segment_id=segment_id,
-                                                        position=pos, format=item_format)
-        sao.item_level_data.append(item_level_data)
+        for pos in od:
+            item_format = random.choice(sbac_config.ASMT_ITEM_BANK_FORMAT)
+            item_level_data = SBACAssessmentOutcomeItemData(student_guid=student.guid_sr,
+                                                            key=od[pos], segment_id=segment_id,
+                                                            position=pos, format=item_format)
+            sao.item_level_data.append(item_level_data)
 
     # Create the date taken
     year_adj = 1

@@ -37,7 +37,7 @@ def task(msg):
                     'and found no content errors.'.format(guid_batch=guid_batch))
     else:
         raise UDL2InvalidJSONCSVPairException('Assessment guid mismatch between Json/Csv pair for '
-                                              'batch {guid_batch}'.format(guid_batch=conf.get(mk.GUID_BATCH)))
+                                              'batch {guid_batch}'.format(guid_batch=guid_batch))
 
     benchmark = BatchTableBenchmark(guid_batch, msg.get(mk.LOAD_TYPE),
                                     task.name, start_time, end_time,

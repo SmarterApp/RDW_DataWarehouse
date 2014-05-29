@@ -26,11 +26,10 @@ FILE_BODY_ATTRIBUTE = 'file'
 def file_upload_service(context, request):
     registration_id = request.matchdict['registration_id']
     file_name = request.headers[FILE_NAME_HEADER]
-    file_ext = os.path.splitext(file_name)[1]
 
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
     file_size_limit = int(request.registry.settings['hpz.frs.file_size_limit'])
-    file_pathname = os.path.join(base_upload_path, registration_id + file_ext)
+    file_pathname = os.path.join(base_upload_path, registration_id)
 
     try:
         if FileRegistry.is_file_registered(registration_id):

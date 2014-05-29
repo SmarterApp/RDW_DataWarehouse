@@ -16,19 +16,21 @@ from hpz.frs.decorators import validate_request_info
 
 
 logger = logging.getLogger(__name__)
-FILE_EXTENSION_HEADER = 'Fileext'
+FILE_NAME_HEADER = 'File-Name'
 FILE_BODY_ATTRIBUTE = 'file'
 
 
 @view_config(route_name='files', renderer='json', request_method='POST')
-@validate_request_info('headers', FILE_EXTENSION_HEADER)
+@validate_request_info('headers', FILE_NAME_HEADER)
 @validate_request_info('POST', FILE_BODY_ATTRIBUTE)
 def file_upload_service(context, request):
     registration_id = request.matchdict['registration_id']
-    file_ext = request.headers[FILE_EXTENSION_HEADER]
+    file_name = request.headers[FILE_NAME_HEADER]
+    file_ext = os.path.splitext(file_name)[1]
+
     base_upload_path = request.registry.settings['hpz.frs.upload_base_path']
     file_size_limit = int(request.registry.settings['hpz.frs.file_size_limit'])
-    file_pathname = os.path.join(base_upload_path, registration_id + '.' + file_ext)
+    file_pathname = os.path.join(base_upload_path, registration_id + file_ext)
 
     try:
         if FileRegistry.is_file_registered(registration_id):
@@ -42,7 +44,7 @@ def file_upload_service(context, request):
                 logger.warning('File [%s] exceeds recommended size limit', file_pathname)
 
             logger.info('The file was successfully uploaded')
-            FileRegistry.update_registration(registration_id, file_pathname)
+            FileRegistry.update_registration(registration_id, file_pathname, file_name)
 
         else:
             logger.error('The file attempting to be upload is not registered')

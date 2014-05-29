@@ -23,9 +23,10 @@ class FileRegistry:
         return registration_id
 
     @staticmethod
-    def update_registration(registration_id, file_path):
+    def update_registration(registration_id, file_path, file_name):
         registration_info = {DatabaseConstants.FILE_PATH: file_path,
-                             DatabaseConstants.CREATE_DT: datetime.now()}
+                             DatabaseConstants.CREATE_DT: datetime.now(),
+                             DatabaseConstants.FILE_NAME: file_name}
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
@@ -34,14 +35,14 @@ class FileRegistry:
             return result.rowcount > 0
 
     @staticmethod
-    def get_file_path(registration_id):
+    def get_file_info(registration_id):
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name='file_registry')
             result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == registration_id))
 
             registration_info = result.fetchone()
 
-            return registration_info['file_path']
+            return registration_info['file_path'], registration_info['file_name']
 
     @staticmethod
     def is_file_registered(registration_id):

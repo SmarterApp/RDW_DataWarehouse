@@ -14,10 +14,11 @@ class RegistrationTest(unittest.TestCase):
     def tearDown(self):
         self.__request = None
 
-    @patch('hpz.frs.registration_service.FileRegistry.get_file_path')
-    def test_download_file(self, path_patch):
+    @patch('hpz.frs.registration_service.FileRegistry.get_file_info')
+    def test_download_file(self, file_info_patch):
         dummy_file_path = 'tmp/filename.zip'
-        path_patch.return_value = dummy_file_path
+        dummy_file_name = 'ActualName.zip'
+        file_info_patch.return_value = dummy_file_path, dummy_file_name
 
         self.__request.method = 'GET'
         self.__request.matchdict['reg_id'] = '1234'
@@ -31,4 +32,4 @@ class RegistrationTest(unittest.TestCase):
         self.assertEqual(len(headers), 3)
         self.assertEqual(headers['X-Sendfile'], dummy_file_path)
         self.assertEqual(headers['Content-Type'], '')
-        self.assertEqual(headers['Content-Disposition'], 'attachment; filename=filename.zip')
+        self.assertEqual(headers['Content-Disposition'], 'attachment; filename=ActualName.zip')

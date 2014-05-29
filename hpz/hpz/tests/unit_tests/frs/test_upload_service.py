@@ -25,7 +25,7 @@ class UploadTest(unittest.TestCase):
     def setUp(self):
         self.__request = DummyRequest()
         self.__request.matchdict['registration_id'] = 'a1-b2-c3-d4-e5'
-        self.__request.headers['Fileext'] = 'zip'
+        self.__request.headers['File-Name'] = 'dummy.zip'
         reg = Registry()
         reg.settings = {'hpz.frs.upload_base_path': '/dev/null', 'hpz.frs.file_size_limit': '1024'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
@@ -133,7 +133,7 @@ class UploadTest(unittest.TestCase):
 
         __invalid_request = DummyRequest()
         __invalid_request.matchdict['registration_id'] = 'a1-b2-c3-d4-e5'
-        __invalid_request.headers['InvalidFileext'] = 'zip'
+        __invalid_request.headers['InvalidFileName'] = 'Dummy'
 
         self.__request.method = 'POST'
         self.__request.POST['file'] = DummyFile()

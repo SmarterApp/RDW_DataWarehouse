@@ -11,9 +11,8 @@ def download_file(context, request):
 
     registration_id = request.matchdict['reg_id']
 
-    file_path = FileRegistry.get_file_path(registration_id)
-    fn = os.path.basename(file_path)
+    file_path, file_name = FileRegistry.get_file_info(registration_id)
 
-    headers = {'X-Sendfile': file_path, 'Content-Type': '', 'Content-Disposition': 'attachment; filename=' + fn}
+    headers = {'X-Sendfile': file_path, 'Content-Type': '', 'Content-Disposition': 'attachment; filename=' + file_name}
 
     return Response(headers=headers)

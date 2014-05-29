@@ -40,12 +40,9 @@ class FileRegistry:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
             result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == registration_id))
 
-            if result.rowcount == 1:
-                registration_info = result.fetchone()
-            else:
-                return None, None, None
+            registration_info = result.fetchone()
 
-            return registration_info[DatabaseConstants.USER_ID], registration_info[DatabaseConstants.FILE_PATH], registration_info[DatabaseConstants.FILE_NAME]
+            return registration_info
 
     @staticmethod
     def is_file_registered(registration_id):

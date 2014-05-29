@@ -5,6 +5,7 @@ from pyramid.security import authenticated_userid
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
 from hpz.database.file_registry import FileRegistry
+from hpz.database.constants import DatabaseConstants
 
 __author__ = 'okrook'
 
@@ -20,7 +21,10 @@ def download_file(context, request):
     # TODO: If/when hpz upgrades to pyramid 1.5 or beyond, change to uid = request.authenticated_userid.get_uid().
     uid = authenticated_userid(request).get_uid()
 
-    user_id, file_path, file_name = FileRegistry.get_registration_info(registration_id)
+    registration_info = FileRegistry.get_registration_info(registration_id)
+    user_id = registration_info[DatabaseConstants.USER_ID] if registration_info is not None else None
+    file_path = registration_info[DatabaseConstants.FILE_PATH] if registration_info is not None else None
+    file_name = registration_info[DatabaseConstants.FILE_NAME] if registration_info is not None else None
 
     response = HTTPNotFound()
     if user_id is None:

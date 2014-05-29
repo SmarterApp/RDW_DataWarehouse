@@ -11,10 +11,10 @@ class HPZConnectorTest(unittest.TestCase):
     def test_create_sqlalchemy(self, connector_mock):
         connector_mock.return_value = None
         namespace = 'ns'
-        settings = {'hpz.db.url': 'htttp://test.com', 'hpz.db.schema_name': 'schema1'}
+        settings = {'hpz.db.url': 'htttp://test.com', 'hpz.db.schema_name': 'schema1', 'hpz.db.pool_size': 20}
         allow_schema_create = False
 
         create_sqlalchemy(namespace, settings, allow_schema_create, None)
 
-        final_settings = {'url': 'htttp://test.com', 'schema_name': 'schema1'}
+        final_settings = {'url': 'htttp://test.com', 'schema_name': 'schema1', 'pool_size': 20}
         connector_mock.assert_called_with(final_settings, '', None, namespace, allow_schema_create)

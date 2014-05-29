@@ -48,8 +48,9 @@ class ContentValidator():
         """
         # Get the corresponding validator and check
         error_list = []
-        for validator in self.validators:
-            result = validator.execute(conf)
-            if result != ErrorCode.STATUS_OK:
-                error_list.append(result)
+        if self.validators:
+            for validator in self.validators:
+                result = validator.execute(conf)
+                if result != ErrorCode.STATUS_OK:
+                    error_list.append(result)
         return error_list

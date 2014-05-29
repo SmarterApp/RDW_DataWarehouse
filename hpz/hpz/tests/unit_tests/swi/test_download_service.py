@@ -26,7 +26,7 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.info')
     def test_download_file(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        get_reg_info_patch.return_value = (self.dummy_uid, self.dummy_file_path, self.dummy_file_name)
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path, "file_name": self.dummy_file_name}
         is_file_patch.return_value = True
         logger_patch.return_value = None
 
@@ -51,7 +51,7 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.error')
     def test_download_file_not_registered(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        get_reg_info_patch.return_value = (None, None, None)
+        get_reg_info_patch.return_value = None
         is_file_patch.return_value = True
         logger_patch.return_value = None
 
@@ -70,7 +70,7 @@ class RegistrationTest(unittest.TestCase):
     def test_download_file_not_owner(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
         dummy_user_id = 'dduck'
-        get_reg_info_patch.return_value = (dummy_user_id, self.dummy_file_path, self.dummy_file_name)
+        get_reg_info_patch.return_value = {"user_id": dummy_user_id, "file_path": self.dummy_file_path, "file_name": self.dummy_file_name}
         is_file_patch.return_value = True
         logger_patch.return_value = None
 
@@ -88,7 +88,7 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.error')
     def test_download_file_still_processing(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        get_reg_info_patch.return_value = (self.dummy_uid, None, None)
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": None, "file_name": None}
         is_file_patch.return_value = True
         logger_patch.return_value = None
 
@@ -106,7 +106,7 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.error')
     def test_download_file_not_on_disk(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        get_reg_info_patch.return_value = (self.dummy_uid, self.dummy_file_path, self.dummy_file_name)
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path, "file_name": self.dummy_file_name}
         is_file_patch.return_value = False
         logger_patch.return_value = None
 

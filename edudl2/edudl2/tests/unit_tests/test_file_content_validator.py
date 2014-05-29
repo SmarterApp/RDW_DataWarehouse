@@ -1,9 +1,9 @@
 __author__ = 'sravi'
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from edudl2.exceptions.errorcodes import ErrorCode
-from edudl2.content_validator.content_validator import ContentValidator
+from edudl2.content_validator.content_validator import ContentValidator, ISValidAssessmentPair
 
 
 class TestContentValidator(unittest.TestCase):
@@ -65,3 +65,35 @@ class TestContentValidator(unittest.TestCase):
         validator.validators = [mock_instance_1, mock_instance_2]
         error_list = validator.execute(conf={})
         self.assertEqual(len(error_list), 0)
+
+    @patch.object(ISValidAssessmentPair, 'get_asmt_and_outcome_result')
+    def test_is_valid_assessment_pair_for_valid_json_csv_file_combination(self, mock_get_asmt_and_outcome_result):
+        mock_get_asmt_and_outcome_result.return_value = ([dict({'guid_asmt': '123'})], [dict({'guid_asmt': '123'})])
+        is_valid_assessment_pair = ISValidAssessmentPair()
+        error_code = is_valid_assessment_pair.execute(conf={})
+        is_valid_assessment_pair.get_asmt_and_outcome_result.assert_called_once_with({})
+        self.assertEqual(error_code, ErrorCode.STATUS_OK)
+
+    @patch.object(ISValidAssessmentPair, 'get_asmt_and_outcome_result')
+    def test_is_valid_assessment_pair_for_invalid_file_combination(self, mock_get_asmt_and_outcome_result):
+        mock_get_asmt_and_outcome_result.return_value = ([dict({'guid_asmt': '123'})], [dict({'guid_asmt': '130'})])
+        is_valid_assessment_pair = ISValidAssessmentPair()
+        error_code = is_valid_assessment_pair.execute(conf={})
+        is_valid_assessment_pair.get_asmt_and_outcome_result.assert_called_once_with({})
+        self.assertEqual(error_code, ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR)
+
+    @patch.object(ISValidAssessmentPair, 'get_asmt_and_outcome_result')
+    def test_is_valid_assessment_pair_for_csv_with_multiple_asmnts(self, mock_get_asmt_and_outcome_result):
+        mock_get_asmt_and_outcome_result.return_value = ([dict({'guid_asmt': '123'})], [dict({'guid_asmt': '130'}), dict({'guid_asmt': '123'})])
+        is_valid_assessment_pair = ISValidAssessmentPair()
+        error_code = is_valid_assessment_pair.execute(conf={})
+        is_valid_assessment_pair.get_asmt_and_outcome_result.assert_called_once_with({})
+        self.assertEqual(error_code, ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR)
+
+    @patch.object(ISValidAssessmentPair, 'get_asmt_and_outcome_result')
+    def test_is_valid_assessment_pair_for_csv_with_no_asmnts(self, mock_get_asmt_and_outcome_result):
+        mock_get_asmt_and_outcome_result.return_value = ([dict({'guid_asmt': '123'})], [])
+        is_valid_assessment_pair = ISValidAssessmentPair()
+        error_code = is_valid_assessment_pair.execute(conf={})
+        is_valid_assessment_pair.get_asmt_and_outcome_result.assert_called_once_with({})
+        self.assertEqual(error_code, ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR)

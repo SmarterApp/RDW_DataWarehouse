@@ -15,22 +15,25 @@ from edudl2.udl2.constants import Constants
 class ISValidAssessmentPair():
     """Ensures the asmt(Json) and asmt_outcome(csv) records conforms to the same Assessment"""
 
-    @staticmethod
-    def execute(conf):
+    def get_asmt_and_outcome_result(self, conf):
+        with get_udl_connection() as conn:
+            asmt_table = conn.get_table(conf.get(mk.ASMT_TABLE))
+            asmt_outcome_table = conn.get_table(conf.get(mk.ASMT_OUTCOME_TABLE))
+            asmt_result = conn.get_result(select([asmt_table.c.guid_asmt]).
+                                          where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
+            asmt_outcome_result = conn.get_result(select([asmt_outcome_table.c.guid_asmt], distinct=True).
+                                                  where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
+        return asmt_result, asmt_outcome_result
+
+    def execute(self, conf):
         """
         Ensures the asmt_guid for all the records in the asmt_outcome matches with the asmt_guid in asmt table
         @return: status code: String
         """
-        with get_udl_connection() as conn:
-            asmt_table = conn.get_table(conf.get(mk.ASMT_TABLE))
-            asmt_outcome_table = conn.get_table(conf.get(mk.ASMT_OUTCOME_TABLE))
-            asmt_row = conn.get_result(select([asmt_table.c.guid_asmt]).
-                                       where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
-            asmt_outcome_row = conn.get_result(select([asmt_outcome_table.c.guid_asmt], distinct=True).
-                                               where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
-            if 1 != len(asmt_row) or 1 != len(asmt_outcome_row) \
-                    or asmt_row[0].get(Constants.GUID_ASMT) != asmt_outcome_row[0].get(Constants.GUID_ASMT):
-                return ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR
+        asmt_result, asmt_outcome_result = self.get_asmt_and_outcome_result(conf)
+        if 1 != len(asmt_result) or 1 != len(asmt_outcome_result) \
+                or asmt_result[0].get(Constants.GUID_ASMT) != asmt_outcome_result[0].get(Constants.GUID_ASMT):
+            return ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR
 
         return ErrorCode.STATUS_OK
 

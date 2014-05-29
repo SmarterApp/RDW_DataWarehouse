@@ -20,7 +20,7 @@ requires = [
     'edapi',
     'edworker',
     'edschema',
-    'edidentity'
+    'edidentity',
     'py-postgresql==1.1.0',
     'psycopg2==2.5.1',
     'pyramid_exclog==0.7',

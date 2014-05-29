@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 class FileRegistry:
 
     @staticmethod
-    def register_request():
+    def register_request(user_id):
         registration_id = uuid4()
-        registration_info = {DatabaseConstants.REGISTRATION_ID: str(registration_id)}
+        registration_info = {DatabaseConstants.REGISTRATION_ID: str(registration_id), DatabaseConstants.USER_ID: user_id}
 
         with get_hpz_connection() as conn:
             file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
@@ -34,19 +34,22 @@ class FileRegistry:
             return result.rowcount > 0
 
     @staticmethod
-    def get_file_path(registration_id):
+    def get_registration_info(registration_id):
         with get_hpz_connection() as conn:
-            file_reg_table = conn.get_table(table_name='file_registry')
+            file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
             result = conn.execute(file_reg_table.select().where(file_reg_table.c.registration_id == registration_id))
 
-            registration_info = result.fetchone()
+            if result.rowcount == 1:
+                registration_info = result.fetchone()
+            else:
+                return None, None
 
-            return registration_info['file_path']
+            return registration_info[DatabaseConstants.USER_ID], registration_info[DatabaseConstants.FILE_PATH]
 
     @staticmethod
     def is_file_registered(registration_id):
         with get_hpz_connection() as conn:
-            file_reg_table = conn.get_table(table_name='file_registry')
+            file_reg_table = conn.get_table(table_name=DatabaseConstants.HPZ_TABLE)
             result = conn.execute(file_reg_table.select(limit=1).where(file_reg_table.c.registration_id == registration_id))
 
             return result.rowcount == 1

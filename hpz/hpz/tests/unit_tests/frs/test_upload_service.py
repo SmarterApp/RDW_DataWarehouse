@@ -118,7 +118,7 @@ class UploadTest(unittest.TestCase):
 
         response = file_upload_service(None, self.__request)
 
-        logger_patch.assert_called_once_with('File [%s] exceeds recommended size limit', '/dev/null/a1-b2-c3-d4-e5.zip')
+        logger_patch.assert_called_once_with('File %s exceeds recommended size limit', '/dev/null/a1-b2-c3-d4-e5.zip')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(update_registration_patch.called)

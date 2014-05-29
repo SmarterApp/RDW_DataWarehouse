@@ -39,9 +39,9 @@ def file_upload_service(context, request):
                 shutil.copyfileobj(input_file, output_file)
 
             if os.path.getsize(file_pathname) > file_size_limit:
-                logger.warning('File [%s] exceeds recommended size limit', file_pathname)
+                logger.warning('File %s exceeds recommended size limit', file_pathname)
 
-            logger.info('The file was successfully uploaded')
+            logger.info('File %s was successfully uploaded', file_pathname)
             FileRegistry.update_registration(registration_id, file_pathname)
 
         else:

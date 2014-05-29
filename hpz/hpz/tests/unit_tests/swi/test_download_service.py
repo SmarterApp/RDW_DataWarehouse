@@ -2,6 +2,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from hpz.swi.download_service import download_file
 from unittest.mock import patch
+from edauth.security.user import User
 
 __author__ = 'npandey'
 
@@ -14,10 +15,17 @@ class RegistrationTest(unittest.TestCase):
     def tearDown(self):
         self.__request = None
 
-    @patch('hpz.frs.registration_service.FileRegistry.get_file_path')
-    def test_download_file(self, path_patch):
+    @patch('hpz.swi.download_service.authenticated_userid')
+    @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
+    @patch('os.path.isfile')
+    def test_download_file(self, is_file_patch, get_reg_info_patch, auth_userid_patch):
+        dummy_uid = 'bbunny'
+        dummy_user = User()
+        dummy_user.set_uid(dummy_uid)
         dummy_file_path = 'tmp/filename.zip'
-        path_patch.return_value = dummy_file_path
+        auth_userid_patch.return_value = dummy_user
+        get_reg_info_patch.return_value = (dummy_uid, dummy_file_path)
+        is_file_patch.return_value = True
 
         self.__request.method = 'GET'
         self.__request.matchdict['reg_id'] = '1234'

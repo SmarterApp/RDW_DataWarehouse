@@ -5,7 +5,7 @@ from pyramid.security import authenticated_userid
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
 from hpz.database.file_registry import FileRegistry
-from hpz.database.constants import DatabaseConstants
+from hpz.database.constants import HPZ
 
 __author__ = 'okrook'
 
@@ -19,25 +19,36 @@ def download_file(context, request):
 
     # Note: Since pyramid v1.5, this method has been deprecated (pyramid v1.4 is currently being used by hpz).
     # TODO: If/when hpz upgrades to pyramid 1.5 or beyond, change to uid = request.authenticated_userid.get_uid().
-    uid = authenticated_userid(request).get_uid()
+    req_uid = authenticated_userid(request).get_uid()
 
     registration_info = FileRegistry.get_registration_info(registration_id)
-    user_id = registration_info[DatabaseConstants.USER_ID] if registration_info is not None else None
-    file_path = registration_info[DatabaseConstants.FILE_PATH] if registration_info is not None else None
-    file_name = registration_info[DatabaseConstants.FILE_NAME] if registration_info is not None else None
+    reg_uid = registration_info[HPZ.USER_ID] if registration_info is not None else None
+    file_path = registration_info[HPZ.FILE_PATH] if registration_info is not None else None
+    file_name = registration_info[HPZ.FILE_NAME] if registration_info is not None else None
 
     response = HTTPNotFound()
-    if user_id is None:
-        logger.error('Download URL is not currently registered')
-    elif uid != user_id:
-        logger.error('Authenticated user is not owner of the file')
-    elif file_path is None:
-        logger.error('File is not available, as it is still being processed')
-    elif not os.path.isfile(file_path):
-        logger.error('File is registered, but does not exist on disk')
-    else:
+
+    if is_download_valid(registration_id, reg_uid, req_uid, file_path):
         headers = {'X-Sendfile': file_path, 'Content-Type': '', 'Content-Disposition': 'attachment; filename=' + file_name}
         response = Response(headers=headers)
-        logger.info('File %s was downloaded', file_name)
+        logger.info('File %s was successfully downloaded', file_path)
 
     return response
+
+
+def is_download_valid(registration_id, reg_uid, req_uid, file_path):
+    is_validated = True
+    if reg_uid is None:
+        logger.error('No file record is registered with requested id %s', registration_id)
+        is_validated = False
+    elif req_uid != reg_uid:
+        logger.error('User %s is not owner of the file with registration id %s', req_uid, registration_id)
+        is_validated = False
+    elif file_path is None:
+        logger.error('File with registration id %s is not yet available', registration_id)
+        is_validated = False
+    elif not os.path.isfile(file_path):
+        logger.error('File %s is registered, but does not exist on disk', file_path)
+        is_validated = False
+
+    return is_validated

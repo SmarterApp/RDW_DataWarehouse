@@ -26,7 +26,8 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.info')
     def test_download_file(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path, "file_name": self.dummy_file_name}
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path,
+                                           "file_name": self.dummy_file_name}
         is_file_patch.return_value = True
         logger_patch.return_value = None
 
@@ -43,7 +44,7 @@ class RegistrationTest(unittest.TestCase):
         self.assertEqual(headers['X-Sendfile'], self.dummy_file_path)
         self.assertEqual(headers['Content-Type'], '')
         self.assertEqual(headers['Content-Disposition'], 'attachment; filename=ActualName.zip')
-        logger_patch.assert_called_once_with('File %s was downloaded', 'ActualName.zip')
+        logger_patch.assert_called_once_with('File %s was successfully downloaded', 'tmp/filename.zip')
 
     @patch('hpz.swi.download_service.authenticated_userid')
     @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
@@ -56,12 +57,12 @@ class RegistrationTest(unittest.TestCase):
         logger_patch.return_value = None
 
         self.__request.method = 'GET'
-        self.__request.matchdict['reg_id'] = '1234'
+        self.__request.matchdict['reg_id'] = '12345'
 
         response = download_file(None, self.__request)
 
         self.assertEqual(response.status_code, 404)
-        logger_patch.assert_called_once_with('Download URL is not currently registered')
+        logger_patch.assert_called_once_with('No file record is registered with requested id %s', '12345')
 
     @patch('hpz.swi.download_service.authenticated_userid')
     @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
@@ -69,18 +70,19 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.error')
     def test_download_file_not_owner(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        dummy_user_id = 'dduck'
-        get_reg_info_patch.return_value = {"user_id": dummy_user_id, "file_path": self.dummy_file_path, "file_name": self.dummy_file_name}
+        reg_user_id = 'dduck'
+        get_reg_info_patch.return_value = {"user_id": reg_user_id, "file_path": self.dummy_file_path,
+                                           "file_name": self.dummy_file_name}
         is_file_patch.return_value = True
         logger_patch.return_value = None
 
         self.__request.method = 'GET'
-        self.__request.matchdict['reg_id'] = '1234'
+        self.__request.matchdict['reg_id'] = '12345'
 
         response = download_file(None, self.__request)
 
         self.assertEqual(response.status_code, 404)
-        logger_patch.assert_called_once_with('Authenticated user is not owner of the file')
+        logger_patch.assert_called_once_with('User %s is not owner of the file with registration id %s', 'bbunny', '12345')
 
     @patch('hpz.swi.download_service.authenticated_userid')
     @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
@@ -93,12 +95,12 @@ class RegistrationTest(unittest.TestCase):
         logger_patch.return_value = None
 
         self.__request.method = 'GET'
-        self.__request.matchdict['reg_id'] = '1234'
+        self.__request.matchdict['reg_id'] = '12345'
 
         response = download_file(None, self.__request)
 
         self.assertEqual(response.status_code, 404)
-        logger_patch.assert_called_once_with('File is not available, as it is still being processed')
+        logger_patch.assert_called_once_with('File with registration id %s is not yet available', '12345')
 
     @patch('hpz.swi.download_service.authenticated_userid')
     @patch('hpz.frs.registration_service.FileRegistry.get_registration_info')
@@ -106,14 +108,15 @@ class RegistrationTest(unittest.TestCase):
     @patch('hpz.swi.download_service.logger.error')
     def test_download_file_not_on_disk(self, logger_patch, is_file_patch, get_reg_info_patch, auth_userid_patch):
         auth_userid_patch.return_value = self.dummy_user
-        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path, "file_name": self.dummy_file_name}
+        get_reg_info_patch.return_value = {"user_id": self.dummy_uid, "file_path": self.dummy_file_path,
+                                           "file_name": self.dummy_file_name}
         is_file_patch.return_value = False
         logger_patch.return_value = None
 
         self.__request.method = 'GET'
-        self.__request.matchdict['reg_id'] = '1234'
+        self.__request.matchdict['reg_id'] = '12345'
 
         response = download_file(None, self.__request)
 
         self.assertEqual(response.status_code, 404)
-        logger_patch.assert_called_once_with('File is registered, but does not exist on disk')
+        logger_patch.assert_called_once_with('File %s is registered, but does not exist on disk', 'tmp/filename.zip')

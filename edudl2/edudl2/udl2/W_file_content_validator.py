@@ -16,6 +16,7 @@ from celery.utils.log import get_task_logger
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.content_validator.content_validator import ContentValidator
+from edudl2.udl2_util.exceptions import UDL2InvalidJSONCSVPairException
 
 
 logger = get_task_logger(__name__)
@@ -35,7 +36,8 @@ def task(msg):
         logger.info('FILE_CONTENT_VALIDATOR: Validated batch {guid_batch} '
                     'and found no content errors.'.format(guid_batch=guid_batch))
     else:
-        raise Exception('File content validator error: %s' % errors)
+        raise UDL2InvalidJSONCSVPairException('Assessment guid mismatch between Json/Csv pair for '
+                                              'batch {guid_batch}'.format(guid_batch=conf.get(mk.GUID_BATCH)))
 
     benchmark = BatchTableBenchmark(guid_batch, msg.get(mk.LOAD_TYPE),
                                     task.name, start_time, end_time,

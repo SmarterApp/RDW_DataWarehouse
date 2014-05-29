@@ -10,7 +10,6 @@ from edudl2.exceptions.errorcodes import ErrorCode
 from edudl2.udl2 import message_keys as mk
 from sqlalchemy.sql.expression import select
 from edudl2.udl2.constants import Constants
-from edudl2.udl2_util.exceptions import UDL2InvalidJSONCSVPairException
 
 
 class ISValidAssessmentPair():
@@ -31,8 +30,8 @@ class ISValidAssessmentPair():
                                                where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
             if 1 != len(asmt_row) or 1 != len(asmt_outcome_row) \
                     or asmt_row[0].get(Constants.GUID_ASMT) != asmt_outcome_row[0].get(Constants.GUID_ASMT):
-                raise UDL2InvalidJSONCSVPairException('Assessment guid mismatch between Json/Csv pair for '
-                                                      'batch {guid_batch}'.format(guid_batch=conf.get(mk.GUID_BATCH)))
+                return ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR
+
         return ErrorCode.STATUS_OK
 
 

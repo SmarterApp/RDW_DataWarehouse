@@ -36,6 +36,8 @@ class ErrorCode(object):
     BATCH_REC_FAILED = '2005'
     DATA_INTEGRITY_ERROR = '1001'
 
+    ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR = '3014'
+
     messages = {
         # system code
         '-1': 'NOT_IMPLEMENTED',

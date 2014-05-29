@@ -37,7 +37,7 @@ common:
         metadata: ../../resource/idp_metadata.xml
       skip.verify: False
       saml:
-        identity_parser: hpz.swi.security.hpz_identity_parser.HPZIdentityParser
+        identity_parser: edidentity.security.sbac_identity_parser.SbacIdentityParser
     cache:
       expire: 3600
       lock_dir: /tmp/memcache

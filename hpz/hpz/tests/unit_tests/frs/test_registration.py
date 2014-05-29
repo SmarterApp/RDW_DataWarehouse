@@ -38,7 +38,7 @@ class RegistrationTest(unittest.TestCase):
 
         response_json = json.loads(str(response.body, encoding='UTF-8'))
         self.assertTrue('url' in response_json)
-        self.assertTrue(persist_patch.called)
+        persist_patch.assert_called_with('1234')
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
     def test_registration_incorrect_payload(self, persist_patch):

@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 def download_file(context, request):
 
     registration_id = request.matchdict['reg_id']
+
+    # Note: Since pyramid v1.5, this method has been deprecated (pyramid v1.4 is currently being used by hpz).
+    # TODO: If/when hpz upgrades to pyramid 1.5 or beyond, change to uid = request.authenticated_userid.get_uid().
     uid = authenticated_userid(request).get_uid()
 
     user_id, file_path = FileRegistry.get_registration_info(registration_id)

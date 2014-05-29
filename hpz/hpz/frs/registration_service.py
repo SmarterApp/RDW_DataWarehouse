@@ -16,7 +16,7 @@ UID_PARAMETER = 'uid'
 @validate_request_info('json_body', UID_PARAMETER)
 def put_file_registration_service(context, request):
     user_id = request.json_body[UID_PARAMETER]
-    registration_id = FileRegistry.register_request()
+    registration_id = FileRegistry.register_request(user_id)
 
     url = request.route_url('download', reg_id=str(registration_id))
 

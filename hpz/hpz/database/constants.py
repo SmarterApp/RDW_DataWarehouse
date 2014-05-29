@@ -7,3 +7,4 @@ class DatabaseConstants:
     CREATE_DT = 'create_dt'
     REGISTRATION_ID = 'registration_id'
     FILE_NAME = 'file_name'
+    USER_ID = 'user_id'

@@ -22,7 +22,7 @@ class ISValidAssessmentPair():
             asmt_result = conn.get_result(select([asmt_table.c.guid_asmt]).
                                           where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
             asmt_outcome_result = conn.get_result(select([asmt_outcome_table.c.guid_asmt], distinct=True).
-                                                  where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
+                                                  where(asmt_outcome_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
         return asmt_result, asmt_outcome_result
 
     def execute(self, conf):

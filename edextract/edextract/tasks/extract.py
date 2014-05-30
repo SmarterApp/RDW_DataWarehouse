@@ -18,7 +18,7 @@ from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import ExtractionError
 from edcore.exceptions import RemoteCopyError
-from edextract.utils.data_archiver import encrypted_archive_files, archive_files, GPGPublicKeyException
+from edextract.utils.data_archiver import archive_files, encrypted_archive_files, archive_unencrypted_files, GPGPublicKeyException
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
@@ -50,7 +50,7 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     ##### TODO: Retain this section once extraction is fully integrated with HPZ.
         workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
                          generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                         archive.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True))
+                         archive_without_encryption.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True))
     #####
 
     workflow.apply_async()
@@ -97,6 +97,19 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
             generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
 
     return group(generate_tasks)
+
+
+@celery.task(name="tasks.extract.archive_without_encryption")
+def archive_without_encryption(request_id, archive_file_name, directory_to_archive):
+    '''
+    given a directory, archive everything in this directory to a file name specified
+    '''
+    task_info = {Constants.TASK_ID: archive.request.id,
+                 Constants.CELERY_TASK_ID: archive.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
+    archive_unencrypted_files(directory_to_archive, archive_file_name)
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
 
 
 @celery.task(name="tasks.extract.archive")

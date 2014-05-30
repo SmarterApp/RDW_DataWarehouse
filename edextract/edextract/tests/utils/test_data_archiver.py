@@ -5,9 +5,11 @@ Created on Dec 19, 2013
 '''
 import unittest
 import os
-from edextract.utils.data_archiver import import_recipient_keys, archive_files, encrypted_archive_files,\
-    GPGPublicKeyException, GPGException
+from edextract.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
+                                           GPGPublicKeyException, GPGException, archive_unencrypted_files)
 import tempfile
+
+## TODO: Refactor this module to just contain test_archive_unencrypted_files once Smarter is fully integrated with HPZ.
 
 
 class MockKeyserver():
@@ -133,6 +135,17 @@ class Test_FileUtils(unittest.TestCase):
             self.assertTrue(os.path.exists(homedir))
             keyserver = settings['extract.gpg.keyserver']
             encrypted_archive_files(dir, recipients, outputfile, homedir=homedir, keyserver=keyserver, gpgbinary='gpg')
+            self.assertTrue(os.path.isfile(outputfile))
+            self.assertNotEqual(os.stat(outputfile).st_size, 0)
+
+    def test_archive_unencrypted_files(self):
+        files = ['test_0.csv', 'test_1.csv', 'test.json']
+        with tempfile.TemporaryDirectory() as dir:
+            for file in files:
+                with open(os.path.join(dir, file), 'a') as f:
+                    f.write(file)
+            outputfile = os.path.join(dir, 'test_output.zip')
+            archive_unencrypted_files(dir, outputfile)
             self.assertTrue(os.path.isfile(outputfile))
             self.assertNotEqual(os.stat(outputfile).st_size, 0)
 

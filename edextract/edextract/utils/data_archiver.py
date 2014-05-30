@@ -3,12 +3,15 @@ Created on Dec 2, 2013
 
 @author: tosako
 '''
+
 import os
 import io
 import zipfile
 import gnupg
 import tempfile
 from edextract.exceptions import GPGPublicKeyException, GPGException
+
+## TODO: Refactor this module to just contain archive_unencrypted_files once Smarter is fully integrated with HPZ.
 
 
 def import_recipient_keys(gpg, recipients, keyserver):
@@ -55,3 +58,15 @@ def archive_files(dirname):
         for file in files:
             zf.write(file, arcname=os.path.basename(file))
     return bufferedIO
+
+
+## TODO: Replace encrypted_archive_files with this method once Smarter is fully integrated with HPZ.
+def archive_unencrypted_files(dir_to_archive, archive_file_name):
+    '''
+    Create unencrypted archive file from files in directory.
+    '''
+
+    with zipfile.ZipFile(archive_file_name, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+        files = [os.path.join(dir_to_archive, f) for f in os.listdir(dir_to_archive) if os.path.isfile(os.path.join(dir_to_archive, f))]
+        for file in files:
+            zf.write(file, arcname=os.path.basename(file))

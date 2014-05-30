@@ -43,7 +43,7 @@ class ContentValidator():
 
     def __init__(self):
         """Initialize all the data validators"""
-        self.validators = [ISValidAssessmentPair()]
+        self.validators = {Constants.LOAD_TYPE_ASSESSMENT: [ISValidAssessmentPair()]}
 
     def execute(self, conf):
         """
@@ -51,8 +51,9 @@ class ContentValidator():
         """
         # Get the corresponding validator and check
         error_list = []
-        if self.validators:
-            for validator in self.validators:
+        validators = self.validators.get(conf.get(mk.LOAD_TYPE))
+        if validators:
+            for validator in validators:
                 result = validator.execute(conf)
                 if result != ErrorCode.STATUS_OK:
                     error_list.append(result)

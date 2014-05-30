@@ -122,7 +122,6 @@ def import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
     '''
     # create sequence name, use table_name and a random number combination.
     # This sequence is used for column src_file_rec_num
-    import pdb;pdb.set_trace();
     seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
 
     global_tenant_seq_name = Constants.SEQUENCE_NAME + '_' + tenant_name

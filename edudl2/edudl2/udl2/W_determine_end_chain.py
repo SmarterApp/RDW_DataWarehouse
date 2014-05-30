@@ -18,7 +18,6 @@ def task(msg):
     logger.info('DETERMINE END ROUTE: Determining end route by %s' % load_type)
 
     common_tasks = [W_parallel_csv_load.get_load_from_csv_tasks(msg),
-                    W_file_content_validator.task.s(),
                     W_load_json_to_integration.task.s(),
                     W_file_content_validator.task.s(),
                     W_load_to_integration_table.task.s(),

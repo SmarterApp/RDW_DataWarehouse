@@ -53,6 +53,7 @@ def get_content_validator_conf(guid_batch, load_type):
         mk.SOURCE_DB_SCHEMA: udl_db_conn.get(Constants.DB_SCHEMA),
         mk.ASMT_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
         mk.ASMT_OUTCOME_TABLE: Constants.UDL2_STAGING_TABLE(load_type),
-        mk.GUID_BATCH: guid_batch
+        mk.GUID_BATCH: guid_batch,
+        mk.LOAD_TYPE: load_type
     }
     return conf

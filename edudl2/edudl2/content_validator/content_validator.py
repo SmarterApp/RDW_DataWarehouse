@@ -51,10 +51,9 @@ class ContentValidator():
         """
         # Get the corresponding validator and check
         error_list = []
-        validators = self.validators.get(conf.get(mk.LOAD_TYPE))
-        if validators:
-            for validator in validators:
-                result = validator.execute(conf)
-                if result != ErrorCode.STATUS_OK:
-                    error_list.append(result)
+        validators = self.validators.get(conf.get(mk.LOAD_TYPE)) if self.validators else []
+        for validator in validators:
+            result = validator.execute(conf)
+            if result != ErrorCode.STATUS_OK:
+                error_list.append(result)
         return error_list

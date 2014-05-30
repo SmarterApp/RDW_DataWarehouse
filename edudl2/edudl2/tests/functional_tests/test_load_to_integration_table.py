@@ -39,7 +39,8 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_TABLE: staging_table,
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
-            mk.GUID_BATCH: guid
+            mk.GUID_BATCH: guid,
+            mk.TENANT_NAME: 'cat'
         }
         load_file(conf)
         with get_udl_connection() as conn:

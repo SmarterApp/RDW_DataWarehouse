@@ -89,7 +89,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
             self.assertNotEqual(result, [])
             for row in result:
                 status = row['udl_phase_step_status']
-                self.assertEqual(status, mk.SUCCESS, 'UDL process did not complete successfully')
+                self.assertEqual(status, mk.SUCCESS, 'UDL process completed successfully')
 
     #Validate the UDL process completed successfully
     def validate_stats_update(self, status):

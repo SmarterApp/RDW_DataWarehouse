@@ -126,7 +126,6 @@ def archive(request_id, directory):
     return content.getvalue()
 
 
-# TODO: Remove this task once all extract types are downloaded by HPZ.
 @celery.task(name="tasks.extract.archive_with_encryption",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)
@@ -168,7 +167,6 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
             raise ExtractionError()
 
 
-# TODO: Remove this task once all extract types are downloaded by HPZ.
 @celery.task(name="tasks.extract.remote_copy",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)

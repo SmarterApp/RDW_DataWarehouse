@@ -9,8 +9,6 @@ from edextract.utils.data_archiver import (import_recipient_keys, archive_files,
                                            GPGPublicKeyException, GPGException, archive_unencrypted_files)
 import tempfile
 
-## TODO: Refactor this module to just contain test_archive_unencrypted_files once Smarter is fully integrated with HPZ.
-
 
 class MockKeyserver():
 

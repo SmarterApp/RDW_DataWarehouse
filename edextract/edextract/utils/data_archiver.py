@@ -11,8 +11,6 @@ import gnupg
 import tempfile
 from edextract.exceptions import GPGPublicKeyException, GPGException
 
-## TODO: Refactor this module to just contain archive_unencrypted_files once Smarter is fully integrated with HPZ.
-
 
 def import_recipient_keys(gpg, recipients, keyserver):
     keys = gpg.search_keys(recipients, keyserver)
@@ -60,7 +58,6 @@ def archive_files(dirname):
     return bufferedIO
 
 
-## TODO: Replace encrypted_archive_files with this method once Smarter is fully integrated with HPZ.
 def archive_unencrypted_files(dir_to_archive, archive_file_name):
     '''
     Create unencrypted archive file from files in directory.

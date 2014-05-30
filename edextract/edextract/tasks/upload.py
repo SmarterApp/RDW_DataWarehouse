@@ -1,18 +1,20 @@
 import logging
 from edextract.celery import celery
 from edextract.exceptions import ExtractionError
-from edextract.tasks import extract
+from edextract.settings.config import get_setting, Config
 from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.utils.http_file_upload import http_file_upload
 
 __author__ = 'ablum'
 log = logging.getLogger('edextract')
+MAX_RETRY = get_setting(Config.MAX_RETRIES, 1)
+DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
 @celery.task(name="tasks.extract.http_upload",
-             max_retries=extract.MAX_RETRY,
-             default_retry_delay=extract.DEFAULT_RETRY_DELAY)
+             max_retries=MAX_RETRY,
+             default_retry_delay=DEFAULT_RETRY_DELAY)
 def upload(request_id, src_file_name, http_info):
     '''
     Remotely copies a source file to a remote machine

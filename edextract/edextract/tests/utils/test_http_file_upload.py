@@ -16,7 +16,7 @@ class TestHTTPFileUpload(unittest.TestCase):
         stream_mock.content_type = 'test_content_type'
         create_stream_patch.return_value = stream_mock
         response_mock = Mock()
-        response_mock.status = 200
+        response_mock.status_code = 200
         post_patch.return_value = response_mock
 
         http_file_upload('filename', 'http://www.this_is_a_dummy_url.com')

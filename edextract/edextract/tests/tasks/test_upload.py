@@ -35,11 +35,11 @@ class TestUpload(unittest.TestCase):
         self.assertTrue(insert_stats_patch.called)
         self.assertEqual(2, insert_stats_patch.call_count)
 
-    @patch('edextract.tasks.upload.extract.MAX_RETRY')
+    @patch('edextract.tasks.upload.get_setting')
     @patch('edextract.tasks.upload.insert_extract_stats')
     @patch('edextract.tasks.upload.http_file_upload')
-    def test_upload_connection_error(self, file_upload_patch, insert_stats_patch, max_retry_patch):
-        max_retry_patch.return_value = 2
+    def test_upload_connection_error(self, file_upload_patch, insert_stats_patch, get_setting_patch):
+        get_setting_patch.return_value = 2
         file_upload_patch.side_effect = ConnectionError
         insert_stats_patch.return_value = None
         http_info = {'url': 'http://test_url.com'}

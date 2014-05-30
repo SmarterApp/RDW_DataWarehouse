@@ -11,6 +11,7 @@ import logging
 from edextract.celery import celery
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.status.constants import Constants
+from edextract.tasks.upload import upload
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
 from edextract.utils import file_utils
@@ -36,22 +37,23 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    ##### TODO: Remove this section once extraction is fully integrated with HPZ.
-    # This is a temporary hack to gradually replace encryption and remote copying to SFTP zone with HTTP transfer via HPZ.
-    hpz_extract_types = [ExtractionDataType.SR_STATISTICS, ExtractionDataType.SR_COMPLETION]
-    extract_type = tasks[0][TaskConstants.EXTRACTION_DATA_TYPE]
-    if extract_type not in hpz_extract_types:
-        workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                         archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                         remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
-    else:
-    #####
-    ##### TODO: Retain this section once extraction is fully integrated with HPZ.
-        workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                         archive_without_encryption.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True))
-    #####
+    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
+                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
+                     archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
+    workflow.apply_async()
+
+
+@celery.task(name='task.extract.start_upload_extract')
+def start_upload_extract(tenant, request_id, archive_file_name, directory_to_archive, http_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
+    '''
+    entry point to start an extract request for one or more extract tasks
+    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
+    '''
+    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
+                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
+                     archive_without_encryption.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     upload.subtask(args=[request_id, archive_file_name, http_info], queues=queue, immutable=True))
 
     workflow.apply_async()
 

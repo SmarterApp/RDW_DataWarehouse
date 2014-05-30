@@ -40,8 +40,7 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     # This is a temporary hack to gradually replace encryption and remote copying to SFTP zone with HTTP transfer via HPZ.
     hpz_extract_types = [ExtractionDataType.SR_STATISTICS, ExtractionDataType.SR_COMPLETION]
     extract_type = tasks[0][TaskConstants.EXTRACTION_DATA_TYPE]
-    if True:  # Just until FTs are updated.
-    #if extract_type not in hpz_extract_types:
+    if extract_type not in hpz_extract_types:
         workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
                          generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
                          archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),

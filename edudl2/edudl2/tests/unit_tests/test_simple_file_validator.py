@@ -74,7 +74,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
 
     def test_for_source_file_with_matching_columns(self):
         test_csv_fields = ['date_assessed', 'dob_student',
-                           'email_student', 'grade_asmt', 'grade_enrolled', 'group_1_id', 'group_1_text', 'group_2_id', 'group_2_text',
+                           'email_student', 'grade_asmt', 'grade_enrolled',
                            'guid_asmt', 'guid_asmt_location', 'guid_district', 'guid_school',
                            'guid_student', 'external_student_id',
                            'name_asmt_location', 'name_district', 'name_school', 'name_state', 'name_student_first',

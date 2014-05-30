@@ -12,7 +12,8 @@ requires = [
     "anyjson==0.3.3",
     "amqp==1.0.13",
     "apscheduler==2.1.1",
-    "python-gnupg==0.3.5"
+    "python-gnupg==0.3.5",
+    "requests_toolbelt"
 ]
 
 tests_require = requires

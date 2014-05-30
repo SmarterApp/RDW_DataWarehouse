@@ -58,8 +58,10 @@ def process_async_extraction_request(params):
 
     response['tasks'] = [task_response]
 
-    encrypted_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-    response['fileName'] = os.path.basename(encrypted_file_path)
+    ## TODO: Return this call back to processor.get_archive_file_path once Smarter is fully integrated with HPZ.
+    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)  # Just until FTs are updated.
+    #archived_file_path = processor.get_unencrypted_archive_file_path(user.get_uid(), tenant, request_id)
+    response['fileName'] = os.path.basename(archived_file_path)
 
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
@@ -71,7 +73,7 @@ def process_async_extraction_request(params):
     registration_id, download_url = register_file(user.get_uid())  # TODO: Pass registration_id to start_extract for file upload to HPZ.
     response['download_url'] = download_url
 
-    start_extract.apply_async(args=[tenant, request_id, public_key_id, encrypted_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, [task_info]], queue=queue)
+    start_extract.apply_async(args=[tenant, request_id, public_key_id, archived_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, [task_info]], queue=queue)
 
     return response
 

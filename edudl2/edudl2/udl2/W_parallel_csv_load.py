@@ -55,9 +55,10 @@ def update_record_sid(msg):
     global_sequence = get_global_sequence(msg[mk.TENANT_NAME])
     with get_udl_connection() as conn:
         _table = conn.get_table(target_db_table)
-        query = select([_table.c.record_sid]).where(_table.c[Constants.GUID_BATCH] == guid_batch)
+        query = select([_table.c.src_file_rec_num]).where(_table.c[Constants.GUID_BATCH] == guid_batch)
         records = conn.execute(query)
         staging_record_count = records.rowcount
+        logger.error("staging record count" + str(staging_record_count))
         current_offset_start = global_sequence.offset(batch_size=staging_record_count)
         update_stmt = update(_table).values(record_sid=current_offset_start + _table.c.src_file_rec_num - 1).\
             where(_table.c[Constants.GUID_BATCH] == guid_batch)

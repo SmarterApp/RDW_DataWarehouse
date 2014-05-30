@@ -63,6 +63,7 @@ class UDLSequence(object):
         """
         # increment the global sequence by batch_size and return the first sequence id as offset
         self.fetch_next_batch(batch_size)
+        logger.error("Current offset" + str(self.current))
         return self.current
 
 

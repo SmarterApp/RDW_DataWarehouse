@@ -60,6 +60,7 @@ require {
     edwareRedirect: 'modules/EDWARE.stateViewRedirect',
     edwarePopover: 'widgets/popover/EDWARE.popover',
     edwareModal: 'widgets/modal/EDWARE.modal',
+    edwareSearch: 'widgets/search/EDWARE.search',
 
     # widgets
     edwareYearDropdown: 'widgets/academicYear/EDWARE.yearDropdown',

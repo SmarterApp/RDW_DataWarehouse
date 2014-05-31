@@ -2,12 +2,14 @@ from edudl2.database.metadata.udl2_metadata import generate_udl2_metadata
 from edschema.database.connector import DBConnection
 from edschema.database.generic_connector import setup_db_connection_from_ini
 from sqlalchemy.sql.expression import text
+from sqlalchemy.schema import Sequence, CreateSequence
 import edcore.database as edcoredb
 from edschema.metadata_generator import generate_ed_metadata
 from edcore.database.stats_connector import StatsDBConnection
 from celery.utils.log import get_task_logger
 from sqlalchemy.exc import IntegrityError
-
+from edudl2.udl2_util.database_util import sequence_exists
+from edudl2.udl2.constants import Constants
 
 UDL_NAMESPACE = 'udl2_db_conn'
 TARGET_NAMESPACE = 'target_db_conn'
@@ -71,6 +73,17 @@ def initialize_all_db(udl2_conf, udl2_flat_conf):
 
 def initialize_db_udl(udl2_conf, allow_create_schema=False):
     initialize_db(UDL_NAMESPACE, generate_udl2_metadata, False, udl2_conf, allow_create_schema)
+    #import pdb;pdb.set_trace();
+    # if in init mode
+    if allow_create_schema:
+        # Create and sync sequence for each tenant on udl database if it doesn't exist
+        with get_udl_connection() as conn:
+            for tenant in udl2_conf.get(PRODUCTION_NAMESPACE):
+                tenant_seq_name = Constants.SEQUENCE_NAME + '_' + tenant
+                if not sequence_exists(conn, tenant_seq_name):
+                    seq = Sequence(name=tenant_seq_name, start=1, increment=1,
+                                   quote='Global record id sequences. form 1 to 2^63 -1 on postgresql')
+                    conn.execute(CreateSequence(seq))
 
 
 def initialize_db_target(udl2_conf):

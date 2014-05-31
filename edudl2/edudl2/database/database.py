@@ -141,7 +141,6 @@ def setup_udl2_schema(udl2_conf):
     # Setup udl2 schema
     initialize_db_udl(udl2_conf, allow_create_schema=True)
     udl2_schema_name = udl2_conf['udl2_db_conn']['db_schema']
-    create_udl2_sequence(udl2_schema_name)
     create_foreign_data_wrapper_extension(udl2_schema_name)
     create_foreign_data_wrapper_server(Constants.UDL2_FDW_SERVER)
 

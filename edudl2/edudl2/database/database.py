@@ -16,7 +16,7 @@ from edudl2.udl2_util.config_reader import read_ini_file
 from edudl2.udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from edudl2.database.metadata.udl2_metadata import generate_udl2_sequences
 from edudl2.database.udl2_connector import initialize_db_udl,\
-    get_udl_connection
+    get_udl_connection, initialize_db_prod
 from edudl2.database.populate_ref_info import populate_ref_column_map,\
     populate_stored_proc
 from sqlalchemy.sql.expression import text
@@ -138,6 +138,7 @@ def setup_udl2_schema(udl2_conf):
     create whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for
     '''
+    initialize_db_prod(udl2_conf)
     # Setup udl2 schema
     initialize_db_udl(udl2_conf, allow_create_schema=True)
     udl2_schema_name = udl2_conf['udl2_db_conn']['db_schema']

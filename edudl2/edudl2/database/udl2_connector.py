@@ -63,9 +63,9 @@ def get_prod_connection(tenant):
 
 def initialize_all_db(udl2_conf, udl2_flat_conf):
     # init db engine
-    initialize_db_udl(udl2_conf)
-    initialize_db_target(udl2_conf)
     initialize_db_prod(udl2_conf)
+    initialize_db_target(udl2_conf)
+    initialize_db_udl(udl2_conf)
     # using edcore connection class to init statsdb connection
     # this needs a flat config file rather than udl2 which needs nested config
     edcoredb.initialize_db(StatsDBConnection, udl2_flat_conf, allow_schema_create=True)
@@ -73,17 +73,34 @@ def initialize_all_db(udl2_conf, udl2_flat_conf):
 
 def initialize_db_udl(udl2_conf, allow_create_schema=False):
     initialize_db(UDL_NAMESPACE, generate_udl2_metadata, False, udl2_conf, allow_create_schema)
-    #import pdb;pdb.set_trace();
     # if in init mode
     if allow_create_schema:
         # Create and sync sequence for each tenant on udl database if it doesn't exist
-        with get_udl_connection() as conn:
-            for tenant in udl2_conf.get(PRODUCTION_NAMESPACE):
+        with get_udl_connection() as udl_conn:
+            all_tenants = udl2_conf.get(PRODUCTION_NAMESPACE)
+            udl_schema_name = udl2_conf.get(UDL_NAMESPACE).get('db_schema')
+            all_tenant_sequences = {}
+            for tenant in all_tenants:
                 tenant_seq_name = Constants.SEQUENCE_NAME + '_' + tenant
-                if not sequence_exists(conn, tenant_seq_name):
-                    seq = Sequence(name=tenant_seq_name, start=1, increment=1,
-                                   quote='Global record id sequences. form 1 to 2^63 -1 on postgresql')
-                    conn.execute(CreateSequence(seq))
+                tenant_schema_name = all_tenants.get(tenant).get('db_schema')
+                tenant_db_url = all_tenants.get(tenant).get('url')
+                key = tenant_db_url + ':' + tenant_schema_name
+                if not key in all_tenant_sequences:
+                    with get_prod_connection(tenant) as prod_conn:
+                        prod_seq_result = prod_conn.execute(text("select nextval(\'{schema_name}.{seq_name} \')".
+                                                                 format(schema_name=tenant_schema_name,
+                                                                        seq_name=Constants.SEQUENCE_NAME)))
+                        prod_seq = prod_seq_result.fetchone()
+                        tenant_seq_value = prod_seq[0]
+                        all_tenant_sequences[key] = tenant_seq_value
+                else:
+                    tenant_seq_value = all_tenant_sequences.get(key)
+
+                if not sequence_exists(udl_conn, tenant_seq_name):
+                    udl_conn.execute(CreateSequence(Sequence(name=tenant_seq_name, increment=1)))
+                udl_conn.execute(text("select setval(\'{schema_name}.{seq_name} \', {value}, {called})".
+                                      format(schema_name=udl_schema_name, seq_name=tenant_seq_name,
+                                             value=tenant_seq_value, called=True)))
 
 
 def initialize_db_target(udl2_conf):

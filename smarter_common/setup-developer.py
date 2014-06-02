@@ -5,7 +5,8 @@ from distutils.core import run_setup
 here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = [
-    'edauth']
+    'edauth',
+    'edcore']
 
 
 for dependency in dependencies:

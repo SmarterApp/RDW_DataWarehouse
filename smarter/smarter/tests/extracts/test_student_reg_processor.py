@@ -35,7 +35,8 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
                              'pickup.sftp.hostname': 'hostname.local.net',
                              'pickup.sftp.user': 'myUser',
                              'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa',
-                             'extract.available_grades': '3,4,5,6,7,8,11'}
+                             'extract.available_grades': '3,4,5,6,7,8,11',
+                             'hpz.file_upload_base_url': 'http://somehost:82/files'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
         cache_opts = {
@@ -129,7 +130,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
     @patch('smarter.extracts.student_reg_processor._create_task_info')
     @patch('smarter.extracts.student_reg_processor.register_file')
     def test_process_async_extraction_request(self, register_file_patch, task_info):
-        with patch('smarter.extracts.student_reg_processor.start_extract.apply_async') as apply_async_mock:
+        with patch('smarter.extracts.student_reg_processor.start_upload_extract.apply_async') as apply_async_mock:
             register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
             dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
             task_info.return_value = dummy_task_info
@@ -139,10 +140,9 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
 
             response = process_async_extraction_request(params)
 
-            self.assertIn('.zip.gpg', response['fileName'])  # Just until FTs are updated.
-            #self.assertIn('.zip', response['fileName'])
+            self.assertIn('.zip', response['fileName'])
             self.assertEqual(response['tasks'][0]['status'], 'ok')
             self.assertEqual(response['tasks'][0][Constants.ACADEMIC_YEAR], 2015)
             self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
-            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)
+            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)

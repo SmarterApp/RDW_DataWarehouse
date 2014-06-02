@@ -6,11 +6,13 @@ Created on Nov 5, 2013
 @author: ejen
 '''
 
+import io
 import os.path
 import logging
 from edextract.celery import celery
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.status.constants import Constants
+from edextract.tasks.upload import upload
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
 from edextract.utils import file_utils
@@ -18,7 +20,7 @@ from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import ExtractionError
 from edcore.exceptions import RemoteCopyError
-from edextract.utils.data_archiver import encrypted_archive_files, archive_files, GPGPublicKeyException
+from edextract.utils.data_archiver import archive_files, encrypted_archive_files, GPGPublicKeyException
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
@@ -36,23 +38,23 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    ##### TODO: Remove this section once extraction is fully integrated with HPZ.
-    # This is a temporary hack to gradually replace encryption and remote copying to SFTP zone with HTTP transfer via HPZ.
-    hpz_extract_types = [ExtractionDataType.SR_STATISTICS, ExtractionDataType.SR_COMPLETION]
-    extract_type = tasks[0][TaskConstants.EXTRACTION_DATA_TYPE]
-    if True:  # Just until FTs are updated.
-    #if extract_type not in hpz_extract_types:
-        workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                         archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                         remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
-    else:
-    #####
-    ##### TODO: Retain this section once extraction is fully integrated with HPZ.
-        workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                         archive.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True))
-    #####
+    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
+                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
+                     archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
+    workflow.apply_async()
+
+
+@celery.task(name='task.extract.start_upload_extract')
+def start_upload_extract(tenant, request_id, archive_file_name, directory_to_archive, http_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
+    '''
+    entry point to start an extract request for one or more extract tasks
+    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
+    '''
+    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
+                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
+                     archive_without_encryption.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     upload.subtask(args=[request_id, archive_file_name, http_info], queues=queue, immutable=True))
 
     workflow.apply_async()
 
@@ -100,6 +102,19 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
     return group(generate_tasks)
 
 
+@celery.task(name="tasks.extract.archive_without_encryption")
+def archive_without_encryption(request_id, archive_file_name, directory_to_archive):
+    '''
+    given a directory, archive everything in this directory to a file name specified
+    '''
+    task_info = {Constants.TASK_ID: archive.request.id,
+                 Constants.CELERY_TASK_ID: archive.request.id,
+                 Constants.REQUEST_GUID: request_id}
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
+    archive_files(directory_to_archive, archive_file_name)
+    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
+
+
 @celery.task(name="tasks.extract.archive")
 def archive(request_id, directory):
     '''
@@ -109,12 +124,13 @@ def archive(request_id, directory):
                  Constants.CELERY_TASK_ID: archive.request.id,
                  Constants.REQUEST_GUID: request_id}
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-    content = archive_files(directory)
+
+    archive_memory_file = io.BytesIO()
+    archive_files(directory, archive_memory_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
-    return content.getvalue()
+    return archive_memory_file.getvalue()
 
 
-# TODO: Remove this task once all extract types are downloaded by HPZ.
 @celery.task(name="tasks.extract.archive_with_encryption",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)
@@ -156,7 +172,6 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
             raise ExtractionError()
 
 
-# TODO: Remove this task once all extract types are downloaded by HPZ.
 @celery.task(name="tasks.extract.remote_copy",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)

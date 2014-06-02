@@ -3,10 +3,11 @@ Created on Dec 19, 2013
 
 @author: ejen
 '''
+import io
 import unittest
 import os
-from edextract.utils.data_archiver import import_recipient_keys, archive_files, encrypted_archive_files,\
-    GPGPublicKeyException, GPGException
+from edextract.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
+                                           GPGPublicKeyException, GPGException)
 import tempfile
 
 
@@ -70,9 +71,11 @@ class Test_FileUtils(unittest.TestCase):
             for file in files:
                 with open(os.path.join(dir, file), 'a') as f:
                     f.write(file)
-            data = archive_files(dir)
+
+            archive_memory_file = io.BytesIO()
+            archive_files(dir, archive_memory_file)
             fixture_len = 343
-            self.assertEqual(len(data.getvalue()), fixture_len)
+            self.assertEqual(len(archive_memory_file.getvalue()), fixture_len)
 
     def test_encrypted_archive_files_public_key_exception(self):
         here = os.path.abspath(os.path.dirname(__file__))
@@ -133,6 +136,17 @@ class Test_FileUtils(unittest.TestCase):
             self.assertTrue(os.path.exists(homedir))
             keyserver = settings['extract.gpg.keyserver']
             encrypted_archive_files(dir, recipients, outputfile, homedir=homedir, keyserver=keyserver, gpgbinary='gpg')
+            self.assertTrue(os.path.isfile(outputfile))
+            self.assertNotEqual(os.stat(outputfile).st_size, 0)
+
+    def test_archive_unencrypted_files(self):
+        files = ['test_0.csv', 'test_1.csv', 'test.json']
+        with tempfile.TemporaryDirectory() as dir:
+            for file in files:
+                with open(os.path.join(dir, file), 'a') as f:
+                    f.write(file)
+            outputfile = os.path.join(dir, 'test_output.zip')
+            archive_files(dir, outputfile)
             self.assertTrue(os.path.isfile(outputfile))
             self.assertNotEqual(os.stat(outputfile).st_size, 0)
 

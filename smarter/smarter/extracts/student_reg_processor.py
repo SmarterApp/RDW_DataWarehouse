@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 __author__ = 'ablum'
 
 """
@@ -12,7 +14,7 @@ from pyramid.threadlocal import get_current_registry
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
-from edextract.tasks.extract import start_extract
+from edextract.tasks.extract import start_upload_extract
 from edextract.status.status import create_new_entry
 from smarter.extracts import processor
 from smarter.extracts import student_reg_statistics
@@ -58,22 +60,19 @@ def process_async_extraction_request(params):
 
     response['tasks'] = [task_response]
 
-    ## TODO: Return this call back to processor.get_archive_file_path once Smarter is fully integrated with HPZ.
-    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)  # Just until FTs are updated.
-    #archived_file_path = processor.get_unencrypted_archive_file_path(user.get_uid(), tenant, request_id)
+    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id, encrypted=False)
     response['fileName'] = os.path.basename(archived_file_path)
 
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
-    public_key_id = processor.get_encryption_public_key_identifier(tenant)
-    gatekeeper_id = processor.get_gatekeeper(tenant)
-    pickup_zone_info = processor.get_pickup_zone_info(tenant)
-
     # Register extract file with HPZ.
-    registration_id, download_url = register_file(user.get_uid())  # TODO: Pass registration_id to start_extract for file upload to HPZ.
+    registration_id, download_url = register_file(user.get_uid())
     response['download_url'] = download_url
 
-    start_extract.apply_async(args=[tenant, request_id, public_key_id, archived_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, [task_info]], queue=queue)
+    file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
+    http_info = {'url': file_upload_url}
+
+    start_upload_extract.apply_async(args=[tenant, request_id, archived_file_path, data_directory_to_archive, http_info, [task_info]], queue=queue)
 
     return response
 

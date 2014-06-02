@@ -3,6 +3,7 @@ Created on Dec 19, 2013
 
 @author: ejen
 '''
+import io
 import unittest
 import os
 from edextract.utils.data_archiver import (import_recipient_keys, archive_files, encrypted_archive_files,
@@ -70,9 +71,11 @@ class Test_FileUtils(unittest.TestCase):
             for file in files:
                 with open(os.path.join(dir, file), 'a') as f:
                     f.write(file)
-            data = archive_files(dir)
+
+            archive_memory_file = io.BytesIO()
+            archive_files(dir, archive_memory_file)
             fixture_len = 343
-            self.assertEqual(len(data.getvalue()), fixture_len)
+            self.assertEqual(len(archive_memory_file.getvalue()), fixture_len)
 
     def test_encrypted_archive_files_public_key_exception(self):
         here = os.path.abspath(os.path.dirname(__file__))
@@ -143,7 +146,7 @@ class Test_FileUtils(unittest.TestCase):
                 with open(os.path.join(dir, file), 'a') as f:
                     f.write(file)
             outputfile = os.path.join(dir, 'test_output.zip')
-            archive_unencrypted_files(dir, outputfile)
+            archive_files(dir, outputfile)
             self.assertTrue(os.path.isfile(outputfile))
             self.assertNotEqual(os.stat(outputfile).st_size, 0)
 

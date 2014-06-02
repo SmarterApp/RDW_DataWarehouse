@@ -6,6 +6,7 @@ Created on Nov 5, 2013
 @author: ejen
 '''
 
+import io
 import os.path
 import logging
 from edextract.celery import celery
@@ -110,7 +111,7 @@ def archive_without_encryption(request_id, archive_file_name, directory_to_archi
                  Constants.CELERY_TASK_ID: archive.request.id,
                  Constants.REQUEST_GUID: request_id}
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-    archive_unencrypted_files(directory_to_archive, archive_file_name)
+    archive_files(directory_to_archive, archive_file_name)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
 
 
@@ -123,9 +124,11 @@ def archive(request_id, directory):
                  Constants.CELERY_TASK_ID: archive.request.id,
                  Constants.REQUEST_GUID: request_id}
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-    content = archive_files(directory)
+
+    archive_memory_file = io.BytesIO()
+    archive_files(directory, archive_memory_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
-    return content.getvalue()
+    return archive_memory_file.getvalue()
 
 
 @celery.task(name="tasks.extract.archive_with_encryption",

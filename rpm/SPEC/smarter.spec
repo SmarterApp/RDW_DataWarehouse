@@ -95,7 +95,7 @@ cd ${WORKSPACE}/edmigrate
 python setup.py clean --all
 python setup.py install
 cd -
-cd ${WORKSPACE}/edidentity
+cd ${WORKSPACE}/smarter-common
 python setup.py clean --all
 python setup.py install
 cd -

@@ -10,9 +10,9 @@ requires = [
     'pyramid == 1.4',
     'edauth']
 
-setup(name='edidentity',
+setup(name='smarter-common',
       version='0.1',
-      description='edidentity',
+      description='smarter-common',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
           "Programming Language :: Python",

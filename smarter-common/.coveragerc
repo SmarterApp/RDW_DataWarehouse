@@ -2,7 +2,7 @@
 omit = 
 	setup.py
 	setup-developer.py
-    edidentity/__init__.py
+   smarter-common/__init__.py
 
 [report]
 exclude_lines = 

@@ -36,6 +36,7 @@ class ValidateTableData(unittest.TestCase):
                      'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
                      'corrupt_source_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
                      'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
+                     'invalid_guid_json':os.path.join(file_to_path, 'test_asmt_guid_validation.tar.gz.gpg'),
                      'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
         self.archived_file = FILE_DICT
         initialize_all_db(udl2_conf, udl2_flat_conf)
@@ -88,6 +89,13 @@ class ValidateTableData(unittest.TestCase):
         self.assertEquals(status, batch_table_data)
         self.assertEquals([('SUCCESS',)], batch_table_post_udl)
 
+    #verify that with different asmt_guid in jsona nd csv lead to UDL pipeline failure with valid exception
+    def verify_asmt_guid(self, udl_connector, guid_batch_id):
+        batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
+        batch_table_status = select([batch_table.c.udl_phase_step_status], and_(batch_table.c.guid_batch == guid_batch_id, batch_table.c.udl_phase == 'udl2.W_file_content_validator.task'))
+        batch_data_tasklevel = udl_connector.execute(batch_table_status).fetchall()
+        self.assertEquals([('FAILURE',)], batch_data_tasklevel)
+
     #Verify that udl is failing due to corrcet task failure.For i.e if json is missing udl should fail due to missing file at file expander task
     def verify_missing_json(self, udl_connector, guid_batch_id):
         batch_table = udl_connector.get_table(Constants.UDL2_BATCH_TABLE)
@@ -125,6 +133,12 @@ class ValidateTableData(unittest.TestCase):
         for row in result:
             notification_status = row['udl_phase_step_status']
             self.assertEqual('SUCCESS', notification_status)
+
+    def test_run_udl_corrupt_guid(self):
+        self.guid_batch_id = str(uuid4())
+        self.run_udl_with_file(self.guid_batch_id, FILE_DICT['invalid_guid_json'])
+        self.verify_udl_failure(self.udl_connector, self.guid_batch_id)
+        self.verify_asmt_guid(self.udl_connector, self.guid_batch_id)
 
     def test_run_udl_ext_col_csv(self):
         self.guid_batch_id = str(uuid4())

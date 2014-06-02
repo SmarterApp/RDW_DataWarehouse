@@ -20,7 +20,7 @@ from celery.canvas import chain, group
 from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import ExtractionError
 from edcore.exceptions import RemoteCopyError
-from edextract.utils.data_archiver import archive_files, encrypted_archive_files, archive_unencrypted_files, GPGPublicKeyException
+from edextract.utils.data_archiver import archive_files, encrypted_archive_files, GPGPublicKeyException
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report

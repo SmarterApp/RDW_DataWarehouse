@@ -171,7 +171,6 @@ common:
         user_path_sftpdepartures_dir: reports
         user_path_filerouter_dir: route
         remote:
-            landing_zone_hostname: edwappsrv6.poc.dum.edwdc.net
             arrivals_path: /opt/edware/zones/landing/arrivals
             sftp_user: udl2
             private_key_file: /opt/edware/ssh/.ssh/id_rsa
@@ -366,6 +365,12 @@ qa:
     pickup.sftp:
       hostname: lzsftpudl0.qa.dum.edwdc.net
       private_key_file: /opt/edware/ssh/.ssh/id_rsa
+    sftp:
+        file_stat_watch_interval: 5
+        file_stat_watch_period: 30
+        file_system_scan_delay: 60
+        remote:
+            landing_zone_hostname: rbtmqudl0.qa.dum.edwdc.net
     edware:
       db:
         cat:
@@ -515,6 +520,12 @@ uat:
         hostname: lzsftpudl0.dmo.som.edwdc.net
         private_key_file: /opt/edware/ssh/.ssh/id_rsa
     disable_stack_trace: true
+    sftp:
+        file_stat_watch_interval: 10
+        file_stat_watch_period: 60
+        file_system_scan_delay: 300
+        remote:
+            landing_zone_hostname: rbtmqudl0.dmo.som.edwdc.net
     edware:
       db:
         es:
@@ -704,6 +715,12 @@ development:
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     sftp.jail.base_path: /tmp
+    sftp:
+        file_stat_watch_interval: 2
+        file_stat_watch_period: 10
+        file_system_scan_delay: 30
+        remote:
+            landing_zone_hostname: localhost
     hpz:
         file_registration_url: http://localhost/registration
         file_upload_base_url: http://localhost/files

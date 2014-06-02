@@ -35,7 +35,8 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
                              'pickup.sftp.hostname': 'hostname.local.net',
                              'pickup.sftp.user': 'myUser',
                              'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa',
-                             'extract.available_grades': '3,4,5,6,7,8,11'}
+                             'extract.available_grades': '3,4,5,6,7,8,11',
+                             'hpz.file_upload_base_url': 'http://somehost:82/files'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
         cache_opts = {

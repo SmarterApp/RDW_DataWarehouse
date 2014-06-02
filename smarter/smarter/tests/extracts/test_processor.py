@@ -75,6 +75,11 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         filename = get_archive_file_path("user", "tenant", "requestId")
         self.assertIn('.zip.gpg', filename)
 
+    def test_get_archive_file_path_extension_no_encryption(self):
+        filename = get_archive_file_path("user", "tenant", "requestId", False)
+        self.assertIn('.zip', filename)
+        self.assertNotIn('.gpg', filename)
+
     def test_gatekeeper(self):
         config = self.reg.settings
         pickup = config.get('pickup.gatekeeper.t1')

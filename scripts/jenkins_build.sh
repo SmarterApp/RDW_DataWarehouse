@@ -483,9 +483,8 @@ function main {
                 setup_for_udl
                 run_udl_integration_tests
             fi
-        else
-            setup_for_hpz
         fi
+        setup_for_hpz
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"

@@ -15,7 +15,7 @@ dependencies = [
     'edcore',
     'edextract',
     'config',
-    'smarter-common']
+    'smarter_common']
 
 
 for dependency in dependencies:

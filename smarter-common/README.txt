@@ -1,1 +1,0 @@
-smarter-common README

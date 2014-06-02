@@ -75,12 +75,12 @@ def init_udl_tenant_sequences(udl2_conf):
     # Create and sync sequence for each tenant on udl database if it doesn't exist
     with get_udl_connection() as udl_conn:
         all_tenants = udl2_conf.get(PRODUCTION_NAMESPACE)
-        udl_schema_name = udl2_conf.get(UDL_NAMESPACE).get('db_schema')
+        udl_schema_name = udl2_conf.get(UDL_NAMESPACE).get(Constants.DB_SCHEMA)
         all_tenant_sequences = {}
         for tenant in all_tenants:
             tenant_seq_name = Constants.TENANT_SEQUENCE_NAME(tenant)
-            tenant_schema_name = all_tenants.get(tenant).get('db_schema')
-            key = all_tenants.get(tenant).get('url') + ':' + tenant_schema_name
+            tenant_schema_name = all_tenants.get(tenant).get(Constants.DB_SCHEMA)
+            key = all_tenants.get(tenant).get(Constants.URL) + ':' + tenant_schema_name
             if not key in all_tenant_sequences:
                 with get_prod_connection(tenant) as prod_conn:
                     prod_seq_result = prod_conn.execute(text("select nextval(\'{schema_name}.{seq_name} \')".

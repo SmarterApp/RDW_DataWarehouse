@@ -52,6 +52,11 @@ REF_TABLE = 'ref_table'
 CSV_LZ_TABLE = 'csv_lz_table'
 ERR_LIST_TABLE = 'err_list_table'
 
+# keys for conf sent to file_content_validator.ContentValidator
+ASMT_TABLE = 'asmt_table'
+ASMT_OUTCOME_TABLE = 'asmt_outcome_table'
+
+
 # keys for conf sent to move_to_integration.move_data_from_staging_to_integration(conf)
 SOURCE_DB_DRIVER = 'source_db_driver'
 SOURCE_DB_USER = 'source_db_user'

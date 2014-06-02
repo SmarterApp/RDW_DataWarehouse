@@ -36,6 +36,8 @@ class ErrorCode(object):
     BATCH_REC_FAILED = '2005'
     DATA_INTEGRITY_ERROR = '1001'
 
+    ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR = '3014'
+
     messages = {
         # system code
         '-1': 'NOT_IMPLEMENTED',
@@ -60,6 +62,7 @@ class ErrorCode(object):
         # Newly added codes
         '3012': 'SRC_JSON_INVALID_STRUCTURE',
         '3013': 'SRC_JSON_INVALID_FORMAT',
+        '3014': 'ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR',
         # For UDL insert and delete
 
         '1000': 'DELETE_RECORD_NOT_FOUND',

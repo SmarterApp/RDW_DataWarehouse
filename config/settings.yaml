@@ -410,6 +410,7 @@ qa:
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -480,6 +481,7 @@ jenkins_qa:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 uat:
   '[app:main]':
@@ -560,6 +562,7 @@ uat:
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -628,6 +631,7 @@ localOpenAM:
     mode: dev
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 development:
   '[app:main]':
@@ -702,6 +706,7 @@ development:
     sftp.jail.base_path: /tmp
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 test:
   '[app:main]':
@@ -755,6 +760,7 @@ test:
       celery_always_eager: true
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 integration:
   '[app:main]':
@@ -801,6 +807,7 @@ integration:
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 jenkins_int:
   '[app:main]':
@@ -856,6 +863,7 @@ jenkins_int:
       sftp.hostname: localhost
     hpz:
         file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
+        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
 
 jenkins_dev:
   '[app:main]':
@@ -911,6 +919,7 @@ jenkins_dev:
       sftp.hostname: localhost
     hpz:
         file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
+        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
 
 air:
   '[app:main]':
@@ -957,3 +966,4 @@ air:
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files

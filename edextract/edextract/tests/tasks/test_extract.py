@@ -26,7 +26,7 @@ from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_encryption,
-                                     remote_copy, prepare_path)
+                                     archive_without_encryption, remote_copy, prepare_path)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -410,6 +410,25 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})
 
             self.assertRaises(ExtractionError, result.get)
+
+    def test_archive_without_encryption(self):
+        files = ['test_0.csv', 'test_1.csv', 'test.json']
+        with tempfile.TemporaryDirectory() as _dir:
+            csv_dir = os.path.join(_dir, 'csv')
+            os.mkdir(csv_dir)
+            zip_file = os.path.join(_dir, 'zip', 'output.zip')
+            os.mkdir(os.path.dirname(zip_file))
+
+            for file in files:
+                with open(os.path.join(csv_dir, file), 'a') as f:
+                    f.write(file)
+
+            request_id = '1'
+
+            result = archive_without_encryption.apply(args=[request_id, zip_file, csv_dir])
+            result.get()
+
+            self.assertTrue(os.path.exists(zip_file))
 
     def test_prepare_path(self):
         tmp_dir = tempfile.mkdtemp()

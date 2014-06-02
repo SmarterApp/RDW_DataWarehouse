@@ -43,17 +43,12 @@ def get_encryption_public_key_identifier(tenant):
     return get_current_registry().settings.get('extract.gpg.public_key.' + tenant)
 
 
-## TODO: Replace get_archive_file_path with this method once Smarter is fully integrated with HPZ.
-def get_unencrypted_archive_file_path(user_name, tenant, request_id):
+def get_archive_file_path(user_name, tenant, request_id, encrypted=True):
     base = _get_extract_work_zone_base_dir()
-    file_name = '{user_name}_{current_time}.zip'.format(user_name=user_name, current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
-    return os.path.join(base, tenant, request_id, 'zip', file_name)
-
-
-## TODO: Remove this method once Smarter is fully integrated with HPZ.
-def get_archive_file_path(user_name, tenant, request_id):
-    base = _get_extract_work_zone_base_dir()
-    file_name = '{user_name}_{current_time}.zip.gpg'.format(user_name=user_name, current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+    encrypt_ext = '.gpg' if encrypted else ''
+    file_name = '{user_name}_{current_time}.zip{encrypt_ext}'.format(user_name=user_name,
+                                                                     current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                                                                     encrypt_ext=encrypt_ext)
     return os.path.join(base, tenant, request_id, 'zip', file_name)
 
 

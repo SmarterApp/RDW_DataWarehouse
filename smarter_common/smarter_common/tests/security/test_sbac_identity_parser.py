@@ -56,5 +56,4 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(chain[0].school_guid, '4368641')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -95,7 +95,7 @@ cd ${WORKSPACE}/edmigrate
 python setup.py clean --all
 python setup.py install
 cd -
-cd ${WORKSPACE}/smarter-common
+cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -

@@ -4,7 +4,7 @@ Created on Feb 25, 2014
 @author: dip
 '''
 import unittest
-from smarter-common.security.sbac_identity_parser import SbacIdentityParser
+from smarter_common.security.sbac_identity_parser import SbacIdentityParser
 import edauth
 from pyramid.security import Allow
 
@@ -56,5 +56,4 @@ class TestSbacIdentityParse(unittest.TestCase):
         self.assertEqual(chain[0].school_guid, '4368641')
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

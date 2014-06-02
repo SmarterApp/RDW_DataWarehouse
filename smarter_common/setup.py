@@ -10,9 +10,9 @@ requires = [
     'pyramid == 1.4',
     'edauth']
 
-setup(name='smarter-common',
+setup(name='smarter_common',
       version='0.1',
-      description='smarter-common',
+      description='smarter_common',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
           "Programming Language :: Python",

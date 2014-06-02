@@ -72,9 +72,7 @@ class ValidateTableData(unittest.TestCase):
     #copy files to tenant directory
     def copy_file_to_tmp(self, file_to_copy):
         # create tenant dir if not exists
-        if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
-        else:
+        if not os.path.exists(self.tenant_dir):
             os.makedirs(self.tenant_dir)
         return shutil.copy2(file_to_copy, self.tenant_dir)
 

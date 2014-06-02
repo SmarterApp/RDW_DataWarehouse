@@ -65,7 +65,7 @@ common:
       idp:
         metadata: ../../resource/idp_metadata.xml
       saml:
-        identity_parser: edidentity.security.sbac_identity_parser.SbacIdentityParser
+        identity_parser: smarter_common.security.sbac_identity_parser.SbacIdentityParser
 
     # Static cache max age
     smarter.resources.static.max_age: 3600
@@ -243,10 +243,10 @@ common:
   '[loggers]':
     keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2
   '[handlers]':
-    keys: console, filelog, audit, security_event
+    keys: console, filelog, audit, security_event, mna_rest
 
   '[formatters]':
-    keys: generic, json
+    keys: generic, json, mna
 
   '[logger_edauth]':
     level: DEBUG
@@ -328,6 +328,13 @@ common:
     level: INFO
     formatter: json
 
+  '[handler_mna_rest]':
+    class: smarter_common.logging.mna.MNAHTTPHandler
+    formatter: mna
+    args: ('mna-dev.opentestsystem.org:8443', '/mna-rest/log', 'POST', 'True')
+    level: DEBUG
+
+
   '[formatter_generic]':
     format: '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s'
 
@@ -335,6 +342,9 @@ common:
     class: edapi.logging.JsonDictLoggingFormatter
     format: '%(asctime)s %(message)s'
 
+  '[formatter_mna]':
+    class: smarter_common.logging.mna.MnALoggingFormatter
+    format: '[%(name)s][%(threadName)s] %(message)s'
 
 # End logging configuration
 

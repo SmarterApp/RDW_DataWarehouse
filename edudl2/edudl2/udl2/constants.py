@@ -8,6 +8,7 @@ class Constants():
     UDL2_DB_CONN = 'udl2_db_conn'
 
     DB_SCHEMA = 'db_schema'
+    URL = 'url'
 
     # table names
     SR_TARGET_TABLE = 'student_reg'
@@ -66,5 +67,4 @@ class Constants():
                                                 Constants.LOAD_TYPE_STUDENT_REGISTRATION:
                                                 Constants.SR_REF_TABLE}.get(load_type, None)
 
-    TENANT_SEQUENCE_NAME = lambda tenant: Constants.SEQUENCE_NAME + '_' + \
-                                          tenant if tenant is not None and len(tenant) > 0 else None
+    TENANT_SEQUENCE_NAME = lambda tenant: Constants.SEQUENCE_NAME + '_' + tenant if tenant is not None and len(tenant) > 0 else None

@@ -75,21 +75,26 @@ def init_udl_tenant_sequences(udl2_conf):
     # Create and sync sequence for each tenant on udl database if it doesn't exist
     with get_udl_connection() as udl_conn:
         all_tenants = udl2_conf.get(PRODUCTION_NAMESPACE)
-        udl_schema_name = udl2_conf.get(UDL_NAMESPACE).get('db_schema')
+        udl_schema_name = udl2_conf.get(UDL_NAMESPACE).get(Constants.DB_SCHEMA)
+        # dict to keep track of tenant sequence values for each tenant defined in the ini
         all_tenant_sequences = {}
         for tenant in all_tenants:
             tenant_seq_name = Constants.TENANT_SEQUENCE_NAME(tenant)
-            tenant_schema_name = all_tenants.get(tenant).get('db_schema')
-            key = all_tenants.get(tenant).get('url') + ':' + tenant_schema_name
+            tenant_schema_name = all_tenants.get(tenant).get(Constants.DB_SCHEMA)
+            # unique identifier for each tenant
+            key = all_tenants.get(tenant).get(Constants.URL) + ':' + tenant_schema_name
+            # check if we have already visited the tenant prod schema
             if not key in all_tenant_sequences:
                 with get_prod_connection(tenant) as prod_conn:
                     prod_seq_result = prod_conn.execute(text("select nextval(\'{schema_name}.{seq_name} \')".
                                                              format(schema_name=tenant_schema_name,
                                                                     seq_name=Constants.SEQUENCE_NAME)))
                     all_tenant_sequences[key] = prod_seq_result.fetchone()[0]
-
+            # check if the global tenant sequence exists in udl database
             if not sequence_exists(udl_conn, tenant_seq_name):
+                # create sequence if does not exist
                 udl_conn.execute(CreateSequence(Sequence(name=tenant_seq_name, increment=1)))
+            # update and set the current val for the tenant sequence
             udl_conn.execute(text("select setval(\'{schema_name}.{seq_name} \', {value}, {called})".
                                   format(schema_name=udl_schema_name, seq_name=tenant_seq_name,
                                          value=all_tenant_sequences[key], called=True)))

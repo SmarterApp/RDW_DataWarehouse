@@ -65,3 +65,6 @@ class Constants():
                                                 Constants.ASMT_REF_TABLE,
                                                 Constants.LOAD_TYPE_STUDENT_REGISTRATION:
                                                 Constants.SR_REF_TABLE}.get(load_type, None)
+
+    TENANT_SEQUENCE_NAME = lambda tenant: Constants.SEQUENCE_NAME + '_' + \
+                                          tenant if tenant is not None and len(tenant) > 0 else None

@@ -78,7 +78,7 @@ def init_udl_tenant_sequences(udl2_conf):
         udl_schema_name = udl2_conf.get(UDL_NAMESPACE).get('db_schema')
         all_tenant_sequences = {}
         for tenant in all_tenants:
-            tenant_seq_name = Constants.SEQUENCE_NAME + '_' + tenant
+            tenant_seq_name = Constants.TENANT_SEQUENCE_NAME(tenant)
             tenant_schema_name = all_tenants.get(tenant).get('db_schema')
             key = all_tenants.get(tenant).get('url') + ':' + tenant_schema_name
             if not key in all_tenant_sequences:

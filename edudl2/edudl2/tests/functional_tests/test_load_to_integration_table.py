@@ -13,7 +13,7 @@ from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from edudl2.udl2_util.database_util import get_db_connection_params
 from edudl2.udl2.constants import Constants
-from sqlalchemy.sql.expression import select, update
+from sqlalchemy.sql.expression import update
 from uuid import uuid4
 
 

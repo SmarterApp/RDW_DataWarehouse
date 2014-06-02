@@ -122,9 +122,9 @@ def import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
     '''
     # create sequence name, use table_name and a random number combination.
     # This sequence is used for column src_file_rec_num
-    seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
+    seq_name = (csv_table + '_' + str(start_seq)).lower()
 
-    global_tenant_seq_name = Constants.SEQUENCE_NAME + '_' + tenant_name
+    global_tenant_seq_name = Constants.TENANT_SEQUENCE_NAME(tenant_name)
 
     # query 1 -- create query to create sequence
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)

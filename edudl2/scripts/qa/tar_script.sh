@@ -53,7 +53,7 @@ for asmt_type in ${asmt_types[*]}
         do
             csv_grade=`echo ${csv_file}|cut -d _ -f 5`
             echo "csv grade " $csv_grade
-            if [[ $csv_file =~ $guid ]] && [[ $csv_grade && $json_grade ]] ;then
+            if [[ $csv_file =~ $guid ]] && [[ $csv_grade == $json_grade ]] ;then
                 echo "csv file" $csv_file;
                 csv=${csv_file%.*}
                 echo "csv " $csv
@@ -68,3 +68,4 @@ mkdir gz_dir
 mkdir gpg_dir
 cp *.gz gz_dir
 cp *.gpg gpg_dir
+

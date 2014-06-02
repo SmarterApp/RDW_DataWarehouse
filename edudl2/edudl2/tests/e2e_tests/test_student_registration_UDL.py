@@ -219,9 +219,7 @@ class FTestStudentRegistrationUDL(unittest.TestCase):
 
     #Copy file to tenant directory
     def copy_file_to_tmp(self, file_to_load):
-        if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
-        else:
+        if not os.path.exists(self.tenant_dir):
             os.makedirs(self.tenant_dir)
         return shutil.copy2(self.student_reg_files[file_to_load]['path'], self.tenant_dir)
 

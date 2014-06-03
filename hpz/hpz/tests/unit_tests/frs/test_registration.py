@@ -17,7 +17,7 @@ class RegistrationTest(unittest.TestCase):
     def setUp(self):
         self.__request = DummyRequest()
         reg = Registry()
-        reg.settings = {}
+        reg.settings = {'hpz.frs.download_base_url': 'http://blah/download'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__config.add_route('download', '/{reg_id}')
 

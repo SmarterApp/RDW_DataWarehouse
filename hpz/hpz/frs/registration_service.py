@@ -18,7 +18,7 @@ def put_file_registration_service(context, request):
     user_id = request.json_body[UID_PARAMETER]
     registration_id = FileRegistry.register_request(user_id)
 
-    url = request.route_url('download', reg_id=str(registration_id))
+    url = '/'.join(s.strip('/') for s in (request.registry.settings['hpz.frs.download_base_url'], str(registration_id)))
 
     r = {'url': url, 'registration_id': str(registration_id)}
 

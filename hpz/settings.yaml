@@ -112,6 +112,7 @@ development:
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296
+        download_base_url: http://localhost/download
     auth:
       saml:
         idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
@@ -129,6 +130,7 @@ jenkins_dev:
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296
+        download_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/download
     auth:
         saml:
           idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp

@@ -172,7 +172,7 @@ def load_fact_asmt_outcome(datasource_name=''):
         with connection.get_transaction() as _:
             connection.execute("INSERT INTO " +
                                "    " + fao + " " +
-                               "(SELECT " +
+                               ("(SELECT " if metadata.schema is not None else "SELECT ") +
                                "     asmt_outcome_vw_rec_id, asmt_rec_id, student_rec_id, inst_hier_rec_id, " +
                                "     asmt_guid, student_guid, state_code, district_guid, school_guid, " +
                                "     where_taken_id, where_taken_name, asmt_grade, enrl_grade, group_1_id, " +
@@ -193,5 +193,5 @@ def load_fact_asmt_outcome(datasource_name=''):
                                "     acc_streamline_mode, from_date, to_date, rec_status, batch_guid " +
                                " FROM " +
                                "     " + fao_vw + " " +
-                               ")")
+                               (")" if metadata.schema is not None else ""))
     return __success

@@ -52,7 +52,6 @@ class Unittest_with_sqlite(UT_Base):
         global csv_imported
         if import_data and not csv_imported.get(datasource_name + '.' + resources_dir, False):
             import_csv_dir(resources_dir, datasource_name=Unittest_with_sqlite.datasource_name)
-            load_fact_asmt_outcome(datasource_name=Unittest_with_sqlite.datasource_name)
             csv_imported[datasource_name + '.' + resources_dir] = True
 
     @classmethod

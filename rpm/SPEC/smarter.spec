@@ -221,7 +221,7 @@ chkconfig --del celeryd-edextract
 chkconfig --del celeryd-edmigrate
 chkconfig --del edmigrate-conductor
 chkconfig --del repmgrd
-chkconfig --del repmgrd-watcher off
+chkconfig --del repmgrd-watcher
 
 %postun
 

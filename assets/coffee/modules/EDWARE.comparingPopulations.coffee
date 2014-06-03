@@ -19,8 +19,7 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-  "edwareSearch"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwareStickyCompare, edwarePreferences, Constants, edwareClientStorage, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
 
   POPULATION_BAR_WIDTH = 145
 
@@ -122,8 +121,6 @@ define [
     createHeaderAndFooter: ()->
       self = this
       this.header ?= edwareHeader.create this.data, this.config
-      this.search ?= new edwareSearch.EdwareSearch this.labels, () ->
-        self.renderGrid()
 
     fetchData: (params)->
       options =
@@ -178,19 +175,17 @@ define [
                              .build()
 
       # Filter out selected rows, if any, we pass in the first columns' grid config field name for sticky chain list
-      gridNameColumn = this.gridConfig[0]["items"][0]["field"]
-      filteredData = this.stickyCompare.getFilteredInfo this.populationData, gridNameColumn
-      searchData = this.search.getSearchResults filteredData, gridNameColumn
+      filteredInfo = this.stickyCompare.getFilteredInfo this.populationData, this.gridConfig[0]["items"][0]["field"]
 
       self = this
       # Create compare population grid for State/District/School view
       @grid = edwareGrid.create {
-        data: searchData.data
+        data: filteredInfo.data
         columns: this.gridConfig
         footer: this.summaryData
         options:
           labels: this.labels
-          stickyCompareEnabled: searchData.enabled
+          stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort
           gridComplete: () ->
             self.afterGridLoadComplete()

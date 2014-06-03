@@ -137,6 +137,15 @@ hr {
 }
 
 // Mixins
+.background-gradient (@from, @to) {
+  background-color: @from;
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(@from), to(@to));
+  background-image: -webkit-linear-gradient(top,@from, @to);
+  background-image: -o-linear-gradient(top,@from, @to);
+  background-image: linear-gradient(to bottom,@from, @to);
+  background-image: -moz-linear-gradient(top,@from, @to);
+}
+
 .rounded-corners (@radius: 5px) {
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
@@ -160,17 +169,21 @@ hr {
   padding-bottom: 10px;
 }
 
+.flipY () {
+    -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+
 // Base CSS
 .edware-btn-primary {
     text-shadow: 1px 1px 1px @color-C8;
     font-size: 13px;
     color: @color-white;
-    background-color: @color-C6;
-    background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-C6),to(@color-C7));
-    background-image: -webkit-linear-gradient(top,@color-C6,@color-C7);
-    background-image: -o-linear-gradient(top,@color-C6,@color-C7);
-    background-image: linear-gradient(to bottom,@color-C6,@color-C7);
-    background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
+    .background-gradient(@color-C6, @color-C7);
 
     &:hover, &:focus {
         background-position: initial;
@@ -184,6 +197,16 @@ hr {
     background-color: @color-white;
     color: @color-B1;
     background-image: none;
+}
+
+.edware-btn-gradient {
+  border: solid 1px @color-C19;
+  .rounded-corners(3px);
+  .background-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
+
+  &:hover, &:focus {
+    .background-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
+  }
 }
 
 ul.edware-dropdown-menu {

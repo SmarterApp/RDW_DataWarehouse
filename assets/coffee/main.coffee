@@ -92,6 +92,8 @@ require {
     HelpMenuTemplate: 'widgets/header/helpMenuTemplate.html',
     headerTemplateHtml: 'widgets/header/template.html',
     YearDropdownTemplate: 'widgets/academicYear/template.html',
+    SearchBoxTemplate: 'widgets/search/SearchBoxTemplate.html',
+    SearchResultTemplate: 'widgets/search/SearchResultTemplate.html',
   },
   shim: {
     'jqGrid': {

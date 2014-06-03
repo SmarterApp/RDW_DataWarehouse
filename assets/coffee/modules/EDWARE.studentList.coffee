@@ -192,8 +192,6 @@ define [
     createHeaderAndFooter: () ->
       self = this
       this.header = edwareHeader.create(this.data, this.config) unless this.header
-      this.search ?= new edwareSearch.EdwareSearch this.labels, () ->
-        self.updateView()
 
     fetchExportData: () ->
       this.assessmentsData
@@ -266,15 +264,14 @@ define [
       # get filtered data and we pass in the first columns' config
       # field name for sticky chain list
       filteredInfo = this.stickyCompare.getFilteredInfo(asmtData, filedName)
-      searchData = this.search.getSearchResults filteredInfo, filedName
 
       self = this
       edwareGrid.create {
-        data: searchData.data
+        data: filteredInfo.data
         columns: @studentsDataSet.columnData[viewName]
         options:
           labels: this.labels
-          stickyCompareEnabled: searchData.enabled
+          stickyCompareEnabled: filteredInfo.enabled
           gridComplete: () ->
             self.afterGridLoadComplete()
       }

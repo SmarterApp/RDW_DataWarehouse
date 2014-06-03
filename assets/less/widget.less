@@ -440,7 +440,7 @@ th.ui-th-column div {
   min-width: 310px;
 
   .mask {display: none;}
-  
+
   .popover-content {
     width: 320px;
     padding: 9px 10px 7px 10px !important;
@@ -451,7 +451,7 @@ th.ui-th-column div {
   &.popover.top .arrow:after {
     border-top-color: @color-C17;
   }
-  
+
 }
 
 .printFooterPopover {
@@ -1605,7 +1605,7 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
     tr {
       display: none;
     }
-    
+
     //control widgets visibility
     &.studentAssessment .assm_rpt {
       display: table-row;
@@ -1825,6 +1825,10 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
         .filterItem .divider {
             border-right: solid 1px @color-B5;
+        }
+
+        .searchItem .divider {
+          padding-right: 0px;
         }
 
         .align_button_area {
@@ -2055,4 +2059,57 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
             }
         }
     }
+}
+
+#SearchBoxTemplate {
+
+  .searchContainer {
+    display: inline;
+    position: relative;
+    bottom: 4px;
+  }
+
+  .searchbox {
+    width: 180px;
+    height: 24px;
+    border-color: @color-C19;
+    border-radius: 3px;
+    height: 15px;
+    font-size: 12px;
+  }
+
+  button {
+    line-height: 12px;
+    width: 44px;
+  }
+}
+
+.searchResult {
+  min-height: 38px;
+  line-height: 38px;
+  border-top: solid 1px @color-B17;
+  border-bottom: solid 1px @color-B17;
+  background-color: @color-B23;
+  padding-left: 12px;
+
+  span {
+    font-size: 15px;
+    color: @color-C18;
+    margin-right: 25px;
+
+    b {
+      color: @color-B1;
+    }
+  }
+
+  a.closeBtn {
+    float: right;
+    margin-right: 20px;
+  }
+
+  .edware-btn-gradient {
+    font-size: 13px;
+    color: @color-B2;
+    width: 78px;
+  }
 }

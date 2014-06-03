@@ -17,7 +17,7 @@ class RegistrationTest(unittest.TestCase):
     def setUp(self):
         self.__request = DummyRequest()
         reg = Registry()
-        reg.settings = {}
+        reg.settings = {'hpz.frs.download_base_url': 'http://blah/download'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__config.add_route('download', '/{reg_id}')
 
@@ -37,8 +37,34 @@ class RegistrationTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
         response_json = json.loads(str(response.body, encoding='UTF-8'))
+
         self.assertTrue('url' in response_json)
+        self.assertTrue('registration_id' in response_json)
+        registration_id = response_json['registration_id']
+        self.assertEqual('http://blah/download/' + registration_id, response_json['url'])
         persist_patch.assert_called_with('1234')
+
+    @patch('hpz.frs.registration_service.FileRegistry.register_request')
+    def test_registration_vaild_url(self, persist_patch):
+        reg = Registry()
+        reg.settings = {'hpz.frs.download_base_url': 'http://blah/download//'}
+        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
+
+        persist_patch.return_value = None
+
+        self.__request.method = 'PUT'
+        self.__request.json_body = {'uid': '1234'}
+
+        response = put_file_registration_service(None, self.__request)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_json = json.loads(str(response.body, encoding='UTF-8'))
+
+        self.assertTrue('url' in response_json)
+        self.assertTrue('registration_id' in response_json)
+        registration_id = response_json['registration_id']
+        self.assertEqual('http://blah/download/' + registration_id, response_json['url'])
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
     def test_registration_incorrect_payload(self, persist_patch):

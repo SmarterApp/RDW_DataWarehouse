@@ -92,7 +92,8 @@ def process_async_extraction_request(params, is_tenant_level=True):
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
         gatekeeper_id = processor.get_gatekeeper(tenant)
         pickup_zone_info = processor.get_pickup_zone_info(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue=queue)  # @UndefinedVariable
+        copy_info = {'gatekeeper_id': gatekeeper_id, 'pickup_zone': pickup_zone_info, 'tenant': tenant, 'copy_type': TaskConstants.SFTP}
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, copy_info, tasks], queue=queue)  # @UndefinedVariable
     return response
 
 

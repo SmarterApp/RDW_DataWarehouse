@@ -29,6 +29,8 @@ class Constants():
     EXTRACTION_DATA_TYPE = 'extraction_data_type'
     ROOT_DIRECTORY = 'root_directory'
     ITEM_IDS = 'item_ids'
+    SFTP = 'sftp'
+    HPZ = 'hpz'
 
 
 class QueryType():

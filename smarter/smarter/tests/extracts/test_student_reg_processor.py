@@ -145,4 +145,4 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
             self.assertEqual(response['tasks'][0][Constants.ACADEMIC_YEAR], 2015)
             self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
-            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)
+            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)

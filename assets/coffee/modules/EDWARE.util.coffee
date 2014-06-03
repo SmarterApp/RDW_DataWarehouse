@@ -169,6 +169,15 @@ define [
    toDisplay = (year)->
     (year - 1) + " - " + year
 
+  deepFind = (obj, path) ->
+    paths = path.split('.')
+
+    for currentPath in paths
+      return obj if not obj
+      obj = obj[currentPath]
+
+    return obj
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams
@@ -189,3 +198,4 @@ define [
   escapeCSV: escapeCSV
   getBaseURL: getBaseURL
   getAcademicYears: getAcademicYears
+  deepFind: deepFind

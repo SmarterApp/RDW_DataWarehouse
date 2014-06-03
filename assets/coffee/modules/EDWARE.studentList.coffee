@@ -13,7 +13,8 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
+  "edwareSearch"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -189,6 +190,7 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
+      self = this
       this.header = edwareHeader.create(this.data, this.config) unless this.header
 
     fetchExportData: () ->

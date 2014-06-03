@@ -197,6 +197,20 @@ define [
       # dynamically load data when scrolling down
       this.jqGrid('setGridParam', {scroll: 1, rowNum: 100}).trigger("reloadGrid")
 
+    $.fn.edwareSortedData = () ->
+      # return grid data in sorted order
+      grid = this
+      sortname = grid.jqGrid('getGridParam', 'sortname')
+      sortorder = grid.jqGrid('getGridParam', 'sortorder')
+      data = grid.jqGrid('getGridParam', 'data')
+      data.sort (row1, row2) ->
+        v1 = edwareUtil.deepFind(row1, sortname)
+        v2 = edwareUtil.deepFind(row2, sortname)
+        if sortorder is 'asc'
+          return v1 > v2
+        else
+          return v2 > v1
+      data
 
   adjustHeight = () ->
     # adjust grid height based on visible region

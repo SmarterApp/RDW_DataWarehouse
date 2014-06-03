@@ -11,7 +11,8 @@ define [
   "edwarePrint"
   "edwarePopover"
   "edwareConstants"
-], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants) ->
+  "edwareSearch"
+], ($, bootstrap, Mustache, ActionBarTemplate, edwareDownload, edwareLegend, edwareAsmtDropdown, edwareDisclaimer, edwarePreferences, edwarePrint, edwarePopover, Constants, edwareSearch) ->
 
   class ReportActionBar
 
@@ -26,6 +27,10 @@ define [
       @legend ?= @createLegend()
       @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
+      @searchBox ?= @createSearchBox()
+
+    createSearchBox: () ->
+      $('#search').edwareSearchBox @config.labels
 
     createPrint: () ->
       @printer = edwarePrint.create '.printModal', @config.labels

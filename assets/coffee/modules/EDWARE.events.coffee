@@ -4,8 +4,9 @@ define ["jquery"], ($) ->
 
   # handle keyboard use highlight effect
   $('body').on
-    keyup: () ->
-      $(this).addClass('highlight')
+    keyup: (e) ->
+      if e.keyCode is 9 # tab key
+        $(this).addClass('highlight')
     mouseup: () ->
       $(this).removeClass('highlight')
 

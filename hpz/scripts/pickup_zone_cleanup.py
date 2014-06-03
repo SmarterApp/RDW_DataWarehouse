@@ -39,7 +39,8 @@ def cleanup(config_file_path, expiration_duration):
 
 
 parser = argparse.ArgumentParser(description='Cleanup HTTP pickup zone files and database')
-parser.add_argument('-c', '--config', help="The path to the ini file", default="/opt/edware/conf/hpz.ini")
+parser.add_argument('-c', '--config', help="The path to the HTTP pickup zone ini file",
+                    default="/opt/edware/conf/hpz.ini")
 parser.add_argument('-e', '--expiration', type=int, required=True, help="The expiration time for files (in days)")
 args = parser.parse_args()
 

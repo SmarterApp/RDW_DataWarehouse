@@ -219,7 +219,7 @@ chkconfig --level 2345 repmgrd-watcher off
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 chkconfig --del celeryd-edmigrate
-chkconfig --add edmigrate-conductor
+chkconfig --del edmigrate-conductor
 chkconfig --del repmgrd
 chkconfig --del repmgrd-watcher off
 

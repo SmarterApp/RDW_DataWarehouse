@@ -90,7 +90,7 @@ qa:
         ca:
             url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
         cat:
-            url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+            url: postgresql://edware:edware2013@dbpgudl0.qa.dum.edwdc.net:5432/edware
     prod_db_conn:
         ca:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
@@ -98,14 +98,11 @@ qa:
         cat:
             url: postgresql://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
             db_schema: edware_es_1_6            
-    gpg_home: /home/udl2/.gnupg
+    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_6
             url: postgresql://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
-    global_sequence:
-        batch_size: 1000
-                                            
 
 uat:
   '[app]':
@@ -124,7 +121,7 @@ uat:
         ca:
             url: postgresql://edware:xON.yw27aw@dwpool0.dmo.som.edwdc.net:6432/edware
             db_schema: edware_es_1_6
-    gpg_home: /home/udl2/.gnupg
+    gpg_home: /opt/edware/keys
     edware_stats:
         db:
             schema_name: edware_es_1_6

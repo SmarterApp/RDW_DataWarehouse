@@ -88,18 +88,25 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/edsftp-watcher
 
 %pre
-
-%post
-chkconfig --add edsftp-watcher
-
 EDWARE_ROOT=/opt/edware
 if [ ! -d $EDWARE_ROOT/run ]; then
     mkdir -p $EDWARE_ROOT/run
 fi
 
-%postun
+if [ ! -d $EDWARE_ROOT/ssh ]; then
+    mkdir -p $EDWARE_ROOT/ssh
+fi
+
+if [ ! -d $EDWARE_ROOT/ssh/.ssh ]; then
+    mkdir -p $EDWARE_ROOT/ssh/.ssh
+fi
+
+%post
+chkconfig --add edsftp-watcher
 
 %preun
 chkconfig --del edsftp-watcher
+
+%postun
 
 %changelog

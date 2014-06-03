@@ -139,8 +139,11 @@ def archive(request_id, recipients, archive_file_name, directory, encrypted):
                      Constants.CELERY_TASK_ID: archive.request.id,
                      Constants.REQUEST_GUID: request_id}
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-        archive_func = get_archive_func(encrypted)
-        archive_func(directory, recipients, archive_file_name)
+
+        if encrypted:
+            archive_with_encryption(directory, recipients, archive_file_name)
+        else:
+            archive_without_encryption(directory, archive_file_name)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
     except GPGPublicKeyException as e:
         # recoverable exception
@@ -159,7 +162,7 @@ def archive(request_id, recipients, archive_file_name, directory, encrypted):
                 # since exc option is not really working for retry.
                 raise ExtractionError()
             except ExtractionError as exc:
-                raise archive.retry(args=[request_id, recipients, encrypted_archive_file_name, directory, encrypted], exc=exc)
+                raise archive.retry(args=[request_id, recipients, archive_file_name, directory, encrypted], exc=exc)
         else:
             raise ExtractionError()
 
@@ -347,17 +350,12 @@ def archive_with_encryption(directory, recipients, encrypted_archive_file_name):
     encrypted_archive_files(directory, recipients, encrypted_archive_file_name, homedir=homedir, keyserver=keyserver, gpgbinary=gpg_binary_file)
 
 
-def archive_without_encryption(directory, recipients, archive_file_name):
+def archive_without_encryption(directory, archive_file_name):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
 
     archive_files(directory, archive_file_name)
-
-
-def get_archive_func(encrypted):
-
-    return archive_with_encryption if encrypted else archive_without_encryption
 
 
 def is_encrypted(tasks):

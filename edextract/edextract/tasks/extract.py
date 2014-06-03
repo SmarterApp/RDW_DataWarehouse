@@ -130,7 +130,7 @@ def archive(request_id, archive_file_name, directory):
         raise ExtractionError()
 
 
-@celery.task(name="tasks.extract.remote_copy",  max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+@celery.task(name="tasks.extract.remote_copy", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
 def remote_copy(request_id, src_file_name, upload_url):
     '''
     Remotely copies a source file to a remote machine

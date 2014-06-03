@@ -173,6 +173,8 @@ chown -R udl2.udl2 $UDL2_ROOT/conf
 %post
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger
+chkconfig --level 2345 celeryd-udl2 off
+chkconfig --level 2345 edudl2-trigger off
 
 %preun
 chkconfig --del celeryd-udl2

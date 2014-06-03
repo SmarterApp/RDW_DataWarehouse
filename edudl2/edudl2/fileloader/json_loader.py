@@ -22,6 +22,7 @@ from sqlalchemy.sql.expression import select, and_
 from psycopg2.extensions import QuotedString
 from edudl2.udl2.constants import Constants
 
+
 def load_json(conf):
     '''
     Main method for loading json into the integration table

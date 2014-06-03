@@ -1,0 +1,1 @@
+smarter_common README

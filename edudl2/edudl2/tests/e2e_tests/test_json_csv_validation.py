@@ -36,7 +36,7 @@ class ValidateTableData(unittest.TestCase):
                      'missing_json': os.path.join(file_to_path, 'test_missing_json_file.tar.gz.gpg'),
                      'corrupt_source_file': os.path.join(file_to_path, 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'),
                      'invalid_load_json': os.path.join(file_to_path, 'test_invalid_load_json_file_tar_gzipped.tar.gz.gpg'),
-                     'invalid_guid_json':os.path.join(file_to_path, 'test_asmt_guid_validation.tar.gz.gpg'),
+                     'invalid_guid_json': os.path.join(file_to_path, 'test_asmt_guid_validation.tar.gz.gpg'),
                      'sr_csv_missing_column': os.path.join(file_to_path, 'student_registration_data', 'test_sr_csv_missing_column.tar.gz.gpg')}
         self.archived_file = FILE_DICT
         initialize_all_db(udl2_conf, udl2_flat_conf)

@@ -9,7 +9,7 @@ dependencies = [
     'edschema',
     'edauth',
     'edcore',
-    'edidentity']
+    'smarter_common']
 
 
 for dependency in dependencies:

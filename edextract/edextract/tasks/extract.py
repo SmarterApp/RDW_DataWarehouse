@@ -38,9 +38,11 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
+
+    encrypted = is_encrypted(tasks)
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
                      generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     archive.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive, encrypted], queues=queue, immutable=True),
                      remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
     workflow.apply_async()
 
@@ -51,9 +53,12 @@ def start_upload_extract(tenant, request_id, archive_file_name, directory_to_arc
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
+
+    public_key_id = None
+    encrypted = is_encrypted(tasks)
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
                      generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive_without_encryption.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     archive.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive, encrypted], queues=queue, immutable=True),
                      upload.subtask(args=[request_id, archive_file_name, http_info], queues=queue, immutable=True))
 
     workflow.apply_async()
@@ -78,8 +83,7 @@ def prepare_path(request_id, paths):
         raise ExtractionError()
 
 
-def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME,
-                                item_level=False):
+def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME, item_level=False):
     """
     Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
 
@@ -102,53 +106,44 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
     return group(generate_tasks)
 
 
-@celery.task(name="tasks.extract.archive_without_encryption")
-def archive_without_encryption(request_id, archive_file_name, directory_to_archive):
+@celery.task(name="tasks.extract.archive_with_stream")
+def archive_with_stream(request_id, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
+    @return: Streamed contents of archive file.
     '''
-    task_info = {Constants.TASK_ID: archive.request.id,
-                 Constants.CELERY_TASK_ID: archive.request.id,
-                 Constants.REQUEST_GUID: request_id}
-    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-    archive_files(directory_to_archive, archive_file_name)
-    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
 
-
-@celery.task(name="tasks.extract.archive")
-def archive(request_id, directory):
-    '''
-    given a directory, archive everything in this directory to a file name specified
-    '''
-    task_info = {Constants.TASK_ID: archive.request.id,
-                 Constants.CELERY_TASK_ID: archive.request.id,
+    task_info = {Constants.TASK_ID: archive_with_stream.request.id,
+                 Constants.CELERY_TASK_ID: archive_with_stream.request.id,
                  Constants.REQUEST_GUID: request_id}
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
 
     archive_memory_file = io.BytesIO()
     archive_files(directory, archive_memory_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
+
     return archive_memory_file.getvalue()
 
 
-@celery.task(name="tasks.extract.archive_with_encryption",
-             max_retries=MAX_RETRY,
-             default_retry_delay=DEFAULT_RETRY_DELAY)
-def archive_with_encryption(request_id, recipients, encrypted_archive_file_name, directory):
+@celery.task(name="tasks.extract.archive", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+def archive(request_id, recipients, archive_file_name, directory, encrypted):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
+
     retryable = False
     exception_thrown = False
+
     try:
-        task_info = {Constants.TASK_ID: archive_with_encryption.request.id,
-                     Constants.CELERY_TASK_ID: archive_with_encryption.request.id,
+        task_info = {Constants.TASK_ID: archive.request.id,
+                     Constants.CELERY_TASK_ID: archive.request.id,
                      Constants.REQUEST_GUID: request_id}
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-        gpg_binary_file = get_setting(Config.BINARYFILE)
-        homedir = get_setting(Config.HOMEDIR)
-        keyserver = get_setting(Config.KEYSERVER)
-        encrypted_archive_files(directory, recipients, encrypted_archive_file_name, homedir=homedir, keyserver=keyserver, gpgbinary=gpg_binary_file)
+
+        if encrypted:
+            archive_with_encryption(directory, recipients, archive_file_name)
+        else:
+            archive_without_encryption(directory, archive_file_name)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
     except GPGPublicKeyException as e:
         # recoverable exception
@@ -167,7 +162,7 @@ def archive_with_encryption(request_id, recipients, encrypted_archive_file_name,
                 # since exc option is not really working for retry.
                 raise ExtractionError()
             except ExtractionError as exc:
-                raise archive_with_encryption.retry(args=[request_id, recipients, encrypted_archive_file_name, directory], exc=exc)
+                raise archive.retry(args=[request_id, recipients, archive_file_name, directory, encrypted], exc=exc)
         else:
             raise ExtractionError()
 
@@ -342,3 +337,29 @@ def get_extract_func(extract_type):
     }
 
     return extract_funcs[extract_type]
+
+
+def archive_with_encryption(directory, recipients, encrypted_archive_file_name):
+    '''
+    given a directory, archive everything in this directory to an encrypted file name specified
+    '''
+
+    gpg_binary_file = get_setting(Config.BINARYFILE)
+    homedir = get_setting(Config.HOMEDIR)
+    keyserver = get_setting(Config.KEYSERVER)
+    encrypted_archive_files(directory, recipients, encrypted_archive_file_name, homedir=homedir, keyserver=keyserver, gpgbinary=gpg_binary_file)
+
+
+def archive_without_encryption(directory, archive_file_name):
+    '''
+    given a directory, archive everything in this directory to a file name specified
+    '''
+
+    archive_files(directory, archive_file_name)
+
+
+def is_encrypted(tasks):
+    extract_type = tasks[0][TaskConstants.EXTRACTION_DATA_TYPE]
+    encrypted_extracts = [ExtractionDataType.QUERY_CSV, ExtractionDataType.QUERY_JSON, ExtractionDataType.QUERY_ITEMS_CSV]
+
+    return extract_type in encrypted_extracts

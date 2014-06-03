@@ -50,6 +50,10 @@ cd ${WORKSPACE}/edschema
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edauth
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edapi
 python setup.py clean --all
 python setup.py install
@@ -59,6 +63,10 @@ python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edudl2
+python setup.py clean --all
+python setup.py install
+cd -
+cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -
@@ -114,11 +122,6 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/edudl2-trigger
 
 %pre
-
-
-%post
-chkconfig --add celeryd-udl2
-
 # check if udl2 group exists and create if not
 egrep -i "^udl:" /etc/group > /dev/null 2>&1
 if [ $? -ne 0 ]; then
@@ -135,24 +138,14 @@ fi
 UDL2_ROOT=/opt/edware
 UDL2_ZONES=$UDL2_ROOT/zones
 
-if [ ! -d $UDL2_ROOT/log ]; then
-    mkdir -p $UDL2_ROOT/log
-fi
-
 if [ ! -d $UDL2_ROOT/keys ]; then
     mkdir -p $UDL2_ROOT/keys
+    chown -R udl2.udl2 $UDL2_ROOT/keys
 fi
 
 if [ ! -d $UDL2_ROOT/run ]; then
     mkdir -p $UDL2_ROOT/run
-fi
-
-if [ ! -f $UDL2_ROOT/log/udl2.audit.log ]; then
-    touch $UDL2_ROOT/log/udl2.audit.log
-fi
-
-if [ ! -f $UDL2_ROOT/log/udl2.error.log ]; then
-    touch $UDL2_ROOT/log/udl2.error.log
+    chown -R udl2.udl2 $UDL2_ROOT/run
 fi
 
 if [ ! -d $UDL2_ZONES ]; then
@@ -175,16 +168,19 @@ if [ ! -d $UDL2_ZONES/landing/history ]; then
     mkdir -p $UDL2_ZONES/landing/history
 fi
 chown -R udl2.udl2 $UDL2_ROOT/zones
-chown -R udl2.udl2 $UDL2_ROOT/log
-chown -R udl2.udl2 $UDL2_ROOT/keys
 chown -R udl2.udl2 $UDL2_ROOT/conf
 
-%postun
-userdel -rf udl2 > /dev/null 2>&1
-groupdel udl2 > /dev/null 2>&1
+%post
+chkconfig --add celeryd-udl2
+chkconfig --add edudl2-trigger
+chkconfig --level 2345 celeryd-udl2 off
+chkconfig --level 2345 edudl2-trigger off
 
 %preun
 chkconfig --del celeryd-udl2
 chkconfig --del edudl2-trigger
+
+%postun
+
 
 %changelog

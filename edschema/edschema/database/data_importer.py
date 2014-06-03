@@ -164,12 +164,14 @@ def load_fact_asmt_outcome(datasource_name=''):
     __success = False
     with DBConnection(name=datasource_name) as connection:
         metadata = connection.get_metadata()
+        fao = metadata.schema + ".fact_asmt_outcome" if metadata.schema is not None else "fact_asmt_outcome"
+        fao_vw = metadata.schema + ".fact_asmt_outcome_vw" if metadata.schema is not None else "fact_asmt_outcome_vw"
         # Look through metadata and upload available imports with the same and and ext csv
         # use transaction.
         # if importing is okay. then commit the transaction; otherwise, roll back
         with connection.get_transaction() as _:
             connection.execute("INSERT INTO " +
-                               "    edware_es_1_7.fact_asmt_outcome " +
+                               "    " + fao + " " +
                                "(SELECT " +
                                "     asmt_outcome_vw_rec_id, asmt_rec_id, student_rec_id, inst_hier_rec_id, " +
                                "     asmt_guid, student_guid, state_code, district_guid, school_guid, " +
@@ -190,6 +192,6 @@ def load_fact_asmt_outcome(datasource_name=''):
                                "     acc_read_aloud_nonembed, acc_scribe_nonembed, acc_speech_to_text_nonembed, " +
                                "     acc_streamline_mode, from_date, to_date, rec_status, batch_guid " +
                                " FROM " +
-                               "     edware_es_1_7.fact_asmt_outcome_vw " +
+                               "     " + fao_vw + " " +
                                ")")
     return __success

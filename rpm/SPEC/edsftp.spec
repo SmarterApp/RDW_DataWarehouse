@@ -103,6 +103,7 @@ fi
 
 %post
 chkconfig --add edsftp-watcher
+chkconfig --level 2345 edsftp-watcher off
 
 %preun
 chkconfig --del edsftp-watcher

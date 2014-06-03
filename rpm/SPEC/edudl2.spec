@@ -50,6 +50,10 @@ cd ${WORKSPACE}/edschema
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edauth
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edapi
 python setup.py clean --all
 python setup.py install
@@ -59,6 +63,10 @@ python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edudl2
+python setup.py clean --all
+python setup.py install
+cd -
+cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -

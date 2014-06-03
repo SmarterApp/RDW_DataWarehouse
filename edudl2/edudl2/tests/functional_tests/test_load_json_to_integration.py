@@ -1,21 +1,26 @@
 __author__ = 'smuhit'
 
+import os
 from edudl2.fileloader.json_loader import load_json
 from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2 import message_keys as mk
 from uuid import uuid4
 from sqlalchemy.sql import select
-from edudl2.database.udl2_connector import get_udl_connection
+from edudl2.tests.functional_tests.util import UDLTestHelper
+from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
-import os
-import unittest
 
 STUDENT_REGISTRATION_JSON_COLUMNS = ['record_sid', 'guid_batch', 'guid_registration', 'academic_year',
                                      'extract_date', 'test_reg_id', 'created_date']
 
 
-class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
+class FunctionalTestLoadJsonToIntegrationTable(UDLTestHelper):
+
+    @classmethod
+    def setUpClass(cls):
+        super(FunctionalTestLoadJsonToIntegrationTable, cls).setUpClass()
+        initialize_db_udl(cls.udl2_conf)
 
     def setUp(self):
         self.udl2_conn = get_udl_connection()
@@ -30,6 +35,7 @@ class FunctionalTestLoadJsonToIntegrationTable(unittest.TestCase):
             mk.MAPPINGS: get_json_table_mapping(load_type),
             mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
+            mk.TENANT_NAME: 'cat'
         }
         return conf
 

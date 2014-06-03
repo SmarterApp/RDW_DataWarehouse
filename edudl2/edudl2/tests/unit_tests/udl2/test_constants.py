@@ -36,6 +36,8 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(Constants.LOAD_TYPE_ASSESSMENT, 'assessment')
         self.assertEqual(Constants.LOAD_TYPE_STUDENT_REGISTRATION, 'studentregistration')
 
+        self.assertEqual(Constants.SEQUENCE_NAME, 'global_rec_seq')
+
     def test_all_lambda_constants(self):
         self.assertEqual(len(Constants.LOAD_TYPES()), 2)
         self.assertEqual(Constants.LOAD_TYPES(), [Constants.LOAD_TYPE_ASSESSMENT, Constants.LOAD_TYPE_STUDENT_REGISTRATION])
@@ -47,3 +49,6 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(Constants.UDL2_JSON_INTEGRATION_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION), Constants.INT_SR_META_TABLE)
         self.assertEqual(Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_ASSESSMENT), Constants.ASMT_REF_TABLE)
         self.assertEqual(Constants.UDL2_REF_MAPPING_TABLE(Constants.LOAD_TYPE_STUDENT_REGISTRATION), Constants.SR_REF_TABLE)
+        self.assertEqual(Constants.TENANT_SEQUENCE_NAME('cat'), Constants.SEQUENCE_NAME + '_' + 'cat')
+        self.assertEqual(Constants.TENANT_SEQUENCE_NAME(''), None)
+        self.assertEqual(Constants.TENANT_SEQUENCE_NAME(None), None)

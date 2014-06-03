@@ -49,9 +49,7 @@ class ValidateSchemaChange(unittest.TestCase):
 
     #Copy file to tenant folder
     def copy_file_to_tmp(self):
-        if os.path.exists(self.tenant_dir):
-            print("tenant dir already exists")
-        else:
+        if not os.path.exists(self.tenant_dir):
             os.makedirs(self.tenant_dir)
         return shutil.copy2(self.archived_file, self.tenant_dir)
 

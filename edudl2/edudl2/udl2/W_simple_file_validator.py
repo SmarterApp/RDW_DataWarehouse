@@ -33,7 +33,7 @@ def task(incoming_msg):
         else:
             # TODO: Jump to ERROR_TASK
             for error in errors:
-                print('ERROR: ' + str(error))
+                logger.error('ERROR: ' + str(error))
             raise Exception('simple file validator error: %s' % errors)
 
     end_time = datetime.datetime.now()

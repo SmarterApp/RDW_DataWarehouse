@@ -100,9 +100,11 @@ def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, sta
     op_column_present = check_header_contains_op(header_file)
 
     # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
-    csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
-    stg_columns = ['guid_batch', 'src_file_rec_num']
-    transformation_rules = ['', '']
+    csv_table_columns = ['\'' + str(guid_batch) + '\'',
+                         'nextval(\'{seq_name}\')',
+                         'nextval(\'{global_tenant_seq_name}\')']
+    stg_columns = ['guid_batch', 'src_file_rec_num', 'record_sid']
+    transformation_rules = ['', '', '']
     if column_mapping_result:
         for mapping in column_mapping_result:
             if mapping[1] == Constants.OP_COLUMN_NAME and not op_column_present:
@@ -114,20 +116,23 @@ def get_fields_map(conn, ref_table_name, csv_lz_table, guid_batch, csv_file, sta
 
 
 def import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
-                   apply_rules, staging_schema, staging_table, csv_schema, csv_table, start_seq):
+                   apply_rules, staging_schema, staging_table, csv_schema, csv_table, start_seq, tenant_name):
     '''
     Load data from foreign table to staging table
     '''
     # create sequence name, use table_name and a random number combination.
     # This sequence is used for column src_file_rec_num
-    seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
+    seq_name = (csv_table + '_' + str(start_seq)).lower()
+
+    global_tenant_seq_name = Constants.TENANT_SEQUENCE_NAME(tenant_name)
 
     # query 1 -- create query to create sequence
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
     # query 2 -- create query to load data from fdw to staging table
     insert_into_staging_table = queries.create_inserting_into_staging_query(stg_columns, apply_rules, csv_table_columns,
-                                                                            staging_schema, staging_table, csv_schema, csv_table, seq_name,
-                                                                            transformation_rules)
+                                                                            staging_schema, staging_table, csv_schema,
+                                                                            csv_table, seq_name,
+                                                                            global_tenant_seq_name, transformation_rules)
     # query 3 -- create query to drop sequence
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
     # logger.debug('@@@@@@@', insert_into_staging_table)
@@ -163,7 +168,7 @@ def load_data_process(conn, conf):
     start_time = datetime.datetime.now()
     import_via_fdw(conn, stg_columns, csv_table_columns, transformation_rules,
                    conf.get(mk.APPLY_RULES), conf.get(mk.TARGET_DB_SCHEMA), conf.get(mk.TARGET_DB_TABLE),
-                   conf.get(mk.CSV_SCHEMA), conf.get(mk.CSV_TABLE), conf.get(mk.ROW_START))
+                   conf.get(mk.CSV_SCHEMA), conf.get(mk.CSV_TABLE), conf.get(mk.ROW_START), conf.get(mk.TENANT_NAME))
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)

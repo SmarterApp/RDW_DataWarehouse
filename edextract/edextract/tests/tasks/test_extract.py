@@ -3,6 +3,7 @@ Created on Nov 7, 2013
 
 @author: dip
 '''
+
 import unittest
 from unittest.mock import patch
 
@@ -25,8 +26,8 @@ from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
-from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_encryption,
-                                     archive_without_encryption, remote_copy, prepare_path)
+from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_stream,
+                                     remote_copy, prepare_path)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -66,8 +67,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_generate(self):
         pass
 
-    def test_archive(self):
-        open(self.__tmp_zip, 'wb').write(archive('req_id', self.__tmp_dir))
+    def test_archive_with_stream(self):
+        open(self.__tmp_zip, 'wb').write(archive_with_stream('req_id', self.__tmp_dir))
 
         zipfile = ZipFile(self.__tmp_zip, "r")
         namelist = zipfile.namelist()
@@ -344,26 +345,19 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(tasks_group, group)
         self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentRegistrationCompletionReportCSV'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
 
-    def test_archive_with_encryption(self):
-        files = ['test_0.csv', 'test_1.csv', 'test.json']
-        with tempfile.TemporaryDirectory() as _dir:
-            csv_dir = os.path.join(_dir, 'csv')
-            os.mkdir(csv_dir)
-            gpg_file = os.path.join(_dir, 'gpg', 'output.gpg')
-            os.mkdir(os.path.dirname(gpg_file))
-            for file in files:
-                with open(os.path.join(csv_dir, file), 'a') as f:
-                    f.write(file)
+    @patch('edextract.tasks.extract.archive_with_encryption')
+    def test_archive_task_with_encryption(self, archive_patch):
+        request_id = '1'
+        recipients = 'kswimberly@amplify.com'
+        gpg_file = 'output.zip.gpg'
+        csv_dir = 'csv/file/dir'
 
-            request_id = '1'
-            recipients = 'kswimberly@amplify.com'
+        result = archive.apply(args=[request_id, recipients, gpg_file, csv_dir, True])
+        result.get()
 
-            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])
-            result.get()
+        archive_patch.assert_called_once_with(csv_dir, recipients, gpg_file)
 
-            self.assertTrue(os.path.exists(gpg_file))
-
-    def test_archive_with_encryption_no_recipients(self):
+    def test_archive_task_with_encryption_no_recipients(self):
         files = ['test_0.csv', 'test_1.csv', 'test.json']
         with tempfile.TemporaryDirectory() as _dir:
             csv_dir = os.path.join(_dir, 'csv')
@@ -377,7 +371,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             request_id = '1'
             recipients = 'nobody@amplify.com'
 
-            result = archive_with_encryption.apply(args=[request_id, recipients, gpg_file, csv_dir])
+            result = archive.apply(args=[request_id, recipients, gpg_file, csv_dir, True])
 
             self.assertRaises(ExtractionError, result.get)
 
@@ -388,14 +382,14 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tenant = 'es'
         gatekeeper = 'foo'
         sftp_info = ['128.0.0.2', 'nobody', '/dev/null']
-        copy_info = {'tenant': tenant, 'gatekeeper': gatekeeper, 'sftp_info': sftp_info, 'copy_type': 'sftp'}
+        copy_info = {'tenant': tenant, 'gatekeeper': gatekeeper, 'sftp_info': sftp_info, 'copy_type': 'sftp', 'timeout': 3}
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
 
-            remote_copy.apply(args=[request_id, src_file_name, copy_info], kwargs={'timeout': 3})
+            remote_copy.apply(args=[request_id, src_file_name, copy_info])
 
-            mock_copy.assert_called_with(src_file_name, copy_info, timeout=3)
+            mock_copy.assert_called_with(src_file_name, copy_info)
 
     @patch('edextract.tasks.extract.copy')
     def test_remote_copy_failure(self, mock_copy):
@@ -404,12 +398,12 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tenant = 'es'
         gatekeeper = 'foo'
         sftp_info = ['128.0.0.2', 'nobody', '/dev/null']
-        copy_info = {'tenant': tenant, 'gatekeeper': gatekeeper, 'sftp_info': sftp_info, 'copy_type': 'sftp'}
+        copy_info = {'tenant': tenant, 'gatekeeper': gatekeeper, 'sftp_info': sftp_info, 'copy_type': 'sftp', 'timeout': 3}
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
 
-            result = remote_copy.apply(args=[request_id, src_file_name, copy_info], kwargs={'timeout': 3})
+            result = remote_copy.apply(args=[request_id, src_file_name, copy_info])
 
             self.assertRaises(ExtractionError, result.get)
 
@@ -420,9 +414,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         insert_stats_patch.return_value = None
         http_info = {'url': 'http://test_url.com', 'copy_type': 'hpz'}
 
-        result = remote_copy.apply(args=['test_request_id', 'test_file_name', http_info], kwargs={'timeout': 3})
+        result = remote_copy.apply(args=['test_request_id', 'test_file_name', http_info])
 
-        file_upload_patch.assert_called_once_with('test_file_name', http_info, timeout=3)
+        file_upload_patch.assert_called_once_with('test_file_name', http_info)
         self.assertTrue(insert_stats_patch.called)
         self.assertEqual(2, insert_stats_patch.call_count)
 
@@ -435,9 +429,9 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         insert_stats_patch.return_value = None
         http_info = {'url': 'http://test_url.com', 'copy_type': 'hpz'}
 
-        remote_copy.apply(args=['test_request_id', 'test_file_name', http_info], kwargs={'timeout': 3})
+        remote_copy.apply(args=['test_request_id', 'test_file_name', http_info])
 
-        file_upload_patch.assert_called_with('test_file_name', http_info, timeout=3)
+        file_upload_patch.assert_called_with('test_file_name', http_info)
         self.assertEqual(2, file_upload_patch.call_count)
         self.assertTrue(insert_stats_patch.called)
         self.assertEqual(4, insert_stats_patch.call_count)
@@ -456,10 +450,17 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
             request_id = '1'
 
-            result = archive_without_encryption.apply(args=[request_id, zip_file, csv_dir])
-            result.get()
+    @patch('edextract.tasks.extract.archive_without_encryption')
+    def test_archive_task_without_encryption(self, archive_patch):
+        request_id = '1'
+        recipients = 'kswimberly@amplify.com'
+        zip_file = 'output.zip'
+        csv_dir = 'csv/file/dir'
 
-            self.assertTrue(os.path.exists(zip_file))
+        result = archive.apply(args=[request_id, recipients, zip_file, csv_dir, False])
+        result.get()
+
+        archive_patch.assert_called_once_with(csv_dir, zip_file)
 
     def test_prepare_path(self):
         tmp_dir = tempfile.mkdtemp()

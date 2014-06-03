@@ -19,7 +19,7 @@ requires = [
     'edschema',
     'edauth',
     'edcore',
-    'edidentity']
+    'smarter_common']
 
 setup(name='hpz',
       version='0.1',

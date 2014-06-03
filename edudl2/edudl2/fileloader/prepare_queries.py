@@ -34,7 +34,7 @@ def drop_staging_tables_query(csv_schema, csv_table):
 
 
 def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
-                                        staging_table, csv_schema, csv_table, seq_name, transformation_rules):
+                                        staging_table, csv_schema, csv_table, seq_name, global_tenant_seq_name, transformation_rules):
     column_names_with_proc = apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules)
     # TODO: This needs to be changed to SQLAlchemy query
     insert_sql = ['INSERT INTO "{staging_schema}"."{staging_table}"(',
@@ -43,9 +43,11 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, c
                   ', '.join(column_names_with_proc),
                   ' FROM "{csv_schema}"."{csv_table}"',
                   ]
-    # note: seq_name is used in the expression of column record_sid in stg_asmt_outcome_columns
+    # note: seq_name is used in the expression for column src_file_rec_num in stg_asmt_outcome_columns
+    # global_tenant_seq_name is used in the expression for column record_sid in stg_asmt_outcome_columns
     return create_filtered_sql_string("".join(insert_sql),
-                                      seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table,
+                                      seq_name=seq_name, global_tenant_seq_name=global_tenant_seq_name,
+                                      staging_schema=staging_schema, staging_table=staging_table,
                                       csv_schema=csv_schema, csv_table=csv_table)
 
 

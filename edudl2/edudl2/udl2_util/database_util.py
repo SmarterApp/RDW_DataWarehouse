@@ -3,10 +3,11 @@ Created on May 22, 2013
 
 @author: ejen
 '''
+import re
 from sqlalchemy.sql.expression import text
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import MetaData
-import re
+from sqlalchemy.sql.expression import select
 from edudl2.udl2_util.exceptions import UDL2SQLFilteredSQLStringException
 
 
@@ -174,3 +175,13 @@ def _create_filtered_string(query, allow_special_chars, **kwargs):
         else:
             raise UDL2SQLFilteredSQLStringException('Type of Name was not string or integer [' + type(value).__name__ + ']')
     return query.format(**kwargs)
+
+
+def sequence_exists(connection, seq_name):
+    '''
+    Return True if sequence exists in the given DB connection, otherwise return False.
+    '''
+    query = select(["sequence_name"]).select_from(
+        "information_schema.sequences").where("sequence_name = '" + seq_name + "'")
+    exist = connection.execute(query).scalar()
+    return exist

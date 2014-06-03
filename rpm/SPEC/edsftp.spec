@@ -41,11 +41,19 @@ cd ${WORKSPACE}/edcore
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edauth
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edapi
 python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edsftp
+python setup.py clean --all
+python setup.py install
+cd -
+cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -

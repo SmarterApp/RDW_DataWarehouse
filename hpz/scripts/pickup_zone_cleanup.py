@@ -20,8 +20,8 @@ def cleanup(config_file_path, expiration_duration):
 
     config = ConfigParser()
     config.read(config_file_path)
-    db_url = config['app:main']['hpz.db.url']
-    db_schema = config['app:main']['hpz.db.schema_name']
+    db_url = config.get('app:main', 'hpz.db.url')
+    db_schema = config.get('app:main', 'hpz.db.schema_name')
 
     engine = create_engine(db_url)
     metadata = MetaData(schema=db_schema, bind=engine)

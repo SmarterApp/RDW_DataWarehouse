@@ -12,7 +12,6 @@ import logging
 from edextract.celery import celery
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.status.constants import Constants
-from edextract.tasks.upload import upload
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
 from edextract.utils import file_utils
@@ -25,6 +24,7 @@ from edextract.data_extract_generation.query_extract_generator import generate_c
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
+from edextract.utils.http_file_upload import http_file_upload
 
 
 log = logging.getLogger('edextract')
@@ -33,7 +33,7 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
 @celery.task(name='task.extract.start_extract')
-def start_extract(tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
+def start_extract(tenant, request_id, public_key_id, archive_file_name, directory_to_archive, copy_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
@@ -43,24 +43,7 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
                      generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
                      archive.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive, encrypted], queues=queue, immutable=True),
-                     remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
-    workflow.apply_async()
-
-
-@celery.task(name='task.extract.start_upload_extract')
-def start_upload_extract(tenant, request_id, archive_file_name, directory_to_archive, http_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
-    '''
-    entry point to start an extract request for one or more extract tasks
-    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
-    '''
-
-    public_key_id = None
-    encrypted = is_encrypted(tasks)
-    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive, encrypted], queues=queue, immutable=True),
-                     upload.subtask(args=[request_id, archive_file_name, http_info], queues=queue, immutable=True))
-
+                     remote_copy.subtask(args=[request_id, archive_file_name, copy_info], queues=queue, immutable=True))
     workflow.apply_async()
 
 
@@ -170,16 +153,20 @@ def archive(request_id, recipients, archive_file_name, directory, encrypted):
 @celery.task(name="tasks.extract.remote_copy",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)
-def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeout=1800):
+def remote_copy(request_id, src_file_name, copy_info):
     '''
     Remotely copies a source file to a remote machine
     '''
+    copy_ops = {TaskConstants.SFTP: copy, TaskConstants.HPZ: http_file_upload}
     task_info = {Constants.TASK_ID: remote_copy.request.id,
                  Constants.CELERY_TASK_ID: remote_copy.request.id,
                  Constants.REQUEST_GUID: request_id}
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPYING})
-        copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2], timeout=timeout)
+
+        copy_type = copy_info['copy_type']
+        copy_ops[copy_type](src_file_name, copy_info)
+
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPIED})
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + str(e))
@@ -190,7 +177,7 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeou
             raise ExtractionError(str(e))
         except ExtractionError as exc:
             # this could be caused by network hiccup
-            raise remote_copy.retry(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': timeout}, exc=exc)
+            raise remote_copy.retry(args=[request_id, src_file_name, copy_info], exc=exc)
     except Exception as e:
         raise ExtractionError(str(e))
 

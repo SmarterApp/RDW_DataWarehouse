@@ -1,5 +1,3 @@
-from urllib.parse import urljoin
-
 __author__ = 'ablum'
 
 """
@@ -14,7 +12,7 @@ from pyramid.threadlocal import get_current_registry
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
-from edextract.tasks.extract import start_upload_extract
+from edextract.tasks.extract import start_extract
 from edextract.status.status import create_new_entry
 from smarter.extracts import processor
 from smarter.extracts import student_reg_statistics
@@ -70,9 +68,9 @@ def process_async_extraction_request(params):
     response['download_url'] = download_url
 
     file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
-    http_info = {'url': file_upload_url}
+    http_info = {'url': file_upload_url, 'copy_type': TaskConstants.HPZ}
 
-    start_upload_extract.apply_async(args=[tenant, request_id, archived_file_path, data_directory_to_archive, http_info, [task_info]], queue=queue)
+    start_extract.apply_async(args=[tenant, request_id, None, archived_file_path, data_directory_to_archive, http_info, [task_info]], queue=queue)
 
     return response
 

@@ -17,6 +17,7 @@ from sqlalchemy.sql.expression import and_
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.security.constants import RolesConstants
+from smarter.extracts.file_registration import register_file
 
 __author__ = 'ablum'
 
@@ -84,16 +85,19 @@ def process_async_extraction_request(params, is_tenant_level=True):
             task_responses += __task_responses
 
     response['tasks'] = task_responses
+
     if len(tasks) > 0:
-        # TODO: handle empty public key
-        public_key_id = processor.get_encryption_public_key_identifier(tenant)
         archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
         response['fileName'] = os.path.basename(archive_file_name)
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
-        gatekeeper_id = processor.get_gatekeeper(tenant)
-        pickup_zone_info = processor.get_pickup_zone_info(tenant)
-        copy_info = {'gatekeeper_id': gatekeeper_id, 'pickup_zone': pickup_zone_info, 'tenant': tenant, 'copy_type': TaskConstants.SFTP}
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, copy_info, tasks], queue=queue)  # @UndefinedVariable
+
+        # Register extract file with HPZ.
+        registration_id, download_url = register_file(user.get_uid())
+        response['download_url'] = download_url
+        file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
+
+        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, file_upload_url, tasks], queue=queue)  # @UndefinedVariable
+
     return response
 
 
@@ -138,14 +142,17 @@ def process_async_item_extraction_request(params, is_tenant_level=True):
 
     response['tasks'] = task_responses
     if len(tasks) > 0:
-        # TODO: handle empty public key
-        public_key_id = processor.get_encryption_public_key_identifier(tenant)
         archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
         response['fileName'] = os.path.basename(archive_file_name)
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
-        gatekeeper_id = processor.get_gatekeeper(tenant)
-        pickup_zone_info = processor.get_pickup_zone_info(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue=queue)  # @UndefinedVariable
+
+        # Register extract file with HPZ.
+        registration_id, download_url = register_file(user.get_uid())
+        response['download_url'] = download_url
+        file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
+
+        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, file_upload_url, tasks], queue=queue)  # @UndefinedVariable
+
     return response
 
 

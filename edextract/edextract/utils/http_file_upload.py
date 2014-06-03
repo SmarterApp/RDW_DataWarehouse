@@ -13,14 +13,14 @@ def __create_stream(file_path, file):
     return MultipartEncoder(fields={'file': (file_path, file, 'application/octet-stream')})
 
 
-def http_file_upload(file_path, copy_info):
-    upload_url = copy_info['url']
+def http_file_upload(file_path, upload_url):
     with open(file_path, 'rb') as f:
         stream = __create_stream(file_path, f)
         headers = {'Content-Type': stream.content_type, 'File-Name': os.path.basename(file_path)}
 
         try:
             response = api.post(upload_url, data=stream, headers=headers)
+
         except ConnectionError as e:
             raise RemoteCopyError(msg=str(e))
 

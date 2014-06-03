@@ -26,6 +26,7 @@ from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter.security.constants import RolesConstants
+from unittest.mock import patch
 from smarter.security.roles.pii import PII  # @UnusedImport
 
 
@@ -38,12 +39,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.reg = Registry()
         self.__work_zone_dir = tempfile.TemporaryDirectory()
         self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
-                             'pickup.gatekeeper.t1': '/t/acb',
-                             'pickup.gatekeeper.t2': '/a/df',
-                             'pickup.gatekeeper.y': '/a/c',
-                             'pickup.sftp.hostname': 'hostname.local.net',
-                             'pickup.sftp.user': 'myUser',
-                             'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa',
+                             'hpz.file_upload_base_url': 'http://somehost:82/files',
                              'extract.available_grades': '3,4,5,6,7,8,11'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
@@ -173,7 +169,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         zip_data = process_sync_extract_request(params)
         self.assertIsNotNone(zip_data)
 
-    def test_process_async_extraction_request_with_subject(self):
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_process_async_extraction_request_with_subject(self, register_file_patch):
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],
                   'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
@@ -187,6 +185,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertIn('.zip', response['fileName'])
         self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
     def test_process_sync_items_extraction_request_NotFoundException(self):
         params = {'stateCode': 'NC',
@@ -205,7 +204,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         zip_data = process_sync_item_extract_request(params)
         self.assertIsNotNone(zip_data)
 
-    def test_process_async_items_extraction_request_with_subject(self):
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_process_async_items_extraction_request_with_subject(self, register_file_patch):
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         params = {'stateCode': 'NC',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',
@@ -215,6 +216,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertIn('.zip', response['fileName'])
         self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
     def test___prepare_data(self):
         params = {'stateCode': 'NC',

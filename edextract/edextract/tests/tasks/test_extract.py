@@ -388,13 +388,14 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tenant = 'es'
         gatekeeper = 'foo'
         sftp_info = ['128.0.0.2', 'nobody', '/dev/null']
+        copy_info = {'tenant': tenant, 'gatekeeper': gatekeeper, 'sftp_info': sftp_info, 'copy_type': 'sftp'}
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
 
-            remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})
+            remote_copy.apply(args=[request_id, src_file_name, copy_info], kwargs={'timeout': 3})
 
-            mock_copy.assert_called_with(src_file_name, '128.0.0.2', 'es', 'foo', 'nobody', '/dev/null', timeout=3)
+            mock_copy.assert_called_with(src_file_name, copy_info, timeout=3)
 
     @patch('edextract.tasks.extract.copy')
     def test_remote_copy_failure(self, mock_copy):
@@ -403,13 +404,43 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tenant = 'es'
         gatekeeper = 'foo'
         sftp_info = ['128.0.0.2', 'nobody', '/dev/null']
+        copy_info = {'tenant': tenant, 'gatekeeper': gatekeeper, 'sftp_info': sftp_info, 'copy_type': 'sftp'}
         with tempfile.TemporaryDirectory() as _dir:
             src_file_name = os.path.join(_dir, 'src.txt')
             open(src_file_name, 'w').close()
 
-            result = remote_copy.apply(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': 3})
+            result = remote_copy.apply(args=[request_id, src_file_name, copy_info], kwargs={'timeout': 3})
 
             self.assertRaises(ExtractionError, result.get)
+
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    @patch('edextract.tasks.extract.http_file_upload')
+    def test_remote_copy_hpz_success(self, file_upload_patch, insert_stats_patch):
+        file_upload_patch.side_effect = None
+        insert_stats_patch.return_value = None
+        http_info = {'url': 'http://test_url.com', 'copy_type': 'hpz'}
+
+        result = remote_copy.apply(args=['test_request_id', 'test_file_name', http_info], kwargs={'timeout': 3})
+
+        file_upload_patch.assert_called_once_with('test_file_name', http_info, timeout=3)
+        self.assertTrue(insert_stats_patch.called)
+        self.assertEqual(2, insert_stats_patch.call_count)
+
+    @patch('edextract.tasks.extract.get_setting')
+    @patch('edextract.tasks.extract.insert_extract_stats')
+    @patch('edextract.tasks.extract.http_file_upload')
+    def test_remote_copy_hpz_connection_error(self, file_upload_patch, insert_stats_patch, get_setting_patch):
+        get_setting_patch.return_value = 2
+        file_upload_patch.side_effect = RemoteCopyError
+        insert_stats_patch.return_value = None
+        http_info = {'url': 'http://test_url.com', 'copy_type': 'hpz'}
+
+        remote_copy.apply(args=['test_request_id', 'test_file_name', http_info], kwargs={'timeout': 3})
+
+        file_upload_patch.assert_called_with('test_file_name', http_info, timeout=3)
+        self.assertEqual(2, file_upload_patch.call_count)
+        self.assertTrue(insert_stats_patch.called)
+        self.assertEqual(4, insert_stats_patch.call_count)
 
     def test_archive_without_encryption(self):
         files = ['test_0.csv', 'test_1.csv', 'test.json']

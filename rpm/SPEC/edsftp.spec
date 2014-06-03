@@ -53,6 +53,10 @@ cd ${WORKSPACE}/edsftp
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/smarter_common
+python setup.py clean --all
+python setup.py install
+cd -
 
 deactivate
 find virtualenv/edsftp/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;

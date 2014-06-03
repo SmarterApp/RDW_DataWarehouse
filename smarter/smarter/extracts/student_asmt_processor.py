@@ -6,7 +6,7 @@ from smarter.extracts.student_assessment import get_extract_assessment_query, ge
 from edcore.utils.utils import compile_query_to_sql_text
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import start_extract, archive, generate_extract_file_tasks, prepare_path
+from edextract.tasks.extract import start_extract, archive_with_stream, generate_extract_file_tasks, prepare_path
 from pyramid.threadlocal import get_current_registry
 from datetime import datetime
 import os
@@ -46,7 +46,7 @@ def process_sync_extract_request(params):
 #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
         prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
+        result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")
@@ -92,7 +92,8 @@ def process_async_extraction_request(params, is_tenant_level=True):
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
         gatekeeper_id = processor.get_gatekeeper(tenant)
         pickup_zone_info = processor.get_pickup_zone_info(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue=queue)  # @UndefinedVariable
+        copy_info = {'gatekeeper_id': gatekeeper_id, 'pickup_zone': pickup_zone_info, 'tenant': tenant, 'copy_type': TaskConstants.SFTP}
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, copy_info, tasks], queue=queue)  # @UndefinedVariable
     return response
 
 
@@ -114,7 +115,7 @@ def process_sync_item_extract_request(params):
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue, item_level=True)().get(timeout=celery_timeout)
-        result = archive.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
+        result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
         raise NotFoundException("There are no results")

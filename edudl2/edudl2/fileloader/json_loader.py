@@ -20,6 +20,7 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.database.udl2_connector import get_udl_connection
 from sqlalchemy.sql.expression import select, and_
 from psycopg2.extensions import QuotedString
+from edudl2.udl2.constants import Constants
 
 
 def load_json(conf):
@@ -30,7 +31,9 @@ def load_json(conf):
 
     json_dict = read_json_file(conf.get(mk.FILE_TO_LOAD))
     flattened_json = flatten_json_dict(json_dict, conf.get(mk.MAPPINGS))
-    return load_to_table(flattened_json, conf.get(mk.GUID_BATCH), conf.get(mk.TARGET_DB_TABLE))
+    return load_to_table(flattened_json, conf.get(mk.GUID_BATCH),
+                         conf.get(mk.TARGET_DB_TABLE), conf.get(mk.TENANT_NAME),
+                         conf.get(mk.TARGET_DB_SCHEMA))
 
 
 def read_json_file(json_file):
@@ -80,12 +83,14 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
-def load_to_table(data_dict, guid_batch, int_table):
+def load_to_table(data_dict, guid_batch, int_table, tenant_name, udl_schema):
     '''
     Load the table into the proper table
     @param data_dict: the dictionary containing the data to be loaded
     @param guid_batch: the id for the batch
     @param int_table: the name of the integration table
+    @param tenant_name: name of the tenant
+    @param udl_schema: udl schema name
     '''
     # Create sqlalchemy connection and get table information from sqlalchemy
     ref_column_mapping_columns = {}
@@ -117,8 +122,10 @@ def load_to_table(data_dict, guid_batch, int_table):
                     continue
             ref_column_mapping_columns[target_column] = value
 
-        from_select_column_names = []
-        from_select_select_values = []
+        record_sid = 'nextval(\'{schema_name}.{tenant_sequence_name}\')'.\
+            format(schema_name=udl_schema, tenant_sequence_name=Constants.TENANT_SEQUENCE_NAME(tenant_name))
+        from_select_column_names = ['record_sid']
+        from_select_select_values = [record_sid]
         for column in s_int_table.c:
             value = data_dict.get(column.name)
             if value:

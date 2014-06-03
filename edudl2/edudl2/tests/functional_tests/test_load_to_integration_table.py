@@ -13,7 +13,7 @@ from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.move_to_integration.move_to_integration import get_column_mapping_from_stg_to_int
 from edudl2.udl2_util.database_util import get_db_connection_params
 from edudl2.udl2.constants import Constants
-from sqlalchemy.sql.expression import select, update
+from sqlalchemy.sql.expression import update
 from uuid import uuid4
 
 
@@ -39,7 +39,8 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
             mk.TARGET_DB_TABLE: staging_table,
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
-            mk.GUID_BATCH: guid
+            mk.GUID_BATCH: guid,
+            mk.TENANT_NAME: 'cat'
         }
         load_file(conf)
         with get_udl_connection() as conn:

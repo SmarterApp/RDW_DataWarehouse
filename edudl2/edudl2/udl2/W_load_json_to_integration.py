@@ -36,11 +36,12 @@ def task(msg):
     start_time = datetime.datetime.now()
     guid_batch = msg[mk.GUID_BATCH]
     load_type = msg[mk.LOAD_TYPE]
+    tenant_name = msg[mk.TENANT_NAME]
     tenant_directory_paths = msg[mk.TENANT_DIRECTORY_PATHS]
     expanded_dir = tenant_directory_paths[mk.EXPANDED]
     json_file = file_util.get_file_type_from_dir('.json', expanded_dir)
     logger.info('LOAD_JSON_TO_INTEGRATION: Loading json file <%s>' % json_file)
-    conf = generate_conf_for_loading(json_file, guid_batch, load_type)
+    conf = generate_conf_for_loading(json_file, guid_batch, load_type, tenant_name)
     affected_rows = load_json(conf)
     end_time = datetime.datetime.now()
 
@@ -53,7 +54,7 @@ def task(msg):
     return msg
 
 
-def generate_conf_for_loading(json_file, guid_batch, load_type):
+def generate_conf_for_loading(json_file, guid_batch, load_type, tenant_name):
     '''
     takes the msg and pulls out the relevant parameters to pass
     the method that loads the json
@@ -63,6 +64,7 @@ def generate_conf_for_loading(json_file, guid_batch, load_type):
         mk.MAPPINGS: get_json_table_mapping(load_type),
         mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
-        mk.GUID_BATCH: guid_batch
+        mk.GUID_BATCH: guid_batch,
+        mk.TENANT_NAME: tenant_name
     }
     return conf

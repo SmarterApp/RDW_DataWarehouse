@@ -130,11 +130,13 @@ class FileLoaderFTest(UDLTestHelper):
             self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_asmt_outcome'
             self.conf[mk.REF_TABLE] = Constants.UDL2_REF_MAPPING_TABLE('assessment')
             self.conf[mk.CSV_TABLE] = 'test_csv_table'
+            self.conf[mk.TENANT_NAME] = 'cat'
             self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('test_file_realdata.csv')
             self.conf[mk.HEADERS] = self.get_csv_file('test_file_headers.csv')
         elif type == 'studentregistration':
             self.conf[mk.TARGET_DB_TABLE] = 'stg_sbac_stu_reg'
             self.conf[mk.REF_TABLE] = Constants.UDL2_REF_MAPPING_TABLE('studentregistration')
+            self.conf[mk.TENANT_NAME] = 'cat'
             self.conf[mk.CSV_TABLE] = 'test_stu_reg_csv_table'
             self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('student_registration_data/test_sample_student_reg.csv')
             self.conf[mk.HEADERS] = self.get_csv_file('student_registration_data/test_stu_reg_header.csv')

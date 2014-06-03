@@ -65,7 +65,7 @@ common:
       idp:
         metadata: ../../resource/idp_metadata.xml
       saml:
-        identity_parser: edidentity.security.sbac_identity_parser.SbacIdentityParser
+        identity_parser: smarter_common.security.sbac_identity_parser.SbacIdentityParser
 
     # Static cache max age
     smarter.resources.static.max_age: 3600
@@ -171,7 +171,6 @@ common:
         user_path_sftpdepartures_dir: reports
         user_path_filerouter_dir: route
         remote:
-            landing_zone_hostname: edwappsrv6.poc.dum.edwdc.net
             arrivals_path: /opt/edware/zones/landing/arrivals
             sftp_user: udl2
             private_key_file: /opt/edware/ssh/.ssh/id_rsa
@@ -243,10 +242,10 @@ common:
   '[loggers]':
     keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event, edmigrate, edsftp, edudl2
   '[handlers]':
-    keys: console, filelog, audit, security_event
+    keys: console, filelog, audit, security_event, mna_rest
 
   '[formatters]':
-    keys: generic, json
+    keys: generic, json, mna
 
   '[logger_edauth]':
     level: DEBUG
@@ -328,6 +327,13 @@ common:
     level: INFO
     formatter: json
 
+  '[handler_mna_rest]':
+    class: smarter_common.logging.mna.MNAHTTPHandler
+    formatter: mna
+    args: ('mna-dev.opentestsystem.org:8443', '/mna-rest/log', 'POST', 'True')
+    level: DEBUG
+
+
   '[formatter_generic]':
     format: '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s'
 
@@ -335,6 +341,9 @@ common:
     class: edapi.logging.JsonDictLoggingFormatter
     format: '%(asctime)s %(message)s'
 
+  '[formatter_mna]':
+    class: smarter_common.logging.mna.MnALoggingFormatter
+    format: '[%(name)s][%(threadName)s] %(message)s'
 
 # End logging configuration
 
@@ -366,6 +375,12 @@ qa:
     pickup.sftp:
       hostname: lzsftpudl0.qa.dum.edwdc.net
       private_key_file: /opt/edware/ssh/.ssh/id_rsa
+    sftp:
+        file_stat_watch_interval: 5
+        file_stat_watch_period: 30
+        file_system_scan_delay: 60
+        remote:
+            landing_zone_hostname: rbtmqudl0.qa.dum.edwdc.net
     edware:
       db:
         cat:
@@ -410,6 +425,7 @@ qa:
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -480,6 +496,7 @@ jenkins_qa:
         BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net/edextract
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 uat:
   '[app:main]':
@@ -513,6 +530,12 @@ uat:
         hostname: lzsftpudl0.dmo.som.edwdc.net
         private_key_file: /opt/edware/ssh/.ssh/id_rsa
     disable_stack_trace: true
+    sftp:
+        file_stat_watch_interval: 10
+        file_stat_watch_period: 60
+        file_system_scan_delay: 300
+        remote:
+            landing_zone_hostname: rbtmqudl0.dmo.som.edwdc.net
     edware:
       db:
         es:
@@ -560,6 +583,7 @@ uat:
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -628,6 +652,7 @@ localOpenAM:
     mode: dev
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 development:
   '[app:main]':
@@ -700,8 +725,15 @@ development:
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     sftp.jail.base_path: /tmp
+    sftp:
+        file_stat_watch_interval: 2
+        file_stat_watch_period: 10
+        file_system_scan_delay: 30
+        remote:
+            landing_zone_hostname: localhost
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 test:
   '[app:main]':
@@ -755,6 +787,7 @@ test:
       celery_always_eager: true
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 integration:
   '[app:main]':
@@ -801,6 +834,7 @@ integration:
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files
 
 jenkins_int:
   '[app:main]':
@@ -856,6 +890,7 @@ jenkins_int:
       sftp.hostname: localhost
     hpz:
         file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
+        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
 
 jenkins_dev:
   '[app:main]':
@@ -911,6 +946,7 @@ jenkins_dev:
       sftp.hostname: localhost
     hpz:
         file_registration_url: http://edwappsrv1.poc.dum.edwdc.net:81/registration
+        file_upload_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/files
 
 air:
   '[app:main]':
@@ -957,3 +993,4 @@ air:
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
     hpz:
         file_registration_url: http://localhost/registration
+        file_upload_base_url: http://localhost/files

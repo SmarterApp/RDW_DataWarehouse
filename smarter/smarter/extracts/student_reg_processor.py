@@ -58,20 +58,19 @@ def process_async_extraction_request(params):
 
     response['tasks'] = [task_response]
 
-    encrypted_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-    response['fileName'] = os.path.basename(encrypted_file_path)
+    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id, encrypted=False)
+    response['fileName'] = os.path.basename(archived_file_path)
 
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
-    public_key_id = processor.get_encryption_public_key_identifier(tenant)
-    gatekeeper_id = processor.get_gatekeeper(tenant)
-    pickup_zone_info = processor.get_pickup_zone_info(tenant)
-
     # Register extract file with HPZ.
-    registration_id, download_url = register_file(user.get_uid())  # TODO: Pass registration_id to start_extract for file upload to HPZ.
+    registration_id, download_url = register_file(user.get_uid())
     response['download_url'] = download_url
 
-    start_extract.apply_async(args=[tenant, request_id, public_key_id, encrypted_file_path, data_directory_to_archive, gatekeeper_id, pickup_zone_info, [task_info]], queue=queue)
+    file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
+    http_info = {'url': file_upload_url, 'copy_type': TaskConstants.HPZ}
+
+    start_extract.apply_async(args=[tenant, request_id, None, archived_file_path, data_directory_to_archive, http_info, [task_info]], queue=queue)
 
     return response
 

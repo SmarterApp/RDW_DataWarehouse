@@ -19,20 +19,21 @@ def task(msg):
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> ' % (msg[mk.FILE_TO_LOAD]))
     guid_batch = msg[mk.GUID_BATCH]
-    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.LOAD_TYPE], msg[mk.HEADERS], guid_batch)
+    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.LOAD_TYPE],
+                                     msg[mk.HEADERS], guid_batch, msg[mk.TENANT_NAME])
     load_file(conf)
     end_time = datetime.datetime.now()
 
     #Record benchmark
-    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True, size_records=msg[mk.SIZE_RECORDS],
-                                    tenant=msg[mk.TENANT_NAME])
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time,
+                                    task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                    udl_leaf=True, size_records=msg[mk.SIZE_RECORDS], tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
 
     return msg
 
 
-def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_path, guid_batch):
+def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_path, guid_batch, tenant_name):
     csv_table = extract_file_name(file_to_load)
     conf = {mk.FILE_TO_LOAD: file_to_load,
             mk.ROW_START: start_seq,
@@ -45,5 +46,6 @@ def generate_conf_for_loading(file_to_load, start_seq, load_type, header_file_pa
             mk.APPLY_RULES: True,
             mk.REF_TABLE: Constants.UDL2_REF_MAPPING_TABLE(load_type),
             mk.CSV_LZ_TABLE: Constants.UDL2_CSV_LZ_TABLE,
-            mk.GUID_BATCH: guid_batch}
+            mk.GUID_BATCH: guid_batch,
+            mk.TENANT_NAME: tenant_name}
     return conf

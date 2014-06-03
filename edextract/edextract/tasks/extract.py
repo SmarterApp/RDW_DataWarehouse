@@ -159,7 +159,7 @@ def archive(request_id, recipients, archive_file_name, directory, encrypted):
                 # since exc option is not really working for retry.
                 raise ExtractionError()
             except ExtractionError as exc:
-                raise archive.retry(args=[request_id, recipients, encrypted_archive_file_name, directory, encrypted], exc=exc)
+                raise archive.retry(args=[request_id, recipients, archive_file_name, directory, encrypted], exc=exc)
         else:
             raise ExtractionError()
 

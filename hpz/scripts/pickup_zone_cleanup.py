@@ -28,14 +28,17 @@ def cleanup(config_file_path, expiration_duration):
     metadata.reflect(schema=db_schema, bind=engine)
     with engine.connect() as conn:
         file_reg_table = Table('file_registry', metadata)
-        select_query = select([file_reg_table.c.file_path]).where(file_reg_table.c.create_dt <= expiration_time)
-        files_to_delete = conn.execute(select_query).fetchall()
-        delete_query = delete(file_reg_table).where(file_reg_table.c.create_dt <= expiration_time)
-        conn.execute(delete_query)
-
-    for file_to_delete in files_to_delete:
-        if os.path.exists(file_to_delete[0]):
-            os.remove(file_to_delete[0])
+        select_query = select([file_reg_table.c.registration_id, file_reg_table.c.file_path])\
+            .where(file_reg_table.c.create_dt <= expiration_time)
+        results = conn.execute(select_query, stream_results=True)
+        rows = results.fetchmany(1024)
+        while len(rows) > 0:
+            for row in rows:
+                if os.path.exists(row['file_path']):
+                    os.remove(row['file_path'])
+                delete_query = delete(file_reg_table).where(file_reg_table.c.registration_id == row['registration_id'])
+                conn.execute(delete_query)
+            rows = results.fetchmany(1024)
 
 
 parser = argparse.ArgumentParser(description='Cleanup HTTP pickup zone files and database')

@@ -60,7 +60,7 @@ def process_async_extraction_request(params):
 
     response['tasks'] = [task_response]
 
-    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id, encrypted=False)
+    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
     response['fileName'] = os.path.basename(archived_file_path)
 
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)

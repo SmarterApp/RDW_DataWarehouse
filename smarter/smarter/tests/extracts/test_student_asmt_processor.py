@@ -184,7 +184,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': ['2016'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         response = process_async_extraction_request(params)
-        self.assertIn('.zip.gpg', response['fileName'])
+        self.assertIn('.zip', response['fileName'])
+        self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
 
     def test_process_sync_items_extraction_request_NotFoundException(self):
@@ -211,7 +212,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'ELA',
                   'asmtGrade': '3'}
         response = process_async_item_extraction_request(params)
-        self.assertIn('.zip.gpg', response['fileName'])
+        self.assertIn('.zip', response['fileName'])
+        self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
 
     def test___prepare_data(self):

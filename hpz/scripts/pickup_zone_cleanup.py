@@ -3,8 +3,7 @@ __author__ = 'smuhit'
 
 import os
 import argparse
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from sqlalchemy.sql import select, delete
 from sqlalchemy import create_engine, Table
 from sqlalchemy.schema import MetaData

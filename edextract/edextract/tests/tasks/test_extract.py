@@ -415,7 +415,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         result = archive.apply(args=[request_id, recipients, zip_file, csv_dir, False])
         result.get()
 
-        archive_patch.assert_called_once_with(csv_dir, recipients, zip_file)
+        archive_patch.assert_called_once_with(csv_dir, zip_file)
 
     def test_prepare_path(self):
         tmp_dir = tempfile.mkdtemp()

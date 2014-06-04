@@ -12,5 +12,6 @@
 		"desc9": "Margen de error",
 		"desc10": "(el tamaño del margen de error se indica de manera numérica)",
 		"error_band": "El error de una puntuación proviene de la cantidad de información proporcionada por la prueba. Se basa en cuán bien una sola prueba puede presentar preguntas de dificultad apropiada para el estudiante en la duración asignada de la prueba. Las pruebas de <em>Smarter Balanced</em> se esfuerzan por proveer las puntuaciones más precisas posibles dentro de un tiempo límite razonable ofreciendo una sección de la prueba que se puede adaptar. Proporcionamos un margen de error para mostrar el rango de los valores de puntuación que muy probablemente pueda obtener un estudiante en una prueba cualquier día dado."
-	}
+	},
+    "searchPlaceholder": "Enter student"
 }

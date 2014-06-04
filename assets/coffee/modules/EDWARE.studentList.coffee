@@ -222,6 +222,8 @@ define [
       @config.reportName = Constants.REPORT_NAME.LOS
       asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder
       @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtPreference asmt

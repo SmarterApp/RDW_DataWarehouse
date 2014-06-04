@@ -46,8 +46,6 @@ define [
       $('#ResourcesModal').edwareModal()
     $('#header .dropdown').mouseleave ->
       $(this).removeClass 'open'
-    .focuslost ->
-      $(this).mouseleave()
 
   # The code below is curently not being used.  Waiting to be refactored
   createCommonRegion = ()->

@@ -17,11 +17,14 @@ define ["jquery"], ($) ->
     focusWatch = []
     checkFocus = () ->
       newFocusChain = $(":focus").parents().andSelf()
-      lostFocus = currentFocusChain.not(newFocusChain.get())
-      lostFocus.each ()->
-        if $.inArray(this, focusWatch) isnt -1
-          $(this).trigger('focuslost')
-      currentFocusChain = newFocusChain
+      if newFocusChain.length isnt 0
+        lostFocus = currentFocusChain.not(newFocusChain.get())
+        if lostFocus.length isnt 0
+          a = 0
+        lostFocus.each ()->
+          if $.inArray(this, focusWatch) isnt -1
+            $(this).trigger('focuslost')
+        currentFocusChain = newFocusChain
 
     $.fn.focuslost = (fn) ->
       # check both focus and blur events

@@ -11,7 +11,7 @@
     <div class="section"><h3>{{labels.student_filters}}</h3></div>
     <div class="section filter_section">
             {{#grades}}
-    <div class="grade_range filter-group" data-name="{{name}}" data-display="{{display}}">
+    <div class="grade_range filter-group filter-group-focuslost" data-name="{{name}}" data-display="{{display}}">
                 {{#options}}
         <label><input type="checkbox" value="{{value}}" data-label={{value}} data-value={{value}}>{{label}}</label></input>
                 {{/options}}
@@ -22,7 +22,7 @@
         <div class="filter-wrapper filter-group" data-name="{{name}}" data-display="{{tag}}">
         <div class="btn-group">
             <button class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span class="display">{{display}}</span><span class="caret"></span></button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu filter-group-focuslost">
                           {{#options}}
                 <li><label><input type="checkbox" value="{{value}}" data-label="{{label}}" data-value={{value}}>{{label}}</label></li>
                           {{/options}}

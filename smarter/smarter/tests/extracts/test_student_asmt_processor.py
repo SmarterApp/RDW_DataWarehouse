@@ -204,7 +204,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         zip_data = process_sync_item_extract_request(params)
         self.assertIsNotNone(zip_data)
 
-    def test_process_async_items_extraction_request_with_subject(self):
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_process_async_items_extraction_request_with_subject(self, register_file_patch):
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         params = {'stateCode': 'NC',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',
@@ -214,6 +216,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertIn('.zip', response['fileName'])
         self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
     def test___prepare_data(self):
         params = {'stateCode': 'NC',

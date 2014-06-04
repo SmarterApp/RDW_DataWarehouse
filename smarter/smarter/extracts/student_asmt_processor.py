@@ -148,7 +148,11 @@ def process_async_item_extraction_request(params, is_tenant_level=True):
         response['fileName'] = os.path.basename(archive_file_name)
         directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
-        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, None, tasks], queue=queue)  # @UndefinedVariable
+        # Register extract file with HPZ.
+        registration_id, download_url = register_file(user.get_uid())
+        response['download_url'] = download_url
+
+        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks], queue=queue)  # @UndefinedVariable
 
     return response
 

@@ -3,7 +3,8 @@ define [
   'jqGrid'
   'edwareUtil'
   'edwareGridFormatters'
-], ($, jqGrid, edwareUtil, edwareGridFormatters) ->
+  'edwareConstants'
+], ($, jqGrid, edwareUtil, edwareGridFormatters, CONSTANTS) ->
 
   COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar',
     '#stickyCompareSection', '.selectedFilter_panel', '.ui-jqgrid-hdiv', '.ui-jqgrid-sdiv']
@@ -41,6 +42,8 @@ define [
         lastFocus = "##{this.id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
+        # emit sorting event to other listeners
+        $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
 
       # load more data when focus on first and last row by triggering
       # scrolling event.

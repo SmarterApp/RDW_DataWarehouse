@@ -87,6 +87,7 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome_vw.c.dmg_eth_blk.label(fact_asmt_outcome_vw_label.get(Constants.DMG_ETH_BLK, Constants.DMG_ETH_BLK)),
                                     fact_asmt_outcome_vw.c.dmg_eth_pcf.label(fact_asmt_outcome_vw_label.get(Constants.DMG_ETH_PCF, Constants.DMG_ETH_PCF)),
                                     fact_asmt_outcome_vw.c.dmg_eth_wht.label(fact_asmt_outcome_vw_label.get(Constants.DMG_ETH_WHT, Constants.DMG_ETH_WHT)),
+                                    fact_asmt_outcome_vw.c.dmg_eth_2om.label(fact_asmt_outcome_vw_label.get(Constants.DMG_ETH_2OM, Constants.DMG_ETH_2OM)),
                                     fact_asmt_outcome_vw.c.dmg_prg_iep.label(fact_asmt_outcome_vw_label.get('dmg_prg_iep', 'dmg_prg_iep')),
                                     fact_asmt_outcome_vw.c.dmg_prg_lep.label(fact_asmt_outcome_vw_label.get('dmg_prg_lep', 'dmg_prg_lep')),
                                     fact_asmt_outcome_vw.c.dmg_prg_504.label(fact_asmt_outcome_vw_label.get('dmg_prg_504', 'dmg_prg_504')),

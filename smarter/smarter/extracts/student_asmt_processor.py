@@ -1,3 +1,10 @@
+from datetime import datetime
+import os
+import copy
+
+from pyramid.threadlocal import get_current_registry
+from sqlalchemy.sql.expression import and_
+
 from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
@@ -7,17 +14,13 @@ from edcore.utils.utils import compile_query_to_sql_text
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
 from edextract.tasks.extract import start_extract, archive_with_stream, generate_extract_file_tasks, prepare_path
-from pyramid.threadlocal import get_current_registry
-from datetime import datetime
-import os
 from edapi.exceptions import NotFoundException
-import copy
 from smarter.security.context import select_with_context
-from sqlalchemy.sql.expression import and_
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.security.constants import RolesConstants
-from smarter.extracts.file_registration import register_file
+from hpz_client.file_registration.file_registration import register_file
+
 
 __author__ = 'ablum'
 
@@ -94,9 +97,8 @@ def process_async_extraction_request(params, is_tenant_level=True):
         # Register extract file with HPZ.
         registration_id, download_url = register_file(user.get_uid())
         response['download_url'] = download_url
-        file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
 
-        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, file_upload_url, tasks], queue=queue)  # @UndefinedVariable
+        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks], queue=queue)  # @UndefinedVariable
 
     return response
 

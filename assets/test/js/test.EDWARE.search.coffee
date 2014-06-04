@@ -5,6 +5,10 @@ define ["jquery", "edwareSearch", "edwareConstants"], ($, edwareSearch, CONSTANT
   labels = {
     "prev": "Prev"
     "next": "Next"
+    "SearchResultText": {
+        "hasMatch": "<b id='cursor'>{{cursor}}</b> of <b>{{total}}</b> matching \"<b>{{keyword}}</b>\"",
+        "notFound": "No match \"<b>{{keyword}}</b>\" in this district. Please check spelling and try again."
+    }
   }
 
   module "EDWARE.search.create",

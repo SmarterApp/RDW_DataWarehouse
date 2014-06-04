@@ -130,6 +130,7 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'dmg_eth_blk': False,
             'dmg_eth_pcf': False,
             'dmg_eth_wht': False,
+            'dmg_eth_2om': False,
             'dmg_prg_iep': False,
             'dmg_prg_lep': False,
             'dmg_prg_504': False,

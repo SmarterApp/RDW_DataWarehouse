@@ -133,7 +133,8 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'dmg_prg_iep': False,
             'dmg_prg_lep': False,
             'dmg_prg_504': False,
-            'dmg_prg_tt1': False
+            'dmg_sts_ecd': False,
+            'dmg_sts_mig': False,
         }
         bad_record = {
             'student_guid': 'not_really_exist'

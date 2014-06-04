@@ -76,7 +76,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('dmg_prg_iep', Boolean, nullable=True),
                      Column('dmg_prg_lep', Boolean, nullable=True),
                      Column('dmg_prg_504', Boolean, nullable=True),
-                     Column('dmg_prg_tt1', Boolean, nullable=True),
+                     Column('dmg_sts_ecd', Boolean, nullable=True),
+                     Column('dmg_sts_mig', Boolean, nullable=True),
                      MetaColumn('from_date', String(8), nullable=False),
                      MetaColumn('to_date', String(8), nullable=True),
                      MetaColumn('rec_status', String(1), nullable=False),
@@ -194,7 +195,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                   Column('dmg_prg_iep', Boolean, nullable=True),
                                   Column('dmg_prg_lep', Boolean, nullable=True),
                                   Column('dmg_prg_504', Boolean, nullable=True),
-                                  Column('dmg_prg_tt1', Boolean, nullable=True),
+                                  Column('dmg_sts_ecd', Boolean, nullable=True),
+                                  Column('dmg_sts_mig', Boolean, nullable=True),
                                   Column('acc_asl_video_embed', SmallInteger, nullable=False),
                                   Column('acc_asl_human_nonembed', SmallInteger, nullable=False),
                                   Column('acc_braile_embed', SmallInteger, nullable=False),
@@ -222,7 +224,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_vw_eth_derived_idx', assessment_outcome_vw.c.dmg_eth_derived, unique=False)
     Index('fact_asmt_outcome_vw_lep_idx', assessment_outcome_vw.c.dmg_prg_lep, unique=False)
     Index('fact_asmt_outcome_vw_504_idx', assessment_outcome_vw.c.dmg_prg_504, unique=False)
-    Index('fact_asmt_outcome_vw_tt1_idx', assessment_outcome_vw.c.dmg_prg_tt1, unique=False)
+    Index('fact_asmt_outcome_vw_ecd_idx', assessment_outcome_vw.c.dmg_sts_ecd, unique=False)
+    Index('fact_asmt_outcome_vw_mig_idx', assessment_outcome_vw.c.dmg_sts_mig, unique=False)
     Index('fact_asmt_outcome_vw_iep_idx', assessment_outcome_vw.c.dmg_prg_iep, unique=False)
     Index('fact_asmt_outcome_vw_sex_idx', assessment_outcome_vw.c.sex, unique=False)
     Index('fact_asmt_outcome_vw_cpop_stateview_idx', assessment_outcome_vw.c.state_code, assessment_outcome_vw.c.asmt_type, assessment_outcome_vw.c.rec_status, assessment_outcome_vw.c.asmt_year, assessment_outcome_vw.c.inst_hier_rec_id, assessment_outcome_vw.c.asmt_subject, assessment_outcome_vw.c.asmt_perf_lvl, assessment_outcome_vw.c.district_guid, unique=False)

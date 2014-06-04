@@ -66,6 +66,10 @@ define [
       currentAsmtType = asmtType || edwarePreferences.getAsmtPreference()
       @disclaimer.update currentAsmtType
 
+    update: () ->
+      # Callback to search box to highlight if necessary
+      @searchBox.addHighlight()
+
     prepareSubjects: () ->
       # use customized subject interval
       return @config.subject if @config.subject

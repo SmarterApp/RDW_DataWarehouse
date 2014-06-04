@@ -52,6 +52,7 @@ define [
       $('.searchResult').remove()
       @searchBox.attr('value', '')
       this.removeHighlight()
+      @keyword = null
 
     search: (keyword) ->
       # do nothing if no search keyword
@@ -87,14 +88,22 @@ define [
       rowHeight = @getRowHeight()
       $('.ui-jqgrid-bdiv').scrollTop(offset * rowHeight)
       # Highlight active match
-      this.removeHighlight()
-      element = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[offset]['rowId'])
-      text = element.text()
-      idx = text.toLowerCase().indexOf(keyword)
-      element.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, keyword.length) + "</span>" + text.substr(idx + keyword.length))
+      @offset = offset
+      @keyword = keyword
+      this.addHighlight()
 
+    addHighlight: () ->
+      this.removeHighlight()
+      if @keyword
+        @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
+        text = @lastHighlightedElement.data('value')
+        idx = text.toLowerCase().indexOf(@keyword)
+        @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
+      
     removeHighlight: () ->
-      $('.nameLinks>span').removeClass("searchHighlight")
+      if @lastHighlightedElement
+        @lastHighlightedElement.children('span').removeClass("searchHighlight")
+        @lastHighlightedElement = null
 
     getRowHeight: () ->
       return @rowHeight if @rowHeight

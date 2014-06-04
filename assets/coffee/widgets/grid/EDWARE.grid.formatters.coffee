@@ -76,7 +76,7 @@ define [
 
     buildLink = (options)->
       if contextSecurity.hasPIIAccess(rowObject.rowId)
-        "<a id='link_#{rowObject.rowId}' class='nameLinks' href='#{options.colModel.formatoptions.linkUrl}?#{params}'>#{displayValue}</a>"
+        "<a id='link_#{rowObject.rowId}' data-value='#{displayValue}' href='#{options.colModel.formatoptions.linkUrl}?#{params}'>#{displayValue}</a>"
       else
         "<a class='disabled' href='#'>#{displayValue}</a>"
 

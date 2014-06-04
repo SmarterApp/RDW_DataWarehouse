@@ -257,6 +257,7 @@ define [
 
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
+      this.actionBar.update()
       # Remove second row header as that counts as a column in setLabel function
       $('.jqg-second-row-header').remove()
 

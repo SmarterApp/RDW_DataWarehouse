@@ -22,3 +22,7 @@ define [], () ->
     INTERIM: 'Interim Comprehensive'
     'INTERIM COMPREHENSIVE': 'Interim Comprehensive'
   }
+
+  EVENTS: {
+    SORT_COLUMNS: 'edwareOnSortColumns'
+  }

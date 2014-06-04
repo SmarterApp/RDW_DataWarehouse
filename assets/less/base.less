@@ -139,11 +139,11 @@ hr {
 // Mixins
 .background-gradient (@from, @to) {
   background-color: @from;
-  background-image: -webkit-gradient(linear,0 0,0 100%,from(@from), to(@to));
-  background-image: -webkit-linear-gradient(top,@from, @to);
-  background-image: -o-linear-gradient(top,@from, @to);
-  background-image: linear-gradient(to bottom,@from, @to);
-  background-image: -moz-linear-gradient(top,@from, @to);
+  background-image: -webkit-linear-gradient(top, @from 0%, @to 100%);
+  background-image:    -moz-linear-gradient(top, @from 0%, @to 100%);
+  background-image:      -ms-gradient(to bottom, @from 0%, @to 100%);
+  background-image:      -o-linear-gradient(top, @from 0%, @to 100%);
+  background-image:         linear-gradient(top, @from 0%, @to 100%);
 }
 
 .rounded-corners (@radius: 5px) {
@@ -201,11 +201,16 @@ hr {
 
 .edware-btn-gradient {
   border: solid 1px @color-C19;
+
   .rounded-corners(3px);
-  .background-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
+  .background-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.25));
+  -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,.8);
+  -webkit-box-shadow: 0 1px 0 0 rgba(255,255,255,.8);
+  box-shadow: 0 1px 0 0 rgba(255,255,255,.8);
 
   &:hover, &:focus {
-    .background-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
+    color: @color-B27 !important;
+    .background-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.25));
   }
 }
 

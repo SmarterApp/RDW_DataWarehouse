@@ -3,7 +3,8 @@ define [
   "mustache"
   "text!SearchBoxTemplate"
   "text!SearchResultTemplate"
-], ($, Mustache, SearchBoxTemplate, SearchResultTemplate) ->
+  "edwareConstants"
+], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS) ->
 
   class EdwareSearch
 
@@ -30,8 +31,10 @@ define [
         self.search keyword
 
       @searchResult.on 'click', '.closeBtn', ()->
-        $('.searchResult').remove()
-        self.searchBox.attr('value', '')
+        self.reset()
+
+      $(document).on CONSTANTS.EVENTS.SORT_COLUMNS, ()->
+        self.reset()
 
       # hijack browser's `Ctrl + F` functionality
       $(window).keydown (e) ->
@@ -44,6 +47,10 @@ define [
         self.results.previous()
       @searchResult.on 'click', '#nextBtn', ()->
         self.results.next()
+
+    reset: ()->
+      $('.searchResult').remove()
+      @searchBox.attr('value', '')
 
     search: (keyword) ->
       # do nothing if no search keyword
@@ -68,7 +75,6 @@ define [
       rowHeight = @getRowHeight()
       $('.ui-jqgrid-bdiv').scrollTop(offset * rowHeight)
       # TODO: to render match in a different color
-
 
     getRowHeight: () ->
       return @rowHeight if @rowHeight

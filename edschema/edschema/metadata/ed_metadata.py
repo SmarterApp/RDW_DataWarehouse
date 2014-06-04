@@ -65,7 +65,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('last_name', String(35), nullable=False),
                      Column('birthdate', String(8), nullable=False),
                      Column('sex', String(10), nullable=False),
-                     Column('email', String(128), nullable=True),
                      Column('dmg_eth_derived', SmallInteger, nullable=True),
                      Column('dmg_eth_hsp', Boolean, nullable=True),
                      Column('dmg_eth_ami', Boolean, nullable=True),

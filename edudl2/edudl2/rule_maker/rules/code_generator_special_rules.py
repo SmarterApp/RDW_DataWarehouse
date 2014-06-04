@@ -8,23 +8,19 @@ Created on July 26, 2013
 
 DERIVE_ETH_SQL = """
 CREATE OR REPLACE FUNCTION sp_deriveEthnicity
--- The order of the input array: dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
+-- The order of the input array: dmg_eth_2om, dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
 -- Input data type for all items in array is varchar, but they should be casted into bool.
 (eth_arr IN varchar[])
 RETURNS INTEGER AS
 $$
 
 DECLARE
-    v_result INTEGER := 0;
-    race_count INTEGER := 0;
     -- This is the code for hispanic. The hispanic will be checked first
-    hispanic_code INTEGER := 3;
-    -- This is the code for two or more races.
-    two_or_more_race_code INTEGER := 7;
+    hispanic_code INTEGER := 4;
 BEGIN
     -- check hispanic
     IF (CAST (eth_arr[hispanic_code] AS BOOL)) = true THEN
-        return hispanic_code;
+        return hispanic_code - 1;
     END IF;
 
     FOR i in array_lower(eth_arr,1) .. array_upper(eth_arr,1)
@@ -33,17 +29,9 @@ BEGIN
         IF i = hispanic_code THEN
             CONTINUE;
         ELSIF (CAST (eth_arr[i] AS BOOL)) = true THEN
-            v_result := i;
-            race_count := race_count+1;
+            RETURN i - 1;
         END IF;
     END LOOP;
-
-    -- two or more races
-    IF race_count > 1 THEN
-        RETURN two_or_more_race_code;
-    ELSE
-        RETURN v_result;
-    END IF;
 
 EXCEPTION
     WHEN OTHERS THEN

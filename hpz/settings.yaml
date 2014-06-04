@@ -137,3 +137,23 @@ jenkins_dev:
           idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
           name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
           issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
+
+qa:
+  '[app:main]':
+    hpz:
+      db:
+        schema_name: hpz
+        url: postgresql+psycopg2://hpz:hpz2014@dbpghpz0.qa.dum.edwdc.net:5432/hpz
+        pool_size: 5
+      frs:
+        upload_base_path: /opt/edware/hpz/uploads
+        file_size_limit: 4294967296
+        download_base_url: http://hpzweb0.qa.dum.edwdc.net/download
+    auth:
+        idp:
+          metadata: /opt/edware/conf/idp_metadata.xml
+        saml:
+          issuer_name: https://hpzweb0.qa.dum.edwdc.net
+          idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+          idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+          name_qualifier: https://auth1.qa.dum.edwdc.net/openam

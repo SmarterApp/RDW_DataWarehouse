@@ -32,7 +32,7 @@ def cleanup(config_file_path, expiration_duration):
 
         select_query = select([file_reg_table.c.registration_id, file_reg_table.c.file_path])\
             .where(file_reg_table.c.create_dt <= expiration_time)
-        delete_query = delete(file_reg_table).where(file_reg_table.c.registration_id == bindparam['registration_id'])
+        delete_query = delete(file_reg_table).where(file_reg_table.c.registration_id == bindparam('registration_id'))
 
         results = conn.execute(select_query, stream_results=True)
         rows = results.fetchmany(1024)

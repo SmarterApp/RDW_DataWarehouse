@@ -60,15 +60,26 @@ define [
       @displayResults(keyword)
 
     displayResults: (keyword)->
-      total = @results.size()
-      hasMatch = total isnt 0
+      message = @getMessage(keyword)
+      hasMatch = @results.size() isnt 0
       @searchResult.html Mustache.to_html SearchResultTemplate,
         hasMatch: hasMatch
-        total: total
-        keyword: keyword
         labels: @labels
+        message: message
       # move to first record only when a match found
       @update @results.offset(), @results.index() if hasMatch
+
+    getMessage: (keyword)->
+      total = @results.size()
+      hasMatch = total isnt 0
+      if hasMatch
+        MessageTemplate = @labels.SearchResultText.hasMatch
+      else
+        MessageTemplate = @labels.SearchResultText.notFound
+      message = Mustache.to_html MessageTemplate,
+        total: total
+        keyword: keyword
+      message
 
     update: (offset, cursor) ->
       $("#cursor", @searchResult).text cursor

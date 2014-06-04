@@ -1,17 +1,17 @@
 <div class="searchResult">
     {{#hasMatch}}
-    <span><b id="cursor">{{cursor}}</b> of <b>{{total}}</b> matching "<b>{{keyword}}</b>"</span>
+    <span>{{{message}}}</span>
     <button id="prevBtn" type="button" class="btn edware-btn-gradient btn-sm">
-        <i class="edware-icon-nav-uparrow-blue"></i>
+        <i class="edware-icon-nav-uparrow-blue marginRight5"></i>
         {{labels.prev}}
     </button>
     <button id="nextBtn" type="button" class="btn edware-btn-gradient btn-sm">
-        <i class="edware-icon-nav-downarrow-blue"></i>
+        <i class="edware-icon-nav-downarrow-blue marginRight5"></i>
         {{labels.next}}
     </button>
     {{/hasMatch}}
     {{^hasMatch}}
-    <span>No match "<b>{{keyword}}</b>" in this district. Please check spelling and try again.</span>
+    <span>{{{message}}}</span>
     {{/hasMatch}}
     <a type="button" class="inherit closeBtn" href="#" title="close help menu" aria-label="close">&times;</a>
 </div>

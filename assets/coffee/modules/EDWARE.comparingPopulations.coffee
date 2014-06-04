@@ -101,9 +101,9 @@ define [
         self.renderReportInfo()
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
+        self.createHeaderAndFooter()
         self.createGrid()
         self.updateFilter()
-        self.createHeaderAndFooter()
         # Set asmt Subject
         subjects = []
         for key, value of self.asmtSubjectsData
@@ -119,7 +119,8 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.header ?= edwareHeader.create(this.data, this.config)
+      self = this
+      this.header ?= edwareHeader.create this.data, this.config
 
     fetchData: (params)->
       options =
@@ -177,7 +178,6 @@ define [
       filteredInfo = this.stickyCompare.getFilteredInfo this.populationData, this.gridConfig[0]["items"][0]["field"]
 
       self = this
-
       # Create compare population grid for State/District/School view
       @grid = edwareGrid.create {
         data: filteredInfo.data

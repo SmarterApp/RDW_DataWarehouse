@@ -5,6 +5,7 @@ import os
 import argparse
 from datetime import datetime, timedelta
 from sqlalchemy.sql import select, delete
+from sqlalchemy.sql.expression import bindparam
 from sqlalchemy import create_engine, Table
 from sqlalchemy.schema import MetaData
 try:
@@ -28,16 +29,19 @@ def cleanup(config_file_path, expiration_duration):
     metadata.reflect(schema=db_schema, bind=engine)
     with engine.connect() as conn:
         file_reg_table = Table('file_registry', metadata)
+
         select_query = select([file_reg_table.c.registration_id, file_reg_table.c.file_path])\
             .where(file_reg_table.c.create_dt <= expiration_time)
+        delete_query = delete(file_reg_table).where(file_reg_table.c.registration_id == bindparam['registration_id'])
+
         results = conn.execute(select_query, stream_results=True)
         rows = results.fetchmany(1024)
         while len(rows) > 0:
             for row in rows:
                 if os.path.exists(row['file_path']):
                     os.remove(row['file_path'])
-                delete_query = delete(file_reg_table).where(file_reg_table.c.registration_id == row['registration_id'])
-                conn.execute(delete_query)
+
+                conn.execute(delete_query, registration_id=row['registration_id'])
             rows = results.fetchmany(1024)
 
 

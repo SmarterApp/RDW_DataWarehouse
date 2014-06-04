@@ -280,6 +280,7 @@ define [
             self.afterGridLoadComplete()
       }
       this.renderHeaderPerfBar()
+      $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer

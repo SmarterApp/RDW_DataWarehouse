@@ -191,6 +191,7 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
+      $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateSortLabels: (index, sortorder) ->
       # Remove second row header as that counts as a column in setLabel function

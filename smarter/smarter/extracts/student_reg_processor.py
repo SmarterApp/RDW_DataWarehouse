@@ -19,7 +19,7 @@ from smarter.extracts import processor
 from smarter.extracts import student_reg_statistics
 from smarter.extracts import student_reg_completion
 from edcore.utils.utils import compile_query_to_sql_text
-from hpz_client.file_registration.file_registration import register_file
+from hpz_client.frs.file_registration import register_file
 
 
 log = logging.getLogger('smarter')

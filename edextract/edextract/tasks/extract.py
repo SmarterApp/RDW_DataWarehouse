@@ -25,7 +25,7 @@ from edextract.data_extract_generation.query_extract_generator import generate_c
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
-from hpz_client.file_upload.http_file_upload import http_file_upload
+from hpz_client.frs.http_file_upload import http_file_upload
 
 
 log = logging.getLogger('edextract')

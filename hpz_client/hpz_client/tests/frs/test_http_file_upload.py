@@ -6,7 +6,7 @@ from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 
 from edcore.exceptions import RemoteCopyError
-from hpz_client.file_upload.http_file_upload import http_file_upload
+from hpz_client.frs.http_file_upload import http_file_upload
 
 
 __author__ = 'ablum'
@@ -19,8 +19,8 @@ class TestHTTPFileUpload(unittest.TestCase):
         self.__request = DummyRequest()
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
 
-    @patch('hpz_client.file_upload.http_file_upload.__create_stream')
-    @patch('hpz_client.file_upload.http_file_upload.api.post')
+    @patch('hpz_client.frs.http_file_upload.__create_stream')
+    @patch('hpz_client.frs.http_file_upload.api.post')
     def test_http_file_upload(self, post_patch, create_stream_patch):
         stream_mock = Mock()
         stream_mock.content_type = 'test_content_type'
@@ -35,8 +35,8 @@ class TestHTTPFileUpload(unittest.TestCase):
 
         post_patch.assert_called_once_with('http://somehost:82/files/a1-b2-c3-d4-e5', data=stream_mock, headers={'Content-Type': stream_mock.content_type, 'File-Name': 'filename'})
 
-    @patch('hpz_client.file_upload.http_file_upload.__create_stream')
-    @patch('hpz_client.file_upload.http_file_upload.api.post')
+    @patch('hpz_client.frs.http_file_upload.__create_stream')
+    @patch('hpz_client.frs.http_file_upload.api.post')
     def test_http_file_upload_error(self, post_patch, create_stream_patch):
         stream_mock = Mock()
         stream_mock.content_type = 'test_content_type'

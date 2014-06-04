@@ -51,6 +51,7 @@ define [
     reset: ()->
       $('.searchResult').remove()
       @searchBox.attr('value', '')
+      this.removeHighlight()
 
     search: (keyword) ->
       # do nothing if no search keyword
@@ -67,7 +68,7 @@ define [
         labels: @labels
         message: message
       # move to first record only when a match found
-      @update @results.offset(), @results.index() if hasMatch
+      @update @results.offset(), @results.index(), keyword.toLowerCase() if hasMatch
 
     getMessage: (keyword)->
       total = @results.size()
@@ -81,11 +82,19 @@ define [
         keyword: keyword
       message
 
-    update: (offset, cursor) ->
+    update: (offset, cursor, keyword) ->
       $("#cursor", @searchResult).text cursor
       rowHeight = @getRowHeight()
       $('.ui-jqgrid-bdiv').scrollTop(offset * rowHeight)
-      # TODO: to render match in a different color
+      # Highlight active match
+      this.removeHighlight()
+      element = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[offset]['rowId'])
+      text = element.text()
+      idx = text.toLowerCase().indexOf(keyword)
+      element.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, keyword.length) + "</span>" + text.substr(idx + keyword.length))
+
+    removeHighlight: () ->
+      $('.nameLinks>span').removeClass("searchHighlight")
 
     getRowHeight: () ->
       return @rowHeight if @rowHeight
@@ -96,19 +105,19 @@ define [
 
     constructor: (keyword, @callback) ->
       # get grid data in sorted order
-      keyword = keyword.toLowerCase()
+      @keyword = keyword.toLowerCase()
       rows = $('#gridTable').edwareSortedData()
       @data = []
       for row, index in rows
-        if @contains(row, keyword)
+        if @contains(row)
           @data.push index
       @cursor = 0
 
-    contains: (row, keyword) ->
+    contains: (row) ->
       value = row['name'] || row['student_full_name']
       if not value
         return false
-      value.toLowerCase().indexOf(keyword) > -1
+      value.toLowerCase().indexOf(@keyword) > -1
 
     index: () ->
       @cursor + 1
@@ -121,11 +130,11 @@ define [
 
     next: () ->
       @cursor = (@cursor + 1) % @data.length
-      @callback @offset(), @index()
+      @callback @offset(), @index(), @keyword
 
     previous: () ->
       @cursor = (@cursor - 1 + @data.length) % @data.length
-      @callback @offset(), @index()
+      @callback @offset(), @index(), @keyword
 
 
   $.fn.edwareSearchBox = (labels) ->

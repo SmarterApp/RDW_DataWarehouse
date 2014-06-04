@@ -224,6 +224,7 @@ define [
       @config.asmtTypes = asmtTypeDropdown
       # placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder
+      @config.labels.SearchResultText = @config.SearchResultText
       @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtPreference asmt

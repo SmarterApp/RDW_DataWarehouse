@@ -239,6 +239,7 @@ define [
       @config.reportName = Constants.REPORT_NAME.CPOP
       # placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
+      @config.labels.SearchResultText = @config.SearchResultText
       @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
         self.reload self.param
 

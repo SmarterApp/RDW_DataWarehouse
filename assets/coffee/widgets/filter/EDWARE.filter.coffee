@@ -92,8 +92,8 @@ define [
         self.storage.clear()
 
       # collapse dropdown menu when focus out
-      $('.filter-group', this.filterArea).focuslost ()->
-        $(this).find('.btn-group').removeClass('open')
+      $('.filter-group-focuslost', this.filterArea).focuslost ()->
+        $(this).parent().removeClass('open')
 
     cancel: (self) ->
       self.reset()

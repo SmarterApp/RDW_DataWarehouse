@@ -40,5 +40,6 @@ define [
       .on 'click', (e)->
         # keep language dropdown menu open
         e.stopPropagation()
-
+    $('#languageSelector').focuslost ->
+      $(this).mouseleave()
   create: create

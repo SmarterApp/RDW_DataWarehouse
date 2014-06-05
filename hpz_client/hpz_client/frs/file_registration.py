@@ -6,8 +6,6 @@ This module contains the functionality for registering extract files with the HP
 import json
 from pyramid.threadlocal import get_current_registry
 from requests import put
-from requests.exceptions import ConnectionError
-from simplejson.scanner import JSONDecodeError
 
 
 def register_file(user_id):

@@ -8,5 +8,10 @@
         "notes": ["Haga clic o pase el indicador del ratón sobre la barra para desglosar las cifras de la población", "Los porcentajes están redondeados al número entero más cercano. Por lo tanto, los porcentajes menores podrían aparecer reportados como '0'."]
     },
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
-    "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)"
+    "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",
+    "searchPlaceholder" : {
+        "state": "Enter district",
+        "district": "Enter school",
+        "school": "Enter grade"
+    }
 }

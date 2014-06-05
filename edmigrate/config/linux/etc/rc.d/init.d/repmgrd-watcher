@@ -1,4 +1,6 @@
 #!/bin/env bash
+#
+# chkconfig: 345 90 10
 
 # Source function library.
 . /etc/rc.d/init.d/functions

@@ -5,10 +5,12 @@ This module tests registering extract files with the HPZ.
 
 import unittest
 from unittest.mock import patch
+
 from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
-from smarter.extracts.file_registration import register_file
+
+from hpz_client.frs.file_registration import register_file
 
 
 class MockResponse():
@@ -26,7 +28,7 @@ class TestFileRegistration(unittest.TestCase):
         self.reg = Registry()
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
 
-    @patch('smarter.extracts.file_registration.put')
+    @patch('hpz_client.frs.file_registration.put')
     def test_register_file(self, put_patch):
         put_patch.return_value = MockResponse({'registration_id': 'a1-b2-c3-d4-e1e10', 'url': 'http://somehost:82/download/a1-b2-c3-d4-e1e10'})
         registration_id, download_url = register_file('dummy_user@phony.com')

@@ -135,9 +135,8 @@ if [ $? -ne 0 ]; then
    useradd udl2 -g udl2 -u 501
 fi
 
+%post
 UDL2_ROOT=/opt/edware
-UDL2_ZONES=$UDL2_ROOT/zones
-
 if [ ! -d $UDL2_ROOT/keys ]; then
     mkdir -p $UDL2_ROOT/keys
     chown -R udl2.udl2 $UDL2_ROOT/keys
@@ -148,29 +147,9 @@ if [ ! -d $UDL2_ROOT/run ]; then
     chown -R udl2.udl2 $UDL2_ROOT/run
 fi
 
-if [ ! -d $UDL2_ZONES ]; then
-    mkdir -p $UDL2_ZONES
+if [ -d $UDL2_ROOT/conf ]; then
+    chown -R udl2.udl2 $UDL2_ROOT/conf
 fi
-
-if [ ! -d $UDL2_ZONES/landing ]; then
-    mkdir -p $UDL2_ZONES/landing
-fi
-
-if [ ! -d $UDL2_ZONES/landing/arrivals ]; then
-    mkdir -p $UDL2_ZONES/landing/arrivals
-fi
-
-if [ ! -d $UDL2_ZONES/landing/work ]; then
-    mkdir -p $UDL2_ZONES/landing/work
-fi
-
-if [ ! -d $UDL2_ZONES/landing/history ]; then
-    mkdir -p $UDL2_ZONES/landing/history
-fi
-chown -R udl2.udl2 $UDL2_ROOT/zones
-chown -R udl2.udl2 $UDL2_ROOT/conf
-
-%post
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger
 chkconfig --level 2345 celeryd-udl2 off

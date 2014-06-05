@@ -1,0 +1,17 @@
+<div class="searchResult">
+    {{#hasMatch}}
+    <span>{{{message}}}</span>
+    <button id="prevBtn" type="button" class="btn edware-btn-gradient btn-sm">
+        <i class="edware-icon-nav-uparrow-blue marginRight5"></i>
+        {{labels.prev}}
+    </button>
+    <button id="nextBtn" type="button" class="btn edware-btn-gradient btn-sm">
+        <i class="edware-icon-nav-downarrow-blue marginRight5"></i>
+        {{labels.next}}
+    </button>
+    {{/hasMatch}}
+    {{^hasMatch}}
+    <span>{{{message}}}</span>
+    {{/hasMatch}}
+    <a type="button" class="inherit closeBtn" href="#" title="close help menu" aria-label="close">&times;</a>
+</div>

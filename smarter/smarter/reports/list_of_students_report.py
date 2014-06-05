@@ -91,8 +91,6 @@ def get_list_of_students_report(params):
         asmtYear = get_default_asmt_academic_year(params)
         params[Constants.ASMTYEAR] = asmtYear
 
-    asmt_administration = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, asmt_year=asmtYear)
-
     results = get_list_of_students(params)
     subjects_map = get_subjects_map(asmtSubject)
     los_results = {}
@@ -105,10 +103,10 @@ def get_list_of_students_report(params):
     los_results[Constants.METADATA] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
     los_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
     los_results[Constants.SUBJECTS] = __reverse_map(subjects_map)
-    # query not stated students count
-    los_results[Constants.NOT_STATED] = get_not_stated_count(params)
 
-    los_results[Constants.ASMT_ADMINISTRATION] = asmt_administration
+    # Additional queries for LOS report
+    los_results[Constants.ASMT_ADMINISTRATION] = get_student_list_asmt_administration(stateCode, districtGuid, schoolGuid, asmtGrade, asmt_year=asmtYear)
+    los_results[Constants.NOT_STATED] = get_not_stated_count(params)
     los_results[Constants.ASMT_PERIOD_YEAR] = get_asmt_academic_years(stateCode)
 
     return los_results

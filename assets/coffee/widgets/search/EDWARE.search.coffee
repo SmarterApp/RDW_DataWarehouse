@@ -97,9 +97,10 @@ define [
       if @keyword
         @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
         text = @lastHighlightedElement.data('value')
-        idx = text.toLowerCase().indexOf(@keyword)
-        @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
-      
+        if text
+          idx = text.toLowerCase().indexOf(@keyword)
+          @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
+
     removeHighlight: () ->
       if @lastHighlightedElement
         @lastHighlightedElement.children('span').removeClass("searchHighlight")

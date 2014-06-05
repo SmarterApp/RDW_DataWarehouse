@@ -17,14 +17,19 @@ def __create_stream(file_path, file):
 
 
 def http_file_upload(file_path, registration_id):
+    log.info('############## http_file_upload: registration_id = ' + registration_id)
     upload_url = get_current_registry().settings.get('hpz.file_upload_base_url') + '/' + registration_id
+    log.info('############## http_file_upload: upload_url = ' + upload_url)
 
     with open(file_path, 'rb') as f:
         stream = __create_stream(file_path, f)
         headers = {'Content-Type': stream.content_type, 'File-Name': os.path.basename(file_path)}
 
         try:
+            log.info('############## http_file_upload: pre-api.post')
             response = api.post(upload_url, data=stream, headers=headers)
+            log.info('############## http_file_upload: post-api.post')
+            log.info('############## http_file_upload: response = ' + response)
 
         except ConnectionError as e:
             raise RemoteCopyError(msg=str(e))

@@ -6,7 +6,7 @@ define [
   'edwareConstants'
 ], ($, jqGrid, edwareUtil, edwareGridFormatters, CONSTANTS) ->
 
-  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar',
+  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar', '#searchResult',
     '#stickyCompareSection', '.selectedFilter_panel', '.ui-jqgrid-hdiv', '.ui-jqgrid-sdiv']
 
   DEFAULT_CONFIG =

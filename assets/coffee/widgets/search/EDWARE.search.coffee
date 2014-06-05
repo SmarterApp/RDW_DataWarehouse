@@ -4,7 +4,8 @@ define [
   "text!SearchBoxTemplate"
   "text!SearchResultTemplate"
   "edwareConstants"
-], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS) ->
+  "edwareGrid"
+], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
 
   class EdwareSearch
 
@@ -53,6 +54,8 @@ define [
       @searchBox.attr('value', '')
       this.removeHighlight()
       @keyword = null
+      # TODO: may need better mechanism to adjust height
+      edwareGrid.adjustHeight()
 
     search: (keyword) ->
       # do nothing if no search keyword
@@ -70,6 +73,8 @@ define [
         message: message
       # move to first record only when a match found
       @update @results.offset(), @results.index(), keyword.toLowerCase() if hasMatch
+      # adjust height to accommodate last row
+      edwareGrid.adjustHeight()
 
     getMessage: (keyword)->
       total = @results.size()

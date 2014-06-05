@@ -265,8 +265,8 @@
 		"items": [
 		    {
 			"name": "Estudiantes",
-			"displayTpl": "",
-			"index": "student_full_name",
+			    "displayTpl": "<a href='#' class='inherit'>Estudiantes</>",
+            "index": "student_full_name",
 			"field": "student_full_name",
 			"width": 330,
 			"style": "ui-ellipsis bold",
@@ -280,8 +280,8 @@
 		    },
 		    {
 			"name": "<h4 class='pull-left'>{{subject1}}</h4> Puntuación general",
-			"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
-			"index": "subject1.asmt_score",
+			"displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> <span aria-hidden='true'>Puntuación general</span><div id='subject1_perfBar' class='header_perfBar'></div>",
+            "index": "subject1.asmt_score",
 			"field": "subject1.asmt_score",
 			"width": 230,
 			"formatter": "performanceBar",
@@ -295,8 +295,8 @@
 		    },
 		    {
 			"name": "<h4 class='pull-left'>{{subject2}}</h4> Puntuación general",
-			"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
-			"index": "subject2.asmt_score",
+			"displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> <span aria-hidden='true'>Puntuación general</span><div id='subject2_perfBar' class='header_perfBar'></div>",
+            "index": "subject2.asmt_score",
 			"field": "subject2.asmt_score",
 			"width": 230,
 			"formatter": "performanceBar",
@@ -311,7 +311,7 @@
 		    {
 			"name": "",
 			"displayTpl": "",
-			"width": 174,
+            "width": 174,
 			"title": false,
 			"export": false,
 			"sortable": false
@@ -324,8 +324,8 @@
 		"items": [
 		    {
 			"name": "Estudiantes",
-			"displayTpl": "",
-			"index": "student_full_name",
+			"displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
+            "index": "student_full_name",
 			"field": "student_full_name",
 			"width": 330,
 			"style": "ui-ellipsis bold",
@@ -339,8 +339,8 @@
 		    },
 		    {
 			"name": "<h4 class='pull-left'>{{subject1}}</h4> Puntuación general",
-			"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
-			"index": "subject1.asmt_score",
+			"displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> <span aria-hidden='true'>Puntuación general</span><div id='subject1_perfBar' class='header_perfBar'></div>",
+            "index": "subject1.asmt_score",
 			"field": "subject1.asmt_score",
 			"width": 175,
 			"formatter": "performanceBar",
@@ -354,8 +354,8 @@
 		    },
 		    {
 			"name": "{{claims.subject1.0.name}}",
-			"displayTpl": "",
-			"index": "subject1.claims.0.perf_lvl",
+			"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+            "index": "subject1.claims.0.perf_lvl",
 			"field": "subject1.claims.0.perf_lvl",
 			"width": 154,
 			"formatter": "showPerfLevel",
@@ -366,8 +366,8 @@
 		    },
 		    {
 			"name": "{{claims.subject1.1.name}}",
-			"displayTpl": "",
-			"index": "subject1.claims.1.perf_lvl",
+			"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+            "index": "subject1.claims.1.perf_lvl",
 			"field": "subject1.claims.1.perf_lvl",
 			"width": 160,
 			"formatter": "showPerfLevel",
@@ -378,8 +378,8 @@
 		    },
 		    {
 			"name": "{{claims.subject1.2.name}}",
-			"displayTpl": "",
-			"index": "subject1.claims.2.perf_lvl",
+			"displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+            "index": "subject1.claims.2.perf_lvl",
 			"field": "subject1.claims.2.perf_lvl",
 			"width": 160,
 			"formatter": "showPerfLevel",
@@ -397,8 +397,8 @@
 		"items": [
 		    {
 			"name": "Estudiantes",
-			"displayTpl": "",
-			"index": "student_full_name",
+			    "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
+            "index": "student_full_name",
 			"field": "student_full_name",
 			"width": 330,
 			"style": "ui-ellipsis bold",
@@ -412,8 +412,8 @@
 		    },
 		    {
 			"name": "<h4 class='pull-left'>{{subject2}}</h4> Puntuación general",
-			"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
-			"index": "subject2.asmt_score",
+			    "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> <span aria-hidden='true'>Puntuación general</span><div id='subject2_perfBar' class='header_perfBar'></div>",
+            "index": "subject2.asmt_score",
 			"field": "subject2.asmt_score",
 			"width": 175,
 			"formatter": "performanceBar",
@@ -427,8 +427,8 @@
 		    },
 		    {
 			"name": "{{claims.subject2.0.name}}",
-			"displayTpl": "",
-			"index": "subject2.claims.0.perf_lvl",
+			    "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
+                "index": "subject2.claims.0.perf_lvl",
 			"field": "subject2.claims.0.perf_lvl",
 			"width": 118,
 			"formatter": "showPerfLevel",
@@ -439,8 +439,8 @@
 		    },
 		    {
 			"name": "{{claims.subject2.1.name}}",
-			"displayTpl": "",
-			"index": "subject2.claims.1.perf_lvl",
+			    "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
+                "index": "subject2.claims.1.perf_lvl",
 			"field": "subject2.claims.1.perf_lvl",
 			"width": 118,
 			"formatter": "showPerfLevel",
@@ -451,8 +451,8 @@
 		    },
 		    {
 			"name": "{{claims.subject2.2.name}}",
-			"displayTpl": "",
-			"index": "subject2.claims.2.perf_lvl",
+			    "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
+                "index": "subject2.claims.2.perf_lvl",
 			"field": "subject2.claims.2.perf_lvl",
 			"width": 118,
 			"formatter": "showPerfLevel",
@@ -463,8 +463,8 @@
 		    },
 		    {
 			"name": "{{claims.subject2.3.name}}",
-			"displayTpl": "",
-			"index": "subject2.claims.3.perf_lvl",
+			    "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
+                "index": "subject2.claims.3.perf_lvl",
 			"field": "subject2.claims.3.perf_lvl",
 			"width": 120,
 			"formatter": "showPerfLevel",
@@ -492,7 +492,7 @@
 				"items": [
 					{
 						"name": "Nombre de la escuela",
-						"displayTpl": "",
+						"displayTpl": "Nombre de la escuela",
 						"index": "name",
 						"field": "name",
 						"width": 186,
@@ -508,7 +508,7 @@
 					},
 			         {
 						"name": "{{subject1}}",
-						"displayTpl": "",
+                        "displayTpl": "<a class='inherit' href='#'><b>{{subject1}}</b></a>",
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
 						"sorttype": "int",
@@ -523,7 +523,7 @@
 					},
 					{
                         "name": "Población total",
-                        "displayTpl": "",
+                        "displayTpl": "<a class='inherit' href='#'>Población total</a>",
                         "index": "results.subject1.total",
                         "field": "results.subject1.total",
                         "sorttype": "int",
@@ -537,7 +537,7 @@
                     },
 					{
 						"name": "{{subject2}}",
-						"displayTpl": "",
+                        "displayTpl": "<a href='#' class='inherit'><b>{{subject2}}</b></a>",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
 						"width": 320,
@@ -552,7 +552,7 @@
 					},
                     {
                         "name": "Población total",
-                        "displayTpl": "",
+                        "displayTpl": "<a class='inherit' href='#'>Población total</a>",
                         "index": "results.subject2.total",
                         "field": "results.subject2.total",
                         "sorttype": "int",

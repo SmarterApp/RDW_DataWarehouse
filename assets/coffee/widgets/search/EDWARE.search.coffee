@@ -4,7 +4,8 @@ define [
   "text!SearchBoxTemplate"
   "text!SearchResultTemplate"
   "edwareConstants"
-], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS) ->
+  "edwareGrid"
+], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
 
   class EdwareSearch
 
@@ -53,6 +54,8 @@ define [
       @searchBox.attr('value', '')
       this.removeHighlight()
       @keyword = null
+      # TODO: may need better mechanism to adjust height
+      edwareGrid.adjustHeight()
 
     search: (keyword) ->
       # do nothing if no search keyword
@@ -70,6 +73,8 @@ define [
         message: message
       # move to first record only when a match found
       @update @results.offset(), @results.index(), keyword.toLowerCase() if hasMatch
+      # adjust height to accommodate last row
+      edwareGrid.adjustHeight()
 
     getMessage: (keyword)->
       total = @results.size()
@@ -97,9 +102,10 @@ define [
       if @keyword
         @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
         text = @lastHighlightedElement.data('value')
-        idx = text.toLowerCase().indexOf(@keyword)
-        @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
-      
+        if text
+          idx = text.toLowerCase().indexOf(@keyword)
+          @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
+
     removeHighlight: () ->
       if @lastHighlightedElement
         @lastHighlightedElement.children('span').removeClass("searchHighlight")

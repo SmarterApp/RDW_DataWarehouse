@@ -142,7 +142,9 @@ def remote_copy(request_id, src_file_name, registration_id):
                  Constants.REQUEST_GUID: request_id}
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPYING})
+        log.info('############## remote_copy: pre-http_file_upload')
         http_file_upload(src_file_name, registration_id)
+        log.info('############## remote_copy: post-http_file_upload')
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPIED})
 
     except RemoteCopyError as e:
@@ -157,6 +159,7 @@ def remote_copy(request_id, src_file_name, registration_id):
             raise remote_copy.retry(args=[request_id, src_file_name, registration_id], exc=exc)
 
     except Exception as e:
+        log.info('############## remote_copy: Exception = ' + str(e))
         raise ExtractionError(str(e))
 
 

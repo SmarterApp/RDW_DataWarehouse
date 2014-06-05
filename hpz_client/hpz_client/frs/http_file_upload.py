@@ -29,7 +29,6 @@ def http_file_upload(file_path, registration_id):
             log.info('############## http_file_upload: pre-api.post')
             response = api.post(upload_url, data=stream, headers=headers)
             log.info('############## http_file_upload: post-api.post')
-            log.info('############## http_file_upload: response = ' + response)
 
         except ConnectionError as e:
             raise RemoteCopyError(msg=str(e))

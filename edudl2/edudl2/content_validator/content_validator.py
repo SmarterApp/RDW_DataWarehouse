@@ -21,7 +21,7 @@ class ISValidAssessmentPair():
             asmt_outcome_table = conn.get_table(conf.get(mk.ASMT_OUTCOME_TABLE))
             asmt_result = conn.get_result(select([asmt_table.c.guid_asmt]).
                                           where(asmt_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
-            asmt_outcome_result = conn.get_result(select([asmt_outcome_table.c.guid_asmt], distinct=True).
+            asmt_outcome_result = conn.get_result(select([asmt_outcome_table.c.assessmentguid], distinct=True).
                                                   where(asmt_outcome_table.c.guid_batch == conf.get(mk.GUID_BATCH)))
         return asmt_result, asmt_outcome_result
 
@@ -32,7 +32,7 @@ class ISValidAssessmentPair():
         """
         asmt_result, asmt_outcome_result = self.get_asmt_and_outcome_result(conf)
         if 1 != len(asmt_result) or 1 != len(asmt_outcome_result) \
-                or asmt_result[0].get(Constants.GUID_ASMT) != asmt_outcome_result[0].get(Constants.GUID_ASMT):
+                or asmt_result[0].get(Constants.GUID_ASMT) != asmt_outcome_result[0].get(Constants.STG_GUID_ASMT):
             return ErrorCode.ASMT_GUID_MISMATCH_IN_JSON_CSV_PAIR
 
         return ErrorCode.STATUS_OK

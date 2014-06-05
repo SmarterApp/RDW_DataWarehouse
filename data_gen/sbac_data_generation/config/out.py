@@ -301,7 +301,7 @@ ASMT_JSON_FORMAT = {'format': 'json',
                         },
                         'Overall': {
                             'MinScore': 'assessment.overall_score_min',
-                            'MxScore': 'assessment.overall_score_max'
+                            'MaxScore': 'assessment.overall_score_max'
                         },
                         'PerformanceLevels': {
                             'Level1': {

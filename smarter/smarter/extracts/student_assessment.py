@@ -39,7 +39,7 @@ def get_extract_assessment_query(params):
         # TODO: Look at removing dim_asmt
         query = select_with_context([dim_asmt.c.asmt_guid.label(dim_asmt_label.get(Constants.ASMT_GUID, Constants.ASMT_GUID)),
                                     fact_asmt_outcome_vw.c.where_taken_id.label(fact_asmt_outcome_vw_label.get('where_taken_id', 'guid_asmt_location')),
-                                    fact_asmt_outcome_vw.c.where_taken_name.label(dim_asmt_label.get('where_taken_name', 'name_asmt_location')),
+                                    fact_asmt_outcome_vw.c.where_taken_name.label(fact_asmt_outcome_vw_label.get('where_taken_name', 'name_asmt_location')),
                                     fact_asmt_outcome_vw.c.asmt_grade.label(fact_asmt_outcome_vw_label.get(Constants.ASMT_GRADE, Constants.ASMT_GRADE)),
                                     dim_inst_hier.c.state_name.label(dim_inst_hier_label.get(Constants.STATE_NAME, 'name_state')),
                                     dim_inst_hier.c.state_code.label(dim_inst_hier_label.get(Constants.STATE_CODE, 'code_state')),

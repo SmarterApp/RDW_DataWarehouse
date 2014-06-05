@@ -11,21 +11,31 @@ from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.udl2.constants import Constants
 
 
-STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec_num', 'guid_asmt', 'guid_asmt_location',
-                                 'name_asmt_location', 'grade_asmt', 'name_state', 'code_state', 'guid_district', 'name_district',
-                                 'guid_school', 'name_school', 'guid_student', 'external_student_id', 'name_student_first',
-                                 'name_student_middle', 'name_student_last',
-                                 'sex_student', 'email_student', 'birthdate_student', 'grade_enrolled',
-                                 'group_1_id', 'group_1_text', 'group_2_id', 'group_2_text',
-                                 'dmg_eth_hsp', 'dmg_eth_ami',
-                                 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1',
-                                 'date_assessed', 'score_asmt', 'score_asmt_min', 'score_asmt_max', 'score_perf_level', 'score_claim_1', 'score_claim_1_min',
-                                 'score_claim_1_max', 'asmt_claim_1_perf_lvl', 'score_claim_2', 'score_claim_2_min', 'score_claim_2_max', 'asmt_claim_2_perf_lvl',
-                                 'score_claim_3', 'score_claim_3_min', 'score_claim_3_max', 'asmt_claim_3_perf_lvl', 'score_claim_4', 'score_claim_4_min',
-                                 'score_claim_4_max', 'asmt_claim_4_perf_lvl', 'asmt_type', 'asmt_subject', 'asmt_year', 'acc_asl_video_embed', 'acc_asl_human_nonembed',
-                                 'acc_braile_embed', 'acc_closed_captioning_embed', 'acc_text_to_speech_embed', 'acc_abacus_nonembed', 'acc_alternate_response_options_nonembed',
-                                 'acc_calculator_nonembed', 'acc_multiplication_table_nonembed', 'acc_print_on_demand_nonembed', 'acc_read_aloud_nonembed', 'acc_scribe_nonembed',
-                                 'acc_speech_to_text_nonembed', 'acc_streamline_mode']
+STG_SBAC_ASMT_OUTCOME_COLUMNS = ['record_sid', 'op', 'guid_batch', 'src_file_rec_num', 'assessmentguid', 'assessmentsessionlocationid',
+                                 'assessmentsessionlocation', 'assessmentlevelforwhichdesigned', 'statename', 'stateabbreviation',
+                                 'responsibledistrictidentifier', 'organizationname',
+                                 'responsibleschoolidentifier', 'nameofinstitution', 'studentidentifier', 'externalssid', 'firstname',
+                                 'middlename', 'lastorsurname', 'sex', 'birthdate',
+                                 'gradelevelwhenassessed', 'group1id', 'group1text', 'group2id', 'group2text',
+                                 'hispanicorlatinoethnicity', 'americanindianoralaskanative',
+                                 'asian', 'blackorafricanamerican', 'nativehawaiianorotherpacificislander', 'white',
+                                 'demographicracetwoormoreraces', 'ideaindicator', 'lepstatus', 'section504status',
+                                 'economicdisadvantagestatus', 'migrantstatus',
+                                 'assessmentadministrationfinishdate', 'assessmentsubtestresultscorevalue',
+                                 'assessmentsubtestminimumvalue', 'assessmentsubtestmaximumvalue', 'assessmentperformancelevelidentifier',
+                                 'assessmentsubtestresultscoreclaim1value', 'assessmentsubtestclaim1minimumvalue',
+                                 'assessmentsubtestclaim1maximumvalue', 'assessmentsubtestclaim1performancelevelidentifier',
+                                 'assessmentsubtestresultscoreclaim2value', 'assessmentsubtestclaim2minimumvalue',
+                                 'assessmentsubtestclaim2maximumvalue', 'assessmentsubtestclaim2performancelevelidentifier',
+                                 'assessmentsubtestresultscoreclaim3value', 'assessmentsubtestclaim3minimumvalue',
+                                 'assessmentsubtestclaim3maximumvalue', 'assessmentsubtestclaim3performancelevelidentifier',
+                                 'assessmentsubtestresultscoreclaim4value', 'assessmentsubtestclaim4minimumvalue',
+                                 'assessmentsubtestclaim4maximumvalue', 'assessmentsubtestclaim4performancelevelidentifier',
+                                 'assessmenttype', 'assessmentacademicsubject', 'assessmentyear', 'accommodationamericansignlanguage',
+                                 'accommodationsignlanguagehumanintervention', 'accommodationbraille', 'accommodationclosedcaptioning',
+                                 'accommodationtexttospeech', 'accommodationabacus', 'accommodationalternateresponseoptions',
+                                 'accommodationcalculator', 'accommodationmultiplicationtable', 'accommodationprintondemand',
+                                 'accommodationreadaloud', 'accommodationscribe', 'accommodationspeechtotext', 'accommodationstreamlinemode']
 
 STG_SBAC_STU_REG_COLUMNS = ['record_sid', 'guid_batch', 'src_file_rec_num', 'name_state', 'code_state', 'guid_district', 'name_district', 'guid_school', 'name_school', 'guid_student',
                             'external_ssid_student', 'name_student_first', 'name_student_middle', 'name_student_last', 'sex_student', 'birthdate_student', 'grade_enrolled', 'dmg_eth_hsp',
@@ -113,7 +123,7 @@ class FileLoaderFTest(UDLTestHelper):
 
         # get newly loaded data for comparison
         assessment_csv_file2_clean = self.get_csv_file('test_file_stored_proc_data_CLEAN.csv')
-        self.compare_csv_table_data(assessment_csv_file2_clean, 'guid_student')
+        self.compare_csv_table_data(assessment_csv_file2_clean, 'StudentIdentifier')
 
     def test_stu_reg_transformations_occur_during_load(self):
         self.load_config('studentregistration')
@@ -145,6 +155,7 @@ class FileLoaderFTest(UDLTestHelper):
 
     def verify_regular_table_content(self, records_in_db):
         with open(self.conf[mk.FILE_TO_LOAD], newline='') as file:
+            print(self.conf[mk.FILE_TO_LOAD])
             reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)
             for row_number, row_in_csv in enumerate(reader):
                 row_in_table = records_in_db[row_number]
@@ -174,6 +185,7 @@ class FileLoaderFTest(UDLTestHelper):
     def compare_csv_table_data(self, csv_file, key_column):
         table_name = self.conf[mk.TARGET_DB_TABLE]
         guid_batch = self.conf['guid_batch']
+        result_key = 'studentidentifier' if table_name == 'stg_sbac_asmt_outcome' else 'guid_student'
         with get_udl_connection() as conn:
             table = conn.get_table(table_name)
             query = select([table]).where(table.c.guid_batch == guid_batch)
@@ -181,7 +193,7 @@ class FileLoaderFTest(UDLTestHelper):
             result_list = results.fetchall()
             expected_rows = self.get_clean_rows_from_file(csv_file)
             # sort rows
-            student_guid_index = results.keys().index('guid_student')  # Determine index of guid_student in results
+            student_guid_index = results.keys().index(result_key)  # Determine index of guid_student in results
             result_list = sorted(result_list, key=lambda i: i[student_guid_index])  # sort results using this index
             expected_rows = sorted(expected_rows, key=lambda k: k[key_column])  # sort expected based on the key
             # Loop through rows

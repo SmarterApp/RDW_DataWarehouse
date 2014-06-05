@@ -130,19 +130,21 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
     def test_derive_eth_function(self):
         function_name = sr.special_rules['deriveEthnicity'][0]
         # dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
-        prepare_data = {'exception': {'src_column': "'sda', 'dg', 'a', 'q', 't', 'fff'", 'expected_code': -1},
-                        'not stated 1': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
-                        'not stated 2': {'src_column': "'f', NULL, NULL, 'f', NULL, 'f'", 'expected_code': 0},
-                        'african american': {'src_column': "'y', 'n', 'n', 'n', 'n', 'n'", 'expected_code': 1},
-                        'asian': {'src_column': "'n', 'y', 'n', 'n', 'n', 'n'", 'expected_code': 2},
-                        'hispanic 1': {'src_column': "'n', 'n', 'y', 'n', 'n', 'n'", 'expected_code': 3},
-                        'hispanic 2': {'src_column': "'n', 'n', 'y', 'y', 'n', 'y'", 'expected_code': 3},
-                        'native american': {'src_column': "'n', 'n', 'n', 'y', 'n', 'n'", 'expected_code': 4},
-                        'pacific islander': {'src_column': "'n', 'n', 'n', 'n', 'y', 'n'", 'expected_code': 5},
-                        'white': {'src_column': "'n', 'n', 'n', 'n', 'n', 'y'", 'expected_code': 6},
-                        'two or more races 1': {'src_column': "'y', 'n', 'n', 'n', 'n', 'y'", 'expected_code': 7},
-                        'two or more races 2': {'src_column': "'n', 'y', 'n', 'n', NULL, 'y'", 'expected_code': 7},
-                        'two or more races 3': {'src_column': "'y', 'y', 'n', 'y', 'y', 'y'", 'expected_code': 7}
+        prepare_data = {'exception': {'src_column': "'sda', 'dg', 'a', 'q', 't', 'fff', 'z'", 'expected_code': -1},
+                        'not stated 1': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
+                        'not stated 2': {'src_column': "'f', NULL, NULL, 'f', NULL, 'f', NULL", 'expected_code': 0},
+                        'african american': {'src_column': "'y', 'n', 'n', 'n', 'n', 'n', 'n'", 'expected_code': 1},
+                        'asian': {'src_column': "'n', 'y', 'n', 'n', 'n', 'n', 'n'", 'expected_code': 2},
+                        'hispanic 1': {'src_column': "'n', 'n', 'y', 'n', 'n', 'n', 'n'", 'expected_code': 3},
+                        'hispanic 2': {'src_column': "'n', 'n', 'y', 'y', 'n', 'y', 'n'", 'expected_code': 3},
+                        'hispanic 3': {'src_column': "'n', 'n', 'y', 'n', 'n', 'n', 'y'", 'expected_code': 3},
+                        'native american': {'src_column': "'n', 'n', 'n', 'y', 'n', 'n', 'n'", 'expected_code': 4},
+                        'pacific islander': {'src_column': "'n', 'n', 'n', 'n', 'y', 'n', 'n'", 'expected_code': 5},
+                        'white': {'src_column': "'n', 'n', 'n', 'n', 'n', 'y', 'n'", 'expected_code': 6},
+                        'two or more races 1': {'src_column': "'y', 'n', 'n', 'n', 'n', 'y', 'n'", 'expected_code': 1},
+                        'two or more races 2': {'src_column': "'n', 'y', 'n', 'n', NULL, 'y', 'n'", 'expected_code': 2},
+                        'two or more races 3': {'src_column': "'y', 'y', 'n', 'y', 'y', 'y', 'y'", 'expected_code': 7},
+                        'two or more races 4': {'src_column': "'n', 'n', 'n', 'n', 'n', 'n', 'y'", 'expected_code': 7}
                         }
         sql_template = 'SELECT %s;' % function_name
         with get_udl_connection() as conn:

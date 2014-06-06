@@ -11,7 +11,6 @@ requires = [
     'pyramid_debugtoolbar == 1.0.8',
     'requests == 2.2.1',
     "requests_toolbelt",
-    'config',
     'edcore']
 
 setup(name='hpz_client',

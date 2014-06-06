@@ -8,6 +8,7 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
 from edextract.status.status import setup_db_connection
 from edextract.settings.config import setup_settings
 from edextract import run_cron_cleanup
+from hpz_client.frs.config import initialize as initialize_hpz
 
 PREFIX = 'extract.celery'
 
@@ -20,10 +21,12 @@ def setup_celery(settings, prefix=PREFIX):
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
+
     setup(celery, settings, prefix)
     setup_settings(settings)
     run_cron_cleanup(settings)
 
+    initialize_hpz(settings)
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)

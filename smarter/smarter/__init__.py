@@ -20,6 +20,7 @@ from services.celery import setup_celery as setup_services_celery, PREFIX as ser
 from edextract.celery import setup_celery as setup_extract_celery, PREFIX as edextractPrefix
 from edcore.security.tenant import set_tenant_map
 from smarter.reports.student_administration import set_default_year_back
+from hpz_client.frs.config import initialize as initialize_hpz
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -61,6 +62,8 @@ def main(global_config, **settings):
     # setup celery
     setup_services_celery(settings, prefix=servicesPrefix)
     setup_extract_celery(settings, prefix=edextractPrefix)
+
+    initialize_hpz(settings)
 
     # include edauth. Calls includeme
     config.include(edauth)

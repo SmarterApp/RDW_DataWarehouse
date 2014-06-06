@@ -42,7 +42,8 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                     'extract.gpg.public_key.cat': 'kswimberly@amplify.com',
                     'extract.celery.CELERY_ALWAYS_EAGER': 'True',
                     'extract.retries_allowed': '1',
-                    'extract.retry_delay': '3'
+                    'extract.retry_delay': '3',
+                    'hpz.file_upload_base_url': 'http://somehost:82/files',
                     }
         setup_celery(settings)
         setup_settings(settings)

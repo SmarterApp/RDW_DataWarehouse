@@ -6,6 +6,7 @@ from pyramid.threadlocal import get_current_registry
 from requests import api
 from requests_toolbelt import MultipartEncoder
 from edcore.exceptions import RemoteCopyError
+from hpz_client.frs.config import Config, get_setting
 
 __author__ = 'ablum'
 
@@ -17,7 +18,8 @@ def __create_stream(file_path, file):
 
 
 def http_file_upload(file_path, registration_id):
-    upload_url = get_current_registry().settings.get('hpz.file_upload_base_url') + '/' + registration_id
+    #upload_url = get_current_registry().settings.get('hpz.file_upload_base_url') + '/' + registration_id
+    upload_url = get_setting(Config.HPZ_FILE_UPLOAD_URL) + '/' + registration_id
 
     with open(file_path, 'rb') as f:
         stream = __create_stream(file_path, f)

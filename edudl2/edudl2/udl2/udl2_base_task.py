@@ -2,7 +2,7 @@ from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.database.utils.query import update_udl_stats
+from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
@@ -60,7 +60,7 @@ class Udl2BaseTask(Task):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.exception('Task failed: ' + self.name + ', task id: ' + task_id)
         msg = args[0]
-        guid_batch = msg.get(mk.GUID_BATCH)
+        batch_guid = msg.get(mk.GUID_BATCH)
         load_type = msg.get(mk.LOAD_TYPE)
         failure_time = datetime.datetime.now()
         udl_phase_step = ''
@@ -68,7 +68,7 @@ class Udl2BaseTask(Task):
         if isinstance(exc, UDLException):
             udl_phase_step = exc.udl_phase_step
             working_schema = exc.working_schema
-        benchmark = BatchTableBenchmark(guid_batch, load_type,
+        benchmark = BatchTableBenchmark(batch_guid, load_type,
                                         udl_phase=self.name,
                                         start_timestamp=failure_time,
                                         end_timestamp=failure_time,
@@ -80,9 +80,7 @@ class Udl2BaseTask(Task):
         benchmark.record_benchmark()
 
         # Write to udl stats table on exceptions
-        stats_rec_id = msg.get(mk.UDL_STATS_REC_ID)
-        if stats_rec_id:
-            update_udl_stats(stats_rec_id, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+        update_udl_stats_by_batch_guid(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
 
         # Write to ERR_LIST
         try:

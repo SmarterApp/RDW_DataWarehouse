@@ -48,7 +48,7 @@ def task(incoming_msg):
         UdlStatsConstants.TENANT: tenant_name,
         UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
     }
-    udl_stats_id = insert_udl_stats(udl_stats)
+    insert_udl_stats(udl_stats)
 
     if not tenant_name:
         raise InvalidTenantNameException
@@ -74,7 +74,6 @@ def task(incoming_msg):
         mk.INPUT_FILE_SIZE: input_file_size,
         mk.FILE_TO_DECRYPT: os.path.join(tenant_directory_paths[mk.ARRIVED], os.path.basename(input_source_file)),
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths,
-        mk.TENANT_NAME: tenant_name,
-        mk.UDL_STATS_REC_ID: udl_stats_id.inserted_primary_key[0]})
+        mk.TENANT_NAME: tenant_name})
 
     return outgoing_msg

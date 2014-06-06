@@ -29,8 +29,8 @@ def task(incoming_msg):
     @param incoming_msg: the message received from the penultimate step in the UDL process. Contains all params needed
     """
     start_time = datetime.datetime.now()
-    guid_batch = incoming_msg[mk.GUID_BATCH]
-    load_type = incoming_msg[mk.LOAD_TYPE]
+    guid_batch = incoming_msg.get(mk.GUID_BATCH)
+    load_type = incoming_msg.get(mk.LOAD_TYPE)
 
     # do the cleanup
     post_etl.cleanup(incoming_msg)
@@ -38,7 +38,7 @@ def task(incoming_msg):
 
     # Benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time,
-                                    finish_time, task_id=str(task.request.id), tenant=incoming_msg[mk.TENANT_NAME])
+                                    finish_time, task_id=str(task.request.id), tenant=incoming_msg.get(mk.TENANT_NAME))
     benchmark.record_benchmark()
 
     # Outgoing message to be piped to All Done

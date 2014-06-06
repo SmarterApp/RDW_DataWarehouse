@@ -76,7 +76,8 @@ define [
 
     buildLink = (options)->
       if contextSecurity.hasPIIAccess(rowObject.rowId)
-        "<a id='link_#{rowObject.rowId}' data-value='#{displayValue}' href='#{options.colModel.formatoptions.linkUrl}?#{params}'>#{displayValue}</a>"
+        escaped = displayValue.replace /'/, "&#39;"
+        "<a id='link_#{rowObject.rowId}' data-value='#{escaped}' href='#{options.colModel.formatoptions.linkUrl}?#{params}'>#{displayValue}</a>"
       else
         "<a class='disabled' href='#'>#{displayValue}</a>"
 

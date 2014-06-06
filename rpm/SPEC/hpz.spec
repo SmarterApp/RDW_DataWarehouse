@@ -111,8 +111,7 @@ if [ ! -d /opt/edware/log ]; then
 fi
 if [ ! -d /opt/edware/hpz/uploads ]; then
     mkdir -p /opt/edware/hpz/uploads
-    chown -R apache uploads
-    chgrp -R apache uploads
+    chown -R apache.apache /opt/edware/hpz/uploads
 fi
 
 %post

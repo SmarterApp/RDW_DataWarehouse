@@ -4,13 +4,11 @@ This module contains the functionality for registering extract files with the HP
 """
 
 import json
-from pyramid.threadlocal import get_current_registry
 from requests import put
 from hpz_client.frs.config import Config, get_setting
 
 
 def register_file(user_id):
-    #registration_url = get_current_registry().settings.get('hpz.file_registration_url')
     registration_url = get_setting(Config.HPZ_FILE_REGISTRATION_URL)
     registration_body = {'uid': user_id}
 

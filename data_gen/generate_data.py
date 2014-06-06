@@ -152,9 +152,9 @@ def prepare_output_files():
         return
 
     # Prepare star-schema output files
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_VW_FORMAT['name'], sbac_out_config.FAO_VW_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_PRI_FORMAT['name'], sbac_out_config.FAO_PRI_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
                                 sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
@@ -358,10 +358,10 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
     it_lz_out_name = sbac_out_config.LZ_ITEMDATA_FORMAT['name']
     it_lz_out_cols = sbac_out_config.LZ_ITEMDATA_FORMAT['columns']
+    fao_vw_out_name = sbac_out_config.FAO_VW_FORMAT['name']
+    fao_vw_out_cols = sbac_out_config.FAO_VW_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
-    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
-    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
     dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
     dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
     sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
@@ -409,16 +409,16 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
                                                  lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
             if WRITE_STAR:
-                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome_vw',
-                                                 root_path=OUT_PATH_ROOT)
-                csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
+                csv_writer.write_records_to_file(fao_vw_out_name, fao_vw_out_cols, rslts,
+                                                 tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts,
                                                  tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
             if WRITE_PG:
                 try:
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw', fao_out_cols,
-                                                           rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw',
+                                                           fao_vw_out_cols, rslts)
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome',
-                                                           fao_pri_out_cols, rslts)
+                                                           fao_out_cols, rslts)
                 except Exception as e:
                     print('PostgreSQL EXCEPTION ::: %s' % str(e))
 

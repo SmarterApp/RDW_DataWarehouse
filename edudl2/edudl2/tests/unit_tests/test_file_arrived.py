@@ -20,7 +20,6 @@ class TestFileArrived(unittest.TestCase):
 
         self.assertEqual(len(result), 5)
 
-    @unittest.skip('')
     def test_create_directory_paths_dir_name(self):
         tenant_name = 'bob'
         batch_guid = 'guid123'

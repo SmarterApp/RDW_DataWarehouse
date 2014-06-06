@@ -16,7 +16,7 @@ MAX_RETRY = get_setting(Config.MAX_RETRIES, 1)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
-@celery.task(name="tasks.extract.archive_with_encryption", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+@celery.task(name="tasks.archive_with_encryption.archive_with_encryption", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
 def archive_with_encryption(request_id, recipients, archive_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified

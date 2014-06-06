@@ -64,6 +64,7 @@ edudl2/edudl2/tests/data/keys/random_seed
 data_gen/DataGeneration/datafiles/csv
 
 *.ini
+wsgi_*_hpz.conf
 
 .project
 

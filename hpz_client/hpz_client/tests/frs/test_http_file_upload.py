@@ -18,7 +18,7 @@ class TestHTTPFileUpload(unittest.TestCase):
         self.reg = Registry()
         self.__request = DummyRequest()
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        settings = {Config.HPZ_FILE_UPLOAD_URL: 'http://somehost:82/files'}
+        settings = {Config.HPZ_FILE_UPLOAD_BASE_URL: 'http://somehost:82/files'}
         initialize(settings)
 
     @patch('hpz_client.frs.http_file_upload.__create_stream')

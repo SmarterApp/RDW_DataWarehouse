@@ -25,7 +25,6 @@ def setup_celery(settings, prefix=PREFIX):
     setup(celery, settings, prefix)
     setup_settings(settings)
     run_cron_cleanup(settings)
-
     initialize_hpz(settings)
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
@@ -36,3 +35,4 @@ if prod_config:
     setup_db_connection(conf)
     setup_settings(conf)
     run_cron_cleanup(conf)
+    initialize_hpz(conf)

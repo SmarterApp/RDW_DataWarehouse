@@ -16,7 +16,7 @@ def __create_stream(file_path, file):
 
 
 def http_file_upload(file_path, registration_id):
-    upload_url = get_setting(Config.HPZ_FILE_UPLOAD_URL) + '/' + registration_id
+    upload_url = get_setting(Config.HPZ_FILE_UPLOAD_BASE_URL) + '/' + registration_id
 
     with open(file_path, 'rb') as f:
         stream = __create_stream(file_path, f)

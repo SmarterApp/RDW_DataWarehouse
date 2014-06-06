@@ -1,2 +1,1 @@
-record_sid,guid_batch,guid_registration,academic_year,extract_date,test_reg_id,created_date
-7,75f1aa80-a459-406a-8529-c357ad0996ad,009a34ee-4609-4b13-8ca2-ed1bc0386afb,2015,09-01-2014,800b3654-4406-4a90-9591-be84b67054df,2014-02-24 14:25:07.497176-05
+record_sid,guid_batch,guid_registration,academic_year,extract_date,test_reg_id,callback_url,created_date7,75f1aa80-a459-406a-8529-c357ad0996ad,009a34ee-4609-4b13-8ca2-ed1bc0386afb,2015,9/1/14,800b3654-4406-4a90-9591-be84b67054df,http://www.example.com/callback,2014-02-24 14:25:07.5

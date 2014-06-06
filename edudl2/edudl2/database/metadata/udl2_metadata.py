@@ -355,6 +355,7 @@ def generate_udl2_metadata(schema_name=None, bind=None):
                                   Column('academic_year', SmallInteger, nullable=False),
                                   Column('extract_date', String(10), nullable=False),
                                   Column('test_reg_id', String(50), nullable=False),
+                                  Column('callback_url', String(512), nullable=False),
                                   Column('created_date', TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()')),
                                   Column('guid_batch', String(36), nullable=False),
                                   )

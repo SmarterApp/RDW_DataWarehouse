@@ -103,14 +103,16 @@ cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
 %attr(755,root,root) /opt/virtualenv/hpz/bin/python3.3
 /opt/virtualenv/hpz/bin/python
 /opt/virtualenv/hpz/bin/python3
+%dir %attr(755,apache,apache) /opt/edware/hpz/uploads
 
 
 %pre
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
-mkdir -p /opt/edware/hpz/uploads
-
+if [! -d /opt/edware/hpz/uploads]; then
+    mkdir -p /opt/edware/hpz/uploads
+fi
 
 %post
 

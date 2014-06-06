@@ -29,7 +29,6 @@ mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/hpz/settings.yaml %{buildroot}/opt/edware/conf/
-mkdir -p %{buildroot}/opt/edware/hpz/uploads
 
 %build
 export LANG=en_US.UTF-8
@@ -110,6 +109,7 @@ cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
+mkdir -p /opt/edware/hpz/uploads
 
 
 %post

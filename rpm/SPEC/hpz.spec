@@ -109,7 +109,7 @@ cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
-if [ ! -d /opt/edware/hpz/uploads]; then
+if [ ! -d /opt/edware/hpz/uploads ]; then
     mkdir -p /opt/edware/hpz/uploads
     chown -R apache uploads
     chgrp -R apache uploads

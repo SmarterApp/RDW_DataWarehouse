@@ -9,7 +9,8 @@ from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edudl2.udl2.celery import celery
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import insert_udl_stats
-
+from edudl2.udl2_util.util import get_tenant_name
+from edudl2.udl2_util.exceptions import InvalidTenantNameException
 
 __author__ = 'abrien'
 
@@ -32,18 +33,33 @@ def task(incoming_msg):
     and creating all the folders needed for this batch run under work zone
     """
     start_time = datetime.datetime.now()
-
     # Retrieve parameters from the incoming message
     input_source_file = incoming_msg[mk.INPUT_FILE_PATH]
     guid_batch = incoming_msg[mk.GUID_BATCH]
     load_type = incoming_msg[mk.LOAD_TYPE]
-
+    tenant_name = get_tenant_name(input_source_file)
     logger.info('W_FILE_ARRIVED: received file <%s> with guid_batch = <%s>' % (input_source_file, guid_batch))
+
+    # Insert into udl stats
+    udl_stats = {
+        UdlStatsConstants.BATCH_GUID: guid_batch,
+        UdlStatsConstants.LOAD_TYPE: load_type,
+        UdlStatsConstants.FILE_ARRIVED: start_time,
+        UdlStatsConstants.TENANT: tenant_name,
+        UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
+    }
+    udl_stats_id = insert_udl_stats(udl_stats)
+
+    if not tenant_name:
+        raise InvalidTenantNameException
+
+    if not os.path.exists(input_source_file):
+        raise FileNotFoundError
     input_file_size = os.path.getsize(input_source_file)
+
     # move the files to work and history zone
     # create all the folders needed for the current run inside work zone
-    tenant_directory_paths, tenant_name = move_file_from_arrivals(input_source_file, guid_batch)
-
+    tenant_directory_paths = move_file_from_arrivals(input_source_file, guid_batch, tenant_name)
     finish_time = datetime.datetime.now()
 
     # Benchmark
@@ -58,17 +74,7 @@ def task(incoming_msg):
         mk.INPUT_FILE_SIZE: input_file_size,
         mk.FILE_TO_DECRYPT: os.path.join(tenant_directory_paths[mk.ARRIVED], os.path.basename(input_source_file)),
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths,
-        mk.TENANT_NAME: tenant_name})
-
-    # Insert into udl stats
-    udl_stats = {
-        UdlStatsConstants.BATCH_GUID: guid_batch,
-        UdlStatsConstants.LOAD_TYPE: load_type,
-        UdlStatsConstants.FILE_ARRIVED: start_time,
-        UdlStatsConstants.TENANT: tenant_name,
-        UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_RECEIVED
-    }
-    udl_stats_id = insert_udl_stats(udl_stats)
-    outgoing_msg[mk.UDL_STATS_REC_ID] = udl_stats_id.inserted_primary_key[0]
+        mk.TENANT_NAME: tenant_name,
+        mk.UDL_STATS_REC_ID: udl_stats_id.inserted_primary_key[0]})
 
     return outgoing_msg

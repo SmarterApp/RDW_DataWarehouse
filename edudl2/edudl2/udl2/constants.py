@@ -44,6 +44,9 @@ class Constants():
     # global sequence name
     SEQUENCE_NAME = 'global_rec_seq'
 
+    ZONES = 'zones'
+    ARRIVALS = 'arrivals'
+
     # Phase number
     INT_TO_STAR_PHASE = 4
 

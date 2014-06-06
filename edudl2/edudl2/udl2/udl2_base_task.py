@@ -59,8 +59,9 @@ class Udl2BaseTask(Task):
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.exception('Task failed: ' + self.name + ', task id: ' + task_id)
-        guid_batch = args[0][mk.GUID_BATCH]
-        load_type = args[0][mk.LOAD_TYPE]
+        msg = args[0]
+        guid_batch = msg.get(mk.GUID_BATCH)
+        load_type = msg.get(mk.LOAD_TYPE)
         failure_time = datetime.datetime.now()
         udl_phase_step = ''
         working_schema = ''
@@ -77,18 +78,22 @@ class Udl2BaseTask(Task):
                                         task_id=str(self.request.id),
                                         error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()
+
         # Write to udl stats table on exceptions
-        update_udl_stats(args[0][mk.UDL_STATS_REC_ID], {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+        stats_rec_id = msg.get(mk.UDL_STATS_REC_ID)
+        if stats_rec_id:
+            update_udl_stats(stats_rec_id, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+
         # Write to ERR_LIST
         try:
             exc.insert_err_list(failure_time)
         except Exception:
             pass
-        msg = {}
-        msg.update(args[0])
-        msg.update({mk.PIPELINE_STATE: 'error'})
+        err_msg = {}
+        err_msg.update(msg)
+        err_msg.update({mk.PIPELINE_STATE: 'error'})
 
-        error_handler_chain = self.__get_pipeline_error_handler_chain(msg, self.name)
+        error_handler_chain = self.__get_pipeline_error_handler_chain(err_msg, self.name)
         if error_handler_chain is not None:
             error_handler_chain.delay()
 

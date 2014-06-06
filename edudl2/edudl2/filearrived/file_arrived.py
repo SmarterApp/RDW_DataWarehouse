@@ -6,23 +6,25 @@ import shutil
 
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2_util.file_util import convert_path_to_list
 from edcore.watch.util import FileUtil
+from edudl2.udl2_util.exceptions import InvalidTenantNameException
 
 
-def move_file_from_arrivals(incoming_file, batch_guid):
+def move_file_from_arrivals(incoming_file, batch_guid, tenant_name):
     """
     Create the subdirectories for the current batch and mv the incoming file to the proper locations.
     :param incoming_file: the path the incoming file
     :param batch_guid: the guid for the current batch
+    :param tenant_name: tenant name for the current batch
     :return: a tuple of (A dictionary containing all the created directories, the tenant name)
     """
-    tenant_name = get_tenant_name(incoming_file)
+    if not tenant_name:
+        raise InvalidTenantNameException
     tenant_directory_paths = create_directory_paths(tenant_name, batch_guid)
     create_batch_directories(tenant_directory_paths)
     move_file_to_work_and_history(incoming_file, tenant_directory_paths.get(mk.ARRIVED),
                                   tenant_directory_paths.get(mk.HISTORY))
-    return tenant_directory_paths, tenant_name
+    return tenant_directory_paths
 
 
 def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
@@ -39,19 +41,6 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     checksum_file = FileUtil.get_complement_file_name(incoming_file)
     if os.path.exists(checksum_file):
         shutil.move(checksum_file, history_dir)
-
-
-def get_tenant_name(incoming_file):
-    """
-    Given the incoming files path return the name of the tenant
-    :param incoming_file: the path to the incoming file
-    :return: A string containing the tenant name
-    """
-    zones_config = udl2_conf.get('zones')
-    if zones_config:
-        arrivals_dir_path = zones_config.get('arrivals')
-    relative_file_path = os.path.relpath(incoming_file, arrivals_dir_path)
-    return convert_path_to_list(relative_file_path)[0]
 
 
 def create_directory_paths(tenant_name, batch_guid):

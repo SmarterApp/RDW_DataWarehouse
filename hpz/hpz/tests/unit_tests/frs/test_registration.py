@@ -45,9 +45,9 @@ class RegistrationTest(unittest.TestCase):
         persist_patch.assert_called_with('1234')
 
     @patch('hpz.frs.registration_service.FileRegistry.register_request')
-    def test_registration_vaild_url(self, persist_patch):
+    def test_registration_valid_url(self, persist_patch):
         reg = Registry()
-        reg.settings = {'hpz.frs.download_base_url': 'http://blah/download//'}
+        reg.settings = {'hpz.frs.download_base_url': 'http://blah/download'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 
         persist_patch.return_value = None

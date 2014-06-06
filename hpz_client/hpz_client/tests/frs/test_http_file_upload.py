@@ -7,6 +7,7 @@ from pyramid.testing import DummyRequest
 
 from edcore.exceptions import RemoteCopyError
 from hpz_client.frs.http_file_upload import http_file_upload
+from hpz_client.frs.config import Config, initialize
 
 
 __author__ = 'ablum'
@@ -15,9 +16,10 @@ __author__ = 'ablum'
 class TestHTTPFileUpload(unittest.TestCase):
     def setUp(self):
         self.reg = Registry()
-        self.reg.settings = {'hpz.file_upload_base_url': 'http://somehost:82/files'}
         self.__request = DummyRequest()
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
+        settings = {Config.HPZ_FILE_UPLOAD_BASE_URL: 'http://somehost:82/files'}
+        initialize(settings)
 
     @patch('hpz_client.frs.http_file_upload.__create_stream')
     @patch('hpz_client.frs.http_file_upload.api.post')

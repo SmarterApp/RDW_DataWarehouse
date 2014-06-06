@@ -6,7 +6,7 @@ define [
   'edwareConstants'
 ], ($, jqGrid, edwareUtil, edwareGridFormatters, CONSTANTS) ->
 
-  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar',
+  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar', '#searchResult',
     '#stickyCompareSection', '.selectedFilter_panel', '.ui-jqgrid-hdiv', '.ui-jqgrid-sdiv']
 
   DEFAULT_CONFIG =
@@ -210,9 +210,9 @@ define [
         v1 = edwareUtil.deepFind(row1, sortname)
         v2 = edwareUtil.deepFind(row2, sortname)
         if sortorder is 'asc'
-          return v1 > v2
+          return if v1 > v2 then 1 else -1
         else
-          return v2 > v1
+          return if v2 > v1 then 1 else -1
       data
 
   adjustHeight = () ->

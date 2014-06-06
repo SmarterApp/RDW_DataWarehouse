@@ -94,6 +94,7 @@ class Constants():
     DMG_ETH_BLK = 'dmg_eth_blk'
     DMG_ETH_PCF = 'dmg_eth_pcf'
     DMG_ETH_WHT = 'dmg_eth_wht'
+    DMG_ETH_2OM = 'dmg_eth_2om'
     NOT_STATED = 'not_stated'
     RAW_EXPORT = 'raw'
     ASMT_YEAR = 'asmt_year'

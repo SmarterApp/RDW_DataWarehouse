@@ -22,10 +22,10 @@ from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.udl2_util import file_util
 from edudl2.fileloader.json_loader import load_json
-from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2_util.measurement import BatchTableBenchmark
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import update_udl_stats
+from edudl2.sfv import sfv_util
 from edudl2.udl2.constants import Constants
 
 logger = get_task_logger(__name__)
@@ -59,9 +59,11 @@ def generate_conf_for_loading(json_file, guid_batch, load_type, tenant_name):
     takes the msg and pulls out the relevant parameters to pass
     the method that loads the json
     '''
+    results = sfv_util.get_source_target_column_values_from_ref_column_mapping(
+            Constants.UDL2_JSON_LZ_TABLE, load_type)
     conf = {
         mk.FILE_TO_LOAD: json_file,
-        mk.MAPPINGS: get_json_table_mapping(load_type),
+        mk.MAPPINGS: dict([(row[0], row[1].split('.')) for row in results]),
         mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
         mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
         mk.GUID_BATCH: guid_batch,

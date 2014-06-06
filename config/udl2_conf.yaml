@@ -33,7 +33,7 @@ common:
         CELERY_DEFAULT_QUEUE: celery        # default celery queue name for celery internal tasks
         CELERY_DEFAULT_EXCHANGE: direct     # default celery exchange name, and exchange type
         CELERY_DEFAULT_ROUTING_KEY: celery  # default celery routing key for tasks
-        CELERYD_CONCURRENCY: 3              # number of available workers processes
+        CELERYD_CONCURRENCY: 4              # number of available workers processes
     rabbitmq:                               # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         RABBITMQ_SERVER_PATH:
             - /opt/local/sbin/rabbitmq-server
@@ -43,11 +43,6 @@ common:
         parts: 1                            # default parts of files
         output_path: .                      # where the newly generated split file located
         keep_headers: True                  # preserve csv header for importing
-    logging:        # log location. this should be in the long run as file locations or more sophisticated logging system
-        level: INFO
-        debug: FALSE
-        audit: /opt/edware/log/udl2.audit.log  # for status log for everything
-        error: /opt/edware/log/udl2.error.log  # for error message and exceptions,
     quiet_mode: False
     passphrase: sbac udl2
     db_defaults:
@@ -136,6 +131,11 @@ development:
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
         datafiles: /opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: /opt/edware/zones/tests/                 # this is for running unit tests.
+    logging:        # log location. this should be in the long run as file locations or more sophisticated logging system
+        level: INFO
+        debug: FALSE
+        audit: /opt/edware/log/udl2.audit.log  # for status log for everything
+        error: /opt/edware/log/udl2.error.log  # for error message and exceptions
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2

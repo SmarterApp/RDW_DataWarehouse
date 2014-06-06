@@ -1,8 +1,8 @@
 import json
 import os
 from edudl2.exceptions.errorcodes import ErrorCode
-from edudl2.udl2.celery import udl2_conf
-from edudl2.udl2_util.udl_mappings import get_json_validation_mapping
+from edudl2.sfv import sfv_util
+from edudl2.udl2.constants import Constants
 
 
 class JsonValidator():
@@ -66,7 +66,10 @@ class HasExpectedFormat(object):
     def __init__(self, load_type):
         # mapping is a dictionary with keys = fields and values = paths to that field within the json structure
         # the paths will consist of a list of strings, each one a component of the path to the given field
-        self.mapping = get_json_validation_mapping(load_type)
+        results = sfv_util.get_source_target_column_values_from_ref_column_mapping(
+            Constants.UDL2_JSON_LZ_TABLE, load_type) if None is None else []
+        self.mapping = dict([(row[0], row[1].split('.')) for row in results])
+        a = 2
 
     def execute(self, dir_path, file_name, batch_sid):
         '''
@@ -107,7 +110,7 @@ class HasExpectedFormat(object):
         current_position = json_object
         for component in path:
             for key in current_position.keys():
-                if component == key.lower():
+                if component.lower() == key.lower():
                     current_position = current_position[key]
                     break
             else:

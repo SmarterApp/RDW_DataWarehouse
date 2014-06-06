@@ -4,7 +4,8 @@ define [
   "text!SearchBoxTemplate"
   "text!SearchResultTemplate"
   "edwareConstants"
-], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS) ->
+  "edwareGrid"
+], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
 
   class EdwareSearch
 
@@ -51,16 +52,20 @@ define [
     reset: ()->
       $('.searchResult').remove()
       @searchBox.attr('value', '')
+      @removeHighlight()
+      @keyword = null
+      # TODO: may need better mechanism to adjust height
+      edwareGrid.adjustHeight()
 
     search: (keyword) ->
       # do nothing if no search keyword
-      keyword = keyword.trim()
-      return if not keyword
-      @results = new ResultIterator keyword, @update.bind(this)
-      @displayResults(keyword)
+      @keyword = keyword.trim()
+      return if not @keyword
+      @results = new ResultIterator @keyword, @update.bind(this)
+      @displayResults()
 
-    displayResults: (keyword)->
-      message = @getMessage(keyword)
+    displayResults: ()->
+      message = @getMessage()
       hasMatch = @results.size() isnt 0
       @searchResult.html Mustache.to_html SearchResultTemplate,
         hasMatch: hasMatch
@@ -68,8 +73,10 @@ define [
         message: message
       # move to first record only when a match found
       @update @results.offset(), @results.index() if hasMatch
+      # adjust height to accommodate last row
+      edwareGrid.adjustHeight()
 
-    getMessage: (keyword)->
+    getMessage: ()->
       total = @results.size()
       hasMatch = total isnt 0
       if hasMatch
@@ -78,14 +85,31 @@ define [
         MessageTemplate = @labels.SearchResultText.notFound
       message = Mustache.to_html MessageTemplate,
         total: total
-        keyword: keyword
+        keyword: @keyword
       message
 
     update: (offset, cursor) ->
       $("#cursor", @searchResult).text cursor
       rowHeight = @getRowHeight()
       $('.ui-jqgrid-bdiv').scrollTop(offset * rowHeight)
-      # TODO: to render match in a different color
+      # Highlight active match
+      @offset = offset
+      @addHighlight()
+
+    addHighlight: () ->
+      @removeHighlight()
+      # ensures that we're only highlighting when there's a search word
+      return if not @keyword
+      @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
+      text = @lastHighlightedElement.data('value')
+      if text
+        idx = text.toLowerCase().indexOf(@keyword.toLowerCase())
+        @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
+
+    removeHighlight: () ->
+      if @lastHighlightedElement
+        @lastHighlightedElement.html(@lastHighlightedElement.data('value'))
+        @lastHighlightedElement = null
 
     getRowHeight: () ->
       return @rowHeight if @rowHeight

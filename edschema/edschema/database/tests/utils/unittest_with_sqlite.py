@@ -9,7 +9,7 @@ from edschema.database.tests.utils.data_gen import generate_cvs_templates
 from zope import component
 from edschema.database.connector import IDbUtil
 import os
-from edschema.database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir, load_fact_asmt_outcome
 
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles

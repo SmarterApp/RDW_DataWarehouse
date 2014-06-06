@@ -155,6 +155,7 @@ define [
       # Rebind events and reset sticky comparison
       this.stickyCompare.update()
       this.alignment.update()
+      this.actionBar.update()
       # Save the current sorting column and order to apply after filtering
       name = $('#gridTable').getGridParam('sortname')
       order = $('#gridTable').getGridParam('sortorder')
@@ -190,6 +191,7 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
+      $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateSortLabels: (index, sortorder) ->
       # Remove second row header as that counts as a column in setLabel function

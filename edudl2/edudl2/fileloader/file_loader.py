@@ -43,8 +43,9 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
     lowered_headers_in_file = [header.lower() for header in header_names_in_header_file]
     # verify headers in csv header file also exist in ref_table
     header_names_in_ref_table = get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table)
+    lowered_header_names_in_ref_table = [header.lower() for header in header_names_in_ref_table]
     # if there are columns which exist at header file, but not defined in ref table, raise exception
-    diff_item = set(lowered_headers_in_file) - set(header_names_in_ref_table)
+    diff_item = set(lowered_headers_in_file) - set(lowered_header_names_in_ref_table)
     if len(diff_item) > 0:
         raise ValueError('Column %s does not match between header file and mapping defined in ref table %s' % (str(diff_item), ref_table))
     formatted_header_names = [canonicalize_header_field(name) for name in lowered_headers_in_file]

@@ -68,106 +68,106 @@
         }
     ],
     "legendInfo": {
-    "sample_intervals": {
-        "asmt_score": 1789,
-        "asmt_score_interval": 65,
-        "asmt_score_max": 2400,
-        "asmt_score_max_range": 441,
-        "asmt_score_min": 1200,
-        "asmt_score_min_range": 263,
-        "asmt_score_pos": 402.5,
-        "asmt_score_range_max": 2027,
-        "asmt_score_range_min": 1907,
-        "score_color": "#e4c904",
-        "cut_point_intervals": [
-        {
-            "asmt_cut_point": 107,
-            "bg_color": "#BB231C",
-            "end_gradient_bg_color": "#C32C25",
-            "interval": "1400",
-            "name": "Minimal Understanding",
-            "start_gradient_bg_color": "#E14A45",
-            "text_color": "#FFFFFF"
+        "sample_intervals": {
+            "asmt_score": 1789,
+            "asmt_score_interval": 65,
+            "asmt_score_max": 2400,
+            "asmt_score_max_range": 441,
+            "asmt_score_min": 1200,
+            "asmt_score_min_range": 263,
+            "asmt_score_pos": 402.5,
+            "asmt_score_range_max": 2027,
+            "asmt_score_range_min": 1907,
+            "score_color": "#e4c904",
+            "cut_point_intervals": [
+                {
+                    "asmt_cut_point": 107,
+                    "bg_color": "#BB231C",
+                    "end_gradient_bg_color": "#C32C25",
+                    "interval": "1400",
+                    "name": "Minimal Understanding",
+                    "start_gradient_bg_color": "#E14A45",
+                    "text_color": "#FFFFFF"
+                },
+                {
+                    "asmt_cut_point": 213,
+                    "bg_color": "#e4c904",
+                    "end_gradient_bg_color": "#e3c703",
+                    "interval": "1800",
+                    "name": "Partial Understanding",
+                    "start_gradient_bg_color": "#eed909",
+                    "text_color": "#000"
+                },
+                {
+                    "asmt_cut_point": 160,
+                    "bg_color": "#6aa506",
+                    "end_gradient_bg_color": "#6aa506",
+                    "interval": "2100",
+                    "name": "Adequate Understanding",
+                    "start_gradient_bg_color": "#99be23",
+                    "text_color": "#FFFFFF"
+                },
+                {
+                    "asmt_cut_point": 160,
+                    "bg_color": "#237ccb",
+                    "end_gradient_bg_color": "#2078ca",
+                    "interval": "2400",
+                    "name": "Thorough Understanding",
+                    "start_gradient_bg_color": "#3a98d1",
+                    "text_color": "#FFFFFF"
+                }
+            ],
+            "intervals": [
+                {
+                    "color": {
+                        "bg_color": "#BB231C",
+                        "end_gradient_bg_color": "#C32C25",
+                        "start_gradient_bg_color": "#E14A45",
+                        "text_color": "#ffffff"
+                    },
+                    "count": 27,
+                    "level": 1,
+                    "percentage": 27,
+                    "showPercentage": true
+                },
+                {
+                    "color": {
+                        "bg_color": "#e4c904",
+                        "start_gradient_bg_color": "#eed909",
+                        "end_gradient_bg_color": "#e3c703",
+                        "text_color": "#000"
+                    },
+                    "count": 33,
+                    "level": 2,
+                    "percentage": 33,
+                    "showPercentage": true
+                },
+                {
+                    "color": {
+                        "bg_color": "#6aa506",
+                        "start_gradient_bg_color": "#99be23",
+                        "end_gradient_bg_color": "#6aa506",
+                        "text_color": "#FFFFFF"
+                    },
+                    "count": 34,
+                    "level": 3,
+                    "percentage": 34,
+                    "showPercentage": true
+                },
+                {
+                    "color": {
+                        "bg_color": "#237ccb",
+                        "start_gradient_bg_color": "#3a98d1",
+                        "end_gradient_bg_color": "#2078ca",
+                        "text_color": "#FFFFFF"
+                    },
+                    "count": 6,
+                    "level": 4,
+                    "percentage": 6,
+                    "showPercentage": true
+                }
+            ]
         },
-        {
-            "asmt_cut_point": 213,
-            "bg_color": "#e4c904",
-            "end_gradient_bg_color": "#e3c703",
-            "interval": "1800",
-            "name": "Partial Understanding",
-            "start_gradient_bg_color": "#eed909",
-            "text_color": "#000"
-        },
-        {
-            "asmt_cut_point": 160,
-            "bg_color": "#6aa506",
-            "end_gradient_bg_color": "#6aa506",
-            "interval": "2100",
-            "name": "Adequate Understanding",
-            "start_gradient_bg_color": "#99be23",
-            "text_color": "#FFFFFF"
-        },
-        {
-            "asmt_cut_point": 160,
-            "bg_color": "#237ccb",
-            "end_gradient_bg_color": "#2078ca",
-            "interval": "2400",
-            "name": "Thorough Understanding",
-            "start_gradient_bg_color": "#3a98d1",
-            "text_color": "#FFFFFF"
-        }
-        ],
-        "intervals": [
-        {
-            "color": {
-            "bg_color": "#BB231C",
-            "end_gradient_bg_color": "#C32C25",
-            "start_gradient_bg_color": "#E14A45",
-            "text_color": "#ffffff"
-            },
-            "count": 27,
-            "level": 1,
-            "percentage": 27,
-            "showPercentage": true
-        },
-        {
-            "color": {
-            "bg_color": "#e4c904",
-            "start_gradient_bg_color": "#eed909",
-            "end_gradient_bg_color": "#e3c703",
-            "text_color": "#000"
-            },
-            "count": 33,
-            "level": 2,
-            "percentage": 33,
-            "showPercentage": true
-        },
-        {
-            "color": {
-            "bg_color": "#6aa506",
-            "start_gradient_bg_color": "#99be23",
-            "end_gradient_bg_color": "#6aa506",
-            "text_color": "#FFFFFF"
-            },
-            "count": 34,
-            "level": 3,
-            "percentage": 34,
-            "showPercentage": true
-        },
-        {
-            "color": {
-            "bg_color": "#237ccb",
-            "start_gradient_bg_color": "#3a98d1",
-            "end_gradient_bg_color": "#2078ca",
-            "text_color": "#FFFFFF"
-            },
-            "count": 6,
-            "level": 4,
-            "percentage": 6,
-            "showPercentage": true
-        }
-        ]
-    },
         "performance_levels": [
             {
                 "level": 3,
@@ -187,235 +187,235 @@
         ]
     },
     "students": {
-    "{{subject1}}_{{subject2}}": [
-        {
-        "items": [
+        "{{subject1}}_{{subject2}}": [
             {
-            "name": "Students",
-            "displayTpl": "<a href='#' class='inherit'>Students</>",
-            "index": "student_full_name",
-            "field": "student_full_name",
-            "width": 330,
-            "style": "ui-ellipsis bold",
-            "formatter": "showlink",
-            "options": {
-                "linkUrl": "indivStudentReport.html"
-            },
-            "hidden": true,
-            "sortorder": "asc",
-            "export": true
-            },
-            {
-            "name": "{{subject1}}",
-            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject1_perfBar' class='header_perfBar'></div>",
-            "index": "subject1.asmt_score",
-            "field": "subject1.asmt_score",
-            "width": 230,
-            "formatter": "performanceBar",
-            "options": {
-                "asmt_type": "subject1"
-            },
-            "sorttype": "int",
-            "align": "center",
-            "title": false,
-            "export": true
-            },
-            {
-            "name": "{{subject2}}",
-            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject2_perfBar' class='header_perfBar'></div>",
-            "index": "subject2.asmt_score",
-            "field": "subject2.asmt_score",
-            "width": 230,
-            "formatter": "performanceBar",
-            "options": {
-                "asmt_type": "subject2"
-            },
-            "sorttype": "int",
-            "align": "center",
-            "title": false,
-            "export": true
-            },
-            {
-            "name": "",
-            "displayTpl": "",
-            "width": 174,
-            "title": false,
-            "export": false,
-            "sortable": false
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject1}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "index": "subject1.asmt_score",
+                        "field": "subject1.asmt_score",
+                        "width": 230,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject2}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "index": "subject2.asmt_score",
+                        "field": "subject2.asmt_score",
+                        "width": 230,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    },
+                    {
+                        "name": "",
+                        "displayTpl": "",
+                        "width": 174,
+                        "title": false,
+                        "export": false,
+                        "sortable": false
+                    }
+                ]
             }
-        ]
-        }
-    ],
-    "{{subject1}}": [
-        {
-        "items": [
+        ],
+        "{{subject1}}": [
             {
-            "name": "Students",
-            "displayTpl": "<a href='#' class='inherit'>Students</a>",
-            "index": "student_full_name",
-            "field": "student_full_name",
-            "width": 330,
-            "style": "ui-ellipsis bold",
-            "formatter": "showlink",
-            "options": {
-                "linkUrl": "indivStudentReport.html"
-            },
-            "hidden": true,
-            "sortorder": "asc",
-            "export": true
-            },
-            {
-            "name": "{{subject1}}",
-            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject1_perfBar' class='header_perfBar'></div>",
-            "index": "subject1.asmt_score",
-            "field": "subject1.asmt_score",
-            "width": 175,
-            "formatter": "performanceBar",
-            "options": {
-                "asmt_type": "subject1"
-            },
-            "sorttype": "int",
-            "align": "center",
-            "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject1.0.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
-            "index": "subject1.claims.0.perf_lvl",
-            "field": "subject1.claims.0.perf_lvl",
-            "width": 154,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject1}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject1}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "index": "subject1.asmt_score",
+                        "field": "subject1.asmt_score",
+                        "width": 175,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject1"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject1.1.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
-            "index": "subject1.claims.1.perf_lvl",
-            "field": "subject1.claims.1.perf_lvl",
-            "width": 160,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject1.0.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.0.name}}</a>",
+                        "index": "subject1.claims.0.perf_lvl",
+                        "field": "subject1.claims.0.perf_lvl",
+                        "width": 154,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject1.2.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
-            "index": "subject1.claims.2.perf_lvl",
-            "field": "subject1.claims.2.perf_lvl",
-            "width": 160,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject1.1.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.1.name}}</a>",
+                        "index": "subject1.claims.1.perf_lvl",
+                        "field": "subject1.claims.1.perf_lvl",
+                        "width": 160,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject1.2.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject1.2.name}}</a>",
+                        "index": "subject1.claims.2.perf_lvl",
+                        "field": "subject1.claims.2.perf_lvl",
+                        "width": 160,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    }
+                ]
             }
-        ]
-        }
-    ],
-    "{{subject2}}": [
-        {
-        "name": "",
-        "items": [
+        ],
+        "{{subject2}}": [
             {
-            "name": "Students",
-            "displayTpl": "<a href='#' class='inherit'>Students</a>",
-            "index": "student_full_name",
-            "field": "student_full_name",
-            "width": 330,
-            "style": "ui-ellipsis bold",
-            "formatter": "showlink",
-            "options": {
-                "linkUrl": "indivStudentReport.html"
-            },
-            "hidden": true,
-            "sortorder": "asc",
-            "export": true
-            },
-            {
-            "name": "{{subject2}}",
-            "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject2_perfBar' class='header_perfBar'></div>",
-            "index": "subject2.asmt_score",
-            "field": "subject2.asmt_score",
-            "width": 175,
-            "formatter": "performanceBar",
-            "options": {
-                "asmt_type": "subject2"
-            },
-            "sorttype": "int",
-            "align": "center",
-            "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject2.0.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
-            "index": "subject2.claims.0.perf_lvl",
-            "field": "subject2.claims.0.perf_lvl",
-            "width": 118,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                "name": "",
+                "items": [
+                    {
+                        "name": "Students",
+                        "displayTpl": "<a href='#' class='inherit'>Students</a>",
+                        "index": "student_full_name",
+                        "field": "student_full_name",
+                        "width": 330,
+                        "style": "ui-ellipsis bold",
+                        "formatter": "showlink",
+                        "options": {
+                            "linkUrl": "indivStudentReport.html"
+                        },
+                        "hidden": true,
+                        "sortorder": "asc",
+                        "export": true
+                    },
+                    {
+                        "name": "{{subject2}}",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>{{subject2}}</a> <span aria-hidden='true'>Overall Score</span><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "index": "subject2.asmt_score",
+                        "field": "subject2.asmt_score",
+                        "width": 175,
+                        "formatter": "performanceBar",
+                        "options": {
+                            "asmt_type": "subject2"
+                        },
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject2.1.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
-            "index": "subject2.claims.1.perf_lvl",
-            "field": "subject2.claims.1.perf_lvl",
-            "width": 118,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.0.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.0.name}}</a>",
+                        "index": "subject2.claims.0.perf_lvl",
+                        "field": "subject2.claims.0.perf_lvl",
+                        "width": 118,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject2.2.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
-            "index": "subject2.claims.2.perf_lvl",
-            "field": "subject2.claims.2.perf_lvl",
-            "width": 118,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.1.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.1.name}}</a>",
+                        "index": "subject2.claims.1.perf_lvl",
+                        "field": "subject2.claims.1.perf_lvl",
+                        "width": 118,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
-            },
-            {
-            "name": "{{claims.subject2.3.name}}",
-            "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
-            "index": "subject2.claims.3.perf_lvl",
-            "field": "subject2.claims.3.perf_lvl",
-            "width": 120,
-            "formatter": "showPerfLevel",
-            "sorttype": "int",
-            "align": "center",
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.2.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.2.name}}</a>",
+                        "index": "subject2.claims.2.perf_lvl",
+                        "field": "subject2.claims.2.perf_lvl",
+                        "width": 118,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
                         "title": false,
-            "export": true
+                        "export": true
+                    },
+                    {
+                        "name": "{{claims.subject2.3.name}}",
+                        "displayTpl": "<a href='#' class='inherit'>{{claims.subject2.3.name}}</a>",
+                        "index": "subject2.claims.3.perf_lvl",
+                        "field": "subject2.claims.3.perf_lvl",
+                        "width": 120,
+                        "formatter": "showPerfLevel",
+                        "sorttype": "int",
+                        "align": "center",
+                        "title": false,
+                        "export": true
+                    }
+                ]
             }
-        ]
+        ],
+        "customViews": {
+            "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
+            "items": {
+                "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
+                "{{subject1}}": "{{subject1}} {{asmtType}}",
+                "{{subject2}}": "{{subject2}} {{asmtType}}"
+            }
         }
-    ],
-    "customViews": {
-        "asmtTypes": [{"name": "Summative", "display": "Summative"}, {"name": "Interim Comprehensive", "display": "Interim Comp."}],
-        "items": {
-        "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
-        "{{subject1}}": "{{subject1}} {{asmtType}}",
-        "{{subject2}}": "{{subject2}} {{asmtType}}"
-        }
-    }
     },
 
     "comparingPopulations": {
         "grid": [
-          {
+            {
                 "items": [
                     {
                         "name": "School Name",
@@ -433,7 +433,7 @@
                         "sortorder": "asc",
                         "export": true
                     },
-                     {
+                    {
                         "name": "{{subject1}}",
                         "displayTpl": "<a class='inherit' href='#'><b>{{subject1}}</b></a>",
                         "index": "results.subject1.sortedValue",
@@ -577,6 +577,6 @@
     },
     "SearchResultText": {
         "hasMatch": "<b id='cursor'>{{cursor}}</b> of <b>{{total}}</b> matching \"<b>{{keyword}}</b>\"",
-        "notFound": "No match \"<b>{{keyword}}</b>\" in this district. Please check spelling and try again."
+        "notFound": "No matches for \"<b>{{keyword}}</b>\". Please check spelling and try again."
     }
 }

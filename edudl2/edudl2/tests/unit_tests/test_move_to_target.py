@@ -121,7 +121,6 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'middle_name': None,
             'last_name': 'Mccarty',
             'sex': 'male',
-            'email': 'richard.mccarty@gangessharkbrownhyaenaprimary.edu',
             'birthdate': '20040312',
             'dmg_eth_derived': 3,
             'dmg_eth_hsp': True,
@@ -130,10 +129,12 @@ class TestMoveToTarget(Unittest_with_udl2_sqlite):
             'dmg_eth_blk': False,
             'dmg_eth_pcf': False,
             'dmg_eth_wht': False,
+            'dmg_eth_2om': False,
             'dmg_prg_iep': False,
             'dmg_prg_lep': False,
             'dmg_prg_504': False,
-            'dmg_prg_tt1': False
+            'dmg_sts_ecd': False,
+            'dmg_sts_mig': False,
         }
         bad_record = {
             'student_guid': 'not_really_exist'
@@ -374,7 +375,6 @@ def get_expected_column_mapping(target_table):
                                                                     ('middle_name', 'name_student_middle'),
                                                                     ('last_name', 'name_student_last'),
                                                                     ('sex', 'sex_student'),
-                                                                    ('email', 'email_student'),
                                                                     ('birthdate', 'birthdate_student'),
                                                                     ('grade', 'grade_enrolled'),
                                                                     ('state_code', 'code_state'),

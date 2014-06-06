@@ -29,12 +29,6 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.reg = Registry()
         self.__work_zone_dir = tempfile.TemporaryDirectory()
         self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
-                             'pickup.gatekeeper.t1': '/t/acb',
-                             'pickup.gatekeeper.t2': '/a/df',
-                             'pickup.gatekeeper.y': '/a/c',
-                             'pickup.sftp.hostname': 'hostname.local.net',
-                             'pickup.sftp.user': 'myUser',
-                             'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa',
                              'extract.available_grades': '3,4,5,6,7,8,11',
                              'hpz.file_upload_base_url': 'http://somehost:82/files'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
@@ -145,4 +139,4 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
             self.assertEqual(response['tasks'][0][Constants.ACADEMIC_YEAR], 2015)
             self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
-            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)
+            apply_async_mock.assert_called_with(args=[ANY, ANY, ANY, ANY, ANY, [dummy_task_info]], queue=ANY)

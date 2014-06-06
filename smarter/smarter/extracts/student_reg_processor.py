@@ -7,6 +7,7 @@ This module provides methods for extracting student registration report informat
 import logging
 import os
 from datetime import datetime
+
 from pyramid.threadlocal import get_current_registry
 
 from smarter.extracts.constants import Constants as Extract, ExtractType
@@ -18,7 +19,7 @@ from smarter.extracts import processor
 from smarter.extracts import student_reg_statistics
 from smarter.extracts import student_reg_completion
 from edcore.utils.utils import compile_query_to_sql_text
-from smarter.extracts.file_registration import register_file
+from hpz_client.frs.file_registration import register_file
 
 
 log = logging.getLogger('smarter')
@@ -58,7 +59,7 @@ def process_async_extraction_request(params):
 
     response['tasks'] = [task_response]
 
-    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id, encrypted=False)
+    archived_file_path = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
     response['fileName'] = os.path.basename(archived_file_path)
 
     data_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
@@ -67,10 +68,7 @@ def process_async_extraction_request(params):
     registration_id, download_url = register_file(user.get_uid())
     response['download_url'] = download_url
 
-    file_upload_url = '/'.join(s.strip('/') for s in (get_current_registry().settings.get('hpz.file_upload_base_url'), registration_id))
-    http_info = {'url': file_upload_url, 'copy_type': TaskConstants.HPZ}
-
-    start_extract.apply_async(args=[tenant, request_id, None, archived_file_path, data_directory_to_archive, http_info, [task_info]], queue=queue)
+    start_extract.apply_async(args=[tenant, request_id, archived_file_path, data_directory_to_archive, registration_id, [task_info]], queue=queue)
 
     return response
 

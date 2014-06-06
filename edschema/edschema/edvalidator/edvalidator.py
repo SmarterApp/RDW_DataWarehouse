@@ -10,7 +10,7 @@ from zope import component
 from edschema.database.connector import IDbUtil
 import sys
 import csv
-from edschema.database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir, load_fact_asmt_outcome
 
 
 def read_csv(dir_name):
@@ -181,6 +181,7 @@ def run_validation(metadata=None, missing_table_ignore=False, missing_field_igno
         if not import_ok:
             print('failed to import csv data')
             return 1
+        load_fact_asmt_outcome()
         return 0
     finally:
         destroy_sqlite()

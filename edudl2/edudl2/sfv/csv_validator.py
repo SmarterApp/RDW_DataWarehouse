@@ -403,6 +403,7 @@ class DoesSourceFileInExpectedFormat(object):
     def __init__(self, load_type, csv_fields=None):
         self.expected_csv_fields = sfv_util.get_source_column_values_from_ref_column_mapping(
             Constants.UDL2_CSV_LZ_TABLE, load_type) if csv_fields is None else csv_fields
+        self.expected_csv_fields = [column.lower() for column in self.expected_csv_fields]
 
     def are_eq(self, a, b):
         return len(a) == len(b) and set(a) == set(b)

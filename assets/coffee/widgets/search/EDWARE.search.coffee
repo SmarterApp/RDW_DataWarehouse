@@ -4,7 +4,8 @@ define [
   "text!SearchBoxTemplate"
   "text!SearchResultTemplate"
   "edwareConstants"
-], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS) ->
+  "edwareGrid"
+], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
 
   class EdwareSearch
 
@@ -51,27 +52,31 @@ define [
     reset: ()->
       $('.searchResult').remove()
       @searchBox.attr('value', '')
-      this.removeHighlight()
+      @removeHighlight()
       @keyword = null
+      # TODO: may need better mechanism to adjust height
+      edwareGrid.adjustHeight()
 
     search: (keyword) ->
       # do nothing if no search keyword
-      keyword = keyword.trim()
-      return if not keyword
-      @results = new ResultIterator keyword, @update.bind(this)
-      @displayResults(keyword)
+      @keyword = keyword.trim()
+      return if not @keyword
+      @results = new ResultIterator @keyword, @update.bind(this)
+      @displayResults()
 
-    displayResults: (keyword)->
-      message = @getMessage(keyword)
+    displayResults: ()->
+      message = @getMessage()
       hasMatch = @results.size() isnt 0
       @searchResult.html Mustache.to_html SearchResultTemplate,
         hasMatch: hasMatch
         labels: @labels
         message: message
       # move to first record only when a match found
-      @update @results.offset(), @results.index(), keyword.toLowerCase() if hasMatch
+      @update @results.offset(), @results.index() if hasMatch
+      # adjust height to accommodate last row
+      edwareGrid.adjustHeight()
 
-    getMessage: (keyword)->
+    getMessage: ()->
       total = @results.size()
       hasMatch = total isnt 0
       if hasMatch
@@ -80,30 +85,30 @@ define [
         MessageTemplate = @labels.SearchResultText.notFound
       message = Mustache.to_html MessageTemplate,
         total: total
-        keyword: keyword
+        keyword: @keyword
       message
 
-    update: (offset, cursor, keyword) ->
+    update: (offset, cursor) ->
       $("#cursor", @searchResult).text cursor
       rowHeight = @getRowHeight()
       $('.ui-jqgrid-bdiv').scrollTop(offset * rowHeight)
       # Highlight active match
       @offset = offset
-      @keyword = keyword
-      this.addHighlight()
+      @addHighlight()
 
     addHighlight: () ->
-      this.removeHighlight()
-      if @keyword
-        @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
-        text = @lastHighlightedElement.data('value')
-        if text
-          idx = text.toLowerCase().indexOf(@keyword)
-          @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
+      @removeHighlight()
+      # ensures that we're only highlighting when there's a search word
+      return if not @keyword
+      @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
+      text = @lastHighlightedElement.data('value')
+      if text
+        idx = text.toLowerCase().indexOf(@keyword.toLowerCase())
+        @lastHighlightedElement.html(text.substr(0, idx) + "<span class='searchHighlight'>" + text.substr(idx, @keyword.length) + "</span>" + text.substr(idx + @keyword.length))
 
     removeHighlight: () ->
       if @lastHighlightedElement
-        @lastHighlightedElement.children('span').removeClass("searchHighlight")
+        @lastHighlightedElement.html(@lastHighlightedElement.data('value'))
         @lastHighlightedElement = null
 
     getRowHeight: () ->
@@ -115,19 +120,19 @@ define [
 
     constructor: (keyword, @callback) ->
       # get grid data in sorted order
-      @keyword = keyword.toLowerCase()
+      keyword = keyword.toLowerCase()
       rows = $('#gridTable').edwareSortedData()
       @data = []
       for row, index in rows
-        if @contains(row)
+        if @contains(row, keyword)
           @data.push index
       @cursor = 0
 
-    contains: (row) ->
+    contains: (row, keyword) ->
       value = row['name'] || row['student_full_name']
       if not value
         return false
-      value.toLowerCase().indexOf(@keyword) > -1
+      value.toLowerCase().indexOf(keyword) > -1
 
     index: () ->
       @cursor + 1
@@ -140,11 +145,11 @@ define [
 
     next: () ->
       @cursor = (@cursor + 1) % @data.length
-      @callback @offset(), @index(), @keyword
+      @callback @offset(), @index()
 
     previous: () ->
       @cursor = (@cursor - 1 + @data.length) % @data.length
-      @callback @offset(), @index(), @keyword
+      @callback @offset(), @index()
 
 
   $.fn.edwareSearchBox = (labels) ->

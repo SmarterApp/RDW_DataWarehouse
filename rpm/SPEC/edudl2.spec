@@ -135,6 +135,7 @@ if [ $? -ne 0 ]; then
    useradd udl2 -g udl2 -u 501
 fi
 
+%post
 UDL2_ROOT=/opt/edware
 if [ ! -d $UDL2_ROOT/keys ]; then
     mkdir -p $UDL2_ROOT/keys
@@ -145,9 +146,10 @@ if [ ! -d $UDL2_ROOT/run ]; then
     mkdir -p $UDL2_ROOT/run
     chown -R udl2.udl2 $UDL2_ROOT/run
 fi
-chown -R udl2.udl2 $UDL2_ROOT/conf
 
-%post
+if [ -d $UDL2_ROOT/conf ]; then
+    chown -R udl2.udl2 $UDL2_ROOT/conf
+fi
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger
 chkconfig --level 2345 celeryd-udl2 off

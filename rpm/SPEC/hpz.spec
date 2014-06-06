@@ -29,6 +29,7 @@ mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/hpz/settings.yaml %{buildroot}/opt/edware/conf/
+mkdir -p %{buildroot}/opt/edware/hpz/uploads
 
 %build
 export LANG=en_US.UTF-8

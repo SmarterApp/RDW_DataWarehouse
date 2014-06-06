@@ -71,12 +71,12 @@ class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_get_archive_file_path(self):
         self.assertIn("/tmp/work_zone/tenant/requestId/zip/user", get_archive_file_path("user", "tenant", "requestId"))
 
-    def test_get_archive_file_path_extension(self):
-        filename = get_archive_file_path("user", "tenant", "requestId")
+    def test_get_archive_file_path_extension_with_encryption(self):
+        filename = get_archive_file_path("user", "tenant", "requestId", True)
         self.assertIn('.zip.gpg', filename)
 
-    def test_get_archive_file_path_extension_no_encryption(self):
-        filename = get_archive_file_path("user", "tenant", "requestId", False)
+    def test_get_archive_file_path_extension(self):
+        filename = get_archive_file_path("user", "tenant", "requestId")
         self.assertIn('.zip', filename)
         self.assertNotIn('.gpg', filename)
 

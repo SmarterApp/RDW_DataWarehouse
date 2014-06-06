@@ -41,11 +41,19 @@ cd ${WORKSPACE}/edcore
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/edauth
+python setup.py clean --all
+python setup.py install
+cd -
 cd ${WORKSPACE}/edapi
 python setup.py clean --all
 python setup.py install
 cd -
 cd ${WORKSPACE}/edsftp
+python setup.py clean --all
+python setup.py install
+cd -
+cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -
@@ -80,18 +88,26 @@ rm -rf %{buildroot}
 %attr(755,root,root) /etc/rc.d/init.d/edsftp-watcher
 
 %pre
-
-%post
-chkconfig --add edsftp-watcher
-
 EDWARE_ROOT=/opt/edware
 if [ ! -d $EDWARE_ROOT/run ]; then
     mkdir -p $EDWARE_ROOT/run
 fi
 
-%postun
+if [ ! -d $EDWARE_ROOT/ssh ]; then
+    mkdir -p $EDWARE_ROOT/ssh
+fi
+
+if [ ! -d $EDWARE_ROOT/ssh/.ssh ]; then
+    mkdir -p $EDWARE_ROOT/ssh/.ssh
+fi
+
+%post
+chkconfig --add edsftp-watcher
+chkconfig --level 2345 edsftp-watcher off
 
 %preun
 chkconfig --del edsftp-watcher
+
+%postun
 
 %changelog

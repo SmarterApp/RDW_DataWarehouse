@@ -19,6 +19,7 @@ from integration_tests.udl_helper import empty_batch_table, empty_stats_table, r
     migrate_data, validate_udl_stats_before_mig, validate_udl_stats_after_mig
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
+
 #@unittest.skip("skipping this test till till ready for jenkins")
 class Test_Intelligent_Insert(unittest.TestCase):
 

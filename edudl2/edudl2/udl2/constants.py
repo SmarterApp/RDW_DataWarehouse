@@ -35,6 +35,7 @@ class Constants():
     # column values
     OP_COLUMN_NAME = 'op'
     GUID_ASMT = 'guid_asmt'
+    STG_GUID_ASMT = 'assessmentguid'
 
     # load types
     LOAD_TYPE_KEY = 'content'

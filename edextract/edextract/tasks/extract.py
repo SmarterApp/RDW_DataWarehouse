@@ -9,22 +9,23 @@ Created on Nov 5, 2013
 import io
 import os.path
 import logging
+
+from celery.canvas import chain, group
+
 from edextract.celery import celery
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.status.constants import Constants
-from edextract.tasks.upload import upload
 from edextract.tasks.constants import Constants as TaskConstants
 from edextract.settings.config import Config, get_setting
 from edextract.utils import file_utils
-from celery.canvas import chain, group
-from edextract.utils.file_remote_copy import copy
 from edextract.exceptions import ExtractionError
 from edcore.exceptions import RemoteCopyError
-from edextract.utils.data_archiver import archive_files, encrypted_archive_files, GPGPublicKeyException
+from edextract.utils.data_archiver import archive_files
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
+from hpz_client.frs.http_file_upload import http_file_upload
 
 
 log = logging.getLogger('edextract')
@@ -33,29 +34,16 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
 @celery.task(name='task.extract.start_extract')
-def start_extract(tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
+def start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
+
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
                      generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive_with_encryption.subtask(args=[request_id, public_key_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                     remote_copy.subtask(args=[request_id, archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queues=queue, immutable=True))
-    workflow.apply_async()
-
-
-@celery.task(name='task.extract.start_upload_extract')
-def start_upload_extract(tenant, request_id, archive_file_name, directory_to_archive, http_info, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
-    '''
-    entry point to start an extract request for one or more extract tasks
-    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
-    '''
-    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive_without_encryption.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                     upload.subtask(args=[request_id, archive_file_name, http_info], queues=queue, immutable=True))
-
+                     archive.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
+                     remote_copy.subtask(args=[request_id, archive_file_name, registration_id], queues=queue, immutable=True))
     workflow.apply_async()
 
 
@@ -64,12 +52,14 @@ def prepare_path(request_id, paths):
     '''
     Given a list of paths of directories, creates it if it doesn't exist
     '''
+
     task_info = {Constants.TASK_ID: prepare_path.request.id,
                  Constants.CELERY_TASK_ID: prepare_path.request.id,
                  Constants.REQUEST_GUID: request_id}
     try:
         for path in paths:
             file_utils.prepare_path(path)
+
     except FileNotFoundError as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.
@@ -78,8 +68,7 @@ def prepare_path(request_id, paths):
         raise ExtractionError()
 
 
-def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME,
-                                item_level=False):
+def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME, item_level=False):
     """
     Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
 
@@ -102,90 +91,60 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
     return group(generate_tasks)
 
 
-@celery.task(name="tasks.extract.archive_without_encryption")
-def archive_without_encryption(request_id, archive_file_name, directory_to_archive):
+@celery.task(name="tasks.extract.archive_with_stream")
+def archive_with_stream(request_id, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
+    @return: Streamed contents of archive file.
     '''
-    task_info = {Constants.TASK_ID: archive.request.id,
-                 Constants.CELERY_TASK_ID: archive.request.id,
-                 Constants.REQUEST_GUID: request_id}
-    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-    archive_files(directory_to_archive, archive_file_name)
-    insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
 
-
-@celery.task(name="tasks.extract.archive")
-def archive(request_id, directory):
-    '''
-    given a directory, archive everything in this directory to a file name specified
-    '''
-    task_info = {Constants.TASK_ID: archive.request.id,
-                 Constants.CELERY_TASK_ID: archive.request.id,
+    task_info = {Constants.TASK_ID: archive_with_stream.request.id,
+                 Constants.CELERY_TASK_ID: archive_with_stream.request.id,
                  Constants.REQUEST_GUID: request_id}
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
 
     archive_memory_file = io.BytesIO()
     archive_files(directory, archive_memory_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
+
     return archive_memory_file.getvalue()
 
 
-@celery.task(name="tasks.extract.archive_with_encryption",
-             max_retries=MAX_RETRY,
-             default_retry_delay=DEFAULT_RETRY_DELAY)
-def archive_with_encryption(request_id, recipients, encrypted_archive_file_name, directory):
+@celery.task(name="tasks.extract.archive", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+def archive(request_id, archive_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
-    retryable = False
-    exception_thrown = False
+
     try:
-        task_info = {Constants.TASK_ID: archive_with_encryption.request.id,
-                     Constants.CELERY_TASK_ID: archive_with_encryption.request.id,
+        task_info = {Constants.TASK_ID: archive.request.id,
+                     Constants.CELERY_TASK_ID: archive.request.id,
                      Constants.REQUEST_GUID: request_id}
+
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVING})
-        gpg_binary_file = get_setting(Config.BINARYFILE)
-        homedir = get_setting(Config.HOMEDIR)
-        keyserver = get_setting(Config.KEYSERVER)
-        encrypted_archive_files(directory, recipients, encrypted_archive_file_name, homedir=homedir, keyserver=keyserver, gpgbinary=gpg_binary_file)
+        archive_files(directory, archive_file_name)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
-    except GPGPublicKeyException as e:
-        # recoverable exception
-        retryable = True
-        exception_thrown = True
-        insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
+
     except Exception as e:
         # unrecoverable exception
-        exception_thrown = True
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
-
-    if exception_thrown:
-        if retryable:
-            try:
-                # this looks funny to you, but this is just a working around solution for celery bug
-                # since exc option is not really working for retry.
-                raise ExtractionError()
-            except ExtractionError as exc:
-                raise archive_with_encryption.retry(args=[request_id, recipients, encrypted_archive_file_name, directory], exc=exc)
-        else:
-            raise ExtractionError()
+        raise ExtractionError()
 
 
-@celery.task(name="tasks.extract.remote_copy",
-             max_retries=MAX_RETRY,
-             default_retry_delay=DEFAULT_RETRY_DELAY)
-def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeout=1800):
+@celery.task(name="tasks.extract.remote_copy", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+def remote_copy(request_id, src_file_name, registration_id):
     '''
     Remotely copies a source file to a remote machine
     '''
+
     task_info = {Constants.TASK_ID: remote_copy.request.id,
                  Constants.CELERY_TASK_ID: remote_copy.request.id,
                  Constants.REQUEST_GUID: request_id}
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPYING})
-        copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2], timeout=timeout)
+        http_file_upload(src_file_name, registration_id)
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.COPIED})
+
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + str(e))
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: 'remote copy has failed: ' + str(e)})
@@ -195,7 +154,8 @@ def remote_copy(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeou
             raise ExtractionError(str(e))
         except ExtractionError as exc:
             # this could be caused by network hiccup
-            raise remote_copy.retry(args=[request_id, src_file_name, tenant, gatekeeper, sftp_info], kwargs={'timeout': timeout}, exc=exc)
+            raise remote_copy.retry(args=[request_id, src_file_name, registration_id], exc=exc)
+
     except Exception as e:
         raise ExtractionError(str(e))
 

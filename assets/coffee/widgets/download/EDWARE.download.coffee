@@ -25,8 +25,6 @@ define [
 
   TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentRegistrationCompletion": "Student Registration Completion"}
 
-  DOWNLOAD_URL_MESSAGE = {"studentRegistrationCompletion": "You can retrieve your file from the following link", "studentRegistrationStatistics": "You can retrieve your file from the following link", "studentAssessment": ""}
-
   REQUEST_ENDPOINT = {
     "studentRegistrationStatistics": "/services/extract/student_registration_statistics",
     "studentAssessment": "/services/extract",
@@ -207,8 +205,6 @@ define [
       fileName = response['fileName']
 
       downloadUrl = response['download_url']
-      if downloadUrl
-        downloadUrlMessage = DOWNLOAD_URL_MESSAGE[this.reportType]
       success = taskResponse.filter (item)->
         item['status'] is 'ok'
       failure = taskResponse.filter (item)->
@@ -222,7 +218,6 @@ define [
         requestTime: this.requestTime
         requestDate: this.requestDate
         fileName: fileName
-        downloadUrlMessage: downloadUrlMessage
         downloadUrl: downloadUrl
         testName: TEST_NAME[this.reportType]
         # success messages

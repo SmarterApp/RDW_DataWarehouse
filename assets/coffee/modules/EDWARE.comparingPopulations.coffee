@@ -101,9 +101,9 @@ define [
         self.renderReportInfo()
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
+        self.createHeaderAndFooter()
         self.createGrid()
         self.updateFilter()
-        self.createHeaderAndFooter()
         # Set asmt Subject
         subjects = []
         for key, value of self.asmtSubjectsData
@@ -119,7 +119,8 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.header ?= edwareHeader.create(this.data, this.config)
+      self = this
+      this.header ?= edwareHeader.create this.data, this.config
 
     fetchData: (params)->
       options =
@@ -154,6 +155,7 @@ define [
       # Rebind events and reset sticky comparison
       this.stickyCompare.update()
       this.alignment.update()
+      this.actionBar.update()
       # Save the current sorting column and order to apply after filtering
       name = $('#gridTable').getGridParam('sortname')
       order = $('#gridTable').getGridParam('sortorder')
@@ -177,7 +179,6 @@ define [
       filteredInfo = this.stickyCompare.getFilteredInfo this.populationData, this.gridConfig[0]["items"][0]["field"]
 
       self = this
-
       # Create compare population grid for State/District/School view
       @grid = edwareGrid.create {
         data: filteredInfo.data
@@ -190,6 +191,7 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
+      $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     updateSortLabels: (index, sortorder) ->
       # Remove second row header as that counts as a column in setLabel function
@@ -237,6 +239,9 @@ define [
       self = this
       @config.colorsData = @data.metadata
       @config.reportName = Constants.REPORT_NAME.CPOP
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
+      @config.labels.SearchResultText = @config.SearchResultText
       @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
         self.reload self.param
 

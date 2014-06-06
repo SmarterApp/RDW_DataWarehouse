@@ -15,7 +15,8 @@ dependencies = [
     'edcore',
     'edextract',
     'config',
-    'smarter_common']
+    'smarter_common',
+    'hpz_client']
 
 
 for dependency in dependencies:

@@ -21,6 +21,7 @@ requires = [
     'edworker',
     'edschema',
     'smarter_common',
+    'hpz_client',
     'py-postgresql==1.1.0',
     'psycopg2==2.5.1',
     'pyramid_exclog==0.7',

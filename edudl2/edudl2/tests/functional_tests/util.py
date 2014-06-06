@@ -57,21 +57,21 @@ class UDLTestHelper(unittest.TestCase):
     def get_staging_asmt_score_avgs(self):
         with get_udl_connection() as conn:
             stg_outcome = conn.get_table('stg_sbac_asmt_outcome')
-            query = select([func.avg(cast(stg_outcome.c.score_asmt, Integer)),
-                            func.avg(cast(stg_outcome.c.score_asmt_min, Integer)),
-                            func.avg(cast(stg_outcome.c.score_asmt_max, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_1, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_1_min, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_1_max, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_2, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_2_min, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_2_max, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_3, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_3_min, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_3_max, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_4, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_4_min, Integer)),
-                            func.avg(cast(stg_outcome.c.score_claim_4_max, Integer))], from_obj=stg_outcome)
+            query = select([func.avg(cast(stg_outcome.c.assessmentsubtestresultscorevalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestminimumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestmaximumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestresultscoreclaim1value, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim1minimumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim1maximumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestresultscoreclaim2value, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim2minimumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim2maximumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestresultscoreclaim3value, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim3minimumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim3maximumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestresultscoreclaim4value, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim4minimumvalue, Integer)),
+                            func.avg(cast(stg_outcome.c.assessmentsubtestclaim4maximumvalue, Integer))], from_obj=stg_outcome)
             result = conn.execute(query)
             for row in result:
                 asmt_avgs = row
@@ -127,7 +127,10 @@ class UDLTestHelper(unittest.TestCase):
             return star_asmt_avgs
 
     def get_staging_demographic_counts(self):
-        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
+        demographics = ['hispanicorlatinoethnicity', 'americanindianoralaskanative', 'asian', 'blackorafricanamerican',
+                        'nativehawaiianorotherpacificislander', 'white', 'demographicracetwoormoreraces',
+                        'ideaindicator', 'lepstatus', 'section504status', 'economicdisadvantagestatus',
+                        'migrantstatus']
         results_dict = {}
         with get_udl_connection() as conn:
             stg_outcome = conn.get_table('stg_sbac_asmt_outcome')
@@ -139,10 +142,26 @@ class UDLTestHelper(unittest.TestCase):
 
                 results_dict[entry] = demo_count
 
-        return results_dict
+        corrleated_results = {
+            'dmg_eth_hsp': results_dict['hispanicorlatinoethnicity'],
+            'dmg_eth_ami': results_dict['americanindianoralaskanative'],
+            'dmg_eth_asn': results_dict['asian'],
+            'dmg_eth_blk': results_dict['blackorafricanamerican'],
+            'dmg_eth_pcf': results_dict['nativehawaiianorotherpacificislander'],
+            'dmg_eth_wht': results_dict['white'],
+            'dmg_eth_2om': results_dict['demographicracetwoormoreraces'],
+            'dmg_prg_iep': results_dict['ideaindicator'],
+            'dmg_prg_lep': results_dict['lepstatus'],
+            'dmg_prg_504': results_dict['section504status'],
+            'dmg_sts_ecd': results_dict['economicdisadvantagestatus'],
+            'dmg_sts_mig': results_dict['migrantstatus'],
+        }
+
+        return corrleated_results
 
     def get_integration_demographic_counts(self):
-        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
+        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht',
+                        'dmg_eth_2om', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig']
         results_dict = {}
         with get_udl_connection() as conn:
             int_outcome = conn.get_table('int_sbac_asmt_outcome')
@@ -164,7 +183,8 @@ class UDLTestHelper(unittest.TestCase):
         return results_dict
 
     def get_star_schema_demographic_counts(self, tenant, schema):
-        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
+        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_eth_2om',
+                        'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_sts_ecd', 'dmg_sts_mig']
         results_dict = {}
         with get_target_connection(tenant, schema) as conn:
             fact = conn.get_table('fact_asmt_outcome_vw')

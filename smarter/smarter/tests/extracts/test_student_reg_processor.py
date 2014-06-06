@@ -29,12 +29,6 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.reg = Registry()
         self.__work_zone_dir = tempfile.TemporaryDirectory()
         self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
-                             'pickup.gatekeeper.t1': '/t/acb',
-                             'pickup.gatekeeper.t2': '/a/df',
-                             'pickup.gatekeeper.y': '/a/c',
-                             'pickup.sftp.hostname': 'hostname.local.net',
-                             'pickup.sftp.user': 'myUser',
-                             'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa',
                              'extract.available_grades': '3,4,5,6,7,8,11',
                              'hpz.file_upload_base_url': 'http://somehost:82/files'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
@@ -130,7 +124,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
     @patch('smarter.extracts.student_reg_processor._create_task_info')
     @patch('smarter.extracts.student_reg_processor.register_file')
     def test_process_async_extraction_request(self, register_file_patch, task_info):
-        with patch('smarter.extracts.student_reg_processor.start_upload_extract.apply_async') as apply_async_mock:
+        with patch('smarter.extracts.student_reg_processor.start_extract.apply_async') as apply_async_mock:
             register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
             dummy_task_info = {'extraction_data_type': 'StudentRegistrationStatisticsReportCSV'}
             task_info.return_value = dummy_task_info

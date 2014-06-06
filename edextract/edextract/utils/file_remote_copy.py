@@ -6,6 +6,8 @@ Created on Nov 7, 2013
 from edcore.watch.mover import SendFileUtil
 from edextract.settings.config import Config, get_setting
 
+DEFAULT_TIMEOUT = 1800
+
 
 def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file, timeout=1800):
     SendFileUtil.remote_transfer_file(source_file=filename, hostname=hostname,

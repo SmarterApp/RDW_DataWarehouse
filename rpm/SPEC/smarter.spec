@@ -99,6 +99,10 @@ cd ${WORKSPACE}/smarter_common
 python setup.py clean --all
 python setup.py install
 cd -
+cd ${WORKSPACE}/hpz_client
+python setup.py clean --all
+python setup.py install
+cd -
 cd %{buildroot}/opt/edware/smarter
 rm -rf assets
 mv ../assets .
@@ -219,9 +223,9 @@ chkconfig --level 2345 repmgrd-watcher off
 chkconfig --del celeryd-services
 chkconfig --del celeryd-edextract
 chkconfig --del celeryd-edmigrate
-chkconfig --add edmigrate-conductor
+chkconfig --del edmigrate-conductor
 chkconfig --del repmgrd
-chkconfig --del repmgrd-watcher off
+chkconfig --del repmgrd-watcher
 
 %postun
 

@@ -107,7 +107,7 @@ class HasExpectedFormat(object):
         current_position = json_object
         for component in path:
             for key in current_position.keys():
-                if component == key.lower():
+                if component.lower() == key.lower():
                     current_position = current_position[key]
                     break
             else:

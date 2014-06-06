@@ -13,7 +13,8 @@ define [
   "edwareReportInfoBar"
   "edwareReportActionBar"
   "edwareContextSecurity"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity) ->
+  "edwareSearch"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -189,6 +190,7 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
+      self = this
       this.header = edwareHeader.create(this.data, this.config) unless this.header
 
     fetchExportData: () ->
@@ -220,6 +222,9 @@ define [
       @config.reportName = Constants.REPORT_NAME.LOS
       asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
+      # placeholder text for search box
+      @config.labels.searchPlaceholder = @config.searchPlaceholder
+      @config.labels.SearchResultText = @config.SearchResultText
       @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtPreference asmt
@@ -252,6 +257,7 @@ define [
 
     afterGridLoadComplete: () ->
       this.stickyCompare.update()
+      this.actionBar.update()
       # Remove second row header as that counts as a column in setLabel function
       $('.jqg-second-row-header').remove()
 
@@ -274,6 +280,7 @@ define [
             self.afterGridLoadComplete()
       }
       this.renderHeaderPerfBar()
+      $(document).trigger Constants.EVENTS.SORT_COLUMNS
 
     createDisclaimer: () ->
       @disclaimer = $('.disclaimerInfo').edwareDisclaimer @config.interimDisclaimer

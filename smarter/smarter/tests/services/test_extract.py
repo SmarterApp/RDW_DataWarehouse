@@ -29,6 +29,7 @@ from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter.security.constants import RolesConstants
+from unittest.mock import patch
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -48,7 +49,8 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
         reg.settings = {}
-        reg.settings['extract.available_grades'] = '3,4,5,6,7,8,9,11'
+        reg.settings = {'extract.available_grades': '3,4,5,6,7,8,9,11',
+                        'hpz.file_upload_base_url': 'http://somehost:82/files'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
 
@@ -172,7 +174,9 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')
 
-    def test_get_valid_tenant_extract(self):
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_get_valid_tenant_extract(self, register_file_patch):
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -184,8 +188,11 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', results.json_body['download_url'])
 
-    def test_post_valid_tenant_extract(self):
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_post_valid_tenant_extract(self, register_file_patch):
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['NC'],
                                     'asmtSubject': ['Math'],
@@ -199,6 +206,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tasks = response.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
 
     def test_with_no_sync_or_async_set(self):
         self.__request.GET['stateCode'] = 'NC'
@@ -232,7 +240,9 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             tested = True
         self.assertTrue(tested)
 
-    def test_send_extraction_requesttest_get_extract_service_async(self):
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_send_extraction_requesttest_get_extract_service_async(self, register_file_patch):
+        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
@@ -243,6 +253,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         response = send_extraction_request(params)
         content_type = response._headerlist[0]
         self.assertEqual(content_type[1], "application/json; charset=UTF-8")
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
 
 
 if __name__ == "__main__":

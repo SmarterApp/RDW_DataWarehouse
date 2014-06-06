@@ -3,9 +3,10 @@ define [
   'jqGrid'
   'edwareUtil'
   'edwareGridFormatters'
-], ($, jqGrid, edwareUtil, edwareGridFormatters) ->
+  'edwareConstants'
+], ($, jqGrid, edwareUtil, edwareGridFormatters, CONSTANTS) ->
 
-  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar',
+  COMPONENTS_SELECTORS = ['#header', '#breadcrumb', '#infoBar', '#actionBar', '#searchResult',
     '#stickyCompareSection', '.selectedFilter_panel', '.ui-jqgrid-hdiv', '.ui-jqgrid-sdiv']
 
   DEFAULT_CONFIG =
@@ -41,6 +42,8 @@ define [
         lastFocus = "##{this.id}"
         # escape dot in element id
         self.lastFocus = lastFocus.replace(/\./gi, '\\.')
+        # emit sorting event to other listeners
+        $(document).trigger CONSTANTS.EVENTS.SORT_COLUMNS
 
       # load more data when focus on first and last row by triggering
       # scrolling event.
@@ -197,6 +200,20 @@ define [
       # dynamically load data when scrolling down
       this.jqGrid('setGridParam', {scroll: 1, rowNum: 100}).trigger("reloadGrid")
 
+    $.fn.edwareSortedData = () ->
+      # return grid data in sorted order
+      grid = this
+      sortname = grid.jqGrid('getGridParam', 'sortname')
+      sortorder = grid.jqGrid('getGridParam', 'sortorder')
+      data = grid.jqGrid('getGridParam', 'data')
+      data.sort (row1, row2) ->
+        v1 = edwareUtil.deepFind(row1, sortname)
+        v2 = edwareUtil.deepFind(row2, sortname)
+        if sortorder is 'asc'
+          return if v1 > v2 then 1 else -1
+        else
+          return if v2 > v1 then 1 else -1
+      data
 
   adjustHeight = () ->
     # adjust grid height based on visible region

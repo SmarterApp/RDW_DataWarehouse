@@ -8,5 +8,10 @@
         "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
     },
     "proficiencyAscending": "(proficiency: <b>least</b> to <b>most</b>)",
-    "proficiencyDescending": "(proficiency: <b>most</b> to <b>least</b>)"
+    "proficiencyDescending": "(proficiency: <b>most</b> to <b>least</b>)",
+    "searchPlaceholder" : {
+        "state": "Enter district",
+        "district": "Enter school",
+        "school": "Enter grade"
+    }
 }

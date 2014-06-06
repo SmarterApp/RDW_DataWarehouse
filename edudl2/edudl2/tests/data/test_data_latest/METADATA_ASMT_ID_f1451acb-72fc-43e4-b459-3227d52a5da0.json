@@ -1,75 +1,71 @@
 {
     "content": "assessment", 
-    "identification": {
-        "guid": "f1451acb-72fc-43e4-b459-3227d52a5da0", 
-        "type": "SUMMATIVE", 
-        "year": "2015", 
-        "period": "2015", 
-        "version": "V1", 
-        "subject": "Math",
-        "effective_date": "20150101"
+    "Identification": {
+        "Guid": "f1451acb-72fc-43e4-b459-3227d52a5da0", 
+        "Type": "SUMMATIVE", 
+        "Year": "2015", 
+        "Period": "2015", 
+        "Version": "V1", 
+        "Subject": "Math",
+        "EffectiveDate": "20150101"
     }, 
-    "overall": {
-        "min_score": "1200", 
-        "max_score": "2400"
+    "Overall": {
+        "MinScore": "1200", 
+        "MaxScor": "2400"
     }, 
-    "performance_levels": {
-        "level_1": {
-            "name": "Minimal Understanding", 
-            "cut_point": "1200"
+    "PerformanceLevels": {
+        "Level1": {
+            "Name": "Minimal Understanding",
+            "CutPoint": "1200"
         }, 
-        "level_2": {
-            "name": "Partial Understanding", 
-            "cut_point": "1400"
+        "Level2": {
+            "Name": "Partial Understanding",
+            "CutPoint": "1400"
         }, 
-        "level_3": {
-            "name": "Adequate Understanding", 
-            "cut_point": "1800"
+        "Level3": {
+            "Name": "Adequate Understanding",
+            "CutPoint": "1800"
         }, 
-        "level_4": {
-            "name": "Thorough Understanding", 
-            "cut_point": "2100"
+        "Level4": {
+            "Name": "Thorough Understanding",
+            "CutPoint": "2100"
         }, 
-        "level_5": {
-            "name": "", 
-            "cut_point": ""
+        "Level5": {
+            "Name": "",
+            "CutPoint": ""
         }
     }, 
-    "claims": {
-        "claim_1": {
-            "name": "Concepts & Procedures", 
-            "min_score": "1200", 
-            "max_score": "2400", 
-            "weight": "0.4"
+    "Claims": {
+        "Claim1": {
+            "Name": "Concepts & Procedures",
+            "MinScore": "1200",
+            "MaxScore": "2400"
         }, 
-        "claim_2": {
-            "name": "Problem Solving and Modeling & Data Analysis", 
-            "min_score": "1200", 
-            "max_score": "2400", 
-            "weight": "0.45"
+        "Claim2": {
+            "Name": "Problem Solving and Modeling & Data Analysis",
+            "MinScore": "1200",
+            "MaxScore": "2400"
         }, 
-        "claim_3": {
-            "name": "Communicating Reasoning", 
-            "min_score": "1200", 
-            "max_score": "2400", 
-            "weight": "0.15"
+        "Claim3": {
+            "Name": "Communicating Reasoning",
+            "MinScore": "1200",
+            "MaxScore": "2400"
         }, 
-        "claim_4": {
-            "name": "", 
-            "min_score": "0", 
-            "max_score": "0", 
-            "weight": "0"
+        "Claim4": {
+            "Name": "",
+            "MinScore": "0",
+            "MaxScore": "0"
         }
     }, 
-    "claim_performance_levels": {
-        "level_1": {
-            "name": "Below Standard"
+    "ClaimsPerformanceLevel": {
+        "Level1": {
+            "Name": "Below Standard"
         }, 
-        "level_2": {
-            "name": "At or Near Standard"
+        "Level2": {
+            "Name": "At or Near Standard"
         }, 
-        "level_3": {
-            "name": "Above Standard"
+        "Level3": {
+            "Name": "Above Standard"
         }
     }
 }

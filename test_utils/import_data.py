@@ -5,7 +5,7 @@ Created on Mar 1, 2013
 '''
 from edschema.database.generic_connector import setup_db_connection_from_ini
 import os
-from edschema.database.data_importer import import_csv_dir
+from edschema.database.data_importer import import_csv_dir, load_fact_asmt_outcome
 import argparse
 import configparser
 from edschema.database.connector import DBConnection
@@ -28,6 +28,7 @@ def main(config_file, resource_dir, tenant_to_update, state_code, state_name, up
         if tenant_to_update in tenant:
             delete_data(tenant)
             import_csv_dir(resource_dir, tenant)
+            load_fact_asmt_outcome(tenant)
             update_state(tenant, state_code, state_name)
             if update_year:
                 update_aca_year(tenant)

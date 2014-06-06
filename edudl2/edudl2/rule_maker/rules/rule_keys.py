@@ -51,6 +51,5 @@ IsNumber = 'IsNumber'  # Validate if the input is a Number
 IsText = 'IsText'  # Validate if the input is Text
 IsSQLSafe = 'IsSQLSafe'  # Validate if the Text does not have any restricted special characters
 IsGoodGUID = 'IsGoodGUID'  # Validate if the GUID is valid
-IsGoodEmail = 'IsGoodEmail'  # Validate is the email is well-formed.
 
 NAME = 'Name'

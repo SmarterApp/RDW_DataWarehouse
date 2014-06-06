@@ -71,7 +71,7 @@ class TestContentValidator(unittest.TestCase):
 
     @patch.object(ISValidAssessmentPair, 'get_asmt_and_outcome_result')
     def test_is_valid_assessment_pair_for_valid_json_csv_file_combination(self, mock_get_asmt_and_outcome_result):
-        mock_get_asmt_and_outcome_result.return_value = ([dict({'guid_asmt': '123'})], [dict({'guid_asmt': '123'})])
+        mock_get_asmt_and_outcome_result.return_value = ([dict({'guid_asmt': '123'})], [dict({'assessmentguid': '123'})])
         is_valid_assessment_pair = ISValidAssessmentPair()
         error_code = is_valid_assessment_pair.execute(conf=self.conf)
         is_valid_assessment_pair.get_asmt_and_outcome_result.assert_called_once_with(self.conf)

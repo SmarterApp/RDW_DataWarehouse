@@ -62,7 +62,8 @@ FAO_FORMAT = {'format': 'csv',
                           {'name': 'dmg_eth_iep', 'val': 'student.prg_iep'},
                           {'name': 'dmg_prg_lep', 'val': 'student.prg_lep'},
                           {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
-                          {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
+                          {'name': 'dmg_sts_ecd', 'val': 'student.prg_econ_disad'},
+                          {'name': 'dmg_sts_mig', 'val': 'False'},
                           {'name': 'acc_asl_video_embed', 'val': 'assessment_outcome.acc_asl_video_embed'},
                           {'name': 'acc_asl_human_nonembed',
                                    'val': 'assessment_outcome.acc_asl_human_nonembed'},
@@ -166,7 +167,6 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
                                   {'name': 'last_name', 'val': 'student.last_name'},
                                   {'name': 'birthdate', 'val': 'student.dob', 'filter': 'date_Ymd'},
                                   {'name': 'sex', 'val': 'student.gender'},
-                                  {'name': 'email', 'val': 'student.email'},
                                   {'name': 'dmg_eth_derived', 'val': 'student.derived_demographic'},
                                   {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
                                   {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
@@ -177,7 +177,8 @@ DIM_STUDENT_FORMAT = {'format': 'csv',
                                   {'name': 'dmg_eth_iep', 'val': 'student.prg_iep'},
                                   {'name': 'dmg_prg_lep', 'val': 'student.prg_lep'},
                                   {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
-                                  {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
+                                  {'name': 'dmg_sts_ecd', 'val': 'student.prg_econ_disad'},
+                                  {'name': 'dmg_sts_mig', 'val': 'False'},
                                   {'name': 'from_date', 'val': '20130901'},
                                   {'name': 'to_date', 'val': '99991231'},
                                   {'name': 'rec_status', 'val': 'C'},
@@ -289,72 +290,72 @@ ASMT_JSON_FORMAT = {'format': 'json',
                     'name': 'METADATA_ASMT_ID_<GUID>.json',
                     'layout': {
                         'content': 'assessment',
-                        'identification': {
-                            'guid': 'assessment.guid_sr',
-                            'type': 'assessment.asmt_type',
-                            'year': 'assessment.period_year',
-                            'period': 'assessment.period',
-                            'version': 'assessment.version',
-                            'subject': 'assessment.subject',
-                            'effective_date': 'assessment_effective.date'
+                        'Identification': {
+                            'Guid': 'assessment.guid_sr',
+                            'Year': 'assessment.period_year',
+                            'Type': 'assessment.asmt_type',
+                            'Period': 'assessment.period',
+                            'Subject': 'assessment.subject',
+                            'EffectiveDate': 'assessment_effective.date',
+                            'Version': 'assessment.version'
                         },
-                        'overall': {
-                            'min_score': 'assessment.overall_score_min',
-                            'max_score': 'assessment.overall_score_max'
+                        'Overall': {
+                            'MinScore': 'assessment.overall_score_min',
+                            'MaxScore': 'assessment.overall_score_max'
                         },
-                        'performance_levels': {
-                            'level_1': {
-                                'name': 'assessment.perf_lvl_name_1',
-                                'cut_point': 'assessment.overall_score_min'
+                        'PerformanceLevels': {
+                            'Level1': {
+                                'Name': 'assessment.perf_lvl_name_1',
+                                'CutPoint': 'assessment.overall_score_min'
                             },
-                            'level_2': {
-                                'name': 'assessment.perf_lvl_name_2',
-                                'cut_point': 'assessment.overall_cut_point_1'
+                            'Level2': {
+                                'Name': 'assessment.perf_lvl_name_2',
+                                'CutPoint': 'assessment.overall_cut_point_1'
                             },
-                            'level_3': {
-                                'name': 'assessment.perf_lvl_name_3',
-                                'cut_point': 'assessment.overall_cut_point_2'
+                            'Level3': {
+                                'Name': 'assessment.perf_lvl_name_3',
+                                'CutPoint': 'assessment.overall_cut_point_2'
                             },
-                            'level_4': {
-                                'name': 'assessment.perf_lvl_name_4',
-                                'cut_point': 'assessment.overall_cut_point_3'
+                            'Level4': {
+                                'Name': 'assessment.perf_lvl_name_4',
+                                'CutPoint': 'assessment.overall_cut_point_3'
                             },
-                            'level_5': {
-                                'name': 'assessment.perf_lvl_name_5',
-                                'cut_point': 'assessment.overall_cut_point_4'
+                            'Level5': {
+                                'Name': 'assessment.perf_lvl_name_5',
+                                'CutPoint': 'assessment.overall_cut_point_4'
                             }
                         },
-                        'claims': {
-                            'claim_1': {
-                                'name': 'assessment.claim_1_name',
-                                'min_score': 'assessment.claim_1_score_min',
-                                'max_score': 'assessment.claim_1_score_max'
+                        'Claims': {
+                            'Claim1': {
+                                'Name': 'assessment.claim_1_name',
+                                'MinScore': 'assessment.claim_1_score_min',
+                                'MaxScore': 'assessment.claim_1_score_max'
                             },
-                            'claim_2': {
-                                'name': 'assessment.claim_2_name',
-                                'min_score': 'assessment.claim_2_score_min',
-                                'max_score': 'assessment.claim_2_score_max'
+                            'Claim2': {
+                                'Name': 'assessment.claim_2_name',
+                                'MinScore': 'assessment.claim_2_score_min',
+                                'MaxScore': 'assessment.claim_2_score_max'
                             },
-                            'claim_3': {
-                                'name': 'assessment.claim_3_name',
-                                'min_score': 'assessment.claim_3_score_min',
-                                'max_score': 'assessment.claim_3_score_max'
+                            'Claim3': {
+                                'Name': 'assessment.claim_3_name',
+                                'MinScore': 'assessment.claim_3_score_min',
+                                'MaxScore': 'assessment.claim_3_score_max'
                             },
-                            'claim_4': {
-                                'name': 'assessment.claim_4_name',
-                                'min_score': 'assessment.claim_4_score_min',
-                                'max_score': 'assessment.claim_4_score_max'
+                            'Claim4': {
+                                'Name': 'assessment.claim_4_name',
+                                'MinScore': 'assessment.claim_4_score_min',
+                                'MaxScore': 'assessment.claim_4_score_max'
                             }
                         },
-                        'claim_performance_levels': {
-                            'level_1': {
-                                'name': 'assessment.claim_perf_lvl_name_1'
+                        'ClaimsPerformanceLevel': {
+                            'Level1': {
+                                'Name': 'assessment.claim_perf_lvl_name_1'
                             },
-                            'level_2': {
-                                'name': 'assessment.claim_perf_lvl_name_2'
+                            'Level2': {
+                                'Name': 'assessment.claim_perf_lvl_name_2'
                             },
-                            'level_3': {
-                                'name': 'assessment.claim_perf_lvl_name_3'
+                            'Level3': {
+                                'Name': 'assessment.claim_perf_lvl_name_3'
                             }
                         }
                     }}
@@ -382,84 +383,111 @@ LZ_ITEMDATA_FORMAT = {'format': 'csv',
 
 LZ_REALDATA_FORMAT = {'format': 'csv',
                       'name': 'REALDATA_ASMT_ID_<GUID>.csv',
-                      'columns': [{'name': 'guid_asmt', 'val': 'assessment.guid_sr'},
-                                  {'name': 'guid_asmt_location', 'val': 'school.guid_sr'},
-                                  {'name': 'name_asmt_location', 'val': 'school.name'},
-                                  {'name': 'grade_asmt', 'val': 'student.grade'},
-                                  {'name': 'name_state', 'val': 'state.name'},
-                                  {'name': 'code_state', 'val': 'state.code'},
-                                  {'name': 'guid_district', 'val': 'district.guid_sr'},
-                                  {'name': 'name_district', 'val': 'district.name'},
-                                  {'name': 'guid_school', 'val': 'school.guid_sr'},
-                                  {'name': 'name_school', 'val': 'school.name'},
-                                  {'name': 'guid_student', 'val': 'student.guid_sr'},
-                                  {'name': 'external_student_id', 'val': 'student.external_ssid_sr'},
-                                  {'name': 'name_student_first', 'val': 'student.first_name'},
-                                  {'name': 'name_student_middle', 'val': 'student.middle_name'},
-                                  {'name': 'name_student_last', 'val': 'student.last_name'},
-                                  {'name': 'gender_student', 'val': 'student.gender'},
-                                  {'name': 'email_student', 'val': 'student.email'},
-                                  {'name': 'dob_student', 'val': 'student.dob', 'filter': 'date_Y_m_d'},
-                                  {'name': 'grade_enrolled', 'val': 'student.grade'},
-                                  {'name': 'date_assessed', 'val': 'assessment_outcome.date_taken',
+                      'columns': [{'name': 'StateName', 'val': 'state.name'},
+                                  {'name': 'StateAbbreviation', 'val': 'state.code'},
+                                  {'name': 'ResponsibleDistrictIdentifier', 'val': 'district.guid_sr'},
+                                  {'name': 'OrganizationName', 'val': 'district.name'},
+                                  {'name': 'ResponsibleSchoolIdentifier', 'val': 'school.guid_sr'},
+                                  {'name': 'NameOfInstitution', 'val': 'school.name'},
+                                  {'name': 'StudentIdentifier', 'val': 'student.guid_sr'},
+                                  {'name': 'ExternalSSID', 'val': 'student.external_ssid_sr'},
+                                  {'name': 'FirstName', 'val': 'student.first_name'},
+                                  {'name': 'MiddleName', 'val': 'student.middle_name'},
+                                  {'name': 'LastOrSurname', 'val': 'student.last_name'},
+                                  {'name': 'Sex', 'val': 'student.gender'},
+                                  {'name': 'Birthdate', 'val': 'student.dob', 'filter': 'date_Ymd'},
+                                  {'name': 'GradeLevelWhenAssessed', 'val': 'student.grade'},
+                                  {'name': 'HispanicOrLatinoEthnicity', 'val': 'student.eth_hispanic'},
+                                  {'name': 'AmericanIndianOrAlaskaNative', 'val': 'student.eth_amer_ind'},
+                                  {'name': 'Asian', 'val': 'student.eth_asian'},
+                                  {'name': 'BlackOrAfricanAmerican', 'val': 'student.eth_black'},
+                                  {'name': 'NativeHawaiianOrOtherPacificIslander', 'val': 'student.eth_pacific'},
+                                  {'name': 'White', 'val': 'student.eth_white'},
+                                  {'name': 'DemographicRaceTwoOrMoreRaces', 'val': 'student.eth_multi'},
+                                  {'name': 'IDEAIndicator', 'val': 'student.prg_iep'},
+                                  {'name': 'LEPStatus', 'val': 'student.prg_lep'},
+                                  {'name': 'Section504Status', 'val': 'student.prg_sec504'},
+                                  {'name': 'EconomicDisadvantageStatus', 'val': 'student.prg_econ_disad'},
+                                  {'name': 'MigrantStatus', 'val': 'False'},
+                                  {'name': 'Group1Id', 'val': ''},
+                                  {'name': 'Group1Text', 'val': ''},
+                                  {'name': 'Group2Id', 'val': ''},
+                                  {'name': 'Group2Text', 'val': ''},
+                                  {'name': 'AssessmentGuid', 'val': 'assessment.guid_sr'},
+                                  {'name': 'AssessmentSessionLocationId', 'val': 'school.guid_sr'},
+                                  {'name': 'AssessmentSessionLocation', 'val': 'school.name'},
+                                  {'name': 'AssessmentAdministrationFinishDate', 'val': 'assessment_outcome.date_taken',
                                    'filter': 'date_Ymd'},
-                                  {'name': 'score_asmt', 'val': 'assessment_outcome.overall_score'},
-                                  {'name': 'score_asmt_min', 'val': 'assessment_outcome.overall_score_range_min'},
-                                  {'name': 'score_asmt_max', 'val': 'assessment_outcome.overall_score_range_max'},
-                                  {'name': 'score_perf_level', 'val': 'assessment_outcome.overall_perf_lvl'},
-                                  {'name': 'score_claim_1', 'val': 'assessment_outcome.claim_1_score'},
-                                  {'name': 'score_claim_1_min', 'val': 'assessment_outcome.claim_1_score_range_min'},
-                                  {'name': 'score_claim_1_max', 'val': 'assessment_outcome.claim_1_score_range_max'},
-                                  {'name': 'asmt_claim_1_perf_lvl', 'val': 'assessment_outcome.claim_1_perf_lvl'},
-                                  {'name': 'score_claim_2', 'val': 'assessment_outcome.claim_2_score'},
-                                  {'name': 'score_claim_2_min', 'val': 'assessment_outcome.claim_2_score_range_min'},
-                                  {'name': 'score_claim_2_max', 'val': 'assessment_outcome.claim_2_score_range_max'},
-                                  {'name': 'asmt_claim_2_perf_lvl', 'val': 'assessment_outcome.claim_2_perf_lvl'},
-                                  {'name': 'score_claim_3', 'val': 'assessment_outcome.claim_3_score'},
-                                  {'name': 'score_claim_3_min', 'val': 'assessment_outcome.claim_3_score_range_min'},
-                                  {'name': 'score_claim_3_max', 'val': 'assessment_outcome.claim_3_score_range_max'},
-                                  {'name': 'asmt_claim_3_perf_lvl', 'val': 'assessment_outcome.claim_3_perf_lvl'},
-                                  {'name': 'score_claim_4', 'val': 'assessment_outcome.claim_4_score'},
-                                  {'name': 'score_claim_4_min', 'val': 'assessment_outcome.claim_4_score_range_min'},
-                                  {'name': 'score_claim_4_max', 'val': 'assessment_outcome.claim_4_score_range_max'},
-                                  {'name': 'asmt_claim_4_perf_lvl', 'val': 'assessment_outcome.claim_4_perf_lvl'},
-                                  {'name': 'dmg_eth_hsp', 'val': 'student.eth_hispanic'},
-                                  {'name': 'dmg_eth_ami', 'val': 'student.eth_amer_ind'},
-                                  {'name': 'dmg_eth_asn', 'val': 'student.eth_asian'},
-                                  {'name': 'dmg_eth_blk', 'val': 'student.eth_black'},
-                                  {'name': 'dmg_eth_pcf', 'val': 'student.eth_pacific'},
-                                  {'name': 'dmg_eth_wht', 'val': 'student.eth_white'},
-                                  {'name': 'dmg_prg_iep', 'val': 'student.prg_iep'},
-                                  {'name': 'dmg_prg_lep', 'val': 'student.prg_lep'},
-                                  {'name': 'dmg_prg_504', 'val': 'student.prg_sec504'},
-                                  {'name': 'dmg_prg_tt1', 'val': 'student.prg_econ_disad'},
-                                  {'name': 'asmt_type', 'val': 'assessment.asmt_type'},
-                                  {'name': 'asmt_year', 'val': 'assessment.period_year'},
-                                  {'name': 'asmt_subject', 'val': 'assessment.subject'},
-                                  {'name': 'acc_asl_video_embed', 'val': 'assessment_outcome.acc_asl_video_embed'},
-                                  {'name': 'acc_asl_human_nonembed',
+                                  {'name': 'AssessmentYear', 'val': 'assessment.period_year'},
+                                  {'name': 'AssessmentType', 'val': 'assessment.asmt_type'},
+                                  {'name': 'AssessmentAcademicSubject', 'val': 'assessment.subject'},
+                                  {'name': 'AssessmentLevelForWhichDesigned', 'val': 'student.grade'},
+                                  {'name': 'AssessmentSubtestResultScoreValue',
+                                   'val': 'assessment_outcome.overall_score'},
+                                  {'name': 'AssessmentSubtestMinimumValue',
+                                   'val': 'assessment_outcome.overall_score_range_min'},
+                                  {'name': 'AssessmentSubtestMaximumValue',
+                                   'val': 'assessment_outcome.overall_score_range_max'},
+                                  {'name': 'AssessmentPerformanceLevelIdentifier',
+                                   'val': 'assessment_outcome.overall_perf_lvl'},
+                                  {'name': 'AssessmentSubtestResultScoreClaim1Value',
+                                   'val': 'assessment_outcome.claim_1_score'},
+                                  {'name': 'AssessmentSubtestClaim1MinimumValue',
+                                   'val': 'assessment_outcome.claim_1_score_range_min'},
+                                  {'name': 'AssessmentSubtestClaim1MaximumValue',
+                                   'val': 'assessment_outcome.claim_1_score_range_max'},
+                                  {'name': 'AssessmentClaim1PerformanceLevelIdentifier',
+                                   'val': 'assessment_outcome.claim_1_perf_lvl'},
+                                  {'name': 'AssessmentSubtestResultScoreClaim2Value',
+                                   'val': 'assessment_outcome.claim_2_score'},
+                                  {'name': 'AssessmentSubtestClaim2MinimumValue',
+                                   'val': 'assessment_outcome.claim_2_score_range_min'},
+                                  {'name': 'AssessmentSubtestClaim2MaximumValue',
+                                   'val': 'assessment_outcome.claim_2_score_range_max'},
+                                  {'name': 'AssessmentClaim2PerformanceLevelIdentifier',
+                                   'val': 'assessment_outcome.claim_2_perf_lvl'},
+                                  {'name': 'AssessmentSubtestResultScoreClaim3Value',
+                                   'val': 'assessment_outcome.claim_3_score'},
+                                  {'name': 'AssessmentSubtestClaim3MinimumValue',
+                                   'val': 'assessment_outcome.claim_3_score_range_min'},
+                                  {'name': 'AssessmentSubtestClaim3MaximumValue',
+                                   'val': 'assessment_outcome.claim_3_score_range_max'},
+                                  {'name': 'AssessmentClaim3PerformanceLevelIdentifier',
+                                   'val': 'assessment_outcome.claim_3_perf_lvl'},
+                                  {'name': 'AssessmentSubtestResultScoreClaim4Value',
+                                   'val': 'assessment_outcome.claim_4_score'},
+                                  {'name': 'AssessmentSubtestClaim4MinimumValue',
+                                   'val': 'assessment_outcome.claim_4_score_range_min'},
+                                  {'name': 'AssessmentSubtestClaim4MaximumValue',
+                                   'val': 'assessment_outcome.claim_4_score_range_max'},
+                                  {'name': 'AssessmentClaim4PerformanceLevelIdentifier',
+                                   'val': 'assessment_outcome.claim_4_perf_lvl'},
+                                  {'name': 'AccommodationAmericanSignLanguage',
+                                   'val': 'assessment_outcome.acc_asl_video_embed'},
+                                  {'name': 'AccommodationSignLanguageHumanIntervention',
                                    'val': 'assessment_outcome.acc_asl_human_nonembed'},
-                                  {'name': 'acc_braile_embed', 'val': 'assessment_outcome.acc_braile_embed'},
-                                  {'name': 'acc_closed_captioning_embed',
+                                  {'name': 'AccommodationBraille', 'val': 'assessment_outcome.acc_braile_embed'},
+                                  {'name': 'AccommodationClosedCaptioning',
                                    'val': 'assessment_outcome.acc_closed_captioning_embed'},
-                                  {'name': 'acc_text_to_speech_embed',
+                                  {'name': 'AccommodationTextToSpeech',
                                    'val': 'assessment_outcome.acc_text_to_speech_embed'},
-                                  {'name': 'acc_abacus_nonembed', 'val': 'assessment_outcome.acc_abacus_nonembed'},
-                                  {'name': 'acc_alternate_response_options_nonembed',
+                                  {'name': 'AccommodationAbacus', 'val': 'assessment_outcome.acc_abacus_nonembed'},
+                                  {'name': 'AccommodationAlternateResponseOptions',
                                    'val': 'assessment_outcome.acc_alternate_response_options_nonembed'},
-                                  {'name': 'acc_calculator_nonembed',
+                                  {'name': 'AccommodationCalculator',
                                    'val': 'assessment_outcome.acc_calculator_nonembed'},
-                                  {'name': 'acc_multiplication_table_nonembed',
+                                  {'name': 'AccommodationMultiplicationTable',
                                    'val': 'assessment_outcome.acc_multiplication_table_nonembed'},
-                                  {'name': 'acc_print_on_demand_nonembed',
+                                  {'name': 'AccommodationPrintOnDemand',
                                    'val': 'assessment_outcome.acc_print_on_demand_nonembed'},
-                                  {'name': 'acc_read_aloud_nonembed',
+                                  {'name': 'AccommodationReadAloud',
                                    'val': 'assessment_outcome.acc_read_aloud_nonembed'},
-                                  {'name': 'acc_scribe_nonembed', 'val': 'assessment_outcome.acc_scribe_nonembed'},
-                                  {'name': 'acc_speech_to_text_nonembed',
+                                  {'name': 'AccommodationScribe', 'val': 'assessment_outcome.acc_scribe_nonembed'},
+                                  {'name': 'AccommodationSpeechToText',
                                    'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
-                                  {'name': 'acc_streamline_mode', 'val': 'assessment_outcome.acc_streamline_mode'},
-                                  {'name': 'op', 'val': 'assessment_outcome.rec_status', 'filter': 'only_delete'}]}
+                                  {'name': 'AccommodationStreamlineMode',
+                                   'val': 'assessment_outcome.acc_streamline_mode'},
+                                  {'name': 'Op', 'val': 'assessment_outcome.rec_status', 'filter': 'only_delete'}]}
 
 SR_FORMAT = {'format': 'csv',
              'name': '<YEAR>_sr_<GUID>.csv',

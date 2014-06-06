@@ -19,7 +19,7 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 log = logging.getLogger('edextract')
 
 
-@celery.task(name="tasks.extract.remote_copy",
+@celery.task(name="tasks.copy_to_sftp_lz.copy_to_sftp_lz",
              max_retries=MAX_RETRY,
              default_retry_delay=DEFAULT_RETRY_DELAY)
 def copy_to_sftp_lz(request_id, src_file_name, tenant, gatekeeper, sftp_info, timeout=1800):

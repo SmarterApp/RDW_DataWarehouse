@@ -350,28 +350,32 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     @patch('edextract.tasks.extract.http_file_upload')
     def test_remote_copy_success(self, file_upload_patch, insert_stats_patch):
         file_upload_patch.side_effect = None
+        insert_stats_patch.side_effect = None
         insert_stats_patch.return_value = None
-        url = 'http://test_url.com'
+        request_id = 'test_request_id'
+        file_name = 'test_file_name'
+        reg_id = 'a1-b2-c3-d4-e5'
 
-        result = remote_copy.apply(args=['test_request_id', 'test_file_name', url])
-        result.get()
+        results = remote_copy.apply(args=[request_id, file_name, reg_id])
+        results.get()
 
-        file_upload_patch.assert_called_once_with('test_file_name', url)
+        file_upload_patch.assert_called_once_with('test_file_name', 'a1-b2-c3-d4-e5')
         self.assertTrue(insert_stats_patch.called)
         self.assertEqual(2, insert_stats_patch.call_count)
 
-    @patch('edextract.tasks.extract.get_setting')
     @patch('edextract.tasks.extract.insert_extract_stats')
     @patch('edextract.tasks.extract.http_file_upload')
-    def test_remote_copy_connection_error(self, file_upload_patch, insert_stats_patch, get_setting_patch):
-        get_setting_patch.return_value = 2
-        file_upload_patch.side_effect = RemoteCopyError
+    def test_remote_copy_connection_error(self, file_upload_patch, insert_stats_patch):
+        file_upload_patch.side_effect = RemoteCopyError('ooops!')
+        insert_stats_patch.side_effect = None
         insert_stats_patch.return_value = None
-        url = 'http://test_url.com'
+        request_id = 'test_request_id'
+        file_name = 'test_file_name'
+        reg_id = 'a1-b2-c3-d4-e5'
 
-        results = remote_copy.apply(args=['test_request_id', 'test_file_name', url])
+        results = remote_copy.apply(args=[request_id, file_name, reg_id])
 
-        file_upload_patch.assert_called_with('test_file_name', url)
+        file_upload_patch.assert_called_with('test_file_name', 'a1-b2-c3-d4-e5')
         self.assertEqual(2, file_upload_patch.call_count)
         self.assertTrue(insert_stats_patch.called)
         self.assertEqual(4, insert_stats_patch.call_count)

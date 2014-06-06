@@ -6,6 +6,7 @@ Unit test for copy_to_sftp_lz module.
 import unittest
 from unittest.mock import patch
 
+from edextract.celery import setup_celery
 from edcore.exceptions import RemoteCopyError
 from edextract.exceptions import ExtractionError
 from edextract.tasks.copy_to_sftp_lz import copy_to_sftp_lz
@@ -22,12 +23,14 @@ class TestCopyToSFTPLZ(unittest.TestCase):
                     'extract.celery.CELERY_ALWAYS_EAGER': 'True',
                     'extract.retries_allowed': '1',
                     'extract.retry_delay': '3'}
+        setup_celery(settings)
         setup_settings(settings)
 
     @patch('edextract.tasks.copy_to_sftp_lz.insert_extract_stats')
     @patch('edextract.utils.file_remote_copy.copy')
-    def test_remote_copy_success(self, file_upload_patch, insert_stats_patch):
+    def test_copy_to_sftp_lz_success(self, file_upload_patch, insert_stats_patch):
         file_upload_patch.side_effect = None
+        insert_stats_patch.side_effect = None
         insert_stats_patch.return_value = None
         request_id = 'test_request_id'
         src_file_name = 'test_file_name.zip'
@@ -45,8 +48,9 @@ class TestCopyToSFTPLZ(unittest.TestCase):
 
     @patch('edextract.tasks.copy_to_sftp_lz.insert_extract_stats')
     @patch('edextract.utils.file_remote_copy.copy')
-    def test_remote_copy_connection_error(self, file_upload_patch, insert_stats_patch):
+    def test_copy_to_sftp_lz_connection_error(self, file_upload_patch, insert_stats_patch):
         file_upload_patch.side_effect = RemoteCopyError('ooops!')
+        insert_stats_patch.side_effect = None
         insert_stats_patch.return_value = None
         request_id = 'test_request_id'
         src_file_name = 'test_file_name.zip'

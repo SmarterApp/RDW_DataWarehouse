@@ -94,8 +94,8 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         self.assertIsNotNone(results)
         self.assertGreater(len(results), 0)
         # Check for columns are in results
-        self.assertIn('acc_streamline_mode', results[0])
-        self.assertIn('acc_asl_human_nonembed', results[0])
+        self.assertIn('AccommodationStreamlineMode', results[0])
+        self.assertIn('AccommodationClosedCaptioning', results[0])
 
     def test_get_extract_items_query(self):
         params = {'stateCode': 'NC',

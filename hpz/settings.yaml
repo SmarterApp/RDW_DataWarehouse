@@ -157,3 +157,15 @@ qa:
           idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
           idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
           name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+    cache:
+      public:
+        shortlived:
+            url: dwcache0.qa.dum.edwdc.net:11211
+        data:
+            url: dwcache0.qa.dum.edwdc.net:11211
+            expire: 31556940
+        filtered_data:
+            url: dwcache0.qa.dum.edwdc.net:11211
+        session:
+            url: dwcache0.qa.dum.edwdc.net:11211
+      type: ext:memcached

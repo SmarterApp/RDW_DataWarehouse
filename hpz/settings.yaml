@@ -166,6 +166,6 @@ qa:
             expire: 31556940
         filtered_data:
             url: dwcache0.qa.dum.edwdc.net:11211
-        session:
-            url: dwcache0.qa.dum.edwdc.net:11211
+      session:
+        url: dwcache0.qa.dum.edwdc.net:11211
       type: ext:memcached

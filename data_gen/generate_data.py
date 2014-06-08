@@ -285,14 +285,15 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
     assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
-    if random.random() < retake_rate:
+    special_random = random.random()
+    if special_random < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
                                                         generate_item_level=generate_item_level)
         assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
-    elif random.random() < update_rate:
+    elif special_random < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
@@ -302,7 +303,7 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
         # See if the updated record should be deleted
         if random.random() < delete_rate:
             ao2.result_status = sbac_in_config.ASMT_STATUS_DELETED
-    elif random.random() < delete_rate:
+    elif special_random < delete_rate:
         # Set the original outcome object to deleted
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
@@ -533,7 +534,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         for student in grade_students:
                             # Create the outcome(s)
                             create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen,
-                                                              assessment_results, skip_rate, WRITE_IL)
+                                                              assessment_results, skip_rate,
+                                                              generate_item_level=WRITE_IL)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -574,7 +576,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     del unique_students
 
     # Return the average student count
-    return int(student_count // 3), unique_student_count
+    return int(student_count // len(ASMT_YEARS)), unique_student_count
 
 
 def generate_state_data(state: SBACState, id_gen):

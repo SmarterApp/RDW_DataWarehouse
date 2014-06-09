@@ -3,12 +3,12 @@
 # check local celeryd-edextract serives by ps
 readonly PROGNAME=$(basename $0)
 
-CMD="ps -f -U root -u root|grep edsftp.scripts.sftp_driver 2> /dev/null"
+CMD="ps -f -U root -u root|grep filerouter.filerouter 2> /dev/null"
 
 usage() {
     echo "  usage: ${PROGNAME}"
     echo ""
-    echo "      nagios plugin that checks celeryd-edextract services is running."
+    echo "      nagios plugin that checks file router services is running."
     echo "      the plugin returns status 0 when service is running."
     echo "      returns status 2 when service has an internal error."
     echo "      returns status 3 when service is not reachable"
@@ -21,14 +21,14 @@ probe() {
      then
         if [[ ! -z $OUTPUT ]]
         then
-            echo "EDSFTP OK"
+            echo "FILE ROUTER OK"
             exit 0
         else
-            echo "EDSFTP CRITICAL"
+            echo "FILE ROUTER CRITICAL"
             exit 2
         fi
      else
-        echo "EDSFTP UNKNOWN"
+        echo "FILE ROUTER UNKNOWN"
         exit 3
      fi
 

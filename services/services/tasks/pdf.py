@@ -172,6 +172,9 @@ def pdf_merge(pdf_files, timeout=TIMEOUT):
     if os.path.isfile(merged_outputfile):
         log.error(merged_outputfile + " is already exist")
         raise PdfGenerationError()
+    for pdf_file in pdf_files:
+        if not os.path.isfile(pdf_file):
+            raise PdfGenerationError('file does not exist: ' + pdf_file)
     try:
         subprocess.call(['pdfunite'] + pdf_files + [merged_outputfile], timeout=timeout)
     except subprocess.TimeoutExpired:

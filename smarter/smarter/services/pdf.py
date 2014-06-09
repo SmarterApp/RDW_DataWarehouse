@@ -22,6 +22,7 @@ from edapi.decorators import validate_params
 from edcore.utils.utils import to_bool
 from smarter.security.constants import RolesConstants
 from celery.canvas import group, chain
+import copy
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
@@ -37,9 +38,8 @@ PDF_PARAMS = {
         Constants.STUDENTGUID: {
             "type": "array",
             "items": {
-                      "type": "string",
-                      "pattern": "^[a-zA-Z0-9\-]{0,50}$"
-                      },
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
             "minItems": 1,
             "uniqueItems": True,
             "required": True},
@@ -123,7 +123,6 @@ def send_pdf_request(params):
     except (PdfGenerationError, TimeoutError) as e:
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
-        print(e)
         # if celery get task got timed out...
         raise EdApiHTTPInternalServerError("Internal Error")
 
@@ -181,9 +180,10 @@ def get_pdf_content(params):
         generate_tasks = []
         args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name, 'grayscale': is_grayscale, 'always_generate': always_generate}
         for idx in range(len(file_names)):
-            args['url'] = urls[idx]
-            args['outputfile'] = file_names[idx]
-            generate_tasks.append(prepare.subtask(kwargs=args, immutable=True))  # @UndefinedVariable
+            copied_args = copy.deepcopy(args)
+            copied_args['url'] = urls[idx]
+            copied_args['outputfile'] = file_names[idx]
+            generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
         # for celery_response in celery_responses:
             # if celery_response.get(timeout=celery_timeout) is not OK:
                 # raise EdApiHTTPInternalServerError("Internal Error")

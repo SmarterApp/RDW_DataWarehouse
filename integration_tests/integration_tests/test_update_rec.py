@@ -17,7 +17,6 @@ from sqlalchemy.sql import select, and_
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-@unittest.skip("test failed at jenkins, under investigation")
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -65,13 +64,13 @@ class Test(unittest.TestCase):
         with get_prod_connection(self.tenant) as connection:
             fact_table = connection.get_table('fact_asmt_outcome_vw')
             dim_student = connection.get_table('dim_student')
-            update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', fact_table.c.asmt_guid == '68177b81-a22a-4d53-a4e0-16d0da50937f'))
+            update_output_data = select([fact_table.c.rec_status], and_(fact_table.c.student_guid == 'f7251065-ca82-4248-9397-cc722e97bbdc', fact_table.c.asmt_guid == 'a685f0ec-a0a6-4b1e-93b8-0c4298ff6374'))
             update_output_table = connection.execute(update_output_data).fetchall()
             self.assertIn(('D',), update_output_table, "Delete status D is not found in the Update record")
             self.assertIn(('C',), update_output_table, "Insert status C is not found in the Update record")
             # verify update asmt_score in fact_table
 
-            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', fact_table.c.rec_status == 'C', fact_table.c.asmt_guid == '68177b81-a22a-4d53-a4e0-16d0da50937f'))
+            update_asmt_score = select([fact_table.c.asmt_score], and_(fact_table.c.student_guid == 'f7251065-ca82-4248-9397-cc722e97bbdc', fact_table.c.rec_status == 'C', fact_table.c.asmt_guid == 'a685f0ec-a0a6-4b1e-93b8-0c4298ff6374'))
             new_asmt_score = connection.execute(update_asmt_score).fetchall()
             expected_asmt_score = [(1900,)]
             # verify that score is updated in fact_Asmt
@@ -80,12 +79,12 @@ class Test(unittest.TestCase):
             self.assertEquals(len(new_asmt_score), 1)
 
             # verification for dim_student update : last name change to Bush
-            update_last_name = select([dim_student.c.last_name], and_(dim_student.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', dim_student.c.batch_guid == self.guid_batch_id, dim_student.c.rec_status == "C"))
+            update_last_name = select([dim_student.c.last_name], and_(dim_student.c.student_guid == 'f7251065-ca82-4248-9397-cc722e97bbdc', dim_student.c.batch_guid == self.guid_batch_id, dim_student.c.rec_status == "C"))
             result_dim_student = connection.execute(update_last_name).fetchall()
             expected_last_name = [('Bush',)]
             self.assertEquals(result_dim_student, expected_last_name)
             # verify that old recod is deactive
-            inactive_rec = select([dim_student], and_(dim_student.c.student_guid == '69072b37-cd15-460b-b9c9-7140f3fe0f64', dim_student.c.rec_status == "D"))
+            inactive_rec = select([dim_student], and_(dim_student.c.student_guid == 'f7251065-ca82-4248-9397-cc722e97bbdc', dim_student.c.rec_status == "I"))
             inactive_result = connection.execute(inactive_rec).fetchall()
             print(len(inactive_result))
 

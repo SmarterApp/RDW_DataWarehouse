@@ -144,9 +144,9 @@ define [
       self = this
       edwareDataProxy.getDataForFilter().done (configs)->
         configs = self.mergeFilters(configs)
-        @filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
-        @filter.loadReport()
-        @filter.update {}
+        self.filter ?= $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
+        self.filter.loadReport()
+        self.filter.update {}
 
     mergeFilters: (configs) ->
       for group in @data.groups

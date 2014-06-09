@@ -475,6 +475,21 @@ qa:
     handlers: syslog
     qualname: edudl2
 
+qa.extract:
+  '[app:main]':
+    edware:
+      db:
+        cat:
+          state_code: ES
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+
+qa.pdf_generator:
+  '[app:main]':
+    batch.user.session.timeout: 300000
+    cache:
+      session.expire: 1200 # 20 minutes
+
 jenkins_qa:
   '[app:main]':
     mode: test
@@ -628,6 +643,21 @@ uat:
     level: WARN
     handlers: syslog
     qualname: edsftp
+
+uat.extract:
+  '[app:main]':
+    edware:
+      db:
+        cat:
+          state_code: ES
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+
+uat.pdf_generator:
+  '[app:main]':
+    batch.user.session.timeout: 300000
+    cache:
+      session.expire: 1200 # 20 minutes
 
 localOpenAM:
   '[app:main]':

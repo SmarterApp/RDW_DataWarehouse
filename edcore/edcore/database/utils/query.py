@@ -35,4 +35,13 @@ def update_udl_stats(rec_id, values):
     '''
     Update udl stats table by rec_id
     '''
-    update_records_in_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values, {UdlStatsConstants.REC_ID: rec_id})
+    update_records_in_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values,
+                            {UdlStatsConstants.REC_ID: rec_id})
+
+
+def update_udl_stats_by_batch_guid(batch_guid, values):
+    '''
+    Update udl stats table by batch_guid
+    '''
+    update_records_in_table(StatsDBConnection, UdlStatsConstants.UDL_STATS, values,
+                            {UdlStatsConstants.BATCH_GUID: batch_guid})

@@ -46,3 +46,11 @@ class UDL2InvalidJSONCSVPairException(UDL2DataValidationException):
     """
     def __init__(self, msg='UDL2 JSON and CSV file mismatch for asmt_guid'):
         super().__init__(msg)
+
+
+class InvalidTenantNameException(UDL2DataValidationException):
+    """
+    Production database is missing Global Sequence
+    """
+    def __init__(self, msg='UDL2 tenant name invalid'):
+        super().__init__(msg)

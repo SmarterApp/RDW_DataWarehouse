@@ -23,8 +23,6 @@ from edudl2.udl2.udl2_base_task import Udl2BaseTask
 from edudl2.udl2_util import file_util
 from edudl2.fileloader.json_loader import load_json
 from edudl2.udl2_util.measurement import BatchTableBenchmark
-from edcore.database.utils.constants import UdlStatsConstants
-from edcore.database.utils.query import update_udl_stats
 from edudl2.sfv import sfv_util
 from edudl2.udl2.constants import Constants
 
@@ -34,11 +32,11 @@ logger = get_task_logger(__name__)
 @celery.task(name="udl2.W_load_json_to_integration.task", base=Udl2BaseTask)
 def task(msg):
     start_time = datetime.datetime.now()
-    guid_batch = msg[mk.GUID_BATCH]
-    load_type = msg[mk.LOAD_TYPE]
-    tenant_name = msg[mk.TENANT_NAME]
-    tenant_directory_paths = msg[mk.TENANT_DIRECTORY_PATHS]
-    expanded_dir = tenant_directory_paths[mk.EXPANDED]
+    guid_batch = msg.get(mk.GUID_BATCH)
+    load_type = msg.get(mk.LOAD_TYPE)
+    tenant_name = msg.get(mk.TENANT_NAME)
+    tenant_directory_paths = msg.get(mk.TENANT_DIRECTORY_PATHS)
+    expanded_dir = tenant_directory_paths.get(mk.EXPANDED)
     json_file = file_util.get_file_type_from_dir('.json', expanded_dir)
     logger.info('LOAD_JSON_TO_INTEGRATION: Loading json file <%s>' % json_file)
     conf = generate_conf_for_loading(json_file, guid_batch, load_type, tenant_name)
@@ -46,11 +44,11 @@ def task(msg):
     end_time = datetime.datetime.now()
 
     # record benchmark
-    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time, task_id=str(task.request.id),
-                                    working_schema=conf[mk.TARGET_DB_SCHEMA], size_records=affected_rows, tenant=msg[mk.TENANT_NAME])
+    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, end_time,
+                                    task_id=str(task.request.id),
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                    size_records=affected_rows, tenant=msg[mk.TENANT_NAME])
     benchmark.record_benchmark()
-    # Update udl stats
-    update_udl_stats(msg[mk.UDL_STATS_REC_ID], {UdlStatsConstants.LOAD_START: start_time, UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_LOADING})
     return msg
 
 

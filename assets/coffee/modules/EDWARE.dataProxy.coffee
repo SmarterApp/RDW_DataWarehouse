@@ -34,7 +34,7 @@ define [
     # redirect to login page
     if xhr.status == 401 and /application\/json/.test(responseHeader)
       location.href = JSON.parse(xhr.responseText).redirect
-    #location.href = "/assets/public/error.html" if redirectOnError
+    location.href = "/assets/public/error.html" if redirectOnError
 
   getDatafromSource = (sourceURL, options) ->
     if not sourceURL || not $.type(sourceURL) in ['string', 'array']

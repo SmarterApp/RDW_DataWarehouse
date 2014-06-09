@@ -9,7 +9,8 @@ from smarter.reports.helpers.filters import _get_filter,\
     has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, FILTERS_SEX,\
     FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
     FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN,\
-    FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO
+    FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO,\
+    reverse_filter_map, get_student_demographic, FILTERS_GENDER
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
     UnittestEdcoreDBConnection
 from smarter.reports.helpers.constants import Constants
@@ -127,6 +128,18 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome_vw.dmg_eth_derived", str(query._whereclause))
             self.assertIn("fact_asmt_outcome_vw.dmg_prg_iep", str(query._whereclause))
 
+    def test_get_student_demographics(self):
+        result = {Constants.DMG_PRG_IEP: True,
+                  Constants.DMG_PRG_504: False,
+                  Constants.DMG_PRG_LEP: None,
+                  Constants.DMG_ETH_DERIVED: 4,
+                  FILTERS_SEX: 'M'}
+        dmg = get_student_demographic(result)
+        self.assertEqual(dmg[FILTERS_PROGRAM_IEP], YES)
+        self.assertEqual(dmg[FILTERS_PROGRAM_504], NO)
+        self.assertEqual(dmg[FILTERS_PROGRAM_LEP], NOT_STATED)
+        self.assertEqual(dmg[FILTERS_GENDER], 'M')
+        self.assertEqual(dmg[FILTERS_ETHNICITY], '4')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.test_value_NONE']

@@ -4,6 +4,7 @@ import os
 from edudl2.udl2.celery import celery
 from celery.utils.log import get_task_logger
 import edudl2.udl2.udl2_pipeline as udl2_pipeline
+from edudl2.udl2.constants import Constants as Const
 
 logger = get_task_logger(__name__)
 
@@ -18,5 +19,9 @@ def schedule_pipeline(archive_file):
         logger.error('W_schedule_pipeline: Scheduling pipeline failed due to invalid file <%s>' % archive_file)
         raise Exception('Scheduling pipeline failed due to invalid file')
 
-    logger.info('W_schedule_pipeline: Scheduling pipeline for file <%s>' % archive_file)
-    udl2_pipeline.get_pipeline_chain(archive_file).delay()
+    # rename the file to mark it as scheduled for processing before submitting task to pipeline.
+    # this is needed to avoid the udl trigger from rescheduling the pipeline in case of delay
+    archive_file_for_processing = archive_file + Const.PROCESSING_FILE_EXT
+    os.rename(archive_file, archive_file_for_processing)
+    logger.info('W_schedule_pipeline: Scheduling pipeline for file <%s>' % archive_file_for_processing)
+    udl2_pipeline.get_pipeline_chain(archive_file_for_processing).delay()

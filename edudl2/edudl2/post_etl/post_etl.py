@@ -11,12 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 def get_work_zone_directories_to_cleanup(msg):
-    tenant_directory_paths = msg[mk.TENANT_DIRECTORY_PATHS]
+    tenant_directory_paths = msg.get(mk.TENANT_DIRECTORY_PATHS)
+    if not tenant_directory_paths:
+        return None
     work_zone_directories_to_cleanup = {
-        mk.ARRIVED: tenant_directory_paths[mk.ARRIVED],
-        mk.DECRYPTED: tenant_directory_paths[mk.DECRYPTED],
-        mk.EXPANDED: tenant_directory_paths[mk.EXPANDED],
-        mk.SUBFILES: tenant_directory_paths[mk.SUBFILES]
+        mk.ARRIVED: tenant_directory_paths.get(mk.ARRIVED),
+        mk.DECRYPTED: tenant_directory_paths.get(mk.DECRYPTED),
+        mk.EXPANDED: tenant_directory_paths.get(mk.EXPANDED),
+        mk.SUBFILES: tenant_directory_paths.get(mk.SUBFILES)
     }
     return work_zone_directories_to_cleanup
 
@@ -51,10 +53,11 @@ def cleanup(msg):
     :param msg: Pipeline message passed down from the task
     """
     work_zone_directories_to_cleanup = get_work_zone_directories_to_cleanup(msg)
-    guid_batch = msg[mk.GUID_BATCH]
+    guid_batch = msg.get(mk.GUID_BATCH)
 
     # cleanup workzone
-    cleanup_work_zone(work_zone_directories_to_cleanup)
+    if work_zone_directories_to_cleanup:
+        cleanup_work_zone(work_zone_directories_to_cleanup)
 
     # cleanup udl tables
     cleanup_udl_tables(guid_batch)

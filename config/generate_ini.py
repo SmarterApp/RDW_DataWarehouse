@@ -46,10 +46,17 @@ def generate_ini(env, input_file='settings.yaml', output_file=None):
     except:
         raise IOError(str.format("could not find or open file {0} for read", input_file))
 
+    # check for host class
+    hostclass = None
+    if '.' in env:
+        hostclass = env
+        env = env.split('.')[0]
+
     # use PyYaml to load the file's content
     settings = yaml.load(settings)
 
     # if the environment is in the yaml file, we use it. otherwise, we just use the common part.
+    env_settings = False
     if env in settings:
         env_settings = settings[env]
     else:
@@ -58,6 +65,13 @@ def generate_ini(env, input_file='settings.yaml', output_file=None):
     if 'common' not in settings:
         raise ValueError("could not find the common section in the yaml file")
 
+    # check for host class config
+    hc_settings = False
+    if hostclass is not None and hostclass in settings:
+        hc_settings = settings[hostclass]
+    elif hostclass is not None:
+        print(str.format("could not find host class environment {0} in the yaml file", hostclass))
+
     common_settings = settings['common']
 
     # first we load the common section into the yaml_object
@@ -65,6 +79,9 @@ def generate_ini(env, input_file='settings.yaml', output_file=None):
     # if we have environment specific data, we use it to add/override to the common section
     if env_settings:
         yaml_object = flatten_yaml(env_settings, yaml_object, "")
+    # if we have host class specific data, we use it to add/override to the environment section
+    if hc_settings:
+        yaml_object = flatten_yaml(hc_settings, yaml_object, "")
 
     result = ""
     # we read each group and write it to the result string with its content.

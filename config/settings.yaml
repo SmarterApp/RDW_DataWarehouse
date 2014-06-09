@@ -424,8 +424,8 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
     hpz:
-      file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/download/registration
-      file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/download/files
+      file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
+      file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':
@@ -474,6 +474,21 @@ qa:
     level: WARN
     handlers: syslog
     qualname: edudl2
+
+qa.extract:
+  '[app:main]':
+    edware:
+      db:
+        cat:
+          state_code: ES
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+
+qa.pdf_generator:
+  '[app:main]':
+    batch.user.session.timeout: 300000
+    cache:
+      session.expire: 1200 # 20 minutes
 
 jenkins_qa:
   '[app:main]':
@@ -628,6 +643,21 @@ uat:
     level: WARN
     handlers: syslog
     qualname: edsftp
+
+uat.extract:
+  '[app:main]':
+    edware:
+      db:
+        cat:
+          state_code: ES
+          schema_name: edware_es_1_6
+          url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
+
+uat.pdf_generator:
+  '[app:main]':
+    batch.user.session.timeout: 300000
+    cache:
+      session.expire: 1200 # 20 minutes
 
 localOpenAM:
   '[app:main]':

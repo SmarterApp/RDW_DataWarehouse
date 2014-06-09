@@ -2,7 +2,7 @@ from celery import Task, chain
 from edudl2.udl2 import message_keys as mk
 import edudl2.udl2 as udl2
 from edcore.database.utils.constants import UdlStatsConstants
-from edcore.database.utils.query import update_udl_stats
+from edcore.database.utils.query import update_udl_stats_by_batch_guid
 from edudl2.exceptions.udl_exceptions import UDLException
 __author__ = 'sravi'
 from celery.utils.log import get_task_logger
@@ -59,15 +59,16 @@ class Udl2BaseTask(Task):
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.exception('Task failed: ' + self.name + ', task id: ' + task_id)
-        guid_batch = args[0][mk.GUID_BATCH]
-        load_type = args[0][mk.LOAD_TYPE]
+        msg = args[0]
+        batch_guid = msg.get(mk.GUID_BATCH)
+        load_type = msg.get(mk.LOAD_TYPE)
         failure_time = datetime.datetime.now()
         udl_phase_step = ''
         working_schema = ''
         if isinstance(exc, UDLException):
             udl_phase_step = exc.udl_phase_step
             working_schema = exc.working_schema
-        benchmark = BatchTableBenchmark(guid_batch, load_type,
+        benchmark = BatchTableBenchmark(batch_guid, load_type,
                                         udl_phase=self.name,
                                         start_timestamp=failure_time,
                                         end_timestamp=failure_time,
@@ -77,18 +78,20 @@ class Udl2BaseTask(Task):
                                         task_id=str(self.request.id),
                                         error_desc=str(exc), stack_trace=einfo.traceback)
         benchmark.record_benchmark()
+
         # Write to udl stats table on exceptions
-        update_udl_stats(args[0][mk.UDL_STATS_REC_ID], {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+        update_udl_stats_by_batch_guid(batch_guid, {UdlStatsConstants.LOAD_STATUS: UdlStatsConstants.UDL_STATUS_FAILED})
+
         # Write to ERR_LIST
         try:
             exc.insert_err_list(failure_time)
         except Exception:
             pass
-        msg = {}
-        msg.update(args[0])
-        msg.update({mk.PIPELINE_STATE: 'error'})
+        err_msg = {}
+        err_msg.update(msg)
+        err_msg.update({mk.PIPELINE_STATE: 'error'})
 
-        error_handler_chain = self.__get_pipeline_error_handler_chain(msg, self.name)
+        error_handler_chain = self.__get_pipeline_error_handler_chain(err_msg, self.name)
         if error_handler_chain is not None:
             error_handler_chain.delay()
 

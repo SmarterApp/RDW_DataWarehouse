@@ -4,7 +4,8 @@ Created on Feb 4, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.list_of_students_report import get_list_of_students_report
+from smarter.reports.list_of_students_report import get_list_of_students_report,\
+    get_group_filters
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
@@ -172,6 +173,17 @@ class TestLOS(Unittest_with_edcore_sqlite):
         self.assertEqual(len(results['assessments']), 3)
         self.assertIsNotNone(results['assessments']['20150106']['Interim Comprehensive']['cad811ad-9b08-4dd1-aa10-52360b80ff7f']['subject2'])
 
+    def test_get_group_filters(self):
+        groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None}, {'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': 'id2', 'group_2_text': 'something'}]
+        results = get_group_filters(groups)
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0]['options'][0]['label'], 'something')
+
+    def test_get_group_filters_group_1_only(self):
+        groups = [{'group_1_id': 'id1', 'group_1_text': 'something', 'group_2_id': None}, {'group_1_id': 'id2', 'group_1_text': 'foo', 'group_2_id': None}]
+        results = get_group_filters(groups)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(len(results[0]['options']), 2)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

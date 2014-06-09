@@ -14,7 +14,8 @@ define [
   "edwareReportActionBar"
   "edwareContextSecurity"
   "edwareSearch"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch) ->
+  "edwareFilter"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareHeader, edwarePreferences,  Constants, edwareStickyCompare, edwareReportInfoBar, edwareReportActionBar, contextSecurity, edwareSearch, edwareFilter) ->
 
   LOS_HEADER_BAR_TEMPLATE  = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
 
@@ -62,24 +63,13 @@ define [
     constructor: (@config) ->
       @asmtTypes = config.students.customViews.asmtTypes
 
-    build: (@data, @labels) ->
+    build: (@data, @cutPointsData, @labels) ->
       @cache = {}
       @allSubjects = "#{data.subjects.subject1}_#{data.subjects.subject2}"
       @assessmentsData  = data.assessments
       @subjectsData = data.subjects
-      @cutPointsData = @createCutPoints()
       @columnData = @createColumns()
       @formatAssessmentsData()
-
-    createCutPoints: () ->
-      cutPointsData = @data.metadata.cutpoints
-      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data))
-      #if cut points don't have background colors, then it will use default background colors
-      for key, items of cutPointsData
-        for interval, i in items.cut_point_intervals
-          if not interval.bg_color
-            $.extend(interval, @config.colors[i])
-      cutPointsData
 
     createColumns: () ->
       # Use mustache template to replace text in json config
@@ -102,14 +92,21 @@ define [
         for asmtType, studentList of assessments
           @cache[effectiveDate][asmtType] ?= {}
           for studentId, assessment of studentList
+            continue if assessment.hide
             row = new StudentModel(effectiveDate, this).init assessment
+            showAllSubjects = false
+            # push to each subject view
             for subjectName, subjectType of @subjectsData
-              continue if not row[subjectName]
+              continue if not row[subjectName] or row[subjectName].hide
               @cache[effectiveDate][asmtType][subjectType] ?= []
               @cache[effectiveDate][asmtType][subjectType].push row
-              @cache[effectiveDate][asmtType][@allSubjects] ?= []
-              allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
-              allsubjects.push row  if row not in allsubjects
+              showAllSubjects = true
+
+            continue if not showAllSubjects
+            # push to conjunct Math_ELA view
+            @cache[effectiveDate][asmtType][@allSubjects] ?= []
+            allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
+            allsubjects.push row  if row not in allsubjects
 
     getAsmtData: (viewName)->
       # Saved asmtType and viewName
@@ -139,12 +136,25 @@ define [
       @stickyCompare ?= new EdwareGridStickyCompare @labels, ()->
         self.updateView()
 
-    reload: (@params) ->
+    reload: (@params)->
       @fetchData params
       @stickyCompare.setReportInfo Constants.REPORT_JSON_NAME.LOS, "student", params
 
-    loadPage: (@data)->
-      @studentsDataSet.build data, @labels
+    renderFilter: () ->
+      self = this
+      edwareDataProxy.getDataForFilter().done (configs)->
+        configs = self.mergeFilters(configs)
+        filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
+        filter.loadReport()
+        filter.update {}
+
+    mergeFilters: (configs) ->
+      for group in @data.groups
+        configs.filters.push group
+      return configs
+
+    loadPage: (@data) ->
+      @cutPointsData = @createCutPoints()
       @contextData = data.context
       @subjectsData = data.subjects
       @userData = data.user_info
@@ -153,9 +163,10 @@ define [
       @renderBreadcrumbs(@labels)
       @renderReportInfo()
       @renderReportActionBar()
+      @renderFilter()
       @createHeaderAndFooter()
 
-      @createGrid()
+      # @createGrid()
       @bindEvents()
       @applyContextSecurity()
 
@@ -164,6 +175,15 @@ define [
       contextSecurity.init @data.context.permissions, @config
       contextSecurity.apply()
 
+    createCutPoints: () ->
+      cutPointsData = @data.metadata.cutpoints
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),@data))
+      #if cut points don't have background colors, then it will use default background colors
+      for key, items of cutPointsData
+        for interval, i in items.cut_point_intervals
+          if not interval.bg_color
+            $.extend(interval, @config.colors[i])
+      cutPointsData
 
     bindEvents: ()->
       # Show tooltip for overall score on mouseover
@@ -218,7 +238,7 @@ define [
 
     renderReportActionBar: () ->
       self = this
-      @config.colorsData = @studentsDataSet.cutPointsData
+      @config.colorsData = @cutPointsData
       @config.reportName = Constants.REPORT_NAME.LOS
       asmtTypeDropdown = @convertAsmtTypes @data.asmt_administration
       @config.asmtTypes = asmtTypeDropdown
@@ -231,9 +251,11 @@ define [
         edwarePreferences.saveAsmtForISR asmt
         self.updateView()
 
-    createGrid: () ->
+    createGrid: (filters) ->
+      data = edwareFilter.filterData(@data, filters)
+      @studentsDataSet.build data, @cutPointsData, @labels
       @updateView()
-      #TODO Set asmt Subject
+      #TODO: Set asmt Subject
       subjects = []
       for key, value of @data.subjects
         subjects.push value

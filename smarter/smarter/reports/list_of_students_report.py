@@ -18,7 +18,7 @@ from smarter.reports.helpers.metadata import get_subjects_map, \
     get_custom_metadata
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query, \
-    FILTERS_CONFIG
+    FILTERS_CONFIG, get_student_demographic
 from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
@@ -95,6 +95,7 @@ def get_list_of_students_report(params):
     subjects_map = get_subjects_map(asmtSubject)
     los_results = {}
     los_results['assessments'] = format_assessments(results, subjects_map)
+    los_results['groups'] = get_group_filters(results)
 
     # query dim_asmt to get cutpoints
     asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
@@ -133,10 +134,13 @@ def format_assessments(results, subjects_map):
         student['student_last_name'] = result['last_name']
         student['enrollment_grade'] = result['enrollment_grade']
         student['state_code'] = result['state_code']
+        student['demographic'] = get_student_demographic(result)
         student[Constants.ROWID] = result['student_guid']
 
         subject = subjects_map[result['asmt_subject']]
         assessment = student.get(subject, {})
+        assessment['group_1_id'] = result['group_1_id']
+        assessment['group_2_id'] = result['group_2_id']
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_score_range_min'] = result['asmt_score_range_min']
@@ -150,6 +154,31 @@ def format_assessments(results, subjects_map):
         asmtDict[asmtType] = asmtList
         assessments[effectiveDate] = asmtDict
     return assessments
+
+
+def get_group_filters(results):
+    # TODO: use list comprehension, format grouping information for filters
+    group_1, group_2 = set(), set()
+    for result in results:
+        if result['group_1_id']:
+            group_1.add((result['group_1_id'], result['group_1_text']))
+        if result['group_2_id']:
+            group_2.add((result['group_2_id'], result['group_2_text']))
+
+    filters = []
+    for idx, group in enumerate((group_1, group_2)):
+        options = [{"value": k, "label": v} for k, v in group]
+        if not options:
+            # exclude empty group
+            continue
+        groups = {}
+        # temporary names, will be updated to more meaningful text
+        groups["display"] = "Group %d" % (idx + 1)
+        groups["tag"] = "Group %d" % (idx + 1)
+        groups["name"] = "group_%d" % (idx + 1)
+        groups["options"] = options
+        filters.append(groups)
+    return filters
 
 
 def get_list_of_students(params):
@@ -196,6 +225,18 @@ def get_list_of_students(params):
                                     fact_asmt_outcome_vw.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
                                     fact_asmt_outcome_vw.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                                     fact_asmt_outcome_vw.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
+                                    # demographic information
+                                    fact_asmt_outcome_vw.c.dmg_eth_derived.label('dmg_eth_derived'),
+                                    fact_asmt_outcome_vw.c.dmg_prg_iep.label('dmg_prg_iep'),
+                                    fact_asmt_outcome_vw.c.dmg_prg_lep.label('dmg_prg_lep'),
+                                    fact_asmt_outcome_vw.c.dmg_prg_504.label('dmg_prg_504'),
+                                    fact_asmt_outcome_vw.c.dmg_sts_ecd.label('dmg_sts_ecd'),
+                                    fact_asmt_outcome_vw.c.sex.label('sex'),
+                                    # grouping information
+                                    fact_asmt_outcome_vw.c.group_1_id.label('group_1_id'),
+                                    fact_asmt_outcome_vw.c.group_1_text.label('group_1_text'),
+                                    fact_asmt_outcome_vw.c.group_2_id.label('group_2_id'),
+                                    fact_asmt_outcome_vw.c.group_2_text.label('group_2_text'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_1.label('asmt_claim_perf_lvl_name_1'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_2.label('asmt_claim_perf_lvl_name_2'),
                                     dim_asmt.c.asmt_claim_perf_lvl_name_3.label('asmt_claim_perf_lvl_name_3'),

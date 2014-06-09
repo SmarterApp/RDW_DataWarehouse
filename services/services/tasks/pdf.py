@@ -16,6 +16,9 @@ import copy
 from services.celery import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
+import tempfile
+import uuid
+import shutil
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
@@ -95,6 +98,31 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
 
     NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
     '''
+    prepare(cookie, url, outputfile, options=options, timeout=timeout, cookie_name=cookie_name, grayscale=grayscale, always_generate=always_generate)
+
+    with open(outputfile, 'rb') as file:
+        stream = file.read()
+
+    return stream
+
+
+@celery.task(name='tasks.pdf.prepare', ignore_result=True)
+def prepare(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayscale=False, always_generate=False):
+    '''
+    Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
+    This is meant to be a synchronous call.  It waits for generate task to return.
+
+    :param cookie: the cookie to pass into http request
+    :param url:  the url to request for
+    :param outputfile:  the path of the file to write pdf to
+    :param options:  options passed into wkhtmltopdf
+    :param timeout:  subprocess call timeout value
+    :param cookie_name:  the name of the cookie being passed into http request
+    :param grayscale: whether to generate pdf in grayscale
+    :param always_generate: whether to always generate pdf instead of checking file system first
+
+    NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
+    '''
     if always_generate or not os.path.exists(outputfile):
         # always delete it first in case of regeneration error
         delete(outputfile)
@@ -103,11 +131,6 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
         except MaxRetriesExceededError:
             log.error("Max retries exceeded in PDF Generation")
             raise PdfGenerationError()
-
-    with open(outputfile, 'rb') as file:
-        stream = file.read()
-
-    return stream
 
 
 def prepare_path(path):
@@ -139,3 +162,22 @@ def delete(path):
     '''
     if os.path.exists(path):
         os.remove(path)
+
+
+@celery.task(name='tasks.pdf.merge')
+def pdf_merge(pdf_files, timeout=TIMEOUT):
+    dirpath = tempfile.mkdtemp()
+    filename = uuid.uuid4()
+    merged_outputfile = os.path.join(dirpath, str(filename))
+    if os.path.isfile(merged_outputfile):
+        log.error(merged_outputfile + " is already exist")
+        raise PdfGenerationError()
+    try:
+        subprocess.call(['pdfunite'] + pdf_files + [merged_outputfile], timeout=timeout)
+    except subprocess.TimeoutExpired:
+        # Note that Timeout exception is valid due to wkhtmltopdf issue 141
+        log.error('wkhmltopdf subprocess call timed out')
+    with open(merged_outputfile, 'rb') as file:
+        stream = file.read()
+    shutil.rmtree(dirpath)
+    return stream

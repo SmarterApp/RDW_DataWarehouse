@@ -597,13 +597,13 @@ def generate_state_data(state: SBACState, id_gen):
                 # Create the summative assessment
                 asmt_key_summ = str(year) + 'summative' + str(grade) + subject
                 assessments[asmt_key_summ] = create_assessment_object('SUMMATIVE', 'Spring', year, subject,
-                                                                      id_gen)
+                                                                      id_gen, generate_item_level=WRITE_IL)
 
                 # Create the interim assessments
                 for period in INTERIM_ASMT_PERIODS:
                     asmt_key_intrm = str(year) + 'interim' + period + str(grade) + subject
                     asmt_intrm = create_assessment_object('INTERIM COMPREHENSIVE', period, year, subject,
-                                                          id_gen)
+                                                          id_gen, generate_item_level=WRITE_IL)
                     assessments[asmt_key_intrm] = asmt_intrm
 
     # Build the districts

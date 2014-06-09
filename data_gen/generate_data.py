@@ -152,9 +152,9 @@ def prepare_output_files():
         return
 
     # Prepare star-schema output files
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_VW_FORMAT['name'], sbac_out_config.FAO_VW_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
-    csv_writer.prepare_csv_file(sbac_out_config.FAO_PRI_FORMAT['name'], sbac_out_config.FAO_PRI_FORMAT['columns'],
+    csv_writer.prepare_csv_file(sbac_out_config.FAO_FORMAT['name'], sbac_out_config.FAO_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_STUDENT_FORMAT['name'],
                                 sbac_out_config.DIM_STUDENT_FORMAT['columns'], root_path=OUT_PATH_ROOT)
@@ -285,14 +285,15 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
     assessment_results[asmt.guid_sr].append(ao)
 
     # Decide if something special is happening
-    if random.random() < retake_rate:
+    special_random = random.random()
+    if special_random < retake_rate:
         # Set the original outcome object to inactive, create a new outcome (with an advanced date take), and return
         ao.result_status = sbac_in_config.ASMT_STATUS_INACTIVE
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
                                                         generate_item_level=generate_item_level)
         assessment_results[asmt.guid_sr].append(ao2)
         ao2.date_taken += datetime.timedelta(days=5)
-    elif random.random() < update_rate:
+    elif special_random < update_rate:
         # Set the original outcome object to deleted and create a new outcome
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
         ao2 = sbac_asmt_gen.generate_assessment_outcome(student, asmt, inst_hier, id_gen,
@@ -302,7 +303,7 @@ def create_assessment_outcome_object(student, asmt, inst_hier, id_gen, assessmen
         # See if the updated record should be deleted
         if random.random() < delete_rate:
             ao2.result_status = sbac_in_config.ASMT_STATUS_DELETED
-    elif random.random() < delete_rate:
+    elif special_random < delete_rate:
         # Set the original outcome object to deleted
         ao.result_status = sbac_in_config.ASMT_STATUS_DELETED
 
@@ -358,10 +359,10 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
     lz_asmt_out_cols = sbac_out_config.LZ_REALDATA_FORMAT['columns']
     it_lz_out_name = sbac_out_config.LZ_ITEMDATA_FORMAT['name']
     it_lz_out_cols = sbac_out_config.LZ_ITEMDATA_FORMAT['columns']
+    fao_vw_out_name = sbac_out_config.FAO_VW_FORMAT['name']
+    fao_vw_out_cols = sbac_out_config.FAO_VW_FORMAT['columns']
     fao_out_name = sbac_out_config.FAO_FORMAT['name']
     fao_out_cols = sbac_out_config.FAO_FORMAT['columns']
-    fao_pri_out_name = sbac_out_config.FAO_PRI_FORMAT['name']
-    fao_pri_out_cols = sbac_out_config.FAO_PRI_FORMAT['columns']
     dstu_out_name = sbac_out_config.DIM_STUDENT_FORMAT['name']
     dstu_out_cols = sbac_out_config.DIM_STUDENT_FORMAT['columns']
     sr_pg_out_name = sbac_out_config.STUDENT_REG_FORMAT['name']
@@ -409,16 +410,16 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
                                                  lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
             if WRITE_STAR:
-                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts, tbl_name='fact_asmt_outcome_vw',
-                                                 root_path=OUT_PATH_ROOT)
-                csv_writer.write_records_to_file(fao_pri_out_name, fao_pri_out_cols, rslts,
+                csv_writer.write_records_to_file(fao_vw_out_name, fao_vw_out_cols, rslts,
+                                                 tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
+                csv_writer.write_records_to_file(fao_out_name, fao_out_cols, rslts,
                                                  tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)
             if WRITE_PG:
                 try:
-                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw', fao_out_cols,
-                                                           rslts)
+                    postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome_vw',
+                                                           fao_vw_out_cols, rslts)
                     postgres_writer.write_records_to_table(DB_CONN, DB_SCHEMA + '.fact_asmt_outcome',
-                                                           fao_pri_out_cols, rslts)
+                                                           fao_out_cols, rslts)
                 except Exception as e:
                     print('PostgreSQL EXCEPTION ::: %s' % str(e))
 
@@ -533,7 +534,8 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                         for student in grade_students:
                             # Create the outcome(s)
                             create_assessment_outcome_objects(student, asmt_summ, interim_asmts, inst_hier, id_gen,
-                                                              assessment_results, skip_rate, WRITE_IL)
+                                                              assessment_results, skip_rate,
+                                                              generate_item_level=WRITE_IL)
 
                             # Determine if this student should be in the SR file
                             if random.random() < sbac_in_config.HAS_ASMT_RESULT_IN_SR_FILE_RATE and first_subject:
@@ -574,7 +576,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     del unique_students
 
     # Return the average student count
-    return int(student_count // 3), unique_student_count
+    return int(student_count // len(ASMT_YEARS)), unique_student_count
 
 
 def generate_state_data(state: SBACState, id_gen):
@@ -595,13 +597,13 @@ def generate_state_data(state: SBACState, id_gen):
                 # Create the summative assessment
                 asmt_key_summ = str(year) + 'summative' + str(grade) + subject
                 assessments[asmt_key_summ] = create_assessment_object('SUMMATIVE', 'Spring', year, subject,
-                                                                      id_gen)
+                                                                      id_gen, generate_item_level=WRITE_IL)
 
                 # Create the interim assessments
                 for period in INTERIM_ASMT_PERIODS:
                     asmt_key_intrm = str(year) + 'interim' + period + str(grade) + subject
                     asmt_intrm = create_assessment_object('INTERIM COMPREHENSIVE', period, year, subject,
-                                                          id_gen)
+                                                          id_gen, generate_item_level=WRITE_IL)
                     assessments[asmt_key_intrm] = asmt_intrm
 
     # Build the districts

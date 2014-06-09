@@ -424,8 +424,8 @@ qa:
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
     hpz:
-        file_registration_url: http://localhost/registration
-        file_upload_base_url: http://localhost/files
+      file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/download/registration
+      file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/download/files
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':

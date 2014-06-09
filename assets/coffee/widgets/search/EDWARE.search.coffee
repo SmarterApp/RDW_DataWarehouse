@@ -100,7 +100,7 @@ define [
       @removeHighlight()
       # ensures that we're only highlighting when there's a search word
       return if not @keyword
-      @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')[@offset]['rowId'])
+      @lastHighlightedElement = $('#link_' + $('#gridTable').jqGrid('getGridParam', 'data')?[@offset]['rowId'])
       text = @lastHighlightedElement.data('value')
       if text
         idx = text.toLowerCase().indexOf(@keyword.toLowerCase())

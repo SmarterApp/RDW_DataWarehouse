@@ -299,6 +299,35 @@ define [
 
 
 
+  filterData = (data, filters) ->
+    # no filters applied
+    return data if not filters
+
+    match = createFilter(filters)
+    for effectiveDate, assessment of data.assessments
+      for asmtType, studentList of assessment
+        for studentId, assessment of studentList
+          if not match(assessment)
+            assessment.hide = true
+          else
+            assessment.hide = false
+    data
+
+  createFilter = (filters) ->
+
+    return (assessment)->
+      for filterName, filterValue of filters
+        # do not check other attributes
+        if not $.isArray(filterValue)
+          continue
+        if not filterName.startWith('group')
+          return false if assessment.demographic[filterName] not in filterValue
+        else
+          # TODO:
+          continue
+      return true
+
+
   #
   #    *  EDWARE Filter plugin
   #    *  @param filterHook - Panel config data
@@ -310,3 +339,5 @@ define [
     $.fn.edwareFilter = (filterTrigger, configs, callback) ->
       new EdwareFilter($(this), filterTrigger, configs, callback)
   ) jQuery
+
+  filterData: filterData

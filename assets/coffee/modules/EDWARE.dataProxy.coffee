@@ -32,9 +32,9 @@ define [
     # Read the redirect url on 401 Unauthorized Error
     responseHeader = xhr.getResponseHeader('Content-Type')
     # redirect to login page
-    if xhr.status == 401 and /application\/json/.test(responseHeader)
-      location.href = JSON.parse(xhr.responseText).redirect
-    location.href = "/assets/public/error.html" if redirectOnError
+    # if xhr.status == 401 and /application\/json/.test(responseHeader)
+    #   location.href = JSON.parse(xhr.responseText).redirect
+    # location.href = "/assets/public/error.html" if redirectOnError
 
   getDatafromSource = (sourceURL, options) ->
     if not sourceURL || not $.type(sourceURL) in ['string', 'array']

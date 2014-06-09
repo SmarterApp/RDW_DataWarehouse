@@ -39,6 +39,15 @@ filter_map = {YES: true(),
               NOT_STATED: null()}
 
 
+def reverse_filter_map(value):
+    if value is null():
+        return NOT_STATED
+    elif value:
+        return YES
+    else:
+        return NO
+
+
 # Used in report_config for allowing demographics parameters for reports
 FILTERS_CONFIG = {
     FILTERS_PROGRAM_LEP: {
@@ -152,3 +161,26 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
         if filter_sex is not None:
             query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
     return query
+
+
+def get_student_demographic(result):
+    demographic = {}
+
+    for column in ['dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504']:
+        filter_name, value = _column_to_filter(column, result[column])
+        demographic[filter_name] = value
+     # 'dmg_eth_derived'
+    demographic['ethnicity'] = str(result['dmg_eth_derived'])
+    demographic['gender'] = result['sex']
+
+    return demographic
+
+
+def _column_to_filter(column, value):
+    if column == 'dmg_prg_iep':
+        return (FILTERS_PROGRAM_IEP, reverse_filter_map(value))
+    elif column == 'dmg_prg_504':
+        return (FILTERS_PROGRAM_504, reverse_filter_map(value))
+    elif column == 'dmg_prg_lep':
+        return (FILTERS_PROGRAM_LEP, reverse_filter_map(value))
+    return (column, value)

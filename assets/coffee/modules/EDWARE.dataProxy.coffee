@@ -10,16 +10,16 @@ define [
   language = edwarePreferences.getSelectedLanguage()
 
   URLs =
-    labels: "../data/common/#{language}/labels.json"
-    filters: "../data/filter/#{language}/filter.json"
-    content: "../data/content/#{language}/content.json"
-    common: "../data/common/#{language}/common.json"
-    landingPage: "../data/content/#{language}/landingPage.json"
+    labels: "../data/#{language}/common/labels.json"
+    filters: "../data/#{language}/filter/filter.json"
+    content: "../data/#{language}/content/content.json"
+    common: "../data/#{language}/common/common.json"
+    landingPage: "../data/#{language}/content/landingPage.json"
     stateMap: "../data/stateMap.json"
 
   # setup URLs for report's specific JSON
   for reportName, fileName of Constants.REPORT_JSON_NAME
-    URLs[fileName] = "../data/common/#{language}/#{fileName}.json"
+    URLs[fileName] = "../data/#{language}/common/#{fileName}.json"
 
   DEFAULT_SETTING =
     type: 'GET'
@@ -34,7 +34,7 @@ define [
     # redirect to login page
     if xhr.status == 401 and /application\/json/.test(responseHeader)
       location.href = JSON.parse(xhr.responseText).redirect
-    location.href = "/assets/public/error.html" if redirectOnError
+    #location.href = "/assets/public/error.html" if redirectOnError
 
   getDatafromSource = (sourceURL, options) ->
     if not sourceURL || not $.type(sourceURL) in ['string', 'array']

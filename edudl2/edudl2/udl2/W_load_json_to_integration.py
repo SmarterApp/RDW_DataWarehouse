@@ -59,8 +59,7 @@ def generate_conf_for_loading(json_file, guid_batch, load_type, tenant_name):
     takes the msg and pulls out the relevant parameters to pass
     the method that loads the json
     '''
-    results = sfv_util.get_source_target_column_values_from_ref_column_mapping(
-            Constants.UDL2_JSON_LZ_TABLE, load_type)
+    results = sfv_util.get_source_target_column_values_from_ref_column_mapping(Constants.UDL2_JSON_LZ_TABLE, load_type)
     conf = {
         mk.FILE_TO_LOAD: json_file,
         mk.MAPPINGS: dict([(row[0], row[1].split('.')) for row in results]),

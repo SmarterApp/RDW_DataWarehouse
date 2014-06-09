@@ -10,6 +10,7 @@ from edudl2.udl2.celery import celery
 from edcore.database.utils.constants import UdlStatsConstants
 from edcore.database.utils.query import insert_udl_stats
 from edudl2.udl2_util.util import get_tenant_name
+from edudl2.udl2.constants import Constants as Const
 from edudl2.udl2_util.exceptions import InvalidTenantNameException
 
 __author__ = 'abrien'
@@ -70,9 +71,13 @@ def task(incoming_msg):
     # Outgoing message to be piped to the file decrypter
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
+    loc = input_source_file.rfind(Const.PROCESSING_FILE_EXT)
+    org_file = input_source_file[:loc] if loc != -1 else input_source_file
     outgoing_msg.update({
+        mk.INPUT_FILE_PATH: org_file,
         mk.INPUT_FILE_SIZE: input_file_size,
-        mk.FILE_TO_DECRYPT: os.path.join(tenant_directory_paths[mk.ARRIVED], os.path.basename(input_source_file)),
+        mk.FILE_TO_DECRYPT: os.path.join(tenant_directory_paths[mk.ARRIVED],
+                                         os.path.basename(org_file)),
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths,
         mk.TENANT_NAME: tenant_name})
 

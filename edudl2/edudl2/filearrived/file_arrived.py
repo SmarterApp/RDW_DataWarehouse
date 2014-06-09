@@ -7,6 +7,7 @@ import shutil
 from edudl2.udl2 import message_keys as mk
 from edudl2.udl2.celery import udl2_conf
 from edcore.watch.util import FileUtil
+from edudl2.udl2.constants import Constants as Const
 from edudl2.udl2_util.exceptions import InvalidTenantNameException
 
 
@@ -36,9 +37,18 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     :param history_dir: the directory path to the history directory
     :return: None
     """
-    shutil.copy2(incoming_file, arrived_dir)
-    shutil.move(incoming_file, history_dir)
-    checksum_file = FileUtil.get_complement_file_name(incoming_file)
+    if os.path.exists(incoming_file):
+        shutil.copy2(incoming_file, history_dir)
+        path_to_history_file = os.path.join(history_dir, os.path.basename(incoming_file))
+        processing_loc = path_to_history_file.rfind(Const.PROCESSING_FILE_EXT)
+        if processing_loc != -1:
+            os.rename(path_to_history_file, path_to_history_file[:processing_loc])
+        shutil.move(incoming_file, arrived_dir)
+        path_to_arrived_file = os.path.join(arrived_dir, os.path.basename(incoming_file))
+        processing_loc = path_to_arrived_file.rfind(Const.PROCESSING_FILE_EXT)
+        if processing_loc != -1:
+            os.rename(path_to_arrived_file, path_to_arrived_file[:processing_loc])
+    checksum_file = FileUtil.get_complement_file_name(incoming_file.rstrip(Const.PROCESSING_FILE_EXT))
     if os.path.exists(checksum_file):
         shutil.move(checksum_file, history_dir)
 

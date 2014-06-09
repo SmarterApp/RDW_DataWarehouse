@@ -51,6 +51,9 @@ class Constants():
     # Phase number
     INT_TO_STAR_PHASE = 4
 
+    # File extensions
+    PROCESSING_FILE_EXT = '.processing'
+
     # lambdas for returning list of constants or constants based on some condition
     # TODO: in future this will be replaced with dynamic udl schema based on load being processed
     LOAD_TYPES = lambda: [Constants.LOAD_TYPE_ASSESSMENT, Constants.LOAD_TYPE_STUDENT_REGISTRATION]

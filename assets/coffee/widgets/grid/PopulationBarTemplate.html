@@ -1,0 +1,14 @@
+<div class='barContainer default {{export}}'>
+    <div class='alignmentHighlightSection'>
+        <div class ='populationBar' data-margin-left='{{subject.alignment}}'>
+            {{{populationBar}}}
+        </div>
+    </div>
+        {{#hasTextReplacement}}
+        <div aria-label="{{subject.asmt_subject}} {{displayText}}" role="">{{displayText}}</div>
+        {{/hasTextReplacement}}
+
+        {{^hasTextReplacement}}
+         <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
+        {{/hasTextReplacement}}
+</div>

@@ -69,7 +69,6 @@ class HasExpectedFormat(object):
         results = sfv_util.get_source_target_column_values_from_ref_column_mapping(
             Constants.UDL2_JSON_LZ_TABLE, load_type) if None is None else []
         self.mapping = dict([(row[0], row[1].split('.')) for row in results])
-        a = 2
 
     def execute(self, dir_path, file_name, batch_sid):
         '''

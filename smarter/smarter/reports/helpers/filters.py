@@ -4,6 +4,7 @@ Created on Jul 11, 2013
 @author: tosako
 '''
 from sqlalchemy.sql.expression import true, false, or_, null
+from smarter.reports.helpers.constants import Constants
 
 YES = 'Y'
 NO = 'N'
@@ -32,6 +33,7 @@ FILTERS_SEX_NOT_STATED = 'not_stated'
 FILTERS_GRADE = 'grade'
 FILTERS_ETHNICITY = 'ethnicity'
 FILTERS_SEX = 'sex'
+FILTERS_GENDER = 'gender'
 
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
@@ -39,13 +41,15 @@ filter_map = {YES: true(),
               NOT_STATED: null()}
 
 
-def reverse_filter_map(value):
-    if value is null():
-        return NOT_STATED
-    elif value:
-        return YES
-    else:
-        return NO
+reverse_filter_map = {None: NOT_STATED,
+                      True: YES,
+                      False: NO}
+
+
+# Maps between client and server demographics names
+dmg_map = {Constants.DMG_PRG_IEP: FILTERS_PROGRAM_IEP,
+           Constants.DMG_PRG_504: FILTERS_PROGRAM_504,
+           Constants.DMG_PRG_LEP: FILTERS_PROGRAM_LEP}
 
 
 # Used in report_config for allowing demographics parameters for reports
@@ -164,23 +168,14 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
 
 
 def get_student_demographic(result):
+    '''
+    Formats student demographic data for consumption in front end
+    '''
     demographic = {}
 
-    for column in ['dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504']:
-        filter_name, value = _column_to_filter(column, result[column])
-        demographic[filter_name] = value
-     # 'dmg_eth_derived'
-    demographic['ethnicity'] = str(result['dmg_eth_derived'])
-    demographic['gender'] = result['sex']
+    for column in dmg_map.keys():
+        demographic[dmg_map.get(column)] = reverse_filter_map.get(result[column])
+    demographic[FILTERS_ETHNICITY] = str(result[Constants.DMG_ETH_DERIVED])
+    demographic[FILTERS_GENDER] = result[FILTERS_SEX]
 
     return demographic
-
-
-def _column_to_filter(column, value):
-    if column == 'dmg_prg_iep':
-        return (FILTERS_PROGRAM_IEP, reverse_filter_map(value))
-    elif column == 'dmg_prg_504':
-        return (FILTERS_PROGRAM_504, reverse_filter_map(value))
-    elif column == 'dmg_prg_lep':
-        return (FILTERS_PROGRAM_LEP, reverse_filter_map(value))
-    return (column, value)

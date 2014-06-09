@@ -155,6 +155,7 @@ def format_assessments(results, subjects_map):
         assessments[effectiveDate] = asmtDict
     return assessments
 
+
 def get_group_filters(results):
     # TODO: use list comprehension, format grouping information for filters
     group_1, group_2 = set(), set()
@@ -252,8 +253,7 @@ def get_list_of_students(params):
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmtYear))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE])))
-        # TODO: need to test extract?
-        # query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:

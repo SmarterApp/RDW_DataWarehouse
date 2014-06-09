@@ -5,33 +5,36 @@ define [
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'
-  'text!edwareFormatterTemplate'
-  'text!edwareGridPerformanceBarTemplate'
-  'text!edwareGridTooltipTemplate'
+  'text!edwareFormatterConfidenceTemplate'
+  'text!edwareFormatterNameTemplate'
+  'text!edwareFormatterPerfLevelTemplate'
+  'text!edwareFormatterPerformanceBarTemplate'
+  'text!edwareFormatterPopulationBarTemplate'
+  'text!edwareFormatterSummaryTemplate'
+  'text!edwareFormatterTextTemplate'
+  'text!edwareFormatterTooltipTemplate'
+  'text!edwareFormatterTotalPopulationTemplate'
   'edwarePreferences'
   'edwareContextSecurity'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate, edwareGridPerformanceBarTemplate, edwareGridTooltipTemplate, edwarePreferences, contextSecurity) ->
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity) ->
 
-  getTemplate = (name) ->
-    $(edwareFormatterTemplate).find('div#' + name).html()
+  SUMMARY_TEMPLATE = edwareFormatterSummaryTemplate
 
-  SUMMARY_TEMPLATE = getTemplate('SUMMARY_TEMPLATE')
+  POPULATION_BAR_TEMPLATE = edwareFormatterPopulationBarTemplate
 
-  POPULATION_BAR_TEMPLATE = getTemplate('POPULATION_BAR_TEMPLATE')
+  TOTAL_POPULATION_TEMPLATE = edwareFormatterTotalPopulationTemplate
 
-  TOTAL_POPULATION_TEMPLATE = getTemplate('TOTAL_POPULATION_TEMPLATE')
+  NAME_TEMPLATE = edwareFormatterNameTemplate
 
-  NAME_TEMPLATE = getTemplate('NAME_TEMPLATE')
+  TOOLTIP_TEMPLATE = edwareFormatterTooltipTemplate
 
-  TOOLTIP_TEMPLATE = edwareGridTooltipTemplate
+  CONFIDENCE_TEMPLATE = edwareFormatterConfidenceTemplate
 
-  CONFIDENCE_TEMPLATE = getTemplate('CONFIDENCE_TEMPLATE')
+  TEXT_TEMPLATE = edwareFormatterTextTemplate
 
-  TEXT_TEMPLATE = getTemplate('TEXT_TEMPLATE')
+  PERFORMANCE_BAR_TEMPLATE = edwareFormatterPerformanceBarTemplate
 
-  PERFORMANCE_BAR_TEMPLATE = edwareGridPerformanceBarTemplate
-
-  PERF_LEVEL_TEMPLATE = getTemplate('PERF_LEVEL_TEMPLATE')
+  PERF_LEVEL_TEMPLATE = edwareFormatterPerfLevelTemplate
 
   #
   # * EDWARE grid formatters

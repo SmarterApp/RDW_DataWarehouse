@@ -1,0 +1,14 @@
+<div class='marginLeft20 {{cssClass}} {{export}}'>
+    {{#isSticky}}
+    <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}' tabindex='0'></div>
+    <label class='stickyRemoveLabel paddingBottom9'>{{labels.remove}}</label>
+    <div class='edwareExportField stickyState' data-label='{{labels.on}}'></div>
+    {{/isSticky}}
+    {{^isSticky}}
+    <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}' aria-label='{{labels.compare}}'></input>
+    <label class='stickyCompareLabel paddingBottom9'>{{labels.compare}}</label>
+    <div class='edwareExportField stickyState' data-label='{{labels.off}}'></div>
+    {{/isSticky}}
+    {{{link}}}
+    <span class='edwareExportField' data-export-name='{{columnName}}' data-export-value='{{displayValue}}'></span>
+</div>

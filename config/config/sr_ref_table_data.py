@@ -7,10 +7,11 @@ ref_table_conf = {
         # column_map_key, phase, source_table, source_column, target_table, target_column, transformation_rule, stored_proc_name, stored_proc_created_date, created_date
 
         #Json to Integration
-        ('1', 'lz_json', 'identification.guid', 'int_sbac_stu_reg_meta', 'guid_registration', 'clean', None),
-        ('1', 'lz_json', 'identification.academicyear', 'int_sbac_stu_reg_meta', 'academic_year', 'clean', None),
-        ('1', 'lz_json', 'identification.extractdate', 'int_sbac_stu_reg_meta', 'extract_date', 'srDate', None),
-        ('1', 'lz_json', 'source.testregsysid', 'int_sbac_stu_reg_meta', 'test_reg_id', 'clean', None),
+        ('1', 'lz_json', 'Identification.Guid', 'int_sbac_stu_reg_meta', 'guid_registration', 'clean', None),
+        ('1', 'lz_json', 'Identification.AcademicYear', 'int_sbac_stu_reg_meta', 'academic_year', 'clean', None),
+        ('1', 'lz_json', 'Identification.ExtractDate', 'int_sbac_stu_reg_meta', 'extract_date', 'srDate', None),
+        ('1', 'lz_json', 'Source.TestRegSysID', 'int_sbac_stu_reg_meta', 'test_reg_id', 'clean', None),
+        ('1', 'lz_json', 'Source.TestRegCallbackURL', 'int_sbac_stu_reg_meta', 'callback_url', 'clean', None),
         # CSV to Staging
         ('1', 'lz_csv', 'statename', 'stg_sbac_stu_reg', 'name_state', 'clean', None),
         ('1', 'lz_csv', 'stateabbreviation', 'stg_sbac_stu_reg', 'code_state', 'cleanUpper', None),

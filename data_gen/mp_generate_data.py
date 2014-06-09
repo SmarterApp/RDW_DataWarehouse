@@ -49,6 +49,7 @@ def generate_state_district_hierarchy(id_gen):
     """
     global DISTRICT_TOTAL_COUNT
     district_tuples = []
+    gen_il = generate_data.WRITE_IL
 
     # Start with states
     for state_cfg in generate_data.STATES:
@@ -67,13 +68,14 @@ def generate_state_district_hierarchy(id_gen):
                     # Create the summative assessment
                     asmt_key_summ = str(year) + 'summative' + str(grade) + subject
                     assessments[asmt_key_summ] = generate_data.create_assessment_object('SUMMATIVE', 'Spring', year,
-                                                                                        subject, id_gen)
+                                                                                        subject, id_gen,
+                                                                                        generate_item_level=gen_il)
 
                     # Create the interim assessments
                     for period in generate_data.INTERIM_ASMT_PERIODS:
                         asmt_key_intrm = str(year) + 'interim' + period + str(grade) + subject
                         asmt_intrm = generate_data.create_assessment_object('INTERIM COMPREHENSIVE', period, year,
-                                                                            subject, id_gen)
+                                                                            subject, id_gen, generate_item_level=gen_il)
                         assessments[asmt_key_intrm] = asmt_intrm
 
         # Build the districts

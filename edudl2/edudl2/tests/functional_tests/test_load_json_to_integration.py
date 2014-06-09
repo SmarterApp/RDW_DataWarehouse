@@ -2,7 +2,6 @@ __author__ = 'smuhit'
 
 import os
 from edudl2.fileloader.json_loader import load_json
-from edudl2.udl2_util.udl_mappings import get_json_table_mapping
 from edudl2.udl2 import message_keys as mk
 from uuid import uuid4
 from sqlalchemy.sql import select
@@ -10,9 +9,10 @@ from edudl2.tests.functional_tests.util import UDLTestHelper
 from edudl2.database.udl2_connector import get_udl_connection, initialize_db_udl
 from edudl2.udl2.celery import udl2_conf
 from edudl2.udl2.constants import Constants
+from edudl2.sfv import sfv_util
 
 STUDENT_REGISTRATION_JSON_COLUMNS = ['record_sid', 'guid_batch', 'guid_registration', 'academic_year',
-                                     'extract_date', 'test_reg_id', 'created_date']
+                                     'extract_date', 'test_reg_id', 'callback_url', 'created_date']
 
 
 class FunctionalTestLoadJsonToIntegrationTable(UDLTestHelper):
@@ -29,10 +29,12 @@ class FunctionalTestLoadJsonToIntegrationTable(UDLTestHelper):
         self.udl2_conn.close_connection()
 
     def generate_config(self, load_type, file, guid):
+        results = sfv_util.get_source_target_column_values_from_ref_column_mapping(
+            Constants.UDL2_JSON_LZ_TABLE, load_type)
         conf = {
             mk.GUID_BATCH: guid,
             mk.FILE_TO_LOAD: file,
-            mk.MAPPINGS: get_json_table_mapping(load_type),
+            mk.MAPPINGS: dict([(row[0], row[1].split('.')) for row in results]),
             mk.TARGET_DB_TABLE: Constants.UDL2_JSON_INTEGRATION_TABLE(load_type),
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db_conn']['db_schema'],
             mk.TENANT_NAME: 'cat'

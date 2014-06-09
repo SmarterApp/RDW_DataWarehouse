@@ -20,7 +20,7 @@ from edudl2.udl2.constants import Constants
 from edudl2.udl2.celery import udl2_conf, udl2_flat_conf
 
 
-@unittest.skip("test failed at jenkins, under investigation")
+#@unittest.skip("test failed at jenkins, under investigation")
 class Test_Err_Handling_Scenario(unittest.TestCase):
 
     def setUp(self):

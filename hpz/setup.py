@@ -19,7 +19,8 @@ requires = [
     'edschema',
     'edauth',
     'edcore',
-    'smarter_common']
+    'smarter_common',
+    'python3-memcached == 1.51']
 
 setup(name='hpz',
       version='0.1',

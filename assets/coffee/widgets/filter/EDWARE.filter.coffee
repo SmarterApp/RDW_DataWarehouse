@@ -63,6 +63,7 @@ define [
         $(self).trigger FILTER_SUBMIT
 
       # attach click event to filter trigger button
+      $(document).off 'click', this.filterTrigger
       $(document).on 'click', this.filterTrigger, ->
         self.toggleFilterArea self
 

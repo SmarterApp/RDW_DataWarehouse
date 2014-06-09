@@ -15,14 +15,6 @@ require [
     params = mergeWithPreference(params)
     studentGrid.reload params
 
-    # Add filter to the page
-    # edwareDataProxy.getDataForFilter().done (configs)->
-    #   filter = $('#losFilter').edwareFilter '.filterItem', configs, (param)->
-    #     param = mergeWithPreference(param)
-    #     studentGrid.reload(param)
-    #   filter.loadReport()
-    #   filter.update {}
-
   mergeWithPreference = (params)->
     edwarePreferences.saveStateCode(params['stateCode'])
     asmtYear = edwarePreferences.getAsmtYearPreference()

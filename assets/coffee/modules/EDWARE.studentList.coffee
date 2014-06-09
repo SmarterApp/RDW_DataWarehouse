@@ -94,14 +94,19 @@ define [
           for studentId, assessment of studentList
             continue if assessment.hide
             row = new StudentModel(effectiveDate, this).init assessment
+            showAllSubjects = false
+            # push to each subject view
             for subjectName, subjectType of @subjectsData
-              continue if not row[subjectName]
+              continue if not row[subjectName] or row[subjectName].hide
               @cache[effectiveDate][asmtType][subjectType] ?= []
               @cache[effectiveDate][asmtType][subjectType].push row
+              showAllSubjects = true
 
-              @cache[effectiveDate][asmtType][@allSubjects] ?= []
-              allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
-              allsubjects.push row  if row not in allsubjects
+            continue if not showAllSubjects
+            # push to conjunct Math_ELA view
+            @cache[effectiveDate][asmtType][@allSubjects] ?= []
+            allsubjects = @cache[effectiveDate][asmtType][@allSubjects]
+            allsubjects.push row  if row not in allsubjects
 
     getAsmtData: (viewName)->
       # Saved asmtType and viewName
@@ -140,6 +145,8 @@ define [
       edwareDataProxy.getDataForFilter().done (configs)->
         configs = self.mergeFilters(configs)
         @filter = $('#losFilter').edwareFilter '.filterItem', configs, self.createGrid.bind(self)
+        @filter.loadReport()
+        @filter.update {}
 
     mergeFilters: (configs) ->
       for group in @data.groups
@@ -147,7 +154,6 @@ define [
       return configs
 
     loadPage: (@data) ->
-      # TODO:
       @cutPointsData = @createCutPoints()
       @contextData = data.context
       @subjectsData = data.subjects
@@ -160,7 +166,7 @@ define [
       @renderFilter()
       @createHeaderAndFooter()
 
-      @createGrid()
+      # @createGrid()
       @bindEvents()
       @applyContextSecurity()
 

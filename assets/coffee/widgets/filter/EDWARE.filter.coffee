@@ -307,25 +307,41 @@ define [
     for effectiveDate, assessment of data.assessments
       for asmtType, studentList of assessment
         for studentId, assessment of studentList
-          if not match(assessment)
+          if not match.demographics(assessment)
             assessment.hide = true
           else
             assessment.hide = false
+          # check grouping filters
+          for subject of data.subjects
+            asmt_subject = assessment[subject]
+            continue if not asmt_subject
+            if not match.grouping(asmt_subject)
+              asmt_subject.hide = true
+            else
+              asmt_subject.hide = false
     data
 
   createFilter = (filters) ->
 
-    return (assessment)->
-      for filterName, filterValue of filters
-        # do not check other attributes
-        if not $.isArray(filterValue)
-          continue
-        if not filterName.startWith('group')
-          return false if assessment.demographic[filterName] not in filterValue
-        else
-          # TODO:
-          continue
-      return true
+    return {
+      demographics : (assessment) ->
+        # TODO: may need refactoring
+        for filterName, filterValue of filters
+          # do not check other attributes
+          if not $.isArray(filterValue)
+            continue
+          if filterName.substr(0, 5) isnt 'group' # do not check grouping filters
+            return false if assessment.demographic[filterName] not in filterValue
+        return true
+
+      grouping: (subject) ->
+        group_1 = filters.group_1
+        group_2 = filters.group_2
+        # we take as a match if there's no grouping filter, or current group id is within filters
+        in_group_1 = not group_1 or subject.group_1_id in group_1
+        in_group_2 = not group_2 or subject.group_2_id in group_2
+        return in_group_1 && in_group_2
+    }
 
 
   #

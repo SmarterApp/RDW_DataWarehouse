@@ -10,6 +10,7 @@ from pyramid.response import Response
 from smarter.security.context import check_context
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
+import smarter.extracts.processor as processor
 import urllib.parse
 import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
@@ -21,8 +22,10 @@ import services.celery
 from edapi.decorators import validate_params
 from edcore.utils.utils import to_bool
 from smarter.security.constants import RolesConstants
+from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
 import copy
+import json
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
@@ -177,6 +180,13 @@ def get_pdf_content(params):
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
     if len(file_names) > 1:
+        # Build response object (including registration with HPZ)
+        request_id, user, tenant = processor.get_extract_request_user_info(state_code)
+        response = {}
+        registration_id, download_url = register_file(user.get_uid())
+        response['download_url'] = download_url
+        response['fileName'] = _get_bulk_pdf_out_name(tenant, registration_id)
+
         generate_tasks = []
         args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name, 'grayscale': is_grayscale, 'always_generate': always_generate}
         for idx in range(len(file_names)):
@@ -184,18 +194,16 @@ def get_pdf_content(params):
             copied_args['url'] = urls[idx]
             copied_args['outputfile'] = file_names[idx]
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
-        # for celery_response in celery_responses:
-            # if celery_response.get(timeout=celery_timeout) is not OK:
-                # raise EdApiHTTPInternalServerError("Internal Error")
-        celery_response = chain(group(generate_tasks), pdf_merge.subtask(args=(file_names, services.celery.TIMEOUT), immutable=True))()  # @UndefinedVariable
-        # group(generate_tasks).apply_async()
-        # celery_response = pdf_merge.delay(file_names, timeout=services.celery.TIMEOUT)  # @UndefinedVariable
-        pdf_stream = celery_response.get(timeout=celery_timeout)
+        celery_response = chain(group(generate_tasks),
+                                pdf_merge.subtask(args=(file_names, response['fileName'],
+                                                        processor.get_extract_work_zone_path(tenant, registration_id),
+                                                        registration_id, services.celery.TIMEOUT), immutable=True))
+        celery_response.apply_async()
+        return Response(body=json.dumps(response), content_type='application/json')
     else:
         celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name, timeout=services.celery.TIMEOUT, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
         pdf_stream = celery_response.get(timeout=celery_timeout)
-
-    return Response(body=pdf_stream, content_type='application/pdf')
+        return Response(body=pdf_stream, content_type='application/pdf')
 
 
 def has_context_for_pdf_request(state_code, student_guid):
@@ -207,3 +215,7 @@ def has_context_for_pdf_request(state_code, student_guid):
     if type(student_guid) is not list:
         student_guid = [student_guid]
     return check_context(RolesConstants.PII, state_code, student_guid)
+
+
+def _get_bulk_pdf_out_name(tenant, registration_id):
+    return registration_id + '.pdf'

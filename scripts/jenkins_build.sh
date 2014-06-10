@@ -323,6 +323,9 @@ function import_data_from_csv {
     if (! $RUN_END_TO_END;) then
         python import_data.py --config ${WORKSPACE}/config/data_copy.ini --resource ${WORKSPACE}/edschema/edschema/database/tests/resources/student_registration_data/ --tenant fish --stateCode VT --stateName Vermont
     fi
+
+    echo "Generate Item Level Data"
+    python create_item_level_files.py --config ${WORKSPACE}/config/data_copy.ini
 }
 
 function build_rpm {

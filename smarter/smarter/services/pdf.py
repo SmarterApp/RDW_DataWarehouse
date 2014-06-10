@@ -4,13 +4,12 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.pdf import prepare, pdf_merge, get, archive, remote_copy
+from services.tasks.pdf import prepare, pdf_merge, get, prepare_path, archive, remote_copy
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
-import smarter.extracts.processor as processor
 import urllib.parse
 import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
@@ -24,7 +23,8 @@ from edcore.utils.utils import to_bool
 from smarter.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
-from edextract.tasks.extract import prepare_path
+from pyramid.security import authenticated_userid
+from pyramid.threadlocal import get_current_request
 import celery
 import copy
 import json
@@ -93,10 +93,11 @@ def post_pdf_service(context, request):
     '''
     try:
         params = request.json_body
+        user = authenticated_userid(request)
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
 
-    return send_pdf_request(params)
+    return send_pdf_request(params, user)
 
 
 @view_config(route_name='pdf', request_method='GET')
@@ -107,10 +108,11 @@ def get_pdf_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    return send_pdf_request(request.GET)
+    user = authenticated_userid(request)
+    return send_pdf_request(request.GET, user)
 
 
-def send_pdf_request(params):
+def send_pdf_request(params, user):
     '''
     Requests for pdf content, throws http exceptions when error occurs
 
@@ -121,7 +123,7 @@ def send_pdf_request(params):
         raise EdApiHTTPNotFound("Not Found")
 
     try:
-        response = get_pdf_content(params)
+        response = get_pdf_content(params, user)
     except InvalidParameterError as e:
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
@@ -130,12 +132,13 @@ def send_pdf_request(params):
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # if celery get task got timed out...
+        print(str(e))
         raise EdApiHTTPInternalServerError("Internal Error")
 
     return response
 
 
-def get_pdf_content(params):
+def get_pdf_content(params, user):
     '''
     Read pdf content from file system if it exists, else generate it
 
@@ -168,7 +171,11 @@ def get_pdf_content(params):
 
     # get isr file path name
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    student_guids_file_names = generate_isr_report_path_by_student_guid(state_code, effective_date, pdf_report_base_dir=pdf_base_dir, student_guids=student_guids, asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+    student_guids_file_names = generate_isr_report_path_by_student_guid(state_code, effective_date,
+                                                                        pdf_report_base_dir=pdf_base_dir,
+                                                                        student_guids=student_guids,
+                                                                        asmt_type=asmt_type, grayScale=is_grayscale,
+                                                                        lang=lang)
 
     urls = []
     file_names = []
@@ -182,14 +189,22 @@ def get_pdf_content(params):
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
+
+    # Decide if this is a bulk merge or simple PDF return
     if len(file_names) > 1:
-        # Build response object (including registration with HPZ)
-        request_id, user, tenant = processor.get_extract_request_user_info(state_code)
+        # Register expected file with HPZ
         registration_id, download_url = register_file(user.get_uid())
-        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, registration_id)
-        directory_to_archive = processor.get_extract_work_zone_path(tenant, registration_id)
+
+        # Set up directory and file names
+        archive_file_name = '{pdf_base}/bulk/{registration_id}/zip/{registration_id}.zip'.format(pdf_base=pdf_base_dir,
+                                                                                                 registration_id=registration_id)
+        directory_to_archive = '{pdf_base}/bulk/{registration_id}/data'.format(pdf_base=pdf_base_dir,
+                                                                               registration_id=registration_id)
+
+        # Create JSON response
         response = {'fileName': os.path.basename(archive_file_name), 'download_url': download_url}
 
+        # Create the tasks for each individual student PDF file we want to merge
         generate_tasks = []
         args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
                 'grayscale': is_grayscale, 'always_generate': always_generate}
@@ -198,11 +213,15 @@ def get_pdf_content(params):
             copied_args['url'] = urls[idx]
             copied_args['outputfile'] = file_names[idx]
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
-        start_bulk(tenant, request_id, _get_bulk_pdf_out_name(registration_id), archive_file_name, directory_to_archive,
+
+        # Start the bulk merge
+        start_bulk(_get_bulk_pdf_out_name(registration_id), archive_file_name, directory_to_archive,
                    registration_id, generate_tasks, file_names, pdf_base_dir)
 
+        # Return the JSON response while the bulk merge runs asynchronously
         return Response(body=json.dumps(response), content_type='application/json')
     else:
+        # Create the task and stream the individual PDF response back to the browser
         celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name,
                                     timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
                                     always_generate=always_generate)  # @UndefinedVariable
@@ -222,22 +241,21 @@ def has_context_for_pdf_request(state_code, student_guid):
 
 
 @celery.task(name='task.pdf.start_bulk')
-def start_bulk(tenant, request_id, bulk_name, archive_file_name, directory_to_archive, registration_id, tasks,
-               file_names, pdf_base_dir):
+def start_bulk(bulk_name, archive_file_name, directory_to_archive, registration_id, tasks, file_names, pdf_base_dir):
     '''
-    entry point to start an extract request for one or more extract tasks
-    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files
-    into one zip
+    entry point to start a bulk PDF generation request for one or more students
+    it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
+    the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
 
-    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]],
+    workflow = chain(prepare_path.subtask(args=[[directory_to_archive, os.path.dirname(archive_file_name)]],
                                           immutable=True),
                      group(tasks),
                      pdf_merge.subtask(args=(file_names, os.path.join(directory_to_archive, bulk_name),
                                              pdf_base_dir, registration_id, services.celery.TIMEOUT),
                                        immutable=True),
-                     archive.subtask(args=[archive_file_name, directory_to_archive], immutable=True),
-                     remote_copy.subtask(args=[archive_file_name, registration_id], immutable=True))
+                     archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),
+                     remote_copy.subtask(args=(archive_file_name, registration_id), immutable=True))
     workflow.apply_async()
 
 

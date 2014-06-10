@@ -4,6 +4,7 @@ Created on Jul 11, 2013
 @author: tosako
 '''
 from sqlalchemy.sql.expression import true, false, or_, null
+from smarter.reports.helpers.constants import Constants
 
 YES = 'Y'
 NO = 'N'
@@ -32,11 +33,23 @@ FILTERS_SEX_NOT_STATED = 'not_stated'
 FILTERS_GRADE = 'grade'
 FILTERS_ETHNICITY = 'ethnicity'
 FILTERS_SEX = 'sex'
+FILTERS_GENDER = 'gender'
 
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
               NO: false(),
               NOT_STATED: null()}
+
+
+reverse_filter_map = {None: NOT_STATED,
+                      True: YES,
+                      False: NO}
+
+
+# Maps between client and server demographics names
+dmg_map = {Constants.DMG_PRG_IEP: FILTERS_PROGRAM_IEP,
+           Constants.DMG_PRG_504: FILTERS_PROGRAM_504,
+           Constants.DMG_PRG_LEP: FILTERS_PROGRAM_LEP}
 
 
 # Used in report_config for allowing demographics parameters for reports
@@ -152,3 +165,17 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
         if filter_sex is not None:
             query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
     return query
+
+
+def get_student_demographic(result):
+    '''
+    Formats student demographic data for consumption in front end
+    '''
+    demographic = {}
+
+    for column in dmg_map.keys():
+        demographic[dmg_map.get(column)] = reverse_filter_map.get(result[column])
+    demographic[FILTERS_ETHNICITY] = str(result[Constants.DMG_ETH_DERIVED])
+    demographic[FILTERS_GENDER] = result[FILTERS_SEX]
+
+    return demographic

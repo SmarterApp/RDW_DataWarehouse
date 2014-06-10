@@ -56,6 +56,7 @@ def generate_ini(env, input_file='settings.yaml', output_file=None):
     settings = yaml.load(settings)
 
     # if the environment is in the yaml file, we use it. otherwise, we just use the common part.
+    env_settings = False
     if env in settings:
         env_settings = settings[env]
     else:
@@ -65,6 +66,7 @@ def generate_ini(env, input_file='settings.yaml', output_file=None):
         raise ValueError("could not find the common section in the yaml file")
 
     # check for host class config
+    hc_settings = False
     if hostclass is not None and hostclass in settings:
         hc_settings = settings[hostclass]
     elif hostclass is not None:

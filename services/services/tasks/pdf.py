@@ -166,12 +166,10 @@ def delete(path):
 
 @celery.task(name='tasks.pdf.merge')
 def pdf_merge(pdf_files, out_file, out_dir, registration_id, timeout=TIMEOUT):
-    out_path = os.path.join(out_dir, out_file)
+    out_path = os.path.join(out_dir, 'merged.pdf')
     if os.path.isfile(out_path):
         log.error(out_file + " is already exist")
         raise PdfGenerationError()
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
@@ -180,3 +178,5 @@ def pdf_merge(pdf_files, out_file, out_dir, registration_id, timeout=TIMEOUT):
     except subprocess.TimeoutExpired:
         # Note that Timeout exception is valid due to wkhtmltopdf issue 141
         log.error('wkhmltopdf subprocess call timed out')
+    except Exception as e:
+        log.error(str(e))

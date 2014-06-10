@@ -24,8 +24,11 @@ from edcore.utils.utils import to_bool
 from smarter.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
+from edextract.tasks.extract import prepare_path, archive, remote_copy
+import celery
 import copy
 import json
+import os
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
@@ -182,26 +185,27 @@ def get_pdf_content(params):
     if len(file_names) > 1:
         # Build response object (including registration with HPZ)
         request_id, user, tenant = processor.get_extract_request_user_info(state_code)
-        response = {}
         registration_id, download_url = register_file(user.get_uid())
-        response['download_url'] = download_url
-        response['fileName'] = _get_bulk_pdf_out_name(tenant, registration_id)
+        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, registration_id)
+        directory_to_archive = processor.get_extract_work_zone_path(tenant, registration_id)
+        response = {'fileName': os.path.basename(archive_file_name), 'download_url': download_url}
 
         generate_tasks = []
-        args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name, 'grayscale': is_grayscale, 'always_generate': always_generate}
+        args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
+                'grayscale': is_grayscale, 'always_generate': always_generate}
         for idx in range(len(file_names)):
             copied_args = copy.deepcopy(args)
             copied_args['url'] = urls[idx]
             copied_args['outputfile'] = file_names[idx]
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
-        celery_response = chain(group(generate_tasks),
-                                pdf_merge.subtask(args=(file_names, response['fileName'],
-                                                        processor.get_extract_work_zone_path(tenant, registration_id),
-                                                        registration_id, services.celery.TIMEOUT), immutable=True))
-        celery_response.apply_async()
+        start_bulk(tenant, request_id, archive_file_name, directory_to_archive, registration_id, generate_tasks,
+                   file_names)
+
         return Response(body=json.dumps(response), content_type='application/json')
     else:
-        celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name, timeout=services.celery.TIMEOUT, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
+        celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name,
+                                    timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
+                                    always_generate=always_generate)  # @UndefinedVariable
         pdf_stream = celery_response.get(timeout=celery_timeout)
         return Response(body=pdf_stream, content_type='application/pdf')
 
@@ -210,12 +214,27 @@ def has_context_for_pdf_request(state_code, student_guid):
     '''
     Validates that user has context to student_guid
 
-    :param student_guid:  guid of the student
+    :param student_guid:  guid(s) of the student(s)
     '''
     if type(student_guid) is not list:
         student_guid = [student_guid]
     return check_context(RolesConstants.PII, state_code, student_guid)
 
 
-def _get_bulk_pdf_out_name(tenant, registration_id):
-    return registration_id + '.pdf'
+@celery.task(name='task.pdf.start_bulk')
+def start_bulk(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, file_names):
+    '''
+    entry point to start an extract request for one or more extract tasks
+    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files
+    into one zip
+    '''
+
+    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]],
+                                          immutable=True),
+                     group(tasks),
+                     pdf_merge.subtask(args=(file_names, archive_file_name,
+                                             directory_to_archive, registration_id, services.celery.TIMEOUT),
+                                       immutable=True),
+                     archive.subtask(args=[request_id, archive_file_name, directory_to_archive], immutable=True),
+                     remote_copy.subtask(args=[request_id, archive_file_name, registration_id], immutable=True))
+    workflow.apply_async()

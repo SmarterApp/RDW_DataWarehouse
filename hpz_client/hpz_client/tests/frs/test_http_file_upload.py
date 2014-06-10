@@ -35,7 +35,7 @@ class TestHTTPFileUpload(unittest.TestCase):
         with patch('builtins.open', mock_open(), create=True):
             http_file_upload('filename', reg_id)
 
-        post_patch.assert_called_once_with('http://somehost:82/files/a1-b2-c3-d4-e5', data=stream_mock, headers={'Content-Type': stream_mock.content_type, 'File-Name': 'filename'})
+        post_patch.assert_called_once_with('http://somehost:82/files/a1-b2-c3-d4-e5', data=stream_mock, headers={'Content-Type': stream_mock.content_type, 'File-Name': 'filename'}, verify=True)
 
     @patch('hpz_client.frs.http_file_upload.__create_stream')
     @patch('hpz_client.frs.http_file_upload.api.post')
@@ -51,5 +51,5 @@ class TestHTTPFileUpload(unittest.TestCase):
         with patch('builtins.open', mock_open(), create=True), self.assertRaises(RemoteCopyError) as context:
             http_file_upload('filename', reg_id)
 
-        post_patch.assert_called_once_with('http://somehost:82/files/a1-b2-c3-d4-e5', data=stream_mock, headers={'Content-Type': stream_mock.content_type, 'File-Name': 'filename'})
+        post_patch.assert_called_once_with('http://somehost:82/files/a1-b2-c3-d4-e5', data=stream_mock, headers={'Content-Type': stream_mock.content_type, 'File-Name': 'filename'}, verify=True)
         self.assertEquals(context.exception.msg, 'ooops!')

@@ -45,15 +45,15 @@
 
                 {
                     "label": "Yes",
-                      "value": "Y"
+                    "value": "Y"
                 },
                 {
                     "label": "No",
-                      "value": "N"
+                    "value": "N"
                 },
                 {
                     "label": "Not Stated",
-                      "value": "NS"
+                    "value": "NS"
                 }
             ]
         },
@@ -65,35 +65,35 @@
             "options" : [
                 {
                     "label": "Hispanic/Latino of any race",
-                      "value": "3"
+                    "value": "3"
                 },
                 {
                     "label": "American Indian or Alaska Native*",
-                      "value": "4"
+                    "value": "4"
                 },
                 {
                     "label": "Asian*",
-                      "value": "2"
+                    "value": "2"
                 },
                 {
                     "label": "Black or African American*",
-                      "value": "1"
+                    "value": "1"
                 },
                 {
                     "label": "Native Hawaiian or Pacific Islander*",
-                      "value": "5"
+                    "value": "5"
                 },
                 {
                     "label": "White*",
-                      "value": "6"
+                    "value": "6"
                 },
                 {
                     "label": "Two or more races*",
-                      "value": "7"
+                    "value": "7"
                 },
                 {
                     "label": "Not Stated",
-                      "value": "0"
+                    "value": "0"
                 }
             ]
         },
@@ -105,15 +105,15 @@
             "options" : [
                 {
                     "label": "Yes",
-                      "value": "Y"
+                    "value": "Y"
                 },
                 {
                     "label": "No",
-                      "value": "N"
+                    "value": "N"
                 },
                 {
                     "label": "Not Stated",
-                      "value": "NS"
+                    "value": "NS"
                 }
             ]
         },
@@ -150,9 +150,16 @@
                 },
                 {
                     "label": "Not Stated",
-                      "value": "NS"
+                    "value": "NS"
                 }
             ]
         }
-    ]
+    ],
+    "group_template" : {
+        "display" : "Student Grouping {{index}}",
+        "tag" : "Student Grouping {{index}}",
+        "name" : "group_{{index}}",
+        "options" : [
+        ]
+    }
 }

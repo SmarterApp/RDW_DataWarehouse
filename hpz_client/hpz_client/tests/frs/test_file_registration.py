@@ -37,4 +37,4 @@ class TestFileRegistration(unittest.TestCase):
         registration_id, download_url = register_file('dummy_user@phony.com')
         self.assertEqual('a1-b2-c3-d4-e1e10', registration_id)
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', download_url)
-        put_patch.assert_called_once_with('http://somehost:82/registration', '{"uid": "dummy_user@phony.com"}')
+        put_patch.assert_called_once_with('http://somehost:82/registration', '{"uid": "dummy_user@phony.com"}', verify=True)

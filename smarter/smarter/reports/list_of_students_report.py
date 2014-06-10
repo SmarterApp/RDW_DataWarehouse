@@ -173,9 +173,8 @@ def get_group_filters(results):
             continue
         groups = {}
         # temporary names, will be updated to more meaningful text
-        groups["display"] = "Group %d" % (idx + 1)
-        groups["tag"] = "Group %d" % (idx + 1)
-        groups["name"] = "group_%d" % (idx + 1)
+        groups["index"] = (idx + 1)
+        options.sort(key=lambda option: option['label'])
         groups["options"] = options
         filters.append(groups)
     return filters

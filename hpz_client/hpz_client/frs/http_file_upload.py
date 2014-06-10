@@ -17,13 +17,14 @@ def __create_stream(file_path, file):
 
 def http_file_upload(file_path, registration_id):
     upload_url = get_setting(Config.HPZ_FILE_UPLOAD_BASE_URL) + '/' + registration_id
+    verify_certificate = not get_setting(Config.HPZ_IGNORE_CERTIFICATE)
 
     with open(file_path, 'rb') as f:
         stream = __create_stream(file_path, f)
         headers = {'Content-Type': stream.content_type, 'File-Name': os.path.basename(file_path)}
 
         try:
-            response = api.post(upload_url, data=stream, headers=headers)
+            response = api.post(upload_url, data=stream, headers=headers, verify=verify_certificate)
 
         except ConnectionError as e:
             raise RemoteCopyError(msg=str(e))

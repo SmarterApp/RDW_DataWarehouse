@@ -149,8 +149,11 @@ define [
         filter.update {}
 
     mergeFilters: (configs) ->
+      template = JSON.stringify(configs.group_template)
       for group in @data.groups
-        configs.filters.push group
+        filter = JSON.parse(Mustache.render template, group)
+        filter.options = group.options
+        configs.filters.push filter
       return configs
 
     loadPage: (@data) ->

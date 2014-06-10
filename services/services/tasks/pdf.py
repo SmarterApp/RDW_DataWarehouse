@@ -170,8 +170,8 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, registration_id, timeout=TIMEOU
     if os.path.isfile(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
-    if not os.path.isdir(out_name):
-        os.makedirs(out_name)
+    if not os.path.isdir(os.path.dirname(out_name)):
+        os.makedirs(os.path.dirname(out_name))
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)

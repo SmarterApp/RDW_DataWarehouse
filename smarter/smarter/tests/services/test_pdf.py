@@ -224,10 +224,10 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(InvalidParameterError, get_pdf_content, params)
 
     @patch('smarter.services.pdf.bulk_pdf_process')
-    @patch('smarter.reports.helpers.ISR_pdf_name_formatter.generate_isr_report_path_by_student_guid')
-    def test_get_pdf_content(self, bulk_pdf_process_patch, generate_isr_report_path_by_student_guid_patch):
-        bulk_pdf_process_patch.return_value = {'hello': 'world'}
-        generate_isr_report_path_by_student_guid_patch.return_value = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/a', '34140997-8949-497e-bbbb-5d72aa7dc9cb': '/b'}
+    @patch('smarter.services.pdf.generate_isr_report_path_by_student_guid')
+    def test_get_pdf_content(self, mock_bulk_pdf_process_patch, mock_generate_isr_report_path_by_student_guid_patch):
+        mock_bulk_pdf_process_patch.return_value = {'hello': 'world'}
+        mock_generate_isr_report_path_by_student_guid_patch.return_value = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/a', '34140997-8949-497e-bbbb-5d72aa7dc9cb': '/b'}
         params = {}
         params['studentGuid'] = ['a5ddfe12-740d-4487-9179-de70f6ac33be', '34140997-8949-497e-bbbb-5d72aa7dc9cb']
         params['stateCode'] = 'NC'

@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.pdf import prepare, generate, pdf_merge, get, OK
+from services.tasks.pdf import prepare, pdf_merge, get
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
@@ -26,6 +26,7 @@ from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
 import copy
 import json
+import os
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
@@ -180,30 +181,36 @@ def get_pdf_content(params):
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
     if len(file_names) > 1:
-        # Build response object (including registration with HPZ)
-        request_id, user, tenant = processor.get_extract_request_user_info(state_code)
-        response = {}
-        registration_id, download_url = register_file(user.get_uid())
-        response['download_url'] = download_url
-        response['fileName'] = _get_bulk_pdf_out_name(tenant, registration_id)
-
-        generate_tasks = []
-        args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name, 'grayscale': is_grayscale, 'always_generate': always_generate}
-        for idx in range(len(file_names)):
-            copied_args = copy.deepcopy(args)
-            copied_args['url'] = urls[idx]
-            copied_args['outputfile'] = file_names[idx]
-            generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
-        celery_response = chain(group(generate_tasks),
-                                pdf_merge.subtask(args=(file_names, response['fileName'],
-                                                        processor.get_extract_work_zone_path(tenant, registration_id),
-                                                        registration_id, services.celery.TIMEOUT), immutable=True))
-        celery_response.apply_async()
-        return Response(body=json.dumps(response), content_type='application/json')
+        response = bulk_pdf_process(urls, file_names, state_code, cookie_value, services.celery.TIMEOUT, cookie_name, is_grayscale, always_generate, pdf_base_dir)
+        playload = json.dumps(response)
+        content_type = 'application/json'
     else:
         celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name, timeout=services.celery.TIMEOUT, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
-        pdf_stream = celery_response.get(timeout=celery_timeout)
-        return Response(body=pdf_stream, content_type='application/pdf')
+        playload = celery_response.get(timeout=celery_timeout)
+        content_type = 'application/pdf'
+    return Response(body=playload, content_type=content_type)
+
+
+def bulk_pdf_process(urls, file_names, state_code, cookie_value, timeout, cookie_name, is_grayscale, always_generate, pdf_base_dir):
+    # Build response object (including registration with HPZ)
+    request_id, user, tenant = processor.get_extract_request_user_info(state_code)
+    response = {}
+    registration_id, download_url = register_file(user.get_uid())
+    response['download_url'] = download_url
+    response['fileName'] = _get_bulk_pdf_out_name(registration_id)
+
+    generate_tasks = []
+    args = {'cookie': cookie_value, 'timeout': timeout, 'cookie_name': cookie_name, 'grayscale': is_grayscale, 'always_generate': always_generate}
+    for idx in range(len(file_names)):
+        copied_args = copy.deepcopy(args)
+        copied_args['url'] = urls[idx]
+        copied_args['outputfile'] = file_names[idx]
+        generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
+    output_file = os.path.join(processor.get_extract_work_zone_path(tenant, registration_id), response['fileName'])
+    celery_response = chain(group(generate_tasks),
+                            pdf_merge.subtask(args=(file_names, output_file, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
+    celery_response.apply_async()
+    return response
 
 
 def has_context_for_pdf_request(state_code, student_guid):
@@ -217,5 +224,5 @@ def has_context_for_pdf_request(state_code, student_guid):
     return check_context(RolesConstants.PII, state_code, student_guid)
 
 
-def _get_bulk_pdf_out_name(tenant, registration_id):
+def _get_bulk_pdf_out_name(registration_id):
     return registration_id + '.pdf'

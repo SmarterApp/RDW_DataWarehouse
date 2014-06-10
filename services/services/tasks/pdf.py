@@ -16,12 +16,13 @@ import copy
 from services.celery import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
-import tempfile
 import uuid
-import shutil
+from subprocess import Popen
+import tempfile
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
+pdfunite_procs = ['pdfunite']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 
 OK = 0
@@ -165,18 +166,45 @@ def delete(path):
 
 
 @celery.task(name='tasks.pdf.merge')
-def pdf_merge(pdf_files, out_file, out_dir, registration_id, timeout=TIMEOUT):
-    out_path = os.path.join(out_dir, out_file)
-    if os.path.isfile(out_path):
-        log.error(out_file + " is already exist")
+def pdf_merge(pdf_files, output_file, pdf_base_dir, timeout=TIMEOUT):
+    if os.path.isfile(output_file):
+        log.error(output_file + " is already exist")
         raise PdfGenerationError()
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    if not os.path.isdir(os.path.dirname(output_file)):
+        os.makedirs(os.path.dirname(output_file))
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
     try:
-        subprocess.call(['pdfunite'] + pdf_files + [out_path], timeout=timeout)
+        # UNIX can handle upto 1024 file descriptors in default.  To be safe we process 1000 files at once.
+        FILE_LIMIT = 2
+        if len(pdf_files) > FILE_LIMIT:
+            with tempfile.TemporaryDirectory(dir=os.path.join(pdf_base_dir, '.tmp')) as temp_dir:
+                files = parallel_pdf_unite(pdf_files, temp_dir, FILE_LIMIT=FILE_LIMIT, timeout=timeout)
+                subprocess.call(pdfunite_procs + files + [output_file], timeout=timeout)
+        else:
+            subprocess.call(pdfunite_procs + pdf_files + [output_file], timeout=timeout)
     except subprocess.TimeoutExpired:
-        # Note that Timeout exception is valid due to wkhtmltopdf issue 141
-        log.error('wkhmltopdf subprocess call timed out')
+        log.error('pdfunite subprocess call timed out')
+
+
+def parallel_pdf_unite(pdf_files, pdf_tmp_dir, FILE_LIMIT=1000, timeout=TIMEOUT):
+    procs = []
+    files = []
+    offset = -1
+    while offset is not int(len(pdf_files) / FILE_LIMIT):
+        offset += 1
+        end = (offset + 1) * FILE_LIMIT if offset is not int(len(pdf_files) / FILE_LIMIT) else len(pdf_files)
+        partial_file_list = []
+        partial_file_list = pdf_files[offset * FILE_LIMIT:end]
+        if len(partial_file_list) is 1:
+            files.append(partial_file_list[0])
+        else:
+            partial_outputfile = os.path.join(pdf_tmp_dir, str(uuid.uuid4()))
+            partial_file_list.append(partial_outputfile)
+            files.append(partial_outputfile)
+            proc = Popen(pdfunite_procs + partial_file_list)
+            procs.append(proc)
+    for proc in procs:
+        proc.wait(timeout=timeout) 
+    return files

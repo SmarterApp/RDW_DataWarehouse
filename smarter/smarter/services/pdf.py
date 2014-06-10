@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.pdf import prepare, pdf_merge, get
+from services.tasks.pdf import prepare, pdf_merge, get, archive
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
@@ -24,7 +24,7 @@ from edcore.utils.utils import to_bool
 from smarter.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
-from edextract.tasks.extract import prepare_path, archive, remote_copy
+from edextract.tasks.extract import prepare_path, remote_copy
 import celery
 import copy
 import json
@@ -236,7 +236,7 @@ def start_bulk(tenant, request_id, bulk_name, archive_file_name, directory_to_ar
                      pdf_merge.subtask(args=(file_names, os.path.join(directory_to_archive, bulk_name),
                                              pdf_base_dir, registration_id, services.celery.TIMEOUT),
                                        immutable=True),
-                     archive.subtask(args=[request_id, archive_file_name, directory_to_archive], immutable=True),
+                     archive.subtask(args=[archive_file_name, directory_to_archive], immutable=True),
                      remote_copy.subtask(args=[request_id, archive_file_name, registration_id], immutable=True))
     workflow.apply_async()
 

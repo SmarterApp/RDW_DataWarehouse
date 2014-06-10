@@ -12,6 +12,7 @@ import subprocess
 from services.celery import celery
 from services.exceptions import PdfGenerationError
 from edcore.exceptions import NotForWindowsException
+from edcore.utils.utils import archive_files
 import copy
 from services.celery import TIMEOUT
 import services
@@ -185,6 +186,19 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, registration_id, timeout=TIMEOU
             subprocess.call(pdfunite_procs + pdf_files + [out_name], timeout=timeout)
     except subprocess.TimeoutExpired:
         log.error('pdfunite subprocess call timed out')
+
+
+@celery.task(name="tasks.pdf.archive")
+def archive(archive_file_name, directory):
+    '''
+    given a directory, archive everything in this directory to a file name specified
+    '''
+
+    try:
+        archive_files(directory, archive_file_name)
+    except Exception as e:
+        # unrecoverable exception
+        raise PdfGenerationError('Unable to archive file(s): ' + directory + ', ' + archive_file_name)
 
 
 def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):

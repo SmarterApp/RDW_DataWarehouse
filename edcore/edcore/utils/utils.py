@@ -12,6 +12,7 @@ from psycopg2.extensions import adapt as sqlescape
 from apscheduler.scheduler import Scheduler
 from sqlalchemy.sql.compiler import BIND_TEMPLATES
 import configparser
+import zipfile
 
 logger = logging.getLogger(__name__)
 pidfile = None
@@ -176,3 +177,13 @@ def create_daemon(_pidfile):
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGHUP, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
+
+
+def archive_files(dir_name, archive_file):
+    '''
+    create archive file under given directory and return zip data
+    '''
+    with zipfile.ZipFile(archive_file, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+        files = [os.path.join(dir_name, f) for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))]
+        for file in files:
+            zf.write(file, arcname=os.path.basename(file))

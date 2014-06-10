@@ -6,9 +6,9 @@ Created on Dec 2, 2013
 
 import os
 import io
-import zipfile
 import gnupg
 import tempfile
+from edcore.utils.utils import archive_files
 from edextract.exceptions import GPGPublicKeyException, GPGException
 
 
@@ -47,13 +47,3 @@ def encrypted_archive_files(dirname, recipients, outputfile, homedir=None, keyse
     # if output file does not exist, it's because directory is not writable or recipients were not available
     if not os.path.exists(outputfile):
         raise GPGException("failed to generate: " + outputfile)
-
-
-def archive_files(dir_name, archive_file):
-    '''
-    create archive file under given directory and return zip data
-    '''
-    with zipfile.ZipFile(archive_file, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
-        files = [os.path.join(dir_name, f) for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f))]
-        for file in files:
-            zf.write(file, arcname=os.path.basename(file))

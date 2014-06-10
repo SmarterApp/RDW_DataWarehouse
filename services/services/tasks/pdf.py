@@ -11,7 +11,7 @@ import logging
 import subprocess
 from services.celery import celery
 from services.exceptions import PdfGenerationError
-from edcore.exceptions import NotForWindowsException
+from edcore.exceptions import NotForWindowsException, RemoteCopyError
 from edcore.utils.utils import archive_files
 import copy
 from services.celery import TIMEOUT
@@ -20,6 +20,7 @@ from celery.exceptions import MaxRetriesExceededError
 import uuid
 from subprocess import Popen
 import tempfile
+from hpz_client.frs.http_file_upload import http_file_upload
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
@@ -199,6 +200,28 @@ def archive(archive_file_name, directory):
     except Exception as e:
         # unrecoverable exception
         raise PdfGenerationError('Unable to archive file(s): ' + directory + ', ' + archive_file_name)
+
+
+@celery.task(name="tasks.pdf.remote_copy", max_retries=5)
+def remote_copy(src_file_name, registration_id):
+    '''
+    Remotely copies a source file to a remote machine
+    '''
+
+    try:
+        http_file_upload(src_file_name, registration_id)
+    except RemoteCopyError as e:
+        log.error("Exception happened in remote copy. " + str(e))
+        try:
+            # this looks funny to you, but this is just a work around solution for celery bug
+            # since exc option is not really working for retry.
+            raise PdfGenerationError(str(e))
+        except PdfGenerationError as exc:
+            # this could be caused by network hiccup
+            raise remote_copy.retry(args=[src_file_name, registration_id], exc=exc)
+
+    except Exception as e:
+        raise PdfGenerationError(str(e))
 
 
 def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):

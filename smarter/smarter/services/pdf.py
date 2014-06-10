@@ -132,7 +132,6 @@ def send_pdf_request(params, user):
         raise EdApiHTTPInternalServerError(e.msg)
     except Exception as e:
         # if celery get task got timed out...
-        print(str(e))
         raise EdApiHTTPInternalServerError("Internal Error")
 
     return response

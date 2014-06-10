@@ -7,10 +7,12 @@ This module stores the relevant information needed by the HPZ Client functions.
 class Config:
     HPZ_FILE_REGISTRATION_URL = 'hpz.file_registration_url'
     HPZ_FILE_UPLOAD_BASE_URL = 'hpz.file_upload_base_url'
+    HPZ_IGNORE_CERTIFICATE = 'hpz.ignore_certificate'
 
 
 _DEFAULTS = [(Config.HPZ_FILE_REGISTRATION_URL, str, 'http://localhost/registration'),
-             (Config.HPZ_FILE_UPLOAD_BASE_URL, str, 'http://localhost/files')]
+             (Config.HPZ_FILE_UPLOAD_BASE_URL, str, 'http://localhost/files'),
+             (Config.HPZ_IGNORE_CERTIFICATE, bool, False)]
 
 # HPZ Client-specific settings, filled from application's ini settings.
 _settings = {}

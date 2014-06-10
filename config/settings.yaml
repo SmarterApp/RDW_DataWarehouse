@@ -426,6 +426,7 @@ qa:
     hpz:
       file_registration_url: https://hpzweb0.qa.dum.edwdc.net:8443/registration
       file_upload_base_url: https://hpzweb0.qa.dum.edwdc.net:8443/files
+      ignore_certificate: True
   '[handlers]':
     keys: audit, syslog, security_event
   '[logger_root]':

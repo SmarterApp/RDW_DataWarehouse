@@ -8,7 +8,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     get_unittest_tenant_name
 from edapi.tests.dummy import DummyRequest
 from pyramid import testing
-from smarter.reports.helpers.aggregate_dim import get_aggregate_dim
+from smarter.reports.helpers.aggregate_dim import get_aggregate_dim,\
+    get_aggregate_dim_cache_route, get_aggregate_dim_cache_route_cache_key
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from edauth.tests.test_helper.create_session import create_test_session
@@ -44,6 +45,19 @@ class TestCustomMetaData(Unittest_with_edcore_sqlite):
         results = record[Constants.RESULTS]
         self.assertFalse(results['subject1'][Constants.HASINTERIM])
         self.assertTrue(results['subject2'][Constants.HASINTERIM])
+
+    def test_get_aggregate_dim_cache_route(self):
+        self.assertIsNone(get_aggregate_dim_cache_route('NC', 'district', 'school', None, None, None, None, None))
+        self.assertEqual('public.shortlived', get_aggregate_dim_cache_route('NC', 'district', None, None, None, None, None, None))
+        self.assertEqual('public.shortlived', get_aggregate_dim_cache_route('NC', None, None, None, None, None, None, None))
+
+    def test_get_aggregate_dim_cache_route_cache_key(self):
+        key = get_aggregate_dim_cache_route_cache_key('NC', 'district', None, 'asmtType', 'asmtYear', 'tenant', 'subject_key', 'subject')
+        self.assertEqual(key[0], 'NC')
+        self.assertEqual(key[1], 'district')
+        self.assertEqual(key[2], 'asmtType')
+        self.assertEqual(key[3], 'asmtYear')
+        self.assertEqual(key[4], 'subject')
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

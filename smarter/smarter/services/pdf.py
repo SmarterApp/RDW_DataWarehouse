@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.pdf import prepare, generate, pdf_merge, get, OK
+from services.tasks.pdf import prepare, pdf_merge, get
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
@@ -198,8 +198,8 @@ def get_pdf_content(params):
             copied_args['url'] = urls[idx]
             copied_args['outputfile'] = file_names[idx]
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
-        start_bulk(tenant, request_id, archive_file_name, directory_to_archive, registration_id, generate_tasks,
-                   file_names)
+        start_bulk(tenant, request_id, _get_bulk_pdf_out_name(registration_id), archive_file_name, directory_to_archive,
+                   registration_id, generate_tasks, file_names)
 
         return Response(body=json.dumps(response), content_type='application/json')
     else:
@@ -222,7 +222,8 @@ def has_context_for_pdf_request(state_code, student_guid):
 
 
 @celery.task(name='task.pdf.start_bulk')
-def start_bulk(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, file_names):
+def start_bulk(tenant, request_id, bulk_name, archive_file_name, directory_to_archive, registration_id, tasks,
+               file_names):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files
@@ -232,9 +233,13 @@ def start_bulk(tenant, request_id, archive_file_name, directory_to_archive, regi
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]],
                                           immutable=True),
                      group(tasks),
-                     pdf_merge.subtask(args=(file_names, archive_file_name,
+                     pdf_merge.subtask(args=(file_names, bulk_name, archive_file_name,
                                              directory_to_archive, registration_id, services.celery.TIMEOUT),
                                        immutable=True),
                      archive.subtask(args=[request_id, archive_file_name, directory_to_archive], immutable=True),
                      remote_copy.subtask(args=[request_id, archive_file_name, registration_id], immutable=True))
     workflow.apply_async()
+
+
+def _get_bulk_pdf_out_name(registration_id):
+    return registration_id + '.pdf'

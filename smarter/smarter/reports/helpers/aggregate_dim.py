@@ -32,7 +32,34 @@ def get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtTy
     return {Constants.RECORDS: sorted_records}
 
 
-@cache_region('public.shortlived')
+def get_aggregate_dim_cache_route(stateCode, districtGuid, schoolGuid, asmtType, asmtYear, tenant, subject_key, subject):
+    '''
+    If school_guid is present, return none - do not cache
+    '''
+    if schoolGuid is not None:
+        return None  # do not cache school level
+    return 'public.shortlived'
+
+
+def get_aggregate_dim_cache_route_cache_key(stateCode, districtGuid, schoolGuid, asmtType, asmtYear, tenant, subject_key, subject):
+    '''
+    Returns cache key for get_aggregate_dim
+
+    :param comparing_pop:  instance of ComparingPopReport
+    :returns: a tuple representing a unique key for comparing populations report
+    '''
+    cache_args = []
+    if stateCode is not None:
+        cache_args.append(stateCode)
+    if districtGuid is not None:
+        cache_args.append(districtGuid)
+    cache_args.append(asmtType)
+    cache_args.append(asmtYear)
+    cache_args.append(subject)
+    return tuple(cache_args)
+
+
+@cache_region(['public.shortlived'], router=get_aggregate_dim_cache_route, key_generator=get_aggregate_dim_cache_route_cache_key)
 def _get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, asmtYear=None, tenant=None, subject_key=None, subject=None):
     '''
     Query for institution or grades that have asmts for the year provided
@@ -46,8 +73,6 @@ def _get_aggregate_dim(stateCode=None, districtGuid=None, schoolGuid=None, asmtT
     :returns: set of records with district guids
     '''
     rows = {}
-    # for key in subjects.keys():
-    #    subject = subjects[key]
     with EdCoreDBConnection(tenant=tenant, state_code=stateCode) as connector:
         # query custom metadata by state code
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)

@@ -7,7 +7,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
+    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from edapi.tests.test_views import DummyValueError
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
@@ -32,6 +32,8 @@ from edcore.security.tenant import set_tenant_map
 from smarter.security.constants import RolesConstants
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
+from smarter.reports.helpers.constants import Constants
+from unittest.mock import patch
 
 
 class TestServices(Unittest_with_edcore_sqlite):
@@ -75,21 +77,21 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': '19489898-d469-41e2-babc-265ecbab2337', 'stateCode': 'NC', 'effectiveDate': 20160404}
+        self.__request.json_body = {'studentGuid': ['19489898-d469-41e2-babc-265ecbab2337'], 'stateCode': 'NC', 'effectiveDate': 20160404}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.method = 'POST'
-        self.__request.json_body = {'studentGuid': studentGuid, 'stateCode': 'NC', 'effectiveDate': 20160404}
+        self.__request.json_body = {'studentGuid': [studentGuid], 'stateCode': 'NC', 'effectiveDate': 20160404}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_path(pdf_file)
-        with open(pdf_file, 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type='SUMMATIVE')
+        prepare_path(pdf_file[studentGuid])
+        with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
         response = post_pdf_service(None, self.__request)
         self.assertIsInstance(response, Response)
@@ -120,9 +122,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_path(pdf_file)
-        with open(pdf_file, 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type='SUMMATIVE')
+        prepare_path(pdf_file[studentGuid])
+        with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
@@ -142,9 +144,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_path(pdf_file)
-        with open(pdf_file, 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type='SUMMATIVE')
+        prepare_path(pdf_file[studentGuid])
+        with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
         response = send_pdf_request(params)
         self.assertIsInstance(response, Response)
@@ -197,12 +199,42 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
         # prepare empty file to mimic a pdf was generated
-        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_path(pdf_file)
-        with open(pdf_file, 'w') as file:
+        pdf_file = generate_isr_report_path_by_student_guid('NC', "20160404", pdf_report_base_dir=self.__temp_dir, student_guids=studentGuid, asmt_type='SUMMATIVE')
+        prepare_path(pdf_file[studentGuid])
+        with open(pdf_file[studentGuid], 'w') as file:
             file.write('%PDF-1.4')
         self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
 
+    def test_send_pdf_request_no_such_report(self):
+        self.__request.matchdict['report'] = 'fake_report.html'
+        self.assertRaises(EdApiHTTPNotFound, send_pdf_request, {})
+
+    def test_send_pdf_request_fail_precondition(self):
+        params = {}
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
+        self.assertRaises(EdApiHTTPPreconditionFailed, send_pdf_request, params)
+
+    def test_get_pdf_content_InvalidParameterError(self):
+        params = {}
+        params['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        params['stateCode'] = 'NC'
+        params[Constants.ASMTTYPE] = 'FAKE'
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
+        self.__request.cookies = {'edware': '123'}
+        self.assertRaises(InvalidParameterError, get_pdf_content, params)
+
+    @patch('smarter.services.pdf.bulk_pdf_process')
+    @patch('smarter.reports.helpers.ISR_pdf_name_formatter.generate_isr_report_path_by_student_guid')
+    def test_get_pdf_content(self, bulk_pdf_process_patch, generate_isr_report_path_by_student_guid_patch):
+        bulk_pdf_process_patch.return_value = {'hello': 'world'}
+        generate_isr_report_path_by_student_guid_patch.return_value = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/a', '34140997-8949-497e-bbbb-5d72aa7dc9cb': '/b'}
+        params = {}
+        params['studentGuid'] = ['a5ddfe12-740d-4487-9179-de70f6ac33be', '34140997-8949-497e-bbbb-5d72aa7dc9cb']
+        params['stateCode'] = 'NC'
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
+        self.__request.cookies = {'edware': '123'}
+        response = get_pdf_content(params)
+        pass
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

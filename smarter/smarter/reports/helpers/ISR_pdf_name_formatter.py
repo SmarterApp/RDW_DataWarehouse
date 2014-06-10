@@ -17,6 +17,8 @@ def generate_isr_report_path_by_student_guid(state_code, effective_date, pdf_rep
     For security, the directory will be created with only the owner can read-write.
     '''
     file_paths = {}
+    if type(student_guids) is not list:
+        student_guids = [student_guids]
     # find state_code, asmt_period_year, district_guid, school_guid, and asmt_grade from DB
     with EdCoreDBConnection(state_code=state_code) as connection:
         fact_asmt_outcome_vw = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)

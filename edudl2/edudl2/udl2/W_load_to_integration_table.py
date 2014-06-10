@@ -34,7 +34,7 @@ def task(msg):
     # Outgoing message to be piped to the file expander
     outgoing_msg = {}
     outgoing_msg.update(msg)
-    outgoing_msg.update({mk.PHASE: 4})
+    outgoing_msg.update({mk.PHASE: 4, mk.TOTAL_ROWS_LOADED: affected_rows})
     return outgoing_msg
 
 

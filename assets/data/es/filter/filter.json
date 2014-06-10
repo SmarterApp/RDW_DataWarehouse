@@ -154,5 +154,12 @@
 				}
 			]
 		}
-	]
+	],
+    "group_template" : {
+        "display" : "Group {{index}}",
+        "tag" : "Group {{index}}",
+        "name" : "group_{{index}}",
+        "options" : [
+        ]
+    }
 }

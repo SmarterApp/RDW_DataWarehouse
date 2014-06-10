@@ -156,8 +156,8 @@
         }
     ],
     "group_template" : {
-        "display" : "Group {{index}}",
-        "tag" : "Group {{index}}",
+        "display" : "Student Groupings {{index}}",
+        "tag" : "Student Groupings {{index}}",
         "name" : "group_{{index}}",
         "options" : [
         ]

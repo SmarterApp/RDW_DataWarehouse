@@ -199,7 +199,7 @@ def get_pdf_content(params):
             copied_args['outputfile'] = file_names[idx]
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
         start_bulk(tenant, request_id, _get_bulk_pdf_out_name(registration_id), archive_file_name, directory_to_archive,
-                   registration_id, generate_tasks, file_names)
+                   registration_id, generate_tasks, file_names, pdf_base_dir)
 
         return Response(body=json.dumps(response), content_type='application/json')
     else:
@@ -223,7 +223,7 @@ def has_context_for_pdf_request(state_code, student_guid):
 
 @celery.task(name='task.pdf.start_bulk')
 def start_bulk(tenant, request_id, bulk_name, archive_file_name, directory_to_archive, registration_id, tasks,
-               file_names):
+               file_names, pdf_base_dir):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files
@@ -233,8 +233,8 @@ def start_bulk(tenant, request_id, bulk_name, archive_file_name, directory_to_ar
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]],
                                           immutable=True),
                      group(tasks),
-                     pdf_merge.subtask(args=(file_names, bulk_name, directory_to_archive, registration_id,
-                                             services.celery.TIMEOUT),
+                     pdf_merge.subtask(args=(file_names, os.path.join(directory_to_archive, bulk_name),
+                                             pdf_base_dir, registration_id, services.celery.TIMEOUT),
                                        immutable=True),
                      archive.subtask(args=[request_id, archive_file_name, directory_to_archive], immutable=True),
                      remote_copy.subtask(args=[request_id, archive_file_name, registration_id], immutable=True))

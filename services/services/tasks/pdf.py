@@ -166,38 +166,34 @@ def delete(path):
 
 
 @celery.task(name='tasks.pdf.merge')
-def pdf_merge(pdf_files, out_name, out_dir, registration_id, timeout=TIMEOUT):
-    out_path = os.path.join(out_dir, out_name)
-    if os.path.isfile(out_path):
-        log.error(out_path + " is already exist")
+def pdf_merge(pdf_files, out_name, pdf_base_dir, registration_id, timeout=TIMEOUT):
+    if os.path.isfile(out_name):
+        log.error(out_name + " is already exist")
         raise PdfGenerationError()
-    if not os.path.isdir(out_dir):
-        os.makedirs(out_dir)
+    if not os.path.isdir(out_name):
+        os.makedirs(out_name)
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
     try:
         # UNIX can handle upto 1024 file descriptors in default.  To be safe we process 1000 files at once.
-
-        idx = 0
         if len(pdf_files) > 1000:
-            with tempfile.TemporaryDirectory(dir=os.path.join(out_dir, registration_id + '_' + str(idx) + '.tmp')) as temp_dir:
-                files = parallel_pdf_unite(pdf_files, temp_dir, timeout=timeout)
-                subprocess.call(pdfunite_procs + files + [out_path], timeout=timeout)
+            with tempfile.TemporaryDirectory(dir=os.path.join(pdf_base_dir, '.tmp')) as temp_dir:
+                files = _parallel_pdf_unite(pdf_files, temp_dir, timeout=timeout)
+                subprocess.call(pdfunite_procs + files + [out_name], timeout=timeout)
         else:
-            subprocess.call(pdfunite_procs + pdf_files + [out_path], timeout=timeout)
+            subprocess.call(pdfunite_procs + pdf_files + [out_name], timeout=timeout)
     except subprocess.TimeoutExpired:
         log.error('pdfunite subprocess call timed out')
 
 
-def parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):
+def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):
     procs = []
     files = []
     offset = -1
     while offset is not int(len(pdf_files) / file_limit):
         offset += 1
         end = (offset + 1) * file_limit if offset is not int(len(pdf_files) / file_limit) else len(pdf_files)
-        partial_file_list = []
         partial_file_list = pdf_files[offset * file_limit:end]
         if len(partial_file_list) is 1:
             files.append(partial_file_list[0])

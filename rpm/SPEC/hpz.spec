@@ -77,6 +77,7 @@ cp -r virtualenv/hpz %{buildroot}/opt/virtualenv
 %defattr(644,root,root,-)
 /opt/edware/hpz/frs.wsgi
 /opt/edware/hpz/swi.wsgi
+/opt/edware/hpz/scripts/pickup_zone_cleanup.py
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
 /opt/virtualenv/hpz/include/*

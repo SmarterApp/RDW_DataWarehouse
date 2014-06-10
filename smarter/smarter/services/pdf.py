@@ -233,8 +233,8 @@ def start_bulk(tenant, request_id, bulk_name, archive_file_name, directory_to_ar
     workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]],
                                           immutable=True),
                      group(tasks),
-                     pdf_merge.subtask(args=(file_names, bulk_name, archive_file_name,
-                                             directory_to_archive, registration_id, services.celery.TIMEOUT),
+                     pdf_merge.subtask(args=(file_names, bulk_name, directory_to_archive, registration_id,
+                                             services.celery.TIMEOUT),
                                        immutable=True),
                      archive.subtask(args=[request_id, archive_file_name, directory_to_archive], immutable=True),
                      remote_copy.subtask(args=[request_id, archive_file_name, registration_id], immutable=True))

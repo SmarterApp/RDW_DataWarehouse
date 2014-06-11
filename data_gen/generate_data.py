@@ -408,7 +408,8 @@ def write_school_data(asmt_year, sr_out_name, dim_students, sr_students, assessm
 
             if WRITE_LZ:
                 csv_writer.write_records_to_file(sbac_out_config.LZ_REALDATA_FORMAT['name'].replace('<GUID>', guid),
-                                                 lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT)
+                                                 lz_asmt_out_cols, rslts, root_path=OUT_PATH_ROOT,
+                                                 entity_filter=('result_status', 'C'))
             if WRITE_STAR:
                 csv_writer.write_records_to_file(fao_vw_out_name, fao_vw_out_cols, rslts,
                                                  tbl_name='fact_asmt_outcome_vw', root_path=OUT_PATH_ROOT)

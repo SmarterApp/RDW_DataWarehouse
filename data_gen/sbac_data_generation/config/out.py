@@ -489,7 +489,7 @@ LZ_REALDATA_FORMAT = {'format': 'csv',
                                    'val': 'assessment_outcome.acc_speech_to_text_nonembed'},
                                   {'name': 'AccommodationStreamlineMode',
                                    'val': 'assessment_outcome.acc_streamline_mode'},
-                                  {'name': 'Op', 'val': 'assessment_outcome.rec_status', 'filter': 'only_delete'}]}
+                                  {'name': 'Op', 'val': 'assessment_outcome.result_status', 'filter': 'only_delete'}]}
 
 SR_FORMAT = {'format': 'csv',
              'name': '<YEAR>_sr_<GUID>.csv',

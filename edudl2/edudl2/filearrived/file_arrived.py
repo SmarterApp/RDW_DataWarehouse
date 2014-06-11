@@ -28,6 +28,18 @@ def move_file_from_arrivals(incoming_file, batch_guid, tenant_name):
     return tenant_directory_paths
 
 
+def get_file_path_striped_extension(file_path, extension=Const.PROCESSING_FILE_EXT):
+    """Returns file path striped extension if found
+
+    :param file_path: file path as string
+    :param extension: extension to be stripped (should include dot)
+    """
+    if not extension.startswith('.'):
+        extension = ''.join(('.', extension))
+    loc = file_path.rfind(extension)
+    return file_path[:loc] if loc != -1 else file_path
+
+
 def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     """
     Copy the incoming source file to its arrived directory under the work folder
@@ -39,18 +51,16 @@ def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     """
     if os.path.exists(incoming_file):
         shutil.copy2(incoming_file, history_dir)
-        path_to_history_file = os.path.join(history_dir, os.path.basename(incoming_file))
-        processing_loc = path_to_history_file.rfind(Const.PROCESSING_FILE_EXT)
-        if processing_loc != -1:
-            os.rename(path_to_history_file, path_to_history_file[:processing_loc])
+        history_file_path = os.path.join(history_dir, os.path.basename(incoming_file))
+        os.rename(history_file_path, get_file_path_striped_extension(history_file_path))
+
         shutil.move(incoming_file, arrived_dir)
-        path_to_arrived_file = os.path.join(arrived_dir, os.path.basename(incoming_file))
-        processing_loc = path_to_arrived_file.rfind(Const.PROCESSING_FILE_EXT)
-        if processing_loc != -1:
-            os.rename(path_to_arrived_file, path_to_arrived_file[:processing_loc])
-    checksum_file = FileUtil.get_complement_file_name(incoming_file.rstrip(Const.PROCESSING_FILE_EXT))
-    if os.path.exists(checksum_file):
-        shutil.move(checksum_file, history_dir)
+        arrived_file_path = os.path.join(arrived_dir, os.path.basename(incoming_file))
+        os.rename(arrived_file_path, get_file_path_striped_extension(arrived_file_path))
+
+        checksum_file = FileUtil.get_complement_file_name(get_file_path_striped_extension(incoming_file))
+        if os.path.exists(checksum_file):
+            shutil.move(checksum_file, history_dir)
 
 
 def create_directory_paths(tenant_name, batch_guid):

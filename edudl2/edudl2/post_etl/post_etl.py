@@ -56,8 +56,8 @@ def cleanup(msg):
     guid_batch = msg.get(mk.GUID_BATCH)
 
     # cleanup workzone
-    if work_zone_directories_to_cleanup:
-        cleanup_work_zone(work_zone_directories_to_cleanup)
+    #if work_zone_directories_to_cleanup:
+    #    cleanup_work_zone(work_zone_directories_to_cleanup)
 
     # cleanup udl tables
     cleanup_udl_tables(guid_batch)

@@ -120,7 +120,7 @@ def get_merged_report_records(summative, interim):
                 # when total is zero, that means there are no summative results, so check if there is interim results
                 if record[Constants.RESULTS][subject][Constants.TOTAL] is 0:
                     # Check if there is interim results, if so, update current record to have hasInterim
-                    record[Constants.RESULTS][subject][Constants.HASINTERIM] = True
+                    record[Constants.RESULTS][subject][Constants.HASINTERIM] = merged[r][Constants.RESULTS][subject].get(Constants.HASINTERIM, False)
 
         merged[r] = record
     # Create an ordered dictionary sorted by the name of institution

@@ -473,12 +473,12 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results[1]['type'], 'sum')
         self.assertEqual(results[1]['name'], 'b')
 
-    def test_get_merged_report_records_with_insufficient_interim(self):
+    def test_get_merged_report_records_with_interim(self):
         summative = {'records': [{'id': 'b', 'name': 'b', 'type': 'sum',
                                   'results': {'a': {'total': 0, 'intervals': [{'percentage': 0}]}}}],
                      'subjects': {'a': 'a'}}
         interim = {'records': [{'id': 'b', 'name': 'b', 'type': 'int',
-                                'results': {'a': {'total': -1, 'intervals': [{'percentage': -1}]}}}],
+                                'results': {'a': {'total': -1, 'hasInterim': True, 'intervals': [{'percentage': -1}]}}}],
                    'subjects': {'a': 'a'}}
         results = get_merged_report_records(summative, interim)
         self.assertEqual(len(results), 1)
@@ -491,12 +491,13 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
                                   'results': {'a': {'total': 0, 'intervals': [{'percentage': 0}]}}}],
                      'subjects': {'a': 'a'}}
         interim = {'records': [{'id': 'b', 'name': 'b', 'type': 'int',
-                                'results': {'a': {'total': 3, 'intervals': [{'percentage': 100}]}}}],
+                                'results': {'a': {'total': 3, 'hasInterim': True, 'intervals': [{'percentage': 100}]}}}],
                    'subjects': {'a': 'a'}}
         results = get_merged_report_records(summative, interim)
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['type'], 'sum')
         self.assertEqual(results[0]['name'], 'b')
+        self.assertEqual(results[0]['results']['a']['hasInterim'], True)
 
 
 if __name__ == "__main__":

@@ -183,7 +183,6 @@ def prepare_path(paths):
         raise PdfGenerationError(str(e))
 
 
-
 @celery.task(name='tasks.pdf.merge')
 def pdf_merge(pdf_files, out_name, pdf_base_dir, registration_id, timeout=TIMEOUT):
     if os.path.isfile(out_name):
@@ -258,5 +257,5 @@ def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT
             proc = Popen(pdfunite_procs + partial_file_list)
             procs.append(proc)
     for proc in procs:
-        proc.wait(timeout=timeout) 
+        proc.wait(timeout=timeout)
     return files

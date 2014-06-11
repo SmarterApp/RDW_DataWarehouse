@@ -25,8 +25,8 @@ from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import get_current_request
-import celery
 import copy
+from datetime import datetime
 import json
 import os
 
@@ -194,8 +194,8 @@ def get_pdf_content(params):
         registration_id, download_url = register_file(user.get_uid())
 
         # Set up directory and file names
-        archive_file_name = os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip',
-                                         '{registration_id}.zip'.format(registration_id=registration_id))
+        archive_file_name = _get_archive_name(os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip'),
+                                              'Example School', lang, is_grayscale)
         directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
 
         # Create JSON response
@@ -212,8 +212,8 @@ def get_pdf_content(params):
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
 
         # Start the bulk merge
-        _start_bulk(_get_bulk_pdf_out_name(directory_to_archive, registration_id), archive_file_name,
-                    directory_to_archive, registration_id, generate_tasks, file_names, pdf_base_dir)
+        _start_bulk(_get_merged_pdf_name(directory_to_archive, 'Example School', 7, lang, is_grayscale),
+                    archive_file_name, directory_to_archive, registration_id, generate_tasks, file_names, pdf_base_dir)
 
         # Return the JSON response while the bulk merge runs asynchronously
         return Response(body=json.dumps(response), content_type='application/json')
@@ -253,5 +253,22 @@ def _start_bulk(bulk_name, archive_file_name, directory_to_archive, registration
     workflow.apply_async()
 
 
-def _get_bulk_pdf_out_name(out_dir, registration_id):
-    return os.path.join(out_dir, registration_id + '.pdf')
+def _get_merged_pdf_name(out_dir, school_name, grade, lang_code, grayscale):
+    timestamp = str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
+    school_name = school_name.replace(' ', '')
+    school_name = school_name[:15] if len(school_name) > 15 else school_name
+    name = 'student_reports_{school_name}_grade_{grade}_{timestamp}_{lang}'.format(school_name=school_name,
+                                                                                   grade=grade,
+                                                                                   timestamp=timestamp,
+                                                                                   lang=lang_code.lower())
+    return os.path.join(out_dir, name + ('.g.pdf' if grayscale else '.pdf'))
+
+
+def _get_archive_name(out_dir, school_name, lang_code, grayscale):
+    timestamp = str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
+    school_name = school_name.replace(' ', '')
+    school_name = school_name[:15] if len(school_name) > 15 else school_name
+    name = 'student_reports_{school_name}_{timestamp}_{lang}'.format(school_name=school_name,
+                                                                     timestamp=timestamp,
+                                                                     lang=lang_code.lower())
+    return os.path.join(out_dir, name + ('.g.zip' if grayscale else '.zip'))

@@ -89,16 +89,20 @@ rm -rf %{buildroot}
 
 %pre
 EDWARE_ROOT=/opt/edware
-if [ ! -d $EDWARE_ROOT/run ]; then
-    mkdir -p $EDWARE_ROOT/run
-fi
-
 if [ ! -d $EDWARE_ROOT/ssh ]; then
     mkdir -p $EDWARE_ROOT/ssh
 fi
 
 if [ ! -d $EDWARE_ROOT/ssh/.ssh ]; then
     mkdir -p $EDWARE_ROOT/ssh/.ssh
+fi
+
+if [ ! -d /var/run/edsftp-watcher ]; then
+    mkdir -p /var/run/edsftp-watcher
+fi
+
+if [ ! -d /var/log/edsftp-watcher ]; then
+    mkdir -p /var/log/edsftp-watcher
 fi
 
 %post

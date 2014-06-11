@@ -4,7 +4,7 @@
 # chkconfig: 345 90 10
 #
 # :Usage: /etc/init.d/celeryd-udl2 {start|stop|force-reload|restart|try-restart|status}
-# :Configuration file: /opt/wgen/edware-udl/etc/celeryd-udl2.conf
+# :Configuration file: /opt/edware/conf/celeryd-udl2.conf
 #
 # See http://docs.celeryproject.org/en/latest/tutorials/daemonizing.html#generic-init-scripts
 

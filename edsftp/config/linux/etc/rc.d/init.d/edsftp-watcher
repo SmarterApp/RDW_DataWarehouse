@@ -5,7 +5,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 . /opt/virtualenv/edsftp/bin/activate
-PIDFILE="/opt/edware/run/edsftp.pid"
+PIDFILE="/var/run/edsftp-watcher/edsftp-watcher.pid"
 EDSFTP_SYNC="python -m edsftp.scripts.sftp_driver --sync -d -p $PIDFILE"
 
 start() {

@@ -93,11 +93,10 @@ def post_pdf_service(context, request):
     '''
     try:
         params = request.json_body
-        user = authenticated_userid(request)
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
 
-    return send_pdf_request(params, user)
+    return send_pdf_request(params)
 
 
 @view_config(route_name='pdf', request_method='GET')
@@ -108,11 +107,10 @@ def get_pdf_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    user = authenticated_userid(request)
-    return send_pdf_request(request.GET, user)
+    return send_pdf_request(request.GET)
 
 
-def send_pdf_request(params, user):
+def send_pdf_request(params):
     '''
     Requests for pdf content, throws http exceptions when error occurs
 
@@ -123,7 +121,7 @@ def send_pdf_request(params, user):
         raise EdApiHTTPNotFound("Not Found")
 
     try:
-        response = get_pdf_content(params, user)
+        response = get_pdf_content(params)
     except InvalidParameterError as e:
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
@@ -137,12 +135,13 @@ def send_pdf_request(params, user):
     return response
 
 
-def get_pdf_content(params, user):
+def get_pdf_content(params):
     '''
     Read pdf content from file system if it exists, else generate it
 
     :param params: python dict that contains query parameters from the request
     '''
+    user = authenticated_userid(get_current_request())
     student_guids = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)

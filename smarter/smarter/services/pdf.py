@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.pdf import prepare, pdf_merge, get, archive, remote_copy
+from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
@@ -249,7 +249,8 @@ def _start_bulk(bulk_name, archive_file_name, directory_to_archive, registration
                                              services.celery.TIMEOUT),
                                        immutable=True),
                      archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),
-                     remote_copy.subtask(args=(archive_file_name, registration_id), immutable=True))
+                     hpz_upload_cleanup.subtask(args=(archive_file_name, registration_id, pdf_base_dir),
+                                                immutable=True))
     workflow.apply_async()
 
 

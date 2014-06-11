@@ -20,6 +20,7 @@ from celery.exceptions import MaxRetriesExceededError
 import uuid
 from subprocess import Popen
 import tempfile
+import shutil
 from hpz_client.frs.http_file_upload import http_file_upload
 
 mswindows = (sys.platform == "win32")
@@ -202,14 +203,18 @@ def archive(archive_file_name, directory):
         raise PdfGenerationError('Unable to archive file(s): ' + directory + ', ' + archive_file_name)
 
 
-@celery.task(name="tasks.pdf.remote_copy", max_retries=5)
-def remote_copy(src_file_name, registration_id):
+@celery.task(name="tasks.pdf.hpz_upload_cleanup", max_retries=5)
+def hpz_upload_cleanup(src_file_name, registration_id, pdf_base_dir):
     '''
     Remotely copies a source file to a remote machine
     '''
 
     try:
+        # Upload to HPZ
         http_file_upload(src_file_name, registration_id)
+
+        # Clean up the PDF merge working directory
+        shutil.rmtree(os.path.join(pdf_base_dir, 'bulk', registration_id), ignore_errors=True)
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + str(e))
         try:
@@ -218,7 +223,7 @@ def remote_copy(src_file_name, registration_id):
             raise PdfGenerationError(str(e))
         except PdfGenerationError as exc:
             # this could be caused by network hiccup
-            raise remote_copy.retry(args=[src_file_name, registration_id], exc=exc)
+            raise hpz_upload_cleanup.retry(args=[src_file_name, registration_id, pdf_base_dir], exc=exc)
 
     except Exception as e:
         raise PdfGenerationError(str(e))

@@ -27,6 +27,8 @@ cp -r ${WORKSPACE}/edsftp %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/edsftp/config/linux/etc/rc.d/init.d/edsftp-watcher %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
@@ -70,6 +72,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(644,root,root,-)
+/opt/edware/conf/generate_ini.py
+/opt/edware/conf/settings.yaml
 /opt/virtualenv/edsftp/include/*
 /opt/virtualenv/edsftp/lib/*
 /opt/virtualenv/edsftp/lib64

@@ -167,29 +167,12 @@ def delete(path):
         os.remove(path)
 
 
-@celery.task(name='task.pdf.prepare_path')
-def prepare_path(paths):
-    '''
-    Given a list of paths of directories, creates it if it doesn't exist
-    '''
-
-    try:
-        for path in paths:
-            if os.path.exists(path) is not True:
-                os.makedirs(path, 0o700)
-    except FileNotFoundError as e:
-        # unrecoverable error, do not try to retry celery task.  it's just wasting time.
-        log.error(e)
-        raise PdfGenerationError(str(e))
-
-
 @celery.task(name='tasks.pdf.merge')
 def pdf_merge(pdf_files, out_name, pdf_base_dir, registration_id, timeout=TIMEOUT):
     if os.path.isfile(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
-    if not os.path.isdir(os.path.dirname(out_name)):
-        os.makedirs(os.path.dirname(out_name))
+    prepare_path(out_name)
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
@@ -212,6 +195,7 @@ def archive(archive_file_name, directory):
     '''
 
     try:
+        prepare_path(archive_file_name)
         archive_files(directory, archive_file_name)
     except Exception as e:
         # unrecoverable exception

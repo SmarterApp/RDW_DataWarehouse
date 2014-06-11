@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.pdf import prepare, pdf_merge, get, prepare_path, archive, remote_copy
+from services.tasks.pdf import prepare, pdf_merge, get, archive, remote_copy
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
@@ -194,10 +194,9 @@ def get_pdf_content(params):
         registration_id, download_url = register_file(user.get_uid())
 
         # Set up directory and file names
-        archive_file_name = '{pdf_base}/bulk/{registration_id}/zip/{registration_id}.zip'.format(pdf_base=pdf_base_dir,
-                                                                                                 registration_id=registration_id)
-        directory_to_archive = '{pdf_base}/bulk/{registration_id}/data'.format(pdf_base=pdf_base_dir,
-                                                                               registration_id=registration_id)
+        archive_file_name = os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip',
+                                         '{registration_id}.zip'.format(registration_id=registration_id))
+        directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
 
         # Create JSON response
         response = {'fileName': os.path.basename(archive_file_name), 'download_url': download_url}
@@ -213,8 +212,8 @@ def get_pdf_content(params):
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
 
         # Start the bulk merge
-        start_bulk(_get_bulk_pdf_out_name(registration_id), archive_file_name, directory_to_archive,
-                   registration_id, generate_tasks, file_names, pdf_base_dir)
+        _start_bulk(_get_bulk_pdf_out_name(directory_to_archive, registration_id), archive_file_name,
+                    directory_to_archive, registration_id, generate_tasks, file_names, pdf_base_dir)
 
         # Return the JSON response while the bulk merge runs asynchronously
         return Response(body=json.dumps(response), content_type='application/json')
@@ -238,24 +237,21 @@ def has_context_for_pdf_request(state_code, student_guid):
     return check_context(RolesConstants.PII, state_code, student_guid)
 
 
-@celery.task(name='task.pdf.start_bulk')
-def start_bulk(bulk_name, archive_file_name, directory_to_archive, registration_id, tasks, file_names, pdf_base_dir):
+def _start_bulk(bulk_name, archive_file_name, directory_to_archive, registration_id, tasks, file_names, pdf_base_dir):
     '''
     entry point to start a bulk PDF generation request for one or more students
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
     the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
 
-    workflow = chain(prepare_path.subtask(args=[[directory_to_archive, os.path.dirname(archive_file_name)]],
-                                          immutable=True),
-                     group(tasks),
-                     pdf_merge.subtask(args=(file_names, os.path.join(directory_to_archive, bulk_name),
-                                             pdf_base_dir, registration_id, services.celery.TIMEOUT),
+    workflow = chain(group(tasks),
+                     pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id,
+                                             services.celery.TIMEOUT),
                                        immutable=True),
                      archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),
                      remote_copy.subtask(args=(archive_file_name, registration_id), immutable=True))
     workflow.apply_async()
 
 
-def _get_bulk_pdf_out_name(registration_id):
-    return registration_id + '.pdf'
+def _get_bulk_pdf_out_name(out_dir, registration_id):
+    return os.path.join(out_dir, registration_id + '.pdf')

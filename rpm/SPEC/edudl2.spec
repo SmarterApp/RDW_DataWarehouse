@@ -141,14 +141,24 @@ if [ ! -d $UDL2_ROOT/keys ]; then
     mkdir -p $UDL2_ROOT/keys
     chown -R udl2.udl2 $UDL2_ROOT/keys
 fi
-
-if [ ! -d $UDL2_ROOT/run ]; then
-    mkdir -p $UDL2_ROOT/run
-    chown -R udl2.udl2 $UDL2_ROOT/run
-fi
-
 if [ -d $UDL2_ROOT/conf ]; then
     chown -R udl2.udl2 $UDL2_ROOT/conf
+fi
+if [ ! -d /var/log/celery-udl2 ]; then
+    mkdir -p /var/log/celery-udl2
+    chown udl2.udl2 /var/log/celery-udl2
+fi
+if [ ! -d /var/log/edudl2-trigger ]; then
+    mkdir -p /var/log/edudl2-trigger
+    chown udl2.udl2 /var/log/edudl2-trigger
+fi
+if [ ! -d /var/run/celery-udl2 ]; then
+    mkdir -p /var/run/celery-udl2
+    chown udl2.udl2 /var/run/celery-udl2
+fi
+if [ ! -d /var/run/edudl2-trigger ]; then
+    mkdir -p /var/run/edudl2-trigger
+    chown udl2.udl2 /var/run/edudl2-trigger
 fi
 chkconfig --add celeryd-udl2
 chkconfig --add edudl2-trigger

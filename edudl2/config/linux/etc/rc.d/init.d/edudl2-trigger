@@ -5,7 +5,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 . /opt/virtualenv/udl2/bin/activate
-PIDFILE="/opt/edware/run/edudl2.pid"
+PIDFILE="/var/run/edudl2-trigger/edudl2-trigger.pid"
 EDUDL2_TRIGGER="python -m edudl2.udl2.udl_trigger -d -p $PIDFILE"
 
 start() {

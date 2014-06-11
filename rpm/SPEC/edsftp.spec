@@ -27,6 +27,8 @@ cp -r ${WORKSPACE}/edsftp %{buildroot}/opt/edware
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/edsftp/config/linux/etc/rc.d/init.d/edsftp-watcher %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 
 %build
 export LANG=en_US.UTF-8
@@ -70,6 +72,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(644,root,root,-)
+/opt/edware/conf/generate_ini.py
+/opt/edware/conf/settings.yaml
 /opt/virtualenv/edsftp/include/*
 /opt/virtualenv/edsftp/lib/*
 /opt/virtualenv/edsftp/lib64
@@ -89,16 +93,20 @@ rm -rf %{buildroot}
 
 %pre
 EDWARE_ROOT=/opt/edware
-if [ ! -d $EDWARE_ROOT/run ]; then
-    mkdir -p $EDWARE_ROOT/run
-fi
-
 if [ ! -d $EDWARE_ROOT/ssh ]; then
     mkdir -p $EDWARE_ROOT/ssh
 fi
 
 if [ ! -d $EDWARE_ROOT/ssh/.ssh ]; then
     mkdir -p $EDWARE_ROOT/ssh/.ssh
+fi
+
+if [ ! -d /var/run/edsftp-watcher ]; then
+    mkdir -p /var/run/edsftp-watcher
+fi
+
+if [ ! -d /var/log/edsftp-watcher ]; then
+    mkdir -p /var/log/edsftp-watcher
 fi
 
 %post

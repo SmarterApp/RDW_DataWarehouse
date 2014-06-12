@@ -220,13 +220,14 @@ def hpz_upload_cleanup(src_file_name, registration_id, pdf_base_dir):
         try:
             # this looks funny to you, but this is just a work around solution for celery bug
             # since exc option is not really working for retry.
-            raise PdfGenerationError(str(e))
-        except PdfGenerationError as exc:
+            # the specific exception raised is irrelevant, it just needs to be unique
+            raise ValueError(str(e))
+        except ValueError as exc:
             # this could be caused by network hiccup
             raise hpz_upload_cleanup.retry(args=[src_file_name, registration_id, pdf_base_dir], exc=exc)
 
     except Exception as e:
-        raise PdfGenerationError(str(e))
+        raise RemoteCopyError(str(e))
 
 
 def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):

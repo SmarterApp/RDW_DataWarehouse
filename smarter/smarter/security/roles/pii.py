@@ -12,6 +12,7 @@ from smarter.security.context_role_map import ContextRoleMap
 from smarter_common.security.constants import RolesConstants
 
 
+
 # PII and SAR Extracts have the same context
 @ContextRoleMap.register([RolesConstants.PII, RolesConstants.SAR_EXTRACTS])
 class PII(BaseRole):

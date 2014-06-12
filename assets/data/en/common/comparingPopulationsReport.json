@@ -10,8 +10,17 @@
     "proficiencyAscending": "(proficiency: <b>least</b> to <b>most</b>)",
     "proficiencyDescending": "(proficiency: <b>most</b> to <b>least</b>)",
     "searchPlaceholder" : {
-        "state": "Enter district",
-        "district": "Enter school",
-        "school": "Enter grade"
+        "state": {
+            "text": "Enter district",
+            "aria": "Find districts in this state. Enter search text and hit enter"
+        },
+        "district": {
+            "text": "Enter school",
+            "aria": "Find schools in this district. Enter search text and hit enter"
+        },
+        "school": {
+            "text": "Enter grade",
+            "aria": "Find grade in this school. Enter search text and hit enter"
+        }
     }
 }

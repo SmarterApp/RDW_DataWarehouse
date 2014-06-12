@@ -13,7 +13,7 @@ class RootFactory(object):
     The root factory returns the traversal root of an application.
     Right now, we're saying that all roles have permission.
     '''
-    __acl__ = [(Allow, RolesConstants.GENERAL, ('view', 'logout', 'default')),
+    __acl__ = [(Allow, RolesConstants.GENERAL, ('view', 'logout', 'download', 'default')),
                (Allow, RolesConstants.PII, ('view', 'logout')),
                (Allow, RolesConstants.ALL_STATES, ('view', 'logout', 'display_home')),
                (Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout')),

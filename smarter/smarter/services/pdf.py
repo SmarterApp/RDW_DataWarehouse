@@ -193,13 +193,15 @@ def get_pdf_content(params):
         # Register expected file with HPZ
         registration_id, download_url = register_file(user.get_uid())
 
+        school_name = 'Example School'
+        asmt_grade = 7
         # Set up directory and file names
-        archive_file_name = _get_archive_name(os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip'),
-                                              'Example School', lang, is_grayscale)
-        directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
+        archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
+
+        merged_pdf_filename = _get_merged_pdf_name(school_name, asmt_grade, lang, is_grayscale)
 
         # Create JSON response
-        response = {'fileName': os.path.basename(archive_file_name), 'download_url': download_url}
+        response = {'fileName': archive_file_name, 'download_url': download_url}
 
         # Create the tasks for each individual student PDF file we want to merge
         generate_tasks = []
@@ -212,8 +214,8 @@ def get_pdf_content(params):
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
 
         # Start the bulk merge
-        _start_bulk(_get_merged_pdf_name(directory_to_archive, 'Example School', 7, lang, is_grayscale),
-                    archive_file_name, directory_to_archive, registration_id, generate_tasks, file_names, pdf_base_dir)
+        _start_bulk(pdf_base_dir, merged_pdf_filename, archive_file_name,
+                    registration_id, generate_tasks, file_names)
 
         # Return the JSON response while the bulk merge runs asynchronously
         return Response(body=json.dumps(response), content_type='application/json')
@@ -237,21 +239,26 @@ def has_context_for_pdf_request(state_code, student_guid):
     return check_context(RolesConstants.PII, state_code, student_guid)
 
 
-def _start_bulk(bulk_name, archive_file_name, directory_to_archive, registration_id, tasks, file_names, pdf_base_dir):
+def _start_bulk(pdf_base_dir, merged_pdf_filename, archive_file_name, registration_id, tasks, file_names):
     '''
     entry point to start a bulk PDF generation request for one or more students
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
     the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
+    pdf_bulk_base_dir = os.path.join(pdf_base_dir, 'bulk', registration_id)
+    directory_to_archive = os.path.join(pdf_bulk_base_dir, 'data')
+    directory_for_zip = os.path.join(pdf_bulk_base_dir, 'zip')
+    merged_pdf_filename = os.path.join(directory_to_archive, merged_pdf_filename)
+    archive_file_name = os.path.join(directory_for_zip, archive_file_name)
 
     workflow = chain(group(tasks),
-                     pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id, services.celery.TIMEOUT), immutable=True),  # @UndefinedVariable
+                     pdf_merge.subtask(args=(file_names, merged_pdf_filename, pdf_base_dir, services.celery.TIMEOUT), immutable=True),  # @UndefinedVariable
                      archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),  # @UndefinedVariable
                      hpz_upload_cleanup.subtask(args=(archive_file_name, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable
     workflow.apply_async()
 
 
-def _get_merged_pdf_name(out_dir, school_name, grade, lang_code, grayscale):
+def _get_merged_pdf_name(school_name, grade, lang_code, grayscale):
     timestamp = str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
     school_name = school_name.replace(' ', '')
     school_name = school_name[:15] if len(school_name) > 15 else school_name
@@ -259,7 +266,7 @@ def _get_merged_pdf_name(out_dir, school_name, grade, lang_code, grayscale):
                                                                                    grade=grade,
                                                                                    timestamp=timestamp,
                                                                                    lang=lang_code.lower())
-    return os.path.join(out_dir, name + ('.g.pdf' if grayscale else '.pdf'))
+    return name + ('.g.pdf' if grayscale else '.pdf')
 
 
 def _get_archive_name(out_dir, school_name, lang_code, grayscale):
@@ -269,4 +276,4 @@ def _get_archive_name(out_dir, school_name, lang_code, grayscale):
     name = 'student_reports_{school_name}_{timestamp}_{lang}'.format(school_name=school_name,
                                                                      timestamp=timestamp,
                                                                      lang=lang_code.lower())
-    return os.path.join(out_dir, name + ('.g.zip' if grayscale else '.zip'))
+    return name + ('.g.zip' if grayscale else '.zip')

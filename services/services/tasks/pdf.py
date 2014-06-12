@@ -169,7 +169,7 @@ def delete(path):
 
 
 @celery.task(name='tasks.pdf.merge')
-def pdf_merge(pdf_files, out_name, pdf_base_dir, registration_id, timeout=TIMEOUT):
+def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
     if os.path.isfile(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()

@@ -219,9 +219,9 @@ def get_pdf_content(params):
         return Response(body=json.dumps(response), content_type='application/json')
     else:
         # Create the task and stream the individual PDF response back to the browser
-        celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name,
+        celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name,  # @UndefinedVariable
                                     timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
-                                    always_generate=always_generate)  # @UndefinedVariable
+                                    always_generate=always_generate)
         pdf_stream = celery_response.get(timeout=celery_timeout)
         return Response(body=pdf_stream, content_type='application/pdf')
 
@@ -245,12 +245,9 @@ def _start_bulk(bulk_name, archive_file_name, directory_to_archive, registration
     '''
 
     workflow = chain(group(tasks),
-                     pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id,
-                                             services.celery.TIMEOUT),
-                                       immutable=True),
-                     archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),
-                     hpz_upload_cleanup.subtask(args=(archive_file_name, registration_id, pdf_base_dir),
-                                                immutable=True))
+                     pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id, services.celery.TIMEOUT), immutable=True),  # @UndefinedVariable
+                     archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),  # @UndefinedVariable
+                     hpz_upload_cleanup.subtask(args=(archive_file_name, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable
     workflow.apply_async()
 
 

@@ -12,8 +12,13 @@ from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
 import pyramid.threadlocal
+from sqlalchemy.sql import select
+from sqlalchemy.sql import and_
+from edcore.database.edcore_connector import EdCoreDBConnection
+from smarter.security.context import select_with_context
+from smarter.reports.helpers.filters import apply_filter_to_query
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
+    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from smarter.reports.helpers.constants import AssessmentType, Constants
@@ -30,9 +35,6 @@ from datetime import datetime
 import json
 import os
 
-
-KNOWN_REPORTS = ['indivstudentreport.html']
-
 PDF_PARAMS = {
     "type": "object",
     "additionalProperties": False,
@@ -44,11 +46,32 @@ PDF_PARAMS = {
         Constants.STUDENTGUID: {
             "type": "array",
             "items": {
-                    "type": "string",
-                    "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+            },
             "minItems": 1,
             "uniqueItems": True,
-            "required": True},
+            "required": False},
+        Constants.DISTRICTGUID: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
+        },
+        Constants.SCHOOLGUID: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
+        },
+        Constants.ASMTGRADE: {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[0-9 ]{0,2}$"
+            },
+            "minitems": 1,
+            "uniqueItems": True,
+            "required": False
+        },
         Constants.ASMTTYPE: {
             "type": "string",
             "required": False,
@@ -116,10 +139,6 @@ def send_pdf_request(params):
 
     :param params: python dict that contains query parameters from the request
     '''
-    report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
-    if report not in KNOWN_REPORTS:
-        raise EdApiHTTPNotFound("Not Found")
-
     try:
         response = get_pdf_content(params)
     except InvalidParameterError as e:
@@ -141,55 +160,74 @@ def get_pdf_content(params):
 
     :param params: python dict that contains query parameters from the request
     '''
+    # Get the user
     user = authenticated_userid(get_current_request())
+
+    # Collect the parameters
     student_guids = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
+    district_guid = params.get(Constants.DISTRICTGUID)
+    school_guid = params.get(Constants.SCHOOLGUID)
+    grades = params.get(Constants.ASMTGRADE, [])
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     effective_date = str(params.get(Constants.EFFECTIVEDATE))
-    if student_guids is None:
+    is_grayscale = bool(params.get('grayscale', 'false').lower() == 'true')
+    lang = params.get('lang', 'en').lower()
+
+    # Check that we have either a list of student GUIDs or a district/school/grade combination in the params
+    if student_guids is None and (district_guid is None or school_guid is None or grades is None):
         raise InvalidParameterError('Required parameter is missing')
-    if type(student_guids) is not list:
-        student_guids = [student_guids]
 
-    if not has_context_for_pdf_request(state_code, student_guids):
-        raise ForbiddenError('Access Denied')
-
+    # Validate the assessment type
     asmt_type = asmt_type.upper()
     if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]:
         raise InvalidParameterError('Unknown assessment type')
 
-    report = pyramid.threadlocal.get_current_request().matchdict['report']
-
-    url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
-
-    # check for gray scale request
-    is_grayscale = bool(params.get('grayscale', 'false').lower() == 'true')
-    # read language
-    lang = params.get('lang', 'en').lower()
-
-    # get isr file path name
-    pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    student_guids_file_names = generate_isr_report_path_by_student_guid(state_code, effective_date,
-                                                                        pdf_report_base_dir=pdf_base_dir,
-                                                                        student_guids=student_guids,
-                                                                        asmt_type=asmt_type, grayScale=is_grayscale,
-                                                                        lang=lang)
-
-    urls = []
-    file_names = []
-    for student_guid in student_guids:
-        # Encode the query parameters and append it to url
-        params[Constants.STUDENTGUID] = student_guid
-        encoded_params = urllib.parse.urlencode(params)
-        urls.append(url + "?%s" % encoded_params)
-        file_names.append(student_guids_file_names[student_guid])
-    # get current session cookie and request for pdf
+    # Get cookies and other config items
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
 
+    # Verify student GUIDs is a list (if we have them)
+    if student_guids is not None and type(student_guids) is not list:
+        student_guids = [student_guids]
+
+    # Set the base individual PDF generation URL
+    base_url = urljoin(pyramid.threadlocal.get_current_request().application_url,
+                       '/assets/html/indivstudentreport.html')
+
+    # If we do not have a list of student GUIDs, we need to get it
+    all_guids = []
+    guids_by_grade = {}
+    if student_guids is None:
+        for grade in grades:
+            guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
+            all_guids.extend([result['student_guid'] for result in guids])
+            guids_by_grade[grade] = [result['student_guid'] for result in guids]
+    else:
+        all_guids.extend(student_guids)
+        guids_by_grade['all'] = student_guids
+
+    # Set up a few additional variables
+    pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
+    urls_by_guid = {}
+
+    # Get all file names
+    files_by_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
+                                                             pdf_report_base_dir=pdf_base_dir, student_guids=all_guids,
+                                                             asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+
+    # Work through each grade
+    for _, guids in guids_by_grade.items():
+        # Create URLs
+        for student_guid in guids:
+            # Check if the user has access to PII for all of these students
+            if not _has_context_for_pdf_request(state_code, student_guid):
+                raise ForbiddenError('Access Denied')
+            urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
+
     # Decide if this is a bulk merge or simple PDF return
-    if len(file_names) > 1:
+    if len(urls_by_guid) > 1:
         # Register expected file with HPZ
         registration_id, download_url = register_file(user.get_uid())
 
@@ -205,28 +243,47 @@ def get_pdf_content(params):
         generate_tasks = []
         args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
                 'grayscale': is_grayscale, 'always_generate': always_generate}
-        for idx in range(len(file_names)):
+        for guid, file_name in files_by_guid.items():
             copied_args = copy.deepcopy(args)
-            copied_args['url'] = urls[idx]
-            copied_args['outputfile'] = file_names[idx]
+            copied_args['url'] = urls_by_guid[guid]
+            copied_args['outputfile'] = file_name
             generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
 
+        # Create the tasks to merge each PDF by grade
+        merge_tasks = []
+        for grade, guids in guids_by_grade.items():
+            # Create bulk output name
+            bulk_name = _get_merged_pdf_name(directory_to_archive, 'Example School', grade, lang, is_grayscale)
+
+            # Get the files for this grade
+            file_names = []
+            for student_guid in guids:
+                file_names.append(files_by_guid[student_guid])
+
+            # Create the merge task
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id,
+                                                       services.celery.TIMEOUT),
+                                                 immutable=True))
+
         # Start the bulk merge
-        _start_bulk(_get_merged_pdf_name(directory_to_archive, 'Example School', 7, lang, is_grayscale),
-                    archive_file_name, directory_to_archive, registration_id, generate_tasks, file_names, pdf_base_dir)
+        _start_bulk(archive_file_name, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
 
         # Return the JSON response while the bulk merge runs asynchronously
         return Response(body=json.dumps(response), content_type='application/json')
     else:
+        # Get the URL and file name
+        url = urls_by_guid[all_guids[0]]
+        file_name = files_by_guid[all_guids[0]]
+
         # Create the task and stream the individual PDF response back to the browser
-        celery_response = get.delay(cookie_value, urls[0], file_names[0], cookie_name=cookie_name,
+        celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name,
                                     timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
                                     always_generate=always_generate)  # @UndefinedVariable
         pdf_stream = celery_response.get(timeout=celery_timeout)
         return Response(body=pdf_stream, content_type='application/pdf')
 
 
-def has_context_for_pdf_request(state_code, student_guid):
+def _has_context_for_pdf_request(state_code, student_guid):
     '''
     Validates that user has context to student_guid
 
@@ -237,17 +294,21 @@ def has_context_for_pdf_request(state_code, student_guid):
     return check_context(RolesConstants.PII, state_code, student_guid)
 
 
-def _start_bulk(bulk_name, archive_file_name, directory_to_archive, registration_id, tasks, file_names, pdf_base_dir):
+def _create_student_pdf_url(student_guid, base_url, params):
+    params[Constants.STUDENTGUID] = student_guid
+    encoded_params = urllib.parse.urlencode(params)
+    return base_url + "?%s" % encoded_params
+
+
+def _start_bulk(archive_file_name, directory_to_archive, registration_id, gen_tasks, merge_tasks, pdf_base_dir):
     '''
     entry point to start a bulk PDF generation request for one or more students
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
     the files into one PDF, archive the PDF into a zip, and upload the zip to HPZ
     '''
 
-    workflow = chain(group(tasks),
-                     pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id,
-                                             services.celery.TIMEOUT),
-                                       immutable=True),
+    workflow = chain(group(gen_tasks),
+                     group(merge_tasks),
                      archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),
                      hpz_upload_cleanup.subtask(args=(archive_file_name, registration_id, pdf_base_dir),
                                                 immutable=True))
@@ -273,3 +334,36 @@ def _get_archive_name(out_dir, school_name, lang_code, grayscale):
                                                                      timestamp=timestamp,
                                                                      lang=lang_code.lower())
     return os.path.join(out_dir, name + ('.g.zip' if grayscale else '.zip'))
+
+
+def _get_student_guids(stateCode, districtGuid, schoolGuid, grade, asmtType, effectiveDate, params):
+    with EdCoreDBConnection(state_code=stateCode) as connector:
+        # Get handle to tables
+        dim_student = connector.get_table(Constants.DIM_STUDENT)
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+
+        # Build select
+        query = select_with_context([fact_asmt_outcome_vw.c.student_guid,
+                                     dim_student.c.first_name,
+                                     dim_student.c.last_name],
+                                    from_obj=[fact_asmt_outcome_vw
+                                              .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
+                                    permission=RolesConstants.PII, state_code=stateCode).distinct()
+
+        # Add where clauses
+        query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
+        query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == schoolGuid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == districtGuid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.enrl_grade == grade))
+        query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmtType))
+        query = query.where(and_(dim_asmt.c.effective_date == effectiveDate))
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
+
+        # Add order by clause
+        query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
+
+        # Return the result
+        return connector.get_result(query)

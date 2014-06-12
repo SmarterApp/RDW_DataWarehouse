@@ -14,7 +14,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 import services
 from pyramid.response import Response
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
-    get_pdf_content, has_context_for_pdf_request
+    get_pdf_content, _has_context_for_pdf_request
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 import tempfile
@@ -179,12 +179,12 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_has_context_for_pdf_request(self):
         student_guid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
-        has_context = has_context_for_pdf_request('NC', student_guid)
+        has_context = _has_context_for_pdf_request('NC', student_guid)
         self.assertTrue(has_context)
 
     def test_has_context_for_pdf_request_with_no_context(self):
         student_guid = 'invalid'
-        has_context = has_context_for_pdf_request('NC', student_guid)
+        has_context = _has_context_for_pdf_request('NC', student_guid)
         self.assertFalse(has_context)
 
     def test_send_pdf_request_with_always_generate_flag(self):

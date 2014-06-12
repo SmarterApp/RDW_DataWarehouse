@@ -67,7 +67,6 @@ class Constants():
     STUDENT_REG = 'student_reg'
     DIM_INST_HIER = 'dim_inst_hier'
     DIM_ASMT = 'dim_asmt'
-    DIM_STAFF = 'dim_staff'
     DIM_STUDENT = 'dim_student'
     FACT_ASMT_OUTCOME_VW = 'fact_asmt_outcome_vw'
     CUSTOM_METADATA = 'custom_metadata'

@@ -1,8 +1,9 @@
 from sqlalchemy import or_, and_
+
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.constants import Constants
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 
 
 __author__ = 'ablum'

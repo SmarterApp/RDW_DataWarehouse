@@ -4,21 +4,22 @@ Created on May 7, 2013
 @author: dip
 '''
 import unittest
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
-    UnittestEdcoreDBConnection, get_unittest_tenant_name
+
 from pyramid import testing
 from pyramid.testing import DummyRequest
+
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.security.context import check_context, select_with_context,\
     get_current_context
+
 # Import the roles below so test can run as a standalone
-from smarter.security.roles.pii import PII  # @UnusedImport
-from smarter.security.roles.state_level import StateLevel  # @UnusedImport
 from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter.reports.helpers.constants import Constants
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from sqlalchemy.sql.expression import and_
 from edauth.security.user import RoleRelation
 

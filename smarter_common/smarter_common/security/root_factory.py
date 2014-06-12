@@ -4,7 +4,8 @@ Created on Feb 11, 2013
 @author: dip
 '''
 from pyramid.security import Allow
-from smarter.security.constants import RolesConstants
+
+from smarter_common.security.constants import RolesConstants
 
 
 class RootFactory(object):

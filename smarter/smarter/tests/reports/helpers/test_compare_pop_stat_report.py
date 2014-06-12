@@ -4,20 +4,20 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
-from smarter.reports.compare_pop_report import set_default_min_cell_size
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
-from smarter.reports.helpers.constants import Constants
+
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.pii import PII  # @UnusedImport
+from pyramid.security import Allow
+
+from smarter.reports.compare_pop_report import set_default_min_cell_size
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
+from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.compare_pop_stat_report import ComparingPopStatReport
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 import edauth
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

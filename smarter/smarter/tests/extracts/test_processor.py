@@ -3,24 +3,25 @@ Created on Nov 5, 2013
 
 @author: ejen
 '''
+import tempfile
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
+from pyramid.registry import Registry
+from beaker.cache import CacheManager, cache_managers
+from beaker.util import parse_cache_config_options
+from pyramid.security import Allow
+
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from smarter.extracts.processor import get_extract_work_zone_path, \
     get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper, \
     get_pickup_zone_info, get_extract_request_user_info, _get_extract_work_zone_base_dir
-from pyramid.registry import Registry
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-import tempfile
-
-from beaker.cache import CacheManager, cache_managers
-from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 
 
 class TestProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

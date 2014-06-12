@@ -4,18 +4,20 @@ Created on Dec 5, 2013
 @author: dip
 '''
 import unittest
+
+from pyramid.testing import DummyRequest
+from pyramid.registry import Registry
+from pyramid import testing
+from pyramid.security import Allow
+
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
-from pyramid.testing import DummyRequest
-from pyramid.registry import Registry
-from pyramid import testing
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
-from pyramid.security import Allow
 import edauth
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 
 
 class TestMetadata(Unittest_with_edcore_sqlite):

@@ -4,9 +4,12 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 
-from edapi.decorators import report_config, user_info
+from string import capwords
+
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
+
+from edapi.decorators import report_config, user_info
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants, AssessmentType
@@ -21,12 +24,12 @@ from smarter.reports.helpers.filters import apply_filter_to_query, \
     FILTERS_CONFIG, get_student_demographic
 from edcore.utils.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
-from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_student_list_asmt_administration,\
     get_asmt_academic_years, get_default_asmt_academic_year
 from smarter.security.tenant import validate_user_tenant
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
+
 
 REPORT_NAME = "list_of_students"
 

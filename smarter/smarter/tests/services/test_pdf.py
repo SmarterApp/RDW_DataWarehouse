@@ -4,32 +4,33 @@ Created on May 17, 2013
 @author: dip
 '''
 import unittest
+import tempfile
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
+from pyramid.response import Response
+from pyramid.registry import Registry
+
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 from edapi.tests.test_views import DummyValueError
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 import services
-from pyramid.response import Response
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
     get_pdf_content, has_context_for_pdf_request
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
-import tempfile
-from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.pdf import prepare_path
+
 #from services.celeryconfig import get_config
 import shutil
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.pii import PII  # @UnusedImport
 from services.tests.tasks.test_pdf import get_cmd
 from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
 

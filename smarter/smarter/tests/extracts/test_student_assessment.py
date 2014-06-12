@@ -4,20 +4,21 @@ Created on Nov 8, 2013
 @author: dip
 '''
 import unittest
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_query
-from edcore.utils.utils import compile_query_to_sql_text
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
+from pyramid.registry import Registry
+from sqlalchemy.sql.expression import select
+from pyramid.security import Allow
+
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_query
+from edcore.utils.utils import compile_query_to_sql_text
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from pyramid.registry import Registry
-from smarter.security.roles.pii import PII  # @UnusedImport
-from sqlalchemy.sql.expression import select
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 from edauth.security.user import RoleRelation
 import edauth
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

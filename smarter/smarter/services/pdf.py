@@ -231,13 +231,14 @@ def get_pdf_content(params):
         # Register expected file with HPZ
         registration_id, download_url = register_file(user.get_uid())
 
+        school_name = 'Example School'  # TODO: Get from somewhere
         # Set up directory and file names
         archive_file_name = _get_archive_name(os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip'),
-                                              'Example School', lang, is_grayscale)
+                                              school_name, lang, is_grayscale)
         directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
 
         # Create JSON response
-        response = {'fileName': os.path.basename(archive_file_name), 'download_url': download_url}
+        response = {'fileName': archive_file_name, 'download_url': download_url}
 
         # Create the tasks for each individual student PDF file we want to merge
         generate_tasks = []
@@ -261,8 +262,7 @@ def get_pdf_content(params):
                 file_names.append(files_by_guid[student_guid])
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, registration_id,
-                                                       services.celery.TIMEOUT),
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, services.celery.TIMEOUT),
                                                  immutable=True))
 
         # Start the bulk merge
@@ -278,7 +278,7 @@ def get_pdf_content(params):
         # Create the task and stream the individual PDF response back to the browser
         celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name,
                                     timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
-                                    always_generate=always_generate)  # @UndefinedVariable
+                                    always_generate=always_generate)
         pdf_stream = celery_response.get(timeout=celery_timeout)
         return Response(body=pdf_stream, content_type='application/pdf')
 

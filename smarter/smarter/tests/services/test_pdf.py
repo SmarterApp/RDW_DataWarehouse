@@ -9,7 +9,7 @@ from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from edapi.tests.test_views import DummyValueError
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
     get_unittest_tenant_name
 import services
 from pyramid.response import Response
@@ -21,7 +21,7 @@ import tempfile
 from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.pdf import prepare_path
-#from services.celeryconfig import get_config
+# from services.celeryconfig import get_config
 import shutil
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.roles.pii import PII  # @UnusedImport
@@ -225,7 +225,9 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     @patch('smarter.services.pdf._start_bulk')
     @patch('smarter.services.pdf.generate_isr_report_path_by_student_guid')
-    def test_get_pdf_content(self, mock_generate_isr_report_path_by_student_guid_patch, mock_start_bulk):
+    @patch('smarter.services.pdf.register_file')
+    def test_get_pdf_content(self, mock_register_file, mock_generate_isr_report_path_by_student_guid_patch, mock_start_bulk):
+        mock_register_file.return_value = (1, 'http://foo.com/foo')
         mock_generate_isr_report_path_by_student_guid_patch.return_value = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/a', '34140997-8949-497e-bbbb-5d72aa7dc9cb': '/b'}
         params = {}
         params['studentGuid'] = ['a5ddfe12-740d-4487-9179-de70f6ac33be', '34140997-8949-497e-bbbb-5d72aa7dc9cb']

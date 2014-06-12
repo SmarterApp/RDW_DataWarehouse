@@ -269,7 +269,7 @@ def _get_merged_pdf_name(school_name, grade, lang_code, grayscale):
     return name + ('.g.pdf' if grayscale else '.pdf')
 
 
-def _get_archive_name(out_dir, school_name, lang_code, grayscale):
+def _get_archive_name(school_name, lang_code, grayscale):
     timestamp = str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
     school_name = school_name.replace(' ', '')
     school_name = school_name[:15] if len(school_name) > 15 else school_name

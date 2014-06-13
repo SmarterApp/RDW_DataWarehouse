@@ -4,32 +4,31 @@ Created on May 8, 2014
 @author: nestep
 """
 import unittest
+import zipfile
+import tempfile
+from unittest.mock import patch
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
+from pyramid.registry import Registry
+from pyramid.response import Response
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
+from pyramid.security import Allow
+
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
-from pyramid.registry import Registry
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.pii import PII  # @UnusedImport
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from pyramid.response import Response
 from smarter.extracts.constants import Constants
 from smarter.services.item_extract import post_item_extract_service, get_item_extract_service,\
     generate_zip_file_name, send_extraction_request
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import smarter.extracts.format
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
-from edapi.utils import convert_query_string_to_dict_arrays
-import zipfile
-import tempfile
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
-from smarter.security.constants import RolesConstants
-from unittest.mock import patch
+from smarter_common.security.constants import RolesConstants
 
 
 class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

@@ -4,7 +4,7 @@ from hpz import frs, swi
 from hpz.database.hpz_connector import initialize_db
 import edauth
 from pyramid_beaker import set_cache_regions_from_settings
-from hpz.swi.security.root_factory import RootFactory
+from smarter_common.security.root_factory import RootFactory
 import os
 
 logger = logging.getLogger(__name__)

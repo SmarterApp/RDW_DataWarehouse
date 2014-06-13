@@ -1,5 +1,14 @@
+import tempfile
+from unittest.mock import patch
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
+from pyramid.registry import Registry
+from sqlalchemy.sql.expression import select
+from beaker.cache import CacheManager, cache_managers
+from beaker.util import parse_cache_config_options
+from pyramid.security import Allow
+
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
@@ -9,25 +18,17 @@ from smarter.extracts.student_asmt_processor import process_async_extraction_req
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
     _create_tasks_with_responses
-from pyramid.registry import Registry
 from edapi.exceptions import NotFoundException
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-import tempfile
 from edextract.celery import setup_celery
 import smarter
-from sqlalchemy.sql.expression import select
 from edauth.security.user import User
 from smarter.extracts.constants import Constants as Extract
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
-from beaker.cache import CacheManager, cache_managers
-from beaker.util import parse_cache_config_options
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
-from smarter.security.constants import RolesConstants
-from unittest.mock import patch
-from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter_common.security.constants import RolesConstants
 
 
 __author__ = 'ablum'

@@ -3,15 +3,17 @@ Created on May 17, 2013
 
 @author: dip
 '''
-from pyramid.view import view_config
-from services.tasks.pdf import get
 from urllib.parse import urljoin
+import urllib.parse
+
+from pyramid.view import view_config
 from pyramid.response import Response
+import pyramid.threadlocal
+
+from services.tasks.pdf import get
 from smarter.security.context import check_context
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
-import urllib.parse
-import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from services.exceptions import PdfGenerationError
@@ -20,7 +22,7 @@ from smarter.reports.helpers.constants import AssessmentType, Constants
 import services.celery
 from edapi.decorators import validate_params
 from edcore.utils.utils import to_bool
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']

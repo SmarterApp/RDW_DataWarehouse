@@ -12,10 +12,10 @@ from uuid import uuid4
 
 class IDGen():
     def __init__(self, lock=multiprocessing.Lock(), rec_dict={}):
-        self._start_rec_id = 20
+        self._start_rec_id = 100000000000
         self._rec_id_lock = lock
         self._rec_id_dict = rec_dict
-        self._rec_id = multiprocessing.Value('i', 20)
+        self._rec_id = multiprocessing.Value('i', 100000000000)
 
     def get_rec_id(self, type_str):
         """

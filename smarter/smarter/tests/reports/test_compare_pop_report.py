@@ -4,6 +4,14 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
+
+from beaker.util import parse_cache_config_options
+from beaker.cache import CacheManager
+from pyramid.testing import DummyRequest
+from pyramid import testing
+from pyramid.security import Allow
+from pyramid.httpexceptions import HTTPForbidden
+
 from smarter.reports.compare_pop_report import get_comparing_populations_report,\
     ComparingPopReport, CACHE_REGION_PUBLIC_DATA,\
     CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route,\
@@ -11,18 +19,10 @@ from smarter.reports.compare_pop_report import get_comparing_populations_report,
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants, AssessmentType
-from beaker.util import parse_cache_config_options
-from beaker.cache import CacheManager
-from pyramid.testing import DummyRequest
-from pyramid import testing
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.pii import PII  # @UnusedImport
 from smarter.reports.helpers import filters
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 import edauth
-from pyramid.httpexceptions import HTTPForbidden
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

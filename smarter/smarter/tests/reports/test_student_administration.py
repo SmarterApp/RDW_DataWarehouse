@@ -1,15 +1,15 @@
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
+
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
+from edauth.tests.test_helper.create_session import create_test_session
 import edauth
-from smarter.security.roles.pii import PII  # @UnusedImport
 from smarter.reports.student_administration import get_asmt_academic_years,\
     get_student_reg_academic_years
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

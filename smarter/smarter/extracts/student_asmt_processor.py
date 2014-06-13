@@ -18,7 +18,7 @@ from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 
 

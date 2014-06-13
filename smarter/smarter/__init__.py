@@ -1,16 +1,18 @@
-from pyramid.config import Configurator
-import edauth
-import edapi
 import os
-import pyramid
 import logging
-from smarter.security.root_factory import RootFactory
 import platform
 import subprocess
 import atexit
 import signal
-from pyramid_beaker import set_cache_regions_from_settings
 import sys
+
+from pyramid.config import Configurator
+import pyramid
+from pyramid_beaker import set_cache_regions_from_settings
+
+import edauth
+import edapi
+from smarter_common.security.root_factory import RootFactory
 from smarter import services, trigger
 from smarter.utils.remote_config import get_remote_config
 from edcore.database import initialize_db
@@ -21,6 +23,7 @@ from edextract.celery import setup_celery as setup_extract_celery, PREFIX as ede
 from edcore.security.tenant import set_tenant_map
 from smarter.reports.student_administration import set_default_year_back
 from hpz_client.frs.config import initialize as initialize_hpz
+
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None

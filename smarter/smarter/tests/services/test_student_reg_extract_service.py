@@ -1,25 +1,26 @@
 __author__ = 'ablum'
 
+from unittest.mock import patch
+import json
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    get_unittest_tenant_name
 from pyramid.registry import Registry
-from edextract.celery import setup_celery
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from smarter.security.constants import RolesConstants
-
-from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-import smarter.extracts.format
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
+
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    get_unittest_tenant_name
+from edextract.celery import setup_celery
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from smarter_common.security.constants import RolesConstants
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+import smarter.extracts.format
+from edauth.tests.test_helper.create_session import create_test_session
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter.services.student_reg_extract_service import post_sr_stat_extract_service, post_sr_comp_extract_service
-from unittest.mock import patch
-import json
 
 
 class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

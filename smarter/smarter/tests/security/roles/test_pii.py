@@ -4,19 +4,21 @@ Created on May 9, 2013
 @author: dip
 '''
 import unittest
+
+from sqlalchemy.sql.expression import select, or_
+from pyramid import testing
+from pyramid.testing import DummyRequest
+from pyramid.security import Allow
+
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from sqlalchemy.sql.expression import select, or_
 from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.pii import PII
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
 from edcore.security.tenant import set_tenant_map
-from pyramid import testing
-from pyramid.testing import DummyRequest
-from pyramid.security import Allow
 import edauth
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 
 
 class TestPIIContextSecurity(Unittest_with_edcore_sqlite):

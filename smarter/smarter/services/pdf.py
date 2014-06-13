@@ -456,4 +456,8 @@ def _get_school_name(state_code, district_guid, school_guid):
         query = query.where(and_(dim_inst_hier.c.school_guid == school_guid))
 
         # Return the result
-        return connector.get_result(query)[0]['school_name']
+        results = connector.get_result(query)
+        if len(results) == 1:
+            return results[0]['school_name']
+        else:
+            raise InvalidParameterError('School name cannot be found')

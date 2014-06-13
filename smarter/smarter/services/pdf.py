@@ -12,13 +12,12 @@ from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
 import pyramid.threadlocal
-from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.filters import apply_filter_to_query
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
+    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from smarter.reports.helpers.constants import AssessmentType, Constants
@@ -34,6 +33,8 @@ import copy
 from datetime import datetime
 import json
 import os
+
+KNOWN_REPORTS = ['indivstudentreport.html']
 
 PDF_PARAMS = {
     "type": "object",
@@ -139,6 +140,11 @@ def send_pdf_request(params):
 
     :param params: python dict that contains query parameters from the request
     '''
+    # Validate report type
+    report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
+    if report not in KNOWN_REPORTS:
+        raise EdApiHTTPNotFound("Not Found")
+
     try:
         response = get_pdf_content(params)
     except InvalidParameterError as e:
@@ -147,7 +153,7 @@ def send_pdf_request(params):
         raise EdApiHTTPForbiddenAccess(e.msg)
     except (PdfGenerationError, TimeoutError) as e:
         raise EdApiHTTPInternalServerError(e.msg)
-    except Exception as e:
+    except Exception:
         # if celery get task got timed out...
         raise EdApiHTTPInternalServerError("Internal Error")
 
@@ -233,9 +239,11 @@ def get_pdf_content(params):
 
         school_name = 'Example School'  # TODO: Get from somewhere
         # Set up directory and file names
-        archive_file_name = _get_archive_name(os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip'),
-                                              school_name, lang, is_grayscale)
         directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
+        directory_for_zip = os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip')
+        archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
+        archive_file_path = os.path.join(directory_for_zip, archive_file_name)
+
 
         # Create JSON response
         response = {'fileName': archive_file_name, 'download_url': download_url}
@@ -253,8 +261,9 @@ def get_pdf_content(params):
         # Create the tasks to merge each PDF by grade
         merge_tasks = []
         for grade, guids in guids_by_grade.items():
-            # Create bulk output name
-            bulk_name = _get_merged_pdf_name(directory_to_archive, 'Example School', grade, lang, is_grayscale)
+            # Create bulk output name and path
+            bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
+            bulk_path = os.path.join(directory_to_archive, bulk_name)
 
             # Get the files for this grade
             file_names = []
@@ -262,11 +271,11 @@ def get_pdf_content(params):
                 file_names.append(files_by_guid[student_guid])
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_name, pdf_base_dir, services.celery.TIMEOUT),
-                                                 immutable=True))
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT),
+                                                 immutable=True))  # @UndefinedVariable
 
         # Start the bulk merge
-        _start_bulk(archive_file_name, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
+        _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
 
         # Return the JSON response while the bulk merge runs asynchronously
         return Response(body=json.dumps(response), content_type='application/json')
@@ -278,7 +287,7 @@ def get_pdf_content(params):
         # Create the task and stream the individual PDF response back to the browser
         celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name,
                                     timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
-                                    always_generate=always_generate)
+                                    always_generate=always_generate)  # @UndefinedVariable
         pdf_stream = celery_response.get(timeout=celery_timeout)
         return Response(body=pdf_stream, content_type='application/pdf')
 
@@ -300,7 +309,7 @@ def _create_student_pdf_url(student_guid, base_url, params):
     return base_url + "?%s" % encoded_params
 
 
-def _start_bulk(archive_file_name, directory_to_archive, registration_id, gen_tasks, merge_tasks, pdf_base_dir):
+def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_tasks, merge_tasks, pdf_base_dir):
     '''
     entry point to start a bulk PDF generation request for one or more students
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
@@ -309,31 +318,32 @@ def _start_bulk(archive_file_name, directory_to_archive, registration_id, gen_ta
 
     workflow = chain(group(gen_tasks),
                      group(merge_tasks),
-                     archive.subtask(args=(archive_file_name, directory_to_archive), immutable=True),
-                     hpz_upload_cleanup.subtask(args=(archive_file_name, registration_id, pdf_base_dir),
-                                                immutable=True))
+                     archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),
+                     hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir),
+                                                immutable=True))  # @UndefinedVariable
     workflow.apply_async()
 
 
-def _get_merged_pdf_name(out_dir, school_name, grade, lang_code, grayscale):
+def _get_merged_pdf_name(school_name, grade, lang_code, grayscale):
     timestamp = str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
     school_name = school_name.replace(' ', '')
     school_name = school_name[:15] if len(school_name) > 15 else school_name
-    name = 'student_reports_{school_name}_grade_{grade}_{timestamp}_{lang}'.format(school_name=school_name,
-                                                                                   grade=grade,
-                                                                                   timestamp=timestamp,
-                                                                                   lang=lang_code.lower())
-    return os.path.join(out_dir, name + ('.g.pdf' if grayscale else '.pdf'))
+    grade_val = '_grade_{grade}'.format(grade=grade) if grade != 'all' else ''
+    name = 'student_reports_{school_name}{grade}_{timestamp}_{lang}'.format(school_name=school_name,
+                                                                            grade=grade_val,
+                                                                            timestamp=timestamp,
+                                                                            lang=lang_code.lower())
+    return name + ('.g.pdf' if grayscale else '.pdf')
 
 
-def _get_archive_name(out_dir, school_name, lang_code, grayscale):
+def _get_archive_name(school_name, lang_code, grayscale):
     timestamp = str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
     school_name = school_name.replace(' ', '')
     school_name = school_name[:15] if len(school_name) > 15 else school_name
     name = 'student_reports_{school_name}_{timestamp}_{lang}'.format(school_name=school_name,
                                                                      timestamp=timestamp,
                                                                      lang=lang_code.lower())
-    return os.path.join(out_dir, name + ('.g.zip' if grayscale else '.zip'))
+    return name + ('.g.zip' if grayscale else '.zip')
 
 
 def _get_student_guids(stateCode, districtGuid, schoolGuid, grade, asmtType, effectiveDate, params):
@@ -356,7 +366,7 @@ def _get_student_guids(stateCode, districtGuid, schoolGuid, grade, asmtType, eff
         query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == districtGuid))
-        query = query.where(and_(fact_asmt_outcome_vw.c.enrl_grade == grade))
+        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmtType))
         query = query.where(and_(dim_asmt.c.effective_date == effectiveDate))

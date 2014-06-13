@@ -295,11 +295,14 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
     if student_guids is None:
         for grade in grades:
             guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
-            all_guids.extend([result['student_guid'] for result in guids])
-            guids_by_grade[grade] = [result['student_guid'] for result in guids]
+            if len(guids) > 0:
+                all_guids.extend([result['student_guid'] for result in guids])
+                guids_by_grade[grade] = [result['student_guid'] for result in guids]
     else:
         all_guids.extend(student_guids)
         guids_by_grade['all'] = student_guids
+    if len(all_guids) == 0:
+        raise InvalidParameterError('No students match filters')
     return all_guids, guids_by_grade
 
 

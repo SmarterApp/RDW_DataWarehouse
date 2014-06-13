@@ -289,6 +289,9 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
 
 
 def _create_student_guids(student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, params):
+    '''
+    create list of student guids by grades
+    '''
     # If we do not have a list of student GUIDs, we need to get it
     all_guids = []
     guids_by_grade = {}
@@ -296,8 +299,8 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
         for grade in grades:
             guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
             if len(guids) > 0:
-                all_guids.extend([result['student_guid'] for result in guids])
-                guids_by_grade[grade] = [result['student_guid'] for result in guids]
+                all_guids.extend([result[Constants.STUDENT_GUID] for result in guids])
+                guids_by_grade[grade] = [result[Constants.STUDENT_GUID] for result in guids]
     else:
         all_guids.extend(student_guids)
         guids_by_grade['all'] = student_guids
@@ -307,6 +310,9 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
 
 
 def _create_urls_by_student_guid(all_guids, state_code, base_url, params):
+    '''
+    create ISR URL link for each students
+    '''
     # Set up a few additional variables
     urls_by_guid = {}
 
@@ -320,6 +326,9 @@ def _create_urls_by_student_guid(all_guids, state_code, base_url, params):
 
 
 def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid, urls_by_guid):
+    '''
+    create celery tasks to prepare pdf files.
+    '''
     generate_tasks = []
     args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
             'grayscale': is_grayscale, 'always_generate': always_generate}
@@ -333,6 +342,9 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
 
 def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
                             is_grayscale):
+    '''
+    create pdf merge tasks
+    '''
     merge_tasks = []
     for grade, student_guids in guids_by_grade.items():
         # Create bulk output name and path
@@ -410,7 +422,7 @@ def _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type,
         fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
 
         # Build select
-        query = select_with_context([fact_asmt_outcome_vw.c.student_guid,
+        query = select_with_context([fact_asmt_outcome_vw.c.student_guid.label(Constants.STUDENT_GUID),
                                      dim_student.c.first_name,
                                      dim_student.c.last_name],
                                     from_obj=[fact_asmt_outcome_vw
@@ -447,7 +459,7 @@ def _get_school_name(state_code, district_guid, school_guid):
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
 
         # Build select
-        query = select([dim_inst_hier.c.school_name],
+        query = select([dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME)],
                        from_obj=[dim_inst_hier])
 
         # Add where clauses
@@ -456,4 +468,4 @@ def _get_school_name(state_code, district_guid, school_guid):
         query = query.where(and_(dim_inst_hier.c.school_guid == school_guid))
 
         # Return the result
-        return connector.get_result(query)[0]['school_name']
+        return connector.get_result(query)[0][Constants.SCHOOL_NAME]

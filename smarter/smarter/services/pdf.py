@@ -224,25 +224,15 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     user = authenticated_userid(get_current_request())
 
     # If we do not have a list of student GUIDs, we need to get it
-    all_guids = []
-    guids_by_grade = {}
-    if student_guids is None:
-        for grade in grades:
-            guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
-            all_guids.extend([result['student_guid'] for result in guids])
-            guids_by_grade[grade] = [result['student_guid'] for result in guids]
-    else:
-        all_guids.extend(student_guids)
-        guids_by_grade['all'] = student_guids
-
+    all_guids, guids_by_grade = _create_student_guids(student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, params)
 
     # Get all file names
-    files_by_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
+    files_by_student_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
                                                              pdf_report_base_dir=pdf_base_dir, student_guids=all_guids,
                                                              asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
 
     # Set up a few additional variables
-    urls_by_guid =  _create_urls_by_guid(guids_by_grade, state_code, base_url, params)
+    urls_by_student_guid =  _create_urls_by_student_guid(guids_by_grade, state_code, base_url, params)
 
     # Register expected file with HPZ
     registration_id, download_url = register_file(user.get_uid())
@@ -260,11 +250,11 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     response = {'fileName': archive_file_name, 'download_url': download_url}
 
     # Create the tasks for each individual student PDF file we want to merge
-    generate_tasks = _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid,
-                                                urls_by_guid)
+    generate_tasks = _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_student_guid,
+                                                urls_by_student_guid)
 
     # Create the tasks to merge each PDF by grade
-    merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid,
+    merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_student_guid,
                                           school_name, lang, is_grayscale)
 
     # Start the bulk merge
@@ -274,7 +264,22 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     return Response(body=json.dumps(response), content_type='application/json')
 
 
-def _create_urls_by_guid(guids_by_grade, state_code, base_url, params):
+def _create_student_guids(student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, params):
+    # If we do not have a list of student GUIDs, we need to get it
+    all_guids = []
+    guids_by_grade = {}
+    if student_guids is None:
+        for grade in grades:
+            guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
+            all_guids.extend([result['student_guid'] for result in guids])
+            guids_by_grade[grade] = [result['student_guid'] for result in guids]
+    else:
+        all_guids.extend(student_guids)
+        guids_by_grade['all'] = student_guids
+    return all_guids, guids_by_grade
+
+
+def _create_urls_by_student_guid(guids_by_grade, state_code, base_url, params):
     # Set up a few additional variables
     urls_by_guid = {}
 
@@ -299,6 +304,7 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
         copied_args['outputfile'] = file_name
         generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
     return generate_tasks
+
 
 def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
                             is_grayscale):

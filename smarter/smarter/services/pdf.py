@@ -235,22 +235,14 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
         all_guids.extend(student_guids)
         guids_by_grade['all'] = student_guids
 
-    # Set up a few additional variables
-    urls_by_guid = {}
 
     # Get all file names
     files_by_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
                                                              pdf_report_base_dir=pdf_base_dir, student_guids=all_guids,
                                                              asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
 
-    # Work through each grade
-    for _, guids in guids_by_grade.items():
-        # Create URLs
-        for student_guid in guids:
-            # Check if the user has access to PII for all of these students
-            if not _has_context_for_pdf_request(state_code, student_guid):
-                raise ForbiddenError('Access Denied')
-            urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
+    # Set up a few additional variables
+    urls_by_guid =  _create_urls_by_guid(guids_by_grade, state_code, base_url, params)
 
     # Register expected file with HPZ
     registration_id, download_url = register_file(user.get_uid())
@@ -280,6 +272,21 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
 
     # Return the JSON response while the bulk merge runs asynchronously
     return Response(body=json.dumps(response), content_type='application/json')
+
+
+def _create_urls_by_guid(guids_by_grade, state_code, base_url, params):
+    # Set up a few additional variables
+    urls_by_guid = {}
+
+    # Work through each grade
+    for _, student_guids in guids_by_grade.items():
+        # Check if the user has access to PII for all of these students
+        if not _has_context_for_pdf_request(state_code, student_guids):
+            raise ForbiddenError('Access Denied')
+        # Create URLs
+        for student_guid in student_guids:
+            urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
+    return urls_by_guid
 
 
 def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid, urls_by_guid):

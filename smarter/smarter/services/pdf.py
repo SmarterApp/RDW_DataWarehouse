@@ -256,7 +256,7 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
                                                                      grayScale=is_grayscale, lang=lang)
 
     # Set up a few additional variables
-    urls_by_student_guid = _create_urls_by_student_guid(guids_by_grade, state_code, base_url, params)
+    urls_by_student_guid = _create_urls_by_student_guid(all_guids, state_code, base_url, params)
 
     # Register expected file with HPZ
     registration_id, download_url = register_file(user.get_uid())
@@ -306,18 +306,16 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
     return all_guids, guids_by_grade
 
 
-def _create_urls_by_student_guid(guids_by_grade, state_code, base_url, params):
+def _create_urls_by_student_guid(all_guids, state_code, base_url, params):
     # Set up a few additional variables
     urls_by_guid = {}
 
-    # Work through each grade
-    for _, student_guids in guids_by_grade.items():
-        # Check if the user has access to PII for all of these students
-        if not _has_context_for_pdf_request(state_code, student_guids):
-            raise ForbiddenError('Access Denied')
-        # Create URLs
-        for student_guid in student_guids:
-            urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
+    # Check if the user has access to PII for all of these students
+    if not _has_context_for_pdf_request(state_code, all_guids):
+        raise ForbiddenError('Access Denied')
+    # Create URLs
+    for student_guid in all_guids:
+        urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
     return urls_by_guid
 
 

@@ -57,18 +57,18 @@ PDF_PARAMS = {
         Constants.DISTRICTGUID: {
             "type": "string",
             "required": False,
-            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
         Constants.SCHOOLGUID: {
             "type": "string",
             "required": False,
-            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
         Constants.ASMTGRADE: {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^[0-9 ]{0,2}$"
+                "pattern": "^[0-9]{0,2}$"
             },
             "minitems": 1,
             "uniqueItems": True,
@@ -103,6 +103,26 @@ PDF_PARAMS = {
             "type": "integer",
             "required": True,
             "pattern": "^[1-9]{8}$"
+        },
+        Constants.GROUP1ID: {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+            },
+            "minitems": 1,
+            "uniqueItems": True,
+            "required": False
+        },
+        Constants.GROUP2ID: {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+            },
+            "minitems": 1,
+            "uniqueItems": True,
+            "required": False
         }
     }, FILTERS_CONFIG)
 }
@@ -191,10 +211,10 @@ def get_pdf_content(params):
     base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
     # Set up a few additional variables
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    if type(student_guids) is not list:
+    if student_guids is not None and type(student_guids) is not list:
         student_guids = [student_guids]
 
-    if len(student_guids) is 1:
+    if student_guids is not None and len(student_guids) is 1:
         response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, effective_date, asmt_type, student_guids[0], lang, is_grayscale, always_generate, celery_timeout, params)
     else:
         response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
@@ -229,8 +249,9 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     if student_guids is None:
         for grade in grades:
             guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
-            all_guids.extend([result['student_guid'] for result in guids])
-            guids_by_grade[grade] = [result['student_guid'] for result in guids]
+            if len(guids) > 0:
+                all_guids.extend([result['student_guid'] for result in guids])
+                guids_by_grade[grade] = [result['student_guid'] for result in guids]
     else:
         all_guids.extend(student_guids)
         guids_by_grade['all'] = student_guids
@@ -299,6 +320,7 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
         copied_args['outputfile'] = file_name
         generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
     return generate_tasks
+
 
 def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
                             is_grayscale):
@@ -396,6 +418,12 @@ def _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type,
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
         query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
+
+        # Check for group IDs
+        if Constants.GROUP1ID in params:
+            query = query.where(and_(fact_asmt_outcome_vw.c.group_1_id.in_(params.get(Constants.GROUP1ID))))
+        if Constants.GROUP2ID in params:
+            query = query.where(and_(fact_asmt_outcome_vw.c.group_2_id.in_(params.get(Constants.GROUP2ID))))
 
         # Add order by clause
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)

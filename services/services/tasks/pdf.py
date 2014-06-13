@@ -187,6 +187,8 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
             subprocess.call(pdfunite_procs + pdf_files + [out_name], timeout=timeout)
     except subprocess.TimeoutExpired:
         log.error('pdfunite subprocess call timed out')
+    except Exception as e:
+        log.error(str(e))
 
 
 @celery.task(name="tasks.pdf.archive")

@@ -98,6 +98,8 @@ class Constants():
     DMG_PRG_IEP = 'dmg_prg_iep'
     DMG_PRG_504 = 'dmg_prg_504'
     DMG_PRG_LEP = 'dmg_prg_lep'
+    GROUP1ID = 'group1Id'
+    GROUP2ID = 'group2Id'
     NOT_STATED = 'not_stated'
     RAW_EXPORT = 'raw'
     ASMT_YEAR = 'asmt_year'

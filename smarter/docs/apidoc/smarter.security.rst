@@ -9,7 +9,7 @@ security Package
 :mod:`constants` Module
 -----------------------
 
-.. automodule:: smarter.security.constants
+.. automodule:: smarter_common.security.constants
     :members:
     :undoc-members:
     :show-inheritance:
@@ -33,7 +33,7 @@ security Package
 :mod:`root_factory` Module
 --------------------------
 
-.. automodule:: smarter.security.root_factory
+.. automodule:: smarter_common.security.root_factory
     :members:
     :undoc-members:
     :show-inheritance:

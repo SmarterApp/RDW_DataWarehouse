@@ -223,6 +223,8 @@ def get_pdf_content(params):
 
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, effective_date, asmt_type, student_guid, lang, is_grayscale, always_generate, celery_timeout, params):
     # Get all file names
+    if not _has_context_for_pdf_request(state_code, student_guid):
+        raise ForbiddenError('Access Denied')
     url = _create_student_pdf_url(student_guid, base_url, params)
     files_by_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
                                                              pdf_report_base_dir=pdf_base_dir, student_guids=[student_guid],

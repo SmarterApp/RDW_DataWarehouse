@@ -223,20 +223,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         self.assertRaises(InvalidParameterError, get_pdf_content, params)
 
-    @patch('smarter.services.pdf._start_bulk')
-    @patch('smarter.services.pdf.generate_isr_report_path_by_student_guid')
-    @patch('smarter.services.pdf.register_file')
-    def test_get_pdf_content(self, mock_register_file, mock_generate_isr_report_path_by_student_guid_patch, mock_start_bulk):
-        mock_register_file.return_value = (1, 'http://foo.com/foo')
-        mock_generate_isr_report_path_by_student_guid_patch.return_value = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/a', '34140997-8949-497e-bbbb-5d72aa7dc9cb': '/b'}
-        params = {}
-        params['studentGuid'] = ['a5ddfe12-740d-4487-9179-de70f6ac33be', '34140997-8949-497e-bbbb-5d72aa7dc9cb']
-        params['stateCode'] = 'NC'
-        self.__request.matchdict['report'] = 'indivStudentReport.html'
-        self.__request.cookies = {'edware': '123'}
-        response = get_pdf_content(params)
-        pass
-
     def test_get_school_name(self):
         name = _get_school_name('NC', '229', '939')
         self.assertEqual(name, 'Daybreak - Western Middle')

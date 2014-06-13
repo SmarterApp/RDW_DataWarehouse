@@ -248,6 +248,18 @@ class TestServices(Unittest_with_edcore_sqlite):
         guids = _get_student_guids('NC', '229', '939', '7', 'SUMMATIVE', '20160404', {})
         self.assertEqual(len(guids), 8)
 
+    def test_get_student_guids_males(self):
+        guids = _get_student_guids('NC', '229', '939', '7', 'SUMMATIVE', '20160404', {'sex': ['male']})
+        self.assertEqual(len(guids), 4)
+
+    def test_get_student_guids_group1(self):
+        guids = _get_student_guids('NC', '229', '939', '7', 'SUMMATIVE', '20160404', {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
+        self.assertEqual(len(guids), 5)
+
+    def test_get_student_guids_group2(self):
+        guids = _get_student_guids('NC', '229', '939', '7', 'SUMMATIVE', '20160404', {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']})
+        self.assertEqual(len(guids), 6)
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

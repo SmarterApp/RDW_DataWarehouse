@@ -228,11 +228,11 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
 
     # Get all file names
     files_by_student_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
-                                                             pdf_report_base_dir=pdf_base_dir, student_guids=all_guids,
-                                                             asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+                                                                     pdf_report_base_dir=pdf_base_dir, student_guids=all_guids,
+                                                                     asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
 
     # Set up a few additional variables
-    urls_by_student_guid =  _create_urls_by_student_guid(guids_by_grade, state_code, base_url, params)
+    urls_by_student_guid = _create_urls_by_student_guid(guids_by_grade, state_code, base_url, params)
 
     # Register expected file with HPZ
     registration_id, download_url = register_file(user.get_uid())

@@ -12,7 +12,7 @@ from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
 import pyramid.threadlocal
-from sqlalchemy.sql import and_
+from sqlalchemy.sql import and_, select
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.filters import apply_filter_to_query
@@ -237,13 +237,14 @@ def get_pdf_content(params):
         # Register expected file with HPZ
         registration_id, download_url = register_file(user.get_uid())
 
-        school_name = 'Example School'  # TODO: Get from somewhere
+        # Get the name of the school
+        school_name = _get_school_name(state_code, district_guid, school_guid)
+
         # Set up directory and file names
         directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
         directory_for_zip = os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip')
         archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
         archive_file_path = os.path.join(directory_for_zip, archive_file_name)
-
 
         # Create JSON response
         response = {'fileName': archive_file_name, 'download_url': download_url}
@@ -346,8 +347,8 @@ def _get_archive_name(school_name, lang_code, grayscale):
     return name + ('.g.zip' if grayscale else '.zip')
 
 
-def _get_student_guids(stateCode, districtGuid, schoolGuid, grade, asmtType, effectiveDate, params):
-    with EdCoreDBConnection(state_code=stateCode) as connector:
+def _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params):
+    with EdCoreDBConnection(state_code=state_code) as connector:
         # Get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -360,16 +361,16 @@ def _get_student_guids(stateCode, districtGuid, schoolGuid, grade, asmtType, eff
                                     from_obj=[fact_asmt_outcome_vw
                                               .join(dim_student, and_(fact_asmt_outcome_vw.c.student_rec_id == dim_student.c.student_rec_id))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
-                                    permission=RolesConstants.PII, state_code=stateCode).distinct()
+                                    permission=RolesConstants.PII, state_code=state_code).distinct()
 
         # Add where clauses
-        query = query.where(fact_asmt_outcome_vw.c.state_code == stateCode)
-        query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == schoolGuid))
-        query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == districtGuid))
+        query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
+        query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
+        query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmtType))
-        query = query.where(and_(dim_asmt.c.effective_date == effectiveDate))
+        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
+        query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
 
         # Add order by clause
@@ -377,3 +378,21 @@ def _get_student_guids(stateCode, districtGuid, schoolGuid, grade, asmtType, eff
 
         # Return the result
         return connector.get_result(query)
+
+
+def _get_school_name(state_code, district_guid, school_guid):
+    with EdCoreDBConnection(state_code=state_code) as connector:
+        # Get handle to tables
+        dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
+
+        # Build select
+        query = select([dim_inst_hier.c.school_name],
+                       from_obj=[dim_inst_hier])
+
+        # Add where clauses
+        query = query.where(dim_inst_hier.c.state_code == state_code)
+        query = query.where(and_(dim_inst_hier.c.district_guid == district_guid))
+        query = query.where(and_(dim_inst_hier.c.school_guid == school_guid))
+
+        # Return the result
+        return connector.get_result(query)[0]['school_name']

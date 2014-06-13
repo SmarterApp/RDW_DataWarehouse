@@ -16,7 +16,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     get_unittest_tenant_name
 import services
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
-    get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_guids
+    get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_guids, _get_archive_name, \
+    _get_merged_pdf_name, _create_student_guids
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
@@ -245,6 +246,110 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_student_guids_group2(self):
         guids = _get_student_guids('NC', '229', '939', '7', 'SUMMATIVE', '20160404', {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(guids), 6)
+
+    def test_get_archive_name(self):
+        name = _get_archive_name('School', 'en', False)
+        start_in = 'student_reports_School_' in name
+        end_in = '_en.zip' in name
+        self.assertEqual(start_in, True)
+        self.assertEquals(end_in, True)
+
+    def test_get_archive_name_spanish(self):
+        name = _get_archive_name('School', 'es', False)
+        start_in = 'student_reports_School_' in name
+        end_in = '_es.zip' in name
+        self.assertEqual(start_in, True)
+        self.assertEquals(end_in, True)
+
+    def test_get_archive_name_grayscale(self):
+        name = _get_archive_name('School', 'en', True)
+        start_in = 'student_reports_School_' in name
+        end_in = '_en.g.zip' in name
+        self.assertEqual(start_in, True)
+        self.assertEquals(end_in, True)
+
+    def test_get_archive_name_space_in_name(self):
+        name = _get_archive_name('School Name', 'en', False)
+        start_in = 'student_reports_SchoolName_' in name
+        end_in = '_en.zip' in name
+        self.assertEqual(start_in, True)
+        self.assertEquals(end_in, True)
+
+    def test_get_archive_name_name_too_long(self):
+        name = _get_archive_name('School Name Is Very Long Thing', 'en', False)
+        start_in = 'student_reports_SchoolNameIsVer_' in name
+        end_in = '_en.zip' in name
+        self.assertEqual(start_in, True)
+        self.assertEquals(end_in, True)
+
+    def test_get_merged_pdf_name(self):
+        name = _get_merged_pdf_name('School', '7', 'en', False)
+        start_in = 'student_reports_School_grade_7_' in name
+        end_in = '_en.pdf' in name
+        self.assertEqual(start_in, True)
+        self.assertEqual(end_in, True)
+
+    def test_get_merged_pdf_name_grayscale(self):
+        name = _get_merged_pdf_name('School', '7', 'en', True)
+        start_in = 'student_reports_School_grade_7_' in name
+        end_in = '_en.g.pdf' in name
+        self.assertEqual(start_in, True)
+        self.assertEqual(end_in, True)
+
+    def test_get_merged_pdf_name_space_in_name(self):
+        name = _get_merged_pdf_name('School Name', '7', 'en', False)
+        start_in = 'student_reports_SchoolName_grade_7_' in name
+        end_in = '_en.pdf' in name
+        self.assertEqual(start_in, True)
+        self.assertEqual(end_in, True)
+
+    def test_get_merged_pdf_name_name_too_long(self):
+        name = _get_merged_pdf_name('School Name Is Very Long Thing', '7', 'en', False)
+        start_in = 'student_reports_SchoolNameIsVer_grade_7_' in name
+        end_in = '_en.pdf' in name
+        self.assertEqual(start_in, True)
+        self.assertEqual(end_in, True)
+
+    def test_get_merged_pdf_name_all_grade(self):
+        name = _get_merged_pdf_name('School', 'all', 'en', False)
+        start_in = 'student_reports_School_' in name
+        grade_not_in = '_grade_' not in name
+        end_in = '_en.pdf' in name
+        self.assertEqual(start_in, True)
+        self.assertEqual(grade_not_in, True)
+        self.assertEqual(end_in, True)
+
+    def test_create_student_guids_by_guids(self):
+        all_guids, guids_by_grade = _create_student_guids(['1', '2', '3'], None, 'NC', None, None, 'SUMMATIVE',
+                                                          '20160404', {})
+        self.assertEqual(len(all_guids), 3)
+        self.assertIn('all', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['all']), 3)
+
+    def test_create_student_guids_by_grade(self):
+        all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', 'SUMMATIVE',
+                                                          '20160404', {})
+        self.assertEqual(len(all_guids), 10)
+        self.assertIn('7', guids_by_grade)
+        self.assertIn('8', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['7']), 8)
+        self.assertEqual(len(guids_by_grade['8']), 2)
+
+    def test_create_student_guids_by_grade_group(self):
+        all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', 'SUMMATIVE',
+                                                          '20160404', {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
+        self.assertEqual(len(all_guids), 5)
+        self.assertIn('7', guids_by_grade)
+        self.assertNotIn('8', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['7']), 5)
+
+    def test_create_student_guids_by_guids_no_students(self):
+        self.assertRaises(InvalidParameterError, _create_student_guids, [], None, 'NC', '229', '939', 'SUMMATIVE',
+                          '20160404', {})
+
+    def test_create_student_guids_by_grade_no_students(self):
+        self.assertRaises(InvalidParameterError, _create_student_guids, None, ['7'], 'NC', '229', '939', 'SUMMATIVE',
+                          '20160404', {'sex': ['not_stated']})
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

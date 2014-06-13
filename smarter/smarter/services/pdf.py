@@ -278,25 +278,30 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
         generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
 
     # Create the tasks to merge each PDF by grade
-    merge_tasks = []
-    for grade, guids in guids_by_grade.items():
-        # Create bulk output name and path
-        bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
-        bulk_path = os.path.join(directory_to_archive, bulk_name)
-
-        # Get the files for this grade
-        file_names = []
-        for student_guid in guids:
-            file_names.append(files_by_guid[student_guid])
-
-        # Create the merge task
-        merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
+    merge_tasks = _create_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
 
     # Return the JSON response while the bulk merge runs asynchronously
     return Response(body=json.dumps(response), content_type='application/json')
+
+
+def _create_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale):
+    merge_tasks = []
+    for grade, student_guids in guids_by_grade.items():
+        # Create bulk output name and path
+        bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
+        bulk_path = os.path.join(directory_to_archive, bulk_name)
+
+        # Get the files for this grade
+        file_names = []
+        for student_guid in student_guids:
+            file_names.append(files_by_guid[student_guid])
+
+        # Create the merge task
+        merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
+    return merge_tasks
 
 
 def _has_context_for_pdf_request(state_code, student_guid):

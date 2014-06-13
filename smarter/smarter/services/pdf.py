@@ -23,9 +23,10 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from smarter.reports.helpers.constants import AssessmentType, Constants
+from smarter.reports.helpers.filters import FILTERS_CONFIG
 import services.celery
 from edapi.decorators import validate_params
-from edcore.utils.utils import to_bool
+from edcore.utils.utils import to_bool, merge_dict
 from hpz_client.frs.file_registration import register_file
 from celery.canvas import group, chain
 from pyramid.security import authenticated_userid
@@ -41,7 +42,7 @@ KNOWN_REPORTS = ['indivstudentreport.html']
 PDF_PARAMS = {
     "type": "object",
     "additionalProperties": False,
-    "properties": {
+    "properties": merge_dict({
         Constants.STATECODE: {
             "type": "string",
             "required": True,
@@ -105,7 +106,7 @@ PDF_PARAMS = {
             "required": True,
             "pattern": "^[1-9]{8}$"
         }
-    }
+    }, FILTERS_CONFIG)
 }
 
 

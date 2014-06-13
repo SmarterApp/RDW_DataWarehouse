@@ -16,13 +16,15 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     get_unittest_tenant_name
 import services
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
-    get_pdf_content, _has_context_for_pdf_request
+    get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_guids
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.pdf import prepare_path
 import shutil
 from services.tests.tasks.test_pdf import get_cmd
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
@@ -51,7 +53,8 @@ class TestServices(Unittest_with_edcore_sqlite):
         edauth.set_roles(defined_roles)
         # Set up context security
         dummy_session = create_test_session([RolesConstants.PII])
-        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.__tenant_name, 'NC', '228', '242')])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.PII, self.__tenant_name, 'NC', '228', '242'),
+                                        RoleRelation(RolesConstants.PII, self.__tenant_name, 'NC', '229', '939')])
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
         # celery settings for UT
@@ -233,6 +236,17 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.cookies = {'edware': '123'}
         response = get_pdf_content(params)
         pass
+
+    def test_get_school_name(self):
+        name = _get_school_name('NC', '229', '939')
+        self.assertEqual(name, 'Daybreak - Western Middle')
+
+    def test_get_school_name_invalid(self):
+        self.assertRaises(InvalidParameterError, _get_school_name, 'NC', 'Bad', 'Bad')
+
+    def test_get_student_guids(self):
+        guids = _get_student_guids('NC', '229', '939', '7', 'SUMMATIVE', '20160404', {})
+        self.assertEqual(len(guids), 8)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

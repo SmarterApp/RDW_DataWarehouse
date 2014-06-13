@@ -5,15 +5,12 @@ Created on May 17, 2013
 '''
 from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup
 from urllib.parse import urljoin
-import urllib.parse
 from pyramid.view import view_config
 from pyramid.response import Response
-import pyramid.threadlocal
 from smarter.security.context import check_context
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
-import pyramid.threadlocal
 from sqlalchemy.sql import and_, select
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
@@ -36,6 +33,7 @@ from datetime import datetime
 import json
 import os
 from smarter_common.security.constants import RolesConstants
+import pyramid
 
 KNOWN_REPORTS = ['indivstudentreport.html']
 
@@ -164,14 +162,6 @@ def send_pdf_request(params):
 
 
 def get_pdf_content(params):
-    '''
-    Read pdf content from file system if it exists, else generate it
-
-    :param params: python dict that contains query parameters from the request
-    '''
-    # Get the user
-    user = authenticated_userid(get_current_request())
-
     # Collect the parameters
     student_guids = params.get(Constants.STUDENTGUID)
     state_code = params.get(Constants.STATECODE)
@@ -182,11 +172,11 @@ def get_pdf_content(params):
     effective_date = str(params.get(Constants.EFFECTIVEDATE))
     is_grayscale = bool(params.get('grayscale', 'false').lower() == 'true')
     lang = params.get('lang', 'en').lower()
+    subprocess_timeout = services.celery.TIMEOUT
 
     # Check that we have either a list of student GUIDs or a district/school/grade combination in the params
     if student_guids is None and (district_guid is None or school_guid is None or grades is None):
         raise InvalidParameterError('Required parameter is missing')
-
     # Validate the assessment type
     asmt_type = asmt_type.upper()
     if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.INTERIM_COMPREHENSIVE]:
@@ -197,13 +187,41 @@ def get_pdf_content(params):
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
 
-    # Verify student GUIDs is a list (if we have them)
-    if student_guids is not None and type(student_guids) is not list:
+    report = pyramid.threadlocal.get_current_request().matchdict['report']
+    base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
+    # Set up a few additional variables
+    pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
+    if type(student_guids) is not list:
         student_guids = [student_guids]
 
-    # Set the base individual PDF generation URL
-    base_url = urljoin(pyramid.threadlocal.get_current_request().application_url,
-                       '/assets/html/indivstudentreport.html')
+    if len(student_guids) is 1:
+        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, effective_date, asmt_type, student_guids[0], lang, is_grayscale, always_generate, celery_timeout, params)
+    else:
+        response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+    return response
+
+
+def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, effective_date, asmt_type, student_guid, lang, is_grayscale, always_generate, celery_timeout, params):
+    # Get all file names
+    url = _create_student_pdf_url(student_guid, base_url, params)
+    files_by_guid = generate_isr_report_path_by_student_guid(state_code, effective_date,
+                                                             pdf_report_base_dir=pdf_base_dir, student_guids=[student_guid],
+                                                             asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
+    file_name = files_by_guid[student_guid]
+    celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=subprocess_timeout, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
+    pdf_stream = celery_response.get(timeout=celery_timeout)
+
+    return Response(body=pdf_stream, content_type='application/pdf')
+
+
+def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, lang, is_grayscale, always_generate, celery_timeout, params):
+    '''
+    Read pdf content from file system if it exists, else generate it
+
+    :param params: python dict that contains query parameters from the request
+    '''
+    # Get the user
+    user = authenticated_userid(get_current_request())
 
     # If we do not have a list of student GUIDs, we need to get it
     all_guids = []
@@ -218,7 +236,6 @@ def get_pdf_content(params):
         guids_by_grade['all'] = student_guids
 
     # Set up a few additional variables
-    pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
     urls_by_guid = {}
 
     # Get all file names
@@ -235,65 +252,51 @@ def get_pdf_content(params):
                 raise ForbiddenError('Access Denied')
             urls_by_guid[student_guid] = _create_student_pdf_url(student_guid, base_url, params)
 
-    # Decide if this is a bulk merge or simple PDF return
-    if len(urls_by_guid) > 1:
-        # Register expected file with HPZ
-        registration_id, download_url = register_file(user.get_uid())
+    # Register expected file with HPZ
+    registration_id, download_url = register_file(user.get_uid())
 
-        # Get the name of the school
-        school_name = _get_school_name(state_code, district_guid, school_guid)
+    # Get the name of the school
+    school_name = _get_school_name(state_code, district_guid, school_guid)
 
-        # Set up directory and file names
-        directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
-        directory_for_zip = os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip')
-        archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
-        archive_file_path = os.path.join(directory_for_zip, archive_file_name)
+    # Set up directory and file names
+    directory_to_archive = os.path.join(pdf_base_dir, 'bulk', registration_id, 'data')
+    directory_for_zip = os.path.join(pdf_base_dir, 'bulk', registration_id, 'zip')
+    archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
+    archive_file_path = os.path.join(directory_for_zip, archive_file_name)
 
-        # Create JSON response
-        response = {'fileName': archive_file_name, 'download_url': download_url}
+    # Create JSON response
+    response = {'fileName': archive_file_name, 'download_url': download_url}
 
-        # Create the tasks for each individual student PDF file we want to merge
-        generate_tasks = []
-        args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
-                'grayscale': is_grayscale, 'always_generate': always_generate}
-        for guid, file_name in files_by_guid.items():
-            copied_args = copy.deepcopy(args)
-            copied_args['url'] = urls_by_guid[guid]
-            copied_args['outputfile'] = file_name
-            generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
+    # Create the tasks for each individual student PDF file we want to merge
+    generate_tasks = []
+    args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
+            'grayscale': is_grayscale, 'always_generate': always_generate}
+    for guid, file_name in files_by_guid.items():
+        copied_args = copy.deepcopy(args)
+        copied_args['url'] = urls_by_guid[guid]
+        copied_args['outputfile'] = file_name
+        generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
 
-        # Create the tasks to merge each PDF by grade
-        merge_tasks = []
-        for grade, guids in guids_by_grade.items():
-            # Create bulk output name and path
-            bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
-            bulk_path = os.path.join(directory_to_archive, bulk_name)
+    # Create the tasks to merge each PDF by grade
+    merge_tasks = []
+    for grade, guids in guids_by_grade.items():
+        # Create bulk output name and path
+        bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
+        bulk_path = os.path.join(directory_to_archive, bulk_name)
 
-            # Get the files for this grade
-            file_names = []
-            for student_guid in guids:
-                file_names.append(files_by_guid[student_guid])
+        # Get the files for this grade
+        file_names = []
+        for student_guid in guids:
+            file_names.append(files_by_guid[student_guid])
 
-            # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT),
-                                                 immutable=True))  # @UndefinedVariable
+        # Create the merge task
+        merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
 
-        # Start the bulk merge
-        _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
+    # Start the bulk merge
+    _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
 
-        # Return the JSON response while the bulk merge runs asynchronously
-        return Response(body=json.dumps(response), content_type='application/json')
-    else:
-        # Get the URL and file name
-        url = urls_by_guid[all_guids[0]]
-        file_name = files_by_guid[all_guids[0]]
-
-        # Create the task and stream the individual PDF response back to the browser
-        celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name,
-                                    timeout=services.celery.TIMEOUT, grayscale=is_grayscale,
-                                    always_generate=always_generate)  # @UndefinedVariable
-        pdf_stream = celery_response.get(timeout=celery_timeout)
-        return Response(body=pdf_stream, content_type='application/pdf')
+    # Return the JSON response while the bulk merge runs asynchronously
+    return Response(body=json.dumps(response), content_type='application/json')
 
 
 def _has_context_for_pdf_request(state_code, student_guid):
@@ -322,9 +325,8 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
 
     workflow = chain(group(gen_tasks),
                      group(merge_tasks),
-                     archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),
-                     hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir),
-                                                immutable=True))  # @UndefinedVariable
+                     archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),  # @UndefinedVariable
+                     hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable
     workflow.apply_async()
 
 

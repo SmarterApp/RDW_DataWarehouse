@@ -15,5 +15,8 @@
     },
     "proficiencyAscending": "(dominio: <b>menor</b> a <b>mayor</b>)",
     "proficiencyDescending": "(dominio: <b>mayor</b> a <b>menor</b>)",
-    "searchPlaceholder": "Enter student"
+    "searchPlaceholder": {
+        "text": "Enter student",
+        "aria": "Find students in this grade. Enter search text and hit enter"
+    }
 }

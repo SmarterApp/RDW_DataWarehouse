@@ -12,13 +12,13 @@ import random
 import uuid
 
 from sqlalchemy import and_, select
-
+import xml.etree.cElementTree as ET
 from edcore.database import get_data_source_names, initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edschema.database.connector import DBConnection
 
 
-def main(config_file, tenant_to_update, out_dir, verbose):
+def main(config_file, tenant_to_update, out_dir, verbose, raw, item):
     """
     Imports data from csv
     """
@@ -32,13 +32,14 @@ def main(config_file, tenant_to_update, out_dir, verbose):
             state_code = get_state_code(tenant)
             assessments = get_all_assessments(tenant)
 
-            # Create item pools for each assessment
-            create_item_pools(assessments)
-            
+            if item:
+                # Create item pools for each assessment
+                create_item_pools(assessments)
+
             # Build files for each assessment
             for asmt in assessments:
                 students = get_students_for_assessment(tenant, asmt['guid'])
-                generate_item_level_files(out_dir, state_code, asmt, students, verbose)
+                generate_data_files(out_dir, state_code, asmt, students, verbose, raw, item)
 
 
 def get_state_code(tenant):
@@ -95,47 +96,64 @@ def get_students_for_assessment(tenant, asmt_guid):
     return students
 
 
-def generate_item_level_files(root_dir, state_code, asmt, students, verbose):
+def generate_data_files(root_dir, state_code, asmt, students, verbose, raw, item):
     """Generate item-level files"""
     for student in students:
         # Build directory path and file name
         dir_path = os.path.join(root_dir, str(state_code).upper(), str(asmt['year']),
                                 str(asmt['type']).upper().replace(' ', '_'), str(asmt['effective_date']),
                                 str(asmt['subject']).upper(), str(student['grade']), str(student['district_guid']))
-        file_name = (str(student['guid']) + '.csv')
 
         # Make sure directory exists
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
 
-        # Select items from the pool
-        items = random.sample(asmt['item_pool'], 100)
-
-        # Create file
-        path = os.path.join(dir_path, file_name)
-        with open(path, 'w') as csv_file:
-            csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            for i in range(100):
-                item = items[i]
-                csv_writer.writerow([item['key'], student['guid'], item['segment'], i, item['client'], 1, 1,
-                                     item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
-                                     'MA-Undesignated', 1, 1, 1, 0])
-        if verbose:
-            print(os.path.join(dir_path, file_name))
-
+        if item:
+            # Select items from the pool
+            items = random.sample(asmt['item_pool'], 100)
+            # Create file
+            item_file_name = (str(student['guid']) + '.csv')
+            item_file_path = os.path.join(dir_path, item_file_name)
+            with open(item_file_path, 'w') as csv_file:
+                csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+                for i in range(100):
+                    item = items[i]
+                    csv_writer.writerow([item['key'], student['guid'], item['segment'], i, item['client'], 1, 1,
+                                         item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
+                                         'MA-Undesignated', 1, 1, 1, 0])
+            if verbose:
+                print(os.path.join(dir_path, item_file_name))
+        if raw:
+            raw_file_name = (str(student['guid']) + '.xml')
+            raw_file_path = os.path.join(dir_path, raw_file_name)
+            with open(raw_file_path, 'w') as xml_file:
+                root = ET.Element("root")
+                student_node = ET.SubElement(root, "student")
+                student_node.set("guid", str(student['guid']))
+                tree = ET.ElementTree(root)
+                tree.write(raw_file_path)
+            if verbose:
+                print(os.path.join(dir_path, raw_file_name))
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Import csv')
+    parser = argparse.ArgumentParser(description='Generate Item level CSV/Source Raw XML')
+    parser.add_argument('-i', '--item', help='Item level CSV data', action='store_true', default=False)
+    parser.add_argument('-r', '--raw', help='Raw XML data', action='store_true', default=False)
     parser.add_argument('-c', '--config', help='Set the path to ini file')
     parser.add_argument('-t', '--tenant', help='Tenant to import data to', default='cat')
     parser.add_argument('-o', '--outDir', help='Root directory to place files', default='/opt/edware/item_level')
     parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true', default=False)
     args = parser.parse_args()
 
+    __raw = args.raw
+    __item = args.item
     __config = args.config
     __tenant = args.tenant
     __out_dir = args.outDir
     __verbose = args.verbose
+
+    if not __raw and not __item:
+        raise argparse.ArgumentError('--raw or --item option needed')
 
     parent_dir = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
 
@@ -146,4 +164,4 @@ if __name__ == '__main__':
         print('Error: config file does not exist')
         exit(-1)
 
-    main(__config, __tenant, __out_dir, __verbose)
+    main(__config, __tenant, __out_dir, __verbose, __raw, __item)

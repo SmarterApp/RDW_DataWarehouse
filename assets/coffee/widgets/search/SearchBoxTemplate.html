@@ -1,9 +1,10 @@
 <div id="SearchBoxTemplate">
     <span class="marginRight5">{{labels.find}} : </span>
     <div class="input-append searchContainer">
-        <input type="text" class="span2 searchbox" role="search" placeholder="{{labels.searchPlaceholder}}">
-        <button class="btn searchBtn" type="button">
+        <input type="search" class="span2 searchbox" placeholder="{{labels.searchPlaceholder.text}}" aria-label="{{labels.searchPlaceholder.aria}}" role="search"/>
+        <button class="btn searchBtn" type="button" aria-hidden="true">
             <i class="icon-search" />
         </button>
+        <button id="edware-aria-search-btn" aria-live="polite" aria-atomic="true" role="description" class="screenreader"></button>
     </div>
 </div>

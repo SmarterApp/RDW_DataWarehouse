@@ -26,3 +26,11 @@ define [], () ->
   EVENTS: {
     SORT_COLUMNS: 'edwareOnSortColumns'
   }
+
+  KEYS: {
+    F: 70
+    ENTER: 13
+    ESC: 27
+    UP_ARROW: 38
+    DOWN_ARROW: 40
+  }

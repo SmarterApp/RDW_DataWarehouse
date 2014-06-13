@@ -440,7 +440,7 @@ function setup_for_udl {
 function setup_for_hpz {
     echo "Rebuild HPZ DB"
     cd $WORKSPACE/hpz/scripts
-    python pickup_zone_cleaup.py -e 0
+    python pickup_zone_cleanup.py -e 0
     /bin/sh teardown_database.sh
     /bin/sh initialize_database.sh
 }

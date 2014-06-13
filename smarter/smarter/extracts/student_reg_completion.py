@@ -1,6 +1,6 @@
 __author__ = 'ablum'
 
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import select, and_
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants

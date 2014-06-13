@@ -20,6 +20,7 @@ from edauth.security.user import RoleRelation
 import edauth
 from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestStudentAssessment(Unittest_with_edcore_sqlite):

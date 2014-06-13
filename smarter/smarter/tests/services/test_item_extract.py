@@ -29,6 +29,9 @@ from edauth.tests.test_helper.create_session import create_test_session
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
+from edapi.utils import convert_query_string_to_dict_arrays
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

@@ -1,26 +1,28 @@
 __author__ = 'ablum'
 
+import tempfile
+from unittest.mock import patch
+from unittest.mock import ANY
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from pyramid.registry import Registry
-from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-import tempfile
-from edextract.celery import setup_celery
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
+from pyramid.security import Allow
+
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+from edextract.celery import setup_celery
 from edauth.tests.test_helper.create_session import create_test_session
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from smarter.extracts.constants import Constants as Extract
 from smarter.reports.helpers.constants import Constants
-from pyramid.security import Allow
 import edauth
 from edauth.security.user import User
 from edcore.security.tenant import set_tenant_map
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
 from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
-from unittest.mock import patch
-from unittest.mock import ANY
 
 
 class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

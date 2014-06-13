@@ -3,12 +3,13 @@ Created on Nov 1, 2013
 
 @author: ejen
 '''
-from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import and_
+
+from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
 from smarter.extracts.format import get_column_mapping
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from smarter.reports.helpers.filters import apply_filter_to_query
 
 

@@ -4,18 +4,19 @@ Created on Mar 8, 2013
 @author: dip
 '''
 import unittest
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
-    get_unittest_tenant_name
-from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from beaker.util import parse_cache_config_options
-from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
+
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    get_unittest_tenant_name
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+from edauth.tests.test_helper.create_session import create_test_session
 import edauth
-from smarter.security.roles.pii import PII  # @UnusedImport
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

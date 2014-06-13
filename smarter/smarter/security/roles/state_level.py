@@ -3,11 +3,12 @@ Created on May 9, 2013
 
 @author: dip
 '''
+from sqlalchemy.sql.expression import or_
+
 from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.base import BaseRole, verify_context
 from smarter.security.context_role_map import ContextRoleMap
-from smarter.security.constants import RolesConstants
-from sqlalchemy.sql.expression import or_
+from smarter_common.security.constants import RolesConstants
 
 
 @ContextRoleMap.register([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])

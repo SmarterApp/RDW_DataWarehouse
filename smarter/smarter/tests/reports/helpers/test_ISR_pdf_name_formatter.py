@@ -4,20 +4,20 @@ Created on May 17, 2013
 @author: tosako
 '''
 import unittest
-from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, \
-    get_unittest_tenant_name
-from edapi.exceptions import NotFoundException
 import os
-from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid, \
-    generate_isr_absolute_file_path_name
+
 from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
-from edauth.tests.test_helper.create_session import create_test_session
 from pyramid.security import Allow
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    get_unittest_tenant_name
+from edapi.exceptions import NotFoundException
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid, \
+    generate_isr_absolute_file_path_name
+from edauth.tests.test_helper.create_session import create_test_session
 import edauth
-from smarter.security.roles.pii import PII  # @UnusedImport
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

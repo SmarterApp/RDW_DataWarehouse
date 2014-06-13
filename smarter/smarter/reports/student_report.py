@@ -3,11 +3,13 @@ Created on Jan 13, 2013
 
 @author: tosako
 '''
+from string import capwords
+
+from sqlalchemy.sql.expression import and_
+
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
-from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
-from string import capwords
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
@@ -20,7 +22,8 @@ from smarter.reports.helpers.metadata import get_custom_metadata, \
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.student_administration import get_student_report_asmt_administration
 from smarter.security.tenant import validate_user_tenant
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
+
 
 REPORT_NAME = 'individual_student_report'
 

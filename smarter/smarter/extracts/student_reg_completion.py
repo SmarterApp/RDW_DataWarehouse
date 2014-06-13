@@ -1,11 +1,11 @@
 __author__ = 'ablum'
 
-from sqlalchemy.sql.expression import select, and_
+from sqlalchemy.sql.expression import and_
 
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 
 
 def get_academic_year_query(academic_year, state_code):

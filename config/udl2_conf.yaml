@@ -60,6 +60,11 @@ common:
     sr_notification_max_attempts: 5
     sr_notification_retry_interval: 30
     sr_notification_timeout_interval: 30
+    logging:        # log location. this should be in the long run as file locations or more sophisticated logging system
+        level: INFO
+        debug: FALSE
+        audit: /opt/edware/log/udl2.audit.log  # for status log for everything
+        error: /opt/edware/log/udl2.error.log  # for error message and exceptions
     udl2_trigger:
         base_dir: /opt/edware/zones/landing
         source_dir: arrivals
@@ -136,11 +141,6 @@ development:
         history: /opt/edware/zones/landing/history/     # this is where we store historical info. it may be an url for large file storages such as s3.
         datafiles: /opt/edware/zones/datafiles/         # this is for storing test sample data files
         tests: /opt/edware/zones/tests/                 # this is for running unit tests.
-    logging:        # log location. this should be in the long run as file locations or more sophisticated logging system
-        level: INFO
-        debug: FALSE
-        audit: /opt/edware/log/udl2.audit.log  # for status log for everything
-        error: /opt/edware/log/udl2.error.log  # for error message and exceptions
     udl2_db_conn:
         url: postgresql://udl2:udl2abc1234@localhost:5432/udl2
         db_schema: udl2

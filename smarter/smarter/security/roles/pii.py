@@ -3,12 +3,13 @@ Created on May 9, 2013
 
 @author: dip
 '''
+from sqlalchemy.sql.expression import and_, or_
+
 from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.default import BaseRole
 from smarter.security.roles.base import verify_context
 from smarter.security.context_role_map import ContextRoleMap
-from smarter.security.constants import RolesConstants
-from sqlalchemy.sql.expression import and_, or_
+from smarter_common.security.constants import RolesConstants
 
 
 # PII and SAR Extracts have the same context

@@ -4,7 +4,8 @@ Created on Feb 11, 2013
 @author: dip
 '''
 from pyramid.security import Allow
-from smarter.security.constants import RolesConstants
+
+from smarter_common.security.constants import RolesConstants
 
 
 class RootFactory(object):
@@ -13,7 +14,7 @@ class RootFactory(object):
     The root factory returns the traversal root of an application.
     Right now, we're saying that all roles have permission.
     '''
-    __acl__ = [(Allow, RolesConstants.GENERAL, ('view', 'logout', 'default')),
+    __acl__ = [(Allow, RolesConstants.GENERAL, ('view', 'logout', 'download', 'default')),
                (Allow, RolesConstants.PII, ('view', 'logout')),
                (Allow, RolesConstants.ALL_STATES, ('view', 'logout', 'display_home')),
                (Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout')),

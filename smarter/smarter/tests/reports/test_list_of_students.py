@@ -4,20 +4,20 @@ Created on Feb 4, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.list_of_students_report import get_list_of_students_report,\
-    get_group_filters
+
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.pii import PII  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from pyramid.security import Allow
+from pyramid.httpexceptions import HTTPForbidden
+
+from smarter.reports.list_of_students_report import get_list_of_students_report,\
+    get_group_filters
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite, get_unittest_tenant_name
 from edauth.tests.test_helper.create_session import create_test_session
-from pyramid.security import Allow
 import edauth
-from pyramid.httpexceptions import HTTPForbidden
-from smarter.security.constants import RolesConstants
+from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 
 

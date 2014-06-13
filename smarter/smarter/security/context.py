@@ -3,16 +3,18 @@ Created on May 7, 2013
 
 @author: dip
 '''
+from functools import wraps
+
 from sqlalchemy.sql.expression import Select
 from pyramid.security import authenticated_userid
 import pyramid
+from pyramid.httpexceptions import HTTPForbidden
+
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.security.tenant import get_tenant_by_state_code
-from pyramid.httpexceptions import HTTPForbidden
-from smarter.security.constants import RolesConstants
-from functools import wraps
+from smarter_common.security.constants import RolesConstants
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], permission=RolesConstants.PII, **kwargs):

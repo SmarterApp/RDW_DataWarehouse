@@ -268,10 +268,12 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     response = {'fileName': archive_file_name, 'download_url': download_url}
 
     # Create the tasks for each individual student PDF file we want to merge
-    generate_tasks = _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid, urls_by_guid)
+    generate_tasks = _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid,
+                                                urls_by_guid)
 
     # Create the tasks to merge each PDF by grade
-    merge_tasks = _create_pdf_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+    merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid,
+                                          school_name, lang, is_grayscale)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
@@ -291,7 +293,8 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
         generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
     return generate_tasks
 
-def _create_pdf_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale):
+def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
+                            is_grayscale):
     merge_tasks = []
     for grade, student_guids in guids_by_grade.items():
         # Create bulk output name and path

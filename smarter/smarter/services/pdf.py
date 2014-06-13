@@ -268,17 +268,10 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     response = {'fileName': archive_file_name, 'download_url': download_url}
 
     # Create the tasks for each individual student PDF file we want to merge
-    generate_tasks = []
-    args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
-            'grayscale': is_grayscale, 'always_generate': always_generate}
-    for guid, file_name in files_by_guid.items():
-        copied_args = copy.deepcopy(args)
-        copied_args['url'] = urls_by_guid[guid]
-        copied_args['outputfile'] = file_name
-        generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
+    generate_tasks = _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid, urls_by_guid)
 
     # Create the tasks to merge each PDF by grade
-    merge_tasks = _create_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+    merge_tasks = _create_pdf_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
@@ -287,7 +280,18 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     return Response(body=json.dumps(response), content_type='application/json')
 
 
-def _create_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale):
+def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_guid, urls_by_guid):
+    generate_tasks = []
+    args = {'cookie': cookie_value, 'timeout': services.celery.TIMEOUT, 'cookie_name': cookie_name,
+            'grayscale': is_grayscale, 'always_generate': always_generate}
+    for student_guid, file_name in files_by_guid.items():
+        copied_args = copy.deepcopy(args)
+        copied_args['url'] = urls_by_guid[student_guid]
+        copied_args['outputfile'] = file_name
+        generate_tasks.append(prepare.subtask(kwargs=copied_args, immutable=True))  # @UndefinedVariable
+    return generate_tasks
+
+def _create_pdf_merge_tasks(directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale):
     merge_tasks = []
     for grade, student_guids in guids_by_grade.items():
         # Create bulk output name and path

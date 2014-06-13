@@ -40,7 +40,6 @@ def main(config_file, tenant_to_update, out_dir, verbose, raw, item):
             for asmt in assessments:
                 students = get_students_for_assessment(tenant, asmt['guid'])
                 generate_data_files(out_dir, state_code, asmt, students, verbose, raw, item)
-                break
 
 
 def get_state_code(tenant):

@@ -19,7 +19,9 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 import services
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
     get_pdf_content, _has_context_for_pdf_request, _get_school_name, _get_student_guids, _get_archive_name, \
-    _get_merged_pdf_name, _create_student_guids, get_single_pdf_content
+    _get_merged_pdf_name, _create_student_guids, get_single_pdf_content, \
+    _create_student_pdf_url, _create_pdf_merge_tasks, \
+    _create_urls_by_student_guid, get_bulk_pdf_content
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
@@ -34,8 +36,9 @@ from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 from unittest.mock import patch
+import json
 
 
 class TestServices(Unittest_with_edcore_sqlite):
@@ -353,9 +356,9 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(InvalidParameterError, _create_student_guids, None, ['7'], 'NC', '229', '939', 'SUMMATIVE',
                           '20160404', {'sex': ['not_stated']})
 
-    @patch('smarter.services.pdf.get')
+    @patch('smarter.services.pdf.get.delay')
     def test_get_single_pdf_content(self, mock_get):
-        mock_get.return_value = 'BIG PDF CONTENT STUFF'
+        mock_get.return_value.get.return_value = 'BIG PDF CONTENT STUFF'.encode()
         response = get_single_pdf_content('/tmp', 'localhost/', '123', 'edware', 30, 'NC', '20160404', 'SUMMATIVE',
                                           'a629ca88-afe6-468c-9dbb-92322a284602', 'en', False, False, 30, {})
         self.assertEqual(response.status_code, 200)
@@ -371,6 +374,92 @@ class TestServices(Unittest_with_edcore_sqlite):
         mock_get.return_value = None
         self.assertRaises(APIForbiddenError, get_single_pdf_content, '/tmp', 'localhost/', '123', 'edware', 30, 'NC',
                           '20160404', 'SUMMATIVE', 'a629ca88-afe6-468c-9dbb', 'en', False, False, 30, {})
+
+    def test_create_student_pdf_url(self):
+        student_guid = '1-2-3-4-5'
+        base_url = 'http://foo.com/foo'
+        params = {}
+        result = _create_student_pdf_url(student_guid, base_url, params)
+        self.assertEqual('http://foo.com/foo?studentGuid=1-2-3-4-5', result)
+        params = {'abc': 'ef'}
+        result = _create_student_pdf_url(student_guid, base_url, params)
+        self.assertTrue('abc=ef' in result)
+
+    def test_create_pdf_merge_tasks_no_guid(self):
+        pdf_base_dir = '/base'
+        directory_to_archive = '/foo'
+        guids_by_grade = []
+        files_by_guid = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/foo/abc.pdf'}
+        school_name = 'schoolname here'
+        lang = 'en'
+        is_grayscale = None
+        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+        self.assertEqual(0, len(tasks))
+        guids_by_grade = {'3': 'a5ddfe12-740d-4487-9179-de70f6ac33be'}
+        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+        self.assertEqual(1, len(tasks))
+
+    def test_create_pdf_merge_tasks_with_guids(self):
+        pdf_base_dir = '/foo'
+        directory_to_archive = '/archive'
+        guids_by_grade = {'2': ['1-2-3-4', 'a-b-c-d'], '3': '4-3-2-1'}
+        files_by_guid = {'1-2-3-4': '/foo/1.pdf', 'a-b-c-d': '/foo/2.pdf', '4-3-2-1': '/foo/3.pdf'}
+        school_name = 'Apple School'
+        lang = 'en'
+        is_grayscale = False
+        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+        self.assertEqual(2, len(tasks))
+
+    def test_create_urls_by_student_guid(self):
+        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        baseURL = 'http://foo.com/abc'
+        url = _create_urls_by_student_guid(studentGuid, 'NC', baseURL, {})
+        self.assertEqual('http://foo.com/abc?studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be', url['a5ddfe12-740d-4487-9179-de70f6ac33be'])
+
+    @patch('smarter.services.pdf._get_archive_name')
+    @patch('smarter.services.pdf._start_bulk')
+    @patch('smarter.services.pdf._create_pdf_merge_tasks')
+    @patch('smarter.services.pdf._create_pdf_generate_tasks')
+    @patch('smarter.services.pdf._get_school_name')
+    @patch('smarter.services.pdf.register_file')
+    @patch('smarter.services.pdf._create_urls_by_student_guid')
+    @patch('smarter.services.pdf.generate_isr_report_path_by_student_guid')
+    @patch('smarter.services.pdf._create_student_guids')
+    @patch('smarter.services.pdf.authenticated_userid')
+    def test_get_bulk_pdf_content(self, mock_authenticated_userid, mock_create_student_guids, mock_generate_isr_report_path_by_student_guid,
+                                  mock_create_urls_by_student_guid, mock_register_file, mock_get_school_name, mock_create_pdf_generate_tasks,
+                                  mock_create_pdf_merge_tasks, mock_start_bulk, mock_get_archive_name):
+        mock_authenticated_userid.get_uid.return_value = ''
+        mock_create_student_guids.return_value = '', ''
+        mock_generate_isr_report_path_by_student_guid.return_value = ''
+        mock_create_urls_by_student_guid.return_value = ''
+        mock_register_file.return_value = '', 'http://foo.com/abc/hello'
+        mock_get_school_name.return_value = ''
+        mock_create_pdf_generate_tasks.return_value = ''
+        mock_create_pdf_merge_tasks.return_value = ''
+        mock_start_bulk.return_value = ''
+        mock_get_archive_name.return_value = 'archive_file.pdf'
+        pdf_base_dir = '/foo1'
+        base_url = 'http://foo.com/abc'
+        cookie_value = 'abc'
+        cookie_name = 'efg'
+        subprocess_timeout = 10
+        student_guids = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        grades = 3
+        state_code = 'NC'
+        district_guid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        school_guid = 'a-b-c'
+        asmt_type = AssessmentType.SUMMATIVE
+        effective_date = '20150401'
+        lang = 'en'
+        is_grayscale = False
+        always_generate = False
+        celery_timeout = 5
+        params = {}
+        response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        body = json.loads(response.body.decode('utf-8'))
+        self.assertEqual(body['fileName'], 'archive_file.pdf')
+        self.assertEqual(body['download_url'], 'http://foo.com/abc/hello')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

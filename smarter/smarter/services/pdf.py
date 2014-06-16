@@ -315,6 +315,8 @@ def _create_urls_by_student_guid(all_guids, state_code, base_url, params):
     '''
     create ISR URL link for each students
     '''
+    if type(all_guids) is not list:
+        all_guids = [all_guids]
     # Set up a few additional variables
     urls_by_guid = {}
 
@@ -348,18 +350,21 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, 
     create pdf merge tasks
     '''
     merge_tasks = []
-    for grade, student_guids in guids_by_grade.items():
-        # Create bulk output name and path
-        bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
-        bulk_path = os.path.join(directory_to_archive, bulk_name)
+    if guids_by_grade:
+        for grade, student_guids in guids_by_grade.items():
+            if type(student_guids) is not list:
+                student_guids = [student_guids]
+            # Create bulk output name and path
+            bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
+            bulk_path = os.path.join(directory_to_archive, bulk_name)
 
-        # Get the files for this grade
-        file_names = []
-        for student_guid in student_guids:
-            file_names.append(files_by_guid[student_guid])
+            # Get the files for this grade
+            file_names = []
+            for student_guid in student_guids:
+                file_names.append(files_by_guid[student_guid])
 
-        # Create the merge task
-        merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
+            # Create the merge task
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
     return merge_tasks
 
 

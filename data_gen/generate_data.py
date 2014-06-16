@@ -80,11 +80,11 @@ csv_writer.register_filters(SBAC_FILTERS)
 postgres_writer.register_filters(SBAC_FILTERS)
 
 
-def assign_team_configuration_options(team, state_name, state_code, state_type):
+def assign_configuration_options(gen_type, state_name, state_code, state_type):
     """
-    Assign configuration options that are specific to one team.
+    Assign configuration options that are specific for the generation type
 
-    @param team: Name of team to assign options for
+    @param gen_type: Generation run type to configure
     @param state_name: Name of state to generate
     @param state_code: Code of state to generate
     @param state_type: Type of state to generate
@@ -93,24 +93,19 @@ def assign_team_configuration_options(team, state_name, state_code, state_type):
         WRITE_PG, WRITE_IL, GRADES_OF_CONCERN
 
     # Validate parameter
-    if team not in ['sonics', 'arkanoids', 'udl']:
-        raise ValueError("Team name '%s' is not known" % team)
+    if gen_type not in ['regular', 'udl']:
+        raise ValueError("Generation type '%s' is not known" % gen_type)
 
     # Set the state
     STATES = [{'name': state_name, 'code': state_code, 'type': state_type}]
 
     # Assign options
-    if team == 'arkanoids':
-        YEARS = [2015, 2016]  # Expected sorted lowest to highest
-        ASMT_YEARS = [2016]  # The years to generate summative assessments for
-        INTERIM_ASMT_PERIODS = []  # The periods for interim assessments
-        NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
-    elif team == 'sonics':
+    if gen_type == 'regular':
         YEARS = [2015, 2016, 2017]  # Expected sorted lowest to highest
         ASMT_YEARS = [2015, 2016, 2017]  # The years to generate summative assessments for
         INTERIM_ASMT_PERIODS = ['Fall', 'Winter', 'Spring']  # The periods for interim assessments
         NUMBER_REGISTRATION_SYSTEMS = 1  # Should be less than the number of expected districts
-    elif team == 'udl':
+    elif gen_type == 'udl':
         # This is a VERY specific configuration specifically designed to generate UDL test files
         STATES = [{'name': 'Example State', 'code': 'ES', 'type': 'udl_test'}]
         YEARS = [2016]
@@ -633,8 +628,8 @@ def generate_state_data(state: SBACState, id_gen):
 if __name__ == '__main__':
     # Argument parsing for task-specific arguments
     parser = argparse.ArgumentParser(description='SBAC data generation task.')
-    parser.add_argument('-t', '--team', dest='team_name', action='store', default='sonics',
-                        help='Specify the name of the team to generate data for (sonics, arkanoids, udl)',
+    parser.add_argument('-t', '--type', dest='gen_type', action='store', default='regular',
+                        help='Specify the type of data generation run to perform (regular, udl)',
                         required=False)
     parser.add_argument('-sn', '--state_name', dest='state_name', action='store', default='North Carolina',
                         help='Specify the name of the state to generate data for (default=North Carolina)',
@@ -672,7 +667,7 @@ if __name__ == '__main__':
     OUT_PATH_ROOT = args.out_dir
 
     # Set team-specific configuration options
-    assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
+    assign_configuration_options(args.gen_type, args.state_name, args.state_code, args.state_type)
 
     # Validate at least one form of output
     if not WRITE_PG and not WRITE_STAR and not WRITE_LZ:

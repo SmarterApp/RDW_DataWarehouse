@@ -153,8 +153,8 @@ def pool_callback(arg_tpl):
 if __name__ == '__main__':
     # Argument parsing for task-specific arguments
     parser = argparse.ArgumentParser(description='SBAC data generation task.')
-    parser.add_argument('-t', '--team', dest='team_name', action='store', default='sonics',
-                        help='Specify the name of the team to generate data for (sonics, arkanoids, udl)',
+    parser.add_argument('-t', '--type', dest='gen_type', action='store', default='regular',
+                        help='Specify the type of data generation run to perform (regular, udl)',
                         required=False)
     parser.add_argument('-sn', '--state_name', dest='state_name', action='store', default='North Carolina',
                         help='Specify the name of the state to generate data for (default=North Carolina)',
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
-    generate_data.assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
+    generate_data.assign_configuration_options(args.gen_type, args.state_name, args.state_code, args.state_type)
 
     # Save output flags
     generate_data.WRITE_PG = args.pg_out

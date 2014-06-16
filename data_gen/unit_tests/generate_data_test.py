@@ -28,13 +28,13 @@ def setup_module():
 
 
 def test_set_configuration_exception():
-    assert_raises(ValueError, generate_data.assign_team_configuration_options, 'Unknown', 'North Carolina', 'NC',
+    assert_raises(ValueError, generate_data.assign_configuration_options, 'Unknown', 'North Carolina', 'NC',
                   'typical_1')
 
 
 def test_set_configuration_state():
     # Set the configuration
-    generate_data.assign_team_configuration_options('sonics', 'North Carolina', 'NC', 'typical_1')
+    generate_data.assign_configuration_options('regular', 'North Carolina', 'NC', 'typical_1')
 
     # Tests
     assert generate_data.STATES[0]['name'] == 'North Carolina'
@@ -42,9 +42,9 @@ def test_set_configuration_state():
     assert generate_data.STATES[0]['type'] == 'typical_1'
 
 
-def test_set_configuration_sonics():
+def test_set_configuration_regular():
     # Set the configuration
-    generate_data.assign_team_configuration_options('sonics', 'North Carolina', 'NC', 'typical_1')
+    generate_data.assign_configuration_options('regular', 'North Carolina', 'NC', 'typical_1')
 
     # Tests
     assert len(generate_data.YEARS) == 3
@@ -59,20 +59,6 @@ def test_set_configuration_sonics():
     assert 'Fall' in generate_data.INTERIM_ASMT_PERIODS
     assert 'Winter' in generate_data.INTERIM_ASMT_PERIODS
     assert 'Spring' in generate_data.INTERIM_ASMT_PERIODS
-    assert generate_data.NUMBER_REGISTRATION_SYSTEMS == 1
-
-
-def test_set_configuration_arkanoids():
-    # Set the configuration
-    generate_data.assign_team_configuration_options('arkanoids', 'North Carolina', 'NC', 'typical_1')
-
-    # Tests
-    assert len(generate_data.YEARS) == 2
-    assert 2015 in generate_data.YEARS
-    assert 2016 in generate_data.YEARS
-    assert len(generate_data.ASMT_YEARS) == 1
-    assert 2016 in generate_data.ASMT_YEARS
-    assert len(generate_data.INTERIM_ASMT_PERIODS) == 0
     assert generate_data.NUMBER_REGISTRATION_SYSTEMS == 1
 
 

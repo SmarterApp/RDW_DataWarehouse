@@ -22,6 +22,7 @@ class Constants():
     SL = 'sl'
     PDF = 'pdf'
     LANG = 'lang'
+    MODE = 'mode'
     GRAYSCALE = 'grayscale'
     STATECODE = 'stateCode'
     DISTRICTGUID = 'districtGuid'

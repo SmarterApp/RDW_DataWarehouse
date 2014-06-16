@@ -79,10 +79,10 @@ PDF_PARAMS = {
             "required": False,
             "pattern": "^[a-zA-Z0-9 ]{0,50}$",
         },
-        Constants.GRAYSCALE: {
+        Constants.MODE: {
             "type": "string",
             "required": False,
-            "pattern": "^(true|false|TRUE|FALSE)$",
+            "pattern": "^(gray|GRAY|color|COLOR)$",
         },
         Constants.LANG: {
             "type": "string",
@@ -185,9 +185,10 @@ def get_pdf_content(params):
     grades = params.get(Constants.ASMTGRADE, [])
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     effective_date = str(params.get(Constants.EFFECTIVEDATE))
-    is_grayscale = bool(params.get(Constants.GRAYSCALE, 'false').lower() == 'true')
+    color_mode = params.get(Constants.MODE, 'gray').lower()
     lang = params.get(Constants.LANG, 'en').lower()
     subprocess_timeout = services.celery.TIMEOUT
+    is_grayscale = (color_mode == 'gray')
 
     report = pyramid.threadlocal.get_current_request().matchdict[Constants.REPORT]
     # Validate report type

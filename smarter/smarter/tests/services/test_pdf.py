@@ -138,7 +138,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         response = get_pdf_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertIsNotNone(response.body)
-        self.assertEqual(response.content_type, 'application/pdf')
+        self.assertEqual(response.content_type, Constants.APPLICATION_PDF)
 
     def test_send_pdf_request(self):
         studentGuid = "a016a4c1-5aca-4146-a85b-ed1172a01a4d"

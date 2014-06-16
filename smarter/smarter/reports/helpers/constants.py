@@ -121,3 +121,4 @@ class Constants():
     ALWAYS_GENERATE = 'always_generate'
     OUTPUTFILE = 'outputfile'
     REPORT = 'report'
+    GRAY = 'gray'

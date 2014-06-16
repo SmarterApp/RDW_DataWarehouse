@@ -23,9 +23,11 @@ from edcore.exceptions import RemoteCopyError
 from edextract.utils.data_archiver import archive_files
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
+from edextract.data_extract_generation.raw_data_generator import generate_raw_data_xml
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
 from hpz_client.frs.http_file_upload import http_file_upload
+from smarter.extracts.constants import ExtractType
 
 
 log = logging.getLogger('edextract')
@@ -68,7 +70,7 @@ def prepare_path(request_id, paths):
         raise ExtractionError()
 
 
-def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME, item_level=False):
+def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME, extract_type=None):
     """
     Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
 
@@ -83,8 +85,8 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
     generate_tasks = []
 
     for task in tasks:
-        if item_level:
-            generate_tasks.append(generate_item_level_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
+        if extract_type and extract_type in [ExtractType.itemLevel, ExtractType.rawData]:
+            generate_tasks.append(generate_item_or_raw_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
         else:
             generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
 
@@ -226,10 +228,10 @@ def generate_extract_file(tenant, request_id, task):
             raise ExtractionError()
 
 
-@celery.task(name="tasks.extract.generate_item_level_extract_file", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
-def generate_item_level_extract_file(tenant, request_id, task):
+@celery.task(name="tasks.extract.generate_item_or_raw_extract_file", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
+def generate_item_or_raw_extract_file(tenant, request_id, task):
     """
-    Generates an extract file given task arguments.
+    Generates an item level/raw extract file given task arguments.
 
     @param tenant: Tenant name
     @param request_id: Extract request ID
@@ -239,11 +241,14 @@ def generate_item_level_extract_file(tenant, request_id, task):
 
     task_id = task[TaskConstants.TASK_TASK_ID]
     extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
-    log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_item_level_extract_file.name,
+    log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_item_or_raw_extract_file.name,
                                                                                           task_id=task_id, extract_type=extract_type))
+    output_dir = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
     output_file = task[TaskConstants.TASK_FILE_NAME]
+    output_path = output_file if extract_type is ExtractType.itemLevel else output_dir
+
     task_info = {Constants.TASK_ID: task_id,
-                 Constants.CELERY_TASK_ID: generate_item_level_extract_file.request.id,
+                 Constants.CELERY_TASK_ID: generate_item_or_raw_extract_file.request.id,
                  Constants.REQUEST_GUID: request_id}
     retryable = False
     exception_thrown = False
@@ -253,12 +258,14 @@ def generate_item_level_extract_file(tenant, request_id, task):
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            if not os.path.isdir(os.path.dirname(output_file)):
+            if extract_type is ExtractType.itemLevel and not os.path.isdir(os.path.dirname(output_file)):
                 raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
+            if extract_type is ExtractType.rawData and not os.path.isdir(output_dir):
+                raise FileNotFoundError(output_dir + " doesn't exist")
 
             # Extract data to file.
             extract_func = get_extract_func(extract_type)
-            extract_func(tenant, output_file, task_info, task)
+            extract_func(tenant, output_path, task_info, task)
 
     except FileNotFoundError as e:
         # which thrown from prepare_path
@@ -297,6 +304,7 @@ def get_extract_func(extract_type):
         ExtractionDataType.QUERY_CSV: generate_csv,
         ExtractionDataType.QUERY_JSON: generate_json,
         ExtractionDataType.QUERY_ITEMS_CSV: generate_items_csv,
+        ExtractionDataType.QUERY_RAW_XML: generate_raw_data_xml,
         ExtractionDataType.SR_STATISTICS: generate_statistics_report,
         ExtractionDataType.SR_COMPLETION: generate_completion_report
     }

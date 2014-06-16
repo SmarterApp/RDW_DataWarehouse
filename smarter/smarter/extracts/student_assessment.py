@@ -134,9 +134,9 @@ def get_extract_assessment_query(params):
     return query
 
 
-def get_extract_assessment_item_query(params):
+def get_extract_assessment_item_and_raw_query(params):
     """
-    private method to generate SQLAlchemy object or sql code for extraction of students for item level data
+    private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
 
     :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
     """

@@ -14,8 +14,8 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPInternalServerError
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
-from smarter.extracts.student_asmt_processor import process_async_item_extraction_request,\
-    process_sync_item_extract_request
+from smarter.extracts.student_asmt_processor import process_async_item_or_raw_extraction_request,\
+    process_sync_item_or_raw_extract_request
 from smarter.extracts.constants import ExtractType, Constants as Extract
 from smarter.reports.helpers.filters import FILTERS_CONFIG
 from datetime import datetime
@@ -137,12 +137,12 @@ def send_extraction_request(params):
         # By default, it is a sync call
         is_async = params.get(Extract.ASYNC, False)
         if is_async:
-            results = process_async_item_extraction_request(params)
+            results = process_async_item_or_raw_extraction_request(params, extract_type=ExtractType.itemLevel)
             response = Response(body=json.dumps(results), content_type='application/json')
         else:
             extract_params = copy.deepcopy(params)
             zip_file_name = generate_zip_file_name(extract_params)
-            content = process_sync_item_extract_request(extract_params)
+            content = process_sync_item_or_raw_extract_request(extract_params, extract_type=ExtractType.itemLevel)
             response = Response(body=content, content_type='application/octet-stream')
             response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
     # TODO: currently we dont' even throw any of these exceptions

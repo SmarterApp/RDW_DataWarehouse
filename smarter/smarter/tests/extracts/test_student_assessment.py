@@ -11,7 +11,7 @@ from pyramid.registry import Registry
 from sqlalchemy.sql.expression import select
 from pyramid.security import Allow
 
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_query
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query
 from edcore.utils.utils import compile_query_to_sql_text
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
@@ -105,7 +105,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        query = get_extract_assessment_item_query(params)
+        query = get_extract_assessment_item_and_raw_query(params)
         self.assertIsNotNone(query)
         self.assertIn('fact_asmt_outcome_vw.asmt_type', str(query._whereclause))
 
@@ -116,7 +116,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        query = get_extract_assessment_item_query(params).limit(541)
+        query = get_extract_assessment_item_and_raw_query(params).limit(541)
         self.assertIsNotNone(query)
         self.assertIn('541', str(query._limit))
 
@@ -127,7 +127,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        query = compile_query_to_sql_text(get_extract_assessment_item_query(params))
+        query = compile_query_to_sql_text(get_extract_assessment_item_and_raw_query(params))
         self.assertIsNotNone(query)
         self.assertIsInstance(query, str)
         self.assertIn('SUMMATIVE', query)
@@ -138,7 +138,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
                   'asmtGrade': '3'}
-        query = get_extract_assessment_item_query(params)
+        query = get_extract_assessment_item_and_raw_query(params)
         self.assertIsNotNone(query)
         with UnittestEdcoreDBConnection() as connection:
             results = connection.get_result(query)

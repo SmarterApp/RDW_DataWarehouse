@@ -189,7 +189,7 @@ DISTRICT_TYPES = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_M
                                                              'Good High School': OTHR_HIGH,
                                                              'Good Middle School': OTHR_MIDL,
                                                              'Good Elementary School': OTHR_ELEM}},
-                  'Big UDL': {'school_counts': {'min': 100, 'max': 102, 'avg': 101},
+                  'Big UDL': {'school_counts': {'min': 200, 'max': 201, 'avg': 200},
                               'school_types_and_ratios': {'UDL High School': 1}}
                   }
 
@@ -213,5 +213,11 @@ STATE_TYPES = {'california': {'district_types_and_counts': [('Big LA', 1), ('Big
                          'demographics': 'california'},
                'udl_test': {'district_types_and_counts': [('Big UDL', 1)],
                             'subject_skip_percentages': {'Math': 0, 'ELA': 0},
-                            'demographics': 'california'}
+                            'demographics': 'california'},
+               'pa': {'district_types_and_counts': [('Big Average', 10), ('Big Good', 10), ('Big Poor', 10),
+                                                    ('Medium Average', 12), ('Medium Poor', 12), ('Medium Very Poor', 12),
+                                                    ('Medium Good', 12), ('Small Average', 8), ('Small Poor', 8),
+                                                    ('Small Good', 8)],
+                      'subject_skip_percentages': {'Math': .04, 'ELA': .03},
+                      'demographics': 'california'},
                }

@@ -7,9 +7,9 @@ define [
   "edwareGrid"
 ], ($, Mustache, SearchBoxTemplate, SearchResultTemplate, CONSTANTS, edwareGrid) ->
 
-  ARIA_TEMPALTE = "<span>{{total}}</span> rows matching {{keyword}}. Use up and down arrow keys to cycle through matching rows. Use enter to select a row. Use escape to exit find mode."
+  ARIA_TEMPALTE = "<span>{{total}}</span> records matching {{keyword}}. Use up and down arrow keys to cycle through matching records. Use enter to select a record. Use escape to exit find mode."
 
-  ARIA_MSG = "row {{cursor}} of {{total}} is {{name}}"
+  ARIA_MSG = "record {{cursor}} of {{total}} is {{name}}"
 
   class EdwareSearch
 

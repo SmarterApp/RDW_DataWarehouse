@@ -33,6 +33,8 @@ from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 from edauth.tests.test_helper.create_session import create_test_session
 from edauth.security.user import RoleRelation
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestServices(Unittest_with_edcore_sqlite):

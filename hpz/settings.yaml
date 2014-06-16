@@ -138,14 +138,6 @@ jenkins_dev:
           name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
           issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
     cache:
-      public:
-        shortlived:
-            url: edwappsrv1.poc.dum.edwdc.net:11211
-        data:
-            url: edwappsrv1.poc.dum.edwdc.net:11211
-            expire: 31556940
-        filtered_data:
-            url: edwappsrv1.poc.dum.edwdc.net:11211
       session:
         url: edwappsrv2.poc.dum.edwdc.net:11211
       type: ext:memcached

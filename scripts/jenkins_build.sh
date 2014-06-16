@@ -440,6 +440,7 @@ function setup_for_udl {
 function setup_for_hpz {
     echo "Rebuild HPZ DB"
     cd $WORKSPACE/hpz/scripts
+    python pickup_zone_cleanup.py -e 0
     /bin/sh teardown_database.sh
     /bin/sh initialize_database.sh
 }
@@ -449,6 +450,13 @@ function run_udl_integration_tests {
     cd $WORKSPACE/integration_tests
     nosetests
     echo "Finished udl data load"
+}
+
+function clean_up_udl_zones {
+    cd /opt/edware/zones/landing/history
+    rm -rf *
+    cd /opt/edware/zones/landing/work
+    rm -rf *
 }
 
 function main {
@@ -467,6 +475,7 @@ function main {
             fi
             run_unit_tests $UT_PATH
         fi
+        clean_up_udl_zones
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG
         #build_egg $MAIN_PKG
@@ -486,6 +495,7 @@ function main {
             else
                 setup_for_udl
                 run_udl_integration_tests
+                clean_up_udl_zones
             fi
         fi
         setup_for_hpz

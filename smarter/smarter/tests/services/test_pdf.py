@@ -28,8 +28,6 @@ from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_p
 from services.tasks.pdf import prepare_path
 import shutil
 from services.tests.tasks.test_pdf import get_cmd
-from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.pii import PII  # @UnusedImport
 from pyramid.security import Allow
 import edauth
 from edcore.security.tenant import set_tenant_map
@@ -39,6 +37,8 @@ from edauth.security.user import RoleRelation
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from unittest.mock import patch
 import json
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestServices(Unittest_with_edcore_sqlite):

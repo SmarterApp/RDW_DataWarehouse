@@ -22,6 +22,8 @@ from smarter.reports.helpers.constants import Constants
 from smarter_common.security.constants import RolesConstants
 from sqlalchemy.sql.expression import and_
 from edauth.security.user import RoleRelation
+from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.security.roles.state_level import StateLevel  # @UnusedImport
 
 
 class TestContext(Unittest_with_edcore_sqlite):

@@ -11,6 +11,7 @@ from smarter.reports.student_administration import get_asmt_academic_years,\
     get_student_reg_academic_years
 from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestStudentAdministration(Unittest_with_edcore_sqlite):

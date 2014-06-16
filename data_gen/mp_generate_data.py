@@ -153,8 +153,8 @@ def pool_callback(arg_tpl):
 if __name__ == '__main__':
     # Argument parsing for task-specific arguments
     parser = argparse.ArgumentParser(description='SBAC data generation task.')
-    parser.add_argument('-t', '--team', dest='team_name', action='store', default='sonics',
-                        help='Specify the name of the team to generate data for (sonics, arkanoids, udl)',
+    parser.add_argument('-t', '--type', dest='gen_type', action='store', default='regular',
+                        help='Specify the type of data generation run to perform (regular, udl)',
                         required=False)
     parser.add_argument('-sn', '--state_name', dest='state_name', action='store', default='North Carolina',
                         help='Specify the name of the state to generate data for (default=North Carolina)',
@@ -167,6 +167,9 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
                         help='Specific the number of sub-processes to spawn (default=2)', required=False)
+    parser.add_argument('-o', '--out_dir', dest='out_dir', action='store', default='out',
+                        help='Specify the root directory for writing output files to',
+                        required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
@@ -182,13 +185,16 @@ if __name__ == '__main__':
     args, unknown = parser.parse_known_args()
 
     # Set team-specific configuration options
-    generate_data.assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)
+    generate_data.assign_configuration_options(args.gen_type, args.state_name, args.state_code, args.state_type)
 
     # Save output flags
     generate_data.WRITE_PG = args.pg_out
     generate_data.WRITE_STAR = args.star_out
     generate_data.WRITE_LZ = args.lz_out
     generate_data.WRITE_IL = args.il_out
+
+    # Save output directory
+    OUT_PATH_ROOT = args.out_dir
 
     # Validate at least one form of output
     if not generate_data.WRITE_PG and not generate_data.WRITE_STAR and not generate_data.WRITE_LZ:

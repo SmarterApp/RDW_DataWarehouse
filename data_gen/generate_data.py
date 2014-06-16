@@ -645,6 +645,9 @@ if __name__ == '__main__':
     parser.add_argument('-st', '--state_type', dest='state_type', action='store', default='devel',
                         help='Specify the type of state to generate data for (devel (default), typical_1, california, udl_test)',
                         required=False)
+    parser.add_argument('-o', '--out_dir', dest='out_dir', action='store', default='out',
+                        help='Specify the root directory for writing output files to',
+                        required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
@@ -664,6 +667,9 @@ if __name__ == '__main__':
     WRITE_STAR = args.star_out
     WRITE_LZ = args.lz_out
     WRITE_IL = args.il_out
+
+    # Save output directory
+    OUT_PATH_ROOT = args.out_dir
 
     # Set team-specific configuration options
     assign_team_configuration_options(args.team_name, args.state_name, args.state_code, args.state_type)

@@ -167,6 +167,9 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-pc', '--process_count', dest='process_count', action='store', default='2',
                         help='Specific the number of sub-processes to spawn (default=2)', required=False)
+    parser.add_argument('-o', '--out_dir', dest='out_dir', action='store', default='out',
+                        help='Specify the root directory for writing output files to',
+                        required=False)
     parser.add_argument('-ho', '--host', dest='pg_host', action='store', default='localhost',
                         help='The host for the PostgreSQL server to write data to')
     parser.add_argument('-s', '--schema', dest='pg_schema', action='store', default='dg_data',
@@ -189,6 +192,9 @@ if __name__ == '__main__':
     generate_data.WRITE_STAR = args.star_out
     generate_data.WRITE_LZ = args.lz_out
     generate_data.WRITE_IL = args.il_out
+
+    # Save output directory
+    OUT_PATH_ROOT = args.out_dir
 
     # Validate at least one form of output
     if not generate_data.WRITE_PG and not generate_data.WRITE_STAR and not generate_data.WRITE_LZ:

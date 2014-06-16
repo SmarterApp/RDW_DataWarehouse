@@ -452,6 +452,13 @@ function run_udl_integration_tests {
     echo "Finished udl data load"
 }
 
+function clean_up_udl_zones {
+    cd /opt/edware/zones/landing/history
+    rm -rf *
+    cd /opt/edware/zones/landing/work
+    rm -rf *
+}
+
 function main {
 
     get_opts $@
@@ -468,6 +475,7 @@ function main {
             fi
             run_unit_tests $UT_PATH
         fi
+        clean_up_udl_zones
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG
         #build_egg $MAIN_PKG
@@ -487,6 +495,7 @@ function main {
             else
                 setup_for_udl
                 run_udl_integration_tests
+                clean_up_udl_zones
             fi
         fi
         setup_for_hpz

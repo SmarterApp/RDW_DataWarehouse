@@ -44,7 +44,8 @@ PDF_PARAMS = {
         Constants.STATECODE: {
             "type": "string",
             "required": True,
-            "pattern": "^[a-zA-Z]{2}$"},
+            "pattern": "^[a-zA-Z]{2}$"
+        },
         Constants.STUDENTGUID: {
             "type": "array",
             "items": {
@@ -53,7 +54,8 @@ PDF_PARAMS = {
             },
             "minItems": 1,
             "uniqueItems": True,
-            "required": False},
+            "required": False
+        },
         Constants.DISTRICTGUID: {
             "type": "string",
             "required": False,
@@ -68,7 +70,7 @@ PDF_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^[0-9]{0,2}$"
+                "pattern": "^[0-9]{1,2}$"
             },
             "minitems": 1,
             "uniqueItems": True,
@@ -191,7 +193,7 @@ def get_pdf_content(params):
     grades = params.get(Constants.ASMTGRADE, [])
     asmt_type = params.get(Constants.ASMTTYPE, AssessmentType.SUMMATIVE)
     asmt_year = params.get(Constants.ASMTYEAR)
-    effective_date = str(params.get(Constants.EFFECTIVEDATE)) if params.get(Constants.EFFECTIVE_DATE) is not None else None
+    effective_date = str(params.get(Constants.EFFECTIVEDATE)) if params.get(Constants.EFFECTIVEDATE) is not None else None
     color_mode = params.get(Constants.MODE, Constants.GRAY).lower()
     lang = params.get(Constants.LANG, 'en').lower()
     subprocess_timeout = services.celery.TIMEOUT
@@ -222,14 +224,12 @@ def get_pdf_content(params):
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
 
+    # Set up a couple additional variables
     base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
-    # Set up a few additional variables
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    if student_guids is not None and type(student_guids) is not list:
-        student_guids = [student_guids]
 
-    if student_guids is not None and len(student_guids) is 1:
-        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids[0], lang, is_grayscale, always_generate, celery_timeout, params)
+    if student_guids is not None and type(student_guids) is not list:
+        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids, lang, is_grayscale, always_generate, celery_timeout, params)
     else:
         response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
     return response
@@ -316,7 +316,8 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
     guids_by_grade = {}
     if student_guids is None:
         for grade in grades:
-            guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, effective_date, params)
+            guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, asmt_year,
+                                       effective_date, params)
             if len(guids) > 0:
                 all_guids.extend([result[Constants.STUDENT_GUID] for result in guids])
                 guids_by_grade[grade] = [result[Constants.STUDENT_GUID] for result in guids]
@@ -464,7 +465,7 @@ def _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type,
         if effective_date is not None:
             query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         elif asmt_year is not None:
-            query = query.where(and_(dim_asmt.c.asmt_year == asmt_year))
+            query = query.where(and_(dim_asmt.c.asmt_period_year == asmt_year))
         else:
             raise InvalidParameterError('Need one of effective_date or asmt_year')
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)

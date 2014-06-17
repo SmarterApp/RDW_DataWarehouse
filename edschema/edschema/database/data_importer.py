@@ -161,6 +161,7 @@ def load_fact_asmt_outcome(datasource_name=''):
     @param datasource_name: the data source name
     @type datasource_name: string
     '''
+    return True
     __success = False
     with DBConnection(name=datasource_name) as connection:
         metadata = connection.get_metadata()

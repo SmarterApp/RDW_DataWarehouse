@@ -123,7 +123,7 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
     if tasks:
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
         prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
-        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue, extract_type=extract_type)().get(timeout=celery_timeout)
+        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
         result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)
     else:
@@ -137,7 +137,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     '''
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
-    default_path = '/opt/edware/item_level' if extract_type is ExtractType.itemLevel else '/opt/edware/raw'
+    default_path = '/opt/edware/item_level' if extract_type is ExtractType.itemLevel else '/opt/edware/raw_data'
     root_dir = get_current_registry().settings.get(data_path_config_key, default_path)
     response = {}
     state_code = params[Constants.STATECODE]

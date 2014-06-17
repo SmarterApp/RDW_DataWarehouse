@@ -24,7 +24,6 @@ def generate_raw_data_xml(tenant, output_path, task_info, extract_args):
     @param task_info: Task information for recording stats
     @param extract_args: Arguments specific to generate_raw_data_xml
     """
-    # Get stuff
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
 

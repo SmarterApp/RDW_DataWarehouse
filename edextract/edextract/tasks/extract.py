@@ -54,7 +54,6 @@ def prepare_path(request_id, paths):
     '''
     Given a list of paths of directories, creates it if it doesn't exist
     '''
-
     task_info = {Constants.TASK_ID: prepare_path.request.id,
                  Constants.CELERY_TASK_ID: prepare_path.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -70,7 +69,7 @@ def prepare_path(request_id, paths):
         raise ExtractionError()
 
 
-def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME, extract_type=None):
+def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
     """
     Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
 
@@ -81,11 +80,11 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
 
     @return: Group of celery tasks to execute
     """
-
     generate_tasks = []
 
     for task in tasks:
-        if extract_type and extract_type in [ExtractType.itemLevel, ExtractType.rawData]:
+        extract_type = task.get(TaskConstants.EXTRACTION_DATA_TYPE)
+        if extract_type in [ExtractionDataType.QUERY_ITEMS_CSV, ExtractionDataType.QUERY_RAW_XML]:
             generate_tasks.append(generate_item_or_raw_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
         else:
             generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
@@ -117,7 +116,6 @@ def archive(request_id, archive_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
-
     try:
         task_info = {Constants.TASK_ID: archive.request.id,
                      Constants.CELERY_TASK_ID: archive.request.id,
@@ -138,7 +136,6 @@ def remote_copy(request_id, src_file_name, registration_id):
     '''
     Remotely copies a source file to a remote machine
     '''
-
     task_info = {Constants.TASK_ID: remote_copy.request.id,
                  Constants.CELERY_TASK_ID: remote_copy.request.id,
                  Constants.REQUEST_GUID: request_id}
@@ -238,7 +235,6 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
     @param task: Calling task
     @param extract_type: Specific type of data extract for calling task
     """
-
     task_id = task[TaskConstants.TASK_TASK_ID]
     extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
     log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_item_or_raw_extract_file.name,
@@ -258,9 +254,9 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            if extract_type is ExtractType.itemLevel and not os.path.isdir(os.path.dirname(output_file)):
+            if extract_type is ExtractionDataType.QUERY_ITEMS_CSV and not os.path.isdir(os.path.dirname(output_file)):
                 raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
-            if extract_type is ExtractType.rawData and not os.path.isdir(output_dir):
+            if extract_type is ExtractionDataType.QUERY_RAW_XML and not os.path.isdir(output_dir):
                 raise FileNotFoundError(output_dir + " doesn't exist")
 
             # Extract data to file.

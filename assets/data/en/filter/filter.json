@@ -120,7 +120,7 @@
         {
             "display" : "Gender",
             "tag" : "Gender",
-            "name" : "gender",
+            "name" : "sex",
             "options" : [
                 {
                     "label": "Male",

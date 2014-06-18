@@ -120,7 +120,7 @@
         {
             "display" : "Sexo",
             "tag" : "Sexo",
-            "name" : "gender",
+            "name" : "sex",
             "options" : [
                 {
                     "label": "Masculino",

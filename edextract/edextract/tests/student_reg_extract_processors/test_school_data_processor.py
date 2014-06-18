@@ -12,9 +12,9 @@ from unittest.mock import MagicMock
 class TestSchoolDataProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
+        self.data = {AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County', AttributeFieldConstants.STATE_CODE: 'NC',
                      AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
-        self.matched_ids_results = {'prev_school_guid': '5f706ksg80hhxs', AttributeFieldConstants.STATE_NAME: 'North Carolina',
+        self.matched_ids_results = {'prev_school_guid': '5f706ksg80hhxs',
                                     AttributeFieldConstants.DISTRICT_NAME: 'Gilfford County',
                                     AttributeFieldConstants.SCHOOL_NAME: 'Daybreak Junior High', AttributeFieldConstants.SCHOOL_GUID: '5f706ksg80hhxs'}
         self.category_trackers = []
@@ -24,7 +24,7 @@ class TestSchoolDataProcessor(unittest.TestCase):
     def test_ed_org_map_updates(self):
         self.school_data_processor.process_yearly_data(self.data)
         self.assertEquals(len(self.school_data_processor.get_ed_org_hierarchy()), 1)
-        self.assertDictEqual(self.school_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Gilfford County',
+        self.assertDictEqual(self.school_data_processor.get_ed_org_hierarchy(), {('NC', 'Gilfford County',
                                                                                   'Daybreak Junior High'): '5f706ksg80hhxs'})
 
     def test_call_to_tracker(self):

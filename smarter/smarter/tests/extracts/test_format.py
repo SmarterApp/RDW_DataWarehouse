@@ -39,7 +39,6 @@ class TestFormat(unittest.TestCase):
     def test_dim_inst_hier(self):
         dim_inst = get_column_mapping(Constants.DIM_INST_HIER)
         self.assertIsNotNone(dim_inst)
-        self.assertEqual(dim_inst['state_name'], 'StateName')
         self.assertEqual(dim_inst['state_code'], 'StateAbbreviation')
         self.assertEqual(dim_inst['district_guid'], 'ResponsibleDistrictIdentifier')
         self.assertEqual(dim_inst['district_name'], 'OrganizationName')

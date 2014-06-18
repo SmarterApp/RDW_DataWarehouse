@@ -42,7 +42,6 @@ def get_extract_assessment_query(params):
                                     fact_asmt_outcome_vw.c.where_taken_id.label(fact_asmt_outcome_vw_label.get('where_taken_id', 'guid_asmt_location')),
                                     fact_asmt_outcome_vw.c.where_taken_name.label(fact_asmt_outcome_vw_label.get('where_taken_name', 'name_asmt_location')),
                                     fact_asmt_outcome_vw.c.asmt_grade.label(fact_asmt_outcome_vw_label.get(Constants.ASMT_GRADE, Constants.ASMT_GRADE)),
-                                    dim_inst_hier.c.state_name.label(dim_inst_hier_label.get(Constants.STATE_NAME, 'name_state')),
                                     dim_inst_hier.c.state_code.label(dim_inst_hier_label.get(Constants.STATE_CODE, 'code_state')),
                                     dim_inst_hier.c.district_guid.label(dim_inst_hier_label.get(Constants.DISTRICT_GUID, 'name_distrct')),
                                     dim_inst_hier.c.district_name.label(dim_inst_hier_label.get(Constants.DISTRICT_NAME, 'name_distrct')),

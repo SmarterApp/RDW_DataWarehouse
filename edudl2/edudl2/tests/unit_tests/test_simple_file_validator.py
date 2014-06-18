@@ -77,7 +77,7 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
                            'AssessmentLevelForWhichDesigned', 'GradeLevelWhenAssessed', 'Group1Id', 'Group1Text', 'Group2Id', 'Group2Text',
                            'AssessmentGuid', 'AssessmentSessionLocationId', 'ResponsibleDistrictIdentifier', 'ResponsibleSchoolIdentifier',
                            'StudentIdentifier', 'ExternalSSID', 'StateAbbreviation',
-                           'AssessmentSessionLocation', 'OrganizationName', 'NameOfInstitution', 'StateName', 'FirstName',
+                           'AssessmentSessionLocation', 'OrganizationName', 'NameOfInstitution', 'FirstName',
                            'LastOrSurname', 'MiddleName', 'AssessmentSubtestResultScoreValue', 'AssessmentSubtestMaximumValue', 'AssessmentSubtestMinimumValue',
                            'AssessmentSubtestResultScoreClaim1Value', 'AssessmentSubtestClaim1MaximumValue', 'AssessmentSubtestClaim1MinimumValue',
                            'AssessmentClaim1PerformanceLevelIdentifier', 'AssessmentSubtestResultScoreClaim2Value',

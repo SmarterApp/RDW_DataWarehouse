@@ -36,7 +36,6 @@ validations = {
                     'guid_asmt_location': [IsGoodGUID, {IsUniqueWithin: ['name_asmt_location']}],
                     'name_asmt_location': IsNotNull,
                     'grade_asmt': [IsNotNull, {IsInList: [3, 4, 5, 6, 7, 8, 11]}],
-                    'name_state': [IsNotNull, {HasMaxLength: 32}],
                     'code_state': [IsNotNull, {IsInList: ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL',
                                                           'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT',
                                                           'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI',

@@ -26,7 +26,7 @@ def get_tracker_results(report_map, total_tracker, trackers, current_year):
         current_year_total = total_entry_data.get(current_year, None)
 
         for tracker in trackers:
-            state_name, district_name, school_name, category, value = get_row_identifiers(key, tracker)
+            state_code, district_name, school_name, category, value = get_row_identifiers(key, tracker)
 
             if total_entry_data:
                 entry_data = _get_map_entry(tracker.get_map_entry(val), current_year, previous_year)
@@ -34,7 +34,7 @@ def get_tracker_results(report_map, total_tracker, trackers, current_year):
                 current_year_count = _get_count(entry_data.get(current_year, 0), [current_year_total])
                 matched_id_count = _get_count(entry_data.get(DataCounter.MATCHED_IDS, 0), [previous_year_total, current_year_total])
 
-                row = [state_name, district_name, school_name, category, value] + _generate_data_row(current_year_count, previous_year_count,
+                row = [state_code, district_name, school_name, category, value] + _generate_data_row(current_year_count, previous_year_count,
                                                                                                      current_year_total, previous_year_total,
                                                                                                      matched_id_count)
 

@@ -336,11 +336,11 @@ define [
         return true
 
       grouping: (subject) ->
-        group_1 = filters.group_1
-        group_2 = filters.group_2
+        group1Id = filters.group1Id
+        group2Id = filters.group2Id
         # we take as a match if there's no grouping filter, or current group id is within filters
-        in_group_1 = not group_1 or subject.group_1_id in group_1
-        in_group_2 = not group_2 or subject.group_2_id in group_2
+        in_group_1 = not group1Id or subject.group_1_id in group1Id
+        in_group_2 = not group2Id or subject.group_2_id in group2Id
         return in_group_1 && in_group_2
     }
 

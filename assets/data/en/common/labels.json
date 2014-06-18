@@ -48,8 +48,8 @@
         },
         "export_label": "Download",
         "export_request_extract": {
-            "text": "Request state data as bulk extract",
-            "desc": "Request state data as bulk extract"
+            "text": "State-level reports & extracts",
+            "desc": "Download registration reports and XML extracts."
         },
         "export_request_files": "Request Files",
         "export_pdf_files": "Generate Reports",

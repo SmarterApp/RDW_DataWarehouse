@@ -255,6 +255,14 @@ class TestServices(Unittest_with_edcore_sqlite):
         guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(guids), 6)
 
+    def test_get_student_guids_alphabetical(self):
+        recs = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {})
+        name = None
+        for record in recs:
+            if name is not None:
+                self.assertLess(name, record['last_name'] + ', ' + record['first_name'])
+            name = record['last_name'] + ', ' + record['first_name']
+
     def test_get_archive_name(self):
         name = _get_archive_name('School', 'en', False)
         start_in = 'student_reports_School_' in name

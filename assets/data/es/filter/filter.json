@@ -158,7 +158,7 @@
     "group_template" : {
         "display" : "Student Grouping {{index}}",
         "tag" : "Student Grouping {{index}}",
-        "name" : "group_{{index}}",
+        "name" : "group{{index}}Id",
         "options" : [
         ]
     }

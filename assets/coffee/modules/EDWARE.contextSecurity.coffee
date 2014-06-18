@@ -46,6 +46,9 @@ define [
         trigger: 'click'
         content: warningIcon + @no_pii_msg
 
+      # remove bulk PDF print
+      $('li.pdf').hide()
+
     apply_raw_extract_security: () ->
       return if @permissions.sar_extracts.all
       $('li.extract').hide()

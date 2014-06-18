@@ -148,7 +148,7 @@ qa:
       db:
         schema_name: hpz
         url: postgresql+psycopg2://hpz:hpz2014@dbpghpz0.qa.dum.edwdc.net:5432/hpz
-        pool_size: 5
+        pool_size: 20
       frs:
         upload_base_path: /opt/edware/hpz/uploads
         file_size_limit: 4294967296

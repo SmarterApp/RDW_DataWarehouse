@@ -16,6 +16,7 @@ define [
     common: "../data/#{language}/common/common.json"
     landingPage: "../data/#{language}/content/landingPage.json"
     stateMap: "../data/stateMap.json"
+    pdf: "/services/pdf/indivStudentReport.html"
 
   # setup URLs for report's specific JSON
   for reportName, fileName of Constants.REPORT_JSON_NAME
@@ -98,8 +99,17 @@ define [
   getDataForLandingPage = ->
     getDatafromSource [URLs.labels, URLs.landingPage]
 
+  sendBulkPDFRequest = (params) ->
+    options =
+      params: params
+      method: 'POST'
+      redirectOnError: false
+      contentType: 'application/json'
+    return getDatafromSource URLs.pdf, options
+
 
   getDatafromSource: getDatafromSource
   getDataForReport: getDataForReport
   getDataForFilter: getDataForFilter
   getDataForLandingPage: getDataForLandingPage
+  sendBulkPDFRequest: sendBulkPDFRequest

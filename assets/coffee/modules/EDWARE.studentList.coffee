@@ -233,6 +233,13 @@ define [
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
+        getReportParams: @getReportParams.bind(this)
+
+    getReportParams: () ->
+      params = {}
+      studentIDs = @stickyCompare.getRows()
+      params["studentGuid"] = studentIDs if studentIDs.length isnt 0
+      params
 
     onAcademicYearSelected: (year) ->
       edwarePreferences.clearAsmtPreference()

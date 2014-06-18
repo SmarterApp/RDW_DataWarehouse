@@ -10,7 +10,6 @@ from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 from pyramid.security import Allow
-
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
@@ -41,22 +40,24 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def test_generate_isr_report_path_by_student_guid(self):
-        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.pdf'))
+        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guids='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
+        self.assertEqual(len(file_name), 1)
+        self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_exist(self):
-        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120101', pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
+        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120101', pdf_report_base_dir='/', student_guids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
 
     def test_generate_isr_absolute_file_path_name(self):
         file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_guid='123', school_guid='456', asmt_grade='1', student_guid='1bc-def-ad', asmt_type='SUMMATIVE', effective_date='20120201')
         self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_for_grayScale(self):
-        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=True, lang='jp')
-        self.assertEqual(file_name, os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.jp.g.pdf'))
+        file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guids='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=True, lang='jp')
+        self.assertEqual(len(file_name), 1)
+        self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.jp.g.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_existd_for_grayScale(self):
-        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120201', pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4', grayScale=True)
+        self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120201', pdf_report_base_dir='/', student_guids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4', grayScale=True)
 
     def test_generate_isr_absolute_file_path_named_for_grayScale(self):
         file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_guid='123', school_guid='456', asmt_grade='1', student_guid='1bc-def-ad', asmt_type='SUMMATIVE', grayScale=True, effective_date='20120201')

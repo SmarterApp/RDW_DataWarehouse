@@ -20,7 +20,7 @@ from edextract.settings.config import Config, get_setting
 from edextract.utils import file_utils
 from edextract.exceptions import ExtractionError
 from edcore.exceptions import RemoteCopyError
-from edextract.utils.data_archiver import archive_files
+from edcore.utils.utils import archive_files
 from edextract.data_extract_generation.query_extract_generator import generate_csv, generate_json
 from edextract.data_extract_generation.item_level_generator import generate_items_csv
 from edextract.data_extract_generation.raw_data_generator import generate_raw_data_xml

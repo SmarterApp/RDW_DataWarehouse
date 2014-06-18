@@ -91,6 +91,9 @@ define [
   getPreferences = (isLongTerm) ->
     JSON.parse(getStorage(isLongTerm).load() || "{}")
 
+  getFilters = () ->
+    JSON.parse(clientStorage.filterStorage.load() || "{}")
+
   saveStateCode:saveStateCode
   getStateCode:getStateCode
   saveAsmtPreference:saveAsmtPreference
@@ -108,3 +111,4 @@ define [
   getAsmtType: getAsmtType
   saveAsmtForISR: saveAsmtForISR
   getAsmtForISR: getAsmtForISR
+  getFilters: getFilters

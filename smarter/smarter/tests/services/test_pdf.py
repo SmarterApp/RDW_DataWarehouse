@@ -84,14 +84,14 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {Constants.STUDENTGUID: ['19489898-d469-41e2-babc-265ecbab2337'], Constants.STATECODE: 'NC', Constants.EFFECTIVEDATE: 20160404}
+        self.__request.json_body = {Constants.STUDENTGUID: ['19489898-d469-41e2-babc-265ecbab2337'], Constants.STATECODE: 'NC', Constants.ASMTTYPE: AssessmentType.SUMMATIVE, Constants.EFFECTIVEDATE: 20160404}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.method = 'POST'
-        self.__request.json_body = {Constants.STUDENTGUID: [studentGuid], Constants.STATECODE: 'NC', Constants.EFFECTIVEDATE: 20160404}
+        self.__request.json_body = {Constants.STUDENTGUID: [studentGuid], Constants.STATECODE: 'NC', Constants.ASMTTYPE: AssessmentType.SUMMATIVE, Constants.EFFECTIVEDATE: 20160404}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
@@ -180,6 +180,8 @@ class TestServices(Unittest_with_edcore_sqlite):
         params = {}
         params[Constants.STUDENTGUID] = '19489898-d469-41e2-babc-265ecbab2337'
         params[Constants.STATECODE] = 'NC'
+        params[Constants.ASMTTYPE] = 'SUMMATIVE'
+        params[Constants.ASMTYEAR] = '2016'
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         self.assertRaises(ForbiddenError, get_pdf_content, params)
@@ -238,19 +240,19 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(InvalidParameterError, _get_school_name, 'NC', 'Bad', 'Bad')
 
     def test_get_student_guids(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '20160404', {})
+        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {})
         self.assertEqual(len(guids), 8)
 
     def test_get_student_guids_males(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '20160404', {'sex': ['male']})
+        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'sex': ['male']})
         self.assertEqual(len(guids), 4)
 
     def test_get_student_guids_group1(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '20160404', {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
+        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(guids), 5)
 
     def test_get_student_guids_group2(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '20160404', {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']})
+        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(guids), 6)
 
     def test_get_archive_name(self):
@@ -327,14 +329,14 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_student_guids_by_guids(self):
         all_guids, guids_by_grade = _create_student_guids(['1', '2', '3'], None, 'NC', None, None, AssessmentType.SUMMATIVE,
-                                                          '20160404', {})
+                                                          '2016', '20160404', {})
         self.assertEqual(len(all_guids), 3)
         self.assertIn('all', guids_by_grade)
         self.assertEqual(len(guids_by_grade['all']), 3)
 
     def test_create_student_guids_by_grade(self):
         all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
-                                                          '20160404', {})
+                                                          '2016', '20160404', {})
         self.assertEqual(len(all_guids), 10)
         self.assertIn('7', guids_by_grade)
         self.assertIn('8', guids_by_grade)
@@ -343,7 +345,8 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_student_guids_by_grade_group(self):
         all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
-                                                          '20160404', {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
+                                                          '2016', '20160404',
+                                                          {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
         self.assertEqual(len(all_guids), 5)
         self.assertIn('7', guids_by_grade)
         self.assertNotIn('8', guids_by_grade)
@@ -351,16 +354,16 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_student_guids_by_guids_no_students(self):
         self.assertRaises(InvalidParameterError, _create_student_guids, [], None, 'NC', '229', '939', AssessmentType.SUMMATIVE,
-                          '20160404', {})
+                          '2016', '20160404', {})
 
     def test_create_student_guids_by_grade_no_students(self):
         self.assertRaises(InvalidParameterError, _create_student_guids, None, ['7'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
-                          '20160404', {'sex': ['not_stated']})
+                          '2016', '20160404', {'sex': ['not_stated']})
 
     @patch('smarter.services.pdf.get.delay')
     def test_get_single_pdf_content(self, mock_get):
         mock_get.return_value.get.return_value = 'BIG PDF CONTENT STUFF'.encode()
-        response = get_single_pdf_content('/tmp', 'localhost/', '123', 'edware', 30, 'NC', '20160404', AssessmentType.SUMMATIVE,
+        response = get_single_pdf_content('/tmp', 'localhost/', '123', 'edware', 30, 'NC', '2016', '20160404', AssessmentType.SUMMATIVE,
                                           'a629ca88-afe6-468c-9dbb-92322a284602', 'en', False, False, 30, {})
         self.assertEqual(response.status_code, 200)
 
@@ -368,13 +371,15 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_single_pdf_content_bad_effective_date(self, mock_get):
         mock_get.return_value = None
         self.assertRaises(APINotFoundException, get_single_pdf_content, '/tmp', 'localhost/', '123', 'edware', 30, 'NC',
-                          '20160304', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb-92322a284602', 'en', False, False, 30, {})
+                          '2016', '20160304', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb-92322a284602', 'en',
+                          False, False, 30, {})
 
     @patch('smarter.services.pdf.get')
     def test_get_single_pdf_content_bad_student_guid(self, mock_get):
         mock_get.return_value = None
         self.assertRaises(APIForbiddenError, get_single_pdf_content, '/tmp', 'localhost/', '123', 'edware', 30, 'NC',
-                          '20160404', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb', 'en', False, False, 30, {})
+                          '2016', '20160404', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb', 'en', False, False,
+                          30, {})
 
     def test_create_student_pdf_url(self):
         student_guid = '1-2-3-4-5'
@@ -451,13 +456,14 @@ class TestServices(Unittest_with_edcore_sqlite):
         district_guid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         school_guid = 'a-b-c'
         asmt_type = AssessmentType.SUMMATIVE
+        asmt_year = None
         effective_date = '20150401'
         lang = 'en'
         is_grayscale = False
         always_generate = False
         celery_timeout = 5
         params = {}
-        response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
         body = json.loads(response.body.decode('utf-8'))
         self.assertEqual(body[Constants.FILENAME], 'archive_file.pdf')
         self.assertEqual(body[Constants.DOWNLOAD_URL], 'http://foo.com/abc/hello')
@@ -466,7 +472,7 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_pdf_content_for_bulk(self, mock_get_bulk_pdf_content):
         mock_get_bulk_pdf_content.return_value = 'return from get_bulk_pdf_content'
         self.__request.matchdict[Constants.REPORT] = 'indivStudentReport.html'
-        params = {Constants.STUDENTGUID: ['a', 'b']}
+        params = {Constants.STUDENTGUID: ['a', 'b'], Constants.ASMTTYPE: 'SUMMATIVE', Constants.ASMTYEAR: '2015'}
         response = get_pdf_content(params)
         self.assertEqual('return from get_bulk_pdf_content', response)
 

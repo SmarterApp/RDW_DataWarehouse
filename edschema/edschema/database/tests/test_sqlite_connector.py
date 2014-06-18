@@ -68,5 +68,4 @@ def compile_big_int_sqlite(type_, compiler, **kw):
     return 'INTEGER'
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

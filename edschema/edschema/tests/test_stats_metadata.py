@@ -31,5 +31,4 @@ class TestStatsMetadata(Unittest_with_sqlite):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

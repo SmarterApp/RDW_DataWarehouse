@@ -233,7 +233,6 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
     @param tenant: Tenant name
     @param request_id: Extract request ID
     @param task: Calling task
-    @param extract_type: Specific type of data extract for calling task
     """
     task_id = task[TaskConstants.TASK_TASK_ID]
     extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
@@ -241,7 +240,6 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
                                                                                           task_id=task_id, extract_type=extract_type))
     output_dir = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
     output_file = task[TaskConstants.TASK_FILE_NAME]
-    output_path = output_file if extract_type is ExtractType.itemLevel else output_dir
 
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_item_or_raw_extract_file.request.id,
@@ -259,7 +257,10 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
             if extract_type is ExtractionDataType.QUERY_RAW_XML and not os.path.isdir(output_dir):
                 raise FileNotFoundError(output_dir + " doesn't exist")
 
-            # Extract data to file.
+            # for item level the output path is a file and for raw extract the output path is a directory
+            # to place all the matching xml files
+            output_path = output_file if extract_type is ExtractionDataType.QUERY_ITEMS_CSV else output_dir
+            # Extract data to file
             extract_func = get_extract_func(extract_type)
             extract_func(tenant, output_path, task_info, task)
 

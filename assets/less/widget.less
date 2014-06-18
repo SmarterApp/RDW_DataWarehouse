@@ -1727,29 +1727,45 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
     }
 
-    #DownloadMenuModal, #PDFModal {
+    #DownloadMenuModal, #PDFModal, #PDFSuccessModal {
+
+      width: 420px;
 
       .modal-header {
         background-color: @color-B28;
         border-radius: 6px;
       }
 
+      .modal-body {
+        padding: 20px;
+      }
+
+      ul {
+        padding: 0px;
+        margin: 0px;
+      }
+
       li {
         display: list-item;
         border: none;
-        height: 30px;
         list-style: none;
 
         input {
           vertical-align: baseline;
-          float: left;
+        }
+
+        h4 {
+          display: inline;
+          color: @color-black;
         }
 
         .desc_block {
-          float: left;
-          padding-left: 10px;
-          width: 479px;
+          padding-left: 25px;
         }
+      }
+
+      hr {
+        margin: 0px 0px 12px;
       }
     }
 

@@ -4,9 +4,11 @@
         <h2 id="PDFModalTitle">{{labels.generate_pdf_reports}}</h2>
     </div>
     <div class="modal-body">
-        {{labels.export_pdf_success}}<br>
-        {{labels.download_from}}:<br>
-        <a target="_blank" href="{{download_url}}">{{download_url}}</a>
+        <p>{{labels.export_pdf_success}}</p>
+        <p>
+            {{labels.download_from}}:<br>
+            <a target="_blank" href="{{download_url}}">{{download_url}}</a>
+        </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn edware-btn-primary edware-btn-ok" data-dismiss="modal">{{labels.ok}}</button>

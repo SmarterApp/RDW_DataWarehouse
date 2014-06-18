@@ -6,32 +6,40 @@
     <div class="modal-body">
         <ul>
             <li class="file">
-                <input id="file" type="radio" name="download" value="file" checked/>
+                <label for="file">
+                    <input id="file" type="radio" name="download" value="file" checked/>
+                    <h4 class="marginLeft8">{{labels.export_download_curr_view.text}}</h4>
+                </label>
                 <div class="desc_block">
-                    <label for="file"><span>{{labels.export_download_curr_view.text}}</span></label>
                     <p>{{labels.export_download_curr_view.desc}}</p>
                 </div>
             </li>
             <li class="extract">
-                <input id="extract" type="radio" name="download" value="extract"/>
+                <label for="extract">
+                    <input id="extract" type="radio" name="download" value="extract"/>
+                    <h4 class="marginLeft8">{{labels.export_download_raw_view.text}}</h4>
+                </label>
                 <div class="desc_block">
-                    <label for="extract"><span>{{labels.export_download_raw_view.text}}</span></label>
                     <p>{{labels.export_download_raw_view.desc}}</p>
                 </div>
 
             </li>
             <li class="csv">
-                <input id="csv" type="radio" name="download" value="csv"/>
+                <label for="csv">
+                    <input id="csv" type="radio" name="download" value="csv"/>
+                    <h4 class="marginLeft8">{{labels.export_request_extract.text}}</h4>
+                </label>
                 <div class="desc_block">
-                    <label for="csv"><span>{{labels.export_request_extract.text}}</span></label>
                     <p>{{labels.export_request_extract.desc}}</p>
                 </div>
 
             </li>
             <li class="pdf">
-                <input id="pdf" type="radio" name="download" value="pdf"/>
+                <label for="pdf">
+                    <input id="pdf" type="radio" name="download" value="pdf"/>
+                    <h4 class="marginLeft8">{{labels.export_bulk_pdf.text}}</h4>
+                </label>
                 <div class="desc_block">
-                    <label for="pdf"><span>{{labels.export_bulk_pdf.text}}</span></label>
                     <p>{{labels.export_bulk_pdf.desc}}</p>
                 </div>
 

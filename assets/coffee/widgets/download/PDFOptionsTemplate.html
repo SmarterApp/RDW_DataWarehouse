@@ -19,11 +19,12 @@
             </li>
         </ul>
         <hr>
-        <ul>
+        <ul class="marginBottom-10">
             {{#languages}}
             <li>
                 <label>
-                    <input id="{{key}}" name="language" type="radio" value="{{key}}">{{value}}</input>
+                    <input id="{{key}}" name="language" type="radio" value="{{key}}" />
+                    <span class="padLeft10">{{value}}</span>
                 </label>
             </li>
             {{/languages}}

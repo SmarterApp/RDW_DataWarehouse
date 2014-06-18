@@ -1044,7 +1044,7 @@ th.ui-th-column div {
     position: absolute;
     margin-top: -9px;
     width: 22px;
-    right: 380px;
+    right: 343px;
 }
 
 .filter {
@@ -1727,21 +1727,46 @@ background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
     }
 
-    #DownloadMenuModal {
-        width: 323px;
-        left: 58%;
+    #DownloadMenuModal, #PDFModal, #PDFSuccessModal {
 
-        li {
-            display: list-item;
-            border: none;
-            height: 30px;
-            list-style: none;
+      width: 420px;
 
-            input, span {
-                vertical-align: baseline;
-                padding-left: 10px;
-            }
+      .modal-header {
+        background-color: @color-B28;
+        border-radius: 6px;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      ul {
+        padding: 0px;
+        margin: 0px;
+      }
+
+      li {
+        display: list-item;
+        border: none;
+        list-style: none;
+
+        input {
+          vertical-align: baseline;
         }
+
+        h4 {
+          display: inline;
+          color: @color-black;
+        }
+
+        .desc_block {
+          padding-left: 25px;
+        }
+      }
+
+      hr {
+        margin: 0px 0px 12px;
+      }
     }
 
     .academicYearArea {

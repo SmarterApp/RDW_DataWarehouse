@@ -233,6 +233,15 @@ define [
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
+        getReportParams: @getReportParams.bind(this)
+
+    getReportParams: () ->
+      grades = for data in @populationData
+        data.id
+      # backend expects asmt grades as a list
+      params = {}
+      params["asmtGrade"] = grades if grades.length isnt 0
+      params
 
 
     renderReportActionBar: () ->

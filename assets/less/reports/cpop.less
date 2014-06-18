@@ -1,115 +1,115 @@
 body.cpop {
 
-    #actionBar {
+  #actionBar {
 	.printItem, .asmtTypeItem {
-	    display: none;
+	  display: none;
 	}
-    }
+  }
 
-    #infoBar {
-        li.overall {
-          display: none;
-        }
+  #infoBar {
+    li.overall {
+      display: none;
     }
+  }
 
 }
 
 /* Customize each report */
 body.state {
 
-    #infoBar #DownloadMenuModal {
-	li.extract { display: none; }
-    }
+  #infoBar #DownloadMenuModal {
+	li.extract, li.pdf { display: none; }
+  }
 }
 
 body.district {
 
-    #infoBar #DownloadMenuModal {
-	li.extract, li.csv { display: none; }
-    }
+  #infoBar #DownloadMenuModal {
+	li.extract, li.csv, li.pdf { display: none; }
+  }
 }
 
 body.school {
 
-    .stickyCheckbox {
+  .stickyCheckbox {
 	display: none;
-    }
+  }
 
-    .stickyCompareLabel {
+  .stickyCompareLabel {
 	display: none;
-    }
+  }
 
-    #infoBar #DownloadMenuModal {
+  #infoBar #DownloadMenuModal {
 	li.csv { display: none; }
-    }
+  }
 }
 
 .cPop_Wrapper {
-    margin-top: 0 !important;
+  margin-top: 0 !important;
 
-    .jqg-second-row-header {
-        display: none;
-      }
+  .jqg-second-row-header {
+    display: none;
+  }
 
-    #jqgh_gridTable_results\.subject1\.sortedValue,
-    #jqgh_gridTable_results\.subject2\.sortedValue,{
+  #jqgh_gridTable_results\.subject1\.sortedValue,
+  #jqgh_gridTable_results\.subject2\.sortedValue,{
 	font-size: 13px;
-    }
+  }
 
-    .barContainer.default{
+  .barContainer.default{
 	margin-left: 15px;
 
 	.populationBar {
-	    width: 265px;
+	  width: 265px;
 
-	    .progress {
+	  .progress {
 		width: 265px;
 
 		.percentageOnBar {
-		    display: block;
+		  display: block;
 		}
-	    }
+	  }
 	}
 
 	.alignmentLine {
-	    display: none;
+	  display: none;
 	}
 
 	.leftPercentageTotal, .rightPercentageTotal {
-	    display: none;
+	  display: none;
 	}
 
-    }
+  }
 
-    .barContainer.alignment {
+  .barContainer.alignment {
 	margin-left: 60px;
 
 	.populationBar {
-	    width: 215px;
+	  width: 215px;
 
-	    .progress {
+	  .progress {
 		width: 145px;
 
 		.percentageOnBar {
-		    display: none;
+		  display: none;
 		}
-	    }
+	  }
 	}
 
 	.alignmentLine {
-	    display: block;
+	  display: block;
 	}
 
 	.leftPercentageTotal, .rightPercentageTotal {
-	    display: block;
+	  display: block;
 	}
 
-    }
+  }
 
-    .barContainer {
+  .barContainer {
 	position: relative;
 
-    }
+  }
 
   .totalPop{
     padding-right:17px;
@@ -132,20 +132,20 @@ body.school {
   .ui-jqgrid tr.footrow td:nth-child(4){ border-right: transparent; }
 
   .popover {
-      max-width: 100% !important;
+    max-width: 100% !important;
 
-      .popover-content {
-          padding: 8px 17px 0px 17px;
+    .popover-content {
+      padding: 8px 17px 0px 17px;
 
-          li {
-              padding-left: 10px;
-              padding-right: 10px;
-          }
+      li {
+        padding-left: 10px;
+        padding-right: 10px;
       }
+    }
   }
 }
 
 
 #cpopFilter, #losFilter {
-    position: relative;
+  position: relative;
 }

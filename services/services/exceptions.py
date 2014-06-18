@@ -20,5 +20,5 @@ class PdfGenerationError(ServicesError):
     '''
     a custom exception raised when a pdf generation failed
     '''
-    def __init__(self):
-        self.msg = 'Pdf Generation failed'
+    def __init__(self, msg='Pdf Generation failed'):
+        self.msg = msg

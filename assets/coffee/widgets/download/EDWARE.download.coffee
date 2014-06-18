@@ -5,6 +5,8 @@ define [
   "moment"
   "text!CSVOptionsTemplate"
   "text!DownloadMenuTemplate"
+  "text!PDFOptionsTemplate"
+  "text!PDFSuccessTemplate"
   "edwareConstants"
   "edwareClientStorage"
   "edwarePreferences"
@@ -13,7 +15,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareEvents) ->
+], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, PDFSuccessTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -277,6 +279,82 @@ define [
       $('#CSVModal').edwareModal
         keepLastFocus: true
 
+
+  class PDFModal
+
+    constructor: (@container, @config) ->
+      self = this
+      loadingLanguage = edwareDataProxy.getDatafromSource "../data/languages.json"
+      loadingLanguage.done (data)->
+        languages = for key, value of data.languages
+          { key:key, value: value }
+        self.initialize languages
+        self.bindEvents()
+        self.show()
+
+    initialize: (languages) ->
+      output = Mustache.to_html PDFOptionsTemplate,
+        labels: @config.labels
+        languages: languages
+      @container.html output
+
+    bindEvents: () ->
+      self = this
+      $('#bulkprint').on 'click', ->
+        $(this).attr('disabled', 'disabled')
+        self.sendPDFRequest()
+
+      # check English by default
+      $('input#en').attr('checked', 'checked')
+
+    getParams: () ->
+      params = edwarePreferences.getFilters()
+      asmt = edwarePreferences.getAsmtPreference()
+      # backend expects asmt grades as a list
+      grade = params['asmtGrade']
+      if grade
+        params['asmtGrade'] = [ grade ]
+      else
+        params['asmtGrade'] = undefined
+      params["effectiveDate"] = asmt.effectiveDate
+      params["asmtType"] = asmt.asmtType
+      params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
+
+      language = @container.find('input[name="language"]:checked').val()
+      # color or grayscale
+      mode = @container.find('input[name="color"]:checked').val()
+      params["lang"] = language
+      params["mode"] = mode
+      params
+
+    sendPDFRequest: () ->
+      params = @config.getReportParams()
+      params = $.extend(@getParams(), params)
+      request = edwareDataProxy.sendBulkPDFRequest params
+      request.done @showSuccessMessage.bind(this)
+      request.fail @showFailureMessage.bind(this)
+
+    showFailureMessage: () ->
+      $('#bulkprint').removeAttr('disabled')
+
+    showSuccessMessage: (response) ->
+      @hide()
+      download_url = response["download_url"]
+      $('#PDFSuccessContainer').html Mustache.to_html PDFSuccessTemplate, {
+        labels: @config.labels
+        download_url: download_url
+      }
+      $('#PDFSuccessModal').edwareModal
+        keepLastFocus: true
+
+    show: () ->
+      $('#PDFModal').edwareModal
+        keepLastFocus: true
+
+    hide: () ->
+      $('#bulkprint').removeAttr('disabled')
+      $('#PDFModal').edwareModal('hide')
+
   class DownloadMenu
 
     constructor: (@container, @config) ->
@@ -295,6 +373,7 @@ define [
         file: this.downloadAsFile
         csv: this.sendCSVRequest
         extract: this.sendExtractRequest
+        pdf: this.printPDF
 
     show: () ->
       $('#DownloadMenuModal').edwareModal()
@@ -347,6 +426,10 @@ define [
         # display file download options
         CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), CSVOptions
         CSVDownload.show()
+
+    printPDF: () ->
+      @PDFOptionsModal ?= new PDFModal $('.PrintContainer'), @config
+      @PDFOptionsModal.show()
 
     fetchData = (params)->
       options =

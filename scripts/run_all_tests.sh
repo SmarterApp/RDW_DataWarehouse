@@ -94,6 +94,22 @@ echo
 cd ../../../edworker/edworker/tests
 nosetests
 
+# Perform Services tests
+echo
+echo
+echo Services tests
+echo
+cd ../../../services/services/tests
+nosetests
+
+# Perform Smarter tests
+echo
+echo
+echo Smarter tests
+echo
+cd ../../../smarter/smarter/tests
+nosetests
+
 # Return to scripts directory
 cd ../../../scripts
 
@@ -103,3 +119,4 @@ echo
 echo
 echo Testing Complete
 echo
+

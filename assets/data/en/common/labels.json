@@ -26,22 +26,40 @@
         "districts": "Districts",
         "district_selected": "District Selected",
         "districts_selected": "Districts Selected",
+        "download_from": "Download from",
         "effective_date": "Effective Date",
         "error_bands": "Error Bands",
         "error_band": "Error Band",
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
         "export_csv_options": "CSV File Download Options",
-        "export_download_curr_view": "Download current view as CSV",
-        "export_download_raw_view": "Download raw data as CSV",
-        "export_label": "Export",
-        "export_request_extract": "Request state data as bulk extract",
+        "export_pdf_options": "Student Report Options",
+        "export_pdf_success": "Your requested reports will be available soon.",
+        "export_bulk_pdf": {
+            "text": "Printable student reports (PDF)",
+            "desc": "Download individual reports for students in this school. The download will reflect active filters and selections."
+        },
+        "export_download_curr_view": {
+            "text": "Current view (CSV)",
+            "desc": "Download the current view as a CSV. The download will reflect active filters and selections."
+        },
+        "export_download_raw_view": {
+            "text": "Student assessment results (CSV)",
+            "desc": "Download summative results for all students in this school."
+        },
+        "export_label": "Download",
+        "export_request_extract": {
+            "text": "State-level reports & extracts",
+            "desc": "Download registration reports and XML extracts."
+        },
         "export_request_files": "Request Files",
+        "export_pdf_files": "Generate Reports",
         "filter": "Filter",
         "filterd_by": "Filtered by",
         "filtered_percentage_of_total": "Filtered Percentage of Total",
         "filtered_student_count": "Filtered Student Count",
         "find": "Find",
         "find_out_more": "Find out more",
+        "generate_pdf_reports": "Generating Requested Reports",
         "grade": "Grade",
         "grayscale": "Grayscale",
         "grayscale_message": "use for black & white printing",
@@ -69,6 +87,7 @@
         "notes": "Notes",
         "off": "Off",
         "on": "On",
+        "ok": "OK",
         "outside_error_band": "Outside Error Band",
         "overall_score": "Overall Score",
         "overall_score_details": "Overall Score Details",

@@ -126,12 +126,12 @@ def generate_data_files(root_dir, state_code, asmt, students, verbose, raw, item
         if raw:
             raw_file_name = (str(student['guid']) + '.xml')
             raw_file_path = os.path.join(dir_path, raw_file_name)
-            with open(raw_file_path, 'w') as xml_file:
-                root = ET.Element("root")
-                student_node = ET.SubElement(root, "student")
-                student_node.set("guid", str(student['guid']))
-                tree = ET.ElementTree(root)
-                tree.write(raw_file_path)
+            #with open(raw_file_path, 'w') as xml_file:
+            root = ET.Element("root")
+            student_node = ET.SubElement(root, "student")
+            student_node.set("guid", str(student['guid']))
+            tree = ET.ElementTree(root)
+            tree.write(raw_file_path)
             if verbose:
                 print(os.path.join(dir_path, raw_file_name))
 

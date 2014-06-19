@@ -20,7 +20,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             dim_inst_hier = connector.get_table("dim_inst_hier")
 
             # check number of field in the table
-            self.assertEqual(11, len(dim_inst_hier.c), "Number of fields in dim_district")
+            self.assertEqual(10, len(dim_inst_hier.c), "Number of fields in dim_district")
 
             query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
             result = connector.get_result(query)
@@ -33,7 +33,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             dim_inst_hier = connector.get_table("dim_inst_hier")
 
             # check number of field in the table
-            self.assertEqual(11, len(dim_inst_hier.c), "Number of fields in dim_district")
+            self.assertEqual(10, len(dim_inst_hier.c), "Number of fields in dim_district")
 
             query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
             results = connector.get_streaming_result(query, fetch_size=1)
@@ -58,7 +58,7 @@ class TestEdMetadata(Unittest_with_sqlite):
             fact_student_reg = connector.get_table("student_reg")
 
             # Check number of fields in the table
-            self.assertEqual(40, len(fact_student_reg.c), "Number of fields in student_registration")
+            self.assertEqual(39, len(fact_student_reg.c), "Number of fields in student_registration")
 
     def test_meta_column_col_type_attr(self):
         meta_column = MetaColumn('test_meta_column', String(50))

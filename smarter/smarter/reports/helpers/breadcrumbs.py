@@ -11,6 +11,60 @@ from sqlalchemy.sql import and_, select
 from smarter.reports.helpers.constants import Constants
 from edcore.database.edcore_connector import EdCoreDBConnection
 
+STATE_NAMES = {
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DE': 'Delaware',
+    'DC': 'District of Columbia',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming'
+}
+
 
 def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None, tenant=None):
     '''
@@ -25,8 +79,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
             # Limit result count to one
             # We limit the results to one since we'll get multiple rows with the same values
             # Think of the case of querying for state name and id, we'll get all the schools in that state
-            query = select([dim_inst_hier.c.state_name.label(Constants.STATE_NAME),
-                            dim_inst_hier.c.state_code.label(Constants.STATE_CODE),
+            query = select([dim_inst_hier.c.state_code.label(Constants.STATE_CODE),
                             dim_inst_hier.c.district_name.label(Constants.DISTRICT_NAME),
                             dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME)],
                            from_obj=[dim_inst_hier], limit=1)
@@ -45,7 +98,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
     if results:
         result = results[0]
         # return an hierarchical ordered list
-        formatted_results.append({'type': 'state', 'name': result[Constants.STATE_NAME], 'id': result[Constants.STATE_CODE]})
+        formatted_results.append({'type': 'state', 'name': STATE_NAMES[result[Constants.STATE_CODE]], 'id': result[Constants.STATE_CODE]})
         if district_guid is not None:
             formatted_results.append({'type': 'district', 'name': result[Constants.DISTRICT_NAME], 'id': district_guid})
             if school_guid is not None:

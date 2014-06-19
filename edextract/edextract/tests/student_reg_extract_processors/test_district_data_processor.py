@@ -14,10 +14,10 @@ from unittest.mock import MagicMock
 class TestDistrictDataProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
+        self.results = {AttributeFieldConstants.STATE_CODE: 'NC',
                         AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County'}
 
-        self.matched_ids_results = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC',
+        self.matched_ids_results = {AttributeFieldConstants.STATE_CODE: 'NC',
                                     AttributeFieldConstants.DISTRICT_GUID: 'GUILFORD_GUID', AttributeFieldConstants.DISTRICT_NAME: 'Guilford County',
                                     'prev_district_guid': 'GUILFORD_GUID'}
 
@@ -28,7 +28,7 @@ class TestDistrictDataProcessor(unittest.TestCase):
     def test_ed_org_map_updates(self):
         self.district_data_processor.process_yearly_data(self.results)
         self.assertEquals(len(self.district_data_processor.get_ed_org_hierarchy()), 1)
-        self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('North Carolina', 'Guilford County', ''): 'GUILFORD_GUID'})
+        self.assertDictEqual(self.district_data_processor.get_ed_org_hierarchy(), {('NC', 'Guilford County', ''): 'GUILFORD_GUID'})
 
     def test_call_to_tracker(self):
         self.district_data_processor._call_academic_year_trackers = MagicMock(return_value=None)

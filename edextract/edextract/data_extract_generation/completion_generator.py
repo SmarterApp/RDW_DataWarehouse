@@ -22,7 +22,7 @@ def get_tracker_results(report_map, trackers, current_year):
     for key, val in report_map.items():
 
         for tracker in trackers:
-            state_name, district_name, school_name, category, value = get_row_identifiers(key, tracker)
+            state_code, district_name, school_name, category, value = get_row_identifiers(key, tracker)
 
             entry_data = tracker.get_map_entry(val)
             current_year_count = summ_math_count = summ_ela_count = int_comp_math_count = int_comp_ela_count = 0
@@ -33,7 +33,7 @@ def get_tracker_results(report_map, trackers, current_year):
                 int_comp_math_count = entry_data.get((AssessmentType.INTERIM_COMPREHENSIVE, AssessmentSubject.MATH), 0)
                 int_comp_ela_count = entry_data.get((AssessmentType.INTERIM_COMPREHENSIVE, AssessmentSubject.ELA), 0)
 
-            row = [state_name, district_name, school_name, category, value] + _generate_data_row(current_year_count, summ_math_count,
+            row = [state_code, district_name, school_name, category, value] + _generate_data_row(current_year_count, summ_math_count,
                                                                                                  summ_ela_count, int_comp_math_count,
                                                                                                  int_comp_ela_count)
 

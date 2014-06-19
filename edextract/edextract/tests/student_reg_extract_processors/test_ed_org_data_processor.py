@@ -21,7 +21,7 @@ class TestEdOrgDataProcessor(unittest.TestCase):
         EdOrgDataProcessor.__abstractmethods__ = set()  # Make this class instantiable for these tests only.
         self.data_processor = EdOrgDataProcessor(self.category_tracker, {})
 
-        self.data = {AttributeFieldConstants.STATE_NAME: 'North Carolina', AttributeFieldConstants.STATE_CODE: 'NC'}
+        self.data = {AttributeFieldConstants.STATE_CODE: 'NC'}
 
     def test_call_tracker(self):
         self.data_processor._call_academic_year_trackers('123', self.data)

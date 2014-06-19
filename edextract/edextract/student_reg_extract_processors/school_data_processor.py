@@ -18,7 +18,7 @@ class SchoolDataProcessor(EdOrgDataProcessor):
 
     def process_yearly_data(self, data_row):
         self._call_academic_year_trackers(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row)
-        self._add_to_edorg_hierarchy(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row[AttributeFieldConstants.STATE_NAME],
+        self._add_to_edorg_hierarchy(data_row[AttributeFieldConstants.SCHOOL_GUID], data_row[AttributeFieldConstants.STATE_CODE],
                                      data_row[AttributeFieldConstants.DISTRICT_NAME], data_row[AttributeFieldConstants.SCHOOL_NAME])
 
     def process_matched_ids_data(self, data_row):

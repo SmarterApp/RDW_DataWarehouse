@@ -4,7 +4,6 @@ __author__ = 'npandey'
 class AttributeFieldConstants():
 
     ACADEMIC_YEAR = 'academic_year'
-    STATE_NAME = 'state_name'
     DISTRICT_NAME = 'district_name'
     SCHOOL_NAME = 'school_name'
     STATE_CODE = 'state_code'

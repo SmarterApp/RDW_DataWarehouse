@@ -58,10 +58,6 @@ def update_state(tenant, state_code, state_name):
         for table in tables:
             stmt = update(table).values(state_code=state_code)
             connection.execute(stmt)
-        state_name_tables = [dim_inst_hier, fact_student_reg]
-        for table in state_name_tables:
-            state_name_stmt = update(table).values(state_name=state_name)
-            connection.execute(state_name_stmt)
 
 
 def update_aca_year(tenant):

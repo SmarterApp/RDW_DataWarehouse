@@ -54,7 +54,6 @@ ref_table_conf = {
         ('1', 'lz_json', 'Identification.Year', 'int_sbac_asmt', 'year', None, "to_number({value},'9999')"),
         ('1', 'lz_json', 'Identification.EffectiveDate', 'int_sbac_asmt', 'effective_date', 'clean', None),
         # CSV to staging
-        ('1', 'lz_csv', 'StateName', 'stg_sbac_asmt_outcome', 'StateName', 'clean', None),
         ('1', 'lz_csv', 'StateAbbreviation', 'stg_sbac_asmt_outcome', 'StateAbbreviation', 'cleanUpper', None),
         ('1', 'lz_csv', 'ResponsibleDistrictIdentifier', 'stg_sbac_asmt_outcome', 'ResponsibleDistrictIdentifier', 'clean', None),
         ('1', 'lz_csv', 'OrganizationName', 'stg_sbac_asmt_outcome', 'OrganizationName', 'clean', None),
@@ -131,7 +130,6 @@ ref_table_conf = {
         ('3', 'stg_sbac_asmt_outcome', 'record_sid', 'int_sbac_asmt_outcome', 'record_sid', None, None),
         ('3', 'stg_sbac_asmt_outcome', 'guid_batch', 'int_sbac_asmt_outcome', 'guid_batch', None, None),
         ('3', 'stg_sbac_asmt_outcome', 'Op', 'int_sbac_asmt_outcome', 'op', None, None),
-        ('3', 'stg_sbac_asmt_outcome', 'StateName', 'int_sbac_asmt_outcome', 'name_state', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'StateAbbreviation', 'int_sbac_asmt_outcome', 'code_state', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'ResponsibleDistrictIdentifier', 'int_sbac_asmt_outcome', 'guid_district', None, 'substr({src_column}, 1, {length})'),
         ('3', 'stg_sbac_asmt_outcome', 'OrganizationName', 'int_sbac_asmt_outcome', 'name_district', None, 'substr({src_column}, 1, {length})'),
@@ -261,7 +259,6 @@ ref_table_conf = {
         ('4', 'int_sbac_asmt', 'guid_batch', 'dim_asmt', 'batch_guid', None, None),
         ('4', 'int_sbac_asmt_outcome', 'record_sid', 'dim_inst_hier', 'inst_hier_rec_id', None, None),
         ('4', 'int_sbac_asmt_outcome', 'code_state', 'dim_inst_hier', 'state_code', None, None),
-        ('4', 'int_sbac_asmt_outcome', 'name_state', 'dim_inst_hier', 'state_name', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_district', 'dim_inst_hier', 'district_guid', None, None),
         ('4', 'int_sbac_asmt_outcome', 'name_district', 'dim_inst_hier', 'district_name', None, None),
         ('4', 'int_sbac_asmt_outcome', 'guid_school', 'dim_inst_hier', 'school_guid', None, None),

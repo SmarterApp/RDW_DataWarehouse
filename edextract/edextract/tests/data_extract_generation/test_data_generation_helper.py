@@ -72,11 +72,11 @@ class TestDataGenerationHelper(unittest.TestCase):
 
     def test_get_row_identifiers(self):
         # New Jersey state Central Regional district LEP Status row.
-        key = EdOrgNameKey(state_name='New Jersey', district_name='Central Regional', school_name='')
+        key = EdOrgNameKey(state_code='NJ', district_name='Central Regional', school_name='')
         tracker = LEPStatusTracker()
-        state_name, district_name, school_name, category, value = get_row_identifiers(key, tracker)
+        state_code, district_name, school_name, category, value = get_row_identifiers(key, tracker)
 
-        self.assertEqual('New Jersey', state_name)
+        self.assertEqual('NJ', state_code)
         self.assertEqual('Central Regional', district_name)
         self.assertEqual('ALL', school_name)
         self.assertEqual('Program', category)

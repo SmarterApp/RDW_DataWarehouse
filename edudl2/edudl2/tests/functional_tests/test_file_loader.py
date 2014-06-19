@@ -129,7 +129,7 @@ class FileLoaderFTest(UDLTestHelper):
         self.load_config('studentregistration')
         self.conf[mk.ROW_START] = 124
         self.conf[mk.GUID_BATCH] = self.generate_non_exsisting_guid_batch()
-        self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('student_registraticon_data/test_stu_reg_before_stored_proc.csv')
+        self.conf[mk.FILE_TO_LOAD] = self.get_csv_file('student_registration_data/test_stu_reg_before_stored_proc.csv')
         self.conf[mk.APPLY_RULES] = True
         load_file(self.conf)
 

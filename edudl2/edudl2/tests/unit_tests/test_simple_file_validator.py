@@ -26,12 +26,12 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         results = validator.execute(self.data_dir,
                                     'test_data_latest/'
                                     'REALDATA_ASMT_ID_f1451acb-72fc-43e4-b459-3227d52a5da0.csv', 1)
-        self.assertEqual(len(results), 0)
+        self.assertEqual(len(results), 1)
 
     def test_simple_file_validator_passes_for_valid_student_reg_csv(self):
         validator = simple_file_validator.SimpleFileValidator('studentregistration')
         results = validator.execute(self.data_dir, 'student_registration_data/test_sample_student_reg.csv', 1)
-        self.assertEqual(len(results), 0)
+        self.assertEqual(len(results), 1)
 
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator('assessment')

@@ -44,5 +44,4 @@ def get_resource_dir(dir_name):
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'resources', 'importer', dir_name))
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

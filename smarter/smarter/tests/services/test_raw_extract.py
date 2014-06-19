@@ -1,8 +1,5 @@
-"""
-Created on May 8, 2014
+__author__ = 'sravi'
 
-@author: nestep
-"""
 import unittest
 import zipfile
 import tempfile
@@ -21,8 +18,8 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
 from edextract.celery import setup_celery
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter.extracts.constants import Constants
-from smarter.services.item_extract import post_item_extract_service, get_item_extract_service,\
-    generate_zip_file_name, send_extraction_request
+from smarter.services.raw_extract import post_raw_data_service, get_raw_data_service, generate_zip_file_name, \
+    send_extraction_request
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 import smarter.extracts.format
 from edauth.tests.test_helper.create_session import create_test_session
@@ -31,7 +28,7 @@ from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 
 
-class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
+class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
     @classmethod
     def setUpClass(cls):
@@ -70,55 +67,51 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request = None
         testing.tearDown()
 
-    def test_post_valid_response_tenant_extract(self):
+    def test_post_valid_response_raw_extract(self):
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': 'NC',
                                     'asmtYear': '2018',
                                     'asmtType': 'SUMMATIVE',
                                     'asmtSubject': 'Math',
                                     'asmtGrade': '3',
-                                    'extractType': 'itemLevel',
+                                    'extractType': 'rawData',
                                     'async': 'true'}
-        results = post_item_extract_service(None, self.__request)
+        results = post_raw_data_service(None, self.__request)
         self.assertIsInstance(results, Response)
         self.assertEqual(len(results.json_body['tasks']), 1)
         self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
 
-    def test_get_missing_param_tenant_extract(self):
+    def test_get_valid_response_raw_extract(self):
+        self.__request.GET['stateCode'] = 'NC'
+        self.__request.GET['asmtYear'] = '2016'
+        self.__request.GET['asmtType'] = 'SUMMATIVE'
+        self.__request.GET['asmtSubject'] = 'Math'
+        self.__request.GET['asmtGrade'] = '3'
+        self.__request.GET['extractType'] = 'rawData'
+        response = get_raw_data_service(None, self.__request)
+        self.assertIsInstance(response, Response)
+        self.assertEqual(response.content_type, 'application/octet-stream')
+
+    def test_get_missing_param_raw_extract(self):
         """Missing asmtYear"""
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
+        self.__request.GET['extractType'] = 'rawData'
         self.__request.GET['async'] = 'true'
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_item_extract_service)
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_raw_data_service)
 
-    def test_get_invalid_param_tenant_extract(self):
+    def test_get_invalid_param_raw_extract(self):
         """asmtYear has letters"""
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '201a'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
+        self.__request.GET['extractType'] = 'rawData'
         self.__request.GET['async'] = 'true'
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_item_extract_service)
-
-    def test_post_valid_response_failed_task_tenant_extract(self):
-        """Data not available"""
-        self.__request.GET['stateCode'] = 'NC'
-        self.__request.GET['asmtYear'] = '2010'
-        self.__request.GET['asmtType'] = 'SUMMATIVE'
-        self.__request.GET['asmtSubject'] = 'Math'
-        self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        self.__request.GET['async'] = 'true'
-        results = get_item_extract_service(None, self.__request)
-        self.assertIsInstance(results, Response)
-        tasks = results.json_body['tasks']
-        self.assertEqual(len(tasks), 1)
-        self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_raw_data_service)
 
     def test_generate_zip_file_name(self):
         params = {'stateCode': 'NC',
@@ -127,14 +120,14 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '6'}
         name = generate_zip_file_name(params)
-        self.assertIn('ITEMS_NC_2016_SUMMATIVE_MATH_GRADE_6', name)
+        self.assertIn('RAW_NC_2016_SUMMATIVE_MATH_GRADE_6', name)
 
     def test_post_invalid_payload(self):
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_item_extract_service)
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_raw_data_service)
 
     def test_post_post_invalid_param(self):
         self.__request.json_body = {}
-        self.assertRaises(EdApiHTTPPreconditionFailed, post_item_extract_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, post_raw_data_service, self.__request)
 
     def test_get_invalid_param(self):
         """Letter in asmtGrade"""
@@ -143,42 +136,19 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmyType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3b'
-        self.assertRaises(EdApiHTTPPreconditionFailed, get_item_extract_service)
-
-    def test_get_extract_service(self):
-        self.__request.GET['stateCode'] = 'NC'
-        self.__request.GET['asmtYear'] = '2016'
-        self.__request.GET['asmtType'] = 'SUMMATIVE'
-        self.__request.GET['asmtSubject'] = 'Math'
-        self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        response = get_item_extract_service(None, self.__request)
-        self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
-
-    def test_post_extract_service(self):
-        self.__request.method = 'POST'
-        self.__request.json_body = {'stateCode': 'NC',
-                                    'asmtYear': '2015',
-                                    'asmtType': 'SUMMATIVE',
-                                    'asmtSubject': 'Math',
-                                    'asmtGrade': '3',
-                                    'extractType': 'itemLevel'}
-        response = post_item_extract_service(None, self.__request)
-        self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/octet-stream')
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_raw_data_service)
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
-    def test_get_valid_tenant_extract(self, register_file_patch):
+    def test_get_valid_raw_extract(self, register_file_patch):
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2015'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
+        self.__request.GET['extractType'] = 'rawData'
         self.__request.GET['async'] = 'true'
-        results = get_item_extract_service(None, self.__request)
+        results = get_raw_data_service(None, self.__request)
         self.assertIsInstance(results, Response)
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
@@ -186,7 +156,7 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', results.json_body['download_url'])
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
-    def test_post_valid_tenant_extract(self, register_file_patch):
+    def test_post_valid_raw_extract(self, register_file_patch):
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': 'NC',
@@ -194,9 +164,9 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
                                     'asmtType': 'SUMMATIVE',
                                     'asmtSubject': 'Math',
                                     'asmtGrade': '3',
-                                    'extractType': 'itemLevel',
+                                    'extractType': 'rawData',
                                     'async': 'true'}
-        response = post_item_extract_service(None, self.__request)
+        response = post_raw_data_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/json')
         tasks = response.json_body['tasks']
@@ -210,18 +180,18 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
-        response = get_item_extract_service(None, self.__request)
+        self.__request.GET['extractType'] = 'rawData'
+        response = get_raw_data_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')
 
-    def test_send_extraction_requesttest_get_extract_service(self):
+    def test_send_extraction_request_sync(self):
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
+        self.__request.GET['extractType'] = 'rawData'
         response = send_extraction_request(self.__request.GET)
         content_type = response._headerlist[0]
         self.assertEqual(content_type[1], "application/octet-stream")
@@ -232,19 +202,19 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             tmpfile.seek(0)
             myzipfile = zipfile.ZipFile(tmpfile)
             filelist = myzipfile.namelist()
-            self.assertEqual(1, len(filelist))
+            self.assertEqual(21, len(filelist))
             tested = True
         self.assertTrue(tested)
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
-    def test_send_extraction_requesttest_get_extract_service_async(self, register_file_patch):
+    def test_send_extraction_request_async(self, register_file_patch):
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2015'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
         self.__request.GET['asmtSubject'] = 'Math'
         self.__request.GET['asmtGrade'] = '3'
-        self.__request.GET['extractType'] = 'itemLevel'
+        self.__request.GET['extractType'] = 'rawData'
         self.__request.GET['async'] = 'true'
         response = send_extraction_request(self.__request.GET)
         content_type = response._headerlist[0]
@@ -253,5 +223,4 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

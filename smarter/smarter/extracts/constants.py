@@ -10,6 +10,7 @@ class ExtractType():
     studentRegistrationStatistics = 'studentRegistrationStatistics'
     studentRegistrationCompletion = 'studentRegistrationCompletion'
     itemLevel = 'itemLevel'
+    rawData = 'rawData'
 
 
 class ReportType():

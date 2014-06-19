@@ -29,6 +29,9 @@ def includeme(config):
     # Add extract for item level data
     config.add_route('assessment_item_level', '/services/extract/assessment_item_level')
 
+    # Add extract for raw xml data
+    config.add_route('raw_data', '/services/extract/raw_data')
+
     # Add extract for student registration statistics
     config.add_route('student_registration_statistics', '/services/extract/student_registration_statistics')
 

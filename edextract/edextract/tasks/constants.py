@@ -11,6 +11,7 @@ class ExtractionDataType():
     QUERY_CSV = 'QueryCSVExtract'
     QUERY_JSON = 'QueryJSONExtract'
     QUERY_ITEMS_CSV = 'QueryItemsCSVExtract'
+    QUERY_RAW_XML = 'QueryRawXML'
 
 
 class Constants():
@@ -29,6 +30,7 @@ class Constants():
     EXTRACTION_DATA_TYPE = 'extraction_data_type'
     ROOT_DIRECTORY = 'root_directory'
     ITEM_IDS = 'item_ids'
+    DIRECTORY_TO_ARCHIVE = 'directory_to_archive'
 
 
 class QueryType():

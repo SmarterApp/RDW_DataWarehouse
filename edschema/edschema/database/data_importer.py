@@ -161,10 +161,12 @@ def load_fact_asmt_outcome(datasource_name=''):
     @param datasource_name: the data source name
     @type datasource_name: string
     '''
-    return True
     __success = False
     with DBConnection(name=datasource_name) as connection:
         metadata = connection.get_metadata()
+        tables = [t.name for t in metadata.sorted_tables]
+        if "fact_asmt_outcome" not in tables:
+            return True
         fao = metadata.schema + ".fact_asmt_outcome" if metadata.schema is not None else "fact_asmt_outcome"
         fao_vw = metadata.schema + ".fact_asmt_outcome_vw" if metadata.schema is not None else "fact_asmt_outcome_vw"
         # Look through metadata and upload available imports with the same and and ext csv

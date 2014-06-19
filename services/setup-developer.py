@@ -10,7 +10,8 @@ dependencies = [
     'edworker',
     'edcore',
     'edauth',
-    'edschema']
+    'edschema',
+    'hpz_client']
 
 
 for dependency in dependencies:

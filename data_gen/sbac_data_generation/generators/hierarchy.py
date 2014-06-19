@@ -48,6 +48,8 @@ def generate_district(district_type, state: SBACState, id_gen):
     # Run the general generator
     d = general_hier_gen.generate_district(district_type, state, sub_class=SBACDistrict)
 
+    if random.random() < sbac_config.STUDENT_GROUPING_RATE:
+        d.student_grouping = True
     # Set the SR guid
     d.guid_sr = id_gen.get_sr_uuid()
 

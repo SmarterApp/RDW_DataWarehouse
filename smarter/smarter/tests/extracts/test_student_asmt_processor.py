@@ -13,11 +13,12 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extracts.student_asmt_processor import process_async_extraction_request, \
-    process_async_item_extraction_request, get_items_extract_file_path, \
-    get_extract_file_path, process_sync_extract_request, process_sync_item_extract_request, \
+    process_async_item_or_raw_extraction_request, get_items_extract_file_path, \
+    get_extract_file_path, process_sync_extract_request, process_sync_item_or_raw_extract_request, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
     _create_tasks_with_responses
+from smarter.extracts.constants import ExtractType
 from edapi.exceptions import NotFoundException
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edextract.celery import setup_celery
@@ -89,10 +90,11 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        results = process_async_item_extraction_request(params)
-        tasks = results['tasks']
-        self.assertEqual(len(tasks), 1)
-        self.assertEqual(tasks[0]['status'], 'fail')
+        for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
+            results = process_async_item_or_raw_extraction_request(params, extract_type=extract_type)
+            tasks = results['tasks']
+            self.assertEqual(len(tasks), 1)
+            self.assertEqual(tasks[0]['status'], 'fail')
 
     def test_get_file_name_tenant_level(self):
         params = {'stateCode': 'CA',
@@ -195,7 +197,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
                   'asmtGrade': '3'}
-        self.assertRaises(NotFoundException, process_sync_item_extract_request, params)
+        for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
+            self.assertRaises(NotFoundException, process_sync_item_or_raw_extract_request, params, extract_type)
 
     def test_process_sync_items_extraction_request_with_subject(self):
         params = {'stateCode': 'NC',
@@ -203,8 +206,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'ELA',
                   'asmtGrade': '3'}
-        zip_data = process_sync_item_extract_request(params)
-        self.assertIsNotNone(zip_data)
+
+        for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
+            zip_data = process_sync_item_or_raw_extract_request(params, extract_type)
+            self.assertIsNotNone(zip_data)
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_process_async_items_extraction_request_with_subject(self, register_file_patch):
@@ -214,11 +219,12 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'ELA',
                   'asmtGrade': '3'}
-        response = process_async_item_extraction_request(params)
-        self.assertIn('.zip', response['fileName'])
-        self.assertNotIn('.gpg', response['fileName'])
-        self.assertEqual(response['tasks'][0]['status'], 'ok')
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
+        for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
+            response = process_async_item_or_raw_extraction_request(params, extract_type)
+            self.assertIn('.zip', response['fileName'])
+            self.assertNotIn('.gpg', response['fileName'])
+            self.assertEqual(response['tasks'][0]['status'], 'ok')
+            self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
 
     def test___prepare_data(self):
         params = {'stateCode': 'NC',
@@ -385,7 +391,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'UUUU',
                   'asmtGrade': '5'}
         user = User()
-        task = _create_new_task('request_id', user, 'tenant', params, query, item_level=True, is_tenant_level=True)
+        task = _create_new_task('request_id', user, 'tenant', params, query, extract_type=ExtractType.itemLevel, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_ITEMS_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
 

@@ -7,7 +7,7 @@ Created on Mar 21, 2014
 from sqlalchemy.sql.expression import Select, Alias
 from sqlalchemy import Table
 
-#TODO: good place for it
+# TODO: good place for it
 NATURAL_KEY_ATTR = 'natural_key'
 META_COLUMN = 'MetaColumn'
 

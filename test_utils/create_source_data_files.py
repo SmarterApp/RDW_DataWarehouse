@@ -126,12 +126,12 @@ def generate_data_files(root_dir, state_code, asmt, students, verbose, raw, item
         if raw:
             raw_file_name = (str(student['guid']) + '.xml')
             raw_file_path = os.path.join(dir_path, raw_file_name)
-            with open(raw_file_path, 'w') as xml_file:
-                root = ET.Element("root")
-                student_node = ET.SubElement(root, "student")
-                student_node.set("guid", str(student['guid']))
-                tree = ET.ElementTree(root)
-                tree.write(raw_file_path)
+            #with open(raw_file_path, 'w') as xml_file:
+            root = ET.Element("root")
+            student_node = ET.SubElement(root, "student")
+            student_node.set("guid", str(student['guid']))
+            tree = ET.ElementTree(root)
+            tree.write(raw_file_path)
             if verbose:
                 print(os.path.join(dir_path, raw_file_name))
 
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--raw', help='Raw XML data', action='store_true', default=False)
     parser.add_argument('-c', '--config', help='Set the path to ini file')
     parser.add_argument('-t', '--tenant', help='Tenant to import data to', default='cat')
-    parser.add_argument('-o', '--outDir', help='Root directory to place files', default='/opt/edware/item_level')
+    parser.add_argument('-o', '--outDir', help='Root directory to place files')
     parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true', default=False)
     args = parser.parse_args()
 
@@ -151,6 +151,9 @@ if __name__ == '__main__':
     __tenant = args.tenant
     __out_dir = args.outDir
     __verbose = args.verbose
+
+    if __out_dir is None:
+        __out_dir = '/opt/edware/item_level' if __item else '/opt/edware/raw_data' if __raw else None
 
     if not __raw and not __item:
         raise argparse.ArgumentError('--raw or --item option needed')

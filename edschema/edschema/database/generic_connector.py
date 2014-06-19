@@ -40,7 +40,7 @@ def setup_db_connection_from_ini(settings, prefix, metadata_func, datasource_nam
             pass
         finally:
             connection.close()
-        #issue CREATEs only for tables that are not present
+        # issue CREATEs only for tables that are not present
         metadata.create_all(bind=engine, checkfirst=True)
 
     # zope registration

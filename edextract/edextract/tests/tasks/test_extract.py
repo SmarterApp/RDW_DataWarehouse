@@ -7,6 +7,7 @@ Created on Nov 7, 2013
 import unittest
 from unittest.mock import patch
 
+import glob
 import tempfile
 import os
 import shutil
@@ -18,16 +19,16 @@ from collections import OrderedDict
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from edcore.tests.utils.unittest_with_edcore_sqlite import (Unittest_with_edcore_sqlite, UnittestEdcoreDBConnection,
                                                             get_unittest_tenant_name)
-from sqlalchemy.sql.expression import select
 from edextract.celery import setup_celery
 from edextract.status.constants import Constants
+from sqlalchemy.sql.expression import and_, select
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
 from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
 from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_stream,
-                                     remote_copy, prepare_path)
+                                     remote_copy, prepare_path, generate_item_or_raw_extract_file)
 from edcore.exceptions import RemoteCopyError
 
 
@@ -346,6 +347,112 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(tasks_group, group)
         self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentRegistrationCompletionReportCSV'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
 
+    def test_generate_extract_file_tasks_for_item_level_extract_request(self):
+        # Have to use OrderedDict here to ensure order in results.
+        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_ITEMS_CSV),
+                              (TaskConstants.TASK_FILE_NAME, 'abc'),
+                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'q1')])),
+                              (TaskConstants.TASK_TASK_ID, 'abc')])]
+
+        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
+        self.assertIsInstance(tasks_group, group)
+        self.assertEqual("tasks.extract.generate_item_or_raw_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryItemsCSVExtract'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
+
+    def test_generate_extract_file_tasks_for_raw_data_extract_request(self):
+        # Have to use OrderedDict here to ensure order in results.
+        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_RAW_XML),
+                              (TaskConstants.TASK_FILE_NAME, 'abc'),
+                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'q1')])),
+                              (TaskConstants.TASK_TASK_ID, 'abc')])]
+
+        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
+
+        self.assertIsInstance(tasks_group, group)
+        self.assertEqual("tasks.extract.generate_item_or_raw_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryRawXML'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
+
+    def test_generate_raw_extract_with_missing_output_dir(self):
+        output_dir = '/tmp/xyz'
+        task = {
+            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_RAW_XML,
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.TASK_FILE_NAME: '/tmp/abc',
+            TaskConstants.TASK_QUERIES: {QueryType.QUERY: 'query'}
+        }
+
+        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
+
+        self.assertRaises(ExtractionError, result.get,)
+
+    def test_generate_raw_extract_file_valid_case(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3'}
+        query = self.__create_item_raw_extract_query(params)
+        root_dir = tempfile.mkdtemp()
+        output_dir = tempfile.mkdtemp(dir=root_dir)
+        task = {
+            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_RAW_XML,
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.TASK_FILE_NAME: '',
+            TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
+            TaskConstants.ROOT_DIRECTORY: root_dir
+        }
+
+        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
+        result.get()
+
+        self.assertTrue(os.path.exists(output_dir))
+        all_extracted_files = glob.glob(os.path.join(output_dir, '*.xml'))
+        self.assertEqual(len(all_extracted_files), 0)
+
+    def test_generate_item_extract_file_valid_case(self):
+        params = {'stateCode': 'NC',
+                  'asmtYear': '2015',
+                  'asmtType': 'SUMMATIVE',
+                  'asmtSubject': 'Math',
+                  'asmtGrade': '3'}
+        query = self.__create_item_raw_extract_query(params)
+        root_dir = tempfile.mkdtemp()
+        output_dir = tempfile.mkdtemp(dir=root_dir)
+        output_file = os.path.join(output_dir, 'items_output.csv')
+        task = {
+            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_ITEMS_CSV,
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.TASK_FILE_NAME: output_file,
+            TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
+            TaskConstants.ROOT_DIRECTORY: root_dir,
+            TaskConstants.ITEM_IDS: None
+        }
+
+        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
+        result.get()
+        self.assertTrue(os.path.exists(output_file))
+        with open(output_file) as f:
+            line = f.readline()
+            header = line.split(',')
+            self.assertEqual(len(header), 18)
+            self.assertTrue('key' in header)
+
+    def test_generate_item_extract_with_missing_output_file(self):
+        output_dir = '/tmp/xyz'
+        task = {
+            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_ITEMS_CSV,
+            TaskConstants.TASK_TASK_ID: 'task_id',
+            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
+            TaskConstants.TASK_FILE_NAME: '/tmp/items_xyz.csv',
+            TaskConstants.TASK_QUERIES: {QueryType.QUERY: 'query'}
+        }
+
+        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
+
+        self.assertRaises(ExtractionError, result.get,)
+
     @patch('edextract.tasks.extract.insert_extract_stats')
     @patch('edextract.tasks.extract.http_file_upload')
     def test_remote_copy_success(self, file_upload_patch, insert_stats_patch):
@@ -404,6 +511,28 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         prepare_path.apply(args=["id", [tmp_dir]]).get()
 
         self.assertTrue(os.path.exists(tmp_dir))
+
+    def __create_item_raw_extract_query(self, params):
+        with UnittestEdcoreDBConnection() as connection:
+            dim_asmt = connection.get_table('dim_asmt')
+            fact_asmt_outcome_vw = connection.get_table('fact_asmt_outcome_vw')
+            query = select([fact_asmt_outcome_vw.c.state_code,
+                            fact_asmt_outcome_vw.c.asmt_year,
+                            fact_asmt_outcome_vw.c.asmt_type,
+                            dim_asmt.c.effective_date,
+                            fact_asmt_outcome_vw.c.asmt_subject,
+                            fact_asmt_outcome_vw.c.asmt_grade,
+                            fact_asmt_outcome_vw.c.district_guid,
+                            fact_asmt_outcome_vw.c.student_guid],
+                           from_obj=[fact_asmt_outcome_vw
+                                     .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))])
+
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == params['asmtYear']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == params['asmtType']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == params['asmtSubject']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == params['asmtGrade']))
+            query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == 'C'))
+            return query
 
 
 if __name__ == "__main__":

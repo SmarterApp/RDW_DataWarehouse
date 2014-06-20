@@ -28,18 +28,12 @@ common:
         http_only: true
         # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
         #max_age: 2400
-        # Maximum number of seconds which a newly issued ticket will be considered valid
-        timeout: 1200
-        # Session expiration time
-      session:
-        timeout: 1200
       idp:
         metadata: ../../resource/idp_metadata.xml
       skip.verify: False
       saml:
         identity_parser: smarter_common.security.sbac_identity_parser.SbacIdentityParser
     cache:
-      expire: 3600
       lock_dir: /tmp/memcache
       public:
         data:
@@ -49,8 +43,6 @@ common:
         shortlived:
             expire: 7776000
       regions: public.data, public.filtered_data, public.shortlived, session
-      session:
-        expire: 1200
       type:
        memory
     ldap:
@@ -119,6 +111,14 @@ development:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:80/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+      session:
+        timeout: 1200
+      policy:
+        timeout: 1200
+    cache:
+      expire: 3600
+      session:
+        expire: 1200
 
 jenkins_dev:
   '[app:main]':
@@ -132,15 +132,21 @@ jenkins_dev:
         file_size_limit: 4294967296
         download_base_url: http://edwappsrv1.poc.dum.edwdc.net:81/download
     auth:
-        saml:
-          idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-          idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-          name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
-          issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net:81'
+      session:
+        timeout: 1200
+      policy:
+        timeout: 1200
     cache:
       session:
         url: edwappsrv2.poc.dum.edwdc.net:11211
+        expire: 1200
       type: ext:memcached
+      expire: 3600
 
 qa:
   '[app:main]':
@@ -154,13 +160,17 @@ qa:
         file_size_limit: 4294967296
         download_base_url: https://hpzweb0.qa.dum.edwdc.net/download
     auth:
-        idp:
-          metadata: /opt/edware/conf/idp_metadata.xml
-        saml:
-          issuer_name: https://hpzweb0.qa.dum.edwdc.net
-          idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-          idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-          name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
+      saml:
+        issuer_name: https://hpzweb0.qa.dum.edwdc.net
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
+      session:
+        timeout: 7200
+      policy:
+        timeout: 7200
     cache:
       public:
         shortlived:
@@ -172,4 +182,6 @@ qa:
             url: dwcache0.qa.dum.edwdc.net:11211
       session:
         url: dwcache0.qa.dum.edwdc.net:11211
+        expire: 7200
       type: ext:memcached
+      expire: 7200

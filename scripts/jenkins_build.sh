@@ -326,6 +326,9 @@ function import_data_from_csv {
 
     echo "Generate Item Level Data"
     python create_source_data_files.py --item --config ${WORKSPACE}/config/data_copy.ini
+ 
+ 	echo "Generate Raw Data"
+ 	python create_source_data_files.py --raw --config ${WORKSPACE}/config/data_copy.ini
 }
 
 function build_rpm {

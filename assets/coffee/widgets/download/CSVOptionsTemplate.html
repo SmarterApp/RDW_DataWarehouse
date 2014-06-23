@@ -1,11 +1,11 @@
 <div id="CSVModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h2 id="myModalLabel">{{labels.export_csv_options}}</h2>
+        <h2 id="myModalLabel">{{options.export_csv_options}}</h2>
     </div>
     <div class="modal-body">
         <div id="message">
-            <p>{{labels.export_availability_msg}}</p>
+            <p>{{options.export_availability_msg}}</p>
         </div>
         <table class='csv_options_table'>
             {{#extractType}}
@@ -116,7 +116,7 @@
         </table>
     </div>
     <div class="modal-footer">
-        <button class="btn edware-btn-primary">{{labels.export_request_files}}</button>
+        <button class="btn edware-btn-primary">{{options.export_request_files}}</button>
     </div>
 
     <script type="text/template" id="ErrorMessageTemplate">

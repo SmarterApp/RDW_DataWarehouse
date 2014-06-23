@@ -26,32 +26,11 @@
         "districts": "Distritos",
         "district_selected": "Distrito seleccionado",
         "districts_selected": "Distritos seleccionados",
+        "download_from": "Download from",
         "effective_date": "Fecha de vigencia",
         "error_bands": "Márgenes de error",
         "error_band": "Margen de error",
-        "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
-        "export_csv_options": "CSV File Download Options",
-        "export_pdf_options": "Student Report Options",
-        "export_pdf_success": "Your requested reports will be available soon.",
-        "export_bulk_pdf": {
-            "text": "Printable student reports (PDF)",
-            "desc": "Download individual reports for students in this school. The download will reflect active filters and selections."
-        },
-        "export_download_curr_view": {
-            "text": "Current view (CSV)",
-            "desc": "Download the current view as a CSV. The download will reflect active filters and selections."
-        },
-        "export_download_raw_view": {
-            "text": "Student assessment results (CSV)",
-            "desc": "Download summative results for all students in this school."
-        },
         "export_label": "Download",
-        "export_request_extract": {
-            "text": "State-level reports & extracts",
-            "desc": "Download registration reports and XML extracts."
-        },
-        "export_request_files": "Request Files",
-        "export_pdf_files": "Generate Reports",
         "feedback": "Retroalimentación",
         "filter": "Filtro",
         "filterd_by": "Filtrado según",
@@ -59,7 +38,6 @@
         "filtered_student_count": "Filtrado según la cantidad de estudiantes",
         "find": "Find",
         "find_out_more": "Saber más",
-        "generate_pdf_reports": "Generating Requested Reports",
         "grade": "Grado",
         "grayscale": "Escala de grises",
         "grayscale_message": "Usar para imprimir en blanco y negro",

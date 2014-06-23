@@ -229,6 +229,7 @@ define [
         reportInfoText: @config.reportInfo
         labels: @labels
         CSVOptions: @config.CSVOptions
+        ExportOptions: @config.ExportOptions
         param: @param
         academicYears:
           options: @academicYears

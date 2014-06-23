@@ -7,6 +7,7 @@ define [
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
   "text!PDFSuccessTemplate"
+  "text!PDFNoDataTemplate"
   "edwareConstants"
   "edwareClientStorage"
   "edwarePreferences"
@@ -15,7 +16,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, PDFSuccessTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, PDFSuccessTemplate, PDFNoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -51,6 +52,7 @@ define [
         studentRegAcademicYear: this.config['studentRegAcademicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
+        options: this.config.ExportOptions
       }
       this.container.html output
       this.message = $('#message', this.container)
@@ -296,6 +298,7 @@ define [
       output = Mustache.to_html PDFOptionsTemplate,
         labels: @config.labels
         languages: languages
+        options: @config.ExportOptions
       @container.html output
 
     bindEvents: () ->
@@ -342,6 +345,7 @@ define [
       download_url = response["download_url"]
       $('#PDFSuccessContainer').html Mustache.to_html PDFSuccessTemplate, {
         labels: @config.labels
+        options: @config.ExportOptions
         download_url: download_url
       }
       $('#PDFSuccessModal').edwareModal
@@ -367,6 +371,7 @@ define [
     initialize: (@container) ->
       output = Mustache.to_html DownloadMenuTemplate, {
         labels: this.config['labels']
+        options: this.config.ExportOptions
       }
       $(@container).html output
       this.eventHandler =
@@ -414,6 +419,7 @@ define [
     sendCSVRequest: () ->
       CSVOptions = @config.CSVOptions
       CSVOptions.labels = @config.labels
+      CSVOptions.ExportOptions = @config.ExportOptions
       # construct CSVDownload modal
       loadingData = fetchData @config.param
       loadingData.done (data)->
@@ -428,8 +434,22 @@ define [
         CSVDownload.show()
 
     printPDF: () ->
-      @PDFOptionsModal ?= new PDFModal $('.PrintContainer'), @config
-      @PDFOptionsModal.show()
+      hasData = $('#gridTable').text() isnt ''
+      if not hasData
+        # display warning message and stop
+        @displayWarningMessage()
+      else
+        @PDFOptionsModal ?= new PDFModal $('.PrintContainer'), @config
+        @PDFOptionsModal.show()
+
+    displayWarningMessage: () ->
+      output = Mustache.to_html PDFNoDataTemplate,
+        labels: @config.labels
+        options: @config.ExportOptions
+      $('#PDFFailureContainer').html output
+      $('#PDFFailureModal').edwareModal
+        keepLastFocus: true
+
 
     fetchData = (params)->
       options =

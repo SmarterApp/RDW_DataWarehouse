@@ -180,7 +180,7 @@ define [
       # create key and display text mapping
       configMap = {}
       for key, value of this.config
-        if key isnt 'labels'
+        if key isnt 'labels' and key isnt 'ExportOptions'
           for option in value.options
             configMap[option.value] = option.display
       for key, value of item

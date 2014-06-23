@@ -927,7 +927,7 @@ jenkins_int:
 
 jenkins_dev:
   '[app:main]':
-  	smarter.PATH: /opt/pdfunite/bin/
+    smarter.PATH: /opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4

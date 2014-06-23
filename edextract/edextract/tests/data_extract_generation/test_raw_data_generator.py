@@ -105,16 +105,16 @@ class TestRawDataGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sqli
             results = connection.get_result(query)
             for result in results:
                 raw_file_relative_path = os.path.join(str(result['state_code']).upper(),
-                                        str(result['asmt_year']), str(result['asmt_type']).upper().replace(' ', '_'),
-                                        str(result['effective_date']), str(result['asmt_subject']).upper(),
-                                        str(result['asmt_grade']), str(result['district_guid']))
+                                                      str(result['asmt_year']), str(result['asmt_type']).upper().replace(' ', '_'),
+                                                      str(result['effective_date']), str(result['asmt_subject']).upper(),
+                                                      str(result['asmt_grade']), str(result['district_guid']))
 
                 raw_file_final_output_path = os.path.join(TestRawDataGenerator.__tmp_raw_dir, raw_file_relative_path)
                 if not os.path.exists(raw_file_final_output_path):
                     os.makedirs(raw_file_final_output_path)
 
-                path_to_xml_file= self.__get_path_to_raw_xml_for_student(TestRawDataGenerator.__tmp_raw_dir,
-                                                                         raw_file_relative_path, result)
+                path_to_xml_file = self.__get_path_to_raw_xml_for_student(TestRawDataGenerator.__tmp_raw_dir,
+                                                                          raw_file_relative_path, result)
                 root = ET.Element("root")
                 student_node = ET.SubElement(root, "student")
                 student_node.set("guid", str(result['student_guid']))

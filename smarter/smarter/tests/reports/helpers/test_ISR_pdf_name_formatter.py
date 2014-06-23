@@ -49,7 +49,7 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
 
     def test_generate_isr_absolute_file_path_name(self):
         file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_guid='123', school_guid='456', asmt_grade='1', student_guid='1bc-def-ad', asmt_type='SUMMATIVE', effective_date='20120201')
-        self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.g.pdf'))
+        self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.20120201.en.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_for_color(self):
         file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guids='61ec47de-e8b5-4e78-9beb-677c44dd9b50', grayScale=False, lang='jp')

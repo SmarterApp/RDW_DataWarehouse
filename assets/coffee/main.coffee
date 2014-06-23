@@ -94,6 +94,7 @@ require {
     CSVOptionsTemplate: 'widgets/download/CSVOptionsTemplate.html',
     PDFOptionsTemplate: 'widgets/download/PDFOptionsTemplate.html',
     PDFSuccessTemplate: 'widgets/download/PDFSuccessTemplate.html',
+    PDFNoDataTemplate: 'widgets/download/PDFNoDataTemplate.html',
     DownloadMenuTemplate: 'widgets/download/DownloadMenuTemplate.html',
     AsmtDropdownTemplate: 'widgets/asmtDropdown/template.html',
     PrintTemplate: 'widgets/print/template.html',

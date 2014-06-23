@@ -1,20 +1,20 @@
 <div id="PDFModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h2 id="PDFModalTitle">{{labels.export_pdf_options}}</h2>
+        <h2 id="PDFModalTitle">{{options.export_pdf_options.title}}</h2>
     </div>
     <div class="modal-body">
         <ul>
             <li>
                 <label>
                     <input name="color" type="radio" value="gray" checked/>
-                    <span class="padLeft10">Grayscale (for black & white printing)</span>
+                    <span class="padLeft10">{{options.export_pdf_options.grayscale}}</span>
                 </label>
             </li>
             <li>
                 <label>
                     <input name="color" type="radio" value="color"/>
-                    <span class="padLeft10">Color</span>
+                    <span class="padLeft10">{{options.export_pdf_options.color}}</span>
                 </label>
             </li>
         </ul>
@@ -31,6 +31,6 @@
         </ul>
     </div>
     <div class="modal-footer">
-        <button id="bulkprint" class="btn edware-btn-primary">{{labels.export_pdf_files}}</button>
+        <button id="bulkprint" class="btn edware-btn-primary">{{options.export_pdf_files}}</button>
     </div>
 </div>

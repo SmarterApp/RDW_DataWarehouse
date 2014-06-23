@@ -33,7 +33,7 @@ define [
       url += 'studentGuid=' + params['studentGuid']
       url += '&stateCode=' + params['stateCode']
       url += '&pdf=true'
-      url += "&grayscale=true" if option is "grayscale"
+      url += "&mode=color" if option is "color"
       url += "&asmtType=" + encodeURI(asmtType) if asmtType
       url += "&lang=" + edwarePreferences.getSelectedLanguage()
       url += "&effectiveDate=" + edwarePreferences.getEffectiveDate()

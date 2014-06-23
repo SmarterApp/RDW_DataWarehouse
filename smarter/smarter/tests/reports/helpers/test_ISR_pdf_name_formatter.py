@@ -42,7 +42,7 @@ class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
     def test_generate_isr_report_path_by_student_guid(self):
         file_name = generate_isr_report_path_by_student_guid('NC', '20160404', pdf_report_base_dir='/', student_guids='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
         self.assertEqual(len(file_name), 1)
-        self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.pdf'))
+        self.assertEqual(file_name['61ec47de-e8b5-4e78-9beb-677c44dd9b50'], os.path.join('/', 'NC', '2016', '228', '242', '4', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.20160404.en.g.pdf'))
 
     def test_generate_isr_report_path_by_student_guid_studentguid_not_exist(self):
         self.assertRaises(NotFoundException, generate_isr_report_path_by_student_guid, 'NC', '20120101', pdf_report_base_dir='/', student_guids='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')

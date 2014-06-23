@@ -10,7 +10,7 @@ from smarter.reports.helpers.filters import _get_filter,\
     FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
     FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN,\
     FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO,\
-    reverse_filter_map, get_student_demographic, FILTERS_GENDER
+    reverse_filter_map, get_student_demographic, FILTERS_SEX
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
     UnittestEdcoreDBConnection
 from smarter.reports.helpers.constants import Constants
@@ -138,7 +138,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         self.assertEqual(dmg[FILTERS_PROGRAM_IEP], YES)
         self.assertEqual(dmg[FILTERS_PROGRAM_504], NO)
         self.assertEqual(dmg[FILTERS_PROGRAM_LEP], NOT_STATED)
-        self.assertEqual(dmg[FILTERS_GENDER], 'M')
+        self.assertEqual(dmg[FILTERS_SEX], 'M')
         self.assertEqual(dmg[FILTERS_ETHNICITY], '4')
 
 if __name__ == "__main__":

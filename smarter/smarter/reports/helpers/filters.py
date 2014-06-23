@@ -33,7 +33,6 @@ FILTERS_SEX_NOT_STATED = 'not_stated'
 FILTERS_GRADE = 'grade'
 FILTERS_ETHNICITY = 'ethnicity'
 FILTERS_SEX = 'sex'
-FILTERS_GENDER = 'gender'
 
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
@@ -176,6 +175,6 @@ def get_student_demographic(result):
     for column in dmg_map.keys():
         demographic[dmg_map.get(column)] = reverse_filter_map.get(result[column])
     demographic[FILTERS_ETHNICITY] = str(result[Constants.DMG_ETH_DERIVED])
-    demographic[FILTERS_GENDER] = result[FILTERS_SEX]
+    demographic[FILTERS_SEX] = result[FILTERS_SEX]
 
     return demographic

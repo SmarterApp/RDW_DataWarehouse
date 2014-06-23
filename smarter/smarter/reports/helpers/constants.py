@@ -85,6 +85,7 @@ class Constants():
     CONTEXT = 'context'
     PARAMS = 'params'
     GRADE = 'Grade'
+    ALLOWSINGLE = 'allowSingle'
     DISPLAY_LEVEL = 'display_level'
     ASMT_PERIOD_YEAR = 'asmt_period_year'
     DMG_ETH_DERIVED = 'dmg_eth_derived'

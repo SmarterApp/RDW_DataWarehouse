@@ -130,6 +130,11 @@ PDF_PARAMS = {
             "minitems": 1,
             "uniqueItems": True,
             "required": False
+        },
+        Constants.ALLOWSINGLE: {
+            "type": "string",
+            "required": False,
+            "pattern": "^(true|false|TRUE|FALSE)$"
         }
     }, FILTERS_CONFIG)
 }
@@ -197,6 +202,7 @@ def get_pdf_content(params):
     color_mode = params.get(Constants.MODE, Constants.GRAY).lower()
     lang = params.get(Constants.LANG, 'en').lower()
     subprocess_timeout = services.celery.TIMEOUT
+    allow_single = bool(params.get(Constants.ALLOWSINGLE, False))
     is_grayscale = (color_mode == Constants.GRAY)
 
     # Validate report type
@@ -228,7 +234,7 @@ def get_pdf_content(params):
     base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
 
-    if student_guids is not None and type(student_guids) is not list:
+    if student_guids is not None and (type(student_guids) is not list or (len(student_guids) == 1 and allow_single)):
         response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids, lang, is_grayscale, always_generate, celery_timeout, params)
     else:
         response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
@@ -238,6 +244,9 @@ def get_pdf_content(params):
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
                            effective_date, asmt_type, student_guid, lang, is_grayscale, always_generate, celery_timeout,
                            params):
+    if type(student_guid) is list:
+        student_guid = student_guid[0]
+
     # Get all file names
     if not _has_context_for_pdf_request(state_code, student_guid):
         raise ForbiddenError('Access Denied')

@@ -258,7 +258,10 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
 
             # for item level the output path is a file and for raw extract the output path is a directory
             # to place all the matching xml files
-            output_path = output_file if extract_type is ExtractionDataType.QUERY_ITEMS_CSV else output_dir
+            if extract_type == ExtractionDataType.QUERY_ITEMS_CSV:
+                output_path = output_file
+            else:
+                output_path = output_dir
             # Extract data to file
             extract_func = get_extract_func(extract_type)
             extract_func(tenant, output_path, task_info, task)

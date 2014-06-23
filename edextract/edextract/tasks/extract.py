@@ -27,7 +27,6 @@ from edextract.data_extract_generation.raw_data_generator import generate_raw_da
 from edextract.data_extract_generation.student_reg_report_generator import generate_statistics_report, generate_completion_report
 from edextract.tasks.constants import ExtractionDataType
 from hpz_client.frs.http_file_upload import http_file_upload
-from smarter.extracts.constants import ExtractType
 
 
 log = logging.getLogger('edextract')

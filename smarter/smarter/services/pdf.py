@@ -3,7 +3,8 @@ Created on May 17, 2013
 
 @author: dip
 '''
-from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup
+from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup,\
+    group_separator
 from urllib.parse import urljoin
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -420,6 +421,7 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
     '''
 
     workflow = chain(group(gen_tasks),
+                     group_separator.subtask(immutable=True),   # @UndefinedVariable
                      group(merge_tasks),
                      archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),  # @UndefinedVariable
                      hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable

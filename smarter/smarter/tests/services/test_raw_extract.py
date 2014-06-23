@@ -26,6 +26,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):

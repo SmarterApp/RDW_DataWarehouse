@@ -196,7 +196,6 @@ def archive(archive_file_name, directory):
     '''
     given a directory, archive everything in this directory to a file name specified
     '''
-
     try:
         prepare_path(archive_file_name)
         archive_files(directory, archive_file_name)
@@ -210,7 +209,6 @@ def hpz_upload_cleanup(src_file_name, registration_id, pdf_base_dir):
     '''
     Remotely copies a source file to a remote machine
     '''
-
     try:
         # Upload to HPZ
         http_file_upload(src_file_name, registration_id)
@@ -230,6 +228,14 @@ def hpz_upload_cleanup(src_file_name, registration_id, pdf_base_dir):
 
     except Exception as e:
         raise RemoteCopyError(str(e))
+
+
+@celery.task(name="tasks.pdf.separator")
+def group_separator():
+    '''
+    A dummy task to separate out a chain of two consecutive groups
+    '''
+    pass
 
 
 def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):

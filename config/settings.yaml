@@ -351,7 +351,7 @@ common:
 qa:
   '[app:main]':
     mode: prod
-    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
+    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@dwqldr0.qa.dum.edwdc.net/services
     migrate.celery:
@@ -518,7 +518,7 @@ jenkins_qa:
 uat:
   '[app:main]':
     mode: prod
-    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
+    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin:/opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net/services
     migrate.celery:
@@ -927,6 +927,7 @@ jenkins_int:
 
 jenkins_dev:
   '[app:main]':
+  	smarter.PATH: /opt/pdfunite/bin/
     services.celery:
       BROKER_URL: amqp://edware:edware1234@edwappsrv1.poc.dum.edwdc.net/services
       CELERYD_CONCURRENCY: 4

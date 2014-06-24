@@ -144,7 +144,7 @@ def prepare_path(path):
     :param string path: Path of the file to create directory for
     '''
     if os.path.exists(os.path.dirname(path)) is not True:
-        os.makedirs(os.path.dirname(path), 0o700)
+        os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
 
 
 def is_valid(path):

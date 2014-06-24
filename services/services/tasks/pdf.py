@@ -110,7 +110,7 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
     return stream
 
 
-@celery.task(name='tasks.pdf.prepare', ignore_result=True)
+@celery.task(name='tasks.pdf.prepare')
 def prepare(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayscale=False, always_generate=False):
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file

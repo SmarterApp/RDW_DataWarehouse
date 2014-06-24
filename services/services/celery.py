@@ -5,6 +5,7 @@ Created on Nov 4, 2013
 '''
 from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
+from hpz_client.frs.config import initialize as initialize_hpz
 
 # default timeout 20 seconds
 TIMEOUT = 20
@@ -49,3 +50,4 @@ celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
     setup_global_settings(conf)
+    initialize_hpz(conf)

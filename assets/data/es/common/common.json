@@ -670,7 +670,7 @@
             "title": "Printable Student Reports",
             "header": "No students.",
             "message": "There are no students in the batch. Please disable active filters and try again."
-        }
+        },
         "export_request_files": "Request Files",
         "export_pdf_files": "Generate Reports",
         "generate_pdf_reports": "Generating Requested Reports"

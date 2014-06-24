@@ -34,15 +34,9 @@ common:
       saml:
         identity_parser: smarter_common.security.sbac_identity_parser.SbacIdentityParser
     cache:
-      lock_dir: /tmp/memcache
-      public:
-        data:
-            expire: 10
-        filtered_data:
-            expire: 15552000
-        shortlived:
-            expire: 7776000
-      regions: public.data, public.filtered_data, public.shortlived, session
+      lock_dir: /tmp/memcachehpz
+      session.expire: 1200
+      regions: session
       type:
        memory
     ldap:
@@ -141,12 +135,6 @@ jenkins_dev:
         timeout: 1200
       policy:
         timeout: 1200
-    cache:
-      session:
-        url: edwappsrv2.poc.dum.edwdc.net:11211
-        expire: 1200
-      type: ext:memcached
-      expire: 3600
 
 qa:
   '[app:main]':

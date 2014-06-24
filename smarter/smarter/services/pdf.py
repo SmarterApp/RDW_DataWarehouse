@@ -226,6 +226,10 @@ def get_pdf_content(params):
     elif asmt_type == AssessmentType.INTERIM_COMPREHENSIVE and effective_date is None:
         raise InvalidParameterError('Required parameter is missing')
 
+    # Verify that PDF is set in the parameters
+    if Constants.PDF not in params:
+        params[Constants.PDF] = True
+
     # Get cookies and other config items
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))

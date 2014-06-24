@@ -323,6 +323,7 @@ define [
       params["asmtType"] = asmt.asmtType
       params["asmtType"] = 'Summative' if asmt.asmtType is undefined
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
+      params["pdf"] = 'True'
 
       language = @container.find('input[name="language"]:checked').val()
       # color or grayscale

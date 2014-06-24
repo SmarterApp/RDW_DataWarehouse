@@ -72,6 +72,10 @@ class SBACAssessmentOutcome(AssessmentOutcome):
     from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
     to_date = DateTimeField(required=True, default=datetime.date(9999, 12, 31))
     item_level_data = ListField(EmbeddedDocumentField(SBACAssessmentOutcomeItemData))
+    group_1_id = StringField(required=False)
+    group_1_text = StringField(required=False)
+    group_2_id = StringField(required=False)
+    group_2_text = StringField(required=False)
 
     def get_object_set(self):
         """

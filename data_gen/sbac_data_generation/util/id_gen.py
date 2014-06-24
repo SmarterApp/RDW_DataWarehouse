@@ -16,6 +16,21 @@ class IDGen():
         self._rec_id_lock = lock
         self._rec_id_dict = rec_dict
         self._rec_id = multiprocessing.Value('i', 100000000000)
+        self._start_grp_id = 100
+        self._grp_id_dict = {}
+
+    def get_group_id(self, type_str):
+        """
+        Get the next integer record ID within the system for the given type string.
+
+        @param type_str: The type string to get a record ID for
+        @returns: Next ID for the given type string
+        """
+        if type_str not in self._grp_id_dict:
+            self._grp_id_dict[type_str] = self._start_grp_id
+        nid = self._grp_id_dict[type_str]
+        self._grp_id_dict[type_str] += 100
+        return nid
 
     def get_rec_id(self, type_str):
         """

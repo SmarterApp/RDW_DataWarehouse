@@ -14,6 +14,7 @@ import sbac_data_generation.generators.hierarchy as hier_gen
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.group import SBACgroup
 from sbac_data_generation.util.id_gen import IDGen
 
 ID_GEN = IDGen()
@@ -69,6 +70,27 @@ def test_generate_school_invalid_type():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     assert_raises(LookupError, hier_gen.generate_school, 'unknown', district, ID_GEN)
+
+
+def test_generate_group():
+    #Create objects
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN)
+    group = hier_gen.generate_group('section_based', school, ID_GEN)
+
+    #Tests
+    assert_is_instance(group, SBACgroup)
+    assert group.school == school
+    assert_regexp_matches(group.guid_sr, SR_GUID_REGEX)
+    assert group.type == 'section_based'
+
+
+def test_generate_group_invalid_type():
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    school = hier_gen.generate_school('High School', district, ID_GEN)
+    assert_raises(LookupError, hier_gen.generate_group,'unknown',school, ID_GEN)
 
 
 def test_generate_school_no_interims():
@@ -163,3 +185,42 @@ def test_set_up_schools_with_grades():
     assert len(schools_with_grades[midl_school_1]) == 3
     assert len(schools_with_grades[midl_school_2]) == 3
     assert len(schools_with_grades[high_school]) == 1
+
+def test_set_up_schools_with_groupings():
+    # Create objects
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school_1 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school_2 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    midl_school_1 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    midl_school_2 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    high_school = hier_gen.generate_school('High School', district, ID_GEN)
+    schools_with_groupings = hier_gen.set_up_schools_with_groupings([elem_school_1, elem_school_2,
+                                                               midl_school_1, midl_school_2, high_school],
+                                                              {3, 4, 5, 6, 7, 8, 11})
+    # Tests
+    assert len(schools_with_groupings) == 5
+    assert len(schools_with_groupings[elem_school_1]) == 3
+    assert len(schools_with_groupings[elem_school_2]) == 3
+    assert len(schools_with_groupings[midl_school_1]) == 3
+    assert len(schools_with_groupings[midl_school_2]) == 3
+    assert len(schools_with_groupings[high_school]) == 1
+
+def test_populate_schools_with_groupings():
+    # Create objects
+    state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
+    district = hier_gen.generate_district('Big Average', state, ID_GEN)
+    elem_school_1 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    elem_school_2 = hier_gen.generate_school('Elementary School', district, ID_GEN)
+    midl_school_1 = hier_gen.generate_school('Middle School', district, ID_GEN)
+    high_school = hier_gen.generate_school('High School', district, ID_GEN)
+    schools_with_groupings = hier_gen.set_up_schools_with_groupings([elem_school_1, elem_school_2,
+                                                               midl_school_1, high_school],
+                                                              {3, 4, 5, 6, 7, 8, 11})
+    pop_school_with_groupings = hier_gen.populate_schools_with_groupings(schools_with_groupings, ID_GEN)
+    # Tests
+    assert len(schools_with_groupings) == 4
+    assert len(schools_with_groupings[elem_school_1]) == 3
+    assert len(schools_with_groupings[elem_school_2]) == 3
+    assert len(schools_with_groupings[midl_school_1]) == 3
+    assert len(schools_with_groupings[high_school]) == 1

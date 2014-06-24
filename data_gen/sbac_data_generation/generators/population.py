@@ -13,6 +13,7 @@ import sbac_data_generation.config.cfg as sbac_in_config
 
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.student import SBACStudent
+from sbac_data_generation.model.teachingstaff import SBACTeachingStaff
 
 
 def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetime.datetime.now().year):
@@ -116,6 +117,73 @@ def repopulate_school_grade(school: SBACSchool, grade, grade_students, id_gen, s
         s.reg_sys = reg_sys
         grade_students.append(s)
 
+
+def assign_student_groups(school, grade, grade_students, schools_with_groupings):
+    """
+    Assign students to groups.
+
+    @param school: The school to assign groupings to.
+    @param grade: The grade in the school to assign groupings to.
+    @param grade_students: The students currently in the grade for this school
+    @param schools_with_groupings: The dict of groups in school by grade, subject and group_type
+    """
+    ela_groups = schools_with_groupings[school][grade]['ELA']
+    math_groups = schools_with_groupings[school][grade]['Math']
+
+    num_tot_groups = len(ela_groups['staff_based'])
+    num_tot_students = len(grade_students)
+    num_students_per_group = int(num_tot_students / num_tot_groups)
+
+    ela_groups_staff_based = ela_groups['staff_based']
+    ela_groups_section_based = ela_groups['section_based']
+    math_groups_staff_based = math_groups['staff_based']
+    math_groups_section_based = math_groups['section_based']
+
+    cur_grp_idx = 0
+    cur_stu_idx = 0
+    students_in_group_cnt = 0
+
+    while cur_stu_idx < len(grade_students):
+        #case when num of students not evenly divide in groups.
+        # Left over students fall in last group.
+        if cur_grp_idx == num_tot_groups:
+                cur_grp_idx -= 1
+        while students_in_group_cnt <= num_students_per_group and cur_stu_idx < num_tot_students:
+            if random.random() < sbac_in_config.ALL_GROUP_RATE:
+                grade_students[cur_stu_idx].ela_group1 = ela_groups_staff_based[cur_grp_idx]
+                grade_students[cur_stu_idx].ela_group2 = ela_groups_section_based[cur_grp_idx]
+                grade_students[cur_stu_idx].math_group1 = math_groups_staff_based[cur_grp_idx]
+                grade_students[cur_stu_idx].math_group2 = math_groups_section_based[cur_grp_idx]
+            else:
+                if random.random() < sbac_in_config.ONE_GROUP_RATE:
+                    grade_students[cur_stu_idx].ela_group1 = ela_groups_staff_based[cur_grp_idx]
+                else:
+                    grade_students[cur_stu_idx].ela_group2 = ela_groups_section_based[cur_grp_idx]
+                if random.random() < sbac_in_config.ONE_GROUP_RATE:
+                    grade_students[cur_stu_idx].math_group1 = math_groups_staff_based[cur_grp_idx]
+                else:
+                    grade_students[cur_stu_idx].math_group2 = math_groups_section_based[cur_grp_idx]
+            cur_stu_idx += 1
+            students_in_group_cnt += 1
+        students_in_group_cnt = 0
+        cur_grp_idx += 1
+
+
+def generate_teaching_staff_member(school: SBACSchool, id_gen):
+    """
+    Generate a teaching_staff for the given school.
+
+    @param school: School for which staff to generate
+    @param id_gen: ID generator
+    @returns: The staff_member
+    """
+    # Run the general generator
+    s = general_pop_gen.generate_teaching_staff_member(school, SBACTeachingStaff)
+
+    # Set the SR guid
+    s.guid_sr = id_gen.get_sr_uuid()
+
+    return s
 
 def _generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):
     """

@@ -9,12 +9,14 @@ import random
 
 import data_generation.generators.hierarchy as general_hier_gen
 import sbac_data_generation.config.cfg as sbac_config
+import sbac_data_generation.generators.population as sbac_pop_gen
 
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.institutionhierarchy import InstitutionHierarchy
 from sbac_data_generation.model.registrationsystem import SBACRegistrationSystem
 from sbac_data_generation.model.school import SBACSchool
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.group import SBACgroup
 
 
 def generate_state(state_type, name, code, id_gen):
@@ -122,6 +124,30 @@ def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, sch
 
     return ih
 
+def generate_group(group_type, school: SBACSchool, id_gen):
+    """
+    Generate a group of given group_type and school
+    @param group_type: Type of group
+    @param id_gen: ID generator
+    @returns: A group object
+    """
+    if group_type not in sbac_config.GROUP_TYPE:
+        raise LookupError("Group type '" + str(group_type) + "' was not found")
+
+    g = SBACgroup()
+    g.type = group_type
+    g.guid_sr = id_gen.get_sr_uuid()
+    g.school = school
+    g.id = id_gen.get_group_id('group')
+
+    if group_type == 'section_based':
+        g.name = "Homeroom " + str(g.id)
+    elif group_type == 'staff_based':
+        #create a teacher object
+        staff = sbac_pop_gen.generate_teaching_staff_member(school, id_gen)
+        g.name = staff.name
+
+    return g
 
 def sort_schools_by_grade(schools):
     """
@@ -152,3 +178,43 @@ def set_up_schools_with_grades(schools, grades_of_concern):
         grades_for_school = grades_of_concern.intersection(school.config['grades'])
         schools_with_grades[school] = dict(zip(grades_for_school, [[] for _ in range(len(grades_for_school))]))
     return schools_with_grades
+
+def populate_schools_with_groupings(schools_with_groupings, id_gen):
+    """
+    Populate a dictionary of groups that associates each school with the concerned grades,
+    subject and groups that a given school has.
+
+    @param schools_with_groupings: Dictionary of schools to dictionary of grades, subject and grouping
+    @param id_gen: ID generator
+    """
+
+    for school, grades in schools_with_groupings.items():
+        num_groups = school.student_count_avg / sbac_config.STUDENTS_PER_GROUP
+        for grade, subjects in grades.items():
+            for subject, groups in subjects.items():
+                for group_type, group_list in groups.items():
+                    for i in range(int(num_groups)):
+                        g = generate_group(group_type, school, id_gen)
+                        group_list.append(g)
+    return schools_with_groupings
+
+def set_up_schools_with_groupings(schools, grades_of_concern):
+    """
+    Build a dictionary that associates each school with the concerned grades,
+    subject and empty dict of groups that a given school has.
+
+    @param schools: Schools to set up
+    @param grades_of_concern: The overall set of grades that we are concerned with
+    @returns: Dictionary of schools to dictionary of grades, subject and empty groupings
+    """
+    schools_with_groupings = {}
+    for school in schools:
+        grade_sub_groups = {}
+        grades_for_school = grades_of_concern.intersection(school.config['grades'])
+
+        for grade in grades_for_school:
+            group_types = dict(zip(sbac_config.GROUP_TYPE, [[] for _ in range(len(sbac_config.GROUP_TYPE))]))
+            grade_sub_groups[grade] = dict(zip(sbac_config.SUBJECTS, [dict(zip(sbac_config.GROUP_TYPE, [list() for _ in range(len(sbac_config.GROUP_TYPE))])) for _ in range(len(sbac_config.SUBJECTS))]))
+        schools_with_groupings[school] = grade_sub_groups
+
+    return schools_with_groupings

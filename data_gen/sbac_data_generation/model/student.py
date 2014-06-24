@@ -11,6 +11,7 @@ from data_generation.model.student import Student
 from sbac_data_generation.model.district import SBACDistrict
 from sbac_data_generation.model.registrationsystem import SBACRegistrationSystem
 from sbac_data_generation.model.state import SBACState
+from sbac_data_generation.model.group import SBACgroup
 
 
 class SBACStudent(Student):
@@ -35,6 +36,10 @@ class SBACStudent(Student):
     prg_lep_exit_date = DateTimeField(required=False)
     prg_primary_disability = StringField(required=False, max_length=30)
     derived_demographic = IntField(required=False)
+    ela_group1 = ReferenceField(SBACgroup, required=False)
+    ela_group2 = ReferenceField(SBACgroup, required=False)
+    math_group1 = ReferenceField(SBACgroup, required=False)
+    math_group2 = ReferenceField(SBACgroup, required=False)
 
     def get_object_set(self):
         """Get the set of objects that this exposes to a CSV or JSON writer.

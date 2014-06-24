@@ -471,6 +471,11 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
     # Sort the schools
     schools_by_grade = sbac_hier_gen.sort_schools_by_grade(schools)
 
+    # Student grouping is enabled for district using Student_grouping_rate
+    if district.student_grouping:
+        schools_with_groupings = sbac_hier_gen.set_up_schools_with_groupings(schools, GRADES_OF_CONCERN)
+        pop_schools_with_groupings = sbac_hier_gen.populate_schools_with_groupings(schools_with_groupings, id_gen)
+
     # Begin processing the years for data
     unique_students = {}
     students = {}
@@ -509,6 +514,9 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
                 sbac_pop_gen.repopulate_school_grade(school, grade, grade_students, id_gen, state, rg_sys_year,
                                                      asmt_year)
                 student_count += len(grade_students)
+
+                if district.student_grouping:
+                    sbac_pop_gen.assign_student_groups(school, grade, grade_students, pop_schools_with_groupings)
 
                 # Create assessment results for this year if requested
                 if asmt_year in ASMT_YEARS:

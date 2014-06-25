@@ -398,7 +398,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         base_url = 'http://foo.com/foo'
         params = {}
         result = _create_student_pdf_url(student_guid, base_url, params)
-        self.assertEqual('http://foo.com/foo?studentGuid=1-2-3-4-5', result)
+        self.assertEqual('http://foo.com/foo?pdf=True&studentGuid=1-2-3-4-5', result)
         params = {'abc': 'ef'}
         result = _create_student_pdf_url(student_guid, base_url, params)
         self.assertTrue('abc=ef' in result)
@@ -432,7 +432,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         baseURL = 'http://foo.com/abc'
         url = _create_urls_by_student_guid(studentGuid, 'NC', baseURL, {})
-        self.assertEqual('http://foo.com/abc?studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be', url['a5ddfe12-740d-4487-9179-de70f6ac33be'])
+        self.assertEqual('http://foo.com/abc?pdf=True&studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be', url['a5ddfe12-740d-4487-9179-de70f6ac33be'])
 
     @patch('smarter.services.pdf._get_archive_name')
     @patch('smarter.services.pdf._start_bulk')

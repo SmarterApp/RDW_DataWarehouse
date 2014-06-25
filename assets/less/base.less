@@ -150,7 +150,8 @@ hr {
   background-color: @from;
   background-image: -webkit-linear-gradient(top, @from 0%, @to 100%);
   background-image:    -moz-linear-gradient(top, @from 0%, @to 100%);
-  background-image:      -ms-gradient(to bottom, @from 0%, @to 100%);
+  background-image:      -ms-linear-gradient(top, @from 0%, @to 100%) !important;
+  background-image:      -ms-gradient(top, @from 0%, @to 100%) !important;
   background-image:      -o-linear-gradient(top, @from 0%, @to 100%);
   background-image:         linear-gradient(top, @from 0%, @to 100%);
 }

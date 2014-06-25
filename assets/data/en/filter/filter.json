@@ -153,6 +153,38 @@
                     "value": "NS"
                 }
             ]
+        },
+        {
+            "display" : "Economic Disadvantage",
+            "tag" : "Economic Disadvantage",
+            "name" : "dmgStsEcd",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                }
+            ]
+        },
+        {
+            "display" : "Migrant Status",
+            "tag" : "Migrant Status",
+            "name" : "dmgStsMig",
+            "options" : [
+                {
+                    "label" : "Yes",
+                    "value" : "Y"
+                },{
+                    "label" : "No",
+                    "value" : "N"
+                },
+                {
+                    "label": "Not Stated",
+                    "value": "NS"
+                }
+            ]
         }
     ],
     "group_template" : {

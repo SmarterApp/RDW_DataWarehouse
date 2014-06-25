@@ -233,6 +233,7 @@ def get_list_of_students(params):
                                     fact_asmt_outcome_vw.c.dmg_prg_lep.label('dmg_prg_lep'),
                                     fact_asmt_outcome_vw.c.dmg_prg_504.label('dmg_prg_504'),
                                     fact_asmt_outcome_vw.c.dmg_sts_ecd.label('dmg_sts_ecd'),
+                                    fact_asmt_outcome_vw.c.dmg_sts_mig.label('dmg_sts_mig'),
                                     fact_asmt_outcome_vw.c.sex.label('sex'),
                                     # grouping information
                                     fact_asmt_outcome_vw.c.group_1_id.label('group_1_id'),

@@ -73,7 +73,7 @@ def create_item_pools(assessments):
     """Create item pools for each assessment"""
     for asmt in assessments:
         pool = []
-        for _ in range(200):
+        for _ in range(300):
             pool.append({'key': uuid.uuid4(), 'client': uuid.uuid4(),
                          'type': random.choice(['MC', 'MS', 'graphicGapMatchInteraction', 'EQ']),
                          'segment': '(SBAC)SBAC-MG110PT-S3-' + str(asmt['subject']).upper()})
@@ -110,13 +110,14 @@ def generate_data_files(root_dir, state_code, asmt, students, verbose, raw, item
 
         if item:
             # Select items from the pool
-            items = random.sample(asmt['item_pool'], 100)
+            items = random.sample(asmt['item_pool'], 135)
+
             # Create file
             item_file_name = (str(student['guid']) + '.csv')
             item_file_path = os.path.join(dir_path, item_file_name)
             with open(item_file_path, 'w') as csv_file:
                 csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-                for i in range(100):
+                for i in range(len(items)):
                     item = items[i]
                     csv_writer.writerow([item['key'], student['guid'], item['segment'], i, item['client'], 1, 1,
                                          item['type'], 0, 1, '2013-04-03T16:21:33.660', 1, 'MA-Undesignated',
@@ -126,14 +127,9 @@ def generate_data_files(root_dir, state_code, asmt, students, verbose, raw, item
         if raw:
             raw_file_name = (str(student['guid']) + '.xml')
             raw_file_path = os.path.join(dir_path, raw_file_name)
-            #with open(raw_file_path, 'w') as xml_file:
-            root = ET.Element("root")
-            student_node = ET.SubElement(root, "student")
-            student_node.set("guid", str(student['guid']))
-            tree = ET.ElementTree(root)
-            tree.write(raw_file_path)
-            if verbose:
-                print(os.path.join(dir_path, raw_file_name))
+            with open(raw_file_path, 'w') as raw_file:
+                for _ in range(20000):
+                    raw_file.write('aaaaaaaaaaaaaaa')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Item level CSV/Source Raw XML')

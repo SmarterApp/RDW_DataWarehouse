@@ -322,7 +322,6 @@ define [
       params["effectiveDate"] = asmt.effectiveDate
       params["asmtType"] = asmt.asmtType || 'Summative'
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
-      params["pdf"] = 'true'
 
       language = @container.find('input[name="language"]:checked').val()
       # color or grayscale

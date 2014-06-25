@@ -21,6 +21,7 @@ def test_rec_id():
     assert_is_instance(id, int)
     assert id == 100000000000
 
+
 def test_group_id():
     idg = IDGen()
     id = idg.get_group_id('some_object_type')
@@ -34,10 +35,11 @@ def test_rec_id_from_two_types():
     assert idg.get_group_id('some_object_type_2') == 100
 
 
-def test_rec_id_from_two_types():
+def test_rec_id_from_two_types_bigger():
     idg = IDGen()
     assert idg.get_rec_id('some_object_type_1') == 100000000000
     assert idg.get_rec_id('some_object_type_2') == 100000000000
+
 
 def test_guid():
     idg = IDGen()

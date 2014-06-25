@@ -21,13 +21,14 @@ GUID_REGEX = '[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}'
 SR_GUID_REGEX = '[a-f0-9]{30}'
 EXT_GUID_REGEX = GUID_REGEX + 'ext'
 
+
 def test_generate_staff():
     state = hier_gen.generate_state('devel', 'Example State', 'ES', ID_GEN)
     district = hier_gen.generate_district('Big Average', state, ID_GEN)
     school = hier_gen.generate_school('High School', district, ID_GEN, interim_asmt_rate=1)
     staff = pop_gen.generate_teaching_staff_member(school, ID_GEN)
 
-    #Tests
+    # Tests
     assert_is_instance(staff, SBACTeachingStaff)
     assert_regexp_matches(staff.guid_sr, SR_GUID_REGEX)
 

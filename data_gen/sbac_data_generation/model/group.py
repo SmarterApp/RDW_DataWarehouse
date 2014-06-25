@@ -18,5 +18,3 @@ class SBACgroup(Document):
     school = ReferenceField(SBACSchool, required=True)
     id = IntField(required=True)
     name = StringField(required=True)
-
-

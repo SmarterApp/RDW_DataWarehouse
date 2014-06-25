@@ -144,7 +144,7 @@ def assign_student_groups(school, grade, grade_students, schools_with_groupings)
     students_in_group_cnt = 0
 
     while cur_stu_idx < len(grade_students):
-        #case when num of students not evenly divide in groups.
+        # Case when num of students not evenly divide in groups.
         # Left over students fall in last group.
         if cur_grp_idx == num_tot_groups:
                 cur_grp_idx -= 1
@@ -184,6 +184,7 @@ def generate_teaching_staff_member(school: SBACSchool, id_gen):
     s.guid_sr = id_gen.get_sr_uuid()
 
     return s
+
 
 def _generate_date_enter_us_school(grade, acad_year=datetime.datetime.now().year):
     """

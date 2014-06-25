@@ -124,6 +124,7 @@ def generate_institution_hierarchy(state: SBACState, district: SBACDistrict, sch
 
     return ih
 
+
 def generate_group(group_type, school: SBACSchool, id_gen):
     """
     Generate a group of given group_type and school
@@ -143,11 +144,12 @@ def generate_group(group_type, school: SBACSchool, id_gen):
     if group_type == 'section_based':
         g.name = "Homeroom " + str(g.id)
     elif group_type == 'staff_based':
-        #create a teacher object
+        # Create a teacher object
         staff = sbac_pop_gen.generate_teaching_staff_member(school, id_gen)
         g.name = staff.name
 
     return g
+
 
 def sort_schools_by_grade(schools):
     """
@@ -179,6 +181,7 @@ def set_up_schools_with_grades(schools, grades_of_concern):
         schools_with_grades[school] = dict(zip(grades_for_school, [[] for _ in range(len(grades_for_school))]))
     return schools_with_grades
 
+
 def populate_schools_with_groupings(schools_with_groupings, id_gen):
     """
     Populate a dictionary of groups that associates each school with the concerned grades,
@@ -197,6 +200,7 @@ def populate_schools_with_groupings(schools_with_groupings, id_gen):
                         g = generate_group(group_type, school, id_gen)
                         group_list.append(g)
     return schools_with_groupings
+
 
 def set_up_schools_with_groupings(schools, grades_of_concern):
     """

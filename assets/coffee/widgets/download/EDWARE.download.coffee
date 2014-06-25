@@ -320,10 +320,8 @@ define [
       else
         params['asmtGrade'] = undefined
       params["effectiveDate"] = asmt.effectiveDate
-      params["asmtType"] = asmt.asmtType
-      params["asmtType"] = 'Summative' if asmt.asmtType is undefined
+      params["asmtType"] = asmt.asmtType || 'Summative'
       params["asmtYear"] = edwarePreferences.getAsmtYearPreference()
-      params["pdf"] = 'True'
 
       language = @container.find('input[name="language"]:checked').val()
       # color or grayscale

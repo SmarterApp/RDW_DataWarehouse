@@ -102,11 +102,6 @@ PDF_PARAMS = {
             "required": False,
             "pattern": "^[a-z]{2}$",
         },
-        # Constants.PDF: {
-        #     "type": "string",
-        #     "required": False,
-        #     "pattern": "^(true|false|TRUE|FALSE)$",
-        # },
         Constants.SL: {
             "type": "string",
             "required": False,
@@ -409,8 +404,7 @@ def _has_context_for_pdf_request(state_code, student_guid):
 
 def _create_student_pdf_url(student_guid, base_url, params):
     params[Constants.STUDENTGUID] = student_guid
-    # Verify that PDF is set in the parameters
-    # params[Constants.PDF] = "true"
+    params[Constants.PDF] = True
     encoded_params = urllib.parse.urlencode(params)
     return base_url + "?%s" % encoded_params
 

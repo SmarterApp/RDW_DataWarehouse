@@ -102,6 +102,11 @@ define [
         key = assessment.effective_date + assessment.asmt_type
         @data[key] ?= []
         @data[key].push assessment if @data[key].length < 2
+        #TODO: temporary workaround for bulk pdf generation
+        if assessment.asmt_type is 'Summative'
+          default_key = undefined + 'Summative'
+          @data[default_key] ?= []
+          @data[default_key].push assessment if @data[default_key].length < 2
 
 
   class EdwareISR

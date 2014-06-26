@@ -72,7 +72,7 @@ def post_sr_stat_extract_service(context, request):
 @view_config(route_name='student_assessment_completion', request_method='POST')
 @validate_params(schema=STUDENT_REGISTRATION_PARAMS)
 @audit_event()
-def post_sr_comp_extract_service(context, request):
+def post_sa_comp_extract_service(context, request):
     '''
     Handles POST request to /services/extract/student_assessment_completion
 

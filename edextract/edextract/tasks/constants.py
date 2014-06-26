@@ -7,7 +7,7 @@ Created on Dec 9, 2013
 
 class ExtractionDataType():
     SR_STATISTICS = 'StudentRegistrationStatisticsReportCSV'
-    SR_COMPLETION = 'StudentRegistrationCompletionReportCSV'
+    SR_COMPLETION = 'StudentAssessmentCompletionReportCSV'
     QUERY_CSV = 'QueryCSVExtract'
     QUERY_JSON = 'QueryJSONExtract'
     QUERY_ITEMS_CSV = 'QueryItemsCSVExtract'

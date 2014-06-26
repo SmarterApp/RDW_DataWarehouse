@@ -531,7 +531,7 @@
                     "value": "studentRegistrationStatistics"
                 },
                 {
-                    "display": "Student Registration Completion",
+                    "display": "Student Assessment Completion",
                     "value": "studentRegistrationCompletion"
                 }
             ]

@@ -111,8 +111,7 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
     queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
     archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
     data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
-    default_path = '/opt/edware/item_level' if extract_type is ExtractType.itemLevel else '/opt/edware/raw_data'
-    root_dir = get_current_registry().settings.get(data_path_config_key, default_path)
+    root_dir = settings.get(data_path_config_key)
     request_id, user, tenant = processor.get_extract_request_user_info()
     extract_params = copy.deepcopy(params)
     directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
@@ -137,8 +136,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     '''
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
-    default_path = '/opt/edware/item_level' if extract_type is ExtractType.itemLevel else '/opt/edware/raw_data'
-    root_dir = get_current_registry().settings.get(data_path_config_key, default_path)
+    root_dir = get_current_registry().settings.get(data_path_config_key)
     response = {}
     state_code = params[Constants.STATECODE]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)

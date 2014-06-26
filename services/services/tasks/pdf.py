@@ -183,6 +183,9 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
             with tempfile.TemporaryDirectory(dir=os.path.join(pdf_base_dir, '.tmp')) as temp_dir:
                 files = _parallel_pdf_unite(pdf_files, temp_dir, timeout=timeout)
                 subprocess.call(pdfunite_procs + files + [out_name], timeout=timeout)
+        elif len(pdf_files) is 1:
+            #pdfunite is not callable if there is only one pdf to merge
+            shutil.copyfile(pdf_files[0], out_name)
         else:
             subprocess.call(pdfunite_procs + pdf_files + [out_name], timeout=timeout)
     except subprocess.TimeoutExpired:

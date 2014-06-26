@@ -35,6 +35,7 @@ import json
 import os
 from smarter_common.security.constants import RolesConstants
 import pyramid
+from batch.pdf.pdf_generator import PDFGenerator
 
 KNOWN_REPORTS = ['indivStudentReport.html']
 
@@ -226,19 +227,20 @@ def get_pdf_content(params):
     elif asmt_type == AssessmentType.INTERIM_COMPREHENSIVE and effective_date is None:
         raise InvalidParameterError('Required parameter is missing')
 
-    # Get cookies and other config items
-    (cookie_name, cookie_value) = get_session_cookie()
-    celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
-    always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
+    settings = pyramid.threadlocal.get_current_registry().settings
+    celery_timeout = int(settings.get('pdf.celery_timeout', '30'))
+    always_generate = to_bool(settings.get('pdf.always_generate', False))
 
     # Set up a couple additional variables
     base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
-    pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
+    pdf_base_dir = settings.get('pdf.report_base_dir', "/tmp")
 
     if student_guids is not None and (type(student_guids) is not list or (len(student_guids) == 1 and allow_single)):
+        # Get cookies and other config items
+        (cookie_name, cookie_value) = get_session_cookie()
         response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids, lang, is_grayscale, always_generate, celery_timeout, params)
     else:
-        response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
     return response
 
 
@@ -262,7 +264,7 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
     return Response(body=pdf_stream, content_type=Constants.APPLICATION_PDF)
 
 
-def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades,
+def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades,
                          state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang,
                          is_grayscale, always_generate, celery_timeout, params):
     '''
@@ -301,13 +303,16 @@ def get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subp
     # Create JSON response
     response = {Constants.FILENAME: archive_file_name, Constants.DOWNLOAD_URL: download_url}
 
+    # Generate cookie
+    pdfGenerator = PDFGenerator(settings)
     # Create the tasks for each individual student PDF file we want to merge
-    generate_tasks = _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_generate, files_by_student_guid,
+    generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name, is_grayscale, always_generate, files_by_student_guid,
                                                 urls_by_student_guid)
 
+    pdfunite_timeout = settings.get('pdf.merge.pdfunite_timeout', 60)
     # Create the tasks to merge each PDF by grade
     merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_student_guid,
-                                          school_name, lang, is_grayscale)
+                                          school_name, lang, is_grayscale, pdfunite_timeout)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
@@ -373,7 +378,7 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
 
 
 def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
-                            is_grayscale):
+                            is_grayscale, pdfunite_timeout):
     '''
     create pdf merge tasks
     '''
@@ -392,7 +397,7 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, 
                 file_names.append(files_by_guid[student_guid])
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, services.celery.TIMEOUT), immutable=True))  # @UndefinedVariable
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
     return merge_tasks
 
 

@@ -87,6 +87,7 @@ def get_students_for_assessment(tenant, asmt_guid):
         fact_asmt = connection.get_table("fact_asmt_outcome_vw")
         query = select([fact_asmt.c.student_guid, fact_asmt.c.asmt_grade, fact_asmt.c.district_guid],
                        from_obj=fact_asmt).where(and_(fact_asmt.c.asmt_guid == asmt_guid))
+        query = query.where(and_(fact_asmt.c.rec_status == 'C'))
         results = connection.get_result(query)
 
         students = []

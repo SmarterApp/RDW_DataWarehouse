@@ -43,7 +43,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.__work_zone_dir = tempfile.TemporaryDirectory()
         self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
                              'hpz.file_upload_base_url': 'http://somehost:82/files',
-                             'extract.available_grades': '3,4,5,6,7,8,11'}
+                             'extract.available_grades': '3,4,5,6,7,8,11',
+                             'extract.raw_data_base_dir': '/opt/edware/raw_data',
+                             'extract.item_level_base_dir': '/opt/edware/item_level'}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
         cache_opts = {

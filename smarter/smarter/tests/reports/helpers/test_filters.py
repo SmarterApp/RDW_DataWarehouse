@@ -132,6 +132,8 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         result = {Constants.DMG_PRG_IEP: True,
                   Constants.DMG_PRG_504: False,
                   Constants.DMG_PRG_LEP: None,
+                  Constants.DMG_STS_ECD: None,
+                  Constants.DMG_STS_MIG: None,
                   Constants.DMG_ETH_DERIVED: 4,
                   FILTERS_SEX: 'M'}
         dmg = get_student_demographic(result)

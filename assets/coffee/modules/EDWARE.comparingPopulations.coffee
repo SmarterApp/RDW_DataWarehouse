@@ -94,7 +94,7 @@ define [
             self.data.metadata[subject] = self.defaultColors
 
         # initialize context security
-        contextSecurity.init data.context.permissions, self.config
+        contextSecurity.init data.context.permissions, self.config, self.reportType
 
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context, self.labels)
@@ -227,6 +227,7 @@ define [
         reportTitle: @breadcrumbs.getReportTitle()
         reportName: Constants.REPORT_NAME.CPOP
         reportInfoText: @config.reportInfo
+        reportType: @reportType
         labels: @labels
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions

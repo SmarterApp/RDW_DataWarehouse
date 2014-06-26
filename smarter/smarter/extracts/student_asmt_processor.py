@@ -73,9 +73,11 @@ def process_async_extraction_request(params, is_tenant_level=True):
             param = ({Constants.ASMTSUBJECT: s,
                      Constants.ASMTTYPE: t,
                      Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE][0]})
+                     Constants.STATECODE: params[Constants.STATECODE][0],
+                     Constants.DISTRICTGUID: params[Constants.DISTRICTGUID][0]})
 
             task_response = {Constants.STATECODE: param[Constants.STATECODE],
+                             Constants.DISTRICTGUID: param[Constants.DISTRICTGUID],
                              Extract.EXTRACTTYPE: ExtractType.studentAssessment,
                              Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
                              Constants.ASMTTYPE: param[Constants.ASMTTYPE],

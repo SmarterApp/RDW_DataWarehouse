@@ -37,14 +37,16 @@ define [
 
   class CSVDownloadModal
 
-    constructor: (@container, @config) ->
+    constructor: (@container, @reportType, @config) ->
       this.initialize()
       this.bindEvents()
 
     initialize: ()->
       this.container = $(this.container)
+
       output = Mustache.to_html CSVOptionsTemplate, {
-        extractType: this.config['extractType']
+        reportType: this.reportType
+        extractType: this.config.extractType
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
         asmtYear: this.config['asmtYear']
@@ -275,6 +277,10 @@ define [
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
+
+      if storageParams and storageParams['districtGuid']
+        params['districtGuid'] = [storageParams['districtGuid']]
+
       params
 
     show: () ->
@@ -370,6 +376,7 @@ define [
 
     initialize: (@container) ->
       output = Mustache.to_html DownloadMenuTemplate, {
+        export_extract_text: @config.ExportOptions.export_request_extract.text[@config.reportType]
         labels: this.config['labels']
         options: this.config.ExportOptions
       }
@@ -406,7 +413,7 @@ define [
       # Get asmtType from session storage
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
       params = {}
-      params['stateCode'] = values['stateCode']
+      params['districtGuid'] = values['districtGuid']
       params['districtGuid'] = values['districtGuid']
       params['schoolGuid'] = values['schoolGuid']
       params['asmtGrade'] = values['asmtGrade'] if values['asmtGrade']
@@ -420,6 +427,8 @@ define [
       CSVOptions = @config.CSVOptions
       CSVOptions.labels = @config.labels
       CSVOptions.ExportOptions = @config.ExportOptions
+      reportType = @config.reportType
+
       # construct CSVDownload modal
       loadingData = fetchData @config.param
       loadingData.done (data)->
@@ -430,7 +439,7 @@ define [
         CSVOptions.academicYear.options = years if years
         CSVOptions.studentRegAcademicYear.options = studentRegYears if studentRegYears
         # display file download options
-        CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), CSVOptions
+        CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), reportType, CSVOptions
         CSVDownload.show()
 
     printPDF: () ->

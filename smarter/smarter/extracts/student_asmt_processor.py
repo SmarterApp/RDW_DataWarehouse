@@ -66,6 +66,7 @@ def process_async_extraction_request(params, is_tenant_level=True):
     response = {}
     task_responses = []
     state_code = params[Constants.STATECODE][0]
+    district_guid = params.get(Constants.DISTRICTGUID, [None])[0]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
     for s in params[Constants.ASMTSUBJECT]:
@@ -73,8 +74,8 @@ def process_async_extraction_request(params, is_tenant_level=True):
             param = ({Constants.ASMTSUBJECT: s,
                      Constants.ASMTTYPE: t,
                      Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: params[Constants.STATECODE][0],
-                     Constants.DISTRICTGUID: params[Constants.DISTRICTGUID][0]})
+                     Constants.STATECODE: state_code,
+                      Constants.DISTRICTGUID: district_guid})
 
             task_response = {Constants.STATECODE: param[Constants.STATECODE],
                              Constants.DISTRICTGUID: param[Constants.DISTRICTGUID],

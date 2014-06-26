@@ -15,7 +15,7 @@ class PDFGenerator(BatchBase):
     Batch pdf pre-generation trigger.
     '''
 
-    def __init__(self, settings, tenant):
+    def __init__(self, settings, tenant=None):
         '''
         Constructor with config file path as parameter.
 

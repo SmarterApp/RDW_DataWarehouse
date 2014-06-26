@@ -12,7 +12,6 @@ import random
 import uuid
 
 from sqlalchemy import and_, select
-import xml.etree.cElementTree as ET
 from edcore.database import get_data_source_names, initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edschema.database.connector import DBConnection
@@ -60,7 +59,6 @@ def get_all_assessments(tenant, asmt_guid=None):
         query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period_year, dim_asmt.c.asmt_type,
                         dim_asmt.c.effective_date, dim_asmt.c.asmt_subject], from_obj=dim_asmt)
         if asmt_guid is not None:
-            print('using guid')
             query = query.where(dim_asmt.c.asmt_guid == asmt_guid)
         results = connection.get_result(query)
 

@@ -12,13 +12,12 @@ import random
 import uuid
 
 from sqlalchemy import and_, select
-import xml.etree.cElementTree as ET
 from edcore.database import get_data_source_names, initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edschema.database.connector import DBConnection
 
 
-def main(config_file, tenant_to_update, out_dir, verbose, raw, item):
+def main(config_file, tenant_to_update, out_dir, verbose, raw, item, asmt_guid=None):
     """
     Imports data from csv
     """
@@ -30,7 +29,7 @@ def main(config_file, tenant_to_update, out_dir, verbose, raw, item):
         if tenant_to_update in tenant:
             # Get necessary meta-data
             state_code = get_state_code(tenant)
-            assessments = get_all_assessments(tenant)
+            assessments = get_all_assessments(tenant, asmt_guid)
 
             if item:
                 # Create item pools for each assessment
@@ -53,12 +52,14 @@ def get_state_code(tenant):
             return result['state_code']
 
 
-def get_all_assessments(tenant):
+def get_all_assessments(tenant, asmt_guid=None):
     """Get all unique assessments"""
     with DBConnection(tenant) as connection:
         dim_asmt = connection.get_table("dim_asmt")
         query = select([dim_asmt.c.asmt_guid, dim_asmt.c.asmt_period_year, dim_asmt.c.asmt_type,
                         dim_asmt.c.effective_date, dim_asmt.c.asmt_subject], from_obj=dim_asmt)
+        if asmt_guid is not None:
+            query = query.where(dim_asmt.c.asmt_guid == asmt_guid)
         results = connection.get_result(query)
 
         asmts = []
@@ -86,6 +87,7 @@ def get_students_for_assessment(tenant, asmt_guid):
         fact_asmt = connection.get_table("fact_asmt_outcome_vw")
         query = select([fact_asmt.c.student_guid, fact_asmt.c.asmt_grade, fact_asmt.c.district_guid],
                        from_obj=fact_asmt).where(and_(fact_asmt.c.asmt_guid == asmt_guid))
+        query = query.where(and_(fact_asmt.c.rec_status == 'C'))
         results = connection.get_result(query)
 
         students = []
@@ -139,6 +141,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--tenant', help='Tenant to import data to', default='cat')
     parser.add_argument('-o', '--outDir', help='Root directory to place files')
     parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true', default=False)
+    parser.add_argument('-a', '--asmtGuid', help='GUID for single assessment to create files for')
     args = parser.parse_args()
 
     __raw = args.raw
@@ -147,6 +150,7 @@ if __name__ == '__main__':
     __tenant = args.tenant
     __out_dir = args.outDir
     __verbose = args.verbose
+    __asmt_guid = args.asmtGuid
 
     if __out_dir is None:
         __out_dir = '/opt/edware/item_level' if __item else '/opt/edware/raw_data' if __raw else None
@@ -163,4 +167,4 @@ if __name__ == '__main__':
         print('Error: config file does not exist')
         exit(-1)
 
-    main(__config, __tenant, __out_dir, __verbose, __raw, __item)
+    main(__config, __tenant, __out_dir, __verbose, __raw, __item, __asmt_guid)

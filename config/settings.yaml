@@ -90,6 +90,7 @@ common:
       base.url: http://localhost:6543/assets/html/
       batch.job.queue: batch_pdf_gen
       health_check.job.queue: health_check
+      merge.pdfunite_timeout: 300
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security

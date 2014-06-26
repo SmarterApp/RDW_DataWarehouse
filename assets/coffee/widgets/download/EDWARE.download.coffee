@@ -26,12 +26,12 @@ define [
 
   COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
 
-  TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentRegistrationCompletion": "Student Registration Completion"}
+  TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentAssessmentCompletion": "Student Assessment Completion"}
 
   REQUEST_ENDPOINT = {
     "studentRegistrationStatistics": "/services/extract/student_registration_statistics",
     "studentAssessment": "/services/extract",
-    "studentRegistrationCompletion": "/services/extract/student_registration_completion"
+    "studentAssessmentCompletion": "/services/extract/student_assessment_completion"
   }
 
 

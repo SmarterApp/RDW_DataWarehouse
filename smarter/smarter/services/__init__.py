@@ -35,5 +35,5 @@ def includeme(config):
     # Add extract for student registration statistics
     config.add_route('student_registration_statistics', '/services/extract/student_registration_statistics')
 
-    # Add extract for student registration completion
-    config.add_route('student_registration_completion', '/services/extract/student_registration_completion')
+    # Add extract for student assessment completion
+    config.add_route('student_assessment_completion', '/services/extract/student_assessment_completion')

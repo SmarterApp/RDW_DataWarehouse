@@ -65,7 +65,7 @@ define [
       if not registration_access
         @remove_extractType('studentRegistrationStatistics')
       if not completion_access
-        @remove_extractType('studentRegistrationCompletion')
+        @remove_extractType('studentAssessmentCompletion')
 
     remove_extractType: (key) ->
       options = []

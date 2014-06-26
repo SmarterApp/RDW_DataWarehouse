@@ -532,7 +532,7 @@
                 },
                 {
                     "display": "Student Assessment Completion",
-                    "value": "studentRegistrationCompletion"
+                    "value": "studentAssessmentCompletion"
                 }
             ]
         },

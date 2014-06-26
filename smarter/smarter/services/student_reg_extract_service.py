@@ -16,7 +16,7 @@ STUDENT_REGISTRATION_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^(" + ExtractType.studentRegistrationStatistics + "|" + ExtractType.studentRegistrationCompletion + ")$"
+                "pattern": "^(" + ExtractType.studentRegistrationStatistics + "|" + ExtractType.studentAssessmentCompletion + ")$"
             },
             "minItems": 1,
             "uniqueItems": True,
@@ -69,12 +69,12 @@ def post_sr_stat_extract_service(context, request):
     return Response(body=json.dumps(results), content_type='application/json')
 
 
-@view_config(route_name='student_registration_completion', request_method='POST')
+@view_config(route_name='student_assessment_completion', request_method='POST')
 @validate_params(schema=STUDENT_REGISTRATION_PARAMS)
 @audit_event()
 def post_sr_comp_extract_service(context, request):
     '''
-    Handles POST request to /services/extract/student_registration_completion
+    Handles POST request to /services/extract/student_assessment_completion
 
     :param context:  Pyramid context object
     :param request:  Pyramid request object

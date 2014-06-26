@@ -69,7 +69,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
 
     def test_post_sr_invalid_type(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {'extractType': ['studentRegistrationComp'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.__request.json_body = {'extractType': ['studentAssessmentComp'], 'academicYear': [2015], "stateCode": ["NC"]}
         self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sr_comp_extract_service, self.__request)
 
     @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
@@ -78,7 +78,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         test_patch.return_value = mock_response
 
         self.__request.method = 'POST'
-        self.__request.json_body = {'extractType': ['studentRegistrationCompletion'], 'academicYear': [2015], "stateCode": ["NC"]}
+        self.__request.json_body = {'extractType': ['studentAssessmentCompletion'], 'academicYear': [2015], "stateCode": ["NC"]}
         response = post_sr_comp_extract_service(None, self.__request)
 
         self.assertEqual(response.status_code, 200)

@@ -6,10 +6,11 @@ Created on Jul 16, 2013
 import unittest
 from sqlalchemy.sql.expression import true, false, null, select
 from smarter.reports.helpers.filters import _get_filter,\
-    has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP, FILTERS_SEX,\
+    has_filters, apply_filter_to_query, FILTERS_PROGRAM_IEP,\
     FILTERS_SEX_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
     FILTERS_SEX_MALE, FILTERS_ETHNICITY_AMERICAN,\
-    FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO,\
+    FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_ECD, FILTERS_PROGRAM_MIG,\
+    FILTERS_GRADE, YES, NOT_STATED, NO,\
     reverse_filter_map, get_student_demographic, FILTERS_SEX
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
     UnittestEdcoreDBConnection
@@ -48,6 +49,8 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         self.assertTrue(has_filters({FILTERS_PROGRAM_IEP: 'a'}))
         self.assertTrue(has_filters({FILTERS_PROGRAM_504: 'a'}))
         self.assertTrue(has_filters({FILTERS_PROGRAM_LEP: 'a'}))
+        self.assertTrue(has_filters({FILTERS_PROGRAM_ECD: 'a'}))
+        self.assertTrue(has_filters({FILTERS_PROGRAM_MIG: 'a'}))
         self.assertTrue(has_filters({FILTERS_ETHNICITY: 'a'}))
         self.assertTrue(has_filters({FILTERS_SEX: 'a'}))
         self.assertTrue(has_filters({FILTERS_GRADE: 'a'}))
@@ -96,6 +99,24 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
             self.assertIsNotNone(query._whereclause)
             self.assertIn("fact_asmt_outcome_vw.dmg_prg_504", str(query._whereclause))
 
+    def test_apply_filter_to_query_with_ecd_filters(self):
+        with UnittestEdcoreDBConnection() as connection:
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome.c.school_guid],
+                           from_obj=([fact_asmt_outcome]))
+            query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_ECD: [NO]})
+            self.assertIsNotNone(query._whereclause)
+            self.assertIn("fact_asmt_outcome_vw.dmg_sts_ecd", str(query._whereclause))
+
+    def test_apply_filter_to_query_with_migrant_filters(self):
+        with UnittestEdcoreDBConnection() as connection:
+            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
+            query = select([fact_asmt_outcome.c.school_guid],
+                           from_obj=([fact_asmt_outcome]))
+            query = apply_filter_to_query(query, fact_asmt_outcome, {FILTERS_PROGRAM_MIG: [NOT_STATED]})
+            self.assertIsNotNone(query._whereclause)
+            self.assertIn("fact_asmt_outcome_vw.dmg_sts_mig", str(query._whereclause))
+
     def test_apply_filter_to_query_with_ethnic_filters(self):
         with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
@@ -132,7 +153,7 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         result = {Constants.DMG_PRG_IEP: True,
                   Constants.DMG_PRG_504: False,
                   Constants.DMG_PRG_LEP: None,
-                  Constants.DMG_STS_ECD: None,
+                  Constants.DMG_STS_ECD: False,
                   Constants.DMG_STS_MIG: None,
                   Constants.DMG_ETH_DERIVED: 4,
                   FILTERS_SEX: 'M'}
@@ -140,6 +161,8 @@ class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
         self.assertEqual(dmg[FILTERS_PROGRAM_IEP], YES)
         self.assertEqual(dmg[FILTERS_PROGRAM_504], NO)
         self.assertEqual(dmg[FILTERS_PROGRAM_LEP], NOT_STATED)
+        self.assertEqual(dmg[FILTERS_PROGRAM_ECD], NO)
+        self.assertEqual(dmg[FILTERS_PROGRAM_MIG], NOT_STATED)
         self.assertEqual(dmg[FILTERS_SEX], 'M')
         self.assertEqual(dmg[FILTERS_ETHNICITY], '4')
 

@@ -41,7 +41,7 @@ def process_async_extraction_request(params):
     extraction_data_type = ''
     if extract_type == ExtractType.studentRegistrationStatistics:
         extraction_data_type = ExtractionDataType.SR_STATISTICS
-    if extract_type == ExtractType.studentRegistrationCompletion:
+    if extract_type == ExtractType.studentAssessmentCompletion:
         extraction_data_type = ExtractionDataType.SR_COMPLETION
 
     extract_params = {TaskConstants.STATE_CODE: state_code,
@@ -90,7 +90,7 @@ def __get_report_headers(extract_params):
 
     if extract_type == ExtractType.studentRegistrationStatistics:
         headers = student_reg_statistics.get_headers(extract_params.get(TaskConstants.ACADEMIC_YEAR))
-    if extract_type == ExtractType.studentRegistrationCompletion:
+    if extract_type == ExtractType.studentAssessmentCompletion:
         headers = student_reg_completion.get_headers(extract_params.get(TaskConstants.ACADEMIC_YEAR))
 
     return headers
@@ -109,7 +109,7 @@ def __get_report_queries(extract_params):
         queries = {QueryType.QUERY: compile_query_to_sql_text(academic_year_query),
                    QueryType.MATCH_ID_QUERY: compile_query_to_sql_text(match_id_query)}
 
-    if extract_type == ExtractType.studentRegistrationCompletion:
+    if extract_type == ExtractType.studentAssessmentCompletion:
         registered_query = student_reg_completion.get_academic_year_query(extract_params[TaskConstants.ACADEMIC_YEAR],
                                                                           extract_params[TaskConstants.STATE_CODE])
         asmt_query = student_reg_completion.get_assessment_query(extract_params[TaskConstants.ACADEMIC_YEAR],

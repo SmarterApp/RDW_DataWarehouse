@@ -40,6 +40,10 @@ from unittest.mock import patch
 import json
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.roles.pii import PII  # @UnusedImport
+from zope import component
+from edauth.security.session_backend import ISessionBackend, SessionBackend
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 
 
 class TestServices(Unittest_with_edcore_sqlite):
@@ -411,10 +415,10 @@ class TestServices(Unittest_with_edcore_sqlite):
         school_name = 'schoolname here'
         lang = 'en'
         is_grayscale = None
-        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
         self.assertEqual(0, len(tasks))
         guids_by_grade = {'3': 'a5ddfe12-740d-4487-9179-de70f6ac33be'}
-        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
         self.assertEqual(1, len(tasks))
 
     def test_create_pdf_merge_tasks_with_guids(self):
@@ -425,7 +429,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         school_name = 'Apple School'
         lang = 'en'
         is_grayscale = False
-        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
+        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
         self.assertEqual(2, len(tasks))
 
     def test_create_urls_by_student_guid(self):
@@ -460,8 +464,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         mock_get_archive_name.return_value = 'archive_file.pdf'
         pdf_base_dir = '/foo1'
         base_url = 'http://foo.com/abc'
-        cookie_value = 'abc'
-        cookie_name = 'efg'
         subprocess_timeout = 10
         student_guids = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         grades = 3
@@ -476,7 +478,16 @@ class TestServices(Unittest_with_edcore_sqlite):
         always_generate = False
         celery_timeout = 5
         params = {}
-        response = get_bulk_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
+        settings = {}
+        settings['cache.regions'] = 'public.data, session'
+        settings['cache.type'] = 'memory'
+        settings['auth.policy.secret'] = 'secret'
+        settings['auth.policy.cookie_name'] = 'myName'
+        settings['auth.policy.hashalg'] = 'sha1'
+        settings['batch.user.session.timeout'] = 10777700
+        CacheManager(**parse_cache_config_options(settings))
+        component.provideUtility(SessionBackend(settings), ISessionBackend)
+        response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
         body = json.loads(response.body.decode('utf-8'))
         self.assertEqual(body[Constants.FILENAME], 'archive_file.pdf')
         self.assertEqual(body[Constants.DOWNLOAD_URL], 'http://foo.com/abc/hello')

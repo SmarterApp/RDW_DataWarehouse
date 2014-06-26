@@ -99,7 +99,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
 
         extract_params = {TaskConstants.STATE_CODE: "NC",
                           TaskConstants.ACADEMIC_YEAR: 2015,
-                          Extract.REPORT_TYPE: 'studentRegistrationCompletion',
+                          Extract.REPORT_TYPE: 'studentAssessmentCompletion',
                           TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.SR_COMPLETION}
 
         user = User()
@@ -108,7 +108,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.assertEqual(8, len(results))
         self.assertEquals(dummy_headers, results[TaskConstants.CSV_HEADERS])
         self.assertEqual(2, len(results[TaskConstants.TASK_QUERIES]))
-        self.assertEquals('StudentRegistrationCompletionReportCSV', results[TaskConstants.EXTRACTION_DATA_TYPE])
+        self.assertEquals('StudentAssessmentCompletionReportCSV', results[TaskConstants.EXTRACTION_DATA_TYPE])
 
     def test__get_extract_file_path(self):
         extract_params = {TaskConstants.STATE_CODE: "NC",

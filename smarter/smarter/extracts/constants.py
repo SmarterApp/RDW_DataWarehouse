@@ -8,7 +8,7 @@ Created on Nov 7, 2013
 class ExtractType():
     studentAssessment = 'studentAssessment'
     studentRegistrationStatistics = 'studentRegistrationStatistics'
-    studentRegistrationCompletion = 'studentRegistrationCompletion'
+    studentAssessmentCompletion = 'studentAssessmentCompletion'
     itemLevel = 'itemLevel'
     rawData = 'rawData'
 

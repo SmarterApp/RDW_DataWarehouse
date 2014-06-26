@@ -16,7 +16,6 @@ define [
     # Add labels
     headerTemplate.find('.text_hi').html labels.hi
     headerTemplate.find('.text_help').html labels.help
-    headerTemplate.find('.text_resources').html labels.resources
     userInfo = data.user_info
     # Add header to the page
     userName = edwareUtil.getUserName userInfo

@@ -49,7 +49,8 @@ class TestItemExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         reg = Registry()
         reg.settings = {}
         reg.settings = {'extract.available_grades': '3,4,5,6,7,8,9,11',
-                        'hpz.file_upload_base_url': 'http://somehost:82/files'}
+                        'hpz.file_upload_base_url': 'http://somehost:82/files',
+                        'extract.item_level_base_dir': '/opt/edware/item_level'}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
 

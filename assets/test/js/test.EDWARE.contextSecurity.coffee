@@ -11,7 +11,7 @@ define [
     }, {
       value: "studentRegistrationStatistics"
     }, {
-      value: "studentRegistrationCompletion"
+      value: "studentAssessmentCompletion"
     }]
   }
 
@@ -105,7 +105,7 @@ define [
       }, {
         value: "studentRegistrationStatistics"
       }, {
-        value: "studentRegistrationCompletion"
+        value: "studentAssessmentCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType
@@ -128,7 +128,7 @@ define [
       }, {
         value: "studentRegistrationStatistics"
       }, {
-        value: "studentRegistrationCompletion"
+        value: "studentAssessmentCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType
@@ -151,7 +151,7 @@ define [
       }, {
         value: "studentRegistrationStatistics"
       }, {
-        value: "studentRegistrationCompletion"
+        value: "studentAssessmentCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType
@@ -160,7 +160,7 @@ define [
     visible = $('.csv').is(":visible")
     ok visible, "Should display bulk extract option"
     equal extractType.options.length, 1, "Should only contain completion extract"
-    equal extractType.options[0].value, "studentRegistrationCompletion", "Should only contain completion option"
+    equal extractType.options[0].value, "studentAssessmentCompletion", "Should only contain completion option"
 
   test "Test srs and src only extract", ->
     permission = {
@@ -174,7 +174,7 @@ define [
       }, {
         value: "studentRegistrationStatistics"
       }, {
-        value: "studentRegistrationCompletion"
+        value: "studentAssessmentCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType
@@ -184,7 +184,7 @@ define [
     ok visible, "Should display bulk extract option"
     equal extractType.options.length, 2, "Should contain registration and completion extract option"
     equal extractType.options[0].value, "studentRegistrationStatistics", "Should contain registration option"
-    equal extractType.options[1].value, "studentRegistrationCompletion", "Should contain completion option"
+    equal extractType.options[1].value, "studentAssessmentCompletion", "Should contain completion option"
 
   test "Test sar and srs only extract", ->
     permission = {
@@ -198,7 +198,7 @@ define [
       }, {
         value: "studentRegistrationStatistics"
       }, {
-        value: "studentRegistrationCompletion"
+        value: "studentAssessmentCompletion"
       }]
     }
     config.CSVOptions.extractType = extractType

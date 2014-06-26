@@ -466,8 +466,8 @@ define [
         params: params
       edwareDataProxy.getDatafromSource "/data/academic_year", options
 
-  create = (container, config)->
-    new CSVDownloadModal $(container), config
+  create = (container, reportType, config)->
+    new CSVDownloadModal $(container), reportType, config
 
   CSVDownloadModal: CSVDownloadModal
   DownloadMenu: DownloadMenu

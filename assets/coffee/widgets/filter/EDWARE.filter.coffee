@@ -331,7 +331,7 @@ define [
           # do not check other attributes
           if not $.isArray(filterValue)
             continue
-          if filterName.substr(0, 5) isnt 'group' # do not check grouping filters
+          if filterName.substr(0, 5) isnt 'group' and filterName.substr(0, 5) isnt 'grade' # do not check grouping filters
             return false if assessment.demographic[filterName] not in filterValue
         return true
 

@@ -155,6 +155,8 @@ def is_valid(path):
     :return:  True if file is valid, else False
     :rtype: Boolean
     '''
+    if 'cover_sheet_grade_' in path:
+        return os.path.exists(path) and (os.path.getsize(path) > 200)
     return os.path.exists(path) and (os.path.getsize(path) > services.celery.MINIMUM_FILE_SIZE)
 
 

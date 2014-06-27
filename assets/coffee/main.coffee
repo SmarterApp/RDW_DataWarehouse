@@ -22,6 +22,7 @@ require {
     'Edware.StudentListReport': 'modules/EDWARE.studentListReport',
     'Edware.IndividualStudentReport': 'modules/EDWARE.individualStudentReport',
     'Edware.StateMap': 'modules/EDWARE.stateMap',
+    'Edware.PDFCoverSheet': 'modules/EDWARE.pdfCoverSheet',
 
     edware: 'modules/EDWARE',
     edwareEvents: 'modules/EDWARE.events',

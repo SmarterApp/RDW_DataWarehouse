@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Smarter Balanced Reporting - Cover Sheet</title>
+        <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap-theme.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css" />
+        <link rel="stylesheet" type="text/css" href="../css/pdf.css" />
+        <script src="../js/3p/require.js"></script>
+        <script>
+             require(['../js/src/main.js'], function(){
+               require(['Edware.PDFCoverSheet']);
+             });
+        </script>
+        <link rel="shortcut icon" href="../images/icons/favicon.ico" />
+    </head>
+    <body class="pdf-cover">
+        <h2>CONFIDENTIAL</h2>
+        <div class="header">
+            <span class="logo">
+                <img src="../images/smarter_printlogo.png" width="234" height="74" />
+            </span>
+            <span class="title">
+                Student Assessment Results
+            </span>
+        </div>
+        <div class="divider">
+            <hr />
+        </div>
+        <div class="top-block">
+            <div id="dvSchoolName"></div>
+            <div>
+                Grade <span id="spnGrade"></span>
+            </div>
+            <div>
+                <span id="spnPageCount"></span> pages (<span id="spnStudentCount"></span> Students)
+            </div>
+        </div>
+        <div class="bottom-block">
+            <div>
+                Requested by: <span id="spnUserName"></span>
+            </div>
+            <div>
+                Date: <span id="spnDate"></span>
+            </div>
+        </div>
+        <div class="footer">
+            <h2>CONFIDENTIAL</h2>
+        </div>
+    </body>
+</html>

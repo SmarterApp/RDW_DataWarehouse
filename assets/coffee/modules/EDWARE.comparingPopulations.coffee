@@ -81,17 +81,6 @@ define [
         self.data = data
         self.populationData = self.data.records
 
-        # process breadcrumbs
-        self.renderBreadcrumbs(self.data.context, self.labels)
-        self.renderReportInfo()
-        self.renderReportActionBar()
-        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
-        self.createHeaderAndFooter()
-
-        if self.populationData.length is 0
-          # no results
-          self.displayNoResults()
-          return
         self.summaryData = self.data.summary
         self.asmtSubjectsData = self.data.subjects
         self.academicYears = self.data.asmt_period_year
@@ -103,6 +92,18 @@ define [
 
         # initialize context security
         contextSecurity.init data.context.permissions, self.config, self.reportType
+
+        # process breadcrumbs
+        self.renderBreadcrumbs(self.data.context, self.labels)
+        self.renderReportInfo()
+        self.renderReportActionBar()
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
+        self.createHeaderAndFooter()
+
+        if self.populationData.length is 0
+          # no results
+          self.displayNoResults()
+          return
 
         # Create grid and update filters
         self.createGrid()

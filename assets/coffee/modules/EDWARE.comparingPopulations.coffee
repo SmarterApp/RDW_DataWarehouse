@@ -80,6 +80,14 @@ define [
       loadingData.done (data)->
         self.data = data
         self.populationData = self.data.records
+
+        # process breadcrumbs
+        self.renderBreadcrumbs(self.data.context, self.labels)
+        self.renderReportInfo()
+        self.renderReportActionBar()
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
+        self.createHeaderAndFooter()
+
         if self.populationData.length is 0
           # no results
           self.displayNoResults()
@@ -96,14 +104,10 @@ define [
         # initialize context security
         contextSecurity.init data.context.permissions, self.config
 
-        # process breadcrumbs
-        self.renderBreadcrumbs(self.data.context, self.labels)
-        self.renderReportInfo()
-        self.renderReportActionBar()
-        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
-        self.createHeaderAndFooter()
+        # Create grid and update filters
         self.createGrid()
         self.updateFilter()
+
         # Set asmt Subject
         subjects = []
         for key, value of self.asmtSubjectsData

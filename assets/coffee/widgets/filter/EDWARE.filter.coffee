@@ -219,7 +219,7 @@ define [
       displayWidth = $('.display', button).text().length * 10
       width = $(button).width() - displayWidth - 35
       # keep minimum width 30px
-      if width > 0 then width else 30
+      if width > 30 then width else 30
 
     loadReport: (params) ->
       this.reset()

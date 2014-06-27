@@ -309,7 +309,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
     generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name, is_grayscale, always_generate, files_by_student_guid,
                                                 urls_by_student_guid)
 
-    pdfunite_timeout = settings.get('pdf.merge.pdfunite_timeout', 60)
+    pdfunite_timeout = int(settings.get('pdf.merge.pdfunite_timeout', '60'))
     # Create the tasks to merge each PDF by grade
     merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_student_guid,
                                           school_name, lang, is_grayscale, pdfunite_timeout)

@@ -408,7 +408,7 @@ class TestComparingPopulations(Unittest_with_edcore_sqlite):
         self.assertEqual(results['not_stated']['dmgPrg504'], 2)
         self.assertEqual(results['not_stated']['dmgPrgIep'], 2)
         self.assertEqual(results['not_stated']['dmgPrgLep'], 0)
-        self.assertEqual(results['not_stated']['dmgStsMig'], 0)
+        self.assertEqual(results['not_stated']['dmgStsMig'], 1)
         self.assertEqual(results['not_stated']['ethnicity'], 0)
         self.assertEqual(results['not_stated']['sex'], 1)
 

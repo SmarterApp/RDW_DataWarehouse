@@ -1,10 +1,10 @@
 {
     "labels": {
-        "achievement_level_descriptors": "Descriptores del nivel de desempeño (DND)",
+        "achievement_level_descriptors": "Descriptores del nivel de desempeño (ALD)",
         "academic_year": "Año escolar",
         "accommodations": "Accommodations",
-        "ald_color_coded": "Código de color DND ",
-        "ald_cutpoints": "Puntos de ejecución mínima DND",
+        "ald_color_coded": "Código de color ALD ",
+        "ald_cutpoints": "Puntos de ejecución mínima ALD",
         "align": "Alinear",
         "apply_filters": "Aplicar filtros",
         "asmt_type": "Tipo de prueba",

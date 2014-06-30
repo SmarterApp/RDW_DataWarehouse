@@ -23,6 +23,11 @@ define [
 
   POPULATION_BAR_WIDTH = 145
 
+  SUBJECT_HEADERS = {
+    "Math": "results.subject1.sortedValue"
+    "ELA": "results.subject2.sortedValue"
+  }
+
   class ConfigBuilder
 
     constructor: (template, subjects) ->
@@ -210,25 +215,19 @@ define [
     updateSortLabels: (index, sortorder) ->
       # Remove second row header as that counts as a column in setLabel function
       $('.jqg-second-row-header').remove()
+
+      # update sorting header labels
       grid = $('#gridTable')
-      colModels = grid.jqGrid('getGridParam').colModel
-      # Reset back to original color for all columns
-      for colModel in colModels
-        #reset labels
-        label = "<a class='inherit' href='#'>#{colModel.label}</a>"
-        grid.jqGrid('setLabel', colModel.label, label)
-        if colModel.name is index
-          newLabel = label
-
-      if index in ["results.subject2.sortedValue", "results.subject1.sortedValue"]
-        if sortorder is 'asc'
-          newLabel = "#{newLabel} <span aria-hidden='true'>#{this.config.proficiencyAscending}</span>"
-        else
-          newLabel = "#{newLabel} <span aria-hidden='true'>#{this.config.proficiencyDescending}</span>"
-      # Set label for active sort column
-      grid.jqGrid('setLabel', index, newLabel, '')
-
-      # TODO: need refactoring:
+      sortedColumn = grid.jqGrid('getGridParam','sortname')
+      for subject, idx of SUBJECT_HEADERS
+        label = "<a class='inherit' href='#'>#{Constants.SUBJECT_TEXT[subject]}</a>"
+        if sortedColumn is idx
+          if sortorder is 'asc'
+            label += " <span aria-hidden='true'>#{@config.proficiencyAscending}</span>"
+          else
+            label += " <span aria-hidden='true'>#{@config.proficiencyDescending}</span>"
+        # Set label for active sort column
+        grid.jqGrid('setLabel', idx, label)
       # get last focused element from EdwareGrid object
       @grid?.resetFocus()
 
@@ -321,15 +320,13 @@ define [
       if this.reportType is 'state'
         this.orgType = this.breadcrumbsData.items[1].name
         this.displayType = "District"
-        this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'district'
         this.orgType = this.breadcrumbsData.items[2].name
         this.displayType = "School"
-        this.title = 'Comparing ' + this.displayType + 's in ' + this.orgType + ' on Math & ELA'
       else if this.reportType is 'school'
         this.orgType = this.breadcrumbsData.items[3].name
         this.displayType = "Grade"
-        this.title = 'Results by Grade for ' + this.orgType + ' on Math & ELA'
+      this.title = "#{@displayType}s in #{@orgType}"
 
     getDisplayType: () ->
       this.displayType

@@ -16,7 +16,8 @@ define [
   'text!edwareFormatterTotalPopulationTemplate'
   'edwarePreferences'
   'edwareContextSecurity'
-], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity) ->
+  'edwareConstants'
+], ($, Mustache, jqGrid, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterConfidenceTemplate, edwareFormatterNameTemplate, edwareFormatterPerfLevelTemplate, edwareFormatterPerformanceBarTemplate, edwareFormatterPopulationBarTemplate, edwareFormatterSummaryTemplate, edwareFormatterTextTemplate, edwareFormatterTooltipTemplate, edwareFormatterTotalPopulationTemplate, edwarePreferences, contextSecurity, Constants) ->
 
   SUMMARY_TEMPLATE = edwareFormatterSummaryTemplate
 
@@ -159,14 +160,20 @@ define [
       return '' if not subject
       subject.asmt_perf_lvl || ''
 
+    getSubjectText = (subject) ->
+      return '' if not subject
+      Constants.SUBJECT_TEXT[subject.asmt_type]
+
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject[subject_type]
     score_ALD = getScoreALD(subject)
+    asmt_subject_text = getSubjectText(subject)
     student_name = getStudentName()
     asmt_perf_lvl = getAsmtPerfLvl(subject)
     rowId = rowObject.rowId + subject_type
     toolTip = Mustache.to_html TOOLTIP_TEMPLATE, {
       student_name: student_name
+      asmt_subject_text: asmt_subject_text
       subject: subject
       labels: options.colModel.labels
       score_ALD: score_ALD
@@ -178,6 +185,7 @@ define [
     columnName = removeHTMLTags(options.colModel.label)
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
       subject: subject
+      asmt_subject_text: asmt_subject_text
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
       columnName: columnName
@@ -235,6 +243,7 @@ define [
       subject.displayText = options.colModel.labels['insufficient_data']
     else if noData
       subject.displayText = options.colModel.labels['no_data_available']
+    subject.asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_subject]
     subject
 
   removeHTMLTags = (str) ->

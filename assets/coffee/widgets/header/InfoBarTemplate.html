@@ -1,7 +1,7 @@
 <ul role="menubar" aria-label="information bar menu">
     <li>
         <h2 class="title" role="heading">{{title}}</h2>
-        <a class="reportInfoIcon" href='#' aria-label="about this report" aria-labelledby="reportInfoPopover" aria-live="polite"></a>
+        <a class="reportInfoIcon inherit" href='#' aria-label="about this report" aria-labelledby="reportInfoPopover" aria-live="polite"></a>
     </li>
     <li class="download">
         <a class="downloadIcon" href='#' aria-label="download button" title="Export Report Data"></a>
@@ -9,7 +9,7 @@
     <li class="overall">
         {{#subjects}}
         <div class="info">
-            <span>{{asmt_subject}}</span>
+            <span>{{asmt_subject_text}}</span>
             <span class="indicator_cell" style="background-color: {{score_bg_color}}; color: {{score_text_color}}">
                 <strong>{{asmt_score}}</strong>
             </span>

@@ -267,7 +267,8 @@ define [
       # placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
       @config.labels.SearchResultText = @config.SearchResultText
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
+      if @reportType == 'school' then displaySearch = false else displaySearch = true
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, displaySearch, () ->
         self.reload self.param
 
     onAcademicYearSelected: (year) ->

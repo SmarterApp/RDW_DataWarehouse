@@ -29,6 +29,7 @@ mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
 pdfunite_procs = ['pdfunite']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
+cover_sheet_pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000']
 
 OK = 0
 FAIL = 1
@@ -186,7 +187,8 @@ def bulk_pdf_cover_sheet(cookie, out_name, merged_name, base_url, base_params, c
     url = base_url + "?%s" % encoded_params
 
     # Generate the cover sheet
-    generate(cookie, url, out_name, cookie_name=cookie_name, grayscale=grayscale, timeout=timeout)
+    generate(cookie, url, out_name, cookie_name=cookie_name, grayscale=grayscale, options=cover_sheet_pdf_defaults,
+             timeout=timeout)
 
 
 @celery.task(name='tasks.pdf.merge')
@@ -241,7 +243,7 @@ def hpz_upload_cleanup(src_file_name, registration_id, pdf_base_dir):
         http_file_upload(src_file_name, registration_id)
 
         # Clean up the PDF merge working directory
-        # shutil.rmtree(os.path.join(pdf_base_dir, 'bulk', registration_id), ignore_errors=True)
+        shutil.rmtree(os.path.join(pdf_base_dir, 'bulk', registration_id), ignore_errors=True)
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + str(e))
         try:

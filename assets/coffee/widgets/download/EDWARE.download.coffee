@@ -376,7 +376,7 @@ define [
 
     initialize: (@container) ->
       output = Mustache.to_html DownloadMenuTemplate, {
-        export_extract_text: @config.ExportOptions.export_request_extract.text[@config.reportType]
+        export_extract_text: @config.ExportOptions?.export_request_extract.text[@config.reportType]
         labels: this.config['labels']
         options: this.config.ExportOptions
       }
@@ -413,7 +413,7 @@ define [
       # Get asmtType from session storage
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
       params = {}
-      params['districtGuid'] = values['districtGuid']
+      params['stateCode'] = values['stateCode']
       params['districtGuid'] = values['districtGuid']
       params['schoolGuid'] = values['schoolGuid']
       params['asmtGrade'] = values['asmtGrade'] if values['asmtGrade']

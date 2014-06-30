@@ -111,6 +111,7 @@ class Constants():
     CURRENT = 'C'
     BULK = 'bulk'
     DATA = 'data'
+    COVER = 'cover'
     ZIP = 'zip'
     FILENAME = 'fileName'
     URL = 'url'

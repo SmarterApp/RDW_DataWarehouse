@@ -9,6 +9,8 @@ import os
 import sys
 import logging
 import subprocess
+import urllib
+import urllib.parse
 from services.celery import celery
 from services.exceptions import PdfGenerationError
 from edcore.exceptions import NotForWindowsException, RemoteCopyError
@@ -170,12 +172,32 @@ def delete(path):
         os.remove(path)
 
 
+@celery.task(name='tasks.pdf.coversheet')
+def bulk_pdf_cover_sheet(cookie, out_name, file_names, base_url, base_params, cookie_name='edware', grayscale=False,
+                         timeout=TIMEOUT):
+    # Make sure the output directory exists
+    prepare_path(out_name)
+
+    # Build the URL for the page to generate
+    encoded_params = urllib.parse.urlencode(base_params)
+    url = base_url + "?%s" % encoded_params
+
+    # Generate the cover sheet
+    generate(cookie, url, out_name, cookie_name=cookie_name, grayscale=grayscale, timeout=timeout)
+
+
 @celery.task(name='tasks.pdf.merge')
-def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
+def pdf_merge(pdf_files, out_name, grade, pdf_base_dir, directory_for_covers, timeout=TIMEOUT):
+    # Prepare output file
     if os.path.isfile(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
     prepare_path(out_name)
+
+    # Add the cover sheet to the list of files
+    pdf_files.insert(0, _get_cover_sheet_path(directory_for_covers, grade))
+
+    # Verify that all PDFs to merge exist
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
@@ -262,3 +284,12 @@ def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT
     for proc in procs:
         proc.wait(timeout=timeout)
     return files
+
+
+def _create_cover_sheet_pdf_url(base_url, params):
+    encoded_params = urllib.parse.urlencode(params)
+    return base_url + "?%s" % encoded_params
+
+
+def _get_cover_sheet_path(cv_dir, grade):
+    return os.path.join(cv_dir, 'cover_sheet_grade_{grade}.pdf'.format(grade=grade))

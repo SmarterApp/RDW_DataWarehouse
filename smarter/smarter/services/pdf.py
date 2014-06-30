@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup,\
-    group_separator
+    group_separator, bulk_pdf_cover_sheet
 from urllib.parse import urljoin
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -296,6 +296,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # Set up directory and file names
     directory_to_archive = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.DATA)
+    directory_for_cover_sheets = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.COVER)
     directory_for_zip = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.ZIP)
     archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
     archive_file_path = os.path.join(directory_for_zip, archive_file_name)
@@ -311,23 +312,17 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
                                                 urls_by_student_guid)
 
     # Create tasks for cover sheets
-    cv_base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/pdfCoverPage.html')
-    cv_params = {
-        'schoolName': school_name,
-        'user': user._User__info['name']['fullName'],
-        'date': str(datetime.now().strftime("%m/%d/%Y")),
-        'pageCount': '',
-        'studentCount': '',
-        'grade': ''
-    }
-    if is_grayscale:
-        cv_params['gray'] = 'true'
-    cover_sheet_tasks = _create_cover_sheet_tasks()
+    cover_sheet_tasks = _create_cover_sheet_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name,
+                                                           is_grayscale, school_name,
+                                                           user._User__info['name']['fullName'],
+                                                           directory_for_cover_sheets, guids_by_grade,
+                                                           files_by_student_guid)
 
     # Create the tasks to merge each PDF by grade
     pdfunite_timeout = int(settings.get('pdf.merge.pdfunite_timeout', '60'))
-    merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_student_guid,
-                                          school_name, lang, is_grayscale, pdfunite_timeout)
+    merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, directory_for_cover_sheets,
+                                          guids_by_grade, files_by_student_guid, school_name, lang, is_grayscale,
+                                          pdfunite_timeout)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, cover_sheet_tasks,
@@ -400,13 +395,48 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
     return generate_tasks
 
 
-def _create_cover_sheet_tasks():
+def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, school_name, user_name,
+                                       directory_for_covers, guids_by_grade, files_by_guid):
     cover_tasks = []
+    cv_base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/pdfCoverPage.html')
+    cv_params = {
+        'schoolName': school_name,
+        'user': user_name,
+        'date': str(datetime.now().strftime("%m/%d/%Y")),
+        'pageCount': '0',
+        'studentCount': '',
+        'grade': ''
+    }
+    if is_grayscale:
+        cv_params['gray'] = True
+    if guids_by_grade:
+        for grade, student_guids in guids_by_grade.items():
+            if type(student_guids) is not list:
+                student_guids = [student_guids]
+            # Create cover sheet output name and path
+            cover_name = _get_cover_sheet_name(grade)
+            cover_path = os.path.join(directory_for_covers, cover_name)
+
+            # Get the files for this grade
+            file_names = []
+            for student_guid in student_guids:
+                file_names.append(files_by_guid[student_guid])
+
+            # Update the parameters for the URL
+            cv_params_this = copy.deepcopy(cv_params)
+            cv_params_this['grade'] = grade
+            cv_params_this['studentCount'] = len(file_names)
+
+            # Create the cover sheet task
+            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, file_names, cv_base_url,
+                                                                  cv_params_this, cookie_name, is_grayscale),
+                                                            immutable=True))  # @UndefinedVariable
+
     return cover_tasks
 
 
-def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
-                            is_grayscale, pdfunite_timeout):
+def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, directory_for_covers, guids_by_grade, files_by_guid,
+                            school_name, lang, is_grayscale, pdfunite_timeout):
     '''
     create pdf merge tasks
     '''
@@ -425,7 +455,7 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, 
                 file_names.append(files_by_guid[student_guid])
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, grade, pdf_base_dir, directory_for_covers, pdfunite_timeout), immutable=True))  # @UndefinedVariable
     return merge_tasks
 
 
@@ -447,11 +477,6 @@ def _create_student_pdf_url(student_guid, base_url, params):
     return base_url + "?%s" % encoded_params
 
 
-def _create_cover_sheet_pdf_url(base_url, params):
-    encoded_params = urllib.parse.urlencode(params)
-    return base_url + "?%s" % encoded_params
-
-
 def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_tasks, cover_tasks, merge_tasks,
                 pdf_base_dir):
     '''
@@ -468,6 +493,10 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
                      archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),  # @UndefinedVariable
                      hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable
     workflow.apply_async()
+
+
+def _get_cover_sheet_name(grade):
+    return 'cover_sheet_grade_{grade}.pdf'.format(grade=grade)
 
 
 def _get_merged_pdf_name(school_name, grade, lang_code, grayscale):

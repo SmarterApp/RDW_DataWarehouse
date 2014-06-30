@@ -173,10 +173,13 @@ def delete(path):
 
 
 @celery.task(name='tasks.pdf.coversheet')
-def bulk_pdf_cover_sheet(cookie, out_name, file_names, base_url, base_params, cookie_name='edware', grayscale=False,
+def bulk_pdf_cover_sheet(cookie, out_name, merged_name, base_url, base_params, cookie_name='edware', grayscale=False,
                          timeout=TIMEOUT):
     # Make sure the output directory exists
     prepare_path(out_name)
+
+    # Get the page count from the merged PDF
+    base_params['pageCount'] = _count_pdf_pages(merged_name)
 
     # Build the URL for the page to generate
     encoded_params = urllib.parse.urlencode(base_params)
@@ -187,15 +190,12 @@ def bulk_pdf_cover_sheet(cookie, out_name, file_names, base_url, base_params, co
 
 
 @celery.task(name='tasks.pdf.merge')
-def pdf_merge(pdf_files, out_name, grade, pdf_base_dir, directory_for_covers, timeout=TIMEOUT):
+def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
     # Prepare output file
     if os.path.isfile(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
     prepare_path(out_name)
-
-    # Add the cover sheet to the list of files
-    pdf_files.insert(0, _get_cover_sheet_path(directory_for_covers, grade))
 
     # Verify that all PDFs to merge exist
     for pdf_file in pdf_files:
@@ -241,7 +241,7 @@ def hpz_upload_cleanup(src_file_name, registration_id, pdf_base_dir):
         http_file_upload(src_file_name, registration_id)
 
         # Clean up the PDF merge working directory
-        shutil.rmtree(os.path.join(pdf_base_dir, 'bulk', registration_id), ignore_errors=True)
+        # shutil.rmtree(os.path.join(pdf_base_dir, 'bulk', registration_id), ignore_errors=True)
     except RemoteCopyError as e:
         log.error("Exception happened in remote copy. " + str(e))
         try:
@@ -286,9 +286,29 @@ def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT
     return files
 
 
-def _create_cover_sheet_pdf_url(base_url, params):
-    encoded_params = urllib.parse.urlencode(params)
-    return base_url + "?%s" % encoded_params
+def _count_pdf_pages(pdf_path):
+    seen_type_path = False  # /Type /Pages
+    seen_kids = False  # /Kids
+    with open(pdf_path, 'rb') as file:
+        for line in file:
+            try:
+                line = line.decode("utf-8")
+                if not seen_type_path and not seen_kids and '/Type /Pages' in line:
+                    seen_type_path = True
+                if seen_type_path and not seen_kids and '/Kids' in line:
+                    seen_kids = True
+                if seen_type_path and seen_kids and '/Count' in line:
+                    parts = line.split(' ')
+                    found_count = False
+                    for part in parts:
+                        if found_count:
+                            return int(part)
+                        if part == '/Count':
+                            found_count = True
+            except:
+                pass
+
+    return -1
 
 
 def _get_cover_sheet_path(cv_dir, grade):

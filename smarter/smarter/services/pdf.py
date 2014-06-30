@@ -360,13 +360,17 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
                     all_guids.append(result[Constants.STUDENT_GUID])
                     guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
     else:
+        grade = None
+        if grades is not None and len(grades) == 1:
+            grade = grades[0]
         guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
-                                   effective_date=effective_date, student_guids=student_guids)
-        guids_by_grade['all'] = []
+                                   effective_date=effective_date, grade=grade, student_guids=student_guids)
+        grade = 'all' if grade is None else grade
+        guids_by_grade[grade] = []
         if len(guids) > 0:
                 for result in guids:
                     all_guids.append(result[Constants.STUDENT_GUID])
-                    guids_by_grade['all'].append(result[Constants.STUDENT_GUID])
+                    guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
     if len(all_guids) == 0:
         raise InvalidParameterError('No students match filters')
     return all_guids, guids_by_grade
@@ -572,9 +576,10 @@ def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params
         query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
         query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
+        if grade is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
         if student_guids is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student_guids)))
         if effective_date is not None:

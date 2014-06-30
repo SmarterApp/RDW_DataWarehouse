@@ -93,13 +93,22 @@ define [
         # initialize context security
         contextSecurity.init data.context.permissions, self.config, self.reportType
 
-        # process breadcrumbs
+        # Process header bar
+        self.createHeaderAndFooter()
+
+        # No results if something went wrong
+        if self.populationData.length is 0 and not self.data.context.items[1]
+          # no results
+          self.displayNoResults()
+          return
+
+        # Render rest of header bar
         self.renderBreadcrumbs(self.data.context, self.labels)
         self.renderReportInfo()
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
-        self.createHeaderAndFooter()
 
+        # No results
         if self.populationData.length is 0
           # no results
           self.displayNoResults()

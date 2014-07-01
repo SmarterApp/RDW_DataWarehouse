@@ -446,8 +446,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertIn('2', counts)
         self.assertIn('3', counts)
         self.assertEqual(2, counts['2'])
-        self.assertEqual(1
-                         , counts['3'])
+        self.assertEqual(1, counts['3'])
         self.assertEqual(2, len(tasks))
 
     def test_create_cover_sheet_generate_tasks(self):

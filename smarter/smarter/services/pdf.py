@@ -356,10 +356,10 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
     guids_by_grade = {}
     if student_guids is None:
         for grade in grades:
-            guids_by_grade[grade] = []
             guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
                                        effective_date=effective_date, grade=grade)
             if len(guids) > 0:
+                guids_by_grade[grade] = []
                 for result in guids:
                     all_guids.append(result[Constants.STUDENT_GUID])
                     guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
@@ -370,11 +370,11 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
         guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
                                    effective_date=effective_date, grade=grade, student_guids=student_guids)
         grade = 'all' if grade is None else grade
-        guids_by_grade[grade] = []
         if len(guids) > 0:
-                for result in guids:
-                    all_guids.append(result[Constants.STUDENT_GUID])
-                    guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
+            guids_by_grade[grade] = []
+            for result in guids:
+                all_guids.append(result[Constants.STUDENT_GUID])
+                guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
     if len(all_guids) == 0:
         raise InvalidParameterError('No students match filters')
     return all_guids, guids_by_grade

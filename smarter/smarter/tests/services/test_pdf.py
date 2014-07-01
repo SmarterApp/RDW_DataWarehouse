@@ -376,11 +376,11 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(InvalidParameterError, _create_student_guids, None, ['7'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
                           '2016', '20160404', {'sex': ['not_stated']})
 
-    @patch('smarter.services.pdf.get.delay')
+    @patch('smarter.services.pdf.get.apply_async')
     def test_get_single_pdf_content(self, mock_get):
         mock_get.return_value.get.return_value = 'BIG PDF CONTENT STUFF'.encode()
         response = get_single_pdf_content('/tmp', 'localhost/', '123', 'edware', 30, 'NC', '2016', '20160404', AssessmentType.SUMMATIVE,
-                                          'a629ca88-afe6-468c-9dbb-92322a284602', 'en', False, False, 30, {})
+                                          'a629ca88-afe6-468c-9dbb-92322a284602', 'en', False, False, 30, {}, 'single_pdf')
         self.assertEqual(response.status_code, 200)
 
     @patch('smarter.services.pdf.get')
@@ -388,14 +388,14 @@ class TestServices(Unittest_with_edcore_sqlite):
         mock_get.return_value = None
         self.assertRaises(APINotFoundException, get_single_pdf_content, '/tmp', 'localhost/', '123', 'edware', 30, 'NC',
                           '2016', '20160304', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb-92322a284602', 'en',
-                          False, False, 30, {})
+                          False, False, 30, {}, 'single_pdf')
 
     @patch('smarter.services.pdf.get')
     def test_get_single_pdf_content_bad_student_guid(self, mock_get):
         mock_get.return_value = None
         self.assertRaises(APIForbiddenError, get_single_pdf_content, '/tmp', 'localhost/', '123', 'edware', 30, 'NC',
                           '2016', '20160404', AssessmentType.SUMMATIVE, 'a629ca88-afe6-468c-9dbb', 'en', False, False,
-                          30, {})
+                          30, {}, 'single_pdf')
 
     def test_create_student_pdf_url(self):
         student_guid = '1-2-3-4-5'

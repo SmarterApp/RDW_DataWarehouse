@@ -103,7 +103,6 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
     NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
     '''
     prepare(cookie, url, outputfile, options=options, timeout=timeout, cookie_name=cookie_name, grayscale=grayscale, always_generate=always_generate)
-
     with open(outputfile, 'rb') as file:
         stream = file.read()
 

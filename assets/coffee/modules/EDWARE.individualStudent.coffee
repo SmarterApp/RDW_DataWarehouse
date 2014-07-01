@@ -186,7 +186,7 @@ define [
       @configData.reportName = Constants.REPORT_NAME.ISR
       @configData.asmtTypes = @getAsmtTypes()
       self = this
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, (asmt) ->
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @configData, false, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtForISR(asmt)
         self.render()

@@ -28,7 +28,7 @@ define [
       @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
       # Create search box if true, else remove it
-      if createSearch then @searchBox ?= @createSearchBox() else $('.searchItem').remove()
+      @searchBox ?= @createSearchBox() if createSearch 
 
     createSearchBox: () ->
       $('#search').edwareSearchBox @config.labels

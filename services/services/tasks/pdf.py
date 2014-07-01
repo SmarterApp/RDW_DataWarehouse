@@ -288,24 +288,26 @@ def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT
 
 
 def _count_pdf_pages(pdf_path):
-    seen_type_path = False  # /Type /Pages
+    seen_type = False  # /Type
+    seen_pages = False  # /Pages
     seen_kids = False  # /Kids
+    seen_count = False  # /Count
     with open(pdf_path, 'rb') as file:
         for line in file:
             try:
                 line = line.decode("utf-8")
-                if not seen_type_path and not seen_kids and '/Type /Pages' in line:
-                    seen_type_path = True
-                if seen_type_path and not seen_kids and '/Kids' in line:
-                    seen_kids = True
-                if seen_type_path and seen_kids and '/Count' in line:
-                    parts = line.split(' ')
-                    found_count = False
-                    for part in parts:
-                        if found_count:
-                            return int(part)
-                        if part == '/Count':
-                            found_count = True
+                parts = line.split(' ')
+                for part in parts:
+                    if not seen_type and not seen_pages and not seen_kids and part == '/Type':
+                        seen_type = True
+                    elif seen_type and not seen_pages and not seen_kids and part == '/Pages':
+                        seen_pages = True
+                    elif seen_type and seen_pages and not seen_kids and part == '/Kids':
+                        seen_kids = True
+                    elif seen_type and seen_pages and seen_kids and part == '/Count':
+                        seen_count = True
+                    elif seen_type and seen_pages and seen_kids and seen_count:
+                        return int(part)
             except:
                 pass
 

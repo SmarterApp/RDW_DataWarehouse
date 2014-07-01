@@ -89,8 +89,10 @@ common:
       always_generate: False
       base.url: http://localhost:6543/assets/html/
       batch.job.queue: batch_pdf_gen
+      single_generate.queue: single_pdf_gen
       health_check.job.queue: health_check
-      merge.pdfunite_timeout: 300
+      merge:
+         pdfunite_timeout: 300
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
@@ -100,15 +102,15 @@ common:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 20
-      CELERY_DEFAULT_QUEUE: celery
-      CELERY_DEFAULT_ROUTING_KEY: celery
+      CELERY_DEFAULT_QUEUE: batch_pdf_gen
+      CELERY_DEFAULT_ROUTING_KEY: batch_pdf_gen
       CELERY_DEFAULT_EXCHANGE_TYPE: direct
       CELERY_QUEUES:
         -   name: celery
             exchange: direct
             key: celery
         -   name: batch_pdf_gen
-            exchange: direct,
+            exchange: direct
             key: batch_pdf_gen
         -   name: batch_worker
             exchange: direct
@@ -116,6 +118,9 @@ common:
         -   name: health_check
             exchange: direct
             key: health_check
+        -   name: single_pdf_gen
+            exchange: direct
+            key: single_pdf_gen
     extract:
       celery_timeout: 30
       retry_delay: 60

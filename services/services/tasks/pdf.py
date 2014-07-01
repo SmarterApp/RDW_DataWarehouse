@@ -29,7 +29,7 @@ mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
 pdfunite_procs = ['pdfunite']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
-cover_sheet_pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000']
+cover_sheet_pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '1000']
 
 OK = 0
 FAIL = 1
@@ -175,9 +175,6 @@ def delete(path):
 @celery.task(name='tasks.pdf.coversheet')
 def bulk_pdf_cover_sheet(cookie, out_name, merged_name, base_url, base_params, cookie_name='edware', grayscale=False,
                          timeout=TIMEOUT):
-    # Make sure the output directory exists
-    prepare_path(out_name)
-
     # Get the page count from the merged PDF
     base_params['pageCount'] = _count_pdf_pages(merged_name)
 

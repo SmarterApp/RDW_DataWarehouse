@@ -12,7 +12,7 @@ from smarter.security.context import check_context
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
-from sqlalchemy.sql import and_, select, func
+from sqlalchemy.sql import and_, select
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.security.context import select_with_context
 from smarter.reports.helpers.filters import apply_filter_to_query

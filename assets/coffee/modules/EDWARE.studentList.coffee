@@ -256,7 +256,7 @@ define [
       # placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder
       @config.labels.SearchResultText = @config.SearchResultText
-      @actionBar = edwareReportActionBar.create '#actionBar', @config, (asmt) ->
+      @actionBar = edwareReportActionBar.create '#actionBar', @config, true, (asmt) ->
         # save assessment type
         edwarePreferences.saveAsmtPreference asmt
         edwarePreferences.saveAsmtForISR asmt

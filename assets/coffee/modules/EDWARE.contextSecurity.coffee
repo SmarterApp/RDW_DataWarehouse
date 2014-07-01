@@ -25,10 +25,11 @@ define [
 
   class ContextSecurity
 
-    constructor: (permissions, config) ->
+    constructor: (permissions, config, @reportType) ->
       @permissions = $.extend(true, {}, DEFAULT_PERMISSIONS, permissions)
       @no_pii_msg = config.labels.no_pii
       @extractType = config.CSVOptions.extractType
+      @isDistrict = @reportType is 'district'
 
     apply: () ->
       @apply_pii_security()
@@ -55,11 +56,12 @@ define [
 
     apply_bulk_extract_security: () ->
       assessment_access = @permissions.sar_extracts.all
-      registration_access = @permissions.srs_extracts.all
-      completion_access = @permissions.src_extracts.all
+      registration_access = @permissions.srs_extracts.all and not @isDistrict
+      completion_access = @permissions.src_extracts.all and not @isDistrict
       # hide csv extract option if user doesn't have any permission
       if not assessment_access and not registration_access and not completion_access
         $('li.csv').hide()
+
       if not assessment_access
         @remove_extractType('studentAssessment')
       if not registration_access
@@ -77,8 +79,8 @@ define [
       @permissions.pii.all or (row_id in @permissions.pii.guid)
 
 
-  init = (permissions, config) ->
-    @security = new ContextSecurity(permissions, config)
+  init = (permissions, config, reportType) ->
+    @security = new ContextSecurity(permissions, config, reportType)
 
   hasPIIAccess = (row_id) ->
     if not @security

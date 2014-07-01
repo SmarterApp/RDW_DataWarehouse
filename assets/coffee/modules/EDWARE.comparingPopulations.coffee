@@ -91,15 +91,24 @@ define [
             self.data.metadata[subject] = self.defaultColors
 
         # initialize context security
-        contextSecurity.init data.context.permissions, self.config
+        contextSecurity.init data.context.permissions, self.config, self.reportType
 
-        # process breadcrumbs
+        # Process header bar
+        self.createHeaderAndFooter()
+
+        # No results if something went wrong
+        if self.populationData.length is 0 and not self.data.context.items[1]
+          # no results
+          self.displayNoResults()
+          return
+
+        # Render rest of header bar
         self.renderBreadcrumbs(self.data.context, self.labels)
         self.renderReportInfo()
         self.renderReportActionBar()
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
-        self.createHeaderAndFooter()
 
+        # No results
         if self.populationData.length is 0
           # no results
           self.displayNoResults()
@@ -232,6 +241,7 @@ define [
         reportTitle: @breadcrumbs.getReportTitle()
         reportName: Constants.REPORT_NAME.CPOP
         reportInfoText: @config.reportInfo
+        reportType: @reportType
         labels: @labels
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions
@@ -257,7 +267,8 @@ define [
       # placeholder text for search box
       @config.labels.searchPlaceholder = @config.searchPlaceholder[@reportType]
       @config.labels.SearchResultText = @config.SearchResultText
-      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, () ->
+      if @reportType == 'school' then displaySearch = false else displaySearch = true
+      @actionBar ?= edwareReportActionBar.create '#actionBar', @config, displaySearch, () ->
         self.reload self.param
 
     onAcademicYearSelected: (year) ->

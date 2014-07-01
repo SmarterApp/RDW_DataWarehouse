@@ -166,7 +166,7 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
     def test_post_extract_service(self):
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['NC'],
-                                    'districtGuid': '229',
+                                    'districtGuid': ['229'],
                                     'schoolGuid': '936',
                                     'asmtSubject': ['Math'],
                                     'asmtType': ['SUMMATIVE']}

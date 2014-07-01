@@ -180,7 +180,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],
-                  'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
+                  'districtGuid': [None],
                   'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],

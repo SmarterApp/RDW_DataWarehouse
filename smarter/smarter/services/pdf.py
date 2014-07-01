@@ -238,7 +238,8 @@ def get_pdf_content(params):
     if student_guids is not None and (type(student_guids) is not list or (len(student_guids) == 1 and allow_single)):
         # Get cookies and other config items
         (cookie_name, cookie_value) = get_session_cookie()
-        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids, lang, is_grayscale, always_generate, celery_timeout, params)
+        single_generate_queue = settings.get('pdf.single_generate.queue')
+        response = get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year, effective_date, asmt_type, student_guids, lang, is_grayscale, always_generate, celery_timeout, params, single_generate_queue)
     else:
         response = get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, student_guids, grades, state_code, district_guid, school_guid, asmt_type, asmt_year, effective_date, lang, is_grayscale, always_generate, celery_timeout, params)
     return response
@@ -246,7 +247,7 @@ def get_pdf_content(params):
 
 def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, subprocess_timeout, state_code, asmt_year,
                            effective_date, asmt_type, student_guid, lang, is_grayscale, always_generate, celery_timeout,
-                           params):
+                           params, single_generate_queue):
     if type(student_guid) is list:
         student_guid = student_guid[0]
 
@@ -258,7 +259,10 @@ def get_single_pdf_content(pdf_base_dir, base_url, cookie_value, cookie_name, su
                                                              pdf_report_base_dir=pdf_base_dir, student_guids=[student_guid],
                                                              asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
     file_name = files_by_guid[student_guid]
-    celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=subprocess_timeout, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
+    args = (cookie_value, url, file_name)
+    options = {'cookie_name': cookie_name, 'timeout': subprocess_timeout, 'grayscale': is_grayscale, 'always_generate': always_generate}
+
+    celery_response = get.apply_async(args=args, kwargs=options, queue=single_generate_queue)  # @UndefinedVariable
     pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type=Constants.APPLICATION_PDF)

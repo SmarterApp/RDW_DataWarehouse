@@ -16,18 +16,19 @@ define [
 
   class ReportActionBar
 
-    constructor: (@container, @config, @reloadCallback) ->
-      @initialize()
+    constructor: (@container, @config, createSearch, @reloadCallback) ->
+      @initialize(createSearch)
       @bindEvents()
 
-    initialize: () ->
+    initialize: (createSearch) ->
       @container = $(@container)
       @container.html Mustache.to_html ActionBarTemplate,
         labels: @config.labels
       @legend ?= @createLegend()
       @asmtDropdown = @createAsmtDropdown()
       @printer ?= @createPrint()
-      @searchBox ?= @createSearchBox()
+      # Create search box if true, else remove it
+      if createSearch then @searchBox ?= @createSearchBox() else $('.searchItem').remove()
 
     createSearchBox: () ->
       $('#search').edwareSearchBox @config.labels
@@ -68,7 +69,7 @@ define [
 
     update: () ->
       # Callback to search box to highlight if necessary
-      @searchBox.addHighlight()
+      @searchBox.addHighlight() if @searchBox
 
     prepareSubjects: () ->
       # use customized subject interval
@@ -106,8 +107,8 @@ define [
       $('a.printLabel').click ->
         self.printer.show()
 
-  create = (container, config, reloadCallback) ->
-    new ReportActionBar(container, config, reloadCallback)
+  create = (container, config, createSearch, reloadCallback) ->
+    new ReportActionBar(container, config, createSearch, reloadCallback)
 
   ReportActionBar: ReportActionBar
   create: create

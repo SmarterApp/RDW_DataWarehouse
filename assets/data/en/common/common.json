@@ -593,7 +593,10 @@
             "desc": "Download summative results for all students in this school."
         },
         "export_request_extract": {
-            "text": "State-level reports & extracts",
+            "text": {
+                "state": "State-level reports & extracts",
+                "district": "District-level reports & extracts"
+            },
             "desc": "Download registration reports and XML extracts."
         },
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",

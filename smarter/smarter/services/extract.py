@@ -76,9 +76,14 @@ TENANT_EXTRACT_PARAMS = {
             "required": True,
         },
         Constants.DISTRICTGUID: {
-            "type": "string",
-            "required": False,
-            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+            },
+            "minItems": 1,
+            "uniqueItems": True,
+            "required": False
         },
         Constants.SCHOOLGUID: {
             "type": "string",

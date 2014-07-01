@@ -22,7 +22,8 @@ from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_req
     _get_merged_pdf_name, _create_student_guids, get_single_pdf_content, \
     _create_student_pdf_url, _create_pdf_merge_tasks, \
     _create_urls_by_student_guid, get_bulk_pdf_content,\
-    _create_pdf_generate_tasks
+    _create_pdf_generate_tasks, _create_cover_sheet_generate_tasks, _create_pdf_cover_merge_tasks,\
+    _get_cover_sheet_name
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
@@ -88,7 +89,11 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.method = 'POST'
-        self.__request.json_body = {Constants.STUDENTGUID: ['19489898-d469-41e2-babc-265ecbab2337'], Constants.STATECODE: 'NC', Constants.ASMTTYPE: AssessmentType.SUMMATIVE, Constants.EFFECTIVEDATE: 20160404}
+        self.__request.json_body = {Constants.STUDENTGUID: ['19489898-d469-41e2-babc-265ecbab2337'],
+                                    Constants.STATECODE: 'NC',
+                                    Constants.ALLOWSINGLE: 'false',
+                                    Constants.ASMTTYPE: AssessmentType.SUMMATIVE,
+                                    Constants.EFFECTIVEDATE: 20160404}
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
@@ -248,23 +253,23 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(InvalidParameterError, _get_school_name, 'NC', 'Bad', 'Bad')
 
     def test_get_student_guids(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {})
+        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 8)
 
     def test_get_student_guids_males(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'sex': ['male']})
+        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {'sex': ['male']}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 4)
 
     def test_get_student_guids_group1(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']})
+        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group1Id': ['d20236e0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 5)
 
     def test_get_student_guids_group2(self):
-        guids = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']})
+        guids = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {'group2Id': ['ee7bcbb0-eb48-11e3-ac10-0800200c9a66']}, '2016', '20160404', '7')
         self.assertEqual(len(guids), 6)
 
     def test_get_student_guids_alphabetical(self):
-        recs = _get_student_guids('NC', '229', '939', '7', AssessmentType.SUMMATIVE, '2016', '20160404', {})
+        recs = _get_student_guids('NC', '229', '939', AssessmentType.SUMMATIVE, {}, '2016', '20160404', '7')
         name = None
         for record in recs:
             if name is not None:
@@ -344,11 +349,12 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(end_in, True)
 
     def test_create_student_guids_by_guids(self):
-        all_guids, guids_by_grade = _create_student_guids(['1', '2', '3'], None, 'NC', None, None, AssessmentType.SUMMATIVE,
-                                                          '2016', '20160404', {})
-        self.assertEqual(len(all_guids), 3)
-        self.assertIn('all', guids_by_grade)
-        self.assertEqual(len(guids_by_grade['all']), 3)
+        all_guids, guids_by_grade = _create_student_guids(['c799b218-0bfb-413d-9ec1-684cde99851d',
+                                                           '115f7b10-9e18-11e2-9e96-0800200c9a66'], ['8'], 'NC', '229',
+                                                          '939', AssessmentType.SUMMATIVE, '2016', '20160404', {})
+        self.assertEqual(len(all_guids), 2)
+        self.assertIn('8', guids_by_grade)
+        self.assertEqual(len(guids_by_grade['8']), 2)
 
     def test_create_student_guids_by_grade(self):
         all_guids, guids_by_grade = _create_student_guids(None, ['7', '8'], 'NC', '229', '939', AssessmentType.SUMMATIVE,
@@ -409,28 +415,88 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_create_pdf_merge_tasks_no_guid(self):
         pdf_base_dir = '/base'
-        directory_to_archive = '/foo'
+        directory_for_merged = '/merged'
+        directory_for_covers = '/covers'
         guids_by_grade = []
         files_by_guid = {'a5ddfe12-740d-4487-9179-de70f6ac33be': '/foo/abc.pdf'}
         school_name = 'schoolname here'
         lang = 'en'
         is_grayscale = None
-        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
         self.assertEqual(0, len(tasks))
+        self.assertEqual(0, len(paths))
+        self.assertEqual(0, len(counts))
         guids_by_grade = {'3': 'a5ddfe12-740d-4487-9179-de70f6ac33be'}
-        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
         self.assertEqual(1, len(tasks))
+        self.assertEqual(1, len(paths))
+        self.assertEqual(1, len(counts))
 
     def test_create_pdf_merge_tasks_with_guids(self):
         pdf_base_dir = '/foo'
-        directory_to_archive = '/archive'
+        directory_for_merged = '/merged'
         guids_by_grade = {'2': ['1-2-3-4', 'a-b-c-d'], '3': '4-3-2-1'}
         files_by_guid = {'1-2-3-4': '/foo/1.pdf', 'a-b-c-d': '/foo/2.pdf', '4-3-2-1': '/foo/3.pdf'}
         school_name = 'Apple School'
         lang = 'en'
         is_grayscale = False
-        tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        self.assertEqual(2, len(paths))
+        self.assertEqual(2, len(counts))
+        self.assertIn('2', counts)
+        self.assertIn('3', counts)
+        self.assertEqual(2, counts['2'])
+        self.assertEqual(1
+                         , counts['3'])
         self.assertEqual(2, len(tasks))
+
+    def test_create_cover_sheet_generate_tasks(self):
+        cookie_val = 'jsdfhiaewf90ahfa;kdfja;weiofaw'
+        cookie_name = 'edware'
+        is_grayscale = True
+        school_name = 'The Great School of Magnificent Grandeur'
+        user_name = 'Principal Pigwilly'
+        directory_for_covers = '/covers'
+        merged_by_grade = {'3': '/merged/3.pdf', '4': '/merged/4.pdf', '5': '/merged/5.pdf'}
+        student_count_by_grade = {'3': 7, '4': 9, '5': 15}
+        tasks, sheets = _create_cover_sheet_generate_tasks(cookie_val, cookie_name, is_grayscale, school_name,
+                                                           user_name, directory_for_covers, merged_by_grade,
+                                                           student_count_by_grade)
+        self.assertEqual(3, len(tasks))
+        self.assertEqual(3, len(sheets))
+
+    def test_create_cover_sheet_generate_tasks_no_generated(self):
+        cookie_val = 'jsdfhiaewf90ahfa;kdfja;weiofaw'
+        cookie_name = 'edware'
+        is_grayscale = True
+        school_name = 'The Great School of Magnificent Grandeur'
+        user_name = 'Principal Pigwilly'
+        directory_for_covers = '/covers'
+        merged_by_grade = None
+        student_count_by_grade = {'3': 7, '4': 9, '5': 15}
+        tasks, sheets = _create_cover_sheet_generate_tasks(cookie_val, cookie_name, is_grayscale, school_name,
+                                                           user_name, directory_for_covers, merged_by_grade,
+                                                           student_count_by_grade)
+        self.assertEqual(0, len(tasks))
+        self.assertEqual(0, len(sheets))
+
+    def test_create_pdf_cover_merge_tasks(self):
+        merged_pdfs_by_grade = {'3': '/meged/3.pdf', '4': '/merged/4.pdf'}
+        cover_sheets_by_grade = {'3': '/covers/3.pdf', '4': '/covers/4.pdf'}
+        directory_to_archive = '/archive'
+        pdf_base_dir = '/pdf'
+        tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive,
+                                              pdf_base_dir)
+        self.assertEqual(2, len(tasks))
+
+    def test_create_pdf_cover_merge_tasks_no_merged(self):
+        merged_pdfs_by_grade = None
+        cover_sheets_by_grade = None
+        directory_to_archive = '/archive'
+        pdf_base_dir = '/pdf'
+        tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive,
+                                              pdf_base_dir)
+        self.assertEqual(0, len(tasks))
 
     def test_create_urls_by_student_guid(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
@@ -439,8 +505,14 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertIn(url['a5ddfe12-740d-4487-9179-de70f6ac33be'], ['http://foo.com/abc?pdf=true&studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be',
                                                                     'http://foo.com/abc?studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be&pdf=true'])
 
+    def test_get_cover_sheet_name(self):
+        name = _get_cover_sheet_name('7')
+        self.assertEqual('cover_sheet_grade_7.pdf', name)
+
     @patch('smarter.services.pdf._get_archive_name')
+    @patch('smarter.services.pdf._get_cover_sheet_name')
     @patch('smarter.services.pdf._start_bulk')
+    @patch('smarter.services.pdf._create_cover_sheet_generate_tasks')
     @patch('smarter.services.pdf._create_pdf_merge_tasks')
     @patch('smarter.services.pdf._create_pdf_generate_tasks')
     @patch('smarter.services.pdf._get_school_name')
@@ -451,7 +523,8 @@ class TestServices(Unittest_with_edcore_sqlite):
     @patch('smarter.services.pdf.authenticated_userid')
     def test_get_bulk_pdf_content(self, mock_authenticated_userid, mock_create_student_guids, mock_generate_isr_report_path_by_student_guid,
                                   mock_create_urls_by_student_guid, mock_register_file, mock_get_school_name, mock_create_pdf_generate_tasks,
-                                  mock_create_pdf_merge_tasks, mock_start_bulk, mock_get_archive_name):
+                                  mock_create_pdf_merge_tasks, mock_create_cover_sheet_generate_tasks, mock_start_bulk,
+                                  mock_get_cover_sheet_name, mock_get_archive_name):
         mock_authenticated_userid.get_uid.return_value = ''
         mock_create_student_guids.return_value = '', ''
         mock_generate_isr_report_path_by_student_guid.return_value = ''
@@ -459,8 +532,10 @@ class TestServices(Unittest_with_edcore_sqlite):
         mock_register_file.return_value = '', 'http://foo.com/abc/hello'
         mock_get_school_name.return_value = ''
         mock_create_pdf_generate_tasks.return_value = ''
-        mock_create_pdf_merge_tasks.return_value = ''
+        mock_create_pdf_merge_tasks.return_value = '', '', ''
+        mock_create_cover_sheet_generate_tasks.return_value = '', ''
         mock_start_bulk.return_value = ''
+        mock_get_cover_sheet_name.return_value = 'cover_sheet_grade_3.pdf'
         mock_get_archive_name.return_value = 'archive_file.pdf'
         pdf_base_dir = '/foo1'
         base_url = 'http://foo.com/abc'

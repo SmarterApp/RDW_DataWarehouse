@@ -22,7 +22,8 @@ from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_req
     _get_merged_pdf_name, _create_student_guids, get_single_pdf_content, \
     _create_student_pdf_url, _create_pdf_merge_tasks, \
     _create_urls_by_student_guid, get_bulk_pdf_content,\
-    _create_pdf_generate_tasks
+    _create_pdf_generate_tasks, _create_cover_sheet_generate_tasks, _create_pdf_cover_merge_tasks,\
+    _get_cover_sheet_name
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
@@ -431,8 +432,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertEqual(1, len(paths))
         self.assertEqual(1, len(counts))
 
-
-
     def test_create_pdf_merge_tasks_with_guids(self):
         pdf_base_dir = '/foo'
         directory_for_merged = '/merged'
@@ -451,12 +450,64 @@ class TestServices(Unittest_with_edcore_sqlite):
                          , counts['3'])
         self.assertEqual(2, len(tasks))
 
+    def test_create_cover_sheet_generate_tasks(self):
+        cookie_val = 'jsdfhiaewf90ahfa;kdfja;weiofaw'
+        cookie_name = 'edware'
+        is_grayscale = True
+        school_name = 'The Great School of Magnificent Grandeur'
+        user_name = 'Principal Pigwilly'
+        directory_for_covers = '/covers'
+        merged_by_grade = {'3': '/merged/3.pdf', '4': '/merged/4.pdf', '5': '/merged/5.pdf'}
+        student_count_by_grade = {'3': 7, '4': 9, '5': 15}
+        tasks, sheets = _create_cover_sheet_generate_tasks(cookie_val, cookie_name, is_grayscale, school_name,
+                                                           user_name, directory_for_covers, merged_by_grade,
+                                                           student_count_by_grade)
+        self.assertEqual(3, len(tasks))
+        self.assertEqual(3, len(sheets))
+
+    def test_create_cover_sheet_generate_tasks_no_generated(self):
+        cookie_val = 'jsdfhiaewf90ahfa;kdfja;weiofaw'
+        cookie_name = 'edware'
+        is_grayscale = True
+        school_name = 'The Great School of Magnificent Grandeur'
+        user_name = 'Principal Pigwilly'
+        directory_for_covers = '/covers'
+        merged_by_grade = None
+        student_count_by_grade = {'3': 7, '4': 9, '5': 15}
+        tasks, sheets = _create_cover_sheet_generate_tasks(cookie_val, cookie_name, is_grayscale, school_name,
+                                                           user_name, directory_for_covers, merged_by_grade,
+                                                           student_count_by_grade)
+        self.assertEqual(0, len(tasks))
+        self.assertEqual(0, len(sheets))
+
+    def test_create_pdf_cover_merge_tasks(self):
+        merged_pdfs_by_grade = {'3': '/meged/3.pdf', '4': '/merged/4.pdf'}
+        cover_sheets_by_grade = {'3': '/covers/3.pdf', '4': '/covers/4.pdf'}
+        directory_to_archive = '/archive'
+        pdf_base_dir = '/pdf'
+        tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive,
+                                              pdf_base_dir)
+        self.assertEqual(2, len(tasks))
+
+    def test_create_pdf_cover_merge_tasks_no_merged(self):
+        merged_pdfs_by_grade = None
+        cover_sheets_by_grade = None
+        directory_to_archive = '/archive'
+        pdf_base_dir = '/pdf'
+        tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive,
+                                              pdf_base_dir)
+        self.assertEqual(0, len(tasks))
+
     def test_create_urls_by_student_guid(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         baseURL = 'http://foo.com/abc'
         url = _create_urls_by_student_guid(studentGuid, 'NC', baseURL, {})
         self.assertIn(url['a5ddfe12-740d-4487-9179-de70f6ac33be'], ['http://foo.com/abc?pdf=true&studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be',
                                                                     'http://foo.com/abc?studentGuid=a5ddfe12-740d-4487-9179-de70f6ac33be&pdf=true'])
+
+    def test_get_cover_sheet_name(self):
+        name = _get_cover_sheet_name('7')
+        self.assertEqual('cover_sheet_grade_7.pdf', name)
 
     @patch('smarter.services.pdf._get_archive_name')
     @patch('smarter.services.pdf._get_cover_sheet_name')

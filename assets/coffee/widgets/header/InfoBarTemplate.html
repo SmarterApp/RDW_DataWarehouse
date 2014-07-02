@@ -1,30 +1,48 @@
-<ul role="menubar" aria-label="information bar menu">
+<ul role="menubar" aria-label="information bar menu" class="nav nav-pills">
     <li>
-        <h2 class="title" role="heading">{{title}}</h2>
-        <a class="reportInfoIcon inherit" href='#' aria-label="about this report" aria-labelledby="reportInfoPopover" aria-live="polite"></a>
+        <h2 class="title marginLeft20" role="heading">{{title}}</h2>
+    </li>
+    <li class="edware-vertical-bar">
+        <a class="inherit reportInfoIcon" href='#' aria-label="about this report" aria-labelledby="reportInfoPopover" aria-live="polite">
+            <i class="edware-icon-report-info"/>
+        </a>
     </li>
     <li class="download">
-        <a class="downloadIcon" href='#' aria-label="download button" title="Export Report Data"></a>
-        <div id="downloadMenuPopup"></div></li>
-    <li class="overall">
-        {{#subjects}}
-        <div class="info">
-            <span>{{asmt_subject_text}}</span>
-            <span class="indicator_cell" style="background-color: {{score_bg_color}}; color: {{score_text_color}}">
-                <strong>{{asmt_score}}</strong>
-            </span>
-            <span class="overallDesc" style="color:{{score_color}};">{{score_name}}</span>
-        </div>
-        {{/subjects}}
-    </li>
-    <li class="academicYearArea pull-right">
-        <span class="info pull-left marginRight8" aria-hidden="true">
-            {{labels.academic_year}}:
-        </span>
-        <a href="#" class="info pull-left inherit academicYearInfoIcon" aria-label="about this selector" aria-labelledby="academicYearInfoPopover" aria-live="polite">
-            <i class="edware-icon-info-mark marginRight8"></i>
+        <a class="downloadIcon" href='#' aria-label="download button" title="Export Report Data">
+            <i class="edware-icon-download downloadIcon"/>
+                DOWNLOAD
         </a>
-        <div id="academicYearAnchor" class="pull-left"></div>
+        <div id="downloadMenuPopup"></div>
+    </li>
+    <li class="pull-right">
+        <ul class="nav nav-pills margin0">
+            {{#subjects}}
+            <li class="padRight17 marginLeft17 edware-vertical-bar">
+                <div>
+                    <b>{{asmt_subject_text}}</b>
+                    <div>
+                        <span class="indicator_cell marginRight8" style="background-color: {{score_bg_color}}; color: {{score_text_color}}">
+                            <strong>{{asmt_score}}</strong>
+                        </span>
+                        <span class="overallDesc" style="color:{{score_color}};">{{score_name}}</span>
+                    </div>
+                </div>
+            </li>
+            {{/subjects}}
+        </ul>
+    </li>
+    <li class="pull-right padRight12 academicYearArea">
+        <ul class="nav nav-pills margin0">
+            <li aria-hidden="true">
+                <span class="academicYearText">{{labels.academic_year}}:</span>
+            </li>
+            <li>
+                <a href="#" class="pull-left inherit academicYearInfoIcon" aria-label="about this selector" aria-labelledby="academicYearInfoPopover" aria-live="polite">
+                    <i class="edware-icon-info-mark"></i>
+                </a>
+            </li>
+            <li><div id="academicYearAnchor" class="pull-left"></div></li>
+        </ul>
     </li>
 </ul>
 <div class="reminderMessage" style="display: none;">

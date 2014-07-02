@@ -207,7 +207,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics</a> <span aria-hidden='true'>Overall Score</span><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 230,
@@ -222,7 +222,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy</a> <span aria-hidden='true'>Overall Score</span><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 230,
@@ -266,7 +266,7 @@
                     },
                     {
                         "name": "{{subject1}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics</a> <span aria-hidden='true'>Overall Score</span><div id='subject1_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
                         "field": "subject1.asmt_score",
                         "width": 175,
@@ -339,7 +339,7 @@
                     },
                     {
                         "name": "{{subject2}}",
-                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy</a> <span aria-hidden='true'>Overall Score</span><div id='subject2_perfBar' class='header_perfBar'></div>",
+                        "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
                         "field": "subject2.asmt_score",
                         "width": 175,

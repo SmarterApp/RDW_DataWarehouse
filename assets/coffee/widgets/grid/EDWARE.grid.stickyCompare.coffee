@@ -152,7 +152,7 @@ define [
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
       label = $(element).siblings("label")
-      label.removeAttr('tabindex').text(this.labels.apply_filter)
+      label.removeAttr('tabindex').text(this.labels.select)
       label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
 
       this.resetCompareRowControls()

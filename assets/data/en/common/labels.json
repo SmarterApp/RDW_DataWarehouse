@@ -22,6 +22,7 @@
         "filter": "filter",
         "count": "Count",
         "date": "Date",
+        "select": "Select",
         "deselect_all": "Deselect All",
         "description": "Description",
         "details": "Details",

@@ -133,9 +133,11 @@ define [
     names = options.colModel.name.split "."
     subject = rowObject[names[0]]
     return '' if not subject
+    asmt_subject_text = Constants.SUBJECT_TEXT[subject.asmt_type]
     perf_lvl_name = subject[names[1]][names[2]]['perf_lvl_name']
     Mustache.to_html PERF_LEVEL_TEMPLATE, {
       asmtType: subject.asmt_type,
+      asmtSubjectText: asmt_subject_text
       labels: options.colModel.labels
       perfLevelNumber: value
       columnName: options.colModel.label

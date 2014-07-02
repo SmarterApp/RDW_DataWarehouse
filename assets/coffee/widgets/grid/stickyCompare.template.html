@@ -1,18 +1,22 @@
 <div id="compareSelectedActions">
     <ul class='stickyControls'>
-    <li>
-        <span class="btn-group">
-            <button id ="stickyChain-btn" type="button" class="btn btn-default stickyChainIcon">
-                {{labels.selected}}
+        <li>
+            <span class="btn-group">
+                <button id ="stickyChain-btn" type="button" class="btn btn-default stickyChainIcon">
+                    {{labels.selected}}
+                </button>
+            </span>
+        </li>
+        <li>
+            <span id="stickyClear-lnk" class="stickyClear">
+                <i class="edware-icon-clear"></i>
+                <a href='#'>{{labels.clear}}</a>
+            </span>
+            <button id="stickyCompare-btn" type="button" class="btn btn-primary edware-btn-primary">
+                {{labels.apply_filter}}
             </button>
-        </span>
-    </li>
-    <li><button id="stickyCompare-btn" type="button" class="btn btn-primary edware-btn-primary">
-        {{labels.compare}}
-    </button>
-    <button id="stickyDeselect-btn" type="button" class="btn btn-deselect">
-        {{labels.deselect_all}}
-    </button></li>
+            <span id="stickyInstText" class='info'>{{labels.sticky_inst_text}}</span>
+        </li>
     </ul>
 </div>
 <div id ="compareEnabledActions">

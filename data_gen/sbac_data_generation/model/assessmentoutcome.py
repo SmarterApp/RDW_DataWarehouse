@@ -57,7 +57,7 @@ class SBACAssessmentOutcome(AssessmentOutcome):
         self.acc_streamline_mode = 0
         self.from_date = sbac_config.HIERARCHY_FROM_DATE
         self.to_date = datetime.date(9999, 12, 31)
-        self.item_level_data = None
+        self.item_level_data = []
         self.group_1_id = None
         self.group_1_text = None
         self.group_2_id = None

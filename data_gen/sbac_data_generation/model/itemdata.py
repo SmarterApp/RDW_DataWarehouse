@@ -5,32 +5,30 @@ Model an item data generated for an assessment outcome (an instance of a student
 @date: May 16, 2014
 """
 
-from mongoengine import ReferenceField, Document, EmbeddedDocument, IntField, StringField, DateTimeField
 
-
-class SBACAssessmentOutcomeItemData(EmbeddedDocument):
+class SBACAssessmentOutcomeItemData:
     """
     The SBAC-specific assessment outcome Item Data class.
     """
-    # assessment_outcome = ReferenceField(SBACAssessmentOutcome, required=True)
-    student_guid = StringField(required=True)
-    key = IntField(required=True)
-    segment_id = StringField(required=True)
-    position = IntField(required=True)
-    client_id = StringField(required=False)
-    operational = IntField(required=False)
-    is_selected = IntField(required=False)
-    format = StringField(required=True)
-    score = IntField(required=False)
-    score_status = IntField(required=False)
-    admin_date = DateTimeField(required=False)
-    number_visits = IntField(required=False)
-    strand = StringField(required=False)
-    content_level = StringField(required=False)
-    page_number = IntField(required=False)
-    page_visits = IntField(required=False)
-    page_time = IntField(required=False)
-    dropped = IntField(required=False)
+    def __init__(self):
+        self.student_guid = None
+        self.key = None
+        self.segment_id = None
+        self.position = None
+        self.client_id = None
+        self.operational = None
+        self.is_selected = None
+        self.format = None
+        self.score = None
+        self.score_status = None
+        self.admin_date = None
+        self.number_visits = None
+        self.strand = None
+        self.content_level = None
+        self.page_number = None
+        self.page_visits = None
+        self.page_time = None
+        self.dropped = None
 
     def get_object_set(self):
         """

@@ -157,6 +157,8 @@ def prepare_output_files():
                                 sbac_out_config.DIM_INST_HIER_FORMAT['columns'], root_path=OUT_PATH_ROOT)
     csv_writer.prepare_csv_file(sbac_out_config.DIM_ASMT_FORMAT['name'], sbac_out_config.DIM_ASMT_FORMAT['columns'],
                                 root_path=OUT_PATH_ROOT)
+    csv_writer.prepare_csv_file(sbac_out_config.SR_FORMAT['name'], sbac_out_config.SR_FORMAT['columns'],
+                                root_path=OUT_PATH_ROOT)
 
 
 def build_registration_systems(years, id_gen):
@@ -496,7 +498,7 @@ def generate_district_data(state: SBACState, district: SBACDistrict, reg_sys_gui
             student.rec_id_sr = id_gen.get_rec_id('sr_student')
 
             # Move the student forward (false from the advance method means the student disappears)
-            if sbac_pop_gen.advance_student(student, schools_by_grade, save_to_mongo=False):
+            if sbac_pop_gen.advance_student(student, schools_by_grade):
                 schools_with_grades[student.school][student.grade].append(student)
 
         # With the students moved around, we will re-populate empty grades and create assessments with outcomes for

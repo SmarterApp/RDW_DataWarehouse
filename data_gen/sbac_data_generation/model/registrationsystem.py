@@ -5,19 +5,18 @@ Model a registration system for the SBAC project.
 @date: March 4, 2014
 """
 
-from mongoengine import DateTimeField, Document, IntField, StringField
 
-
-class SBACRegistrationSystem(Document):
+class SBACRegistrationSystem:
     """
     Model a SBAC registration system.
     """
-    guid = StringField(required=True, primary_key=True)
-    guid_sr = StringField(required=True)
-    sys_guid = StringField(required=True)
-    academic_year = IntField(required=True)
-    extract_date = DateTimeField(required=True)
-    callback_url = StringField(required=True)
+    def __init__(self):
+        self.guid = None
+        self.guid_sr = None
+        self.sys_guid = None
+        self.academic_year = None
+        self.extract_date = None
+        self.callback_url = None
 
     def get_object_set(self):
         """

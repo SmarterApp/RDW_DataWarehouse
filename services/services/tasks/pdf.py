@@ -9,6 +9,8 @@ import os
 import sys
 import logging
 import subprocess
+import urllib
+import urllib.parse
 from services.celery import celery
 from services.exceptions import PdfGenerationError
 from edcore.exceptions import NotForWindowsException, RemoteCopyError
@@ -27,6 +29,7 @@ mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
 pdfunite_procs = ['pdfunite']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
+cover_sheet_pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '1000']
 
 OK = 0
 FAIL = 1
@@ -154,6 +157,8 @@ def is_valid(path):
     :return:  True if file is valid, else False
     :rtype: Boolean
     '''
+    if 'cover_sheet_grade_' in path:
+        return os.path.exists(path) and (os.path.getsize(path) > 200)
     return os.path.exists(path) and (os.path.getsize(path) > services.celery.MINIMUM_FILE_SIZE)
 
 
@@ -167,12 +172,30 @@ def delete(path):
         os.remove(path)
 
 
+@celery.task(name='tasks.pdf.coversheet')
+def bulk_pdf_cover_sheet(cookie, out_name, merged_name, base_url, base_params, cookie_name='edware', grayscale=False,
+                         timeout=TIMEOUT):
+    # Get the page count from the merged PDF
+    base_params['pageCount'] = _count_pdf_pages(merged_name)
+
+    # Build the URL for the page to generate
+    encoded_params = urllib.parse.urlencode(base_params)
+    url = base_url + "?%s" % encoded_params
+
+    # Generate the cover sheet
+    generate(cookie, url, out_name, cookie_name=cookie_name, grayscale=grayscale, options=cover_sheet_pdf_defaults,
+             timeout=timeout)
+
+
 @celery.task(name='tasks.pdf.merge')
 def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
+    # Prepare output file
     if os.path.isfile(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
     prepare_path(out_name)
+
+    # Verify that all PDFs to merge exist
     for pdf_file in pdf_files:
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
@@ -259,3 +282,36 @@ def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT
     for proc in procs:
         proc.wait(timeout=timeout)
     return files
+
+
+def _count_pdf_pages(pdf_path):
+    seen_type = False  # /Type
+    seen_pages = False  # /Pages
+    seen_kids = False  # /Kids
+    seen_count = False  # /Count
+    with open(pdf_path, 'rb') as file:
+        for line in file:
+            try:
+                line = line.decode("utf-8")
+                if not seen_type and '/Type' not in line:
+                    continue
+                parts = line.split(' ')
+                for part in parts:
+                    if not seen_type and not seen_pages and not seen_kids and part == '/Type':
+                        seen_type = True
+                    elif seen_type and not seen_pages and not seen_kids and part == '/Pages':
+                        seen_pages = True
+                    elif seen_type and seen_pages and not seen_kids and part == '/Kids':
+                        seen_kids = True
+                    elif seen_type and seen_pages and seen_kids and part == '/Count':
+                        seen_count = True
+                    elif seen_type and seen_pages and seen_kids and seen_count:
+                        return int(part)
+            except:
+                pass
+
+    return -1
+
+
+def _get_cover_sheet_path(cv_dir, grade):
+    return os.path.join(cv_dir, 'cover_sheet_grade_{grade}.pdf'.format(grade=grade))

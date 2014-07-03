@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from services.tasks.pdf import prepare, pdf_merge, get, archive, hpz_upload_cleanup,\
-    group_separator
+    group_separator, bulk_pdf_cover_sheet
 from urllib.parse import urljoin
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -300,6 +300,8 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # Set up directory and file names
     directory_to_archive = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.DATA)
+    directory_for_merged_pdfs = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.MERGED)
+    directory_for_cover_sheets = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.COVER)
     directory_for_zip = os.path.join(pdf_base_dir, Constants.BULK, registration_id, Constants.ZIP)
     archive_file_name = _get_archive_name(school_name, lang, is_grayscale)
     archive_file_path = os.path.join(directory_for_zip, archive_file_name)
@@ -309,17 +311,36 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # Generate cookie
     pdfGenerator = PDFGenerator(settings)
+
     # Create the tasks for each individual student PDF file we want to merge
     generate_tasks = _create_pdf_generate_tasks(pdfGenerator.cookie_value, pdfGenerator.cookie_name, is_grayscale, always_generate, files_by_student_guid,
                                                 urls_by_student_guid)
 
-    pdfunite_timeout = int(settings.get('pdf.merge.pdfunite_timeout', '60'))
     # Create the tasks to merge each PDF by grade
-    merge_tasks = _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_student_guid,
-                                          school_name, lang, is_grayscale, pdfunite_timeout)
+    pdfunite_timeout = int(settings.get('pdf.merge.pdfunite_timeout', '60'))
+    merge_tasks, merged_pdfs_by_grade, student_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
+                                                                                      directory_for_merged_pdfs,
+                                                                                      guids_by_grade,
+                                                                                      files_by_student_guid,
+                                                                                      school_name, lang, is_grayscale,
+                                                                                      pdfunite_timeout)
+
+    # Create tasks for cover sheets
+    cover_sheet_tasks, cover_sheets_by_grade = _create_cover_sheet_generate_tasks(pdfGenerator.cookie_value,
+                                                                                  pdfGenerator.cookie_name,
+                                                                                  is_grayscale, school_name,
+                                                                                  user._User__info['name']['fullName'],
+                                                                                  directory_for_cover_sheets,
+                                                                                  merged_pdfs_by_grade,
+                                                                                  student_count_by_pdf)
+
+    # Create tasks to merge in cover sheets
+    merge_covers_tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade,
+                                                       directory_to_archive, pdf_base_dir, pdfunite_timeout)
 
     # Start the bulk merge
-    _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks, pdf_base_dir)
+    _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks,
+                cover_sheet_tasks, merge_covers_tasks, pdf_base_dir)
 
     # Return the JSON response while the bulk merge runs asynchronously
     return Response(body=json.dumps(response), content_type=Constants.APPLICATION_JSON)
@@ -335,14 +356,25 @@ def _create_student_guids(student_guids, grades, state_code, district_guid, scho
     guids_by_grade = {}
     if student_guids is None:
         for grade in grades:
-            guids = _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, asmt_year,
-                                       effective_date, params)
+            guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
+                                       effective_date=effective_date, grade=grade)
             if len(guids) > 0:
-                all_guids.extend([result[Constants.STUDENT_GUID] for result in guids])
-                guids_by_grade[grade] = [result[Constants.STUDENT_GUID] for result in guids]
+                guids_by_grade[grade] = []
+                for result in guids:
+                    all_guids.append(result[Constants.STUDENT_GUID])
+                    guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
     else:
-        all_guids.extend(student_guids)
-        guids_by_grade['all'] = student_guids
+        grade = None
+        if grades is not None and len(grades) == 1:
+            grade = grades[0]
+        guids = _get_student_guids(state_code, district_guid, school_guid, asmt_type, params, asmt_year=asmt_year,
+                                   effective_date=effective_date, grade=grade, student_guids=student_guids)
+        grade = 'all' if grade is None else grade
+        if len(guids) > 0:
+            guids_by_grade[grade] = []
+            for result in guids:
+                all_guids.append(result[Constants.STUDENT_GUID])
+                guids_by_grade[grade].append(result[Constants.STUDENT_GUID])
     if len(all_guids) == 0:
         raise InvalidParameterError('No students match filters')
     return all_guids, guids_by_grade
@@ -381,19 +413,21 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
     return generate_tasks
 
 
-def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, files_by_guid, school_name, lang,
-                            is_grayscale, pdfunite_timeout):
+def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid,
+                            school_name, lang, is_grayscale, pdfunite_timeout):
     '''
     create pdf merge tasks
     '''
     merge_tasks = []
+    bulk_paths = {}
+    counts_by_grade = {}
     if guids_by_grade:
         for grade, student_guids in guids_by_grade.items():
             if type(student_guids) is not list:
                 student_guids = [student_guids]
             # Create bulk output name and path
             bulk_name = _get_merged_pdf_name(school_name, grade, lang, is_grayscale)
-            bulk_path = os.path.join(directory_to_archive, bulk_name)
+            bulk_path = os.path.join(directory_for_merged, bulk_name)
 
             # Get the files for this grade
             file_names = []
@@ -402,6 +436,62 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_to_archive, guids_by_grade, 
 
             # Create the merge task
             merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
+            bulk_paths[grade] = bulk_path
+            counts_by_grade[grade] = len(file_names)
+    return merge_tasks, bulk_paths, counts_by_grade
+
+
+def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, school_name, user_name,
+                                       directory_for_covers, merged_by_grade, student_count_by_grade):
+    cover_tasks = []
+    cover_sheets_by_grade = {}
+    cv_base_url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/pdfCoverPage.html')
+    cv_params = {
+        'schoolName': school_name,
+        'user': user_name,
+        'date': str(datetime.now().strftime("%m/%d/%Y")),
+        'pageCount': '',
+        'studentCount': '',
+        'grade': ''
+    }
+    if is_grayscale:
+        cv_params['gray'] = True
+    if merged_by_grade:
+        for grade, merged_path in merged_by_grade.items():
+            # Create cover sheet output name and path
+            cover_name = _get_cover_sheet_name(grade)
+            cover_path = os.path.join(directory_for_covers, cover_name)
+
+            # Update the parameters for the URL
+            cv_params_this = copy.deepcopy(cv_params)
+            cv_params_this['grade'] = grade
+            cv_params_this['studentCount'] = student_count_by_grade[grade]
+
+            # Create the cover sheet task
+            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,
+                                                                  cv_params_this, cookie_name, is_grayscale),
+                                                            immutable=True))  # @UndefinedVariable
+            cover_sheets_by_grade[grade] = cover_path
+
+    return cover_tasks, cover_sheets_by_grade
+
+
+def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive, pdf_base_dir, pdfunite_timeout):
+    '''
+    create pdf merge tasks
+    '''
+    merge_tasks = []
+    if merged_pdfs_by_grade and cover_sheets_by_grade:
+        for grade, merged_pdf_path in merged_pdfs_by_grade.items():
+            # Get the desired final output path
+            merged_name = os.path.basename(merged_pdf_path)
+            merged_out_path = os.path.join(directory_to_archive, merged_name)
+
+            # Put the two files together to merge
+            file_names = [cover_sheets_by_grade[grade], merged_pdf_path]
+
+            # Create the merge task
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, merged_out_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
     return merge_tasks
 
 
@@ -423,7 +513,8 @@ def _create_student_pdf_url(student_guid, base_url, params):
     return base_url + "?%s" % encoded_params
 
 
-def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_tasks, merge_tasks, pdf_base_dir):
+def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_tasks, merge_tasks, cover_tasks,
+                merge_covers_tasks, pdf_base_dir):
     '''
     entry point to start a bulk PDF generation request for one or more students
     it groups the generation of individual PDFs into a celery task group and then chains it to the next task to merge
@@ -431,11 +522,19 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
     '''
 
     workflow = chain(group(gen_tasks),
-                     group_separator.subtask(immutable=True),   # @UndefinedVariable
+                     group_separator.subtask(immutable=True),  # @UndefinedVariable
                      group(merge_tasks),
+                     group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     group(cover_tasks),
+                     group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     group(merge_covers_tasks),
                      archive.subtask(args=(archive_file_path, directory_to_archive), immutable=True),  # @UndefinedVariable
                      hpz_upload_cleanup.subtask(args=(archive_file_path, registration_id, pdf_base_dir), immutable=True))  # @UndefinedVariable
     workflow.apply_async()
+
+
+def _get_cover_sheet_name(grade):
+    return 'cover_sheet_grade_{grade}.pdf'.format(grade=grade)
 
 
 def _get_merged_pdf_name(school_name, grade, lang_code, grayscale):
@@ -460,7 +559,8 @@ def _get_archive_name(school_name, lang_code, grayscale):
     return name + ('.g.zip' if grayscale else '.zip')
 
 
-def _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type, asmt_year, effective_date, params):
+def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params,
+                       asmt_year=None, effective_date=None, grade=None, student_guids=None):
     with EdCoreDBConnection(state_code=state_code) as connector:
         # Get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -480,9 +580,12 @@ def _get_student_guids(state_code, district_guid, school_guid, grade, asmt_type,
         query = query.where(fact_asmt_outcome_vw.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
         query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
-        query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
+        if grade is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == grade))
+        if student_guids is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student_guids)))
         if effective_date is not None:
             query = query.where(and_(dim_asmt.c.effective_date == effective_date))
         elif asmt_year is not None:

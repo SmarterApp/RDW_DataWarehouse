@@ -58,7 +58,7 @@ def test_advance_student_advanced():
     schools_by_grade = {grade: [midl_school] for grade in midl_school.grades}
 
     # Test
-    assert pop_gen.advance_student(student, schools_by_grade, hold_back_rate=0, save_to_mongo=False)
+    assert pop_gen.advance_student(student, schools_by_grade, hold_back_rate=0)
 
 
 def test_advance_student_held_back():
@@ -70,7 +70,7 @@ def test_advance_student_held_back():
     schools_by_grade = {grade: [midl_school] for grade in midl_school.grades}
 
     # Test
-    assert pop_gen.advance_student(student, schools_by_grade, hold_back_rate=1, drop_out_rate=0, save_to_mongo=False)
+    assert pop_gen.advance_student(student, schools_by_grade, hold_back_rate=1, drop_out_rate=0)
 
 
 def test_advance_student_drop_out():
@@ -82,8 +82,7 @@ def test_advance_student_drop_out():
     schools_by_grade = {grade: [high_school] for grade in high_school.grades}
 
     # Test
-    assert not pop_gen.advance_student(student, schools_by_grade, hold_back_rate=1, drop_out_rate=1,
-                                       save_to_mongo=False)
+    assert not pop_gen.advance_student(student, schools_by_grade, hold_back_rate=1, drop_out_rate=1)
 
 
 def test_repopulate_school_grade_empty():

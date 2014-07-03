@@ -15,4 +15,4 @@ class SBACSchool(School):
     def __init__(self):
         super().__init__()
         self.guid_sr = None
-        self.takes_interim_asmts = None
+        self.takes_interim_asmts = False

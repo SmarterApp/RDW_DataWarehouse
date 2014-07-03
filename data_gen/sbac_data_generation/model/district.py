@@ -14,5 +14,5 @@ class SBACDistrict(District):
     """
     def __init__(self):
         super().__init__()
-        self.student_grouping = None
+        self.student_grouping = False
         self.guid_sr = None

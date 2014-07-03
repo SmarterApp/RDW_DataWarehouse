@@ -5,8 +5,6 @@ Model the SBAC-specific items of a state.
 @date: February 22, 2014
 """
 
-from mongoengine import StringField
-
 from data_generation.model.state import State
 
 
@@ -14,4 +12,6 @@ class SBACState(State):
     """
     The SBAC-specific state class.
     """
-    guid_sr = StringField(required=True)
+    def __init__(self):
+        super().__init__()
+        self.guid_sr = None

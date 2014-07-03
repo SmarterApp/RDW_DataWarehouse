@@ -5,16 +5,14 @@ Model the SBAC-specific items of a teaching staff.
 @date: June 19, 2014
 """
 
-from mongoengine import StringField, IntField, ReferenceField, Document
-from sbac_data_generation.model.school import SBACSchool
 
-
-class SBACgroup(Document):
+class SBACgroup:
     """
     Model a SBAC student group.
     """
-    type = StringField(required=True)
-    guid_sr = StringField(required=True)
-    school = ReferenceField(SBACSchool, required=True)
-    id = IntField(required=True)
-    name = StringField(required=True)
+    def __init__(self):
+        self.type = None
+        self.guid_sr = None
+        self.school = None
+        self.id = None
+        self.name = None

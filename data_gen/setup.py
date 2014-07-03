@@ -4,7 +4,7 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
-requires = ['FixtureDataGeneration_Core == 0.3.1']
+requires = ['FixtureDataGeneration_Core == 0.4']
 
 tests_require = requires + ['nose',
                             'pep8',
@@ -13,7 +13,7 @@ tests_require = requires + ['nose',
 private_repositories = ['lib']
 
 setuptools.setup(name='FixtureDataGeneration-SBAC',
-                 version='0.1',
+                 version='0.2',
                  description='Fixture data generator for the SBAC project',
                  author='Sonic - Amplify Insight',
                  author_email='insight_ed-ware-sonic@amplify.com',

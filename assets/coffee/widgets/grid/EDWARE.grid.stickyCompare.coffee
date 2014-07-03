@@ -277,9 +277,9 @@ define [
       $('.stickyCheckbox:checked').siblings("label")\
         .attr('tabindex', '0').text(text)
       # To display ex. "districts_selected" label
-      instText_splits = this.labels["sticky_inst_text_" + labelNameKey].split " "
-      this.stickyInstTextPrefix.text(instText_splits[0] + " " + count + " " +  instText_splits[1..instText_splits.length].join(' '))
-      this.stickyChainText.text(count + " " + this.labels[labelNameKey + "_selected"])
+      instText = this.labels["sticky_inst_text"]
+      this.stickyInstTextPrefix.text("#{this.labels.filter} #{count} #{instText[labelNameKey]}")
+      this.stickyChainText.text("#{count} #{this.labels[labelNameKey + "_selected"]}")
 
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {'labels': this.labels}

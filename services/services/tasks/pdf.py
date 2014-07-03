@@ -293,6 +293,8 @@ def _count_pdf_pages(pdf_path):
         for line in file:
             try:
                 line = line.decode("utf-8")
+                if not seen_type and '/Type' not in line:
+                    continue
                 parts = line.split(' ')
                 for part in parts:
                     if not seen_type and not seen_pages and not seen_kids and part == '/Type':

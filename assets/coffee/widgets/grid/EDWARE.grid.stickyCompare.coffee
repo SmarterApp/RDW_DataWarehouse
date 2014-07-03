@@ -26,9 +26,10 @@ define [
       this.stickyEnabledDescription = $('#stickyEnabledDescription')
       this.stickyCompareBtn = $('#stickyCompare-btn')
       this.stickyChainBtn = $('#stickyChain-btn')
+      this.stickyChainText = $('#stickyChain-text')
       this.stickyClearLink = $('#stickyClear-lnk')
       this.stickyShowAllBtn = $('#stickyShowAll-btn')
-      this.stickyInstText = $('#stickyInstText')
+      this.stickyInstTextPrefix = $('#stickyInstTextPrefix')
 
     # Sets information when we know what type of report it is, etc.
     # compareMode is set to false since we know that the html is reloaded
@@ -86,7 +87,7 @@ define [
         # Remove class of checkedlabel, add class of regular label and then set the text
         label = $('.stickyCheckbox').siblings("label")
         label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
-        label.text(self.labels.apply_filter)
+        label.text(self.labels.select)
         self.resetCompareRowControls()
 
       # Show all district button
@@ -276,9 +277,9 @@ define [
       $('.stickyCheckbox:checked').siblings("label")\
         .attr('tabindex', '0').text(text)
       # To display ex. "districts_selected" label
-      instText_splits = this.labels.sticky_inst_text.split " "
-      this.stickyInstText.text(instText_splits[0] + " " + count + " " +  instText_splits[1..instText_splits.length].join(' '))
-      this.stickyChainBtn.text(count + " " + this.labels[labelNameKey + "_selected"])
+      instText_splits = this.labels["sticky_inst_text_" + labelNameKey].split " "
+      this.stickyInstTextPrefix.text(instText_splits[0] + " " + count + " " +  instText_splits[1..instText_splits.length].join(' '))
+      this.stickyChainText.text(count + " " + this.labels[labelNameKey + "_selected"])
 
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {'labels': this.labels}

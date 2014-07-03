@@ -3,19 +3,25 @@
         <li>
             <span class="btn-group">
                 <button id ="stickyChain-btn" type="button" class="btn btn-default stickyChainIcon">
-                    {{labels.selected}}
+                    <span id ="stickyChain-text">{{labels.selected}}</span>
+                    <i class="edware-icon-globalheader-downarrow marginLeft8"></i>
                 </button>
             </span>
         </li>
         <li>
-            <span id="stickyClear-lnk" class="stickyClear">
+            <span id="stickyClear-lnk" class="stickyClear marginRight20">
                 <i class="edware-icon-clear"></i>
                 <a href='#'>{{labels.clear}}</a>
             </span>
-            <button id="stickyCompare-btn" type="button" class="btn btn-primary edware-btn-primary">
+            <button id="stickyCompare-btn" type="button" class="btn btn-primary edware-btn-primary marginRight20">
                 {{labels.apply_filter}}
             </button>
-            <span id="stickyInstText" class='info'>{{labels.sticky_inst_text}}</span>
+            <span id="stickyInstText" class='stickyInstText'>
+                <span id="stickyInstTextPrefix">{{labels.sticky_inst_text}}</span>
+                <span><b>{{labels.compare}}</b></span>
+                <span>{{labels.or}}</span>
+                <span><b>{{labels.download}}</b><span>
+            </span>
         </li>
     </ul>
 </div>

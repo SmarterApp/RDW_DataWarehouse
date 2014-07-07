@@ -31,7 +31,7 @@ def error_redirect(request):
     Errors get redirected here
     '''
 
-    url = request.application_url + '/assets/public/hpz_error.html'
+    url = request.application_url + '/assets/public/error.html'
     return HTTPMovedPermanently(location=url, expires=0, cache_control='no-store, no-cache, must-revalidate')
 
 

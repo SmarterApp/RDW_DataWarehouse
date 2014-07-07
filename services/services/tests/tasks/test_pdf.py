@@ -167,12 +167,14 @@ class TestCreatePdf(unittest.TestCase):
     def test_pdf_merge_pdf_file_doesnot_exist(self, mock_prepare_path):
         self.assertRaises(PdfGenerationError, pdf_merge, ['/foo/pdf_files_doesnot_exist'], '/foo/merged.pdf', 'pdf_base_dir')
 
+    @patch('services.tasks.pdf.os.path.exists')
     @patch('services.tasks.pdf._pdfunite_subprocess')
     @patch('services.tasks.pdf._partial_pdfunite')
     @patch('services.tasks.pdf.prepare_path')
     @patch('services.tasks.pdf.os.path.isfile')
-    def test_pdf_merge_more_than_max_pdf(self, mock_isfile, mock_prepare_path, mock_partial_pdfunite, mock_pdfunite_subprocess):
+    def test_pdf_merge_more_than_max_pdf(self, mock_isfile, mock_prepare_path, mock_partial_pdfunite, mock_pdfunite_subprocess, mock_exists):
         mock_isfile.return_value = True
+        mock_exists.side_effect = [False, True]
         pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
         pdf_merge(pdffiles, '/foo/outfile', '/foo', max_pdfunite_files=2)
         self.assertTrue(mock_partial_pdfunite.called)

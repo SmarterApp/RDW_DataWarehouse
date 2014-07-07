@@ -26,4 +26,4 @@ class NotForWindowsException(EdCoreError):
     Exception for Windows users
     '''
     def __init__(self, msg):
-        EdCoreError.__init(self, msg)
+        EdCoreError.__init__(self, msg)

@@ -9,7 +9,7 @@ from services.tasks.pdf import generate, OK, \
     prepare_path, get, is_valid, delete, prepare, bulk_pdf_cover_sheet, \
     _build_url, pdf_merge, archive, hpz_upload_cleanup, group_separator, \
     _partial_pdfunite, _read_dir, _get_next_partial_outputfile_name, \
-    _pdfunite_subprocess, _get_cover_sheet_path, _count_pdf_pages
+    _pdfunite_subprocess, _count_pdf_pages
 from services.celery import setup_global_settings
 import platform
 import os
@@ -381,10 +381,6 @@ class TestCreatePdf(unittest.TestCase):
     def test_pdfunite_subprocess_exception(self, mock_Popen):
         mock_Popen.return_value.wait.side_effect = Exception()
         self.assertRaises(PDFUniteError, _pdfunite_subprocess, ['/foo/1'], '/foo/2', 1)
-
-    def test_get_cover_sheet_path(self):
-        path = _get_cover_sheet_path('/foo', 11)
-        self.assertEqual(path, '/foo/cover_sheet_grade_11.pdf')
 
     def test_count_pdf_pages(self):
         outfile = tempfile.NamedTemporaryFile(delete=False)

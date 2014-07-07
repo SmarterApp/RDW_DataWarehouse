@@ -469,9 +469,9 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
             cv_params_this['studentCount'] = student_count_by_grade[grade]
 
             # Create the cover sheet task
-            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,
+            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,  # @UndefinedVariable
                                                                   cv_params_this, cookie_name, is_grayscale),
-                                                            immutable=True))  # @UndefinedVariable
+                                                            immutable=True))
             cover_sheets_by_grade[grade] = cover_path
 
     return cover_tasks, cover_sheets_by_grade

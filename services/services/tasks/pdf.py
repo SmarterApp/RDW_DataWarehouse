@@ -403,7 +403,3 @@ def _count_pdf_pages(pdf_path):
                         return int(part)
 
     return -1
-
-
-def _get_cover_sheet_path(cv_dir, grade):
-    return os.path.join(cv_dir, '{prefix}{grade}.pdf'.format(prefix=ServicesConstants.COVER_SHEET_NAME_PREFIX, grade=grade))

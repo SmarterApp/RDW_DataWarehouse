@@ -167,6 +167,21 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')
 
+    def test_post_extract_service_with_filters_and_selections(self):
+        self.__request.method = 'POST'
+        self.__request.json_body = {'stateCode': ['NC'],
+                                    'districtGuid': ['229'],
+                                    'schoolGuid': ['939'],
+                                    'asmtSubject': ['Math'],
+                                    'asmtYear': ['2016'],
+                                    'asmtType': ['SUMMATIVE'],
+                                    'sex': ['male'],
+                                    'asmtGrade': ['7'],
+                                    'studentGuid': ['a629ca88-afe6-468c-9dbb-92322a284602']}
+        response = post_extract_service(None, self.__request)
+        self.assertIsInstance(response, Response)
+        self.assertEqual(response.content_type, 'application/octet-stream')
+
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_get_valid_tenant_extract(self, register_file_patch):
         register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'

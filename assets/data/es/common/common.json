@@ -264,7 +264,7 @@
 	        {
 		        "items": [
 		            {
-			            "name": "Estudiantes",
+			            "name": "Students",
 			            "displayTpl": "<a href='#' class='inherit'>Estudiantes</>",
                         "index": "student_full_name",
 			            "field": "student_full_name",
@@ -280,7 +280,7 @@
 		            },
 		            {
 			            "name": "<h4 class='pull-left'>{{subject1}}</h4> Puntuación general",
-			            "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a>",
+			            "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
 			            "field": "subject1.asmt_score",
 			            "width": 230,
@@ -295,7 +295,7 @@
 		            },
 		            {
 			            "name": "<h4 class='pull-left'>{{subject2}}</h4> Puntuación general",
-			            "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a>",
+			            "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
 			            "field": "subject2.asmt_score",
 			            "width": 230,
@@ -323,7 +323,7 @@
 	        {
 		        "items": [
 		            {
-			            "name": "Estudiantes",
+			            "name": "Students",
 			            "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
                         "index": "student_full_name",
 			            "field": "student_full_name",
@@ -339,7 +339,7 @@
 		            },
 		            {
 			            "name": "<h4 class='pull-left'>{{subject1}}</h4> Puntuación general",
-			            "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a>",
+			            "displayTpl": "<a class='pull-left inherit subject' href='#'>Mathematics Overall</a><div id='subject1_perfBar' class='header_perfBar'></div>",
                         "index": "subject1.asmt_score",
 			            "field": "subject1.asmt_score",
 			            "width": 175,
@@ -396,7 +396,7 @@
 		        "name": "",
 		        "items": [
 		            {
-			            "name": "Estudiantes",
+			            "name": "Students",
 			            "displayTpl": "<a href='#' class='inherit'>Estudiantes</a>",
                         "index": "student_full_name",
 			            "field": "student_full_name",
@@ -412,7 +412,7 @@
 		            },
 		            {
 			            "name": "<h4 class='pull-left'>{{subject2}}</h4> Puntuación general",
-			            "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a>",
+			            "displayTpl": "<a class='pull-left inherit subject' href='#'>ELA/Literacy Overall</a><div id='subject2_perfBar' class='header_perfBar'></div>",
                         "index": "subject2.asmt_score",
 			            "field": "subject2.asmt_score",
 			            "width": 175,
@@ -491,7 +491,7 @@
 		    {
 				"items": [
 					{
-						"name": "Nombre de la escuela",
+						"name": "School Name",
 						"displayTpl": "Nombre de la escuela",
 						"index": "name",
 						"field": "name",
@@ -508,7 +508,7 @@
 					},
 			        {
 						"name": "{{subject1}}",
-                        "displayTpl": "<a class='inherit' href='#'><b>{{subject1}}</b></a>",
+                        "displayTpl": "<a class='inherit' href='#'><b>Mathematics</b></a>",
 						"index": "results.subject1.sortedValue",
 						"field": "results.subject1.sortedValue",
 						"sorttype": "int",
@@ -537,7 +537,7 @@
                     },
 					{
 						"name": "{{subject2}}",
-                        "displayTpl": "<a href='#' class='inherit'><b>{{subject2}}</b></a>",
+                        "displayTpl": "<a href='#' class='inherit'><b>ELA/Literacy</b></a>",
 						"index": "results.subject2.sortedValue",
 						"field": "results.subject2.sortedValue",
 						"width": 320,
@@ -570,16 +570,19 @@
 		"customViews": {
 			"school": {
 				"name": "Grado",
+                "displayTpl": "<a href='#' class='inherit'>Grado</a>",
 				"link": "studentList.html",
 				"id_name": "asmtGrade"
 			},
 			"district": {
 				"name": "Nombre de la escuela",
+                "displayTpl": "<a href='#' class='inherit'>Nombre de la escuela</a>",
 				"link": "comparingPopulations.html",
 				"id_name": "schoolGuid"
 			},
 			"state": {
 				"name": "Nombre del distrito",
+                "displayTpl": "<a href='#' class='inherit'>Nombre del distrito</a>",
 				"link": "comparingPopulations.html",
 				"id_name": "districtGuid"
 			}

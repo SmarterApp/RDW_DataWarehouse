@@ -107,6 +107,7 @@ def process_extraction_request(params, is_async=True):
         else:
             raise NotFoundException("There are no results")
 
+
 # TODO: we don't need to support sync for item level or raw extracts.  Remove it when we have time to clean up
 def process_sync_item_or_raw_extract_request(params, extract_type):
     '''

@@ -336,7 +336,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # Create tasks to merge in cover sheets
     merge_covers_tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade,
-                                                       directory_to_archive, pdf_base_dir)
+                                                       directory_to_archive, pdf_base_dir, pdfunite_timeout)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks,
@@ -476,7 +476,7 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
     return cover_tasks, cover_sheets_by_grade
 
 
-def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive, pdf_base_dir):
+def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive, pdf_base_dir, pdfunite_timeout):
     '''
     create pdf merge tasks
     '''
@@ -491,7 +491,7 @@ def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, d
             file_names = [cover_sheets_by_grade[grade], merged_pdf_path]
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, merged_out_path, pdf_base_dir), immutable=True))  # @UndefinedVariable
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, merged_out_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
     return merge_tasks
 
 

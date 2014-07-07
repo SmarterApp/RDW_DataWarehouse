@@ -59,6 +59,9 @@ define [
         # ex. assessmentSection0, assessmentSection1
         assessment.count = idx
 
+        # map subject to meaningful text
+        assessment.asmt_subject_text = Constants.SUBJECT_TEXT[assessment.asmt_subject]
+
         # set role-based content
         assessment.content = @configData.content
 

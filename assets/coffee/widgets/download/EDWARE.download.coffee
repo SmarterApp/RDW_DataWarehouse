@@ -464,6 +464,7 @@ define [
       options =
         method: "POST"
         params: params
+        redirectOnError: false
       edwareDataProxy.getDatafromSource "/data/academic_year", options
 
   create = (container, reportType, config)->

@@ -1,8 +1,8 @@
 {{#hasTextReplacement}}
   {{#intervals}}
 <div class="{{export}} edwareExportField">
-    <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.count}}'></span>
-    <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
+    <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{asmt_subject_text}} {{labels.level}} {{level}} {{labels.count}}'></span>
+    <span class='edwareExportField' data-export-value='{{displayText}}' data-export-name='{{asmt_subject_text}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
 </div>
   {{/intervals}}
 {{/hasTextReplacement}}
@@ -15,7 +15,7 @@
   {{rightTotalPercentage}}{{#rightTotalPercentage}}%{{/rightTotalPercentage}}
 </div>
 <div class="progress" tabindex="0">
-    <span class="screenreader">{{asmt_subject}}</span>
+    <span class="screenreader">{{asmt_subject_text}}</span>
     {{#intervals}}
     <div class="bar" style="background-color: {{#color}}{{bg_color}} !important; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}) !important; background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}) !important; background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}) !important; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">
         <span class="screenreader">{{count}} students</span>
@@ -34,8 +34,8 @@
         <li>
         <div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
                 <div class="{{export}}">
-                    <span class='edwareExportField' data-export-value='{{count}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.count}}'></span>
-                    <span class='edwareExportField' data-export-value='{{percentage}}%' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
+                    <span class='edwareExportField' data-export-value='{{count}}' data-export-name='{{asmt_subject_text}} {{labels.level}} {{level}} {{labels.count}}'></span>
+                    <span class='edwareExportField' data-export-value='{{percentage}}%' data-export-name='{{asmt_subject_text}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
                 </div>
         </li>
         {{/intervals}}

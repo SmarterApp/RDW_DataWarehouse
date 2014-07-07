@@ -195,23 +195,17 @@ define [
       # client passes in data and this will return rows that user have selected and whether stickyCompare is enabled
       # We need the columnField that corresponds to each data row to build sticky chain list
       returnData = []
-      selectedRows = this.getSelectedRowsFromStorage()
-      if selectedRows.length > 0
-        for data in allData
-          if returnData.length is selectedRows.length
-            break
-          if String(data.rowId) in selectedRows
-            returnData.push data
-            # We need to repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
-            this.selectedRows[data.rowId] = data[columnField]
-        # For the case that rows don't match data available, reset comparing stickies
-        if selectedRows.length != returnData.length
-          returnData = allData
-          selectedRows = []
-          this.reset()
-      else
-        returnData = allData
+      # show all records
+      selectedRows = @getSelectedRowsFromStorage()
+      if selectedRows.length is 0
+        return {'data': allData, 'enabled': false }
+      for data in allData
+        if String(data.rowId) in selectedRows
+          returnData.push data
+          # We need to repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
+          @selectedRows[data.rowId] = data[columnField]
       return {'data': returnData, 'enabled': selectedRows.length > 0}
+
 
     reset: () ->
       this.selectedRows = {}

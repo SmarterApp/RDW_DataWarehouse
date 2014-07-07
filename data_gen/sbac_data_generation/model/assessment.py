@@ -5,8 +5,6 @@ Model an assessment for the SBAC assessment.
 @date: February 24, 2014
 """
 
-from mongoengine import DateTimeField, FloatField, IntField, StringField, DictField
-
 import data_generation.writers.filters as write_filters
 import sbac_data_generation.config.cfg as sbac_config
 
@@ -17,49 +15,51 @@ class SBACAssessment(Assessment):
     """
     The SBAC-specific assessment class.
     """
-    rec_id = IntField(required=True)
-    guid_sr = StringField(required=True)
-    asmt_type = StringField(required=True)
-    period = StringField(required=True)
-    period_year = IntField(required=True)
-    version = StringField(required=True)
-    subject = StringField(required=True)
-    claim_1_name = StringField(required=True)
-    claim_2_name = StringField(required=True)
-    claim_3_name = StringField(required=True)
-    claim_4_name = StringField(required=False)
-    perf_lvl_name_1 = StringField(required=True)
-    perf_lvl_name_2 = StringField(required=True)
-    perf_lvl_name_3 = StringField(required=True)
-    perf_lvl_name_4 = StringField(required=True)
-    perf_lvl_name_5 = StringField(required=False)
-    overall_score_min = IntField(required=True)
-    overall_score_max = IntField(required=True)
-    claim_1_score_min = IntField(required=True)
-    claim_1_score_max = IntField(required=True)
-    claim_1_score_weight = FloatField(required=True)
-    claim_2_score_min = IntField(required=True)
-    claim_2_score_max = IntField(required=True)
-    claim_2_score_weight = FloatField(required=True)
-    claim_3_score_min = IntField(required=True)
-    claim_3_score_max = IntField(required=True)
-    claim_3_score_weight = FloatField(required=True)
-    claim_4_score_min = IntField(required=False)
-    claim_4_score_max = IntField(required=False)
-    claim_4_score_weight = FloatField(required=False)
-    claim_perf_lvl_name_1 = StringField(required=True)
-    claim_perf_lvl_name_2 = StringField(required=True)
-    claim_perf_lvl_name_3 = StringField(required=True)
-    overall_cut_point_1 = IntField(required=True)
-    overall_cut_point_2 = IntField(required=True)
-    overall_cut_point_3 = IntField(required=True)
-    overall_cut_point_4 = IntField(required=False)
-    claim_cut_point_1 = IntField(required=True)
-    claim_cut_point_2 = IntField(required=True)
-    from_date = DateTimeField(required=True, default=sbac_config.HIERARCHY_FROM_DATE)
-    to_date = DateTimeField(required=False)
-    effective_date = DateTimeField(required=False)
-    item_bank = DictField(required=True)
+    def __init__(self):
+        super().__init__()
+        self.rec_id = None
+        self.guid_sr = None
+        self.asmt_type = None
+        self.period = None
+        self.period_year = None
+        self.version = None
+        self.subject = None
+        self.claim_1_name = None
+        self.claim_2_name = None
+        self.claim_3_name = None
+        self.claim_4_name = None
+        self.perf_lvl_name_1 = None
+        self.perf_lvl_name_2 = None
+        self.perf_lvl_name_3 = None
+        self.perf_lvl_name_4 = None
+        self.perf_lvl_name_5 = None
+        self.overall_score_min = None
+        self.overall_score_max = None
+        self.claim_1_score_min = None
+        self.claim_1_score_max = None
+        self.claim_1_score_weight = None
+        self.claim_2_score_min = None
+        self.claim_2_score_max = None
+        self.claim_2_score_weight = None
+        self.claim_3_score_min = None
+        self.claim_3_score_max = None
+        self.claim_3_score_weight = None
+        self.claim_4_score_min = None
+        self.claim_4_score_max = None
+        self.claim_4_score_weight = None
+        self.claim_perf_lvl_name_1 = None
+        self.claim_perf_lvl_name_2 = None
+        self.claim_perf_lvl_name_3 = None
+        self.overall_cut_point_1 = None
+        self.overall_cut_point_2 = None
+        self.overall_cut_point_3 = None
+        self.overall_cut_point_4 = None
+        self.claim_cut_point_1 = None
+        self.claim_cut_point_2 = None
+        self.from_date = sbac_config.HIERARCHY_FROM_DATE
+        self.to_date = None
+        self.effective_date = None
+        self.item_bank = None
 
     def get_object_set(self):
         """Get the set of objects that this exposes to a CSV or JSON writer.

@@ -1,6 +1,6 @@
 {{#subject}}
 <div class='losTooltip hide'>
-    <div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{labels.overall_score}}</div>
+    <div class='js-popupTitle hide'>{{student_name}} | {{asmt_subject_text}} {{labels.overall_score}}</div>
     <div class='summary'>
         <div class='title left'>{{labels.overall_score}}</div>
         <div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'>
@@ -14,14 +14,14 @@
         <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
     </div>
     <span class='edwareExportField' data-export-value='{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}'
-              data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>
-    <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
-    <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level_number}}'></span>
+              data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
+    <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
+    <span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
 </div>
-<div id="{{rowId}}" class='screenreader' aria-hidden="true">{{subject.asmt_type}} {{labels.overall_score}} {{subject.asmt_score}} {{score_ALD}} {{labels.error_band}} {{subject.asmt_score_range_min}} to {{subject.asmt_score_range_max}}</div>
+<div id="{{rowId}}" class='screenreader' aria-hidden="true">{{asmt_subject_text}} {{labels.overall_score}} {{subject.asmt_score}} {{score_ALD}} {{labels.error_band}} {{subject.asmt_score_range_min}} to {{subject.asmt_score_range_max}}</div>
 {{/subject}}
 {{^subject}}
-<span class='edwareExportField' data-export-value='' data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>
-<span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
-<span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level_number}}'></span>
+<span class='edwareExportField' data-export-value='' data-export-name='{{asmt_subject_text}} {{labels.error_band}}'></span>
+<span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level}}'></span>
+<span class='edwareExportField' data-export-value='{{asmt_perf_lvl}}' data-export-name='{{asmt_subject_text}} {{labels.performance_level_number}}'></span>
 {{/subject}}

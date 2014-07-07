@@ -2,7 +2,7 @@
 {{#current}}
 <div id="assessmentSection{{count}}" class="innerBox clearfix assessmentSection">
     <div class="sidebar pull-left">
-        <h1 aria-role="heading" aria-label="{{asmt_subject}}">{{asmt_subject}}</h1>
+        <h1 aria-role="heading" aria-label="{{asmt_subject}}">{{asmt_subject_text}}</h1>
         <h3 class="type">
             <strong>{{asmt_type}} {{asmt_period}} </strong>
         </h3>
@@ -29,7 +29,7 @@
     <div class="contentWrapper">
         <div class="overallScoreSection">
             <div class="summary printContent clearfix">
-                <h1 class="pull-left">{{asmt_subject}}</h1>
+                <h1 class="pull-left">{{asmt_subject_text}}</h1>
                 <div class="pull-right">
                     <h3 class="type pull-left marginLeft20">
                         <strong>{{asmt_type}} {{asmt_period}} </strong>
@@ -83,7 +83,7 @@
                 <div id="accommodationScreenReader{{count}}" aria-labelledby="accommodationScreenReader{{count}}">
                     {{#sections}}
                     <div class="section">
-                    	<div class="screenreader"></div> 
+                    	<div class="screenreader"></div>
                         <p>{{current.0.first_name}} {{{description}}}</p>
                         <div>
                             {{#accommodation}}

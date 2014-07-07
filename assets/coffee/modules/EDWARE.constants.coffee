@@ -34,3 +34,8 @@ define [], () ->
     UP_ARROW: 38
     DOWN_ARROW: 40
   }
+
+  SUBJECT_TEXT: {
+    Math: "Mathematics"
+    ELA: "ELA/Literacy"
+  }

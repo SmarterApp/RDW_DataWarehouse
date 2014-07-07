@@ -59,8 +59,8 @@ def generate_student(school: SBACSchool, grade, id_gen, state, acad_year=datetim
 
 
 def advance_student(student: SBACStudent, schools_by_grade, hold_back_rate=sbac_in_config.HOLD_BACK_RATE,
-                    drop_out_rate=sbac_in_config.NOT_ADVANCED_DROP_OUT_RATE, transfer_rate=sbac_in_config.TRANSFER_RATE,
-                    save_to_mongo=True):
+                    drop_out_rate=sbac_in_config.NOT_ADVANCED_DROP_OUT_RATE,
+                    transfer_rate=sbac_in_config.TRANSFER_RATE):
     """
     Take a student and advance them to the next grade. If the next grade takes the student out of the current school,
     pick a new school for them to go to.
@@ -68,13 +68,11 @@ def advance_student(student: SBACStudent, schools_by_grade, hold_back_rate=sbac_
     @param student: The student to move
     @param schools_by_grade: Potential new schools for a student to be enrolled in
     @param drop_out_rate: The rate (chance) that a student will drop out at if they are not advanced
-    @param save_to_mongo: If any changes to the student should be saved in Mongo
     @returns: True if the student still exists in the system, False if they do not
     """
     # Use the general generator to advance the student
     rslt = general_pop_gen.advance_student(student, schools_by_grade, hold_back_rate=hold_back_rate,
-                                           drop_out_rate=drop_out_rate, transfer_rate=transfer_rate,
-                                           save_to_mongo=save_to_mongo)
+                                           drop_out_rate=drop_out_rate, transfer_rate=transfer_rate)
 
     # If we are not keeping the student, don't worry about them
     if not rslt:

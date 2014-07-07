@@ -16,16 +16,16 @@
         "acc_asl_video_embed": "ASL Videos",
         "acc_asl_human_nonembed": "Human ASL Signer",
         "acc_braile_embed": "Fully Brailled",
-        "acc_closed_captioning_embed": "Closed Captioning: ELA Listening Stimuli",
-        "acc_text_to_speech_embed": "Text-to-speech: ELA Reading Passages",
+        "acc_closed_captioning_embed": "Closed Captioning: ELA/Literacy Listening Stimuli",
+        "acc_text_to_speech_embed": "Text-to-speech: ELA/Literacy Reading Passages",
         "acc_abacus_nonembed": "Abacus",
         "acc_alternate_response_options_nonembed": "Alternative Response Options",
         "acc_calculator_nonembed": "Calculator",
         "acc_multiplication_table_nonembed": "Multiplication Table",
         "acc_print_on_demand_nonembed": "Printed Stimuli / Items",
-        "acc_read_aloud_nonembed": "Read-aloud: ELA Reading Passages",
-        "acc_scribe_nonembed": "Scribe: ELA Writing Items",
-        "acc_speech_to_text_nonembed": "Speech-to-text: ELA Writing Items",
+        "acc_read_aloud_nonembed": "Read-aloud: ELA/Literacy Reading Passages",
+        "acc_scribe_nonembed": "Scribe: ELA/Literacy Writing Items",
+        "acc_speech_to_text_nonembed": "Speech-to-text: ELA/Literacy Writing Items",
         "acc_streamline_mode": "Streamline Mode"
     }
 }

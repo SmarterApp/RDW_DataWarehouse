@@ -31,11 +31,9 @@ define [
       path.join Constants.DELIMITOR.COMMA
 
     getSortBy: () ->
-      sortName = this.table.getGridParam('sortname');
-      models = this.table.getGridParam('colModel')
-      sortBy = ''
-      $.each models, (idx, model)->
-        sortBy = $("<div>#{model.label}</div>").text() if model.index is sortName
+      sortName = this.table.getGridParam('sortname')
+      sortedColumnId = "#jqgh_gridTable_#{sortName}".replace(/\./g, "\\.")
+      sortBy = $(sortedColumnId).text()
       sortBy
 
 
@@ -118,7 +116,7 @@ define [
   class EdwareDownload
 
     constructor: () ->
-      # Use any available BlobBuilder/URL implementation:
+      # Use any available BlobBuilderu/URL implementation:
       this.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.Blob
       this.URL = window.URL || window.webkitURL || window.mozURL || window.msURL
       # IE 10 has a handy navigator.msSaveBlob method.

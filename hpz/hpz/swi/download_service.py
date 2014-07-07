@@ -3,7 +3,6 @@ import logging
 from pyramid.view import view_config
 from pyramid.security import authenticated_userid
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPNotFound
 from hpz.database.file_registry import FileRegistry
 from hpz.database.constants import HPZ
 
@@ -26,12 +25,18 @@ def download_file(context, request):
     file_path = registration_info[HPZ.FILE_PATH] if registration_info is not None else None
     file_name = registration_info[HPZ.FILE_NAME] if registration_info is not None else None
 
-    response = HTTPNotFound()
-
     if is_download_valid(registration_id, reg_uid, req_uid, file_path):
         headers = {'X-Sendfile': file_path, 'Content-Type': '', 'Content-Disposition': 'attachment; filename=' + file_name}
         response = Response(headers=headers)
         logger.info('File %s was successfully downloaded', file_path)
+    else:
+        content = None
+        here = os.path.abspath(os.path.dirname(__file__))
+        assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..', '..'), 'assets'))
+        hpz_error = os.path.join(assets_dir, 'templates', 'hpz_error.pt')
+        with open(hpz_error, 'r') as f:
+            content = f.read()
+        response = Response(content, status_code=404)
 
     return response
 

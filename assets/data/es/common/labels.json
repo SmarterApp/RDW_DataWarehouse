@@ -1,10 +1,10 @@
 {
     "labels": {
-        "achievement_level_descriptors": "Descriptores del nivel de desempeño (DND)",
+        "achievement_level_descriptors": "Descriptores del nivel de desempeño (ALD)",
         "academic_year": "Año escolar",
         "accommodations": "Accommodations",
-        "ald_color_coded": "Código de color DND ",
-        "ald_cutpoints": "Puntos de ejecución mínima DND",
+        "ald_color_coded": "Código de color ALD ",
+        "ald_cutpoints": "Puntos de ejecución mínima ALD",
         "align": "Alinear",
         "apply_filters": "Aplicar filtros",
         "asmt_type": "Tipo de prueba",
@@ -89,7 +89,7 @@
         "score": "Puntuación",
         "score_range": "Rango de la puntuación",
         "select_measure": "Seleccionar medida",
-        "select_state_prompt": "Select State to start exploring Smarter Balanced test results",
+        "select_state_prompt": "Select state to start exploring Smarter Balanced test results",
         "show_all": "Mostrar todo",
         "sort_by": "Ordenar por",
         "state": "Estado",

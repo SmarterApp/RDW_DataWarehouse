@@ -36,6 +36,9 @@ FILTERS_GRADE = 'grade'
 FILTERS_ETHNICITY = 'ethnicity'
 FILTERS_SEX = 'sex'
 
+FILTERS_GROUP_1 = 'group1Id'
+FILTERS_GROUP_2 = 'group2Id'
+
 # Maps Yes, No and Not Stated to equivalent SQLAlchemey values
 filter_map = {YES: true(),
               NO: false(),
@@ -122,6 +125,22 @@ FILTERS_CONFIG = {
             "type": "string",
             "pattern": "^(" + FILTERS_SEX_MALE + "|" + FILTERS_SEX_FEMALE + "|" + FILTERS_SEX_NOT_STATED + ")$"
         }
+    },
+    FILTERS_GROUP_1: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
+    },
+    FILTERS_GROUP_2: {
+        "type": "array",
+        "required": False,
+        "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+        }
     }
 }
 
@@ -189,6 +208,12 @@ def apply_filter_to_query(query, fact_asmt_outcome_vw, filters):
         filter_sex = filters.get(FILTERS_SEX)
         if filter_sex is not None:
             query = query.where(fact_asmt_outcome_vw.c.sex.in_(filter_sex))
+        filter_group_1 = filters.get(FILTERS_GROUP_1)
+        if filter_group_1 is not None:
+            query = query.where(fact_asmt_outcome_vw.c.group_1_id.in_(filter_group_1))
+        filter_group_2 = filters.get(FILTERS_GROUP_2)
+        if filter_group_2 is not None:
+            query = query.where(fact_asmt_outcome_vw.c.group_2_id.in_(filter_group_2))
     return query
 
 

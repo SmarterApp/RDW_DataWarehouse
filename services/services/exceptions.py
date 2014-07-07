@@ -22,3 +22,11 @@ class PdfGenerationError(ServicesError):
     '''
     def __init__(self, msg='Pdf Generation failed'):
         self.msg = msg
+
+
+class PDFUniteError(PdfGenerationError):
+    '''
+    a custom exception raised when a pdfunite is failed
+    '''
+    def __init__(self, msg='pdfunite is failed'):
+        self.msg = msg

@@ -9,7 +9,9 @@ from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query
+from smarter.extracts.student_assessment import get_extract_assessment_query, \
+    get_extract_assessment_item_and_raw_query
+from smarter.extracts.estimator import get_extract_file_chunk_estimate
 from edcore.utils.utils import compile_query_to_sql_text
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
@@ -145,6 +147,10 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
     extract_params = copy.deepcopy(params)
     directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
+
+    estimated_extract_file_count = get_extract_file_chunk_estimate(params=params, extract_type=extract_type)
+    print(estimated_extract_file_count)
+
     out_file_name = get_items_extract_file_path(extract_params, tenant, request_id) if extract_type is ExtractType.itemLevel else None
     tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params,
                                                                      root_dir, out_file_name, directory_to_archive,

@@ -12,9 +12,9 @@ from pyramid.security import Allow
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite, \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
-from smarter.extracts.student_asmt_processor import process_async_extraction_request, \
+from smarter.extracts.student_asmt_processor import process_extraction_request, \
     process_async_item_or_raw_extraction_request, get_items_extract_file_path, \
-    get_extract_file_path, process_sync_extract_request, process_sync_item_or_raw_extract_request, \
+    get_extract_file_path, process_sync_item_or_raw_extract_request, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
     _create_tasks_with_responses
@@ -79,7 +79,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': ['SUMMATIVE', 'INTERIM COMPREHENSIVE'],
                   'asmtSubject': ['Math', 'ELA'],
                   'extractType': ['studentAssessment']}
-        results = process_async_extraction_request(params)
+        results = process_extraction_request(params)
         tasks = results['tasks']
         self.assertEqual(len(tasks), 4)
         self.assertEqual(tasks[0]['status'], 'fail')
@@ -146,33 +146,32 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertIn('/tmp/work_zone/tenant/request_id/data/ITEMS_CA_2015_ABC_UUUU_GRADE_5', path)
 
     def test_process_sync_extraction_request_NotFoundException(self):
-        params = {'stateCode': 'CA',
-                  'districtGuid': '228',
-                  'schoolGuid': '242',
-                  'asmtType': 'SUMMATIVE',
+        params = {'stateCode': ['CA'],
+                  'districtGuid': ['228'],
+                  'schoolGuid': ['242'],
+                  'asmtType': ['SUMMATIVE'],
                   'asmtSubject': [],
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
-        self.assertRaises(NotFoundException, process_sync_extract_request, params)
+        self.assertRaises(NotFoundException, process_extraction_request, params, False)
 
     def test_process_sync_extraction_request_NotFoundException_with_subject(self):
-        params = {'stateCode': 'NC',
-                  'districtGuid': '228',
-                  'schoolGuid': '242',
-                  'asmtType': 'SUMMATIVE',
+        params = {'stateCode': ['NC'],
+                  'districtGuid': ['228'],
+                  'schoolGuid': ['242'],
+                  'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
-                  'asmtYear': '2018',
+                  'asmtYear': ['2018'],
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
-        self.assertRaises(NotFoundException, process_sync_extract_request, params)
+        self.assertRaises(NotFoundException, process_extraction_request, params, False)
 
     def test_process_sync_extraction_request_with_subject(self):
-        params = {'stateCode': 'NC',
-                  'districtGuid': 'c912df4b-acdf-40ac-9a91-f66aefac7851',
-                  'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
-                  'asmtType': 'INTERIM COMPREHENSIVE',
+        params = {'stateCode': ['NC'],
+                  'districtGuid': ['c912df4b-acdf-40ac-9a91-f66aefac7851'],
+                  'schoolGuid': ['429804d2-50db-4e0e-aa94-96ed8a36d7d5'],
+                  'asmtType': ['INTERIM COMPREHENSIVE'],
                   'asmtSubject': ['ELA'],
-                  'asmtYear': '2016',
-                  'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
-        zip_data = process_sync_extract_request(params)
+                  'asmtYear': ['2016']}
+        zip_data = process_extraction_request(params, is_async=False)
         self.assertIsNotNone(zip_data)
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
@@ -181,13 +180,12 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         params = {'stateCode': ['NC'],
                   'asmtYear': ['2015'],
                   'districtGuid': [None],
-                  'schoolGuid': 'fc85bac1-f471-4425-8848-c6cb28058614',
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['ELA'],
                   'asmtGrade': ['3'],
                   'asmtYear': ['2016'],
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
-        response = process_async_extraction_request(params)
+        response = process_extraction_request(params)
         self.assertIn('.zip', response['fileName'])
         self.assertNotIn('.gpg', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')

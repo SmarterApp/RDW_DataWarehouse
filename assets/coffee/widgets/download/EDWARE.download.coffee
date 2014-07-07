@@ -37,7 +37,7 @@ define [
 
   class CSVDownloadModal
 
-    constructor: (@container, @reportType, @config) ->
+    constructor: (@container, @reportType, @config, @reportParamCallback) ->
       this.initialize()
       this.bindEvents()
 
@@ -258,6 +258,11 @@ define [
 
     getParams: ()->
       params = {}
+      # Get filter params only for accessment extracts
+      if @reportType == "studentAssessment" 
+        params = edwarePreferences.getFilters() 
+        # get sticky compared rows if any
+        params = $.extend(@reportParamCallback(), params)
       $('tr:visible ul.checkbox-menu', this.container).each (index, param)->
         $param = $(param)
         key = $param.data('key')
@@ -409,10 +414,14 @@ define [
       $('#gridTable').edwareExport @config.reportName, @config.labels
 
     sendExtractRequest: () ->
+      # Send sync request for CSV extracts
       values = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
-      params = {}
+      # Get filters
+      params = edwarePreferences.getFilters() 
+      # Get sticky compared rows if any
+      params = $.extend(@config.getReportParams(), params)
       params['stateCode'] = values['stateCode']
       params['districtGuid'] = values['districtGuid']
       params['schoolGuid'] = values['schoolGuid']
@@ -428,6 +437,7 @@ define [
       CSVOptions.labels = @config.labels
       CSVOptions.ExportOptions = @config.ExportOptions
       reportType = @config.reportType
+      reportParamsCallback = @config.getReportParams
 
       # construct CSVDownload modal
       loadingData = fetchData @config.param
@@ -439,7 +449,7 @@ define [
         CSVOptions.academicYear.options = years if years
         CSVOptions.studentRegAcademicYear.options = studentRegYears if studentRegYears
         # display file download options
-        CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), reportType, CSVOptions
+        CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), reportType, CSVOptions, reportParamsCallback
         CSVDownload.show()
 
     printPDF: () ->
@@ -467,8 +477,8 @@ define [
         redirectOnError: false
       edwareDataProxy.getDatafromSource "/data/academic_year", options
 
-  create = (container, reportType, config)->
-    new CSVDownloadModal $(container), reportType, config
+  create = (container, reportType, config, reportParamCallback)->
+    new CSVDownloadModal $(container), reportType, config, reportParamCallback
 
   CSVDownloadModal: CSVDownloadModal
   DownloadMenu: DownloadMenu

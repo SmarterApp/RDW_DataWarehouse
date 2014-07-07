@@ -26,6 +26,7 @@ def get_extract_assessment_query(params):
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_year = params.get(Constants.ASMTYEAR)
     asmt_subject = params.get(Constants.ASMTSUBJECT)
+    student = params.get(Constants.STUDENTGUID)
 
     dim_student_label = get_column_mapping(Constants.DIM_STUDENT)
     dim_inst_hier_label = get_column_mapping(Constants.DIM_INST_HIER)
@@ -128,7 +129,10 @@ def get_extract_assessment_query(params):
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))
         if asmt_grade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
+        if student:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student)))
 
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
     return query
 
@@ -140,10 +144,13 @@ def get_extract_assessment_item_and_raw_query(params):
     :param params: for query parameters asmt_year, asmt_type, asmt_subject, asmt_grade
     """
     state_code = params.get(Constants.STATECODE)
+    district_guid = params.get(Constants.DISTRICTGUID)
+    school_guid = params.get(Constants.SCHOOLGUID)
     asmt_year = params.get(Constants.ASMTYEAR)
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_subject = params.get(Constants.ASMTSUBJECT)
     asmt_grade = params.get(Constants.ASMTGRADE)
+    student = params.get(Constants.STUDENTGUID)
 
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -167,5 +174,12 @@ def get_extract_assessment_item_and_raw_query(params):
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
         query = query.where(and_(fact_asmt_outcome_vw.c.rec_status == Constants.CURRENT))
+        if school_guid is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.school_guid == school_guid))
+        if district_guid is not None:
+            query = query.where(and_(fact_asmt_outcome_vw.c.district_guid == district_guid))
+        if student:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student)))
+
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)  # Filters demographics
     return query

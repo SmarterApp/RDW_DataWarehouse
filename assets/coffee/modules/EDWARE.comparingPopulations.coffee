@@ -251,11 +251,18 @@ define [
         getReportParams: @getReportParams.bind(this)
 
     getReportParams: () ->
-      grades = for data in @populationData
-        data.id
-      # backend expects asmt grades as a list
       params = {}
-      params["asmtGrade"] = grades if grades.length isnt 0
+      # For school level we'll return grades
+      if @reportType == 'school'
+        grades = for data in @populationData
+          data.id
+        # backend expects asmt grades as a list
+        params["asmtGrade"] = grades if grades.length isnt 0
+      else
+        # For state and district, get stickies for extracts
+        selected = @stickyCompare.getRows()
+        if selected.length > 0
+          if @reportType == 'state' then params['districtGuid'] = selected else params['schoolGuid'] = selected
       params
 
 

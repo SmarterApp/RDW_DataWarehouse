@@ -1,16 +1,14 @@
 from datetime import datetime
 import os
 import copy
-
 from pyramid.threadlocal import get_current_registry
 from sqlalchemy.sql.expression import and_
-
 from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query
-from edcore.utils.utils import compile_query_to_sql_text
+from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
 from edextract.tasks.extract import start_extract, archive_with_stream, generate_extract_file_tasks, prepare_path
@@ -20,90 +18,94 @@ from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter_common.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
+from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG,\
+    apply_filter_to_query
 
 
 __author__ = 'ablum'
 
 
-def process_sync_extract_request(params):
-    '''
-    TODO add doc string
-    '''
-    settings = get_current_registry().settings
-    queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
-    archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
-    tasks = []
-    state_code = params[Constants.STATECODE]
-    request_id, user, tenant = processor.get_extract_request_user_info(state_code)
-    extract_params = copy.deepcopy(params)
-    for subject in params[Constants.ASMTSUBJECT]:
-        extract_params[Constants.ASMTSUBJECT] = subject
-        subject_tasks, task_responses = _create_tasks_with_responses(request_id, user, tenant, extract_params)
-        tasks += subject_tasks
-    if tasks:
-        directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
-        celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        # Synchronous calls to generate json and csv and then to archive
-        # BUG, it still routes to 'extract' queue due to chain
-#        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
-#                       route_tasks(tenant, request_id, tasks, queue_name=queue),
-#                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
-        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
-        generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
-        result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
-        return result.get(timeout=celery_timeout)
-    else:
-        raise NotFoundException("There are no results")
-
-
-def process_async_extraction_request(params, is_tenant_level=True):
+def process_extraction_request(params, is_async=True):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
-    queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
     tasks = []
     response = {}
     task_responses = []
+    filter_params = {}
     state_code = params[Constants.STATECODE][0]
-    district_guid = params.get(Constants.DISTRICTGUID, [None])[0]
+    districts = params.get(Constants.DISTRICTGUID, [None])
+    schools = params.get(Constants.SCHOOLGUID, [None])
+    grades = params.get(Constants.ASMTGRADE, [None])
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
 
-    for s in params[Constants.ASMTSUBJECT]:
-        for t in params[Constants.ASMTTYPE]:
-            param = ({Constants.ASMTSUBJECT: s,
-                     Constants.ASMTTYPE: t,
-                     Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                     Constants.STATECODE: state_code,
-                      Constants.DISTRICTGUID: district_guid})
+    # This is purely for file name conventions (for async extracts), consider refactoring
+    is_tenant_level = is_async
 
-            task_response = {Constants.STATECODE: param[Constants.STATECODE],
-                             Constants.DISTRICTGUID: param[Constants.DISTRICTGUID],
-                             Extract.EXTRACTTYPE: ExtractType.studentAssessment,
-                             Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
-                             Constants.ASMTTYPE: param[Constants.ASMTTYPE],
-                             Constants.ASMTYEAR: param[Constants.ASMTYEAR],
-                             Extract.REQUESTID: request_id}
+    # Get filter related parameters
+    if has_filters(params):
+        filter_params = {k: v for k, v in params.items() if k in FILTERS_CONFIG}
 
-            # separate by grades if no grade is specified
-            __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
-            tasks += __tasks
-            task_responses += __task_responses
+    for district in districts:
+        for school in schools:
+            for grade in grades:
+                for s in params[Constants.ASMTSUBJECT]:
+                    for t in params[Constants.ASMTTYPE]:
+                        param = merge_dict({Constants.ASMTSUBJECT: s,
+                                            Constants.ASMTTYPE: t,
+                                            Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
+                                            Constants.STATECODE: state_code,
+                                            Constants.SCHOOLGUID: school,
+                                            Constants.DISTRICTGUID: district,
+                                            Constants.ASMTGRADE: grade,
+                                            Constants.STUDENTGUID: params.get(Constants.STUDENTGUID)}, filter_params)
 
-    response['tasks'] = task_responses
+                        task_response = {Constants.STATECODE: param[Constants.STATECODE],
+                                         Constants.DISTRICTGUID: district,
+                                         Constants.SCHOOLGUID: school,
+                                         Extract.EXTRACTTYPE: ExtractType.studentAssessment,
+                                         Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
+                                         Constants.ASMTTYPE: param[Constants.ASMTTYPE],
+                                         Constants.ASMTYEAR: param[Constants.ASMTYEAR],
+                                         Extract.REQUESTID: request_id}
 
-    if len(tasks) > 0:
-        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-        response['fileName'] = os.path.basename(archive_file_name)
-        directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
+                        # separate by grades if no grade is specified
+                        __tasks, __task_responses = _create_tasks_with_responses(request_id, user, tenant, param, task_response, is_tenant_level=is_tenant_level)
+                        tasks += __tasks
+                        task_responses += __task_responses
+    if is_async:
+        response['tasks'] = task_responses
+        if tasks:
+            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
+            response['fileName'] = os.path.basename(archive_file_name)
+            directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
-        # Register extract file with HPZ.
-        registration_id, download_url = register_file(user.get_uid())
-        response['download_url'] = download_url
+            # Register extract file with HPZ.
+            registration_id, download_url = register_file(user.get_uid())
+            response['download_url'] = download_url
 
-        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks], queue=queue)  # @UndefinedVariable
-
-    return response
+            queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
+            start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks], queue=queue)  # @UndefinedVariable
+        return response
+    else:
+        if tasks:
+            settings = get_current_registry().settings
+            queue = settings.get('extract.job.queue.sync', TaskConstants.SYNC_QUEUE_NAME)
+            archive_queue = settings.get('extract.job.queue.archive', TaskConstants.ARCHIVE_QUEUE_NAME)
+            directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
+            celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
+            # Synchronous calls to generate json and csv and then to archive
+            # BUG, it still routes to 'extract' queue due to chain
+    #        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
+    #                       route_tasks(tenant, request_id, tasks, queue_name=queue),
+    #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
+            prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+            generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
+            result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
+            return result.get(timeout=celery_timeout)
+        else:
+            raise NotFoundException("There are no results")
 
 
 def process_sync_item_or_raw_extract_request(params, extract_type):
@@ -164,10 +166,18 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     return response
 
 
-def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_year, asmt_type, asmt_subject):
+def _get_asmt_records(param):
     '''
     query all asmt_guid and asmt_grade by given extract request params
     '''
+    asmt_type = param.get(Constants.ASMTTYPE)
+    asmt_subject = param.get(Constants.ASMTSUBJECT)
+    state_code = param.get(Constants.STATECODE)
+    district_guid = param.get(Constants.DISTRICTGUID)
+    school_guid = param.get(Constants.SCHOOLGUID)
+    asmt_grade = param.get(Constants.ASMTGRADE)
+    asmt_year = param.get(Constants.ASMTYEAR)
+    student_guid = param.get(Constants.STUDENTGUID)
     # TODO: remove dim_asmt
     with EdCoreDBConnection(state_code=state_code) as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -190,7 +200,10 @@ def _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_y
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
         if asmt_year is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
+        if student_guid:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student_guid)))
 
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, param)
         results = connector.get_result(query)
     return results
 
@@ -202,20 +215,13 @@ def _prepare_data(param):
     asmt_guid_with_grades = []
     dim_asmt = None
     fact_asmt_outcome_vw = None
-    asmt_type = param.get(Constants.ASMTTYPE)
-    asmt_subject = param.get(Constants.ASMTSUBJECT)
-    state_code = param.get(Constants.STATECODE)
-    district_guid = param.get(Constants.DISTRICTGUID)
-    school_guid = param.get(Constants.SCHOOLGUID)
-    asmt_grade = param.get(Constants.ASMTGRADE)
-    asmt_year = param.get(Constants.ASMTYEAR)
-    available_records = _get_asmt_records(state_code, district_guid, school_guid, asmt_grade, asmt_year, asmt_type, asmt_subject)
+    available_records = _get_asmt_records(param)
     # Format to a list with a tuple of asmt_guid and grades
     for record_by_asmt_type in available_records:
         asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
 
     if asmt_guid_with_grades:
-        with EdCoreDBConnection(state_code=state_code) as connector:
+        with EdCoreDBConnection(state_code=param.get(Constants.STATECODE)) as connector:
             dim_asmt = connector.get_table(Constants.DIM_ASMT)
             fact_asmt_outcome_vw = connector.get_table(Constants.FACT_ASMT_OUTCOME_VW)
     # Returns list of asmt guid with grades, and table objects

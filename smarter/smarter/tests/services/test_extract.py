@@ -30,6 +30,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
+from smarter.security.roles.pii import PII  # @UnusedImport
 
 
 class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -121,20 +122,11 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(tasks[1][Constants.STATUS], Constants.FAIL)
 
     def test_generate_zip_file_name_for_grades(self):
-        params = {'asmtGrade': '6',
-                  'asmtSubject': ['Math'],
-                  'asmtType': 'SUMMATIVE',
-                  'asmtYear': '2016',
-                  'stateCode': 'NC'}
-        name = generate_zip_file_name(params)
+        name = generate_zip_file_name('2016', ['6'], 'SUMMATIVE', ['MATH'])
         self.assertIn('ASMT_2016_GRADE_6_MATH_SUMMATIVE', name)
 
     def test_generate_zip_file_name_for_schools(self):
-        params = {'asmtSubject': ['Math', 'ELA'],
-                  'asmtType': 'Summative',
-                  'asmtYear': '2016',
-                  'stateCode': 'NC'}
-        name = generate_zip_file_name(params)
+        name = generate_zip_file_name('2016', [None], 'SUMMATIVE', ['MATH', 'ELA'])
         self.assertIn('ASMT_2016_ELA_MATH_SUMMATIVE', name)
 
     def test_post_invalid_payload(self):
@@ -167,9 +159,25 @@ class TestExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['NC'],
                                     'districtGuid': ['229'],
-                                    'schoolGuid': '936',
+                                    'schoolGuid': ['936'],
                                     'asmtSubject': ['Math'],
+                                    'asmtYear': ['2015'],
                                     'asmtType': ['SUMMATIVE']}
+        response = post_extract_service(None, self.__request)
+        self.assertIsInstance(response, Response)
+        self.assertEqual(response.content_type, 'application/octet-stream')
+
+    def test_post_extract_service_with_filters_and_selections(self):
+        self.__request.method = 'POST'
+        self.__request.json_body = {'stateCode': ['NC'],
+                                    'districtGuid': ['229'],
+                                    'schoolGuid': ['939'],
+                                    'asmtSubject': ['Math'],
+                                    'asmtYear': ['2016'],
+                                    'asmtType': ['SUMMATIVE'],
+                                    'sex': ['male'],
+                                    'asmtGrade': ['7'],
+                                    'studentGuid': ['a629ca88-afe6-468c-9dbb-92322a284602']}
         response = post_extract_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')

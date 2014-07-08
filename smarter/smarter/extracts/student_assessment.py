@@ -26,6 +26,7 @@ def get_extract_assessment_query(params):
     asmt_type = params.get(Constants.ASMTTYPE)
     asmt_year = params.get(Constants.ASMTYEAR)
     asmt_subject = params.get(Constants.ASMTSUBJECT)
+    student = params.get(Constants.STUDENTGUID)
 
     dim_student_label = get_column_mapping(Constants.DIM_STUDENT)
     dim_inst_hier_label = get_column_mapping(Constants.DIM_INST_HIER)
@@ -128,7 +129,10 @@ def get_extract_assessment_query(params):
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))
         if asmt_grade is not None:
             query = query.where(and_(fact_asmt_outcome_vw.c.asmt_grade == asmt_grade))
+        if student:
+            query = query.where(and_(fact_asmt_outcome_vw.c.student_guid.in_(student)))
 
+        query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
     return query
 
@@ -162,6 +166,7 @@ def get_extract_assessment_item_and_raw_query(params):
                                     permission=RolesConstants.SAR_EXTRACTS,
                                     state_code=state_code)
 
+        query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_year == asmt_year))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))
         query = query.where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))

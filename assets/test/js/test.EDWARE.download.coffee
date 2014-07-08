@@ -21,6 +21,10 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     CSVOptions: config.CSVOptions
     labels: {}
     ExportOptions: config.ExportOptions
+ 
+  dummyCallback = () ->
+    # Dummy function acting as a callback
+    {}
 
   module "EDWARE.download",
     setup: ->
@@ -49,22 +53,22 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     ok edwareDownload.create, "download widget should provide create function"
 
   test "Test display widget", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     model.show()
     ok $('.modal-backdrop'), "Modal should set up a backdrop on body element"
 
   test "Test create function", ->
-    CSVDownload = edwareDownload.create '#CSVDownloadContainer', 'state', config.CSVOptions
+    CSVDownload = edwareDownload.create '#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback
     ok CSVDownload, "create function should create a CSVDownload object"
 
   test "Test CSVDownloadModal", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     notEqual $('#CSVDownloadContainer').html(), '', "CSV modal container should be populated with template"
     equal $('#CSVModal').size(), 1, "CSV template should contain modal trigger"
     equal $('ul').size(), 3, "CSV template should contain 3 dropdown menus"
 
   test "Test click events", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     secondOption = $('.dropdown-menu input')
     secondOption.trigger 'click' # select second element
     dropdown = secondOption.closest('.btn-group').children('span.dropdown-display')
@@ -73,7 +77,7 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
 
   test "Test send request", ->
     edwareClientStorage.filterStorage.save({"stateCode": "NC"})
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     $('ul input').attr('checked','')
     params = model.getParams()
     expectParams = {
@@ -86,28 +90,28 @@ define ["jquery", "edwareDownload", "edwarePreferences", "edwareClientStorage", 
     edwareClientStorage.clearAll()
 
   test "Test failed request", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     model.sendRequest '/data/dummy'
     ok $('#message').find('.error')[0], "Should display error message"
 
   test "Test success request", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     model.sendRequest '/services/extract'
     ok $('#message').find('.success')[0], "Should display success message"
 
   test "Test request button click event", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     $('.edware-btn-primary').trigger 'click'
     ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
 
   test "Test validating parameters", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     $('.dropdown-menu input').removeAttr 'checked'
     $('.edware-btn-primary').trigger 'click'
     ok $('#message').find('.error')[0], "Should display invalid message"
 
   test "Test invalid selection", ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions)
+    model = new CSVDownloadModal('#CSVDownloadContainer', 'state', config.CSVOptions, dummyCallback)
     $('.dropdown-menu input').removeAttr 'checked'
     # uncheck all selection of report type
     $('input[value="summative"]').trigger('click').trigger('click')

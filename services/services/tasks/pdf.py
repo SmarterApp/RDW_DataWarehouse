@@ -22,6 +22,7 @@ from subprocess import Popen
 import shutil
 from hpz_client.frs.http_file_upload import http_file_upload
 from services.constants import ServicesConstants
+import uuid
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
@@ -218,8 +219,15 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT, max_pdfunite_f
     try:
         # UNIX can handle upto 1024 file descriptors in default.  To be safe we process 50 files at once.
         if len(pdf_files) > max_pdfunite_files:
+            partial_dir = os.path.join(os.sep, '.tmp', 'partial')
+            if partial_dir not in pdf_base_dir:
+                gid = uuid.uuid4()
+                pdf_base_dir = os.path.join(pdf_base_dir, '.tmp', 'partial', str(gid))
+                if os.path.exists(pdf_base_dir) is not True:
+                    os.makedirs(pdf_base_dir, mode=0o700, exist_ok=True)
             files = _partial_pdfunite(pdf_files, pdf_base_dir, timeout=timeout, file_limit=max_pdfunite_files)
             _pdfunite_subprocess(files, out_name, timeout)
+            shutil.rmtree(pdf_base_dir, ignore_errors=True)
         elif len(pdf_files) is 1:
             # pdfunite is not callable if there is only one pdf to merge
             shutil.copyfile(pdf_files[0], out_name)
@@ -234,6 +242,7 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT, max_pdfunite_f
         except PDFUniteError as exc:
             # this could be caused by network hiccup
             log.info('[pdf_merge] retry generate   : ' + out_name)
+            log.error('[pdf_merge] retry generate   : ' + str(exc))
             raise pdf_merge.retry(args=(pdf_files, out_name, pdf_base_dir, timeout, max_pdfunite_files), exc=exc)
     except Exception as e:
         log.error(str(e))
@@ -287,10 +296,8 @@ def group_separator():
     pass
 
 
-def _partial_pdfunite(pdf_files, pdf_base_dir, file_limit=ServicesConstants.MAX_PDFUNITE_FILE, timeout=TIMEOUT):
+def _partial_pdfunite(pdf_files, pdf_tmp_dir, file_limit=ServicesConstants.MAX_PDFUNITE_FILE, timeout=TIMEOUT):
     files = []
-    pdf_tmp_dir = os.path.join(os.path.dirname(pdf_base_dir), '.tmp', '.partial')
-    prepare_path(pdf_tmp_dir)
     if file_limit < 1:
         raise PDFUniteError('file_limit must be grater than 1')
     elif file_limit is 1:
@@ -375,29 +382,24 @@ def _count_pdf_pages(pdf_path):
     with open(pdf_path, 'rb') as file:
         for line in file:
             skip = True
-            line = line.decode("utf-8")
-            if line.startswith('<<') or 'obj <<' in line:
+            if line.startswith(b'<<') or b'obj <<' in line:
                 reset()
-                line = line[line.find('<<'):]
+                line = line[line.find(b'<<'):]
             if seen['type']:
                 skip = False
-            elif not seen['type'] and '/Type' in line:
+            elif not seen['type'] and b'/Type' in line:
                 skip = False
 
             if not skip:
-                parts = line.strip().split(' ')
+                parts = line.strip().split(b' ')
                 for part in parts:
-                    if not seen['type'] and not seen['pages'] and part == '/Type':
+                    if not seen['type'] and not seen['pages'] and part == b'/Type':
                         seen['type'] = True
-                    elif seen['type'] and not seen['pages'] and part == '/Pages':
+                    elif seen['type'] and not seen['pages'] and part == b'/Pages':
                         seen['pages'] = True
-                    elif seen['type'] and seen['pages'] and part == '/Count':
+                    elif seen['type'] and seen['pages'] and part == b'/Count':
                         seen['count'] = True
                     elif part.isdigit() and seen['type'] and seen['pages'] and seen['count']:
                         return int(part)
 
     return -1
-
-
-def _get_cover_sheet_path(cv_dir, grade):
-    return os.path.join(cv_dir, '{prefix}{grade}.pdf'.format(prefix=ServicesConstants.COVER_SHEET_NAME_PREFIX, grade=grade))

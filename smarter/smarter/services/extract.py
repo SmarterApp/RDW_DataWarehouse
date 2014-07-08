@@ -9,22 +9,23 @@ from edapi.decorators import validate_params
 from edapi.utils import convert_query_string_to_dict_arrays
 from edextract.exceptions import ExtractionError
 from pyramid.response import Response
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPInternalServerError
 import json
 from smarter.reports.helpers.constants import AssessmentType, Constants
-from smarter.extracts.student_asmt_processor import process_async_extraction_request,\
-    process_sync_extract_request
+from smarter.extracts.student_asmt_processor import process_extraction_request
 from smarter.extracts.constants import ExtractType, Constants as Extract
 from datetime import datetime
 import logging
+from smarter.reports.helpers.filters import FILTERS_CONFIG
+from edcore.utils.utils import merge_dict
 
 logger = logging.getLogger(__name__)
 
 TENANT_EXTRACT_PARAMS = {
     "type": "object",
     "additionalProperties": False,
-    "properties": {
+    "properties": merge_dict({
         Extract.EXTRACTTYPE: {
             "type": "array",
             "items": {
@@ -86,15 +87,34 @@ TENANT_EXTRACT_PARAMS = {
             "required": False
         },
         Constants.SCHOOLGUID: {
-            "type": "string",
-            "required": False,
-            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+            },
+            "minItems": 1,
+            "uniqueItems": True,
+            "required": False
         },
         Constants.ASMTGRADE: {
-            "type": "string",
-            "maxLength": 2,
-            "required": False,
-            "pattern": "^[K0-9]+$",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+            },
+            "minItems": 1,
+            "uniqueItems": True,
+            "required": False
+        },
+        Constants.STUDENTGUID: {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9\-]{0,50}$"
+            },
+            "minItems": 1,
+            "uniqueItems": True,
+            "required": False
         },
         Extract.SYNC: {
             "type": "string",
@@ -107,14 +127,11 @@ TENANT_EXTRACT_PARAMS = {
             "pattern": "^(true|TRUE)$",
         },
         Constants.SL: {  # this is added by GET request inside browsers
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^\d+$"
-            },
+            "type": "string",
+            "pattern": "^\d+$",
             "required": False
         }
-    }
+    }, FILTERS_CONFIG)
 }
 
 
@@ -164,21 +181,17 @@ def send_extraction_request(params):
     try:
         # By default, it is a sync call
         is_async = params.get(Extract.ASYNC, False)
+        results = process_extraction_request(params, is_async=is_async)
         if is_async:
-            if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
-                results = process_async_extraction_request(params)
-                response = Response(body=json.dumps(results), content_type='application/json')
+            # TODO: we should validate the type when we refactor the endpoint
+            #if ExtractType.studentAssessment in params[Extract.EXTRACTTYPE]:
+            response = Response(body=json.dumps(results), content_type='application/json')
         else:
-            extract_params = {Constants.STATECODE: params.get(Constants.STATECODE, [None])[0],
-                              Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID, [None])[0],
-                              Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID, [None])[0],
-                              Constants.ASMTTYPE: params.get(Constants.ASMTTYPE, [None])[0],
-                              Constants.ASMTYEAR: params.get(Constants.ASMTYEAR, [None])[0],
-                              Constants.ASMTGRADE: params.get(Constants.ASMTGRADE, [None])[0],
-                              Constants.ASMTSUBJECT: params.get(Constants.ASMTSUBJECT)}
-            zip_file_name = generate_zip_file_name(extract_params)
-            content = process_sync_extract_request(extract_params)
-            response = Response(body=content, content_type='application/octet-stream')
+            zip_file_name = generate_zip_file_name(params.get(Constants.ASMTYEAR, [None])[0],
+                                                   params.get(Constants.ASMTGRADE, [None]),
+                                                   params.get(Constants.ASMTTYPE, [None])[0],
+                                                   params.get(Constants.ASMTSUBJECT),)
+            response = Response(body=results, content_type='application/octet-stream')
             response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % zip_file_name)
     # TODO: currently we dont' even throw any of these exceptions
     except ExtractionError as e:
@@ -193,7 +206,7 @@ def send_extraction_request(params):
     return response
 
 
-def generate_zip_file_name(params):
+def generate_zip_file_name(asmt_year, asmt_grade, asmt_type, asmt_subject):
     '''
     Generate file name for archive file according
         Zip file name:
@@ -201,14 +214,12 @@ def generate_zip_file_name(params):
         School-level: ASMT_<subject>_<type>_<timestamp>.zip
         Grade-level:  ASMT_<grade>_<subject>_<type>_<timestamp>.zip
     '''
-    subjects = params.get(Constants.ASMTSUBJECT)
-    subjects.sort()
-    asmtSubjects = '_'.join(subjects)
-    asmtGrade = params.get(Constants.ASMTGRADE)
-    identifier = '_GRADE_' + str(asmtGrade) if asmtGrade is not None else ''
+    asmt_subject.sort()
+    asmtSubjects = '_'.join(asmt_subject)
+    identifier = '_GRADE_' + str(asmt_grade[0]) if len(asmt_grade) == 1 and asmt_grade[0] is not None else ''
     return "ASMT_{asmtYear}{identifier}_{asmtSubject}_{asmtType}_{timestamp}.zip".\
         format(identifier=identifier,
                asmtSubject=asmtSubjects.upper(),
-               asmtType=params.get(Constants.ASMTTYPE).upper(),
-               asmtYear=params.get(Constants.ASMTYEAR),
+               asmtType=asmt_type.upper(),
+               asmtYear=asmt_year,
                timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))

@@ -10,7 +10,7 @@ from hpz_client.frs.config import initialize as initialize_hpz
 # default timeout 20 seconds
 TIMEOUT = 20
 # default number of pdf generation retries
-MAX_RETRIES = 3
+MAX_RETRIES = 1
 # minimum file size of pdf generated
 MINIMUM_FILE_SIZE = 80000
 

@@ -9,7 +9,7 @@ from services.tasks.pdf import generate, OK, \
     prepare_path, get, is_valid, delete, prepare, bulk_pdf_cover_sheet, \
     _build_url, pdf_merge, archive, hpz_upload_cleanup, group_separator, \
     _partial_pdfunite, _read_dir, _get_next_partial_outputfile_name, \
-    _pdfunite_subprocess, _get_cover_sheet_path, _count_pdf_pages
+    _pdfunite_subprocess, _count_pdf_pages
 from services.celery import setup_global_settings
 import platform
 import os
@@ -167,12 +167,14 @@ class TestCreatePdf(unittest.TestCase):
     def test_pdf_merge_pdf_file_doesnot_exist(self, mock_prepare_path):
         self.assertRaises(PdfGenerationError, pdf_merge, ['/foo/pdf_files_doesnot_exist'], '/foo/merged.pdf', 'pdf_base_dir')
 
+    @patch('services.tasks.pdf.os.path.exists')
     @patch('services.tasks.pdf._pdfunite_subprocess')
     @patch('services.tasks.pdf._partial_pdfunite')
     @patch('services.tasks.pdf.prepare_path')
     @patch('services.tasks.pdf.os.path.isfile')
-    def test_pdf_merge_more_than_max_pdf(self, mock_isfile, mock_prepare_path, mock_partial_pdfunite, mock_pdfunite_subprocess):
+    def test_pdf_merge_more_than_max_pdf(self, mock_isfile, mock_prepare_path, mock_partial_pdfunite, mock_pdfunite_subprocess, mock_exists):
         mock_isfile.return_value = True
+        mock_exists.side_effect = [False, True]
         pdffiles = ['/foo/1', '/foo/2', '/foo/3', '/foo/4', '/foo/5', '/foo/6', '/foo/7']
         pdf_merge(pdffiles, '/foo/outfile', '/foo', max_pdfunite_files=2)
         self.assertTrue(mock_partial_pdfunite.called)
@@ -379,10 +381,6 @@ class TestCreatePdf(unittest.TestCase):
     def test_pdfunite_subprocess_exception(self, mock_Popen):
         mock_Popen.return_value.wait.side_effect = Exception()
         self.assertRaises(PDFUniteError, _pdfunite_subprocess, ['/foo/1'], '/foo/2', 1)
-
-    def test_get_cover_sheet_path(self):
-        path = _get_cover_sheet_path('/foo', 11)
-        self.assertEqual(path, '/foo/cover_sheet_grade_11.pdf')
 
     def test_count_pdf_pages(self):
         outfile = tempfile.NamedTemporaryFile(delete=False)

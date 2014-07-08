@@ -114,26 +114,6 @@ PDF_PARAMS = {
             "required": False,
             "pattern": "^\d+$",
         },
-        Constants.GROUP1ID: {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9\-]{0,50}$"
-            },
-            "minitems": 1,
-            "uniqueItems": True,
-            "required": False
-        },
-        Constants.GROUP2ID: {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9\-]{0,50}$"
-            },
-            "minitems": 1,
-            "uniqueItems": True,
-            "required": False
-        },
         Constants.ALLOWSINGLE: {
             "type": "string",
             "required": False,
@@ -469,9 +449,9 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
             cv_params_this['studentCount'] = student_count_by_grade[grade]
 
             # Create the cover sheet task
-            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,
+            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,  # @UndefinedVariable
                                                                   cv_params_this, cookie_name, is_grayscale),
-                                                            immutable=True))  # @UndefinedVariable
+                                                            immutable=True))
             cover_sheets_by_grade[grade] = cover_path
 
     return cover_tasks, cover_sheets_by_grade
@@ -594,12 +574,6 @@ def _get_student_guids(state_code, district_guid, school_guid, asmt_type, params
         else:
             raise InvalidParameterError('Need one of effective_date or asmt_year')
         query = apply_filter_to_query(query, fact_asmt_outcome_vw, params)
-
-        # Check for group IDs
-        if Constants.GROUP1ID in params:
-            query = query.where(and_(fact_asmt_outcome_vw.c.group_1_id.in_(params.get(Constants.GROUP1ID))))
-        if Constants.GROUP2ID in params:
-            query = query.where(and_(fact_asmt_outcome_vw.c.group_2_id.in_(params.get(Constants.GROUP2ID))))
 
         # Add order by clause
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)

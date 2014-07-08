@@ -37,6 +37,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
         reg.settings['ldap.base.dn'] = 'ou=environment,dc=edwdc,dc=net'
+        reg.settings['batch.user.session.timeout'] = 15
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)

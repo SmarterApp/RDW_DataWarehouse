@@ -17,6 +17,7 @@ class TestBeakerBackend(unittest.TestCase):
         reg['cache.expire'] = 10
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'
+        reg['batch.user.session.timeout'] = 15
         self.cachemgr = CacheManager(**parse_cache_config_options(reg))
         self.backend = BeakerBackend(reg)
 

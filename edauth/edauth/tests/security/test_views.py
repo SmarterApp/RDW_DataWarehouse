@@ -62,6 +62,7 @@ class TestViews(unittest.TestCase):
         self.registry.settings['cache.expire'] = 10
         self.registry.settings['cache.regions'] = 'session'
         self.registry.settings['cache.type'] = 'memory'
+        self.registry.settings['batch.user.session.timeout'] = 15
 
         self.__request = EdAuthDummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite

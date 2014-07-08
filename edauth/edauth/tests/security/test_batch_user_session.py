@@ -44,6 +44,7 @@ class TestPdfSessionWithBeaker(TestPdfSession):
         reg.settings['cache.expire'] = 10
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
+        reg.settings['batch.user.session.timeout'] = 15
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
 
     def test_launch_pdf_session(self):

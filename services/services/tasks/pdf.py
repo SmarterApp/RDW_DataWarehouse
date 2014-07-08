@@ -11,18 +11,18 @@ import logging
 import subprocess
 import urllib.parse
 from services.celery import celery
-from services.exceptions import PdfGenerationError
+from services.exceptions import PdfGenerationError, PDFUniteError
 from edcore.exceptions import NotForWindowsException, RemoteCopyError
 from edcore.utils.utils import archive_files
 import copy
 from services.celery import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
-import uuid
 from subprocess import Popen
-import tempfile
 import shutil
 from hpz_client.frs.http_file_upload import http_file_upload
+from services.constants import ServicesConstants
+import uuid
 
 mswindows = (sys.platform == "win32")
 pdf_procs = ['wkhtmltopdf']
@@ -81,8 +81,17 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
             log.error("Pdf file validation failed.  Removing file %s. Will attempt to regenerate pdf", outputfile)
             delete(outputfile)
 
-            kwargs = {'options': options, 'timeout': timeout, 'cookie_name': cookie_name, 'grayscale': grayscale}
-            return generate.retry(args=[cookie, url, outputfile], kwargs=kwargs, exc=PdfGenerationError())
+            try:
+                # this looks funny to you, but this is just a work around solution for celery bug
+                # since exc option is not really working for retry.
+                # the specific exception raised is irrelevant, it just needs to be unique
+                raise PdfGenerationError()
+            except PdfGenerationError as exc:
+                # this could be caused by network hiccup
+                log.info('[generate] retry generate   : ' + outputfile)
+                kwargs = {'options': options, 'timeout': timeout, 'cookie_name': cookie_name, 'grayscale': grayscale}
+                raise generate.retry(args=(cookie, url, outputfile), kwargs=kwargs, exc=exc)
+
         else:
             return OK
 
@@ -128,14 +137,18 @@ def prepare(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
 
     NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
     '''
+    # for UT purpose
+    return_value = False
     if always_generate or not os.path.exists(outputfile):
         # always delete it first in case of regeneration error
         delete(outputfile)
         try:
             generate(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayscale=grayscale)
+            return_value = True
         except MaxRetriesExceededError:
             log.error("Max retries exceeded in PDF Generation")
             raise PdfGenerationError()
+    return return_value
 
 
 def prepare_path(path):
@@ -156,8 +169,8 @@ def is_valid(path):
     :return:  True if file is valid, else False
     :rtype: Boolean
     '''
-    if 'cover_sheet_grade_' in path:
-        return os.path.exists(path) and (os.path.getsize(path) > 200)
+    if ServicesConstants.COVER_SHEET_NAME_PREFIX in path:
+        return os.path.exists(path) and (os.path.getsize(path) > ServicesConstants.MINIMUM_COVER_FILE_SIZE)
     return os.path.exists(path) and (os.path.getsize(path) > services.celery.MINIMUM_FILE_SIZE)
 
 
@@ -172,24 +185,29 @@ def delete(path):
 
 
 @celery.task(name='tasks.pdf.coversheet')
-def bulk_pdf_cover_sheet(cookie, out_name, merged_name, base_url, base_params, cookie_name='edware', grayscale=False,
+def bulk_pdf_cover_sheet(cookie, out_name, merged_pdf_filename, base_url, base_params, cookie_name='edware', grayscale=False,
                          timeout=TIMEOUT):
-    # Get the page count from the merged PDF
-    base_params['pageCount'] = _count_pdf_pages(merged_name)
-
-    # Build the URL for the page to generate
-    encoded_params = urllib.parse.urlencode(base_params)
-    url = base_url + "?%s" % encoded_params
+    url = _build_url(base_url, base_params, merged_pdf_filename)
 
     # Generate the cover sheet
     generate(cookie, url, out_name, cookie_name=cookie_name, grayscale=grayscale, options=cover_sheet_pdf_defaults,
              timeout=timeout)
 
 
-@celery.task(name='tasks.pdf.merge')
-def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
+def _build_url(base_url, base_params, merged_pdf_filename):
+    # Get the page count from the merged PDF
+    base_params[ServicesConstants.PAGECOUNT] = _count_pdf_pages(merged_pdf_filename)
+
+    # Build the URL for the page to generate
+    encoded_params = urllib.parse.urlencode(base_params)
+    url = base_url + "?%s" % encoded_params
+    return url
+
+
+@celery.task(name='tasks.pdf.merge', max_retries=ServicesConstants.PDF_MERGE_MAX_RETRY, default_retry_delay=ServicesConstants.PDF_MERGE_RETRY_DELAY)
+def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT, max_pdfunite_files=ServicesConstants.MAX_PDFUNITE_FILE):
     # Prepare output file
-    if os.path.isfile(out_name):
+    if os.path.exists(out_name):
         log.error(out_name + " is already exist")
         raise PdfGenerationError()
     prepare_path(out_name)
@@ -199,20 +217,36 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT):
         if not os.path.isfile(pdf_file):
             raise PdfGenerationError('file does not exist: ' + pdf_file)
     try:
-        # UNIX can handle upto 1024 file descriptors in default.  To be safe we process 1000 files at once.
-        if len(pdf_files) > 1000:
-            with tempfile.TemporaryDirectory(dir=os.path.join(pdf_base_dir, '.tmp')) as temp_dir:
-                files = _parallel_pdf_unite(pdf_files, temp_dir, timeout=timeout)
-                subprocess.call(pdfunite_procs + files + [out_name], timeout=timeout)
+        # UNIX can handle upto 1024 file descriptors in default.  To be safe we process 50 files at once.
+        if len(pdf_files) > max_pdfunite_files:
+            partial_dir = os.path.join(os.sep, '.tmp', 'partial')
+            if partial_dir not in pdf_base_dir:
+                gid = uuid.uuid4()
+                pdf_base_dir = os.path.join(pdf_base_dir, '.tmp', 'partial', str(gid))
+                if os.path.exists(pdf_base_dir) is not True:
+                    os.makedirs(pdf_base_dir, mode=0o700, exist_ok=True)
+            files = _partial_pdfunite(pdf_files, pdf_base_dir, timeout=timeout, file_limit=max_pdfunite_files)
+            _pdfunite_subprocess(files, out_name, timeout)
+            shutil.rmtree(pdf_base_dir, ignore_errors=True)
         elif len(pdf_files) is 1:
-            #pdfunite is not callable if there is only one pdf to merge
+            # pdfunite is not callable if there is only one pdf to merge
             shutil.copyfile(pdf_files[0], out_name)
         else:
-            subprocess.call(pdfunite_procs + pdf_files + [out_name], timeout=timeout)
-    except subprocess.TimeoutExpired:
-        log.error('pdfunite subprocess call timed out')
+            _pdfunite_subprocess(pdf_files, out_name, timeout)
+    except PDFUniteError as exc:
+        try:
+            # this looks funny to you, but this is just a work around solution for celery bug
+            # since exc option is not really working for retry.
+            # the specific exception raised is irrelevant, it just needs to be unique
+            raise
+        except PDFUniteError as exc:
+            # this could be caused by network hiccup
+            log.info('[pdf_merge] retry generate   : ' + out_name)
+            log.error('[pdf_merge] retry generate   : ' + str(exc))
+            raise pdf_merge.retry(args=(pdf_files, out_name, pdf_base_dir, timeout, max_pdfunite_files), exc=exc)
     except Exception as e:
         log.error(str(e))
+        raise
 
 
 @celery.task(name="tasks.pdf.archive")
@@ -223,7 +257,7 @@ def archive(archive_file_name, directory):
     try:
         prepare_path(archive_file_name)
         archive_files(directory, archive_file_name)
-    except Exception as e:
+    except Exception:
         # unrecoverable exception
         raise PdfGenerationError('Unable to archive file(s): ' + directory + ', ' + archive_file_name)
 
@@ -262,55 +296,110 @@ def group_separator():
     pass
 
 
-def _parallel_pdf_unite(pdf_files, pdf_tmp_dir, file_limit=1000, timeout=TIMEOUT):
-    procs = []
+def _partial_pdfunite(pdf_files, pdf_tmp_dir, file_limit=ServicesConstants.MAX_PDFUNITE_FILE, timeout=TIMEOUT):
     files = []
-    offset = -1
-    while offset is not int(len(pdf_files) / file_limit):
-        offset += 1
-        end = (offset + 1) * file_limit if offset is not int(len(pdf_files) / file_limit) else len(pdf_files)
-        partial_file_list = pdf_files[offset * file_limit:end]
-        if len(partial_file_list) is 1:
-            files.append(partial_file_list[0])
-        else:
-            partial_outputfile = os.path.join(pdf_tmp_dir, str(uuid.uuid4()))
-            partial_file_list.append(partial_outputfile)
+    if file_limit < 1:
+        raise PDFUniteError('file_limit must be grater than 1')
+    elif file_limit is 1:
+        for pdf_file in pdf_files:
+            partial_outputfile = _get_next_partial_outputfile_name(pdf_tmp_dir)
+            shutil.copy(pdf_file, partial_outputfile)
             files.append(partial_outputfile)
-            proc = Popen(pdfunite_procs + partial_file_list)
-            procs.append(proc)
-    for proc in procs:
-        proc.wait(timeout=timeout)
+    else:
+        files = _read_dir(pdf_tmp_dir)
+        offset = len(files)
+        partial_outputfile = _get_next_partial_outputfile_name(pdf_tmp_dir)
+        while offset < int(len(pdf_files) / file_limit) or (offset == int(len(pdf_files) / file_limit) and int(len(pdf_files) % file_limit) > 0):
+            if offset == int(os.path.basename(partial_outputfile)):
+                if offset == int(len(pdf_files) / file_limit):
+                    partial_file_list = pdf_files[-1 * int(len(pdf_files) % file_limit):]
+                else:
+                    end = (offset + 1) * file_limit if offset is not int(len(pdf_files) / file_limit) else len(pdf_files)
+                    partial_file_list = pdf_files[offset * file_limit:end]
+                if len(partial_file_list) is 1:
+                    files.append(partial_file_list[0])
+                else:
+                    files.append(partial_outputfile)
+                    try:
+                        _pdfunite_subprocess(partial_file_list, partial_outputfile, timeout)
+                    except PdfGenerationError:
+                        # delete partial_outputfiles
+                        delete(partial_outputfile)
+                        raise
+                partial_outputfile = _get_next_partial_outputfile_name(pdf_tmp_dir)
+            offset += 1
     return files
 
 
+def _read_dir(pdf_tmp_dir):
+    files = [os.path.join(pdf_tmp_dir, f) for f in os.listdir(pdf_tmp_dir) if os.path.isfile(os.path.join(pdf_tmp_dir, f))]
+    if files:
+        files.sort()
+    return files
+
+
+def _get_next_partial_outputfile_name(pdf_tmp_dir):
+    '''
+    generate next partial pdf filename for pdfunite
+    '''
+    next_filename = None
+    files = _read_dir(pdf_tmp_dir)
+    if files:
+        filename = files[-1]
+        next_filename = os.path.join(pdf_tmp_dir, ('%03d' % (int(os.path.basename(filename)) + 1)))
+    else:
+        next_filename = os.path.join(pdf_tmp_dir, "001")
+    return next_filename
+
+
+def _pdfunite_subprocess(input_files, output_file, timeout):
+    exception = None
+    try:
+        proc = Popen(pdfunite_procs + input_files + [output_file])
+        proc.wait(timeout=timeout)
+        if proc is not None and proc.returncode is not 0:
+            stderr = proc.communicate()[1]
+            # raise if there ie error
+            exception = PDFUniteError('pdfunite: ' + str(stderr))
+    except Exception as e:
+        exception = PDFUniteError(str(e))
+    if exception is not None:
+        raise exception
+
+
 def _count_pdf_pages(pdf_path):
-    seen_type = False  # /Type
-    seen_pages = False  # /Pages
-    seen_kids = False  # /Kids
-    seen_count = False  # /Count
+    seen = {'type': False,  # /Type
+            'pages': False,  # /Pages
+            'kids': False,  # /Kids
+            'count': False  # /Count
+            }
+
+    def reset():
+        seen['type'] = False
+        seen['pages'] = False
+        seen['count'] = False
+
     with open(pdf_path, 'rb') as file:
         for line in file:
-            try:
-                line = line.decode("utf-8")
-                if not seen_type and '/Type' not in line:
-                    continue
-                parts = line.split(' ')
+            skip = True
+            if line.startswith(b'<<') or b'obj <<' in line:
+                reset()
+                line = line[line.find(b'<<'):]
+            if seen['type']:
+                skip = False
+            elif not seen['type'] and b'/Type' in line:
+                skip = False
+
+            if not skip:
+                parts = line.strip().split(b' ')
                 for part in parts:
-                    if not seen_type and not seen_pages and not seen_kids and part == '/Type':
-                        seen_type = True
-                    elif seen_type and not seen_pages and not seen_kids and part == '/Pages':
-                        seen_pages = True
-                    elif seen_type and seen_pages and not seen_kids and part == '/Kids':
-                        seen_kids = True
-                    elif seen_type and seen_pages and seen_kids and part == '/Count':
-                        seen_count = True
-                    elif seen_type and seen_pages and seen_kids and seen_count:
+                    if not seen['type'] and not seen['pages'] and part == b'/Type':
+                        seen['type'] = True
+                    elif seen['type'] and not seen['pages'] and part == b'/Pages':
+                        seen['pages'] = True
+                    elif seen['type'] and seen['pages'] and part == b'/Count':
+                        seen['count'] = True
+                    elif part.isdigit() and seen['type'] and seen['pages'] and seen['count']:
                         return int(part)
-            except:
-                pass
 
     return -1
-
-
-def _get_cover_sheet_path(cv_dir, grade):
-    return os.path.join(cv_dir, 'cover_sheet_grade_{grade}.pdf'.format(grade=grade))

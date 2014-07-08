@@ -36,6 +36,7 @@ import os
 from smarter_common.security.constants import RolesConstants
 import pyramid
 from batch.pdf.pdf_generator import PDFGenerator
+from services.constants import ServicesConstants
 
 KNOWN_REPORTS = ['indivStudentReport.html']
 
@@ -448,9 +449,9 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
             cv_params_this['studentCount'] = student_count_by_grade[grade]
 
             # Create the cover sheet task
-            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,
+            cover_tasks.append(bulk_pdf_cover_sheet.subtask(args=(cookie_value, cover_path, merged_path, cv_base_url,  # @UndefinedVariable
                                                                   cv_params_this, cookie_name, is_grayscale),
-                                                            immutable=True))  # @UndefinedVariable
+                                                            immutable=True))
             cover_sheets_by_grade[grade] = cover_path
 
     return cover_tasks, cover_sheets_by_grade
@@ -514,7 +515,7 @@ def _start_bulk(archive_file_path, directory_to_archive, registration_id, gen_ta
 
 
 def _get_cover_sheet_name(grade):
-    return 'cover_sheet_grade_{grade}.pdf'.format(grade=grade)
+    return '{cover_sheet_name_prefix}{grade}.pdf'.format(cover_sheet_name_prefix=ServicesConstants.COVER_SHEET_NAME_PREFIX, grade=grade)
 
 
 def _get_merged_pdf_name(school_name, grade, lang_code, grayscale):

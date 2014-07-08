@@ -13,7 +13,13 @@ def includeme(config):
 
     # Add File Download end point
     config.add_route('download', '/download/{reg_id}')
+    config.add_route('error', '404')
 
     here = os.path.abspath(os.path.dirname(__file__))
     assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..', '..'), 'assets'))
     config.add_static_view('assets/images', os.path.join(assets_dir, 'images'))
+
+
+@view_config(route_name='error', renderer='../../assets/templates/hpz_error.pt')
+def hpz_error(request):
+    return {}

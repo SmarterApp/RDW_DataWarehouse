@@ -9,7 +9,6 @@ import os
 import sys
 import logging
 import subprocess
-import urllib
 import urllib.parse
 from services.celery import celery
 from services.exceptions import PdfGenerationError

@@ -23,6 +23,7 @@ class TestCache(Unittest_with_edcore_sqlite):
         reg['cache.expire'] = 10
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'
+        reg['batch.user.session.timeout'] =  15
         CacheManager(**parse_cache_config_options(reg))
         component.provideUtility(SessionBackend(reg), ISessionBackend)
 

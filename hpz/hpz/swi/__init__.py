@@ -13,7 +13,7 @@ def includeme(config):
 
     # Add File Download end point
     config.add_route('download', '/download/{reg_id}')
-    config.add_route('error', '404')
+    config.add_route('error', 'error')
 
     here = os.path.abspath(os.path.dirname(__file__))
     assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..', '..'), 'assets'))

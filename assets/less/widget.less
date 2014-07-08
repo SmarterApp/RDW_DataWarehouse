@@ -1313,20 +1313,24 @@ th.ui-th-column div {
     .stickyClear {
       cursor: pointer;
       a {
-        font-weight: bold;
         font-size: 12px;
         text-decoration: none;
+        color: @color-A2;
       }
 
       a:hover {
         text-decoration:none;
-        color: @color-A4;
+        color: @color-A2;
       }
 
     }
 
     .stickyInstText {
-       font-size: 13px;
+       font-size: 14px;
+
+       b {
+         color: @color-B1;
+       }
     }
   }
 
@@ -1402,22 +1406,11 @@ th.ui-th-column div {
         background-position: initial;
     }
   }
-  .stickyChainIcon{
-    background-image: url("../images/iconCheckbox.png");
-    background-repeat: no-repeat;
-    background-position: 5px center;
-    background-size: 12px 12px;
-    padding-left: 28px;
-    border-color: @color-B15;
-    font-size: 13px;
-    height: 24px;
-    line-height: 10px;
-    color: @color-B1;
-    text-shadow: none;
-    background-color: @color-white;
-  }
 
-  #stickyCompare-btn {height: 28px};
+  #stickyCompare-btn {
+    height: 28px;
+    padding: 4px 20px;
+  };
 
 }
 .stickyChainScrollable {

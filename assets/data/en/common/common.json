@@ -581,22 +581,25 @@
     },
     "ExportOptions" : {
         "export_bulk_pdf": {
-            "text": "Printable student reports (PDF)",
-            "desc": "Download individual reports for students in this school. The download will reflect active filters and selections."
+            "text": "Printable student reports",
+            "desc": {
+                "enabled": "Download individual reports for students in this school.",
+                "disabled": "Unavailable at this level. Click into a school to download individual student reports."
+            }
         },
         "export_download_curr_view": {
-            "text": "Current view (CSV)",
-            "desc": "Download the current view as a CSV. The download will reflect active filters and selections."
+            "text": "Current view",
+            "desc": "Download the current view as a CSV."
         },
         "export_download_raw_view": {
-            "text": "Student assessment results (CSV)",
-            "desc": "Download summative results for all students in this school."
+            "text": "Student assessment results",
+            "desc": {
+                "enabled": "Download summative results for all students in this",
+                "disabled": "Unavailable at this level. Requires PII permission for all students in this"
+            }
         },
         "export_request_extract": {
-            "text": {
-                "state": "State-level reports & extracts",
-                "district": "District-level reports & extracts"
-            },
+            "text": "State Downloads",
             "desc": "Download registration reports and XML extracts."
         },
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
@@ -606,7 +609,9 @@
             "grayscale": "Grayscale (for black & white printing)",
             "color": "Color"
         },
-        "export_pdf_success": "Your requested reports will be available soon.",
+        "export_success": "Your requested reports will be available soon.",
+        "export_failure": "Something went wrong.",
+        "export_retry": "Please retry again or contact the administrator at",
         "export_pdf_no_data": {
             "title": "Printable Student Reports",
             "header": "No students.",
@@ -614,6 +619,6 @@
         },
         "export_request_files": "Request Files",
         "export_pdf_files": "Generate Reports",
-        "generate_pdf_reports": "Generating Requested Reports"
+        "generate_reports": "Generating Requested Reports"
     }
 }

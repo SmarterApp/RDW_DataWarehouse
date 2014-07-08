@@ -1693,7 +1693,7 @@ th.ui-th-column div {
     padding: 3px;
   }
 
-  #DownloadMenuModal, #PDFModal, #PDFSuccessModal, #PDFFailureModal {
+  #DownloadMenuModal, #PDFModal, #DownloadSuccessModal, #DownloadFailureModal {
 
     width: 420px;
 
@@ -1727,12 +1727,32 @@ th.ui-th-column div {
 
       .desc_block {
         padding-left: 25px;
+        &.disabled {display: none;}
+        &.enabled {display: block;}
       }
+
+      &.disabled {
+        .desc_block {
+          &.disabled {display: block;}
+          &.enabled {display: none;}
+        }
+
+        h4 {
+          color: @color-B2;
+        }
+      }
+    }
+
+    .note p {
+      background-color: @color-B28;
+      padding: 5px 0px 3px 10px;
     }
 
     hr {
       margin: 0px 0px 12px;
     }
+
+    b {color: @color-black}
   }
 
   .reminderMessage {

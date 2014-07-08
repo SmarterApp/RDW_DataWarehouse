@@ -6,8 +6,9 @@ define [
   "text!CSVOptionsTemplate"
   "text!DownloadMenuTemplate"
   "text!PDFOptionsTemplate"
-  "text!PDFSuccessTemplate"
-  "text!PDFNoDataTemplate"
+  "text!SuccessTemplate"
+  "text!FailureTemplate"
+  "text!NoDataTemplate"
   "edwareConstants"
   "edwareClientStorage"
   "edwarePreferences"
@@ -16,7 +17,7 @@ define [
   "edwareUtil"
   "edwareModal"
   "edwareEvents"
-], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, PDFSuccessTemplate, PDFNoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
+], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -34,6 +35,25 @@ define [
     "studentAssessmentCompletion": "/services/extract/student_assessment_completion"
   }
 
+  showFailureMessage = (response) ->
+    @hide()
+    $('#DownloadResponseContainer').html Mustache.to_html FailureTemplate, {
+      labels: @config.labels
+      options: @config.ExportOptions
+    }
+    $('#DownloadFailureModal').edwareModal
+      keepLastFocus: true
+
+  showSuccessMessage = (response) ->
+    @hide()
+    download_url = response["download_url"]
+    $('#DownloadResponseContainer').html Mustache.to_html SuccessTemplate, {
+      labels: @config.labels
+      options: @config.ExportOptions
+      download_url: download_url
+    }
+    $('#DownloadSuccessModal').edwareModal
+      keepLastFocus: true
 
   class CSVDownloadModal
 
@@ -259,8 +279,8 @@ define [
     getParams: ()->
       params = {}
       # Get filter params only for accessment extracts
-      if @reportType == "studentAssessment" 
-        params = edwarePreferences.getFilters() 
+      if @reportType == "studentAssessment"
+        params = edwarePreferences.getFilters()
         # get sticky compared rows if any
         params = $.extend(@reportParamCallback(), params)
       $('tr:visible ul.checkbox-menu', this.container).each (index, param)->
@@ -345,22 +365,8 @@ define [
       params = @config.getReportParams()
       params = $.extend(@getParams(), params)
       request = edwareDataProxy.sendBulkPDFRequest params
-      request.done @showSuccessMessage.bind(this)
-      request.fail @showFailureMessage.bind(this)
-
-    showFailureMessage: () ->
-      $('#bulkprint').removeAttr('disabled')
-
-    showSuccessMessage: (response) ->
-      @hide()
-      download_url = response["download_url"]
-      $('#PDFSuccessContainer').html Mustache.to_html PDFSuccessTemplate, {
-        labels: @config.labels
-        options: @config.ExportOptions
-        download_url: download_url
-      }
-      $('#PDFSuccessModal').edwareModal
-        keepLastFocus: true
+      request.done showSuccessMessage.bind(this)
+      request.fail showFailureMessage.bind(this)
 
     show: () ->
       $('#PDFModal').edwareModal
@@ -373,6 +379,7 @@ define [
   class DownloadMenu
 
     constructor: (@container, @config) ->
+      @reportType = @config.reportType
       this.initialize(@container)
       this.bindEvents()
 
@@ -381,7 +388,7 @@ define [
 
     initialize: (@container) ->
       output = Mustache.to_html DownloadMenuTemplate, {
-        export_extract_text: @config.ExportOptions?.export_request_extract.text[@config.reportType]
+        reportType: @reportType
         labels: this.config['labels']
         options: this.config.ExportOptions
       }
@@ -396,30 +403,76 @@ define [
       $('#DownloadMenuModal').edwareModal()
 
     hide: () ->
+      $('#exportButton').removeAttr('disabled')
       $('#DownloadMenuModal').edwareModal('hide')
 
     bindEvents: () ->
       self = this
       # bind export event
       $('.btn-primary', '#DownloadMenuModal').click ->
+        # disable button to avoid user click twice
+        $('#exportButton').attr('disabled', 'disabled')
         # get selected option
         option = $(self.container).find('input[type="radio"]:checked').val()
         self.eventHandler[option].call(self)
-        self.hide()
       $('#DownloadMenuModal').on 'shown', ->
         self.disableInvisibleButtons()
 
     downloadAsFile: () ->
       # download 508-compliant file
       $('#gridTable').edwareExport @config.reportName, @config.labels
+      @hide()
+
+    getParams: ()->
+      # extract both Math and ELA summative results
+      params = {}
+      params['asmtSubject'] = Constants.SUBJECTS
+      params['asmtType'] = ['SUMMATIVE']
+      asmtYear = edwarePreferences.getAsmtYearPreference()
+      params["asmtYear"] =[asmtYear.toString()]
+      params['extractType'] = ['studentAssessment']
+
+      storageParams = JSON.parse edwareClientStorage.filterStorage.load()
+      if storageParams and storageParams['stateCode']
+        params['stateCode'] = [storageParams['stateCode']]
+
+      if storageParams and storageParams['districtGuid']
+        params['districtGuid'] = [storageParams['districtGuid']]
+
+      params
+
+    sendAsyncExtractRequest: () ->
+      # extract Math and ELA summative assessment data
+      params = $.extend(true, {'async': 'true'}, this.getParams())
+      # Get request time
+      currentTime = moment()
+      this.requestDate = currentTime.format 'MMM Do'
+      this.requestTime = currentTime.format 'h:mma'
+
+      options =
+        params: params
+        method: 'POST'
+        redirectOnError: false
+
+      request = edwareDataProxy.getDatafromSource REQUEST_ENDPOINT["studentAssessment"], options
+      request.done showSuccessMessage.bind(this)
+      request.fail showFailureMessage.bind(this)
 
     sendExtractRequest: () ->
-      # Send sync request for CSV extracts
+      # perform asynchronous extract on state and distrct level
+      if @reportType is Constants.REPORT_TYPE.STATE or @reportType is Constants.REPORT_TYPE.DISTRICT
+        this.sendAsyncExtractRequest()
+      else
+        # perform synchronous extract on school and grade level
+        this.sendSyncExtractRequest()
+        this.hide()
+
+    sendSyncExtractRequest: () ->
       values = JSON.parse edwareClientStorage.filterStorage.load()
       # Get asmtType from session storage
       asmtType = edwarePreferences.getAsmtPreference().asmtType || Constants.ASMT_TYPE.SUMMATIVE
       # Get filters
-      params = edwarePreferences.getFilters() 
+      params = edwarePreferences.getFilters()
       # Get sticky compared rows if any
       params = $.extend(@config.getReportParams(), params)
       params['stateCode'] = values['stateCode']
@@ -433,6 +486,9 @@ define [
       window.location = url
 
     sendCSVRequest: () ->
+      alert "Coming up soon!"
+      @hide()
+      return
       CSVOptions = @config.CSVOptions
       CSVOptions.labels = @config.labels
       CSVOptions.ExportOptions = @config.ExportOptions
@@ -453,6 +509,7 @@ define [
         CSVDownload.show()
 
     printPDF: () ->
+      @hide()
       hasData = $('#gridTable').text() isnt ''
       if not hasData
         # display warning message and stop
@@ -462,13 +519,12 @@ define [
         @PDFOptionsModal.show()
 
     displayWarningMessage: () ->
-      output = Mustache.to_html PDFNoDataTemplate,
+      output = Mustache.to_html NoDataTemplate,
         labels: @config.labels
         options: @config.ExportOptions
-      $('#PDFFailureContainer').html output
-      $('#PDFFailureModal').edwareModal
+      $('#DownloadResponseContainer').html output
+      $('#DownloadFailureModal').edwareModal
         keepLastFocus: true
-
 
     fetchData = (params)->
       options =

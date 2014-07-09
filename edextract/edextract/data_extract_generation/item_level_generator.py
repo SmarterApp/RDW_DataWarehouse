@@ -19,16 +19,17 @@ logger = logging.getLogger(__name__)
 ITEM_KEY_POS = 0
 
 
-def generate_items_csv(tenant, output_file, task_info, extract_args):
+def generate_items_csv(tenant, output_files, task_info, extract_args):
     """
     Write item-level data to CSV file
 
     @param tenant: Requestor's tenant ID
-    @param output_file: File pathname of extract file
+    @param output_files: List of output file path's for item extract
     @param task_info: Task information for recording stats
     @param extract_args: Arguments specific to generate_items_csv
     """
     # Get stuff
+    import pdb;pdb.set_trace();
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     items_root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
     item_ids = extract_args[TaskConstants.ITEM_IDS]
@@ -40,12 +41,19 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
 
         # Write the header to the file
         # TODO: Should not be hard coded
-        if not os.path.exists(output_file):
-            write_csv(output_file,
-                      ['key', 'student_guid', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
-                       'format', 'score', 'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel',
-                       'pageNumber', 'pageVisits', 'pageTime', 'dropped'],
-                      [])
+        for output_file in output_files:
+            if not os.path.exists(output_file):
+                write_csv(output_file,
+                          ['key', 'student_guid', 'segmentId', 'position', 'clientId', 'operational', 'isSelected',
+                           'format', 'score', 'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel',
+                           'pageNumber', 'pageVisits', 'pageTime', 'dropped'],
+                          [])
+
+        # Test hack for now to write all content to first file, other files will have only headers
+        # this line needs to be removed and replaced with call to get what input files
+        # will go in to what output files based on output file threshold
+        output_file = output_files[0]
+        # end of hack lines
 
         # Open the file to stream it out
         with open(output_file, 'a') as out_file:

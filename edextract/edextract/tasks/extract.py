@@ -35,17 +35,41 @@ DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
 @celery.task(name='task.extract.start_extract')
-def start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
+def start_extract(tenant, request_id, archive_file_names, directories_to_archive, registration_ids, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-
-    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
+    workflow = chain(generate_prepare_path_task(request_id, archive_file_names, directories_to_archive, queue_name=queue),
                      generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                     remote_copy.subtask(args=[request_id, archive_file_name, registration_id], queues=queue, immutable=True))
+                     extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     generate_archive_file_tasks(request_id, archive_file_names, directories_to_archive, queue_name=queue),
+                     extract_group_separator.subtask(immutable=True),  # @UndefinedVariable
+                     generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=queue))
     workflow.apply_async()
+
+@celery.task(name="tasks.extract.separator")
+def extract_group_separator():
+    '''
+    A dummy task to separate out a chain of two consecutive groups
+    '''
+    pass
+
+
+def generate_prepare_path_task(request_id, archive_file_names, directories_to_archive, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
+    """
+    Given a list of paths, create a single celery task to prepare the paths
+
+    @param request_id: Report request ID
+    @param archive_file_names: list of the archive file names
+    @param directories_to_archive: list of directories to be archived using the names in archive_file_names
+    @param queue_name(optional): Queue to which to send celery task requests
+
+    @return: Celery task to execute
+    """
+    paths_to_prepare = [directory for directory in directories_to_archive] + [os.path.dirname(file) for file in archive_file_names]
+    import pdb;pdb.set_trace();
+    return prepare_path.subtask(args=[request_id, paths_to_prepare], queue=queue_name, immutable=True)
 
 
 @celery.task(name='task.extract.prepare_path')
@@ -87,7 +111,7 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
             generate_tasks.append(generate_item_or_raw_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
         else:
             generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
-
+    import pdb;pdb.set_trace();
     return group(generate_tasks)
 
 
@@ -110,6 +134,26 @@ def archive_with_stream(request_id, directory):
     return archive_memory_file.getvalue()
 
 
+def generate_archive_file_tasks(request_id, archive_file_names, directories_to_archive, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
+    """
+    Given a list of directories to archive and a corresponding list of archive file names, create a celery task for each
+    one of the archiving to be done
+
+    @param request_id: Report request ID
+    @param archive_file_names: list of the archive file names
+    @param directories_to_archive: list of directories to be archived using the names in archive_file_names
+    @param queue_name(optional): Queue to which to send celery task requests
+
+    @return: Group of celery tasks to execute
+    """
+    archive_tasks = []
+
+    for i in range(0, len(directories_to_archive)):
+        archive_tasks.append(archive.subtask(args=[request_id, archive_file_names[i], directories_to_archive[i]], queue=queue_name, immutable=True))
+    import pdb;pdb.set_trace();
+    return group(archive_tasks)
+
+
 @celery.task(name="tasks.extract.archive", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
 def archive(request_id, archive_file_name, directory):
     '''
@@ -128,6 +172,26 @@ def archive(request_id, archive_file_name, directory):
         # unrecoverable exception
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         raise ExtractionError()
+
+
+def generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
+    """
+    Given a list of archive files and a corresponding list of registration ids, create a celery task for each
+    one of the remote copy to be done
+
+    @param request_id: Report request ID
+    @param archive_file_names: list of the archive file names
+    @param registration_ids: list of registration ids obtained from HPZ corresponding to each file in the archive_file_names list
+    @param queue_name(optional): Queue to which to send celery task requests
+
+    @return: Group of celery tasks to execute
+    """
+    remote_copy_tasks = []
+
+    for i in range(0, len(archive_file_names)):
+        remote_copy_tasks.append(remote_copy.subtask(args=[request_id, archive_file_names[i], registration_ids[i]], queue=queue_name, immutable=True))
+    import pdb;pdb.set_trace();
+    return group(remote_copy_tasks)
 
 
 @celery.task(name="tasks.extract.remote_copy", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
@@ -237,34 +301,40 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
     extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
     log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_item_or_raw_extract_file.name,
                                                                                           task_id=task_id, extract_type=extract_type))
-    output_dir = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
-    output_file = task[TaskConstants.TASK_FILE_NAME]
+    output_dirs = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
+    output_files = task[TaskConstants.TASK_FILE_NAME]
 
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_item_or_raw_extract_file.request.id,
                  Constants.REQUEST_GUID: request_id}
     retryable = False
     exception_thrown = False
-
+    import pdb;pdb.set_trace();
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            if extract_type is ExtractionDataType.QUERY_ITEMS_CSV and not os.path.isdir(os.path.dirname(output_file)):
-                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
-            if extract_type is ExtractionDataType.QUERY_RAW_XML and not os.path.isdir(output_dir):
-                raise FileNotFoundError(output_dir + " doesn't exist")
+            if extract_type is ExtractionDataType.QUERY_ITEMS_CSV:
+                for output_file in output_files:
+                    if not os.path.isdir(os.path.dirname(output_file)):
+                        raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
+            if extract_type is ExtractionDataType.QUERY_RAW_XML:
+                for output_dir in output_dirs:
+                    if not os.path.isdir(output_dir):
+                        raise FileNotFoundError(output_dir + " doesn't exist")
 
-            # for item level the output path is a file and for raw extract the output path is a directory
+            # for item level the output path is a list of one or more files
+            # and for raw extract the output path is a list of one or more directory
             # to place all the matching xml files
             if extract_type == ExtractionDataType.QUERY_ITEMS_CSV:
-                output_path = output_file
+                output_paths = output_files
             else:
-                output_path = output_dir
+                output_paths = output_dirs
             # Extract data to file
+            import pdb;pdb.set_trace();
             extract_func = get_extract_func(extract_type)
-            extract_func(tenant, output_path, task_info, task)
+            extract_func(tenant, output_paths, task_info, task)
 
     except FileNotFoundError as e:
         # which thrown from prepare_path

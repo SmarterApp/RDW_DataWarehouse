@@ -15,15 +15,16 @@ from edextract.tasks.constants import Constants as TaskConstants, QueryType
 logger = logging.getLogger(__name__)
 
 
-def generate_raw_data_xml(tenant, output_path, task_info, extract_args):
+def generate_raw_data_xml(tenant, output_paths, task_info, extract_args):
     """
     Write raw xml data to output file
 
     @param tenant: Requestor's tenant ID
-    @param output_path: pathname to place the selected output files
+    @param output_paths: list of output path name's to place the selected raw data xml files
     @param task_info: Task information for recording stats
     @param extract_args: Arguments specific to generate_raw_data_xml
     """
+    import pdb;pdb.set_trace();
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
 
@@ -33,6 +34,12 @@ def generate_raw_data_xml(tenant, output_path, task_info, extract_args):
         for result in results:
             # Build path to file
             source_file = _get_path_to_raw_xml(root_dir, result)
+
+            # Test hack for now to place all raw data xml files in  first folder
+            # this line needs to be removed and replaced with call to get what input files
+            # will go in to what output folders based on zipping threshold
+            output_path = output_paths[0]
+            # end of hack lines
 
             # copy the above source raw xml file to output directory to be archived
             _copy_file_out(source_file, output_path)

@@ -132,6 +132,7 @@ def send_extraction_request(params):
     :param session: session for this user request
     :param params: python dict that contains query parameters from the request
     '''
+    import pdb;pdb.set_trace();
     response = None
     try:
         # By default, it is a sync call

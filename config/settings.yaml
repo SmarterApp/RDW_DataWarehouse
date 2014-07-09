@@ -133,9 +133,9 @@ common:
             avg_record_size_bytes: 300
             avg_record_count: 1000
         raw_data:
-            avg_xml_file_size: 1024
+            avg_xml_file_size: 296000
       # if extract size is estimated beyond this multiple extracts file size will be created
-      extract_file_chunk_threshold_bytes: 2147483648
+      extract_file_chunk_threshold_bytes: 3000000
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: kswimberly@amplify.com

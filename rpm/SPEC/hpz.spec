@@ -25,6 +25,7 @@ rm -rf virtualenv/hpz
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/hpz %{buildroot}/opt/edware
+touch %{buildroot}/opt/edware/hpz/assets/__init__.py
 mkdir -p %{buildroot}/opt/edware/conf
 mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/

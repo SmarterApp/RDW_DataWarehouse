@@ -11,7 +11,7 @@ from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extracts.student_assessment import get_extract_assessment_query, \
     get_extract_assessment_item_and_raw_query
-from smarter.extracts.estimator import get_extract_file_chunk_estimate
+from edextract.tasks.estimator import estimate_files
 from edcore.utils.utils import compile_query_to_sql_text
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
@@ -135,6 +135,27 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
         raise NotFoundException("There are no results")
 
 
+def estimate_extract_files(params, extract_type):
+    """
+    returns an estimate of the number of extract files based on query params and extract type
+
+    @param params: Extract query params
+    @param extract_type: Type of Extract (Item Level/Raw Data)
+    """
+    settings = get_current_registry().settings
+    data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
+    root_dir = settings.get(data_path_config_key)
+    threshold_size = settings.get('extract.extract_file_chunk_threshold_bytes')
+    state_code = params.get(Constants.STATECODE)
+    asmt_year = params.get(Constants.ASMTYEAR)
+    asmt_type = params.get(Constants.ASMTTYPE)
+    asmt_subject = params.get(Constants.ASMTSUBJECT)
+    asmt_grade = params.get(Constants.ASMTGRADE)
+    return estimate_files(root_dir=root_dir, state_code=state_code, asmt_type=asmt_type,
+                          asmt_year=asmt_year, asmt_subject=asmt_subject, asmt_grade=asmt_grade,
+                          threshold_size=threshold_size)
+
+
 def process_async_item_or_raw_extraction_request(params, extract_type):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
@@ -150,8 +171,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     base_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
     # get an estimate for number of extract files that needs to be created based on the params
-    # Note: This is only an estimate
-    parts = get_extract_file_chunk_estimate(params=params, extract_type=extract_type)
+    parts = estimate_extract_files(params=params, extract_type=extract_type)
     out_file_names = []
     directories_to_archive = []
 

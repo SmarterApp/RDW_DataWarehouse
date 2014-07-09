@@ -34,6 +34,7 @@ class File():
     def size(self):
         return self.__size
 
+
 def _read_dirs(parent_dir):
     files = []
     for _root, _dirs, _files in os.walk(parent_dir):
@@ -49,7 +50,7 @@ def generate_file_group(parent_dir, threshold_size):
     page = []
     file_total_size = 0
     for file in files:
-        if file_total_size + file.size > threshold_size:
+        if float(file_total_size) + float(file.size) > float(threshold_size):
             file_group.append(copy.deepcopy(page))
             del page[:]
             page.append(file)

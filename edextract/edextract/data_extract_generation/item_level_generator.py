@@ -29,7 +29,6 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
     @param extract_args: Arguments specific to generate_items_csv
     """
     # Get stuff
-    import pdb;pdb.set_trace();
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     items_root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
     item_ids = extract_args[TaskConstants.ITEM_IDS]

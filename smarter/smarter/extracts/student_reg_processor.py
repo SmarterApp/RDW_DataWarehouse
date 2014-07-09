@@ -68,7 +68,8 @@ def process_async_extraction_request(params):
     registration_id, download_url = register_file(user.get_uid())
     response['download_url'] = download_url
 
-    start_extract.apply_async(args=[tenant, request_id, archived_file_path, data_directory_to_archive, registration_id, [task_info]], queue=queue)
+    start_extract.apply_async(args=[tenant, request_id, [archived_file_path], [data_directory_to_archive],
+                                    [registration_id], [task_info]], queue=queue)
 
     return response
 

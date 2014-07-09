@@ -68,7 +68,6 @@ def generate_prepare_path_task(request_id, archive_file_names, directories_to_ar
     @return: Celery task to execute
     """
     paths_to_prepare = [directory for directory in directories_to_archive] + [os.path.dirname(file) for file in archive_file_names]
-    import pdb;pdb.set_trace();
     return prepare_path.subtask(args=[request_id, paths_to_prepare], queue=queue_name, immutable=True)
 
 
@@ -111,7 +110,6 @@ def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConsta
             generate_tasks.append(generate_item_or_raw_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
         else:
             generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
-    import pdb;pdb.set_trace();
     return group(generate_tasks)
 
 
@@ -130,7 +128,6 @@ def archive_with_stream(request_id, directory):
     archive_memory_file = io.BytesIO()
     archive_files(directory, archive_memory_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
-
     return archive_memory_file.getvalue()
 
 
@@ -150,7 +147,6 @@ def generate_archive_file_tasks(request_id, archive_file_names, directories_to_a
 
     for i in range(0, len(directories_to_archive)):
         archive_tasks.append(archive.subtask(args=[request_id, archive_file_names[i], directories_to_archive[i]], queue=queue_name, immutable=True))
-    import pdb;pdb.set_trace();
     return group(archive_tasks)
 
 
@@ -190,7 +186,6 @@ def generate_remote_copy_tasks(request_id, archive_file_names, registration_ids,
 
     for i in range(0, len(archive_file_names)):
         remote_copy_tasks.append(remote_copy.subtask(args=[request_id, archive_file_names[i], registration_ids[i]], queue=queue_name, immutable=True))
-    import pdb;pdb.set_trace();
     return group(remote_copy_tasks)
 
 
@@ -309,7 +304,6 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
                  Constants.REQUEST_GUID: request_id}
     retryable = False
     exception_thrown = False
-    import pdb;pdb.set_trace();
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
@@ -332,7 +326,6 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
             else:
                 output_paths = output_dirs
             # Extract data to file
-            import pdb;pdb.set_trace();
             extract_func = get_extract_func(extract_type)
             extract_func(tenant, output_paths, task_info, task)
 

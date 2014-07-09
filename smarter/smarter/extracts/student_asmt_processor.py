@@ -164,7 +164,6 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir,
                                                                      out_file_names, directories_to_archive,
                                                                      extract_type)
-    import pdb;pdb.set_trace();
     response['tasks'] = task_responses
     extract_files = []
     archive_files = []
@@ -182,7 +181,6 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
             extract_file['download_url'] = download_url
             extract_files.append(extract_file)
     response['files'] = extract_files
-    import pdb;pdb.set_trace();
     start_extract.apply_async(args=[tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks], queue=queue)  # @UndefinedVariable
     return response
 

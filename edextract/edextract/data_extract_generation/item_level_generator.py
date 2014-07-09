@@ -59,7 +59,7 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
             # Read each result for item-level data
             for result in results:
                 # Build path to file
-                path = _get_path_to_item_csv(items_root_dir, result)
+                path = _get_path_to_item_csv(items_root_dir, **result)
 
                 # Write this file to output file if we are not checking for specific item IDs or if this file contains
                 # at least one of the requested item IDs
@@ -70,11 +70,39 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def _get_path_to_item_csv(items_root_dir, record):
-    return os.path.join(items_root_dir, str(record['state_code']).upper(), str(record['asmt_year']),
-                        str(record['asmt_type']).upper().replace(' ', '_'), str(record['effective_date']),
-                        str(record['asmt_subject']).upper(), str(record['asmt_grade']), str(record['district_guid']),
-                        (str(record['student_guid']) + '.csv'))
+def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_guid=None, student_guid=None):
+    path = items_root_dir
+    if state_code is not None:
+        path = os.path.join(path, state_code)
+    else:
+        return path
+    if asmt_year is not None:
+        path = os.path.join(path, asmt_year)
+    else:
+        return path
+    if asmt_type is not None:
+        path = os.path.join(path, asmt_type.upper().replace(' ', '_'))
+    else:
+        return path
+    if effective_date is not None:
+        path = os.path.join(path, effective_date)
+    else:
+        return path
+    if asmt_subject is not None:
+        path = os.path.join(path, asmt_subject.upper())
+    else:
+        return path
+    if asmt_grade is not None:
+        path = os.path.join(path, asmt_grade)
+    else:
+        return path
+    if district_guid is not None:
+        path = os.path.join(path, district_guid)
+    else:
+        return path
+    if student_guid is not None:
+        path = os.path.join(path, student_guid + '.csv')
+    return path
 
 
 def _check_file_for_items(path, item_ids):

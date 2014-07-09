@@ -13,6 +13,8 @@ TIMEOUT = 20
 MAX_RETRIES = 1
 # minimum file size of pdf generated
 MINIMUM_FILE_SIZE = 80000
+# pdfunite timeout
+PDFUNITE_TIMEOUT = 3000
 
 # delay in retry. Default to 5 seconds
 RETRY_DELAY = 5
@@ -41,10 +43,12 @@ def setup_global_settings(settings):
     global MINIMUM_FILE_SIZE
     global MAX_RETRIES
     global RETRY_DELAY
+    global PDFUNITE_TIMEOUT
     TIMEOUT = int(settings.get('pdf.generate_timeout', TIMEOUT))
     MINIMUM_FILE_SIZE = int(settings.get('pdf.minimum_file_size', MINIMUM_FILE_SIZE))
     MAX_RETRIES = int(settings.get('pdf.retries_allowed', MAX_RETRIES))
     RETRY_DELAY = int(settings.get('pdf.retry_delay', RETRY_DELAY))
+    PDFUNITE_TIMEOUT = int(settings.get('pdf.merge.pdfunite_timeout', PDFUNITE_TIMEOUT))
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)

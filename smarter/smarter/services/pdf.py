@@ -298,13 +298,11 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
                                                 urls_by_student_guid)
 
     # Create the tasks to merge each PDF by grade
-    pdfunite_timeout = int(settings.get('pdf.merge.pdfunite_timeout', '600'))
     merge_tasks, merged_pdfs_by_grade, student_count_by_pdf = _create_pdf_merge_tasks(pdf_base_dir,
                                                                                       directory_for_merged_pdfs,
                                                                                       guids_by_grade,
                                                                                       files_by_student_guid,
-                                                                                      school_name, lang, is_grayscale,
-                                                                                      pdfunite_timeout)
+                                                                                      school_name, lang, is_grayscale)
 
     # Create tasks for cover sheets
     cover_sheet_tasks, cover_sheets_by_grade = _create_cover_sheet_generate_tasks(pdfGenerator.cookie_value,
@@ -317,7 +315,7 @@ def get_bulk_pdf_content(settings, pdf_base_dir, base_url, subprocess_timeout, s
 
     # Create tasks to merge in cover sheets
     merge_covers_tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade,
-                                                       directory_to_archive, pdf_base_dir, pdfunite_timeout)
+                                                       directory_to_archive, pdf_base_dir)
 
     # Start the bulk merge
     _start_bulk(archive_file_path, directory_to_archive, registration_id, generate_tasks, merge_tasks,
@@ -395,7 +393,7 @@ def _create_pdf_generate_tasks(cookie_value, cookie_name, is_grayscale, always_g
 
 
 def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid,
-                            school_name, lang, is_grayscale, pdfunite_timeout):
+                            school_name, lang, is_grayscale):
     '''
     create pdf merge tasks
     '''
@@ -416,7 +414,7 @@ def _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, 
                 file_names.append(files_by_guid[student_guid])
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, bulk_path, pdf_base_dir), immutable=True))  # @UndefinedVariable
             bulk_paths[grade] = bulk_path
             counts_by_grade[grade] = len(file_names)
     return merge_tasks, bulk_paths, counts_by_grade
@@ -457,7 +455,7 @@ def _create_cover_sheet_generate_tasks(cookie_value, cookie_name, is_grayscale, 
     return cover_tasks, cover_sheets_by_grade
 
 
-def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive, pdf_base_dir, pdfunite_timeout):
+def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive, pdf_base_dir):
     '''
     create pdf merge tasks
     '''
@@ -472,7 +470,7 @@ def _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, d
             file_names = [cover_sheets_by_grade[grade], merged_pdf_path]
 
             # Create the merge task
-            merge_tasks.append(pdf_merge.subtask(args=(file_names, merged_out_path, pdf_base_dir, pdfunite_timeout), immutable=True))  # @UndefinedVariable
+            merge_tasks.append(pdf_merge.subtask(args=(file_names, merged_out_path, pdf_base_dir), immutable=True))  # @UndefinedVariable
     return merge_tasks
 
 

@@ -98,7 +98,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
     if results:
         result = results[0]
         # return an hierarchical ordered list
-        formatted_results.append({'type': 'state', 'name': STATE_NAMES[result[Constants.STATE_CODE]], 'id': result[Constants.STATE_CODE]})
+        formatted_results.append({'type': 'state', 'name': STATE_NAMES.get(result[Constants.STATE_CODE], 'Example State'), 'id': result[Constants.STATE_CODE]})
         if district_guid is not None:
             formatted_results.append({'type': 'district', 'name': result[Constants.DISTRICT_NAME], 'id': district_guid})
             if school_guid is not None:

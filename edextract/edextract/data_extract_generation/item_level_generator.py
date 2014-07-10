@@ -12,6 +12,8 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.status.constants import Constants
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.tasks.constants import Constants as TaskConstants, QueryType
+from edextract.utils.file_utils import File
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -23,25 +25,24 @@ CSV_HEADER = ['key', 'student_guid', 'segmentId', 'position', 'clientId', 'opera
               'pageNumber', 'pageVisits', 'pageTime', 'dropped']
 
 def generate_items_csv(tenant, output_files, task_info, extract_args):
-    """
+    '''
     Write item-level data to CSV file
 
     @param tenant: Requestor's tenant ID
     @param output_files: List of output file path's for item extract
     @param task_info: Task information for recording stats
     @param extract_args: Arguments specific to generate_items_csv
-    """
+    '''
     # Get stuff
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     items_root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
     item_ids = extract_args[TaskConstants.ITEM_IDS]
-    threshold_size = extract_args.get(TaskConstants.THRESHOLD_SIZE, -1)
 
     with EdCoreDBConnection(tenant=tenant) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)
         results = connection.get_streaming_result(query)
 
-        _append_csv_files(items_root_dir, item_ids, results, output_files[0], CSV_HEADER, threshold_size)
+        _append_csv_files(items_root_dir, item_ids, results, output_files[0], CSV_HEADER)
         # Done
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
@@ -88,44 +89,45 @@ def _check_file_for_items(file_descriptor, item_ids):
     return False
 
 
-def _append_csv_files(items_root_dir, item_ids, results, output_file, csv_header, threshold_size):
+def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_header):
 
-    def open_outfile():
-        out_file = open(output_file, 'w')
-        csvwriter = csv.writer(out_file, quoting=csv.QUOTE_MINIMAL)
+    def open_outfile(output_file):
+        _file = open(output_file, 'w')
+        csvwriter = csv.writer(_file, quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(csv_header)
-        return out_file
+        return _file
 
-    out_file = open_outfile()
-    file_number = 0
-    for result in results:
-        # Build path to file
-        path = _get_path_to_item_csv(items_root_dir, **result)
+    _output_files = copy.deepcopy(output_files)
+    files = _prepare_file_list(items_root_dir, results)
+    number_of_files = len(_output_files)
+    threshold_size = -1
+    if number_of_files > 1:
+        total_file_size = sum(file.size for file in files)
+        threshold_size = total_file_size / len(_output_files)
+    out_file = None
+    for file in files:
+        if out_file is not None and threshold_size > 0 and out_file.tell() > threshold_size:
+            # close current out_file
+            out_file.close()
+            out_file = None
+        if out_file is None:
+            output_file = output_files.pop(0)
+            out_file = open_outfile(output_file)
         # Write this file to output file if we are not checking for specific item IDs or if this file contains
         # at least one of the requested item IDs
-        if os.path.exists(path):
-            in_file = open(path, 'r')
-            if not item_ids is not None or _check_file_for_items(in_file, item_ids):
-                if threshold_size > 0:
-                    # we want to limit file size for output file.
-                    in_file_size = os.fstat(in_file.fileno()).st_size
-                    if in_file_size + out_file.tell() > threshold_size:
-                        # close current out_file and write in new file
-                        out_file.close()
-                        _rename_to_partial_filename(output_file, file_number)
-                        file_number += 1
-                        out_file = open_outfile()
-                in_file.seek(0)
-                out_file.write(in_file.read())
-            in_file.close()
-    out_file.close()
-    if file_number is not 0:
-        _rename_to_partial_filename(path, file_number)
+        in_file = open(file.name, 'r')
+        if not item_ids is not None or _check_file_for_items(in_file, item_ids):
+            in_file.seek(0)
+            out_file.write(in_file.read())
+        in_file.close()
+    if out_file is not None:
+        out_file.close()
 
 
-def _rename_to_partial_filename(src, file_number):
-    dir_name, base_name = os.path.split(src)
-    partial_dir = os.path.join(dir_name, 'partial', "%03d" % file_number)
-    os.makedirs(partial_dir, mode=0o700, exist_ok=True)
-    new_name = "%03d%s" % (file_number, base_name)
-    os.rename(src, os.path.join(partial_dir, new_name))
+def _prepare_file_list(items_root_dir, results):
+    files = []
+    for result in results:
+        path = _get_path_to_item_csv(items_root_dir, **result)
+        file = File(path)
+        files.append(file)
+    return files

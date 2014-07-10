@@ -671,7 +671,7 @@
             "grayscale": "Grayscale (for black & white printing)",
             "color": "Color"
         },
-        "export_pdf_success": "Your requested reports will be available soon.",
+        "export_pdf_success": "Your requested reports will be available within 24 hours.",
         "export_pdf_no_data": {
             "title": "Printable Student Reports",
             "header": "No students.",

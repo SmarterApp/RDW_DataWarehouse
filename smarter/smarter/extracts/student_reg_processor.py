@@ -13,13 +13,13 @@ from pyramid.threadlocal import get_current_registry
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter.reports.helpers.constants import Constants as EndpointConstants
-from edextract.tasks.extract import start_extract
 from edextract.status.status import create_new_entry
 from smarter.extracts import processor
 from smarter.extracts import student_reg_statistics
 from smarter.extracts import student_reg_completion
 from edcore.utils.utils import compile_query_to_sql_text
 from hpz_client.frs.file_registration import register_file
+from smarter.extracts.utils import start_extract
 
 
 log = logging.getLogger('smarter')
@@ -68,7 +68,7 @@ def process_async_extraction_request(params):
     registration_id, download_url = register_file(user.get_uid())
     response['download_url'] = download_url
 
-    start_extract.apply_async(args=[tenant, request_id, archived_file_path, data_directory_to_archive, registration_id, [task_info]], queue=queue)
+    start_extract(tenant, request_id, archived_file_path, data_directory_to_archive, registration_id, [task_info], queue=queue)
 
     return response
 

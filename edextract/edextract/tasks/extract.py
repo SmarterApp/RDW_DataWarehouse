@@ -34,20 +34,6 @@ MAX_RETRY = get_setting(Config.MAX_RETRIES, 1)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
-@celery.task(name='task.extract.start_extract')
-def start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=TaskConstants.DEFAULT_QUEUE_NAME):
-    '''
-    entry point to start an extract request for one or more extract tasks
-    it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
-    '''
-
-    workflow = chain(prepare_path.subtask(args=[request_id, [directory_to_archive, os.path.dirname(archive_file_name)]], queues=queue, immutable=True),
-                     generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue),
-                     archive.subtask(args=[request_id, archive_file_name, directory_to_archive], queues=queue, immutable=True),
-                     remote_copy.subtask(args=[request_id, archive_file_name, registration_id], queues=queue, immutable=True))
-    workflow.apply_async()
-
-
 @celery.task(name='task.extract.prepare_path')
 def prepare_path(request_id, paths):
     '''

@@ -11,7 +11,7 @@ from smarter.extracts.student_assessment import get_extract_assessment_query, ge
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import start_extract, archive_with_stream, generate_extract_file_tasks, prepare_path
+from edextract.tasks.extract import archive_with_stream, generate_extract_file_tasks, prepare_path
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
@@ -20,6 +20,7 @@ from smarter_common.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG,\
     apply_filter_to_query
+from smarter.extracts.utils import start_extract
 
 
 __author__ = 'ablum'
@@ -86,7 +87,7 @@ def process_extraction_request(params, is_async=True):
             response['download_url'] = download_url
 
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-            start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks], queue=queue)  # @UndefinedVariable
+            start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=queue)
         return response
     else:
         if tasks:
@@ -162,7 +163,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
         registration_id, download_url = register_file(user.get_uid())
         response['download_url'] = download_url
 
-        start_extract.apply_async(args=[tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks], queue=queue)  # @UndefinedVariable
+        start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=queue)
 
     return response
 

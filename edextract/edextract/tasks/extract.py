@@ -9,9 +9,6 @@ Created on Nov 5, 2013
 import io
 import os.path
 import logging
-
-from celery.canvas import chain, group
-
 from edextract.celery import celery
 from edextract.status.status import ExtractStatus, insert_extract_stats
 from edextract.status.constants import Constants
@@ -34,6 +31,13 @@ MAX_RETRY = get_setting(Config.MAX_RETRIES, 1)
 DEFAULT_RETRY_DELAY = get_setting(Config.RETRY_DELAY, 60)
 
 
+@celery.task(name="tasks.extract.separator")
+def extract_group_separator():
+    '''
+    A dummy task to separate out a chain of two consecutive groups
+    '''
+    pass
+
 @celery.task(name='task.extract.prepare_path')
 def prepare_path(request_id, paths):
     '''
@@ -54,29 +58,6 @@ def prepare_path(request_id, paths):
         raise ExtractionError()
 
 
-def generate_extract_file_tasks(tenant, request_id, tasks, queue_name=TaskConstants.DEFAULT_QUEUE_NAME):
-    """
-    Given a list of tasks, create a celery task for each one to generate the task-specific extract file.
-
-    @param tenant: tenant of the user
-    @param request_id: Report request ID
-    @param tasks: List of extract tasks to execute
-    @param queue_name(optional): Queue to which to send celery task requests
-
-    @return: Group of celery tasks to execute
-    """
-    generate_tasks = []
-
-    for task in tasks:
-        extract_type = task.get(TaskConstants.EXTRACTION_DATA_TYPE)
-        if extract_type in [ExtractionDataType.QUERY_ITEMS_CSV, ExtractionDataType.QUERY_RAW_XML]:
-            generate_tasks.append(generate_item_or_raw_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
-        else:
-            generate_tasks.append(generate_extract_file.subtask(args=[tenant, request_id, task], queue=queue_name, immutable=True))
-
-    return group(generate_tasks)
-
-
 @celery.task(name="tasks.extract.archive_with_stream")
 def archive_with_stream(request_id, directory):
     '''
@@ -92,7 +73,6 @@ def archive_with_stream(request_id, directory):
     archive_memory_file = io.BytesIO()
     archive_files(directory, archive_memory_file)
     insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.ARCHIVED})
-
     return archive_memory_file.getvalue()
 
 
@@ -114,6 +94,7 @@ def archive(request_id, archive_file_name, directory):
         # unrecoverable exception
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         raise ExtractionError()
+
 
 
 @celery.task(name="tasks.extract.remote_copy", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)
@@ -223,34 +204,38 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
     extract_type = task[TaskConstants.EXTRACTION_DATA_TYPE]
     log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_item_or_raw_extract_file.name,
                                                                                           task_id=task_id, extract_type=extract_type))
-    output_dir = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
-    output_file = task[TaskConstants.TASK_FILE_NAME]
+    output_dirs = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
+    output_files = task[TaskConstants.TASK_FILE_NAME]
 
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_item_or_raw_extract_file.request.id,
                  Constants.REQUEST_GUID: request_id}
     retryable = False
     exception_thrown = False
-
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
             insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED_NO_TENANT})
         else:
-            if extract_type is ExtractionDataType.QUERY_ITEMS_CSV and not os.path.isdir(os.path.dirname(output_file)):
-                raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
-            if extract_type is ExtractionDataType.QUERY_RAW_XML and not os.path.isdir(output_dir):
-                raise FileNotFoundError(output_dir + " doesn't exist")
+            if extract_type is ExtractionDataType.QUERY_ITEMS_CSV:
+                for output_file in output_files:
+                    if not os.path.isdir(os.path.dirname(output_file)):
+                        raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
+            if extract_type is ExtractionDataType.QUERY_RAW_XML:
+                for output_dir in output_dirs:
+                    if not os.path.isdir(output_dir):
+                        raise FileNotFoundError(output_dir + " doesn't exist")
 
-            # for item level the output path is a file and for raw extract the output path is a directory
+            # for item level the output path is a list of one or more files
+            # and for raw extract the output path is a list of one or more directory
             # to place all the matching xml files
             if extract_type == ExtractionDataType.QUERY_ITEMS_CSV:
-                output_path = output_file
+                output_paths = output_files
             else:
-                output_path = output_dir
+                output_paths = output_dirs
             # Extract data to file
             extract_func = get_extract_func(extract_type)
-            extract_func(tenant, output_path, task_info, task)
+            extract_func(tenant, output_paths, task_info, task)
 
     except FileNotFoundError as e:
         # which thrown from prepare_path

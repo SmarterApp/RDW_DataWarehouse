@@ -11,7 +11,6 @@ from smarter.extracts.student_assessment import get_extract_assessment_query, ge
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import archive_with_stream, generate_extract_file_tasks, prepare_path
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
@@ -20,7 +19,10 @@ from smarter_common.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG,\
     apply_filter_to_query
-from smarter.extracts.utils import start_extract
+from smarter.extracts.utils import start_extract, generate_extract_file_tasks
+from edextract.tasks.extract import archive_with_stream
+import random
+from edextract.tasks.estimator import estimate_files
 
 
 __author__ = 'ablum'
@@ -87,7 +89,7 @@ def process_extraction_request(params, is_async=True):
             response['download_url'] = download_url
 
             queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
-            start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=queue)
+            start_extract(tenant, request_id, [archive_file_name], [directory_to_archive], [registration_id], tasks, queue=queue)
         return response
     else:
         if tasks:
@@ -136,6 +138,27 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
         raise NotFoundException("There are no results")
 
 
+def estimate_extract_files(params, extract_type):
+    """
+    returns an estimate of the number of extract files based on query params and extract type
+
+    @param params: Extract query params
+    @param extract_type: Type of Extract (Item Level/Raw Data)
+    """
+    settings = get_current_registry().settings
+    data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
+    root_dir = settings.get(data_path_config_key)
+    threshold_size = settings.get('extract.extract_file_chunk_threshold_bytes')
+    state_code = params.get(Constants.STATECODE)
+    asmt_year = params.get(Constants.ASMTYEAR)
+    asmt_type = params.get(Constants.ASMTTYPE)
+    asmt_subject = params.get(Constants.ASMTSUBJECT)
+    asmt_grade = params.get(Constants.ASMTGRADE)
+    return estimate_files(root_dir=root_dir, state_code=state_code, asmt_type=asmt_type,
+                          asmt_year=asmt_year, asmt_subject=asmt_subject, asmt_grade=asmt_grade,
+                          threshold_size=threshold_size)
+
+
 def process_async_item_or_raw_extraction_request(params, extract_type):
     '''
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
@@ -148,23 +171,44 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     state_code = params[Constants.STATECODE]
     request_id, user, tenant = processor.get_extract_request_user_info(state_code)
     extract_params = copy.deepcopy(params)
-    directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
-    out_file_name = get_items_extract_file_path(extract_params, tenant, request_id) if extract_type is ExtractType.itemLevel else None
-    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params,
-                                                                     root_dir, out_file_name, directory_to_archive,
+    base_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
+
+    # get an estimate for number of extract files that needs to be created based on the params
+    #parts = estimate_extract_files(params=params, extract_type=extract_type)
+
+    # temp hack till estimator is fixed. Needs to be removed and substituted with above line
+    parts = random.randint(2, 3)
+
+    out_file_names = []
+    directories_to_archive = []
+
+    for part in range(parts):
+        if extract_type is ExtractType.itemLevel:
+            out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id,
+                                                              part=str(part), total_parts=parts))
+        directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(part) if parts > 1 else ''))
+
+    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir,
+                                                                     out_file_names, directories_to_archive,
                                                                      extract_type)
-
     response['tasks'] = task_responses
+    extract_files = []
+    archive_files = []
+    registration_ids = []
     if len(tasks) > 0:
-        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
-        response['fileName'] = os.path.basename(archive_file_name)
-
-        # Register extract file with HPZ.
-        registration_id, download_url = register_file(user.get_uid())
-        response['download_url'] = download_url
-
-        start_extract(tenant, request_id, archive_file_name, directory_to_archive, registration_id, tasks, queue=queue)
-
+        for part in range(parts):
+            extract_file = {}
+            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id,
+                                                                part=str(part), total_parts=parts)
+            # Register extract file with HPZ
+            registration_id, download_url = register_file(user.get_uid())
+            archive_files.append(archive_file_name)
+            registration_ids.append(registration_id)
+            extract_file['fileName'] = os.path.basename(archive_file_name)
+            extract_file['download_url'] = download_url
+            extract_files.append(extract_file)
+    response['files'] = extract_files
+    start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
     return response
 
 
@@ -260,7 +304,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     return tasks, task_responses
 
 
-def _create_item_or_raw_tasks_with_responses(request_id, user, param, root_dir, out_file, directory_to_archive,
+def _create_item_or_raw_tasks_with_responses(request_id, user, param, root_dir, out_files, directories_to_archive,
                                              extract_type, task_response={}, is_tenant_level=False):
     '''
     TODO comment
@@ -277,9 +321,9 @@ def _create_item_or_raw_tasks_with_responses(request_id, user, param, root_dir, 
         tenant = states_to_tenants[state_code]
         task = _create_new_task(request_id, user, tenant, param, query,
                                 is_tenant_level=is_tenant_level, extract_type=extract_type)
-        task[TaskConstants.TASK_FILE_NAME] = out_file
+        task[TaskConstants.TASK_FILE_NAME] = out_files
         task[TaskConstants.ROOT_DIRECTORY] = root_dir
-        task[TaskConstants.DIRECTORY_TO_ARCHIVE] = directory_to_archive
+        task[TaskConstants.DIRECTORY_TO_ARCHIVE] = directories_to_archive
         if extract_type is ExtractType.itemLevel:
             task[TaskConstants.ITEM_IDS] = param.get(Constants.ITEMID) if Constants.ITEMID in param else None
         tasks.append(task)
@@ -348,16 +392,18 @@ def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
 
 
-def get_items_extract_file_path(param, tenant, request_id):
-    file_name = '{prefix}_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_GRADE_{asmtGrade}_{currentTime}.csv'.\
+def get_items_extract_file_path(param, tenant, request_id, part=None, total_parts=None):
+    file_name = '{prefix}_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_GRADE_{asmtGrade}_{currentTime}{part}.csv'.\
                 format(prefix='ITEMS',
                        stateCode=param[Constants.STATECODE],
                        asmtYear=param[Constants.ASMTYEAR],
                        asmtType=param[Constants.ASMTTYPE].upper(),
                        asmtSubject=param[Constants.ASMTSUBJECT].upper(),
                        asmtGrade=param.get(Constants.ASMTGRADE),
-                       currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
-    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
+                       currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                       part='_part' + part if total_parts and total_parts > 1 and part else '')
+    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id),
+                        'part' + str(part) if total_parts > 1 else '', file_name)
 
 
 def get_asmt_metadata_file_path(params, tenant, request_id):

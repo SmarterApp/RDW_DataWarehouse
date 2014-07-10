@@ -422,12 +422,12 @@ class TestServices(Unittest_with_edcore_sqlite):
         school_name = 'schoolname here'
         lang = 'en'
         is_grayscale = None
-        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
         self.assertEqual(0, len(tasks))
         self.assertEqual(0, len(paths))
         self.assertEqual(0, len(counts))
         guids_by_grade = {'3': 'a5ddfe12-740d-4487-9179-de70f6ac33be'}
-        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
         self.assertEqual(1, len(tasks))
         self.assertEqual(1, len(paths))
         self.assertEqual(1, len(counts))
@@ -440,7 +440,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         school_name = 'Apple School'
         lang = 'en'
         is_grayscale = False
-        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale, 30)
+        tasks, paths, counts = _create_pdf_merge_tasks(pdf_base_dir, directory_for_merged, guids_by_grade, files_by_guid, school_name, lang, is_grayscale)
         self.assertEqual(2, len(paths))
         self.assertEqual(2, len(counts))
         self.assertIn('2', counts)
@@ -485,7 +485,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         directory_to_archive = '/archive'
         pdf_base_dir = '/pdf'
         tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive,
-                                              pdf_base_dir, 30)
+                                              pdf_base_dir)
         self.assertEqual(2, len(tasks))
 
     def test_create_pdf_cover_merge_tasks_no_merged(self):
@@ -494,7 +494,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         directory_to_archive = '/archive'
         pdf_base_dir = '/pdf'
         tasks = _create_pdf_cover_merge_tasks(merged_pdfs_by_grade, cover_sheets_by_grade, directory_to_archive,
-                                              pdf_base_dir, 30)
+                                              pdf_base_dir)
         self.assertEqual(0, len(tasks))
 
     def test_create_urls_by_student_guid(self):

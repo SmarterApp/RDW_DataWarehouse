@@ -98,5 +98,7 @@ def _append_csv_files(items_root_dir, item_ids, results, output_file, csv_header
 
 def _rename_to_partial_filename(src, file_number):
     dir_name, base_name = os.path.split(src)
+    partial_dir = os.path.join(dir_name, 'partial', "%03d" % file_number)
+    os.makedirs(partial_dir, mode=0o700, exist_ok=True)
     new_name = "%03d%s" % (file_number, base_name)
-    os.rename(src, os.path.join(dir_name, new_name))
+    os.rename(src, os.path.join(partial_dir, new_name))

@@ -519,34 +519,34 @@
     ,
     "CSVOptions": {
         "extractType": {
-            "name": "Report Type",
+            "name": "Report / export type",
             "key": "extractType",
             "options": [
                 {
-                    "display": "Student Assessment Results",
-                    "value": "studentAssessment"
-                },
-                {
                     "display": "Student Registration Statistics",
-                    "value": "studentRegistrationStatistics"
+                    "value": "registrationStatistics"
                 },
                 {
-                    "display": "Student Assessment Completion",
-                    "value": "studentAssessmentCompletion"
+                    "display": "Assessment Completion Statistics",
+                    "value": "completionStatistics"
+                },
+                {
+                    "display": "Audit XML",
+                    "value": "rawXML"
+                },
+                {
+                    "display": "Individual Item Response Data",
+                    "value": "itemLevel"
                 }
             ]
         },
-        "academicYear": {
-            "name": "Academic Year",
+        "completionAcademicYear": {
+            "name": "Academic year",
             "key": "academicYear"
         },
-        "studentRegAcademicYear": {
-            "name": "Academic Year",
+        "registrationAcademicYear": {
+            "name": "Academic year",
             "key": "academicYear"
-        },
-        "asmtYear": {
-            "name": "Assessment Year",
-            "key": "asmtYear"
         },
         "asmtType": {
             "name": "Assessment Type",
@@ -566,10 +566,10 @@
             "key": "asmtSubject",
             "options": [
                 {
-                    "display": "Math",
+                    "display": "Mathematics",
                     "value": "Math"
                 }, {
-                    "display": "ELA",
+                    "display": "ELA/Literacy",
                     "value": "ELA"
                 }
             ]
@@ -603,7 +603,6 @@
             "desc": "Download registration reports and XML extracts."
         },
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
-        "export_csv_options": "CSV File Download Options",
         "export_pdf_options": {
             "title": "Student Report Options",
             "grayscale": "Grayscale (for black & white printing)",
@@ -617,7 +616,7 @@
             "header": "No students.",
             "message": "There are no students in the batch. Please disable active filters and try again."
         },
-        "export_request_files": "Request Files",
+        "export_request_files": "Generate",
         "export_pdf_files": "Generate Reports",
         "generate_reports": "Generating Requested Reports"
     }

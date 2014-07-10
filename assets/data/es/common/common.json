@@ -668,7 +668,6 @@
             "desc": "Download registration reports and XML extracts."
         },
         "export_availability_msg": "Once requested your CSV will become available in 24 hours at your secured FTP site",
-        "export_csv_options": "CSV File Download Options",
         "export_pdf_options": {
             "title": "Student Report Options",
             "grayscale": "Grayscale (for black & white printing)",

@@ -19,20 +19,10 @@ define [
   "edwareEvents"
 ], ($, bootstrap, Mustache, moment, CSVOptionsTemplate, DownloadMenuTemplate, PDFOptionsTemplate, SuccessTemplate, FailureTemplate, NoDataTemplate, Constants, edwareClientStorage, edwarePreferences, edwareExport, edwareDataProxy, edwareUtil, edwareModal, edwareEvents) ->
 
-  ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
-
-  SUCCESS_TEMPLATE = $(CSVOptionsTemplate).children('#SuccessMessageTemplate').html()
-
-  INDIVIDUAL_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#IndividualValidationTemplate').html()
-
-  COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
-
-  TEST_NAME = {"studentRegistrationStatistics": "Student Registration Statistics", "studentAssessment": "Tests Results", "studentAssessmentCompletion": "Student Assessment Completion"}
-
   REQUEST_ENDPOINT = {
-    "studentRegistrationStatistics": "/services/extract/student_registration_statistics",
+    "registrationStatistics": "/services/extract/student_registration_statistics",
     "studentAssessment": "/services/extract",
-    "studentAssessmentCompletion": "/services/extract/student_assessment_completion"
+    "completionStatistics": "/services/extract/student_assessment_completion"
   }
 
   showFailureMessage = (response) ->
@@ -55,45 +45,39 @@ define [
     $('#DownloadSuccessModal').edwareModal
       keepLastFocus: true
 
-  class CSVDownloadModal
+  class StateDownloadModal
 
-    constructor: (@container, @reportType, @config, @reportParamCallback) ->
-      this.initialize()
-      this.bindEvents()
+    constructor: (@container, @config, @reportParamCallback) ->
+      @initialize()
+      @bindEvents()
 
     initialize: ()->
-      this.container = $(this.container)
-
       output = Mustache.to_html CSVOptionsTemplate, {
-        reportType: this.reportType
         extractType: this.config.extractType
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
-        asmtYear: this.config['asmtYear']
-        academicYear: this.config['academicYear']
-        studentRegAcademicYear: this.config['studentRegAcademicYear']
+        completionAcademicYear: this.config['completionAcademicYear']
+        registrationAcademicYear: this.config['registrationAcademicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
         options: this.config.ExportOptions
       }
       this.container.html output
-      this.message = $('#message', this.container)
       this.dropdownMenu = $('ul.dropdown-menu', this.container)
       this.checkboxMenu = $('ul.checkbox-menu', this.container)
       this.submitBtn = $('.edware-btn-primary', this.container)
       this.asmtTypeBox = $('div#asmtType', this.container)
       this.selectDefault()
-      this.reportTypes = for option in @config.extractType.options
-        option.value
-      this.setMainPulldownLabel(@reportTypes[0])
+      this.fetchParams =
+        completionStatistics: this.getSACParams
+        registrationStatistics: this.getSRSParams
 
     bindEvents: ()->
       self = this
-      # prevent dropdown menu from disappearing
-      $('ul.dropdown-menu.report_type li', @container).click (e) ->
-        $('div.error', self.messages).remove()
-        reportType = $(this).data('value')
-        self.setMainPulldownLabel(reportType)
+      # show or hide componenets on page according export type
+      $('.extractType input', @container).click (e) ->
+        self.extractType = $(this).attr('value')
+        $('#StateDownloadModal .modal-body').removeClass().addClass("#{self.extractType} modal-body")
 
       # set up academic years
       $('ul.edware-dropdown-menu li', @container).click (e)->
@@ -107,7 +91,6 @@ define [
         $dropdown.removeClass 'open'
       .keypress (e) ->
         $(this).click() if e.keyCode is 13
-
 
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
@@ -125,52 +108,31 @@ define [
         $(this).removeClass('open')
 
       this.submitBtn.click ()->
-        # remove earlier error messages
-        $('div.error', self.messages).remove()
-        # validate each selection group
-        invalidFields = []
-        # check if button is 'Close' or 'Request'
-        if $(this).data('dismiss') != 'modal'
-          $('tr:visible div.btn-group', self.container).each ()->
-            $dropdown = $(this)
-            if not self.validate($dropdown)
-              $dropdown.addClass('invalid')
-              invalidFields.push $dropdown.data('option-name')
-          if invalidFields.length isnt 0
-            self.showCombinedErrorMessage invalidFields
-          else
-            # disable button and all the input checkboxes
-            self.disableInput()
-            self.sendRequest REQUEST_ENDPOINT[self.reportType]
+        # disable button and all the input checkboxes
+        self.disableInput()
+        # get parameters
+        params = self.fetchParams[self.extractType].call(self)
+        self.sendRequest REQUEST_ENDPOINT[self.extractType], params
 
-    setMainPulldownLabel: (reportType)->
-      @reportType = reportType
-      $('#CSVModal').removeClass(@reportTypes.join(" ")).addClass(reportType)
+    getSACParams: () ->
+      academicYear = $('#completionAcademicYear').data('value')
+      return {
+        "extractType": ["studentAssessmentCompletion"]
+        "academicYear": [ academicYear]
+      }
 
-    validate: ($dropdown) ->
-      isValid  = false
-      if this.reportType is 'studentRegistrationStatistics'
-        isValid = this.validate_sr_options $dropdown
-      else
-        isValid = this.validate_input_options $dropdown
-      isValid
-
-    validate_input_options: ($dropdown) ->
-      checked = this.getSelectedOptions $dropdown
-      checked.length isnt 0
-
-    validate_sr_options: ($dropdown) ->
-      checked = []
-      if $('#studentRegAcademicYear .dropdown-display').text() != ""
-        checked.push $('#studentRegAcademicYear .dropdown-display').text()
-      allChecked = checked.concat this.getSelectedOptions $dropdown
-      allChecked.length isnt 0
+    getSRSParams: () ->
+      academicYear = $('#registrationAcademicYear').data('value')
+      return {
+        "extractType": ["studentRegistrationStatistics"]
+        "academicYear": [ academicYear ]
+      }
 
     getSelectedOptions: ($dropdown)->
       # get selected option text
       checked = []
       $dropdown.find('input:checked').each () ->
-          checked.push $(this).data('label')
+        checked.push $(this).data('label')
       optionValue = $dropdown.find('.dropdown-menu').data('value')
       if optionValue
         checked.push optionValue
@@ -181,8 +143,9 @@ define [
       $('ul li:nth-child(1) input',this.container).each ()->
         $(this).trigger 'click'
 
-    sendRequest: (url)->
-      params = $.extend(true, {'async': 'true'}, this.getParams())
+    sendRequest: (url, params)->
+      params = $.extend(true, params, this.getParams())
+
       # Get request time
       currentTime = moment()
       this.requestDate = currentTime.format 'MMM Do'
@@ -194,27 +157,16 @@ define [
         redirectOnError: false
 
       request = edwareDataProxy.getDatafromSource url, options
-      request.done this.showSuccessMessage.bind(this)
-      request.fail this.showFailureMessage.bind(this)
-
-    toDisplay: (item)->
-      # convert server response to display text
-      # create key and display text mapping
-      configMap = {}
-      for key, value of this.config
-        if key isnt 'labels' and key isnt 'ExportOptions'
-          for option in value.options
-            configMap[option.value] = option.display
-      for key, value of item
-        item[key] = configMap[value] if configMap[value]
-      item
+      request.done showSuccessMessage.bind(this)
+      request.fail showFailureMessage.bind(this)
 
     showCloseButton: () ->
       this.submitBtn.text 'Close'
       this.submitBtn.removeAttr 'disabled'
       this.submitBtn.attr 'data-dismiss', 'modal'
 
-    enableInput: () ->
+    hide: () ->
+      $('#StateDownloadModal').edwareModal('hide')
       this.submitBtn.removeAttr 'disabled'
       $('input:checkbox', this.container).removeAttr 'disabled'
       $('.btn-extract-academic-year').attr('disabled', false)
@@ -277,39 +229,16 @@ define [
       this.message.append validationMsg
 
     getParams: ()->
-      params = {}
-      # Get filter params only for accessment extracts
-      if @reportType == "studentAssessment"
-        params = edwarePreferences.getFilters()
-        # get sticky compared rows if any
-        params = $.extend(@reportParamCallback(), params)
-      $('tr:visible ul.checkbox-menu', this.container).each (index, param)->
-        $param = $(param)
-        key = $param.data('key')
-        params[key] = []
-        $param.find('input:checked').each ()->
-          params[key].push $(this).attr('value')
-
-      $('tr:visible ul.dropdown-menu', this.container).each (index, param)->
-        $this = $(this)
-        key = $this.data('key')
-        value = $this.data('value')
-        if key is 'academicYear'
-          params[key] = [value]
-        else
-          params[key] = [value.toString()]
+      params = {'async': 'true'}
 
       storageParams = JSON.parse edwareClientStorage.filterStorage.load()
       if storageParams and storageParams['stateCode']
         params['stateCode'] = [storageParams['stateCode']]
 
-      if storageParams and storageParams['districtGuid']
-        params['districtGuid'] = [storageParams['districtGuid']]
-
       params
 
     show: () ->
-      $('#CSVModal').edwareModal
+      $('#StateDownloadModal').edwareModal
         keepLastFocus: true
 
 
@@ -486,9 +415,7 @@ define [
       window.location = url
 
     sendCSVRequest: () ->
-      alert "Coming up soon!"
       @hide()
-      return
       CSVOptions = @config.CSVOptions
       CSVOptions.labels = @config.labels
       CSVOptions.ExportOptions = @config.ExportOptions
@@ -501,11 +428,10 @@ define [
         # merge academic years to JSON config
         years = edwareUtil.getAcademicYears data.asmt_period_year
         studentRegYears = edwareUtil.getAcademicYears data.studentRegAcademicYear
-        CSVOptions.asmtYear.options = years if years
-        CSVOptions.academicYear.options = years if years
-        CSVOptions.studentRegAcademicYear.options = studentRegYears if studentRegYears
+        CSVOptions.completionAcademicYear.options = years if years
+        CSVOptions.registrationAcademicYear.options = studentRegYears if studentRegYears
         # display file download options
-        CSVDownload = new CSVDownloadModal $('.CSVDownloadContainer'), reportType, CSVOptions, reportParamsCallback
+        CSVDownload = new StateDownloadModal $('.CSVDownloadContainer'), CSVOptions, reportParamsCallback
         CSVDownload.show()
 
     printPDF: () ->
@@ -534,8 +460,8 @@ define [
       edwareDataProxy.getDatafromSource "/data/academic_year", options
 
   create = (container, reportType, config, reportParamCallback)->
-    new CSVDownloadModal $(container), reportType, config, reportParamCallback
+    new StateDownloadModal $(container), reportType, config, reportParamCallback
 
-  CSVDownloadModal: CSVDownloadModal
+  StateDownloadModal: StateDownloadModal
   DownloadMenu: DownloadMenu
   create: create

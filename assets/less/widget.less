@@ -1463,160 +1463,29 @@ th.ui-th-column div {
 }
 
 
-#CSVModal {
+#StateDownloadModal .modal-body{
 
-  font-size: 14px;
-  z-index: 9999;
-
-  h2 {
-    color: @color-A1;
-  }
-
-  table.csv_options_table {
-
-    margin: 0 auto;
-
-    tr {
-
-      td {
-        vertical-align: top;
-        padding: 5px 5px;
-
-        &:first-child {
-          padding-top: 10px;
-          color: #333;
-          text-align: right;
-        }
-      }
-
-      button.dropdown-toggle {
-        width: 250px;
-        height: 28px;
-        text-align: left;
-        font-size: 14px;
-
-        .dropdown-display {
-          display: inline-block;
-          text-overflow: ellipsis;
-          width: 190px;
-          overflow: hidden;
-          white-space: nowrap;
-          float: left;
-        }
-
-        .caret {
-          float: right;
-        }
-      }
-
-      div.ui-spinner {
-        border: none;
-        span.ui-spinner {
-          border: solid 1px;
-          border-radius: 4px;
-          #academicYear {
-            font-size: 14px;
-            color: @color-black;
-          }
-        }
-      }
-
-      ul {
-        margin: 0px 0px;
-        width: 250px;
-        list-style-type: none;
-
-        label {
-          display: inline-block;
-          margin-top: 5px;
-          padding-left: 0px;
-          color: @color-black;
-          width: 100%;
-
-          input {
-            width: 15px;
-            height: 15px;
-            margin-right: 5px;
-            position: relative;
-            top: -4px;
-          }
-        }
-
-        li {
-          padding: 0 10px;
-        }
-
-        &.checkbox-menu {
-          border: solid 1px;
-          border-radius: 5px;
-        }
-      }
-
-      .invalid {
-        ul, button {
-          border-color: red;
-        }
-      }
-
-      &.rpt_option.disabled {
-        display: none
-      }
-    }
-  }
-
-  .modal-body {
-    height: 340px;
-
-    #message {
-      font-size: 13px;
-
-      div {
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 13px;
-      }
-
-      .success {
-        background-color: rgb(220,241,217);
-        color: rgb(35,126,57);
-      }
-
-      .error {
-        background-color: rgb(244, 222, 222);
-        color: rgb(178, 71, 68);
-      }
-    }
-  }
-
-  .btn-primary {
-    text-shadow: 1px 1px 1px @color-C8;
-    background-color: @color-C6;
-    background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-C6),to(@color-C7));
-    background-image: -webkit-linear-gradient(top,@color-C6,@color-C7);
-    background-image: -o-linear-gradient(top,@color-C6,@color-C7);
-    background-image: linear-gradient(to bottom,@color-C6,@color-C7);
-    background-image: -moz-linear-gradient(top,@color-C6,@color-C7);
-
-    &:hover {
-      background-position: initial;
-    }
-  }
-
-  tr {
+  .section {
     display: none;
+    margin-bottom: 15px;
+
+    //always display extract type
+    &.extractType {display: block;}
   }
 
   //control widgets visibility
-  &.studentAssessment .assm_rpt {
-    display: table-row;
+  &.registrationStatistics{
+    .SRS {display: block;}
   }
 
-  &.studentRegistrationStatistics .sr_rpt{
-    display: table-row;
+  &.completionStatistics {
+    .SAC {display: block;}
   }
 
-  &.studentAssessmentCompletion .srcomp_rpt {
-    display: table-row;
+  &.rawXML, &.itemLevel {
+    .SAC {display: block;}
+    .rawXML {display: block;}
+    .itemLevel {display: block;}
   }
 }
 
@@ -1646,7 +1515,7 @@ th.ui-th-column div {
     font-weight: bold;
 
     &:hover, &:focus {
-               background-color: white;
+               background-color: @color-A7;
                color: @color-A4;
              }
   }
@@ -1693,9 +1562,10 @@ th.ui-th-column div {
     padding: 3px;
   }
 
-  #DownloadMenuModal, #PDFModal, #DownloadSuccessModal, #DownloadFailureModal {
+  #DownloadMenuModal, #PDFModal, #DownloadSuccessModal, #DownloadFailureModal, #StateDownloadModal{
 
     width: 420px;
+    overflow-y: visible;
 
     .modal-header {
       background-color: @color-B28;
@@ -1704,6 +1574,7 @@ th.ui-th-column div {
 
     .modal-body {
       padding: 20px;
+      overflow-y: visible;
     }
 
     ul {
@@ -1718,11 +1589,6 @@ th.ui-th-column div {
 
       input {
         vertical-align: baseline;
-      }
-
-      h4 {
-        display: inline;
-        color: @color-black;
       }
 
       .desc_block {
@@ -1752,7 +1618,10 @@ th.ui-th-column div {
       margin: 0px 0px 12px;
     }
 
-    b {color: @color-black}
+    h4 {
+      display: inline;
+      color: @color-black;
+    }
   }
 
   .reminderMessage {

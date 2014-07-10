@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import copy
+import random
 
 from pyramid.threadlocal import get_current_registry
 from sqlalchemy.sql.expression import and_
@@ -171,7 +172,11 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     base_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
     # get an estimate for number of extract files that needs to be created based on the params
-    parts = estimate_extract_files(params=params, extract_type=extract_type)
+    #parts = estimate_extract_files(params=params, extract_type=extract_type)
+
+    # temp hack till estimator is fixed. Needs to be removed and substituted with above line
+    parts = random.randint(2, 3)
+
     out_file_names = []
     directories_to_archive = []
 
@@ -391,7 +396,8 @@ def get_items_extract_file_path(param, tenant, request_id, part=None, total_part
                        asmtGrade=param.get(Constants.ASMTGRADE),
                        currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
                        part='_part' + part if total_parts and total_parts > 1 and part else '')
-    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
+    return os.path.join(processor.get_extract_work_zone_path(tenant, request_id),
+                        'part' + str(part) if total_parts > 1 else '', file_name)
 
 
 def get_asmt_metadata_file_path(params, tenant, request_id):

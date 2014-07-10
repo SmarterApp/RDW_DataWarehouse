@@ -86,8 +86,7 @@ def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_
         return path
     if effective_date is not None:
         path = os.path.join(path, effective_date)
-    else:
-        return path
+
     if asmt_subject is not None:
         path = os.path.join(path, asmt_subject.upper())
     else:

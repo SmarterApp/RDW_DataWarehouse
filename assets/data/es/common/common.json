@@ -588,7 +588,7 @@
 			}
 		}
 	},
-    "interimDisclaimer": "<ol><li>Las tareas y los ítems de los exámenes intermedios se califican de manera local por maestros. Esta es una oportunidad de desarrollo profesional para los maestros que promueve la comprensión de la actividad evaluativa. Sin embargo, la evaluación local no está sujeta a los controles rigurosos usados en la evaluación acumulativa. Los resultados locales pueden mostrar alguna variación.</li><li>Las preguntas del examen intermedio no son confidenciales. Se pueden usar para discusiones en el salón o en exámenes más cortos y enfocados.  Cuando se presenta esto, la familiaridad con las preguntas del examen puede afectar el desempeño del estudiante.</li><li>Si las preguntas del examen se distribuyen de manera amplia, los parámetros de los ítems pueden diferir de aquellos establecidos en los exámenes de campo confidenciales. Esto afecta la precisión de las puntuaciones en la escala intermedia.</li></ol>"
+	"interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require hand scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {

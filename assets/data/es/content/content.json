@@ -27,8 +27,8 @@
 
 	"policy_content": {
 		"11": {
-			"Math": "Los estudiantes de los grados 8 al 12 verán información de la política del consorcio común para la educación superior y un enlace para los recursos del estado que el mismo estado puede modificar: <a href='#'>http://stateresources.link</a>",
-			"ELA": " Los estudiantes de los grados 8 al 12 verán información de la política del consorcio común para la educación superior y un enlace para los recursos del estado que el mismo estado puede modificar: <a href='#'>http://stateresources.link</a>"
+			"Math": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>",
+			"ELA": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>"
 		},
 		"8": {
 			"Math": {

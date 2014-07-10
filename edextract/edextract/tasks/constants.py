@@ -31,6 +31,7 @@ class Constants():
     ROOT_DIRECTORY = 'root_directory'
     ITEM_IDS = 'item_ids'
     DIRECTORY_TO_ARCHIVE = 'directory_to_archive'
+    THRESHOLD_SIZE = 'threshold_size'
 
 
 class QueryType():

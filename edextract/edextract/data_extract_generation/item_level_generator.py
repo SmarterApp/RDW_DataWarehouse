@@ -32,6 +32,7 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     items_root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
     item_ids = extract_args[TaskConstants.ITEM_IDS]
+    threshold_size = extract_args.get(TaskConstants.THRESHOLD_SIZE, -1)
     checking_ids = item_ids is not None
 
     with EdCoreDBConnection(tenant=tenant) as connection:
@@ -56,9 +57,11 @@ def generate_items_csv(tenant, output_file, task_info, extract_args):
 
                 # Write this file to output file if we are not checking for specific item IDs or if this file contains
                 # at least one of the requested item IDs
-                if not checking_ids or _check_file_for_items(path, item_ids):
-                    _write_file_out(path, out_file)
-
+                if os.path.exists(path):
+                    with open(path, 'r') as in_file:
+                        if not checking_ids or _check_file_for_items(in_file, item_ids):
+                            in_file.seek(0)
+                            out_file.write(in_file.read())
         # Done
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
@@ -70,17 +73,9 @@ def _get_path_to_item_csv(items_root_dir, record):
                         (str(record['student_guid']) + '.csv'))
 
 
-def _check_file_for_items(path, item_ids):
-    if os.path.exists(path):
-        with open(path, 'r') as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            for row in csv_reader:
-                if row[ITEM_KEY_POS] in item_ids:
-                    return True
+def _check_file_for_items(file_descriptor, item_ids):
+    csv_reader = csv.reader(file_descriptor, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+    for row in csv_reader:
+        if row[ITEM_KEY_POS] in item_ids:
+            return True
     return False
-
-
-def _write_file_out(path, out_file):
-    if os.path.exists(path):
-        with open(path, 'r') as in_file:
-            out_file.write(in_file.read())

@@ -34,6 +34,9 @@ from smarter_common.security.constants import RolesConstants
 from smarter.security.roles.pii import PII  # @UnusedImport
 from smarter.security.roles.state_level import StateLevel  # @UnusedImport
 from smarter.extracts.student_assessment import get_required_permission
+from smarter.extracts.processor import _get_extract_work_zone_base_dir
+import os
+from unittest.case import skip
 
 
 __author__ = 'ablum'
@@ -43,12 +46,15 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
 
     def setUp(self):
         self.reg = Registry()
-        self.__work_zone_dir = tempfile.TemporaryDirectory()
-        self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
+        self.__temp_dir = tempfile.TemporaryDirectory()
+        self.__work_zone_dir = os.path.join(self.__temp_dir.name, 'work_zone')
+        self.__raw_data_base_dir = os.path.join(self.__temp_dir.name, 'raw_data')
+        self.__item_level_base_dir = os.path.join(self.__temp_dir.name, 'item_level')
+        self.reg.settings = {'extract.work_zone_base_dir': self.__work_zone_dir,
                              'hpz.file_upload_base_url': 'http://somehost:82/files',
                              'extract.available_grades': '3,4,5,6,7,8,11',
-                             'extract.raw_data_base_dir': '/opt/edware/raw_data',
-                             'extract.item_level_base_dir': '/opt/edware/item_level'}
+                             'extract.raw_data_base_dir': self.__raw_data_base_dir,
+                             'extract.item_level_base_dir': self.__item_level_base_dir}
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}
         setup_celery(settings)
         cache_opts = {
@@ -72,6 +78,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         # reset the registry
         testing.tearDown()
         cache_managers.clear()
+        self.__temp_dir.cleanup()
 
     @classmethod
     def setUpClass(cls):
@@ -90,7 +97,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual(tasks[0]['status'], 'fail')
         self.assertEqual(tasks[3]['status'], 'fail')
 
-    def test_process_async_item_extraction_request(self):
+    @patch('smarter.extracts.student_asmt_processor.start_extract')
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_process_async_item_extraction_request(self, mock_register_file, mock_start_extract):
+        mock_register_file.return_value = ('a', 'b')
         params = {'stateCode': 'NC',
                   'asmtYear': '2018',
                   'asmtType': 'SUMMATIVE',
@@ -111,7 +121,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGrade': '6'}
         path = get_extract_file_path(params, 'tenant', 'request_id', is_tenant_level=True)
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_6_UUUU_ABC_', path)
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_6_UUUU_ABC_')
+        self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_school(self):
@@ -125,7 +136,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGrade': '1'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_1_UUUU_ABC_', path)
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_1_UUUU_ABC')
+        self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_file_name_grade(self):
@@ -138,7 +150,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         path = get_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_5_UUUU_ABC_', path)
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5_UUUU_ABC_')
+        self.assertIn(expected_path, path)
         self.assertIn('2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.csv', path)
 
     def test_get_item_file_name(self):
@@ -148,7 +161,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'UUUU',
                   'asmtGrade': '5'}
         path = get_items_extract_file_path(params, 'tenant', 'request_id')
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ITEMS_CA_2015_ABC_UUUU_GRADE_5', path)
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ITEMS_CA_2015_ABC_UUUU_GRADE_5')
+        self.assertIn(expected_path, path)
 
     def test_get_item_file_name_with_multi_parts(self):
         params = {'stateCode': 'CA',
@@ -157,7 +171,9 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'UUUU',
                   'asmtGrade': '5'}
         path = get_items_extract_file_path(params, 'tenant', 'request_id', partial_no=2)
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ITEMS_CA_2015_ABC_UUUU_GRADE_5', path)
+        workzone_dir = _get_extract_work_zone_base_dir()
+        expected_path = os.path.join(workzone_dir, 'tenant', 'request_id', 'data', 'part2', 'ITEMS_CA_2015_ABC_UUUU_GRADE_5')
+        self.assertIn(expected_path, path)
         self.assertIn('_part2', path)
 
     def test_process_sync_extraction_request_NotFoundException(self):
@@ -226,6 +242,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
             self.assertRaises(NotFoundException, process_sync_item_or_raw_extract_request, params, extract_type)
 
+    @skip('removing soon')
     def test_process_sync_items_extraction_request_with_subject(self):
         params = {'stateCode': 'NC',
                   'asmtYear': '2016',
@@ -237,9 +254,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
             zip_data = process_sync_item_or_raw_extract_request(params, extract_type)
             self.assertIsNotNone(zip_data)
 
+    @patch('smarter.extracts.student_asmt_processor.start_extract')
     @patch('smarter.extracts.student_asmt_processor.register_file')
-    def test_process_async_items_extraction_request_with_subject(self, register_file_patch):
-        register_file_patch.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
+    def test_process_async_items_extraction_request_with_subject(self, mock_register_file, mock_start_extract):
+        mock_register_file.return_value = 'a1-b2-c3-d4-e1e10', 'http://somehost:82/download/a1-b2-c3-d4-e1e10'
         params = {'stateCode': 'NC',
                   'asmtYear': '2016',
                   'asmtType': 'SUMMATIVE',
@@ -247,10 +265,10 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtGrade': '3'}
         for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
             response = process_async_item_or_raw_extraction_request(params, extract_type)
-            self.assertIn('.zip', response['fileName'])
-            self.assertNotIn('.gpg', response['fileName'])
+            self.assertIn('.zip', response['files'][0]['fileName'])
+            self.assertNotIn('.gpg', response['files'][0]['fileName'])
             self.assertEqual(response['tasks'][0]['status'], 'ok')
-            self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['download_url'])
+            self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response['files'][0]['download_url'])
 
     def test___prepare_data(self):
         params = {'stateCode': 'NC',
@@ -278,7 +296,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtYear': '2015',
                   'asmtGuid': '2C2ED8DC-A51E-45D1-BB4D-D0CF03898259'}
         file_name = get_asmt_metadata_file_path(params, "tenant", "id")
-        self.assertIn('/tmp/work_zone/tenant/id/data', file_name)
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'id', 'data')
+        self.assertIn(expected_path, file_name)
         self.assertIn('METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', file_name)
 
     def test__create_tasks_for_non_tenant_lvl(self):
@@ -318,7 +337,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual(len(results), 2)
         self.assertEquals(ExtractionDataType.QUERY_CSV, results[0][TaskConstants.EXTRACTION_DATA_TYPE])
         self.assertEquals(ExtractionDataType.QUERY_JSON, results[1][TaskConstants.EXTRACTION_DATA_TYPE])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_5', results[0][TaskConstants.TASK_FILE_NAME])
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_5')
+        self.assertIn(expected_path, results[0][TaskConstants.TASK_FILE_NAME])
 
     def test__create_asmt_metadata_task(self):
         params = {'stateCode': 'CA',
@@ -350,7 +370,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                                 extract_file_path=get_extract_file_path)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_GRADE_5')
+        self.assertIn(expected_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_non_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -368,7 +389,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=False)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_JSON, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
+        expceted_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json')
+        self.assertIn(expceted_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -387,7 +409,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                                 extract_file_path=get_extract_file_path)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_CSV, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/ASMT_2015_CA_GRADE_5', task[TaskConstants.TASK_FILE_NAME])
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'ASMT_2015_CA_GRADE_5')
+        self.assertIn(expected_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_tenant_level_json_request(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -405,7 +428,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         task = _create_new_task('request_id', user, 'tenant', params, query, asmt_metadata=True, is_tenant_level=True)
         self.assertIsNotNone(task)
         self.assertEquals(ExtractionDataType.QUERY_JSON, task[TaskConstants.EXTRACTION_DATA_TYPE])
-        self.assertIn('/tmp/work_zone/tenant/request_id/data/METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json', task[TaskConstants.TASK_FILE_NAME])
+        expected_path = os.path.join(self.__work_zone_dir, 'tenant', 'request_id', 'data', 'METADATA_ASMT_2015_CA_GRADE_5_UUUU_ABC_2C2ED8DC-A51E-45D1-BB4D-D0CF03898259.json')
+        self.assertIn(expected_path, task[TaskConstants.TASK_FILE_NAME])
 
     def test__create_new_task_item_level(self):
         with UnittestEdcoreDBConnection() as connection:

@@ -214,6 +214,7 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
                  Constants.REQUEST_GUID: request_id}
     retryable = False
     exception_thrown = False
+    output_file = None
     try:
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTING})
         if tenant is None:
@@ -242,7 +243,7 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
     except FileNotFoundError as e:
         # which thrown from prepare_path
         # unrecoverable error, do not try to retry celery task.  it's just wasting time.
-        if os.path.isfile(output_file):
+        if output_file is not None and os.path.isfile(output_file):
             # file should be deleted if there is an error
             os.unlink(output_file)
         log.error(e)
@@ -251,7 +252,7 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
         retryable = False
 
     except Exception as e:
-        if os.path.isfile(output_file):
+        if output_file is not None and  os.path.isfile(output_file):
             # file should be deleted if there is an error
             os.unlink(output_file)
         log.error(e)

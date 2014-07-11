@@ -7,7 +7,8 @@ from smarter.extracts import processor
 from smarter.reports.helpers.constants import Constants
 from smarter.extracts.constants import Constants as Extract, ExtractType
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query
+from smarter.extracts.student_assessment import get_extract_assessment_query, get_extract_assessment_item_and_raw_query,\
+    get_required_permission
 from edcore.utils.utils import compile_query_to_sql_text, merge_dict
 from edcore.security.tenant import get_state_code_to_tenant_map
 from edextract.status.status import create_new_entry
@@ -16,7 +17,6 @@ from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
-from smarter_common.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
 from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG,\
     apply_filter_to_query
@@ -167,7 +167,7 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     return response
 
 
-def _get_asmt_records(param):
+def _get_asmt_records(param, extract_type):
     '''
     query all asmt_guid and asmt_grade by given extract request params
     '''
@@ -186,7 +186,7 @@ def _get_asmt_records(param):
         query = select_with_context([dim_asmt.c.asmt_guid.label(Constants.ASMT_GUID),
                                      fact_asmt_outcome_vw.c.asmt_grade.label(Constants.ASMT_GRADE)],
                                     from_obj=[dim_asmt
-                                              .join(fact_asmt_outcome_vw, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=RolesConstants.SAR_EXTRACTS, state_code=state_code)\
+                                              .join(fact_asmt_outcome_vw, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))], permission=get_required_permission(extract_type), state_code=state_code)\
             .where(and_(fact_asmt_outcome_vw.c.state_code == state_code))\
             .where(and_(fact_asmt_outcome_vw.c.asmt_type == asmt_type))\
             .where(and_(fact_asmt_outcome_vw.c.asmt_subject == asmt_subject))\
@@ -209,14 +209,14 @@ def _get_asmt_records(param):
     return results
 
 
-def _prepare_data(param):
+def _prepare_data(param, extract_type):
     '''
     Prepare record for available pre-query extract
     '''
     asmt_guid_with_grades = []
     dim_asmt = None
     fact_asmt_outcome_vw = None
-    available_records = _get_asmt_records(param)
+    available_records = _get_asmt_records(param, extract_type)
     # Format to a list with a tuple of asmt_guid and grades
     for record_by_asmt_type in available_records:
         asmt_guid_with_grades.append((record_by_asmt_type[Constants.ASMT_GUID], record_by_asmt_type[Constants.ASMT_GRADE]))
@@ -236,7 +236,7 @@ def _create_tasks_with_responses(request_id, user, tenant, param, task_response=
     tasks = []
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
-    guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(param)
+    guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(param, ExtractType.studentAssessment)
 
     copied_params = copy.deepcopy(param)
     copied_params[Constants.ASMTGRADE] = None
@@ -268,11 +268,11 @@ def _create_item_or_raw_tasks_with_responses(request_id, user, param, root_dir, 
     task_responses = []
     copied_task_response = copy.deepcopy(task_response)
     states_to_tenants = get_state_code_to_tenant_map()
-    guid_grade, _, _ = _prepare_data(param)
+    guid_grade, _, _ = _prepare_data(param, extract_type)
 
     if guid_grade:
         state_code = param.get(Constants.STATECODE)
-        query = get_extract_assessment_item_and_raw_query(param)
+        query = get_extract_assessment_item_and_raw_query(param, extract_type)
         tenant = states_to_tenants[state_code]
         task = _create_new_task(request_id, user, tenant, param, query,
                                 is_tenant_level=is_tenant_level, extract_type=extract_type)

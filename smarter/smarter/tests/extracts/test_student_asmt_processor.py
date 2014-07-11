@@ -31,6 +31,8 @@ import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.security.roles.state_level import StateLevel  # @UnusedImport
+from smarter.extracts.student_assessment import get_required_permission
 
 
 __author__ = 'ablum'
@@ -57,9 +59,11 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
-        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.AUDIT_XML_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.ITEM_LEVEL_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
-        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS, RolesConstants.AUDIT_XML_EXTRACTS, RolesConstants.ITEM_LEVEL_EXTRACTS])
         self.__config.testing_securitypolicy(dummy_session.get_user())
         set_tenant_map({get_unittest_tenant_name(): 'NC'})
 
@@ -245,7 +249,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtSubject': 'ELA',
                   'asmtGuid': 'c8f2b827-e61b-4d9e-827f-daa59bdd9cb0'}
         smarter.extracts.format.json_column_mapping = {}
-        guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(params)
+        guid_grade, dim_asmt, fact_asmt_outcome_vw = _prepare_data(params, ExtractType.studentAssessment)
         self.assertEqual(1, len(guid_grade))
         self.assertIsNotNone(dim_asmt)
         self.assertIsNotNone(fact_asmt_outcome_vw)
@@ -446,3 +450,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual(len(results[0]), 4)
         self.assertEqual(len(results[1]), 1)
         self.assertEqual(results[1][0][Extract.STATUS], Extract.OK)
+
+    def test_get_required_permission(self):
+        self.assertEqual('IIRDEXTRACTS', get_required_permission(ExtractType.itemLevel))
+        self.assertEqual('AUDITXML', get_required_permission(ExtractType.rawData))
+        self.assertEqual('SAREXTRACTS', get_required_permission(ExtractType.studentAssessment))

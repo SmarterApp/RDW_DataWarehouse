@@ -11,6 +11,18 @@ from smarter.security.context import select_with_context
 from smarter.extracts.format import get_column_mapping
 from smarter_common.security.constants import RolesConstants
 from smarter.reports.helpers.filters import apply_filter_to_query
+from smarter.extracts.constants import ExtractType
+
+
+def get_required_permission(extract_type):
+    '''
+    Queries are shared between different extracts, and permission is different based on the extract type
+    The correct permission is returned given the extract type
+    '''
+    permissions = {ExtractType.itemLevel: RolesConstants.ITEM_LEVEL_EXTRACTS,
+                   ExtractType.rawData: RolesConstants.AUDIT_XML_EXTRACTS,
+                   ExtractType.studentAssessment: RolesConstants.SAR_EXTRACTS}
+    return permissions.get(extract_type)
 
 
 def get_extract_assessment_query(params):
@@ -137,7 +149,7 @@ def get_extract_assessment_query(params):
     return query
 
 
-def get_extract_assessment_item_and_raw_query(params):
+def get_extract_assessment_item_and_raw_query(params, extract_type):
     """
     private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
 
@@ -163,7 +175,7 @@ def get_extract_assessment_item_and_raw_query(params):
                                      fact_asmt_outcome_vw.c.student_guid],
                                     from_obj=[fact_asmt_outcome_vw
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
-                                    permission=RolesConstants.SAR_EXTRACTS,
+                                    permission=get_required_permission(extract_type),
                                     state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code))

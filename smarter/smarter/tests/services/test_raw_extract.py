@@ -24,7 +24,7 @@ from edauth.tests.test_helper.create_session import create_test_session
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
-from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.security.roles.state_level import StateLevel  # @UnusedImport
 
 
 class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -50,11 +50,11 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
 
-        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.AUDIT_XML_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         set_tenant_map({get_unittest_tenant_name(): 'NC'})
         # Set up context security
-        dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
+        dummy_session = create_test_session([RolesConstants.AUDIT_XML_EXTRACTS])
         self.__config.testing_securitypolicy(dummy_session.get_user())
         # celery settings for UT
         settings = {'extract.celery.CELERY_ALWAYS_EAGER': True}

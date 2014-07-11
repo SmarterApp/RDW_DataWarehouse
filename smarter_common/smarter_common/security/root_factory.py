@@ -20,6 +20,8 @@ class RootFactory(object):
                (Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout')),
                (Allow, RolesConstants.SRS_EXTRACTS, ('view', 'logout')),
                (Allow, RolesConstants.SRC_EXTRACTS, ('view', 'logout')),
+               (Allow, RolesConstants.AUDIT_XML_EXTRACTS, ('view', 'logout')),
+               (Allow, RolesConstants.ITEM_LEVEL_EXTRACTS, ('view', 'logout')),
                (Allow, RolesConstants.SUPER_USER, ('view', 'logout', 'super_admin_rights')),
                # For no role in memberOf in SAML response
                # Ideally, this should be in edauth

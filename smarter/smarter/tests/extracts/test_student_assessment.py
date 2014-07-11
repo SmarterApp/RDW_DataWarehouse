@@ -21,6 +21,8 @@ import edauth
 from smarter_common.security.constants import RolesConstants
 from edcore.security.tenant import set_tenant_map
 from smarter.security.roles.pii import PII  # @UnusedImport
+from smarter.security.roles.state_level import StateLevel  # @UnusedImport
+from smarter.extracts.constants import ExtractType
 
 
 class TestStudentAssessment(Unittest_with_edcore_sqlite):
@@ -32,12 +34,16 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
         reg.settings = {}
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
-        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout'))]
+        defined_roles = [(Allow, RolesConstants.SAR_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.ITEM_LEVEL_EXTRACTS, ('view', 'logout')),
+                         (Allow, RolesConstants.ITEM_LEVEL_EXTRACTS, ('view', 'logout'))]
         edauth.set_roles(defined_roles)
         set_tenant_map({get_unittest_tenant_name(): 'NC'})
         # Set up context security
         dummy_session = create_test_session([RolesConstants.SAR_EXTRACTS])
-        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", None, None)])
+        dummy_session.set_user_context([RoleRelation(RolesConstants.SAR_EXTRACTS, get_unittest_tenant_name(), "NC", None, None),
+                                        RoleRelation(RolesConstants.AUDIT_XML_EXTRACTS, get_unittest_tenant_name(), "NC", None, None),
+                                        RoleRelation(RolesConstants.ITEM_LEVEL_EXTRACTS, get_unittest_tenant_name(), "NC", None, None)])
         self.__config.testing_securitypolicy(dummy_session.get_user())
 
     def tearDown(self):
@@ -136,7 +142,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        query = get_extract_assessment_item_and_raw_query(params)
+        query = get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel)
         self.assertIsNotNone(query)
         self.assertIn('fact_asmt_outcome_vw.asmt_type', str(query._whereclause))
 
@@ -147,7 +153,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        query = get_extract_assessment_item_and_raw_query(params).limit(541)
+        query = get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel).limit(541)
         self.assertIsNotNone(query)
         self.assertIn('541', str(query._limit))
 
@@ -158,7 +164,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtSubject': 'Math',
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
-        query = compile_query_to_sql_text(get_extract_assessment_item_and_raw_query(params))
+        query = compile_query_to_sql_text(get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel))
         self.assertIsNotNone(query)
         self.assertIsInstance(query, str)
         self.assertIn('SUMMATIVE', query)
@@ -169,7 +175,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtType': 'SUMMATIVE',
                   'asmtSubject': 'Math',
                   'asmtGrade': '3'}
-        query = get_extract_assessment_item_and_raw_query(params)
+        query = get_extract_assessment_item_and_raw_query(params, ExtractType.itemLevel)
         self.assertIsNotNone(query)
         with UnittestEdcoreDBConnection() as connection:
             results = connection.get_result(query)

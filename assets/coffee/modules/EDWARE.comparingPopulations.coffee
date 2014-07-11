@@ -239,7 +239,7 @@ define [
       edwareReportInfoBar.create '#infoBar',
         reportTitle: @breadcrumbs.getReportTitle()
         reportName: Constants.REPORT_NAME.CPOP
-        reportInfoText: @config.reportInfo
+        reportInfoText: @config.reportInfo[@reportType]
         reportType: @reportType
         labels: @labels
         CSVOptions: @config.CSVOptions

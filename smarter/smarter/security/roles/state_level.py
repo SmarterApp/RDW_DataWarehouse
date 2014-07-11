@@ -11,7 +11,8 @@ from smarter.security.context_role_map import ContextRoleMap
 from smarter_common.security.constants import RolesConstants
 
 
-@ContextRoleMap.register([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS])
+# Access is bound to state level
+@ContextRoleMap.register([RolesConstants.SRS_EXTRACTS, RolesConstants.SRC_EXTRACTS, RolesConstants.AUDIT_XML_EXTRACTS, RolesConstants.ITEM_LEVEL_EXTRACTS])
 class StateLevel(BaseRole):
 
     def __init__(self, connector, name):

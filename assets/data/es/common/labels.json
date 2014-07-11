@@ -94,6 +94,14 @@
         "show_all": "Mostrar todo",
         "sort_by": "Ordenar por",
         "state": "Estado",
+        "sticky_inst_text": {
+            "school": "selected school to",
+            "schools": "selected schools to",
+            "district": "selected district to",
+            "districts": "selected districts to",
+            "student": "selected student to",
+            "students": "selected students to"
+        },
         "student": "Estudiante",
         "students": "Estudiantes",
         "student_filters": "Filtros de estudiante",

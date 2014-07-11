@@ -152,7 +152,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtType': 'abc',
                   'asmtSubject': 'UUUU',
                   'asmtGrade': '5'}
-        path = get_items_extract_file_path(params, 'tenant', 'request_id', part='2', total_parts=2)
+        path = get_items_extract_file_path(params, 'tenant', 'request_id', partial_no=2)
         self.assertIn('/tmp/work_zone/tenant/request_id/data/ITEMS_CA_2015_ABC_UUUU_GRADE_5', path)
         self.assertIn('_part2', path)
 

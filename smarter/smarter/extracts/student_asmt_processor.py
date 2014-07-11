@@ -191,9 +191,9 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
         for estimated_total_file in range(estimated_total_files):
             extract_file = {}
             if extract_type is ExtractType.itemLevel:
-                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=str(estimated_total_file)))
+                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=estimated_total_file))
             directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
-            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=str(estimated_total_file))
+            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=estimated_total_file)
             archive_files.append(archive_file_name)
             registration_id, download_url = register_file(user.get_uid())
             registration_ids.append(registration_id)
@@ -409,7 +409,7 @@ def get_items_extract_file_path(param, tenant, request_id, partial_no=None):
                        asmtSubject=param[Constants.ASMTSUBJECT].upper(),
                        asmtGrade=param.get(Constants.ASMTGRADE),
                        currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                       partial_no='_part' + partial_no if partial_no is not None else '')
+                       partial_no='_part' + str(partial_no) if partial_no is not None else '')
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id),
                         'part' + str(partial_no) if partial_no is not None else '', file_name)
 

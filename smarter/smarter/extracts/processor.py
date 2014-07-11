@@ -47,9 +47,9 @@ def get_archive_file_path(user_name, tenant, request_id, partial_no=None, encryp
     base = _get_extract_work_zone_base_dir()
     archive_ext = 'zip.gpg' if encrypted else 'zip'
     file_name = '{user_name}_{current_time}{partial_no}.{archive_ext}'.format(user_name=user_name,
-                                                                        current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                                                                        archive_ext=archive_ext,
-                                                                        partial_no='_part' + partial_no if partial_no is not None else '')
+                                                                              current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
+                                                                              archive_ext=archive_ext,
+                                                                              partial_no='_part' + partial_no if partial_no is not None else '')
     return os.path.join(base, tenant, request_id, 'zip', file_name)
 
 

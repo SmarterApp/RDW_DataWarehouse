@@ -25,6 +25,7 @@ def start_extract(tenant, request_id, archive_file_names, directories_to_archive
                      generate_remote_copy_tasks(request_id, archive_file_names, registration_ids, queue_name=queue))
     workflow.apply_async()
 
+
 def generate_prepare_path_task(request_id, archive_file_names, directories_to_archive, queue_name=None):
     """
     Given a list of paths, create a single celery task to prepare the paths
@@ -38,6 +39,7 @@ def generate_prepare_path_task(request_id, archive_file_names, directories_to_ar
     """
     paths_to_prepare = [directory for directory in directories_to_archive] + [os.path.dirname(file) for file in archive_file_names]
     return prepare_path.subtask(args=[request_id, paths_to_prepare], queue=queue_name, immutable=True)  # @UndefinedVariable
+
 
 def generate_archive_file_tasks(request_id, archive_file_names, directories_to_archive, queue_name=None):
     """
@@ -97,4 +99,3 @@ def generate_remote_copy_tasks(request_id, archive_file_names, registration_ids,
     for i in range(0, len(archive_file_names)):
         remote_copy_tasks.append(remote_copy.subtask(args=[request_id, archive_file_names[i], registration_ids[i]], queue=queue_name, immutable=True))  # @UndefinedVariable
     return group(remote_copy_tasks)
-

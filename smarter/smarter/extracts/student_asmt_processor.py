@@ -148,7 +148,6 @@ def estimate_extract_total_file_size(params, avg_file_size):
     with EdCoreDBConnection(state_code=state_code) as connector:
         query = get_extract_assessment_item_and_raw_query(params)
         return_number = connector.execute(query).rowcount
-        
     return return_number * avg_file_size
 
 

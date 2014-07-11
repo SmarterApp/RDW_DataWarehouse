@@ -24,6 +24,7 @@ CSV_HEADER = ['key', 'student_guid', 'segmentId', 'position', 'clientId', 'opera
               'format', 'score', 'scoreStatus', 'adminDate', 'numberVisits', 'strand', 'contentLevel',
               'pageNumber', 'pageVisits', 'pageTime', 'dropped']
 
+
 def generate_items_csv(tenant, output_files, task_info, extract_args):
     '''
     Write item-level data to CSV file

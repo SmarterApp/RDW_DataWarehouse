@@ -38,6 +38,7 @@ def extract_group_separator():
     '''
     pass
 
+
 @celery.task(name='task.extract.prepare_path')
 def prepare_path(request_id, paths):
     '''
@@ -94,7 +95,6 @@ def archive(request_id, archive_file_name, directory):
         # unrecoverable exception
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.FAILED, Constants.INFO: str(e)})
         raise ExtractionError()
-
 
 
 @celery.task(name="tasks.extract.remote_copy", max_retries=MAX_RETRY, default_retry_delay=DEFAULT_RETRY_DELAY)

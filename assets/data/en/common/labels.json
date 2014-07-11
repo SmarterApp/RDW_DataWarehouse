@@ -40,12 +40,6 @@
         "filterd_by": "Filtered by",
         "filtered_percentage_of_total": "Filtered Percentage of Total",
         "filtered_student_count": "Filtered Student Count",
-        "sticky_inst_text": {
-            "school": "selected school to",
-            "schools": "selected schools to",
-            "district": "selected district to",
-            "districts": "selected districts to"
-        },
         "download": "download",
         "or": "or",
         "find": "Find",
@@ -107,6 +101,14 @@
         "show_all": "Show All",
         "sort_by": "Sort By",
         "state": "State",
+        "sticky_inst_text": {
+            "school": "selected school to",
+            "schools": "selected schools to",
+            "district": "selected district to",
+            "districts": "selected districts to",
+            "student": "selected student to",
+            "students": "selected students to"
+        },
         "student": "Student",
         "students": "Students",
         "student_filters": "Student Filters",

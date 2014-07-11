@@ -105,22 +105,22 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
     threshold_size = -1
     if number_of_files > 1:
         total_file_size = sum(file.size for file in files)
-        threshold_size = total_file_size / len(_output_files)
+        threshold_size = int(total_file_size / len(_output_files))
 
     out_file = None
     for file in files:
-        if out_file is not None and threshold_size > 0 and out_file.tell() > threshold_size and _output_files:
-            # close current out_file
-            out_file.close()
-            out_file = None
-        if out_file is None:
-            output_file = _output_files.pop(0)
-            out_file = open_outfile(output_file)
         # Write this file to output file if we are not checking for specific item IDs or if this file contains
         # at least one of the requested item IDs
         with open(file.name, 'r') as in_file:
             if item_ids is None or _check_file_for_items(in_file, item_ids):
                 in_file.seek(0)
+                if out_file is not None and threshold_size > 0 and out_file.tell() + file.size > threshold_size and _output_files:
+                    # close current out_file
+                    out_file.close()
+                    out_file = None
+                if out_file is None:
+                    output_file = _output_files.pop(0)
+                    out_file = open_outfile(output_file)
                 out_file.write(in_file.read())
 
     if out_file is not None:

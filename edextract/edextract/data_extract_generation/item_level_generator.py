@@ -42,12 +42,14 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
         # Get results (streamed, it is important to avoid memory exhaustion)
         results = connection.get_streaming_result(query)
 
-        _append_csv_files(items_root_dir, item_ids, results, output_files[0], CSV_HEADER)
+        _append_csv_files(items_root_dir, item_ids, results, output_files, CSV_HEADER)
         # Done
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
 def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_guid=None, student_guid=None):
+    if type(asmt_year) is int:
+        asmt_year = str(asmt_year)
     path = items_root_dir
     if state_code is not None:
         path = os.path.join(path, state_code)
@@ -107,17 +109,17 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
 
     out_file = None
     for file in files:
-        if out_file is not None and threshold_size > 0 and out_file.tell() > threshold_size:
+        if out_file is not None and threshold_size > 0 and out_file.tell() > threshold_size and _output_files:
             # close current out_file
             out_file.close()
             out_file = None
         if out_file is None:
-            output_file = output_files.pop(0)
+            output_file = _output_files.pop(0)
             out_file = open_outfile(output_file)
         # Write this file to output file if we are not checking for specific item IDs or if this file contains
         # at least one of the requested item IDs
         with open(file.name, 'r') as in_file:
-            if not item_ids is not None or _check_file_for_items(in_file, item_ids):
+            if item_ids is None or _check_file_for_items(in_file, item_ids):
                 in_file.seek(0)
                 out_file.write(in_file.read())
 

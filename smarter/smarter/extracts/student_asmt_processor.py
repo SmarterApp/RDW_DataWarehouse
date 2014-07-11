@@ -17,12 +17,11 @@ from smarter.extracts.metadata import get_metadata_file_name, get_asmt_metadata
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType, QueryType
 from smarter_common.security.constants import RolesConstants
 from hpz_client.frs.file_registration import register_file
-from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG,\
+from smarter.reports.helpers.filters import has_filters, FILTERS_CONFIG, \
     apply_filter_to_query
 from smarter.extracts.utils import start_extract, generate_extract_file_tasks
-from edextract.tasks.extract import archive_with_stream
+from edextract.tasks.extract import archive_with_stream, prepare_path
 import random
-from edextract.tasks.estimator import estimate_files
 
 
 __author__ = 'ablum'
@@ -103,7 +102,7 @@ def process_extraction_request(params, is_async=True):
     #        result = chain(prepare_path.subtask(args=[tenant, request_id, [directory_to_archive]], queue=queue, immutable=True),      # @UndefinedVariable
     #                       route_tasks(tenant, request_id, tasks, queue_name=queue),
     #                       archive.subtask(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)).delay()
-            prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+            prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)  # @UndefinedVariable
             generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
             result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
             return result.get(timeout=celery_timeout)
@@ -130,7 +129,7 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
                                                                      extract_type)
     if tasks:
         celery_timeout = int(get_current_registry().settings.get('extract.celery_timeout', '30'))
-        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)      # @UndefinedVariable
+        prepare_path.apply_async(args=[request_id, [directory_to_archive]], queue=queue, immutable=True).get(timeout=celery_timeout)
         generate_extract_file_tasks(tenant, request_id, tasks, queue_name=queue)().get(timeout=celery_timeout)
         result = archive_with_stream.apply_async(args=[request_id, directory_to_archive], queue=archive_queue, immutable=True)
         return result.get(timeout=celery_timeout)
@@ -138,25 +137,19 @@ def process_sync_item_or_raw_extract_request(params, extract_type):
         raise NotFoundException("There are no results")
 
 
-def estimate_extract_files(params, extract_type):
+def estimate_extract_total_file_size(params, avg_file_size):
     """
     returns an estimate of the number of extract files based on query params and extract type
 
     @param params: Extract query params
-    @param extract_type: Type of Extract (Item Level/Raw Data)
     """
-    settings = get_current_registry().settings
-    data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
-    root_dir = settings.get(data_path_config_key)
-    threshold_size = settings.get('extract.extract_file_chunk_threshold_bytes')
+    return_number = 0
     state_code = params.get(Constants.STATECODE)
-    asmt_year = params.get(Constants.ASMTYEAR)
-    asmt_type = params.get(Constants.ASMTTYPE)
-    asmt_subject = params.get(Constants.ASMTSUBJECT)
-    asmt_grade = params.get(Constants.ASMTGRADE)
-    return estimate_files(root_dir=root_dir, state_code=state_code, asmt_type=asmt_type,
-                          asmt_year=asmt_year, asmt_subject=asmt_subject, asmt_grade=asmt_grade,
-                          threshold_size=threshold_size)
+    with EdCoreDBConnection(state_code=state_code) as connector:
+        query = get_extract_assessment_item_and_raw_query(params)
+        return_number = connector.execute(query).rowcount
+        
+    return return_number * avg_file_size
 
 
 def process_async_item_or_raw_extraction_request(params, extract_type):
@@ -165,6 +158,11 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     :param bool is_tenant_level:  True if it is a tenant level request
     '''
     queue = get_current_registry().settings.get('extract.job.queue.async', TaskConstants.DEFAULT_QUEUE_NAME)
+    soft_limit = int(get_current_registry().settings.get('extract.partial_file.size.soft_limit', '-1'))
+    if extract_type is ExtractType.itemLevel:
+        average_size = int(get_current_registry().settings.get('extract.partial_file.size.average.csv', '-1'))
+    else:
+        average_size = int(get_current_registry().settings.get('extract.partial_file.size.average.xml', '-1'))
     data_path_config_key = 'extract.item_level_base_dir' if extract_type is ExtractType.itemLevel else 'extract.raw_data_base_dir'
     root_dir = get_current_registry().settings.get(data_path_config_key)
     response = {}
@@ -174,39 +172,50 @@ def process_async_item_or_raw_extraction_request(params, extract_type):
     base_directory_to_archive = processor.get_extract_work_zone_path(tenant, request_id)
 
     # get an estimate for number of extract files that needs to be created based on the params
-    #parts = estimate_extract_files(params=params, extract_type=extract_type)
+    # parts = estimate_extract_files(params=params, extract_type=extract_type)
 
     # temp hack till estimator is fixed. Needs to be removed and substituted with above line
-    parts = random.randint(2, 3)
+    estimated_total_files = 1
+    if soft_limit > 0:
+        estimated_total_size = estimate_extract_total_file_size(params, average_size)
+        estimated_total_files = int(estimated_total_size / soft_limit)
+        if estimated_total_size % soft_limit > 0:
+            estimated_total_files += 1
 
     out_file_names = []
     directories_to_archive = []
-
-    for part in range(parts):
-        if extract_type is ExtractType.itemLevel:
-            out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id,
-                                                              part=str(part), total_parts=parts))
-        directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(part) if parts > 1 else ''))
-
-    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir,
-                                                                     out_file_names, directories_to_archive,
-                                                                     extract_type)
-    response['tasks'] = task_responses
     extract_files = []
     archive_files = []
     registration_ids = []
-    if len(tasks) > 0:
-        for part in range(parts):
+
+    if estimated_total_files > 1:
+        for estimated_total_file in range(estimated_total_files):
             extract_file = {}
-            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id,
-                                                                part=str(part), total_parts=parts)
-            # Register extract file with HPZ
-            registration_id, download_url = register_file(user.get_uid())
+            if extract_type is ExtractType.itemLevel:
+                out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id, partial_no=str(estimated_total_file)))
+            directories_to_archive.append(os.path.join(base_directory_to_archive, 'part' + str(estimated_total_file)))
+            archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id, partial_no=str(estimated_total_file))
             archive_files.append(archive_file_name)
+            registration_id, download_url = register_file(user.get_uid())
             registration_ids.append(registration_id)
             extract_file['fileName'] = os.path.basename(archive_file_name)
             extract_file['download_url'] = download_url
             extract_files.append(extract_file)
+    else:
+        extract_file = {}
+        if extract_type is ExtractType.itemLevel:
+            out_file_names.append(get_items_extract_file_path(extract_params, tenant, request_id))
+        directories_to_archive.append(base_directory_to_archive)
+        archive_file_name = processor.get_archive_file_path(user.get_uid(), tenant, request_id)
+        archive_files.append(archive_file_name)
+        registration_id, download_url = register_file(user.get_uid())
+        registration_ids.append(registration_id)
+        extract_file['fileName'] = os.path.basename(archive_file_name)
+        extract_file['download_url'] = download_url
+        extract_files.append(extract_file)
+
+    tasks, task_responses = _create_item_or_raw_tasks_with_responses(request_id, user, extract_params, root_dir, out_file_names, directories_to_archive, extract_type)
+    response['tasks'] = task_responses
     response['files'] = extract_files
     start_extract(tenant, request_id, archive_files, directories_to_archive, registration_ids, tasks, queue=queue)
     return response
@@ -392,8 +401,8 @@ def get_extract_file_path(param, tenant, request_id, is_tenant_level=False):
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id), file_name)
 
 
-def get_items_extract_file_path(param, tenant, request_id, part=None, total_parts=None):
-    file_name = '{prefix}_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_GRADE_{asmtGrade}_{currentTime}{part}.csv'.\
+def get_items_extract_file_path(param, tenant, request_id, partial_no=None):
+    file_name = '{prefix}_{stateCode}_{asmtYear}_{asmtType}_{asmtSubject}_GRADE_{asmtGrade}_{currentTime}{partial_no}.csv'.\
                 format(prefix='ITEMS',
                        stateCode=param[Constants.STATECODE],
                        asmtYear=param[Constants.ASMTYEAR],
@@ -401,9 +410,9 @@ def get_items_extract_file_path(param, tenant, request_id, part=None, total_part
                        asmtSubject=param[Constants.ASMTSUBJECT].upper(),
                        asmtGrade=param.get(Constants.ASMTGRADE),
                        currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
-                       part='_part' + part if total_parts and total_parts > 1 and part else '')
+                       partial_no='_part' + partial_no if partial_no is not None else '')
     return os.path.join(processor.get_extract_work_zone_path(tenant, request_id),
-                        'part' + str(part) if total_parts > 1 else '', file_name)
+                        'part' + str(partial_no) if partial_no is not None else '', file_name)
 
 
 def get_asmt_metadata_file_path(params, tenant, request_id):

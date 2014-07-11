@@ -21,6 +21,7 @@ from smarter.reports.helpers.filters import FILTERS_CONFIG
 from datetime import datetime
 import logging
 import copy
+from smarter.extracts.student_assessment import get_extract_assessment_item_and_raw_query
 
 logger = logging.getLogger(__name__)
 

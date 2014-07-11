@@ -206,6 +206,8 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
                                                                                           task_id=task_id, extract_type=extract_type))
     output_dirs = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
     output_files = task[TaskConstants.TASK_FILE_NAME]
+    if type(output_files) is not list:
+        output_files = [output_files]
 
     task_info = {Constants.TASK_ID: task_id,
                  Constants.CELERY_TASK_ID: generate_item_or_raw_extract_file.request.id,
@@ -221,7 +223,7 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
                 for output_file in output_files:
                     if not os.path.isdir(os.path.dirname(output_file)):
                         raise FileNotFoundError(os.path.dirname(output_file) + " doesn't exist")
-            if extract_type is ExtractionDataType.QUERY_RAW_XML:
+            elif extract_type is ExtractionDataType.QUERY_RAW_XML:
                 for output_dir in output_dirs:
                     if not os.path.isdir(output_dir):
                         raise FileNotFoundError(output_dir + " doesn't exist")

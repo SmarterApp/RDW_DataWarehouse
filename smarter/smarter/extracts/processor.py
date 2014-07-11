@@ -43,13 +43,13 @@ def get_encryption_public_key_identifier(tenant):
     return get_current_registry().settings.get('extract.gpg.public_key.' + tenant)
 
 
-def get_archive_file_path(user_name, tenant, request_id, part=None, total_parts=None, encrypted=False):
+def get_archive_file_path(user_name, tenant, request_id, partial_no=None, encrypted=False):
     base = _get_extract_work_zone_base_dir()
     archive_ext = 'zip.gpg' if encrypted else 'zip'
-    file_name = '{user_name}_{current_time}{part}.{archive_ext}'.format(user_name=user_name,
+    file_name = '{user_name}_{current_time}{partial_no}.{archive_ext}'.format(user_name=user_name,
                                                                         current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")),
                                                                         archive_ext=archive_ext,
-                                                                        part='_part' + part if total_parts and total_parts > 1 and part else '')
+                                                                        part='_part' + partial_no if partial_no is not None else '')
     return os.path.join(base, tenant, request_id, 'zip', file_name)
 
 

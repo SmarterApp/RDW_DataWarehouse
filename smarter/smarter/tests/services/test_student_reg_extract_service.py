@@ -72,7 +72,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.__request.json_body = {'extractType': ['studentAssessmentComp'], 'academicYear': [2015], "stateCode": ["NC"]}
         self.assertRaises(EdApiHTTPPreconditionFailed, None, post_sa_comp_extract_service, self.__request)
 
-    @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
+    @patch('smarter.services.student_reg_extract_service.process_extraction_request')
     def test_post_sr_comp_extraction_request(self, test_patch):
         mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg", "download_url": "http://somehost:82/download/a1-b2-c3-d4-e1e10"}')
         test_patch.return_value = mock_response
@@ -89,7 +89,7 @@ class TestStudentRegExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sql
         self.assertEqual(response_json['tasks']['state_code'], 'NC')
         self.assertEqual(response_json['download_url'], 'http://somehost:82/download/a1-b2-c3-d4-e1e10')
 
-    @patch('smarter.services.student_reg_extract_service.process_async_extraction_request')
+    @patch('smarter.services.student_reg_extract_service.process_extraction_request')
     def test_post_sr_stat_extraction_request(self, test_patch):
         mock_response = json.loads('{"tasks" : {"state_code":"NC"}, "file_name":"test.gpg", "download_url": "http://somehost:82/download/a1-b2-c3-d4-e1e10"}')
         test_patch.return_value = mock_response

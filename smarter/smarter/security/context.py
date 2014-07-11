@@ -4,12 +4,10 @@ Created on May 7, 2013
 @author: dip
 '''
 from functools import wraps
-
 from sqlalchemy.sql.expression import Select
 from pyramid.security import authenticated_userid
 import pyramid
 from pyramid.httpexceptions import HTTPForbidden
-
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
 from edcore.database.edcore_connector import EdCoreDBConnection

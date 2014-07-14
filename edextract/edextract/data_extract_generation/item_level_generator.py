@@ -48,9 +48,13 @@ def generate_items_csv(tenant, output_files, task_info, extract_args):
         insert_extract_stats(task_info, {Constants.STATUS: ExtractStatus.EXTRACTED})
 
 
-def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_guid=None, student_guid=None):
+def _get_path_to_item_csv(items_root_dir, state_code=None, asmt_year=None, asmt_type=None, effective_date=None, asmt_subject=None, asmt_grade=None, district_guid=None, student_guid=None, **kwargs):
     if type(asmt_year) is int:
         asmt_year = str(asmt_year)
+    if type(effective_date) is int:
+        effective_date = str(effective_date)
+    if type(asmt_grade) is int:
+        asmt_grade = str(asmt_grade)
     path = items_root_dir
     if state_code is not None:
         path = os.path.join(path, state_code)
@@ -101,6 +105,8 @@ def _append_csv_files(items_root_dir, item_ids, results, output_files, csv_heade
         return _file
 
     _output_files = copy.deepcopy(output_files)
+    if type(_output_files) is not list:
+        _output_files = [_output_files]
     files = _prepare_file_list(items_root_dir, results)
     number_of_files = len(_output_files)
     threshold_size = -1

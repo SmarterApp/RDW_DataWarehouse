@@ -26,6 +26,8 @@ def generate_raw_data_xml(tenant, output_paths, task_info, extract_args):
     """
     query = extract_args[TaskConstants.TASK_QUERIES][QueryType.QUERY]
     root_dir = extract_args[TaskConstants.ROOT_DIRECTORY]
+    if type(output_paths) is not list:
+        output_paths = [output_paths]
 
     with EdCoreDBConnection(tenant=tenant) as connection:
         # Get results (streamed, it is important to avoid memory exhaustion)

@@ -27,7 +27,7 @@ from celery.canvas import group
 from edextract.exceptions import ExtractionError
 from edextract.settings.config import setup_settings
 from edextract.tasks.constants import ExtractionDataType
-from edextract.tasks.extract import (generate_extract_file_tasks, generate_extract_file, archive, archive_with_stream,
+from edextract.tasks.extract import (generate_extract_file, archive, archive_with_stream,
                                      remote_copy, prepare_path, generate_item_or_raw_extract_file)
 from edcore.exceptions import RemoteCopyError
 
@@ -96,7 +96,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: None
         }
 
-        result = generate_extract_file.apply(args=[None, '0', task])    # @UndefinedVariable
+        result = generate_extract_file.apply(args=[None, '0', task])  # @UndefinedVariable
         result.get()
 
         self.assertFalse(os.path.exists(output))
@@ -114,7 +114,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
 
-        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])  # @UndefinedVariable
         result.get()
 
         self.assertTrue(os.path.exists(output))
@@ -140,7 +140,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
 
-        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+        result = generate_extract_file.apply(args=[self._tenant, 'request_id', task])  # @UndefinedVariable
 
         self.assertRaises(ExtractionError, result.get,)
 
@@ -157,7 +157,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
 
-        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])  # @UndefinedVariable
         results.get()
 
         self.assertTrue(os.path.exists(output))
@@ -178,7 +178,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
 
-        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])  # @UndefinedVariable
 
         self.assertRaises(ExtractionError, results.get)
 
@@ -195,7 +195,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
 
-        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])  # @UndefinedVariable
         results.get()
 
         self.assertTrue(os.path.exists(output))
@@ -215,7 +215,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: query}
         }
 
-        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])    # @UndefinedVariable
+        results = generate_extract_file.apply(args=[self._tenant, 'request_id', task])  # @UndefinedVariable
 
         self.assertRaises(ExtractionError, results.get)
 
@@ -282,95 +282,6 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
 
         mock_generate_completion_report.assert_called_with(self._tenant, output, task_info, task)
 
-    def test_generate_extract_file_tasks_asmt_json_request(self):
-        # Have to use OrderedDict here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_JSON),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'abc'}),
-                              (TaskConstants.TASK_TASK_ID, 'abc')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryJSONExtract'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-
-    def test_generate_extract_file_tasks_asmt_csv_request(self):
-        # Have to use OrderedDict here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_CSV),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'abc'}),
-                              (TaskConstants.TASK_TASK_ID, 'abc')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryCSVExtract'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-
-    def test_generate_extract_file_tasks_json_request_asmt_multi_requests(self):
-        # Have to use OrderedDicts here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_JSON),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'abc'}),
-                              (TaskConstants.TASK_TASK_ID, 'abc')]),
-                 OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_CSV),
-                              (TaskConstants.TASK_FILE_NAME, 'def'),
-                              (TaskConstants.TASK_QUERIES, {QueryType.QUERY: 'def'}),
-                              (TaskConstants.TASK_TASK_ID, 'def')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryJSONExtract'), ('file_name', 'abc'), ('task_queries', {'query': 'abc'}), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryCSVExtract'), ('file_name', 'def'), ('task_queries', {'query': 'def'}), ('task_id', 'def')]))", str(tasks_group.kwargs['tasks'][1]))
-
-    def test_generate_extract_file_tasks_sr_statistics_request(self):
-        # Have to use OrderedDict here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.SR_STATISTICS),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'ayq1'), (QueryType.MATCH_ID_QUERY, 'miq1')])),
-                              (TaskConstants.TASK_TASK_ID, 'abc')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentRegistrationStatisticsReportCSV'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'ayq1'), ('match_id_query', 'miq1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-
-    def test_generate_extract_file_tasks_sr_completion_request(self):
-        # Have to use OrderedDict here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.SR_COMPLETION),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'q1')])),
-                              (TaskConstants.TASK_TASK_ID, 'abc')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'StudentAssessmentCompletionReportCSV'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-
-    def test_generate_extract_file_tasks_for_item_level_extract_request(self):
-        # Have to use OrderedDict here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_ITEMS_CSV),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'q1')])),
-                              (TaskConstants.TASK_TASK_ID, 'abc')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_item_or_raw_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryItemsCSVExtract'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-
-    def test_generate_extract_file_tasks_for_raw_data_extract_request(self):
-        # Have to use OrderedDict here to ensure order in results.
-        tasks = [OrderedDict([(TaskConstants.EXTRACTION_DATA_TYPE, ExtractionDataType.QUERY_RAW_XML),
-                              (TaskConstants.TASK_FILE_NAME, 'abc'),
-                              (TaskConstants.TASK_QUERIES, OrderedDict([(QueryType.QUERY, 'q1')])),
-                              (TaskConstants.TASK_TASK_ID, 'abc')])]
-
-        tasks_group = generate_extract_file_tasks(self._tenant, 'request', tasks)
-
-        self.assertIsInstance(tasks_group, group)
-        self.assertEqual("tasks.extract.generate_item_or_raw_extract_file('tomcat', 'request', OrderedDict([('extraction_data_type', 'QueryRawXML'), ('file_name', 'abc'), ('task_queries', OrderedDict([('query', 'q1')])), ('task_id', 'abc')]))", str(tasks_group.kwargs['tasks'][0]))
-
     def test_generate_raw_extract_with_missing_output_dir(self):
         output_dir = '/tmp/xyz'
         task = {
@@ -381,9 +292,7 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.TASK_QUERIES: {QueryType.QUERY: 'query'}
         }
 
-        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
-
-        self.assertRaises(ExtractionError, result.get,)
+        self.assertRaises(ExtractionError, generate_item_or_raw_extract_file, self._tenant, 'request_id', task)
 
     def test_generate_raw_extract_file_valid_case(self):
         params = {'stateCode': 'NC',
@@ -403,41 +312,11 @@ class TestExtractTask(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
             TaskConstants.ROOT_DIRECTORY: root_dir
         }
 
-        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
-        result.get()
+        generate_item_or_raw_extract_file(self._tenant, 'request_id', task)
 
         self.assertTrue(os.path.exists(output_dir))
         all_extracted_files = glob.glob(os.path.join(output_dir, '*.xml'))
         self.assertEqual(len(all_extracted_files), 0)
-
-    def test_generate_item_extract_file_valid_case(self):
-        params = {'stateCode': 'NC',
-                  'asmtYear': '2015',
-                  'asmtType': 'SUMMATIVE',
-                  'asmtSubject': 'Math',
-                  'asmtGrade': '3'}
-        query = self.__create_item_raw_extract_query(params)
-        root_dir = tempfile.mkdtemp()
-        output_dir = tempfile.mkdtemp(dir=root_dir)
-        output_file = os.path.join(output_dir, 'items_output.csv')
-        task = {
-            TaskConstants.EXTRACTION_DATA_TYPE: ExtractionDataType.QUERY_ITEMS_CSV,
-            TaskConstants.TASK_TASK_ID: 'task_id',
-            TaskConstants.DIRECTORY_TO_ARCHIVE: output_dir,
-            TaskConstants.TASK_FILE_NAME: output_file,
-            TaskConstants.TASK_QUERIES: {QueryType.QUERY: query},
-            TaskConstants.ROOT_DIRECTORY: root_dir,
-            TaskConstants.ITEM_IDS: None
-        }
-
-        result = generate_item_or_raw_extract_file.apply(args=[self._tenant, 'request_id', task])
-        result.get()
-        self.assertTrue(os.path.exists(output_file))
-        with open(output_file) as f:
-            line = f.readline()
-            header = line.split(',')
-            self.assertEqual(len(header), 18)
-            self.assertTrue('key' in header)
 
     def test_generate_item_extract_with_missing_output_file(self):
         output_dir = '/tmp/xyz'

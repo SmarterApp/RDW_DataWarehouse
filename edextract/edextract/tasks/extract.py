@@ -205,6 +205,8 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
     log.info('execute {task_name} for task {task_id}, extract type {extract_type}'.format(task_name=generate_item_or_raw_extract_file.name,
                                                                                           task_id=task_id, extract_type=extract_type))
     output_dirs = task[TaskConstants.DIRECTORY_TO_ARCHIVE]
+    if type(output_dirs) is not list:
+        output_dirs = [output_dirs]
     output_files = task[TaskConstants.TASK_FILE_NAME]
     if type(output_files) is not list:
         output_files = [output_files]

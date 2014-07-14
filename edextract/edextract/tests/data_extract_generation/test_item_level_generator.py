@@ -111,7 +111,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'asmt_grade': 3,
                   'district_guid': '3ab54de78a',
                   'student_guid': 'a78dbf34'}
-        path = _get_path_to_item_csv(items_root_dir, record)
+        path = _get_path_to_item_csv(items_root_dir, **record)
         self.assertEqual(path, '/opt/edware/item_level/NC/2015/SUMMATIVE/20150402/MATH/3/3ab54de78a/a78dbf34.csv')
 
     def test_get_path_to_item_csv_interim(self):
@@ -124,7 +124,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                   'asmt_grade': 3,
                   'district_guid': '3ab54de78a',
                   'student_guid': 'a78dbf34'}
-        path = _get_path_to_item_csv(items_root_dir, record)
+        path = _get_path_to_item_csv(items_root_dir, **record)
         self.assertEqual(path,
                          '/opt/edware/item_level/NC/2015/INTERIM_COMPREHENSIVE/20150106/ELA/3/3ab54de78a/a78dbf34.csv')
 
@@ -190,7 +190,7 @@ class TestItemLevelGenerator(Unittest_with_stats_sqlite, Unittest_with_edcore_sq
                 if not os.path.exists(dir_path):
                     os.makedirs(dir_path)
 
-                with open(_get_path_to_item_csv(TestItemLevelGenerator.__tmp_item_dir, result), 'w') as csv_file:
+                with open(_get_path_to_item_csv(TestItemLevelGenerator.__tmp_item_dir, **dict(result)), 'w') as csv_file:
                     csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
                     for item in student_pool:
                         csv_writer.writerow([item['key'], result['student_guid'], item['segment'], 0, item['client'],

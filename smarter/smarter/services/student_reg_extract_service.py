@@ -41,6 +41,11 @@ STUDENT_REGISTRATION_PARAMS = {
             "minItems": 1,
             "uniqueItems": True,
             "required": True,
+        },
+        Extract.ASYNC: {
+            "type": "string",
+            "required": False,
+            "pattern": "^(true|TRUE)$",
         }
     }
 }

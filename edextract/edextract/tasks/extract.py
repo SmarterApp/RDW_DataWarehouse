@@ -254,7 +254,7 @@ def generate_item_or_raw_extract_file(tenant, request_id, task):
         retryable = False
 
     except Exception as e:
-        if output_file is not None and  os.path.isfile(output_file):
+        if output_file is not None and os.path.isfile(output_file):
             # file should be deleted if there is an error
             os.unlink(output_file)
         log.error(e)

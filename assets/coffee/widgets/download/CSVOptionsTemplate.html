@@ -52,7 +52,7 @@
         {{/registrationAcademicYear}}
         {{#grade}}
         <div class="section rawXML itemLevel">
-            <label><h4>{{name}}</h4></label>
+            <label><h4>{{name}}</h4><span class="warning"> ({{labels.required}})</span></label>
             <div class="btn-group" data-option-name="{{name}}">
                 <button class="btn dropdown-toggle btn-extract-academic-year edware-btn-flat" data-toggle="dropdown">
                     <span class='dropdown-display'>{{options.0.display}}</span>

@@ -19,12 +19,12 @@ from smarter.extracts.constants import Constants
 from smarter.services.raw_extract import post_raw_data_service, get_raw_data_service, generate_zip_file_name, \
     send_extraction_request
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-import smarter.extracts.format
 from edauth.tests.test_helper.create_session import create_test_session
 import edauth
 from edcore.security.tenant import set_tenant_map
 from smarter_common.security.constants import RolesConstants
 from smarter.security.roles.state_level import StateLevel  # @UnusedImport
+import smarter
 
 
 class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -67,7 +67,10 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.__request = None
         testing.tearDown()
 
-    def test_post_valid_response_raw_extract(self):
+    @patch('smarter.extracts.student_asmt_processor.start_extract')
+    @patch('smarter.extracts.student_asmt_processor.register_file')
+    def test_post_valid_response_raw_extract(self, mock_register_file, mock_start_extract):
+        mock_register_file.return_value = 'a', 'b'
         self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': 'NC',
                                     'asmtYear': '2018',
@@ -81,7 +84,10 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertEqual(len(results.json_body['tasks']), 1)
         self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
 
-    def test_get_valid_response_raw_extract(self):
+    @patch('smarter.services.raw_extract.process_sync_item_or_raw_extract_request')
+    @patch('smarter.extracts.student_asmt_processor.start_extract')
+    def test_get_valid_response_raw_extract(self, mock_start_extract, mock_process_sync_item_or_raw_extract_request):
+        mock_process_sync_item_or_raw_extract_request.return_value = b'hello'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
@@ -153,7 +159,7 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tasks = results.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', results.json_body['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', results.json_body['files'][0]['download_url'])
 
     @patch('smarter.extracts.student_asmt_processor.register_file')
     def test_post_valid_raw_extract(self, register_file_patch):
@@ -172,9 +178,11 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         tasks = response.json_body['tasks']
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0][Constants.STATUS], Constants.OK)
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['files'][0]['download_url'])
 
-    def test_with_no_sync_or_async_set(self):
+    @patch('smarter.services.raw_extract.process_sync_item_or_raw_extract_request')
+    def test_with_no_sync_or_async_set(self, mock_process_sync_item_or_raw_extract_request):
+        mock_process_sync_item_or_raw_extract_request.return_value = b'hello'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
@@ -185,7 +193,9 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/octet-stream')
 
-    def test_send_extraction_request_sync(self):
+    @patch('smarter.services.raw_extract.process_sync_item_or_raw_extract_request')
+    def test_send_extraction_request_sync(self, mock_process_sync_item_or_raw_extract_request):
+        mock_process_sync_item_or_raw_extract_request.return_value = b'hello'
         self.__request.GET['stateCode'] = 'NC'
         self.__request.GET['asmtYear'] = '2016'
         self.__request.GET['asmtType'] = 'SUMMATIVE'
@@ -211,7 +221,7 @@ class TestRawExtract(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
         response = send_extraction_request(self.__request.GET)
         content_type = response._headerlist[0]
         self.assertEqual(content_type[1], "application/json; charset=UTF-8")
-        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['download_url'])
+        self.assertEqual('http://somehost:82/download/a1-b2-c3-d4-e1e10', response.json_body['files'][0]['download_url'])
 
 
 if __name__ == "__main__":

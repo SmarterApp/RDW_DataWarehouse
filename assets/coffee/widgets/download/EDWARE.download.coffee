@@ -23,6 +23,8 @@ define [
     "registrationStatistics": "/services/extract/student_registration_statistics",
     "studentAssessment": "/services/extract",
     "completionStatistics": "/services/extract/student_assessment_completion"
+    "rawXML": "/some/dummy/url"
+    "itemLevel": "/some/dummy/url"
   }
 
   showFailureMessage = (response) ->
@@ -72,6 +74,8 @@ define [
       this.fetchParams =
         completionStatistics: this.getSACParams
         registrationStatistics: this.getSRSParams
+        rawXML: this.getRawExtractParams
+        itemLevel: this.getRawExtractParams
 
     bindEvents: ()->
       self = this
@@ -127,6 +131,18 @@ define [
       return {
         "extractType": ["studentRegistrationStatistics"]
         "academicYear": [ academicYear ]
+      }
+
+    getRawExtractParams: () ->
+      academicYear = $('#academicYear').data('value')
+      grade = $('#grade').data('value')
+      asmtSubject = $('input[name="asmtSubject"]:checked').val()
+      asmtType = $('input[name="asmtType"]:checked').val()
+      return {
+        "extractType": ["studentRegistrationStatistics"]
+        "academicYear": [ academicYear ]
+        "asmtSubject": [ asmtSubject ]
+        "asmtType": [ asmtType ]
       }
 
     getSelectedOptions: ($dropdown)->

@@ -22,7 +22,7 @@ import edauth
 from edauth.security.user import User
 from edcore.security.tenant import set_tenant_map
 from edextract.tasks.constants import Constants as TaskConstants, ExtractionDataType
-from smarter.extracts.student_reg_processor import _create_task_info, process_async_extraction_request, _get_extract_file_path
+from smarter.extracts.student_reg_processor import _create_task_info, process_extraction_request, _get_extract_file_path
 
 
 class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_sqlite):
@@ -123,6 +123,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.assertIn('tenant', result)
         self.assertIn('NC', result)
 
+
     @patch('smarter.extracts.student_reg_processor.start_extract')
     @patch('smarter.extracts.student_reg_processor._create_task_info')
     @patch('smarter.extracts.student_reg_processor.register_file')
@@ -134,7 +135,7 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
                   Constants.ACADEMIC_YEAR: [2015],
                   Extract.EXTRACTTYPE: ['studentRegistrationStatistics']}
 
-        response = process_async_extraction_request(params)
+        response = process_extraction_request(params)
 
         self.assertIn('.zip', response['fileName'])
         self.assertEqual(response['tasks'][0]['status'], 'ok')

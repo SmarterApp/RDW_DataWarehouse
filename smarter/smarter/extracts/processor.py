@@ -39,10 +39,6 @@ def get_extract_work_zone_path(tenant, request_id):
     return os.path.join(base, tenant, request_id, 'data')
 
 
-def get_encryption_public_key_identifier(tenant):
-    return get_current_registry().settings.get('extract.gpg.public_key.' + tenant)
-
-
 def get_archive_file_path(user_name, tenant, request_id, encrypted=False, partial_no=None, ):
     base = _get_extract_work_zone_base_dir()
     archive_ext = 'zip.gpg' if encrypted else 'zip'
@@ -51,6 +47,15 @@ def get_archive_file_path(user_name, tenant, request_id, encrypted=False, partia
                                                                               archive_ext=archive_ext,
                                                                               partial_no='_part' + partial_no if partial_no is not None else '')
     return os.path.join(base, tenant, request_id, 'zip', file_name)
+
+
+'''
+Code below is for SFTP pick up zone
+'''
+
+
+def get_encryption_public_key_identifier(tenant):
+    return get_current_registry().settings.get('extract.gpg.public_key.' + tenant)
 
 
 def get_gatekeeper(tenant):

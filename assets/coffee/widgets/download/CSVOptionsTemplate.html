@@ -14,7 +14,7 @@
             </ul>
         </div>
         {{/extractType}}
-        {{#completionAcademicYear}}
+        {{#academicYear}}
         <div class="section SAC">
             <label><h4>{{name}}</h4></label>
             <div class="btn-group" data-option-name="{{name}}">
@@ -22,7 +22,7 @@
                     <span class='dropdown-display'>{{options.0.display}}</span>
                     <i class="edware-icon-globalheader-downarrow" style="margin-left: 43px;"></i>
                 </button>
-                <ul id="completionAcademicYear" class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
+                <ul id="academicYear" class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}" data-value="{{options.0.value}}">
                     {{#options}}
                     <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
                         <span>{{display}}</span>
@@ -31,7 +31,7 @@
                 </ul>
             </div>
         </div>
-        {{/completionAcademicYear}}
+        {{/academicYear}}
 
         {{#registrationAcademicYear}}
         <div class="section SRS">
@@ -51,13 +51,12 @@
             </div>
         </div>
         {{/registrationAcademicYear}}
-
         {{#subject}}
         <div class="section rawXML itemLevel">
             <label><h4>{{name}}</h4></label>
             <ul>
                 {{#options}}
-                <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
+                <li><label><input type="radio" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
                 {{/options}}
             </ul>
         </div>
@@ -68,7 +67,7 @@
             <label><h4>{{name}}</h4></label>
             <ul>
                 {{#options}}
-                <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
+                <li><label><input type="radio" value="{{value}}" data-label="{{display}}"><span class="marginLeft8">{{display}}</span></label></li>
                 {{/options}}
             </ul>
         </div>

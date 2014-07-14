@@ -540,7 +540,7 @@
                 }
             ]
         },
-        "completionAcademicYear": {
+        "academicYear": {
             "name": "Academic year",
             "key": "academicYear"
         },

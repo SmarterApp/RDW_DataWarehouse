@@ -56,7 +56,7 @@ define [
         extractType: this.config.extractType
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
-        completionAcademicYear: this.config['completionAcademicYear']
+        academicYear: this.config['academicYear']
         registrationAcademicYear: this.config['registrationAcademicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
@@ -115,7 +115,7 @@ define [
         self.sendRequest REQUEST_ENDPOINT[self.extractType], params
 
     getSACParams: () ->
-      academicYear = $('#completionAcademicYear').data('value')
+      academicYear = $('#academicYear').data('value')
       return {
         "extractType": ["studentAssessmentCompletion"]
         "academicYear": [ academicYear]
@@ -428,7 +428,7 @@ define [
         # merge academic years to JSON config
         years = edwareUtil.getAcademicYears data.asmt_period_year
         studentRegYears = edwareUtil.getAcademicYears data.studentRegAcademicYear
-        CSVOptions.completionAcademicYear.options = years if years
+        CSVOptions.academicYear.options = years if years
         CSVOptions.registrationAcademicYear.options = studentRegYears if studentRegYears
         # display file download options
         CSVDownload = new StateDownloadModal $('.CSVDownloadContainer'), CSVOptions, reportParamsCallback

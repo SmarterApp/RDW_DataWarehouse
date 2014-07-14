@@ -60,6 +60,7 @@ define [
         registrationAcademicYear: this.config['registrationAcademicYear']
         asmtState: this.config['asmtState']
         labels: this.config['labels']
+        grade: this.config['grade']
         options: this.config.ExportOptions
       }
       this.container.html output

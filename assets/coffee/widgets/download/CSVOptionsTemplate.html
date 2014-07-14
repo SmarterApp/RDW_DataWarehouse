@@ -1,7 +1,7 @@
 <div id="StateDownloadModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h2 id="myModalLabel">{{options.export_request_extract.text}}</h2>
+  <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h2 id="myModalLabel">{{options.export_request_extract.text}}</h2>
     </div>
     <div class="modal-body registrationStatistics">
         {{#extractType}}
@@ -32,10 +32,9 @@
             </div>
         </div>
         {{/academicYear}}
-
         {{#registrationAcademicYear}}
         <div class="section SRS">
-            <label><h4>{{name}}1</h4></label>
+            <label><h4>{{name}}</h4></label>
             <div class="btn-group" data-option-name="{{name}}">
                 <button class="btn dropdown-toggle btn-extract-academic-year edware-btn-flat" data-toggle="dropdown">
                     <span class='dropdown-display'>{{options.0.display}}</span>
@@ -51,6 +50,24 @@
             </div>
         </div>
         {{/registrationAcademicYear}}
+        {{#grade}}
+        <div class="section rawXML itemLevel">
+            <label><h4>{{name}}</h4></label>
+            <div class="btn-group" data-option-name="{{name}}">
+                <button class="btn dropdown-toggle btn-extract-academic-year edware-btn-flat" data-toggle="dropdown">
+                    <span class='dropdown-display'>{{options.0.display}}</span>
+                    <i class="edware-icon-globalheader-downarrow" style="margin-left: 43px;"></i>
+                </button>
+                <ul id="grade" class="dropdown-menu asmtYearOptions edware-dropdown-menu" data-key="{{key}}"  data-value="{{options.0.value}}">
+                    {{#options}}
+                    <li tabindex="0" data-label="{{display}}" data-value="{{value}}">
+                        <span>{{display}}</span>
+                    </li>
+                    {{/options}}
+                </ul>
+            </div>
+        </div>
+        {{/grade}}
         {{#subject}}
         <div class="section rawXML itemLevel">
             <label><h4>{{name}}</h4></label>

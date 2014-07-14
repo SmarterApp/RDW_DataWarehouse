@@ -573,6 +573,52 @@
                     "value": "ELA"
                 }
             ]
+        },
+        "grade": {
+            "name": "Grade",
+            "key": "grade",
+            "options": [
+                {
+                    "display": "Select",
+                    "value": ""
+                },
+                {
+                    "display": "Grade 3",
+                    "value": "3"
+                },
+                {
+                    "display": "Grade 4",
+                    "value": "4"
+                },
+                {
+                    "display": "Grade 5",
+                    "value": "5"
+                },
+                {
+                    "display": "Grade 6",
+                    "value": "6"
+                },
+                {
+                    "display": "Grade 7",
+                    "value": "7"
+                },
+                {
+                    "display": "Grade 8",
+                    "value": "8"
+                },
+                {
+                    "display": "Grade 9",
+                    "value": "9"
+                },
+                {
+                    "display": "Grade 10",
+                    "value": "10"
+                },
+                {
+                    "display": "Grade 11",
+                    "value": "11"
+                }
+            ]
         }
     },
     "SearchResultText": {

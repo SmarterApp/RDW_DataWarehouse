@@ -29,6 +29,7 @@ class TestCallback(unittest.TestCase):
         reg.settings['cache.expire'] = 10
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
+        reg.settings['batch.user.session.timeout'] = 15
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 

@@ -515,7 +515,7 @@
             }
         }
     },
-    "interimDisclaimer": "<ol><li>Tasks and items on interim tests are scored locally by teachers.  This is a professional development opportunity for teachers that promotes understanding of scoring activity. Local scoring, however, is not subject to the rigorous controls used in summative assessment. Local results may show some variation.</li><li>Interim assessment questions are not secure. They may be used for classroom discussion or in shorter, more targeted tests.  When this is the case, familiarity with test questions my affect student performance.</li><li>If test questions are shared widely, item parameters may differ from those established in secure field testing. This affects the accuracy of interim scale scores.</li></ol>"
+    "interimDisclaimer": "<u>Important Information about Interim Assessments</u><ol><li>Questions on interim tests that require hand scoring may be scored locally by teachers. This local scoring is not subject to the rigorous controls used in summative assessment and local results may show some variations.</li><li>Interim assessment questions are not secure. Exposure to, and familiarity, with test questions may affect student performance and the accuracy of interim results.</li></ol>"
     ,
     "CSVOptions": {
         "extractType": {
@@ -608,7 +608,7 @@
             "grayscale": "Grayscale (for black & white printing)",
             "color": "Color"
         },
-        "export_success": "Your requested reports will be available soon.",
+        "export_success": "Your requested reports will be available within 24 hours.",
         "export_failure": "Something went wrong.",
         "export_retry": "Please retry again or contact the administrator at",
         "export_pdf_no_data": {

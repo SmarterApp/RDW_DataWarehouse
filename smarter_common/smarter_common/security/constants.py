@@ -15,6 +15,8 @@ class RolesConstants():
     SAR_EXTRACTS = 'SAREXTRACTS'
     SRS_EXTRACTS = 'SRSEXTRACTS'
     SRC_EXTRACTS = 'SRCEXTRACTS'
+    AUDIT_XML_EXTRACTS = 'AUDITXML'
+    ITEM_LEVEL_EXTRACTS = 'IIRDEXTRACTS'
     SUPER_USER = 'SUPER_USER'
     # For no role in memberOf in SAML response
     NONE = 'NONE'

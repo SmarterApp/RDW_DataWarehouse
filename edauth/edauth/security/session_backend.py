@@ -50,7 +50,7 @@ class Backend(object):
     '''
     Interface for backend used to store sessions
     '''
-    def create_new_session(self, session):
+    def create_new_session(self, session, overwrite_timeout=False):
         pass
 
     def update_session(self, session):
@@ -72,19 +72,23 @@ class BeakerBackend(Backend):
     '''
     def __init__(self, settings):
         self.cache_mgr = CacheManager(**parse_cache_config_options(settings))
+        self.batch_timeout = int(settings.get('batch.user.session.timeout'))
 
-    def create_new_session(self, session):
+    def create_new_session(self, session, overwrite_timeout=False):
         '''
         Creates a new session
         '''
-        self.update_session(session)
+        self.update_session(session, overwrite_timeout=overwrite_timeout)
 
-    def update_session(self, session):
+    def update_session(self, session, overwrite_timeout=False):
         '''
         Given a session, persist it
         '''
         _id = session.get_session_id()
         region = self.__get_cache_region(_id)
+        # Overwrite the timeout for batch user sessions
+        if overwrite_timeout:
+            region.expiretime = self.batch_timeout
         region.put(_id, session)
 
     def get_session(self, session_id):

@@ -1301,13 +1301,36 @@ th.ui-th-column div {
       .mask {
         height: 15px;
         position: relative;
-        width: 150px;
+        width: 320px;
         top: -15px;
       }
 
       .popover-content {
         padding: 0px 10px 10px;
       }
+    }
+
+    .stickyClear {
+      cursor: pointer;
+      a {
+        font-size: 12px;
+        text-decoration: none;
+        color: @color-A2;
+      }
+
+      a:hover {
+        text-decoration:none;
+        color: @color-A2;
+      }
+
+    }
+
+    .stickyInstText {
+       font-size: 14px;
+
+       b {
+         color: @color-B1;
+       }
     }
   }
 
@@ -1359,7 +1382,6 @@ th.ui-th-column div {
 
   }
 
-
   #stickyEnabledDescription{
     display:inline;
     vertical-align: middle;
@@ -1381,25 +1403,14 @@ th.ui-th-column div {
     background-image: -moz-linear-gradient(top,@color-white,@color-white);
 
     &:hover {
-      background-position: initial;
+        background-position: initial;
     }
   }
-  .stickyChainIcon{
-    background-image: url("../images/stickyChainIcon.png");
-    background-repeat: no-repeat;
-    background-position: 5px center;
-    background-size: 18px 12px;
-    padding-left: 28px;
-    border-color: @color-B15;
-    font-size: 13px;
-    height: 24px;
-    line-height: 10px;
-    color: @color-B1;
-    text-shadow: none;
-    background-color: @color-white;
-  }
 
-  #stickyCompare-btn {height: 28px};
+  #stickyCompare-btn {
+    height: 28px;
+    padding: 4px 20px;
+  };
 
 }
 .stickyChainScrollable {

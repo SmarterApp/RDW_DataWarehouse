@@ -26,8 +26,10 @@ define [
       this.stickyEnabledDescription = $('#stickyEnabledDescription')
       this.stickyCompareBtn = $('#stickyCompare-btn')
       this.stickyChainBtn = $('#stickyChain-btn')
-      this.stickyDeselectBtn = $('#stickyDeselect-btn')
+      this.stickyChainText = $('#stickyChain-text')
+      this.stickyClearLink = $('#stickyClear-lnk')
       this.stickyShowAllBtn = $('#stickyShowAll-btn')
+      this.stickyInstTextPrefix = $('#stickyInstTextPrefix')
 
     # Sets information when we know what type of report it is, etc.
     # compareMode is set to false since we know that the html is reloaded
@@ -79,13 +81,13 @@ define [
         self.compare()
 
       # Deselect Button in summary row
-      $(document).on 'click', '#stickyDeselect-btn', () ->
+      $(document).on 'click', '#stickyClear-lnk', () ->
         self.clearSelectedRows()
         $('.stickyCheckbox').attr('checked', false)
         # Remove class of checkedlabel, add class of regular label and then set the text
         label = $('.stickyCheckbox').siblings("label")
         label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
-        label.text(self.labels.compare)
+        label.text(self.labels.select)
         self.resetCompareRowControls()
 
       # Show all district button
@@ -151,7 +153,7 @@ define [
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
       label = $(element).siblings("label")
-      label.removeAttr('tabindex').text(this.labels.compare)
+      label.removeAttr('tabindex').text(this.labels.select)
       label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
 
       this.resetCompareRowControls()
@@ -255,7 +257,7 @@ define [
 
     # Reset Grid rows checkbox and button text
     resetCompareRowControls: () ->
-      text = this.labels.compare
+      text = this.labels.filter
       labelNameKey = this.displayType
       count = this.getRowsCount()
       if count > 0
@@ -268,9 +270,10 @@ define [
       text += " " + countText if countText
       $('.stickyCheckbox:checked').siblings("label")\
         .attr('tabindex', '0').text(text)
-      this.stickyCompareBtn.text(text)
       # To display ex. "districts_selected" label
-      this.stickyChainBtn.text(count + " " + this.labels[labelNameKey + "_selected"])
+      instText = this.labels["sticky_inst_text"]
+      this.stickyInstTextPrefix.text("#{this.labels.filter} #{count} #{instText[labelNameKey]}")
+      this.stickyChainText.text("#{count} #{this.labels[labelNameKey + "_selected"]}")
 
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {'labels': this.labels}

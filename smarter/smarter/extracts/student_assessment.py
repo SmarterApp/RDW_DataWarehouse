@@ -11,6 +11,18 @@ from smarter.security.context import select_with_context
 from smarter.extracts.format import get_column_mapping
 from smarter_common.security.constants import RolesConstants
 from smarter.reports.helpers.filters import apply_filter_to_query
+from smarter.extracts.constants import ExtractType
+
+
+def get_required_permission(extract_type):
+    '''
+    Queries are shared between different extracts, and permission is different based on the extract type
+    The correct permission is returned given the extract type
+    '''
+    permissions = {ExtractType.itemLevel: RolesConstants.ITEM_LEVEL_EXTRACTS,
+                   ExtractType.rawData: RolesConstants.AUDIT_XML_EXTRACTS,
+                   ExtractType.studentAssessment: RolesConstants.SAR_EXTRACTS}
+    return permissions.get(extract_type)
 
 
 def get_extract_assessment_query(params):
@@ -56,10 +68,10 @@ def get_extract_assessment_query(params):
                                     dim_student.c.birthdate.label(dim_student_label.get('birthdate', 'dob')),
                                     dim_student.c.external_student_id.label(dim_student_label.get('external_student_id', 'external_student_id')),
                                     fact_asmt_outcome_vw.c.enrl_grade.label(fact_asmt_outcome_vw_label.get('enrl_grade', 'enrollment_grade')),
-                                    fact_asmt_outcome_vw.c.enrl_grade.label(fact_asmt_outcome_vw_label.get('group_1_id', 'group_1_id')),
-                                    fact_asmt_outcome_vw.c.enrl_grade.label(fact_asmt_outcome_vw_label.get('group_1_text', 'group_1_text')),
-                                    fact_asmt_outcome_vw.c.enrl_grade.label(fact_asmt_outcome_vw_label.get('group_2_id', 'group_2_id')),
-                                    fact_asmt_outcome_vw.c.enrl_grade.label(fact_asmt_outcome_vw_label.get('group_2_text', 'group_2_text')),
+                                    fact_asmt_outcome_vw.c.group_1_id.label(fact_asmt_outcome_vw_label.get('group_1_id', 'group_1_id')),
+                                    fact_asmt_outcome_vw.c.group_1_text.label(fact_asmt_outcome_vw_label.get('group_1_text', 'group_1_text')),
+                                    fact_asmt_outcome_vw.c.group_2_id.label(fact_asmt_outcome_vw_label.get('group_2_id', 'group_2_id')),
+                                    fact_asmt_outcome_vw.c.group_2_text.label(fact_asmt_outcome_vw_label.get('group_2_text', 'group_2_text')),
                                     fact_asmt_outcome_vw.c.date_taken.label(fact_asmt_outcome_vw_label.get('date_taken', 'date_taken')),
                                     fact_asmt_outcome_vw.c.asmt_score.label(fact_asmt_outcome_vw_label.get('asmt_score', 'asmt_score')),
                                     fact_asmt_outcome_vw.c.asmt_score_range_min.label(fact_asmt_outcome_vw_label.get('asmt_score_range_min', 'asmt_score_range_min')),
@@ -137,7 +149,7 @@ def get_extract_assessment_query(params):
     return query
 
 
-def get_extract_assessment_item_and_raw_query(params):
+def get_extract_assessment_item_and_raw_query(params, extract_type):
     """
     private method to generate SQLAlchemy object or sql code for extraction of students for item level/raw data
 
@@ -163,7 +175,7 @@ def get_extract_assessment_item_and_raw_query(params):
                                      fact_asmt_outcome_vw.c.student_guid],
                                     from_obj=[fact_asmt_outcome_vw
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome_vw.c.asmt_rec_id))],
-                                    permission=RolesConstants.SAR_EXTRACTS,
+                                    permission=get_required_permission(extract_type),
                                     state_code=state_code)
 
         query = query.where(and_(fact_asmt_outcome_vw.c.state_code == state_code))

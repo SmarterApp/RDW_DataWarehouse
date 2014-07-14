@@ -1,7 +1,6 @@
 __author__ = 'ablum'
 
-from sqlalchemy.sql.expression import select, and_
-
+from sqlalchemy.sql.expression import and_
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context import select_with_context
@@ -9,8 +8,6 @@ from smarter_common.security.constants import RolesConstants
 
 
 def get_academic_year_query(academic_year, state_code):
-
-    # TODO: Make query from select_with_context once SONIC adds security context to completion reports.
     with EdCoreDBConnection(state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)
         academic_year_query = select_with_context([student_reg.c.state_code,
@@ -41,8 +38,6 @@ def get_academic_year_query(academic_year, state_code):
 
 
 def get_assessment_query(academic_year, state_code):
-
-    # TODO: Make query from select_with_context once SONIC adds security context to completion reports.
     with EdCoreDBConnection(state_code=state_code) as connection:
         student_reg = connection.get_table(Constants.STUDENT_REG)
         asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME_VW)
@@ -56,7 +51,7 @@ def get_assessment_query(academic_year, state_code):
                                           state_code=state_code)\
             .distinct(asmt_outcome.c.student_guid, asmt_outcome.c.asmt_subject, asmt_outcome.c.asmt_type)\
             .where(and_(asmt_outcome.c.rec_status == Constants.CURRENT, asmt_outcome.c.asmt_year == academic_year))\
-            .alias(name='fact_asmt_outcome_vw')
+            .alias(name=Constants.FACT_ASMT_OUTCOME_VW)
 
         academic_year_query = select_with_context([student_reg.c.state_code,
                                                    student_reg.c.district_guid,

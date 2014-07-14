@@ -10,7 +10,7 @@ import sys
 import logging
 import subprocess
 import urllib.parse
-from services.celery import celery
+from services.celery import celery, PDFUNITE_TIMEOUT
 from services.exceptions import PdfGenerationError, PDFUniteError
 from edcore.exceptions import NotForWindowsException, RemoteCopyError
 from edcore.utils.utils import archive_files
@@ -205,7 +205,7 @@ def _build_url(base_url, base_params, merged_pdf_filename):
 
 
 @celery.task(name='tasks.pdf.merge', max_retries=ServicesConstants.PDF_MERGE_MAX_RETRY, default_retry_delay=ServicesConstants.PDF_MERGE_RETRY_DELAY)
-def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT, max_pdfunite_files=ServicesConstants.MAX_PDFUNITE_FILE):
+def pdf_merge(pdf_files, out_name, pdf_base_dir, max_pdfunite_files=ServicesConstants.MAX_PDFUNITE_FILE):
     # Prepare output file
     if os.path.exists(out_name):
         log.error(out_name + " is already exist")
@@ -225,14 +225,14 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT, max_pdfunite_f
                 pdf_base_dir = os.path.join(pdf_base_dir, '.tmp', 'partial', str(gid))
                 if os.path.exists(pdf_base_dir) is not True:
                     os.makedirs(pdf_base_dir, mode=0o700, exist_ok=True)
-            files = _partial_pdfunite(pdf_files, pdf_base_dir, timeout=timeout, file_limit=max_pdfunite_files)
-            _pdfunite_subprocess(files, out_name, timeout)
+            files = _partial_pdfunite(pdf_files, pdf_base_dir, timeout=PDFUNITE_TIMEOUT, file_limit=max_pdfunite_files)
+            _pdfunite_subprocess(files, out_name, PDFUNITE_TIMEOUT)
             shutil.rmtree(pdf_base_dir, ignore_errors=True)
         elif len(pdf_files) is 1:
             # pdfunite is not callable if there is only one pdf to merge
             shutil.copyfile(pdf_files[0], out_name)
         else:
-            _pdfunite_subprocess(pdf_files, out_name, timeout)
+            _pdfunite_subprocess(pdf_files, out_name, PDFUNITE_TIMEOUT)
     except PDFUniteError as exc:
         try:
             # this looks funny to you, but this is just a work around solution for celery bug
@@ -243,7 +243,7 @@ def pdf_merge(pdf_files, out_name, pdf_base_dir, timeout=TIMEOUT, max_pdfunite_f
             # this could be caused by network hiccup
             log.info('[pdf_merge] retry generate   : ' + out_name)
             log.error('[pdf_merge] retry generate   : ' + str(exc))
-            raise pdf_merge.retry(args=(pdf_files, out_name, pdf_base_dir, timeout, max_pdfunite_files), exc=exc)
+            raise pdf_merge.retry(args=(pdf_files, out_name, pdf_base_dir, max_pdfunite_files), exc=exc)
     except Exception as e:
         log.error(str(e))
         raise

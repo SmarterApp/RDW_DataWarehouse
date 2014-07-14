@@ -75,5 +75,5 @@ def __create_session(roles, expire_in_secs, tenant_name):
     __uid = str(uuid.uuid4())
     session.set_uid(__uid)
     # save current session
-    get_session_backend().create_new_session(session)
+    get_session_backend().create_new_session(session, overwrite_timeout=True)
     return session

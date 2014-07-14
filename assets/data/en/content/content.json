@@ -27,8 +27,8 @@
 
     "policy_content": {
         "11": {
-            "Math": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='#'>http://stateresources.link</a>",
-            "ELA": "Students in Grades 8 through 12 will see Consortium-common Higher Ed policy information, and a State-Customizable link to state resources: <a href='#'>http://stateresources.link</a>"
+            "Math": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>",
+            "ELA": "Colleges and universities may use Smarter Balanced scores as evidence of student readiness for entry-level, credit-bearing courses.  For more information, visit <a href='#'>http://stateresources.link</a>"
         },
         "8": {
             "Math": {
@@ -50,7 +50,7 @@
         "Math": {
             "description": {
                 "1": "Students can explain and apply mathematical concepts and carry out mathematical procedures with precision and fluency.",
-                "2": "Students can solve a range of complex, well-posed problems in pure and applied mathematics, making productive use of knowledge and problem solving strategies. Students can analyze complex, real-world scenarios and can construct and use mathematical models to interpret and solve problems.",
+                "2": "Students can solve a range of complex, well-posed problems in pure and applied mathematics, making productive use of knowledge and problem-solving strategies.  Students can analyze complex, real-world scenarios and can construct and use mathematical models to interpret and solve problems.",
                 "3": "Students can clearly and precisely construct viable arguments to support their own reasoning and to critique the reasoning of others."
             },
             "scoreTooltip": {

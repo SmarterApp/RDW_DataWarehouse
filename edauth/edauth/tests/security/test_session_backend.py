@@ -8,6 +8,7 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from edauth.security.session import Session
 from edauth.security.session_backend import BeakerBackend
+import time
 
 
 class TestBeakerBackend(unittest.TestCase):
@@ -17,6 +18,7 @@ class TestBeakerBackend(unittest.TestCase):
         reg['cache.expire'] = 10
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'
+        reg['batch.user.session.timeout'] = 1
         self.cachemgr = CacheManager(**parse_cache_config_options(reg))
         self.backend = BeakerBackend(reg)
 
@@ -58,6 +60,14 @@ class TestBeakerBackend(unittest.TestCase):
         self.backend.update_session(session)
         lookup = self.__get_region('456').get('456')
         self.assertEquals(lookup.get_uid(), 'def')
+
+    def test_overwrite_timeout(self):
+        session = Session()
+        session.set_session_id('1456')
+        session.set_uid('abc')
+        self.backend.create_new_session(session, overwrite_timeout=True)
+        time.sleep(1)
+        self.assertIsNone(self.backend.get_session('1456'))
 
 
 if __name__ == "__main__":

@@ -123,7 +123,6 @@ class TestStudentRegProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_s
         self.assertIn('tenant', result)
         self.assertIn('NC', result)
 
-
     @patch('smarter.extracts.student_reg_processor.start_extract')
     @patch('smarter.extracts.student_reg_processor._create_task_info')
     @patch('smarter.extracts.student_reg_processor.register_file')

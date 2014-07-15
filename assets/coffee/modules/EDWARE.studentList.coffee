@@ -232,10 +232,11 @@ define [
         labels: @labels
         CSVOptions: @config.CSVOptions
         ExportOptions: @config.ExportOptions
+        param: @params
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
-        getReportParams: @getReportParams.bind(this)
+        getReportParams: @getReportParams.bind(this), contextSecurity
 
     getReportParams: () ->
       params = {}

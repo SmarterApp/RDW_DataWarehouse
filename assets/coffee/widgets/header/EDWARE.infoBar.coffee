@@ -12,7 +12,7 @@ define [
 
   class ReportInfoBar
 
-    constructor: (@container, @config) ->
+    constructor: (@container, @config, @contextSecurity) ->
       @initialize()
       @bindEvent()
 
@@ -55,15 +55,15 @@ define [
         tabindex: 0
 
     createDownloadMenu: () ->
-      @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config)
+      @edwareDownloadMenu ?= new edwareDownload.DownloadMenu($('#downloadMenuPopup'), @config, @contextSecurity)
 
     createAcademicYear: (years) ->
       return if not years
       callback = @config.academicYears.callback
       @academicYear ?= $('#academicYearAnchor').createYearDropdown years, callback
 
-  create = (container, config) ->
-    infoBar = new ReportInfoBar(container, config)
+  create = (container, config, contextSecurity) ->
+    infoBar = new ReportInfoBar(container, config, contextSecurity)
 
 
   ReportInfoBar: ReportInfoBar

@@ -70,7 +70,9 @@ def get_current_context(params):
     sar_extracts = user_context.get_chain(tenant, RolesConstants.SAR_EXTRACTS, params)
     srs_extracts = user_context.get_chain(tenant, RolesConstants.SRS_EXTRACTS, params)
     src_extracts = user_context.get_chain(tenant, RolesConstants.SRC_EXTRACTS, params)
-    return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts, 'src_extracts': src_extracts}
+    audit_xml_extracts = user_context.get_chain(tenant, RolesConstants.AUDIT_XML_EXTRACTS, params)
+    item_lvl_extracts = user_context.get_chain(tenant, RolesConstants.ITEM_LEVEL_EXTRACTS, params)
+    return {'pii': pii, 'sar_extracts': sar_extracts, 'srs_extracts': srs_extracts, 'src_extracts': src_extracts, 'audit_xml_extracts': audit_xml_extracts, 'item_extracts': item_lvl_extracts}
 
 
 def get_current_request_context(origin_func):

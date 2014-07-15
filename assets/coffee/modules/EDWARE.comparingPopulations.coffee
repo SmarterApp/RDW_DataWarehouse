@@ -248,7 +248,7 @@ define [
         academicYears:
           options: @academicYears
           callback: @onAcademicYearSelected.bind(this)
-        getReportParams: @getReportParams.bind(this)
+        getReportParams: @getReportParams.bind(this), contextSecurity
 
     getReportParams: () ->
       params = {}

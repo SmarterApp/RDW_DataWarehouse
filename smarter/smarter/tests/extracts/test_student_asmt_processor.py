@@ -108,10 +108,7 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
                   'asmtGrade': '3',
                   'extractType': 'itemLevel'}
         for extract_type in [ExtractType.rawData, ExtractType.itemLevel]:
-            results = process_async_item_or_raw_extraction_request(params, extract_type=extract_type)
-            tasks = results['tasks']
-            self.assertEqual(len(tasks), 1)
-            self.assertEqual(tasks[0]['status'], 'fail')
+            self.assertRaises(NotFoundException, process_async_item_or_raw_extraction_request, params, extract_type)
 
     def test_get_file_name_tenant_level(self):
         params = {'stateCode': 'CA',

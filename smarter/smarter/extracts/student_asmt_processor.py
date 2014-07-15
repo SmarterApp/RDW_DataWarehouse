@@ -143,12 +143,11 @@ def estimate_extract_total_file_size(params, avg_file_size, extract_type):
 
     @param params: Extract query params
     """
-    return_number = 0
     state_code = params.get(Constants.STATECODE)
     with EdCoreDBConnection(state_code=state_code) as connector:
         query = get_extract_assessment_item_and_raw_query(params, extract_type)
         return_number = connector.execute(query).rowcount
-    return return_number * avg_file_size
+    return 0 if return_number < 0 else return_number * avg_file_size
 
 
 def process_async_item_or_raw_extraction_request(params, extract_type):

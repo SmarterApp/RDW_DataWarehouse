@@ -14,15 +14,18 @@ from smarter.reports.helpers.filters import apply_filter_to_query
 from smarter.extracts.constants import ExtractType
 
 
+__permissions = {ExtractType.itemLevel: RolesConstants.ITEM_LEVEL_EXTRACTS,
+                 ExtractType.rawData: RolesConstants.AUDIT_XML_EXTRACTS,
+                 ExtractType.studentAssessment: RolesConstants.SAR_EXTRACTS}
+
+
 def get_required_permission(extract_type):
     '''
     Queries are shared between different extracts, and permission is different based on the extract type
     The correct permission is returned given the extract type
     '''
-    permissions = {ExtractType.itemLevel: RolesConstants.ITEM_LEVEL_EXTRACTS,
-                   ExtractType.rawData: RolesConstants.AUDIT_XML_EXTRACTS,
-                   ExtractType.studentAssessment: RolesConstants.SAR_EXTRACTS}
-    return permissions.get(extract_type)
+
+    return __permissions.get(extract_type)
 
 
 def get_extract_assessment_query(params):

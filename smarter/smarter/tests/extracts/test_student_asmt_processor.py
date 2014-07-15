@@ -18,7 +18,7 @@ from smarter.extracts.student_asmt_processor import process_extraction_request, 
     get_extract_file_path, process_sync_item_or_raw_extract_request, \
     get_asmt_metadata_file_path, _prepare_data, _create_tasks, \
     _create_asmt_metadata_task, _create_new_task, \
-    _create_tasks_with_responses
+    _create_tasks_with_responses, estimate_extract_total_file_size
 from smarter.extracts.constants import ExtractType
 from edapi.exceptions import NotFoundException
 from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
@@ -490,3 +490,8 @@ class TestStudentAsmtProcessor(Unittest_with_edcore_sqlite, Unittest_with_stats_
         self.assertEqual('IIRDEXTRACTS', get_required_permission(ExtractType.itemLevel))
         self.assertEqual('AUDITXML', get_required_permission(ExtractType.rawData))
         self.assertEqual('SAREXTRACTS', get_required_permission(ExtractType.studentAssessment))
+
+    def test_estimate_extract_total_file_size(self):
+        params = {'asmtType': 'SUMMATIVE', 'asmtYear': '2016', 'extractType': 'itemLevel', 'stateCode': 'NC', 'asmtGrade': '5', 'asmtSubject': 'Math', 'async': 'true'}
+        total = estimate_extract_total_file_size(params, 1000, ExtractType.itemLevel)
+        self.assertEqual(0, total)
